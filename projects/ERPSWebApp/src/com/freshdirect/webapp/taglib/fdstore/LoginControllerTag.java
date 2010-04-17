@@ -9,6 +9,9 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.net.URLEncoder;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,21 +23,17 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.mail.EmailUtil;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.ListIterator;
 /**
  *
  *
@@ -111,15 +110,15 @@ public class LoginControllerTag extends AbstractControllerTag {
                     
                 }
                 // current user has gift card recipients that need to be added to the login user's recipients list
-                if(currentUser.getLevel()==FDUserI.GUEST &&  currentUser.getRecipentList().getRecipents().size() > 0) {
-                	List tempList = currentUser.getRecipentList().getRecipents();
-                	ListIterator iterator = tempList.listIterator();
+                if(currentUser.getLevel()==FDUserI.GUEST &&  currentUser.getRecipientList().getRecipients().size() > 0) {
+                	List<RecipientModel> tempList = currentUser.getRecipientList().getRecipients();
+                	ListIterator<RecipientModel> iterator = tempList.listIterator();
                 	//add currentUser's list to login user
                 	while(iterator.hasNext()) {
                 		SavedRecipientModel srm = (SavedRecipientModel)iterator.next();
                 		// reset the FDUserId to the login user
                 		srm.setFdUserId(loginUser.getUserId());
-                		loginUser.getRecipentList().addRecipient(srm);
+                		loginUser.getRecipientList().addRecipient(srm);
                 	}
                 	/*Seems like no need to clear the recipients
                 	ListIterator i = currentUser.getRecipentList().getRecipents().listIterator();

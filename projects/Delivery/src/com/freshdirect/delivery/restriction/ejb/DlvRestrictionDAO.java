@@ -17,6 +17,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.EnumLogicalOperator;
 import com.freshdirect.framework.util.TimeOfDay;
@@ -25,12 +26,12 @@ public class DlvRestrictionDAO {
 
 	private final static TimeOfDay JUST_BEFORE_MIDNIGHT = new TimeOfDay("11:59 PM");
 
-	public static List getDlvRestrictions(Connection conn) throws SQLException {
+	public static List<RestrictionI> getDlvRestrictions(Connection conn) throws SQLException {
 
 		PreparedStatement ps = conn
 			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason from dlv.restricted_days");
 		ResultSet rs = ps.executeQuery();
-		List restrictions = new ArrayList();
+		List<RestrictionI> restrictions = new ArrayList<RestrictionI>();
 		while (rs.next()) {
 
 			String id = rs.getString("ID");
@@ -98,7 +99,7 @@ public class DlvRestrictionDAO {
 			"and mdsys.sdo_relate(gb.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?,?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'";
 //	select * from dlv.GEO_RESTRICTION_BOUNDARY gr where mdsys.sdo_relate(gr.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(-73.952006,40.59712,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'
 	//1910 AVE V  	11229  	40.59712  	-73.952006
-	public static List getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
+	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(GEOGRAPHY_RESTRICTION);
 		ps.setString(1, address.getServiceType().getName());
@@ -106,7 +107,7 @@ public class DlvRestrictionDAO {
 		ps.setDouble(3, address.getLatitude());
 		
 		ResultSet rs = ps.executeQuery();
-		List restrictions = new ArrayList();
+		List<GeographyRestriction> restrictions = new ArrayList<GeographyRestriction>();
 		GeographyRestriction restriction = null;
 		GeographyRestrictedDay restrictedDay = null;
 		EnumLogicalOperator condition = null;

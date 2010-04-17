@@ -122,6 +122,32 @@
 	</weblogic-enterprise-bean>
 
 	<weblogic-enterprise-bean>
+		<ejb-name>StandingOrders</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>50</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>10</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.StandingOrders</jndi-name>
+	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
 		<ejb-name>CallCenterManager</ejb-name>
 		<stateless-session-descriptor>
 	        <pool>
@@ -457,6 +483,37 @@
 		</reference-descriptor>
 		<jndi-name>freshdirect.fdstore.FDSurvey</jndi-name>
 	</weblogic-enterprise-bean>
+
+	<weblogic-enterprise-bean>
+		<ejb-name>CreateEmail</ejb-name>
+		<stateless-session-descriptor>
+	        <pool>
+				<max-beans-in-free-pool>10</max-beans-in-free-pool>
+				<initial-beans-in-free-pool>1</initial-beans-in-free-pool>
+	        </pool>
+
+			<stateless-clustering>
+			</stateless-clustering>
+
+		</stateless-session-descriptor>
+
+		<transaction-descriptor>
+		</transaction-descriptor>
+
+		<reference-descriptor>
+			<resource-description>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<jndi-name>fddatasource</jndi-name>
+			</resource-description>
+			<ejb-reference-description>
+				<ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+				<jndi-name>freshdirect.fdstore.CustomerManager</jndi-name>
+			</ejb-reference-description>
+		</reference-descriptor>
+
+		<jndi-name>freshdirect.fdstore.CreateEmail</jndi-name>
+	</weblogic-enterprise-bean>
+
 	<transaction-isolation>
 		<isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
 		<method>
@@ -465,4 +522,5 @@
 			<method-name>*</method-name>
 		</method>
 	</transaction-isolation>
+
 </weblogic-ejb-jar>

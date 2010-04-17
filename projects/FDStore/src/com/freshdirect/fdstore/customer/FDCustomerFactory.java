@@ -1,9 +1,3 @@
-/*
- * Class.java
- *
- * Created on November 1, 2001, 1:33 PM
- */
-
 package com.freshdirect.fdstore.customer;
 
 /**
@@ -68,6 +62,21 @@ public class FDCustomerFactory {
 		}
 	}
 
+	public static String getFDCustomerIdFromErpId( String erpCustomerId ) throws FDResourceException {
+		if (fdCustomerHome==null) {
+			lookupFDCustomerHome();
+		}
+		try {
+			FDCustomerEB eb = fdCustomerHome.findByErpCustomerId(erpCustomerId);
+			return ( (FDCustomerModel) eb.getModel() ).getPK().getId();
+		} catch(FinderException fe) {
+			fdCustomerHome=null;
+			throw new FDResourceException(fe);
+		} catch(RemoteException re) {
+			fdCustomerHome=null;
+			throw new FDResourceException(re);
+		}
+	}
 
 	public static ErpCustomerModel getErpCustomer(FDIdentity identity) throws FDResourceException {
 		return getErpCustomer( identity.getErpCustomerPK() );

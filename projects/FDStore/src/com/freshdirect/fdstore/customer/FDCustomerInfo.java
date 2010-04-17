@@ -1,8 +1,3 @@
-/*
- * 
- * FDCustomerInfo.java
- * Date: Oct 8, 2002 Time: 8:21:48 PM
- */
 package com.freshdirect.fdstore.customer;
 
 import com.freshdirect.common.address.PhoneNumber;
@@ -14,6 +9,8 @@ import com.freshdirect.common.address.PhoneNumber;
  */
 
 public class FDCustomerInfo implements java.io.Serializable{
+	
+	private static final long	serialVersionUID	= 6170229483507780937L;
 	
 	private int numberOfOrders;
 	private String firstName;

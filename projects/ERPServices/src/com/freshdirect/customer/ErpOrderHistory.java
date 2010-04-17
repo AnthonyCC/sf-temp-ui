@@ -1,10 +1,7 @@
 package com.freshdirect.customer;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * @author skrishnasamy
@@ -15,19 +12,19 @@ public class ErpOrderHistory implements OrderHistoryI {
 	private static final long serialVersionUID = 4888213033162047918L;
 
 
-	private Collection erpSaleInfos;
-	private Collection erpRegSaleInfos;
+	private Collection<ErpSaleInfo> erpSaleInfos;
+	private Collection<ErpSaleInfo> erpRegSaleInfos;
 
 	/**
 	 * 
 	 * @param erpsaleInfos
 	 */
-	public ErpOrderHistory(Collection erpsaleInfos) {
+	public ErpOrderHistory(Collection<ErpSaleInfo> erpsaleInfos) {
 		this.erpSaleInfos = erpsaleInfos;
 		erpRegSaleInfos=ErpOrderHistoryUtil.filterOrders(this.erpSaleInfos,EnumSaleType.REGULAR);
 	}
 
-	public Collection getErpSaleInfos() {
+	public Collection<ErpSaleInfo> getErpSaleInfos() {
 		return this.erpSaleInfos;
 	}
 	

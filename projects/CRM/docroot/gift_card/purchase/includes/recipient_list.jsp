@@ -4,7 +4,10 @@
 <%@ page import='java.util.List' %>
 <%@ page import='java.util.ListIterator' %>
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.GiftCardUtil' %>
-
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
+<%@ page import="com.freshdirect.giftcard.RecipientModel"%>
 <%@ page import='com.freshdirect.framework.util.FormatterUtil' %>
 
 <%
@@ -19,18 +22,13 @@ if("true".equalsIgnoreCase(gcStr)){
 
 FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
-FDRecipientList recipList = giftUser.getRecipentList();
+FDRecipientList recipList = giftUser.getRecipientList();
 if(recipList != null) {
-	List recipients =  recipList.getRecipents();
+	List<RecipientModel> recipients =  recipList.getRecipients();
 	if(!recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%>
-		
-<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>
-<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
-<%@page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
-		<table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
+		%><table width="100%" cellspacing="0" cellpadding="0" border="0" class="gc_tableBody">
 			<tr>
 				<td><!-- <img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /> -->
                  <b>Selected Cards (<%=recipList.size()%>):</b>
@@ -69,7 +67,7 @@ if(recipList != null) {
 			<div class="gcRecipListContainerCRM">
 				<table class="recipTableCRM" cellspacing="0" cellpadding="0" width="100%">
 						<%
-						ListIterator j = recipients.listIterator();
+						ListIterator<RecipientModel> j = recipients.listIterator();
 						while(j.hasNext()) {
 							SavedRecipientModel srm = (SavedRecipientModel)j.next();
 						%>

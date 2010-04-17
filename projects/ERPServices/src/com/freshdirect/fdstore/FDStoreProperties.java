@@ -399,6 +399,9 @@ public class FDStoreProperties {
 	private final static String PROP_ZONE_PRICING_AD_ENABLED = "fdstore.zone.pricing.ad.enabled";
 	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
 	
+	//Standing Orders
+	private final static String SO_GLOBAL_ENABLER = "fdstore.standingorders.enabled";
+	
 	//new products revamp
 	private static final String PROP_NEWPRODUCTS_DEPTID="fdstore.newProducts.DeptId";
 	private static final String PROP_NEWPRODUCTS_CATID="fdstore.newProducts.CatId";
@@ -721,6 +724,9 @@ public class FDStoreProperties {
 		
 		//Window Steering
 		defaults.put(WINDOW_STEERING_PROMOTION_PREFIX,"WS_");
+		
+		//Standing Orders
+		defaults.put(SO_GLOBAL_ENABLER, "false");
 		
 		//new products revamp
 		defaults.put(PROP_NEWPRODUCTS_DEPTID, "newproduct");
@@ -1666,6 +1672,10 @@ public class FDStoreProperties {
 	 */
 	public static boolean useOscache() {
 		return !( isAnnotationMode() || getPreviewMode() );		
+	}
+
+	public static boolean isStandingOrdersEnabled() {
+		return Boolean.valueOf(config.getProperty(SO_GLOBAL_ENABLER)).booleanValue();
 	}
 	
 	//new products revamp

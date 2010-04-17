@@ -73,7 +73,7 @@
 				sessionuser.getGiftCart().setDeliveryAddress(null);
 				
              }
-				FDRecipientList recipListContinue = sessionuser.getRecipentList();
+				FDRecipientList recipListContinue = sessionuser.getRecipientList();
              %>
             <fd:ErrorHandler result='<%=result%>' name='gc_amount_minimum' id='errorMsg'>
                <%@ include file="/includes/i_error_messages.jspf" %>

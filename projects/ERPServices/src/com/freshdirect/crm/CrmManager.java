@@ -66,7 +66,7 @@ public class CrmManager {
 			try {
 				manager = new CrmManager();
 				CrmManagerHome home =
-					(CrmManagerHome) manager.serviceLocator.getRemoteHome("freshdirect.crm.Manager", CrmManagerHome.class);
+					(CrmManagerHome) manager.serviceLocator.getRemoteHome("freshdirect.crm.Manager");
 				CrmManagerSB sb = home.create();
 				manager.setOperations(sb.getOperations());
 			} catch (NamingException e) {
@@ -405,7 +405,7 @@ public class CrmManager {
 	
 	private CrmManagerSB getCrmManagerSB() throws FDResourceException {
 		try {
-			CrmManagerHome home = (CrmManagerHome) serviceLocator.getRemoteHome("freshdirect.crm.Manager", CrmManagerHome.class);
+			CrmManagerHome home = (CrmManagerHome) serviceLocator.getRemoteHome("freshdirect.crm.Manager");
 			return home.create();
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);

@@ -172,6 +172,8 @@ public class ErpServicesProperties {
 	private final static String PROP_AVS_ERROR_ORDER_COUNT="payment.avs_error.order.count";
 	private final static String PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS = "signup.promo.duplicate.addr.delivery.days";
 	
+	private final static String SO_TECH_RECIPIENT = "standingorders.technical.error.recipient.address";
+	private final static String SO_TECH_FROM = "standingorders.technical.error.from.address";
 	
 	static {
 		Properties defaults = new Properties();
@@ -303,6 +305,9 @@ public class ErpServicesProperties {
 		defaults.put(PROP_AVS_ERROR_ORDER_COUNT, "5");
 		defaults.put(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS, "180");
 		defaults.put(PROP_AVS_ADDRESS_CHECK, "false");
+		
+		defaults.put( SO_TECH_RECIPIENT, "sa@freshdirect.com" );
+		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -617,7 +622,7 @@ public class ErpServicesProperties {
 	}
 
 	public static Context getInitialContext() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String,String> env = new Hashtable<String,String>();
 		env.put(Context.PROVIDER_URL, getProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);
@@ -731,5 +736,12 @@ public class ErpServicesProperties {
 		return Integer.parseInt(config.getProperty(PROP_SIGNUP_PROMO_DUPLICATE_ADDR_DELV_DAYS));		
 		
 	}
-
+	
+	public static String getStandingOrdersTechnicalErrorRecipientAddress() {
+		return config.getProperty(SO_TECH_RECIPIENT);
+	}
+	public static String getStandingOrdersTechnicalErrorFromAddress() {
+		return config.getProperty(SO_TECH_FROM);
+	}
+	
 }

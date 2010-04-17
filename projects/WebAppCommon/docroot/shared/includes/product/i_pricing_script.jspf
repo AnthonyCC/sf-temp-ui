@@ -1,78 +1,12 @@
-<%@ page import='com.freshdirect.common.pricing.*' %>
+<%@ page import="java.util.Collection"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
 <%--
 	builds javascript pricing structures
 	expects a collection of SkuModel objects, called "sku"
 --%>
 <%-- import the pricing engine --%>
-<script language="javascript" src="/assets/javascript/pricing.js"></script>
-<script language="javascript">
-if (!document.materialPricesArray) {
-	document.materialPricesArray = new Array();
-}
-if (!document.cvPricesArray) {
-	document.cvPricesArray = new Array();
-}
-if (!document.salesUnitRatiosArray) {
-	document.salesUnitRatiosArray = new Array();
-}
-<% FDSessionUser p_user = (FDSessionUser)session.getAttribute(SessionName.USER); %>
-<logic:iterate id="sku" collection="<%= skus %>" type="SkuModel">
- <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-  <fd:FDProduct id="product" productInfo="<%= productInfo %>">
-<%				
-	Pricing pricing = product.getPricing();
-	MaterialPrice[] matPrices = pricing.getZonePrice(p_user.getPricingContext().getZoneId()).getMaterialPrices();
-	CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
-	SalesUnitRatio[] suRatios = pricing.getSalesUnitRatios();
-
-	// material prices array
-	if (matPrices.length > 0) {
-%>
-if (document.materialPricesArray['<%= productInfo.getSkuCode() %>'] == null) {
-	document.materialPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
-<% 
-		for(int j=0; j<matPrices.length; j++) {
-%>    document.materialPricesArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new MaterialPrice(<%= matPrices[j].getPrice() %>, '<%= matPrices[j].getPricingUnit() %>', '<%= matPrices[j].getScaleLowerBound() %>', '<%= matPrices[j].getScaleUpperBound() %>', '<%=matPrices[j].getScaleUnit()%>');
-<%
-		}
-%>
-}
-<%
-	}
-
-
-	// characterisctic value prices
-	if (cvPrices.length > 0) {
-%>
-if (!document.cvPricesArray['<%= productInfo.getSkuCode() %>']) {
-	document.cvPricesArray['<%= productInfo.getSkuCode() %>'] = new Array();
-<% 
-		for (int j=0; j<cvPrices.length; j++) { 
-%>    document.cvPricesArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new CharValuePrice('<%= cvPrices[j].getCharacteristicName() %>', '<%= cvPrices[j].getCharValueName() %>', <%= cvPrices[j].getPrice() %>, '<%= cvPrices[j].getPricingUnit() %>', <%= cvPrices[j].getApplyHow() %>);
-<%
-		}
-%>
-}
-<%
-	}
-
-	// sales unit ratios
-	if (suRatios.length > 0) {
-%>
-if (!document.salesUnitRatiosArray['<%= productInfo.getSkuCode() %>']) {
-	document.salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'] = new Array();
-<% 
-		for(int j=0; j<suRatios.length; j++) {
-%>    document.salesUnitRatiosArray['<%= productInfo.getSkuCode() %>'][<%=j%>] = new SalesUnitRatio('<%= suRatios[j].getAlternateUnit() %>', '<%= suRatios[j].getSalesUnit() %>', <%= suRatios[j].getRatio() %>);
-<%
-		}
-%>
-}
-<%
-	}
-%>
-   </fd:FDProduct>
-  </fd:FDProductInfo>
-</logic:iterate>
-</script>
-<%-- end of javascript pricing structures --%>
+<script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+<fd:TxProductPricingSupport customer="<%= (FDUserI) session.getAttribute(SessionName.USER) %>" skus="<%= (Collection<SkuModel>)skus %>"></fd:TxProductPricingSupport>

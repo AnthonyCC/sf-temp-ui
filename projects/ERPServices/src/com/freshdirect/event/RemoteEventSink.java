@@ -39,7 +39,7 @@ public class RemoteEventSink implements EventSinkI {
 	
 	private EventLoggerHome getEventLoggerHome() {
 		try {
-			return (EventLoggerHome) serviceLocator.getRemoteHome("freshdirect.event.EventLogger", EventLoggerHome.class);
+			return (EventLoggerHome) serviceLocator.getRemoteHome("freshdirect.event.EventLogger");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

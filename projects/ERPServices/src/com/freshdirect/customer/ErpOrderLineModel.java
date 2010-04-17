@@ -1,18 +1,10 @@
-/*
- * $Workfile:ErpOrderLineModel.java$
- *
- * $Date:5/8/2003 4:21:26 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.customer;
 
 import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -29,7 +21,9 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 
-    private String orderLineNumber;
+	private static final long	serialVersionUID	= 6088652627874909097L;
+	
+	private String orderLineNumber;
     private String orderLineId;
     
     private String affiliateCode;
@@ -153,7 +147,7 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		return this.configuration.getQuantity();
 	}
 
-	public Map getOptions() {
+	public Map<String,String> getOptions() {
 		return this.configuration.getOptions();
 	}
 

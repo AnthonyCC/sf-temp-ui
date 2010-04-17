@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.framework.core;
 
 /**
@@ -15,7 +6,10 @@ package com.freshdirect.framework.core;
  * @version $Revision$
  * @author $Author$
  */
+
 public abstract class ModelSupport extends ModelBase {
+
+	private static final long	serialVersionUID	= -7178043825081956157L;
 
 	/**
 	 * default constructor
@@ -24,12 +18,19 @@ public abstract class ModelSupport extends ModelBase {
 		super();
 	}
 
+	/**
+	 * @return The ID of the PrimaryKey if there is one, null otherwise
+	 */
 	public String getId() {
 		return getPK() == null ? null : getPK().getId();
 	}
 
-	public void setId(String id) {
-		this.setPK(new PrimaryKey(id));
+	/**
+	 * Sets a new PrimaryKey with the given ID.
+	 * @param id ID of the new PK
+	 */
+	public void setId( String id ) {
+		this.setPK( new PrimaryKey( id ) );
 	}
 
 }

@@ -1536,8 +1536,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 	private ErpComplaintManagerHome getComplaintManagerHome() {
 		try {
 			return (ErpComplaintManagerHome) LOCATOR.getRemoteHome(
-				"java:comp/env/ejb/ComplaintManager",
-				ErpComplaintManagerHome.class);
+				"java:comp/env/ejb/ComplaintManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -1545,7 +1544,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -1562,7 +1561,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
     private DlvPassManagerHome getDlvPassManagerHome() {
         try {
-            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class);
+            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
         } catch (NamingException e) {
             throw new EJBException(e);
         }

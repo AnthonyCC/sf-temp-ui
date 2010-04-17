@@ -13,7 +13,6 @@ import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
-
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -29,16 +28,17 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.content.ProxyProduct;
+import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.util.MathUtil;
 
 public class FDProductSelection implements FDProductSelectionI {
 
+	private static final long	serialVersionUID	= 4143825923906335052L;
+	
 	protected final static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	protected final static DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
 
@@ -148,11 +148,11 @@ public class FDProductSelection implements FDProductSelectionI {
 			new FDConfiguration(this.getConfiguration().getQuantity(), salesUnit, this.getConfiguration().getOptions()));
 	}
 
-	public Map getOptions() {
+	public Map<String,String> getOptions() {
 		return this.orderLine.getOptions();
 	}
 
-	public final void setOptions(Map options) {
+	public final void setOptions(Map<String,String> options) {
 		this.setConfiguration(
 			new FDConfiguration(this.getConfiguration().getQuantity(), this.getConfiguration().getSalesUnit(), options));
 	}
@@ -298,7 +298,6 @@ public class FDProductSelection implements FDProductSelectionI {
 				Price discountP=PricingEngine.applyDiscount(p,1,this.getDiscount());
 				disAmount=discountP.getBasePrice();
 			} catch (PricingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}else{
@@ -514,7 +513,6 @@ public class FDProductSelection implements FDProductSelectionI {
 	}
 
 	public EnumOrderLineRating getProduceRating() {
-		// TODO Auto-generated method stub
 		return orderLine.getProduceRating();
 	}
 

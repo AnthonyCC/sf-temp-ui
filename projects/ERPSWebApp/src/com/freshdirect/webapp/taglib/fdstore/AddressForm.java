@@ -143,7 +143,7 @@ public class AddressForm implements WebFormI { //, AddressName
 		return this.lastName;
 	}
 
-    protected AddressModel getDeliveryAddress() {
+    public AddressModel getDeliveryAddress() {
 		AddressModel address = new AddressModel();
         this.decorateAddress(address);
         return address;

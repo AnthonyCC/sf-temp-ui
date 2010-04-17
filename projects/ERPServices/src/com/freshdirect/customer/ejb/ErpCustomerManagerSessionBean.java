@@ -1,11 +1,3 @@
-/*
- * $Workfile:ErpCustomerManagerSessionBean.java$
- *
- * $Date:8/29/2003 11:07:09 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.customer.ejb;
 
 import java.rmi.RemoteException;
@@ -34,8 +26,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.common.customer.PaymentMethodI;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -61,6 +51,7 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpAppliedCreditModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
+import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpChargeInvoiceModel;
 import com.freshdirect.customer.ErpChargeLineModel;
@@ -100,11 +91,14 @@ import com.freshdirect.customer.adapter.CustomerAdapter;
 import com.freshdirect.customer.adapter.SapOrderAdapter;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
 import com.freshdirect.deliverypass.DlvPassUsageLine;
+import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.GiftCardApplicationStrategy;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -114,14 +108,9 @@ import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.payment.fraud.PaymentFraudManager;
 import com.freshdirect.sap.SapCustomerI;
 import com.freshdirect.sap.SapOrderLineI;
-import com.freshdirect.sap.SapProperties;
-import com.freshdirect.sap.command.SapCommandI;
-import com.freshdirect.sap.command.SapCreateCustomer;
 import com.freshdirect.sap.command.SapPostReturnCommand;
-import com.freshdirect.sap.ejb.SapException;
 import com.freshdirect.sap.ejb.SapGatewayHome;
 import com.freshdirect.sap.ejb.SapGatewaySB;
-import com.freshdirect.sap.ejb.SapResult;
 
 /**
  *
@@ -131,7 +120,10 @@ import com.freshdirect.sap.ejb.SapResult;
  */
 public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
+	private static final long	serialVersionUID	= -8402554411597357822L;
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(ErpCustomerManagerSessionBean.class);
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 
@@ -184,37 +176,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	}
 
 
-	/*private void createCustomerForGC(ErpCustomerModel erpCustomer,
-			PrimaryKey customerPK) {
-
-		SapCreateCustomer sapCreateCustomer = null;
-		try {
-			
-			SapCustomerI customer = new CustomerAdapter(false, erpCustomer, null, erpCustomer.getSapBillToAddress());
-			sapCreateCustomer = new SapCreateCustomer(customerPK.getId(), customer);
-			if (SapProperties.isBlackhole()) {
-				LOGGER.debug("Message blackholed.");
-				return;
-			}
-			sapCreateCustomer.execute();
-			String custId = sapCreateCustomer.getErpCustomerNumber();
-			ErpCustomerEB custEB;
-			try {
-				custEB = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(custId));
-				custEB.setSapId(sapCreateCustomer.getSapCustomerNumber());
-
-			} catch (RemoteException e) {
-				throw new EJBException("RemoteException occured processing customer " + custId, e);
-
-			} catch (FinderException e) {
-				throw new EJBException("RemoteException occured processing customer " + custId, e);
-
-			}
-		} catch (SapException e) {
-			throw new EJBException("SapException occured while creating new customer", e);			
-		}
-	}*/
-	
 	private void enqueueCustomer(ErpCustomerModel erpCustomer, PrimaryKey customerPK) {
 		enqueueCustomer(erpCustomer, customerPK, false);
 	}
@@ -259,7 +220,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	public PrimaryKey placeOrder(
 		PrimaryKey erpCustomerPk,
 		ErpCreateOrderModel order,
-		Set usedPromotionCodes,
+		Set<String> usedPromotionCodes,
 		CustomerRatingI rating,
 		CrmAgentRole agentRole,
 		String dlvPassId,
@@ -409,18 +370,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			// Locate and reverse any potential applied credits
 			//
-			HashMap creditsMap = new HashMap();
+			HashMap<String,Double> creditsMap = new HashMap<String,Double>();
 
 			ErpAbstractOrderModel order = saleEB.getCurrentOrder();
 			
 
-			for (Iterator i = order.getAppliedCredits().iterator(); i.hasNext();) {
-				ErpAppliedCreditModel ac = (ErpAppliedCreditModel) i.next();
+			for ( ErpAppliedCreditModel ac : order.getAppliedCredits() ) {
 				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
 			}
-            
-			
-			
+            			
 
 			ErpCancelOrderModel cancelOrder = new ErpCancelOrderModel();
 			cancelOrder.setTransactionSource(source);
@@ -451,7 +409,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	public void modifyOrder(
 			String saleId,
 			ErpModifyOrderModel order,
-			Set usedPromotionCodes,
+			Set<String> usedPromotionCodes,
 			CustomerRatingI cra,
 			CrmAgentRole agentRole,
 			boolean sendToSap) throws ErpFraudException, ErpTransactionException {
@@ -471,10 +429,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 			// reverse credits applied to the last order Transaction
 			ErpAbstractOrderModel originalOrder = saleEB.getCurrentOrder();
-			List credits = originalOrder.getAppliedCredits();
-			HashMap creditsMap = new HashMap();
-			for (Iterator i = credits.iterator(); i.hasNext();) {
-				ErpAppliedCreditModel ac = (ErpAppliedCreditModel) i.next();
+			List<ErpAppliedCreditModel> credits = originalOrder.getAppliedCredits();
+			HashMap<String, Double> creditsMap = new HashMap<String, Double>();
+			for ( ErpAppliedCreditModel ac : credits ) {
 				creditsMap.put(ac.getCustomerCreditPk().getId(), new Double(ac.getAmount()));
 			}
 			reverseAppliedCredits(sale.getCustomerPk(), creditsMap);
@@ -588,7 +545,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			fraudSB.postCheckDonationFraud(salePk, erpCustomerPk, order, agentRole);
 	}
 	
-	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection charges)
+	public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection<ErpChargeLineModel> charges)
 		throws ErpTransactionException {
 		try {
 
@@ -599,7 +556,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpResubmitPaymentModel resubmitModel = new ErpResubmitPaymentModel();
 			resubmitModel.setPaymentMethod(paymentMethod);
 			resubmitModel.setInvoiceLines(invoice.getInvoiceLines());
-			List chargesList = invoice.getCharges();
+			List<ErpChargeLineModel> chargesList = invoice.getCharges();
 			chargesList.addAll(charges);
 			resubmitModel.setCharges(chargesList);
 
@@ -614,16 +571,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		return null;
 	}
 
-	private void reverseAppliedCredits(PrimaryKey customerPk, HashMap creditsMap) {
+	private void reverseAppliedCredits(PrimaryKey customerPk, HashMap<String, Double> creditsMap) {
 		try {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPk);
 			ErpCustomerModel customerModel = (ErpCustomerModel) customerEB.getModel();
-			Collection credits = customerModel.getCustomerCredits();
-			for (Iterator it = credits.iterator(); it.hasNext();) {
-				ErpCustomerCreditModel credit = (ErpCustomerCreditModel) it.next();
+			Collection<ErpCustomerCreditModel> credits = customerModel.getCustomerCredits();
+			for ( ErpCustomerCreditModel credit : credits ) {
 				String thisCreditId = credit.getPK().getId();
 				if (creditsMap.containsKey(thisCreditId)) {
-					Double delta = (Double) creditsMap.get(thisCreditId);
+					Double delta = creditsMap.get(thisCreditId);
 					LOGGER.debug(
 						"Reversing credit (#"
 							+ thisCreditId
@@ -650,13 +606,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(erpCustomerPk);
 			ErpCustomerModel customerModel = (ErpCustomerModel) customerEB.getModel();
-			List customerCredits = customerModel.getCustomerCredits();
+			List<ErpCustomerCreditModel> customerCredits = customerModel.getCustomerCredits();
 
-			for (Iterator acIterator = order.getAppliedCredits().iterator(); acIterator.hasNext();) {
-				//creditsApplied = true;
-				ErpAppliedCreditModel appliedCredit = (ErpAppliedCreditModel) acIterator.next();
-				for (Iterator ccIterator = customerCredits.iterator(); ccIterator.hasNext();) {
-					ErpCustomerCreditModel customerCredit = (ErpCustomerCreditModel) ccIterator.next();
+			for ( ErpAppliedCreditModel appliedCredit : order.getAppliedCredits() ) {
+				for ( ErpCustomerCreditModel customerCredit : customerCredits ) {
 					if (appliedCredit.getCustomerCreditPk().getId().equals(customerCredit.getPK().getId())) {
 						//customerCredit.setRemainingAmount( customerCredit.getRemainingAmount() - appliedCredit.getAmount() );
 						LOGGER.debug(
@@ -683,7 +636,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * @see ErpCustomerManagerSB#checkAvailability(PrimaryKey, ErpCreateOrderModel, long)
 	 */
-	public Map checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout) {
+	public Map<String, List<ErpInventoryModel>> checkAvailability(PrimaryKey erpCustomerPk, ErpCreateOrderModel order, long timeout) {
 		SapOrderAdapter sapOrder = this.adaptOrder(erpCustomerPk, order, null);
 
 		try {
@@ -698,7 +651,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			throw new EJBException("Error talking to session bean " + ex.getMessage());
 		}
 
-		Map inventoryMap = new HashMap();
+		Map<String, List<ErpInventoryModel>> inventoryMap = new HashMap<String, List<ErpInventoryModel>>();
 		for (int i = 0; i < sapOrder.numberOfOrderLines(); i++) {
 			SapOrderLineI orderLine = sapOrder.getOrderLine(i);
 			inventoryMap.put(orderLine.getLineNumber(), orderLine.getInventories());
@@ -736,19 +689,8 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			Collection history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
+			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrderHistoryInfo(conn, erpCustomerPk.getId());
 
-/*			This block has been commented out as loading of Promotion History is seperated
- * 			from Order History. Jira Task PERF - 22.
- * 			Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
-			for (Iterator i = history.iterator(); i.hasNext();) {
-				ErpSaleInfo saleInfo = (ErpSaleInfo) i.next();
-				Set promoCodes = (Set) promoParticipation.get(saleInfo.getSaleId());
-				if (promoCodes != null) {
-					saleInfo.setUsedPromotionCodes(promoCodes);
-				}
-			}
-*/
 			return new ErpOrderHistory(history);
 
 		} catch (SQLException ex) {
@@ -768,7 +710,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			Connection conn = null;
 			try {
 				conn = this.getConnection();
-				Map promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
+				Map<String,Set<String>> promoParticipation = ErpPromotionDAO.loadPromotionParticipation(conn, erpCustomerPk);
 				return new ErpPromotionHistory(promoParticipation);
 
 			} catch (SQLException ex) {
@@ -810,7 +752,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
 					//Set the selected gift cards from the original order.
 					//ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(eb.getCustomerPk());
-					List selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
+					List<ErpGiftCardModel> selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
 					order.setSelectedGiftCards(selectedGiftCards);
 					//Re Generate Applied gift cards info.
 					GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, invoice);
@@ -914,16 +856,15 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	
 
-	private void reconcileInvoicedCredits(PrimaryKey customerPK, List invoicedCredits, List appliedCredits)
+	private void reconcileInvoicedCredits(PrimaryKey customerPK, List<ErpInvoicedCreditModel> invoicedCredits, List<ErpAppliedCreditModel> appliedCredits)
 		throws RemoteException, FinderException {
 		ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(customerPK);
 		ErpCustomerModel customerModel = (ErpCustomerModel) customerEB.getModel();
-		List customerCredits = customerModel.getCustomerCredits();
+		List<ErpCustomerCreditModel> customerCredits = customerModel.getCustomerCredits();
 
-		for (Iterator i = invoicedCredits.iterator(); i.hasNext();) {
-			ErpInvoicedCreditModel invoicedCredit = (ErpInvoicedCreditModel) i.next();
-			for (Iterator j = appliedCredits.iterator(); j.hasNext();) {
-				ErpAppliedCreditModel appliedCredit = (ErpAppliedCreditModel) j.next();
+		for ( ErpInvoicedCreditModel invoicedCredit : invoicedCredits ) {
+			for ( ErpAppliedCreditModel appliedCredit : appliedCredits ) {
+				
 				if (appliedCredit.getPK().getId().equals(invoicedCredit.getOriginalCreditId())) {
 					invoicedCredit.setCustomerCreditPk(appliedCredit.getCustomerCreditPk());
 					invoicedCredit.setDepartment(appliedCredit.getDepartment());
@@ -932,8 +873,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					int originalAmount = (int) Math.round(appliedCredit.getAmount() * 100);
 
 					if (invoicedAmount < originalAmount) {
-						for (Iterator ccIterator = customerCredits.iterator(); ccIterator.hasNext();) {
-							ErpCustomerCreditModel customerCredit = (ErpCustomerCreditModel) ccIterator.next();
+						for ( ErpCustomerCreditModel customerCredit : customerCredits ) {
 							if (invoicedCredit.getCustomerCreditPk().getId().equals(customerCredit.getPK().getId())) {
 								LOGGER.debug(
 									"setting remaining credit on CUSTCREDIT "
@@ -949,7 +889,6 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 							}
 						}
 					}
-
 					break;
 				}
 			}
@@ -1101,7 +1040,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getRedeliveries(java.util.Date date) {
+	public List getRedeliveries(Date date) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1175,7 +1114,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getTruckNumbersForDate(java.util.Date deliveryDate) {
+	public List getTruckNumbersForDate(Date deliveryDate) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1218,7 +1157,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getOrdersForDateAndAddress(java.util.Date date, String address, String zipcode) {
+	public List getOrdersForDateAndAddress(Date date, String address, String zipcode) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1237,7 +1176,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getOrdersByTruckNumber(String truckNumber, java.util.Date deliveryDate) {
+	public List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1325,7 +1264,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			} else {
 				pendingComplaint.setStatus(EnumComplaintStatus.REJECTED);
 				pendingComplaint.setApprovedBy(csrId);
-				pendingComplaint.setApprovedDate(new java.util.Date());
+				pendingComplaint.setApprovedDate(new Date());
 				//
 				eb.updateComplaint(pendingComplaint);
 			}
@@ -1380,7 +1319,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			//
 			if (autoApprove) {
 				complaint.setStatus(EnumComplaintStatus.APPROVED);
-				complaint.setApprovedDate(new java.util.Date());
+				complaint.setApprovedDate(new Date());
 				complaint.setApprovedBy("AUTO_APPROVED");
 			}
 		
@@ -1405,7 +1344,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// and get back the new sale model with the complaint
 			//
 			ErpSaleModel saleModel = (ErpSaleModel) eb.getModel();
-			Collection complaints = saleModel.getComplaints();
+			Collection<ErpComplaintModel> complaints = saleModel.getComplaints();
 			ErpComplaintModel lastComplaint = this.getLastComplaint(complaints);
 			PrimaryKey complaintPk = lastComplaint.getPK();
 			
@@ -1558,13 +1497,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	} // method addCashback
 
-	private ErpComplaintModel getLastComplaint(Collection col) {
+	private ErpComplaintModel getLastComplaint(Collection<ErpComplaintModel> col) {
 
 		ErpComplaintModel lastComplaint = null;
+		Date lastDate = null;
 
-		for (Iterator it = col.iterator(); it.hasNext();) {
-			java.util.Date lastDate = null;
-			ErpComplaintModel cm = (ErpComplaintModel) it.next();
+		for ( ErpComplaintModel cm : col ) {
 			if (lastDate == null || cm.getCreateDate().after(lastDate)) {
 				lastDate = cm.getCreateDate();
 				lastComplaint = cm;
@@ -1586,9 +1524,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// Could be multiple customer credits per complaint,
 			// so we need to iterate through them and add them to the customer bean
 			//
-			Collection deptCredits = this.getDeptCredits(complaint, saleModel.getRecentOrderTransaction());
-			for (Iterator it = deptCredits.iterator(); it.hasNext();) {
-				DeptCredit dc = (DeptCredit) it.next();
+			Collection<DeptCredit> deptCredits = this.getDeptCredits(complaint, saleModel.getRecentOrderTransaction());
+			for (Iterator<DeptCredit> it = deptCredits.iterator(); it.hasNext();) {
+				DeptCredit dc = it.next();
 				ErpCustomerCreditModel custCreditModel =
 					new ErpCustomerCreditModel(
 						complaint.getPK(),
@@ -1609,12 +1547,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private Collection getDeptCredits(ErpComplaintModel complaint, ErpAbstractOrderModel order) {
+	private Collection<DeptCredit> getDeptCredits(ErpComplaintModel complaint, ErpAbstractOrderModel order) {
 
-		HashMap deptCredits = new HashMap();
+		HashMap<DeptAffiliateKey, DeptCredit> deptCredits = new HashMap<DeptAffiliateKey, DeptCredit>();
 
-		for (Iterator i = complaint.getComplaintLines().iterator(); i.hasNext();) {
-			ErpComplaintLineModel complaintLine = (ErpComplaintLineModel) i.next();
+		for ( ErpComplaintLineModel complaintLine : complaint.getComplaintLines() ) {
 			if (EnumComplaintLineMethod.STORE_CREDIT.equals(complaintLine.getMethod()) && (complaintLine.getAmount() > 0.0)) {
 				ErpAffiliate affiliate = null;
 				if (EnumComplaintLineType.ORDER_LINE.equals(complaintLine.getType())) {
@@ -1625,7 +1562,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					affiliate = ErpAffiliate.getEnum(ErpAffiliate.CODE_FD);
 				}
 				DeptAffiliateKey key = new DeptAffiliateKey(affiliate, complaintLine.getDepartmentCode());
-				DeptCredit dc = (DeptCredit) deptCredits.get(key);
+				DeptCredit dc = deptCredits.get(key);
 				if (dc == null) {
 					dc = new DeptCredit(key, complaintLine.getAmount());
 					deptCredits.put(key, dc);
@@ -1704,13 +1641,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Collection getFailedAuthorizationSales() {
+	public Collection<ModelI> getFailedAuthorizationSales() {
 		try {
 			//
 			// Get sale model and associated customer bean
 			//
 			Collection col = this.getErpSaleHome().findByStatus(EnumSaleStatus.AUTHORIZATION_FAILED);
-			List models = new ArrayList();
+			List<ModelI> models = new ArrayList<ModelI>();
 			for (Iterator i = col.iterator(); i.hasNext();) {
 				ErpSaleEB saleEB = (ErpSaleEB) i.next();
 				models.add(saleEB.getModel());
@@ -1794,7 +1731,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public List getAlerts(PrimaryKey pk) {
+	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk) {
 		try {
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
 			return customerEB.getCustomerAlerts();
@@ -1815,14 +1752,13 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		try {
 			// find relevant customer
 			ErpCustomerEB customerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
-			List alerts = customerEB.getCustomerAlerts();
+			List<ErpCustomerAlertModel> alerts = customerEB.getCustomerAlerts();
 			
 			if (alertType == null) {  // if there are any alerts
 				return alerts.size() > 0;
 			}
 			
-			for (Iterator iter = alerts.iterator(); iter.hasNext();) {
-				ErpCustomerAlertModel alert = (ErpCustomerAlertModel) iter.next();
+			for ( ErpCustomerAlertModel alert : alerts ) {
 				if (alertType.equalsIgnoreCase(alert.getAlertType())) {
 					return true;
 				}
@@ -1948,8 +1884,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				throw new ErpTransactionException(fe, "cannot find sale with pk: " + saleId);
 			}
 			ErpComplaintModel complaint = null;
-			for (Iterator i = saleEB.getComplaints().iterator(); i.hasNext();) {
-				ErpComplaintModel model = (ErpComplaintModel) i.next();
+			for ( ErpComplaintModel model : saleEB.getComplaints() ) {
 				if (model.getPK().getId().equals(complaintId)) {
 					complaint = model;
 					break;
@@ -2014,12 +1949,12 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpInvoiceModel invoice = saleEB.getInvoice();
 			ErpGenerateInvoiceCommand invoiceCommand = new ErpGenerateInvoiceCommand();
 			ErpInvoiceModel newInvoice = invoiceCommand.generateNewInvoice(order, invoice, returnOrder);			
-			this.reconcileInvoicedCredits(saleEB.getCustomerPk(), newInvoice.getAppliedCredits(), invoice.getAppliedCredits());
+			reconcileInvoicedCredits(saleEB.getCustomerPk(), (List)newInvoice.getAppliedCredits(), invoice.getAppliedCredits());
 			List appliedGiftCards = order.getAppliedGiftcards();
 			if(appliedGiftCards != null && appliedGiftCards.size() > 0) {
 				//Set the selected gift cards from the original order.
 				//ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(saleEB.getCustomerPk());
-				List selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
+				List<ErpGiftCardModel> selectedGiftCards = ErpGiftCardUtil.getGiftcardPaymentMethods(appliedGiftCards);
 				order.setSelectedGiftCards(selectedGiftCards);
 				//Re Generate Applied gift cards info.
 				GiftCardApplicationStrategy strategy = new GiftCardApplicationStrategy(order, newInvoice);
@@ -2060,15 +1995,14 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private SapPostReturnCommand createSapReturnCommand(ErpAbstractOrderModel order, ErpInvoiceModel invoice) {
 
-		Map accs = new HashMap();
+		Map<Object,ReturnAccumulator> accs = new HashMap<Object,ReturnAccumulator>();
 		for (Iterator i = ErpAffiliate.getEnumList().iterator(); i.hasNext();) {
 			accs.put(i.next(), new ReturnAccumulator());
 		}
 
-		for (Iterator i = order.getOrderLines().iterator(); i.hasNext();) {
-			ErpOrderLineModel orderLine = (ErpOrderLineModel) i.next();
+		for ( ErpOrderLineModel orderLine : order.getOrderLines() ) {
 			ErpInvoiceLineModel invoiceLine = invoice.getInvoiceLine(orderLine.getOrderLineNumber());
-			ReturnAccumulator acc = (ReturnAccumulator) accs.get(orderLine.getAffiliate());
+			ReturnAccumulator acc = accs.get(orderLine.getAffiliate());
 			acc.process(invoiceLine);
 		}
 
@@ -2176,7 +2110,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private SapGatewayHome getSapGatewayHome() {
 		try {
-			return (SapGatewayHome) LOCATOR.getRemoteHome("java:comp/env/ejb/SapGateway", SapGatewayHome.class);
+			return (SapGatewayHome) LOCATOR.getRemoteHome("java:comp/env/ejb/SapGateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -2184,7 +2118,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private ErpSaleHome getErpSaleHome() {
 		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale", ErpSaleHome.class);
+			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -2192,7 +2126,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -2200,7 +2134,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 
 	private ErpFraudPreventionHome getErpFraudHome() {
 		try {
-			return (ErpFraudPreventionHome) LOCATOR.getRemoteHome("freshdirect.fraud.prevention", ErpFraudPreventionHome.class);
+			return (ErpFraudPreventionHome) LOCATOR.getRemoteHome("freshdirect.fraud.prevention");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -2278,7 +2212,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-    public void updateCartonInfo(String saleId, List cartonList) throws RemoteException, FinderException {
+    public void updateCartonInfo(String saleId, List<ErpCartonInfo> cartonList) throws RemoteException, FinderException {
 		try {
 
 			LOGGER.info("Updating carton info - start. saleId=" + saleId);
@@ -2345,10 +2279,10 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			ErpSaleEB erpSaleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
 			PrimaryKey pk = erpSaleEB.getCustomerPk();
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome().findByPrimaryKey(pk);
-			List paymentMethodList = erpCustomerEB.getPaymentMethods();
+			List<ErpPaymentMethodI> paymentMethodList = erpCustomerEB.getPaymentMethods();
 			if (paymentMethodList != null && paymentMethodList.size() > 0) {
-				for (Iterator iter = paymentMethodList.iterator(); iter.hasNext();) {
-					ErpPaymentMethodI pm = (ErpPaymentMethodI) iter.next();
+				for (Iterator<ErpPaymentMethodI> iter = paymentMethodList.iterator(); iter.hasNext();) {
+					ErpPaymentMethodI pm = iter.next();
 					if (paymentMethodType != null && paymentMethodType.equals(pm.getPaymentMethodType()) &&
 							accountNumber != null && accountNumber.equals(pm.getAccountNumber()) ) {
 						return pm;
@@ -2452,7 +2386,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			Collection history = ErpSaleInfoDAO.getOrdersByDlvPassId(conn, customerPk, dlvPassId);
+			Collection<ErpSaleInfo> history = ErpSaleInfoDAO.getOrdersByDlvPassId(conn, customerPk, dlvPassId);
 
 			return new ErpOrderHistory(history);
 
@@ -2496,9 +2430,9 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	/**
 	 * Get a list of orders that used delivery passes on a customer account.
 	 */
-	public Map getDlvPassesUsageInfo(String customerPk) {
+	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(String customerPk) {
 		Connection conn = null;
-		Map mapInfo = new HashMap();
+		Map<String, DlvPassUsageInfo> mapInfo = new HashMap<String, DlvPassUsageInfo>();
 		try {
 			conn = this.getConnection();
 			Collection usageList = ErpSaleInfoDAO.getOrdersUsingDlvPass(conn, customerPk);
@@ -2508,7 +2442,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 				String dlvPassId = usageLine.getDlvPassIdUsed();
 				DlvPassUsageInfo usageInfo = null;
 				if(mapInfo.containsKey(dlvPassId)) {
-					usageInfo = (DlvPassUsageInfo) mapInfo.get(dlvPassId);
+					usageInfo = mapInfo.get(dlvPassId);
 
 				}else{
 					//Create a usageInfo Object and add it to the Map.

@@ -3,7 +3,6 @@ package com.freshdirect.delivery.restriction;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,15 +11,16 @@ import com.freshdirect.framework.util.DateRange;
 
 public class DlvRestrictionsList implements Serializable {
 
-	private final List restrictions;
+	private static final long	serialVersionUID	= -2213868641684699998L;
+	
+	private final List<RestrictionI> restrictions;
 
-	public DlvRestrictionsList(List restrictions) {
+	public DlvRestrictionsList(List<RestrictionI> restrictions) {
 		this.restrictions = restrictions;
 	}
 
 	public boolean isRestricted(EnumDlvRestrictionCriterion criterion, EnumDlvRestrictionReason reason, Date date) {
-		for (Iterator i = this.restrictions.iterator(); i.hasNext();) {
-			RestrictionI rest = (RestrictionI) i.next();
+		for ( RestrictionI rest : restrictions ) {
 			if (rest.getReason().equals(reason) && rest.contains(date)) {
 				return true;
 			}
@@ -63,26 +63,25 @@ public class DlvRestrictionsList implements Serializable {
 				return true;
 		}
 				
-		List l = getRestrictions(null, reason, null, range);
+		List<RestrictionI> l = getRestrictions(null, reason, null, range);
 		return l.size() > 0;
 	}
 
-	public List getRestrictions(DateRange range) {
+	public List<RestrictionI> getRestrictions(DateRange range) {
 		return this.getRestrictions(null, null, null, range);
 	}
 
-	public List getRestrictions(EnumDlvRestrictionReason reason, DateRange range) {
+	public List<RestrictionI> getRestrictions(EnumDlvRestrictionReason reason, DateRange range) {
 		return this.getRestrictions(null, reason, null, range);
 	}
 
-	public List getRestrictions(
+	public List<RestrictionI> getRestrictions(
 		EnumDlvRestrictionCriterion criterion,
 		EnumDlvRestrictionReason reason,
 		EnumDlvRestrictionType type,
 		DateRange range) {
-		List l = new ArrayList();
-		for (Iterator i = this.restrictions.iterator(); i.hasNext();) {
-			RestrictionI rest = (RestrictionI) i.next();
+		List<RestrictionI> l = new ArrayList<RestrictionI>();
+		for ( RestrictionI rest : restrictions ) {
 			if (!rest.isMatching(criterion, reason, type)) {
 				continue;
 			}
@@ -96,10 +95,9 @@ public class DlvRestrictionsList implements Serializable {
 	/**
 	 * @return List of all restrictions that contain the specified range  
 	 */
-	public List getRestrictionsContaining(DateRange range) {
-		List l = new ArrayList();
-		for (Iterator i = this.restrictions.iterator(); i.hasNext();) {
-			RestrictionI rest = (RestrictionI) i.next();
+	public List<RestrictionI> getRestrictionsContaining(DateRange range) {
+		List<RestrictionI> l = new ArrayList<RestrictionI>();
+		for ( RestrictionI rest : restrictions ) {
 			if (rest.contains(range)) {
 				l.add(rest);
 			}
@@ -107,14 +105,13 @@ public class DlvRestrictionsList implements Serializable {
 		return l;
 	}
 
-	public List getRestrictions(EnumDlvRestrictionReason reason) {
+	public List<RestrictionI> getRestrictions(EnumDlvRestrictionReason reason) {
 		return this.getRestrictions(reason, null);
 	}
 
-	public List getRestrictions(EnumDlvRestrictionCriterion criterion, Set reasons) {
-		List l = new ArrayList();
-		for (Iterator i = this.restrictions.iterator(); i.hasNext();) {
-			RestrictionI r = (RestrictionI) i.next();
+	public List<RestrictionI> getRestrictions(EnumDlvRestrictionCriterion criterion, Set<EnumDlvRestrictionReason> reasons) {
+		List<RestrictionI> l = new ArrayList<RestrictionI>();
+		for ( RestrictionI r  : restrictions ) {
 			if ((criterion == null || criterion.equals(r.getCriterion())) && reasons.contains(r.getReason())) {
 				l.add(r);
 			}
@@ -122,10 +119,9 @@ public class DlvRestrictionsList implements Serializable {
 		return l;
 	}
 
-	public List getRestrictions(EnumDlvRestrictionCriterion criterion, EnumDlvRestrictionReason reason, EnumDlvRestrictionType type) {
-		List l = new ArrayList();
-		for (Iterator i = this.restrictions.iterator(); i.hasNext();) {
-			RestrictionI r = (RestrictionI) i.next();
+	public List<RestrictionI> getRestrictions(EnumDlvRestrictionCriterion criterion, EnumDlvRestrictionReason reason, EnumDlvRestrictionType type) {
+		List<RestrictionI> l = new ArrayList<RestrictionI>();
+		for ( RestrictionI r : restrictions ) {
 			if (!r.isMatching(criterion, reason, type)) {
 				continue;
 			}

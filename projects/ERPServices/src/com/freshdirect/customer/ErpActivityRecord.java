@@ -2,10 +2,9 @@ package com.freshdirect.customer;
 
 import java.util.Date;
 import java.util.Comparator;
-import java.util.List;
-import com.freshdirect.enums.EnumModel;
 
 public class ErpActivityRecord implements java.io.Serializable {
+	private static final long serialVersionUID = 8592047251020131505L;
 
 	private String customerId;
 	private EnumTransactionSource source;
@@ -19,6 +18,8 @@ public class ErpActivityRecord implements java.io.Serializable {
 	private String deliveryPassId;
 	private String changeOrderId;
 	private String reason;
+
+	private String standingOrderId;
 	
 	public String getChangeOrderId() {
 		return changeOrderId;
@@ -92,42 +93,36 @@ public class ErpActivityRecord implements java.io.Serializable {
 		this.source = source;
 	}
 	
-	private abstract static class ActivityRecordComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			return this.compare((ErpActivityRecord) o1, (ErpActivityRecord) o2);
-		}
-		
-		protected abstract int compare(ErpActivityRecord c1, ErpActivityRecord c2);
-		
-		protected int compare(List enumList, EnumModel e1, EnumModel e2) {
-			return compare(enumList.indexOf(e1), enumList.indexOf(e2));
-		}
-		
-		protected int compare(int p1, int p2) {
-			return p1 == p2 ? 0 : (p1 < p2 ? -1 : 1);
-		}
-	}
 	
-	public final static Comparator COMP_DATE = new ActivityRecordComparator() {
-		protected int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
+	public String getStandingOrderId() {
+		return standingOrderId;
+	}
+
+	public void setStandingOrderId(String standingOrderId) {
+		this.standingOrderId = standingOrderId;
+	}
+
+
+	public final static Comparator<ErpActivityRecord> COMP_DATE = new Comparator<ErpActivityRecord>() {
+		public int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
 			return c1.getDate().compareTo(c2.getDate()); 	
 		}
 	};
 		
-	public final static Comparator COMP_ACTIVITY = new ActivityRecordComparator () {
-		protected int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
+	public final static Comparator<ErpActivityRecord> COMP_ACTIVITY = new Comparator<ErpActivityRecord>() {
+		public int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
 			return c1.getActivityType().getName().toLowerCase().compareTo(c2.getActivityType().getName().toLowerCase());
 		}
 	};
 	
-	public final static Comparator COMP_INITIATOR = new ActivityRecordComparator() {
-		protected int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
+	public final static Comparator<ErpActivityRecord> COMP_INITIATOR = new Comparator<ErpActivityRecord>() {
+		public int compare(ErpActivityRecord c1, ErpActivityRecord c2) {
 			return c1.getInitiator().toLowerCase().compareTo(c2.getInitiator().toLowerCase());
 		}
 	};
 	
-	public final static Comparator COMP_SOURCE = new ActivityRecordComparator() {
-		protected int compare(ErpActivityRecord c1, ErpActivityRecord c2){
+	public final static Comparator<ErpActivityRecord> COMP_SOURCE = new Comparator<ErpActivityRecord>() {
+		public int compare(ErpActivityRecord c1, ErpActivityRecord c2){
 			return c1.getSource().getName().toLowerCase().compareTo(c2.getSource().getName().toLowerCase());
 		}
 	};

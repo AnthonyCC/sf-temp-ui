@@ -201,7 +201,7 @@ public class PaymentManager {
 			if (serviceLocator == null) {
 				serviceLocator = new ServiceLocator(ErpServicesProperties.getInitialContext());
 			}
-			paymentHome = (PaymentHome) serviceLocator.getRemoteHome("freshdirect.payment.Payment", PaymentHome.class);
+			paymentHome = (PaymentHome) serviceLocator.getRemoteHome("freshdirect.payment.Payment");
 		} catch (NamingException ex) {
 			throw new EJBException(ex);
 		}

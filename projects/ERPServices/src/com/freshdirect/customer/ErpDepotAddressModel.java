@@ -1,8 +1,3 @@
-/*
- * 
- * ErpDepotAddressModel.java
- * Date: Aug 5, 2002 Time: 7:00:25 PM
- */
 package com.freshdirect.customer;
 
 /**
@@ -14,6 +9,8 @@ import com.freshdirect.common.address.BasicContactAddressI;
 import com.freshdirect.common.customer.EnumServiceType;
 
 public class ErpDepotAddressModel extends ErpAddressModel {
+	
+	private static final long	serialVersionUID	= 4364276404888344963L;
 	
 	private String regionId;
 	private String zoneCode;

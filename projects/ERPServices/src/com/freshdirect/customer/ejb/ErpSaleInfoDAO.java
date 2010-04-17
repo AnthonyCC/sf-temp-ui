@@ -15,13 +15,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -41,7 +36,6 @@ import com.freshdirect.fdstore.FDConfiguredProductFactory;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -74,8 +68,8 @@ public class ErpSaleInfoDAO {
 		+ "and s.id=del.id order by to_number(s.id) desc";
 	*/
 	//New query using Customer_id index in SALESACTION table. As part of PERF-27 task.
-	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,del.referenced_order,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
-		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence,"
+	private static final String QUERY_ORDER_HISTORY = "select cre.customer_id, cre.id, cre.truck_number, cre.stop_sequence, cre.standingorder_id, cre.dlv_pass_id,cre.type, del.requested_date, cre.status, sac.amount,sac.sub_total, del.payment_method_type,del.referenced_order,  cre.action_date as create_date, cre.source as create_source, cre.initiator as create_by, del.action_date as mod_date,  del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type,  NVL(app.amount, 0) as credit_approved, NVL(pen.amount, 0) as credit_pending, del.zone"
+		+ " from   (select  s.customer_id, s.id, s.status, s.dlv_pass_id,s.type, s.truck_number, s.stop_sequence, s.standingorder_id,"
 		+ " sa.action_date, sa.source, sa.initiator"
 		+ "         from   cust.sale s, cust.salesaction sa"
 		+ "         where  sale_id = s.id"
@@ -140,7 +134,7 @@ public class ErpSaleInfoDAO {
 		+ "where sale_id=s.id and sa.action_type = 'CRO' and s.customer_id=? " 
 		+ "and s.id=del.id order by to_number(s.id) desc";
 */	
-	public static Collection getOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
+	public static Collection<ErpSaleInfo> getOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_ORDER_HISTORY);
 		ps.setString(1, erpCustomerId);
 		ps.setString(2, erpCustomerId);
@@ -150,7 +144,7 @@ public class ErpSaleInfoDAO {
 		ps.setString(5, erpCustomerId);
 
 		ResultSet rs = ps.executeQuery();
-		List extendedInfos = new ArrayList();
+		List<ErpSaleInfo> extendedInfos = new ArrayList<ErpSaleInfo>();
 		while (rs.next()) {
 			
 			String referencedOrder=rs.getString("REFERENCED_ORDER");
@@ -180,8 +174,8 @@ public class ErpSaleInfoDAO {
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
-				    (referencedOrder==null || "".equals(referencedOrder))?false:true
-					));
+				    (referencedOrder==null || "".equals(referencedOrder))?false:true,
+					rs.getString("STANDINGORDER_ID")));
 		}
 		rs.close();
 		ps.close();
@@ -190,7 +184,7 @@ public class ErpSaleInfoDAO {
 	}
 	
 	private static final String ORDERS_BY_DLV_PASS =
-		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status,s.type, s.truck_number, s.stop_sequence, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
+		"select s.customer_id,s.id, s.dlv_pass_id,del.requested_date, s.status,s.type, s.truck_number, s.stop_sequence, s.standingorder_id, del.payment_method_type, sa.action_date as create_date, sa.source as create_source, sa.initiator as create_by, "
 		+ "del.action_date as mod_date, del.source as mod_source, del.initiator as mod_by, del.starttime, del.endtime, del.cutofftime, del.delivery_type, del.zone, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='APP'), 0) as credit_approved, "
 		+ "NVL(( select sum(c.amount) as amount from cust.complaint c where c.sale_id=s.id and c.status='PEN'), 0) as credit_pending, "
@@ -205,13 +199,13 @@ public class ErpSaleInfoDAO {
 		+ "and s.customer_id=?) del "
 		+ "where sale_id=s.id and sa.action_type = 'CRO' and s.customer_id=? and s.dlv_pass_id =? and s.id=del.id order by to_number(s.id) desc";
 
-	public static Collection getOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId) throws SQLException {
+	public static Collection<ErpSaleInfo> getOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(ORDERS_BY_DLV_PASS);
 		ps.setString(1, erpCustomerId);
 		ps.setString(2, erpCustomerId);
 		ps.setString(3, dlvPassId);
 		ResultSet rs = ps.executeQuery();
-		List extendedInfos = new ArrayList();
+		List<ErpSaleInfo> extendedInfos = new ArrayList<ErpSaleInfo>();
 		while (rs.next()) {
 			extendedInfos.add(
 				new ErpSaleInfo(
@@ -238,7 +232,8 @@ public class ErpSaleInfoDAO {
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
-					false
+					false,
+					rs.getString("STANDINGORDER_ID")
 					));
 		}
 		rs.close();
@@ -251,14 +246,13 @@ public class ErpSaleInfoDAO {
 			+ "and s.status <> 'CAN' and sa.action_date=(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
 			+ "and s.customer_id = ? and s.dlv_pass_id in (select id from cust.delivery_pass where customer_id = ?) order by s.dlv_pass_id";
 
-	public static Collection getOrdersUsingDlvPass(Connection conn, String erpCustomerId) throws SQLException {
+	public static Collection<DlvPassUsageLine> getOrdersUsingDlvPass(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_ORDERS_USED_DLV_PASS);
 		ps.setString(1, erpCustomerId);
 		ps.setString(2, erpCustomerId);
 		ResultSet rs = ps.executeQuery();
-		List usageList = new ArrayList();
+		List<DlvPassUsageLine> usageList = new ArrayList<DlvPassUsageLine>();
 		while (rs.next()) {
-			String note = null;
 			usageList.add(
 				new DlvPassUsageLine(
 					rs.getString("DLV_PASS_ID"),
@@ -287,26 +281,27 @@ public class ErpSaleInfoDAO {
 		+ "(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
 		+ "and s.customer_id = ? and s.type='REG' and s.dlv_pass_id = ?";
 
-public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId, int noOfDaysOld) throws SQLException {
-	PreparedStatement ps = conn.prepareStatement(GET_RECENT_ORDERS_BY_DLV_PASS);
-	//ps.setInt(1, noOfDaysOld);
-	ps.setString(1, erpCustomerId);
-	ps.setString(2, dlvPassId);
-
-	ResultSet rs = ps.executeQuery();
-	List usageList = new ArrayList();
-	while (rs.next()) {
-		usageList.add(
-			new DlvPassUsageLine(
-				dlvPassId,
-				rs.getString("SALE_ID"),
-				rs.getDate("REQUESTED_DATE"),
-				EnumSaleStatus.getSaleStatus(rs.getString("STATUS"))));
+	public static Collection<DlvPassUsageLine> getRecentOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId, int noOfDaysOld) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(GET_RECENT_ORDERS_BY_DLV_PASS);
+		//ps.setInt(1, noOfDaysOld);
+		ps.setString(1, erpCustomerId);
+		ps.setString(2, dlvPassId);
+	
+		ResultSet rs = ps.executeQuery();
+		List<DlvPassUsageLine> usageList = new ArrayList<DlvPassUsageLine>();
+		while (rs.next()) {
+			usageList.add(
+				new DlvPassUsageLine(
+					dlvPassId,
+					rs.getString("SALE_ID"),
+					rs.getDate("REQUESTED_DATE"),
+					EnumSaleStatus.getSaleStatus(rs.getString("STATUS"))));
+		}
+		rs.close();
+		ps.close();
+		return usageList;
 	}
-	rs.close();
-	ps.close();
-	return usageList;
-}
+
 	private static final String TRUCK_NUMBER_QUERY =
 		"select s.truck_number, sum(decode(s.status, 'ENR', 1, 0)) as has_enroute, count(*) as order_total "
 			+ "from cust.salesaction sa, cust.sale s,  cust.deliveryinfo di "
@@ -642,7 +637,7 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
   */
 	//New query using Customer_id index in SALESACTION table.
 	private static final String QUERY_WEB_ORDER_HISTORY = 
-		"select	s.id, s.status, s.truck_number, s.stop_sequence, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
+		"select	s.id, s.status, s.truck_number, s.stop_sequence, s.standingorder_id as standingorder_id, sa.action_date as mod_date, sa.requested_date, sa.action_type, sa.source as mod_source,"
 		+ "		(select action_date from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_date, "
 		+ "		(select source from cust.salesaction where sale_id = s.id and customer_id=s.customer_id and action_type = 'CRO') as create_source,"
 		+ "		di.delivery_type, di.zone, pi.payment_method_type "
@@ -668,11 +663,11 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 		+ "and sa.action_type in ('CRO', 'MOD') "
 		+ "and sa.id = di.salesaction_id and sa.id = pi.salesaction_id";
 	*/
-	public static Collection getWebOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
+	public static Collection<ErpSaleInfo> getWebOrderHistoryInfo(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_WEB_ORDER_HISTORY);
 		ps.setString(1, erpCustomerId);
 		ResultSet rs = ps.executeQuery();
-		List extendedInfos = new ArrayList();
+		List<ErpSaleInfo> extendedInfos = new ArrayList<ErpSaleInfo>();
 		while (rs.next()) {
 			extendedInfos.add(
 				new ErpSaleInfo(
@@ -699,7 +694,8 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 					EnumSaleType.REGULAR,
 					rs.getString("TRUCK_NUMBER"),
 					rs.getString("STOP_SEQUENCE"),
-					false
+					false,
+					rs.getString("STANDINGORDER_ID")
 					));
 		}
 		rs.close();
@@ -778,8 +774,8 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 			+ "where s.id=sa.sale_id and s.status = 'NEW' "
 			+ "and s.type='GCD' and sa.action_type in ('AUT')";
 	
-	public static List getNSMOrdersForGC(Connection conn) throws SQLException{
-		List list = new ArrayList();
+	public static List<ErpSaleInfo> getNSMOrdersForGC(Connection conn) throws SQLException{
+		List<ErpSaleInfo> list = new ArrayList<ErpSaleInfo>();
 		PreparedStatement ps = conn.prepareStatement(GC_NSM_ORD_SEARCH_QUERY);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -812,7 +808,8 @@ public static Collection getRecentOrdersByDlvPassId(Connection conn, String erpC
 						EnumSaleType.GIFTCARD,
 						"",
 						"",
-						false);
+						false,
+						null);
 						list.add(erpSaleInfo);
 			}
 		}

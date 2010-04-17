@@ -1,32 +1,26 @@
-/*
- * $Workfile:FDTimeslot.java$
- *
- * $Date:3/13/03 5:27:00 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- *
- *
  * @version $Revision:3$
  * @author $Author:Kashif Nadeem$
  */
+
 public class FDTimeslot implements Serializable {
 
-	private final static Category LOGGER = Category.getInstance(FDTimeslot.class);
+	private static final long	serialVersionUID	= 4180048326412481300L;
+
+	@SuppressWarnings( "unused" )
+	private final static Logger LOGGER = LoggerFactory.getInstance( FDTimeslot.class );
 	
 	private final DlvTimeslotModel dlvTimeslot;
 
@@ -55,8 +49,7 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot.getZoneId();
 	}
 
-	public String getZoneCode() {
-		
+	public String getZoneCode() {		
 		return dlvTimeslot.getZoneCode();
 	}
 	public int getTotalAvailable() {
@@ -146,6 +139,10 @@ public class FDTimeslot implements Serializable {
 
 	public DlvTimeslotModel getDlvTimeslot() {
 		return dlvTimeslot;
+	}
+	
+	public String toString() {
+		return dlvTimeslot.toString();
 	}
 
 }

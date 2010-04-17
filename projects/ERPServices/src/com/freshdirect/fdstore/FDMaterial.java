@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import com.freshdirect.content.attributes.AttributesI;
@@ -21,6 +13,8 @@ import com.freshdirect.framework.util.DayOfWeekSet;
  */
 public class FDMaterial extends FDAttributeProxy {
 
+	private static final long	serialVersionUID	= -3900022254504839075L;
+	
 	private final String materialNumber;
 	private final EnumATPRule atpRule;
 	private final String salesUnitCharacteristic;

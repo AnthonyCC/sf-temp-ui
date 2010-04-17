@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.util.Date;
@@ -18,12 +10,12 @@ import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
+
 public class FDReservation extends ModelSupport {
+	
+	private static final long	serialVersionUID	= -8318474657729420003L;
+	
 	private final Date expirationDateTime;
 	private final EnumReservationType type;
 	private final FDTimeslot timeslot;

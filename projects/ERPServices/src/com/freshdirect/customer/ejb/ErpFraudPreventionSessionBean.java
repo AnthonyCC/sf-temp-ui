@@ -1,11 +1,3 @@
-/*
- * $Workfile:ErpFraudPreventionSessionBean.java$
- *
- * $Date:6/11/2003 5:03:05 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.customer.ejb;
 
 import java.sql.Connection;
@@ -39,10 +31,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCustomerModel;
-import com.freshdirect.customer.ErpModifyOrderModel;
-import com.freshdirect.customer.ErpOrderHistory;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -55,7 +44,10 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 
+	private static final long	serialVersionUID	= 1799458790722386756L;
+	
 	private static Category LOGGER = LoggerFactory.getInstance(ErpFraudPreventionSessionBean.class);
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	private FraudDAO dao = new FraudDAO();
@@ -68,12 +60,12 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	protected String getResourceCacheKey() {
 		return "com.freshdirect.customer.ejb.ErpFraudHome";
 	}
-
-	public Set checkRegistrationFraud(ErpCustomerModel erpCustomer) {
+	
+	public Set<EnumFraudReason> checkRegistrationFraud(ErpCustomerModel erpCustomer) {
 
 		if (!"true".equalsIgnoreCase(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
-			return Collections.EMPTY_SET;
+			return Collections.<EnumFraudReason>emptySet();
 		}
 
 		LOGGER.info("Fraud check, registration. userId=" + erpCustomer.getUserId());
@@ -81,12 +73,12 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		//
 		// Find customer delivery address
 		//
-		Collection addresses = erpCustomer.getShipToAddresses();
+		Collection<ErpAddressModel> addresses = erpCustomer.getShipToAddresses();
 		LOGGER.debug("num addresses @ registration = " + addresses.size());
 
 		ErpAddressModel dlvAddress = null;
-		for (Iterator it = addresses.iterator(); it.hasNext();) {
-			dlvAddress = (ErpAddressModel) it.next();
+		for (Iterator<ErpAddressModel> it = addresses.iterator(); it.hasNext();) {
+			dlvAddress = it.next();
 			LOGGER.debug("address is " + dlvAddress);
 			if (EnumServiceType.CORPORATE.equals(dlvAddress.getServiceType())) {
 				continue;	
@@ -96,7 +88,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		LOGGER.debug("address is " + dlvAddress);
 
 		Connection conn = null;
-		Set fraudReasons = new HashSet();
+		Set<EnumFraudReason> fraudReasons = new HashSet<EnumFraudReason>();
 		try {
 			conn = getConnection();
 			if (dao.isDuplicateShipToAddress(conn, dlvAddress, null)) {
@@ -191,7 +183,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		return retval;
 	}
 
-	public boolean checkPhoneFraud(String erpCustomerId, Collection phones) {
+	public boolean checkPhoneFraud(String erpCustomerId, Collection<PhoneNumber> phones) {
 
 		if (!"true".equals(ErpServicesProperties.getCheckForFraud())) {
 			// no check, no problem :)
@@ -205,8 +197,8 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			for (Iterator it = phones.iterator();(it.hasNext() && !retval);) {
-				retval = dao.isDuplicatePhone(conn, (PhoneNumber) it.next(), erpCustomerId);
+			for (Iterator<PhoneNumber> it = phones.iterator();(it.hasNext() && !retval);) {
+				retval = dao.isDuplicatePhone(conn, it.next(), erpCustomerId);
 			}
 
 		} catch (SQLException ex) {
@@ -303,7 +295,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 	}
 
 
-	private final static Set SUPERAGENT_ROLES = new HashSet(Arrays.asList(new String[] {
+	private final static Set<String> SUPERAGENT_ROLES = new HashSet<String>(Arrays.asList(new String[] {
 		CrmAgentRole.SUP_CODE,
 		CrmAgentRole.ADM_CODE,
 		CrmAgentRole.SYS_CODE}));
@@ -498,7 +490,7 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		boolean retval = false;
 		boolean createCase = false;
 
-		final boolean corporate = EnumDeliveryType.CORPORATE.equals(order.getDeliveryInfo().getDeliveryType());
+//		final boolean corporate = EnumDeliveryType.CORPORATE.equals(order.getDeliveryInfo().getDeliveryType());
 		final boolean csr = EnumTransactionSource.CUSTOMER_REP.equals(order.getTransactionSource());
 
 		if (order.getAmount() > ErpServicesProperties.getGiftCardOrderLimit() && !csr) {
@@ -673,4 +665,5 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		//TODO: Any checks required or not like 3 day limit etc. 
 		
 	}
+	
 }

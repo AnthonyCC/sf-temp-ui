@@ -1,38 +1,31 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001-2002 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib;
 
-import java.io.*;
+import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagData;
+import javax.servlet.jsp.tagext.TagExtraInfo;
+import javax.servlet.jsp.tagext.VariableInfo;
 
-import com.freshdirect.framework.webapp.*;
+import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
+import com.freshdirect.framework.webapp.ActionResult;
 
-import com.freshdirect.webapp.util.*;
-
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
 public abstract class AbstractControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
+
+	private static final long	serialVersionUID	= -9139816225596448770L;
 
 	private static Category LOGGER = LoggerFactory.getInstance(AbstractControllerTag.class);
 
+	
+
+	
 	private String actionName;
 	private String successPage;
 	private String result;

@@ -20,6 +20,7 @@ import javax.servlet.jsp.tagext.VariableInfo;
 import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -73,6 +74,11 @@ public class AgeVerificationControllerTag extends com.freshdirect.framework.weba
 						cart.setAgeVerified(true);
 						user.setShoppingCart(cart);
 						session.setAttribute(SessionName.USER, user);
+						
+						// APPDEV-141 store agreement result in standing order
+						if (EnumCheckoutMode.NORMAL != user.getCheckoutMode() && user.getCurrentStandingOrder() != null) {
+							user.getCurrentStandingOrder().setAlcoholAgreement(true);
+						}
 					}else{
 						actionResult.addError(new ActionError("didnot_agree", "You must certify that you are over 21 in order to proceed with Checkout. If you cannot, please remove the alcohol items from your cart before continuing."));
 					}

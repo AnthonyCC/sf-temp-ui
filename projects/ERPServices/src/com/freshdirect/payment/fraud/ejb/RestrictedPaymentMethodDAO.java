@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.payment.fraud.ejb;
 
 import java.sql.*;
@@ -30,12 +21,9 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 import java.util.List;
 import java.util.ArrayList;
 
+
 /**
  * RestrictedPaymentMethodDAO.
- *
- * @version    $Revision$
- * @author     $Author$
- * @stereotype fd-persistent
  */
 public class RestrictedPaymentMethodDAO {
 	
@@ -143,12 +131,12 @@ public class RestrictedPaymentMethodDAO {
 		
 	}
 	
-	public static List findRestrictedPaymentMethodByCustomerId(Connection conn, String customerId, EnumRestrictedPaymentMethodStatus status) throws SQLException {
+	public static List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(Connection conn, String customerId, EnumRestrictedPaymentMethodStatus status) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
+		ArrayList<RestrictedPaymentMethodModel> list = null;
 		
 		try {
 			String sql = loadSQL + " WHERE CUSTOMER_ID = ?";
@@ -163,7 +151,7 @@ public class RestrictedPaymentMethodDAO {
 				ps.setString(index++, status.getName());
 			}			
 			rs = ps.executeQuery();
-			list = new ArrayList();
+			list = new ArrayList<RestrictedPaymentMethodModel>();
 			while  (rs.next()) {
 				m = loadResult(rs);
 				list.add(m);
@@ -183,7 +171,6 @@ public class RestrictedPaymentMethodDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
 		
 		try {
 			String sql = loadSQL + " WHERE PAYMENT_METHOD_ID = ?";
@@ -198,7 +185,6 @@ public class RestrictedPaymentMethodDAO {
 				ps.setString(index++, status.getName());
 			}			
 			rs = ps.executeQuery();
-			list = new ArrayList();
 			if  (rs.next()) {
 				m = loadResult(rs);
 			}
@@ -212,12 +198,12 @@ public class RestrictedPaymentMethodDAO {
 				
 	}
 
-	public static List findRestrictedPaymentMethods(Connection conn, RestrictedPaymentMethodCriteria criteria) throws SQLException {
+	public static List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(Connection conn, RestrictedPaymentMethodCriteria criteria) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
+		ArrayList<RestrictedPaymentMethodModel> list = null;
 
 		CriteriaBuilder builder = new CriteriaBuilder();
 		
@@ -256,7 +242,7 @@ public class RestrictedPaymentMethodDAO {
 				ps.setObject(i + 1, par[i]);
 			}
 			rs = ps.executeQuery();
-			list = new ArrayList();
+			list = new ArrayList<RestrictedPaymentMethodModel>();
 			while  (rs.next()) {
 				m = loadResult(rs);
 				list.add(m);
@@ -271,17 +257,17 @@ public class RestrictedPaymentMethodDAO {
 				
 	}
 
-	public static List loadAll(Connection conn) throws SQLException {
+	public static List<RestrictedPaymentMethodModel> loadAll(Connection conn) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
+		ArrayList<RestrictedPaymentMethodModel> list = null;
 		
 		try {
 			ps = conn.prepareStatement(loadSQL);
 			rs = ps.executeQuery();
-			list = new ArrayList();
+			list = new ArrayList<RestrictedPaymentMethodModel>();
 			while (rs.next()) {
 				m = loadResult(rs);
 				list.add(m);
@@ -297,17 +283,17 @@ public class RestrictedPaymentMethodDAO {
 	
 	}
 	
-	public static List loadAllBadPaymentMethods(Connection conn) throws SQLException {
+	public static List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods(Connection conn) throws SQLException {
 		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
+		ArrayList<RestrictedPaymentMethodModel> list = null;
 		
 		try {
 			ps = conn.prepareStatement(loadSQL + " WHERE STATUS = 'BAD'");
 			rs = ps.executeQuery();
-			list = new ArrayList();
+			list = new ArrayList<RestrictedPaymentMethodModel>();
 			while (rs.next()) {
 				m = loadResult(rs);
 				list.add(m);
@@ -330,17 +316,17 @@ public class RestrictedPaymentMethodDAO {
 										"UNION " +
 										loadSQL + " WHERE ACCOUNT_PATTERN_TYPE IN ('SW', 'EW', 'CT')"; 
 
-	public static List loadAllPatterns(Connection conn) throws SQLException {
+	public static List<RestrictedPaymentMethodModel> loadAllPatterns(Connection conn) throws SQLException {
 	
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		RestrictedPaymentMethodModel m = null;
-		ArrayList list = null;
+		ArrayList<RestrictedPaymentMethodModel> list = null;
 		
 		try {
 			ps = conn.prepareStatement(loadAllPatternsSQL);
 			rs = ps.executeQuery();
-			list = new ArrayList();
+			list = new ArrayList<RestrictedPaymentMethodModel>();
 			while (rs.next()) {
 				m = loadResult(rs);
 				list.add(m);

@@ -5,16 +5,10 @@
 	<classpathentry kind="src" path="data"/>
 	<classpathentry kind="src" path="perf-src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/Framework"/>
-	<classpathentry kind="src" path="/ERPServices"/>
-	<classpathentry kind="src" path="/FDStore"/>
 	<classpathentry kind="src" path="/ERPSWebApp"/>
-	<classpathentry kind="src" path="/Delivery"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/junit.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/easymock.jar"/>
-	<classpathentry kind="src" path="/DataLoader"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/dbunit.jar"/>
-	<classpathentry kind="src" path="/CMS"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/junitperf.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jrunittesthelper.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/hsqldb.jar"/>

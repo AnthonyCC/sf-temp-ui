@@ -9,6 +9,8 @@ import com.freshdirect.customer.ErpActivityRecord;
 
 public class FDActionInfo implements Serializable {
 
+	private static final long	serialVersionUID	= 5436805819502477394L;
+	
 	private EnumTransactionSource source;
 	private FDIdentity identity;
 	private String initiator;

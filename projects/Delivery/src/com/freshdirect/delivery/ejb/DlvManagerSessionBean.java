@@ -42,10 +42,13 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvApartmentRange;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvTimeslotCapacityInfo;
 import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
+import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
@@ -59,12 +62,14 @@ import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
 import com.freshdirect.delivery.TimeslotCapacityContext;
 import com.freshdirect.delivery.TimeslotCapacityWrapper;
+import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneDescriptor;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -89,6 +94,8 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class DlvManagerSessionBean extends SessionBeanSupport {
+
+	private static final long	serialVersionUID	= 1817746018911108166L;
 
 	private static final Category LOGGER = LoggerFactory.getInstance(DlvManagerSessionBean.class);
 
@@ -128,7 +135,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address)
+	public List<DlvTimeslotModel> getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address)
 		throws InvalidAddressException {
 		Connection conn = null;
 		try {
@@ -149,7 +156,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 
 
-	public List getTimeslotCapacityInfo(java.util.Date date) {
+	public List<DlvTimeslotCapacityInfo> getTimeslotCapacityInfo(java.util.Date date) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -169,7 +176,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	}
 
 
-	public List getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode)
+	public List<DlvTimeslotModel> getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode)
 		throws DlvResourceException {
 		Connection conn = null;
 
@@ -502,7 +509,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getReservationsForCustomer(String customerId) {
+	public List<DlvReservationModel> getReservationsForCustomer(String customerId) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -520,7 +527,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	private List getAllReservationsByCustomerAndTimeslot(String customerId, String timeslotId) {
+	private List<DlvReservationModel> getAllReservationsByCustomerAndTimeslot(String customerId, String timeslotId) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -591,12 +598,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
 			Date endDate = DateUtil.addDays(startDate, 1);
 
-			List baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
+			List<DlvTimeslotModel> baseTimeslots = this.getTimeslotForDateRangeAndZone(startDate, endDate, address);
 			
 			List<FDTimeslot> routingTimeslots = new ArrayList<FDTimeslot>();
 			
-			for (Iterator<DlvTimeslotModel> i = baseTimeslots.iterator(); i.hasNext();) {
-				DlvTimeslotModel timeslot =  i.next();
+			for (DlvTimeslotModel timeslot : baseTimeslots) {
 				routingTimeslots.add(new FDTimeslot(timeslot));
 			}
 			
@@ -604,16 +610,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				routingTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots, address);
 			}*/
 			
-			List messages = new ArrayList();
+			List<String> errMessages = new ArrayList<String>();
 
 			try {
 				if(routingTimeslots != null) {
-					List geographicRestrictions = this.getGeographicDlvRestrictions( address);
+					List<GeographyRestriction> geographicRestrictions = this.getGeographicDlvRestrictions( address);
 
 					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
-						for(Iterator i = routingTimeslots.iterator(); i.hasNext();) {
+						for(Iterator<FDTimeslot> i = routingTimeslots.iterator(); i.hasNext();) {
 							FDTimeslot ts = (FDTimeslot)i.next();
-							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, messages, null)) {
+							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, errMessages, null)) {
 								// filter off empty timeslots (unless they must be retained)
 								i.remove();
 							}
@@ -621,12 +627,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					}
 				}
 			} catch (DlvResourceException dlvResException) {
-				LOGGER.info("Failed to load Geography Restriction "+messages);
+				LOGGER.info("Failed to load Geography Restriction "+errMessages);
 			}
 
 			DlvTimeslotModel foundTimeslot = null;
-			for (Iterator i = routingTimeslots.iterator(); i.hasNext();) {
-				FDTimeslot ts = (FDTimeslot)i.next();
+			for (FDTimeslot ts : routingTimeslots) {
 				DlvTimeslotModel t = ts.getDlvTimeslot();
 				if (t.isMatching(startDate, startTime, endTime)) {
 					foundTimeslot = t;
@@ -643,9 +648,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				return false;
 			}
 
-			List reservations = getAllReservationsByCustomerAndTimeslot(customerId, foundTimeslot.getPK().getId());
-			for (Iterator i = reservations.iterator(); i.hasNext(); ) {
-				DlvReservationModel rsv = (DlvReservationModel) i.next();
+			final List<DlvReservationModel> reservations = getAllReservationsByCustomerAndTimeslot(customerId, foundTimeslot.getPK().getId());
+			for (DlvReservationModel rsv : reservations) {
 				if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
 					logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
 									"Failed to make recurring reservation for customer - already reserved");
@@ -872,10 +876,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public ArrayList findSuggestionsForAmbiguousAddress(AddressModel address) throws InvalidAddressException {
+	public List<AddressModel> findSuggestionsForAmbiguousAddress(AddressModel address) throws InvalidAddressException {
 		GeographyDAO dao = new GeographyDAO();
 		Connection conn = null;
-		ArrayList list = new ArrayList();
+		ArrayList<AddressModel> list = new ArrayList<AddressModel>();
 		try {
 			conn = this.getConnection();
 			list.addAll(dao.findSuggestionsForAmbiguousAddress(address, conn));
@@ -900,9 +904,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 			conn = getConnection();
 			GeographyDAO dao = new GeographyDAO();
-			LOGGER.debug(address+"\n--------- DLV Manage Session Bean Before geocode---------------------\n"+address);
+			LOGGER.debug("before geocode --> "+address);
 			result = dao.geocode(address, conn);
-			LOGGER.debug(address+"\n--------- DLV Manage Session Bean After geocode---------------------\n"+address);
+			LOGGER.debug("after geocode --> "+address);
 			return new DlvAddressGeocodeResponse(address, result);
 
 		} catch (SQLException sqle) {
@@ -948,7 +952,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getCutoffInfo(String zoneCode, Date day) {
+	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -986,7 +990,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getDeliverableZipCodes(EnumServiceType serviceType) {
+	public List<DlvZipInfoModel> getDeliverableZipCodes(EnumServiceType serviceType) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1089,7 +1093,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return status;
 	}
 
-	public EnumDeliveryStatus getServiceStatus(List dlvInfos) {
+	public EnumDeliveryStatus getServiceStatus(List<DlvZipInfoModel> dlvInfos) {
 		//
 		// no geographic info for this zipcode, is pickup available?
 		//
@@ -1106,8 +1110,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		java.util.Date deliveryWindow = delWindCal.getTime();
 		DlvZipInfoModel bestDelivery = null;
 
-		for (Iterator i = dlvInfos.iterator(); i.hasNext();) {
-		   DlvZipInfoModel dlvInfo = (DlvZipInfoModel) i.next();
+		for ( DlvZipInfoModel dlvInfo : dlvInfos) {
 		   if (dlvInfo.getStartDate().before(deliveryWindow)) {
 			    if (bestDelivery == null) {
 			     bestDelivery = dlvInfo;
@@ -1174,9 +1177,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List findApartmentRanges(AddressModel address) throws InvalidAddressException {
+	public List<DlvApartmentRange> findApartmentRanges(AddressModel address) throws InvalidAddressException {
 		Connection conn = null;
-		List ranges = new ArrayList();
+		List<DlvApartmentRange> ranges = new ArrayList<DlvApartmentRange>();
 		GeographyDAO dao = new GeographyDAO();
 
 		try {
@@ -1203,14 +1206,13 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		DlvReservationModel rsv = getReservation(rsvId);
 		boolean isRestored = false;
 		if (!EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType())) {
-			List reservations = getReservationsForCustomer(rsv.getCustomerId());
+			List<DlvReservationModel> reservations = getReservationsForCustomer(rsv.getCustomerId());
 			if (reservations.isEmpty()) {
 				restoreReservation(rsvId);
 				isRestored = true;
 			} else {
 				DlvReservationModel foundRsv = null;
-				for (Iterator i = reservations.iterator(); i.hasNext();) {
-					DlvReservationModel r = (DlvReservationModel) i.next();
+				for ( DlvReservationModel r : reservations ) {
 					if (!EnumReservationType.STANDARD_RESERVATION.equals(r.getReservationType())) {
 						foundRsv = r;
 						break;
@@ -1393,7 +1395,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return regions;
 	}
 
-	public List getDlvRestrictions() throws DlvResourceException {
+	public List<RestrictionI> getDlvRestrictions() throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1413,7 +1415,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getGeographicDlvRestrictions(AddressModel address) throws DlvResourceException {
+	public List<GeographyRestriction> getGeographicDlvRestrictions(AddressModel address) throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -1433,7 +1435,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getSiteAnnouncements() throws DlvResourceException {
+	public List<SiteAnnouncement> getSiteAnnouncements() throws DlvResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1473,7 +1475,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	public List searchGeocodeException(ExceptionAddress ex){
+	public List<ExceptionAddress> searchGeocodeException(ExceptionAddress ex){
 		Connection conn = null;
 		GeographyDAO dao = new GeographyDAO();
 		try{
@@ -1549,7 +1551,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getCountiesByState(String stateAbbrev){
+	public List<String> getCountiesByState(String stateAbbrev){
 		Connection conn = null;
 		GeographyDAO dao = new GeographyDAO();
 		try{
@@ -1571,7 +1573,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	private static String muniSql = "select * from dlv.municipality_info order by state, county desc, city desc";
 
-	public List getMunicipalityInfos() {
+	public List<MunicipalityInfo> getMunicipalityInfos() {
 		Connection conn = null;
 		try{
 			List<MunicipalityInfo> muniList = new ArrayList<MunicipalityInfo>();
@@ -1592,7 +1594,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					alcoholRestricted );
 				muniList.add(mi);
 			}
-			return (muniList.size()!=0 ? muniList : Collections.EMPTY_LIST);
+			return (muniList.size() > 0 ? muniList : Collections.<MunicipalityInfo>emptyList() );
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new FDRuntimeException(e);
@@ -1608,7 +1610,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	public List searchExceptionAddresses(ExceptionAddress ea){
+	public List<ExceptionAddress> searchExceptionAddresses(ExceptionAddress ea){
 		Connection conn = null;
 		GeographyDAO dao = new GeographyDAO();
 		try{
@@ -1665,7 +1667,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getCutoffTimesByDate(Date day) {
+	public List<Date> getCutoffTimesByDate(Date day) {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();

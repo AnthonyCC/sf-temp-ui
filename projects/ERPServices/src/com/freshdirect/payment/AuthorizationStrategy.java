@@ -1,7 +1,7 @@
 package com.freshdirect.payment;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -21,10 +21,10 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
-import java.util.Collections;
-
 public class AuthorizationStrategy extends PaymentStrategy {
 
+	private static final long	serialVersionUID	= -193567950363428880L;
+	
 	private final AuthInfo fdAuthInfo;
 	private final AuthInfo bcAuthInfo;
 	private final AuthInfo usqAuthInfo;
@@ -45,14 +45,13 @@ public class AuthorizationStrategy extends PaymentStrategy {
 				ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ));
 	}
 
-	public List getOutstandingAuthorizations() {
+	public List<AuthorizationInfo> getOutstandingAuthorizations() {
 		ErpAbstractOrderModel order = this.sale.getCurrentOrder();
 		ErpInvoiceModel inv = this.sale.getLastInvoice();
 		final ErpAffiliate bc = ErpAffiliate.getEnum(ErpAffiliate.CODE_BC);
 		final ErpAffiliate usq = ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ);
 
-		for (Iterator i = order.getOrderLines().iterator(); i.hasNext();) {
-			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
+		for ( ErpOrderLineModel line : order.getOrderLines() ) {
 			if (usq.equals(line.getAffiliate())) {
 				if (inv != null) {
 					usqAuthInfo.addInvoiceLine(inv.getInvoiceLine(line.getOrderLineNumber()));
@@ -81,28 +80,24 @@ public class AuthorizationStrategy extends PaymentStrategy {
 			    throw new FDRuntimeException("Order with not orderlines");
 		}
 
-		for (Iterator i = order.getCharges().iterator(); i.hasNext();) {
-			ErpChargeLineModel cl = (ErpChargeLineModel) i.next();
+		for ( ErpChargeLineModel cl : order.getCharges() ) {
 			fdAuthInfo.addCharge(cl);
 		}
 					
 		
-		List discounts = order.getDiscounts();
+		List<ErpDiscountLineModel> discounts = order.getDiscounts();
 		if (discounts != null && !discounts.isEmpty()) {
-			for (Iterator i = discounts.iterator(); i.hasNext();) {
-				ErpDiscountLineModel d = (ErpDiscountLineModel) i.next();
+			for ( ErpDiscountLineModel d  : discounts ) {
 				this.addDeduction(d.getDiscount().getAmount());
 			}
 		}
 		
-		for (Iterator i = order.getAppliedCredits().iterator(); i.hasNext();) {
-			ErpAppliedCreditModel c = (ErpAppliedCreditModel) i.next();
+		for ( ErpAppliedCreditModel c : order.getAppliedCredits() ) {
 			this.addDeduction(c.getAmount());
 		}
 		
 		//Apply GC Payments
-		for (Iterator i = order.getAppliedGiftcards().iterator(); i.hasNext();) {
-			ErpAppliedGiftCardModel agc = (ErpAppliedGiftCardModel) i.next();
+		for ( ErpAppliedGiftCardModel agc : order.getAppliedGiftcards() ) {
 			if(usq.equals(agc.getAffiliate())) {
 				usqAuthInfo.addGCPayment(agc.getAmount());
 			} else {
@@ -123,13 +118,13 @@ public class AuthorizationStrategy extends PaymentStrategy {
 		}
 	}
 
-	private List getOutstandingAuthorizations(ErpPaymentMethodI pm) {
+	private List<AuthorizationInfo> getOutstandingAuthorizations(ErpPaymentMethodI pm) {
 		if(pm.isGiftCard()) return Collections.emptyList();
 		this.fdAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.fdAuthInfo.affiliate, pm));
 		this.bcAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.bcAuthInfo.affiliate, pm));
 		this.usqAuthInfo.setAuthorizations(this.sale.getApprovedAuthorizations(this.usqAuthInfo.affiliate, pm));
 		
-		List auths = new ArrayList();
+		List<AuthorizationInfo> auths = new ArrayList<AuthorizationInfo>();
 		AuthorizationInfo fdInfo = fdAuthInfo.getAuthInfo(pm);				
 		if(fdInfo.getAmount() > 0) {
 			auths.add(fdInfo);
@@ -155,23 +150,22 @@ public class AuthorizationStrategy extends PaymentStrategy {
 
 	private static class AuthInfo extends PaymentStrategy.PaymentInfo {
 		
-		private final String customerId;
-		private List auths;
+		private final String				customerId;
+		private List<ErpAuthorizationModel>	auths;
 
 		public AuthInfo(String saleId, String customerId, ErpAffiliate affiliate) {
 			super(saleId, affiliate);
 			this.customerId = customerId;
 		}
 
-		public void setAuthorizations(List auths) {
+		public void setAuthorizations(List<ErpAuthorizationModel> auths) {
 			this.auths = auths;
 		}
 
 
 		public AuthorizationInfo getAuthInfo(ErpPaymentMethodI pm) {
-			double amount = this.getAmount();
-			for (Iterator i = this.auths.iterator(); i.hasNext();) {
-				ErpAuthorizationModel auth = (ErpAuthorizationModel) i.next();
+			double amount = getAmount();
+			for ( ErpAuthorizationModel auth : auths ) {
 				if (EnumPaymentType.MAKE_GOOD.equals(pm.getPaymentType())
 					|| EnumPaymentType.ON_FD_ACCOUNT.equals(pm.getPaymentType())) {
 					amount = MathUtil.roundDecimal(amount - auth.getAmount());

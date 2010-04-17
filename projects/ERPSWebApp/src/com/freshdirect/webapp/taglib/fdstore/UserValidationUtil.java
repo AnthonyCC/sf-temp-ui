@@ -6,11 +6,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import com.freshdirect.crm.CrmAgentModel;
-import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -34,7 +32,7 @@ public class UserValidationUtil {
 	public static boolean validateRecipientNotEmpty(HttpServletRequest request, ActionResult result) {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-		if (user.getRecipentList().size() == 0) {
+		if (user.getRecipientList().size() == 0) {
 			result.addError(new ActionError("order_minimum", SystemMessageList.MSG_CHECKOUT_RECIPIENT_EMPTY));
 			return false;
 		}
@@ -53,6 +51,7 @@ public class UserValidationUtil {
 		}
 		return false;
 	}
+	
 	public static boolean validateOrderMinimum(HttpServletRequest request, ActionResult result) throws FDResourceException {
 		
 		HttpSession session = request.getSession();
@@ -98,7 +97,7 @@ public class UserValidationUtil {
 		HttpSession session = request.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 	   
-		if (user.getRecipentList().size() == 0) {
+		if (user.getRecipientList().size() == 0) {
 			result.addError(
 				new ActionError(
 					"recipients_empty",

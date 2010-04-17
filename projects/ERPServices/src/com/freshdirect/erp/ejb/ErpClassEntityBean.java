@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.erp.ejb;
 
 import java.sql.Connection;
@@ -42,6 +34,8 @@ import com.freshdirect.framework.core.VersionedPrimaryKey;
  * @stereotype fd-entity
  */
 public class ErpClassEntityBean extends VersionedEntityBeanSupport {
+
+	private static final long	serialVersionUID	= -4488277676960244385L;
 
 	/** SAP unique ID */
 	private String sapId;

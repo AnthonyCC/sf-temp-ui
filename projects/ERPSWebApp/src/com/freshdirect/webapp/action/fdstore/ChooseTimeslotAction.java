@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.action.fdstore;
-/*
- * Created on Apr 30, 2003
- */
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -13,13 +11,14 @@ import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.action.WebActionSupport;
@@ -28,23 +27,18 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
-/**
- * @author knadeem
- */
 
 public class ChooseTimeslotAction extends WebActionSupport {
+
+	private static final long	serialVersionUID	= 7329584900713977234L;
 
 	/** Length of reservations in msecs */
 	private final static long RESERVATION_MILLISECONDS = 45 * 60 * 1000; // 45 minutes
 
 	private static Category LOGGER = LoggerFactory.getInstance(ChooseTimeslotAction.class);
 
+	@Override
 	public String execute() throws Exception {
-		return this.doExecute();
-	}
-
-	protected String doExecute() throws FDResourceException {
-
 		HttpSession session = this.getWebActionContext().getSession();
 		HttpServletRequest request = this.getWebActionContext().getRequest();
 
@@ -83,20 +77,6 @@ public class ChooseTimeslotAction extends WebActionSupport {
 			addressId = erpAddress.getPK().getId();
 		} else {
 			addressId = ((ErpDepotAddressModel) erpAddress).getLocationId();
-			/*ErpDepotAddressModel depotAddress = (ErpDepotAddressModel)erpAddress;
-			if(depotAddress.isPickup()){
-				String pickupAgreement = request.getParameter("pickup_agreement");
-				if(pickupAgreement == null){
-					this.addError("pickup_didnot_agree", SystemMessageList.MSG_CHECKOUT_PICKUP_DIDNOT_AGREE);
-					return ERROR;
-				}
-				session.setAttribute(SessionName.PICKUP_AGREEMENT, pickupAgreement);
-				String authorizedPeople = request.getParameter("authorized_people");
-				if(authorizedPeople != null && authorizedPeople.length() > 1){
-					erpAddress.setInstructions(authorizedPeople.substring(0, Math.min(authorizedPeople.length(), 88)));
-					session.setAttribute(SessionName.AUTHORIZED_PEOPLE, authorizedPeople);
-				}
-			}*/
 		}
 
 		try {
@@ -111,9 +91,12 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						LOGGER.warn("Error releasing reservation", fdre);
 					}
 				}
-				cart.setDeliveryReservation(advRsv);
-				user.setShoppingCart(cart);
-				session.setAttribute(SessionName.USER, user);
+				
+				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+					setDeliveryTimeslot(session, advRsv);
+				} else {
+					setSODeliveryTimeslot(session, advRsv);
+				}
 				return SUCCESS;
 			}
 
@@ -149,11 +132,11 @@ public class ChooseTimeslotAction extends WebActionSupport {
 						chefsTable,
 						ctDeliveryProfile, isForced);
 
-				// save reservation id in cart
-				cart.setDeliveryReservation(timeSlotResrv);
-
-				user.setShoppingCart(cart);
-				session.setAttribute(SessionName.USER, user);
+				if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+					setDeliveryTimeslot(session, timeSlotResrv);
+				} else {
+					setSODeliveryTimeslot(session, timeSlotResrv);
+				}
 			}
 
 			return this.getResult().isSuccess() ? SUCCESS : ERROR;
@@ -164,5 +147,27 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		} catch (ReservationException re) {
 			throw new FDResourceException(re);
 		}
+	}
+
+	/**
+	 * @param session
+	 * @param resv
+	 */
+	private void setDeliveryTimeslot(HttpSession session, FDReservation resv) {
+		final FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+		final FDCartModel cart = user.getShoppingCart();
+
+		cart.setDeliveryReservation(resv);
+		user.setShoppingCart(cart);
+		session.setAttribute(SessionName.USER, user);
+	}
+
+	private void setSODeliveryTimeslot(HttpSession session, FDReservation resv) {
+		final FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+		this.setDeliveryTimeslot(session, resv);
+		
+		FDStandingOrder so = user.getCurrentStandingOrder();
+		so.setupDelivery(resv);
 	}
 }

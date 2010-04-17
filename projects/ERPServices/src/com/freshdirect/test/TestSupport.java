@@ -32,7 +32,7 @@ public class TestSupport {
 	private TestSupportHome getTestSupportHome() {
 		try {
 			return (TestSupportHome) serviceLocator.getRemoteHome(
-				"freshdirect.test.TestSupport", TestSupportHome.class);
+				"freshdirect.test.TestSupport");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

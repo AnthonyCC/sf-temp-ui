@@ -40,12 +40,12 @@ class ReconciliationCaseBuilder {
 		}
 	}
 
-	public List getCases() {
+	public List<CrmSystemCaseInfo> getCases() {
 		if (this.shortedAmount <= (this.order.getSubTotal() * ErpServicesProperties.getCaseShortshipPercentage())) {
-			return Collections.EMPTY_LIST;
+			return Collections.<CrmSystemCaseInfo>emptyList();
 		}
 
-		List cases = new ArrayList();
+		List<CrmSystemCaseInfo> cases = new ArrayList<CrmSystemCaseInfo>();
 
 		if (this.details.length() > 0) {
 			CrmSystemCaseInfo info =

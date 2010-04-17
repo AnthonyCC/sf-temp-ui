@@ -1299,6 +1299,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>soListId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>starterListId</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
@@ -2985,12 +2990,12 @@
 		<attribute>
 			<name>id</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>action</name>
 			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
+			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>
 
@@ -3252,17 +3257,22 @@
 		<info></info>
 		<attribute>
 			<name>namespace</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>formName</name>
-			<required>true</required>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>skus</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>impressions</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -3272,6 +3282,11 @@
 		</attribute>
 		<attribute>
 			<name>inputNamePostfix</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>onlyCore</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3870,4 +3885,49 @@
 			<rtexprvalue>false</rtexprvalue>
 		</attribute>
 	</tag>        
+
+	<!--  Standing Orders section -->
+	<tag>
+		<name>ManageStandingOrders</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.ManageStandingOrdersTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.ManageStandingOrdersTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Manages existing Standing Orders</info>	
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>ListStandingOrders</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.ListStandingOrdersTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.ListStandingOrdersTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Lists customer's Standing Orders</info>	
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+ 	<tag>
+		<name>CreateStandingOrder</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.CreateStandingOrderTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.CreateStandingOrderTag$TagEI</teiclass>
+ 		<bodycontent>JSP</bodycontent>
+ 		<info>Creates a new Standing Order object in session</info>	
+ 		<attribute>
+ 			<name>result</name>
+ 			<required>true</required>
+ 			<rtexprvalue>false</rtexprvalue>
+ 		</attribute>
+ 	</tag>
+ 	<tag>
+		<name>CancelStandingOrderCheckout</name>
+		<tagclass>com.freshdirect.webapp.taglib.standingorder.CancelStandingOrderCheckoutTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.standingorder.CancelStandingOrderCheckoutTag$TagEI</teiclass>
+ 		<bodycontent>JSP</bodycontent>
+ 		<info>Cancels ongoing SO creation or modification and restores customer cart</info>	
+ 	</tag>
 </taglib>

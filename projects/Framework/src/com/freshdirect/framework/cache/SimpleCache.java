@@ -8,27 +8,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * Basic {@link com.freshdirect.framework.cache.CacheI} implementation
  * using a synchronized HashMap. Objects never automatically expire.
  */
-public class SimpleCache implements CacheI {
+public class SimpleCache<K extends Serializable,V> implements CacheI<K,V> {
 
-	private ConcurrentHashMap map;
+	private ConcurrentHashMap<K,V> map;
 	private String name;
 
 	
 	public SimpleCache() {
 		super();
-		map = new ConcurrentHashMap();
+		map = new ConcurrentHashMap<K,V>();
 	}
 	
-	public Object get(Serializable key) {
+	public V get(K key) {
 		return map.get(key);
 	}
 
 
-	public void put(Serializable key, Object object) {		
+	public void put(K key, V object) {		
 		map.put(key, object);		
 	}
 
-	public void remove(Serializable key) {
+	public void remove(K key) {
 		map.remove(key);
 	}
 

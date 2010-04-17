@@ -76,8 +76,7 @@ final public class VariantRegistry {
 			throws NamingException {
 		return (SmartStoreServiceConfigurationHome) new ServiceLocator(
 				FDStoreProperties.getInitialContext()).getRemoteHome(
-				"freshdirect.smartstore.SmartStoreServiceConfiguration",
-				SmartStoreServiceConfigurationHome.class);
+				"freshdirect.smartstore.SmartStoreServiceConfiguration");
 	}
 
 	private void load() {

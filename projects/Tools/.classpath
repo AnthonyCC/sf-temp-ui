@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="/Framework"/>
-	<classpathentry kind="src" path="/ERPServices"/>
-	<classpathentry kind="src" path="/FDStore"/>
 	<classpathentry kind="src" path="/ERPSWebApp"/>
-	<classpathentry kind="src" path="/Delivery"/>
-	<classpathentry kind="src" path="/DataLoader"/>
-	<classpathentry kind="src" path="/CMS"/>
 	<classpathentry kind="src" path="/listadmin"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/log4j.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-3.0.0.jar"/>

@@ -1,30 +1,19 @@
 package com.freshdirect.giftcard;
 
-import java.util.Date;
-import java.util.List;
-
-import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionType;
 import com.freshdirect.customer.ErpTransactionModel;
-import com.freshdirect.payment.EnumBankAccountType;
-import com.freshdirect.payment.EnumGiftCardTransactionStatus;
-import com.freshdirect.payment.EnumGiftCardTransactionType;
-import com.freshdirect.payment.EnumPaymentMethodType;
 
-/**
- * @stereotype fd-model
- */
 public class ErpGiftCardTransModel extends ErpTransactionModel {
 	
-    private double amount;
+	private static final long	serialVersionUID	= 7900833703399393453L;
+	
+	private double amount;
     private double tax;
 	
 	    
     public ErpGiftCardTransModel(EnumTransactionType txType) {
 		super(txType);
     }
-    
     
   
 	public double getAmount(){
@@ -45,7 +34,5 @@ public class ErpGiftCardTransModel extends ErpTransactionModel {
 	public double getPreTaxAmount(){
 		return this.amount - this.tax;
 	}
-
-	
 	
 }

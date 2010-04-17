@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import com.freshdirect.common.customer.EnumCardType;
@@ -24,6 +15,8 @@ import java.util.Date;
  */
 public class ErpCreditCardModel extends ErpPaymentMethodModel {
 
+	private static final long	serialVersionUID	= 4226856315306939606L;
+	
 	private Date expirationDate;
 	private EnumCardType cardType;
 

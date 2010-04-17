@@ -12,38 +12,31 @@ package com.freshdirect.giftcard.ejb;
  * @version 
  */
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.freshdirect.common.customer.EnumCardType;
-import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpComplaintReason;
 import com.freshdirect.customer.ErpSaleInfo;
-import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.GenericSearchCriteria;
-import com.freshdirect.framework.util.TextEncryptor;
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
-import com.freshdirect.giftcard.ErpGiftCardI;
-import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.ErpPreAuthGiftCardModel;
+import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
-import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class GiftCardPersistanceDAO {
 
@@ -534,8 +527,8 @@ public class GiftCardPersistanceDAO {
 													  " SA.ACTION_DATE=S.CROMOD_DATE";
 	
 
-	public static List loadGiftCardOrders(Connection conn, String erpCustomerPK) throws SQLException {
-		List saleList=new ArrayList();
+	public static List<ErpSaleInfo> loadGiftCardOrders(Connection conn, String erpCustomerPK) throws SQLException {
+		List<ErpSaleInfo> saleList=new ArrayList<ErpSaleInfo>();
 		PreparedStatement ps = conn.prepareStatement(SELECT_ORDERS_WITH_GC);						
 		ps.setString(1, erpCustomerPK);
 		ResultSet rs = ps.executeQuery();
@@ -565,7 +558,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null,false);			
+					null,false,null);			
 			saleList.add(info);
 		} 
 		
@@ -615,10 +608,10 @@ public class GiftCardPersistanceDAO {
 															" AGC.CERTIFICATE_NUM=?";
 
 
-	public static List loadGiftCardRedemedOrders(Connection conn,
+	public static List<ErpSaleInfo> loadGiftCardRedemedOrders(Connection conn,
 			String erpCustomerPK, String certNum) throws SQLException {
-		// TODO Auto-generated method stub
-		List saleList=new ArrayList();
+
+		List<ErpSaleInfo> saleList=new ArrayList<ErpSaleInfo>();
 		PreparedStatement ps = conn.prepareStatement(SELECT_ORDERS_WITH_GC_CERT);						
 		ps.setString(1, erpCustomerPK);
 		ps.setString(2, certNum);
@@ -649,7 +642,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false);			
+					null, false, null);			
 			saleList.add(info);
 		} 
 		
@@ -664,10 +657,10 @@ public class GiftCardPersistanceDAO {
 	" AGC.CERTIFICATE_NUM=?";
 
 
-	public static List loadGiftCardRedemedOrders(Connection conn,
+	public static List<ErpSaleInfo> loadGiftCardRedemedOrders(Connection conn,
 			String certNum) throws SQLException {
-		// TODO Auto-generated method stub
-		List saleList=new ArrayList();
+
+		List<ErpSaleInfo> saleList=new ArrayList<ErpSaleInfo>();
 		PreparedStatement ps = conn.prepareStatement(SELECT_APPLIED_GC_ORDERS);						
 		
 		ps.setString(1, certNum);
@@ -698,7 +691,7 @@ public class GiftCardPersistanceDAO {
 					null,
 					EnumSaleType.getSaleType(rs.getString("TYPE")),
 					null,
-					null, false);			
+					null, false, null);			
 			saleList.add(info);
 		} 
 

@@ -1,11 +1,3 @@
-/*
- * $Workfile:FDDeliveryManager.java$
- *
- * $Date:8/28/2003 3:23:16 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
@@ -14,7 +6,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -32,51 +23,59 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.common.pricing.MunicipalityInfoWrapper;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvApartmentRange;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvTimeslotCapacityInfo;
+import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
+import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.TimedLruCache;
 import com.freshdirect.routing.model.IDeliveryReservation;
 
 /**
- *
- *
  * @version $Revision:23$
  * @author $Author:Viktor Szathmary$
  */
+
 public class FDDeliveryManager {
 
 	private final ServiceLocator serviceLocator;
 	private static FDDeliveryManager dlvManager = null;
 
 	/** cache zipCode -> DlvServiceSelectionResult */
-	private static TimedLruCache zipCheckCache = new TimedLruCache(200, 60 * 60 * 1000);
+	private static TimedLruCache<String,DlvServiceSelectionResult> zipCheckCache = 
+		new TimedLruCache<String,DlvServiceSelectionResult>(200, 60 * 60 * 1000);
 
 	/** 1 hr cache zoneCode -> List of cutoff-times for next day (DlvZoneCutoffInfo)*/
-	private static TimedLruCache zoneCutoffCache = new TimedLruCache(200, 60 * 60 * 1000);
+	private static TimedLruCache<String,List<DlvZoneCutoffInfo>> zoneCutoffCache = 
+		new TimedLruCache<String,List<DlvZoneCutoffInfo>>(200, 60 * 60 * 1000);
 
 	/** 5 min cache zoneCode -> remaining Capacity for next day (DlvZoneCapacityInfo)*/
-	private static TimedLruCache zoneCapacityCache = new TimedLruCache(200, 5 * 60 * 1000);
+	private static TimedLruCache<String,DlvZoneCapacityInfo> zoneCapacityCache = 
+		new TimedLruCache<String,DlvZoneCapacityInfo>(200, 5 * 60 * 1000);
 
 	private DlvRestrictionsList dlvRestrictions = null;
 	private long REFRESH_PERIOD = 1000 * 60 * 5; // 5 minutes
 	private long lastRefresh = 0;
 
-	private List announcementList = null;
+	private List<SiteAnnouncement> announcementList = null;
 	private long ANN_REFRESH_PERIOD = 1000 * 60 * 10; //10 minutes
 	private long lastAnnRefresh = 0;
 	//private boolean isAlt
@@ -105,7 +104,7 @@ public class FDDeliveryManager {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 
-				List l = sb.getDlvRestrictions();
+				List<RestrictionI> l = sb.getDlvRestrictions();
 				this.dlvRestrictions = new DlvRestrictionsList(l);
 
 				lastRefresh = System.currentTimeMillis();
@@ -124,7 +123,7 @@ public class FDDeliveryManager {
 		if (System.currentTimeMillis() - lastAnnRefresh > ANN_REFRESH_PERIOD) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
-				List l = sb.getSiteAnnouncements();
+				List<SiteAnnouncement> l = sb.getSiteAnnouncements();
 				this.announcementList = Collections.unmodifiableList(l);
 
 				lastAnnRefresh = System.currentTimeMillis();
@@ -142,8 +141,8 @@ public class FDDeliveryManager {
 		this.refreshRestrictionsCache();
 		return this.dlvRestrictions;
 	}
-
-	public List getGeographicDlvRestrictions(AddressModel address) throws FDResourceException {
+	
+	public List<GeographyRestriction> getGeographicDlvRestrictions(AddressModel address) throws FDResourceException {		
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 
@@ -158,7 +157,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List getSiteAnnouncement() throws FDResourceException {
+	public List<SiteAnnouncement> getSiteAnnouncement() throws FDResourceException {
 		this.refreshSiteAnnouncementsCache();
 		return this.announcementList;
 	}
@@ -220,7 +219,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public ArrayList findSuggestionsForAmbiguousAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
+	public List<AddressModel> findSuggestionsForAmbiguousAddress(AddressModel address) throws FDResourceException, FDInvalidAddressException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.findSuggestionsForAmbiguousAddress(address);
@@ -278,12 +277,12 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List getCutofftimeForZone(String zoneCode, Date day) throws FDResourceException {
+	public List<DlvZoneCutoffInfo> getCutofftimeForZone(String zoneCode, Date day) throws FDResourceException {
 
 		if("".equals(zoneCode)) {
-			return Collections.EMPTY_LIST;
+			return Collections.<DlvZoneCutoffInfo>emptyList();
 		}
-		List times = (List) zoneCutoffCache.get(zoneCode);
+		List<DlvZoneCutoffInfo> times = zoneCutoffCache.get(zoneCode);
 		if(times == null) {
 			try {
 				DlvManagerSB sb = getDlvManagerHome().create();
@@ -301,7 +300,7 @@ public class FDDeliveryManager {
 
 	public DlvZoneCapacityInfo getZoneCapacity(String zoneCode, Date day) throws FDResourceException {
 
-		DlvZoneCapacityInfo capacity = (DlvZoneCapacityInfo) zoneCapacityCache.get(zoneCode);
+		DlvZoneCapacityInfo capacity = zoneCapacityCache.get(zoneCode);
 
 		if(capacity == null) {
 			try {
@@ -320,7 +319,7 @@ public class FDDeliveryManager {
 		return capacity;
 	}
 
-	public List getDeliverableZipCodes(EnumServiceType serviceType) throws FDResourceException {
+	public List<DlvZipInfoModel> getDeliverableZipCodes(EnumServiceType serviceType) throws FDResourceException {
 
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -335,7 +334,7 @@ public class FDDeliveryManager {
 	public DlvServiceSelectionResult checkZipCode(String zipCode) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			DlvServiceSelectionResult result = (DlvServiceSelectionResult) zipCheckCache.get(zipCode);
+			DlvServiceSelectionResult result = zipCheckCache.get(zipCode);
 			if (result == null) {
 				result = sb.checkServicesForZipCode(zipCode);
 				zipCheckCache.put(zipCode, result);
@@ -364,12 +363,11 @@ public class FDDeliveryManager {
 	}
 
 	public List<FDTimeslot> getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
-		try {
+		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
 			List<DlvTimeslotModel> timeslots = sb.getTimeslotForDateRangeAndZone(begDate, endDate, address);
-			for (Iterator<DlvTimeslotModel> i = timeslots.iterator(); i.hasNext();) {
-				DlvTimeslotModel timeslot =  i.next();
+			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
 			}			
 			
@@ -391,16 +389,13 @@ public class FDDeliveryManager {
 		}
 	}
 
-
-
-	public ArrayList getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address) throws FDResourceException {
+	public List<FDTimeslot> getAllTimeslotsForDateRange(Date startDate, Date endDate, AddressModel address) throws FDResourceException {
 		try {
-			ArrayList retLst = new ArrayList();
+			ArrayList<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List timeslots = sb.getAllTimeslotsForDateRange(startDate, endDate, address);
-			for (Iterator i = timeslots.iterator(); i.hasNext();) {
-				DlvTimeslotModel timeslot = (DlvTimeslotModel) i.next();
-				retLst.add(new FDTimeslot(timeslot));
+			List<DlvTimeslotModel> timeslots = sb.getAllTimeslotsForDateRange(startDate, endDate, address);
+			for ( DlvTimeslotModel timeslot : timeslots ) {
+				retLst.add( new FDTimeslot( timeslot ) );
 			}
 			return retLst;
 		} catch (RemoteException re) {
@@ -413,7 +408,7 @@ public class FDDeliveryManager {
 	}
 
 
-	public List getTimeslotCapacityInfo(java.util.Date date) {
+	public List<DlvTimeslotCapacityInfo> getTimeslotCapacityInfo(java.util.Date date) {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.getTimeslotCapacityInfo(date);
@@ -438,14 +433,13 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
+	public List<FDTimeslot> getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
 
 		try {
-			List retLst = new ArrayList();
+			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List timeslots = sb.getTimeslotsForDepot(begDate, endDate, regionId, zoneCode);
-			for (Iterator i = timeslots.iterator(); i.hasNext();) {
-				DlvTimeslotModel timeslot = (DlvTimeslotModel) i.next();
+			List<DlvTimeslotModel> timeslots = sb.getTimeslotsForDepot(begDate, endDate, regionId, zoneCode);
+			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
 			}
 			
@@ -570,18 +564,17 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List getResevervationsForCustomer(String customerId) throws FDResourceException {
+	public List<FDReservation> getReservationsForCustomer(String customerId) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
-			List reservations = sb.getReservationsForCustomer(customerId);
+			List<DlvReservationModel> reservations = sb.getReservationsForCustomer(customerId);
 
 			if (reservations.isEmpty()) {
-				return Collections.EMPTY_LIST;
+				return Collections.<FDReservation>emptyList();
 			}
 
-			List rsvLst = new ArrayList();
-			for (Iterator i = reservations.iterator(); i.hasNext();) {
-				DlvReservationModel dlvRsv = (DlvReservationModel) i.next();
+			List<FDReservation> rsvLst = new ArrayList<FDReservation>();
+			for ( DlvReservationModel dlvRsv : reservations ) {
 				FDTimeslot timeslot = this.getTimeslotsById(dlvRsv.getTimeslotId());
 				rsvLst.add(new FDReservation(
 					dlvRsv.getPK(),
@@ -608,7 +601,6 @@ public class FDDeliveryManager {
 		try {
 
 			DlvManagerSB sb = getDlvManagerHome().create();
-			DlvReservationModel oldReserve = sb.getReservation(rsvId);
 			sb.commitReservation(rsvId, customerId, orderId,pr1);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
 				DlvReservationModel reservation=sb.getReservation(rsvId);
@@ -716,7 +708,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List findApartmentRanges(AddressModel address) throws FDResourceException, InvalidAddressException {
+	public List<DlvApartmentRange> findApartmentRanges(AddressModel address) throws FDResourceException, InvalidAddressException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.findApartmentRanges(address);
@@ -738,7 +730,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List searchExceptionAddresses(ExceptionAddress ex) throws FDResourceException {
+	public List<ExceptionAddress> searchExceptionAddresses(ExceptionAddress ex) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.searchExceptionAddresses(ex);
@@ -787,7 +779,7 @@ public class FDDeliveryManager {
 	}
 
 
-	public List getCountiesByState(String stateAbbrev) throws FDResourceException{
+	public List<String> getCountiesByState(String stateAbbrev) throws FDResourceException{
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.getCountiesByState(stateAbbrev);
@@ -800,14 +792,14 @@ public class FDDeliveryManager {
 
 	private DlvManagerHome getDlvManagerHome() {
 		try {
-			return (DlvManagerHome) serviceLocator.getRemoteHome(FDStoreProperties.getDeliveryManagerHome(), DlvManagerHome.class);
+			return (DlvManagerHome) serviceLocator.getRemoteHome(FDStoreProperties.getDeliveryManagerHome());
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}
 	}
 
 
-	public List searchGeocodeException(ExceptionAddress ex) throws FDResourceException {
+	public List<ExceptionAddress> searchGeocodeException(ExceptionAddress ex) throws FDResourceException {
 
 		DlvManagerSB sb;
 		try {
@@ -872,10 +864,10 @@ public class FDDeliveryManager {
 
 	}
 
-	private Map stateCountyByZip = new HashMap();
+	private Map<String, StateCounty> stateCountyByZip = new HashMap<String, StateCounty>();
 	private StateCounty lookupStateCountyByZip(String zipcode) throws FDResourceException{
 		try {
-			StateCounty sc = (StateCounty) stateCountyByZip.get(zipcode);
+			StateCounty sc = stateCountyByZip.get(zipcode);
 			if(sc == null){
 				DlvManagerSB sb = getDlvManagerHome().create();
 				sc = sb.lookupStateCountyByZip(zipcode);
@@ -909,7 +901,7 @@ public class FDDeliveryManager {
 		return null;
 	}
 
-	public List getCutofftimesByDate(Date day) throws FDResourceException {
+	public List<Date> getCutofftimesByDate(Date day) throws FDResourceException {
 		try {
 			DlvManagerSB sb = getDlvManagerHome().create();
 			return sb.getCutoffTimesByDate(day);
@@ -937,9 +929,7 @@ public class FDDeliveryManager {
 
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {
 
-			try {
-
-
+			try {				
 				DlvManagerSB sb = getDlvManagerHome().create();
 				return sb.reserveTimeslotEx(reservation, address, timeslot);
 
@@ -951,9 +941,7 @@ public class FDDeliveryManager {
 		}
 
 	public void commitReservationEx(DlvReservationModel reservation,ContactAddressModel address) throws FDResourceException{
-		try {
-
-			System.out.println( "In commitReservationEx()");
+		try {			
 			DlvManagerSB sb = getDlvManagerHome().create();
 			sb.commitReservationEx(reservation, address);
 

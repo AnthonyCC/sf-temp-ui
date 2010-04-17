@@ -1,16 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.Set;
 
 import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -19,12 +11,7 @@ import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public interface FDOrderInfoI extends Serializable {
 
 	public String getErpSalesId();
@@ -55,6 +42,7 @@ public interface FDOrderInfoI extends Serializable {
     
 	public double getApprovedCreditAmount();
     
+	@Deprecated
 	public EnumSaleStatus getSaleStatus();
 
 	public Date getDeliveryStartTime();
@@ -74,4 +62,23 @@ public interface FDOrderInfoI extends Serializable {
 	public String getTruckNumber();
 	
 	public String getStopSequence();
+	
+	public String getStandingOrderId();
+
+	public boolean isModifiable();
+	
+	public boolean isShopFromThisOrder();
+	
+	public static final Comparator<FDOrderInfoI> COMPARE_BY_CREATE_DATE = new Comparator<FDOrderInfoI>() {
+		@Override
+		public int compare( FDOrderInfoI o1, FDOrderInfoI o2 ) {
+			return o1.getCreateDate().compareTo( o2.getCreateDate() );
+		}
+	};
+	public static final Comparator<FDOrderInfoI> COMPARE_BY_REQUESTED_DATE = new Comparator<FDOrderInfoI>() {
+		@Override
+		public int compare( FDOrderInfoI o1, FDOrderInfoI o2 ) {
+			return o1.getRequestedDate().compareTo( o2.getRequestedDate() );
+		}
+	};
 }

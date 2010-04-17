@@ -19,12 +19,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *     <a href="http://java.sun.com/blueprints/corej2eepatterns/Patterns/ServiceLocator.html">http://java.sun.com/blueprints/corej2eepatterns/Patterns/ServiceLocator.html</a>
  * </pre></blockquote> 
  */
+
 public class ServiceLocator {
 
 	private final static Category LOGGER = LoggerFactory.getInstance( ServiceLocator.class );
 
 	private final Context ctx;
-	private final Map cache = Collections.synchronizedMap(new HashMap());
+	private final Map<String,EJBHome> cache = Collections.synchronizedMap( new HashMap<String,EJBHome>() );
 
 	public ServiceLocator() {
 		try {
@@ -39,12 +40,11 @@ public class ServiceLocator {
 		this.ctx = ctx;
 	}
 
-	public EJBHome getRemoteHome(String jndiHomeName, Class className) throws NamingException {
-		EJBHome home = (EJBHome) cache.get(jndiHomeName);
-		if (home==null) {
+	public EJBHome getRemoteHome(String jndiHomeName) throws NamingException {
+		EJBHome home = cache.get(jndiHomeName);
+		if ( home == null ) {
 			Object objref = this.ctx.lookup(jndiHomeName);
 			home = (EJBHome)objref;
-			//home = (EJBHome) PortableRemoteObject.narrow(objref, className);
 			cache.put(jndiHomeName, home);
 		}
 		return home;

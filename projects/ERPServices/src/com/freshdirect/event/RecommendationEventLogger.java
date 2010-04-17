@@ -106,7 +106,7 @@ public class RecommendationEventLogger {
 	private RecommendationEventLoggerHome getImpressionLoggerHome() {
 		try {
 			return (RecommendationEventLoggerHome) serviceLocator.getRemoteHome(
-				"freshdirect.event.RecommendationEventLogger", RecommendationEventLoggerHome.class);
+				"freshdirect.event.RecommendationEventLogger");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 
 public class StringUtil {
 	
@@ -50,7 +51,7 @@ public class StringUtil {
 		}
 
 		// capitalize words
-		return StringUtils.capitaliseAllWords(sb.toString().toLowerCase());
+		return WordUtils.capitalizeFully( sb.toString() );
 	}
 	
 	
@@ -272,7 +273,7 @@ public class StringUtil {
 		return StringUtils.join(strArray, DEFAULT_SEPARATOR);
 	}
 
-	public static String encodeString(List list) {
+	public static String encodeString(List<? extends Object> list) {
 				
 		if (list != null && list.size() > 0) {
 			return StringUtils.join(list.toArray(), DEFAULT_SEPARATOR);
@@ -658,44 +659,26 @@ public class StringUtil {
 		return false;
 	}
 	
-	public static String formQueryString(List lstValues) {
-		
-		if(lstValues != null) {			
-	    	if(lstValues.size() > 1) {
-	    		Iterator iterator = lstValues.iterator();
-	    		int intCount = 0;
-	    		StringBuffer strBuf = new StringBuffer();	    		
-	        	while(iterator.hasNext()) {
-	        		intCount++;
-	        		strBuf.append("'").append(iterator.next()).append("'");
-	        		if(intCount != lstValues.size()) {
-	        			strBuf.append(",");
-	        		}
-	        	}
-	        	return "in ("+strBuf.toString()+")";
-	    	} else if (lstValues.size() == 1){
-	    		return "= '"+lstValues.get(0)+"'";
-	    	}
-		} 
+	public static String formQueryString( List<? extends Object> lstValues ) {
+		if ( lstValues != null ) {
+			if ( lstValues.size() > 1 ) {
+				int intCount = 0;
+				StringBuffer strBuf = new StringBuffer();
+				for ( Object next : lstValues ) {
+					intCount++;
+					strBuf.append( "'" ).append( next ).append( "'" );
+					if ( intCount != lstValues.size() ) {
+						strBuf.append( "," );
+					}
+				}
+				return "in (" + strBuf.toString() + ")";
+			} else if ( lstValues.size() == 1 ) {
+				return "= '" + lstValues.get( 0 ) + "'";
+			}
+		}
 		return null;
-    	
-	}
-	
-    /**
-     * this function emulates the class.getSimpleName() found in java 1.5 or
-     * more TODO : after migration to 1.5 remove!
-     * 
-     * @param cls
-     */
-    public static String getSimpleName(Class cls) {
-        String name = cls.getName();
-        int lastDot = name.lastIndexOf('.');
-        if (lastDot != -1) {
-            name = name.substring(lastDot + 1);
-        }
-        return name;
-    }
-	
+
+	}	
 
 
     /**
@@ -706,8 +689,7 @@ public class StringUtil {
 	 * @param delimiter
 	 * @return
 	 */
-	public static <T>
-	String join(final Iterable<T> objs, final String delimiter) {
+	public static <T> String join(final Iterable<T> objs, final String delimiter) {
 	    Iterator<T> iter = objs.iterator();
 	    if (!iter.hasNext())
 	        return "";

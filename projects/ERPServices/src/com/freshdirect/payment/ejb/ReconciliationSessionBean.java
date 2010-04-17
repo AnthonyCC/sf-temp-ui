@@ -691,7 +691,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 	
 	private ErpSaleHome getErpSaleHome() {
 		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale", ErpSaleHome.class);
+			return (ErpSaleHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpSale");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -699,7 +699,7 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomerManager", ErpCustomerManagerHome.class);
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

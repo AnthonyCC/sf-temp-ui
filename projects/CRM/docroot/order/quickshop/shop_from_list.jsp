@@ -80,8 +80,8 @@
 	String listName = null;
     int listSize=0;    
 	for(Iterator I = lists.iterator(); I.hasNext(); ) {
-	   FDCustomerCreatedList list = (FDCustomerCreatedList)I.next();
-	   if (list.getId().equals(ccListIdVal)) {
+		FDCustomerListInfo list = (FDCustomerListInfo)I.next();
+		if (list.getId().equals(ccListIdVal)) {
 	      listName = list.getName();          
               listSize = list.getCount();
 	      break;

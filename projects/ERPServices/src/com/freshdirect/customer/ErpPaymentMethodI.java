@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import java.util.Date;
@@ -14,6 +5,7 @@ import java.util.Date;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumCardType;
+import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -115,9 +107,10 @@ public interface ErpPaymentMethodI extends AddressI {
 
 	public void setAvsCkeckFailed(boolean avsCkeckFailed);
 	
+	public PrimaryKey getPK();
+	
 	public boolean isBypassAVSCheck();
 	
 	public void setBypassAVSCheck(boolean bypassAVSCheck);
-
 }
 

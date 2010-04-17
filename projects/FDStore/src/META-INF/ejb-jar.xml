@@ -123,6 +123,20 @@
 		</session>
 
 		<session>
+			<ejb-name>StandingOrders</ejb-name>
+			<home>com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersHome</home>
+			<remote>com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSB</remote>
+			<ejb-class>com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
+
+		<session>
 			<ejb-name>CallCenterManager</ejb-name>
 			<home>com.freshdirect.fdstore.customer.ejb.CallCenterManagerHome</home>
 			<remote>com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB</remote>
@@ -313,6 +327,26 @@
 				<remote>com.freshdirect.erp.ejb.ErpZoneInfoSB</remote>
 			</ejb-ref>
 		</session>        
+
+		<session>
+			<ejb-name>CreateEmail</ejb-name>
+			<home>com.freshdirect.fdstore.mail.CreateEmailHome</home>
+			<remote>com.freshdirect.fdstore.mail.CreateEmailSB</remote>
+			<ejb-class>com.freshdirect.fdstore.mail.CreateEmailSessionBean</ejb-class>
+			<session-type>Stateless</session-type>
+			<transaction-type>Container</transaction-type>
+			<ejb-ref>
+				<ejb-ref-name>ejb/FDCustomerManager</ejb-ref-name>
+				<ejb-ref-type>Session</ejb-ref-type>
+				<home>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome</home>
+				<remote>com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB</remote>
+			</ejb-ref>
+			<resource-ref>
+				<res-ref-name>jdbc/dbpool</res-ref-name>
+				<res-type>javax.sql.DataSource</res-type>
+				<res-auth>Container</res-auth>
+			</resource-ref>
+		</session>
 
         <message-driven>
 			<ejb-name>AdServerListener</ejb-name>

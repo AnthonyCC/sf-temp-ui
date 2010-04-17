@@ -315,7 +315,7 @@ abstract class ErpAbstractOrderPersistentBean extends ErpTransactionPersistentBe
 	protected RecepientsList getRecepientsPBList() {
 		RecepientsList lst = new RecepientsList();
 		lst.setParentPK(this.getPK());
-		for(Iterator i = this.model.getRecepientsList().iterator(); i.hasNext(); ){
+		for(Iterator i = this.model.getRecipientsList().iterator(); i.hasNext(); ){
 			lst.add(new ErpGCRecipientPersitanceBean((ErpRecipentModel)i.next()));
 		}
 		return lst;

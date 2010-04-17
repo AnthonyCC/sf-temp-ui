@@ -1,5 +1,6 @@
 package com.freshdirect.crm.ejb;
 
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -13,6 +14,9 @@ import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public abstract class CrmEntityBeanSupport extends EntityBeanSupport {
+
+	private static final long	serialVersionUID	= 2650620991286768117L;
+	
 	protected ModelI model;
 
 	public void initialize() {

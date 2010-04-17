@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Category;
@@ -27,18 +26,13 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
-import com.freshdirect.fdstore.promotion.DCPDiscountRule;
-import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromotionContextI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
@@ -48,8 +42,11 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class PromotionContextAdapter implements PromotionContextI {
 
 	private final FDUserI user;
-	private List rulePromoCodes;
+	private List<String> rulePromoCodes;
 	private Date now;
+	
+	
+	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(PromotionContextAdapter.class);
 
 
@@ -107,16 +104,16 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public String getSubscribedSignupPromotionCode() {
 		String ignoreSaleId = this.getModifiedSaleId();
-		Set promoCodes = PromotionFactory.getInstance().getPromotionCodesByType(EnumPromotionType.SIGNUP);
+		Set<String> promoCodes = PromotionFactory.getInstance().getPromotionCodesByType(EnumPromotionType.SIGNUP);
 		try {
 
-			Set allPromos = user.getPromotionHistory().getUsedPromotionCodes(ignoreSaleId);
+			Set<String> allPromos = user.getPromotionHistory().getUsedPromotionCodes(ignoreSaleId);
 			promoCodes.retainAll(allPromos);
 
 			if (promoCodes.isEmpty()) {
 				return null;
 			}
-			return (String) promoCodes.iterator().next();
+			return promoCodes.iterator().next();
 
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e);
@@ -230,7 +227,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return user.getIdentity();
 	}
 
-	public void setRulePromoCode(List rulePromoCodes) {
+	public void setRulePromoCode(List<String> rulePromoCodes) {
 		this.rulePromoCodes = rulePromoCodes;
 
 	}
@@ -256,16 +253,16 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId){
 		return this.user.getAssignedCustomerParam(promoId);
 	}
-
-	public List getEligibleLinesForDCPDiscount(String promoId, Set contentKeys){
+	
+	@Override
+	public List<FDCartLineI> getEligibleLinesForDCPDiscount(String promoId, Set<ContentKey> contentKeys) {
 		if(getShoppingCart().isEmpty()){
-			return Collections.EMPTY_LIST;
+			return Collections.<FDCartLineI>emptyList();
 		}
-		List eligibleLines = new ArrayList();
+		List<FDCartLineI> eligibleLines = new ArrayList<FDCartLineI>();
 
-		List orderLines = getShoppingCart().getOrderLines();
-		for(Iterator i = orderLines.iterator(); i.hasNext();){
-			FDCartLineI cartLine = (FDCartLineI)i.next();
+		List<FDCartLineI> orderLines = getShoppingCart().getOrderLines();
+		for ( FDCartLineI cartLine : orderLines ) {
 			boolean eligible = false;
 			String recipeSourceId = cartLine.getRecipeSourceId();
 			if(recipeSourceId != null && recipeSourceId.length() > 0){
@@ -310,7 +307,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public void clearHeaderDiscounts(){
 		//Clear all header discounts.
-		this.user.getShoppingCart().setDiscounts(new ArrayList());
+		this.user.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
 	}
 	private boolean isMaxDiscountAmount(double promotionAmt, EnumPromotionType type){
 		Discount applied = this.getHeaderDiscount();
@@ -330,38 +327,32 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 
 	public Discount getHeaderDiscount() {
-		// TODO Auto-generated method stub
-		List l = this.getShoppingCart().getDiscounts();
+		List<ErpDiscountLineModel> l = this.getShoppingCart().getDiscounts();
 		if(l.isEmpty())
 			return null;
 
-		Iterator i = l.iterator();
+		Iterator<ErpDiscountLineModel> i = l.iterator();
 		//Get the applied discount from the cart.
-		ErpDiscountLineModel model = (ErpDiscountLineModel)i.next();
+		ErpDiscountLineModel model = i.next();
 		if(model==null) return null;
 		Discount applied = model.getDiscount();
 		return applied; 
 	}
 	
-	
 	public boolean isPostPromoConflictEnabled(){
 		return this.getUser().isPostPromoConflictEnabled();
 	}
 
-
 	public void clearLineItemDiscounts() {
-		// TODO Auto-generated method stub
-		  FDCartModel cart= this.getUser().getShoppingCart();
-		  cart.clearLineItemDiscounts();
+		FDCartModel cart = this.getUser().getShoppingCart();
+		cart.clearLineItemDiscounts();
 	}
-
 
 	public double getTotalLineItemDiscount() {
-		// TODO Auto-generated method stub
-		FDCartModel cart= this.getUser().getShoppingCart();
+		FDCartModel cart = this.getUser().getShoppingCart();
 		return cart.getTotalLineItemsDiscountAmount();
 	}
-	
+
 	public PricingContext getPricingContext() {
 		return this.getUser().getPricingContext();
 	}

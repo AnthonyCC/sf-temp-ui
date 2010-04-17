@@ -4,15 +4,14 @@ import java.io.Serializable;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.framework.console.DebugConsole;
 import com.freshdirect.framework.util.JMXUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class ManagedCache implements CacheI, ManagedCacheMBean {
+public class ManagedCache<K extends Serializable,V> implements CacheI<K,V>, ManagedCacheMBean {
 
 	private static final Category LOGGER = LoggerFactory.getInstance(ManagedCache.class);
 
-	CacheI cache;
+	CacheI<K,V> cache;
 
 	int numOfNulls = 0;
 	final Object numOfNullsMutex = new Object();
@@ -27,15 +26,15 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 	final Object numOfNullHitsMutex = new Object();
 		
 	private boolean nullElementStats = false;
-	private Object nullElement;
+	private V nullElement;
 
 	private boolean countElems = true;
 	
-	public ManagedCache(String type, CacheI cache) {
+	public ManagedCache(String type, CacheI<K,V> cache) {
 		this(type, cache, null);
 	}
 	
-	public ManagedCache(String type, CacheI cache, Object nullElement) {
+	public ManagedCache(String type, CacheI<K,V> cache, V nullElement) {
 		assert (cache != null);
 		this.cache = cache;
 		this.nullElement = nullElement;
@@ -57,13 +56,13 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		return cache.getName();
 	}
 
-	public Object get(Serializable key) {
-		Object result = cache.get(key);
+	public V get(K key) {
+		V result = cache.get(key);
 		updateGetStats(key, result);
 		return result;
 	}
 
-	public void put(Serializable key, Object object) {
+	public void put(K key, V object) {
 		if (nullElementStats) {	
 			synchronized (this) {
 				increaseNullsIfNullObject(object);		
@@ -76,7 +75,7 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		
 	}
 
-	public void remove(Serializable key) {
+	public void remove(K key) {
 		if (nullElementStats) {
 			synchronized (this) {
 				decreaseNullsIfNullObject(key); // Decrease the number of NULL objects if one is going to be removed
@@ -103,7 +102,7 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		return -1;
 	}
 
-	public  int getCacheNullElements() {
+	public int getCacheNullElements() {
 		return nullElementStats ? numOfNulls : -1;
 	}
 
@@ -161,7 +160,7 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		return nullElementStats;
 	}
 
-	private void updateGetStats(Serializable key, Object result) {
+	private void updateGetStats(K key, V result) {
 		if (result == null) {
 			synchronized (numOfMissesMutex) {
 				numOfMisses ++;
@@ -177,7 +176,7 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		}
 	}
 
-	private void decreaseNullsIfNullObject(Serializable key) {
+	private void decreaseNullsIfNullObject(K key) {
 		Object o = cache.get(key);
 		if (o == nullElement) {
 			synchronized (numOfNullsMutex) {
@@ -186,7 +185,7 @@ public class ManagedCache implements CacheI, ManagedCacheMBean {
 		}
 	}
 
-	private void increaseNullsIfNullObject(Object object) {
+	private void increaseNullsIfNullObject(V object) {
 		if (object == nullElement) {
 			synchronized (numOfNullsMutex) {
 				numOfNulls++;

@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.content;
 
 import java.text.SimpleDateFormat;
@@ -32,16 +23,13 @@ import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 
-/**
- *
- * @version	 $Revision$
- * @author	  $Author$
- */
 public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 	
-	private List variationMatrix = new ArrayList();
+	private static final long	serialVersionUID	= 4368164084658898445L;
+
+	private List<DomainValue> variationMatrix = new ArrayList<DomainValue>();
 	
-	private List variationOptions = new ArrayList();
+	private List<DomainValue> variationOptions = new ArrayList<DomainValue>();
 	
 	private boolean unavailable;
 	private long lastRefresh = 0;
@@ -158,13 +146,13 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 		}
 	}
 
-	public List getBrands() {
-		List brandModels = new ArrayList();
+	public List<BrandModel> getBrands() {
+		List<BrandModel> brandModels = new ArrayList<BrandModel>();
 		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, false);
 
-		List newList = new ArrayList();
+		List<BrandModel> newList = new ArrayList<BrandModel>();
 		for (int i = 0; i < brandModels.size(); i++) {
-			BrandModel b = (BrandModel) brandModels.get(i);
+			BrandModel b = brandModels.get(i);
 			String str = b.getFullName();
 			if ((str != null) && !str.equals("")) {
 				newList.add(b);

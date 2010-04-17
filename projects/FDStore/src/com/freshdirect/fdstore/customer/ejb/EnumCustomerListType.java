@@ -1,76 +1,54 @@
-/*
- * Created on Jun 30, 2005
- *
- */
 package com.freshdirect.fdstore.customer.ejb;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.enums.Enum;
 
 /**
  *  Enumeration of the different list types the customer might have.
  */
-public class EnumCustomerListType extends Enum {
-
+public enum EnumCustomerListType {
+	
 	/** The customer's shopping list. */
-	public static final EnumCustomerListType SHOPPING_LIST = new EnumCustomerListType("AUTO");
+	SHOPPING_LIST("AUTO"),	
 	
 	/** A recipe list. */
-	public static final EnumCustomerListType RECIPE_LIST = new EnumCustomerListType("RECIPE");
+	RECIPE_LIST("RECIPE"),
 	
 	/** The customer's own list, created and maintained by the customer. */
-	public static final EnumCustomerListType CC_LIST = new EnumCustomerListType("CCL");
-
+	CC_LIST("CCL"),			
+	
+	/** List belonging to a standing order. */
+	SO("SO");				
+	
+	String name;
+	
 	/**
 	 *  Constructor.
 	 *  
 	 *  @param typeName the name of the list type
 	 */
 	private EnumCustomerListType(String typeName) {
-		super(typeName);
+		this.name = typeName;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	
 	/**
 	 *  Return the list type enumerated object by specifying the list type
 	 *  name.
 	 *  
-	 *  @param typeName the name of the custmer list's type
+	 *  @param typeName the name of the customer list's type
 	 *  @return the enumerated object based on the specified name.
 	 */
 	public static EnumCustomerListType getEnum(String typeName) {
-		return (EnumCustomerListType) getEnum(EnumCustomerListType.class, typeName);
-	}
-
-	/**
-	 *  Return a map of customer list type enumerated objects, keyed by their
-	 *  name.
-	 *  
-	 *  @return a map, containing the enumerated objects of customer list types,
-	 *          with the list names as keys.
-	 */
-	public static Map getEnumMap() {
-		return getEnumMap(EnumCustomerListType.class);
-	}
-
-	/**
-	 *  Return a list of customer list type enumerated objects.
-	 *  
-	 *  @return a list of customer list type enumerated objects.
-	 */
-	public static List getEnumList() {
-		return getEnumList(EnumCustomerListType.class);
-	}
-
-	/**
-	 *  Return an iterator on the customer list type enumerated objects.
-	 *  
-	 *  @return an iterator on the customer list type enumerated objects.
-	 */
-	public static Iterator iterator() {
-		return iterator(EnumCustomerListType.class);
+		for (EnumCustomerListType t : EnumCustomerListType.values()) {
+			if (t.getName().equalsIgnoreCase(typeName)) {
+				return t;
+			}
+		}
+		
+		return null;
 	}
 
 	/**
@@ -78,8 +56,8 @@ public class EnumCustomerListType extends Enum {
 	 *  
 	 *  @return the name of the customer list type.
 	 */
+	@Override
 	public String toString() {
 		return this.getName();
 	}
-
 }

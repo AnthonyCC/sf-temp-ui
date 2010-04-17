@@ -11,34 +11,28 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAccountVerificationModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
-import com.freshdirect.customer.ejb.ErpSaleHome;
-import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.CPMServerGateway;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodHome;
 import com.freshdirect.payment.fraud.ejb.RestrictedPaymentMethodSB;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDStoreProperties;
 
 public class PaymentFraudManager {
 
 	private static Category LOGGER = LoggerFactory.getInstance(PaymentFraudManager.class);
 
 	private static  RestrictedPaymentMethodHome restrictedPaymentMethodHome = null;
-	private static  ErpSaleHome erpSaleHome = null;
-	private static  ActivityLogHome activityLogHome = null;
-	private static  ErpCustomerManagerHome erpCustomerManagerHome = null;
 
 	public static PrimaryKey createRestrictedPaymentMethod(RestrictedPaymentMethodModel restrictedPaymentMethod) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
@@ -68,7 +62,7 @@ public class PaymentFraudManager {
 		}				
 	}
 	
-	public static List getRestrictedPaymentMethodsByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
+	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethodsByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
 			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
@@ -96,7 +90,7 @@ public class PaymentFraudManager {
 		}				
 	}
 
-	public static List getRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException {
+	public static List<RestrictedPaymentMethodModel> getRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
 			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
@@ -138,7 +132,7 @@ public class PaymentFraudManager {
 		}						
 	}
 	
-	public static List loadAllPatterns() throws FDResourceException {
+	public static List<RestrictedPaymentMethodModel> loadAllPatterns() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
 			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
@@ -152,7 +146,7 @@ public class PaymentFraudManager {
 		}				
 	}
 
-	public static List loadAllRestrictedPaymentMethods() throws FDResourceException {
+	public static List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
 			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
@@ -166,7 +160,7 @@ public class PaymentFraudManager {
 		}				
 	}
 
-	public static List loadAllBadPaymentMethods() throws FDResourceException {
+	public static List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws FDResourceException {
 		lookupRestrictedPaymentMethodHome();
 		try {
 			RestrictedPaymentMethodSB sb = restrictedPaymentMethodHome.create();
@@ -220,7 +214,7 @@ public class PaymentFraudManager {
 			}
 			criteria.setAccountNumber(paymentMethod.getAccountNumber());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			List list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
+			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
 			// add only if it's not already in there
 			if (list == null || list.size() == 0) {
@@ -277,7 +271,7 @@ public class PaymentFraudManager {
 			}
 			criteria.setAccountNumber(paymentMethod.getAccountNumber());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
-			List list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
+			List<RestrictedPaymentMethodModel> list = PaymentFraudManager.getRestrictedPaymentMethods(criteria);
 
 			// remove only if there is one
 			if (list != null && list.size() == 1) {
@@ -336,9 +330,8 @@ public class PaymentFraudManager {
 	public boolean verifyAccountExternal(ErpPaymentMethodI paymentMethod) throws ErpTransactionException {
 		try {			
 			if ("true".equalsIgnoreCase(FDStoreProperties.getCheckExternalForPaymentMethodFraud())) {	
-		    	CPMServerGateway sb = new CPMServerGateway();			
 		        if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
-		        	ErpAccountVerificationModel model = sb.verifyECAccount(paymentMethod);
+		        	ErpAccountVerificationModel model = CPMServerGateway.verifyECAccount(paymentMethod);
 		        	if (model != null && (EnumPaymentResponse.APPROVED.getCode().equals(model.getResponseCode())
 		        			|| EnumPaymentResponse.APPROVED.getCode().equals(model.getVerificationResult()))) {
 		        		return true;

@@ -93,7 +93,7 @@ public class CreateNewGCUserTag  extends com.freshdirect.framework.webapp.BodyTa
 			FDUser oldFdUser=oldUser.getUser();			
 			oldCart = oldUser.getShoppingCart();
 		
-			user.setRecipientList(oldUser.getRecipentList());
+			user.setRecipientList(oldUser.getRecipientList());
 	     	//Set the last entered sender name and sender email to request.
 	        user.setLastSenderName(oldUser.getLastSenderName());
 	     	user.setLastSenderEmail(oldUser.getLastSenderEmail());     	

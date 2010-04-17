@@ -1,14 +1,10 @@
-/*
- * 
- * ErpReturnInvoicePersistentBean.java
- * Date: Oct 28, 2002 Time: 3:50:39 PM
- */
 package com.freshdirect.fdstore.content.meal.ejb;
 
 /**
  * 
  * @author knadeem
  */
+import java.rmi.RemoteException;
 import java.sql.*;
 import java.util.*;
 
@@ -17,7 +13,9 @@ import com.freshdirect.fdstore.content.meal.*;
 
 public class MealPersistentBean extends DependentPersistentBeanSupport {
 	
-    private MealModel meal;
+	private static final long	serialVersionUID	= 126776166681782318L;
+	
+	private MealModel meal;
     private String agent;
 	
 	/**
@@ -65,8 +63,8 @@ public class MealPersistentBean extends DependentPersistentBeanSupport {
 	 */
 	
 	public void setFromModel(ModelI m) {
-        this.meal = (MealModel) m;
-        this.setPK(m.getPK());
+	    this.meal = (MealModel) m;
+	    this.setPK(m.getPK());
 	}
     
     public String getAgent() {

@@ -22,12 +22,12 @@ import com.freshdirect.framework.util.NVL;
 public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSource, HasRedirectUrl, HasTemplateType {
 
 	/** Orders products by department & full name */
-	public final static Comparator DEPTFULL_COMPARATOR = new Comparator() {
+	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(Object o1, Object o2) {
+		public int compare(ProductModel p1, ProductModel p2) {
 
-			ProductModel p1 = (ProductModel) o1;
-			ProductModel p2 = (ProductModel) o2;
+			// ProductModel p1 = (ProductModel) o1;
+			// ProductModel p2 = (ProductModel) o2;
 
 			int ret = NVL.apply(p1.getDepartment().getFullName(), "").compareTo(NVL.apply(p2.getDepartment().getFullName(), ""));
 
@@ -39,14 +39,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 		}
 	};
 
-	public static class PriceComparator implements Comparator {
+	public static class PriceComparator implements Comparator<SkuModel> {
 
 		private int flips;
 
-		public int compare(Object obj1, Object obj2) {
+		public int compare(SkuModel sku1, SkuModel sku2) {
 			try {
-				SkuModel sku1 = ((SkuModel) obj1);
-				SkuModel sku2 = ((SkuModel) obj2);
+				// SkuModel sku1 = ((SkuModel) obj1);
+				// SkuModel sku2 = ((SkuModel) obj2);
 				String zoneId1 = sku1.getPricingContext().getZoneId();
 				String zoneId2 = sku2.getPricingContext().getZoneId();
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
@@ -402,7 +402,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	/** Getter for property brands.
 	 * @return List of BrandModels that are referenced by the  property brands.
 	 */
-	public List getBrands();
+	public List<BrandModel> getBrands();
 
 	/**
 	 *  Tell if this product can be autoconfigured.

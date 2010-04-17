@@ -19,7 +19,6 @@
 <%@ page import='java.util.Calendar' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 	java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
@@ -140,7 +139,7 @@
 								<td><div class="recipAmount">Amount</div></td>
 							</tr>
 							<%
-								ListIterator i = recipients.getRecipents().listIterator();
+								Iterator i = recipients.getRecipients().listIterator();
 								while(i.hasNext()) {
 									ErpRecipentModel erm = (ErpRecipentModel)i.next();
 							%>
@@ -151,7 +150,7 @@
 										<div class="recipName" id="<%=erm.getSale_id()%>Name"><%= erm.getRecipientName()%></div>
 										<div class="recipAmount" id="<%=erm.getSale_id()%>Amount">$<%= erm.getFormattedAmount() %></div>
 									</div>
-								<td>
+								</td>
 							</tr>
 							<%
 								indx++;

@@ -32,6 +32,7 @@ public class ErpEmailFactory  {
 	}
 	
 	private static class FDGiftCardFtlEmail extends FDFtlEmail{
+		private static final long	serialVersionUID	= 3717239880428298318L;
 		private GiftCardOrderInfo giftCardInfo;
 		public FDGiftCardFtlEmail(GiftCardOrderInfo giftCardInfo){
 			super();

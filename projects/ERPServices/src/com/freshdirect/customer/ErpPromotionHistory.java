@@ -1,38 +1,34 @@
 package com.freshdirect.customer;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.payment.EnumPaymentMethodType;
-
 public class ErpPromotionHistory implements Serializable {
 
+	private static final long	serialVersionUID	= -1153376310120005350L;
+	
 	/** Map saleId -> Set of usedPromotionCodes */
-	private final Map erpPromoHistoryInfo;
+	private final Map<String,Set<String>> erpPromoHistoryInfo;
 
-	public ErpPromotionHistory(Map erpPromoHistoryInfo) {
+	public ErpPromotionHistory(Map<String,Set<String>> erpPromoHistoryInfo) {
 		this.erpPromoHistoryInfo = erpPromoHistoryInfo;
 	}
 
-	public Map getErpPromoHistoryInfo() {
+	public Map<String,Set<String>> getErpPromoHistoryInfo() {
 		return this.erpPromoHistoryInfo;
 	}
 
 	
 	public int getPromotionUsageCount(String promotionCode, String ignoreSaleId) {
 		int count = 0;
-		for (Iterator i=this.erpPromoHistoryInfo.keySet().iterator(); i.hasNext(); ) {
-			String saleId = (String) i.next();
+		for ( String saleId : erpPromoHistoryInfo.keySet() ) {
 			if (saleId.equals(ignoreSaleId)) {
 				continue;
 			}
-			Set usedPromoCodes = (Set)erpPromoHistoryInfo.get(saleId);
+			Set<String> usedPromoCodes = erpPromoHistoryInfo.get(saleId);
 			if (usedPromoCodes.contains(promotionCode)) {
 				count++;
 			}
@@ -40,23 +36,22 @@ public class ErpPromotionHistory implements Serializable {
 		return count;
 	}
 
-	public Set getUsedPromotionCodes(String ignoreSaleId) {
-		Set allPromos = new HashSet();
-		for (Iterator i=this.erpPromoHistoryInfo.keySet().iterator(); i.hasNext(); ) {
-			String saleId = (String) i.next();
+	public Set<String> getUsedPromotionCodes(String ignoreSaleId) {
+		Set<String> allPromos = new HashSet<String>();
+		for ( String saleId : erpPromoHistoryInfo.keySet() ) {
 			if (saleId.equals(ignoreSaleId)) {
 				continue;
 			}
-			Set usedPromoCodes = (Set)erpPromoHistoryInfo.get(saleId);
+			Set<String> usedPromoCodes = erpPromoHistoryInfo.get(saleId);
 			allPromos.addAll(usedPromoCodes);
 		}
 		return allPromos;
 	}
 	
-	public Set getUsedPromotionCodesFor(String saleId){
-		Set usedPromoCodes = (Set)this.erpPromoHistoryInfo.get(saleId);
-		if(usedPromoCodes == null){
-			return Collections.EMPTY_SET;
+	public Set<String> getUsedPromotionCodesFor( String saleId ) {
+		Set<String> usedPromoCodes = erpPromoHistoryInfo.get( saleId );
+		if ( usedPromoCodes == null ) {
+			return Collections.<String>emptySet();
 		}
 		return usedPromoCodes;
 	}

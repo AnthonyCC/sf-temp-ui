@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.mobileapi.model.MessageCodes.ErrorCodeTranslator;
 import com.freshdirect.mobileapi.model.MessageCodes.ErrorMessage;
@@ -123,9 +124,9 @@ public class Message implements DateFormat, Cloneable {
         this.warnings.put(GENERIC_ID + this.warnings.size(), message);
     }
 
-    public void addWarningMessages(Collection<String> messages) {
-        for (String message : messages) {
-            this.warnings.put(GENERIC_ID + this.warnings.size(), message);
+    public void addWarningMessages(Collection<ActionWarning> messages) {
+        for (ActionWarning message : messages) {
+            this.warnings.put(GENERIC_ID + this.warnings.size(), message.getDescription());
         }
     }
 

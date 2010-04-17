@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Generic key-value object cache interface. Implementors are expected to
  * provide thread-safe cache implementations.
  */
-public interface CacheI {
+public interface CacheI<K extends Serializable,V> {
 	
 	/**
 	 * Retrieve a keyed object from cache.
@@ -15,7 +15,7 @@ public interface CacheI {
 	 * @param key 
 	 * @return the cached object, or null if not found
 	 */
-	public Object get(Serializable key);
+	public V get(K key);
 
 	/**
 	 * Store a keyed object in cache.
@@ -23,14 +23,14 @@ public interface CacheI {
 	 * @param key
 	 * @param object
 	 */
-	public void put(Serializable key, Object object);
+	public void put(K key, V object);
 
 	/**
 	 * Evict the object for a given key from cache.
 	 * 
 	 * @param key
 	 */
-	public void remove(Serializable key);
+	public void remove(K key);
 
 	/**
 	 * Evict all objects from cache.

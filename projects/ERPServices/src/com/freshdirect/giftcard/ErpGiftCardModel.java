@@ -4,11 +4,12 @@ import java.util.Date;
 
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class ErpGiftCardModel extends ErpPaymentMethodModel {
 
+	private static final long	serialVersionUID	= -8372965576631514916L;
+	
 	private double balance = 0.0; 
 	private double originalAmount;
 	private String purchaseSaleId;

@@ -6,7 +6,8 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import='java.text.MessageFormat' %>
-<%@ page import='com.freshdirect.fdstore.promotion.*'%>  
+<%@ page import='com.freshdirect.fdstore.promotion.*'%>
+<%@ page import="java.util.Locale"%>  
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -14,20 +15,25 @@
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
+
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
+<%
+	//final boolean dontPlaceOrder = EnumCheckoutMode.MODIFY_SO.equals(user.getCheckoutMode());
+	//String actionName = dontPlaceOrder ? "updateStandingOrder" : "submitOrder";
+	String actionName = "submitOrder";
+%>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Review & Submit Order</tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <fd:FDShoppingCart id='cart' result="result">
 
-<fd:CheckoutController actionName="submitOrder" result="result" successPage="step_4_receipt.jsp">
+<fd:CheckoutController actionName="<%= actionName %>" result="result" successPage="step_4_receipt.jsp">
 <%
-        FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
         FDIdentity identity  = user.getIdentity();
         ErpAddressModel dlvAddress = cart.getDeliveryAddress();
-        ErpPaymentMethodI paymentMethod =(ErpPaymentMethodI) cart.getPaymentMethod();
+        ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
         ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
 		FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(identity);
 
@@ -38,15 +44,17 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 		boolean orderAmountFraud = result.hasError("order_amount_fraud");
 		boolean doubleSubmit = result.hasError("processing_order");
-
+		
+		// Save checkout mode for receipt page.
+		session.setAttribute("checkout_mode", user.getCheckoutMode().toString());
 %>
 <fd:SmartSavingsUpdate promoConflictMode="true"/>
 
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
+<form method="post" name="order_submit" id="order_submit">
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
- <form method="post" name="order_submit" id="order_submit">
 	<tr VALIGN="TOP">
 	<td CLASS="text11" width="415" VALIGN="bottom">
 		<FONT CLASS="title18">Review &amp; Submit Order (Final Step)</FONT><BR>
@@ -68,7 +76,7 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(docu
     <fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'>
         <%
         sbErrorMsg.append("<br>");
-	sbErrorMsg.append(errorMsg);
+		sbErrorMsg.append(errorMsg);
         sbErrorMsg.append("<br>");
         %>
     </fd:ErrorHandler>
@@ -96,32 +104,23 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(docu
     </fd:ErrorHandler>
 	<fd:ErrorHandler result='<%=result%>' name='invalid_reservation' id='errorMsg'>
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
-    </fd:ErrorHandler>
-    	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
-    		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
-    </fd:ErrorHandler>
+	</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+	</fd:ErrorHandler>
     
     
     
-    <%
-if(user.isPromoConflictResolutionApplied()){
-StringBuffer buffer = new StringBuffer(
-					SystemMessageList.MSG_PROMOTION_APPLIED_VARY2);
-			result.addWarning(new ActionWarning("promo_war2", buffer
-					.toString()));
-                    
+<%
+if (user.isPromoConflictResolutionApplied()) {
     user.setPromoConflictResolutionApplied(false);                                    
-%>
 
-<fd:ErrorHandler result='<%=result%>' name='promo_war2' id='errorMsg'>
-    <%@ include file="/includes/i_warning_messages.jspf" %>   
-</fd:ErrorHandler>
- 
+    result.addWarning(new ActionWarning("promo_war2", SystemMessageList.MSG_PROMOTION_APPLIED_VARY2));
+%>	<fd:ErrorHandler result='<%= result %>' name='promo_war2' id='errorMsg'>
+<%@ include file="/includes/i_warning_messages.jspf" %>   
+	</fd:ErrorHandler>
 <%
-  }
- %> 
-    
-<%
+}
 
         if (doubleSubmit) {
 			sbErrorMsg.append(result.getError("processing_order").getDescription());
@@ -149,24 +148,27 @@ StringBuffer buffer = new StringBuffer(
 <IMG src="/media_stat/images/layout/ff9933.gif" width="693" height="1"><br>
 <font class="space4pix"><br></font>
 <table width="693" CELLPADDING="0" CELLSPACING="0" BORDER="0">
-<tr VALIGN="TOP">
-<td width="658" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
+	<tr VALIGN="TOP">
+		<td width="658" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleText"><% } %><BR>
-</td>
-<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
+		</td>
+		<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleArrow"><% } %></td>
-</tr>
-</table><BR>
-
+	</tr>
+</table>
+<BR>
 <table width="693" cellpadding="0" cellspacing="0" border="0">
-<tr VALIGN="TOP">
-<td width="693"><img src="/media_stat/images/navigation/cart_details.gif" width="83" height="9" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
+	<tr VALIGN="TOP">
+		<td width="693"><img src="/media_stat/images/navigation/cart_details.gif" width="83" height="9" border="0" alt="CART DETAILS">&nbsp;&nbsp;&nbsp;
 <% if (request.getRequestURI().toLowerCase().indexOf("your_account/") != 1){ %>
 <FONT CLASS="text9">If you would like to make any changes to your order, <A HREF="/view_cart.jsp?trk=chkplc">click here</A> to go back to your cart.</FONT><BR>
 <% } %>
-<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" BORDER="0" VSPACE="3"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font></td>
-</tr>
+			<IMG src="/media_stat/images/layout/999966.gif" width="693" height="1" BORDER="0" VSPACE="3"><br>
+			<IMG src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
+			<font class="title11"><b>Note:</b></font> <font class="text11orbold">Our goal is to fill your order with food of the highest quality. Occasionally, we'll get a shipment that doesn't meet our standards and we cannot accept it. Of course, if this happens, FreshDirect will not charge you for the missing item.</font>
+		</td>
+	</tr>
 	<tr>
 		<td align="left">
 			<%@ include file="/includes/ckt_acct/i_step_4_cart_details.jspf" %>
@@ -175,21 +177,25 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(docu
 </table>
 
 <BR>
-	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" width="693" height="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-	<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" width="693" height="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
+<table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
 	<tr VALIGN="TOP">
-	<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&amp;ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-	<td width="375"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&amp;ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0"></td>
-	<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><BR>
-</td>
-<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
-<% if (!orderAmountFraud && !doubleSubmit ) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow"><% } %></td>
+		<td width="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&amp;ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" height="19" border="0" alt="CONTINUE SHOPPING"></a></td>
+		<td width="375"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&amp;ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR>
+			<IMG src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0">
+		</td>
+		<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><BR>
+		</td>
+		<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
+<% if (!orderAmountFraud && !doubleSubmit ) {
+%>			<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif" BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
+<% } %>
+		</td>
 	</tr>
-	</table>
-	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
+</table>
+<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 </FORM>
 </fd:CheckoutController>
 </fd:FDShoppingCart>

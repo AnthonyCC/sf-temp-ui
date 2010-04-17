@@ -2,21 +2,22 @@
 
 package com.freshdirect.customer;
 
-public class EnumTransactionSource implements java.io.Serializable {
-     public final static EnumTransactionSource WEBSITE			= new EnumTransactionSource(0, "WEB", "Website");
-	 public final static EnumTransactionSource SYSTEM			= new EnumTransactionSource(1, "SYS", "System");
-     public final static EnumTransactionSource CUSTOMER_REP		= new EnumTransactionSource(2, "CSR", "Telephone");
-     public final static EnumTransactionSource ADMINISTRATOR	= new EnumTransactionSource(3, "ADM", "Administrator");
-     public final static EnumTransactionSource TRANSPORTATION   = new EnumTransactionSource(4, "TRA", "Transportation");
-     public final static EnumTransactionSource IPHONE_WEBSITE   = new EnumTransactionSource(5, "IPW", "iPhone");
+public enum EnumTransactionSource {
+	WEBSITE("WEB", "Website"),
+	SYSTEM("SYS", "System"),
+	CUSTOMER_REP("CSR", "Telephone"),
+	ADMINISTRATOR("ADM", "Administrator"),
+	TRANSPORTATION("TRA", "Transportation"),
+	IPHONE_WEBSITE("IPW", "iPhone"),
+	STANDING_ORDER("STO", "Standing Order")
+	;
 
-     private EnumTransactionSource(int id, String code, String name) {
-    	 this.id = id;
-    	 this.code = code;
-    	 this.name = name;
-     }
+	EnumTransactionSource(String code, String name) {
+		this.code = code;
+		this.name = name;
+	}
 
-    public String getCode() {
+	public String getCode() {
         return this.code;
     }
 
@@ -35,12 +36,16 @@ public class EnumTransactionSource implements java.io.Serializable {
 			case 3:
 				return ADMINISTRATOR;
 			case 4:
+				return TRANSPORTATION;
+			case 5:
 				return IPHONE_WEBSITE;
+			case 6:
+				return STANDING_ORDER;
 			default:
 				return null;
 		}
 	}
-	public static EnumTransactionSource getTransactionSource(String code){
+	public static EnumTransactionSource getTransactionSource(String code) {
 		if(WEBSITE.getCode().equalsIgnoreCase(code)){
 			return WEBSITE;
 		}else if(SYSTEM.getCode().equalsIgnoreCase(code)){
@@ -53,6 +58,8 @@ public class EnumTransactionSource implements java.io.Serializable {
 			return TRANSPORTATION;
 		}else if(IPHONE_WEBSITE.getCode().equalsIgnoreCase(code)){
 			return IPHONE_WEBSITE;
+		}else if(STANDING_ORDER.getCode().equalsIgnoreCase(code)){
+			return STANDING_ORDER;
 		}else{
 			try {
 				return getTransactionSource( Integer.parseInt(code) );
@@ -63,18 +70,11 @@ public class EnumTransactionSource implements java.io.Serializable {
 		}
 	}
 
-   	public boolean equals(Object o) {
-		if (o instanceof EnumTransactionSource) {
-			return this.id == ((EnumTransactionSource)o).id;
-		}
-		return false;
-	}
-	
+
 	public String toString() {
 		return this.code;
 	}
 
-    private final int id;
     private final String name;
     private final String code;
 

@@ -1,59 +1,55 @@
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
 <table width="535" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
 		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 		<td width="237" class="text13">
 
 			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
-			<font class="text12bold" color="#FF9933">CHOOSE AN ORDER:<br><br></font>
-			<font class="space2pix"><br><br><br></font>
+			<div class="text12bold" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
 			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
-			<%= orderNav.toString() %>
 			
 			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
 			<fd:GetCustomerRecipeList id="recipes">
-				<div class="text15"><b>Your Recipes</b></div>
-				<div class="text12bold" style="color: #FF9933">REORDER YOUR FAVORITES:</div>
-				<div><br>
-					<b><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></b>
-					<br><br><br>
-				</div>
-							
+				<div class="text15" style="font-weight: bold;">Your Recipes</div>
+				<div class="text12bold" style="padding-top: 2px; color: #FF9933">REORDER YOUR FAVORITES:</div>
+				<div style="font-weight: bold; padding: 1em 0 2em 0"><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></div>
 			</fd:GetCustomerRecipeList>
 		</td>
 		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
 		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		<td width="20"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
-		<%
-		String qsDeptId = "";
-		boolean hasDeptId = false;
-		boolean showLink = false;
-		String qsMenuLink = "every_item.jsp";
-		%>
+
 		<td width="247" class="text13">
-			
-			<div>
-				
-			<font class="text15"><b>Everything You've<br>Ever Ordered!</b></font><font class="space2pix"><br><br></font>
+			<!-- STANDING ORDERS SECTION -->
+			<div id="standingorders-section">
+				<div class="text15" style="font-weight: bold;">Your Standing Orders</div>
+				<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933">AUTOMATIC RECURRING DELIVERIES</div>
+<%@ include file="/quickshop/includes/so_lists.jspf" %>
+			</div>
+			<div style="height: 25px"></div>
+			<!-- SHOPPING LISTS SECTION -->
+			<div id="shopping-list-section">
+				<fd:CCLCheck>			
+					<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
+					<font class="space2pix"><br><br></font>
+					<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+				</fd:CCLCheck>
+			</div>
+			<div style="height: 25px"></div>
+			<div id="eieo-section">
+				<div class="text15" style="font-weight: bold;">Everything You've<br>Ever Ordered!</div>
+				<font class="space2pix"><br><br></font>
 				<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT: </font>
 				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
 				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
 					<OPTION>Choose Department...
-	    
-					<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
-					<%= departmentNav.toString() %>
-					
+<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
 				</SELECT>
-			</div>
-			<div>
-			<img src="/media_stat/images/layout/clear.gif" width="0" height="50">
-			<fd:CCLCheck>			
-						<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
-						<font class="space2pix"><br><br></font>
-						<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
-						<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
-			</fd:CCLCheck>
 			</div>
 		</td>
 	</tr>

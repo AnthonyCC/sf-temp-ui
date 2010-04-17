@@ -89,7 +89,7 @@ public class GCRegisterListener extends MessageDrivenBeanSupport {
 	
 	private GiftCardManagerHome getGiftCardManagerHome() throws NamingException{
 		try {
-			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager", GiftCardManagerHome.class);
+			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager");
 		} catch (NamingException e) {
 			throw e;
 		}

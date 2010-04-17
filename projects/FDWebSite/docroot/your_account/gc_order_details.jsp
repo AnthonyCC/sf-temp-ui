@@ -7,15 +7,17 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.giftcard.*"%>
 <%@ page import='com.freshdirect.fdstore.giftcard.*' %>
-
+<%@ page import="java.util.Collection"%>
+<%@ page import="java.util.Iterator"%>
 <%@ page import="java.text.*" %>
 <%@ page import='java.util.List.*' %>
+<%@ page import="java.util.Locale"%>
 
 <%@ taglib uri='template' prefix='tmpl' %> 
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <%  String orderId = request.getParameter("orderId"); %>
 <fd:ModifyOrderController orderId="<%= orderId %>" result="result" successPage='<%= "/your_account/order_details.jsp?orderId=" + orderId %>'>
 <tmpl:insert template='/common/template/dnav.jsp'>
@@ -27,7 +29,6 @@
     SimpleDateFormat dateOnlyFormatter = new SimpleDateFormat("MM/dd/yy");
     //String orderId = request.getParameter("orderId");
     
-    FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
     FDIdentity identity  = user.getIdentity();
     ErpCustomerInfoModel customerModel = FDCustomerFactory.getErpCustomerInfo(identity);
 %>
@@ -106,10 +107,10 @@
     </td>
     <%
     boolean hasCredit = false;
-    Collection comp = cart.getComplaints();
+    Collection<ErpComplaintModel> comp = cart.getComplaints();
     if (comp != null) {
             ErpComplaintModel c = null;
-            for (Iterator i=comp.iterator(); i.hasNext(); ) {
+            for (Iterator<ErpComplaintModel> i=comp.iterator(); i.hasNext(); ) {
                 c = (ErpComplaintModel)i.next();
 
                 if (c != null && EnumComplaintStatus.APPROVED.equals(c.getStatus())){
@@ -162,7 +163,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
     <%
                 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
                 if(cart.isPending()) {
-                    ListIterator i = recipients.getRecipents().listIterator();
+                    Iterator<RecipientModel> i = recipients.getRecipients().iterator();
                     while(i.hasNext()) {
                         ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>
@@ -186,18 +187,18 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 							<td>&nbsp;</td>
 						</tr>
 			<%
-				indx++;
-			}
+					indx++;
+				}
             } else {
                 ErpGiftCardDlvConfirmModel model = cart.getGCDeliveryInfo();
-                ListIterator j = model.getDlvInfoTranactionList().listIterator();
+                Iterator<ErpGCDlvInformationHolder> j = model.getDlvInfoTranactionList().iterator();
                 while(j.hasNext()) {
-				ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
-                ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
-                if(recModel != null) {
-                    //Set the latest resend info.
-                    recipient.setRecepientModel(recModel);
-                }
+					ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
+	                ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
+	                if(recModel != null) {
+	                    //Set the latest resend info.
+	                    recipient.setRecepientModel(recModel);
+	                }
 			%>
             <tr>
                 <td><%= recipient.getCertificationNumber() != null ? recipient.getCertificationNumber() : "" %></td>
@@ -217,10 +218,10 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                 <%
                     String status = "";
                     boolean isPending = false;
-                    if(recipient.getCertificationNumber() == null) {
+                    if (recipient.getCertificationNumber() == null) {
                         status = "In Process";
                         isPending = true;
-                    }else{
+                    } else {
                         if(recipient.getRecepientModel().getDeliveryMode().equals(EnumGCDeliveryMode.PDF)) status = "Completed";
                         else status = "Sent";
                         FDGiftCardI gc =user.getGiftCardList().getGiftCard(recipient.getCertificationNumber());
@@ -233,7 +234,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
                     <td><a href="#" onClick="recipResendFetch('<%= cart.getErpSalesId() %>','<%= recipient.getCertificationNumber() %>'); return false;"><%= status.equals("Completed") ? "Send" : "Resend" %></a></td>
                     <td><a href="/gift_card/postbacks/pdf_gen.jsp?saleId=<%= cart.getErpSalesId() %>&certNum=<%= recipient.getCertificationNumber() %>" >View/Print</a></td>
                 <% } else { %>    
-                    <td>&nbsp;</a></td>
+                    <td>&nbsp;</td>
                     <td>&nbsp;</td>
                 
                 <% } %>
@@ -244,17 +245,6 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
             }       
             %>            
 </table>
-<%--
-<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle" >
-		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
-		</tr>
-
-        <tr>
-            <td class="recipTotal">SUBTOTAL: <%=  recipients.getFormattedSubTotal() %></td>
-        </tr>
-</table>
---%>
 
 </fd:GetOrder>
 

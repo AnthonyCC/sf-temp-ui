@@ -1,28 +1,20 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.customer;
 
-import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.ErpInvoiceLineI;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.event.EnumEventSource;
 
 
 public interface FDCartLineI extends FDProductSelectionI {
 
-	public List buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException;
+	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber) throws FDResourceException, FDInvalidConfigurationException;
 
 	public FDCartLineI createCopy();
 		
@@ -85,7 +77,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	public String getReturnDisplayQuantity();
 	public boolean hasRestockingFee();
 	
-	public Set getApplicableRestrictions();
+	public Set<EnumDlvRestrictionReason> getApplicableRestrictions();
 	
 	public String getOrderLineId();
 	public void setOrderLineId(String orderLineId);

@@ -1,9 +1,3 @@
-/*
- * Class.java
- *
- * Created on August 20, 2001, 5:23 PM
- */
-
 package com.freshdirect.delivery;
 
 /**
@@ -13,6 +7,8 @@ package com.freshdirect.delivery;
  */
 public class EnumReservationStatus implements java.io.Serializable {
 
+	private static final long	serialVersionUID	= 5002191229427433704L;
+	
 	public final static EnumReservationStatus RESERVED = new EnumReservationStatus(0, 5, "Reserved");
 	public final static EnumReservationStatus COMMITTED = new EnumReservationStatus(1, 10, "Committed");
 	public final static EnumReservationStatus CANCELED = new EnumReservationStatus(2, 15, "Canceled");

@@ -5,8 +5,9 @@ import java.util.Date;
 import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.framework.core.ModelSupport;
 
-public abstract class FDCustomerListItem extends ModelSupport implements
-		SaleStatisticsI {
+public abstract class FDCustomerListItem extends ModelSupport implements SaleStatisticsI {
+
+	private static final long	serialVersionUID	= 5133761393589673937L;
 
 	private int frequency;
 

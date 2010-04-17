@@ -67,7 +67,7 @@ public class ErpInventoryManagerSessionBean extends SessionBeanSupport {
 
 	private ErpInventoryHome getInventoryHome() {
 		try {
-			return (ErpInventoryHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpInventory", ErpInventoryHome.class);
+			return (ErpInventoryHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpInventory");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

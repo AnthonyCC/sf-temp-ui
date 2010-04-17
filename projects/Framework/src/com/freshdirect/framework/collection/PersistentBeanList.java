@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.collection;
 
 import java.sql.Connection;
@@ -23,9 +15,6 @@ import com.freshdirect.framework.core.PrimaryKey;
  * Abstract collection class for PersistentBean objects.
  *
  * Client needs to implement load(Connection).
- *
- * @version $Revision$
- * @author $Author$
  */
 public abstract class PersistentBeanList extends LocalObjectList implements PersistentListI {
 
@@ -60,14 +49,13 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
 			return true;
 		}
 		for (Iterator i=this.iterator(); i.hasNext(); ) {
-			PersistentBeanI pb = (PersistentBeanI)i.next();
-			if ( pb.isModified() || pb.isAnonymous() ) {
-				return true;
+				PersistentBeanI pb = (PersistentBeanI)i.next();
+				if ( pb.isModified() || pb.isAnonymous() ) {
+					return true;
+				}
 			}
-		}
 
 		return false;
-
 	}
 
 	////////////////// overriden add stuff //////////////////
@@ -258,15 +246,15 @@ public abstract class PersistentBeanList extends LocalObjectList implements Pers
 		// store
 		for (Iterator i=this.iterator(); i.hasNext(); ) {
 			PersistentBeanI bean = (PersistentBeanI)i.next();
-			if (bean.isAnonymous()) {
-				// new bean
-				//LOGGER.debug("syncToDatabase create "+bean);
-				bean.create(conn);
-			} else if (bean.isModified()) {
-				// changed bean
-				//LOGGER.debug("syncToDatabase store "+bean);
-				bean.store(conn);
-			}
+				if (bean.isAnonymous()) {
+					// new bean
+					//LOGGER.debug("syncToDatabase create "+bean);
+					bean.create(conn);
+				} else if (bean.isModified()) {
+					// changed bean
+					//LOGGER.debug("syncToDatabase store "+bean);
+					bean.store(conn);
+				}
 		}
 		// cleanup
 		removedElements.clear();

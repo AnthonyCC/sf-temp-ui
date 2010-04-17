@@ -2,19 +2,16 @@ package com.freshdirect.giftcard;
 
 import java.util.Date;
 
-import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumTransactionType;
-import com.freshdirect.customer.ErpTransactionModel;
-import com.freshdirect.payment.EnumBankAccountType;
 import com.freshdirect.payment.EnumGiftCardTransactionStatus;
 import com.freshdirect.payment.EnumGiftCardTransactionType;
-import com.freshdirect.payment.EnumPaymentMethodType;
 
 /**
  * @stereotype fd-model
  */
 public class ErpGiftCardAuthModel extends ErpGiftCardTransModel {
+	
+	private static final long	serialVersionUID	= -1723794521538000094L;
 	
 	ErpGiftCardTransactionModel tranModel;
 	

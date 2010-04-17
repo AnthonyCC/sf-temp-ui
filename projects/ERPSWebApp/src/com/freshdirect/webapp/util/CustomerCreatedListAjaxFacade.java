@@ -3,12 +3,10 @@ package com.freshdirect.webapp.util;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.LogManager;
@@ -20,18 +18,19 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -90,12 +89,15 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	public String[] getListNames(HttpSession session) throws FDResourceException, FDCustomerListExistsException, AjaxFacadeException {
 		LOGGER.debug("getListNames() called");
 		FDUserI user = getUser(session, FDUserI.RECOGNIZED);
-		List lists = user.getCustomerCreatedListInfos();
+
+		List<FDCustomerListInfo> lists = user.getCustomerCreatedListInfos();
 		String [] result = new String[lists.size()];
+
 		int c = 0;
-		for (Iterator i = lists.iterator(); i.hasNext();) {
-			result[c++] = (((FDCustomerCreatedList) i.next()).getName());
+		for (FDCustomerListInfo l : lists) {
+			result[c++] = l.getName();
 		}
+
 	    return result;
 	}
 	
@@ -111,18 +113,48 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	 *  @throws FDCustomerListExistsException if the user does not have lists (?)
 	 * @throws UnauthorizedRequest 
 	 */
-	public CustomerCreatedListNames getListNamesWithItemCount(HttpSession session) throws FDResourceException,
+	public CustomerListNames getListNamesWithItemCount(HttpSession session) throws FDResourceException,
 	                                                     FDCustomerListExistsException, AjaxFacadeException {
 		LOGGER.debug("getListsWithItemCount() called");
 		FDUserI user = getUser(session, FDUserI.RECOGNIZED);
-	    List lists = user.getCustomerCreatedListInfos();
+	    // get ccl lists
+	    List<FDCustomerListInfo> lists = user.getCustomerCreatedListInfos();
 	    if (lists == null) {
 	    	throw new FDResourceException("Could not retrieve lists");
 	    }
-	    TreeSet sorted = new TreeSet(FDCustomerCreatedList.getNameComparator());
+	    appendStandingOrderInfos(user, lists);
+	    
+	    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
+			public int compare(FDCustomerListInfo l1, FDCustomerListInfo l2) {
+				return l1.getName().compareToIgnoreCase(l2.getName()) < 0 ? -1 : 1;
+			}
+		});
 	    sorted.addAll(lists);
 	    
 	    return getCustomerCreatedListNamesFromSet(sorted);
+	}
+
+
+	/**
+	 * @param user Current customer
+	 * @param lists An already populated list of FDCustomerListInfo instances
+	 */
+	private void appendStandingOrderInfos(FDUserI user,
+			List<FDCustomerListInfo> lists) {
+		// append standing order lists
+	    final List<FDCustomerListInfo> standingOrderListInfos = user.getStandingOrderListInfos();
+
+	    final FDStandingOrder so = user.getCurrentStandingOrder();
+	    if (so != null) {
+    		// exclude currently edited SO from list names
+	    	for (FDCustomerListInfo i : standingOrderListInfos) {
+	    		if ( !so.getCustomerListName().equals(i.getName()) ) {
+	    			lists.add(i);
+	    		}
+	    	}
+	    } else {
+	    	lists.addAll(standingOrderListInfos);
+	    }
 	}
 		
 	/**
@@ -139,28 +171,34 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	 *  @throws FDCustomerListExistsException if the user does not have lists (?)
 	 * @throws UnauthorizedRequest 
 	 */
-	public CustomerCreatedListNames getListNamesWithItemCount(HttpSession session, String srcListName) throws FDResourceException,
+	public CustomerListNames getListNamesWithItemCount(HttpSession session, String srcListName) throws FDResourceException,
     							   									       FDCustomerListExistsException, AjaxFacadeException {
 		LOGGER.debug("getListsWithItemCount() called with "+srcListName);
 		FDUserI user = getUser(session, FDUserI.RECOGNIZED);
 		if (srcListName==null) {
 			return getListNamesWithItemCount(session);
 		}
-		List filteredLists = new ArrayList();
+		List<FDCustomerListInfo> filteredLists = new ArrayList<FDCustomerListInfo>();
 	    
-		List allLists      = user.getCustomerCreatedListInfos();
+		List<FDCustomerListInfo> allLists      = user.getCustomerCreatedListInfos();
 
 	    if (allLists == null) {
 	    	throw new FDResourceException("Could not retrieve lists");
 	    } else {
 		    for(int j = 0; j < allLists.size(); j++) {
-		    	FDCustomerCreatedList list = (FDCustomerCreatedList) allLists.get(j);
+		    	FDCustomerListInfo list = (FDCustomerListInfo) allLists.get(j);
 		    	if(!list.getName().equals(srcListName)) {
 		    		filteredLists.add(list);
 		    	}
 		    }
 	    }
-	    TreeSet sorted = new TreeSet(FDCustomerCreatedList.getNameComparator());
+	    appendStandingOrderInfos(user, filteredLists);
+
+	    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
+			public int compare(FDCustomerListInfo l1, FDCustomerListInfo l2) {
+				return l1.getName().compareToIgnoreCase(l2.getName()) < 0 ? -1 : 1;
+			}
+		});
 	    sorted.addAll(filteredLists);
 	    
 	    return getCustomerCreatedListNamesFromSet(sorted);
@@ -194,6 +232,40 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	}
 	
 	
+	/**
+	 * Renames a Standing Order List
+	 * 
+	 * @param session
+	 * @param oldList
+	 * @param newList
+	 */
+	public String renameSOList(HttpSession session, String oldList, String newList) throws NameEmpty, NameExists, FDResourceException, AjaxFacadeException { 
+		LOGGER.debug("renameSOList called:"+oldList+"->"+newList);
+		FDUserI user = getUser(session, FDUserI.SIGNED_IN);
+		oldList = oldList.trim();
+		if (oldList.equals("")) {
+			throw new NameEmpty();
+		}
+		newList = newList.trim();
+		if (newList.equals("")) {
+			throw new NameEmpty();
+		} else if (newList.length() > FDCustomerCreatedList.MAX_NAME_LENGTH) {
+			throw new NameTooLong();
+		}
+
+		try {
+			FDListManager.renameCustomerList(user.getIdentity(), EnumCustomerListType.SO, oldList, newList);
+		}
+		catch (FDCustomerListExistsException e) {
+			throw new NameExists();
+		}
+		
+		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, null, oldList);
+		user.invalidateCache(); // Update CCL experience metrics
+		return newList;
+	}
+	
+	
 	/** Remove an item from a list.
 	 * 
 	 * @param session 
@@ -209,10 +281,27 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	}
 
 	
+	/** Remove an item from a list.
+	 * 
+	 * @param session 
+	 * @param lineId the line Id of the item (which is unique across all items)
+	 * @throws FDResourceException
+	 */
+	public void removeSOLineItem(HttpSession session, String lineId) throws FDResourceException, AjaxFacadeException {
+		FDUserI user = getUser(session, FDUserI.SIGNED_IN);
+		FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
+		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO,null,null);
+
+		user.invalidateCache();
+	}
+
+	
 	/** Add item selection to the list.
 	 * 
 	 * @param listName name of CCL
+	 * @param typeName CCL or SO
 	 * @param items
+	 * 
 	 * @return list id corresponding to ListName
 	 * @throws FDResourceException
 	 * @throws IllegalStateException 
@@ -220,45 +309,48 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	 * @throws NameEmpty no such list
 	 * @throws UnauthorizedRequest 
 	 */
-	public FDCustomerCreatedList addItemsToList(HttpSession session, String listName, FDCustomerCreatedList items) throws FDResourceException, AjaxFacadeException, FDSkuNotFoundException, IllegalStateException {
-		LOGGER.debug("addItemToList called:"+listName);
+	public FDCustomerCreatedList addItemsToList(HttpSession session, String listName, String typeName, FDCustomerCreatedList items) throws FDResourceException, AjaxFacadeException, FDSkuNotFoundException, IllegalStateException {
+		LOGGER.debug("addItemToList called: " + listName + " type: " + typeName);
 		
 		FDUserI user = getUser(session, FDUserI.RECOGNIZED);
 		
-		// load list
-		FDCustomerList list = FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.CC_LIST, listName);
-		
-	    if (list == null) throw new NameEmpty();
+		// determine list type
+		EnumCustomerListType type = EnumCustomerListType.getEnum(typeName);
+		if (type == null)
+			type = EnumCustomerListType.CC_LIST; // default case
 
-		FDCustomerCreatedList ccl = (FDCustomerCreatedList)list;
-		for(Iterator I = items.getLineItems().iterator(); I.hasNext(); ) {
-			FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)I.next();
-			ccl.addLineItem(item);
-			// LINE ID = item.getPK().getId();
+		// load list
+		FDCustomerList list = FDListManager.getCustomerList(user.getIdentity(), type, listName);
+	    if (list == null)
+	    	throw new NameEmpty();
+
+		for (FDCustomerListItem item  : items.getLineItems()) {
+			list.addLineItem(item);
 		}
 
 		// storeList
-		FDListManager.storeCustomerList(ccl);
-		
+		FDListManager.storeCustomerList(list);
+
 		// reload list for PKs
-		list = FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.CC_LIST, listName);
-		Set storedItems = new LinkedHashSet();
+		list = FDListManager.getCustomerList(user.getIdentity(), type, listName);
+
+		Set<FDCustomerListItem> storedItems = new LinkedHashSet<FDCustomerListItem>();
 		storedItems.addAll(list.getLineItems());
 		storedItems.retainAll(items.getLineItems());
 		
 		// Create a fake list containing needed list items
 		FDCustomerCreatedList resultList = new FDCustomerCreatedList();
 		resultList.setId(list.getId());
-		for (Iterator I = storedItems.iterator(); I.hasNext(); ) {
-			FDCustomerProductListLineItem it = (FDCustomerProductListLineItem) I.next();
+		
+		for (FDCustomerListItem it : storedItems) {
 			// don't forget to call this to initialize product dependent properties of FDCustomerProductListLineItem
 			//   such as categoryID and productID
 			resultList.addLineItem(it);
 		}
 
 
-		QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_CCL, null, listName);
-		user.invalidateCache(); // Update CCL experience metrics
+		QuickCartCache.invalidateOnChange(session, EnumCustomerListType.CC_LIST == type ? QuickCart.PRODUCT_TYPE_CCL : QuickCart.PRODUCT_TYPE_SO, null, listName);
+		user.invalidateCache(); // Update CCL or SO experience metrics
 
 	    return resultList;
 	}
@@ -268,28 +360,28 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	/**
 	 * This function allows to add recent cart items to shopping list. Called from ccl.js
 	 * 
-	 * @author segabor
 	 * @param session
-	 * @param listName name of CCL
+	 * @param listName name
+	 * @param typeName CCL or SO
+	 * 
 	 * @return
 	 * @throws FDResourceException 
 	 * @throws AjaxFacadeException 
 	 * @throws IllegalStateException 
 	 * @throws FDSkuNotFoundException 
 	 */
-	public FDCustomerCreatedList addRecentItemsToList(HttpSession session, String listName) throws FDResourceException, FDSkuNotFoundException, IllegalStateException, AjaxFacadeException {
+	public FDCustomerCreatedList addRecentItemsToList(HttpSession session, String listName, String typeName) throws FDResourceException, FDSkuNotFoundException, IllegalStateException, AjaxFacadeException {
 		FDUserI user = getUser(session, FDUserI.RECOGNIZED);
 		FDCustomerCreatedList items = new FDCustomerCreatedList();
-		
+
 		// item transformation
 		FDCartModel cart = user.getShoppingCart();
-		Iterator it = cart.getRecentOrderLines().iterator();
-		while (it.hasNext()) {
-			FDProductSelectionI item = (FDProductSelectionI) it.next();
+
+		for (FDCartLineI item : cart.getRecentOrderLines()) {
 			items.addLineItem(new FDCustomerProductListLineItem(item));
 		}
-		
-		return addItemsToList(session, listName, items);
+
+		return addItemsToList(session, listName, typeName, items);
 	}
 	
 	
@@ -353,8 +445,24 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		return new CustomerCreatedListAjaxFacade();
 	}
 	
-	public static class CustomerCreatedListNames {
+	
+	/**
+	 * Transport type
+	 */
+	public static class CustomerListNames {
+		/**
+		 * List infos
+		 * 
+		 * [i][0] = list name
+		 * [i][1] = count
+		 * [i][2] = type, see {@link EnumCustomerListType} (CCL or SO)
+		 * 
+		 */
 		private String[][] listNames;
+
+		/**
+		 * Name of most recent list
+		 */
 		private String mostRecentList;
 
 		public String[][] getListNames() {
@@ -374,22 +482,25 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		}
 	}
 
-	private CustomerCreatedListNames getCustomerCreatedListNamesFromSet(Set sorted) {
-	    String [][] listNames = new String[sorted.size()][2];
+	private CustomerListNames getCustomerCreatedListNamesFromSet(Set<FDCustomerListInfo> sorted) {
+	    String [][] listNames = new String[sorted.size()][3];
 	    int c = 0;
 	    String mostRecentList = null;
 	    Date mostRecentMod = null;
-	    for(Iterator i = sorted.iterator(); i.hasNext(); ++c) {
-	    	FDCustomerCreatedList clist = (FDCustomerCreatedList) i.next();	    	
-	    	listNames[c][0] = clist.getName();	    	
-	    	listNames[c][1] = Integer.toString(((FDCustomerCreatedListInfo) clist).getCount());
+
+	    for (FDCustomerListInfo clist : sorted) {
+	    	listNames[c][0] = clist.getName();
+	    	listNames[c][1] = Integer.toString(clist.getCount());
+	    	listNames[c][2] = clist.getType().getName();
 	    	if (mostRecentList == null || clist.getModificationDate().compareTo(mostRecentMod) > 0) {
 	    		mostRecentList = clist.getName();
 	    		mostRecentMod = clist.getModificationDate();
 	    	}
+	    	
+	    	c++;
 	    }
 	    
-	    CustomerCreatedListNames result = new CustomerCreatedListNames();
+	    CustomerListNames result = new CustomerListNames();
 	    result.setListNames(listNames);
 	    result.setMostRecentList(mostRecentList);
 	    

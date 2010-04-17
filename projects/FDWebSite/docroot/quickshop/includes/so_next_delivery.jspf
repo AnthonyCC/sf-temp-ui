@@ -1,0 +1,38 @@
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+
+<% 
+	FDOrderInfoI lastOrder = so.getLastOrder( user );
+	List<FDOrderInfoI> allOrders = so.getAllOrders( user );
+%>
+
+<% if ( lastOrder != null ) { %>
+	<!-- <%= "Last Order Info : id = " + lastOrder.getErpSalesId() + "; status = " + lastOrder.getOrderStatus().getDisplayName() + "; requested date = " + lastOrder.getRequestedDate() + "; create date = " + lastOrder.getCreateDate() + "; " + (lastOrder.isModifiable() ? "modifiable" : "not modifiable") %> -->
+<% } else { %>
+	<!-- <%= "No last order found." %> -->
+<% } %>
+
+<% 	if ( allOrders != null && allOrders.size() > 0 ) { 
+		Collections.sort( allOrders, FDOrderInfoI.COMPARE_BY_CREATE_DATE ); %>
+		<!--List of all orders related to this standing order :-->
+		<% for ( FDOrderInfoI order : allOrders ) { %>
+			<!-- <%= "Order Info : id = " + order.getErpSalesId() + "; status = " + order.getOrderStatus().getDisplayName() + "; requested date = " + order.getRequestedDate() + "; create date = " + order.getCreateDate() + "; " + (order.isModifiable() ? "modifiable" : "not modifiable") %> --> 
+		<% }
+	} else { %>
+		<!-- <%= "No orders found for this standing order." %> -->
+<% 	} %>
+
+
+
+<% if ( lastOrder != null && lastOrder.isModifiable() ) { %>
+	
+	<div>The next delivery is scheduled for <%= FDStandingOrder.DATE_FORMATTER.format( lastOrder.getRequestedDate() ) %></div>
+	<div><a href="/your_account/order_details.jsp?orderId=<%= lastOrder.getErpSalesId() %>">Click here to modify or cancel this specific order</a></div>
+	
+<% } else { %>
+
+	<div style="text-align: left; font-weight: bold">Your next delivery is scheduled for <%= so.getNextDeliveryString() %></div>					
+	
+<% } %>

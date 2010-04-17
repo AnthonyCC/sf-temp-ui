@@ -1,6 +1,7 @@
 package com.freshdirect.fdstore.lists;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -11,18 +12,97 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public abstract class FDCustomerList extends ModelSupport {
 	
-	private PrimaryKey customerPk;
+	private static final long	serialVersionUID	= -6109376082050638762L;
 
-	private String name;
+	protected PrimaryKey customerPk;
+
+	protected String name;
 	
-	private Date createDate;
+	protected Date createDate;
 	
 	/** The timestamp of the last modification of the list. */
-	private Date modificationDate;
+	protected Date modificationDate;
 	
-	// List<FDCustomerListItem>
-	private List lineItems = new ArrayList();
+	protected List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 
+	
+	
+	private static class CompareByModificationDate implements Comparator<FDCustomerList> {
+
+		public int compare( FDCustomerList l1, FDCustomerList l2 ) {
+
+			if ( l1 == null || l1.getModificationDate() == null ) {
+				return 1;
+			}
+			if ( l2 == null || l2.getModificationDate() == null ) {
+				return -1;
+			}
+
+			return -l1.getModificationDate().compareTo( l2.getModificationDate() );
+		}
+
+		@Override
+		public boolean equals( Object o ) {
+			// there is only one static instance
+			return o == this;
+		}
+	}
+	
+	private static class CompareByName implements Comparator<FDCustomerList> {
+
+		public int compare( FDCustomerList l1, FDCustomerList l2 ) {
+
+			if ( l1 == null || l1.getName() == null ) {
+				return -1;
+			}
+			if ( l2 == null || l2.getName() == null ) {
+				return 1;
+			}
+			// should not return 0, since YoYo and yoyo than would be treated equal
+			return l1.getName().compareToIgnoreCase( l2.getName() ) < 0 ? -1 : 1;
+		}
+
+		@Override
+		public boolean equals( Object o ) {
+			// there is only one static instance
+			return o == this;
+		}
+	}
+	
+	private static class CompareByItemCount implements Comparator<FDCustomerList> {
+
+		public int compare( FDCustomerList l1, FDCustomerList l2 ) {
+			if ( l1 == null )
+				return -1;
+			if ( l2 == null )
+				return 1;
+
+			if ( l1.equals( l2 ) )
+				return 0;
+			
+			int c1 = l1.getCount();
+			int c2 = l2.getCount(); 
+			
+			return c1 < c2 ? 1 : -1;				
+		}
+
+		@Override
+		public boolean equals( Object o ) {
+			// there is only one static instance
+			return o == this;
+		}
+	}
+
+	private static Comparator<FDCustomerList> compareByModificationDate = new CompareByModificationDate();
+	private static Comparator<FDCustomerList> compareByName = new CompareByName();
+	private static Comparator<FDCustomerList> compareByItemCount = new CompareByItemCount();
+	
+	public static Comparator<FDCustomerList> getModificationDateComparator() { return compareByModificationDate; }
+	public static Comparator<FDCustomerList> getNameComparator() { return compareByName; }
+	public static Comparator<FDCustomerList> getItemCountComparator() { return compareByItemCount; }
+	
+
+	
 	public void setCustomerPk(PrimaryKey customerPk) {
 		markAsModified();
 		this.customerPk = customerPk;
@@ -44,7 +124,7 @@ public abstract class FDCustomerList extends ModelSupport {
 	/**
 	 * @return List<FDCustomerListItem>
 	 */
-	public List getLineItems() {
+	public List<FDCustomerListItem> getLineItems() {
 		return lineItems;
 	}
 
@@ -52,9 +132,14 @@ public abstract class FDCustomerList extends ModelSupport {
 	 * @param lineItems List of FDCustomerListLineItem
 	 * @throws FDResourceException 
 	 */
-	public void setLineItems(List lineItems) {
+	public void setLineItems(List<FDCustomerListItem> lineItems) {
 		markAsModified();
 		this.lineItems = lineItems;
+	}
+
+	public void addLineItem(FDCustomerListItem item) {
+		getLineItems().add(item);
+		markAsModified();
 	}
 
 	public Date getCreateDate() {
@@ -104,11 +189,21 @@ public abstract class FDCustomerList extends ModelSupport {
 	 *  Reverse a previous marking of this list as modified.
 	 *  Resets the last modification date to the supplied date.
 	 *  
-	 *  @param modificationDate the old modification date, that was valid before
+	 *  @param modDate the old modification date, that was valid before
 	 *         the call to markAsModified(). it is the responsibility of the
 	 *         caller to store this date if he wants to unmark a list.
 	 */
-	protected void unmarkAsModified(Date modificationDate) {
-		setModificationDate(modificationDate);
+	// FIXME this does not make much sense really ... what was the original intention here? 
+	protected void unmarkAsModified(Date modDate) {
+		setModificationDate(modDate);
+	}
+	
+	public int getCount() {
+		return lineItems == null ? 0 : lineItems.size();
+	}
+	
+	
+	public void removeAllLineItems() {
+		lineItems.clear();
 	}
 }

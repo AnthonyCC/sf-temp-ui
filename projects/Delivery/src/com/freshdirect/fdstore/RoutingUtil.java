@@ -502,11 +502,7 @@ public class RoutingUtil {
 	}
 
 	private static String getHourAMPM(Date date) {
-		try {
-			return  DateUtil.formatTimeAMPM(date);
-		} catch (ParseException pe) {
-			return null;
-		}
+		return  DateUtil.formatTimeAMPM(date);
 	}
 
 	private  RoutingGatewayHome getRoutingGatewayHome() throws FDResourceException {

@@ -7,6 +7,7 @@ package com.freshdirect.webapp.util;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -127,9 +128,9 @@ public class JspMethods {
 			product = ((ConfiguredProduct) product).getSourceProduct();
 		}
 		ContentNodeModel parent = product.getParentNode();
-		List catList = new ArrayList();
+		List<CategoryModel> catList = new ArrayList<CategoryModel>();
 		while (parent instanceof CategoryModel) {
-			catList.add(parent);
+			catList.add((CategoryModel)parent);
 			parent = parent.getParentNode();
 		}
 
@@ -190,11 +191,11 @@ public class JspMethods {
 	}
 
 	public static double getPrice(ProductModel theProduct) throws JspException {
-		List skus = theProduct.getSkus();
+		List<SkuModel> skus = theProduct.getSkus();
 		SkuModel sku = null;
 		// remove the unavailable sku's
-		for (ListIterator li = skus.listIterator(); li.hasNext();) {
-			sku = (SkuModel) li.next();
+		for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
+			sku = li.next();
 			if (sku.isUnavailable()) {
 				li.remove();
 			}
@@ -311,16 +312,16 @@ public class JspMethods {
 		}
 	}
 
-	public static Comparator domainValueComp = new Comparator() {
 
-		public int compare(Object obj1, Object obj2) {
-			DomainValue dv1 = (DomainValue) obj1;
-			DomainValue dv2 = (DomainValue) obj2;
+	public static Comparator<DomainValue> domainValueComp = new Comparator<DomainValue>() {
+
+		public int compare(DomainValue dv1, DomainValue dv2) {
 			return dv1.getValue().compareTo(dv2.getValue());
 		}
 	};
 
-	public static class MyAttributeComparator implements Comparator {
+
+	public static class MyAttributeComparator implements Comparator<ContentNodeModel> {
 
 		private String attribName = null;
 		private boolean reverseOrder = false;
@@ -338,14 +339,13 @@ public class JspMethods {
 			this.includeCategory = flag;
 		}
 
-		public int compare(Object obj1, Object obj2) {
+		public int compare(ContentNodeModel cn1, ContentNodeModel cn2) {
 			String sortField1 = "";
 			String sortField2 = "";
 			String attribValue1 = "";
 			String attribValue2 = "";
 			CategoryModel parentCategory = null;
-			ContentNodeModel cn1 = (ContentNodeModel) obj1;
-			ContentNodeModel cn2 = (ContentNodeModel) obj2;
+
 			if (ContentNodeModel.TYPE_CATEGORY.equals(cn1.getContentType())) {
 				sortField1 = leadZeroes(((CategoryModel) cn1).getPriority(), 6)
 						+ cn1.getFullName() + ":";
@@ -437,11 +437,11 @@ public class JspMethods {
 		}
 	}
 
-	public static List sorter(java.util.Collection CatsAndProds, String orderBy) {
+	public static List sorter(Collection CatsAndProds, String orderBy) {
 		return JspMethods.sorter(CatsAndProds, orderBy, true, true);
 	}
 
-	public static List sorter(java.util.Collection CatsAndProds,
+	public static List sorter(Collection CatsAndProds,
 			String orderBy, boolean reverseOrder, boolean includeFolder) {
 		// sort the items by folder + (specified-attribute | Name | price)
 		List sortedList = new ArrayList(CatsAndProds);
@@ -450,7 +450,7 @@ public class JspMethods {
 		sortByRatingAttribute.setReverseOrder(reverseOrder);
 		sortByRatingAttribute.setIncludeCategory(includeFolder);
 		Collections.sort(sortedList, sortByRatingAttribute);
-		// }
+
 		return sortedList;
 	}
 
@@ -477,7 +477,12 @@ public class JspMethods {
 		}
 	}
 
-	// **** moved these methods from CatLayoutManager.jspf ***/
+
+	
+	/**
+	 * Utility method used in layouts/featured_all.jsp and layouts/how_to_cookit.jspf
+	 * Extracted from CatLayoutManager.jspf
+	 */
 	public static String displayFAProducts(LinkedList productLinks,
 			boolean showPrices, boolean listIsUnavailable) {
 		return displayFAProducts(productLinks, null, showPrices,
@@ -510,9 +515,6 @@ public class JspMethods {
 				}
 				outputRows.append("<TD width=\"290\">");
 				outputRows.append(productLinks.get(k));
-				// if (productPrices!=null ) {
-				// outputRows.append(productPrices.get(k));
-				// }
 
 				outputRows.append("</td><TD width=\"5\">");
 				if (k == 0) { // Since this cell is in the first row use the
@@ -568,18 +570,16 @@ public class JspMethods {
 			}
 			outputRows.append("</table></td>");
 		}
-		// <TD width="90"><%=col1.toString()%//></td>
-		// <%// =outputRows.toString()%//>
 
 		return outputRows.toString();
 	}
 
-	public static void dumpErrors(ActionResult _result) {
-		if (!_result.isSuccess()) {
-			java.util.Collection errs = _result.getErrors();
-			Iterator itr = errs.iterator();
-			for (; itr.hasNext();) {
-				System.out.println(((ActionError) itr.next()).getDescription());
+
+
+	public static void dumpErrors(ActionResult result) {
+		if (!result.isSuccess()) {
+			for (ActionError err : result.getErrors()) {
+				System.out.println(err.getDescription());
 			}
 		}
 	}
@@ -737,26 +737,10 @@ public class JspMethods {
 						+ imagePath + "\")");
 				rolloverText.append(";return true;'");
 			}
-			if (false == true) { // (displayProduct.getBoolean("ATR_in_season",
-									// false)) {
-				indicators.append("<IMG SRC=\"");
-				indicators.append(inSeasonIndicator);
-				indicators
-						.append("\" width=\"9\" height=\"8\" hspace=\"3\" vspace=\"4\" border=\"0\"");
-				indicators.append(" ALT=\"\">");
-			} else {
-				indicators.append("&nbsp;");
-			}
 
-			/*
-			 * if (false==true) { //displayProduct.getBoolean("ATR_u_organic",
-			 * false)) { indicators.append("<IMG SRC=\"");
-			 * indicators.append(organicIndicator); indicators.append("\"
-			 * width=\"5\" height=\"5\" hspace=\"0\" vspace=\"5\"
-			 * border=\"0\""); indicators.append(" ALT=\"\">"); } else{
-			 */
 			indicators.append("&nbsp;");
-			// }
+
+			indicators.append("&nbsp;");
 		} else if (ContentNodeModel.TYPE_CATEGORY.equals(displayThing
 				.getContentType())) {
 		        CategoryModel displayCategory = (CategoryModel) displayThing; 
@@ -768,16 +752,8 @@ public class JspMethods {
 			imageHeight = itemImage == null ? 0 : itemImage.getHeight(); // displayFolder.getContent("ATR_image_category_photo").getString("ATR_image_height");
 			itemAltText = displayFolder.getAltText(); // (getString("ATR_alt_text",
 														// itemName);
-			// if
-			// (pageContext.getRequest().getRequestURI().toLowerCase().endsWith("department.jsp")){
-			// if
-			// (request.getRequestURI().toLowerCase().endsWith("department.jsp")){
-			// itemURL =
-			// response.encodeURL("/category.jsp?catId="+displayFolder+trkCode);
-			// } else {
 			itemURL = response.encodeURL("/category.jsp?catId=" + displayFolder
 					+ trackingCode);
-			// }
 			ContentNodeModel alias = displayCategory.getAlias();
 			if (alias != null) {
 				if (ContentNodeModel.TYPE_CATEGORY.equals(alias.getContentType())) {
@@ -789,17 +765,7 @@ public class JspMethods {
 				}
 			}
 
-			if (false == true) {// !!! need another way to do
-								// this(displayFolder.getBoolean("ATR_contains_organic",
-				// false)) {
-				indicators.append("<IMG SRC=\"");
-				indicators.append(organicIndicator);
-				indicators
-						.append("\" width=\"5\" height=\"5\" hspace=\"0\" vspace=\"5\" border=\"0\"");
-				indicators.append(" ALT=\"\">");
-			} else {
-				indicators.append("&nbsp;");
-			}
+			indicators.append("&nbsp;");
 		} else if (displayThing.getContentType().equals(
 		            ContentNodeModel.TYPE_DEPARTMENT)) {
 			displayFolder = displayThing;
@@ -812,17 +778,7 @@ public class JspMethods {
 			itemAltText = displayFolder.getAltText();
 			itemURL = response.encodeURL("category.jsp?catId=" + displayFolder
 					+ trkCode);
-			if (false == true) {// !!! need another way to do
-								// this(displayFolder.getBoolean("ATR_contains_organic",
-				// false)) {
-				indicators.append("<IMG SRC=\"");
-				indicators.append(organicIndicator);
-				indicators
-						.append("\" width=\"5\" height=\"5\" hspace=\"0\" vspace=\"5\" border=\"0\"");
-				indicators.append(" ALT=\"\">");
-			} else {
-				indicators.append("&nbsp;");
-			}
+			indicators.append("&nbsp;");
 		}
 		displayObj.setItemName(itemName);
 		displayObj.setItemURL(itemURL);
@@ -865,45 +821,6 @@ public class JspMethods {
         return buf.toString();
     }
 
-/*	private static ProductModel getFeaturedProduct_original(ContentRef cr) {
-		if (!cr.getType().equals(ContentNodeI.TYPE_PRODUCT))
-			return null;
-		return getFeaturedProduct((ProductRef) cr);
-	}
-
-	private static ProductModel getFeaturedProduct_original(ProductRef pf) {
-		// the content ref must have a category and Product Id in it
-		if (pf == null || !pf.getType().equals(ContentNodeI.TYPE_PRODUCT)) {
-			return null;
-		}
-		ContentFactory contentFactory = ContentFactory.getInstance();
-		ContentNodeModel cnm = null;
-
-		if (pf.getRefName() == null || pf.getRefName2() == null) {
-			return null;
-		}
-		ProductModel product = null;
-		product = pf.lookupProduct();
-		if (product == null) {
-			cnm = pf.lookupCategory();
-			if (cnm == null) {
-				return null;
-			}
-			// great..get this category's subcategories
-			product = null;
-			List subFolders = ((CategoryModel) cnm).getSubcategories();
-			for (int idx = 0; idx < subFolders.size() && product == null; idx++) {
-				CategoryModel subFldr = (CategoryModel) subFolders.get(idx);
-				product = contentFactory.getProductByName(subFldr.toString(),
-						pf.getRefName2());
-			}
-
-			if (product == null) {
-			}
-		}
-		return product;
-	}
-*/
 	public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat
 			.getCurrencyInstance(Locale.US);
 
@@ -982,11 +899,11 @@ public class JspMethods {
 	}
 
 	/**
-	* For truncating the decimal number to 2 digits.
-	* 
-	* @param number
-	* @return
-	*/
+	 * For truncating the decimal number to 2 digits.
+	 * 
+	 * @param number
+	 * @return
+	 */
 	public static double formatDecimal(double number) {
 		DecimalFormat decimalFormat = new DecimalFormat("0.##");
 		String strNumber = decimalFormat.format(number);

@@ -3,16 +3,16 @@ package com.freshdirect.delivery.restriction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 
 public class GeographyRestriction extends ModelSupport   {
+	
+	private static final long	serialVersionUID	= 1923999018513521720L;
 	
 	private String name;  
 	private String active;	  
@@ -20,7 +20,7 @@ public class GeographyRestriction extends ModelSupport   {
 	private String message;
 	private String showMessage;
 	private String serviceType;
-	private Map restrictedDays;
+	private Map<Integer,List<GeographyRestrictedDay>> restrictedDays;
 	
 	private DateRange range;
 	
@@ -43,34 +43,34 @@ public class GeographyRestriction extends ModelSupport   {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Map getRestrictedDays() {
+	public Map<Integer,List<GeographyRestrictedDay>> getRestrictedDays() {
 		return restrictedDays;
 	}
-	public void setRestrictedDays(Map restrictedDays) {
+	public void setRestrictedDays(Map<Integer,List<GeographyRestrictedDay>> restrictedDays) {
 		this.restrictedDays = restrictedDays;
 	}
 	
 	public void setRestrictedDay(int dayOfWeek, GeographyRestrictedDay restrictedDay) {
 		Integer objDayofWeek = new Integer(dayOfWeek);
 		if(restrictedDays == null) {
-			restrictedDays = new HashMap();
+			restrictedDays = new HashMap<Integer,List<GeographyRestrictedDay>>();
 		}
 		if(restrictedDays.get(objDayofWeek) == null) {
-			restrictedDays.put(objDayofWeek, new ArrayList());
+			restrictedDays.put(objDayofWeek, new ArrayList<GeographyRestrictedDay>());
 		}
-		((List)restrictedDays.get(objDayofWeek)).add(restrictedDay);
+		restrictedDays.get(objDayofWeek).add(restrictedDay);
 	}
 	
-	public List getRestrictedDay(int dayOfWeek ) {
-		List _restrictedDays = new ArrayList();
+	public List<GeographyRestrictedDay> getRestrictedDay(int dayOfWeek ) {
+		List<GeographyRestrictedDay> _restrictedDays = new ArrayList<GeographyRestrictedDay>();
 		Integer primaryKey = new Integer(dayOfWeek);
 		Integer allKey = new Integer(0);
 		if(restrictedDays != null) {
 			if(restrictedDays.get(primaryKey) != null) {
-				_restrictedDays.addAll((List)restrictedDays.get(primaryKey));
+				_restrictedDays.addAll(restrictedDays.get(primaryKey));
 			}
 			if(restrictedDays.get(allKey) != null) {
-				_restrictedDays.addAll((List)restrictedDays.get(allKey));
+				_restrictedDays.addAll(restrictedDays.get(allKey));
 			}
 		}
 		return _restrictedDays;
@@ -100,14 +100,12 @@ public class GeographyRestriction extends ModelSupport   {
 		this.message = message;
 	}
 	
-	public static boolean isTimeSlotGeoRestricted(List geographicRestrictions
+	public static boolean isTimeSlotGeoRestricted(List<GeographyRestriction> geographicRestrictions
 			, FDTimeslot timeslot
-			, List messages, DateRange baseRange) {
+			, List<String> messages, DateRange baseRange) {
 		boolean isRestricted = false;
 		if(geographicRestrictions != null && timeslot != null && messages != null) {
-			Iterator _iterator = geographicRestrictions.iterator();
-			while(_iterator.hasNext()) {
-				GeographyRestriction geoRestriction = (GeographyRestriction)_iterator.next();
+			for ( GeographyRestriction geoRestriction : geographicRestrictions ) {
 				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages, baseRange)) {
 					isRestricted = true;
 					break;
@@ -119,18 +117,15 @@ public class GeographyRestriction extends ModelSupport   {
 	
 	public static boolean isTimeSlotGeoRestricted(GeographyRestriction geographicRestrictions
 												, FDTimeslot timeslot
-												, List messages, DateRange baseRange) {
+												, List<String> messages, DateRange baseRange) {
 		
 		boolean isRestricted = false;
 		if(geographicRestrictions != null) {
-			List restrictedDays = geographicRestrictions.getRestrictedDay(timeslot.getDayOfWeek());
-			if(restrictedDays != null) {
-				Iterator _iterator = restrictedDays.iterator();
-				while(_iterator.hasNext()) {
-					GeographyRestrictedDay restrictedDay = (GeographyRestrictedDay)_iterator.next();
-					if(restrictedDay != null) {
-						try {							
-						
+			List<GeographyRestrictedDay> restrictedDays = geographicRestrictions.getRestrictedDay(timeslot.getDayOfWeek());
+			if( restrictedDays != null ) {
+				for ( GeographyRestrictedDay restrictedDay : restrictedDays ) {
+					if( restrictedDay != null ) {
+						try {											
 							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
 								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());

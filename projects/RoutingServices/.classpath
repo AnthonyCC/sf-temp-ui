@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Framework"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/activation-1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/neethi-2.0.4.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/wstx-asl-3.2.4.jar"/>
@@ -23,7 +22,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/wsdl4j-1.5.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xml-apis.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/XmlSchema-1.4.3.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPServices"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

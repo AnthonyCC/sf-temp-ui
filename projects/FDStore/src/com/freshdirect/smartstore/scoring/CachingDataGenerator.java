@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.ExpiringReference;
 import com.freshdirect.framework.util.LruCache;
@@ -17,15 +18,16 @@ import java.util.concurrent.TimeUnit;
 
 public class CachingDataGenerator extends DataGenerator {
 
-    private static final int       HOUR_IN_MILLIS = 60 * 60 * 1000;
+    private static final int HOUR_IN_MILLIS = 60 * 60 * 1000;
 
     protected static LruCache<String, BalkingExpiringReference> cache          = new LruCache<String, BalkingExpiringReference>(FDStoreProperties.getSmartStoreDataSourceCacheSize());
 
     private static Executor        threadPool     = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(),
                                                           new ThreadPoolExecutor.DiscardPolicy());
 
-    boolean                        cacheEnabled;
+    boolean cacheEnabled;
 
+    
     public CachingDataGenerator() {
         super();
         cacheEnabled = FDStoreProperties.isSmartstoreDataSourcesCached();
@@ -35,45 +37,44 @@ public class CachingDataGenerator extends DataGenerator {
         return null;
     }
 
-    public final List generate(SessionInput sessionInput, final DataAccess input) {
+    public final List<ContentNodeModel> generate(SessionInput sessionInput, final DataAccess input) {
         if (cacheEnabled) {
             String key = getKey(sessionInput);
             final SessionInput inp = new SessionInput(sessionInput.getCustomerId(), sessionInput.getCustomerServiceType(), sessionInput.getPricingContext());
             inp.setCurrentNode(sessionInput.getCurrentNode());
             inp.setExplicitList(sessionInput.getExplicitList());
             if (cache.get(key) == null) {
-                cache.put(key, new BalkingExpiringReference(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
-                    protected Object load() {
-                        List result = generateImpl(inp, input);
+                cache.put(key, new BalkingExpiringReference<List<ContentNodeModel>>(HOUR_IN_MILLIS, threadPool, generateImpl(inp, input)) {
+                    protected List<ContentNodeModel> load() {
+                        List<ContentNodeModel> result = generateImpl(inp, input);
                         return result;
                     }
-
                 });
             }
-            List cached = (List) cache.get(key).get();
+            List<ContentNodeModel> cached = (List<ContentNodeModel>) cache.get(key).get();
             if (cached != null) {
                 return cached;
             }
-            return Collections.EMPTY_LIST;
+            return Collections.<ContentNodeModel>emptyList();
         } else {
             return generateImpl(sessionInput, input);
         }
     }
 
-    public List generateImpl(SessionInput sessionInput, DataAccess input) {
-        return Collections.EMPTY_LIST;
+    public List<ContentNodeModel> generateImpl(SessionInput sessionInput, DataAccess input) {
+        return Collections.<ContentNodeModel>emptyList();
     }
 
-    public static List peekIntoCache(String key) {
+    public static List<ContentNodeModel> peekIntoCache(String key) {
         if (cache.get(key) == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.<ContentNodeModel>emptyList();
         }
 
-        List cached = (List) cache.get(key).get();
+        List<ContentNodeModel> cached = (List<ContentNodeModel>) cache.get(key).get();
         if (cached != null) {
             return cached;
         }
-        return Collections.EMPTY_LIST;
+        return Collections.<ContentNodeModel>emptyList();
     }
     
     public boolean isCacheEnabled() {

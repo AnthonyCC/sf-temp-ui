@@ -1,30 +1,18 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.framework.core;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 
 /** a helper class the provides the basic functionality of all model objects
- *
- * @version $Revision$
- * @author $Author$
  */ 
 abstract class ModelBase implements ModelI {
     
-    /** the primary key for the entity this model represents
+	private static final long	serialVersionUID	= -7256599161191712120L;
+	
+	/** the primary key for the entity this model represents
      */    
     private PrimaryKey pk;
     
@@ -60,6 +48,7 @@ abstract class ModelBase implements ModelI {
      * Combination hashcode of class name and ID.
      * @return the hash for this object
      */
+	@Override
 	public int hashCode() {
 		return
 			(this.getPK()==null) ?
@@ -67,13 +56,14 @@ abstract class ModelBase implements ModelI {
 			getClass().getName().hashCode() ^ this.getPK().hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		if (this==o) {
 			return true;
 		}
 		if (o instanceof ModelI) {
-			PrimaryKey opk = ((ModelI)o).getPK();
-			return opk==null || this.getPK()==null ? false : this.getPK().equals(opk);
+				PrimaryKey opk = ((ModelI)o).getPK();
+				return opk==null || this.getPK()==null ? false : this.getPK().equals(opk);
 		}
 		return false;
 	}
@@ -109,7 +99,8 @@ abstract class ModelBase implements ModelI {
     /** gets the string equivalent of this model
      * @return the string equivalent
      */    
-    public String toString() {
+    @Override
+	public String toString() {
     	return "Model[" + this.getClass().getName() + ":" + this.getPK() + "]";
     }
      

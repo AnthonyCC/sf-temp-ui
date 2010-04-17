@@ -1,7 +1,6 @@
 package com.freshdirect.common.address;
 
 
-
 public interface AddressI extends BasicAddressI {
 
     public void setAddress1(String address1);

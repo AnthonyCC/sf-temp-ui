@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import java.util.ArrayList;
@@ -14,10 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.framework.collection.CollectionException;
 import com.freshdirect.framework.collection.LocalObjectList;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.giftcard.ErpGiftCardI;
 
 /**
  * ErpCustomer model class.
@@ -27,6 +18,9 @@ import com.freshdirect.giftcard.ErpGiftCardI;
  * @stereotype fd-model
  */
 public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
+	
+	private static final long	serialVersionUID	= -8450312250626317852L;
+
 	/**
 	 * @link aggregationByValue
 	 * @directed
@@ -81,9 +75,9 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	 *
 	 * @return collection of ShipToAddress model objects
 	 */
-	public List getShipToAddresses() {
+	public List<ErpAddressModel> getShipToAddresses() {
 		// shallow copy
-		return (java.util.List) this.shipToAddress.clone();
+		return (List<ErpAddressModel>)this.shipToAddress.clone();
 	}
 
 	/**
@@ -117,18 +111,18 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 		return null != this.shipToAddress.removeByPK(pk);
 	}
 
-	public List getCustomerCredits() {
+	public List<ErpCustomerCreditModel> getCustomerCredits() {
 		// shallow copy
-		return (java.util.List) this.customerCredits.clone();
+		return (List<ErpCustomerCreditModel>) this.customerCredits.clone();
 	}
 
 	public void addCustomerCredit(ErpCustomerCreditModel element){
 		this.customerCredits.add(element);
 	}
 	
-	public List getCreditsForComplaint(String complaintId){
-		List complaintCredits = new ArrayList();
-		for(Iterator i = this.customerCredits.iterator(); i.hasNext();){
+	public List<ErpCustomerCreditModel> getCreditsForComplaint( String complaintId ){
+		List<ErpCustomerCreditModel> complaintCredits = new ArrayList<ErpCustomerCreditModel>();
+		for(Iterator<ErpCustomerCreditModel> i = this.customerCredits.iterator(); i.hasNext();){
 			ErpCustomerCreditModel customerCredit = (ErpCustomerCreditModel)i.next();
 			if(customerCredit.getComplaintPk().getId().equals(complaintId)){
 				complaintCredits.add(customerCredit);
@@ -147,7 +141,7 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 
 	public double getCustomerCreditRemainingAmount() {
 		double remainingCreditAmount = 0.0;
-		for (Iterator it = this.customerCredits.iterator(); it.hasNext(); ) {
+		for (Iterator<ErpCustomerCreditModel> it = this.customerCredits.iterator(); it.hasNext(); ) {
 			ErpCustomerCreditModel credit = (ErpCustomerCreditModel) it.next();
 			remainingCreditAmount += credit.getRemainingAmount();
 		}
@@ -170,8 +164,8 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	    this.active = active;
 	}
 
-	public List getPaymentMethods() {
-	    return (java.util.List) this.paymentMethodList.clone();
+	public List<ErpPaymentMethodI> getPaymentMethods() {
+	    return (List<ErpPaymentMethodI>)this.paymentMethodList.clone();
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element){
@@ -190,8 +184,8 @@ public class ErpCustomerModel extends ModelSupport implements ErpCustomerI {
 	    return this.customerAlerts == null || this.customerAlerts.size()> 0;
 	}
 
-	public List getCustomerAlerts() {
-	    return (java.util.List) this.customerAlerts.clone();
+	public List<ErpCustomerAlertModel> getCustomerAlerts() {
+	    return (List<ErpCustomerAlertModel>) this.customerAlerts.clone();
 	}
 
 	public void addCustomerAlert(ErpCustomerAlertModel element){

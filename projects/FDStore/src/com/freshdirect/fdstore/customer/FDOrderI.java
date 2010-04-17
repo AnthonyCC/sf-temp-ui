@@ -179,4 +179,6 @@ public interface FDOrderI extends FDCartI {
 	public ErpOrderLineModel getOrderLineByNumber(String orderlineNumber);
 	
 	public ErpGCDlvInformationHolder getGCDlvInformationHolder(String givexNumber);
+	
+	public String getStandingOrderId();
 }

@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.customer.ErpCustomerInfoModel"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerFactory"%>
 <%@ page import="com.freshdirect.common.address.*"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%
 Collection pickups = FDDepotManager.getInstance().getPickupDepots();
 boolean theHamptonsIsOn = FDStoreProperties.getHamptons();
@@ -29,7 +30,8 @@ String hamptonsPickup = request.getParameter("hamptons_pickup");
 if( hamptonsPickup==null) hamptonsPickup="";
 
 if(pickups.size() > 0){  %>
-	<table border="0" cellpadding="0" cellspacing="0" width="675">
+	
+<table border="0" cellpadding="0" cellspacing="0" width="675">
 		<tr>
 			<td><img src="/media_stat/images/template/checkout/pickup_locations.gif" alt="PICK UP LOCATIONS"></td>
 		</tr>

@@ -1,20 +1,9 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.framework.core;
 
 import javax.ejb.EJBObject;
 import java.rmi.RemoteException;
 
 /** the basic interface that all entity bean remote interfaces should implement
- * @version $Revision$
- * @author $Author$
  */ 
 public interface EntityBeanRemoteI extends IdentifiedI, ModelConsumerI, ModelProducerI, EJBObject {
     

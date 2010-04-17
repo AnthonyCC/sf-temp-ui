@@ -83,6 +83,7 @@ import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.OrderPermissionsI;
 import com.freshdirect.webapp.util.OrderPermissionsImpl;
+import com.freshdirect.webapp.util.ShoppingCartUtil;
 import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpAddressModel;
 /**
@@ -417,13 +418,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Cancel Modify order: load the shopping cart with the old items
 		//
 		try {
-			FDCartModel originalCart = FDCustomerManager.recognize(currentUser.getIdentity()).getShoppingCart();
-			currentUser.setShoppingCart( originalCart );
-			currentUser.invalidateCache();
-
-			session.setAttribute( SessionName.USER, currentUser );
-            //The previous recommendations of the current user need to be removed.
-            session.removeAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
+			ShoppingCartUtil.restoreCart(session);
+			
     		FDGiftCardInfoList gcList = currentUser.getGiftCardList();
     		//Clear any hold amounts.
     		gcList.clearAllHoldAmount();

@@ -61,7 +61,7 @@ public class OrderHistoryInfoTag extends AbstractGetterTag {
 	public static class TagEI extends AbstractGetterTag.TagEI {
 
 		protected String getResultType() {
-			return "java.util.Collection";
+			return "java.util.Collection<com.freshdirect.fdstore.customer.FDOrderInfoI>";
 		}
 
 	}

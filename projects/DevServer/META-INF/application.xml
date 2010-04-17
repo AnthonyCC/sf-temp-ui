@@ -15,6 +15,9 @@
          <ejb>../FDStore/bin</ejb>
      </module>
      <module>
+         <ejb>../StandingOrdersService/bin</ejb>
+     </module>
+     <module>
         <web>
             <web-uri>../FDWebSite/docroot</web-uri>
             <context-root></context-root>

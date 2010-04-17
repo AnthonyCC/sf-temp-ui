@@ -1,9 +1,3 @@
-/*
- * Geocoder.java
- *
- * Created on February 11, 2002, 8:13 PM
- */
-
 package com.freshdirect.delivery.ejb;
 
 import java.sql.Connection;
@@ -15,7 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
@@ -40,17 +34,18 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class GeographyDAO {
 
+	@SuppressWarnings( "unused" )
 	private static final Category LOGGER = LoggerFactory.getInstance(GeographyDAO.class);
 
 	public GeographyDAO() {
 		super();
 	}
 
-	public ArrayList findSuggestionsForAmbiguousAddress(AddressModel address, Connection conn)
+	public List<AddressModel> findSuggestionsForAmbiguousAddress(AddressModel address, Connection conn)
 		throws SQLException,
 		InvalidAddressException {
 
-		ArrayList suggestions = new ArrayList();
+		ArrayList<AddressModel> suggestions = new ArrayList<AddressModel>();
 
 		//
 		// run address through the scrubber
@@ -105,7 +100,7 @@ public class GeographyDAO {
 		return suggestions;
 	}
 
-	private static void processSuggestions(ResultSet rs, ArrayList addresses, AddressModel origAddr, String bldgNum)
+	private static void processSuggestions(ResultSet rs, List<AddressModel> addresses, AddressModel origAddr, String bldgNum)
 		throws SQLException {
 		while (rs.next()) {
 			String s_pre = rs.getString("STREET_PRE_DIR");
@@ -254,7 +249,7 @@ public class GeographyDAO {
 					ps.setString(2, zipCode);
 					ps.setString(3, String.valueOf(bldgNumber));
 					rs = ps.executeQuery();
-					ArrayList streetNames = new ArrayList();
+					ArrayList<StreetName> streetNames = new ArrayList<StreetName>();
 					while (rs.next()) {
 						StreetName sname = new StreetName();
 						sname.preDir = rs.getString("STREET_PRE_DIR");
@@ -272,10 +267,10 @@ public class GeographyDAO {
 					//
 					StreetName correctName = null;
 					if (streetNames.size() == 1) {
-						correctName = (StreetName) streetNames.get(0);
+						correctName = streetNames.get(0);
 					} else if (multiples) {
-						for (Iterator nIter = streetNames.iterator(); nIter.hasNext();) {
-							StreetName aName = (StreetName) nIter.next();
+						for (Iterator<StreetName> nIter = streetNames.iterator(); nIter.hasNext();) {
+							StreetName aName = nIter.next();
 							if (aName.normal.equals(streetNormal)) {
 								multiples = false;
 								correctName = aName;
@@ -341,7 +336,7 @@ public class GeographyDAO {
 			ps.setString(5, apt);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				address.setCity(StringUtils.capitaliseAllWords(rs.getString("CITY").toLowerCase()));
+				address.setCity( WordUtils.capitalizeFully( rs.getString( "CITY" ) ) );
 				address.setState(rs.getString("STATE"));
 				info.setCounty(rs.getString("COUNTY"));
 				info.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
@@ -381,7 +376,7 @@ public class GeographyDAO {
 			ps.setString(3, String.valueOf(bldgNumber));
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				address.setCity(StringUtils.capitaliseAllWords(rs.getString("CITY").toLowerCase()));
+				address.setCity( WordUtils.capitalizeFully( rs.getString("CITY") ) );
 				address.setState(rs.getString("STATE"));
 				info.setCounty(rs.getString("COUNTY"));
 				info.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
@@ -445,7 +440,9 @@ public class GeographyDAO {
 	private final static double XmetersToDeg = 1.0 / 84515.0; // meters per degree longitude approx at 40.7 deg latitude
 	private final static double YmetersToDeg = 1.0 / 111048.0; // meters per degree latitude approx at 40.7 deg latitude
 
+	@SuppressWarnings( "unused" )
 	private final static double slopeAdjustment = YmetersToDeg / XmetersToDeg;
+	
 	private final static String streetSegQuery = "SELECT ng.link_id, ng.l_addrsch, ng.r_addrsch, ng.l_nrefaddr, ng.l_refaddr, "
 		+ "ng.r_nrefaddr, ng.r_refaddr, ng.l_postcode, ng.r_postcode, "
 		+ "gg.column_value AS coord "
@@ -1005,7 +1002,7 @@ public class GeographyDAO {
 		return buff.toString();
 	}
 
-	public ArrayList findApartmentRanges(AddressModel address, Connection conn) throws InvalidAddressException, SQLException {
+	public ArrayList<DlvApartmentRange> findApartmentRanges(AddressModel address, Connection conn) throws InvalidAddressException, SQLException {
 		//
 		// run address through the scrubber
 		//
@@ -1037,7 +1034,7 @@ public class GeographyDAO {
 
 		String streetNormal = compress(streetName);
 
-		ArrayList ranges = new ArrayList();
+		ArrayList<DlvApartmentRange> ranges = new ArrayList<DlvApartmentRange>();
 
 		String[] zipCodeList = getZipCodeFromAddress(address);
 		String zipCode = null;
@@ -1166,7 +1163,7 @@ public class GeographyDAO {
 		if (rs.next()) {
 			city = rs.getString("CITY");
 			if(city != null) {
-				address.setCity(StringUtils.capitaliseAllWords(city.toLowerCase()));
+				address.setCity( WordUtils.capitalizeFully( city ) );
 			}
 			info.setAddressType(EnumAddressType.getEnum(rs.getString("ADDRESS_TYPE")));
 			info.setCounty(rs.getString("COUNTY"));
@@ -1251,14 +1248,14 @@ public class GeographyDAO {
 
 	private final static String SEARCH_GEOCODE_EXCEPTION = "select SCRUBBED_ADDRESS, ZIPCODE, LATITUDE, LONGITUDE from dlv.geocode_exceptions where scrubbed_address LIKE ? and zipcode LIKE ? ";
 
-	public List searchGeocodeException(Connection conn, ExceptionAddress ex) throws SQLException {
+	public List<ExceptionAddress> searchGeocodeException(Connection conn, ExceptionAddress ex) throws SQLException {
 
 			PreparedStatement ps = conn.prepareStatement(SEARCH_GEOCODE_EXCEPTION);
 			ps.setString(1, "".equals(ex.getScrubbedAddress()) ? "%" : "%" + ex.getScrubbedAddress().toUpperCase() + "%");
 			ps.setString(2, "".equals(ex.getZip()) ? "%" : ex.getZip());
 			ResultSet rs = ps.executeQuery();
 
-			List exceptions = new ArrayList();
+			List<ExceptionAddress> exceptions = new ArrayList<ExceptionAddress>();
 			while(rs.next()){
 				ExceptionAddress ea = new ExceptionAddress();
 				ea.setScrubbedAddress(rs.getString("SCRUBBED_ADDRESS"));
@@ -1323,8 +1320,8 @@ public class GeographyDAO {
 
 	private final static String COUNTIES_STATE = "select county from dlv.city_state where state = ? group by county";
 
-	public List getCountiesByState(Connection conn, String stateAbbrev) throws SQLException {
-		List counties = new ArrayList();
+	public List<String> getCountiesByState(Connection conn, String stateAbbrev) throws SQLException {
+		List<String> counties = new ArrayList<String>();
 
 		PreparedStatement ps = conn.prepareStatement(COUNTIES_STATE);
 		ps.setString(1, stateAbbrev);
@@ -1344,8 +1341,8 @@ public class GeographyDAO {
 											"where zpf.CITY_STATE_KEY = cs.CITY_STATE_KEY " +
 											"and zipcode = ? " +
 											"group by city";
-	public List lookupCitiesByZip(Connection conn, String zipcode) throws SQLException {
-		List cities = new ArrayList();
+	public List<String> lookupCitiesByZip(Connection conn, String zipcode) throws SQLException {
+		List<String> cities = new ArrayList<String>();
 
 		PreparedStatement ps = conn.prepareStatement(CITY_ZIP);
 		ps.setString(1, zipcode);
@@ -1405,7 +1402,7 @@ public class GeographyDAO {
 				if(county == null){
 					return EnumAddressVerificationResult.NOT_VERIFIED;
 				}
-				address.setCity(StringUtils.capitaliseAllWords(address.getCity().toLowerCase()));
+				address.setCity( WordUtils.capitalizeFully( address.getCity() ) );
 				address.getAddressInfo().setCounty(county);
 				address.getAddressInfo().setAddressType(EnumAddressType.STREET);
 
@@ -1424,13 +1421,13 @@ public class GeographyDAO {
 		"select  ID, SCRUBBED_ADDRESS, APT_NUM_LOW, APT_NUM_HIGH, ZIPCODE, ADDRESS_TYPE, REASON, CREATED_BY, MODTIME, COUNTY, STATE, CITY"
 		+" from dlv.zipplusfour_exceptions where scrubbed_address like ? and zipcode like ? order by scrubbed_address";
 
-	public List searchExceptionAddresses(Connection conn, ExceptionAddress address) throws SQLException{
+	public List<ExceptionAddress> searchExceptionAddresses(Connection conn, ExceptionAddress address) throws SQLException{
 		PreparedStatement ps = conn.prepareStatement(ZPF_EXCEPTION_SEARCH);
 		ps.setString(1, "".equals(address.getStreetAddress()) ? "%" : "%" + address.getStreetAddress().toUpperCase() + "%");
 		ps.setString(2, "".equals(address.getZip()) ? "%" : address.getZip());
 		ResultSet rs = ps.executeQuery();
 
-		List exceptions = new ArrayList();
+		List<ExceptionAddress> exceptions = new ArrayList<ExceptionAddress>();
 		while(rs.next()){
 			ExceptionAddress ea = new ExceptionAddress();
 			ea.setId(rs.getString("ID"));

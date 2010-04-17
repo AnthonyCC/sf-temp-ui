@@ -128,7 +128,7 @@ public class OrderPromotionHelper {
 		return false;
 	}
 	
-	public static boolean isRecipeEligible(String recipeSourceId , Set contentKeys) {
+	public static boolean isRecipeEligible(String recipeSourceId , Set<ContentKey> contentKeys) {
 		ContentKey rkey = ContentNodeModelUtil.getContentKey(EnumDCPDContentType.RECIPE.getName(), recipeSourceId); 
 		if(rkey != null && contentKeys.contains(rkey)){
 			//Line item is eligible for the recipe-id-level discount.

@@ -317,7 +317,7 @@ public class SmartStoreConfigurationStrategy extends FallbackConfigurationStrate
 	 * 
 	 * @return List<FDCustomerProductListLineItem>
 	 */
-	protected List getUserLineItems(String erpCustomerPK, List skuCodes) throws FDResourceException {
+	protected List<FDCustomerListItem> getUserLineItems(String erpCustomerPK, List<String> skuCodes) throws FDResourceException {
 		FDCustomerProductList details = FDListManager.getOrderDetails(erpCustomerPK, skuCodes);
 		return details.getLineItems();
 	}

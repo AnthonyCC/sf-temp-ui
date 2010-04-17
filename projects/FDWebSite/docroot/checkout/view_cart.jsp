@@ -108,7 +108,7 @@ StringBuffer buffer = new StringBuffer(
     //Reload the DP status from Database to make the session and DB are in sync.
     user.updateDlvPassInfo();
     //TODO - Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
-   user.getDCPDPromoProductCache().clear();
+	user.getDCPDPromoProductCache().clear();
 
 %>
 
@@ -161,7 +161,7 @@ StringBuffer buffer = new StringBuffer(
 	<table width="693" border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 			<td width="30"><a href="/index.jsp" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" width="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></td>
-			<td width="345"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><br>and return to your cart.<br><img src="/media_stat/images/layout/clear.gif" width="340" HEIGHT="1" border="0"></td>
+			<td width="345"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"><br>and return to your cart.<br><img src="/media_stat/images/layout/clear.gif" width="340" HEIGHT="1" border="0"></td>
 			<td width="283" align="right" valign="middle"><input type="image" name="checkout" src="/media_stat/images/buttons/checkout.gif" width="57" HEIGHT="9" border="0" alt="CHECKOUT" VSPACE="0"></td>
 			<td width="35" align="right"><font class="space2pix"><br></font><input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif" width="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></td>
 		</tr>

@@ -47,7 +47,7 @@ public abstract class DYFService extends BaseContentKeyRecommendationService {
 
 	protected DyfModelHome getModelHome() {
 		try {
-			return (DyfModelHome) serviceLocator.getRemoteHome("freshdirect.smartstore.DyfModelHome", DyfModelHome.class);
+			return (DyfModelHome) serviceLocator.getRemoteHome("freshdirect.smartstore.DyfModelHome");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

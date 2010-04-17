@@ -1,12 +1,3 @@
-/*
- * $Workfile:$
- *
- * $Date:$
- *
- * Copyright (c) 2003 FreshDirect
- *
- */
- 
 package com.freshdirect.fdstore.customer;
 
 import java.util.Comparator;
@@ -25,12 +16,6 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 
 
-/**
- * FDProductI
- *
- * @version    $Revision:$
- * @author     $Author:$
- */
 public interface FDProductSelectionI extends FDConfigurableI {
 		
 	public FDSku getSku();
@@ -58,7 +43,7 @@ public interface FDProductSelectionI extends FDConfigurableI {
 
 	public void setSalesUnit(String salesUnit);
 	
-	public void setOptions(Map options);
+	public void setOptions(Map<String,String> options);
 	
 	public boolean isAlcohol();
 
@@ -151,6 +136,7 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	 */
 	public void setOriginatingProductId(String originatingProductId);
 	
+	public PricingContext getPricingContext();
 	
 	public void setPricingContext(PricingContext pCtx) ;
 	
@@ -170,54 +156,36 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	
 	public void refreshConfiguration() throws FDResourceException, FDInvalidConfigurationException;
 	
-	public final static Comparator FREQUENCY_COMPARATOR = new Comparator() {
+	public final static Comparator<FDProductSelectionI> FREQUENCY_COMPARATOR = new Comparator<FDProductSelectionI>() {
 
-		public int compare(Object o1, Object o2) {
-			FDProductSelectionI  h1 = (FDProductSelectionI) o1;
-			FDProductSelectionI h2 = (FDProductSelectionI) o2;
-			
-			int retValue = ((FDProductSelectionI)o1).getDepartmentDesc().compareTo(((FDProductSelectionI)o2).getDepartmentDesc());
-			
-			if(retValue == 0){
+		public int compare( FDProductSelectionI h1, FDProductSelectionI h2 ) {
+			int retValue = h1.getDepartmentDesc().compareTo(h2.getDepartmentDesc());			
+			if ( retValue == 0 ) {
 				retValue = (h2.getStatistics() == null ? 0 : h2.getStatistics().getFrequency()) - (h1.getStatistics() == null ? 0 : h1.getStatistics().getFrequency());
-			}
-			
+			}			
 			return retValue;
 		}
-
 	};
 	
-	public final static Comparator RECENT_PURCHASE_COMPARATOR_DESC = new Comparator() {
+	public final static Comparator<FDProductSelectionI> RECENT_PURCHASE_COMPARATOR_DESC = new Comparator<FDProductSelectionI>() {
 
-		public int compare(Object o1, Object o2) {
-			FDProductSelectionI h1 = (FDProductSelectionI) o1;
-			FDProductSelectionI h2 = (FDProductSelectionI) o2;
-			
-			int retValue = ((FDProductSelectionI)o1).getDepartmentDesc().compareTo(((FDProductSelectionI)o2).getDepartmentDesc());
+		public int compare( FDProductSelectionI h1, FDProductSelectionI h2 ) {
+			int retValue = h1.getDepartmentDesc().compareTo(h2.getDepartmentDesc());
 			if(retValue == 0){
-				retValue = (h2.getStatistics() == null ? new Date(0) : h2.getStatistics().getLastPurchase()).compareTo(h1 == null ? new Date(0) : h1.getStatistics().getLastPurchase());
-			}
-			
-			return retValue;
-			
+				retValue = (h2.getStatistics() == null ? new Date(0) : h2.getStatistics().getLastPurchase()).compareTo(h1.getStatistics() == null ? new Date(0) : h1.getStatistics().getLastPurchase());
+			}			
+			return retValue;			
 		}
-
 	};
 	
-	public final static Comparator DESCRIPTION_COMPARATOR = new Comparator() {
+	public final static Comparator<FDProductSelectionI> DESCRIPTION_COMPARATOR = new Comparator<FDProductSelectionI>() {
 
-		public int compare(Object o1, Object o2) {
-			FDProductSelectionI h1 = (FDProductSelectionI) o1;
-			FDProductSelectionI h2 = (FDProductSelectionI) o2;
-			
-			int retValue = ((FDProductSelectionI)o1).getDepartmentDesc().compareTo(((FDProductSelectionI)o2).getDepartmentDesc());
-			
+		public int compare( FDProductSelectionI h1, FDProductSelectionI h2 ) {
+			int retValue = h1.getDepartmentDesc().compareTo(h2.getDepartmentDesc());			
 			if(retValue == 0){
 				return h1.getDescription().compareTo(h2.getDescription());
-			}
-			
+			}			
 			return retValue;
 		}
-
 	};
 }

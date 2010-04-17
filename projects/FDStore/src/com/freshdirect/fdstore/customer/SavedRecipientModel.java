@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.customer;
 
-import java.util.Random;
-
 import com.freshdirect.giftcard.RecipientModel;
 
 public class SavedRecipientModel extends RecipientModel {

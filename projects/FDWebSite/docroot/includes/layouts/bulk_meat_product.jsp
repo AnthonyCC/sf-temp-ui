@@ -10,13 +10,15 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import="com.freshdirect.common.pricing.Pricing"%>
+<%@ page import="java.io.InputStream"%>
+<%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<fd:CheckLoginStatus id="user"/>
 <%
 //********** Start of Stuff to let JSPF's become JSP's **************
-
-FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
 String catId = request.getParameter("catId"); 
 String deptId = request.getParameter("deptId"); 
@@ -44,7 +46,6 @@ String singleSuccessPage = "/cart_confirm.jsp?catId="+catId;
 request.setAttribute("successPage",singleSuccessPage);
 
 %>
-<fd:CheckLoginStatus />
 <fd:FDShoppingCart id='cart' action='addToCart' result='result' multiSuccessPage='<%=multiSuccessPage%>' successPage='<%=singleSuccessPage%>'>
 <%
 request.removeAttribute("successPage");
@@ -75,8 +76,8 @@ String akaName = "";
 String packageDesc = "";
 ProductModel firstProduct = null;
 FDProduct firstFDProduct=null;
-List prodSkus = null;
-List skus = new ArrayList();
+List<SkuModel> prodSkus = null;
+List<SkuModel> skus = new ArrayList<SkuModel>();
 String IMAGE_GREEN_ARROW_DOWN = "/media/images/layout/grn_arrow_down.gif";
 String IMAGE_GREEN_ARROW_UP = "/media/images/layout/grn_arrow_up.gif";
 String IMAGE_CLEAR = "/media/images/layout/clear.gif";
@@ -105,10 +106,10 @@ for(Iterator itr= sortedColl.iterator();itr.hasNext();){
 
     String price = "";
 //   SkuModel sku = null; 
-    defaultSku = (SkuModel)prodSkus.get(0);
+    defaultSku = prodSkus.get(0);
     if (prodSkus.size()>1) {
-        for (ListIterator li=prodSkus.listIterator(); li.hasNext(); ) { 
-             defaultSku = (SkuModel)li.next();
+        for (ListIterator<SkuModel> li=prodSkus.listIterator(); li.hasNext(); ) { 
+             defaultSku = li.next();
             if ( defaultSku.isUnavailable() ) {
                li.remove();
             }
@@ -120,7 +121,7 @@ for(Iterator itr= sortedColl.iterator();itr.hasNext();){
         continue;
     }
     
-    defaultSku = (SkuModel)prodSkus.get(0);
+    defaultSku = prodSkus.get(0);
 
     isAvailable = true;
     prodMinQuantity = firstProduct.getQuantityMinimum();
@@ -169,7 +170,7 @@ String brandPopupLink=null;
 String brandName = null;
 // get the brand logo, if any.
 if (firstProduct!=null) {
-    List prodBrands = firstProduct.getBrands();
+    List<BrandModel> prodBrands = firstProduct.getBrands();
     if (prodBrands!=null && prodBrands.size() > 0 ) {
         BrandModel bm = (BrandModel)prodBrands.get(0);
         if (bm!=null){
@@ -281,10 +282,10 @@ String prodDescPath = null;
 // get the images and Content for this product
     prodSkus = bulkProduct.getSkus();
     if (prodSkus.size()>1) {
-        for (ListIterator li=prodSkus.listIterator(); li.hasNext(); ) { 
-             defaultSku = (SkuModel)li.next();
+        for (ListIterator<SkuModel> li=prodSkus.listIterator(); li.hasNext(); ) { 
+            defaultSku = li.next();
             if ( defaultSku.isUnavailable() ) {
-               li.remove();
+                li.remove();
             }
         }
     }
@@ -297,10 +298,10 @@ String prodDescPath = null;
     String price = "";
     SkuModel sku = null; 
     if (skuSize==1) {
-        leastPriceSku = (com.freshdirect.fdstore.content.SkuModel)prodSkus.get(0);  // we only need one sku
+        leastPriceSku = prodSkus.get(0);  // we only need one sku
     } else {
-        Comparator priceComp = new com.freshdirect.fdstore.content.ProductModel.PriceComparator();
-        leastPriceSku = (com.freshdirect.fdstore.content.SkuModel) Collections.min(prodSkus, priceComp);
+        Comparator<SkuModel> priceComp = new ProductModel.PriceComparator();
+        leastPriceSku = Collections.<SkuModel>min(prodSkus, priceComp);
     }
     bulkImage = bulkProduct.getDetailImage();
     if (bulkProduct.getProductDescription()==null) {
@@ -325,9 +326,9 @@ String prodDescPath = null;
 <% 
     // show the sku options
     FDProduct blkFDProd=null;
-    for(Iterator skuItr = prodSkus.iterator();skuItr.hasNext();){
-        sku = (SkuModel)skuItr.next();
-        if (((SkuModel)sku).isUnavailable()) continue;
+    for(Iterator<SkuModel> skuItr = prodSkus.iterator();skuItr.hasNext();){
+        sku = skuItr.next();
+        if (sku.isUnavailable()) continue;
         String skuPrice = "";
         String skuSalesUnit="";
         String gradePath="";
@@ -471,10 +472,7 @@ if (cvprice > 0.0) { %>
 <TD COLSPAN="4" WIDTH="400" BGCOLOR="#999966"><IMG src="/media_stat/images/layout/999966.gif" WIDTH="1" HEIGHT="1"></TD>
 </TR>
 <tr><TD colspan="4" ALIGN="center"><br>
-<%
-String add_button ="/media/images/buttons/add_to_cart.gif";
-%>
-<input type="image" name="addToCart" src="<%= add_button%>"  ALT="ADD ITEMS TO YOUR CART" height="20" width="93" HSPACE="2" VSPACE="0" BORDER="0"><br>
+<input type="image" name="addToCart" src="/media/images/buttons/add_to_cart.gif"  ALT="ADD ITEMS TO YOUR CART" height="20" width="93" HSPACE="2" VSPACE="0" BORDER="0"><br>
 <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 
 <script type="text/javascript">

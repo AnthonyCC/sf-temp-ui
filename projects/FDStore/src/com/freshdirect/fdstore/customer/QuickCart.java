@@ -27,7 +27,7 @@ import com.freshdirect.fdstore.content.ProductModel;
  */
 public class QuickCart implements FDProductCollectionI {
 
-	private final List orderLines = new ArrayList();
+	private final List<FDProductSelectionI> orderLines = new ArrayList<FDProductSelectionI>();
 	private String orderId = null;
 	private Date deliveryDate = null;
 	private String productType="";
@@ -37,6 +37,7 @@ public class QuickCart implements FDProductCollectionI {
 	public static final String PRODUCT_TYPE_CCL="CCL";
 	public static final String PRODUCT_TYPE_PRD="PRODUCT";
 	public static final String PRODUCT_TYPE_STARTER_LIST="STARTER_LIST";
+	public static final String PRODUCT_TYPE_SO="SO";
 	
 
 	public QuickCart() {
@@ -77,7 +78,7 @@ public class QuickCart implements FDProductCollectionI {
 		//this.reSort();
 	}
 
-	public void addProducts(Collection cartLines) {
+	public void addProducts(Collection<FDProductSelectionI> cartLines) {
 		this.orderLines.addAll(cartLines);
 	}
 
@@ -98,9 +99,9 @@ public class QuickCart implements FDProductCollectionI {
 	}
 
 	// List<FDProductSelectionI>
-	public void setProducts(List lines) {
+	public void setProducts(List<FDProductSelectionI> lines) {
 		this.orderLines.clear();
-		for (Iterator i = lines.iterator(); i.hasNext();) {
+		for (Iterator<FDProductSelectionI> i = lines.iterator(); i.hasNext();) {
 			FDProductSelectionI product = (FDProductSelectionI) i.next();
 			if(getUserZoneId()!=null) product.setPricingContext(new PricingContext(getUserZoneId()));
 			this.orderLines.add(product);
@@ -117,7 +118,7 @@ public class QuickCart implements FDProductCollectionI {
 	}
 
 	public void zeroAllQuantities() {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+		for (Iterator<FDProductSelectionI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDProductSelectionI product = (FDProductSelectionI) i.next();
 			if (product.isSoldBySalesUnits()) {
 				product.setSalesUnit("");
@@ -136,14 +137,14 @@ public class QuickCart implements FDProductCollectionI {
 	}
 
 	// List<FDProductSelectionI>
-	public List getProducts() {
+	public List<FDProductSelectionI> getProducts() {
 		return Collections.unmodifiableList(this.orderLines);
 	}
 
 	// List<FDProductSelectionI>
-	public List getProducts(String deptId) {
-		List deptProducts = new ArrayList();
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
+	public List<FDProductSelectionI> getProducts(String deptId) {
+		List<FDProductSelectionI> deptProducts = new ArrayList<FDProductSelectionI>();
+		for (Iterator<FDProductSelectionI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDProductSelectionI productSelection = (FDProductSelectionI) i.next();
 			ProductModel product = productSelection.lookupProduct();
 			if (product.getDepartment().getContentName().equalsIgnoreCase(deptId)) {
@@ -153,12 +154,10 @@ public class QuickCart implements FDProductCollectionI {
 		return Collections.unmodifiableList(deptProducts);
 	}
 
-	private final static Comparator PRODUCT_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
+	private final static Comparator<FDProductSelectionI> PRODUCT_COMPARATOR = new Comparator<FDProductSelectionI>() {
+		public int compare(FDProductSelectionI product1, FDProductSelectionI product2) {
 			///order by Department and then by product.
-			FDProductSelectionI product1 = (FDProductSelectionI) o1;
-			FDProductSelectionI product2 = (FDProductSelectionI) o2;
-			
+		
 			int retValue = product1.getDepartmentDesc().compareTo(product2.getDepartmentDesc());
 			if (retValue == 0) {
 				retValue = product1.getDescription().compareTo(product2.getDescription());

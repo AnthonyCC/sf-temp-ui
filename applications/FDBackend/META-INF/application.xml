@@ -16,5 +16,8 @@
     <module>
       <ejb>DataLoaderEJB-WL.jar</ejb>
     </module>
+    <module>
+      <ejb>StandingOrdersService.jar</ejb>
+    </module>
     
 </application>

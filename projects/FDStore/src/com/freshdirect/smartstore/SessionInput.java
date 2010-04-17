@@ -146,10 +146,7 @@ public class SessionInput {
 	 * @return The current cart contents as Collection<@link {@link ContentKey}>
 	 */
 	public Set<ContentKey> getCartContents() {
-		if (cartContents != null)
-			return cartContents;
-		else
-			return Collections.emptySet();
+		return cartContents != null ? cartContents : Collections.<ContentKey>emptySet();
 	}
 	
 	public void setRecentItems(Set<ContentKey> recentItems) {
@@ -198,10 +195,7 @@ public class SessionInput {
 	}
 
 	public List<ContentNodeModel> getExplicitList() {
-		if (explicitList != null)
-			return explicitList;
-		else
-			return Collections.emptyList();
+		return explicitList != null ? explicitList : Collections.<ContentNodeModel>emptyList();
 	}
 
 	public void setExplicitList(List<ContentNodeModel> explicitList) {

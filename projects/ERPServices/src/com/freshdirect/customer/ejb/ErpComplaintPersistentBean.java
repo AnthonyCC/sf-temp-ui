@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import com.freshdirect.crm.ejb.CustomerEmailDAO;
@@ -29,6 +30,8 @@ import com.freshdirect.framework.core.PrimaryKey;
  */
 public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 
+	private static final long	serialVersionUID	= 2327472172245398226L;
+	
 	private ErpComplaintModel model = new ErpComplaintModel();
 	
 	/** Default constructor. */
@@ -82,8 +85,8 @@ public class ErpComplaintPersistentBean extends DependentPersistentBeanSupport {
 	 * @return a List of ErpComplaintPersistentBean objects (empty if found none).
 	 * @throws SQLException if any problems occur talking to the database
 	 */
-	public static List findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
-		java.util.List lst = new java.util.LinkedList();
+	public static List<ErpComplaintPersistentBean> findByParent(Connection conn, PrimaryKey parentPK) throws SQLException {
+		List<ErpComplaintPersistentBean> lst = new LinkedList<ErpComplaintPersistentBean>();
 		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.COMPLAINT WHERE SALE_ID=?");
 		ps.setString(1, parentPK.getId());
 		ResultSet rs = ps.executeQuery();

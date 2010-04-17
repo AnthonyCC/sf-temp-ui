@@ -8,16 +8,18 @@ import java.util.Map;
 
 public class EnumRestrictedAddressReason  implements Serializable {
 	
-	private final static Map STATUSCODE_MAP = new HashMap();
+	private static final long	serialVersionUID	= -8891749505635801945L;
+
+	private final static Map<String,EnumRestrictedAddressReason> STATUSCODE_MAP = new HashMap<String,EnumRestrictedAddressReason>();
 	
-	public static final EnumRestrictedAddressReason NONE = new EnumRestrictedAddressReason(1, "N", "No Restrictions");
-	public static final EnumRestrictedAddressReason ALCOHOL = new EnumRestrictedAddressReason(2, "A", "No Alcohol Delivery");
-	public static final EnumRestrictedAddressReason FRAUD = new EnumRestrictedAddressReason(3, "F", "Restricted due to fraud");
-	public static final EnumRestrictedAddressReason COMMERCIAL = new EnumRestrictedAddressReason(4, "C", "Commercial Address Restriction");
+	public static final EnumRestrictedAddressReason NONE 		= new EnumRestrictedAddressReason(1, "N", "No Restrictions");
+	public static final EnumRestrictedAddressReason ALCOHOL 	= new EnumRestrictedAddressReason(2, "A", "No Alcohol Delivery");
+	public static final EnumRestrictedAddressReason FRAUD		= new EnumRestrictedAddressReason(3, "F", "Restricted due to fraud");
+	public static final EnumRestrictedAddressReason COMMERCIAL 	= new EnumRestrictedAddressReason(4, "C", "Commercial Address Restriction");
 	
-	private final int id;
-	private final String code;
-	private final String description;
+	private final int 		id;
+	private final String 	code;
+	private final String 	description;
 	
 	public EnumRestrictedAddressReason(int id, String code, String description){
 		this.id = id;
@@ -46,12 +48,12 @@ public class EnumRestrictedAddressReason  implements Serializable {
 		return false;
 	}
 	
-	public static List getEnumList(){
-		List eList=new ArrayList();
-		eList.add(NONE);
-		eList.add(ALCOHOL);
-		eList.add(FRAUD);
-		eList.add(COMMERCIAL);
+	public static List<EnumRestrictedAddressReason> getEnumList() {
+		List<EnumRestrictedAddressReason> eList = new ArrayList<EnumRestrictedAddressReason>();
+		eList.add( NONE );
+		eList.add( ALCOHOL );
+		eList.add( FRAUD );
+		eList.add( COMMERCIAL );
 		return eList;
 	}
 

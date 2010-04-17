@@ -1,6 +1,12 @@
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Comparator"%>
+<%@ page import='java.util.Date' %>
+<%@ page import='java.util.Calendar' %>
+<%@ page import='java.util.TreeSet' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*'%>
 <%@ page import='com.freshdirect.fdstore.lists.*'%>
-<%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -8,17 +14,13 @@
 <%@ page import='com.freshdirect.framework.util.DateUtil' %>
 <%@ page import='com.freshdirect.framework.util.StringUtil' %>
 <%@ page import='com.freshdirect.fdstore.content.StarterList' %>
-<%@ page import='java.util.Date' %>
-<%@ page import='java.util.Calendar' %>
-<%@ page import='java.util.TreeSet' %>
-<%@ page import='java.util.List' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
 
+<%@page import="java.util.Collections"%><fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
 <fd:FDCustomerCreatedList id="lists" action="loadLists">
 
 <%        
@@ -119,34 +121,33 @@
 		    <TR>
                          <TD> <font class="textprbold" color="#996699"><b>LIST NAME</b></font></TD>
                          <TD> <font class="textprbold" color="#996699"><b>UPDATED</b></font></TD>
-			 <TD/>
 		    </TR>
 <%
-			    Comparator comparator = null;
-			    if (sortField.equals("update")) comparator = FDCustomerCreatedList.getModificationDateComparator();
-			    else if (sortField.equals("item_count")) comparator = FDCustomerCreatedList.getItemCountComparator();
-			    else if (sortField.equals("name")) comparator = FDCustomerCreatedList.getNameComparator();
-			    TreeSet sorted = new TreeSet(comparator);
-			    sorted.addAll(lists);
+			    Comparator<FDCustomerList> comparator = null;
+			    if (sortField.equals("update")) comparator = FDCustomerList.getModificationDateComparator();
+			    else if (sortField.equals("item_count")) comparator = FDCustomerList.getItemCountComparator();
+			    else if (sortField.equals("name")) comparator = FDCustomerList.getNameComparator();
+			    
+			    Collections.sort( lists, comparator );
 
-                            for(Iterator I = sorted.iterator(); I.hasNext();) {
-                               FDCustomerCreatedList list = (FDCustomerCreatedList)I.next();
-			       int n = list.getCount();
-%>
-                            <TR>
-			        <TD>
-				   <span id="list:<%=list.getId()%>,<%=n%>"><b><a href="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=list.getId()%>"><%= StringUtil.escapeHTML(list.getName())%></a></b> <nobr>(<%=n%> <%= n == 1 ? " Item" :" Items"%>)</nobr></span><br/>
-				</TD>
-				<TD>
-				   <%= DateUtil.relativeDifferenceAsString(new Date(), list.getModificationDate()) %>
-				</TD>
-				<TD>
-				   <a href="/unsupported.jsp" onclick="return CCL.rename_list('<%= StringUtil.escapeHTML(StringUtil.escapeJavaScript(list.getName()))%>', this);">RENAME</a>
-				</TD>
-			    </TR>
-<%
-			    }
-%>
+				for( FDCustomerList list : lists ) {
+					int n = 0;
+					if ( list instanceof FDCustomerCreatedList ) n = ((FDCustomerCreatedList)list).getCount();
+					else if ( list instanceof FDCustomerListInfo ) n = ((FDCustomerListInfo)list).getCount();
+					%>
+					<TR>
+						<TD>
+							<span id="list:<%=list.getId()%>,<%=n%>"><b><a href="/quickshop/shop_from_list.jsp?<%=CclUtils.CC_LIST_ID%>=<%=list.getId()%>"><%= StringUtil.escapeHTML(list.getName())%></a></b> <nobr>(<%=n%> <%= n == 1 ? " Item" :" Items"%>)</nobr></span><br/>
+						</TD>
+						<TD>
+							<%= DateUtil.relativeDifferenceAsString(new Date(), list.getModificationDate()) %>
+						</TD>
+						<TD>
+						   <a href="/unsupported.jsp" onclick="return CCL.rename_list('<%= StringUtil.escapeHTML(StringUtil.escapeJavaScript(list.getName()))%>', this);">RENAME</a>
+						</TD>
+					</TR>
+				<% } %>
+				
                    </TABLE>
                    </TD>
 			     
@@ -233,5 +234,4 @@
 
 </tmpl:insert>
 
-</body>
 </fd:FDCustomerCreatedList>

@@ -2,6 +2,7 @@ package com.freshdirect.framework.xml;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -191,6 +192,9 @@ public class XMLSerializer {
 				if (method.getParameterTypes().length!=0) {
 					continue;
 				}
+				
+				if (method.isAnnotationPresent(ExcludeFromXmlSerializer.class))
+					continue;
 				
 				String childName = this.mapMethod(method);
 				if (childName==null) {

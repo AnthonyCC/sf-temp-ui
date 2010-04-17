@@ -1,18 +1,7 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -25,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Category;
 
@@ -59,17 +47,17 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
-import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
-import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
+import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -78,6 +66,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.callcenter.ComplaintUtil;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDEventUtil;
@@ -85,21 +74,13 @@ import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.RequestUtil;
 
-/**
- * 
- * @version $Revision$
- * @author $Author$
- */
-public class FDShoppingCartControllerTag extends
-		com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
-	/**
-	 * 
-	 */
+public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {
+
+
 	private static final long serialVersionUID = -7350790143456750035L;
 
-	private static Category LOGGER = LoggerFactory
-			.getInstance(FDShoppingCartControllerTag.class);
+	private static Category LOGGER = LoggerFactory.getInstance(FDShoppingCartControllerTag.class);
 
 	private String id;
 
@@ -115,7 +96,7 @@ public class FDShoppingCartControllerTag extends
 
 	private boolean cleanupCart = false;
 
-	private List removeIds;
+	private List<Integer> removeIds;
 
 	private HttpServletRequest request;
 
@@ -126,14 +107,11 @@ public class FDShoppingCartControllerTag extends
 	/**
 	 * Cartlines already processed, BUT not yet added to the cart.
 	 */
-	private List cartLinesToAdd = Collections.EMPTY_LIST;
+	private List<FDCartLineI> cartLinesToAdd = Collections.emptyList();
 
-	private List frmSkuIds = new ArrayList();
+	private List<String> frmSkuIds = new ArrayList<String>();
 
 	private final String GENERAL_ERR_MSG = "The marked lines have invalid or missing data.";
-
-	// PK from original order
-	private String orderId = null;
 
 	// OrderLine credit inputs
 	private String[] orderLineId = null;
@@ -142,6 +120,7 @@ public class FDShoppingCartControllerTag extends
 	// Credit notes
 	String description = "Make good 0 credit complaint";
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -199,6 +178,8 @@ public class FDShoppingCartControllerTag extends
 		return "addMultipleToCart".equals(action) || "addToCart".equals(action);
 	}
 
+
+	@Override
 	public int doStartTag() throws JspException {
 		HttpSession session = pageContext.getSession();
 
@@ -241,12 +222,17 @@ public class FDShoppingCartControllerTag extends
 				pageContext.setAttribute(resultName, result);
 				return EVAL_BODY_BUFFERED;
 			} else if ("CCL:ItemManipulate".equalsIgnoreCase(action)) {
-				String ccListId = (String) request
-						.getParameter(CclUtils.CC_LIST_ID);
-				String lineId = (String) request.getParameter("lineId");
-				String listAction = (String) request
-						.getParameter("list_action");
+				String ccListId = request.getParameter(CclUtils.CC_LIST_ID);
+				String lineId = request.getParameter("lineId");
+				String listAction = request.getParameter("list_action");
 
+				String qcType = request.getParameter("qcType");
+				if (qcType == null || "".equals(qcType))
+					qcType = QuickCart.PRODUCT_TYPE_CCL;
+
+				if (!(qcType.equals(QuickCart.PRODUCT_TYPE_CCL) || qcType.equals(QuickCart.PRODUCT_TYPE_SO)))
+					throw new JspException("Invalid list type " + qcType);
+				
 				boolean worked = false;
 				try {
 					if ("modify".equalsIgnoreCase(listAction)) {
@@ -259,97 +245,80 @@ public class FDShoppingCartControllerTag extends
 
 						// the list is only stored if actual modifications take
 						// place
-						FDCustomerCreatedList cclist = FDListManager
-								.getCustomerCreatedList(user.getIdentity(),
-										ccListId);
-						List items = cclist.getLineItems();
+						FDCustomerList cclist = FDListManager.getCustomerListById(
+								user.getIdentity(),
+								QuickCart.PRODUCT_TYPE_SO.equals(qcType) ? EnumCustomerListType.SO : EnumCustomerListType.CC_LIST,
+								ccListId);
+						List<FDCustomerListItem> items = cclist.getLineItems();
 						worked = true;
-						for (Enumeration e = request.getParameterNames(); e
-								.hasMoreElements();) {
-							String paramName = (String) e.nextElement();
-							if (paramName.startsWith("skuCode")) {
-								String suffix = paramName.substring("skuCode"
-										.length());
 
-								FDCartLineI cartI = this.processCartLine(
-										suffix, null, true, false);
+						for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
+							String paramName = e.nextElement();
+							if (paramName.startsWith("skuCode")) {
+								String suffix = paramName.substring("skuCode".length());
+
+								FDCartLineI cartI = this.processCartLine(suffix, null, true, false);
+
 								if (cartI != null) {
 									boolean found = false;
-									for (Iterator I = items.iterator(); I
-											.hasNext();) {
-										FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) I
-												.next();
+									for (Iterator<FDCustomerListItem> I = items.iterator(); I.hasNext();) {
+										FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) I.next();
 										if (item.getId().equals(lineId)) {
 											found = true;
 											I.remove();
-											FDCustomerProductListLineItem li = new FDCustomerProductListLineItem(
-													cartI.getSkuCode(),
-													new FDConfiguration(cartI
-															.getConfiguration()),
-													cartI.getRecipeSourceId());
+											FDCustomerProductListLineItem li = new FDCustomerProductListLineItem(cartI.getSkuCode(),
+													new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 											li.setFrequency(1);
+
 											cclist.addLineItem(li);
-											FDListManager
-													.storeCustomerList(cclist);
-											user.invalidateCache();
-											QuickCartCache.invalidateOnChange(
-													session,
-													QuickCart.PRODUCT_TYPE_CCL,
-													ccListId, null);
+											FDListManager.storeCustomerList(cclist);
+
+											// invalidate caches
+											QuickCartCache.invalidateOnChange(session, qcType, ccListId, null);
 											break;
 										}
 									}
+
 									if (!found)
-										LOGGER.warn("Item with id " + lineId
-												+ " is not on list");
+										LOGGER.warn("Item with id " + lineId + " is not on list");
 								} else
 									worked = false;
 							} // item
 						} // items
 					} else if ("remove".equalsIgnoreCase(listAction)) {
-						FDListManager.removeCustomerListItem(user,
-								new PrimaryKey(lineId));
-						QuickCartCache.invalidateOnChange(session,
-								QuickCart.PRODUCT_TYPE_CCL, ccListId, null);
+						FDListManager.removeCustomerListItem(user, new PrimaryKey(lineId));
+						QuickCartCache.invalidateOnChange(session, qcType, ccListId, null);
 						user.invalidateCache();
+
 						worked = true;
 					} else {
-						LOGGER.warn("list_action = " + listAction
-								+ " (remove or modify accepted)");
-						throw new JspException(
-								"Incorrect request parameter: list_action= "
-										+ listAction);
+						LOGGER.warn("list_action = " + listAction + " (remove or modify accepted)");
+						throw new JspException( "Incorrect request parameter: list_action= " + listAction);
 					}
 
 					if (worked) {
 
-						HttpServletResponse response = (HttpServletResponse) pageContext
-								.getResponse();
-						String redirectURL = response
-								.encodeRedirectURL(successPage);
+						HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+						String redirectURL = response.encodeRedirectURL(successPage);
 						if (redirectURL == null)
 							redirectURL = request.getParameter("successPage");
 						if (redirectURL == null)
 							return SKIP_BODY;
-						LOGGER.debug("List modified, redirecting to "
-								+ redirectURL);
+						LOGGER.debug("List modified, redirecting to " + redirectURL);
 						response.sendRedirect(redirectURL);
-						JspWriter writer = pageContext.getOut();
-						//writer.close();
+
 						return SKIP_BODY;
 					}
 				} catch (IOException ioe) {
-					throw new JspException("Error redirecting: "
-							+ ioe.getMessage());
+					throw new JspException("Error redirecting: "+ ioe.getMessage());
 				} catch (FDResourceException re) {
-					throw new JspException("Error in accessing resource: "
-							+ re.getMessage());
+					throw new JspException("Error in accessing resource: "+ re.getMessage());
 				}
 			} else if ("CCL:AddMultipleToList".equalsIgnoreCase(action)) {
 
 				FDCustomerCreatedList selection = null;
 
-				String source = (String) request.getParameter("source");
+				String source = request.getParameter("source");
 				if (source == null)
 					source = "";
 
@@ -360,9 +329,7 @@ public class FDShoppingCartControllerTag extends
 				} else if (source.startsWith("ccl_sidebar")) {
 					// use the selected ccl_sidebar's suffix, non-strict check,
 					// use product minimum, do not skip zeros
-					selection = getProductSelection(source
-							.substring("ccl_sidebar".length()), false, true,
-							false);
+					selection = getProductSelection(source.substring("ccl_sidebar".length()), false, true, false);
 				} else {
 					LOGGER.warn("Invalid source: " + source);
 					throw new JspException("Invalid source: " + source);
@@ -380,15 +347,12 @@ public class FDShoppingCartControllerTag extends
 
 			} else if ("CCL:copyToList".equalsIgnoreCase(action)) {
 				session.removeAttribute("SkusAdded");
-				String ccListId = (String) request
-						.getParameter(CclUtils.CC_LIST_ID);
+				String ccListId = request.getParameter(CclUtils.CC_LIST_ID);
 				String listName = null;
 				try {
-					listName = FDListManager.getListName(user.getIdentity(),
-							EnumCustomerListType.CC_LIST, ccListId);
+					listName = FDListManager.getListName(user.getIdentity(), ccListId);
 					if (listName == null)
-						throw new JspException("List with id " + ccListId
-								+ " not found");
+						throw new JspException("List with id " + ccListId + " not found");
 				} catch (FDResourceException e) {
 					e.printStackTrace();
 					throw new JspException(e);
@@ -396,15 +360,12 @@ public class FDShoppingCartControllerTag extends
 
 				// deduce suffices from request, strict only if not multiple, do
 				// not use minimum, skip zeros if multiple
-				boolean multiple = "multiple".equalsIgnoreCase((String) request
-						.getParameter("ccl_copy_type"));
+				boolean multiple = "multiple".equalsIgnoreCase(request.getParameter("ccl_copy_type"));
 
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				FDCustomerCreatedList selection = getProductSelection(null,
-						!multiple, false, multiple);
+				FDCustomerCreatedList selection = getProductSelection(null,!multiple, false, multiple);
 				checkResult.setSelection(selection);
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.COPY_SELECTION);
+				checkResult.setResponseType(ItemSelectionCheckResult.COPY_SELECTION);
 				checkResult.setListName(listName);
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
@@ -422,13 +383,11 @@ public class FDShoppingCartControllerTag extends
 				affectedLines = changeOrderLine() ? 1 : 0;
 			} else if ("updateQuantities".equalsIgnoreCase(action)) {
 				affectedLines = updateQuantities() ? 1 : 0;
-				if (!inCallCenter && successPage != null
-						&& successPage.indexOf("checkout/step") > -1)
+				if (!inCallCenter && successPage != null && successPage.indexOf("checkout/step") > -1)
 					try {
 						LOGGER.debug("  about to call calidate Order min");
 						cart.refreshAll();
-						UserValidationUtil
-								.validateCartNotEmpty(request, result);
+						UserValidationUtil.validateCartNotEmpty(request, result);
 					} catch (FDResourceException ex) {
 						throw new JspException(ex);
 					} catch (FDException e) {
@@ -448,45 +407,34 @@ public class FDShoppingCartControllerTag extends
 				if ("true".equals(request.getParameter("makegood"))) {
 					this.getFormData(request, result);
 					for (int i = 0; i < orderLineId.length; i++) {
-						if (orderLineId[i] == null
-								|| "".equals(orderLineId[i].trim())) {
-							result
-									.addError(new ActionError(
-											"system",
-											"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
+						if (orderLineId[i] == null || "".equals(orderLineId[i].trim())) {
+							result.addError(new ActionError(
+								"system",
+								"Order line ID from original order is missing, please go back clean all items in cart and select items from original order again."));
 						}
 					}
 					for (int i = 0; i < orderLineReason.length; i++) {
-						if (orderLineReason[i] == null
-								|| "".equals(orderLineReason[i].trim())) {
-							result.addError(new ActionError("system",
-									"Make good reason is missing"));
+						if (orderLineReason[i] == null || "".equals(orderLineReason[i].trim())) {
+							result.addError(new ActionError("system", "Make good reason is missing"));
 						}
 					}
 
 					try {
 						buildComplaint(result, complaintModel);
 					} catch (FDResourceException ex) {
-						LOGGER
-								.warn(
-										"FDResourceException while building ErpComplaintModel",
-										ex);
+						LOGGER.warn("FDResourceException while building ErpComplaintModel", ex);
 						throw new JspException(ex.getMessage());
 					}
-					session.setAttribute(SessionName.MAKEGOOD_COMPLAINT,
-							complaintModel);
-					session.setAttribute("makeGoodOrder", request
-							.getParameter("makeGoodOrder"));
-					session.setAttribute("referencedOrder", request
-							.getParameter("referencedOrder"));
+					session.setAttribute(SessionName.MAKEGOOD_COMPLAINT, complaintModel);
+					session.setAttribute("makeGoodOrder", request.getParameter("makeGoodOrder"));
+					session.setAttribute("referencedOrder", request.getParameter("referencedOrder"));
 				}
 			} else {
 				// unrecognized action, it's probably not for this tag then
 				// return EVAL_BODY_BUFFERED;
 				LOGGER.warn("Unrecognized action:" + action);
 			}
-		} else if ((request.getParameter("remove") != null)
-				&& "GET".equalsIgnoreCase(request.getMethod())) {
+		} else if ((request.getParameter("remove") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			if (request.getParameter("cartLine") == null) {
 				// no specific orderline -> remove all
 				affectedLines = this.removeAllCartLines();
@@ -506,15 +454,12 @@ public class FDShoppingCartControllerTag extends
 								  RequestUtil.getFilteredQueryString(request, new String[] {"remove", "cartLine"});
 				try {
 					response.sendRedirect(response.encodeRedirectURL(succPage));
-					JspWriter writer = pageContext.getOut();
-					//writer.close();
 				} catch (IOException e) {
 					return SKIP_BODY;
 				}
 			}
 		
-		} else if ((request.getParameter("removeRecipe") != null)
-				&& "GET".equalsIgnoreCase(request.getMethod())) {
+		} else if ((request.getParameter("removeRecipe") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			affectedLines = this.removeRecipe();
 		}
 		// Handle delivery pass (if any) in the cart.
@@ -528,12 +473,8 @@ public class FDShoppingCartControllerTag extends
 			try {
 				user.performDlvPassStatusCheck();
 			} catch (FDResourceException ex) {
-				LOGGER
-						.warn(
-								"FDResourceException during user.performDlvPassStatusCheck()",
-								ex);
+				LOGGER.warn("FDResourceException during user.performDlvPassStatusCheck()",ex);
 				throw new JspException(ex);
-
 			}
 		} else {
 			// If corporate or pickup do not apply the pass.
@@ -542,13 +483,11 @@ public class FDShoppingCartControllerTag extends
 				// Bug fix MNT-12
 				// If corporate or pickup do not apply the pass.
 				cart.setDlvPassApplied(false);
-				cart.setChargeWaived(EnumChargeType.DELIVERY, false,
-						DlvPassConstants.PROMO_CODE);
+				cart.setChargeWaived(EnumChargeType.DELIVERY, false, DlvPassConstants.PROMO_CODE);
 			}
 		}
 
 		if (affectedLines > 0) {
-
 			try {
 				cart.refreshAll();
 			} catch (FDException e) {
@@ -557,8 +496,7 @@ public class FDShoppingCartControllerTag extends
 			}
 			// This method retains all product keys that are in the cart in the
 			// dcpd promo product info.
-			user.getDCPDPromoProductCache().retainAll(
-					cart.getProductKeysForLineItems());
+			user.getDCPDPromoProductCache().retainAll(cart.getProductKeysForLineItems());
 
 			user.updateUserState();
 
@@ -585,18 +523,11 @@ public class FDShoppingCartControllerTag extends
 		// redirect to success page if an action was successfully performed
 		// and a success page was defined
 		//
-		if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null)
-				&& (successPage != null) && result.isSuccess()) {
-			String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage
-					: successPage;
-			HttpServletResponse response = (HttpServletResponse) pageContext
-					.getResponse();
+		if ("POST".equalsIgnoreCase(request.getMethod()) && (action != null) && (successPage != null) && result.isSuccess()) {
+			String redir = (affectedLines > 1 && this.multiSuccessPage != null) ? this.multiSuccessPage : successPage;
+			HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 			try {
-
 				response.sendRedirect(response.encodeRedirectURL(redir));
-				JspWriter writer = pageContext.getOut();
-				//writer.close();
-
 				return SKIP_BODY;
 			} catch (IOException ioe) {
 				// if there was a problem redirecting, well.. fuck it.. :)
@@ -614,8 +545,7 @@ public class FDShoppingCartControllerTag extends
 			// !!! refactor to doEndTag
 			this.finishCartCleanup();
 		}
-		pageContext.setAttribute("cartCleanupRemovedSomeStuff", new Boolean(
-				!(this.removeIds == null || this.removeIds.size() == 0)));
+		pageContext.setAttribute("cartCleanupRemovedSomeStuff", new Boolean(!(this.removeIds == null || this.removeIds.size() == 0)));
 
 		//
 		// place the cart as a scripting variable in the page
@@ -659,10 +589,8 @@ public class FDShoppingCartControllerTag extends
 			 * order. Since the applied pass got already cancelled, we remove
 			 * the pass applied to the order afer notifying the user.
 			 */
-			StringBuffer buffer = new StringBuffer(
-					SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
-			result.addWarning(new ActionWarning("pass_cancelled", buffer
-					.toString()));
+			StringBuffer buffer = new StringBuffer(SystemMessageList.MSG_UNLIMITED_PASS_CANCELLED);
+			result.addWarning(new ActionWarning("pass_cancelled", buffer.toString()));
 		}
 	}
 
@@ -672,7 +600,7 @@ public class FDShoppingCartControllerTag extends
 		FDCartModel cart = user.getShoppingCart();
 
 		for (int i = 0; i < cart.numberOfOrderLines(); i++) {
-			FDCartLineI cartLine = (FDCartLineI) cart.getOrderLine(i);
+			FDCartLineI cartLine = cart.getOrderLine(i);
 			if (cartLine instanceof FDModifyCartLineI) {
 				// skip it
 				continue;
@@ -680,8 +608,7 @@ public class FDShoppingCartControllerTag extends
 
 			boolean isAvail = false;
 			try {
-				FDProductInfo pi = FDCachedFactory.getProductInfo(cartLine
-						.getSkuCode());
+				FDProductInfo pi = FDCachedFactory.getProductInfo(cartLine.getSkuCode());
 				isAvail = pi.isAvailable();
 			} catch (FDSkuNotFoundException ex) {
 				// isAvail is false, that's fine
@@ -689,7 +616,7 @@ public class FDShoppingCartControllerTag extends
 
 			if (!isAvail) {
 				if (this.removeIds == null) {
-					this.removeIds = new ArrayList();
+					this.removeIds = new ArrayList<Integer>();
 				}
 				this.removeIds.add(new Integer(cartLine.getRandomId()));
 			}
@@ -713,19 +640,15 @@ public class FDShoppingCartControllerTag extends
 	 * @return items selected
 	 * @throws JspException
 	 */
-	protected FDCustomerCreatedList getProductSelection(String suffix,
-			boolean strict, boolean useProductMinimum, boolean skipZeros)
-			throws JspException {
+	protected FDCustomerCreatedList getProductSelection(String suffix, boolean strict, boolean useProductMinimum, boolean skipZeros) throws JspException {
 		FDCustomerCreatedList selection = new FDCustomerCreatedList();
 
 		// known suffix
 		if (suffix != null) {
-			FDCartLineI cartI = this.processCartLine(suffix, null, strict,
-					useProductMinimum);
+			FDCartLineI cartI = this.processCartLine(suffix, null, strict, useProductMinimum);
 			if (cartI != null) {
 				FDCustomerProductListLineItem lineItem = new FDCustomerProductListLineItem(
-						cartI.getSkuCode(), new FDConfiguration(cartI
-								.getConfiguration()), cartI.getRecipeSourceId());
+						cartI.getSkuCode(), new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 				selection.addLineItem(lineItem);
 			}
 			return selection;
@@ -733,33 +656,26 @@ public class FDShoppingCartControllerTag extends
 
 		// find selected suffices
 		String prefix = "skuCode";
-		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
-			String paramName = (String) e.nextElement();
+		for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
+			String paramName = e.nextElement();
 			if (paramName.startsWith(prefix)) {
 				suffix = paramName.substring(prefix.length());
 
 				if (skipZeros) {
-					String quant = (String) request.getParameter("quantity"
-							+ suffix);
+					String quant = request.getParameter("quantity" + suffix);
 					if (quant == null || "".equals(quant) || "0".equals(quant))
 						continue;
-					String salesUnit = (String) request
-							.getParameter("salesUnit" + suffix);
+					String salesUnit = request.getParameter("salesUnit" + suffix);
 					if (salesUnit == null || "".equals(salesUnit))
 						continue;
 				}
 
-				if ("ccl_actual_selection".equals(request
-						.getParameter("source"))
-						&& "_big".equals(suffix))
+				if ("ccl_actual_selection".equals(request.getParameter("source")) && "_big".equals(suffix))
 					continue;
-				FDCartLineI cartI = this.processCartLine(suffix, null, strict,
-						useProductMinimum);
+				FDCartLineI cartI = this.processCartLine(suffix, null, strict, useProductMinimum);
 				if (cartI != null) {
 					FDCustomerProductListLineItem lineItem = new FDCustomerProductListLineItem(
-							cartI.getSkuCode(), new FDConfiguration(cartI
-									.getConfiguration()), cartI
-									.getRecipeSourceId());
+							cartI.getSkuCode(), new FDConfiguration(cartI.getConfiguration()), cartI.getRecipeSourceId());
 					selection.addLineItem(lineItem);
 				}
 			}
@@ -787,8 +703,8 @@ public class FDShoppingCartControllerTag extends
 		FDUserI user = (FDUserI) session.getAttribute(USER);
 		FDCartModel cart = user.getShoppingCart();
 
-		for (Iterator i = this.removeIds.iterator(); i.hasNext();) {
-			int rid = ((Integer) i.next()).intValue();
+		for (Iterator<Integer> i = this.removeIds.iterator(); i.hasNext();) {
+			int rid = i.next().intValue();
 			cart.removeOrderLineById(rid);
 		}
 
@@ -808,21 +724,18 @@ public class FDShoppingCartControllerTag extends
 		// first figure out which cartLine we're talking about
 		//
 		if (cartLine == null) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		int cartIndex = -1;
 		try {
 			cartIndex = cart.getOrderLineIndex(Integer.parseInt(cartLine));
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		if (cartIndex == -1) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		//
@@ -832,8 +745,7 @@ public class FDShoppingCartControllerTag extends
 			//
 			// do a change
 			//
-			FDCartLineI originalLine = (FDCartLineI) cart
-					.getOrderLine(cartIndex);
+			FDCartLineI originalLine = cart.getOrderLine(cartIndex);
 			FDCartLineI newCartLine = this.processCartLine(originalLine);
 			if (newCartLine != null) {
 				cart.setOrderLine(cartIndex, newCartLine);
@@ -846,8 +758,7 @@ public class FDShoppingCartControllerTag extends
 			//
 			// do a remove
 			//
-			FDCartLineI originalLine = (FDCartLineI) cart
-					.getOrderLine(cartIndex);
+			FDCartLineI originalLine = cart.getOrderLine(cartIndex);
 			cart.removeOrderLine(cartIndex);
 			originalLine.setSource(getEventSource());
 			FDEventUtil.logRemoveCartEvent(originalLine, request);
@@ -864,43 +775,34 @@ public class FDShoppingCartControllerTag extends
 
 	protected int removeRecipe() {
 		String recipeId = request.getParameter("removeRecipe");
-		List cartLinesRemoved = cart.removeOrderLinesByRecipe(recipeId);
-		for (Iterator i = cartLinesRemoved.iterator(); i.hasNext();) {
-			FDCartLineI removedLine = (FDCartLineI) i.next();
+		List<FDCartLineI> cartLinesRemoved = cart.removeOrderLinesByRecipe(recipeId);
+		for (FDCartLineI removedLine : cartLinesRemoved) {
 			removedLine.setSource(getEventSource());
 			FDEventUtil.logRemoveCartEvent(removedLine, request);
 		}
 		return cartLinesRemoved.size();
 	}
 
-	protected boolean removeOrderLine() throws JspException {
+	protected boolean removeOrderLine() {
 		String cartLine = request.getParameter("cartLine");
 
 		if (cartLine == null) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
-		/*
-		 * try { return cart.removeOrderLineById(Integer.parseInt(cartLine)); }
-		 * catch (NumberFormatException nfe) { result.addError(new
-		 * ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
-		 * return false; }
-		 */
+
 		int cartIndex = -1;
 		try {
 			cartIndex = cart.getOrderLineIndex(Integer.parseInt(cartLine));
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
 		if (cartIndex == -1) {
-			result.addError(new ActionError("system",
-					SystemMessageList.MSG_IDENTIFY_CARTLINE));
+			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_CARTLINE));
 			return false;
 		}
-		FDCartLineI originalLine = (FDCartLineI) cart.getOrderLine(cartIndex);
+		FDCartLineI originalLine = cart.getOrderLine(cartIndex);
 		cart.removeOrderLine(cartIndex);
 		originalLine.setSource(getEventSource());
 		FDEventUtil.logRemoveCartEvent(originalLine, request);
@@ -936,7 +838,7 @@ public class FDShoppingCartControllerTag extends
 	 * @return "&lt;SUFFIX&gt;_" (the underscore is part of the return) for matches, "_" otherwise
 	 */
 	private String deduceMultipleSuffix() {
-		for(Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
+		for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
 			String name = e.nextElement().toString();
 			if (name.startsWith("productId")) {
 				int end = name.lastIndexOf('_');
@@ -959,8 +861,8 @@ public class FDShoppingCartControllerTag extends
 
 		int l = "addSingleToCart_".length();
 		String suffix = null;
-		for (Enumeration e = request.getParameterNames(); e.hasMoreElements();) {
-			String n = (String) e.nextElement();
+		for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements();) {
+			String n = e.nextElement();
 			if (n.startsWith("addSingleToCart_")) {
 				suffix = n.substring(l, n.indexOf('.'));
 				break;
@@ -971,8 +873,7 @@ public class FDShoppingCartControllerTag extends
 			// add single item from multiple to cart
 			LOGGER.debug("addSingleToCart " + suffix);
 
-			FDCartLineI cartLine = this.processCartLine("_" + suffix, null,
-					false, true);
+			FDCartLineI cartLine = this.processCartLine("_" + suffix, null, false, true);
 			if (cartLine != null) {
 				cart.addOrderLine(cartLine);
 				cartLine.setSource(getEventSource());
@@ -993,7 +894,7 @@ public class FDShoppingCartControllerTag extends
 			}
 			int itemCount = Integer.parseInt(itemCountParam);
 
-			cartLinesToAdd = new ArrayList(itemCount);
+			cartLinesToAdd = new ArrayList<FDCartLineI>(itemCount);
 			int addedLines = 0;
 
 			//
@@ -1002,8 +903,7 @@ public class FDShoppingCartControllerTag extends
 			
 
 			for (int i = 0; i < itemCount; i++) {
-				FDCartLineI cartLine = this.processCartLine(deduceMultipleSuffix() + i, null,
-						strict, false);
+				FDCartLineI cartLine = this.processCartLine(deduceMultipleSuffix() + i, null, strict, false);
 				if (cartLine == null) {
 					// skip
 					continue;
@@ -1013,8 +913,6 @@ public class FDShoppingCartControllerTag extends
 				// Make sure to describe it first
 				try {
 					OrderLineUtil.describe(cartLine);
-				} catch (FDResourceException e) {
-					// don't care
 				} catch (FDInvalidConfigurationException e) {
 					// don't care
 				}
@@ -1030,17 +928,16 @@ public class FDShoppingCartControllerTag extends
 					cart.addOrderLines(cartLinesToAdd);
 					cartLinesToAdd.clear();
 				} else {
-					String errorMsg = "ccl_actual_selection"
-							.equalsIgnoreCase(request.getParameter("source")) ? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
-							: SystemMessageList.MSG_QUANTITY_REQUIRED;
+					String errorMsg = "ccl_actual_selection" .equalsIgnoreCase(request.getParameter("source")) 
+						? SystemMessageList.MSG_CCL_QUANTITY_REQUIRED
+						: SystemMessageList.MSG_QUANTITY_REQUIRED;
 					result.addError(new ActionError("quantity", errorMsg));
 				}
 			}
 			return addedLines;
 
 		} catch (NumberFormatException ex) {
-			throw new JspException("Invalid itemCount supplied "
-					+ ex.getMessage());
+			throw new JspException("Invalid itemCount supplied " + ex.getMessage());
 		}
 
 	}
@@ -1049,8 +946,7 @@ public class FDShoppingCartControllerTag extends
 	 * @return the FDCartLine built from the request, or null if there were any
 	 *         problems
 	 */
-	private FDCartLineI processCartLine(FDCartLineI originalLine)
-			throws JspException {
+	private FDCartLineI processCartLine(FDCartLineI originalLine) throws JspException {		
 		return this.processCartLine("", originalLine, true, false);
 	}
 
@@ -1066,9 +962,7 @@ public class FDShoppingCartControllerTag extends
 	 * @return the FDCartLine built from the request, or null if there were any
 	 *         problems
 	 */
-	private FDCartLineI processCartLine(String suffix,
-			FDCartLineI originalLine, boolean strictCheck,
-			boolean useProductMinimum) throws JspException {
+	private FDCartLineI processCartLine(String suffix, FDCartLineI originalLine, boolean strictCheck, boolean useProductMinimum) throws JspException {
 
 		final String paramSkuCode = "skuCode" + suffix;
 		final String paramCatId = "catId" + suffix;
@@ -1095,27 +989,22 @@ public class FDShoppingCartControllerTag extends
 		boolean contentSpecified = !(prodName == null || prodName.length() == 0);
 
 		if (strictCheck && !contentSpecified) {
-			result.addError(new ActionError(paramProductId,
-					"Please select a product."));
+			result.addError(new ActionError(paramProductId, "Please select a product."));
 			return null;
 		}
 
 		ProductModel prodNode = null;
 		try {
 			if (contentSpecified) {
-				prodNode = ContentFactory.getInstance().getProductByName(
-						catName, prodName);
+				prodNode = ContentFactory.getInstance().getProductByName( catName, prodName);
 				if (prodNode == null) {
-					throw new JspException(
-							"Selected product not found in specified category: category: "
-									+ catName + " Product: " + prodName);
+					throw new JspException( "Selected product not found in specified category: category: " + catName + " Product: " + prodName);
 				}
 			} else {
 				prodNode = ContentFactory.getInstance().getProduct(skuCode);
 			}
 		} catch (FDSkuNotFoundException ex) {
-			throw new JspException("Error accessing resources: "
-					+ ex.getMessage());
+			throw new JspException("Error accessing resources: " + ex.getMessage());
 		}
 
 		if ("".equals(skuCode)) {
@@ -1132,8 +1021,7 @@ public class FDShoppingCartControllerTag extends
 
 			String quan = request.getParameter(paramQuantity);
 			if (quan == null) {
-				result.addError(new ActionError(paramQuantity,
-						MESSAGE_INVALID_QUANTITY));
+				result.addError(new ActionError(paramQuantity, MESSAGE_INVALID_QUANTITY));
 			} else if ("".equals(quan) && useProductMinimum) {
 				quan = prodNode.getQuantityMinimum() + "";
 			}
@@ -1144,28 +1032,23 @@ public class FDShoppingCartControllerTag extends
 			}
 			quantity = new Double(quan).doubleValue();
 		} catch (NumberFormatException nfe) {
-			result.addError(new ActionError(paramQuantity,
-					MESSAGE_INVALID_QUANTITY));
+			result.addError(new ActionError(paramQuantity, MESSAGE_INVALID_QUANTITY));
 		}
 
-		double origQuantity = originalLine == null ? 0 : originalLine
-				.getQuantity();
+		double origQuantity = originalLine == null ? 0 : originalLine.getQuantity();
 
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
-		String errorMessage = this.validateQuantity(user, prodNode, quantity,
-				origQuantity);
+		String errorMessage = this.validateQuantity(user, prodNode, quantity, origQuantity);
 		if (errorMessage != null) {
 			result.addError(new ActionError(paramQuantity, errorMessage));
 		}
 
 		FDProduct product;
 		try {
-			product = FDCachedFactory.getProduct(FDCachedFactory
-					.getProductInfo(skuCode));
+			product = FDCachedFactory.getProduct(FDCachedFactory .getProductInfo(skuCode));
 		} catch (FDResourceException fdre) {
 			LOGGER.warn("Error accessing resource", fdre);
-			throw new JspException("Error accessing resource "
-					+ fdre.getMessage());
+			throw new JspException("Error accessing resource " + fdre.getMessage());
 		} catch (FDSkuNotFoundException fdsnfe) {
 			LOGGER.warn("SKU not found", fdsnfe);
 			throw new JspException("SKU not found", fdsnfe);
@@ -1179,8 +1062,7 @@ public class FDShoppingCartControllerTag extends
 		FDSalesUnit salesUnit = null;
 
 		String requestedUnit = request.getParameter(paramSalesUnit);
-		if ((("".equals(requestedUnit) || requestedUnit == null) && useProductMinimum)
-				|| product.getSalesUnits().length == 1) {
+		if ((("".equals(requestedUnit) || requestedUnit == null) && useProductMinimum) || product.getSalesUnits().length == 1) {
 			// get the default sales unit
 			salesUnit = product.getSalesUnits()[0];
 		} else {
@@ -1199,24 +1081,18 @@ public class FDShoppingCartControllerTag extends
 		                + ContentNodeModelUtil.nullValue(prodNode.getSalesUnitLabel(), "Sales Unit")); 
 
 		LOGGER.debug("Consented " + request.getParameter("consented" + suffix));
-		if (prodNode.hasTerms()
-				&& !"true".equals(request.getParameter("consented" + suffix))) {
-			LOGGER.debug("ADDING ERROR, since consented" + suffix + "="
-					+ request.getParameter("consented" + suffix));
+		if (prodNode.hasTerms() && !"true".equals(request.getParameter("consented" + suffix))) {
+			LOGGER.debug("ADDING ERROR, since consented" + suffix + "=" + request.getParameter("consented" + suffix));
 			if (!"yes".equalsIgnoreCase(request.getParameter("agreeToTerms"))) {
-				result
-						.addError(new ActionError("agreeToTerms",
-								"Product terms"));
+				result .addError(new ActionError("agreeToTerms", "Product terms"));
 			}
 		}
 		/*
 		 * Get the original cartlineId if one is present else set it blank.
 		 */
-		String origCartLineId = originalLine == null ? "" : originalLine
-				.getCartlineId();
+		String origCartLineId = originalLine == null ? "" : originalLine .getCartlineId();
 
-		FDCartLineI theCartLine = processSimple(suffix, prodNode, product,
-				quantity, salesUnit, origCartLineId, variantId, user.getPricingZoneId());
+		FDCartLineI theCartLine = processSimple(suffix, prodNode, product, quantity, salesUnit, origCartLineId, variantId, user.getPricingZoneId());
 
 		// recipe source tracking
 		String recipeId;
@@ -1227,12 +1103,10 @@ public class FDShoppingCartControllerTag extends
 			recipeId = request.getParameter(paramRecipeId);
 		}
 		if (recipeId != null) {
-			Recipe recipe = (Recipe) ContentFactory.getInstance()
-					.getContentNode(recipeId);
+			Recipe recipe = (Recipe) ContentFactory.getInstance().getContentNode(recipeId);
 			if (recipe != null && theCartLine != null) {
 				theCartLine.setRecipeSourceId(recipeId);
-				boolean requestNotification = request
-						.getParameter("requestNotification") != null;
+				boolean requestNotification = request .getParameter("requestNotification") != null;
 				theCartLine.setRequestNotification(requestNotification);
 			}
 		}
@@ -1246,10 +1120,8 @@ public class FDShoppingCartControllerTag extends
 			String catId = request.getParameter("catId");
 			String sfx = request.getParameter("ymal_box") != null ? "" : suffix != null ? suffix : ""; 
 			String ymalSetId = request.getParameter("ymalSetId"+sfx);
-			String originatingProductId = request
-					.getParameter("originatingProductId"+sfx);
-			String originalOrderLineId = request
-					.getParameter("originalOrderLineId" + suffix);
+			String originatingProductId = request.getParameter("originatingProductId"+sfx);
+			String originalOrderLineId = request.getParameter("originalOrderLineId" + suffix);
 
 			theCartLine.setYmalCategoryId(catId);
 			theCartLine.setYmalSetId(ymalSetId);
@@ -1285,14 +1157,13 @@ public class FDShoppingCartControllerTag extends
 		// walk through the variations to see what's been set and try to build a
 		// variation map
 		//
-		HashMap varMap = new HashMap();
+		HashMap<String,String> varMap = new HashMap<String,String>();
 		FDVariation[] variations = product.getVariations();
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation variation = variations[i];
 			FDVariationOption[] options = variation.getVariationOptions();
 
-			String optionName = request.getParameter(variation.getName()
-					+ suffix);
+			String optionName = request.getParameter(variation.getName() + suffix);
 
 			if (options.length == 1) {
 				//
@@ -1300,8 +1171,7 @@ public class FDShoppingCartControllerTag extends
 				//
 				varMap.put(variation.getName(), options[0].getName());
 
-			} else if (((optionName == null) || "".equals(optionName))
-					&& variation.isOptional()) {
+			} else if (((optionName == null) || "".equals(optionName)) && variation.isOptional()) {
 				//
 				// user didn't select anything for an optional variation, pick
 				// the SELECTED option for them
@@ -1353,17 +1223,16 @@ public class FDShoppingCartControllerTag extends
 			 * cart.
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
-					new FDConfiguration(quantity, salesUnit
-					.getName(), varMap), variantId, pZoneId);
+					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
+					variantId, pZoneId);
 		} else {
 			/*
 			 * When an existing item in the cart is modified, reuse the same
 			 * cartlineId instead of generating a new one.
-			 * 
 			 */
 			cartLine = new FDCartLineModel(new FDSku(product), prodNode,
-					new FDConfiguration(quantity, salesUnit
-					.getName(), varMap), origCartLineId, null, false, variantId, pZoneId);
+					new FDConfiguration(quantity, salesUnit .getName(), varMap), 
+					origCartLineId, null, false, variantId, pZoneId);
 		}
 
 		return cartLine;
@@ -1377,11 +1246,10 @@ public class FDShoppingCartControllerTag extends
 	 * @return total quantity of product already proccessed
 	 */
 	private double getCartlinesQuantity(ProductModel product) {
-		String categoryName = product.getParentNode().getContentName();
 		String productName = product.getContentName();
 		double sum = 0;
-		for (Iterator i = this.cartLinesToAdd.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.cartLinesToAdd.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (productName.equals(line.getProductName())) {
 				sum += line.getQuantity();
 			}
@@ -1389,8 +1257,8 @@ public class FDShoppingCartControllerTag extends
 		return sum;
 	}
 
-	private String validateQuantity(FDUserI user, ProductModel prodNode,
-			double quantity, double adjustmentQuantity) {
+	private String validateQuantity(FDUserI user, ProductModel prodNode, double quantity, double adjustmentQuantity) {
+		
 		DecimalFormat formatter = new DecimalFormat("0.##");
 		if (quantity < prodNode.getQuantityMinimum()) {
 			return "FreshDirect cannot deliver less than "
@@ -1398,10 +1266,8 @@ public class FDShoppingCartControllerTag extends
 					+ prodNode.getFullName();
 		}
 
-		if ((quantity - prodNode.getQuantityMinimum())
-				% prodNode.getQuantityIncrement() != 0) {
-			return "Quantity must be an increment of "
-					+ formatter.format( prodNode.getQuantityIncrement() );
+		if ((quantity - prodNode.getQuantityMinimum()) % prodNode.getQuantityIncrement() != 0) {
+			return "Quantity must be an increment of " + formatter.format( prodNode.getQuantityIncrement() );
 		}
 
 		// For CCL Requests (other than cart events)
@@ -1427,12 +1293,12 @@ public class FDShoppingCartControllerTag extends
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(USER);
 
 		boolean cartChanged = false;
-		ArrayList orderLines = new ArrayList(cart.getOrderLines());
+		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		try {
 			int idx = -1;
-			for (ListIterator i = orderLines.listIterator(); i.hasNext();) {
+			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
 				idx++;
-				FDCartLineI orderLine = (FDCartLineI) i.next();
+				FDCartLineI orderLine = i.next();
 
 				String randomId = request.getParameter("rnd_" + idx);
 				if (!(String.valueOf(orderLine.getRandomId()).equals(randomId))) {
@@ -1443,8 +1309,7 @@ public class FDShoppingCartControllerTag extends
 				orderLine.setSource(getEventSource());
 
 				ProductModel prodNode = ContentFactory.getInstance()
-						.getProductByName(orderLine.getCategoryName(),
-								orderLine.getProductName());
+						.getProductByName(orderLine.getCategoryName(), orderLine.getProductName());
 
 				boolean modifyOrderMode = orderLine instanceof FDModifyCartLineI;
 
@@ -1475,14 +1340,11 @@ public class FDShoppingCartControllerTag extends
 							quantity = prodNode.getQuantityMinimum();
 						} else {
 							double totalQty = cart.getTotalQuantity(prodNode);
-							if (quantity + totalQty - orderLine.getQuantity() > user
-									.getQuantityMaximum(prodNode)) {
-								quantity = user.getQuantityMaximum(prodNode)
-										- totalQty + orderLine.getQuantity();
+							if (quantity + totalQty - orderLine.getQuantity() > user.getQuantityMaximum(prodNode)) {
+								quantity = user.getQuantityMaximum(prodNode) - totalQty + orderLine.getQuantity();
 							}
 						}
-						quantity = Math.floor((quantity - prodNode
-								.getQuantityMinimum())
+						quantity = Math.floor((quantity - prodNode.getQuantityMinimum())
 								/ prodNode.getQuantityIncrement())
 								* prodNode.getQuantityIncrement()
 								+ prodNode.getQuantityMinimum();
@@ -1506,82 +1368,61 @@ public class FDShoppingCartControllerTag extends
 								// order mode
 								orderLine.setQuantity(quantity);
 								// Log that the quantity has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil .logEditCartEvent(orderLine, request);
 
 							} else {
 								// modify order mode
 
 								// how much we're adding/removing
-								double deltaQty = quantity
-										- orderLine.getQuantity();
+								double deltaQty = quantity - orderLine.getQuantity();
 
 								if (deltaQty < 0) {
 									// need to remove some, that's easy, i can
 									// do that...
 									orderLine.setQuantity(quantity);
 									// Log that the quantity has been updated.
-									FDEventUtil.logEditCartEvent(orderLine,
-											request);
+									FDEventUtil.logEditCartEvent(orderLine, request);
 
 								} else {
 									// deltaQty>0, see how much can we add to
 									// this orderline
 									double origQuantity = ((FDModifyCartLineI) orderLine)
-											.getOriginalOrderLine()
-											.getQuantity();
-									double origDiff = origQuantity
-											- orderLine.getQuantity();
+											.getOriginalOrderLine().getQuantity();
+									double origDiff = origQuantity - orderLine.getQuantity();
 
 									if (origDiff > 0) {
-										double addToLine = Math.min(origDiff,
-												deltaQty);
-										orderLine.setQuantity(orderLine
-												.getQuantity()
-												+ addToLine);
-										// Log that the quantity has been
-										// updated.
-										FDEventUtil.logEditCartEvent(orderLine,
-												request);
+										double addToLine = Math.min(origDiff, deltaQty);
+										orderLine.setQuantity(orderLine .getQuantity() + addToLine);
+										// Log that the quantity has been updated.
+										FDEventUtil.logEditCartEvent(orderLine, request);
 										deltaQty -= addToLine;
 									}
 
-									// add a new orderline for rest of the
-									// difference, if any
+									// add a new orderline for rest of the difference, if any
 									if (deltaQty > 0) {
 
-										FDCartLineI newLine = orderLine
-												.createCopy();
+										FDCartLineI newLine = orderLine .createCopy();
 										newLine.setPricingContext(new PricingContext(user.getPricingZoneId()));
 										try {
 											OrderLineUtil.cleanup(newLine);
 										} catch (FDInvalidConfigurationException e) {
-											throw new JspException(
-													"Orderline configuration no longer valid",
-													e);
+											throw new JspException( "Orderline configuration no longer valid", e);
 										}
 										newLine.setQuantity(deltaQty);
 										i.add(newLine);
 										// Log a addToCart event.
-										FDEventUtil.logAddToCartEvent(newLine,
-												request);
+										FDEventUtil.logAddToCartEvent(newLine, request);
 									}
-
 								}
-
 							}
 							cartChanged = true;
 						}
 					} catch (NumberFormatException nfe) {
-						result
-								.addError(new ActionError("quantity_" + idx,
-										"Invalid quantity " + reqQty
-												+ ", not a number"));
+						result .addError(new ActionError("quantity_" + idx, "Invalid quantity " + reqQty + ", not a number"));
 					}
 				} else {
 					// it's a sales unit chg
-					String reqSalesUnit = request.getParameter("salesUnit_"
-							+ idx);
+					String reqSalesUnit = request.getParameter("salesUnit_" + idx);
 
 					if ("".equals(reqSalesUnit)) {
 						// mark orderline for removal
@@ -1602,8 +1443,7 @@ public class FDShoppingCartControllerTag extends
 							if (!modifyOrderMode) {
 								orderLine.setSalesUnit(reqSalesUnit);
 								// Log that the quantity has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil.logEditCartEvent(orderLine, request);
 							} else {
 								// modify order mode - replace orderline
 								// FDCartLineI newLine =
@@ -1616,15 +1456,13 @@ public class FDShoppingCartControllerTag extends
 								orderLine.setSalesUnit(reqSalesUnit);
 								i.set(orderLine);
 								// Log that the salesunit has been updated.
-								FDEventUtil
-										.logEditCartEvent(orderLine, request);
+								FDEventUtil.logEditCartEvent(orderLine, request);
 
 							}
 							cartChanged = true;
 						} else {
 							result.addError(new ActionError("salesUnit_" + idx,
-									"Sales unit " + reqSalesUnit
-											+ " is not valid"));
+									"Sales unit " + reqSalesUnit + " is not valid"));
 						}
 					}
 				}
@@ -1637,7 +1475,7 @@ public class FDShoppingCartControllerTag extends
 		}
 		if (cartChanged) {
 			// remove marked orderlines
-			for (ListIterator i = orderLines.listIterator(); i.hasNext();) {
+			for (ListIterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
 				if (i.next() == null) {
 					i.remove();
 				}
@@ -1650,11 +1488,11 @@ public class FDShoppingCartControllerTag extends
 
 	protected int removeAllCartLines() {
 		int lines = cart.numberOfOrderLines();
-		ArrayList orderLines = new ArrayList(cart.getOrderLines());
+		ArrayList<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(cart.getOrderLines());
 		cart.clearOrderLines();
 		// Log a removeCart Event for each of those orderLine.
-		for (ListIterator i = orderLines.listIterator(); i.hasNext();) {
-			FDCartLineI orderLine = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = orderLines.listIterator(); i.hasNext();) {
+			FDCartLineI orderLine = i.next();
 			orderLine.setSource(getEventSource());
 			FDEventUtil.logRemoveCartEvent(orderLine, request);
 		}
@@ -1665,9 +1503,7 @@ public class FDShoppingCartControllerTag extends
 	 * Builds a valid, well-formed ErpComplaintModel
 	 * 
 	 */
-	private void buildComplaint(ActionResult result,
-			ErpComplaintModel complaintModel) throws FDResourceException,
-			JspException {
+	private void buildComplaint(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException {
 
 		this.parseOrderLines(result, complaintModel);
 		this.setComplaintDetails(result, complaintModel);
@@ -1678,13 +1514,10 @@ public class FDShoppingCartControllerTag extends
 	 * Build complaint lines for each order line and validate data.
 	 * 
 	 */
-	private void parseOrderLines(ActionResult result,
-			ErpComplaintModel complaintModel) throws FDResourceException,
-			JspException {
+	private void parseOrderLines(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException {
 
-		ArrayList lines = new ArrayList();
-		FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager
-				.getOrder(this.orderId);
+		ArrayList<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
+		// FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
 
 		for (int i = 0; i < orderLineReason.length; i++) {
 
@@ -1724,8 +1557,7 @@ public class FDShoppingCartControllerTag extends
 			// Investigate for errors
 			//
 			if (!line.isValidComplaintLine()) {
-				result.addError(new ActionError("ol_error_" + i,
-						"Missing or invalid data in this line."));
+				result.addError(new ActionError("ol_error_" + i, "Missing or invalid data in this line."));
 				addGeneralError(result);
 			}
 
@@ -1736,15 +1568,12 @@ public class FDShoppingCartControllerTag extends
 		complaintModel.setType(EnumComplaintType.STORE_CREDIT);
 	}
 
-	private void setComplaintDetails(ActionResult result,
-			ErpComplaintModel complaintModel) {
-		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext
-				.getSession());
+	private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) {
+		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
 		if (agent != null) {
 			complaintModel.setCreatedBy(agent.getUserId());
 		} else {
-			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession()
-					.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
+			CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 			complaintModel.setCreatedBy(ccUser.getId());
 		}
 
@@ -1763,8 +1592,7 @@ public class FDShoppingCartControllerTag extends
 	 */
 	private void addGeneralError(ActionResult result) {
 		if (!result.hasError("general_error_msg"))
-			result.addError(new ActionError("general_error_msg",
-					GENERAL_ERR_MSG));
+			result.addError(new ActionError("general_error_msg", GENERAL_ERR_MSG));
 	}
 
 	/**
@@ -1773,7 +1601,7 @@ public class FDShoppingCartControllerTag extends
 	 */
 	private void getFormData(HttpServletRequest request, ActionResult result) {
 
-		orderId = request.getParameter("orig_sale_id");
+		String orderId = request.getParameter("orig_sale_id");
 		this.orderLineId = request.getParameterValues("orderlineId");
 		orderLineReason = request.getParameterValues("ol_credit_reason");
 

@@ -28,8 +28,6 @@ public class ConfigurationUtil {
 				impression.getConfiguration(), null);
 		try {
 			OrderLineUtil.describe(selection);
-		} catch (FDResourceException e) {
-			return null;
 		} catch (FDInvalidConfigurationException e) {
 			return null;
 		}

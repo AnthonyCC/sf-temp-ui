@@ -41,34 +41,37 @@
 	cartType=quickCart.getProductType();
 	if(cartType==null) cartType=""; 
 %><fd:FDCustomerCreatedList id='lists' action='loadLists'><%
-
-String pageNav = "";
-String pageNavTitle = "";
+	String pageNav = "";
+	String pageNavTitle = "";
 
 // ORDER
-if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { 
-%><fd:OrderHistoryInfo id='orderHistoryInfo'><% 
+if (!QuickCart.PRODUCT_TYPE_CCL.equals(cartType) && !QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) {
+%><fd:OrderHistoryInfo id='orderHistoryInfo'><%
 	if (quickCart.isEveryItemEverOrdered()) {
-		%><%@ include file="/quickshop/includes/department_nav.jspf" %><%
-		pageNav = departmentNav.toString();
+%><%@ include file="/quickshop/includes/department_nav.jspf" %><%
+	pageNav = departmentNav.toString();
 		pageNavTitle = "EVERYTHING YOU'VE EVER ORDERED";
 	} else {
-		boolean showDetails = false; 
-		%><%@ include file="/quickshop/includes/order_nav.jspf" %><%	  
-		pageNav = orderNav.toString();
+		boolean showDetails = false;
+%><%@ include file="/quickshop/includes/order_nav.jspf" %><%
+	pageNav = orderNav.toString();
 		pageNavTitle = "YOUR PREVIOUS ORDERS";
 	}
 %></fd:OrderHistoryInfo><%
-}
+	}
 %><tmpl:insert template='/common/template/quick_shop_nav.jsp'>
-<%  if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) { %> 
+<%
+	if(QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_STARTER_LIST.equals(cartType)) {
+%> 
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
 	<tmpl:put name='side_nav' direct='true'>
 	<font class="space4pix"><br/></font>
 	<a href="/quickshop/all_lists.jsp">
 	<img src="/media_stat/images/template/quickshop/yourlists_catnav.gif" border="0" width="81" height="53"></a>
 	<font class="space4pix"><br/></font>
-	<% { String selectedListId = orderId; %>
+	<%
+		{ String selectedListId = orderId;
+	%>
 	<%@ include file="/quickshop/includes/cclist_nav.jspf"%>
 	<% } %>
 	</tmpl:put>

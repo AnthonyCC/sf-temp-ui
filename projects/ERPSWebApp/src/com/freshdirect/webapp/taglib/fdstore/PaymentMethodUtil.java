@@ -202,7 +202,7 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_ACCOUNT_NUMBER_LENGTH
 					);
 			        
-			        if(paymentMethod.getPaymentMethodType().ECHECK.equals(paymentMethod.getPaymentMethodType()))
+			        if( EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType()))
 			        {
 			        	result.addError(scrubbedAccountNumber.length() > 25,
 			        			PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
@@ -273,6 +273,11 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     }
     
     public static void validatePaymentMethod(HttpServletRequest request, ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user) throws FDResourceException {
+		String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
+    	validatePaymentMethod( paymentMethod, result, user, request.getAttribute("gift_card") != null, request.getAttribute("donation") != null, bypassBadAccountCheck != null && !bypassBadAccountCheck.trim().equals("") );
+    }
+    
+    public static void validatePaymentMethod ( ErpPaymentMethodI paymentMethod, ActionResult result, FDUserI user, boolean gift_card, boolean donation, boolean bypassBadAccountCheck ) throws FDResourceException {
     	boolean isFiftyStateValidationReqd=true;
     	//check name on card
         result.addError(
@@ -293,16 +298,16 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
 	        );
 	        FDReservation reservation = null;
-	        if(request.getAttribute("gift_card") != null) {
+	        if ( gift_card ) {
 		        //check expiration date
 				FDCartModel cart = user.getGiftCart();
 				reservation = cart.getDeliveryReservation();
-				isFiftyStateValidationReqd=false;
-	        } if(request.getAttribute("donation") != null){
+				isFiftyStateValidationReqd = false;
+	        } else if ( donation ) {
 	        	FDCartModel cart = user.getDonationCart();
 				reservation = cart.getDeliveryReservation();
-				isFiftyStateValidationReqd=false;
-	        }   else {
+				isFiftyStateValidationReqd = false;
+	        } else {
 		        //check expiration date
 				FDCartModel cart = user.getShoppingCart();
 				reservation = cart.getDeliveryReservation();
@@ -358,10 +363,8 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 			result.addError("".equals(paymentMethod.getZipCode()), EnumUserInfoName.BIL_ZIPCODE.getCode(), SystemMessageList.MSG_REQUIRED);
 			
 			if(result.isSuccess()){
-				String bypassBadAccountCheck = RequestUtil.getRequestParameter(request,PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK);
 				result.addError(
-		        	PaymentFraudManager.checkBadAccount(paymentMethod, false) &&
-					(bypassBadAccountCheck == null || "".equals(bypassBadAccountCheck)), 
+		        	PaymentFraudManager.checkBadAccount(paymentMethod, false) && !bypassBadAccountCheck, 
 					PaymentMethodName.BYPASS_BAD_ACCOUNT_CHECK,SystemMessageList.MSG_REQUIRED
 		        ); 
 			}
@@ -565,15 +568,13 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
     public static boolean hasECheckAccount(FDIdentity identity) {
     	
     	try {
-	    	java.util.Collection paymentMethods = FDCustomerManager.getPaymentMethods(identity);
+	    	Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods(identity);
 	
 	    	//
 	    	//    	   EChecks terms only needs to be displayed when adding the first Echeck account
 	    	//
 	    	
-	    	Iterator iterator = paymentMethods.iterator();
-	    	while ( iterator.hasNext() ) {
-	    		ErpPaymentMethodI thisPaymentMethod = (ErpPaymentMethodI) iterator.next();
+	    	for ( ErpPaymentMethodI thisPaymentMethod : paymentMethods ) {
 	    		if (EnumPaymentMethodType.ECHECK.equals(thisPaymentMethod.getPaymentMethodType())) {
 	    			return true;
 	    		}

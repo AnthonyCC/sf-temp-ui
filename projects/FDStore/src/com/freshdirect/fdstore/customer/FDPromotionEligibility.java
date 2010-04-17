@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.customer;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -12,13 +11,15 @@ import com.freshdirect.fdstore.promotion.PromotionI;
 
 public class FDPromotionEligibility implements Serializable {
 
-	/** Set of String (promotionCode) */
-	private final Set eligibilePromos = new HashSet();
+	private static final long	serialVersionUID	= 3747005615570612091L;
 
 	/** Set of String (promotionCode) */
-	private final Set appliedPromos = new HashSet();
+	private final Set<String> eligibilePromos = new HashSet<String>();
+
+	/** Set of String (promotionCode) */
+	private final Set<String> appliedPromos = new HashSet<String>();
 	
-	private final Set recommendedPromos = new HashSet();
+	private final Set<String> recommendedPromos = new HashSet<String>();
 	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);
@@ -35,7 +36,7 @@ public class FDPromotionEligibility implements Serializable {
 	/**
 	 * @param redemptionPromos Set of String
 	 */
-	public void setEligiblity(Set promotionCodes, boolean eligibile) {
+	public void setEligiblity(Set<String> promotionCodes, boolean eligibile) {
 		if (eligibile) {
 			this.eligibilePromos.addAll(promotionCodes);
 		} else {
@@ -66,18 +67,18 @@ public class FDPromotionEligibility implements Serializable {
 	}
 
 	/** @return Set of String (promotionCode) */
-	public Set getAppliedPromotionCodes() {
+	public Set<String> getAppliedPromotionCodes() {
 		return Collections.unmodifiableSet(this.appliedPromos);
 	}
 
 	/** @return Set of String (promotionCode) */
-	public Set getEligiblePromotionCodes() {
+	public Set<String> getEligiblePromotionCodes() {
 		return Collections.unmodifiableSet(this.eligibilePromos);
 	}
 
 	/** @return Set of String (promotionCode) */
-	public Set getEligiblePromotionCodes(EnumPromotionType type) {
-		Set s = PromotionFactory.getInstance().getPromotionCodesByType(type);
+	public Set<String> getEligiblePromotionCodes(EnumPromotionType type) {
+		Set<String> s = PromotionFactory.getInstance().getPromotionCodesByType(type);
 		s.retainAll(this.eligibilePromos);
 		return s;
 	}
@@ -88,8 +89,7 @@ public class FDPromotionEligibility implements Serializable {
 	
 	
 	public String getAppliedLineItemPromoCode(){			
-		for (Iterator i = this.appliedPromos.iterator(); i.hasNext();) {
-			String promoCode = (String) i.next();
+		for ( String promoCode : appliedPromos ) {
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 			if(promo.isLineItemDiscount()) return promoCode;
 		}
@@ -101,7 +101,7 @@ public class FDPromotionEligibility implements Serializable {
 		return "FDPromotionEligibility[eligible=" + this.eligibilePromos.toString() + ", applied=" + this.appliedPromos + "] ";
 	}
 
-	public Set getRecommendedPromos() {
+	public Set<String> getRecommendedPromos() {
 		return Collections.unmodifiableSet(this.recommendedPromos);
 	}
 

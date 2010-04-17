@@ -16,40 +16,46 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
 
 public class ActivityDAO implements java.io.Serializable {
+	
+	private static final long serialVersionUID = 2593574875770125711L;
 
-	public void logActivity(Connection conn, ErpActivityRecord rec) throws SQLException {
-		StringBuffer q = new StringBuffer();
-		q.append(
-			"INSERT INTO CUST.ACTIVITY_LOG (ACTIVITY_ID, CUSTOMER_ID, NOTE, TIMESTAMP, SOURCE, INITIATOR, DLV_PASS_ID, SALE_ID, REASON) VALUES (?,?,?,?,?,?,?,?,?)");
+	private static final String INSERT = "INSERT INTO CUST.ACTIVITY_LOG (ACTIVITY_ID, CUSTOMER_ID, NOTE, TIMESTAMP, SOURCE, INITIATOR, DLV_PASS_ID, SALE_ID, REASON, STANDINGORDER_ID) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	
+	public void logActivity( Connection conn, ErpActivityRecord rec ) throws SQLException {
 
-		PreparedStatement ps = conn.prepareStatement(q.toString());
-		ps.setString(1, rec.getActivityType().getCode());
-		ps.setString(2, rec.getCustomerId());
-		ps.setString(3, rec.getNote());
-		ps.setTimestamp(4, new java.sql.Timestamp(new java.util.Date().getTime()));
-		ps.setString(5, rec.getSource().getCode());
-		ps.setString(6, rec.getInitiator());
-		if(rec.getDeliveryPassId() != null){
-			ps.setString(7, rec.getDeliveryPassId());
-		}else{
-			ps.setNull(7, Types.VARCHAR);
+		PreparedStatement ps = conn.prepareStatement( INSERT );
+		ps.setString( 1, rec.getActivityType().getCode() );
+		ps.setString( 2, rec.getCustomerId() );
+		ps.setString( 3, rec.getNote() );
+		ps.setTimestamp( 4, new java.sql.Timestamp( new java.util.Date().getTime() ) );
+		ps.setString( 5, rec.getSource().getCode() );
+		ps.setString( 6, rec.getInitiator() );
+		if ( rec.getDeliveryPassId() != null ) {
+			ps.setString( 7, rec.getDeliveryPassId() );
+		} else {
+			ps.setNull( 7, Types.VARCHAR );
 		}
-		if(rec.getChangeOrderId() != null){
-			ps.setString(8, rec.getChangeOrderId());
-		}else{
-			ps.setNull(8, Types.VARCHAR);
+		if ( rec.getChangeOrderId() != null ) {
+			ps.setString( 8, rec.getChangeOrderId() );
+		} else {
+			ps.setNull( 8, Types.VARCHAR );
 		}
-		if(rec.getReason() != null){
-			ps.setString(9, rec.getReason());
-		}else{
-			ps.setNull(9, Types.VARCHAR);
+		if ( rec.getReason() != null ) {
+			ps.setString( 9, rec.getReason() );
+		} else {
+			ps.setNull( 9, Types.VARCHAR );
 		}
-		
+		if ( rec.getStandingOrderId() != null ) {
+			ps.setString( 10, rec.getStandingOrderId() );
+		} else {
+			ps.setNull( 10, Types.VARCHAR );
+		}
+
 		try {
-			if (ps.executeUpdate() != 1) {
-				throw new SQLException("Row not created");
+			if ( ps.executeUpdate() != 1 ) {
+				throw new SQLException( "Row not created" );
 			}
-		} catch (SQLException sqle) {
+		} catch ( SQLException sqle ) {
 			throw sqle;
 		} finally {
 			ps.close();
@@ -60,7 +66,8 @@ public class ActivityDAO implements java.io.Serializable {
 	/**
 	 * @return Collection of <code>ErpActivityRecord</code> objects
 	 */
-	public Collection getActivityByTemplate(Connection conn, ErpActivityRecord template) throws SQLException {
+	public Collection<ErpActivityRecord> getActivityByTemplate(Connection conn, ErpActivityRecord template) throws SQLException {
+		
 		CriteriaBuilder builder = new CriteriaBuilder();
 		builder.addString("CUSTOMER_ID", template.getCustomerId());
 		builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
@@ -79,7 +86,7 @@ public class ActivityDAO implements java.io.Serializable {
 			ps.setObject(i + 1, par[i]);
 		}
 		ResultSet rs = ps.executeQuery();
-		List l = new ArrayList();
+		List<ErpActivityRecord> l = new ArrayList<ErpActivityRecord>();
 
 		while (rs.next()) {
 			l.add(this.loadFromResultSet(rs));
@@ -91,18 +98,19 @@ public class ActivityDAO implements java.io.Serializable {
 		return l;
 	}
 
-	private ErpActivityRecord loadFromResultSet(ResultSet rs) throws SQLException {
+	private ErpActivityRecord loadFromResultSet( ResultSet rs ) throws SQLException {
 		ErpActivityRecord rec = new ErpActivityRecord();
-		rec.setCustomerId(rs.getString("CUSTOMER_ID"));
-		rec.setActivityType(EnumAccountActivityType.getActivityType(rs.getString("ACTIVITY_ID")));
-		rec.setNote(rs.getString("NOTE"));
-		rec.setDate(new java.util.Date(rs.getTimestamp("TIMESTAMP").getTime()));
-		rec.setSource(EnumTransactionSource.getTransactionSource(rs.getString("SOURCE")));
-		rec.setInitiator(rs.getString("INITIATOR"));
-		//Columns specific to delivery pass changes.
-		rec.setDeliveryPassId(rs.getString("DLV_PASS_ID"));
-		rec.setChangeOrderId(rs.getString("SALE_ID"));
-		rec.setReason(rs.getString("REASON"));
+		rec.setCustomerId( rs.getString( "CUSTOMER_ID" ) );
+		rec.setActivityType( EnumAccountActivityType.getActivityType( rs.getString( "ACTIVITY_ID" ) ) );
+		rec.setNote( rs.getString( "NOTE" ) );
+		rec.setDate( new java.util.Date( rs.getTimestamp( "TIMESTAMP" ).getTime() ) );
+		rec.setSource( EnumTransactionSource.getTransactionSource( rs.getString( "SOURCE" ) ) );
+		rec.setInitiator( rs.getString( "INITIATOR" ) );
+		// Columns specific to delivery pass changes.
+		rec.setDeliveryPassId( rs.getString( "DLV_PASS_ID" ) );
+		rec.setChangeOrderId( rs.getString( "SALE_ID" ) );
+		rec.setReason( rs.getString( "REASON" ) );
+		rec.setStandingOrderId( rs.getString( "STANDINGORDER_ID" ) );
 		return rec;
 	}
 

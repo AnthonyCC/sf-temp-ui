@@ -1,8 +1,5 @@
 package com.freshdirect.delivery.ejb;
 
-/*
- * Created on Apr 23, 2003
- */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -181,7 +178,7 @@ public class DlvManagerDAO {
 			+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?,?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
 
-	public static List getAllTimeslotsForDateRange(
+	public static List<DlvTimeslotModel> getAllTimeslotsForDateRange(
 		Connection conn,
 		AddressModel address,
 		java.util.Date startDate,
@@ -202,7 +199,7 @@ public class DlvManagerDAO {
 		ps.setDouble(9, address.getLatitude());
 
 		ResultSet rs = ps.executeQuery();
-		List timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -320,7 +317,7 @@ public class DlvManagerDAO {
 			+ "and to_date(to_char(ts.base_date-1, 'MM/DD/YY ') || to_char(ts.cutoff_time, 'HH:MI:SS AM'), 'MM/DD/YY HH:MI:SS AM') > SYSDATE "
 			+ "order by ts.base_date, z.zone_code, ts.start_time ";
 
-	public static List getTimeslotsForDepot(
+	public static List<DlvTimeslotModel> getTimeslotsForDepot(
 		Connection conn,
 		String regionId,
 		String zoneCode,
@@ -340,7 +337,7 @@ public class DlvManagerDAO {
 		ps.setString(8, zoneCode);
 
 		ResultSet rs = ps.executeQuery();
-		List timeslots = processTimeslotResultSet(rs);
+		List<DlvTimeslotModel> timeslots = processTimeslotResultSet(rs);
 		rs.close();
 		ps.close();
 		return timeslots;
@@ -377,13 +374,13 @@ public class DlvManagerDAO {
 	}
 
 	private static final String RESERVATION_FOR_CUSTOMER="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
-	public static List getReservationForCustomer(Connection conn, String customerId) throws SQLException {
+	public static List<DlvReservationModel> getReservationForCustomer(Connection conn, String customerId) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(RESERVATION_FOR_CUSTOMER);
 		ps.setString(1, customerId);
 		ps.setInt(2, EnumReservationStatus.RESERVED.getCode());
 		ResultSet rs = ps.executeQuery();
-		List reservations = new ArrayList();
+		List<DlvReservationModel> reservations = new ArrayList<DlvReservationModel>();
 		while (rs.next()) {
 			DlvReservationModel rsv = loadReservationFromResultSet(rs);
 			reservations.add(rsv);
@@ -396,7 +393,7 @@ public class DlvManagerDAO {
 	}
 
 	private static final String RESERVATION_BY_CUSTOMER_AND_TIMESLOT="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION,R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
-	public static List getAllReservationsByCustomerAndTimeslot(Connection conn, String customerId, String timeslotId) throws SQLException {
+	public static List<DlvReservationModel> getAllReservationsByCustomerAndTimeslot(Connection conn, String customerId, String timeslotId) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(RESERVATION_BY_CUSTOMER_AND_TIMESLOT);
 				//"SELECT ID, ORDER_ID, CUSTOMER_ID, STATUS_CODE, TIMESLOT_ID, ZONE_ID, EXPIRATION_DATETIME, TYPE, ADDRESS_ID FROM DLV.RESERVATION WHERE CUSTOMER_ID = ? AND TIMESLOT_ID=?";
@@ -405,7 +402,7 @@ public class DlvManagerDAO {
 		ps.setString(1, customerId);
 		ps.setString(2, timeslotId);
 		ResultSet rs = ps.executeQuery();
-		List reservations = new ArrayList();
+		List<DlvReservationModel> reservations = new ArrayList<DlvReservationModel>();
 		while (rs.next()) {
 			DlvReservationModel rsv = loadReservationFromResultSet(rs);
 			reservations.add(rsv);
@@ -566,14 +563,14 @@ public class DlvManagerDAO {
 			+ "order by t.base_date, t.cutoff_time ";
 
 	
-	public static List getCutoffInfo(Connection conn, String zoneCode, Date start, Date end) throws SQLException {
+	public static List<DlvZoneCutoffInfo> getCutoffInfo(Connection conn, String zoneCode, Date start, Date end) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(CUTOFF_INFO_QUERY);
 		ps.setString(1, zoneCode);
 		ps.setDate(2, new java.sql.Date(start.getTime()));
 		ps.setDate(3, new java.sql.Date(end.getTime()));
 		
 		ResultSet rs = ps.executeQuery();
-		List infos = new ArrayList();
+		List<DlvZoneCutoffInfo> infos = new ArrayList<DlvZoneCutoffInfo>();
 		while(rs.next()) {
 			DlvZoneCutoffInfo info = new DlvZoneCutoffInfo(zoneCode,
 										rs.getDate("BASE_DATE"), 
@@ -615,7 +612,7 @@ public class DlvManagerDAO {
 		ps.setDate(7, new java.sql.Date(end.getTime()));
 		
 		ResultSet rs = ps.executeQuery();
-		List timeslots = new ArrayList();
+		List<DlvTimeslotModel> timeslots = new ArrayList<DlvTimeslotModel>();
 		while(rs.next()) {
 			timeslots.add(getTimeslot(rs));
 		}
@@ -626,8 +623,8 @@ public class DlvManagerDAO {
 		int totalCapacity = 0;
 		int totalReservations = 0;
 		
-		for(Iterator i = timeslots.iterator(); i.hasNext(); ) {
-			DlvTimeslotModel t = (DlvTimeslotModel) i.next();
+		for(Iterator<DlvTimeslotModel> i = timeslots.iterator(); i.hasNext(); ) {
+			DlvTimeslotModel t = i.next();
 			totalCapacity += t.getCapacity();
 			totalReservations += t.getTotalAllocation(); 
 		}
@@ -655,7 +652,7 @@ public class DlvManagerDAO {
 		"SELECT zipcode, trunc(sysdate) as start_date, cos_coverage as coverage "
 			+ "from dlv.zipcode where zipcode = ?";
 
-	public static List checkZipcode(Connection conn, String zipcode, EnumServiceType serviceType) throws SQLException {
+	public static List<DlvZipInfoModel> checkZipcode(Connection conn, String zipcode, EnumServiceType serviceType) throws SQLException {
 		
 		String query = null;
 		if(DlvProperties.useFreeSpatialOnly()) {
@@ -676,7 +673,7 @@ public class DlvManagerDAO {
 		}
 
 		ResultSet rs = ps.executeQuery();
-		List lst = new ArrayList();
+		List<DlvZipInfoModel> lst = new ArrayList<DlvZipInfoModel>();
 		while (rs.next()) {
 			DlvZipInfoModel info =
 				new DlvZipInfoModel(rs.getString("ZIPCODE"), rs.getTimestamp("START_DATE"), rs.getDouble("COVERAGE"));
@@ -700,7 +697,7 @@ public class DlvManagerDAO {
 	/**
 	 * @return List of DlvZipInfoModel
 	 */
-	public static List checkAddress(Connection conn, AddressModel address, EnumServiceType serviceType) throws SQLException, InvalidAddressException {
+	public static List<DlvZipInfoModel> checkAddress(Connection conn, AddressModel address, EnumServiceType serviceType) throws SQLException, InvalidAddressException {
 		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
 			geocodeAddress(conn, address, false);
 		}
@@ -712,7 +709,7 @@ public class DlvManagerDAO {
 
 		ResultSet rs = ps.executeQuery();
 		/* List of DlvZipInfoModel */
-		List infoList = new ArrayList();
+		List<DlvZipInfoModel> infoList = new ArrayList<DlvZipInfoModel>();
 		while (rs.next()) {
 			DlvZipInfoModel info =
 				new DlvZipInfoModel(address.getZipCode(), rs.getTimestamp("START_DATE"), rs.getDouble("COVERAGE"));
@@ -778,7 +775,7 @@ public class DlvManagerDAO {
 		"select zipcode, cos_coverage from dlv.zipcode where cos_coverage > .1";
 		
 
-	public static List getDeliverableZipCodes(Connection conn, EnumServiceType serviceType) throws SQLException {
+	public static List<DlvZipInfoModel> getDeliverableZipCodes(Connection conn, EnumServiceType serviceType) throws SQLException {
 		String query = null;
 		if(DlvProperties.useFreeSpatialOnly()) {
 			if(EnumServiceType.CORPORATE.equals(serviceType)) {
@@ -795,7 +792,7 @@ public class DlvManagerDAO {
 			ps.setString(1, serviceType.getName());
 		}
 		ResultSet rs = ps.executeQuery(); 
-		List lst = new ArrayList();
+		List<DlvZipInfoModel> lst = new ArrayList<DlvZipInfoModel>();
 		while (rs.next()) {
 			lst.add(new DlvZipInfoModel(rs.getString(1), new java.util.Date(), rs.getDouble(2)));
 		}
@@ -804,10 +801,10 @@ public class DlvManagerDAO {
 		return lst;
 	}
 
-	public static List getSiteAnnouncements(Connection conn) throws SQLException {
+	public static List<SiteAnnouncement> getSiteAnnouncements(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("select * from dlv.site_announcements");
 		ResultSet rs = ps.executeQuery();
-		List lst = new ArrayList();
+		List<SiteAnnouncement> lst = new ArrayList<SiteAnnouncement>();
 		while (rs.next()) {
 			String headline = rs.getString("HEADLINE");
 			String copy = rs.getString("COPY");
@@ -817,9 +814,9 @@ public class DlvManagerDAO {
 
 			Date lastOrderBefore = rs.getTimestamp("LAST_ORDER_BEFORE");
 
-			Set placements = getPlacements(rs.getString("PLACEMENT"));
-			Set userLevels = getUserLevels("X".equals(rs.getString("ANONYMOUS")), "X".equals(rs.getString("REGISTERED")));
-			Set deliveryStatuses = getUserDlvStatus(rs.getString("USER_DLV_STATUS"));
+			Set<EnumPlacement> placements = getPlacements(rs.getString("PLACEMENT"));
+			Set<EnumUserLevel> userLevels = getUserLevels("X".equals(rs.getString("ANONYMOUS")), "X".equals(rs.getString("REGISTERED")));
+			Set<EnumUserDeliveryStatus> deliveryStatuses = getUserDlvStatus(rs.getString("USER_DLV_STATUS"));
 
 			SiteAnnouncement ann =
 				new SiteAnnouncement(headline, copy, startDate, endDate, placements, userLevels, deliveryStatuses, lastOrderBefore);
@@ -829,8 +826,8 @@ public class DlvManagerDAO {
 		return lst;
 	}
 
-	private static Set getUserLevels(boolean anonymous, boolean registered) {
-		Set s = new HashSet();
+	private static Set<EnumUserLevel> getUserLevels(boolean anonymous, boolean registered) {
+		Set<EnumUserLevel> s = new HashSet<EnumUserLevel>();
 		if (anonymous) {
 			s.add(EnumUserLevel.GUEST);
 		}
@@ -840,8 +837,8 @@ public class DlvManagerDAO {
 		return s;
 	}
 
-	private static Set getPlacements(String placements) {
-		Set plc = new HashSet();
+	private static Set<EnumPlacement> getPlacements(String placements) {
+		Set<EnumPlacement> plc = new HashSet<EnumPlacement>();
 		if (placements != null) {
 			StringTokenizer st = new StringTokenizer(placements, ",");
 			while (st.hasMoreTokens()) {
@@ -852,8 +849,8 @@ public class DlvManagerDAO {
 		return plc;
 	}
 
-	private static Set getUserDlvStatus(String dlvStatus) {
-		Set dlv = new HashSet();
+	private static Set<EnumUserDeliveryStatus> getUserDlvStatus(String dlvStatus) {
+		Set<EnumUserDeliveryStatus> dlv = new HashSet<EnumUserDeliveryStatus>();
 		if (dlvStatus != null) {
 			StringTokenizer st = new StringTokenizer(dlvStatus, ",");
 			while (st.hasMoreTokens()) {
@@ -873,11 +870,11 @@ public class DlvManagerDAO {
 		+ " order by cutoff_time, zone_code, start_time";
 
 	/** @return List of DlvTimeslotCapacityInfo */
-	public static List getTimeslotCapacityInfo(Connection conn, Date date) throws SQLException {
+	public static List<DlvTimeslotCapacityInfo> getTimeslotCapacityInfo(Connection conn, Date date) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_TIMESLOT_CAPACITY_INFO);
 		ps.setDate(1, new java.sql.Date(date.getTime()));
 		ResultSet rs = ps.executeQuery();
-		List lst = new ArrayList();
+		List<DlvTimeslotCapacityInfo> lst = new ArrayList<DlvTimeslotCapacityInfo>();
 		while (rs.next()) {
 			TimeOfDay cutoff = new TimeOfDay(rs.getTimestamp("CUTOFF_TIME"));
 			String zone = rs.getString("ZONE_CODE");
@@ -949,13 +946,13 @@ public class DlvManagerDAO {
 			+ "group by t.cutoff_time "
 			+ "order by t.cutoff_time ";
 	
-	public static List getCutoffTimesByDate(Connection conn, Date start) throws SQLException {
+	public static List<Date> getCutoffTimesByDate(Connection conn, Date start) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(CUTOFF_BY_DATE_QUERY);
 		ps.setDate(1, new java.sql.Date(start.getTime()));
 	
 
 		ResultSet rs = ps.executeQuery();
-		List cutOffTimes = new ArrayList();
+		List<Date> cutOffTimes = new ArrayList<Date>();
 		while(rs.next()) {
 			Date cutOffTime = rs.getTimestamp("CUTOFFTIME");
 			cutOffTimes.add(cutOffTime);

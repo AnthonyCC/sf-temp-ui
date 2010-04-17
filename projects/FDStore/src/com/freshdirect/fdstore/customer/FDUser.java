@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.customer;
 
 import java.text.ChoiceFormat;
@@ -28,15 +20,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.DeliveryPassModel;
@@ -44,6 +41,7 @@ import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDDepotManager;
 import com.freshdirect.fdstore.FDReservation;
@@ -52,11 +50,13 @@ import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.lists.CclUtils;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -69,20 +69,19 @@ import com.freshdirect.fdstore.promotion.WaiveDeliveryCharge;
 import com.freshdirect.fdstore.rules.EligibilityCalculator;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
 public class FDUser extends ModelSupport implements FDUserI {
+	private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
+
 	private static final long serialVersionUID = 8492744405934393676L;
 
 	public static final String SERVICE_EMAIL = "service@freshdirect.com";
@@ -125,7 +124,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private transient Boolean checkEligible;
 	private transient Boolean referrerEligible;
 	private transient String regRefTrackingCode;
-	private transient List cclListInfos;
+	private transient List<FDCustomerListInfo> cclListInfos;
+	private transient List<FDCustomerListInfo> soListInfos;
 
 	private String lastRefTrackingCode;
 
@@ -172,9 +172,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private FDCartModel donationCart = new FDCartModel();
 	private Integer donationTotalQuantity = 0;
 	
-	private Map cachedRecipientInfo = null;
+	private Map<String, ErpGCDlvInformationHolder> cachedRecipientInfo = null;
 	
 	private PricingContext pricingContext;
+	
+	protected Boolean isSOEligible = null;
+
+	
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -353,7 +357,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.setPromotionAddressMismatch(false);
 
 		this.getShoppingCart().clearSampleLines();
-		this.getShoppingCart().setDiscounts(new ArrayList());
+		this.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
 		this.getShoppingCart().clearLineItemDiscounts();
 		//this.setPromoVariantMap(null);
 		// evaluate special dlv charge override
@@ -446,8 +450,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.referrerEligible = null;
 		this.regRefTrackingCode = null;
 		this.cclListInfos = null;
+		this.soListInfos = null;
 		this.cachedPromoHistory = null;
 		this.promoVariantMap = null;
+		this.isSOEligible = null;
     }
     /*
      * This method was introduced as part of PERF-22 task.
@@ -649,7 +655,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			try {
 				String county = FDDeliveryManager.getInstance().getCounty(getShoppingCart().getDeliveryAddress());
 				if("SUFFOLK".equalsIgnoreCase(county)){
-					return 99;
+					return 100;
 				}
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
@@ -869,11 +875,11 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return checkEligible.booleanValue();
     }
 
-	public Collection getPaymentMethods() {
+	public Collection<ErpPaymentMethodI> getPaymentMethods() {
 		try {
 			return FDCustomerManager.getPaymentMethods(this.identity);
 		} catch (FDResourceException e) {
-			return new ArrayList(); // empty list
+			return new ArrayList<ErpPaymentMethodI>(); // empty list
 		}
 	}
 
@@ -1076,18 +1082,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void performDlvPassStatusCheck()  throws FDResourceException {
-		if(this.isDlvPassActive()){
+		if (this.isDlvPassActive()){
 			if(!(this.getShoppingCart().isChargeWaived(EnumChargeType.DELIVERY))){
 				//If delivery promotion was applied, do not reapply the waiving of dlv charge.
 				this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE);
 				this.getShoppingCart().setDlvPassApplied(true);
 			}
-		}/*else if(this.isDlvPassExpired()   && this.getShoppingCart().isDlvPassAlreadyApplied()){
-
-			this.getShoppingCart().setChargeWaived(EnumChargeType.DELIVERY,true, DlvPassConstants.PROMO_CODE);
-			this.getShoppingCart().setDlvPassApplied(true);
-		}*/
-		else if((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
+		} else if ((this.getShoppingCart() instanceof FDModifyCartModel)&&(this.getDlvPassInfo().isUnlimited())) {
 
 			String dpId=((FDModifyCartModel)this.getShoppingCart()).getOriginalOrder().getDeliveryPassId();
 			if(dpId!=null && !dpId.equals("")) {
@@ -1109,13 +1110,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public boolean isEligibleForDeliveryPass() throws FDResourceException {
-		/*if(EnumDlvPassProfileType.BSGS.equals(getEligibleDeliveryPass()) || EnumDlvPassProfileType.UNLIMITED.equals(getEligibleDeliveryPass())) {
-			return true;
-		} else {
-			return false;
-		}
-		return true;*/
-
 		EnumDlvPassProfileType profileType=getEligibleDeliveryPass();
 		if(profileType.equals(EnumDlvPassProfileType.NOT_ELIGIBLE))
 			return false;
@@ -1209,22 +1203,18 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public void setLastRefProgramId(String progId) {
-		// TODO Auto-generated method stub
 		this.lastRefProgId=progId;
 	}
 
 	public String getLastRefProgId() {
-		// TODO Auto-generated method stub
 		return this.lastRefProgId;
 	}
 
 	public void setLastRefTrkDtls(String trkDtls) {
-		// TODO Auto-generated method stub
 		this.lastRefTrkDtls=trkDtls;
 	}
 
 	public String getLastRefTrkDtls() {
-		// TODO Auto-generated method stub
 		return this.lastRefTrkDtls;
 	}
 
@@ -1287,11 +1277,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 	public boolean isCCLInExperienced() {
-		try {
-			return CclUtils.isCCLInExperienced(this, getCustomerCreatedListInfos());
-		} catch (FDResourceException e) {
-			return false;
-		}
+		return CclUtils.isCCLInExperienced(this, getCustomerCreatedListInfos());
 	}
 
 
@@ -1325,7 +1311,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return null;
 	}
 
-	public List getCustomerCreatedListInfos() {
+	@Override
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos() {
 		if (getLevel() == FDUserI.GUEST) {
 			// We don't have an identity
 			return null;
@@ -1339,6 +1326,23 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		return cclListInfos;
 	}
+
+	@Override
+	public List<FDCustomerListInfo> getStandingOrderListInfos() {
+		if (getLevel() == FDUserI.GUEST) {
+			// We don't have an identity
+			return null;
+		}
+		if (soListInfos == null) {
+			try {
+				soListInfos = FDListManager.getStandingOrderListInfos(this);
+			} catch (Exception e) {
+				throw new FDRuntimeException(e);
+			}
+		}
+		return soListInfos;
+	}
+
 
 	public void setAssignedCustomerParams(Map assignedCustomerParams) {
 		this.assignedCustomerParams = assignedCustomerParams;
@@ -1392,8 +1396,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
 	public int getTotalCartSkuQuantity(String args[]){
-		Collection c = Arrays.asList(args);
-		Set argSet = new HashSet(c);
+		Collection<String> c = Arrays.asList(args);
+		Set<String> argSet = new HashSet<String>(c);
         if(args==null) {
                     //System.out.println("** args :"+args);
                     return 0;
@@ -1403,9 +1407,9 @@ public class FDUser extends ModelSupport implements FDUserI {
             int count=0;
                     for (Iterator j = this.shoppingCart.getOrderLines().iterator(); j.hasNext();) {
                                 FDCartLineI line = (FDCartLineI) j.next();
-                                for(Iterator i=argSet.iterator();i.hasNext();)
+                                for(Iterator<String> i=argSet.iterator();i.hasNext();)
                                 {
-                                            String sku=(String)i.next();
+                                            String sku=i.next();
                                             if (sku.equals(line.getSkuCode()))
                                             {
                                                         count += line.getQuantity();
@@ -1502,7 +1506,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	private void getGCRecipientInfo() throws FDResourceException {
 		if(null != cachedGiftCards && null != cachedGiftCards.getGiftcards() && !cachedGiftCards.getGiftcards().isEmpty()){
-			List saleIds = new ArrayList();
+			List<String> saleIds = new ArrayList<String>();
 			for (Iterator iterator = cachedGiftCards.getGiftcards().iterator(); iterator
 					.hasNext();) {
 				FDGiftCardModel lFDGiftCardModel = (FDGiftCardModel) iterator.next();
@@ -1525,32 +1529,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 		ErpGCDlvInformationHolder holder = null;
 		try {
-			if(null == cachedRecipientInfo){
-//				getGCRecipientInfo();
-				cachedRecipientInfo = new HashMap();
+			if (null == cachedRecipientInfo){
+				cachedRecipientInfo = new HashMap<String, ErpGCDlvInformationHolder>();
 			}
-			/*if(null !=cachedRecipientInfo){
-				if(cachedRecipientInfo.containsKey(saleId)){
-					 recipientList = (List)cachedRecipientInfo.get(saleId);
-				}else{
-					recipientList = FDCustomerManager.getGiftCardRecepientsForOrder(saleId);
-					cachedRecipientInfo.put(saleId, recipientList);				
-				}
-				
-				if(null != recipientList && !recipientList.isEmpty()){
-					for (Iterator iterator = recipientList.iterator(); iterator
-							.hasNext();) {
-						ErpGCDlvInformationHolder holder = (ErpGCDlvInformationHolder) iterator.next();
-						if(holder.getCertificationNumber().equalsIgnoreCase(certNum)){
-							return holder.getRecepientModel().getSenderName();
-						}
-						
-					}
-				}
-			}*/
-			if(null !=cachedRecipientInfo){
+
+			if (null !=cachedRecipientInfo){
 				if(cachedRecipientInfo.containsKey(certNum)){
-					 holder = (ErpGCDlvInformationHolder)cachedRecipientInfo.get(certNum);
+					 holder = cachedRecipientInfo.get(certNum);
 				}else{
 					holder = FDCustomerManager.GetGiftCardRecipentByCertNum(certNum);
 					cachedRecipientInfo.put(certNum, holder);				
@@ -1591,7 +1576,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.dummyCart = dcart;
 	}
 	
-	public FDRecipientList getRecipentList(){
+	public FDRecipientList getRecipientList(){
 		if( null == this.recipientList) {
 			this.recipientList = new FDRecipientList();
 		}
@@ -1603,7 +1588,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 	
     public boolean isGCOrderMinimumMet() {
-		double subTotal = this.getRecipentList().getSubtotal();
+		double subTotal = this.getRecipientList().getSubtotal();
 		return subTotal >= this.getMinimumOrderAmount();
     }
     
@@ -1655,21 +1640,93 @@ public class FDUser extends ModelSupport implements FDUserI {
 		}
 	}
 	
-	 public int getTotalRegularOrderCount() throws FDResourceException {
-	        return this.getOrderHistory().getTotalRegularOrderCount();
-	    }
+	public int getTotalRegularOrderCount() throws FDResourceException {
+		return this.getOrderHistory().getTotalRegularOrderCount();
+	}
 
-	 public Collection<EnumServiceType> getUserServicesBasedOnAddresses() throws FDResourceException {
-	     if (servicesBasedOnAddress==null) {
-	         ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(getIdentity().getErpCustomerPK());	     
-	         List<ErpAddressModel> shipToAddresses = erpCustomer.getShipToAddresses();
-	         servicesBasedOnAddress = new HashSet<EnumServiceType> ();
-	         for (ErpAddressModel m : shipToAddresses) {
-	             servicesBasedOnAddress.add(m.getServiceType());
-	         }
-	     }
-	     return servicesBasedOnAddress;
-	 }
+	public Collection<EnumServiceType> getUserServicesBasedOnAddresses() throws FDResourceException {
+		if (servicesBasedOnAddress==null) {
+		    ErpCustomerModel erpCustomer = FDCustomerFactory.getErpCustomer(getIdentity().getErpCustomerPK());	     
+		    List<ErpAddressModel> shipToAddresses = erpCustomer.getShipToAddresses();
+		    servicesBasedOnAddress = new HashSet<EnumServiceType> ();
+		    for (ErpAddressModel m : shipToAddresses) {
+		        servicesBasedOnAddress.add(m.getServiceType());
+		    }
+		}
+	    return servicesBasedOnAddress;
+	}
+
+
+	// Profile key
+	private static String PROFILE_SO_KEY = "so.enabled"; 
+	
+
+	/**
+	 * Ensures StandingOrder feature is available for the customer
+	 * 
+	 * 1. Check personal availability in profiles
+	 * 2. Check global availability in fdstore.properties
+	 * 
+	 * @return
+	 */
+	private boolean isSOEnabled() {
+		// Check personal flag in user profile
+		try {
+			boolean isEnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO_KEY)).booleanValue();
+			
+			if (isEnabledInProfile) {
+				LOGGER.debug("SO enabled in customer profile");
+				return true;
+			}
+		} catch (FDResourceException e) {
+		}
+		
+		// Check global flag
+		final boolean standingOrdersEnabled = FDStoreProperties.isStandingOrdersEnabled();
+		LOGGER.debug("Standing Orders " + (standingOrdersEnabled ? "" : "NOT") + " enabled globally");
+		return standingOrdersEnabled;
+	}
+
+
+	@Override
+	public boolean isEligibleForStandingOrders() {
+		if (isSOEligible == null) {
+			isSOEligible = Boolean.FALSE;
+
+			if (isSOEnabled()) {
+				try {
+					FDOrderHistory h = (FDOrderHistory) getOrderHistory();
+					
+					// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
+					for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
+						LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
+						if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() )
+								|| i.getStandingOrderId() != null ) {
+							isSOEligible = Boolean.TRUE;
+							break;
+						}
+					}
+				} catch (FDResourceException e) {
+					LOGGER.error("Order info crashed; exc="+e);
+				}
+			}
+		}
+
+		LOGGER.debug("Customer eligible for SO: " + isSOEligible);
+
+		return isSOEligible.booleanValue();
+	}
+
+	
+	@Override
+	public FDStandingOrder getCurrentStandingOrder() {
+		throw new IllegalArgumentException( "Calling getCurrentStandingOrder() in FDUser is not allowed." );
+	}
+
+	@Override
+	public EnumCheckoutMode getCheckoutMode() {
+		return EnumCheckoutMode.NORMAL;
+	}
 	 
 	 public String getPricingZoneId(){
 		 return this.getPricingContext().getZoneId();

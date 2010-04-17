@@ -33,7 +33,7 @@ public class ActivityLog {
 		return INSTANCE;
 	}
 
-	public Collection findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
+	public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws FDResourceException {
 		try {
 			return this.getActivityLogSB().findActivityByTemplate(template);
 		} catch (RemoteException e) {
@@ -43,8 +43,7 @@ public class ActivityLog {
 
 	private ActivityLogSB getActivityLogSB() throws FDResourceException {
 		try {
-			ActivityLogHome home = (ActivityLogHome) serviceLocator.getRemoteHome("freshdirect.customer.ActivityLog",
-				ActivityLogHome.class);
+			ActivityLogHome home = (ActivityLogHome) serviceLocator.getRemoteHome("freshdirect.customer.ActivityLog");
 			return home.create();
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);

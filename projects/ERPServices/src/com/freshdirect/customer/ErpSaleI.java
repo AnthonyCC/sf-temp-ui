@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import com.freshdirect.framework.core.PrimaryKey;
@@ -14,13 +5,6 @@ import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * ErpTransactionGroup interface
- *
- * @version    $Revision$
- * @author     $Author$
- * @stereotype fd-interface
- */
 public interface ErpSaleI {
 	/**
 	 * @link aggregationByValue
@@ -78,16 +62,16 @@ public interface ErpSaleI {
 	/**
      * @return collection of ErpTransactionModel objects
      */
-    public Collection getTransactions() throws RemoteException;
+    public Collection<ErpTransactionModel> getTransactions() throws RemoteException;
 
 	/**
      * @return collection of ErpComplaintModel objects
      */
-    public Collection getComplaints() throws RemoteException;
+    public Collection<ErpComplaintModel> getComplaints() throws RemoteException;
 
 	/**
      * @return collection of ErpAuthorizationModel objects
      */
-    public List getFailedAuthorizations() throws RemoteException;
+    public List<ErpAuthorizationModel> getFailedAuthorizations() throws RemoteException;
 }
 

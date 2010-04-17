@@ -69,8 +69,7 @@ public class URLRewriteManager {
 	private FDCustomerManagerSB getFDCustomerManager() {
 		try {
 			FDCustomerManagerHome home = (FDCustomerManagerHome) locator.getRemoteHome(
-				FDStoreProperties.getFDCustomerManagerHome(),
-				FDCustomerManagerHome.class);
+				FDStoreProperties.getFDCustomerManagerHome());
 			return home.create();
 		} catch (Exception e) {
 			throw new EJBException("Cannot obtain reference to FDCustomerManagerSB to load rewrite rules", e);

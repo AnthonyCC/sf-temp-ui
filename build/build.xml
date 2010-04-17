@@ -47,9 +47,7 @@
 		<pathelement location="${weblogic.home}/server/lib/CR189281_debug.jar"/>
         <pathelement location="${weblogic.home}/server/lib/webserviceclient.jar"/>
         <pathelement location="${weblogic.home}/server/lib/webserviceclient+ssl.jar"/>
-        <pathelement location="${weblogic.home}/server/lib/webservices.jar"/>
-        
-        
+        <pathelement location="${weblogic.home}/server/lib/webservices.jar"/>        
 	</path>
 
 	<path id="common.classpath">
@@ -228,10 +226,11 @@
 		<checkoutLabeled dir="projects/listadmin"/>
 		<checkoutLabeled dir="projects/ocf-adm"/>
 		<checkoutLabeled dir="projects/RefAdmin"/>
-    <checkoutLabeled dir="projects/MarketingAdmin"/>
-    <checkoutLabeled dir="projects/TransportationAdmin"/>
-    <checkoutLabeled dir="projects/RoutingServices"/>
+    	<checkoutLabeled dir="projects/MarketingAdmin"/>
+    	<checkoutLabeled dir="projects/TransportationAdmin"/>
+    	<checkoutLabeled dir="projects/RoutingServices"/>
 		<checkoutLabeled dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->
+		<checkoutLabeled dir="projects/StandingOrdersService"/> <!-- Standing Orders background service -->
 		<checkoutLabeled dir="applications"/>
 		<!--	<checkoutLabeled dir="release"/> -->
 	</target>
@@ -288,10 +287,11 @@
 		<checkoutLatest dir="projects/listadmin"/>
 		<checkoutLatest dir="projects/ocf-adm"/>
 		<checkoutLatest dir="projects/RefAdmin"/>
-        	<checkoutLatest dir="projects/MarketingAdmin"/>
-        	<checkoutLatest dir="projects/TransportationAdmin"/>
-        	<checkoutLatest dir="projects/RoutingServices"/>
+        <checkoutLatest dir="projects/MarketingAdmin"/>
+        <checkoutLatest dir="projects/TransportationAdmin"/>
+        <checkoutLatest dir="projects/RoutingServices"/>
 		<checkoutLatest dir="projects/FDIntegrationServices"/> <!-- Added: Schematic rsung -->        	
+		<checkoutLatest dir="projects/StandingOrdersService"/>
 		<checkoutLatest dir="applications"/>
 		<!--	<checkoutLatest dir="release"/> -->
 
@@ -380,10 +380,11 @@
 		<mkdir dir="${work.dir}/ocf-adm" />
 		<mkdir dir="${work.dir}/docs" />
 		<mkdir dir="${work.dir}/RefAdmin"/>
-                <mkdir dir="${work.dir}/MrktAdmin"/>
-                <mkdir dir="${work.dir}/TransportationAdmin"/>
-                <mkdir dir="${work.dir}/RoutingServices"/>
-                <mkdir dir="${work.dir}/cms-gwt"/>
+		<mkdir dir="${work.dir}/MrktAdmin"/>
+		<mkdir dir="${work.dir}/TransportationAdmin"/>
+		<mkdir dir="${work.dir}/RoutingServices"/>
+		<mkdir dir="${work.dir}/cms-gwt"/>
+		<mkdir dir="${work.dir}/StandingOrdersService"/>
 	</target>
 
     <target name        = "copy_shared_dirs"
@@ -484,7 +485,7 @@
         </copy>
     </target>
 
-	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources" description="Build everything">
+	<target name="build" depends="framework,erpservices,routing,delivery,cms,fdstore,listadmin-lib,ocf,dataloader,erpswebapp,tools,resources,StandingOrdersService" description="Build everything">
 	</target>
 
 	<target name="jsmin" description="Minimizing javascript files">
@@ -494,6 +495,7 @@
 			</classpath>
 		</taskdef>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/ccl.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/ccl-min.js"/>
+		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/fcu.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/fcu-min.js"/>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/jsonrpc.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/jsonrpc-min.js"/>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/rounded_corners.inc.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/rounded_corners-min.js"/>
 	</target>
@@ -1413,9 +1415,7 @@
                 <pathelement location="${thirdparty.home}/wstx-asl-3.2.4.jar"/>
                 <pathelement location="${thirdparty.home}/wsdl4j-1.5.1.jar"/>
                 <pathelement location="${thirdparty.home}/xml-apis.jar"/>
-			</path>
-            
-            
+			</path>     
 	
 			<makeProject
 				project="RoutingServices"
@@ -1651,46 +1651,46 @@
 
 
 
-        <target name="cms-gwt" description="Build cms-gwt">
-                <path id="cms-gwt.classpath">
-                        <pathelement location="${work.dir}/Framework.jar"/>
-                        <pathelement location="${work.dir}/CMS.jar"/>
-                        <pathelement location="${work.dir}/Framework.jar"/>
-                        <pathelement location="${work.dir}/ERPServices.jar"/>
+    <target name="cms-gwt" description="Build cms-gwt">
+		<path id="cms-gwt.classpath">
+            <pathelement location="${work.dir}/Framework.jar"/>
+            <pathelement location="${work.dir}/CMS.jar"/>
+            <pathelement location="${work.dir}/Framework.jar"/>
+            <pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/gxt.jar"/>
 			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
 		</path>
-                <property name="cms-gwt.path" value="projects/cms-gwt" />
-                <makeProject
-                        project="cms-gwt"
-                        classpathref="cms-gwt.classpath" 
-                        source="1.5"/>
-                <gwt-compile project="cms-gwt" classpathref="cms-gwt.classpath" module-name="com.freshdirect.cms.ui.cmsgwt" />
-                <war destfile="${work.dir}/cms-gwt.war" webxml="${cms-gwt.path}/war/WEB-INF/web.xml">
-                    <manifest>
-                        <attribute name="Specification-Version" value="${build.counter}"/>
-                        <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
-                        <attribute name="Implementation-Title" value="cms-gwt"/>
-                        <attribute name="Implementation-Version" value="${build.counter}"/>
-                        <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
-                        <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
-                    </manifest>
-                    <webinf dir="${cms-gwt.path}/war/WEB-INF">
-                        <include name="*.xml"/>
-                        <exclude name="web.xml"/>
-                    </webinf>
-                    <lib file="${work.dir}/cms-gwt.jar"/>
-                    <lib file="${thirdparty.home}/gxt.jar"/>
-                    <lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
-                    <fileset dir="${work.dir}/cms-gwt.js/com.freshdirect.cms.ui.cmsgwt"/>
-                    <fileset dir="${cms-gwt.path}/war">
-                        <include name="*.html"/>
-                        <include name="*.jsp"/>
-                        <include name="**/*.css"/>
-                    </fileset>
-                </war>	
-        </target>
+            <property name="cms-gwt.path" value="projects/cms-gwt" />
+            <makeProject
+                    project="cms-gwt"
+                    classpathref="cms-gwt.classpath" 
+                    source="1.5"/>
+            <gwt-compile project="cms-gwt" classpathref="cms-gwt.classpath" module-name="com.freshdirect.cms.ui.cmsgwt" />
+            <war destfile="${work.dir}/cms-gwt.war" webxml="${cms-gwt.path}/war/WEB-INF/web.xml">
+                <manifest>
+                    <attribute name="Specification-Version" value="${build.counter}"/>
+                    <attribute name="Specification-Vendor" value="FreshDirect LLC"/>
+                    <attribute name="Implementation-Title" value="cms-gwt"/>
+                    <attribute name="Implementation-Version" value="${build.counter}"/>
+                    <attribute name="Implementation-Vendor" value="FreshDirect LLC"/>
+                    <attribute name="Build-Id" value="${build.prefix}-${build.counter}"/>
+                </manifest>
+                <webinf dir="${cms-gwt.path}/war/WEB-INF">
+                    <include name="*.xml"/>
+                    <exclude name="web.xml"/>
+                </webinf>
+                <lib file="${work.dir}/cms-gwt.jar"/>
+                <lib file="${thirdparty.home}/gxt.jar"/>
+                <lib file="${thirdparty.home}/gwt/gwt-servlet.jar"/>
+                <fileset dir="${work.dir}/cms-gwt.js/com.freshdirect.cms.ui.cmsgwt"/>
+                <fileset dir="${cms-gwt.path}/war">
+                    <include name="*.html"/>
+                    <include name="*.jsp"/>
+                    <include name="**/*.css"/>
+                </fileset>
+            </war>	
+    </target>
 
 	<target name="cms-tap" description="Build cms-tap">
 		<!-- directory for compiled stuff -->
@@ -1957,8 +1957,6 @@
 
 	</target>
 
-
-
 	<target name="transportAdmin" description="Build Transportation Admin">
 		<!-- directory for compiled stuff -->
 		<mkdir dir="${work.dir}/TransportationAdmin/WEB-INF/classes" />
@@ -2039,6 +2037,21 @@
 
 	</target>
 
+	<target name="StandingOrdersService" description="Build Standing Orders Service">
+		<path id="StandingOrdersService.classpath">
+			<pathelement location="${work.dir}/Framework.jar"/>
+			<pathelement location="${work.dir}/ERPServicesEJB-WL.jar"/>
+			<pathelement location="${work.dir}/DeliveryEJB-WL.jar"/>
+			<pathelement location="${work.dir}/RoutingServices.jar"/>
+			<pathelement location="${work.dir}/CMS.jar"/>
+			<pathelement location="${work.dir}/FDStore.jar"/>
+			<pathelement location="${work.dir}/ERPSWebApp.jar"/>
+		</path>
+
+		<makeEjbProject
+			project="StandingOrdersService"
+			classpathref="StandingOrdersService.classpath"/>
+	</target>
 
 	
 	<target name="deployDlvAdmin" description="Build and Deploy dlvadmin" depends="dlvadmin">
@@ -2146,12 +2159,14 @@
 				<include name="DeliveryEJB-WL.jar"/>
 				<include name="FDStoreEJB-WL.jar"/>
 				<include name="DataLoaderEJB-WL.jar"/>
+				<include name="StandingOrdersService.jar"/>
 			</ejbs>
 			<libraries>
 				<include name="Framework.jar"/>
 				<include name="CMS.jar"/>
 				<include name="Resources.jar"/>
 				<include name="RoutingServices.jar"/>
+				<include name="ERPSWebApp.jar"/>
 			</libraries>
 			<lib>
 				<include name="lcc.jar"/>
@@ -2466,6 +2481,7 @@
 			<zipfileset src="${work.dir}/DataLoaderEJB-WL.jar" excludes="META-INF/*"/>
 			<zipfileset src="${work.dir}/FDStoreEJB-WL.jar" excludes="META-INF/*"/>
             <zipfileset src="${work.dir}/RoutingServices.jar" excludes="META-INF/*"/>
+            <zipfileset src="${work.dir}/StandingOrdersService.jar" excludes="META-INF/*"/>
 
 			<!-- Tools -->
 			<zipfileset src="${work.dir}/Tools.jar" excludes="META-INF/*"/>
@@ -2577,86 +2593,86 @@
 				<i>Copyright &copy; 2001-2007 FreshDirect Inc. All Rights Reserved.</i>
 			</small>]]></bottom>
 
-		<tag name="TODO" description="To do:"/>
-		<tag name="FIXME" description="Fix me:"/>
+			<tag name="TODO" description="To do:"/>
+			<tag name="FIXME" description="Fix me:"/>
+	
+			<tag dir="${basedir}/build">
+				<filename name="togetherj-tags.txt"/>
+			</tag>
+	
+			<classpath>
+				<path refid="j2ee.classpath"/>
+				<path refid="common.classpath"/>
+				<pathelement path="${classpath.erps.lib}"/>
+				<pathelement path="${classpath.cms.lib}"/>
+			</classpath>
+	
+			<sourcepath>
+				<pathelement location="${projects.dir}/Framework/src"/>
+				<pathelement location="${projects.dir}/ERPServices/src"/>
+				<pathelement location="${projects.dir}/Delivery/src"/>
+				<pathelement location="${projects.dir}/FDStore/src"/>
+				<pathelement location="${projects.dir}/CMS/src"/>
+			</sourcepath>
+	
+			<group title="CMS">
+				<package name="com.freshdirect.cms"/>
+				<package name="com.freshdirect.cms.*" />
+			</group>
+	
+			<group title="CMS: FDStore Integration">
+				<package name="com.freshdirect.fdstore.attributes"/>
+				<package name="com.freshdirect.fdstore.attributes.*"/>
+				<package name="com.freshdirect.fdstore.content"/>
+				<package name="com.freshdirect.fdstore.content.*"/>
+				<package name="com.freshdirect.fdstore.merchandising"/>
+			</group>
+	
+			<group title="FDStore">
+				<package name="com.freshdirect.fdstore"/>
+				<package name="com.freshdirect.fdstore.*"/>
+			</group>
+	
+			<group title="ERPS: Product Models">
+				<package name="com.freshdirect.erp"/>
+				<package name="com.freshdirect.erp.*"/>
+				<package name="com.freshdirect.content.*"/>
+			</group>
+	
+			<group title="ERPS: SAP Interface">
+				<package name="com.freshdirect.sap"/>
+				<package name="com.freshdirect.sap.*"/>
+			</group>
+	
+			<group title="ERPS: Payment">
+				<package name="com.freshdirect.payment"/>
+				<package name="com.freshdirect.payment.*"/>
+			</group>
+	
+			<group title="ERPS: Customer, Order">
+				<package name="com.freshdirect.customer"/>
+				<package name="com.freshdirect.customer.*"/>
+				<package name="com.freshdirect.affiliate"/>
+				<package name="com.freshdirect.affiliate.*"/>
+			</group>
+	
+			<group title="ERPS: CRM">
+				<package name="com.freshdirect.crm"/>
+				<package name="com.freshdirect.crm.*"/>
+			</group>
+	
+			<group title="Delivery">
+				<package name="com.freshdirect.delivery"/>
+				<package name="com.freshdirect.delivery.*"/>
+				<package name="com.freshdirect.dlvadmin.*"/>
+			</group>
+	
+			<group title="Framework">
+				<package name="com.freshdirect.framework.*"/>
+			</group>
 
-		<tag dir="${basedir}/build">
-			<filename name="togetherj-tags.txt"/>
-		</tag>
-
-		<classpath>
-			<path refid="j2ee.classpath"/>
-			<path refid="common.classpath"/>
-			<pathelement path="${classpath.erps.lib}"/>
-			<pathelement path="${classpath.cms.lib}"/>
-		</classpath>
-
-		<sourcepath>
-			<pathelement location="${projects.dir}/Framework/src"/>
-			<pathelement location="${projects.dir}/ERPServices/src"/>
-			<pathelement location="${projects.dir}/Delivery/src"/>
-			<pathelement location="${projects.dir}/FDStore/src"/>
-			<pathelement location="${projects.dir}/CMS/src"/>
-		</sourcepath>
-
-		<group title="CMS">
-			<package name="com.freshdirect.cms"/>
-			<package name="com.freshdirect.cms.*" />
-		</group>
-
-		<group title="CMS: FDStore Integration">
-			<package name="com.freshdirect.fdstore.attributes"/>
-			<package name="com.freshdirect.fdstore.attributes.*"/>
-			<package name="com.freshdirect.fdstore.content"/>
-			<package name="com.freshdirect.fdstore.content.*"/>
-			<package name="com.freshdirect.fdstore.merchandising"/>
-		</group>
-
-		<group title="FDStore">
-			<package name="com.freshdirect.fdstore"/>
-			<package name="com.freshdirect.fdstore.*"/>
-		</group>
-
-		<group title="ERPS: Product Models">
-			<package name="com.freshdirect.erp"/>
-			<package name="com.freshdirect.erp.*"/>
-			<package name="com.freshdirect.content.*"/>
-		</group>
-
-		<group title="ERPS: SAP Interface">
-			<package name="com.freshdirect.sap"/>
-			<package name="com.freshdirect.sap.*"/>
-		</group>
-
-		<group title="ERPS: Payment">
-			<package name="com.freshdirect.payment"/>
-			<package name="com.freshdirect.payment.*"/>
-		</group>
-
-		<group title="ERPS: Customer, Order">
-			<package name="com.freshdirect.customer"/>
-			<package name="com.freshdirect.customer.*"/>
-			<package name="com.freshdirect.affiliate"/>
-			<package name="com.freshdirect.affiliate.*"/>
-		</group>
-
-		<group title="ERPS: CRM">
-			<package name="com.freshdirect.crm"/>
-			<package name="com.freshdirect.crm.*"/>
-		</group>
-
-		<group title="Delivery">
-			<package name="com.freshdirect.delivery"/>
-			<package name="com.freshdirect.delivery.*"/>
-			<package name="com.freshdirect.dlvadmin.*"/>
-		</group>
-
-		<group title="Framework">
-			<package name="com.freshdirect.framework.*"/>
-		</group>
-
-	</javadoc>
-</target>
+		</javadoc>
+	</target>
 
 	<target name="jmeter_runner" description="JMETER Running Tool">
 		<mkdir dir="${work.dir}/jmeter_tools" />

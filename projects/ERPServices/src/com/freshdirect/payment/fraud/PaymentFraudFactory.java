@@ -11,32 +11,30 @@ import com.freshdirect.framework.util.ExpiringReference;
 public class PaymentFraudFactory {
 	private final static PaymentFraudFactory INSTANCE = new PaymentFraudFactory();
 	
-	private static ExpiringReference patternsCache = new ExpiringReference(1440 * 60 * 1000) {
-		protected Object load() {
-			try {
-				List list = PaymentFraudManager.loadAllPatterns();
-				return list;
-			} catch (EJBException ex) {
-				throw new FDRuntimeException(ex);
-			} catch (FDResourceException ex) {
-				throw new FDRuntimeException(ex);
-			}
-		}
-				
+	private static ExpiringReference<List<RestrictedPaymentMethodModel>> patternsCache = 
+		new ExpiringReference<List<RestrictedPaymentMethodModel>>(1440 * 60 * 1000) {
+			protected List<RestrictedPaymentMethodModel> load() {
+				try {
+					return PaymentFraudManager.loadAllPatterns();
+				} catch (EJBException ex) {
+					throw new FDRuntimeException(ex);
+				} catch (FDResourceException ex) {
+					throw new FDRuntimeException(ex);
+				}
+			}				
 	};
 	
-	private static ExpiringReference badAccountsCache = new ExpiringReference(1440 * 60 * 1000) {
-		protected Object load() {
-			try {
-				return PaymentFraudManager.loadAllBadPaymentMethods();
-			} catch (EJBException ex) {
-				throw new FDRuntimeException(ex);
-			} catch (FDResourceException ex) {
-				throw new FDRuntimeException(ex);
+	private static ExpiringReference<List<RestrictedPaymentMethodModel>> badAccountsCache = 
+		new ExpiringReference<List<RestrictedPaymentMethodModel>>(1440 * 60 * 1000) {
+			protected List<RestrictedPaymentMethodModel> load() {
+				try {
+					return PaymentFraudManager.loadAllBadPaymentMethods();
+				} catch (EJBException ex) {
+					throw new FDRuntimeException(ex);
+				} catch (FDResourceException ex) {
+					throw new FDRuntimeException(ex);
+				}
 			}
-		}
-		
-
 	};
 
 	private PaymentFraudFactory() {
@@ -46,12 +44,12 @@ public class PaymentFraudFactory {
 		return INSTANCE;
 	}
 
-	public List getPatternListFromCache() {
-		return (List)patternsCache.get();
+	public List<RestrictedPaymentMethodModel> getPatternListFromCache() {
+		return (List<RestrictedPaymentMethodModel>)patternsCache.get();
 	}
 
-	public List getBadAccountListFromCache() {
-		return (List)badAccountsCache.get();
+	public List<RestrictedPaymentMethodModel> getBadAccountListFromCache() {
+		return (List<RestrictedPaymentMethodModel>)badAccountsCache.get();
 	}
 
 	public void forcePatternsCacheRefresh() {

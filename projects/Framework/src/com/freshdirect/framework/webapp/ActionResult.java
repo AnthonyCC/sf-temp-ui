@@ -1,32 +1,19 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001-2002 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.webapp;
 
 import java.util.*;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
 public class ActionResult {
-	private static final Category LOGGER = Category.getInstance(ActionResult.class);
+	
+	private static final Logger LOGGER = Logger.getLogger( ActionResult.class );
 
-	private HashMap errors = null;
-	private HashMap warnings = null;
+	private HashMap<String, ActionError>	errors		= null;
+	private HashMap<String, ActionWarning>	warnings	= null;
 
 	public ActionResult() {
-		errors = new HashMap();
-		warnings = new HashMap();
+		errors = new HashMap<String, ActionError>();
+		warnings = new HashMap<String, ActionWarning>();
 	}
 
 	public boolean isSuccess() {
@@ -66,12 +53,19 @@ public class ActionResult {
 		this.addError(new ActionError(message));
 	}
 
-	public Collection getErrors() {
+	public Collection<ActionError> getErrors() {
 		return Collections.unmodifiableCollection(errors.values());
+	}
+	
+	public ActionError getFirstError() {
+		for ( ActionError err : errors.values() ) {
+			return err;
+		}
+		return null;
 	}
 
 	public ActionError getError(String type) {
-		return (ActionError) errors.get(type);
+		return errors.get(type);
 	}
 
 	public boolean hasError(String type) {
@@ -91,12 +85,12 @@ public class ActionResult {
 		return false;
 	}
 	
-	public Collection getWarnings(){
+	public Collection<ActionWarning> getWarnings(){
 		return Collections.unmodifiableCollection(warnings.values());
 	}
 	
 	public ActionWarning getWarning(String type){
-		return (ActionWarning) warnings.get(type);
+		return warnings.get(type);
 	}
 	
 	public boolean hasWarning(String type) {
@@ -104,7 +98,7 @@ public class ActionResult {
 	}
 
 	public String toString() {
-		return "ActionResult[ERRORS: " + this.errors + "\nWARNINGS: " + this.warnings +"]";
+		return "ActionResult[ERRORS: " + this.errors + "][WARNINGS: " + this.warnings +"]";
 	}
 	
 }

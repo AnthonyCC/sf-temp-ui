@@ -1,3 +1,8 @@
+<%@ page import='java.util.Enumeration' %>
+<%@ page import='java.util.Iterator' %>
+<%@ page import='java.util.Collection' %>
+<%@ page import='java.util.List' %>
+<%@ page import='java.util.ArrayList' %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*" %>
@@ -19,21 +24,19 @@
 
 <%request.setAttribute("listPos", "SystemMessage,ProductNote,CategoryNote");%>
 
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Payment Information</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
-
-    FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	String actionName = request.getParameter("actionName");
 	if (actionName==null)
 		actionName = "noAction";
 	boolean isSetPayment = false;
 	boolean isDeleteCC = false;
 	if ( "".equals(actionName) ) {
-		for (Enumeration e = request.getParameterNames(); e.hasMoreElements(); ) {
+		for (Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ) {
 			String n = (String) e.nextElement();
 			if ( n.startsWith("next_step") ) {
 				isSetPayment = true;
@@ -47,7 +50,7 @@
 			}
 		}
 		if (!isSetPayment) {
-			for (Enumeration e2 = request.getParameterNames(); e2.hasMoreElements(); ) {
+			for (Enumeration<String> e2 = request.getParameterNames(); e2.hasMoreElements(); ) {
 				String n = (String) e2.nextElement();
 				if ( n.startsWith("delete_cc") ) {
 					isDeleteCC = true;
@@ -57,12 +60,11 @@
 			}
 		}
 	}
+	
 	String successPage = "";
-	if ("setPaymentMethod".equalsIgnoreCase(actionName)) {
+	if ("setPaymentMethod".equalsIgnoreCase(actionName) || "setNoPaymentMethod".equalsIgnoreCase(actionName)) {
 	    successPage = "/checkout/step_4_submit.jsp";
-	} if ("setNoPaymentMethod".equalsIgnoreCase(actionName)) {
-	    successPage = "/checkout/step_4_submit.jsp";
-	}else if ("deletePaymentMethod".equalsIgnoreCase(actionName)) {
+	} else if ("deletePaymentMethod".equalsIgnoreCase(actionName)) {
     	successPage = "/checkout/step_3_choose.jsp";
 	}
 %>
@@ -80,8 +82,8 @@
 	Date currentDlvStart = DateUtil.truncate(cart.getDeliveryReservation().getStartTime());
 	if(!user.isAddressVerificationError()) {
     
-        for (Iterator hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
-            FDOrderInfoI oi = (FDOrderInfoI) hIter.next();
+        for (Iterator<FDOrderInfoI> hIter = orderHistoryInfo.iterator(); hIter.hasNext(); ) {
+            FDOrderInfoI oi = hIter.next();
             if (!(oi.getErpSalesId().equals(ignoreSaleId))
                 && oi.isPending()
                 && currentDlvStart.equals(DateUtil.truncate(oi.getDeliveryStartTime()))) {
@@ -179,7 +181,7 @@
 <%
 
 if(isPaymentRequired) {
-	Collection paymentMethods = null;
+	Collection<ErpPaymentMethodI> paymentMethods = null;
 	FDIdentity identity = null;
 	boolean isECheckRestricted = false;
 	if(user!=null && user.getIdentity()!=null) {
@@ -192,7 +194,7 @@ if(isPaymentRequired) {
 		boolean hasCheck = false;
 
 		if (paymentMethods!=null && paymentMethods.size() > 0){
-			ArrayList payMethodsList = new ArrayList(paymentMethods);
+			ArrayList<ErpPaymentMethodI> payMethodsList = new ArrayList<ErpPaymentMethodI>(paymentMethods);
 			for(ListIterator saItr=payMethodsList.listIterator();saItr.hasNext();) {
 				ErpPaymentMethodI paymentM = (ErpPaymentMethodI)saItr.next();
 				if (EnumPaymentMethodType.CREDITCARD.equals(paymentM.getPaymentMethodType())) {

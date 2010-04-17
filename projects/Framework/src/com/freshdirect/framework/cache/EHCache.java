@@ -17,7 +17,7 @@ import net.sf.ehcache.Element;
  *     <a href="http://ehcache.sourceforge.net/">http://ehcache.sourceforge.net/</a>
  * </pre></blockquote> 
  */
-public class EHCache implements CacheI {
+public class EHCache<K extends Serializable,V extends Serializable> implements CacheI<K,V> {
 
 	public static final int DEFAULT_CACHE_SIZE = 5000;
 	public static final long DEFAULT_TTL = 3600;
@@ -29,21 +29,22 @@ public class EHCache implements CacheI {
 	private long timeToLiveSeconds = DEFAULT_TTL;
 	private long timeToIdleSeconds = DEFAULT_TTI;
 
-	public Object get(Serializable key) {
+	@SuppressWarnings( "unchecked" )
+	public V get(K key) {
 		try {
 			Element e = getCache().get(key);
-			return e == null ? null : e.getValue();
+			return e == null ? null : (V)e.getValue();
 		} catch (CacheException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	public void put(Serializable key, Object object) {
-		Element e = new Element(key, (Serializable) object);
+	public void put(K key, V object) {
+		Element e = new Element(key, object);
 		getCache().put(e);
 	}
 
-	public void remove(Serializable key) {
+	public void remove(K key) {
 		getCache().remove(key);
 	}
 

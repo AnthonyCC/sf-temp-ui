@@ -50,7 +50,7 @@ if (request.getParameter("gcTemplateId") !=null) {
 }
 
 if (recipId!=null && recipId.trim().length()>0) {
-    recipModel = _user.getRecipentList().getRecipientById(recipId);
+    recipModel = _user.getRecipientList().getRecipientById(recipId);
     if(recipModel != null) editThisRecipId = true;
     
 }

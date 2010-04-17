@@ -27,7 +27,7 @@
 	<br/>
 	If you need to run out during your delivery timeslot, we will leave your order at your home.
 	<br/>
-	Your order is guarnateed fresh outside for up to 30 minutes, and certain restrictions apply.
+	Your order is guaranteed fresh outside for up to 30 minutes, and certain restrictions apply.
 	<br/>
 	<a href="javascript:popup('/help/unattended_delivery.jsp','large')"><b>Click here to learn more about Unattended Delivery</b></a>
 	</center>
@@ -62,9 +62,22 @@
 <%@ include file="/common/template/includes/globalnav_top.jspf" %>
 
 <%
-String prefix = "ck";
+	String prefix;
     if (modOrder) {
         prefix = "cg";
+    } else if ( standingOrder ) {
+    	prefix = "qs";
+    } else {
+    	prefix = "ck";
+    }
+    
+    String bgColor;
+    if (modOrder) {
+    	bgColor = "#6699CC";    	
+    } else if ( standingOrder ) {
+    	bgColor = "#996699";    	
+    } else {
+    	bgColor = "#669933";
     }
 %> 
 <%
@@ -145,7 +158,7 @@ if(uri.indexOf("step_1")!=-1) { // delivery address
 %>
 <FONT CLASS="space4pix"><BR></FONT>
 <TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0"><tr>
-<td WIDTH="740"  BGCOLOR="#6699<%=modOrder?"CC":"33"%>"><img src="/media_stat/images/navigation/<%=prefix%>_nav_checkout.gif" width="137" height="34" border="0" alt="CHECKOUT" align="middle"><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><a href="<%=viewCartPage%>" onMouseOver="swapImage('coNavViewCartImg','<%= stepViewCartImgPath_r%>')" onMouseOut="swapImage('coNavViewCartImg','<%= stepViewCartImgPath%>')"><img src="/media_stat/images/navigation/<%=prefix%>_nav_view_cart.gif" name="coNavViewCartImg" width="96" height="34" border="0" alt="VIEW CART" align="middle"></a><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvAddrPage%><img src="<%=stepDlvAddrImgPath%>" name="dlvAddrImg" width="124" height="34" border="0" alt="STEP 1: DELIVERY ADDRESS" align="middle" ><% if (dlvAddrPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvTimePage%><img src="<%=stepDlvTimeImgPath%>" name="dlvTimeImg" width="99" height="34" border="0" alt="STEP 2: CHOOSE TIME" align="middle"><% if (dlvTimePage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=paymentPage%><img src="<%=stepPayImgPath%>" name="paymentImg" width="102" height="34" border="0" alt="STEP 3: PAYMENT INFO" align="middle"><% if (paymentPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><img src="<%=stepSubmitOrdImgPath%>" width="110" height="34" border="0" alt="STEP 4: SUBMIT ORDER" align="middle">
+<td WIDTH="740"  BGCOLOR="<%=bgColor%>"><img src="/media_stat/images/navigation/<%=prefix%>_nav_checkout.gif" width="137" height="34" border="0" alt="CHECKOUT" align="middle"><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><a href="<%=viewCartPage%>" onMouseOver="swapImage('coNavViewCartImg','<%= stepViewCartImgPath_r%>')" onMouseOut="swapImage('coNavViewCartImg','<%= stepViewCartImgPath%>')"><img src="/media_stat/images/navigation/<%=prefix%>_nav_view_cart.gif" name="coNavViewCartImg" width="96" height="34" border="0" alt="VIEW CART" align="middle"></a><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvAddrPage%><img src="<%=stepDlvAddrImgPath%>" name="dlvAddrImg" width="124" height="34" border="0" alt="STEP 1: DELIVERY ADDRESS" align="middle" ><% if (dlvAddrPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=dlvTimePage%><img src="<%=stepDlvTimeImgPath%>" name="dlvTimeImg" width="99" height="34" border="0" alt="STEP 2: CHOOSE TIME" align="middle"><% if (dlvTimePage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><%=paymentPage%><img src="<%=stepPayImgPath%>" name="paymentImg" width="102" height="34" border="0" alt="STEP 3: PAYMENT INFO" align="middle"><% if (paymentPage.length()>0) {%></a><%}%><img src="/media_stat/images/layout/ffffff.gif" WIDTH="1" HEIGHT="22" align="middle"><img src="<%=stepSubmitOrdImgPath%>" width="110" height="34" border="0" alt="STEP 4: SUBMIT ORDER" align="middle">
 </td>
 <TD WIDTH="5"><img src="/media_stat/images/layout/<%=prefix%>_nav_right.gif" width="5" height="34" border="0"></TD>
 </tr></table>

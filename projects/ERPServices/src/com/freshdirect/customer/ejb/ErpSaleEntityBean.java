@@ -9,7 +9,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +19,7 @@ import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionType;
@@ -28,6 +28,7 @@ import com.freshdirect.customer.ErpAdjustmentModel;
 import com.freshdirect.customer.ErpAuthorizationModel;
 import com.freshdirect.customer.ErpCancelOrderModel;
 import com.freshdirect.customer.ErpCaptureModel;
+import com.freshdirect.customer.ErpCartonInfo;
 import com.freshdirect.customer.ErpCashbackModel;
 import com.freshdirect.customer.ErpChargeInvoiceModel;
 import com.freshdirect.customer.ErpChargeSettlementModel;
@@ -54,6 +55,7 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.customer.ErpVoidCaptureModel;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
+import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -81,6 +83,8 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  */
 public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
+	private static final long	serialVersionUID	= 4750923330554772316L;
+
 	private static Category LOGGER = LoggerFactory.getInstance(ErpSaleEntityBean.class);
 
 	private ErpSaleModel model;
@@ -88,12 +92,12 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	private ErpComplaintList complaints;
 
 	public void initialize() {
-		this.model = new ErpSaleModel(null, null, new ArrayList(), new ArrayList(), null, null, Collections.EMPTY_SET, new ArrayList(), null,null);
-		this.complaints = new ErpComplaintList();
+		model = new ErpSaleModel(null, null, new ArrayList<ErpTransactionModel>(), new ArrayList<ErpComplaintModel>(), null, null, Collections.<String>emptySet(), new ArrayList<ErpCartonInfo>(), null, null, null);
+		complaints = new ErpComplaintList();
 	}
 
 	public ModelI getModel() {
-		return this.model.deepCopy();
+		return model.deepCopy();
 	}
 
 	/** Copy from model. */
@@ -119,30 +123,30 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public void forcePaymentStatus() throws ErpTransactionException {
 		try{
-			this.model.forcePaymentStatus();
-			this.setModified();
+			model.forcePaymentStatus();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void forceSettlement() throws ErpTransactionException {
 		try{
-			this.model.forceSettlement();
-			this.setModified();
+			model.forceSettlement();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 	
 	public void forceSettlementFailed() throws ErpTransactionException {
 		try{
-			this.model.forceSettlementFailed();
-			this.setModified();
+			model.forceSettlementFailed();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -150,7 +154,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public PrimaryKey ejbFindByPrimaryKey(PrimaryKey pk) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
-			conn = this.getConnection();
+			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.SALE where ID=?");
 			ps.setString(1, pk.getId());
 			ResultSet rs = ps.executeQuery();
@@ -180,7 +184,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public PrimaryKey ejbFindByComplaintId(String complaintId) throws ObjectNotFoundException, FinderException {
 		Connection conn = null;
 		try {
-			conn = this.getConnection();
+			conn = getConnection();
 			PreparedStatement ps = conn.prepareStatement("SELECT SALE_ID FROM CUST.COMPLAINT WHERE ID = ?");
 			ps.setString(1, complaintId);
 			ResultSet rs = ps.executeQuery();
@@ -207,14 +211,14 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public Collection ejbFindByStatus(EnumSaleStatus saleStatus) throws FinderException {
-		return this.performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?", saleStatus.getStatusCode());
+	public Collection<PrimaryKey> ejbFindByStatus(EnumSaleStatus saleStatus) throws FinderException {
+		return performFind("SELECT ID FROM CUST.SALE WHERE STATUS=?", saleStatus.getStatusCode());
 	}
 
-	private Collection performFind(String statement, String parameter) throws FinderException {
+	private Collection<PrimaryKey> performFind(String statement, String parameter) throws FinderException {
 		Connection conn = null;
 		try {
-			conn = this.getConnection();
+			conn = getConnection();
 
 			PreparedStatement ps = conn.prepareStatement(statement);
 			if (parameter != null) {
@@ -222,7 +226,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			}
 			ResultSet rs = ps.executeQuery();
 
-			List lst = new ArrayList();
+			List<PrimaryKey> lst = new ArrayList<PrimaryKey>();
 			while (rs.next()) {
 				String id = rs.getString(1);
 				lst.add(new PrimaryKey(id));
@@ -246,43 +250,18 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-/*	*//**
-	 * Create sales with a create order transcation. Status will be NEW.
-	 *//*
-	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes)
-		throws CreateException {
-		Connection conn = null;
-		try {
-			this.initialize();
-			this.model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes);
-			conn = this.getConnection();
-			return this.create(conn);
-
-		} catch (SQLException sqle) {
-			LOGGER.warn("Error in ejbCreate", sqle);
-			throw new CreateException(sqle.getMessage());
-		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException sqle2) {
-				// eat it
-			}
-		}
-	}*/
 
 	/**
 	 * Create sales with a create order transcation and uses a delivery pass. Status will be NEW.
 	 */
-	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType saleType)
+	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes, String dlvPassId,EnumSaleType saleType)
 		throws CreateException {
 		Connection conn = null;
 		try {
-			this.initialize();
-			this.model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes, dlvPassId,saleType);
-			conn = this.getConnection();
-			return this.create(conn);
+			initialize();
+			model = new ErpSaleModel(customerPk, createOrder, usedPromotionCodes, dlvPassId,saleType);
+			conn = getConnection();
+			return create(conn);
 
 		} catch (SQLException sqle) {
 			LOGGER.warn("Error in ejbCreate", sqle);
@@ -298,18 +277,18 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set usedPromotionCodes, String dlvPassId,EnumSaleType type) {
+	public void ejbPostCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes, String dlvPassId,EnumSaleType type) {
 		// this space is intentionally blank :)
 	}
 
 	public PrimaryKey create(Connection conn) throws SQLException {
-		this.setPK(new PrimaryKey(this.getNextId(conn, "CUST")));
+		setPK(new PrimaryKey(getNextId(conn, "CUST")));
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.SALE (ID,CUSTOMER_ID,STATUS,SAP_NUMBER, DLV_PASS_ID,TYPE,CROMOD_DATE) values (?,?,?,?,?,?,?)");
-		ps.setString(1, this.getPK().getId());
-		ps.setString(2, this.model.getCustomerPk().getId());
-		ps.setString(3, this.model.getStatus().getStatusCode());
-		ps.setString(4, this.model.getSapOrderNumber());
-		String dlvPassId = this.model.getDeliveryPassId();
+		ps.setString(1, getPK().getId());
+		ps.setString(2, model.getCustomerPk().getId());
+		ps.setString(3, model.getStatus().getStatusCode());
+		ps.setString(4, model.getSapOrderNumber());
+		String dlvPassId = model.getDeliveryPassId();
 		if(dlvPassId != null){
 			//True when this order uses a delivery pass.
 			ps.setString(5, dlvPassId);
@@ -318,41 +297,41 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.setNull(5, Types.VARCHAR);
 		}
 
-		ps.setString(6,this.model.getType().getSaleType());
+		ps.setString(6,model.getType().getSaleType());
 		//Added as part of PERF-27 task.
-		ps.setTimestamp(7, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+		ps.setTimestamp(7, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
 
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
 			}
 		} catch (SQLException sqle) {
-			this.setPK(null);
+			setPK(null);
 			throw sqle;
 		} finally {
 			ps.close();
 		}
 
 		// create children
-		ErpTransactionList txList = this.getTransactionPBList();
+		ErpTransactionList txList = getTransactionPBList();
 		txList.create(conn);
 
 	
 		complaints.create(conn);
-		if(this.model.hasUsedPromotionCodes()==true) {
-			ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
+		if(model.hasUsedPromotionCodes()==true) {
+			ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes());
 		}
-		this.createCroModMaxDate(conn);
+		createCroModMaxDate(conn);
 
-		return this.getPK();
+		return getPK();
 	}
 
 	private void createCroModMaxDate(Connection conn)throws SQLException {
 		PreparedStatement ps = null;
 		try{
 			ps = conn.prepareStatement("INSERT INTO CUST.SALE_CRO_MOD_DATE(SALE_ID, MAX_DATE) VALUES(?,?)");
-			ps.setString(1, this.getPK().getId());
-			ps.setTimestamp(2, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+			ps.setString(1, getPK().getId());
+			ps.setTimestamp(2, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
 			ps.execute();
 		}finally{
 			if(ps != null){
@@ -363,18 +342,17 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	private ErpTransactionList getTransactionPBList() throws SQLException{
 		ErpTransactionList txList = new ErpTransactionList();
-		txList.setParentPK(this.getPK());
-		for(Iterator i = this.model.getTransactions().iterator(); i.hasNext(); ){
-			ErpTransactionModel m = (ErpTransactionModel) i.next();			
+		txList.setParentPK(getPK());
+		for ( ErpTransactionModel m : model.getTransactions() ) {
 			if(m.getTransactionType().isUpdatable()) {
-				ErpUpdatableTransactionBean upb = ErpTransactionList.createUpdatablePersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
-				m.setCustomerId(this.model.getCustomerPk().getId());
+				ErpUpdatableTransactionBean upb = ErpTransactionList.createUpdatablePersistentBean(m.getTransactionType(), m.getPK(), getPK());
+				m.setCustomerId(model.getCustomerPk().getId());
 				upb.setFromModel(m);
 				txList.add(upb);
 			} else {
-				ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), this.getPK());
+				ErpTransactionPersistentBean pb = ErpTransactionList.createPersistentBean(m.getTransactionType(), m.getPK(), getPK());
 				//Added as part of PERF-27 task.
-				m.setCustomerId(this.model.getCustomerPk().getId());
+				m.setCustomerId(model.getCustomerPk().getId());
 				pb.setFromModel(m);
 				txList.add(pb);
 			}
@@ -385,10 +363,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	private ErpComplaintList buildComplaintPBList() {
 		ErpComplaintList compList = new ErpComplaintList();
-		compList.setParentPK(this.getPK());
-		for(Iterator i = this.model.getComplaints().iterator(); i.hasNext(); ){
+		compList.setParentPK(getPK());
+		for ( ErpComplaintModel m : model.getComplaints() ) {
 			ErpComplaintPersistentBean pb = new ErpComplaintPersistentBean();
-			pb.setFromModel((ErpComplaintModel)i.next());
+			pb.setFromModel( m );
 			compList.add(pb);
 		}
 		return compList;
@@ -397,11 +375,11 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void load(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID,TYPE FROM CUST.SALE WHERE ID=?");
-		ps.setString(1, this.getPK().getId());
+			"SELECT CUSTOMER_ID, STATUS, SAP_NUMBER, WAVE_NUMBER, TRUCK_NUMBER, STOP_SEQUENCE, NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS, DLV_PASS_ID, TYPE, STANDINGORDER_ID FROM CUST.SALE WHERE ID=?");
+		ps.setString(1, getPK().getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
-			throw new SQLException("No such ErpSale PK: " + this.getPK());
+			throw new SQLException("No such ErpSale PK: " + getPK());
 		}
 		// load properties from result set
 		PrimaryKey customerPk = new PrimaryKey(rs.getString(1));
@@ -410,6 +388,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpShippingInfo shippingInfo = new ErpShippingInfo(rs.getString(4), rs.getString(5), rs.getString(6), rs.getInt(7), rs.getInt(8), rs.getInt(9));
 		String dlvPassId = rs.getString(10);
 		String _saleType=rs.getString(11);
+		String standingOrderId = rs.getString(12);
 		EnumSaleType saleType=EnumSaleType.REGULAR;
 		if(_saleType!=null) {
 			saleType=EnumSaleType.getSaleType(_saleType);
@@ -420,23 +399,23 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		// load children
 
 		ErpTransactionList txList = new ErpTransactionList();
-		txList.setParentPK(this.getPK());
+		txList.setParentPK(getPK());
 		txList.load(conn);
 		
 
 		ErpComplaintList compList = new ErpComplaintList();
-		compList.setParentPK(this.getPK());
+		compList.setParentPK(getPK());
 		compList.load(conn);
 
-		Set usedPromotionCodes = ErpPromotionDAO.select(conn, this.getPK());
+		Set<String> usedPromotionCodes = ErpPromotionDAO.select(conn, getPK());
 
 		PrimaryKey oldPk = model.getPK();
 
-		List cartonInfo = ErpCartonsDAO.getCartonInfo(conn, this.getPK());		
-		this.model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId,saleType);
-		this.model.setPK(oldPk);
+		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
+		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId);
+		model.setPK(oldPk);
 
-		super.decorateModel(this.model);
+		super.decorateModel(model);
 	}
 
 	String saleUpdateWithWaveSQL =
@@ -448,15 +427,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void store(Connection conn) throws SQLException {
 		if (isModified()) {
 			PreparedStatement ps = null;
-			ErpShippingInfo sInfo = this.model.getShippingInfo();
+			ErpShippingInfo sInfo = model.getShippingInfo();
 			if (sInfo != null && sInfo.getWaveNumber() != null) {
 				ps = conn.prepareStatement(saleUpdateWithWaveSQL);
 			} else {
 				ps = conn.prepareStatement(saleUpdateWithNoWaveSQL);
 			}
 			int index = 1;
-			ps.setString(index++, this.model.getStatus().getStatusCode());
-			ps.setString(index++, this.model.getSapOrderNumber());
+			ps.setString(index++, model.getStatus().getStatusCode());
+			ps.setString(index++, model.getSapOrderNumber());
 			ps.setString(index++, sInfo != null ? sInfo.getTruckNumber() : null);
 			ps.setString(index++, sInfo != null ? sInfo.getStopSequence() : null);
 			ps.setInt(index++, sInfo != null ? sInfo.getRegularCartons() : 0);
@@ -464,35 +443,35 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			ps.setInt(index++, sInfo != null ? sInfo.getAlcoholCartons() : 0);
 			LOGGER.debug("Delivery pass id in store "+model.getDeliveryPassId());
 			//Update delivery pass id.
-			if(this.model.getDeliveryPassId() != null){
-				ps.setString(index++, this.model.getDeliveryPassId());
+			if(model.getDeliveryPassId() != null){
+				ps.setString(index++, model.getDeliveryPassId());
 			}else{
 				ps.setNull(index++, Types.VARCHAR);
 			}
 
 			//Added as part of PERF-27 task.
-			ps.setTimestamp(index++, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
+			ps.setTimestamp(index++, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
 
 			// DO NOT UPDATE SALE.wave_number in database if getWaveNumber returns null
 			if (sInfo != null && sInfo.getWaveNumber() != null) {
 				ps.setString(index++, sInfo.getWaveNumber());
 			}
 
-			ps.setString(index++, this.getPK().getId());
+			ps.setString(index++, getPK().getId());
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not updated");
 			}
 			ps.close();
 
-			ErpPromotionDAO.delete(conn, this.getPK());
-			if(this.model.hasUsedPromotionCodes())
-				ErpPromotionDAO.insert(conn, this.getPK(), this.model.getUsedPromotionCodes());
+			ErpPromotionDAO.delete(conn, getPK());
+			if(model.hasUsedPromotionCodes())
+				ErpPromotionDAO.insert(conn, getPK(), model.getUsedPromotionCodes());
 		}
 		//store children
-		ErpTransactionList txList = this.getTransactionPBList();
+		ErpTransactionList txList = getTransactionPBList();
 		if (txList.isModified()) {
 			txList.store(conn);
-			this.updateCroModMaxDate(conn);
+			updateCroModMaxDate(conn);
 		}
 	
 		if (complaints.isModified()) {
@@ -505,8 +484,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		PreparedStatement ps = null;
 		try{
 			ps = conn.prepareStatement("UPDATE CUST.SALE_CRO_MOD_DATE SET MAX_DATE = ? WHERE SALE_ID = ?");
-			ps.setTimestamp(1, new java.sql.Timestamp(this.model.getCurrentOrder().getTransactionDate().getTime()));
-			ps.setString(2, this.getPK().getId());
+			ps.setTimestamp(1, new java.sql.Timestamp(model.getCurrentOrder().getTransactionDate().getTime()));
+			ps.setString(2, getPK().getId());
 			ps.execute();
 		}finally{
 			if(ps != null){
@@ -520,23 +499,23 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public PrimaryKey getCustomerPk() {
-		return this.model.getCustomerPk();
+		return model.getCustomerPk();
 	}
 
 	public EnumSaleStatus getStatus() {
-		return this.model.getStatus();
+		return model.getStatus();
 	}
 
 	public String getSapOrderNumber() {
-		return this.model.getSapOrderNumber();
+		return model.getSapOrderNumber();
 	}
 
-	public Collection getTransactions() {
-		return this.model.getTransactions();
+	public Collection<ErpTransactionModel> getTransactions() {
+		return model.getTransactions();
 	}
 
-	public Collection getComplaints() {
-		return this.model.getComplaints();
+	public Collection<ErpComplaintModel> getComplaints() {
+		return model.getComplaints();
 	}
 
 	/**
@@ -549,10 +528,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void submitFailed(String message) throws ErpTransactionException {
 		try{
-			this.model.submitFailed(message);
-			this.setModified();
+			model.submitFailed(message);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -567,10 +546,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void createOrderComplete(String sapOrderNumber) throws ErpTransactionException {
 		try{
-			this.model.createOrderComplete(sapOrderNumber);
-			this.setModified();
+			model.createOrderComplete(sapOrderNumber);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -581,12 +560,12 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 *
 	 * @throws ErpTransactionException on violation of business transaction rules
 	 */
-	public void modifyOrder(ErpModifyOrderModel model, Set usedPromotionCodes) throws ErpTransactionException {
+	public void modifyOrder(ErpModifyOrderModel model, Set<String> usedPromotionCodes) throws ErpTransactionException {
 		try{
 			this.model.modifyOrder(model, usedPromotionCodes);
-			this.setModified();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -599,10 +578,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void modifyOrderComplete() throws ErpTransactionException {
 		try{
-			this.model.modifyOrderComplete();
-			this.setModified();
+			model.modifyOrderComplete();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -615,10 +594,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void cancelOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
 		try{
-			this.model.cancelOrder(cancelOrder);
-			this.setModified();
+			model.cancelOrder(cancelOrder);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -631,10 +610,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void cancelGCOrder(ErpCancelOrderModel cancelOrder) throws ErpTransactionException {
 		try{
-			this.model.cancelGCOrder(cancelOrder);
-			this.setModified();
+			model.cancelGCOrder(cancelOrder);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -648,29 +627,29 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void cancelOrderComplete() throws ErpTransactionException {
 		try{
 			model.cancelOrderComplete();
-			this.setModified();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void cutoff() throws ErpTransactionException {
 		try{
-			this.model.cutoff();
-			this.setModified();
+			model.cutoff();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 	
 	public void emailPending() throws ErpTransactionException{
 		try{
-			this.model.emailPending();
-			this.setModified();
+			model.emailPending();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 		
@@ -678,10 +657,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public void setGiftCardRegPending() throws ErpTransactionException{
 		try{
-			this.model.setGiftCardRegPending();
-			this.setModified();
+			model.setGiftCardRegPending();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 		
@@ -696,29 +675,29 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void addInvoice(ErpInvoiceModel invoiceModel) throws ErpTransactionException {
 		try{
-			this.model.addInvoice(invoiceModel);
-			this.setModified();
+			model.addInvoice(invoiceModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addChargeInvoice(ErpChargeInvoiceModel chargeInvoiceModel) throws ErpTransactionException {
 		try{
-			this.model.addChargeInvoice(chargeInvoiceModel);
-			this.setModified();
+			model.addChargeInvoice(chargeInvoiceModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public List reconcileSale() throws ErpTransactionException {
+	public List<CrmSystemCaseInfo> reconcileSale() throws ErpTransactionException {
 		try{
-			return this.model.reconcileSale();
+			return model.reconcileSale();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -731,56 +710,56 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 * @param String stopSequence stop sequnce on the route for this sale
 	 */
 	public void updateShippingInfo(ErpShippingInfo shippingInfo) {
-		this.model.updateShippingInfo(shippingInfo);
-		this.setModified();
+		model.updateShippingInfo(shippingInfo);
+		setModified();
 	}
 
 	public void markAsRedelivery() throws ErpTransactionException {
 		try{
-			this.model.markAsRedelivery();
-			this.setModified();
+			model.markAsRedelivery();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void markAsEnroute() throws ErpTransactionException {
 		try{
-			this.model.markAsEnroute();
-			this.setModified();
+			model.markAsEnroute();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void markAsReturn() throws ErpTransactionException {
 		try{
-			this.model.markAsReturn();
-			this.setModified();
+			model.markAsReturn();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addReturn(ErpReturnOrderModel returnModel) throws ErpTransactionException {
 		try{
-			this.model.addReturn(returnModel);
-			this.setModified();
+			model.addReturn(returnModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addRedelivery(ErpRedeliveryModel redeliveryModel) throws ErpTransactionException {
 		try{
-			this.model.addRedelivery(redeliveryModel);
-			this.setModified();
+			model.addRedelivery(redeliveryModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -788,15 +767,15 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel) throws ErpTransactionException {
 		try{
 			// If the order involves gift cards, do 'Post Auth', else proceed as usual.
-			if(null != this.getCurrentOrder().getAppliedGiftcards() && this.getCurrentOrder().getAppliedGiftcards().size() > 0) {
-				this.model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.POST_AUTH_PENDING);
-				this.setModified();
+			if(null != getCurrentOrder().getAppliedGiftcards() && getCurrentOrder().getAppliedGiftcards().size() > 0) {
+				model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.POST_AUTH_PENDING);
+				setModified();
 			}else{
-				this.model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.CAPTURE_PENDING);
-				this.setModified();
+				model.addDeliveryConfirm(deliveryConfirmModel,EnumSaleStatus.CAPTURE_PENDING);
+				setModified();
 			}
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -806,10 +785,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void addRegisterGiftCard(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
 		
 		try{
-			this.model.addRegisterGiftCard(registerGCModel);
-			this.setModified();
+			model.addRegisterGiftCard(registerGCModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}		
 	}
@@ -818,10 +797,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void addGiftCardEmailInfo(ErpGiftCardTransModel emailGCModel) throws ErpTransactionException {
 		
 		try{			
-			this.model.addGiftCardEmailInfo(emailGCModel);
-			this.setModified();
+			model.addGiftCardEmailInfo(emailGCModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}		
 	}
@@ -830,10 +809,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	public void addGiftCardDeliveryConfirm(ErpGiftCardTransModel registerGCModel) throws ErpTransactionException {
 		
 		try{
-			this.model.addGiftCardDlvConfirm(registerGCModel);
-			this.setModified();
+			model.addGiftCardDlvConfirm(registerGCModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}		
 	}
@@ -846,62 +825,62 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void addComplaint(ErpComplaintModel complaintModel) throws ErpTransactionException {
 		try{
-			this.model.addComplaint(complaintModel);
-			this.complaints = buildComplaintPBList();
-			this.setModified();
+			model.addComplaint(complaintModel);
+			complaints = buildComplaintPBList();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void updateComplaint(ErpComplaintModel newComplaint) throws ErpTransactionException {
 		try{
-			this.model.updateComplaint(newComplaint);
-			this.complaints = buildComplaintPBList();
-			this.setModified();
+			model.updateComplaint(newComplaint);
+			complaints = buildComplaintPBList();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addChargeback(ErpChargebackModel chargebackModel) throws ErpTransactionException {
 		try{
-			this.model.addChargeback(chargebackModel);
-			this.setModified();
+			model.addChargeback(chargebackModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addChargebackReversal(ErpChargebackReversalModel cbkReversal) throws ErpTransactionException {
 		try{
-			this.model.addChargebackReversal(cbkReversal);
-			this.setModified();
+			model.addChargebackReversal(cbkReversal);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addAdjustment(ErpAdjustmentModel adjustmentModel) throws ErpTransactionException {
 		try{
-			this.model.addAdjustment(adjustmentModel);
-			this.setModified();
+			model.addAdjustment(adjustmentModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addResubmitPayment(ErpResubmitPaymentModel resubmitPaymentModel) throws ErpTransactionException {
 		try{
-			this.model.addResubmitPayment(resubmitPaymentModel);
-			this.setModified();
+			model.addResubmitPayment(resubmitPaymentModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -914,10 +893,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void addAuthorization(ErpAuthorizationModel authorizationModel) throws ErpTransactionException {
 		try{
-			this.model.addAuthorization(authorizationModel);
-			this.setModified();
+			model.addAuthorization(authorizationModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -931,10 +910,10 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public void addGiftCardBalanceTransfer(ErpGiftCardTransModel authorizationModel) throws ErpTransactionException {
 		try{
-			this.model.addGCBalanceTransfer(authorizationModel);
-			this.setModified();
+			model.addGCBalanceTransfer(authorizationModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -942,109 +921,109 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	public void addSettlement(ErpSettlementModel settlementModel) throws ErpTransactionException {
 		try{
-			this.model.addSettlement(settlementModel);
-			this.setModified();
+			model.addSettlement(settlementModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addFailedSettlement(ErpFailedSettlementModel failedSettlementModel) throws ErpTransactionException {
 		try{
-			this.model.addFailedSettlement(failedSettlementModel);
-			this.setModified();
+			model.addFailedSettlement(failedSettlementModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addChargeSettlement(ErpChargeSettlementModel chargeSettlementModel) throws ErpTransactionException {
 		try{
-			this.model.addChargeSettlement(chargeSettlementModel);
-			this.setModified();
+			model.addChargeSettlement(chargeSettlementModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addFundsRedeposit(ErpFundsRedepositModel fundsRedepositModel) throws ErpTransactionException {
 		try{
-			this.model.addFundsRedeposit(fundsRedepositModel);
-			this.setModified();
+			model.addFundsRedeposit(fundsRedepositModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addFailedChargeSettlement(ErpFailedChargeSettlementModel failedChargeSettlementModel) throws ErpTransactionException {
 		try{
-			this.model.addFailedChargeSettlement(failedChargeSettlementModel);
-			this.setModified();
+			model.addFailedChargeSettlement(failedChargeSettlementModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addManualAuthorization(ErpAuthorizationModel authorizationModel) throws ErpTransactionException {
 		try{
-			this.model.addManualAuthorization(authorizationModel);
-			this.setModified();
+			model.addManualAuthorization(authorizationModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addReversal(ErpReversalModel reversalModel) throws ErpTransactionException {
 		try{
-			this.model.addReversal(reversalModel);
-			this.setModified();
+			model.addReversal(reversalModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addCashback(ErpCashbackModel cashbackModel) throws ErpTransactionException {
 		try{
-			this.model.addCashback(cashbackModel);
-			this.setModified();
+			model.addCashback(cashbackModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}	
 
 	public void addCapture(ErpCaptureModel captureModel) throws ErpTransactionException {
 		try{
-			this.model.addCapture(captureModel);
-			this.setModified();
+			model.addCapture(captureModel);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public void addVoidCapture(ErpVoidCaptureModel voidCapture) throws ErpTransactionException {
 		try{
-			this.model.addVoidCapture(voidCapture);
-			this.setModified();
+			model.addVoidCapture(voidCapture);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public java.util.Date getCaptureDate() throws ErpTransactionException {
 		try{
-			return this.model.getCaptureDate();
+			return model.getCaptureDate();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
@@ -1053,60 +1032,60 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 * Get how the current order looks like. Returns the last create or change order transaction.
 	 */
 	public ErpAbstractOrderModel getCurrentOrder() {
-		return this.model.getCurrentOrder();
+		return model.getCurrentOrder();
 	}
 
-	public List getAuthorizations() {
-		return this.model.getAuthorizations();
+	public List<ErpAuthorizationModel> getAuthorizations() {
+		return model.getAuthorizations();
 	}
 
-	public List getApprovedAuthorizations() {
-		return this.model.getApprovedAuthorizations();
+	public List<ErpAuthorizationModel> getApprovedAuthorizations() {
+		return model.getApprovedAuthorizations();
 	}
 
 	public double getOutstandingCaptureAmount() {
-		return this.model.getOutstandingCaptureAmount();
+		return model.getOutstandingCaptureAmount();
 	}
 
-	public List getCaptures() {
-		return this.model.getCaptures();
+	public List<ErpCaptureModel> getCaptures() {
+		return model.getCaptures();
 	}
 
-	public List getSettlements() throws ErpTransactionException {
+	public List<ErpSettlementModel> getSettlements() throws ErpTransactionException {
 		try{
-			return this.model.getSettlements();
+			return model.getSettlements();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public List getAdjustments() throws ErpTransactionException {
+	public List<ErpAdjustmentModel> getAdjustments() throws ErpTransactionException {
 		try{
-			return this.model.getAdjustments();
+			return model.getAdjustments();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public List getFailedAuthorizations() {
-		return this.model.getFailedAuthorizations();
+	public List<ErpAuthorizationModel> getFailedAuthorizations() {
+		return model.getFailedAuthorizations();
 	}
 
 	public ErpInvoiceModel getInvoice() throws ErpTransactionException {
 		try{
-			return this.model.getInvoice();
+			return model.getInvoice();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
-	public void updateCartonInfo(List cartonInfo) throws ErpTransactionException, RemoteException {
+	public void updateCartonInfo(List<ErpCartonInfo> cartonInfo) throws ErpTransactionException, RemoteException {
 		Connection conn = null;
 		try {
-			conn = this.getConnection();
+			conn = getConnection();
 
 			ErpCartonsDAO.delete(conn, getPK());
 
@@ -1125,13 +1104,13 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		}
 	}
 
-	public List getCartonInfo() throws ErpTransactionException, RemoteException {
-		List returnList = new ArrayList();
+	public List<ErpCartonInfo> getCartonInfo() throws ErpTransactionException, RemoteException {
+		List<ErpCartonInfo> returnList = new ArrayList<ErpCartonInfo>();
 		Connection conn = null;
 		try {
-			conn = this.getConnection();
+			conn = getConnection();
 
-			returnList = ErpCartonsDAO.getCartonInfo(conn, this.getPK());
+			returnList = ErpCartonsDAO.getCartonInfo(conn, getPK());
 
 		} catch (SQLException sqle) {
 			throw new ErpTransactionException(sqle.getMessage());
@@ -1148,115 +1127,114 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public ErpChargeInvoiceModel getChargeInvoice() {
-		return this.model.getChargeInvoice();
+		return model.getChargeInvoice();
 	}
 
 	public  boolean getIsChargePayment(String authId) {
-		return this.model.getIsChargePayment(authId);
+		return model.getIsChargePayment(authId);
 	}
 
 	public  boolean getIsChargePayment(double chargeAmount) {
-		return this.model.getIsChargePayment(chargeAmount);
+		return model.getIsChargePayment(chargeAmount);
 	}
 
 	public boolean hasChargeSettlement() {
-		return this.model.hasChargeSettlement();
+		return model.hasChargeSettlement();
 	}
 
 	public boolean hasFundsRedeposit() {
-		return this.model.hasFundsRedeposit();
+		return model.hasFundsRedeposit();
 	}
 
 	public EnumTransactionType getCurrentTransactionType() {
-		return this.model.getCurrentTransactionType();
+		return model.getCurrentTransactionType();
 	}
 
-	public List getFailedSettlements() {
-		return this.model.getFailedSettlements();
+	public List<ErpFailedSettlementModel> getFailedSettlements() {
+		return model.getFailedSettlements();
 	}
 
-	public List getChargeSettlements() {
-			return this.model.getChargeSettlements();
+	public List<ErpChargeSettlementModel> getChargeSettlements() {
+		return model.getChargeSettlements();
 	}
 
-	public List getFundsRedeposits(){
-		return this.model.getFundsRedeposits();
+	public List<ErpFundsRedepositModel> getFundsRedeposits(){
+		return model.getFundsRedeposits();
 	}
 
-	public List getFailedChargeSettlements() {
-		return this.model.getFailedChargeSettlements();
+	public List<ErpFailedChargeSettlementModel> getFailedChargeSettlements() {
+		return model.getFailedChargeSettlements();
 	}
 
 	public void reverseChargePayment() throws ErpTransactionException {
-		try{
-			this.model.reverseChargePayment();
-			this.setModified();
-		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+		try {
+			model.reverseChargePayment();
+			setModified();
+		} catch ( ErpTransactionException e ) {
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 
 	public boolean getIsSettlementFailedAfterSettled() {
-		return this.model.getIsSettlementFailedAfterSettled();
+		return model.getIsSettlementFailedAfterSettled();
 	}
 
 	//For Gift Cards _ begin.
 	
-	public List getPendingGCAuthorizations(ErpPaymentMethodI pm) {
-		return this.model.getPendingGCAuthorizations(pm);
+	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations(ErpPaymentMethodI pm) {
+		return model.getPendingGCAuthorizations(pm);
 	}
 	
-	public List getPendingGCReverseAuths(ErpPaymentMethodI pm) {
-		return this.model.getPendingGCReverseAuths(pm);
+	public List<ErpReverseAuthGiftCardModel> getPendingGCReverseAuths(ErpPaymentMethodI pm) {
+		return model.getPendingGCReverseAuths(pm);
 	}
 
-	public List getValidGCAuthorizations(ErpPaymentMethodI pm){
-		return this.model.getValidGCAuthorizations(pm);
+	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations(ErpPaymentMethodI pm){
+		return model.getValidGCAuthorizations(pm);
+	}	
+	
+	public List<ErpPreAuthGiftCardModel> getPendingGCAuthorizations() {
+		return model.getPendingGCAuthorizations();
 	}
 	
-	
-	public List getPendingGCAuthorizations() {
-		return this.model.getPendingGCAuthorizations();
+	public List<ErpReverseAuthGiftCardModel> getPendingReverseGCAuthorizations() {
+		return model.getPendingReverseGCAuthorizations();
 	}
 	
-	public List getPendingReverseGCAuthorizations() {
-		return this.model.getPendingReverseGCAuthorizations();
+	public List<ErpPreAuthGiftCardModel> getValidGCAuthorizations() {
+		return model.getValidGCAuthorizations();
 	}
 	
-	public List getValidGCAuthorizations() {
-		return this.model.getValidGCAuthorizations();
-	}
-	
-	public List getValidGCPostAuthorizations() {
-		return this.model.getValidGCPostAuthorizations();
+	public List<ErpPostAuthGiftCardModel> getValidGCPostAuthorizations() {
+		return model.getValidGCPostAuthorizations();
 	}
 	
 	public void addGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
 		try {
-			this.model.addGCAuthorization(auth);
-			this.setModified();
+			model.addGCAuthorization(auth);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 	public void addPostAuthorization(ErpPostAuthGiftCardModel postAuth) throws ErpTransactionException {
 		try {
-			this.model.addPostAuthorization(postAuth);
-			this.setModified();
+			model.addPostAuthorization(postAuth);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}		
 	}
 	
 	public void addReverseGCPreAuthorization(ErpReverseAuthGiftCardModel rauth) throws ErpTransactionException {
 		try {
-			this.model.addReverseGCAuthorization(rauth);
-			this.setModified();
+			model.addReverseGCAuthorization(rauth);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 
@@ -1264,35 +1242,35 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	
 	public void cancelGCPreAuthorization(ErpPreAuthGiftCardModel auth) throws ErpTransactionException {
 		try {
-			this.model.cancelGCAuthorization(auth);
-			this.setModified();
+			model.cancelGCAuthorization(auth);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 
 	}
 
 	public boolean hasValidPostAuth(ErpPaymentMethodI pm, String preAuthCode) {
-		return this.model.hasValidPostAuth(pm, preAuthCode);
+		return model.hasValidPostAuth(pm, preAuthCode);
 	}
 	
 	public void updateGCAuthorization(ErpGiftCardAuthModel auth) throws ErpTransactionException {
 		try {
-			this.model.updateGCAuthorization(auth);
-			this.setModified();
+			model.updateGCAuthorization(auth);
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 	
 	public void markAsCapturePending() throws ErpTransactionException {
 		try {
-			this.model.markAsCapturePending();
-			this.setModified();
+			model.markAsCapturePending();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}		
 		
@@ -1300,19 +1278,22 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	
 	public void markAsSettlementPending() throws ErpTransactionException {
 		try {
-			this.model.markAsSettlementPending();
-			this.setModified();
+			model.markAsSettlementPending();
+			setModified();
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}			
 		
 	}
 	
 	private static class ErpTransactionList extends DependentPersistentBeanList {
+
+		private static final long	serialVersionUID	= 4204931950533869261L;
+
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpTransactionList.this.getParentPK();
-			List txList = new ArrayList();
+			List<DependentPersistentBeanSupport> txList = new ArrayList<DependentPersistentBeanSupport>();
 
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.SALESACTION WHERE SALE_ID=?");
 			ps.setString(1, ppk.getId());
@@ -1441,16 +1422,19 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	private static class ErpComplaintList extends DependentPersistentBeanList {
+		
+		private static final long	serialVersionUID	= 8774828244401069072L;
+
 		public void load(Connection conn) throws SQLException {
 			PrimaryKey ppk = (PrimaryKey) ErpComplaintList.this.getParentPK();
-			List complaintList = new ArrayList();
+			List<DependentPersistentBeanSupport> complaintList = new ArrayList<DependentPersistentBeanSupport>();
 			complaintList.addAll(ErpComplaintPersistentBean.findByParent(conn, ppk));
 			ErpComplaintList.this.set(complaintList);
 		}
 	}
 
-	public Collection ejbFindByDeliveryPassId(String dlvPassId) throws FinderException {
-		return this.performFind("SELECT ID FROM CUST.SALE WHERE DLV_PASS_ID = ?", dlvPassId);
+	public Collection<PrimaryKey> ejbFindByDeliveryPassId(String dlvPassId) throws FinderException {
+		return performFind("SELECT ID FROM CUST.SALE WHERE DLV_PASS_ID = ?", dlvPassId);
 	}
 
 	/**
@@ -1460,8 +1444,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 
 	public void updateDeliveryPassId(String dlvPassId) {
-			this.model.setDeliveryPassId(dlvPassId);
-			this.setModified();
+			model.setDeliveryPassId(dlvPassId);
+			setModified();
 	}
 
 	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
@@ -1481,7 +1465,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			if(null==saleType) {
 				saleType=EnumSaleType.REGULAR;
 			}
-			conn = this.getConnection();
+			conn = getConnection();
 			if(EnumSaleType.REGULAR.equals(saleType)) {
 			  ps=conn.prepareStatement(GET_NTH_NONCOS_REG_ORDER_QUERY);
 			}
@@ -1522,22 +1506,18 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	}
 
 	public ErpRegisterGiftCardModel getRecentRegistration() {
-		return this.model.getRecentRegisteration();
+		return model.getRecentRegisteration();
 	}
 	
 	public void addDeliveryConfirm(ErpDeliveryConfirmModel deliveryConfirmModel, EnumSaleStatus enumSaleStatus) throws ErpTransactionException{
 		try{
-			this.model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
-			this.setModified();
+			model.addDeliveryConfirm(deliveryConfirmModel,enumSaleStatus);			
+			setModified();
 			
 		}catch(ErpTransactionException e){
-			this.getEntityContext().setRollbackOnly();
+			getEntityContext().setRollbackOnly();
 			throw e;
 		}
 	}
 	
-	/*public void addSettlementPending(ErpSettlementPendingModel erpSettlementPendingModel) throws ErpTransactionException{
-		this.model.addSettlementPending(erpSettlementPendingModel);
-		this.setModified();
-	}*/
 }

@@ -160,7 +160,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 
 	private static ErpClassHome getClassHome() {
 		try {
-			return (ErpClassHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpClass", ErpClassHome.class);
+			return (ErpClassHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpClass");
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}

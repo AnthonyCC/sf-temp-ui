@@ -17,11 +17,17 @@ public class FDJSONRPCBridge extends JSONRPCBridge {
 	}
 
 	private void registerFDSerializers() {
+		// Register custom serializers
 		try {
 			registerSerializer(FDCustomerCreatedListJSONSerializer.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		try {
+			registerSerializer(EnumStandingOrderFrequencyJSONSerializer.getInstance());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
-	
 }

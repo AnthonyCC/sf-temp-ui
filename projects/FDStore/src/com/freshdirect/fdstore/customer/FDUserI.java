@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
@@ -17,27 +9,26 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
 
 import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public interface FDUserI extends java.io.Serializable {
 
 
@@ -98,6 +89,7 @@ public interface FDUserI extends java.io.Serializable {
 	public FDPromotionEligibility getPromotionEligibility();
 
 	/** @deprecated */
+	@Deprecated
 	public double getMaxSignupPromotion();
 
 	public SignupDiscountRule getSignupDiscountRule();
@@ -205,7 +197,7 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isCheckEligible();
 
-	public Collection getPaymentMethods();
+	public Collection<ErpPaymentMethodI> getPaymentMethods();
 
 	public String getUserId ();
 
@@ -295,7 +287,9 @@ public interface FDUserI extends java.io.Serializable {
 
 	public boolean isCCLInExperienced();
 
-	public List getCustomerCreatedListInfos();
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos();
+
+	public List<FDCustomerListInfo> getStandingOrderListInfos();
 
 	public DCPDPromoProductCache getDCPDPromoProductCache();
 
@@ -379,7 +373,7 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public void setGiftCart(FDCartModel dcart);
 	
-	public FDRecipientList getRecipentList();
+	public FDRecipientList getRecipientList();
 	
 	public void setRecipientList(FDRecipientList r);
 	
@@ -407,6 +401,14 @@ public interface FDUserI extends java.io.Serializable {
 	public double getGiftcardsTotalBalance();
 	
 	public String getGCSenderName(String certNum, String custId);
+	
+	/** Is customer eligible for Standing Orders service? */
+	public boolean isEligibleForStandingOrders();
+	
+	public FDStandingOrder getCurrentStandingOrder();
+	
+	/** Tells checkout controller the way of work */
+	public EnumCheckoutMode getCheckoutMode();
 	
     public String getPricingZoneId();
 

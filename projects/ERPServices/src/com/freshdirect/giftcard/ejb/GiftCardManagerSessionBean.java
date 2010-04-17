@@ -96,7 +96,7 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 		try{	
 			ErpSaleEB saleEB=null;			
 			saleEB = this.getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			recipentList=saleEB.getCurrentOrder().getRecepientsList();
+			recipentList=saleEB.getCurrentOrder().getRecipientsList();
 			ErpRegisterGiftCardModel regModel = saleEB.getRecentRegistration();
 			int count = 0;
 			if(regModel != null)

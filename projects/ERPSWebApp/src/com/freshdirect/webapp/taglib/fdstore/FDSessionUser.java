@@ -1,15 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +18,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
-
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -33,6 +25,7 @@ import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -47,29 +40,24 @@ import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.SavedRecipientModel;
-import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
-import com.freshdirect.fdstore.promotion.FDPromotionVisitor;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
+	
 	private static final long serialVersionUID = 587469031501334715L;
 
-	private static Category LOGGER = LoggerFactory.getInstance( FDUser.class );
+	private static Category LOGGER = LoggerFactory.getInstance( FDSessionUser.class );
 
     private final FDUser user;
 
@@ -82,7 +70,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private Date startDate;
 	private long lastRequestDate;
-	private Map impressions = new HashMap();
+	private Map<String,SessionImpressionLogEntry> impressions = new HashMap<String,SessionImpressionLogEntry>();
 
 	private String sessionId = null;
 
@@ -105,7 +93,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private boolean isAddressVerificationError;
     private String addressVerficationMsg;
     
-    private List oneTimeGCPaymentError=null;
+    private List<String> oneTimeGCPaymentError=null;
     
     //Vending changes
     private boolean lastCOSSurveySuccess;	//holds if survey was success
@@ -114,6 +102,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setLastCOSSurveySuccess(boolean lastCOSSurveySuccess) {
 		this.lastCOSSurveySuccess = lastCOSSurveySuccess;
 	}
+	
+	private FDStandingOrder currentStandingOrder;
+
+	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
+	
+	
+	
 	
     public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
@@ -127,11 +122,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     	return this.lastCOSSurvey;
     }
 	
-    public List getOneTimeGCPaymentError() {
+    public List<String> getOneTimeGCPaymentError() {
 		return oneTimeGCPaymentError;
 	}
 
-	public void setOneTimeGCPaymentError(List oneTimeGCPaymentError) {
+	public void setOneTimeGCPaymentError(List<String> oneTimeGCPaymentError) {
 		this.oneTimeGCPaymentError = oneTimeGCPaymentError;
 	}
 
@@ -157,18 +152,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		EnumTransactionSource src = EnumTransactionSource.WEBSITE;
-    //Rsung(Schematic): Adding new application type detection. no longer binary (web or csr) 
-    //
-    //              if (app!=null && "callcenter".equalsIgnoreCase(app)) {
-    //                      src = EnumTransactionSource.CUSTOMER_REP;
-    //              }
-    if (app != null) {
-        if ("callcenter".equalsIgnoreCase(app)) {
-            src = EnumTransactionSource.CUSTOMER_REP;
-        } else if (EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
-            src = EnumTransactionSource.IPHONE_WEBSITE;
-        } //else get defaulted to website
-    }
+
+	    if (app != null) {
+	        if ("callcenter".equalsIgnoreCase(app)) {
+	            src = EnumTransactionSource.CUSTOMER_REP;
+	        } else if (EnumTransactionSource.IPHONE_WEBSITE.getCode().equals(app)) {
+	            src = EnumTransactionSource.IPHONE_WEBSITE;
+	        } //else get defaulted to website
+	    }
 		this.user.setApplication(src);
 
         lastCartSaveTime = System.currentTimeMillis();
@@ -211,13 +202,13 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
     private void saveImpressions() {
         if (!impressions.isEmpty()) {
-            ArrayList logEntries = new ArrayList();
+        	List<SessionImpressionLogEntry> logEntries = new ArrayList<SessionImpressionLogEntry>();
             logEntries.addAll(impressions.values());
             Date endDate = new Date(lastRequestDate);
             for (int i = 0; i < logEntries.size(); i++) {
-                ((SessionImpressionLogEntry) logEntries.get(i)).setStartEndTime(startDate, endDate);
-                ((SessionImpressionLogEntry) logEntries.get(i)).setZoneId(user.getPricingZoneId());
-                System.out.println("SessionImpressionLogEntry:sessionId:"+((SessionImpressionLogEntry) logEntries.get(i)).getSessionId());
+                logEntries.get(i).setStartEndTime(startDate, endDate);
+                logEntries.get(i).setZoneId(user.getPricingZoneId());
+                System.out.println("SessionImpressionLogEntry:sessionId:"+logEntries.get(i).getSessionId());
             }
             
             SessionImpressionLog.getInstance().saveLogEntries(logEntries);
@@ -229,7 +220,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             throw new IllegalStateException("current FD user not bound to session");
         }
 
-        SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
+        SessionImpressionLogEntry entry = impressions.get(variant);
         if (entry == null) {
             entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
             impressions.put(variant, entry);
@@ -243,7 +234,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
             throw new IllegalStateException("current FD user not bound to session");
         }
 
-        SessionImpressionLogEntry entry = (SessionImpressionLogEntry) impressions.get(variant);
+        SessionImpressionLogEntry entry = impressions.get(variant);
         if (entry == null) {
             entry = new SessionImpressionLogEntry(user.getPrimaryKey(), sessionId, variant);
             impressions.put(variant, entry);
@@ -279,7 +270,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		//
 //		if (this.user.isAnonymous()) return false;
 		//
-		// don't save carts in modify mode
+		// don't save not persistent carts or in modify mode
 		//
 		if (this.getShoppingCart() instanceof FDModifyCartModel) return false;
 		//
@@ -614,8 +605,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         return (user != null) ? user.isCheckEligible() : false;
     }
 
-	public Collection getPaymentMethods() {
-        return (user != null) ? user.getPaymentMethods() : new ArrayList();
+	public Collection<ErpPaymentMethodI> getPaymentMethods() {
+        return (user != null) ? user.getPaymentMethods() : Collections.<ErpPaymentMethodI>emptyList();
 	}
 
 	public String  getUserId() {
@@ -791,8 +782,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.isCCLInExperienced();
 	}
 
-	public List getCustomerCreatedListInfos() {
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos() {
 		return this.user.getCustomerCreatedListInfos();
+	}
+
+	public List<FDCustomerListInfo> getStandingOrderListInfos() {
+		return this.user.getStandingOrderListInfos();
 	}
 
 	public DCPDPromoProductCache getDCPDPromoProductCache(){
@@ -913,22 +908,18 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	public void setPromotionAddressMismatch(boolean b) {
-		// TODO Auto-generated method stub
 		user.setPromotionAddressMismatch(b);
 	}
 
 	public void setSignupDiscountRule(SignupDiscountRule discountRule) {
-		// TODO Auto-generated method stub
         user.setSignupDiscountRule(discountRule);
 	}
 
 	public boolean isPromoConflictResolutionApplied() {
-		// TODO Auto-generated method stub
 		return user.isPromoConflictResolutionApplied();
 	}
 
 	public void setPromoConflictResolutionApplied(boolean isPromoConflictResolutionApplied) {
-		// TODO Auto-generated method stub
 		user.setPromoConflictResolutionApplied(isPromoConflictResolutionApplied);
 	}
 	
@@ -940,8 +931,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		return this.user.getGiftCart();
 	}
 	
-	public FDRecipientList getRecipentList(){
-		return this.user.getRecipentList();
+	public FDRecipientList getRecipientList(){
+		return this.user.getRecipientList();
 	}
 	
 	public void setRecipientList(FDRecipientList r){
@@ -1065,6 +1056,31 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public int getTotalRegularOrderCount() throws FDResourceException {
     	return this.user.getTotalRegularOrderCount();
     }
+
+	/** Is customer eligible for Standing Orders service? */
+	@Override
+	public boolean isEligibleForStandingOrders() {
+		return user.isEligibleForStandingOrders();
+	}
+
+	
+	@Override
+	public FDStandingOrder getCurrentStandingOrder() {
+		return currentStandingOrder;
+	}
+
+	public void setCurrentStandingOrder(FDStandingOrder currentStandingOrder) {
+		this.currentStandingOrder = currentStandingOrder;
+	}
+
+	@Override
+	public EnumCheckoutMode getCheckoutMode() {
+		return checkoutMode;
+	}
+
+	public void setCheckoutMode(EnumCheckoutMode mode) {
+		this.checkoutMode = mode;
+	}
 	
     public String getPricingZoneId(){
     	return this.user.getPricingZoneId();

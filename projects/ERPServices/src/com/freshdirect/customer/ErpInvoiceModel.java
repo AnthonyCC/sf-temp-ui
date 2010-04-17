@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import java.util.ArrayList;
@@ -19,6 +10,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.framework.util.MathUtil;
+import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 
 /**
  * ErpInvoice interface
@@ -29,9 +21,11 @@ import com.freshdirect.framework.util.MathUtil;
  */
 public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 	
-	private List appliedCredits = new ArrayList();
-	private List discounts = new ArrayList();
-	private List appliedGiftCards = new ArrayList();
+	private static final long	serialVersionUID	= -2686808883359684082L;
+	
+	private List<ErpAppliedCreditModel> appliedCredits = new ArrayList<ErpAppliedCreditModel>();
+	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
+	private List<ErpAppliedGiftCardModel> appliedGiftCards = new ArrayList<ErpAppliedGiftCardModel>();
 	
     public ErpInvoiceModel() {
 		super(EnumTransactionType.INVOICE);
@@ -45,8 +39,8 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 	public double getDiscountAmount(){
 		double totalDiscountAmount = 0.0;
 		if (this.discounts != null || this.discounts.size() > 0) {
-			for (Iterator iter = this.discounts.iterator(); iter.hasNext();) {
-				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = iter.next();
 				totalDiscountAmount += discountLine.getDiscount().getAmount();
 			}
 			return totalDiscountAmount;
@@ -54,10 +48,10 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 		return totalDiscountAmount; 
 	}
 	
-    public List getAppliedCredits() { 
+    public List<ErpAppliedCreditModel> getAppliedCredits() { 
     	return appliedCredits; 
     }
-	public void setAppliedCredits(List appliedCredits){ 
+	public void setAppliedCredits(List<ErpAppliedCreditModel> appliedCredits){ 
 		this.appliedCredits = appliedCredits; 
 	}
 	public void addAppliedCredit(ErpAppliedCreditModel credit){
@@ -69,8 +63,8 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 			return 0;
 		}
 		double amt = 0;
-		for(Iterator i = this.appliedCredits.iterator(); i.hasNext(); ){
-			ErpAppliedCreditModel credit = (ErpAppliedCreditModel) i.next();
+		for(Iterator<ErpAppliedCreditModel> i = this.appliedCredits.iterator(); i.hasNext(); ){
+			ErpAppliedCreditModel credit = i.next();
 			amt += credit.getAmount();
 		}
 		return amt;
@@ -81,8 +75,8 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 			return 0;
 		}
 		double amt = 0;
-		for(Iterator i = this.appliedCredits.iterator(); i.hasNext(); ){
-			ErpAppliedCreditModel credit = (ErpAppliedCreditModel) i.next();
+		for(Iterator<ErpAppliedCreditModel> i = this.appliedCredits.iterator(); i.hasNext(); ){
+			ErpAppliedCreditModel credit = i.next();
 			if(affiliate.equals(credit.getAffiliate())){
 				amt += credit.getAmount();
 			}
@@ -97,9 +91,9 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
     	}
     	ErpInvoiceModel invoice = (ErpInvoiceModel)obj;
     	
-    	List thisLines = this.getInvoiceLines(); 
+    	List<ErpInvoiceLineModel> thisLines = getInvoiceLines(); 
     	Collections.sort(thisLines, INVOICELINE_COMPARATOR);
-    	List testLines = invoice.getInvoiceLines();
+    	List<ErpInvoiceLineModel> testLines = invoice.getInvoiceLines();
     	Collections.sort(testLines, INVOICELINE_COMPARATOR);
     	
     	if(thisLines.size() != testLines.size()){
@@ -120,13 +114,13 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
     	return true;
     }
     
-    public List getDiscounts() { return this.discounts; }
-    public void setDiscounts(List l) { this.discounts = l; }
+    public List<ErpDiscountLineModel> getDiscounts() { return this.discounts; }
+    public void setDiscounts(List<ErpDiscountLineModel> l) { this.discounts = l; }
     public void addDiscount(ErpDiscountLineModel discount) { this.discounts.add(discount); }
 
 	public ErpDiscountLineModel getDiscount(EnumDiscountType discountType) {
-        for (Iterator i=this.discounts.iterator(); i.hasNext(); ) {
-        	ErpDiscountLineModel curr = (ErpDiscountLineModel)i.next();
+        for (Iterator<ErpDiscountLineModel> i=this.discounts.iterator(); i.hasNext(); ) {
+        	ErpDiscountLineModel curr = i.next();
         	Discount discount = curr.getDiscount();
         	if (discount != null && discountType.equals( discount.getDiscountType() )) {
 				return curr;
@@ -135,10 +129,10 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
         return null;
 	}
 
-	public List getDiscounts(EnumDiscountType discountType) {
-		List discountList = new ArrayList();
-        for (Iterator i=this.discounts.iterator(); i.hasNext(); ) {
-        	ErpDiscountLineModel curr = (ErpDiscountLineModel)i.next();
+	public List<ErpDiscountLineModel> getDiscounts(EnumDiscountType discountType) {
+		List<ErpDiscountLineModel> discountList = new ArrayList<ErpDiscountLineModel>();
+        for (Iterator<ErpDiscountLineModel> i=this.discounts.iterator(); i.hasNext(); ) {
+        	ErpDiscountLineModel curr = i.next();
         	Discount discount = curr.getDiscount();
         	if (discount != null && discountType.equals( discount.getDiscountType() )) {
         		discountList.add( curr );
@@ -147,19 +141,17 @@ public class ErpInvoiceModel extends ErpAbstractInvoiceModel {
 		return discountList;
 	}
 
-	private static final Comparator INVOICELINE_COMPARATOR = new Comparator(){
-				public int compare(Object o1, Object o2) {
-					ErpInvoiceLineModel line1 = (ErpInvoiceLineModel) o1;
-					ErpInvoiceLineModel line2 = (ErpInvoiceLineModel) o2;
+	private static final Comparator<ErpInvoiceLineI> INVOICELINE_COMPARATOR = new Comparator<ErpInvoiceLineI>(){
+				public int compare( ErpInvoiceLineI line1, ErpInvoiceLineI line2 ) {
 					return line1.getOrderLineNumber().compareTo(line2.getOrderLineNumber());
 				}
 			};
 
-	public List getAppliedGiftCards() {
+	public List<ErpAppliedGiftCardModel> getAppliedGiftCards() {
 		return appliedGiftCards;
 	}
 
-	public void setAppliedGiftCards(List appliedGiftCards) {
+	public void setAppliedGiftCards(List<ErpAppliedGiftCardModel> appliedGiftCards) {
 		this.appliedGiftCards = appliedGiftCards;
 	} 
 }

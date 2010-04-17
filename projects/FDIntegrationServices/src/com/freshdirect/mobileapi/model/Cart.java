@@ -30,7 +30,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.RecipeDepartment;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -50,7 +49,6 @@ import com.freshdirect.mobileapi.controller.data.SalesUnit;
 import com.freshdirect.mobileapi.controller.data.request.AddItemToCart;
 import com.freshdirect.mobileapi.controller.data.request.AddMultipleItemsToCart;
 import com.freshdirect.mobileapi.controller.data.request.MultipleRequest;
-import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.request.UpdateItemInCart;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
@@ -61,16 +59,15 @@ import com.freshdirect.mobileapi.controller.data.response.Order;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.AffiliateCartDetail;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Group;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.ProductLineItem;
+import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.SummaryLineCharge;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.CartLineItem.CartLineItemType;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.Discount.DiscountType;
-import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail.RedemptionPromotion.RedemptionPromotionType;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.tagwrapper.FDShoppingCartControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RedemptionCodeControllerTagWrapper;
 import com.freshdirect.mobileapi.model.tagwrapper.RequestParamName;
-import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -190,8 +187,7 @@ public class Cart {
      */
     public Map<String, Boolean> getCartRestriction() {
         Map<String, Boolean> cartRestrictions = new HashMap<String, Boolean>();
-        for (Iterator i = ((FDCartModel) cart).getApplicableRestrictions().iterator(); i.hasNext();) {
-            EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
+        for ( EnumDlvRestrictionReason reason : ((FDCartModel) cart).getApplicableRestrictions() ) {
             if (EnumDlvRestrictionReason.THANKSGIVING.equals(reason)) {
                 cartRestrictions.put(THANKSGIVING_RESTRICTION, Boolean.TRUE);
                 continue;

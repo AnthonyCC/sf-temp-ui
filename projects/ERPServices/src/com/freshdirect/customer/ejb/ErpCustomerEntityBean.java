@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.customer.ejb;
 
 
@@ -17,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -29,16 +22,17 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpCreditCardModel;
-import com.freshdirect.customer.ErpECheckModel;
-import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpCustomerAlertModel;
 import com.freshdirect.customer.ErpCustomerCreditModel;
 import com.freshdirect.customer.ErpCustomerI;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpECheckModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpPaymentMethodTransactionModel;
+import com.freshdirect.customer.ErpPaymentMethodModel;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.framework.collection.CollectionException;
 import com.freshdirect.framework.collection.DependentPersistentBeanList;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
@@ -46,8 +40,6 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardModel;
-import com.freshdirect.payment.EnumPaymentMethodType;
-import com.freshdirect.customer.ErpCustomerAlertModel;
 
 /**
  * ErpCustomer entity bean implementation.
@@ -60,6 +52,8 @@ import com.freshdirect.customer.ErpCustomerAlertModel;
  * @ejbPrimaryKey <{PrimaryKey}>
  * @stereotype fd-entity*/
 public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCustomerI {
+
+	private static final long	serialVersionUID	= -8059593847257886394L;
 
 	private static Category LOGGER = LoggerFactory.getInstance( ErpCustomerEntityBean.class );
 
@@ -114,16 +108,16 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 
 		// deep copy properties
 		model.setCustomerInfo(((ErpCustomerInfoModel)this.customerInfo.getModel()));
-		for(Iterator i = this.shipToAddress.iterator(); i.hasNext();){
+		for(Iterator<ErpAddressPersistentBean> i = this.shipToAddress.iterator(); i.hasNext();){
 			model.addShipToAddress((ErpAddressModel)((ErpAddressPersistentBean)i.next()).getModel());
 		}
-		for(Iterator i = this.paymentMethodList.iterator(); i.hasNext();){
+		for(Iterator<ErpPaymentMethodPersistentBean> i = this.paymentMethodList.iterator(); i.hasNext();){
 			model.addPaymentMethod((ErpPaymentMethodI)((ErpPaymentMethodPersistentBean)i.next()).getModel());
 		}
-		for(Iterator i = this.customerCredits.iterator(); i.hasNext();){
+		for(Iterator<ErpCustomerCreditPersistentBean> i = this.customerCredits.iterator(); i.hasNext();){
 			model.addCustomerCredit((ErpCustomerCreditModel)((ErpCustomerCreditPersistentBean)i.next()).getModel());
 		}
-		for(Iterator i = this.customerAlerts.iterator(); i.hasNext();){
+		for(Iterator<ErpCustomerAlertPersistentBean> i = this.customerAlerts.iterator(); i.hasNext();){
 			model.addCustomerAlert((ErpCustomerAlertModel)((ErpCustomerAlertPersistentBean)i.next()).getModel());
 		}
 		return model;
@@ -334,12 +328,12 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		if (this.shipToAddress.isModified()) {
 			this.shipToAddress.store( conn );
 		}
-		System.out.println("Before calling store ******************* ");
+		LOGGER.info("Before calling store ******************* ");
 		if(this.paymentMethodList.isModified()){
-			System.out.println("Inside store ******************* ");
+			LOGGER.info("Inside store ******************* ");
 			this.paymentMethodList.store(conn);
 		}
-		System.out.println("After calling store ******************* ");
+		LOGGER.info("After calling store ******************* ");
 		if (this.customerInfo.isModified()) {
 			this.customerInfo.store( conn );
 		}
@@ -382,7 +376,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	 * Get ShipToAddresss.
 	 *
 	 * @return collection of ShipToAddress model objects*/
-	public List getShipToAddresses() {
+	public List<ErpAddressModel> getShipToAddresses() {
 		// copy into models
 		return this.shipToAddress.getModelList();
 	}
@@ -464,7 +458,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return null != this.shipToAddress.removeByPK(pk);
 	}
 
-	public List getCustomerCredits() {
+	public List<ErpCustomerCreditModel> getCustomerCredits() {
 		// copy into models
 		return this.customerCredits.getModelList();
 	}
@@ -481,9 +475,9 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 	public void removeCustomerCreditByComplaintId(String complaintId) throws ErpTransactionException {
 		
 		ErpCustomerCreditModel creditModel = null;
-		List complaintCredits = new ArrayList();
+		List<ErpCustomerCreditModel> complaintCredits = new ArrayList<ErpCustomerCreditModel>();
 		
-		for(Iterator i = this.customerCredits.iterator(); i.hasNext(); ){
+		for(Iterator<ErpCustomerCreditPersistentBean> i = this.customerCredits.iterator(); i.hasNext(); ){
 			ErpCustomerCreditPersistentBean bean = (ErpCustomerCreditPersistentBean)i.next();
 			creditModel = (ErpCustomerCreditModel)bean.getModel();
 			if(creditModel.getComplaintPk().getId().equals(complaintId)){
@@ -495,7 +489,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 			throw new ErpTransactionException("no credit found for complaintId: "+complaintId);
 		}
 		//make sure that none of the credits have been utilized yet
-		for(Iterator i = complaintCredits.iterator(); i.hasNext(); ){
+		for(Iterator<ErpCustomerCreditModel> i = complaintCredits.iterator(); i.hasNext(); ){
 			creditModel = (ErpCustomerCreditModel)i.next();	
 			if(MathUtil.roundDecimal(creditModel.getRemainingAmount()) != MathUtil.roundDecimal(creditModel.getOriginalAmount())){
 				this.getEntityContext().setRollbackOnly();
@@ -503,7 +497,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 			}
 		}
 		//now finally remove credits for given complaint
-		for(Iterator i = complaintCredits.iterator(); i.hasNext(); ){
+		for(Iterator<ErpCustomerCreditModel> i = complaintCredits.iterator(); i.hasNext(); ){
 			creditModel = (ErpCustomerCreditModel)i.next();
 			this.customerCredits.removeByPK(creditModel.getPK());
 		}
@@ -523,22 +517,20 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.setModified();
 	}
 
-	protected void setShipToAddressFromModel(Collection collection) {
+	protected void setShipToAddressFromModel(Collection<ErpAddressModel> collection) {
 		// create persistent bean collection
-		java.util.List persistentBeans = new java.util.LinkedList();
-		for (Iterator i=collection.iterator(); i.hasNext(); ) {
-			ErpAddressModel model = (ErpAddressModel) i.next();
+		List<ErpAddressPersistentBean> persistentBeans = new LinkedList<ErpAddressPersistentBean>();
+		for ( ErpAddressModel model : collection ) {
 			persistentBeans.add( new ErpAddressPersistentBean(model) );
 		}
 		// set it
 		this.shipToAddress.set(persistentBeans);
 	}
 
-	protected void setCustomerCreditFromModel(Collection collection) {
+	protected void setCustomerCreditFromModel(Collection<ErpCustomerCreditModel> collection) {
 		// create persistent bean collection
-		java.util.List persistentBeans = new java.util.LinkedList();
-		for (Iterator i=collection.iterator(); i.hasNext(); ) {
-			ErpCustomerCreditModel model = (ErpCustomerCreditModel) i.next();
+		List<ErpCustomerCreditPersistentBean> persistentBeans = new LinkedList<ErpCustomerCreditPersistentBean>();
+		for ( ErpCustomerCreditModel model : collection ) {
 			persistentBeans.add( new ErpCustomerCreditPersistentBean(model) );
 		}
 		// set it
@@ -635,10 +627,10 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return null != this.paymentMethodList.removeByPK(pk);
 	}
 
-	public List getPaymentMethods() throws RemoteException {
-		List pmList = this.paymentMethodList.getModelList();
-		for(Iterator it=pmList.iterator(); it.hasNext();){
-			ErpPaymentMethodModel model = (ErpPaymentMethodModel) it.next();
+	public List<ErpPaymentMethodI> getPaymentMethods() throws RemoteException {
+		List<ErpPaymentMethodI> pmList = this.paymentMethodList.getModelList();
+		for( Iterator<ErpPaymentMethodI> it = pmList.iterator(); it.hasNext(); ){
+			ErpPaymentMethodI model = it.next();
 			if(model instanceof ErpGiftCardModel) {
 				//Remove gift cards before sending.
 				it.remove();
@@ -647,18 +639,18 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return pmList;
 	}
 	
-	public List getGiftCards() throws RemoteException {
-		List pmList = this.paymentMethodList.getModelList();
-		System.out.println("Pm List before contains "+pmList);
-		for(Iterator it=pmList.iterator(); it.hasNext();){
-			ErpPaymentMethodModel model = (ErpPaymentMethodModel) it.next();
-			if(model instanceof ErpCreditCardModel || model instanceof ErpECheckModel) {
+	public List<ErpGiftCardModel> getGiftCards() throws RemoteException {
+		List<ErpPaymentMethodModel> pmList = this.paymentMethodList.getModelList();
+		LOGGER.info("Pm List before contains "+pmList);
+		for( Iterator<ErpPaymentMethodModel> it = pmList.iterator(); it.hasNext(); ) {
+			ErpPaymentMethodModel model = it.next();
+			if( !( model instanceof ErpGiftCardModel ) ) {
 				//Remove credit cards and Echecks before sending.
 				it.remove();
 			}
 		}
-		System.out.println("Pm List after contains "+pmList);
-		return pmList;
+		LOGGER.info("Pm List after contains "+pmList);
+		return (List<ErpGiftCardModel>)(List)pmList;
 	}
 
 	public void addPaymentMethod(ErpPaymentMethodI element) throws RemoteException {
@@ -666,11 +658,10 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		this.paymentMethodList.add(bean);
 	}
 
-	protected void setPaymentMethodFromModel(Collection collection) {
+	protected void setPaymentMethodFromModel(Collection<ErpPaymentMethodI> collection) {
 		// create persistent bean collection
-		java.util.List persistentBeans = new java.util.LinkedList();
-		for (Iterator i=collection.iterator(); i.hasNext(); ) {
-			ErpPaymentMethodI model = (ErpPaymentMethodI) i.next();
+		List<ErpPaymentMethodPersistentBean> persistentBeans = new LinkedList<ErpPaymentMethodPersistentBean>();
+		for ( ErpPaymentMethodI model : collection ) {
 			persistentBeans.add( new ErpPaymentMethodPersistentBean((ErpPaymentMethodModel)model) );				
 		}
 		// set it
@@ -679,9 +670,8 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 
 	public void updateCustomerCredit(String customerCreditId, double delta) {
 		boolean foundCustomerCredit = false;
-		List customerCredits = this.getCustomerCredits();
-		for (Iterator it = customerCredits.iterator(); it.hasNext(); ) {
-			ErpCustomerCreditModel customerCredit = (ErpCustomerCreditModel) it.next();
+		List<ErpCustomerCreditModel> customerCredits = this.getCustomerCredits();
+		for ( ErpCustomerCreditModel customerCredit : customerCredits ) {
 			if ( customerCredit.getPK().getId().equals(customerCreditId) ) {
 				foundCustomerCredit = true;
 				double remainingAmount = customerCredit.getRemainingAmount();
@@ -711,7 +701,7 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return null != this.customerAlerts.removeByPK(pk);
 	}
 
-	public List getCustomerAlerts() {
+	public List<ErpCustomerAlertModel> getCustomerAlerts() {
 		return this.customerAlerts.getModelList();
 	}
 
@@ -724,11 +714,10 @@ public class ErpCustomerEntityBean extends EntityBeanSupport implements ErpCusto
 		return customerAlerts != null && customerAlerts.size() > 0;
 	}
 
-	protected void setCustomerAlertFromModel(Collection collection) {
+	protected void setCustomerAlertFromModel(Collection<ErpCustomerAlertModel> collection) {
 		// create persistent bean collection
-		java.util.List persistentBeans = new java.util.LinkedList();
-		for (Iterator i=collection.iterator(); i.hasNext(); ) {
-			ErpCustomerAlertModel model = (ErpCustomerAlertModel) i.next();
+		List<ErpCustomerAlertPersistentBean> persistentBeans = new LinkedList<ErpCustomerAlertPersistentBean>();
+		for ( ErpCustomerAlertModel model : collection ) {
 			persistentBeans.add( new ErpCustomerAlertPersistentBean(model) );
 		}
 		// set it

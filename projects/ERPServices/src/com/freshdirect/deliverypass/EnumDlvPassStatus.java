@@ -14,6 +14,8 @@ import org.apache.commons.lang.enums.Enum;
 */
 public class EnumDlvPassStatus  extends Enum {
 	
+	private static final long	serialVersionUID	= -3099766459764540964L;
+	
 	public static final EnumDlvPassStatus NONE = new EnumDlvPassStatus("NONE", "None");
 	public static final EnumDlvPassStatus PENDING = new EnumDlvPassStatus("PEN", "Pending");
 	public static final EnumDlvPassStatus ACTIVE = new EnumDlvPassStatus("ACT", "Active");
@@ -25,7 +27,9 @@ public class EnumDlvPassStatus  extends Enum {
 	public static final EnumDlvPassStatus ORDER_CANCELLED = new EnumDlvPassStatus("CAO", "Cancelled");
 	public static final EnumDlvPassStatus PASS_RETURNED = new EnumDlvPassStatus("RET", "Returned");
 	public static final EnumDlvPassStatus READY_TO_USE = new EnumDlvPassStatus("RTU", "Ready To Use");
+	
 	private final String displayName;
+	
 	private EnumDlvPassStatus(String name, String displayName) {
 		super(name);
 		this.displayName = displayName;
@@ -39,15 +43,18 @@ public class EnumDlvPassStatus  extends Enum {
 		return (EnumDlvPassStatus) getEnum(EnumDlvPassStatus.class, name);
 	}
 
-	public static Map getEnumMap() {
+	@SuppressWarnings( "unchecked" )
+	public static Map<String,EnumDlvPassStatus> getEnumMap() {
 		return getEnumMap(EnumDlvPassStatus.class);
 	}
 
-	public static List getEnumList() {
+	@SuppressWarnings( "unchecked" )
+	public static List<EnumDlvPassStatus> getEnumList() {
 		return getEnumList(EnumDlvPassStatus.class);
 	}
 
-	public static Iterator iterator() {
+	@SuppressWarnings( "unchecked" )
+	public static Iterator<EnumDlvPassStatus> iterator() {
 		return iterator(EnumDlvPassStatus.class);
 	}
 }

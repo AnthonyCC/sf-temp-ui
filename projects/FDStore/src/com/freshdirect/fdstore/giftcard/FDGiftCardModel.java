@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.giftcard;
 
-import java.io.Serializable;
-
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -10,6 +8,8 @@ import com.freshdirect.giftcard.EnumGiftCardStatus;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 
 public class FDGiftCardModel implements FDGiftCardI {
+	
+	private static final long	serialVersionUID	= -5597089769677225165L;
 	
 	private ErpGiftCardModel giftCardModel;
 	private boolean selected = true;

@@ -1,17 +1,13 @@
 package com.freshdirect.cms.node;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
@@ -30,6 +26,8 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
  */
 public class ContentNode implements ContentNodeI {
 
+	private static final long	serialVersionUID	= -2807267115367900617L;
+
 	/** originating content service */
 	private final ContentServiceI contentService;
 
@@ -37,7 +35,7 @@ public class ContentNode implements ContentNodeI {
 	private final ContentKey key;
 
 	/** Map of String (name) -> Object (value) */
-	private final Map attributes = new HashMap();
+	private final Map<String, AttributeI> attributes = new HashMap<String, AttributeI>();
 
 	/**
 	 * @param contentService the {@link ContentServiceI} originating this node (never null)
@@ -57,8 +55,7 @@ public class ContentNode implements ContentNodeI {
 		if (def == null) {
 			throw new IllegalArgumentException("No type definition for " + key + " in " + typeService);
 		}
-		for (Iterator i = def.getAttributeNames().iterator(); i.hasNext();) {
-			String atrName = (String) i.next();
+		for ( String atrName : def.getAttributeNames() ) {
 			AttributeDefI atrDef = def.getAttributeDef(atrName);
 			Attribute atr;
 			if (atrDef instanceof RelationshipDefI) {
@@ -82,7 +79,7 @@ public class ContentNode implements ContentNodeI {
 	// convenience
 	//
 
-	public Set getChildKeys() {
+	public Set<ContentKey> getChildKeys() {
 		return ContentNodeUtil.getChildKeys(this);
 	}
 
@@ -95,26 +92,28 @@ public class ContentNode implements ContentNodeI {
 	//
 
 	public AttributeI getAttribute(String name) {
-		return (AttributeI) attributes.get(name);
+		return attributes.get(name);
 	}
 	
-        @Override
-        public Object getAttributeValue(String name) {
-            AttributeI a = getAttribute(name);
-            return a != null ? a.getValue() : null;
-        }
+    @SuppressWarnings( "deprecation" )
+	@Override
+    public Object getAttributeValue(String name) {
+        AttributeI a = getAttribute(name);
+        return a != null ? a.getValue() : null;
+    }
 
-        @Override
-        public boolean setAttributeValue(String name, Object value) {
-            AttributeI a = getAttribute(name);
-            if (a != null) {
-                a.setValue(value);
-                return true;
-            }
-            return false;
+    @SuppressWarnings( "deprecation" )
+	@Override
+    public boolean setAttributeValue(String name, Object value) {
+        AttributeI a = getAttribute(name);
+        if (a != null) {
+            a.setValue(value);
+            return true;
         }
+        return false;
+    }
         
-	public Map getAttributes() {
+	public Map<String, AttributeI> getAttributes() {
 		return this.attributes;
 	}
 
@@ -160,6 +159,7 @@ public class ContentNode implements ContentNodeI {
         }
 	}
 
+	@Override
 	public boolean equals(Object obj) {
 		if (obj == this) {
 			return true;
@@ -171,10 +171,12 @@ public class ContentNode implements ContentNodeI {
 		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		return this.key.hashCode();
 	}
 
+	@Override
 	public String toString() {
 		return "ContentNode[" + this.key + "]";
 	}

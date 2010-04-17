@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.customer.ejb;
 
 import java.sql.Connection;
@@ -15,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
@@ -23,8 +13,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpOrderLineModel;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.giftcard.ErpRecipentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -107,31 +95,30 @@ public class FDUserDAO {
 		return user;
 	}
 
-	private static List convertToErpOrderlines(List cartlines) throws FDResourceException {
+	private static List<ErpOrderLineModel> convertToErpOrderlines(List<FDCartLineI> cartlines) throws FDResourceException {
 
 		int num = 0;
-		List erpOrderlines = new ArrayList();
-		for (Iterator i = cartlines.iterator(); i.hasNext();) {
-			FDCartLineI cartline = (FDCartLineI) i.next();
-			List erpLines;
+		List<ErpOrderLineModel> erpOrderlines = new ArrayList<ErpOrderLineModel>();
+		for ( FDCartLineI cartline : cartlines ) {
+			ErpOrderLineModel erpLines;
 			try {
 				erpLines = cartline.buildErpOrderLines(num);
 			} catch (FDInvalidConfigurationException e) {
 				LOGGER.warn("Skipping invalid cartline", e);
 				continue;
 			}
-			erpOrderlines.addAll(erpLines);
-			num += erpLines.size();
+			erpOrderlines.add(erpLines);
+			num += 1;
 		}
 
 		return erpOrderlines;
 	}
 
-	private static List convertToCartLines(List erplines) {
+	private static List<FDCartLineI> convertToCartLines(List<ErpOrderLineModel> erplines) {
 
-		List cartlines = new ArrayList();
+		List<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
 		for (int i = 0; i < erplines.size(); i++) {
-			ErpOrderLineModel ol = (ErpOrderLineModel) erplines.get(i);
+			ErpOrderLineModel ol = erplines.get(i);
 
 			FDCartLineI cartLine;
 			cartLine = new FDCartLineModel(ol);
@@ -176,7 +163,7 @@ public class FDUserDAO {
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
 			//Load GC recipients if any. 
-			List recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
+			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
 		}
@@ -231,7 +218,7 @@ public class FDUserDAO {
 			cart.addOrderLines(convertToCartLines(FDCartLineDAO.loadCartLines(conn, user.getPK())));
 			user.setShoppingCart(cart);
 			//Load GC recipients if any. 
-			List recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
+			List<SavedRecipientModel> recipients = SavedRecipientDAO.loadSavedRecipients(conn, user.getPK().getId());
 			FDRecipientList repList = new FDRecipientList(recipients);
 			user.setRecipientList(repList);
 		}
@@ -388,7 +375,7 @@ public class FDUserDAO {
 		ps.executeUpdate();
 		ps.close();
 
-		List erpOrderLine;
+		List<ErpOrderLineModel> erpOrderLine;
 		try {
 			erpOrderLine = convertToErpOrderlines(user.getShoppingCart().getOrderLines());
 		} catch (FDResourceException e) {
@@ -398,8 +385,8 @@ public class FDUserDAO {
 		
 		FDCartLineDAO.storeCartLines(conn, user.getPK(), erpOrderLine);
 		//Store GC Recipient List if any.
-		if(user.getRecipentList() != null){
-			SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipentList().getRecipents());
+		if(user.getRecipientList() != null){
+			SavedRecipientDAO.storeSavedRecipients(conn, user.getPK().getId(), user.getRecipientList().getRecipients());
 		}
 	}
 	

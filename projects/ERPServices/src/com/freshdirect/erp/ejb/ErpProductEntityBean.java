@@ -444,7 +444,7 @@ public class ErpProductEntityBean extends VersionedEntityBeanSupport {
 		try {
 
 			ErpMaterialHome matHome =
-				(ErpMaterialHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpMaterial", ErpMaterialHome.class);
+				(ErpMaterialHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpMaterial");
 
 			ErpMaterialEB matEB = matHome.findByPrimaryKey(matPK);
 			return (ErpMaterialModel) matEB.getModel();

@@ -14,38 +14,33 @@ import java.util.Collections;
 
 public class FDGiftCardInfoList implements Serializable {
 	
-	//List of ErpGiftCardModel.
-	private List giftcards = null;
+	private static final long	serialVersionUID	= -1730795546450052567L;
+
+	private List<FDGiftCardI> giftcards = null;
 	
-	public final static Comparator GIFT_CARD_RECEIVED_COMPARATOR = new Comparator() {
+	public final static Comparator<FDGiftCardI> GIFT_CARD_RECEIVED_COMPARATOR = new Comparator<FDGiftCardI>() {
 
-		public int compare(Object o1, Object o2) {
-
-			FDGiftCardModel p1 = (FDGiftCardModel) o1;
-			FDGiftCardModel p2 = (FDGiftCardModel) o2;
-
+		public int compare( FDGiftCardI p1, FDGiftCardI p2 ) {
 			int ret = new Double(p2.getBalance()).compareTo(new Double(p1.getBalance()));
 			return ret;
 		}
 	};
 	
-	public FDGiftCardInfoList(Collection erpgiftcards) {
-		this.giftcards = new ArrayList(erpgiftcards.size());
-		for(Iterator it = erpgiftcards.iterator(); it.hasNext();){
-			ErpGiftCardModel gcModel = (ErpGiftCardModel)it.next();
+	public FDGiftCardInfoList(Collection<ErpGiftCardModel> erpgiftcards) {
+		this.giftcards = new ArrayList<FDGiftCardI>(erpgiftcards.size());
+		for( ErpGiftCardModel gcModel : erpgiftcards ){
 			this.addGiftCard(new FDGiftCardModel(gcModel));
 		}
 	}
 
-	public List getGiftcards() {
+	public List<FDGiftCardI> getGiftcards() {
 		Collections.sort(giftcards, GIFT_CARD_RECEIVED_COMPARATOR);
 		return Collections.unmodifiableList(giftcards);
 	}
 
-	public List getSelectedGiftcards(){
-		List selectedCards = new ArrayList();
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardModel gc = (FDGiftCardModel) it.next();
+	public List<ErpGiftCardModel> getSelectedGiftcards(){
+		List<ErpGiftCardModel> selectedCards = new ArrayList<ErpGiftCardModel>();
+		for( FDGiftCardI gc : giftcards ) {
 			if(FDStoreProperties.isGivexBlackHoleEnabled()|| !gc.isRedeemable() || !gc.isSelected() || gc.getBalance() <= 0 ) {
 				continue;
 			} 
@@ -67,8 +62,7 @@ public class FDGiftCardInfoList implements Serializable {
 	}
 	
 	public FDGiftCardI getGiftCard(String certificationNum) {
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardI gc = (FDGiftCardI) it.next();
+		for( FDGiftCardI gc : giftcards ) {
 			if(gc.getCertificateNumber().equals(certificationNum)){
 				return gc;
 			}
@@ -78,8 +72,7 @@ public class FDGiftCardInfoList implements Serializable {
 	
 	public double getTotalBalance() {
 		double balance = 0.0;
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardI gc = (FDGiftCardI) it.next();
+		for( FDGiftCardI gc : giftcards ) {
 			if(FDStoreProperties.isGivexBlackHoleEnabled() || !gc.isRedeemable() || !gc.isSelected()) {
 				continue;
 			}
@@ -90,14 +83,12 @@ public class FDGiftCardInfoList implements Serializable {
 	}
 	
 	public void clearAllHoldAmount() {
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardI gc = (FDGiftCardI) it.next();
-				gc.setHoldAmount(0.0);
+		for( FDGiftCardI gc : giftcards ) {
+			gc.setHoldAmount(0.0);
 		}
 	}
 	public void clearAllSelection(){
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardModel gc = (FDGiftCardModel) it.next();
+		for( FDGiftCardI gc : giftcards ) {
 			gc.setSelected(false);
 		}
 	}
@@ -107,8 +98,8 @@ public class FDGiftCardInfoList implements Serializable {
 	}
 	
 	public void remove(String certificationNum){
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardI gc = (FDGiftCardI) it.next();
+		for(Iterator<FDGiftCardI> it = this.giftcards.iterator(); it.hasNext();) {
+			FDGiftCardI gc = it.next();
 			if(gc.getCertificateNumber().equals(certificationNum)){
 				it.remove();
 				break;
@@ -118,8 +109,7 @@ public class FDGiftCardInfoList implements Serializable {
 	
 	public double getGiftcardsTotalBalance() {
 		double balance = 0.0;
-		for(Iterator it = this.giftcards.iterator(); it.hasNext();) {
-			FDGiftCardI gc = (FDGiftCardI) it.next();
+		for( FDGiftCardI gc : giftcards ) {
 			if(FDStoreProperties.isGivexBlackHoleEnabled() || !gc.isRedeemable()) {
 				continue;
 			}

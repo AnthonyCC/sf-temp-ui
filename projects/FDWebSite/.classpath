@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CMS"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DataLoader"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Delivery"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/DlvAdmin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ERPServices"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/ERPSWebApp"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/FDStore"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Framework"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/listadmin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OCF"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/RulesAdmin"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Tests"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/ERPSWebApp"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-fileupload-1.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>

@@ -303,7 +303,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -312,7 +312,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 	
 	private GiftCardManagerHome getGiftCardManagerHome() {
 		try {
-			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager", GiftCardManagerHome.class);
+			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -320,7 +320,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private GCGatewayHome getGCGatewayHome() {
 		try {
-			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway", GCGatewayHome.class);
+			return (GCGatewayHome) LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -328,7 +328,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private  ErpRoutingGatewayHome getErpRoutingGatewayHome() {
 		try {
-			return (ErpRoutingGatewayHome) ROUTING_LOCATOR.getRemoteHome("freshdirect.routing.ErpRoutingGateway", ErpRoutingGatewayHome.class);
+			return (ErpRoutingGatewayHome) ROUTING_LOCATOR.getRemoteHome("freshdirect.routing.ErpRoutingGateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -336,7 +336,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private ErpSaleHome getErpSaleHome() {
 		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
+			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -429,7 +429,7 @@ public class SapResultListener extends MessageDrivenBeanSupport {
 
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

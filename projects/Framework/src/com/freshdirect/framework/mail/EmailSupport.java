@@ -4,10 +4,12 @@ import java.util.*;
 
 public class EmailSupport implements EmailI {
 
+	private static final long	serialVersionUID	= 8501265368515620808L;
+	
 	private String recipient = "";
 	private EmailAddress from = null;
-	private Collection ccList = new ArrayList();
-	private Collection bccList = new ArrayList();
+	private Collection<String> ccList = new ArrayList<String>();
+	private Collection<String> bccList = new ArrayList<String>();
 	private String subject = "";
 	
 	public String getRecipient() {
@@ -34,19 +36,19 @@ public class EmailSupport implements EmailI {
 		this.subject = subject;
 	}
 	
-	public Collection getCCList() {
+	public Collection<String> getCCList() {
 		return this.ccList;
 	}
 
-	public void setCCList(Collection cc) {
+	public void setCCList(Collection<String> cc) {
 		this.ccList = cc;
 	}
 
-	public Collection getBCCList() {
+	public Collection<String> getBCCList() {
 		return this.bccList;
 	}
 
-	public void setBCCList(Collection bcc) {
+	public void setBCCList(Collection<String> bcc) {
 		this.bccList = bcc;
 	}
 

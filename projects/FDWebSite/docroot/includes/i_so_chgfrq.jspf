@@ -1,0 +1,19 @@
+<%@ page import="com.freshdirect.fdstore.standingorders.EnumStandingOrderFrequency"
+%><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
+%><%@ page import="com.freshdirect.fdstore.customer.FDUserI"
+%><%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%><%
+	FDStandingOrder ___so = ((FDUserI) session.getAttribute(SessionName.USER)).getCurrentStandingOrder();
+%><script type="text/javascript">
+function changeFrequency(inp) {
+	$C.asyncRequest('GET', '/api/so_api.jsp?action=setFrequencyCur&freqOrd='+inp, {});
+}
+</script><form id="so-chgfrq" style="display: inline;">
+<select onchange="changeFrequency(this.value);">
+<%
+	for (EnumStandingOrderFrequency f : EnumStandingOrderFrequency.values()) {
+%>		<option value="<%= f.getFrequency() %>" <%= ___so.getFrequency() == f.getFrequency() ? "selected=\"selected\"" : ""  %>><%= f.getTitle() %></option>
+<%
+	}
+%>
+</select>
+</form>

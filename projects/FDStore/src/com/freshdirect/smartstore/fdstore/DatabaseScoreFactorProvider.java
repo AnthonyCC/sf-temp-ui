@@ -147,7 +147,7 @@ public class DatabaseScoreFactorProvider {
 
     // get service configuration home bean
     private ScoreFactorHome getScoreFactorHome() throws NamingException {
-        return (ScoreFactorHome) serviceLocator.getRemoteHome("freshdirect.smartstore.ScoreFactorHome", ScoreFactorHome.class);
+        return (ScoreFactorHome) serviceLocator.getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
 
     }
 

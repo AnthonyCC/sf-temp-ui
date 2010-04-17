@@ -6,18 +6,14 @@ import com.freshdirect.delivery.EnumTimeslotStatus;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.TimeOfDay;
 
-/**
- * User: knadeem
- * Date: Dec 26, 2002
- * Time: 4:27:07 PM
- * File: DlvShiftTimeslot
- */
-public class DlvShiftTimeslotModel  extends ModelSupport {
+public class DlvShiftTimeslotModel extends ModelSupport {
 
-	public final static Comparator COMPARATOR_START_DATE = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			TimeOfDay t1 = ((DlvShiftTimeslotModel)o1).getStartTime();
-			TimeOfDay t2 = ((DlvShiftTimeslotModel)o2).getStartTime();
+	private static final long	serialVersionUID	= 685714352845438811L;
+	
+	public final static Comparator<DlvShiftTimeslotModel> COMPARATOR_START_DATE = new Comparator<DlvShiftTimeslotModel>() {
+		public int compare(DlvShiftTimeslotModel o1, DlvShiftTimeslotModel o2) {
+			TimeOfDay t1 = o1.getStartTime();
+			TimeOfDay t2 = o2.getStartTime();
 			if (t1==null) return 1;
 			if (t2==null) return -1;
 			return t1.getAsDate().compareTo( t2.getAsDate() );

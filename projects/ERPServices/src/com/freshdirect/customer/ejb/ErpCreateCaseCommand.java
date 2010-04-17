@@ -65,7 +65,7 @@ public class ErpCreateCaseCommand {
 
 	private CrmManagerHome getCrmManagerHome() {
 		try {
-			return (CrmManagerHome) locator.getRemoteHome("freshdirect.crm.Manager", CrmManagerHome.class);
+			return (CrmManagerHome) locator.getRemoteHome("freshdirect.crm.Manager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

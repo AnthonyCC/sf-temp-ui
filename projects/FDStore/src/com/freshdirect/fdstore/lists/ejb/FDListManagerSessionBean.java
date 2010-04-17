@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.lists.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
@@ -24,26 +24,31 @@ import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDListManagerSessionBean extends SessionBeanSupport {
 
+	private static final long	serialVersionUID	= 3548977965120918261L;
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDListManagerSessionBean.class);
 
-	public List getEveryItemEverOrdered(FDIdentity identity) throws FDResourceException {
+	public List<FDProductSelectionI> getEveryItemEverOrdered(FDIdentity identity) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 
-			List retList = new ArrayList();
+			List<FDProductSelectionI> retList = new ArrayList<FDProductSelectionI>();
 			FDCustomerShoppingList list = (FDCustomerShoppingList) dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 
 			if (list == null) {
@@ -52,7 +57,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 				list = (FDCustomerShoppingList) dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 			}
 
-			for (Iterator i = list.getLineItems().iterator(); i.hasNext();) {
+			for (Iterator<FDCustomerListItem> i = list.getLineItems().iterator(); i.hasNext();) {
 				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 				try {
 					if(item.getSkuCode().equals(FDStoreProperties.getGiftcardSkucode())){
@@ -96,7 +101,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			return dao.load(conn, identity /* new PrimaryKey(identity.getErpCustomerPK()) */, type, listName);
+			return dao.load(conn, identity, type, listName);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -104,16 +109,36 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public void storeCustomerList(FDCustomerList list) throws FDResourceException {
+	public FDCustomerList getCustomerListById(FDIdentity identity, EnumCustomerListType type, String listId) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			dao.store(conn, list);
+			return dao.lookupById(conn, identity, type, listId);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-                    close(conn);
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after getCustomerList", e);
+				}
+			}
+		}
+	}
+	
+	public String storeCustomerList( FDCustomerList list ) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			LOGGER.debug( "FDListManagerSessionBean:storeCustomerList()" );
+			return dao.store( conn, list );
+		} catch ( SQLException e ) {
+			throw new FDResourceException( e );
+		} finally {
+			close( conn );
 		}
 	}
 
@@ -133,12 +158,12 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 	}
 
     // CCL
-	public void createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException, FDCustomerListExistsException {
+	public void createCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, FDCustomerListExistsException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			if (dao.isCustomerCreatedList(conn,identity,listName)) throw new FDCustomerListExistsException();
+			if (dao.isCustomerList(conn,identity,EnumCustomerListType.CC_LIST,listName)) throw new FDCustomerListExistsException();
 			dao.createCustomerCreatedList(conn, identity, listName);
 		} catch (FDCustomerListExistsException e) {
 			this.getSessionContext().setRollbackOnly();
@@ -151,7 +176,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 	}
 	
     // CCL
-	public void deleteCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException {
+	public void deleteCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException {
 		Connection conn = null;
 		if (getCustomerCreatedLists(identity).size() <= 1) {
 			// don't delete the last list.
@@ -169,12 +194,12 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 	}
 	
     // CCL
-	public boolean isCustomerCreatedList(FDIdentity identity, String listName) throws FDResourceException, RemoteException {
+	public boolean isCustomerList(FDIdentity identity, EnumCustomerListType type, String listName) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			return dao.isCustomerCreatedList(conn, identity, listName);
+			return dao.isCustomerList(conn, identity, type != null ? type : EnumCustomerListType.CC_LIST, listName);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -185,13 +210,13 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 	private static final String DEFAULT_CCL_NAME_SUFFIX = "'s List";
 	
 	// CCL
-	public List getCustomerCreatedLists(FDIdentity identity) throws FDResourceException, RemoteException {
+	public List<FDCustomerCreatedList> getCustomerCreatedLists(FDIdentity identity) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 
-			List lists = dao.getCustomerCreatedLists(conn, identity); 
+			List<FDCustomerCreatedList> lists = dao.getCustomerCreatedLists(conn, identity); 
 			if (lists.isEmpty()) { 
 				FDUser user = FDUserDAO.recognizeWithIdentity(conn, identity);
 				if (user.isAnonymous()) {
@@ -211,13 +236,13 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 	}
 	
 	// CCL
-	public List getCustomerCreatedListInfos(FDIdentity identity) throws FDResourceException, RemoteException {
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos(FDIdentity identity) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 
-			List lists = dao.getCustomerCreatedListInfos(conn, identity); 
+			List<FDCustomerListInfo> lists = dao.getCustomerCreatedListInfos(conn, identity); 
 			if (lists.isEmpty()) { 
 				FDUserI user = FDCustomerManager.recognize(identity);
 				String defaultName = user.getFirstName()+ DEFAULT_CCL_NAME_SUFFIX;
@@ -234,8 +259,29 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
+	// CCL
+	public List<FDCustomerListInfo> getStandingOrderListInfos(FDIdentity identity) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+
+			return dao.getStandingOrderListInfos(conn, identity);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after removeCustomerListItem", e);
+				}
+			}
+		}
+	}
+
 	// this is a generic api modify the customer list. just make sure name does not duplicate before calling this 
-	public void modifyCustomerCreatedList(FDCustomerList list) throws FDResourceException, RemoteException {
+	public void modifyCustomerCreatedList(FDCustomerList list) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -252,7 +298,7 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 
 	// this API will copy the customer list from source to target.
 	// currently this is not getting used	
-	public void copyCustomerCreatedList(FDCustomerList sourceCCList,FDCustomerList targetCCList) throws FDResourceException, RemoteException, FDCustomerListExistsException {
+	public void copyCustomerCreatedList(FDCustomerList sourceCCList,FDCustomerList targetCCList) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -262,8 +308,8 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			if(sourceCCList instanceof FDCustomerProductList && targetCCList instanceof FDCustomerProductList) 
 			{
 				FDCustomerProductList targerList=(FDCustomerProductList)targetCCList;
-				//	iterate through the new list and add indivisual Item to the OldList
-				for (Iterator i = sourceCCList.getLineItems().iterator(); i.hasNext();)
+				//	iterate through the new list and add individual Item to the OldList
+				for (Iterator<FDCustomerListItem> i = sourceCCList.getLineItems().iterator(); i.hasNext();)
 				{						
 					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 					item.setLastPurchase(new Date());
@@ -273,8 +319,8 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 			else if(sourceCCList instanceof FDCustomerRecipeList && targetCCList instanceof FDCustomerRecipeList)
 			{
 				FDCustomerRecipeList targerList=(FDCustomerRecipeList)targetCCList;
-				//	iterate through the new list and add indivisual Item to the OldList
-				for (Iterator i = sourceCCList.getLineItems().iterator(); i.hasNext();)
+				//	iterate through the new list and add individual Item to the OldList
+				for (Iterator<FDCustomerListItem> i = sourceCCList.getLineItems().iterator(); i.hasNext();)
 				{						
 					FDCustomerRecipeListLineItem item = (FDCustomerRecipeListLineItem) i.next();
 					item.setLastPurchase(new Date());
@@ -298,41 +344,45 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public FDCustomerCreatedList getCustomerCreatedList(FDIdentity identity,String ccListId) throws FDResourceException, RemoteException
+	public FDCustomerCreatedList getCustomerCreatedList(FDIdentity identity,String ccListId) throws FDResourceException
 	{
 		Connection conn = null;			
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 			FDCustomerCreatedList ccl = dao.getCustomerCreatedList(conn, identity,ccListId);
-			ccl.cleanList();
+			if ( ccl != null ) {
+				ccl.cleanList();
+			} else { 
+				LOGGER.warn ( "Customer list not found for id : " + ccListId + "; returning null.");
+			}
 			return ccl;
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-                    close(conn);
+			close(conn);
 		}			
 	}
 	
-	public String getListName(FDIdentity identity, EnumCustomerListType type, String ccListId) throws FDResourceException, RemoteException {
+	public String getListName(FDIdentity identity, String ccListId) throws FDResourceException {
 		Connection conn = null;			
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			return dao.getListName(conn, identity, type, ccListId);
+			return dao.getListName(conn, identity, ccListId);
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-                    close(conn);
+			close(conn);
 		}			
 	}
 	
-	public void renameCustomerCreatedList(FDIdentity identity, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException {
+	public void renameCustomerCreatedList(FDIdentity identity, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException {
 		Connection conn = null;			
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
-			if (dao.isCustomerCreatedList(conn, identity, newName)) throw new FDCustomerListExistsException();
+			if (dao.isCustomerList(conn, identity, EnumCustomerListType.CC_LIST, newName)) throw new FDCustomerListExistsException();
 			dao.renameCustomerCreatedList(conn, identity, oldName, newName);
 		}catch (FDCustomerListExistsException e) {
 			getSessionContext().setRollbackOnly();
@@ -340,11 +390,42 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} catch (SQLException e) {
 			throw new FDResourceException(e);
 		} finally {
-                    close(conn);
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after renameCustomerCreatedList", e);
+				}
+			}
 		}	
 	}
 	
-	public FDCustomerProductList getOrderDetails(String erpCustomerId, List skus) throws FDResourceException, RemoteException {
+	public void renameCustomerList(FDIdentity identity, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException {
+		Connection conn = null;			
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			if (type == null)
+				type = EnumCustomerListType.CC_LIST;
+			if (dao.isCustomerList(conn, identity, type, newName)) throw new FDCustomerListExistsException();
+			dao.renameCustomerList(conn, identity, type, oldName, newName);
+		}catch (FDCustomerListExistsException e) {
+			getSessionContext().setRollbackOnly();
+			throw e;
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after renameCustomerList", e);
+				}
+			}
+		}	
+	}
+	
+	public FDCustomerProductList getOrderDetails(String erpCustomerId, List<String> skus) throws FDResourceException {
 		Connection conn = null;			
 		try {
 			conn = getConnection();
@@ -357,5 +438,26 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		} finally {
                     close(conn);
 		}	
+	}
+
+
+	public FDStandingOrderList getStandingOrderList(FDIdentity identity, String soListId) throws FDResourceException
+	{
+		Connection conn = null;			
+		try {
+			conn = getConnection();
+			FDCustomerListDAO dao = new FDCustomerListDAO();
+			return dao.getStandingOrderList(conn, identity, soListId);
+		} catch (SQLException e) {
+			throw new FDResourceException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after getStandingOrderList", e);
+				}
+			}
+		}
 	}
 }

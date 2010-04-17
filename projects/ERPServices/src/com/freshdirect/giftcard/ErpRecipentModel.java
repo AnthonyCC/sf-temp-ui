@@ -1,6 +1,5 @@
 package com.freshdirect.giftcard;
 
-import com.freshdirect.framework.core.ModelSupport;
 
 public class ErpRecipentModel extends RecipientModel {
 

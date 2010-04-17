@@ -34,7 +34,7 @@ public class SessionImpressionLog {
 	private SessionImpressionLogHome getSessionImpressionLogHome() {
 		try {
 			return (SessionImpressionLogHome) serviceLocator.getRemoteHome(
-				SessionImpressionLogHome.JNDI_HOME, SessionImpressionLogHome.class);
+				SessionImpressionLogHome.JNDI_HOME);
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

@@ -1,11 +1,3 @@
-/*
- * $Workfile:ErpCustomerManagerSB.java$
- *
- * $Date:7/11/2003 6:37:16 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.customer.ejb;
 
 import java.rmi.RemoteException;
@@ -52,7 +44,6 @@ import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.OrderHistoryI;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.EnumPaymentMethodType;
 
@@ -87,7 +78,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public PrimaryKey placeOrder(
 		PrimaryKey erpCustomerPk,
 		ErpCreateOrderModel order,
-		Set usedPromotionCodes,
+		Set<String> usedPromotionCodes,
 		CustomerRatingI rating,
 		CrmAgentRole agentRole,
 		String dlvPassId,
@@ -120,7 +111,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     public void modifyOrder(
 		String saleId,
 		ErpModifyOrderModel order,
-		Set usedPromotionCodes,
+		Set<String> usedPromotionCodes,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
 		boolean sendToSap) throws ErpTransactionException, ErpFraudException, RemoteException;

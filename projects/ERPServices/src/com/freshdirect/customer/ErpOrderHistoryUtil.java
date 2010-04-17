@@ -262,7 +262,7 @@ public class ErpOrderHistoryUtil {
 		return amount;
 	}
 
-	public static Collection filterOrders(Collection erpSaleInfos, EnumSaleType saleType) {
+	public static Collection<ErpSaleInfo> filterOrders(Collection<ErpSaleInfo> erpSaleInfos, EnumSaleType saleType) {
 		
 		if(saleType==null) {
 			return erpSaleInfos;

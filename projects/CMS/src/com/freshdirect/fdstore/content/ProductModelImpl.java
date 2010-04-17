@@ -78,7 +78,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	private List skuModels = new ArrayList();
 	
-	private final List brandModels = new ArrayList();
+	private final List<BrandModel> brandModels = new ArrayList<BrandModel>();
 	
 	private final List weRecommendText = new ArrayList();
 
@@ -271,12 +271,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/** Getter for property brands.
 	 * @return List of BrandModels that are referenced by the  property brands.
 	 */
-	public List getBrands() {
+	public List<BrandModel> getBrands() {
 		ContentNodeModelUtil.refreshModels(this, "brands", brandModels, false);
 
-		List newList = new ArrayList();
+		List<BrandModel> newList = new ArrayList<BrandModel>();
 		for (int i = 0; i < brandModels.size(); i++) {
-			BrandModel b = (BrandModel) brandModels.get(i);
+			BrandModel b = brandModels.get(i);
 			String str = b.getFullName();
 			if ((str != null) && !str.equals("")) {
 				newList.add(b);

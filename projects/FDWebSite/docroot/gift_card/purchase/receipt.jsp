@@ -17,6 +17,8 @@
 <%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
 <%@ page import="com.freshdirect.giftcard.*"%>
 <%@ page import="java.util.Calendar" %>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Locale" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -25,7 +27,7 @@
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/giftcard.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - User Name, Password, & Contact Info</tmpl:put>
     <tmpl:put name='content' direct='true'>
@@ -38,9 +40,6 @@ java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyIns
 %>
 <%
 
-
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-FDIdentity identity  = user.getIdentity();
 
 String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
@@ -78,7 +77,6 @@ int idx = 0;
             <TD WIDTH="10"><BR></TD>
             <TD WIDTH="280">
             <font class="space4pix"><br></font>
-            <FONT CLASS="text12">
      </TD>
         </TR>
         </TABLE>
@@ -169,7 +167,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
 			<td><div class="recipAmount">Amount</div></td>
 		</tr>
 			<%
-			ListIterator i = recipients.getRecipents().listIterator();
+			Iterator<RecipientModel> i = recipients.getRecipients().listIterator();
 			while(i.hasNext()) {
 				ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>

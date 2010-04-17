@@ -1,16 +1,10 @@
-/*
- * DlvServiceSelectionResult.java
- *
- * Created on May 12, 2003, 10:18 PM
- */
-
 package com.freshdirect.delivery;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.common.customer.EnumServiceType;
@@ -22,7 +16,9 @@ import com.freshdirect.common.customer.EnumServiceType;
  */
 public class DlvServiceSelectionResult implements Serializable {
 	
-	private HashMap serviceStatus = new HashMap();
+	private static final long	serialVersionUID	= 8634254710338888689L;
+	
+	private Map<EnumServiceType,EnumDeliveryStatus> serviceStatus = new HashMap<EnumServiceType,EnumDeliveryStatus>();
 	private EnumRestrictedAddressReason restrictionReason = EnumRestrictedAddressReason.NONE;
 
 	public void setRestrictionReason(EnumRestrictedAddressReason restrictionReason) {
@@ -46,14 +42,13 @@ public class DlvServiceSelectionResult implements Serializable {
 		return status != null ? status : EnumDeliveryStatus.DONOT_DELIVER ;
 	}
 	
-	public Set getAvailableServices(){
+	public Set<EnumServiceType> getAvailableServices(){
 		if(this.serviceStatus.isEmpty()){
-			return Collections.EMPTY_SET;
+			return Collections.<EnumServiceType>emptySet();
 		}
 		
-		Set s = new HashSet();
-		for(Iterator i = this.serviceStatus.keySet().iterator(); i.hasNext(); ){
-			EnumServiceType service = (EnumServiceType)i.next();
+		Set<EnumServiceType> s = new HashSet<EnumServiceType>();
+		for ( EnumServiceType service : serviceStatus.keySet() ) {
 			EnumDeliveryStatus status = this.getServiceStatus(service);
 			if(EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)){
 				s.add(service);

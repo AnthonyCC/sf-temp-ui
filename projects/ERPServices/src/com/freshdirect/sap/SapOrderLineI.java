@@ -16,6 +16,7 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.model.ErpInventoryModel;
 
 public interface SapOrderLineI extends Serializable {
 
@@ -80,7 +81,7 @@ public interface SapOrderLineI extends Serializable {
 	/**
 	 * Get selected variation-variation option pairs.
 	 */
-	public Map getOptions();
+	public Map<String,String> getOptions();
 
 	/**
 	 * Get optional orderline discount.
@@ -121,7 +122,7 @@ public interface SapOrderLineI extends Serializable {
 	 * 
 	 * @param inventories List of ErpInventoryModel 
 	 */
-	public void setInventories(List inventories);
+	public void setInventories(List<ErpInventoryModel> inventories);
 
 	/**
 	 * Get the inventory list for this material (after an ATP check).
@@ -130,7 +131,7 @@ public interface SapOrderLineI extends Serializable {
 	 *
 	 * @throws IllegalStateException if the ATP was not executed yet
 	 */
-	public List getInventories();
+	public List<ErpInventoryModel> getInventories();
 	
 	public double getFixedPrice();
 	

@@ -865,8 +865,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private FDCustomerManagerSB getFDCustomerManagerSB() {
 		try {
 			FDCustomerManagerHome home = (FDCustomerManagerHome) LOCATOR.getRemoteHome(
-				"java:comp/env/ejb/FDCustomerManager",
-				FDCustomerManagerHome.class);
+				"java:comp/env/ejb/FDCustomerManager");
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);
@@ -879,7 +878,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 	private PaymentSB getPaymentSB() {
 		try {
-			PaymentHome home = (PaymentHome)LOCATOR.getRemoteHome("java:comp/env/ejb/Payment", PaymentHome.class);
+			PaymentHome home = (PaymentHome)LOCATOR.getRemoteHome("java:comp/env/ejb/Payment");
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);
@@ -892,7 +891,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 	private PaymentGatewaySB getPaymentGatewaySB() {
 		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome(), PaymentGatewayHome.class);
+			PaymentGatewayHome home = (PaymentGatewayHome)LOCATOR.getRemoteHome(DlvProperties.getPaymentGatewayHome());
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);
@@ -905,7 +904,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	private GCGatewaySB getGCGatewaySB() {
 		try {
-			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway", GCGatewayHome.class);
+			GCGatewayHome home = (GCGatewayHome)LOCATOR.getRemoteHome("freshdirect.giftcard.Gateway");
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);
@@ -919,8 +918,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	private GiftCardManagerSB getGiftCardManagerSB() {
 		try {
 			GiftCardManagerHome home = (GiftCardManagerHome) LOCATOR.getRemoteHome(
-				"java:comp/env/ejb/GiftCardManager",
-				GiftCardManagerHome.class);
+				"java:comp/env/ejb/GiftCardManager");
 			return home.create();
 		} catch (NamingException e) {
 			throw new EJBException(e);

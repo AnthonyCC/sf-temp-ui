@@ -81,11 +81,11 @@
 			    if (sortField.equals("update")) comparator = FDCustomerCreatedList.getModificationDateComparator();
 			    else if (sortField.equals("item_count")) comparator = FDCustomerCreatedList.getItemCountComparator();
 			    else if (sortField.equals("name")) comparator = FDCustomerCreatedList.getNameComparator();
-			    TreeSet sorted = new TreeSet(comparator);
+			    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(comparator);
 			    sorted.addAll(lists);
 
                             for(Iterator I = sorted.iterator(); I.hasNext();) {
-                               FDCustomerCreatedList list = (FDCustomerCreatedList)I.next();
+                            	FDCustomerListInfo list = (FDCustomerListInfo)I.next();
 			       int n = list.getCount();
 %>
                             <TR>

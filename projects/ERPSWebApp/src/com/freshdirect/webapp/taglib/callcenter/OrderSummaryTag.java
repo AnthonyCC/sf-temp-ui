@@ -93,9 +93,10 @@ public class OrderSummaryTag extends com.freshdirect.framework.webapp.BodyTagSup
 		}
 
 		public String getLastModifiedBy() {
-			return EnumTransactionSource.CUSTOMER_REP.equals(order.getOrderSource("LAST_MODIFIED")) 
+			final EnumTransactionSource orderSource = order.getOrderSource("LAST_MODIFIED");
+			return EnumTransactionSource.CUSTOMER_REP.equals(orderSource) 
 			    ? (order.getTransactionInitiator()!=null ? order.getTransactionInitiator("LAST_MODIFIED") : "CSR" )
-			    : (EnumTransactionSource.SYSTEM).equals(order.getOrderSource("LAST_MODIFIED")) 
+			    : (EnumTransactionSource.SYSTEM).equals(orderSource) 
 			       ? "SYSTEM" 
 			       : "CUSTOMER";
 		}

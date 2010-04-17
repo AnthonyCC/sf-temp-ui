@@ -13,27 +13,29 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 
 public class FDOrderHistory extends ErpOrderHistory {
 
-	private final List fdOrderInfos;
+	private static final long	serialVersionUID	= -4179034756408883935L;
+	
+	private final List<FDOrderInfoAdapter> fdOrderInfos;
 
-	public FDOrderHistory(Collection erpSaleInfos) {
+	public FDOrderHistory(Collection<ErpSaleInfo> erpSaleInfos) {
 		super(erpSaleInfos);
-		this.fdOrderInfos = new ArrayList(erpSaleInfos.size());
-		for (Iterator i = erpSaleInfos.iterator(); i.hasNext();) {
-			fdOrderInfos.add(new FDOrderInfoAdapter((ErpSaleInfo) i.next()));
+		this.fdOrderInfos = new ArrayList<FDOrderInfoAdapter>(erpSaleInfos.size());
+		for ( ErpSaleInfo esi : erpSaleInfos ) {
+			fdOrderInfos.add( new FDOrderInfoAdapter( esi ) );
 		}
 
 	}
 
 	/** @return Collection of FDOrderInfoI */
-	public Collection getFDOrderInfos() {
+	public Collection<FDOrderInfoAdapter> getFDOrderInfos() {
 		return fdOrderInfos;
 	}
 
-	public Collection getFDOrderInfos(EnumSaleType saleType) {
+	public Collection<FDOrderInfoI> getFDOrderInfos(EnumSaleType saleType) {
 
-		List l = new ArrayList();
-		for (Iterator i = this.fdOrderInfos.iterator(); i.hasNext();) {
-			FDOrderInfoI o = (FDOrderInfoI) i.next();
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
+		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = i.next();
 			if(saleType.equals(o.getSaleType())) {
 				l.add(o);
 			}
@@ -43,10 +45,10 @@ public class FDOrderHistory extends ErpOrderHistory {
 	/**
 	 * @return Collection of FDOrderInfoI where status allows creating make-good
 	 */
-	public Collection getMakeGoodReferenceInfos() {
-		List l = new ArrayList();
-		for (Iterator i = this.fdOrderInfos.iterator(); i.hasNext();) {
-			FDOrderInfoI o = (FDOrderInfoI) i.next();
+	public Collection<FDOrderInfoI> getMakeGoodReferenceInfos() {
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
+		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = i.next();
 			EnumSaleStatus s = o.getOrderStatus();
 			if (EnumSaleStatus.NEW.equals(s)
 				|| EnumSaleStatus.SUBMITTED.equals(s)
@@ -63,10 +65,10 @@ public class FDOrderHistory extends ErpOrderHistory {
 	 * This method returns a list of orders that used the given delivery pass.
 	 * @ return Collection of FDOrderInfoI.
 	 */
-	public Collection getDlvPassOrderInfos(String dlvPassId) {
-		List l = new ArrayList();
-		for (Iterator i = this.fdOrderInfos.iterator(); i.hasNext();) {
-			FDOrderInfoI o = (FDOrderInfoI) i.next();
+	public Collection<FDOrderInfoI> getDlvPassOrderInfos(String dlvPassId) {
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
+		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = i.next();
 			if (o.getDlvPassId() != null && o.getDlvPassId().equals(dlvPassId)) {
 				//This Order used the delivery pass. So add it to the list.
 				l.add(o);				

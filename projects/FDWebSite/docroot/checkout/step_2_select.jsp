@@ -1,3 +1,6 @@
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.Iterator"%>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.customer.ErpAddressModel'%>
@@ -12,7 +15,7 @@
 <%@ page import="com.freshdirect.delivery.EnumReservationType"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%@ page import="com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine" %>
-
+<%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ page import='java.net.URLEncoder'%>
@@ -43,41 +46,63 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
  //System.out.println("validRange:"+validRange);
 
 %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
     String successPage = "/checkout/step_3_choose.jsp";
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 	if (user.isChefsTable()) timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 
 	FDCartModel cart = user.getShoppingCart();
-	ErpAddressModel address = cart.getDeliveryAddress();
-	FDReservation rsv = user.getReservation();
-	String preReserveSlotId = "";
-	String hamptonsDepotCode ="HAM";
+
+	// export
+	ErpAddressModel address;
+	// export
+	FDReservation rsv;
+
 	String depotCode=null;
+	final String HAMPTONS_DEPOT_CODE ="HAM";
+
+	// export
 	boolean hasPreReserved = false;
-	if(rsv != null){
-		preReserveSlotId = rsv.getTimeslotId();
-		hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
-	}
+	// export
+	String preReserveSlotId = "";
+	
+	//export
+	FDStandingOrder currentStandingOrder = null;
+
 	String timeSlotId = request.getParameter("deliveryTimeslotId");
-	if (cart.getDeliveryReservation() != null) {
-		rsv = cart.getDeliveryReservation();
-	}
-	if (timeSlotId == null) {
+	if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
+		rsv = user.getReservation();
+
+		address = cart.getDeliveryAddress();
+
 		if(rsv != null){
-			timeSlotId = rsv.getTimeslotId();
-		}else{
-			timeSlotId = "";
+			preReserveSlotId = rsv.getTimeslotId();
+			hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
 		}
-	}
-	
-	if(cart instanceof FDModifyCartModel && rsv != null && !EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && "".equals(preReserveSlotId) && !hasPreReserved){
-		preReserveSlotId = rsv.getTimeslotId();
-		hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
-	}
-	
+		if (cart.getDeliveryReservation() != null) {
+			rsv = cart.getDeliveryReservation();
+		}
+		if (timeSlotId == null) {
+			if(rsv != null){
+				timeSlotId = rsv.getTimeslotId();
+			}else{
+				timeSlotId = "";
+			}
+		}
+		
+		if(cart instanceof FDModifyCartModel && rsv != null && !EnumReservationType.STANDARD_RESERVATION.equals(rsv.getReservationType()) && "".equals(preReserveSlotId) && !hasPreReserved){
+			preReserveSlotId = rsv.getTimeslotId();
+			hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
+		}
+	} else { //if ( EnumCheckoutMode.MODIFY_SO == user.getCheckoutMode() ) {
+		currentStandingOrder = user.getCurrentStandingOrder();
+		timeSlotId = "";
+		address = currentStandingOrder.getDeliveryAddress();
+		rsv = null;
+		/* STANDING ORDER - UNFINISHED CODE */
+	} 
+
 	boolean isDepotAddress = false;
 	ErpDepotAddressModel depotAddress = null;
 	
@@ -87,14 +112,18 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		depotAddress =  (ErpDepotAddressModel) address;
 		depotCode = com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId(depotAddress.getLocationId()).getDepotCode();
 	}
-	double cartTotal = cart.getTotal();
-    List payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
+
+	final double cartTotal = cart.getTotal();
+
+    List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
     if (payMethods==null || payMethods.size()==0) {
         successPage = "/checkout/step_3_card_add.jsp?proceed=true";
     }
     successPage = "/checkout/step_2_check.jsp?successPage="+URLEncoder.encode(successPage);
 
+    // ??
 	String zoneId = cart.getDeliveryZone();
+
 	if (zoneId==null ) {
 		//redirect back to the view cart page 
 		response.sendRedirect(response.encodeRedirectURL("/checkout/view_cart.jsp?trk=chkplc"));
@@ -144,7 +173,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 %>
 <fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>">
 <%
-	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
+	List<FDTimeslotList> timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	List messages = DeliveryTimeSlotResult.getMessages();
@@ -152,7 +181,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 	boolean isKosherSlotAvailable = false;
 	boolean hasCapacity = true;
-	for(Iterator i = timeslotList.iterator(); i.hasNext(); ){
+	for(Iterator<FDTimeslotList> i = timeslotList.iterator(); i.hasNext(); ){
 		FDTimeslotList lst = (FDTimeslotList)i.next();
 		isKosherSlotAvailable = isKosherSlotAvailable || lst.isKosherSlotAvailable(restrictions);
 		hasCapacity = hasCapacity || lst.hasCapacity();
@@ -168,13 +197,12 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	}
 %>
 
-<script>
-var zonePromoString=""; 
+<script type="text/javascript">
 var zonePromoEnabled=false;
-<%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>"; 
+<% if (zonePromoAmount>0)  { %>
+zonePromoString=<%=zonePromoString %>'; 
 zonePromoEnabled=true;
-<%} %>
+<% } %>
 </script>
 
 
@@ -415,6 +443,29 @@ if (errorMsg!=null) {%>
 		//System.out.println("=====================showAdvanceOrderBand:"+showAdvanceOrderBand);
   }
 %>
+
+<%
+	// calculate which timeslot to select when modifying standing orders
+	if ( currentStandingOrder != null ) {
+		//out.print( "SO=" + currentStandingOrder + "<br/>");
+		DeliveryInterval deliveryInterval;
+		try { 
+			deliveryInterval = new DeliveryInterval( currentStandingOrder );
+		} catch ( IllegalArgumentException e ) {
+			deliveryInterval = null;
+		}
+		if ( deliveryInterval != null && deliveryInterval.isWithinDeliveryWindow() ) {
+			for ( FDTimeslot tsl : timeslots.getTimeslotsFlat() ) {
+				if ( deliveryInterval.checkTimeslot( tsl ) ) {
+					timeSlotId = tsl.getTimeslotId();
+					//out.print("timeslot has been selected :" + tsl +"<br/>");
+					break;
+				}
+			}
+		}
+	}
+%>
+
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 	<%@ include file="/shared/includes/delivery/i_restriction_band.jspf"%>
 	<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
@@ -488,7 +539,7 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 
 <%	if (!isDepotAddress && "SUFFOLK".equalsIgnoreCase(address.getAddressInfo().getCounty()) ){  	%>
 	<fd:IncludeMedia name="/media/editorial/hamptons/timeslot_hamptons_fri_sat.html" />
-<%	} else if (isDepotAddress && hamptonsDepotCode.equalsIgnoreCase(depotCode)){ %>
+<%	} else if (isDepotAddress && HAMPTONS_DEPOT_CODE.equalsIgnoreCase(depotCode)){ %>
 	<fd:IncludeMedia name="/media/editorial/hamptons/timeslot_hamptons_wkday.html" />
 <%	} %>
 			<br><br></td></tr>

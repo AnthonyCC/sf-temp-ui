@@ -1,45 +1,41 @@
-/*
- * EnumDeliveryType.java
- *
- * Created on November 15, 2001, 10:38 PM
- */
-
 package com.freshdirect.customer;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.freshdirect.common.customer.EnumServiceType;
 
 /**
  *
  * @author  jmccarter
  * @version
  */
-public class EnumDeliveryType implements java.io.Serializable {
+public class EnumDeliveryType implements Serializable {
 
-	private final static Map DELIVERY_TYPE_MAP = new HashMap();
+	private static final long	serialVersionUID	= -1948272245997890928L;
 
-	public final static EnumDeliveryType HOME = new EnumDeliveryType(0, "H", "Home Delivery", "003");
-	public final static EnumDeliveryType DEPOT = new EnumDeliveryType(1, "D", "Depot Delivery", "002");
-	public final static EnumDeliveryType PICKUP = new EnumDeliveryType(2, "P", "Pickup", "002");
-	public final static EnumDeliveryType CORPORATE = new EnumDeliveryType(3, "C", "Corporate Delivery", "004");
-	//Added for Gift cards.
-	public static final EnumDeliveryType GIFT_CARD_PERSONAL = new EnumDeliveryType(4, "GP", "Personal Delivery", "003");
-	public static final EnumDeliveryType GIFT_CARD_CORPORATE = new EnumDeliveryType(5, "GC", "Professional Delivery", "004");
+	private final static Map<String,EnumDeliveryType> DELIVERY_TYPE_MAP = new HashMap<String,EnumDeliveryType>();
 	
-	//Added for Robin Hood - Donation..
-	public static final EnumDeliveryType DONATION_INDIVIDUAL = new EnumDeliveryType(6, "DI", "Personal Delivery", "003");
-	public static final EnumDeliveryType DONATION_BUSINESS = new EnumDeliveryType(7, "DB", "Professional Delivery", "004");
+	private static int idCounter = 0;
 
+	public final static EnumDeliveryType	HOME				= new EnumDeliveryType( "H", "Home Delivery", "003" );
+	public final static EnumDeliveryType	DEPOT				= new EnumDeliveryType( "D", "Depot Delivery", "002" );
+	public final static EnumDeliveryType	PICKUP				= new EnumDeliveryType( "P", "Pickup", "002" );
+	public final static EnumDeliveryType	CORPORATE			= new EnumDeliveryType( "C", "Corporate Delivery", "004" );
+	// Added for Gift cards.
+	public static final EnumDeliveryType	GIFT_CARD_PERSONAL	= new EnumDeliveryType( "GP", "Personal Delivery", "003" );
+	public static final EnumDeliveryType	GIFT_CARD_CORPORATE	= new EnumDeliveryType( "GC", "Professional Delivery", "004" );
+
+	// Added for Robin Hood - Donation..
+	public static final EnumDeliveryType	DONATION_INDIVIDUAL	= new EnumDeliveryType( "DI", "Personal Delivery", "003" );
+	public static final EnumDeliveryType	DONATION_BUSINESS	= new EnumDeliveryType( "DB", "Professional Delivery", "004" );
 
 	private final int id;
 	private final String code;
 	private final String name;
 	private final String deliveryModel;
 
-	private EnumDeliveryType(int id, String code, String name, String deliveryModel) {
-		this.id = id;
+	private EnumDeliveryType(String code, String name, String deliveryModel) {
+		this.id = idCounter++;
 		this.code = code;
 		this.name = name;
 		this.deliveryModel = deliveryModel;
@@ -64,13 +60,11 @@ public class EnumDeliveryType implements java.io.Serializable {
 	}
 
 	public static EnumDeliveryType getDeliveryType(String code) {
-		return (EnumDeliveryType) DELIVERY_TYPE_MAP.get(code);
+		return DELIVERY_TYPE_MAP.get(code);
 	}
 
 	public boolean equals(Object o) {
-		if (o == null)
-			return false;
-		if (o instanceof EnumDeliveryType) {
+		if ( o != null && o instanceof EnumDeliveryType ) {
 			return this.id == ((EnumDeliveryType) o).id;
 		}
 		return false;

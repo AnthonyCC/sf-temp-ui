@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -26,7 +27,7 @@ public class ContentNodeModelUtil {
 	
 	private final static boolean STRICT_MODE = false;
 
-	static HashMap CONTENT_TO_TYPE_MAP = new HashMap();
+	static Map<String,String> CONTENT_TO_TYPE_MAP = new HashMap<String,String>();
 
 	static {
 		CONTENT_TO_TYPE_MAP.put("Store", ContentNodeModel.TYPE_STORE);
@@ -61,7 +62,7 @@ public class ContentNodeModelUtil {
 		CONTENT_TO_TYPE_MAP.put("FAQ", ContentNodeModel.TYPE_FAQ);
 	}
 
-	public static LinkedHashMap TYPE_MODEL_MAP = new LinkedHashMap();
+	public static LinkedHashMap<String,Class<?>> TYPE_MODEL_MAP = new LinkedHashMap<String,Class<?>>();
 
 	static {
 		TYPE_MODEL_MAP.put("Sku", SkuModel.class);

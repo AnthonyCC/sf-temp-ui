@@ -1,32 +1,34 @@
-<%@ page import="java.util.List"
-%><%@ page import="java.util.ArrayList"
-%><%@ page import="java.util.Iterator"
-%><%@ page import="com.freshdirect.webapp.util.FDURLUtil"
-%><%@ page import="com.freshdirect.fdstore.customer.FDProductSelectionI"
-%><%@ page import="com.freshdirect.fdstore.customer.FDProductSelection"
-%><%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"
-%><%@ page import="com.freshdirect.fdstore.customer.FDInvalidConfigurationException"
-%><%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"
-%><%@ page import="com.freshdirect.fdstore.content.RecipeSection"
-%><%@ page import="com.freshdirect.fdstore.content.ConfiguredProduct"
-%><%@ page import="com.freshdirect.fdstore.content.ContentFactory"
-%><%@ page import="com.freshdirect.fdstore.content.ProductModel"
-%><%@ page import="com.freshdirect.fdstore.content.MediaI"
-%><%@ page import="com.freshdirect.fdstore.content.Image"
-%><%@ page import="com.freshdirect.fdstore.content.RecipeSource"
-%><%@ page import="com.freshdirect.fdstore.content.RecipeAuthor"
-%><%@ page import="com.freshdirect.fdstore.FDProductInfo"
-%><%@ page import="com.freshdirect.fdstore.FDSkuNotFoundException"
-%><%@ page import="com.freshdirect.fdstore.FDResourceException"
-%><%@ page import="com.freshdirect.fdstore.FDCachedFactory"
-%><%@ page import="com.freshdirect.fdstore.FDConfigurableI"
-%><%@ page import="com.freshdirect.fdstore.FDSku"
-%><%@ page import="com.freshdirect.fdstore.FDProduct"
-%><%@ page import="com.freshdirect.framework.webapp.ActionError"
-%><%@ page import="com.freshdirect.webapp.util.JspMethods"
-%><%@ page import='com.freshdirect.fdstore.customer.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*' 
-%><%--
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Set"%>
+<%@ page import="java.util.Collection"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDProductSelectionI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDProductSelection"%>
+<%@ page import="com.freshdirect.fdstore.customer.OrderLineUtil"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDInvalidConfigurationException"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSection"%>
+<%@ page import="com.freshdirect.fdstore.content.ConfiguredProduct"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSource"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeAuthor"%>
+<%@ page import="com.freshdirect.fdstore.FDProductInfo"%>
+<%@ page import="com.freshdirect.fdstore.FDSkuNotFoundException"%>
+<%@ page import="com.freshdirect.fdstore.FDResourceException"%>
+<%@ page import="com.freshdirect.fdstore.FDCachedFactory"%>
+<%@ page import="com.freshdirect.fdstore.FDConfigurableI"%>
+<%@ page import="com.freshdirect.fdstore.FDSku"%>
+<%@ page import="com.freshdirect.fdstore.FDProduct"%>
+<%@ page import="com.freshdirect.framework.webapp.ActionError"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import='com.freshdirect.fdstore.customer.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%--
 -- This includes paints the recipe body and bottom (no side navs)
 -- Expects the host page to define the following variables:
     RecipeVariant   variant;
@@ -108,6 +110,7 @@
 		authorNames.append( ((RecipeAuthor)authors.get(i)).getName());
 	}
 %>
+
 <table width="550" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
 	 	<td colspan="3">
@@ -306,7 +309,7 @@ span.selectedRecipeVariant {
         <td align="center" style="padding: 0px 0px 10px 0px;">
 <%
 // render pricing script
-Set skus = variant.getDistinctSkus();
+Set<SkuModel> skus = variant.getDistinctSkus();
 %>
 <%@ include file="/shared/includes/product/i_pricing_script.jspf" %>
 

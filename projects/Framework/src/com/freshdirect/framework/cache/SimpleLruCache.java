@@ -9,9 +9,9 @@ import com.freshdirect.framework.util.TimedLruCache;
  * Basic {@link com.freshdirect.framework.cache.CacheI} implementation
  * using a synchronized HashMap. Objects never automatically expire.
  */
-public class SimpleLruCache implements CacheI {
+public class SimpleLruCache<K extends Serializable,V> implements CacheI<K,V> {
 
-	private LruCache cache = null;
+	private LruCache<K,V> cache = null;
 
 	private int timeout;
 	
@@ -22,30 +22,30 @@ public class SimpleLruCache implements CacheI {
 	public SimpleLruCache() {
 	}
 	
-	private synchronized LruCache getCache() {
+	private synchronized LruCache<K,V> getCache() {
 		if (cache == null) {
 			cache = createCacheInstance();
 		}
 		return cache;
 	}
 	
-	private LruCache createCacheInstance() {
+	private LruCache<K,V> createCacheInstance() {
 		if (getTimeout() <= 0) {
-			return new LruCache(getCapacity());
+			return new LruCache<K,V>(getCapacity());
 		} else {
-			return new TimedLruCache(getCapacity(), getTimeout()*1000); // Timeout has to be passed in milliseconds. 
+			return new TimedLruCache<K,V>(getCapacity(), getTimeout()*1000); // Timeout has to be passed in milliseconds. 
 		}
 	}
 
-	public Object get(Serializable key) {
+	public V get(K key) {
 		return getCache().get(key);
 	}
 
-	public void put(Serializable key, Object object) {
+	public void put(K key, V object) {
 		getCache().put(key, object);
 	}
 
-	public void remove(Serializable key) {
+	public void remove(K key) {
 		getCache().remove(key);
 	}
 

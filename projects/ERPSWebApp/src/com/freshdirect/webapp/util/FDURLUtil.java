@@ -21,11 +21,13 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.lists.CclUtils;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.webapp.taglib.smartstore.Impression;
-
-
 
 
 /**
@@ -35,9 +37,13 @@ import com.freshdirect.webapp.taglib.smartstore.Impression;
  *
  */
 public class FDURLUtil {
+	
 	public static final String RECIPE_PAGE_BASE			= "/recipe.jsp";
 	public static final String RECIPE_PAGE_BASE_CRM		= "/order/recipe.jsp";
 
+	public static final String STANDING_ORDER_DETAIL_PAGE	= "/quickshop/so_details.jsp";
+	public static final String STANDING_ORDER_MAIN_PAGE		= "/quickshop/standing_orders.jsp";
+	
 	public static String safeURLEncode(String str) {
 		try {
 			return URLEncoder.encode(str, "UTF-8");
@@ -54,7 +60,6 @@ public class FDURLUtil {
 
 	
 	public static String getProductURI(ProductModel productNode, Variant variant) {
-		// FIXME: later variant will have site feature attribute as well
 		return FDURLUtil.getProductURI(productNode,
 				variant.getSiteFeature().getName().toLowerCase(),
 				variant.getId());
@@ -238,7 +243,7 @@ public class FDURLUtil {
 	//   see in i_configured_product.jspf
 	public static String getConfiguredProductURI(ConfiguredProduct productNode, String trackingCode, FDConfigurableI config) {
 		ProductModel actProd = productNode.getProduct();
-		Map cfgOptions = config.getOptions();
+		Map<String,String> cfgOptions = config.getOptions();
 		
 		StringBuffer uri = new StringBuffer();
 		
@@ -257,9 +262,8 @@ public class FDURLUtil {
 
 		// append configuration
 		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "quantity=").append(config.getQuantity()).append(ProductDisplayUtil.URL_PARAM_SEP + "salesUnit=").append(config.getSalesUnit());
-    	for(Iterator optItr = cfgOptions.keySet().iterator(); optItr.hasNext();) {
-    		String optionName = (String)optItr.next();
-    		String optionValue = (String)cfgOptions.get(optionName);
+    	for( String optionName : cfgOptions.keySet() ) {
+    		String optionValue = cfgOptions.get(optionName);
     		uri.append(ProductDisplayUtil.URL_PARAM_SEP).append(optionName).append("=").append(optionValue);
     	}
 		return uri.toString();
@@ -322,8 +326,8 @@ public class FDURLUtil {
 	 * @param suffix target key suffix
 	 * @return Extracted parameters
 	 */
-	private static Map collectCommonParameters(Map params, String suffix) {
-		Map collectedParams = new HashMap();
+	private static Map<String, String> collectCommonParameters(Map<String,String[]> params, String suffix) {
+		Map<String, String> collectedParams = new HashMap<String, String>();
 
 		if (suffix == null) {
 			suffix = "";
@@ -331,31 +335,31 @@ public class FDURLUtil {
 
 		// tracking code 
 	    if (params.get("trk") != null) {
-	    	collectedParams.put("trk"+suffix, ((String[])params.get("trk"))[0]);
+	    	collectedParams.put("trk"+suffix, params.get("trk")[0]);
 			
 	    	// additional DYF parameter
 	    	if (params.get("variant") != null) {
-	    		collectedParams.put("variant"+suffix, ((String[])params.get("variant"))[0]);
+	    		collectedParams.put("variant"+suffix, params.get("variant")[0]);
 	    	}
 
 	    	if (params.get("ymalSetId") != null) {
-	    		collectedParams.put("ymalSetId"+suffix, ((String[])params.get("ymalSetId"))[0]);
+	    		collectedParams.put("ymalSetId"+suffix, params.get("ymalSetId")[0]);
 	    	}
 
 	    	if (params.get("originatingProductId") != null) {
-	    		collectedParams.put("originatingProductId"+suffix, ((String[])params.get("originatingProductId"))[0]);
+	    		collectedParams.put("originatingProductId"+suffix, params.get("originatingProductId")[0]);
 	    	}
 
 	    	// Smart Search parameters
 	    	if (params.get("trkd") != null) {
-	    		collectedParams.put("trkd"+suffix, ((String[])params.get("trkd"))[0]);
+	    		collectedParams.put("trkd"+suffix, params.get("trkd")[0]);
 	    		if (params.get("rank")!=null) {
-	    			collectedParams.put("rank"+suffix, ((String[])params.get("rank"))[0]);
+	    			collectedParams.put("rank"+suffix, params.get("rank")[0]);
 	    		}
 	    	}
 	    }
 	    if (params.get(ProductDisplayUtil.IMPRESSION_ID) != null) {
-	        collectedParams.put(ProductDisplayUtil.IMPRESSION_ID, ((String[])params.get(ProductDisplayUtil.IMPRESSION_ID))[0]);
+	        collectedParams.put(ProductDisplayUtil.IMPRESSION_ID, params.get(ProductDisplayUtil.IMPRESSION_ID)[0]);
 	    }
 	    return collectedParams;
 	}
@@ -368,20 +372,18 @@ public class FDURLUtil {
 	 * @param buf<StringBuffer> Buffer that will have parameters
 	 * @param params Request parameters
 	 */
-	public static void appendCommonParameters(StringBuffer buf, Map params ) {
-		Map _p = collectCommonParameters(params, null);
+	public static void appendCommonParameters(StringBuffer buf, Map<String,String[]> params ) {
+		Map<String, String> _p = collectCommonParameters(params, null);
 
-		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
-			Map.Entry e = (Map.Entry) it.next();
+		for ( Map.Entry<String,String> e : _p.entrySet() ) {
 	        buf.append("&"+e.getKey()+"=" + e.getValue());
 		}
 	}
 
-	public static String getHiddenCommonParameters(Map params, String suffix) {
-		Map _p = collectCommonParameters(params, suffix);
+	public static String getHiddenCommonParameters(Map<String,String[]> params, String suffix) {
+		Map<String, String> _p = collectCommonParameters(params, suffix);
 		StringWriter out = new StringWriter();
-		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
-			Map.Entry e = (Map.Entry) it.next();
+		for ( Map.Entry<String,String> e : _p.entrySet() ) {
 			appendHiddenField(out, e.getKey().toString(), e.getValue().toString());
 		}
 		return out.toString();
@@ -394,10 +396,9 @@ public class FDURLUtil {
 	 * @param params
 	 * @param suffix
 	 */
-	public static void appendCommonParameters(JspWriter out, Map params, String suffix) {
-		Map _p = collectCommonParameters(params, suffix);
-		for (Iterator it=_p.entrySet().iterator(); it.hasNext();) {
-			Map.Entry e = (Map.Entry) it.next();
+	public static void appendCommonParameters(JspWriter out, Map<String,String[]> params, String suffix) {
+		Map<String, String> _p = collectCommonParameters(params, suffix);
+		for ( Map.Entry<String,String> e : _p.entrySet() ) {
 	        appendHiddenField(out, e.getKey().toString(), e.getValue().toString());
 		}
 	}
@@ -529,5 +530,104 @@ public class FDURLUtil {
             if (impressionId!=null) {
                 Impression.productClick(impressionId, trkId, trkdId);
             }
+	}
+
+
+	/**
+	 * Return URI to standing order page
+	 * 
+	 * @param so a {@link com.freshdirect.fdstore.standingorders.FDStandingOrder} instance
+	 * @param action Action name (can be null)
+	 * 
+	 * @return
+	 */
+	public static String getStandingOrderLandingPage(FDStandingOrder so, String action) {
+		StringBuffer uri = new StringBuffer();
+		uri.append(STANDING_ORDER_DETAIL_PAGE);
+		uri.append("?ccListId=" + so.getCustomerListId());
+		if (action != null) {
+			uri.append("&action="+action);
+		}
+		return uri.toString();
+	}
+
+	public static String getStandingOrderMainPage() {
+		StringBuffer uri = new StringBuffer();
+		uri.append(STANDING_ORDER_MAIN_PAGE);
+		return uri.toString();
+	}
+
+	/**
+	 * Provides link to line item modification page.
+	 * Example:
+	 * 
+	 * http://dev.freshdirect.com/quickshop/ccl_item_modify.jsp?skuCode=VAR0072429
+	 *  &catId=hmr_fresh
+	 *  &productId=var_ds_gt_risotto
+	 *  &action=CCL:ItemManipulate
+	 *  &ccListId=2153109849
+	 *  &lineId=2197096194
+	 *  &quantity=2
+	 *  &salesUnit=EA
+	 *  
+	 * @param servletRoot	e.g. "/quickshop/"
+	 * @param qc			QuickShop instance
+	 * @param orderId
+	 * @param orderLine
+	 * @param ccListIdStr	Customer list ID
+	 * @param hasDeptId
+	 * @param qsDeptId
+	 * @return
+	 */
+	public static String getQuickShopItemModifyPage(String servletRoot, QuickCart qc, String orderId, FDProductSelectionI orderLine, String ccListIdStr, boolean hasDeptId, String qsDeptId) {
+	    final ProductModel productNode = orderLine.lookupProduct();
+	    
+	    
+	    StringBuffer qsLink = new StringBuffer();
+
+	    String cartType = qc.getProductType();
+	    final boolean isCCLorSO = QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_SO.equals(cartType);
+	    
+		if (isCCLorSO) {
+		   qsLink.append(servletRoot);
+		   qsLink.append("/ccl_item_modify.jsp");
+		} else  {
+		   qsLink.append(servletRoot);
+		   qsLink.append("/item_modify.jsp");
+		}
+
+		qsLink.append("?skuCode=").append( orderLine.getSkuCode() );
+		qsLink.append("&catId=").append( productNode.getParentNode() );
+		qsLink.append("&productId=").append( productNode );
+
+		// specify action - needed for FDShoppingCartController
+		if (isCCLorSO) {
+			qsLink.append("&action=CCL:ItemManipulate");
+			qsLink.append("&qcType="+cartType);
+		}
+			
+		if (orderId!=null)
+			qsLink.append("&orderId=").append( orderId );
+		
+		if (ccListIdStr != null)
+			qsLink.append('&').append(CclUtils.CC_LIST_ID).append('=').append(ccListIdStr);
+
+		if (hasDeptId)
+			qsLink.append("&qsDeptId=" + qsDeptId);
+
+		// list configuration
+		for (Iterator<Map.Entry<String,String>> i=orderLine.getOptions().entrySet().iterator(); i.hasNext(); ) {
+			Map.Entry<String,String> entry = i.next();
+			qsLink.append("&").append( entry.getKey() ).append("=").append( entry.getValue() );
+		}
+
+		if (orderLine.getRecipeSourceId() != null)
+			qsLink.append("&recipeId=").append( orderLine.getRecipeSourceId() );
+
+		if (isCCLorSO)
+			qsLink.append("&lineId=").append(orderLine.getCustomerListLineId());
+
+		
+		return qsLink.toString();
 	}
 }

@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
+<%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -11,6 +12,7 @@
 
 <%! final java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%! final java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
+
 <fd:CheckLoginStatus id="user" />
 <%
 //--------OAS Page Variables-----------------------
@@ -88,7 +90,7 @@ StringBuffer buffer = new StringBuffer(
     //Reload the DP status from Database to make the session and DB are in sync.
     user.updateDlvPassInfo();
     //TODO - Reset the DCPD eligiblity map to re-calculate the promo if in case promotion was modified.
-   user.getDCPDPromoProductCache().clear();
+	user.getDCPDPromoProductCache().clear();
 
 %>
 

@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import com.freshdirect.cms.ContentKey;
 
 public class RecipeSection extends ContentNodeModelImpl {
 
-	private final List ingredients = new ArrayList();
+	private final List<ConfiguredProduct> ingredients = new ArrayList<ConfiguredProduct>();
 
 	public RecipeSection(ContentKey cKey) {
 		super(cKey);
@@ -30,16 +29,15 @@ public class RecipeSection extends ContentNodeModelImpl {
 	 *  
 	 *  @return a list of ConfiguredProduct objects.
 	 */
-	public List getIngredients() {
+	public List<ConfiguredProduct> getIngredients() {
 		ContentNodeModelUtil.refreshModels(this, "ingredients", ingredients, false);
 		return Collections.unmodifiableList(ingredients);
 	}
 
 	/** @return Set of SkuModel */
-	public Set getDistinctSkus() {
-		Set skus = new HashSet();
-		for (Iterator si = getIngredients().iterator(); si.hasNext();) {
-			ConfiguredProduct cp = (ConfiguredProduct) si.next();
+	public Set<SkuModel> getDistinctSkus() {
+		Set<SkuModel> skus = new HashSet<SkuModel>();
+		for ( ConfiguredProduct cp : getIngredients() ) {
 			if (cp.isUnavailable()) {
 				continue;
 			}
@@ -59,8 +57,7 @@ public class RecipeSection extends ContentNodeModelImpl {
 	 *          false otherwise
 	 */
 	public boolean isAvailable() {
-		for (Iterator i = getIngredients().iterator(); i.hasNext();) {
-			ConfiguredProduct prod = (ConfiguredProduct) i.next();
+		for ( ConfiguredProduct prod : getIngredients() ) {
 			if (prod.isUnavailable() && prod.isRequired()) {
 				return false;
 			}
@@ -76,8 +73,7 @@ public class RecipeSection extends ContentNodeModelImpl {
 	 *          are available, false otherwise.
 	 */
 	public boolean isAllAvailable() {
-		for (Iterator i = getIngredients().iterator(); i.hasNext();) {
-			ConfiguredProduct prod = (ConfiguredProduct) i.next();
+		for ( ConfiguredProduct prod : getIngredients() ) {
 			if (prod.isUnavailable()) {
 				return false;
 			}

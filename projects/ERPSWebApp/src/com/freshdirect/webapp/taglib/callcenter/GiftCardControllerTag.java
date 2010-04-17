@@ -373,7 +373,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
             			FDReservation reservation= UserUtil.getFDReservation(user.getIdentity().getErpCustomerPK(),null);
             			user.getGiftCart().setDeliveryReservation(reservation);
             			
-            			List repList = convertSavedToErpRecipienntModel(user.getRecipentList().getRecipents(),user.getIdentity().getErpCustomerPK());	
+            			List repList = convertSavedToErpRecipienntModel(user.getRecipientList().getRecipients(),user.getIdentity().getErpCustomerPK());	
             			
             		    try {
     						String saleId;
@@ -786,7 +786,7 @@ public class GiftCardControllerTag extends com.freshdirect.framework.webapp.Body
     
 	private static GiftCardManagerHome getGiftCardManagerHome() {
 		try {
-			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager", GiftCardManagerHome.class);
+			return (GiftCardManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.GiftCardManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

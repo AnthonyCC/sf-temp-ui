@@ -14,7 +14,7 @@
 <crm:GetFDUser id="user">
 <fd:AccountActivity activities='activities'>
 <%!
-private final static Map ACTIVITY_COMPARATORS = new HashMap();
+private final static Map<String,Comparator<ErpActivityRecord>> ACTIVITY_COMPARATORS = new HashMap<String,Comparator<ErpActivityRecord>>();
 static {
 	ACTIVITY_COMPARATORS.put("date", ErpActivityRecord.COMP_DATE);
 	ACTIVITY_COMPARATORS.put("activity", ErpActivityRecord.COMP_ACTIVITY);
@@ -25,7 +25,7 @@ static {
 <%
 JspTableSorter sort = new JspTableSorter(request);
 
-Comparator comp = (Comparator)ACTIVITY_COMPARATORS.get(sort.getSortBy());
+Comparator<ErpActivityRecord> comp = ACTIVITY_COMPARATORS.get(sort.getSortBy());
 if (comp == null) {
 	Collections.sort(activities, new ReverseComparator(ErpActivityRecord.COMP_DATE));
 } else {

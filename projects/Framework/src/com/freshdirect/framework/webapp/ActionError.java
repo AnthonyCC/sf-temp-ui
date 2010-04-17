@@ -1,19 +1,5 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001-2002 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.webapp;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
 public class ActionError {
     
     public final static String GENERIC = "genericError";

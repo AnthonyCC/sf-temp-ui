@@ -147,19 +147,4 @@ public class FDSessionBeanSupport extends SessionBeanSupport {
     protected ErpMonitorSB getErpMonitor() throws RemoteException, CreateException {
         return getErpMonitorHome().create();
     }
-    
-    
-
-    /**
-     * @param jndiHomeName
-     * @param className
-     * @return
-     * @throws NamingException
-     * @see com.freshdirect.framework.core.ServiceLocator#getRemoteHome(java.lang.String, java.lang.Class)
-     */
-    protected EJBHome getRemoteHome(String jndiHomeName, Class className) throws NamingException {
-        return LOCATOR.getRemoteHome(jndiHomeName, className);
-    }
-
-
 }

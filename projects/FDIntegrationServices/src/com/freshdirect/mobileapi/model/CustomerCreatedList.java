@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
+import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 
 /**
  * Wrapper for FDCustomerCreatedList 
@@ -65,7 +66,7 @@ public class CustomerCreatedList {
     }
 
     public List<CustomerProductListLineItem> getLineItems() {
-        return CustomerProductListLineItem.wrap(this.target.getLineItems());
+        return CustomerProductListLineItem.wrap((List<FDCustomerProductListLineItem>)(List)this.target.getLineItems());
     }
 
 }

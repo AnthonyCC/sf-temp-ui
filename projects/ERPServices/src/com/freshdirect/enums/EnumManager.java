@@ -54,7 +54,7 @@ public class EnumManager {
 	private EnumManagerSB getEnumManagerSB() {
 		try {
 			EnumManagerHome home =
-				(EnumManagerHome) this.serviceLocator.getRemoteHome("freshdirect.enums.EnumManager", EnumManagerHome.class);
+				(EnumManagerHome) this.serviceLocator.getRemoteHome("freshdirect.enums.EnumManager");
 			return home.create();
 		} catch (NamingException e) {
 			LOGGER.error(e);

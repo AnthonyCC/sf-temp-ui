@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import com.freshdirect.common.address.*;
@@ -180,6 +171,9 @@ public class ErpAddressModel extends ContactAddressModel {
 
 		// deliver to neighbor
 		return new BasicContactAddressI() {
+			
+			private static final long	serialVersionUID	= 8009887805313335384L;
+
 			public String getFirstName() {
 				return ErpAddressModel.this.getAltFirstName();
 			}
@@ -222,7 +216,6 @@ public class ErpAddressModel extends ContactAddressModel {
 
 			// changes done for GeoCode 
 			public AddressInfo getAddressInfo() {
-				// TODO Auto-generated method stub
 				return ErpAddressModel.this.getAddressInfo();
 			}
 

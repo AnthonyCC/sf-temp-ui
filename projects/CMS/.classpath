@@ -2,9 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="src" path="/Framework"/>
-	<classpathentry exported="true" kind="src" path="/ERPServices"/>
-	<classpathentry exported="true" kind="src" path="/Delivery"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jgroups-2.2.7.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/slide/jakarta-slide-webdavlib-2.1.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jug-lgpl-2.0.0.jar"/>
@@ -14,5 +11,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-3.0.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-queries-3.0.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-spellchecker-3.0.0.jar"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Delivery"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

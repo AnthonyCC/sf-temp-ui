@@ -1,17 +1,6 @@
 /*jslint browser: true, evil: false, nomen: false, undef: false, white: false, widget: true */
 /* Customer Created Lists AJAX interface */                                                                                      
 
-/** Convenience class for creating CCL Popups 
- * 
- */
-var CCLPanel = function (el, titleImg, userConfig) {
-    if (arguments.length > 0) { 
-        CCLPanel.superclass.constructor.call(this, el, userConfig); 
-        this.titleImg = titleImg;
-    }             
-
-};
-
 var escapeHTML = function(str) {
    var buff = new Array();
    for(i=0; i< str.length; ++i) {
@@ -49,6 +38,44 @@ function flattenHash(obj, array) {
 }
 
 
+
+
+var CCLLinkTargetsClass  = function() {
+};
+
+CCLLinkTargetsClass.prototype.set_target = function(link,target) {
+    this.targets[link] = target;
+};
+
+CCLLinkTargetsClass.prototype.target = function(link) {
+    if (this.targets[link]) return this.targets[link];
+    window.alert("no target for link " + link);
+};
+
+var CCLLinkTargets = new CCLLinkTargetsClass();
+
+CCLLinkTargets.targets = {
+    visitLists      : "/quickshop/all_lists.jsp",
+    visitThisList   : "/quickshop/shop_from_list.jsp",
+    visitThisSOList : "/quickshop/so_list.jsp",
+    selection_check : "/api/check_selection.jsp",
+    goToQS          : "/quickshop/index.jsp",
+    modifyItem      : "/quickshop/ccl_item_modify.jsp"
+};
+
+
+
+/** Convenience class for creating CCL Popups 
+ * 
+ */
+var CCLPanel = function (el, titleImg, userConfig) {
+    if (arguments.length > 0) { 
+        CCLPanel.superclass.constructor.call(this, el, userConfig); 
+        this.titleImg = titleImg;
+    }             
+
+};
+
 YAHOO.extend(CCLPanel, YAHOO.widget.Panel); 
 
 CCLPanel.CSS_CCLPANEL = "ccl-panel";
@@ -65,7 +92,10 @@ CCLPanel.TITLE_IMAGES = {
     "list_delete_title.gif": { width: "84px", height: "12px" },
     "list_diag_help.gif": { width: "12px", height: "12px" },
     "list_diag_close.gif": { width: "12px", height: "12px" },
-    "shopping_lists_title.gif": { width: "118px", height: "12px" }
+    "shopping_lists_title.gif": { width: "118px", height: "12px" },
+    "so_chgfrq_title.gif": { width: "162px", height: "14px" },
+    "so_delorder_title.gif": { width: "108px", height: "14px" },
+    "so_shiftdlv_title.gif": { width: "119px", height: "13px" }
 };
 
 CCLPanel.TXT = {
@@ -110,7 +140,22 @@ CCLPanel.TXT = {
         style: "text11rbold" },
     "ChooseList" : { 
         txt:   "Please choose a list:", 
-        style: "text11" }
+        style: "text11" },
+    "DelOrder" : { 
+        txt:   "Yes, delete this standing order", 
+        style: "text11" },
+    "DelOrderTitle" : { 
+        txt:   "<div style=\"color: #660000; font-weight: bold; text-align: left;\">ARE YOU SURE YOU WANT TO DELETE THIS STANDING ORDER?</div>", 
+        style: "text12" },
+    "DelOrderBody" : {
+        txt:   "<ul><li>This list will be deleted<br><br></li><li>No further deliveries will be scheduled.</li></ul>", 
+        style: "text11" },
+    "DelOrderConfirm" : {
+        txt:   "<div style=\"color: #660000; font-weight: bold; text-align: left;\">STANDING ORDER HAS BEEN DELETED</div>", 
+        style: "text11" },
+    "SkipDelivery" : { 
+        txt:   "Your upcoming delivery is ", 
+        style: "text12" }
 };
 
 CCLPanel.LINKS = {
@@ -135,6 +180,9 @@ CCLPanel.LINKS = {
     "visitThisList" : { 
         txt:   "<u>View this list in Quickshop</u>", 
         style: "text11g" },
+    "visitThisSOList" : { 
+        txt:   "<u>View this list in Quickshop</u>", 
+        style: "text11g" },
     "deleteList" : { 
         txt:   "<u>Yes, delete this list.</u>", 
         style: "text11gbold" },
@@ -146,7 +194,7 @@ CCLPanel.LINKS = {
         style: "text11g" },
     "refresh" : {
         txt:   "<u>Refresh the page.</u>",
-    style: "text11g" },
+	    style: "text11g" },
     "signUp"   : { 
         txt:   "<u>Sign Up</u>", 
         style: "text11g ccl-panel-needlogintext",
@@ -156,30 +204,18 @@ CCLPanel.LINKS = {
         txt:   "<u>Log In</u>", 
         style: "text11g ccl-panel-needlogintext",
         prefixStyle: "text11 ccl-font-black",
-        prefix: "<b>Current Customer?</b> " }
+        prefix: "<b>Current Customer?</b> " },
+    "delOrderLink" : { 
+        txt:   "<u>Yes, delete this standing order</u>", 
+        style: "text11gbold" },
+    "skipDlvLink" : { 
+        txt:   "<u>Skip this delivery</u>", 
+        style: "text11gbold" },
+    "skipCancelLink" : { 
+        txt:   "<u>Cancel, do not skip</u>", 
+        style: "text11gbold" }
 };
 
-var CCLLinkTargetsClass  = function() {
-};
-
-CCLLinkTargetsClass.prototype.set_target = function(link,target) {
-    this.targets[link] = target;
-};
-
-CCLLinkTargetsClass.prototype.target = function(link) {
-    if (this.targets[link]) return this.targets[link];
-    window.alert("no target for link " + link);
-};
-
-var CCLLinkTargets = new CCLLinkTargetsClass();
-
-CCLLinkTargets.targets = {
-    visitLists      : "/quickshop/all_lists.jsp",
-    visitThisList   : "/quickshop/shop_from_list.jsp",
-    selection_check : "/api/check_selection.jsp",
-    goToQS          : "/quickshop/index.jsp",
-    modifyItem      : "/quickshop/ccl_item_modify.jsp"
-};
 
 CCLPanel.INPUT = {
     "nameInput" : { 
@@ -188,19 +224,6 @@ CCLPanel.INPUT = {
 };
 
 
-function preload_images() {
-    // create a hidden element in the DOM:
-    var preloadElement = document.createElement("div");
-    preloadElement.style.display = "none";
-    preloadElement.style.visibility = "hidden";
-    document.body.appendChild(preloadElement);
-    var cacheFunc = function() {
-        CCLPanel.TITLE_IMAGES[this._imgId].cachedImg = this;
-    };
-    for (id in CCLPanel.TITLE_IMAGES) {
-        preloadElement.appendChild(CCLPanel.createTitleImg(id, cacheFunc));
-    }
-}
 
 CCLPanel.prototype.init = function(el, userConfig) { 
     CCLPanel.superclass.init.call(this, el);  
@@ -322,7 +345,7 @@ CCLPanel.prototype.init = function(el, userConfig) {
         self.render(document.body);
         self.show();
         self.currentState = "_nojson_wait";
-    }
+    };
 
     // Standard state function: wait for help text from the server
     this.states["_nojson_wait"] = function(self, event_type, orig, args) {
@@ -467,7 +490,7 @@ CCLPanel.prototype.createPrefixedLink = function(id, withspan) {
     myPanel.sources[id] = anchor;
     
     return elem;    
-}
+};
 
 CCLPanel.prototype.createBulletedList = function() {
     // create unordered list
@@ -628,17 +651,22 @@ CCLPanel.prototype.createDropdownList = function(id, style, labels, values) {
 CCLPanel.prototype.computeDropDownMembers = function(result) {
     var labels = new Array();
     var values = new Array();
+    var types = new Object();
 
     for(i = 0; i< result.length; ++i) {
         var itemLabel = " (" +  result[i][1] + (result[i][1] == 1 ? " item" : " items") + ")" ;
         values[i] = result[i][0];
         labels[i] = values[i] + itemLabel;
+        // types[i] = result[i][2];
+        types[result[i][0]] = result[i][2];
     }
     values[result.length] = "__NEW__";
     labels[result.length] = "CREATE NEW LIST";
+    types[result.length] = ""; // no type
 
     this.dropdownLabels = labels;
     this.dropdownValues = values;
+    this.dropdownTypes = types;
 };
 
 CCLPanel.prototype.setupJSON = function(){
@@ -658,7 +686,7 @@ CCLPanel.prototype.setupJSON = function(){
         return false;
     }
     return true;
-}
+};
 
 // Start the State Machine
 CCLPanel.prototype.startSM = function() {
@@ -752,7 +780,7 @@ CCLPanel.prototype.handleTimeoutException = function() {
                 }
                 self.hide();
             }
-    }
+        };
     }
 };
 
@@ -903,6 +931,11 @@ CCLPanel.prototype.setContext = function(context) {
 };
 
 
+
+
+
+
+
 /** Main CCL interface entry point class
  * 
  */
@@ -912,8 +945,18 @@ var CCLClass = function() {
 
 
 
-
-CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contextAlign) {
+/**
+ * Creates a generic CCL panel
+ * 
+ * @param {Object} id			DOM ID
+ * @param {Object} titleImg		Title image
+ * @param {Object} context
+ * @param {Object} panelAlign	Panel alignment
+ * @param {Object} contextAlign	Context alignment
+ * @param {Object} bodyBuilder	Builder function that builds up the body content of the panel (optional)
+ * 
+ */
+CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contextAlign, bodyBuilder) {
 
     var textPanel = new CCLPanel(id, titleImg);
 
@@ -923,6 +966,25 @@ CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contex
         textPanel.contextAlign = contextAlign;
     }
 
+    /* Allow customized panel decorator when operation completed */
+    if (typeof(bodyBuilder) == 'function') {
+    	textPanel.builder = bodyBuilder;
+    } else {
+    	textPanel.builder = function(text) {
+	        this.makeBody(text,
+	            this.createLink("contShopping"),
+	            this.createLink("visitLists")
+	        );
+    	};
+    }
+
+    
+	/**
+	 * First state - draw panel
+	 * Next state: "shown"
+	 * 
+	 * @param {Object} self
+	 */
     textPanel.states["init"] = function(self) {
         self.cfg.setProperty("width", "250px");
 
@@ -939,31 +1001,58 @@ CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contex
         self.render(document.body);
         self.show();
         self.currentState = "shown";
+		
+		// put caret to input field
         self.sources.nameInput.focus();
     };
 
+
+	/**
+	 * Receives input and triggers AJAX operation
+	 * Next state: "wait_response"
+	 * 
+	 * @param {Object} self
+	 * @param {Object} event_type
+	 * @param {Object} orig
+	 */
     textPanel.states["shown"] = function(self, event_type, orig) {
         if ((event_type == "textenter" && orig == self.sources.nameInput) || 
              (event_type == "click" && orig == self.sources["contLink"])) {
-            // Let's JSON
+            // Let's trigger AJAX op
+			
+			// change panel display
             self.makeBody(self.createWaitAnimation());
+			
+			// go
             var value = self.sources["nameInput"].value;
             self.executeOperation(self);
+
             self.currentState = "wait_response";
         }
     };
-        
+
+
+	/**
+	 * In this phase ajax response is processed
+	 * 
+	 * @param {Object} self
+	 * @param {Object} event_type
+	 * @param {Object} orig
+	 * @param {Object} args
+	 */
     textPanel.states["wait_response"] = function(self, event_type, orig, args) {
         if (event_type == "json") {
             var result = args[0];
             var exception = args[1];
                 
             if (exception != null) {
-                // Ugly errors happen
+                // ERROR BRANCH
+				// Ugly errors happen
                 switch (self.handleJSONListNameException(result, exception)) {
                     case CCLPanel.JSON_NameEmpty:
-                var link = "EnterName";
-            if (self.NeedsName) link = self.NeedsName;
+                		var link = "EnterName";
+            			if (self.NeedsName)
+							link = self.NeedsName;
                         var text = self.createText(link);
                         break;
                     case CCLPanel.JSON_NameExists:
@@ -972,8 +1061,8 @@ CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contex
                     case CCLPanel.JSON_NameTooLong:
                         var text = self.createText("NameTooLong");
                         break;
-            case CCLPanel.JSON_SessionTimeout:
-                return;
+		            case CCLPanel.JSON_SessionTimeout:
+		                return;
                     default:
                         var text = self.createText("EnterNewList"); // This should not happen, fail gracefully
                 }
@@ -983,26 +1072,40 @@ CCLClass._create_text_panel = function(id, titleImg, context, panelAlign, contex
                     self.createLink("contLink")
                 );
                 self.currentState = "shown";
-                self.sources["nameInput"].focus(); 
-                return ;
-            }
+                self.sources["nameInput"].focus();
+				
+				// END
+                return;
+            } else if (self.close_on_success) {
+				// 'close_on_success' flag is set
+				// so hide panel
 
-            if (self.close_on_success) {
                 self.hide();
                 window.location.reload();
-                return ;
+				
+				// END
+                return;
             }
 
             var text = self.createResultText(self, result); 
 
-            self.makeBody(text,
-                self.createLink("contShopping"),
-                self.createLink("visitLists")
-            );
+            try {
+            	self.builder(text);
+            } catch(e) {
+            	alert(e);
+            }
+
             self.currentState = "complete";
         }
     };
     
+	/**
+	 * Final state, handle 
+	 * 
+	 * @param {Object} self
+	 * @param {Object} event_type
+	 * @param {Object} orig
+	 */
     textPanel.states["complete"] = function(self, event_type, orig) {
         if (event_type == "click") {
             if (orig == self.sources.visitLists) {
@@ -1195,6 +1298,478 @@ CCLClass.prototype.rename_list = function(listname, context) {
     return false;
 };
 
+/* Rename a Standing Order list */
+CCLClass.prototype.rename_so_list = function(listname, context) {
+    if (YAHOO.com.freshdirect.ccl.renameSOPanel) {
+        YAHOO.com.freshdirect.ccl.renameSOPanel.oldListName = listname;
+        YAHOO.com.freshdirect.ccl.renameSOPanel.setContext(context);
+        YAHOO.com.freshdirect.ccl.renameSOPanel.startSM();
+        return false;
+    }
+        
+    var renamePanel = new CCLClass._create_text_panel(
+        "CCL_renamePanel",
+        "list_rename_title.gif",
+        context,
+        YAHOO.widget.Overlay.TOP_LEFT,
+        YAHOO.widget.Overlay.BOTTOM_RIGHT,
+        function(txt) {
+            this.makeBody(txt,
+                this.createLink("contShopping")
+            );
+        }
+    );
+                
+    YAHOO.com.freshdirect.ccl.renameSOPanel = renamePanel;        
+    renamePanel.oldListName = listname;
+    renamePanel.close_on_success = false;
+    renamePanel.NeedsName = "NeedsName";
+
+    renamePanel.initTextValue = function(self) {
+        self.sources["nameInput"].value = self.oldListName;
+    };
+    
+    renamePanel.executeOperation = function(self) {
+        self.JSON.CCLFacade.renameSOList(self, self.oldListName, self.sources["nameInput"].value);        
+    };
+    
+    renamePanel.createResultText = function(self, result) {
+        return self.createText("List has been renamed to <b>"+result+"</b>", "text11");
+    };
+    
+    renamePanel.startSM();
+
+    return false;
+};
+
+
+/**
+ * [APPDEV-141] Change frequency of a standing order
+ * 
+ * @param {Object} listname Name of Standing Order list
+ * @param {Object} context Current script scope
+ */
+CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, context) {
+	// check if panel already created
+    if (YAHOO.com.freshdirect.ccl.changeFrqPanel) {
+        YAHOO.com.freshdirect.ccl.changeFrqPanel.setContext(context);
+
+		// init panel
+		YAHOO.com.freshdirect.ccl.changeFrqPanel.soId = soId; // FIXME
+		YAHOO.com.freshdirect.ccl.changeFrqPanel.freq = freq; //FIXME
+
+        YAHOO.com.freshdirect.ccl.changeFrqPanel.startSM();
+        return false;
+    }
+
+
+	var titleImg = "so_chgfrq_title.gif";
+    var aPanel = new CCLClass._create_text_panel(
+        "CCL_chgFrqPanel",
+        titleImg,
+        context,
+        YAHOO.widget.Overlay.TOP_LEFT,
+        YAHOO.widget.Overlay.BOTTOM_RIGHT,
+        function(txt) {
+            this.makeBody(txt,
+                this.createLink("contShopping")
+            );
+        }
+    );
+	
+	
+	
+	// cache panel
+	YAHOO.com.freshdirect.ccl.changeFrqPanel = aPanel;
+
+	// init panel
+	aPanel.soId = soId; // FIXME
+	aPanel.freq = freq; //FIXME
+
+    
+	aPanel.states["init"] = function(self) {
+        self.cfg.setProperty("width", "250px");
+        self.createHeader(self.createTitleImg(titleImg));
+                                    
+        self.makeBody(
+			function(text, style) {
+			    var elem = document.createElement("div");
+			    elem.innerHTML = text;
+			    styleStr = "ccl-panel-text";
+			    if (style)
+					styleStr = styleStr + " " + style;
+			    YAHOO.util.Dom.addClass(elem, styleStr); 
+			    return elem;
+			}("Select delivery frequency for orders after " + nextDlvDate, 'text11'),
+            self.createLink("contLink"),
+            self.createLink("cancel")
+        );
+
+        // self.initTextValue(self);
+
+        self.render(document.body);
+        self.show();
+		
+        self.currentState = "retrieve_lists";
+        self.handleStateEvent("auto", self);
+
+		// put caret to input field
+        // self.sources.nameInput.focus();
+	};
+	
+    aPanel.states["shown"] = function(self, event_type, orig) {
+        if (event_type == "click" && orig == self.sources["dropdown"]) {
+            // User picked a frequency
+            self.makeBody(self.createWaitAnimation());
+
+			// let FD know
+	        YAHOO.util.Connect.asyncRequest(
+	            "POST",
+	            "/api/so_api.jsp",
+	            {
+	                success: function(resp) {
+						var ptr = resp.argument.ptr;
+
+						ptr.makeBody(
+							ptr.createText(resp.responseText, 'text11'),
+							ptr.createLink("contLink")
+						);
+					},
+	                failure: function(resp) {
+			            var ptr = resp.argument.ptr;
+			            ptr.makeBody(
+			                ptr.createText("ServiceError"),
+			                ptr.createLink("errorClose")
+			            );
+			            ptr.currentState = "error";
+			        },
+	                argument: { ptr: self}
+	            },
+	            "action=setFrequency&soId="+self.soId+"&freqOrd="+self.sources.dropdown.value
+	        );
+			
+			self.currentState = "complete";
+        } else if (orig == self.sources.cancel) {
+        	self.hide();
+		}
+    };
+
+
+    aPanel.states["retrieve_lists"] = function(self, event_type) {
+        self.get_list_items(self);
+		
+		// move forth
+        self.currentState = "shown";
+    };
+
+    aPanel.states["complete"] = function(self, event_type, orig) {
+        if (event_type == "click") {
+            if (orig == self.sources.visitLists) {
+                window.location.href = CCLLinkTargets.target("visitLists");
+            }
+            if (orig == self.sources.contLink) {
+                window.location.reload();
+            }
+            self.hide();
+        }
+    };
+	
+	aPanel.executeOperation = function(self) {};
+
+	// retrieve enums
+	aPanel.get_list_items = function(self) {
+        YAHOO.util.Connect.asyncRequest(
+            "POST",
+            "/api/so_api.jsp",
+            {
+                success: function(resp) {
+					var self = resp.argument.ptr;
+					
+			        if (!resp.responseText) {
+			            self.unexpectedJSONResponse(ptr);
+			            return;
+			        }
+					
+
+					var enumList = eval('(' + resp.responseText + ')');
+
+					var vals = [];
+					var texts = [];
+					for (n in enumList) {
+						vals.push(enumList[n]["_ord"]);
+						texts.push(enumList[n].title);
+					}
+					
+			        self.makeBody(
+						function(text, style) {
+						    var elem = document.createElement("div");
+						    elem.innerHTML = text;
+						    styleStr = "ccl-panel-text";
+						    if (style)
+								styleStr = styleStr + " " + style;
+						    YAHOO.util.Dom.addClass(elem, styleStr); 
+						    return elem;
+						}("Select delivery frequency for orders after " + nextDlvDate, 'text11'),
+						self.createDropdownList('dropdown', 'text11', texts, vals),
+			            self.createLink("contLink"),
+			            self.createLink("cancel")
+			        );
+					
+					// set current value
+					for (n in enumList) {
+						if (Number(enumList[n].frequency) == self.freq) {
+							self.sources.dropdown.value = enumList[n]["_ord"];
+							break;
+						}
+					}
+					
+				},
+                failure: function(resp) {
+		            var ptr = resp.argument.ptr;
+		            ptr.makeBody(
+		                ptr.createText("ServiceError"),
+		                ptr.createLink("errorClose")
+		            );
+		            ptr.currentState = "error";
+		        },
+                argument: { ptr: self}
+            },
+            "action=getFrequencyList"
+        );
+	};
+
+	aPanel.startSM();
+
+
+	// stop JS event bubbling
+    return false;
+};
+
+
+
+
+/**
+ * Shows up a delete SO panel
+ * 
+ * @param {Object} soId Standing Order ID
+ * @param {Object} scope
+ */
+CCLClass.prototype.delete_so = function(soId, scope) {
+	// check if panel already created
+    if (YAHOO.com.freshdirect.ccl.deleteSoPanel) {
+        YAHOO.com.freshdirect.ccl.deleteSoPanel.setContext(scope);
+
+		// init panel
+		YAHOO.com.freshdirect.ccl.deleteSoPanel.soId = soId;
+
+        YAHOO.com.freshdirect.ccl.deleteSoPanel.startSM();
+        return false;
+    }
+
+
+	var titleImg = "so_delorder_title.gif";
+    var aPanel = new CCLClass._create_text_panel(
+        "CCL_delSOPanel",
+        titleImg,
+        scope,
+        YAHOO.widget.Overlay.TOP_LEFT,
+        YAHOO.widget.Overlay.BOTTOM_RIGHT
+    );
+	
+	
+	
+	// cache panel
+	YAHOO.com.freshdirect.ccl.deleteSoPanel = aPanel;
+
+	// init panel
+	aPanel.soId = soId;
+
+
+	aPanel.states["init"] = function(self) {
+        self.cfg.setProperty("width", "250px");
+        self.createHeader(self.createTitleImg(titleImg));
+                                    
+        self.makeBody(
+			self.createText("DelOrderTitle"),
+			self.createText("DelOrderBody"),
+            self.createLink("delOrderLink"),
+            self.createLink("cancel")
+        );
+
+        // self.initTextValue(self);
+
+        self.render(document.body);
+        self.show();
+		
+        self.currentState = "shown";
+        self.handleStateEvent("auto", self);
+
+		// put caret to input field
+        // self.sources.nameInput.focus();
+	};
+	
+	aPanel.states["shown"] = function(self, event_type, orig) {
+        if (event_type == "click") {
+			if (orig == self.sources["delOrderLink"]) {
+	            self.makeBody(self.createWaitAnimation());
+		        YAHOO.util.Connect.asyncRequest(
+		            "POST",
+		            "/api/so_api.jsp",
+		            {
+		                success: function(resp) {
+							var ptr = resp.argument.ptr;
+	
+							ptr.makeBody(
+								ptr.createText("DelOrderConfirm"),
+								ptr.createLink("contLink")
+							);
+						},
+		                failure: function(resp) {
+				            var ptr = resp.argument.ptr;
+				            ptr.makeBody(
+				                ptr.createText("ServiceError"),
+				                ptr.createLink("errorClose")
+				            );
+				            ptr.currentState = "error";
+				        },
+		                argument: { ptr: self}
+		            },
+		            "action=delete&soId="+self.soId
+		        );
+
+				// self.currentState = "complete";
+			} else if (orig == self.sources["contLink"]) {
+				window.location = "/quickshop/standing_orders.jsp";
+				self.hide();
+			} else if (orig == self.sources["cancel"]) {
+				self.hide();
+			}
+		}
+	}
+
+	aPanel.startSM();
+	return false;
+};
+
+
+
+CCLClass.prototype.shift_so_delivery = function(soId, dlv, scope) {
+	// check if panel already created
+    if (YAHOO.com.freshdirect.ccl.shiftDlvPanel) {
+        YAHOO.com.freshdirect.ccl.shiftDlvPanel.setContext(scope);
+
+		// init panel
+		YAHOO.com.freshdirect.ccl.shiftDlvPanel.soId = soId;
+		YAHOO.com.freshdirect.ccl.shiftDlvPanel.dlv = dlv;
+
+        YAHOO.com.freshdirect.ccl.shiftDlvPanel.startSM();
+        return false;
+    }
+
+
+	var titleImg = "so_shiftdlv_title.gif";
+    var aPanel = new CCLClass._create_text_panel(
+        "CCL_shiftdlvSOPanel",
+        titleImg,
+        scope,
+        YAHOO.widget.Overlay.TOP_LEFT,
+        YAHOO.widget.Overlay.BOTTOM_RIGHT
+    );
+	
+	
+	
+	// cache panel
+	YAHOO.com.freshdirect.ccl.shiftDlvPanel = aPanel;
+
+	// init panel
+	aPanel.soId = soId;
+	aPanel.dlv = dlv;
+
+
+	aPanel.states["init"] = function(self) {
+        self.cfg.setProperty("width", "250px");
+        self.createHeader(self.createTitleImg(titleImg));
+                                    
+        self.makeBody(
+			function(text, style) {
+			    var elem = document.createElement("div");
+			    elem.innerHTML = text;
+			    styleStr = "ccl-panel-text";
+			    if (style)
+					styleStr = styleStr + " " + style;
+			    YAHOO.util.Dom.addClass(elem, styleStr); 
+			    return elem;
+			}("Your upcoming delivery is " + dlv, 'title12'),
+            self.createLink("skipDlvLink"),
+            self.createLink("skipCancelLink")
+        );
+
+        self.render(document.body);
+        self.show();
+		
+        self.currentState = "shown";
+        self.handleStateEvent("auto", self);
+	};
+	
+	aPanel.states["shown"] = function(self, event_type, orig) {
+        if (event_type == "click") {
+			if (orig == self.sources["skipDlvLink"]) {
+	            self.makeBody(self.createWaitAnimation());
+		        YAHOO.util.Connect.asyncRequest(
+		            "POST",
+		            "/api/so_api.jsp",
+		            {
+		                success: function(resp) {
+							var ptr = resp.argument.ptr;
+	
+							ptr.makeBody(
+								ptr.createText(resp.responseText, "title12"),
+								ptr.createLink("contLink")
+							);
+						},
+		                failure: function(resp) {
+				            var ptr = resp.argument.ptr;
+				            ptr.makeBody(
+				                ptr.createText("ServiceError"),
+				                ptr.createLink("errorClose")
+				            );
+				            ptr.currentState = "error";
+				        },
+		                argument: { ptr: self}
+		            },
+		            "action=skip&soId="+self.soId
+		        );
+
+				// self.currentState = "complete";
+			} else if (orig == self.sources["skipCancelLink"]) {
+				self.hide();
+			} else if (orig == self.sources["contLink"]) {
+				window.location.reload();
+				self.hide();
+			}
+		}
+	}
+
+	aPanel.startSM();
+	return false;
+};
+
+/**
+ * Creates a panel with a drop down list option
+ * 
+ * Properties:
+ *    this.hiddenParams : set hidden form params here
+ *    this.the_list		: Name of selected list
+ *    this.items		: 
+ * 
+ * The following methods must be added to the created panel:
+ *   get_list_items(self)	- Triggers JSON RPC Action to retrieve list of items
+ *   modify_list(self)		- 
+ * 
+ * @param {Object} id			DOM ID
+ * @param {Object} titleImg		Title image file
+ * @param {Object} context		Current JS scope
+ */
 CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
     var listPanel =  new CCLPanel(id, titleImg);   
    
@@ -1242,7 +1817,8 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
         self.cfg.setProperty("width", "250px");
         self.createHeader(self.createTitleImg(titleImg));
 
-        self.the_list = "";
+        self.the_list = "";			// name of selected list
+        self.the_list_type = "";	// type of selected list
 
         self.makeBody(self.createWaitAnimation());
 
@@ -1309,6 +1885,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
                 return ;
             } 
 
+			// if list is empty
             if (result.listNames.length == 0) {
                 self.makeBody(
                     self.createText("YouDontHaveAList"),
@@ -1323,6 +1900,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
             // save automatically on one list, then do that
             if (self.autoSaveOnOneItem && result.listNames.length == 1) {
                 self.the_list = result.listNames[0][0];
+                self.the_list_type = self.dropdownTypes[self.the_list];
                 self.currentState = "wait_save_response";
                 self.modify_list(self);
                 return;
@@ -1335,9 +1913,13 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
                 self.createDropdownList("dropdown","text11",self.dropdownLabels, self.dropdownValues),
                 self.createLink("contLink")
             );
+
             if (result.mostRecentList) {              
                 self.sources.dropdown.value = result.mostRecentList;
             }
+				
+			
+
             self.currentState = "shown_list";
         } // if event_type == "json"
     };
@@ -1365,6 +1947,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
              } 
         } else if (orig == self.sources["contLink"]) {
             self.the_list = self.sources["dropdown"].value;
+            self.the_list_type = self.dropdownTypes[self.the_list];
             self.makeBody(self.createWaitAnimation());
             self.modify_list(self);
             self.currentState = "wait_save_response";
@@ -1491,7 +2074,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
                     // bulleted list of links
                     self.createBulletedList(
                         self.createLink("keepShopping"),
-                        self.createLink("visitThisList"),
+                        self.the_list_type == "SO" ? self.createLink("visitThisSOList") : self.createLink("visitThisList"),
                         self.createLink("createAnotherList")
                     )
                 );
@@ -1562,6 +2145,9 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
                 return ;
             }
             self.the_list = result;
+            // self.the_list_type = self.dropdownTypes[self.the_list];
+            self.the_list_type = "CCL";
+
             self.modify_list(self);
             self.currentState = "wait_save_response";
         } // json
@@ -1573,7 +2159,9 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
         if (event_type == "click") {
             self.hide();
             if (orig == self.sources["visitThisList"]) {
-                window.location.href = CCLLinkTargets.target("visitThisList") + "?ccListId=" + self.listId;
+				window.location.href = CCLLinkTargets.target("visitThisList") + "?ccListId=" + self.listId;
+			} else if (orig == self.sources["visitThisSOList"]) {
+                window.location.href = CCLLinkTargets.target("visitThisSOList") + "?ccListId=" + self.listId;
             } else if (orig == self.sources["createAnotherList"]) {
                 CCL.create_list(false, context);
             } else if (orig == self.sources["keepShopping"] &&
@@ -1584,7 +2172,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
     };
 
     return listPanel;
-}
+};
 
 
 
@@ -1641,10 +2229,13 @@ CCLClass.prototype.save_items = function(form_id, context, qsParams, hiddenParam
             return;
         }
         var jsonObject = eval('(' + resp.responseText + ')');
+
         // sanity check, we are waiting for a save selection response
         if (jsonObject.type != "save_selection") {
-        if (jsonObject.type == "no_session") ptr.handleTimeoutException();
-            else ptr.unexpectedJSONResponse(ptr);
+	        if (jsonObject.type == "no_session")
+				ptr.handleTimeoutException();
+            else
+				ptr.unexpectedJSONResponse(ptr);
             return;
         }
 
@@ -1655,11 +2246,13 @@ CCLClass.prototype.save_items = function(form_id, context, qsParams, hiddenParam
             document.getElementById(ptr.form_id).submit();
         } else {
             var itemCount = 0;
-        var item;
-            for(item in jsonObject.items) ++itemCount;
+	        var item;
+            for(item in jsonObject.items)
+				++itemCount;
             if (itemCount > 0) {
                 ptr.items = jsonObject.items;
                 ptr.item_count = itemCount;
+				
                 ptr.currentState = "retrieve_lists";
                 ptr.handleStateEvent("async_check",ptr);
             } else {
@@ -1676,26 +2269,21 @@ CCLClass.prototype.save_items = function(form_id, context, qsParams, hiddenParam
 
     savePanel.modify_list = function(self) {
         self.JSON.CCLFacade.addItemsToList(
-            self,self.the_list, self.items
-    );
-    }
+            self,self.the_list, self.the_list_type, self.items
+        );
+    };
 
     savePanel.startSM();
     return false;
 };
 
 
-/**
- * Under construction!!
- * @author segabor
- */
 CCLClass.prototype.add_recent_cart_items = function() {
     if (YAHOO.com.freshdirect.ccl.cartPanel) {
         YAHOO.com.freshdirect.ccl.cartPanel.startSM();
         return false;
     }
 
-    // TODO: is that .gif good for us?
     var cartPanel =  this._create_list_panel("CCL_cartPanel", "list_save_item_title.gif", null);
     YAHOO.com.freshdirect.ccl.cartPanel = cartPanel;
 
@@ -1722,7 +2310,7 @@ CCLClass.prototype.add_recent_cart_items = function() {
     };
 
     cartPanel.modify_list = function(self) {
-        self.JSON.CCLFacade.addRecentItemsToList(self,self.the_list);
+        self.JSON.CCLFacade.addRecentItemsToList(self,self.the_list, self.the_list_type);
     };
 
     cartPanel.startSM();
@@ -1796,7 +2384,7 @@ CCLClass.prototype.copy_items = function(form_id, context, qsParams, hiddenParam
     };
 
     copyPanel.modify_list = function(self) {
-        self.JSON.CCLFacade.addItemsToList(self,self.the_list,self.items);
+        self.JSON.CCLFacade.addItemsToList(self, self.the_list, self.the_list_type, self.items);
     };
 
     copyPanel.startSM();
@@ -1890,13 +2478,13 @@ CCLClass.prototype.adopt_list = function(form_id, context, def_list, qsParams, h
                 document.getElementById(ptr.form_id).submit();
             }
         }
-    }
+    };
 
     adoptListPanel.modify_list = function(self) {
         self.JSON.CCLFacade.addItemsToList(
-            self,self.the_list, self.items
-    );
-    }
+            self,self.the_list, self.the_list_type, self.items
+        );
+    };
 
     adoptListPanel.startSM();
     return false;
@@ -1907,155 +2495,34 @@ CCLClass.prototype.remove_item = function(listId,lineId) {
     // Make sure that the lineId is passed as string
     lineId = "" + lineId;
     this.json.CCLFacade.removeLineItem(lineId);
-    //window.location.href = CCLLinkTargets.target("visitThisList") + "?ccListId=" + listId;
 };
+
+CCLClass.prototype.remove_so_item = function(listId,lineId) {
+    if (!this.json) this.json = new JSONRpcClient("/api/json-rpc.jsp");
+    // Make sure that the lineId is passed as string
+    lineId = "" + lineId;
+    this.json.CCLFacade.removeSOLineItem(lineId);
+};
+
 
 var CCL = new CCLClass();
 
+
+
+
+
+
+// formerly known as preload_images
 function CCL_hookEvents() {
-    preload_images();
+    // create a hidden element in the DOM:
+    var preloadElement = document.createElement("div");
+    preloadElement.style.display = "none";
+    preloadElement.style.visibility = "hidden";
+    document.body.appendChild(preloadElement);
+
+    for (id in CCLPanel.TITLE_IMAGES) {
+		preloadElement.appendChild(CCLPanel.createTitleImg(id, function() {
+			CCLPanel.TITLE_IMAGES[this._imgId].cachedImg = this;
+	    }));
+    }
 }
-
-
-/**
- * Utilities to handle form change events.
- *
- */
-var FormChangeUtilClass = function() {
-}
-
-/**
- * Default warning message. If not specifically set, this will be used.
- */
-FormChangeUtilClass.prototype.defaultWarning = "www.freshdirect.com - The changes you have made to this page will be lost!";
-
-/**
- * Disable or enable checking for a particular form.
- * Note that the function returned by warnOnSignatureChange will reset the value
- * supplied once the event has been used up.
- * @param formId the id of the form
- * @param check boolean
- */ 
-FormChangeUtilClass.prototype.checkSignature = function(formId, check) {
-    var form = document.getElementById(formId);
-    if (form == null) return;
-    form.setAttribute("FD__check_signature",check.toString());
-};
-
-
-/**
- * Calculate and store the form's signature.
- *
- * The signature of the form will be recorded regardless of the value for enable.
- * The second optional argument has an effect whether warnings will be issued.
- * @param formId the id of the form
- * @param enabled whether to enable form change warnings (optional, false by default)
- */
-FormChangeUtilClass.prototype.recordSignature = function(formId, enabled) {
-
-    var form = document.getElementById(formId);
-    if (form == null) return;
-
-    if (arguments.length == 1) enabled = false;
-
-    // calculate form signature
-    form.setAttribute(
-         "FD__form_signature",
-         YAHOO.util.Connect.setForm(formId,false,false));
-
-    // set whether signature checking for warnings enabled
-    form.setAttribute("FD__check_signature", enabled.toString());
-
-    // set the form's default checking policy
-    form.setAttribute("FD__check_signature_default", enabled.toString());
-
-    // set the default warning message
-    form.setAttribute("FD__signature_change_warning",this.defaultWarning);
-};
-
-/**
- * Reset the warning message and the checking policy to their default values.
- *
- * @param formId the id of the form
- */
-FormChangeUtilClass.prototype.resetDefaults = function(formId) {
-    var form = document.getElementById(formId);
-    if (form == null) return;
-
-    var checkingDefault = form.getAttribute("FD__check_signature_default");
-    if (checkingDefault == null) return;
-
-    form.setAttribute("FD__check_signature",checkingDefault);
-    form.setAttribute("FD__signature_change_warning",this.defaultWarning);
-};
-
-/**
- * Returns whether the form has changed.
- * @param formId the id of the form
- */
-FormChangeUtilClass.prototype.formSignatureChanged = function(formId) {
-
-    var form = document.getElementById(formId);
-    if (form == null) return false;
- 
-    var signature =  form.getAttribute("FD__form_signature");
-    if (signature == null) return false;
- 
-    return signature != YAHOO.util.Connect.setForm(formId,false,false)
-};
-
-/**
- * Set a warning message for a form.
- * This also enables form change warnings. Note also that the function returned by
- * warnOnSignatureChange will reset the message and the action of warning checking to the default
- * after the event has occured.
- *
- * @param formId id of the form
- * @message warning to use
- */
-FormChangeUtilClass.prototype.setWarningMessage = function(formId,message) {
-    var form = document.getElementById(formId);
-    if (form == null) return false;
-
-    form.setAttribute("FD__signature_change_warning",message);
-    form.setAttribute("FD__check_signature","true");
-};
-
-/**
- * Return a function that can be attached to the window.onbeforeunload event.
- *
- * The function returned will reset signature checking and the warning message
- * to their default values, since the user may press "cancel".
- *
- * @param id of the form
- */
-FormChangeUtilClass.prototype.warnOnSignatureChange = function(formId) {
-
-    var self = this;
-
-    return function() {
-        // is there such a form?
-        var form = document.getElementById(formId);
-        if (form == null) return;
-
-        // should we check at all?
-        var check = form.getAttribute("FD__check_signature");
-        if ("true" == check) {
-
-            // is there a specific message to use?
-            var message = form.getAttribute("FD__signature_change_warning");
-            if (message == null) message = self.defaultWarning;
-
-            // consume event
-            self.resetDefaults(formId);
-            if (self.formSignatureChanged(formId)) return message; 
-        } else {
-
-           // consume event
-           self.resetDefaults(formId);
-           return;
-        }
-    };
-};
-
-var FormChangeUtil = new FormChangeUtilClass();

@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public class ErpPromotionDAO {
 		ps.close();
 	}
 
-	public static void insert(Connection conn, PrimaryKey salePk, Set promotionCodes) throws SQLException {
+	public static void insert(Connection conn, PrimaryKey salePk, Set<String> promotionCodes) throws SQLException {
 		if (promotionCodes.isEmpty()) {
 			return;
 		}
@@ -29,9 +28,9 @@ public class ErpPromotionDAO {
 		PreparedStatement ps =
 			conn.prepareStatement(
 				"INSERT INTO CUST.PROMOTION_PARTICIPATION(SALE_ID, PROMOTION_ID) VALUES (?,(SELECT ID FROM CUST.PROMOTION WHERE CODE=?))");
-		for (Iterator i = promotionCodes.iterator(); i.hasNext();) {
+		for ( String promoCode : promotionCodes ) {
 			ps.setString(1, salePk.getId());
-			ps.setString(2, (String) i.next());
+			ps.setString(2, promoCode);
 			ps.addBatch();
 		}
 
@@ -40,13 +39,13 @@ public class ErpPromotionDAO {
 		ps.close();
 	}
 
-	public static Set select(Connection conn, PrimaryKey salePk) throws SQLException {
+	public static Set<String> select(Connection conn, PrimaryKey salePk) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
 				"SELECT P.CODE FROM CUST.PROMOTION P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
 		ps.setString(1, salePk.getId());
 
-		Set promotionCodes = new HashSet();
+		Set<String> promotionCodes = new HashSet<String>();
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			promotionCodes.add(rs.getString(1));
@@ -59,8 +58,8 @@ public class ErpPromotionDAO {
 	}
 
 	/** @return Map of saleId -> Set of promocodes */
-	public static Map loadPromotionParticipation(Connection conn, PrimaryKey customerPk) throws SQLException {
-		Map participation = new HashMap();
+	public static Map<String,Set<String>> loadPromotionParticipation(Connection conn, PrimaryKey customerPk) throws SQLException {
+		Map<String,Set<String>> participation = new HashMap<String,Set<String>>();
 
 		PreparedStatement ps =
 			conn.prepareStatement(
@@ -71,9 +70,9 @@ public class ErpPromotionDAO {
 		while (rs.next()) {
 			String saleId = rs.getString(1);
 			String promoCode = rs.getString(2);
-			Set promos = (Set) participation.get(saleId);
+			Set<String> promos = participation.get(saleId);
 			if (promos == null) {
-				promos = new HashSet();
+				promos = new HashSet<String>();
 				participation.put(saleId, promos);
 			}
 			promos.add(promoCode);

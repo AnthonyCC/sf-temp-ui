@@ -25,15 +25,22 @@ public class ErpLogActivityCommand {
 		this.newTx = newTx;
 	}
 	
-	public void execute () {
-		ActivityLogHome home = this.getActivityLogHome();
+	public ErpLogActivityCommand(ErpActivityRecord record) {
+		this.locator = new ServiceLocator();
+		this.record = record;
+		this.newTx = false;
+	}
+	
+	public void execute() {
 		try {
-			ActivityLogSB logSB = home.create();
+			ActivityLogSB logSB = getActivityLogHome().create();
+			
 			if (newTx) {
 				logSB.logActivityNewTX(record);
 			} else {
 				logSB.logActivity(record);
 			}
+			
 		} catch (RemoteException e) {
 			throw new EJBException(e);
 		} catch (CreateException e) {
@@ -43,7 +50,7 @@ public class ErpLogActivityCommand {
 	
 	private ActivityLogHome getActivityLogHome() {
 		try {
-			return (ActivityLogHome) locator.getRemoteHome("freshdirect.customer.ActivityLog", ActivityLogHome.class);
+			return (ActivityLogHome) locator.getRemoteHome("freshdirect.customer.ActivityLog");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

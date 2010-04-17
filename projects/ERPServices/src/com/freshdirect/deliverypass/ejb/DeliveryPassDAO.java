@@ -109,8 +109,8 @@ public class DeliveryPassDAO {
 	
 	private final static String GET_DELIVERY_PASSES = "SELECT ID, CUSTOMER_ID, TYPE, DESCRIPTION, PURCHASE_DATE, AMOUNT, PURCHASE_ORDER_ID, TOTAL_NUM_DLVS, REM_NUM_DLVS, ORG_EXP_DATE, EXP_DATE, USAGE_CNT, NUM_OF_CREDITS, STATUS from CUST.DELIVERY_PASS where CUSTOMER_ID = ? ORDER BY PURCHASE_DATE DESC";
 	
-	public static List getDeliveryPasses(Connection conn, String customerPk) throws SQLException {
-		List deliveryPasses = null;
+	public static List<DeliveryPassModel> getDeliveryPasses(Connection conn, String customerPk) throws SQLException {
+		List<DeliveryPassModel> deliveryPasses = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -119,7 +119,7 @@ public class DeliveryPassDAO {
 			rs = ps.executeQuery();
 			while(rs.next()){
 				if(deliveryPasses == null){
-					deliveryPasses = new ArrayList();
+					deliveryPasses = new ArrayList<DeliveryPassModel>();
 				}
 				deliveryPasses.add(getDeliveryPass(rs));
 			}
@@ -139,8 +139,8 @@ public class DeliveryPassDAO {
 	
 	
 	
-	public static List getDlvPassesByStatus(Connection conn, String customerPk, EnumDlvPassStatus status) throws SQLException {
-		List deliveryPasses = new ArrayList();
+	public static List<DeliveryPassModel> getDlvPassesByStatus(Connection conn, String customerPk, EnumDlvPassStatus status) throws SQLException {
+		List<DeliveryPassModel> deliveryPasses = new ArrayList<DeliveryPassModel>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -165,8 +165,8 @@ public class DeliveryPassDAO {
 	
 	private final static String GET_DELIVERY_PASS_STATUS_COUNT = "SELECT  STATUS, count(STATUS) from CUST.DELIVERY_PASS where CUSTOMER_ID = ? GROUP BY STATUS";
 	
-	public static Map getAllStatusCount(Connection conn, String customerPk) throws SQLException {
-		Map statusCount = null;
+	public static Map<EnumDlvPassStatus,Integer> getAllStatusCount(Connection conn, String customerPk) throws SQLException {
+		Map<EnumDlvPassStatus,Integer> statusCount = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -175,7 +175,7 @@ public class DeliveryPassDAO {
 			rs = ps.executeQuery();
 			while(rs.next()){
 				if(statusCount == null){
-					statusCount = new HashMap();
+					statusCount = new HashMap<EnumDlvPassStatus,Integer>();
 				}
 				statusCount.put(EnumDlvPassStatus.getEnum(rs.getString(1)), new Integer(rs.getInt(2)));
 			}
@@ -275,8 +275,8 @@ public class DeliveryPassDAO {
 	 * @throws SQLException
 	 */
 
-	public static List getDeliveryPassesByOrderId(Connection conn, String orderId) throws SQLException{
-		List deliveryPasses = null;
+	public static List<DeliveryPassModel> getDeliveryPassesByOrderId(Connection conn, String orderId) throws SQLException{
+		List<DeliveryPassModel> deliveryPasses = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -285,7 +285,7 @@ public class DeliveryPassDAO {
 			rs = ps.executeQuery();
 			while(rs.next()){
 				if(deliveryPasses == null){
-					deliveryPasses = new ArrayList();
+					deliveryPasses = new ArrayList<DeliveryPassModel>();
 				}
 				deliveryPasses.add(getDeliveryPass(rs));
 			}
@@ -372,9 +372,9 @@ public class DeliveryPassDAO {
 	}
 	
 	private final static String GET_USABLE_AUTORENEW_PASSES_QUERY = "SELECT * FROM CUST.DELIVERY_PASS WHERE CUSTOMER_ID=? AND ( STATUS IN ('PEN','RTU')  OR (STATUS='ACT' AND TRUNC(EXP_DATE)>TRUNC(SYSDATE))) AND TYPE IN (SELECT SKU_CODE FROM CUST.DLV_PASS_TYPE WHERE IS_AUTORENEW_DP='Y')";
-	public static List getUsableAutoRenewPasses(Connection conn, String customerPK) throws SQLException {
-        
-		List autoRenewPasses=new ArrayList(5);
+	
+	public static List<DeliveryPassModel> getUsableAutoRenewPasses(Connection conn, String customerPK) throws SQLException {        
+		List<DeliveryPassModel> autoRenewPasses=new ArrayList<DeliveryPassModel>(5);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try{
@@ -412,8 +412,8 @@ public class DeliveryPassDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Object[] autoRenewalInfo=new Object[2];
-		List customer=new ArrayList(10);
-		List autoRenewalSKU=new ArrayList(10);
+		List<String> customer=new ArrayList<String>(10);
+		List<String> autoRenewalSKU=new ArrayList<String>(10);
 		autoRenewalInfo[0]=customer;
 		autoRenewalInfo[1]=autoRenewalSKU;
 		
@@ -451,7 +451,6 @@ public class DeliveryPassDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int days=0;
-		List customer=new ArrayList(10);
 		
 		try{
 			ps = conn.prepareStatement(GET_DAYS_SINCE_DP_EXPIRED_QUERY);
@@ -483,7 +482,6 @@ public class DeliveryPassDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		int days=0;
-		List customer=new ArrayList(10);
 		
 		try{
 			ps = conn.prepareStatement(GET_DAYS_TO_DP_EXPIRED_QUERY);

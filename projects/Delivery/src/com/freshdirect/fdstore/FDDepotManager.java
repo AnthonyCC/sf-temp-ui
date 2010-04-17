@@ -235,8 +235,7 @@ public class FDDepotManager {
 	private DlvDepotManagerHome getDlvDepotManagerHome() {
 		try {
 			return (DlvDepotManagerHome) serviceLocator.getRemoteHome(
-				DlvProperties.getDlvDepotManagerHome(),
-				DlvDepotManagerHome.class);
+				DlvProperties.getDlvDepotManagerHome());
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

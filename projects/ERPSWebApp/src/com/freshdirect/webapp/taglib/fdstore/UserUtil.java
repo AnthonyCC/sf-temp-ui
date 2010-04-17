@@ -82,7 +82,7 @@ public class UserUtil {
 			ContentFactory contentFactory = ContentFactory.getInstance();
 			int n = 0;
 		
-			List recipList = user.getRecipentList().getRecipents(); //FDCustomerManager.loadSavedRecipients(user.getUser());			
+			List recipList = user.getRecipientList().getRecipients(); //FDCustomerManager.loadSavedRecipients(user.getUser());			
 			int quantity = 1;
 			Map optionMap = new HashMap();
 
@@ -160,7 +160,7 @@ public class UserUtil {
 		    FDSalesUnit[] units = product.getSalesUnits();
 		
 		    FDSalesUnit salesUnit = units[n % units.length];
-		    List recipList= bulkRecList.getFDRecipentsList().getRecipents();
+		    List recipList= bulkRecList.getFDRecipentsList().getRecipients();
 		    if(!recipList.isEmpty()) {
 		    	ListIterator i = recipList.listIterator();
 		    	while(i.hasNext()) {            		

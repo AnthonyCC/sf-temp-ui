@@ -1,9 +1,3 @@
-/*
- * DlvManagerSB.java
- *
- * Created on August 27, 2001, 7:00 PM
- */
-
 package com.freshdirect.delivery.ejb;
 
 /**
@@ -12,7 +6,6 @@ package com.freshdirect.delivery.ejb;
  * @version 
  */
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -23,24 +16,30 @@ import javax.ejb.FinderException;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvApartmentRange;
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
+import com.freshdirect.delivery.DlvTimeslotCapacityInfo;
+import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneCapacityInfo;
+import com.freshdirect.delivery.DlvZoneCutoffInfo;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.ExceptionAddress;
 import com.freshdirect.delivery.InvalidAddressException;
 import com.freshdirect.delivery.ReservationException;
+import com.freshdirect.delivery.announcement.SiteAnnouncement;
+import com.freshdirect.delivery.model.DlvRegionModel;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.fdstore.FDReservation;
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
@@ -53,11 +52,10 @@ import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 public interface DlvManagerSB extends EJBObject {
 	
     public List<DlvTimeslotModel> getTimeslotForDateRangeAndZone(Date begDate, Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
-	public List getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode) throws DlvResourceException , RemoteException;
-	public List getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
+	public List<DlvTimeslotModel> getTimeslotsForDepot(java.util.Date startDate, java.util.Date endDate, String regionId, String zoneCode) throws DlvResourceException , RemoteException;
+	public List<DlvTimeslotModel> getAllTimeslotsForDateRange(java.util.Date startDate, java.util.Date endDate, AddressModel address) throws InvalidAddressException, RemoteException;
 
-	/** @return List of DlvTimeslotCapacityInfo */
-	public List getTimeslotCapacityInfo(java.util.Date date) throws RemoteException;
+	public List<DlvTimeslotCapacityInfo> getTimeslotCapacityInfo(java.util.Date date) throws RemoteException;
 
 	public DlvReservationModel reserveTimeslot(DlvTimeslotModel dlvTimeslot, String customerId, long holdTime, EnumReservationType type, ContactAddressModel addressId, boolean chefsTable,String ctDeliveryProfile,boolean isForced) throws ReservationException, RemoteException;
     public void commitReservation(String rsvId, String customerId, String orderId,boolean pr1) throws ReservationException, RemoteException;
@@ -69,38 +67,38 @@ public interface DlvManagerSB extends EJBObject {
 	public DlvReservationModel getReservation(String reservationId) throws FinderException, RemoteException;
 	
     public DlvTimeslotModel getTimeslotById(String timeslotId) throws FinderException, RemoteException;
-	public List getAllZonesByRegion(String regionId)throws RemoteException;
+	public List<DlvZoneModel> getAllZonesByRegion(String regionId)throws RemoteException;
 	public DlvZoneInfoModel getZoneInfo(AddressModel address, Date date) throws InvalidAddressException, RemoteException;
-	public List getCutoffInfo(String zoneCode, Date day) throws RemoteException;
+	public List<DlvZoneCutoffInfo> getCutoffInfo(String zoneCode, Date day) throws RemoteException;
 	public DlvZoneCapacityInfo getZoneCapacity(String zoneCode, Date day) throws RemoteException;
 	public void saveFutureZoneNotification(String email, String zip, String serviceType) throws RemoteException;
     
-    public List getDeliverableZipCodes(EnumServiceType serviceType) throws RemoteException;
+    public List<DlvZipInfoModel> getDeliverableZipCodes(EnumServiceType serviceType) throws RemoteException;
     public DlvServiceSelectionResult checkServicesForZipCode(String zipCode) throws RemoteException;
     public DlvServiceSelectionResult checkServicesForAddress(AddressModel address) throws InvalidAddressException, RemoteException;
     
-    public ArrayList findSuggestionsForAmbiguousAddress(AddressModel address) throws InvalidAddressException, RemoteException;
+    public List<AddressModel> findSuggestionsForAmbiguousAddress(AddressModel address) throws InvalidAddressException, RemoteException;
     public DlvZoneInfoModel getZoneInfoForDepot(String regionId, String zoneCode, Date date) throws DlvResourceException, RemoteException;
     
-    public Collection getZonesForRegionId(String regionId) throws DlvResourceException, RemoteException;
+    public Collection<DlvZoneModel> getZonesForRegionId(String regionId) throws DlvResourceException, RemoteException;
     
-    public Collection getAllRegions() throws DlvResourceException, RemoteException;
+    public Collection<DlvRegionModel> getAllRegions() throws DlvResourceException, RemoteException;
     
     public DlvAddressGeocodeResponse geocodeAddress(AddressModel address) throws InvalidAddressException, RemoteException;
     
-    public List findApartmentRanges(AddressModel address) throws InvalidAddressException, RemoteException;
+    public List<DlvApartmentRange> findApartmentRanges(AddressModel address) throws InvalidAddressException, RemoteException;
     
     public boolean checkForAlcoholDelivery(String scrubbedAddress, String zipcode) throws RemoteException;
     
     public EnumRestrictedAddressReason checkAddressForRestrictions(AddressModel address) throws RemoteException;
     
-    public List getDlvRestrictions() throws DlvResourceException, RemoteException;
+    public List<RestrictionI> getDlvRestrictions() throws DlvResourceException, RemoteException;
     
-    public List getGeographicDlvRestrictions(AddressModel address)throws DlvResourceException, RemoteException;
+    public List<GeographyRestriction> getGeographicDlvRestrictions(AddressModel address)throws DlvResourceException, RemoteException;
     
-	public List getSiteAnnouncements() throws DlvResourceException, RemoteException;
+	public List<SiteAnnouncement> getSiteAnnouncements() throws DlvResourceException, RemoteException;
 	
-	public List getReservationsForCustomer(String customerId) throws RemoteException;
+	public List<DlvReservationModel> getReservationsForCustomer(String customerId) throws RemoteException;
 	
 	public void extendReservation(String rsvId, Date newExpTime) throws RemoteException;
 	
@@ -112,23 +110,23 @@ public interface DlvManagerSB extends EJBObject {
 
 	public void addGeocodeException(ExceptionAddress ex, String userId) throws RemoteException;
 	
-	public List searchGeocodeException(ExceptionAddress ex) throws RemoteException;
+	public List<ExceptionAddress> searchGeocodeException(ExceptionAddress ex) throws RemoteException;
 	
 	public void deleteGeocodeException(ExceptionAddress ex) throws RemoteException;
 	
 	public String getCounty(String city, String state) throws RemoteException;
 	
-	public List getCountiesByState(String stateAbbrev) throws RemoteException;
+	public List<String> getCountiesByState(String stateAbbrev) throws RemoteException;
 	
-	public List getMunicipalityInfos() throws RemoteException;
+	public List<MunicipalityInfo> getMunicipalityInfos() throws RemoteException;
 
-	public List searchExceptionAddresses(ExceptionAddress ex) throws RemoteException;
+	public List<ExceptionAddress> searchExceptionAddresses(ExceptionAddress ex) throws RemoteException;
 	
 	public void deleteAddressException(String id) throws RemoteException;
 
 	public StateCounty lookupStateCountyByZip(String zipcode) throws RemoteException;
 
-	public List getCutoffTimesByDate(Date day) throws RemoteException;
+	public List<Date> getCutoffTimesByDate(Date day) throws RemoteException;
 	
 	public List<FDTimeslot> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
 	

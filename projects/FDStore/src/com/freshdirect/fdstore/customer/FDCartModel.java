@@ -1,15 +1,6 @@
-/*
- * $Workfile:FDCartModel.java$
- *
- * $Date:8/23/2003 7:26:19 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,8 +11,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.jsp.JspException;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
@@ -42,13 +31,13 @@ import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassType;
+import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.atp.FDAvailabilityHelper;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
@@ -63,12 +52,9 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.FormatterUtil;
 import com.freshdirect.framework.util.MathUtil;
-import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
 import com.freshdirect.giftcard.ErpGiftCardModel;
-import com.freshdirect.giftcard.ErpGiftCardUtil;
 
 /**
  * FDShoppingCart model class.
@@ -79,9 +65,6 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
  */
 public class FDCartModel extends ModelSupport implements FDCartI {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7672203060098085507L;
 
 	private void checkLimitPlus(int delta) {
@@ -99,11 +82,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 
 	/** Order cartlines by department desc, description, configuration desc, quantity */
-	public final static Comparator LINE_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
+	public final static Comparator<FDCartLineI> LINE_COMPARATOR = new Comparator<FDCartLineI>() {
+		public int compare(FDCartLineI cartLine1, FDCartLineI cartLine2) {
 				///order by Department and then by product.
-			FDCartLineI cartLine1 = (FDCartLineI) o1;
-			FDCartLineI cartLine2 = (FDCartLineI) o2;
 			int retValue = 0;
 			if(null != cartLine1.getDepartmentDesc() && null != cartLine2.getDepartmentDesc()){
 			retValue = cartLine1.getDepartmentDesc().compareTo(cartLine2.getDepartmentDesc());			
@@ -131,13 +112,13 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * @clientCardinality 1
 	 * @supplierCardinality 0..*
 	 */
-	private final List orderLines = new ArrayList();
+	private final List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>();
 
-	private final List sampleLines = new ArrayList();
+	private final List<FDCartLineI> sampleLines = new ArrayList<FDCartLineI>();
 
-	private final List charges = new ArrayList();
+	private final List<ErpChargeLineModel> charges = new ArrayList<ErpChargeLineModel>();
 
-	private List customerCredits = new ArrayList();
+	private List<ErpAppliedCreditModel> customerCredits = new ArrayList<ErpAppliedCreditModel>();
 	
 	private FDReservation deliveryReservation = null;
 
@@ -154,7 +135,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	private boolean ageVerified = false;
 
-	private List discounts = new ArrayList();
+	private List<ErpDiscountLineModel> discounts = new ArrayList<ErpDiscountLineModel>();
 	
 	//
 	// "transient" fields below
@@ -162,8 +143,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	private final List<FDCartLineI> recentOrderLines = new ArrayList<FDCartLineI>();
 	
-	private List recommendedItemList=null;
-		 	
 	private transient FDAvailabilityI availability;
 	//This attribute is to hold the count of deliverypasses this cart holds.
 	private int deliveryPassCount = 0;
@@ -175,12 +154,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	private boolean dlvPromotionApplied;
 	
 	//This attribute contains the list of unavailable delivery passes to the user.
-	private List unavailablePasses;
-	
-	private int discountAppliedCount=0;
+	private List<DlvPassAvailabilityInfo> unavailablePasses;
 	
 	//Selected gift cards
-	private List selectedGiftCards = null;
+	private List<ErpGiftCardModel> selectedGiftCards = null;
 	
 	private double bufferAmt = 0.0;
 	
@@ -207,6 +184,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public void setDeliveryPassCount(int dlvPassCount) {
 		this.deliveryPassCount = dlvPassCount;
 	}
+	
+	
 	public FDCartModel() {
 	}
 
@@ -214,7 +193,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		setOrderLines(cart.orderLines);
 		setCharges(cart.charges);
 		setDiscounts(cart.discounts);
-		setCustomerCredits(new ArrayList(cart.customerCredits));
+		setCustomerCredits(new ArrayList<ErpAppliedCreditModel>(cart.customerCredits));
 
 		setZoneInfo(cart.zoneInfo);
 		setDeliveryReservation(cart.deliveryReservation);
@@ -230,7 +209,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.clearAvailability();
 	}
 
-	public void addOrderLines(Collection cartLines) {
+	public void addOrderLines(Collection<FDCartLineI> cartLines) {
 		checkLimitPlus(cartLines.size());
 		this.orderLines.addAll(cartLines);
 		this.recentOrderLines.clear();
@@ -247,7 +226,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public FDCartLineI getOrderLine(int index) {
-		return (FDCartLineI) this.orderLines.get(index);
+		return this.orderLines.get(index);
 	}
 
 	/**
@@ -257,8 +236,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public int getOrderLineIndex(int randomId) {
 		int c = 0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext(); c++) {
-			if (randomId == ((FDCartLineI) i.next()).getRandomId()) {
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext(); c++) {
+			if (randomId == i.next().getRandomId()) {
 				return c;
 			}
 		}
@@ -270,7 +249,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return idx == -1 ? null : this.getOrderLine(idx);
 	}
 
-	public void setOrderLines(List lines) {
+	public void setOrderLines(List<FDCartLineI> lines) {
 		checkLimitTotal(lines.size());
 		this.orderLines.clear();
 		this.orderLines.addAll(lines);
@@ -309,8 +288,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 *          a recipe, false otherwise
 	 */
 	public boolean containsRecipeItems() {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			
 			if (line.getRecipeSourceId() != null) {
 				return true;
@@ -328,11 +307,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 *  @return true if the shopping cart contains items from all the supplied
 	 *          recipes IDs, false otherwise.
 	 */
-	public boolean containsRecipeItems(List recipeIds) {
-		Set ids = new HashSet(recipeIds);
+	public boolean containsRecipeItems(List<String> recipeIds) {
+		Set<String> ids = new HashSet<String>(recipeIds);
 		
-		for (Iterator i = this.orderLines.iterator(); i.hasNext() && !ids.isEmpty();) {
-			FDCartLineI line     = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext() && !ids.isEmpty();) {
+			FDCartLineI line     = i.next();
 			String      recipeId = line.getRecipeSourceId();
 			
 			if (recipeId != null) {
@@ -351,10 +330,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 *          the specified book, false otherwise.
 	 */
 	public boolean containsRecipeFromBook(String sourceId) {
-		Set recipesIds = new HashSet();
+		Set<String> recipesIds = new HashSet<String>();
 		
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line     = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line     = i.next();
 			String      recipeId = line.getRecipeSourceId();
 			
 			if (recipeId == null) {
@@ -383,10 +362,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 * 
 	 * @return number of items removed
 	 */
-	public List removeOrderLinesByRecipe(String recipeId) {
-		List cartLinesRemoved = new ArrayList();
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+	public List<FDCartLineI> removeOrderLinesByRecipe(String recipeId) {
+		List<FDCartLineI> cartLinesRemoved = new ArrayList<FDCartLineI>();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (recipeId.equals(line.getRecipeSourceId())) {
 				cartLinesRemoved.add(line);
 				i.remove();
@@ -403,11 +382,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.clearAvailability();
 	}
 
-	public List getOrderLines() {
+	public List<FDCartLineI> getOrderLines() {
 		return Collections.unmodifiableList(this.orderLines);
 	}
 
-	public List getSampleLines() {
+	public List<FDCartLineI> getSampleLines() {
 		return Collections.unmodifiableList(this.sampleLines);
 	}
 
@@ -436,8 +415,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean isEstimatedPrice() {
-		for (Iterator i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (line.isEstimatedPrice()) {
 				return true;
 			}
@@ -447,22 +426,22 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	/**
 	 * @return total price of orderlines in USD, with no taxes, charges or discounts applied
-	 */
-	
+	 */	
 	public double getSubTotal() {
 		double subTotal = 0.0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			subTotal += MathUtil.roundDecimal(((FDCartLineI) i.next()).getPrice());
+		for ( FDCartLineI cartLineModel : orderLines ) {			
+			subTotal += MathUtil.roundDecimal( cartLineModel.getPrice() );
 		}
 		return MathUtil.roundDecimal(subTotal);
 	}
 	
 	
+	/**
+	 * @return total price of orderlines in USD, with no taxes and charges, but with discounts applied
+	 */	
 	public double getActualSubTotal() {
 		double subTotal = 0.0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			
-			FDCartLineI cartLineModel=(FDCartLineI) i.next();
+		for ( FDCartLineI cartLineModel : orderLines ) {			
 			subTotal += MathUtil.roundDecimal(cartLineModel.getPrice());
 			// add the discount amount for reporting
 			subTotal += MathUtil.roundDecimal(cartLineModel.getDiscountAmount());
@@ -474,8 +453,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	/**  
 	 * @return total price of orderlines in USD, with taxes, charges without discounts applied
-	 */
-    
+	 */    
 	public double getPreDeductionTotal(){	      
 	      double preTotal = 0.0;
 	        preTotal += MathUtil.roundDecimal(this.getSubTotal());			
@@ -483,8 +461,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	        preTotal += MathUtil.roundDecimal(this.getDepositValue());
 
 			// apply charges
-			for (Iterator i = this.charges.iterator(); i.hasNext();) {
-				preTotal += MathUtil.roundDecimal(((ErpChargeLineModel) i.next()).getTotalAmount());
+			for ( ErpChargeLineModel charge : charges ) {
+				preTotal += MathUtil.roundDecimal( charge.getTotalAmount() );
 			}
            return MathUtil.roundDecimal(preTotal);
 	}
@@ -494,12 +472,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 */
 	public double getTaxValue() {
 		double taxValue = 0.0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			taxValue += ((FDCartLineI) i.next()).getTaxValue();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			taxValue += i.next().getTaxValue();
 		}
 		
-		for(Iterator i = this.charges.iterator(); i.hasNext(); ) {
-			ErpChargeLineModel c = (ErpChargeLineModel) i.next();
+		for(Iterator<ErpChargeLineModel> i = this.charges.iterator(); i.hasNext(); ) {
+			ErpChargeLineModel c = i.next();
 			taxValue += c.getTotalAmount() * c.getTaxRate();
 		}
 		
@@ -508,8 +486,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	public double getDepositValue() {
 		double depositValue = 0.0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			depositValue += ((FDCartLineI) i.next()).getDepositValue();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			depositValue += i.next().getDepositValue();
 		}
 		return depositValue;
 	}
@@ -523,8 +501,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		total += MathUtil.roundDecimal(this.getTaxValue());
 		total += MathUtil.roundDecimal(this.getDepositValue());
 		// apply charges
-		for (Iterator i = this.charges.iterator(); i.hasNext();) {
-			total += MathUtil.roundDecimal(((ErpChargeLineModel) i.next()).getTotalAmount());
+		for (Iterator<ErpChargeLineModel> i = this.charges.iterator(); i.hasNext();) {
+			total += MathUtil.roundDecimal(i.next().getTotalAmount());
 		}
 		total -= this.getTotalDiscountValue();
 		total -= this.getCustomerCreditsValue();
@@ -550,19 +528,19 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	//
 	//
 
-	public Collection getCharges() {
+	public Collection<ErpChargeLineModel> getCharges() {
 		return Collections.unmodifiableCollection(this.charges);
 	}
 
-	protected void setCharges(Collection charges) {
+	protected void setCharges(Collection<ErpChargeLineModel> charges) {
 		this.charges.clear();
 		this.charges.addAll(charges);
 	}
 
 	public ErpChargeLineModel getCharge(EnumChargeType chargeType) {
 		ErpChargeLineModel charge = null;
-		for (Iterator i = this.charges.iterator(); i.hasNext();) {
-			ErpChargeLineModel curr = (ErpChargeLineModel) i.next();
+		for (Iterator<ErpChargeLineModel> i = this.charges.iterator(); i.hasNext();) {
+			ErpChargeLineModel curr = i.next();
 			if (chargeType.equals(curr.getType())) {
 				if (charge != null) {
 					throw new RuntimeException("Multiple charges present of type " + chargeType);
@@ -574,8 +552,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public void clearCharge(EnumChargeType chargeType) {
-		for (Iterator i = this.charges.iterator(); i.hasNext();) {
-			ErpChargeLineModel curr = (ErpChargeLineModel) i.next();
+		for (Iterator<ErpChargeLineModel> i = this.charges.iterator(); i.hasNext();) {
+			ErpChargeLineModel curr = i.next();
 			if (chargeType.equals(curr.getType())) {
 				i.remove();
 			}
@@ -732,15 +710,15 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	/**
 	 * @return Map of cartLineId -> FDAvailabilityInfo of all unavailable lines for req. date
 	 */
-	public Map getUnavailabilityMap() {
+	public Map<String,FDAvailabilityInfo> getUnavailabilityMap() {
 		if(this.deliveryReservation == null){
-			return Collections.EMPTY_MAP;
+			return Collections.<String,FDAvailabilityInfo>emptyMap();
 		}
 		
 		DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
 		FDAvailabilityInfo info = this.getAvailability().availableCompletely(requestedRange);
 		if (info.isAvailable()) {
-			return Collections.EMPTY_MAP;
+			return Collections.<String,FDAvailabilityInfo>emptyMap();
 		}
 		return ((FDCompositeAvailabilityInfo)info).getComponentInfo();
 	}
@@ -752,24 +730,22 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return FDAvailabilityHelper.getFirstAvailableDate(this.getAvailability());
 	}
 
-	public Set getRestrictionMessages() {
-		Set rMsgs = new HashSet();
-		for(Iterator i = this.getUnavailabilityMap().values().iterator(); i.hasNext(); ){
-			Object o = i.next();
-			if(o instanceof FDRestrictedAvailabilityInfo){
-				FDRestrictedAvailabilityInfo info = (FDRestrictedAvailabilityInfo)o;
-				rMsgs.add(info.getRestriction().getMessage());
+	public Set<String> getRestrictionMessages() {
+		Set<String> rMsgs = new HashSet<String>();
+		for ( FDAvailabilityInfo ai : getUnavailabilityMap().values() ) {
+			if ( ai instanceof FDRestrictedAvailabilityInfo ) {
+				FDRestrictedAvailabilityInfo info = (FDRestrictedAvailabilityInfo)ai;
+				rMsgs.add( info.getRestriction().getMessage() );
 			}
 		}
 		return rMsgs;
 	}
 
 	public boolean hasKosherRestrictions() {
-		for(Iterator i = this.getUnavailabilityMap().values().iterator(); i.hasNext(); ){
-			Object o = i.next();
-			if(o instanceof FDRestrictedAvailabilityInfo){
-				FDRestrictedAvailabilityInfo info = (FDRestrictedAvailabilityInfo)o;
-				if(EnumDlvRestrictionReason.KOSHER.equals(info.getRestriction().getReason())){
+		for ( FDAvailabilityInfo ai : getUnavailabilityMap().values() ) {
+			if ( ai instanceof FDRestrictedAvailabilityInfo ) {
+				FDRestrictedAvailabilityInfo info = (FDRestrictedAvailabilityInfo)ai;
+				if ( EnumDlvRestrictionReason.KOSHER.equals( info.getRestriction().getReason() ) ) {
 					return true;
 				}
 			}
@@ -781,18 +757,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return this.getUnavailabilityMap().isEmpty();
 	}
 
-	public void setCustomerCredits(List credits) {
+	public void setCustomerCredits(List<ErpAppliedCreditModel> credits) {
 		this.customerCredits = credits;
 	}
 
-	public List getCustomerCredits() {
+	public List<ErpAppliedCreditModel> getCustomerCredits() {
 		return this.customerCredits;
 	}
 	
 	public double getCustomerCreditsValue() {
 		double creditAmount = 0.0;
-		for (Iterator it = this.customerCredits.iterator(); it.hasNext();) {
-			ErpAppliedCreditModel creditModel = (ErpAppliedCreditModel) it.next();
+		for (Iterator<ErpAppliedCreditModel> it = this.customerCredits.iterator(); it.hasNext();) {
+			ErpAppliedCreditModel creditModel = it.next();
 			creditAmount += MathUtil.roundDecimal(creditModel.getAmount());
 		}
 		return MathUtil.roundDecimal(creditAmount);
@@ -844,8 +820,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean hasItemsFrom(String[] contentNames) throws FDResourceException {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			ProductModel pm = ContentFactory.getInstance().getProductByName(line.getCategoryName(), line.getProductName());
 			if (pm.hasParentWithName(contentNames)) {
 				return true;
@@ -855,18 +831,16 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean hasBrandName(String brandName) throws FDResourceException {
-		Set brands = new HashSet();
+		Set<String> brands = new HashSet<String>();
 		brands.add(brandName);
 		return this.hasBrandName(brands);
 	}
 
-	public boolean hasBrandName(Set brandNames) throws FDResourceException {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+	public boolean hasBrandName(Set<String> brandNames) throws FDResourceException {
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			ProductModel pm = ContentFactory.getInstance().getProductByName(line.getCategoryName(), line.getProductName());
-			List brands = pm.getBrands();
-			for (Iterator brandi = brands.iterator(); brandi.hasNext();) {
-				BrandModel brand = (BrandModel) brandi.next();
+			for ( BrandModel brand : pm.getBrands() ) {
 				if (brandNames.contains(brand.getContentName())) {
 					return true;
 				}
@@ -876,8 +850,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean containsAlcohol() {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (line.isAlcohol()) {
 				return true;
 			}
@@ -887,8 +861,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	public double getSubTotalWithoutAlcohol() {
 		double subTotal = 0.0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (!line.isAlcohol()) {
 				subTotal += line.getPrice();
 			}
@@ -898,8 +872,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public void removeAlcoholicLines() {
-		for (ListIterator i = this.orderLines.listIterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (ListIterator<FDCartLineI> i = this.orderLines.listIterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (line.isAlcohol()) {
 				i.remove();
 			}
@@ -907,8 +881,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public boolean containsKosherItems() {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (line.isKosher()) {
 				return true;
 			}
@@ -916,10 +890,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return false;
 	}
 
-	public Set getApplicableRestrictions() {
-		Set restrictions = new HashSet();
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
+		Set<EnumDlvRestrictionReason> restrictions = new HashSet<EnumDlvRestrictionReason>();
+		for ( FDCartLineI line : orderLines ) {
 			restrictions.addAll(line.getApplicableRestrictions());
 		}
 		return restrictions;
@@ -932,8 +905,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		String categoryName = product.getParentNode().getContentName();
 		String productName = product.getContentName();
 		double sum = 0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if (productName.equals(line.getProductName()) && categoryName.equals(line.getCategoryName())) {
 				sum += line.getQuantity();
 			}
@@ -949,52 +922,18 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			return;
 		}
 
-		List cleanLines = OrderLineUtil.update(this.orderLines,true);
+		List<FDCartLineI> cleanLines = OrderLineUtil.update(orderLines,true);
 
 		this.setOrderLines(cleanLines);
 		this.sortOrderLines();
 	}
 
 	public void refreshAll() throws FDResourceException, FDInvalidConfigurationException {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI) i.next();
+		for ( FDCartLineI cartLine : orderLines ) {
 			cartLine.refreshConfiguration();
 		}
 	}
 
-	/*	This method is obsolete. Moved the logic to AdjustAvailabilityTag
-	 * *//**
-		 * Remove/adjust unavailable orderlines
-		 *//*
-		public void adjustAvailability() {
-			Map unavMap = this.getUnavailabilityMap();
-			for (Iterator i = unavMap.entrySet().iterator(); i.hasNext();) {
-				Map.Entry entry = (Map.Entry) i.next();
-				Integer key = (Integer) entry.getKey();
-				FDAvailabilityInfo info = (FDAvailabilityInfo) entry.getValue();
-
-				if (info instanceof FDStockAvailabilityInfo) {
-					FDStockAvailabilityInfo sInfo = (FDStockAvailabilityInfo) info;
-					if (sInfo.getQuantity() == 0) {
-						// remove
-						this.removeOrderLine(this.getOrderLineIndex(key.intValue()));
-					} else {
-						// adjust quantity
-						FDCartLineI cartline = this.getOrderLineById(key.intValue());
-						cartline.setQuantity(sInfo.getQuantity());
-					}
-				} else {
-					// remove
-					this.removeOrderLine(this.getOrderLineIndex(key.intValue()));
-				}
-			}
-			try {
-				this.refreshAll();
-			} catch (FDException e) {
-				// !!! improve error handling
-				throw new FDRuntimeException(e);
-			}
-		}*/
 
 	//
 	// order views
@@ -1004,7 +943,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return WebOrderViewFactory.getOrderView(orderLines, affiliate);
 	}
 
-	public List getOrderViews() {
+	public List<WebOrderViewI> getOrderViews() {
 		return WebOrderViewFactory.getOrderViews(orderLines);
 	}
 	
@@ -1024,26 +963,24 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			mi = miw.getMunicipalityInfo(fdMan.lookupStateByZip(zipcode), fdMan.lookupCountyByZip(zipcode), null);
 		}
 		
-		//System.out.println(" MunicipalityInfo :"+mi.getTaxRate());
 		if(mi != null){
 			taxRate = mi.getTaxRate();
 			depositRate = mi.getBottleDeposit();
 		}
 	
-		for(Iterator i = this.orderLines.iterator(); i.hasNext();){
-			FDCartLineI cartline = (FDCartLineI) i.next();
+		for( FDCartLineI cartline : orderLines ) {
 			cartline.setTaxRate(taxRate);
 			cartline.setDepositValue(depositRate);
 		}
 	}
 
-	public List getDiscounts() {
+	public List<ErpDiscountLineModel> getDiscounts() {
 		return this.discounts;
 	}
 	
 	
 
-	public void setDiscounts(List discounts) {
+	public void setDiscounts(List<ErpDiscountLineModel> discounts) {
 		this.discounts = discounts;
 	}
 	
@@ -1058,8 +995,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public double getTotalDiscountValue() {
 		double discountValue = 0.0;
 		if (this.discounts != null && this.discounts.size() > 0) {
-			for (Iterator iter = this.discounts.iterator(); iter.hasNext();) {
-				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = iter.next();
 				discountValue += MathUtil.roundDecimal(discountLine.getDiscount().getAmount());
 			}
 		}
@@ -1067,8 +1004,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	public void handleDeliveryPass() {
 		int count = 0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if(line.lookupFDProduct().isDeliveryPass()){
 				count++;
 			}
@@ -1109,11 +1046,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 	}
 
-	public List getUnavailablePasses() {
+	public List<DlvPassAvailabilityInfo> getUnavailablePasses() {
 		return unavailablePasses;
 	}
 
-	public void setUnavailablePasses(List unavailablePasses) {
+	public void setUnavailablePasses(List<DlvPassAvailabilityInfo> unavailablePasses) {
 		this.unavailablePasses = unavailablePasses;
 	}
 	
@@ -1131,8 +1068,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	public boolean containsUnlimitedPass(){
 		boolean contains = false;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI line = i.next();
 			if(line.lookupFDProduct().isDeliveryPass()){
 				String skuCode = line.getSkuCode();
 				if(DeliveryPassType.getEnum(skuCode).isUnlimited()){
@@ -1151,8 +1088,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	public boolean hasAdvanceOrderItem() {
 		boolean hasAOItem = false;
 
-		for (Iterator i = this.orderLines.iterator(); i.hasNext() && !hasAOItem;) {
-			FDCartLineI line = (FDCartLineI) i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext() && !hasAOItem;) {
+			FDCartLineI line = i.next();
 			hasAOItem = line.hasAdvanceOrderFlag();
 		}
 		return hasAOItem;
@@ -1168,10 +1105,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	/*
 	 * Get the product keys of the line items.
 	 */
-	public Set getProductKeysForLineItems() {
-		Set prodKeysInCart = new HashSet();
-		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI) i.next();
+	public Set<String> getProductKeysForLineItems() {
+		Set<String> prodKeysInCart = new HashSet<String>();
+		for ( FDCartLineI cartLine : getOrderLines() ) {
 			String productId = cartLine.getProductRef().getContentKey().getId();
 			prodKeysInCart.add(productId);
 		}
@@ -1185,8 +1121,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		String desc = "NONE";
 		//Show any redeemed sample line if any.
 		if ( this.sampleLines != null && this.sampleLines.size() > 0) {
-			for(Iterator i = this.sampleLines.iterator(); i.hasNext();){
-				FDCartLineI cartLine = (FDCartLineI)i.next();
+			for(Iterator<FDCartLineI> i = this.sampleLines.iterator(); i.hasNext();){
+				FDCartLineI cartLine = i.next();
 				Discount discount =  cartLine.getDiscount();
 				String code = discount.getPromotionCode();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(code);
@@ -1198,18 +1134,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		return desc;
 	}
 
-	public List getRecommendedItemList() {
-		return recommendedItemList;
-	}
-
-	public void setRecommendedItemList(List recommendedItemList) {
-		this.recommendedItemList = recommendedItemList;
-	}
-	
 	public int getLineItemDiscountCount(String promoCode){
-		Set uniqueDiscountedProducts =new HashSet(); 
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
+		Set<String> uniqueDiscountedProducts =new HashSet<String>(); 
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
 			if(cartLine.hasDiscount(promoCode)) {
 				uniqueDiscountedProducts.add(cartLine.getProductRef().getContentKey().getId());
 			}
@@ -1218,8 +1146,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public void clearLineItemDiscounts(){
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
 			if(cartLine.getDiscount() !=  null) cartLine.removeLineItemDiscount();
 			
 			try {
@@ -1232,10 +1160,9 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public double getTotalLineItemsDiscountAmount() {
-		// TODO Auto-generated method stub
 		double discountAmt=0;
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
 			if(cartLine.getDiscount() !=  null){
 				discountAmt+=cartLine.getDiscountAmount();
 			}
@@ -1243,36 +1170,33 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return discountAmt;
 	}
 	
-	public Set getUniqueSavingsIds() {
-		Set saveIdsInCart = new HashSet();
-		for (Iterator i = this.getOrderLines().iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI) i.next();
+	public Set<String> getUniqueSavingsIds() {
+		Set<String> saveIdsInCart = new HashSet<String>();
+		for ( FDCartLineI cartLine : getOrderLines() ) {
 			saveIdsInCart.add(cartLine.getSavingsId());;
 		}
 		return saveIdsInCart;
 	}
 	
 	public boolean hasHeaderDiscount() {
-		// TODO Auto-generated method stub
-		List l = this.getDiscounts();
+		List<ErpDiscountLineModel> l = this.getDiscounts();
 		if(l.isEmpty())
 			return false;
 		return true;
 	}
 
-	public List getSelectedGiftCards() {
+	public List<ErpGiftCardModel> getSelectedGiftCards() {
 		return selectedGiftCards;
 	}
 
-	public void setSelectedGiftCards(List selectedGiftCards) {
+	public void setSelectedGiftCards(List<ErpGiftCardModel> selectedGiftCards) {
 		this.selectedGiftCards = selectedGiftCards;
 	}
 
 	public double getTotalAppliedGCAmount(){
 		double gcBal = 0.0;		
-		if(this.getSelectedGiftCards() != null && this.getSelectedGiftCards().size() > 0){
-			for(Iterator it = this.getSelectedGiftCards().iterator();it.hasNext();){
-				ErpGiftCardModel model = (ErpGiftCardModel)it.next();
+		if ( this.getSelectedGiftCards() != null && this.getSelectedGiftCards().size() > 0 ) {
+			for ( ErpGiftCardModel model : getSelectedGiftCards() ) {
 				gcBal += model.getBalance();
 			}
 		}
@@ -1294,9 +1218,16 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.bufferAmt = bufferAmt;
 	}
 	
+	/**
+	 * Override to prevent saving it
+	 * @return
+	 */
+	public boolean isPersistent() {
+		return true;
+	}
+
 	public void setPricingContextToOrderLines(PricingContext pCtx) {
-		for (Iterator i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI)i.next();
+		for (FDCartLineI cartLine : this.orderLines) {
 			cartLine.setPricingContext(pCtx);
 			try {
 				OrderLineUtil.cleanup(cartLine);

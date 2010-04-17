@@ -1,11 +1,3 @@
-/*
- * $Workfile:$
- *
- * $Date:$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
@@ -37,16 +29,11 @@ import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-/**
- *
- *
- * @version $Revision:$
- * @author $Author:$
- */
 public class OrderLineUtil {
 	
 	private final static Category LOGGER = LoggerFactory.getInstance(OrderLineUtil.class);
@@ -59,22 +46,20 @@ public class OrderLineUtil {
 	 * CCL
 	 * brings a list of old items up to date, throwing away anything that can't be updated
 	 */
-	public static List updateCCLItems(List listItems) throws FDResourceException {
+	public static List<FDCustomerListItem> updateCCLItems(List<FDCustomerListItem> listItems) throws FDResourceException {
 		assert (listItems != null);
 		
-		List validItems = new ArrayList(listItems.size());
+		List<FDCustomerListItem> validItems = new ArrayList<FDCustomerListItem>(listItems.size());
 
-		for (Iterator i = listItems.iterator(); i.hasNext();) {
+		for (Iterator<FDCustomerListItem> i = listItems.iterator(); i.hasNext();) {
 			FDCustomerProductListLineItem pl = (FDCustomerProductListLineItem)i.next();
 			FDProductSelectionI ps;
 			try {
-				ps = (FDProductSelectionI)pl.convertToSelection();
+				ps = pl.convertToSelection();
 			} catch (FDSkuNotFoundException e1) {
-				// TODO Auto-generated catch block
 	            LOGGER.warn("No sku found for " + pl);
 				continue;
 			} catch (FDResourceException e1) {
-				// TODO Auto-generated catch block	
 				LOGGER.warn("Resource exception (" + pl + ')');
 				continue;
 			} 
@@ -105,12 +90,11 @@ public class OrderLineUtil {
 	/**
 	 * brings a list of old items up to date, throwing away anything that can't be updated
 	 */
-	public static List update(List productSelections, boolean removeUnavailable) throws FDResourceException {
+	public static List<FDCartLineI> update(List<FDCartLineI> productSelections, boolean removeUnavailable) throws FDResourceException {
 
-		List validSelections = new ArrayList(productSelections.size());
+		List<FDCartLineI> validSelections = new ArrayList<FDCartLineI>(productSelections.size());
 
-		for (Iterator i = productSelections.iterator(); i.hasNext();) {
-			FDProductSelectionI ps = (FDProductSelectionI) i.next();
+		for ( FDCartLineI ps : productSelections ) {
 			try {
 				OrderLineUtil.cleanup(ps);
 				validSelections.add(ps);
@@ -125,16 +109,16 @@ public class OrderLineUtil {
 		return validSelections;
 	}
 	
-	public static List cleanAndRemoveDuplicateProductSelections(List productSelections, boolean removeUnavailable) throws FDResourceException {
-		List cleanList = update(productSelections,removeUnavailable);
+	public static List<FDCartLineI> cleanAndRemoveDuplicateProductSelections(List<FDCartLineI> productSelections, boolean removeUnavailable) throws FDResourceException {
+		List<FDCartLineI> cleanList = update(productSelections,removeUnavailable);
 		return removeDuplicateProductSelections(cleanList);
 	}
 	
 
-	public static List removeDuplicateProductSelections(List productSelections) throws FDResourceException {
-		List cleanList = new ArrayList(productSelections);
+	public static List<FDCartLineI> removeDuplicateProductSelections(List<FDCartLineI> productSelections) throws FDResourceException {
+		List<FDCartLineI> cleanList = new ArrayList<FDCartLineI>(productSelections);
 		for (int i = 0; i < cleanList.size() - 1; i++) {
-			if (OrderLineUtil.isSameConfiguration((FDProductSelectionI) cleanList.get(i), (FDProductSelectionI) cleanList.get(i + 1))) {
+			if (OrderLineUtil.isSameConfiguration(cleanList.get(i), cleanList.get(i + 1))) {
 				cleanList.remove(i + 1);
 				i--;
 			}
@@ -142,14 +126,13 @@ public class OrderLineUtil {
 		return cleanList;
 	}
 
-	public static List getValidProductSelectionsFromCCLItems(List cclItems) throws FDResourceException {
-		List productSelections = new ArrayList();
-		for (Iterator it = cclItems.iterator(); it.hasNext();) {
+	public static List<FDProductSelectionI> getValidProductSelectionsFromCCLItems(List<FDCustomerListItem> cclItems) throws FDResourceException {
+		List<FDProductSelectionI> productSelections = new ArrayList<FDProductSelectionI>();
+		for (Iterator<FDCustomerListItem> it = cclItems.iterator(); it.hasNext();) {
 			FDCustomerProductListLineItem pl = (FDCustomerProductListLineItem)it.next(); 
 			try {
 				FDProductSelectionI item = pl.convertToSelection();
-				item.setRecipeSourceId(pl.getRecipeSourceId());
-				productSelections.add(pl.convertToSelection());
+				productSelections.add( item );
 			} catch (FDSkuNotFoundException e) {
 				// Invalid selections are omitted
 				continue;
@@ -160,10 +143,26 @@ public class OrderLineUtil {
 		return productSelections;
 	}
 
-	public static void describe(FDProductSelectionI theProduct) throws FDResourceException, FDInvalidConfigurationException {
+	public static boolean isValidCustomerList(List<FDCustomerListItem> cclItems) throws FDResourceException {
+		for ( FDCustomerListItem item : cclItems ) {
+			if ( item instanceof FDCustomerProductListLineItem ) {
+				FDCustomerProductListLineItem pl = (FDCustomerProductListLineItem)item; 
+				try {
+					pl.convertToSelection();
+				} catch (FDSkuNotFoundException e) {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static void describe(FDProductSelectionI theProduct) throws FDInvalidConfigurationException {
 		ProductModel prodNode = theProduct.lookupProduct();
 		if (prodNode == null) {
-			throw new FDInvalidConfigurationException("Can't find product in store for selection " + theProduct.getProductRef());
+			throw new FDInvalidConfigurationException.Unavailable("Can't find product in store for selection " + theProduct.getProductRef());
 		}
 		
 		theProduct.setDescription(prodNode.getFullName());
@@ -180,14 +179,12 @@ public class OrderLineUtil {
 		try {
 			theProduct.setConfigurationDesc(createConfigurationDescription(theProduct));
 		} catch (FDSkuNotFoundException e) {
-			throw new FDInvalidConfigurationException(e);
+			throw new FDInvalidConfigurationException.Unavailable(e,"Sku not found");
 		}
 
 	}
 
-	private static String createConfigurationDescription(FDProductSelectionI theProduct)
-		throws FDResourceException,
-		FDSkuNotFoundException {
+	private static String createConfigurationDescription(FDProductSelectionI theProduct) throws FDSkuNotFoundException {
 
 		FDProduct product = theProduct.lookupFDProduct();
 		ProductModel prodNode = theProduct.lookupProduct();
@@ -198,7 +195,7 @@ public class OrderLineUtil {
 		//
 		// add sales unit description
 		//
-		if (theProduct == null) {
+		if (product == null) {
 			throw new FDSkuNotFoundException("No current product found for " + theProduct.getSku());
 		}
 		FDSalesUnit unit = product.getSalesUnit(theProduct.getConfiguration().getSalesUnit());
@@ -228,25 +225,23 @@ public class OrderLineUtil {
 		//
 		// add description of sku variations
 		//
-		List varMatr = skuNode.getVariationMatrix();
-		for (Iterator varIter = varMatr.iterator(); varIter.hasNext();) {
-			DomainValue dv =(DomainValue) varIter.next();
+		List<DomainValue> varMatr = skuNode.getVariationMatrix();
+		for ( DomainValue dv : varMatr ) {
 			if (dv == null)
 				continue;
 			if (confDescr.length() > 0)
 				confDescr.append(", ");
 			confDescr.append(dv.getLabel().trim());
 		}
-		List varOpts = skuNode.getVariationOptions();
-		for (Iterator optIter = varOpts.iterator(); optIter.hasNext();) {
-			DomainValue dv = (DomainValue) optIter.next();
+		List<DomainValue> varOpts = skuNode.getVariationOptions();
+		for ( DomainValue dv : varOpts ) {
 			//
 			// only add this to the description if it can be used to uniquely describe the selected sku
 			//
 			boolean useThis = false;
-			List skus = prodNode.getPrimarySkus();
-			for (ListIterator li = skus.listIterator(); li.hasNext();) {
-				SkuModel s = (SkuModel) li.next();
+			List<SkuModel> skus = prodNode.getSkus();
+			for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
+				SkuModel s = li.next();
 				if (s.isUnavailable()) {
 					li.remove();
 				}
@@ -254,11 +249,9 @@ public class OrderLineUtil {
 			if (skus.size() == 1) {
 				useThis = false;
 			} else {
-				for (Iterator skIter = skus.iterator(); skIter.hasNext();) {
-					SkuModel testSku = (SkuModel) skIter.next();
-					List variationOptions = testSku.getVariationOptions();
-					for (Iterator voIter = variationOptions.iterator(); voIter.hasNext();) {
-						DomainValue testDv = (DomainValue) voIter.next();
+				for ( SkuModel testSku : skus ) {
+					List<DomainValue> variationOptions = testSku.getVariationOptions();
+					for ( DomainValue testDv : variationOptions ) {
 						if (dv.getDomain().equals(testDv.getDomain()) && !dv.equals(testDv)) {
 							useThis = true;
 						}
@@ -279,7 +272,7 @@ public class OrderLineUtil {
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation variation = variations[i];
 
-			String optionName = (String) theProduct.getConfiguration().getOptions().get(variation.getName());
+			String optionName = theProduct.getConfiguration().getOptions().get(variation.getName());
 			if (optionName == null)
 				continue;
 
@@ -326,18 +319,16 @@ public class OrderLineUtil {
 			return false;
 		}
 
-		Map config1 = cartLine1.getOptions();
-		Map config2 = cartLine2.getOptions();
-		for (Iterator i = config1.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			Object c1 = e.getKey();
-			Object cv2 = config2.get(c1);
+		Map<String,String> config1 = cartLine1.getOptions();
+		Map<String,String> config2 = cartLine2.getOptions();
+		for ( Map.Entry<String,String> e : config1.entrySet() ) {
+			String c1 = e.getKey();
+			String cv2 = config2.get(c1);
 
 			if (cv2 == null || !cv2.equals(e.getValue())) {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -362,18 +353,16 @@ public class OrderLineUtil {
 			return false;
 		}
 	
-		Map config1 = cartLine1.getOptions();
-		Map config2 = cartLine2.getOptions();
-		for (Iterator i = config1.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
-			Object c1 = e.getKey();
-			Object cv2 = config2.get(c1);
+		Map<String,String> config1 = cartLine1.getOptions();
+		Map<String,String> config2 = cartLine2.getOptions();
+		for ( Map.Entry<String,String> e : config1.entrySet() ) {
+			String c1 = e.getKey();
+			String cv2 = config2.get(c1);
 	
 			if (cv2 == null || !cv2.equals(e.getValue())) {
 				return false;
 			}
-		}
-	
+		}	
 		return true;
 	}
 	
@@ -436,12 +425,12 @@ public class OrderLineUtil {
 		}
 
 		// validate options
-		Map conf = config.getOptions();
-		Set currOptions = new HashSet();
+		Map<String,String> conf = config.getOptions();
+		Set<String> currOptions = new HashSet<String>();
 		FDVariation[] variations = product.getVariations();
 		for (int vi = 0; vi < variations.length; vi++) {
 			FDVariation var = variations[vi];
-			String varOpt = (String) conf.get(var.getName());
+			String varOpt = conf.get(var.getName());
 			currOptions.add(var.getName());
 			if (varOpt == null) {
 				throw new FDInvalidConfigurationException.MissingVariation("Missing variation found " + var.getName());
@@ -466,24 +455,22 @@ public class OrderLineUtil {
 	}
 
 
-	public static void cleanProductLists(List lists) throws FDResourceException {
+	public static void cleanProductLists(List<? extends FDCustomerProductList> lists) throws FDResourceException {
 		assert (lists != null);
-		for (Iterator it = lists.iterator(); it.hasNext();) {
-			FDCustomerProductList pl = (FDCustomerProductList) it.next();
+		for ( FDCustomerProductList pl : lists ) {
 			pl.cleanList();
 		}	
 	}
 
 	
 
-	public static Set collectDepartmentNames(Collection orderlines) {
+	public static Set<String> collectDepartmentNames(Collection<FDCartLineI> orderlines) {
 		if (orderlines == null || orderlines.size() == 0)
-			return Collections.EMPTY_SET;
+			return Collections.emptySet();
 		
-		Set depts = new HashSet();
+		Set<String> depts = new HashSet<String>();
 		
-		for (Iterator it=orderlines.iterator(); it.hasNext(); ) {
-			FDCartLineI orderLine = (FDCartLineI) it.next();
+		for (FDCartLineI orderLine : orderlines ) {
 			depts.add(orderLine.getDepartmentDesc());
 		}
 		

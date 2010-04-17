@@ -1,12 +1,22 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <table cellpadding="0" cellspacing="0" border="0" align="center">
 	<tr valign="top">
-<fd:CCLCheck>			
+<fd:CCLCheck>
 		<td><img src="/media_stat/images/layout/clear.gif" width="20" height="1"></td>
 		<td width="237" class="text13">
-			<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span><font class="space2pix"><br><br></font>
-			<font class="text12bold" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
-			<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
-			 </td>
+			<!-- STANDING ORDERS SECTION -->
+			<div id="standingorders-section">
+				<div class="text15" style="font-weight: bold;">Your Standing Orders</div>
+				<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933">AUTOMATIC RECURRING DELIVERIES</div>
+<%@ include file="/quickshop/includes/so_lists.jspf" %>
+			</div>
+			<div style="height: 25px"></div>
+			<div>
+				<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span><font class="space2pix"><br><br></font>
+				<font class="text12bold" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
+				<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+			</div>
+		 </td>
         <td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
 		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		<td width="20"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
@@ -22,15 +32,13 @@
         <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
 		</td>
         </fd:IncludeMedia>        
-</tr>
+	</tr>
 </table> 
 
-        <div align="center">
-            <img src="/media_stat/images/layout/line_cccccc.gif" width="500" height="1">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" border="0"><br>			
-			<br><span class="space2pix"><br></span>
-			<span class="bodyCopy"><a href="/index.jsp"><b>Click here to continue shopping from our home page!</b></a></span><br><br>
-			<img src="/media_stat/images/template/quickshop/9managers_s.jpg" width="500" height="122" vspace="6" alt="Department Managers" border="0">
-		</div>
-
-
+<div align="center">
+	<img src="/media_stat/images/layout/line_cccccc.gif" width="500" height="1">
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" border="0"><br>			
+	<br><span class="space2pix"><br></span>
+	<span class="bodyCopy"><a href="/index.jsp"><b>Click here to continue shopping from our home page!</b></a></span><br><br>
+	<img src="/media_stat/images/template/quickshop/9managers_s.jpg" width="500" height="122" vspace="6" alt="Department Managers" border="0">
+</div>

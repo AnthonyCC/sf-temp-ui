@@ -7,6 +7,8 @@ import com.freshdirect.framework.util.NVL;
 
 public class AddressModel extends ModelSupport implements AddressI {
 
+	private static final long	serialVersionUID	= 5400543540252405370L;
+	
 	private String address1 = "";
 	private String address2 = "";
 	private String apartment = "";

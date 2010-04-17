@@ -16,7 +16,6 @@ import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmLateIssueModel;
 import com.freshdirect.crm.CrmManager;
 import com.freshdirect.customer.EnumComplaintStatus;
-import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -29,7 +28,6 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDOrderHistory;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
-import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -66,7 +64,7 @@ public class CustomerSummaryUtil {
 
 
 	/* @return List<CrmCaseModel> */
-	public List getRecentCases(int n) throws FDResourceException {
+	public List<CrmCaseModel> getRecentCases(int n) throws FDResourceException {
 		CrmCaseTemplate template = new CrmCaseTemplate();
 		template.setCustomerPK( new PrimaryKey(user.getIdentity().getErpCustomerPK()));
 		// template.setSortBy(request.getParameter("sortBy"));
@@ -74,7 +72,7 @@ public class CustomerSummaryUtil {
 		template.setStartRecord(0);
 		template.setEndRecord(n);
 		
-		List recentCases = CrmSession.findCases(this.request.getSession(), template);
+		List<CrmCaseModel> recentCases = CrmSession.findCases(this.request.getSession(), template);
 		
 		return recentCases;
 	}
@@ -119,10 +117,21 @@ public class CustomerSummaryUtil {
 
 
 	String sourceToMethod(EnumTransactionSource source) {
-		return EnumTransactionSource.CUSTOMER_REP.equals(source) ?
+		switch(source) {
+		case CUSTOMER_REP:
+			return "CSR";
+		case SYSTEM:
+			return "SYSTEM";
+		case STANDING_ORDER:
+			return "STANDING ORDER";
+		default:
+			return "CUSTOMER";
+		}
+
+		/* return EnumTransactionSource.CUSTOMER_REP.equals(source) ?
 				"CSR" :
 				EnumTransactionSource.SYSTEM.equals(source) ?
-						"SYSTEM" : "CUSTOMER";
+						"SYSTEM" : "CUSTOMER"; */
 	}
     
     public String getCreatedBy(FDOrderInfoI order) {
@@ -140,7 +149,7 @@ public class CustomerSummaryUtil {
 			CrmCaseAction o1 = (CrmCaseAction) arg0;
 			CrmCaseAction o2 = (CrmCaseAction) arg1;
 
-			// revers order
+			// reverse order
 			return -1*(o1.getTimestamp().compareTo(o2.getTimestamp() ) );
 		}
 	};

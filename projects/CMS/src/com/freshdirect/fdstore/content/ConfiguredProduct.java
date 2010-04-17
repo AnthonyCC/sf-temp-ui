@@ -214,9 +214,9 @@ public class ConfiguredProduct extends ProxyProduct {
 		return suAttr == null ? "EA" : (String) suAttr;
 	}
 	
-	public Map getOptions() {
+	public Map<String,String> getOptions() {
 		Object optAttr = super.getCmsAttributeValue("OPTIONS");
-		Map options = optAttr == null ? Collections.EMPTY_MAP
+		Map<String,String> options = optAttr == null ? Collections.EMPTY_MAP
 				: ErpOrderLineUtil.convertStringToHashMap((String) optAttr);
 		if (!options.isEmpty()) {
 			// perform a bit of cleanup (remove extra options)
@@ -226,7 +226,7 @@ public class ConfiguredProduct extends ProxyProduct {
 				if (fdv.length == 0) {
 					options.clear();
 				} else {
-					Set s = new HashSet(fdv.length);
+					Set<String> s = new HashSet<String>(fdv.length);
 					for (int i = 0; i < fdv.length; i++) {
 						s.add(fdv[i].getName());
 					}

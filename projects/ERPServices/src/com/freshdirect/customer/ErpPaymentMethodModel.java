@@ -11,6 +11,8 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 public abstract class ErpPaymentMethodModel extends ModelSupport implements ErpPaymentMethodI {
 
+	private static final long	serialVersionUID	= -3496284200065106331L;
+	
 	private String customerId;	
 	private String name;
 	private String accountNumber;

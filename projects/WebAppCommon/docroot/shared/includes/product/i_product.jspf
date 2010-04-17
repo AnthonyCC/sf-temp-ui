@@ -19,6 +19,13 @@ This include expects the following:
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.common.pricing.CharacteristicValuePrice"%>
+<%@page import="com.freshdirect.common.pricing.Pricing"%>
 
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -33,6 +40,7 @@ This include expects the following:
 if ( skuSize == 0 ) {
 	%><%@ include file="/shared/includes/product/i_product_unavailable.jspf"%><%
 } else {
+	ProductModel prd = (ProductModel) productNode;
 	
     boolean hasTemplate = templateLine != null;
     String skuCode = hasTemplate ? templateLine.getSkuCode() : request.getParameter("skuCode");
@@ -47,11 +55,11 @@ if ( skuSize == 0 ) {
     } else {
         if ( skuCode != null ) {
             // locate the proper sku based on request
-            defaultSku = productNode.getSku(skuCode);
+            defaultSku = prd.getSku(skuCode);
         }
         if ( defaultSku == null ) {
             // no sku from request: default is the one with lowest price
-            defaultSku = productNode.getDefaultSku();
+            defaultSku = prd.getDefaultSku();
         }
     }
 
@@ -71,7 +79,7 @@ if ( skuSize == 0 ) {
         }
 
         String reqQuantity = request.getParameter("quantity");
-        double qty = reqQuantity == null ? productNode.getQuantityMinimum() : Double.parseDouble(reqQuantity);
+        double qty = reqQuantity == null ? prd.getQuantityMinimum() : Double.parseDouble(reqQuantity);
         FDConfiguration cfg = new FDConfiguration(qty, request.getParameter("salesUnit"), tmpConfig);
 
     	String variantId = request.getParameter("variant");
@@ -85,8 +93,8 @@ if ( skuSize == 0 ) {
     
     if ( CartName.QUICKSHOP.equals(cartMode) || CartName.ADD_TO_CART.equals(cartMode) ) {
         formAction
-	    	.append("catId=").append(productNode.getParentNode())
-	    	.append("&productId=").append(productNode);
+	    	.append("catId=").append(prd.getParentNode())
+	    	.append("&productId=").append(prd);
 
         // append parameters such SmartStore DYF and Smart Search tracking codes ...
         FDURLUtil.appendCommonParameters(formAction, request.getParameterMap());
@@ -102,25 +110,26 @@ if ( skuSize == 0 ) {
 
     } else if ( CartName.MODIFY_LIST.equals(cartMode) ) {
 		formAction.append(CclUtils.CC_LIST_ID).append('=').append(request.getAttribute(CclUtils.CC_LIST_ID));
+		formAction.append("&qcType=" + request.getAttribute("qcType"));
     } else {
 		formAction.append(request.getQueryString());
     }
-    %>
-    
-	<table width="100%" cellpadding="0" cellspacing="0" border="0"> <%-- Outermost table 1 --%>
-	
-		<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
-		
+%>
+	<form id='product_form' method='post' name="productForm" action="<%= formAction %>">
+<%	if ( CartName.MODIFY_CART.equals(cartMode) ) {
+%>	<input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
+	<input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
+	<input type="hidden" name="CCListId" value="<%=request.getAttribute(CclUtils.CC_LIST_ID)%>"/>
+<%	}
+	if ( request.getParameter("fdsc.source") != null ) {
+%>	<input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/>
+<% 	}
+%>	<input type="hidden" name="productId" value='<%= templateLine.getProductName() %>'>
+	<input type="hidden" name="catId" value='<%= templateLine.getCategoryName() %>'>
+
+		<table width="100%" cellpadding="0" cellspacing="0" border="0"> <%-- Outermost table 1 --%>
 			<tr><td <%= !isWineLayout ? "align=\"right\"":""%>>
 			
-        		<% if ( CartName.MODIFY_CART.equals(cartMode) ) { %>
-            		<input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
-            		<input type="hidden" name="CCL_COPY_TYPE" value="SINGLE"/>
-            		<input type="hidden" name="CCListId" value="<%=request.getAttribute(CclUtils.CC_LIST_ID)%>"/>
-		        <% } %>
-        		<% if ( request.getParameter("fdsc.source") != null ) { %>
-            		<input type="hidden" name="fdsc.source" value="<%=request.getParameter("fdsc.source")%>"/>
-        		<% } %>
         		
     			<%
 				    boolean hasSingleSalesUnit = (1 == defaultProduct.getSalesUnits().length);
@@ -194,8 +203,6 @@ if ( skuSize == 0 ) {
 				    }
 			    </script>
 					
-				<input type="hidden" name="productId" value='<%= templateLine.getProductName() %>'>
-				<input type="hidden" name="catId" value='<%= templateLine.getCategoryName() %>'>
 
     			<%    
     				if ( !isWineLayout ) {
@@ -229,12 +236,12 @@ if ( skuSize == 0 ) {
 
 					}
     
-					String productTitle = productNode.getFullName().toUpperCase(); 
+					String productTitle = prd.getFullName().toUpperCase(); 
 					String productTitle2 = null;
 					if ( isWineLayout ) {
-						productTitle = productNode.getFullName().toUpperCase();
-						String thisProdBrandLabel = productNode.getPrimaryBrandName();
-						List wineVintage=productNode.getWineVintage();		
+						productTitle = prd.getFullName().toUpperCase();
+						String thisProdBrandLabel = prd.getPrimaryBrandName();
+						List wineVintage=prd.getWineVintage();		
 						if ( wineVintage != null && wineVintage.size() > 0 ) {
 							DomainValue dValue = (DomainValue)wineVintage.get(0);
 							productTitle = new StringBuffer(100).append(productTitle).append(" ").append( dValue.getLabel() ).toString();
@@ -255,7 +262,7 @@ if ( skuSize == 0 ) {
 				        %><br/><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br/><%
 				    }
 				
-				    String akaName = productNode.getAka();
+				    String akaName = prd.getAka();
 				    if ( (akaName != null) && !"".equals(akaName) ) {
 				        %>"<%= akaName %>"<br/><%
 				    }
@@ -451,7 +458,7 @@ if ( skuSize == 0 ) {
 					            String lpop = "large_pop";
 					            String title = variation.getDescription();
 					            
-					            boolean large = title.equalsIgnoreCase("MARINADE/RUB") || productNode.getParentNode().toString().indexOf("kosher_meat") > -1;
+					            boolean large = title.equalsIgnoreCase("MARINADE/RUB") || prd.getParentNode().toString().indexOf("kosher_meat") > -1;
 				            %>
 				            
 				            <select name="<%= charId %>" class="text11" style="width:165px" onChange="checkFDDefAndSetOption(this.form,'<%= charId %>',this.options[this.selectedIndex].value,'<%=fddefPop%>?catId=<%= templateLine.getCategoryName() %>&prodId=<%= templateLine.getProductName() %>&charName=<%=charName%>&tmpl=<%=large?lpop:spop%>&title=<%=title%>',<%=(large?largePopup:smallPopup).getHeight()%>,<%=(large?largePopup:smallPopup).getWidth()%>);">
@@ -632,7 +639,7 @@ if ( skuSize == 0 ) {
 										<tr>
 											<td style="padding-right:4px;" class="text11bold"><%= productNode.getQuantityText() %><% if (productNode.getQuantityMinimum() != 1) { out.println(" *"); } %></td>
 			                				<td class="text11"><input type="text" class="text11" size="4" name="quantity" value="<%= quantityFormatter.format(defaultQuantity) %>" onChange="chgQty(0);" onBlur="pricing.setQuantity(this.value);"></td>
-											<td width="12" align="right"><a href="javascript:chgQty(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
+											<td width="12" align="right"><a href="javascript:chgQty(<%= prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty(<%= -prd.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
 			                			</tr>
 									</table>
 								</td>
@@ -668,12 +675,12 @@ if ( skuSize == 0 ) {
 					    <script language="javascript">
 						    function chgQty(delta) {
 						        qty = parseFloat(document.productForm.quantity.value) + delta;
-						        if (isNaN(qty) || qty < <%= productNode.getQuantityMinimum() %>) {
-						            qty = <%= productNode.getQuantityMinimum() %>;
-						        } else if (qty >= <%= user.getQuantityMaximum(productNode) %>) {
-						            qty = <%= user.getQuantityMaximum(productNode) %>;
+						        if (isNaN(qty) || qty < <%= prd.getQuantityMinimum() %>) {
+						            qty = <%= prd.getQuantityMinimum() %>;
+						        } else if (qty >= <%= user.getQuantityMaximum(prd) %>) {
+						            qty = <%= user.getQuantityMaximum(prd) %>;
 						        }
-						        qty = Math.floor( (qty-<%= productNode.getQuantityMinimum() %>)/<%=productNode.getQuantityIncrement()%> )*<%=productNode.getQuantityIncrement()%>  + <%= productNode.getQuantityMinimum() %>;
+						        qty = Math.floor( (qty-<%= prd.getQuantityMinimum() %>)/<%=prd.getQuantityIncrement()%> )*<%=prd.getQuantityIncrement()%>  + <%= prd.getQuantityMinimum() %>;
 						        pricing.setQuantity(qty);
 						        document.productForm.quantity.value = qty;
 						    }
@@ -778,9 +785,9 @@ if ( skuSize == 0 ) {
 							%><%= earliestAvailability.toString() %><%
 						}
 
-						SkuModel _defaultSku = !productNode.isUnavailable()? productNode.getDefaultSku():(SkuModel)productNode.getSkus().get(0);
+						SkuModel _defaultSku = !prd.isUnavailable()? prd.getDefaultSku():(SkuModel)prd.getSkus().get(0);
     					if ( _defaultSku != null ) {
-        					FDProduct fdprd = productNode.isUnavailable() ? null : _defaultSku.getProduct();
+        					FDProduct fdprd = prd.isUnavailable() ? null : _defaultSku.getProduct();
         					if ( fdprd.getKosherInfo().isKosherProduction() ) { %>
             					<br/><span class="kosher">*</span> Not available for delivery on Friday, Saturday, or Sunday morning.
             					<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%= EnumDlvRestrictionReason.KOSHER %>" withinHorizon="true">
@@ -834,8 +841,6 @@ if ( skuSize == 0 ) {
 			    <%@ include file="/shared/includes/product/i_partially_frozen.jspf" %>
 			    <%@ include file="/includes/product/i_cancellation_note.jspf" %>			    
 			</td></tr>
-			
-    	</form>
-	</table>
-	
+		</table>
+	</form>
 <% } // END OF "THE BIG IF" :) %>

@@ -2,6 +2,8 @@ package com.freshdirect.common.address;
 
 public class ContactAddressModel extends AddressModel implements BasicContactAddressI {
 
+	private static final long	serialVersionUID	= -7794472986742379373L;
+	
 	private String firstName = "";
 	private String lastName = "";
 	private PhoneNumber phone = new PhoneNumber("");

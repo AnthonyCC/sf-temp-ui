@@ -10,9 +10,9 @@ import java.net.URL;
  * The preferred way to get an logger instance:
  * <PRE>
  *  import com.freshdirect.framework.util.log.LoggerFactory;
- *  import org.apache.log4j.Category;
+ *  import org.apache.log4j.Logger;
  *
- * 	private static Category LOGGER = LoggerFactory.getInstance( MyClass.class );
+ * 	private static Logger LOGGER = LoggerFactory.getInstance( MyClass.class );
  * </PRE>
  * Usage sample:
  * <PRE>
@@ -21,21 +21,21 @@ import java.net.URL;
  *
  * @author Viktor Szathmary
  */
+
 public class LoggerFactory {
 
 	private static boolean configured=false;
 
-
 	/**
 	 * Shorthand for getInstance(clazz.getName())
 	 */	
-	public static Logger getInstance( Class clazz ) {
+	public static Logger getInstance( Class<?> clazz ) {
 		checkConfig();
 		return Logger.getLogger(clazz);
 	}
 
 	/**
-	 * Retrieve a category with named as the name parameter
+	 * Retrieve a logger with named as the name parameter
 	 */	
 	public static Logger getInstance( String name ) {
 		checkConfig();
@@ -45,8 +45,8 @@ public class LoggerFactory {
 
 	private final static void checkConfig() {
 		if (!configured) {
-			if ( !(Category.getCurrentCategories().hasMoreElements() ||
-				Category.getRoot().getAllAppenders().hasMoreElements()) ) {
+			if ( !(LogManager.getCurrentLoggers().hasMoreElements() ||
+				LogManager.getRootLogger().getAllAppenders().hasMoreElements()) ) {
 					// it was not automatically configured, so...
 					try {
 						// try XML based configuration first
@@ -65,7 +65,7 @@ public class LoggerFactory {
 		}
 	}
 
-	private static Category LOGGER = LoggerFactory.getInstance( LoggerFactory.class );
+	private static Logger LOGGER = LoggerFactory.getInstance( LoggerFactory.class );
 
 	/** 
 	 * Demo

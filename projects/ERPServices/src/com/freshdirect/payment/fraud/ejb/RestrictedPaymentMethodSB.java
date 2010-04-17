@@ -17,11 +17,11 @@ public interface RestrictedPaymentMethodSB extends EJBObject {
 
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPrimaryKey(PrimaryKey pk) throws RemoteException;
 
-	public List findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
 	
 	public RestrictedPaymentMethodModel findRestrictedPaymentMethodByPaymentMethodId(String paymentMethodId, EnumRestrictedPaymentMethodStatus status) throws RemoteException;
 	
-	public List findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws RemoteException;
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) throws RemoteException;
 
 	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel model) throws RemoteException;
 
@@ -29,11 +29,11 @@ public interface RestrictedPaymentMethodSB extends EJBObject {
 	
 	public boolean checkBadAccount(ErpPaymentMethodI erpPaymentMethod, boolean useBadAccountCache) throws RemoteException;
 
-	public List loadAllPatterns() throws RemoteException;
+	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws RemoteException;
 
-	public List loadAllRestrictedPaymentMethods() throws RemoteException;
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws RemoteException;
 
-	public List loadAllBadPaymentMethods() throws RemoteException;
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws RemoteException;
 
 	public ErpPaymentMethodI findPaymentMethodByAccountInfo(RestrictedPaymentMethodModel m) throws RemoteException;
 		

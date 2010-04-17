@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.promotion;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,16 +35,16 @@ public class PromotionFactory {
 
 	private final static PromotionFactory INSTANCE = new PromotionFactory();
 	private static Category LOGGER = LoggerFactory.getInstance(PromotionFactory.class);
-	private CacheI cache;
-	private Map promotionMap = new LinkedHashMap();
+	private CacheI<String, PromotionI> cache;
+	private Map<String, PromotionI> promotionMap = new LinkedHashMap<String, PromotionI>();
 	private Date maxLastModified;
-	//private int refreshPeriod = 1200; //20 Minutes
 	
-	private ExpiringReference automaticpromotions = new ExpiringReference(10 * 60 * 1000) {
-		protected Object load() {
+	private ExpiringReference<List<PromotionI>> automaticpromotions = new ExpiringReference<List<PromotionI>>(10 * 60 * 1000) {
+		protected List<PromotionI> load() {
 			try {
 				LOGGER.info("REFRESHING AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+maxLastModified);
-				List promoList = FDPromotionManager.getModifiedOnlyPromos(maxLastModified);
+				@SuppressWarnings( "unchecked" )
+				List<PromotionI> promoList = FDPromotionManager.getModifiedOnlyPromos(maxLastModified);
 				LOGGER.info("REFRESHED AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS. FOUND "+promoList.size());
 				return promoList;
 			} catch (FDResourceException ex) {
@@ -55,15 +54,15 @@ public class PromotionFactory {
 	};
 
 	private PromotionFactory() {
-		this.cache = new ManagedCache("PROMOTION", constructCache());
+		this.cache = new ManagedCache<String, PromotionI>("PROMOTION", constructCache());
 		loadAutomaticPromotions();
 	}
 
 	private void loadAutomaticPromotions(){
 		try {
-			List promoList = FDPromotionManager.getAllAutomtaticPromotions();
-			for (Iterator i = promoList.iterator(); i.hasNext();) {
-				PromotionI promo = (PromotionI) i.next();
+			@SuppressWarnings( "unchecked" )
+			List<PromotionI> promoList = FDPromotionManager.getAllAutomtaticPromotions();
+			for ( PromotionI promo : promoList ) {
 				Date promoModifyDate = promo.getModifyDate();
 				Date now = new Date();
 				if(this.maxLastModified == null || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
@@ -81,11 +80,10 @@ public class PromotionFactory {
 		return INSTANCE;
 	}
 
-	protected synchronized Map getAutomaticPromotionMap() {
-		List promoList = (List) this.automaticpromotions.get();
+	protected synchronized Map<String, PromotionI> getAutomaticPromotionMap() {
+		List<PromotionI> promoList = this.automaticpromotions.get();
 		if(promoList.size() > 0){
-			for (Iterator i = promoList.iterator(); i.hasNext();) {
-				PromotionI promo = (PromotionI) i.next();
+			for ( PromotionI promo : promoList ) {
 				Date promoModifyDate = promo.getModifyDate();
 				Date now = new Date();
 				if(this.maxLastModified == null  || (this.maxLastModified.before(promoModifyDate) && !promoModifyDate.after(now))){
@@ -109,11 +107,11 @@ public class PromotionFactory {
 		return this.promotionMap;
 	}
 	
-	public Collection getAllAutomaticPromotions() {
+	public Collection<PromotionI> getAllAutomaticPromotions() {
 		return this.getAutomaticPromotionMap().values();
 	}
 
-	public Collection getAllAutomaticCodes() {
+	public Collection<String> getAllAutomaticCodes() {
 			//Returns Collection containing Automatic Promo codes -->
 			return this.getAutomaticPromotionMap().keySet();
 	}
@@ -143,7 +141,7 @@ public class PromotionFactory {
 	 * @return
 	 */
 	public PromotionI getAutomaticPromotion(String promoId) {
-		return (PromotionI) this.getAutomaticPromotionMap().get(promoId);
+		return this.getAutomaticPromotionMap().get(promoId);
 	}
 	/**
 	 * 
@@ -187,10 +185,9 @@ public class PromotionFactory {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public Set getPromotionCodesByType(EnumPromotionType type) {
-		Set s = new HashSet();
-		for (Iterator i = this.getAllAutomaticPromotions().iterator(); i.hasNext();) {
-			Promotion promo = (Promotion) i.next();
+	public Set<String> getPromotionCodesByType(EnumPromotionType type) {
+		Set<String> s = new HashSet<String>();
+		for ( PromotionI promo : getAllAutomaticPromotions() ) {
 			if (promo.getPromotionType().equals(type)) {
 				s.add(promo.getPromotionCode());
 			}
@@ -209,12 +206,12 @@ public class PromotionFactory {
 		}
 	}
 
-	private CacheI getCache() {
+	private CacheI<String, PromotionI> getCache() {
 		return this.cache;
 	}
 	
-	private CacheI constructCache(){
-		SimpleLruCache lruCache = new SimpleLruCache();
+	private CacheI<String, PromotionI> constructCache(){
+		SimpleLruCache<String, PromotionI> lruCache = new SimpleLruCache<String, PromotionI>();
 		lruCache.setName("PROMOTION");
 		lruCache.setCapacity(ErpServicesProperties.getPromotionRTSizeLimit());
 		lruCache.setTimeout(FDStoreProperties.getPromotionRTRefreshPeriod());

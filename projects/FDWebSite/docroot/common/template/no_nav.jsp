@@ -1,9 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE); %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
@@ -42,16 +42,21 @@
 				inViewCart = true;
 			}
 
-			FDUserI tmplUser = (FDUserI) session.getAttribute( SessionName.USER );
-			FDCartModel tmplCart = null;
-			if(tmplUser != null) {
-				tmplCart = (FDCartModel) tmplUser.getShoppingCart();
-			}
-			if (tmplCart != null && tmplCart instanceof FDModifyCartModel && inViewCart) {
-				modOrder = true;
-					color = "6699cc";
-					suffix = "_blue";
-			}
+	FDUserI tmplUser = (FDUserI) session.getAttribute( SessionName.USER );
+	FDCartModel tmplCart = null;
+	if(tmplUser != null) {
+		tmplCart = (FDCartModel) tmplUser.getShoppingCart();
+	}
+	if (tmplCart != null && tmplCart instanceof FDModifyCartModel && inViewCart) {
+		modOrder = true;
+       	color = "6699CC";
+       	suffix = "_blue";
+	} else if (tmplUser.getCurrentStandingOrder() != null) {
+		// STANDING ORDER
+		modOrder = true;		
+       	color = "996699";
+       	suffix = "_purple";
+	}
 
 		%>
 		<%@ include file="/common/template/includes/globalnav.jspf" %> 
@@ -70,7 +75,8 @@
 					<!-- content lands here -->
 					<tmpl:get name='content'/>
 					<!-- content ends above here-->
-					<br /><br /></td>
+					<br /><br />
+				</td>
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
 			<tr>

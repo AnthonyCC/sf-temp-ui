@@ -19,7 +19,8 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
@@ -43,7 +44,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		super(name);
 	}
 	
-	private final List idGenerator = new ArrayList();
+	private final List<String> idGenerator = new ArrayList<String>();
 	
 	private Date currentDate;
 
@@ -154,10 +155,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		this.assertDataSet("SampleList.xml", getIgnoreModificationDateColumnSpec());
 	}
 
-	private static Map getIgnoreModificationDateColumnSpec() {
-		Set s = new HashSet();
+	private static Map<String,Set<String>> getIgnoreModificationDateColumnSpec() {
+		Set<String> s = new HashSet<String>();
 		s.add("MODIFICATION_DATE");
-		HashMap m = new HashMap();		
+		HashMap<String,Set<String>> m = new HashMap<String,Set<String>>();		
 		m.put("CUST.CUSTOMERLIST", s);
 		return m;
 	}
@@ -167,15 +168,15 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	public void testStore() throws Exception {
 		PrimaryKey customerPk = new PrimaryKey("C1");
 		
-		List								lineItems;
-		Map								configMap;
+		List<FDCustomerListItem>		lineItems;
+		Map<String,String>						configMap;
 		FDCustomerProductListLineItem	slLineItem;
 		FDCustomerRecipeListLineItem		rlLineItem;
 		FDCustomerShoppingList 			shoppingList;
 		FDCustomerRecipeList				recipeList;
 
 		// create the shopping list sample data
-		lineItems = new ArrayList();
+		lineItems = new ArrayList<FDCustomerListItem>();
 		
         slLineItem = new FDCustomerProductListLineItem("VEG0010950",new FDConfiguration(50, "EA"));
         slLineItem.setRecipeSourceId(null);
@@ -185,7 +186,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
         slLineItem.setDeleted(null);
         
         lineItems.add(slLineItem);
-        configMap = new HashMap();
+        configMap = new HashMap<String,String>();
         configMap.put("C_SF_MAR", "LHR");
         slLineItem = new FDCustomerProductListLineItem("SEA0064611",new FDConfiguration(1, "H05", configMap));
         slLineItem.setFrequency(2);
@@ -210,8 +211,8 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		dao.store(conn, shoppingList);
 		assertEquals(shoppingList.getId(), "L1");
 		{
-			Set s = new HashSet();
-			for (Iterator it = shoppingList.getLineItems().iterator(); it.hasNext();) {
+			Set<String> s = new HashSet<String>();
+			for (Iterator<FDCustomerListItem> it = shoppingList.getLineItems().iterator(); it.hasNext();) {
 				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)it.next(); 
 				s.add(item.getId().intern());
 			}
@@ -222,7 +223,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 
 
 		// now create the recipe list sample data
-		lineItems = new ArrayList();
+		lineItems = new ArrayList<FDCustomerListItem>();
 		
         rlLineItem = new FDCustomerRecipeListLineItem();
         rlLineItem.setRecipeId("REC_FOO");
@@ -256,8 +257,8 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		dao.store(conn, recipeList);
 		assertEquals(recipeList.getId(), "L2");
 		{
-			Set s = new HashSet();
-			for (Iterator it = recipeList.getLineItems().iterator(); it.hasNext();) {
+			Set<String> s = new HashSet<String>();
+			for (Iterator<FDCustomerListItem> it = recipeList.getLineItems().iterator(); it.hasNext();) {
 				FDCustomerRecipeListLineItem item = (FDCustomerRecipeListLineItem)it.next(); 
 				s.add(item.getId().intern());
 			}
@@ -347,7 +348,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	        li.setLastPurchase(REC_DATE);
 	        li.setDeleted(MOD_DATE);
 	        
-	        List lineItems = new ArrayList();
+	        List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 	        lineItems.add(li);
 	        l.setLineItems(lineItems);
 			l.setModificationDate(MOD_DATE);
@@ -358,8 +359,8 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 			dao.store(conn, l);
 			assertEquals(l.getId(), "L4");
 			{
-				Set s = new HashSet();
-				for (Iterator it = l.getLineItems().iterator(); it.hasNext();) {
+				Set<String> s = new HashSet<String>();
+				for (Iterator<FDCustomerListItem> it = l.getLineItems().iterator(); it.hasNext();) {
 					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)it.next(); 
 					s.add(item.getId().intern());
 				}
@@ -369,7 +370,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		}
 		
 		{
-	        List lineItems = new ArrayList();
+	        List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 
 			FDCustomerCreatedList l = new FDCustomerCreatedList();
 			l.setCustomerPk(new PrimaryKey("C1"));
@@ -383,7 +384,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	        li.setDeleted(null);
 	        lineItems.add(li);
 	        
-	        Map configMap = new HashMap();
+	        Map<String,String> configMap = new HashMap<String,String>();
 	        configMap.put("C_SF_MAR", "LHR");
 	        li = new FDCustomerProductListLineItem("SEA0064611",new FDConfiguration(1, "H05", configMap));
 	        li.setFrequency(2);
@@ -409,8 +410,8 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 	        dao.store(conn, l);
 			assertEquals(l.getId(), "L5");
 			{
-				Set s = new HashSet();
-				for (Iterator it = l.getLineItems().iterator(); it.hasNext();) {
+				Set<String> s = new HashSet<String>();
+				for (Iterator<FDCustomerListItem> it = l.getLineItems().iterator(); it.hasNext();) {
 					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem)it.next(); 
 					s.add(item.getId().intern());
 				}
@@ -440,19 +441,11 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		
 		String customerPk = "C1";
 		FDIdentity identity = new FDIdentity(customerPk);
-		List  lists = dao.getCustomerCreatedListInfos(conn, identity);
+		List<FDCustomerListInfo>  lists = dao.getCustomerCreatedListInfos(conn, identity);
 		
 		assertEquals(lists.size(), 3);
 		
-		for (Iterator it = lists.iterator(); it.hasNext();) {
-			FDCustomerCreatedListInfo li = (FDCustomerCreatedListInfo) it.next();
-			try {
-				li.getLineItems();
-				fail();
-			} catch (UnsupportedOperationException e) {
-				// Catch valid exception
-			}
-			
+		for (FDCustomerListInfo li : lists) {
 			if (li.getId().equals("L3")) {
 				assertEquals(li.getCreateDate(), li.getModificationDate());
 				assertEquals(li.getCount(), 0);
@@ -478,36 +471,35 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		
 		String customerPk = "C1";
 		FDIdentity identity = new FDIdentity(customerPk);
-		List  lists = dao.getCustomerCreatedLists(conn, identity);
+		List<FDCustomerCreatedList>  lists = dao.getCustomerCreatedLists(conn, identity);
 		
 		assertEquals(lists.size(), 3);
 		
-		for (Iterator it = lists.iterator(); it.hasNext();) {
-			FDCustomerCreatedList li = (FDCustomerCreatedList) it.next();
+		for (FDCustomerCreatedList li : lists) {
 					
 			
 			if (li.getId().equals("L3")) {
 				assertEquals(li.getCreateDate(), li.getModificationDate());
 				assertEquals(li.getCount(), 0);
-				List items = li.getLineItems();
+				List<FDCustomerListItem> items = li.getLineItems();
 				assertEquals(items.size(), 0);
 			}
 
 			if (li.getId().equals("L4")) {
 				assertFalse(li.getCreateDate().equals(li.getModificationDate()));
 				assertEquals(li.getCount(), 0);
-				List items = li.getLineItems();
+				List<FDCustomerListItem> items = li.getLineItems();
 				assertEquals(items.size(), 0);
 			}
 						
 			if (li.getId().equals("L5")) {
 				assertFalse(li.getCreateDate().equals(li.getModificationDate()));
 				assertEquals(li.getCount(), 2);
-				List items = li.getLineItems();
+				List<FDCustomerListItem> items = li.getLineItems();
 				assertEquals(items.size(), 2);
 
-				for (Iterator iter = items.iterator(); iter.hasNext();) {
-					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) iter.next();
+				for (FDCustomerListItem it : items) {
+					FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) it;
 					if (item.getSkuCode().equals("VEG0010950")) {
 						assertEquals(item.getConfiguration(), new FDConfiguration(50, "EA"));
 						assertEquals(item.getFrequency(), 5);
@@ -515,7 +507,7 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 						assertEquals(item.getLastPurchase(), ADD_DATE);
 						assertNull(item.getDeleted());						
 					} else if (item.getSkuCode().equals("SEA0064611")) {
-				        Map configMap = new HashMap();
+				        Map<String,String> configMap = new HashMap<String,String>();
 				        configMap.put("C_SF_MAR", "LHR");
 				        assertEquals(item.getConfiguration(), new FDConfiguration(1, "H05", configMap));
 				        assertEquals(item.getFrequency(), 2);
@@ -585,9 +577,9 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		
 		dao.store(conn, ccl);
 		
-		assertTrue(dao.isCustomerCreatedList(conn, identity, "Test CCL 1"));
-		assertFalse(dao.isCustomerCreatedList(conn, identity, "Test recipe list 1"));
-		assertFalse(dao.isCustomerCreatedList(conn, identity, "N/A list"));
+		assertTrue(dao.isCustomerList(conn, identity, EnumCustomerListType.CC_LIST, "Test CCL 1"));
+		assertFalse(dao.isCustomerList(conn, identity, EnumCustomerListType.CC_LIST, "Test recipe list 1"));
+		assertFalse(dao.isCustomerList(conn, identity, EnumCustomerListType.CC_LIST, "N/A list"));
 		
 	}
 
@@ -652,10 +644,10 @@ public class FDCustomerListDAOTestCase extends DbTestCaseSupport{
 		FDIdentity identityOrig = new FDIdentity("C1");
 		FDIdentity identity = new FDIdentity("C2");
 
-		assertNotNull(dao.getListName(conn, identityOrig, EnumCustomerListType.CC_LIST, "L3"));
+		assertNotNull(dao.getListName(conn, identityOrig, "L3"));
 
-		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L3"));
-		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L4"));
-		assertNull(dao.getListName(conn, identity, EnumCustomerListType.CC_LIST, "L5"));
+		assertNull(dao.getListName(conn, identity, "L3"));
+		assertNull(dao.getListName(conn, identity, "L4"));
+		assertNull(dao.getListName(conn, identity, "L5"));
 	}
 }

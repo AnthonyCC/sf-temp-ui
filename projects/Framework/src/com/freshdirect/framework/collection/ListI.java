@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.collection;
 
 import java.util.List;
@@ -20,9 +12,6 @@ import com.freshdirect.framework.core.*;
  * functionality.  It allows objects to be found by their primary key.
  * Individual elements can be updated by passing the collection a model.
  * The elements can be returned as an enumeration for EJB 1.0 compatibility.
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public interface ListI extends Serializable, List {
 
@@ -86,6 +75,5 @@ public interface ListI extends Serializable, List {
      */
     public Enumeration enumeration();
 
-    
+  
 }
-

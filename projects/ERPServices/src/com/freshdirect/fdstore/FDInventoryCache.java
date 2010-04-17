@@ -59,7 +59,7 @@ public class FDInventoryCache extends FDAbstractCache {
 	
 	private ErpInfoHome lookupInfoHome() {
 		try {
-			return (ErpInfoHome) serviceLocator.getRemoteHome("freshdirect.erp.Info", ErpInfoHome.class);
+			return (ErpInfoHome) serviceLocator.getRemoteHome("freshdirect.erp.Info");
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}

@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.collection;
 
 import java.util.ArrayList;
@@ -25,9 +17,6 @@ import com.freshdirect.framework.core.*;
  * this list supports lazy lookup of the remote objects from a list of primary keys.
  * methods which accept objects or collections as parameters can accept either
  * primary keys or remote objects
- *
- * @version $Revision$
- * @author $Author$
  */
 public abstract class RemoteObjectList implements PersistentListI {
     
@@ -710,11 +699,11 @@ public abstract class RemoteObjectList implements PersistentListI {
      * @param element the model to use to update the collection's corrspeonding element
      */
     public synchronized void update(ModelI model) {
-        if (model.isAnonymous())
-            throw new CollectionException("Can't select an entity to update from an anonymous model");
-        EntityBeanRemoteI ejbremote = (EntityBeanRemoteI) get(model.getPK());
-        makeBackup();
         try {
+	        if (model.isAnonymous())
+	            throw new CollectionException("Can't select an entity to update from an anonymous model");
+	        EntityBeanRemoteI ejbremote = (EntityBeanRemoteI) get(model.getPK());
+	        makeBackup();
             ejbremote.setFromModel(model);
         } catch (RemoteException re) {
             restoreFromBackup();

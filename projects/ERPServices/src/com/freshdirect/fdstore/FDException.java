@@ -1,24 +1,15 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import com.freshdirect.framework.core.ExceptionSupport;
 
 /**
  * Exception for fdstore related errors.
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public class FDException extends ExceptionSupport {
     
-    /**
+	private static final long	serialVersionUID	= -2752574160991126906L;
+
+	/**
      * Default constructor.
      */    
     public FDException() {

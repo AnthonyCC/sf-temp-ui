@@ -3,29 +3,19 @@ package com.freshdirect.webapp.action.fdstore;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.customer.EnumWebServiceType;
-import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -34,58 +24,44 @@ import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpFraudException;
+import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPaymentMethodModel;
-import com.freshdirect.giftcard.ErpRecipentModel;
-import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.giftcard.RecipientModel;
-import com.freshdirect.delivery.DlvZoneInfoModel;
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
-import com.freshdirect.fdstore.FDCachedFactory;
-import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.FDInvalidAddressException;
-import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.customer.FDActionInfo;
-import com.freshdirect.fdstore.FDSalesUnit;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
-import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
-import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
-import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.FDUser;
-import com.freshdirect.fdstore.customer.SavedRecipientModel;
+import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
-import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.giftcard.ErpRecipentModel;
+import com.freshdirect.giftcard.RecipientModel;
+import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.webapp.action.WebActionSupport;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
@@ -94,8 +70,12 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 import com.freshdirect.webapp.taglib.fdstore.UserUtil;
 import com.freshdirect.webapp.taglib.fdstore.UserValidationUtil;
+import com.freshdirect.webapp.util.QuickCartCache;
+import com.freshdirect.webapp.util.ShoppingCartUtil;
 
 public class SubmitOrderAction extends WebActionSupport {
+
+	private static final long	serialVersionUID	= 799322647556961986L;
 
 	private static Category LOGGER = LoggerFactory.getInstance( SubmitOrderAction.class );
 
@@ -103,6 +83,7 @@ public class SubmitOrderAction extends WebActionSupport {
 	private String authCutoffPage;
 	private String ccdAddCardPage;
 	private String gcFraudPage;
+	private FDStandingOrder standingOrder;
 	private String addGcPage = "/gift_card/purchase/add_giftcard.jsp";
 	private String crmAddBulkGcPage = "/gift_card/purchase/add_bulk_giftcard.jsp";
 	
@@ -118,8 +99,13 @@ public class SubmitOrderAction extends WebActionSupport {
 		this.gcFraudPage = gcFraudPage;
 	}
 	
+	public void setStandingOrder(FDStandingOrder standingOrder) {
+		this.standingOrder = standingOrder;
+	}
+
+
 	public String execute() throws Exception {
-		HttpSession session = this.getWebActionContext().getSession();
+		HttpSession session = getWebActionContext().getSession();
 		if (session.getAttribute("ProcessingOrder")!=null) {	
 
 			// another thread is already processing this request
@@ -149,8 +135,8 @@ public class SubmitOrderAction extends WebActionSupport {
 		}
 				
 		try {
-			session.setAttribute("ProcessingOrder", Boolean.TRUE); //attempt to prevent double submmission
-			return this.doExecute();
+			session.setAttribute("ProcessingOrder", Boolean.TRUE); //attempt to prevent double submission
+			return doExecute();
 
 		} finally {
 			session.removeAttribute("ProcessingOrder");
@@ -234,7 +220,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			return ERROR;
 		}
 		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
-        if(user.getRecipentList().size() > FDStoreProperties.getGiftCardRecipientLimit() && !EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
+        if(user.getRecipientList().size() > FDStoreProperties.getGiftCardRecipientLimit() && !EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
     		this.addError("limitReached", formatGCRecipientCountMsg(SystemMessageList.MSG_CHECKOUT_GC_RECIPIENT_COUNT));
     		return ERROR;
     	}
@@ -276,20 +262,19 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-			if(isBulkOrder){
-				List repList = convertSavedToErpRecipienntModel(user.getBulkRecipentList().getFDRecipentsList().getRecipents());
+			if ( isBulkOrder ) {
+				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getBulkRecipentList().getFDRecipentsList().getRecipients() );
 				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,repList,isBulkOrder );			
+				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			} else {
-				List repList = convertSavedToErpRecipienntModel(user.getRecipentList().getRecipents());
+				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getRecipientList().getRecipients() );
 				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,repList,isBulkOrder );			
+				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			}
-
 			
 			//update or create everyItemEverOrdered Customer List
 			try{
-				updateCustomerShoppingList(user, cart, modifying);
+				updateEIEO(user, cart, modifying);
 			} catch(Exception e){
 				LOGGER.error("Error handling every item ever ordered list during checkout", e);
 			}
@@ -382,39 +367,27 @@ public class SubmitOrderAction extends WebActionSupport {
 		}catch(ServiceUnavailableException se){
 			this.addError("service_unavailable", SystemMessageList.MSG_GC_SERVICE_UNAVAILABLE);
 		}catch (ErpAddressVerificationException ae) {
-			//user.incrementFailedAuthorizations();
+						
+			user.setAddressVerificationError(true);
 			
-				HttpServletResponse response = this.getWebActionContext().getResponse();				
-					//response.sendRedirect(this.ccdProblemPage);
-				
-				user.setAddressVerificationError(true);
-				
-				String message =ae.getMessage();
-				message=message.replace("9999",user.getCustomerServiceContact());
-				System.out.println("ae.getMessage() :"+message);
-				this.addError("address_verification_failed", message);
-				user.setAddressVerficationMsg(message);
-				//response.sendRedirect(this.ccdProblemPage);
-			
-
-		}
-		
-		
-		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";		
-	
+			String message =ae.getMessage();
+			message=message.replace("9999",user.getCustomerServiceContact());
+			LOGGER.error( message, ae );
+			this.addError("address_verification_failed", message);
+			user.setAddressVerficationMsg(message);
+			//response.sendRedirect(this.ccdProblemPage);
+		}		
+		return this.getResult().isSuccess() ? "SUCCESS" : "ERROR";	
 	}
 	
-	private List convertSavedToErpRecipienntModel(List savedList)
-	{
-	 	ListIterator i = savedList.listIterator();
-	 	List recList=new ArrayList();
-    	while(i.hasNext()) {    		
-    		SavedRecipientModel srm = (SavedRecipientModel)i.next();
-    		ErpRecipentModel rm=new ErpRecipentModel();
-    		rm.toModel(srm);
-    		recList.add(rm);
-         }
-    	return recList;
+	private List<ErpRecipentModel> convertSavedToErpRecipientModel( List<RecipientModel> savedList ) {
+		List<ErpRecipentModel> recList = new ArrayList<ErpRecipentModel>();
+		for ( RecipientModel srm : savedList ) {
+			ErpRecipentModel rm = new ErpRecipentModel();
+			rm.toModel( srm );
+			recList.add( rm );
+		}
+		return recList;
 	}
 	
 	protected String doExecute() throws FDResourceException {
@@ -426,7 +399,8 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCartModel cart = user.getShoppingCart();
 		FDReservation reservation = cart.getDeliveryReservation();
 
-
+		final EnumCheckoutMode mode = user.getCheckoutMode();
+		
 		// potential double-submission, how else would the user end up here...
 		if (cart.getDeliveryAddress()==null || reservation==null || reservation.getStartTime()==null || reservation.getEndTime()==null || cart.getPaymentMethod()==null ) {
 			return SUCCESS;
@@ -441,6 +415,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		}
 		
 		if(!cart.getZoneInfo().getZoneId().equals(reservation.getZoneId())) {
+			LOGGER.warn( "Invalid reservation : zone id-s do not match!" );
 			this.addError("invalid_reservation", SystemMessageList.MSG_CHECKOUT_MISMATCHED_RESERVATION);
 			return ERROR;
 		}
@@ -526,14 +501,41 @@ public class SubmitOrderAction extends WebActionSupport {
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
 		
 		FDUser fdUser = user.getUser();
-		try {
+
+
+
+		/**
+		 * Prepare a standing order object
+		 * Note that this operation must precede order creation!
+		 */
+		if (EnumCheckoutMode.CREATE_SO == mode) {
+			// this condition is equal to that SO exists but it does not have PK yet
+			standingOrder.setCustomerId(user.getIdentity().getErpCustomerPK());
 			
+			// get default payment method already set by CheckoutControllerTag
+			String pmPK = (String)session.getAttribute("__default_payment_method_pk");
+			if (pmPK == null) {
+				// if not found then request it from the customer manager
+				pmPK = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
+			}
+			standingOrder.setPaymentMethodId(pmPK);
+
+			standingOrder.setAddressId(cart.getDeliveryAddress().getPK().getId());
+
+			standingOrder.setAlcoholAgreement( cart.isAgeVerified() );
+			
+			standingOrder.setupDelivery(cart.getDeliveryReservation());
+		}
+
+
+
+		try {
 			String orderNumber = null;
 			CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 			
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-			Set appliedPromos = null;
+			Set<String> appliedPromos = null;
 			if(user.isEligibleForSignupPromotion()){
 				//If applied promo is signup then store the eligibilty list.
 				appliedPromos = user.getPromotionEligibility().getEligiblePromotionCodes();
@@ -573,12 +575,64 @@ public class SubmitOrderAction extends WebActionSupport {
 				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
 				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
 				info.setPR1(isPR1);
+
 				orderNumber = FDCustomerManager.placeOrder(info, cart, appliedPromos, sendEmail,cra,status );
 			}
+
+
+			/**
+			 * Standing Order related post actions
+			 */
+			if (orderNumber != null && EnumCheckoutMode.NORMAL != mode) {
+				switch(mode) {
+				case CREATE_SO:
+					{
+						try {
+							String soPk = FDStandingOrdersManager.getInstance().manageStandingOrder(cart, standingOrder);
+							standingOrder.setId( soPk );
+						} catch (FDResourceException e) {
+							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
+							LOGGER.warn( e.getFDStackTrace() );
+						}
+					}
+					break;
+				case MODIFY_SO:
+					{
+						// update standing order + customer list
+						try {
+							FDStandingOrdersManager.getInstance().manageStandingOrder(cart, standingOrder);
+							
+							// perform cache cleanup
+							QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, standingOrder.getCustomerListId(), null);
+
+						} catch (FDResourceException e) {
+							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
+							LOGGER.warn( e.getFDStackTrace() );
+							/// result.addError(true, "techical_difficulty", "Failed to update standing order.");
+						}
+						
+
+						standingOrder.clearLastError();
+
+					}
+					break;
+				}
+				
+				// new order created, assign to the particular standing order
+				try {
+					FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderNumber, standingOrder);
+				} catch (FDResourceException e) {
+					LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderNumber, e);
+					LOGGER.warn( e.getFDStackTrace() );
+				}
+
+				FDStandingOrdersManager.getInstance().save( standingOrder );
+			}
+
 			
 			//update or create everyItemEverOrdered Customer List
 			try{
-				updateCustomerShoppingList(user, cart, modifying);
+				updateEIEO(user, cart, modifying);
 			} catch(Exception e){
 				LOGGER.error("Error handling every item ever ordered list during checkout", e);
 			}
@@ -596,10 +650,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			    user.setReservation(null);
 			}
 			
-			if (cart instanceof FDModifyCartModel) {
+			if ( cart instanceof FDModifyCartModel || EnumCheckoutMode.MODIFY_SO == mode ) {
 				// load cart user had before modifying order.
-				FDCartModel originalCart = FDCustomerManager.recognize(user.getIdentity()).getShoppingCart();
-				user.setShoppingCart( originalCart );
+				ShoppingCartUtil.restoreCart(session);
 				
 			} else {
 				// Clear the cart from the session by replacing it with a new cart
@@ -640,6 +693,13 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.updateDlvPassInfo();
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
+			
+
+			// standing orders - return to normal mode
+			if (EnumCheckoutMode.NORMAL != mode && this.getResult().isSuccess()) {
+				user.setCurrentStandingOrder(null);
+				user.setCheckoutMode(EnumCheckoutMode.NORMAL);
+			}
 		} catch (FDAuthenticationException fdae) {
 			LOGGER.warn("Error recalling original cart", fdae);
 			throw new FDResourceException("Error recalling original cart " + fdae.getMessage());
@@ -671,7 +731,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				user.setAddressVerificationError(true);				
 				String message =ae.getMessage();
 				message=message.replace("9999",user.getCustomerServiceContact());
-				System.out.println("ae.getMessage() :"+message);
+				LOGGER.error( message, ae );
 				this.addError("address_verification_failed", message);
 				user.setAddressVerficationMsg(message);
 				response.sendRedirect(this.ccdProblemPage);
@@ -711,7 +771,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			this.addError("payment_indequate", SystemMessageList.MSG_PAYMENT_INADEQUATE);
 			//clear the dummy Payment method.
 			cart.setPaymentMethod(null);
-			List payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
+			List<ErpPaymentMethodI> payMethods = FDCustomerFactory.getErpCustomer(user.getIdentity()).getPaymentMethods();
 			try {
 				HttpServletResponse response = this.getWebActionContext().getResponse();
 				 if (payMethods==null || payMethods.size()==0) {
@@ -763,7 +823,16 @@ public class SubmitOrderAction extends WebActionSupport {
 			new Object[] {new Integer(FDStoreProperties.getGiftCardRecipientLimit()),  UserUtil.getCustomerServiceContact(this.getWebActionContext().getRequest())});
 	}
 	
-	private void updateCustomerShoppingList(FDSessionUser user, FDCartModel cart, boolean modifying) throws FDResourceException {
+
+	/**
+	 * Update or create everyItemEverOrdered Customer List
+	 * 
+	 * @param user
+	 * @param cart
+	 * @param modifying
+	 * @throws FDResourceException
+	 */
+	private void updateEIEO(FDSessionUser user, FDCartModel cart, boolean modifying) throws FDResourceException {
 		FDCustomerShoppingList everyItemList = (FDCustomerShoppingList) FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SHOPPING_LIST, FDCustomerShoppingList.EVERY_ITEM_LIST);
 		
 		if(everyItemList == null){
@@ -771,8 +840,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			everyItemList = FDListManager.generateEveryItemEverOrdered(user.getIdentity());
 		} else {
 		
-			for(Iterator i = cart.getOrderLines().iterator(); i.hasNext();){
-				FDProductSelectionI selection = (FDProductSelectionI) i.next();
+			for( FDProductSelectionI selection : cart.getOrderLines() ) { 
 				everyItemList.mergeSelection(selection, modifying);
 			}
 		}
@@ -787,15 +855,14 @@ public class SubmitOrderAction extends WebActionSupport {
 			PrimaryKey custPk = new PrimaryKey(user.getIdentity().getErpCustomerPK());
 			everyRecipeList = new FDCustomerRecipeList(custPk, FDCustomerRecipeList.EVERY_RECIPE_LIST);
 		}
-		Set recipeIds = new HashSet();
-		for (Iterator i = cart.getOrderLines().iterator(); i.hasNext();) {
-			FDProductSelectionI selection = (FDProductSelectionI) i.next();
+		Set<String> recipeIds = new HashSet<String>();
+		for ( FDProductSelectionI selection : cart.getOrderLines() ) {
 			if (selection.getRecipeSourceId() != null) {
 				recipeIds.add(selection.getRecipeSourceId());
 			}
 		}
-		for (Iterator i = recipeIds.iterator(); i.hasNext();) {
-			everyRecipeList.mergeRecipe((String) i.next(), modifying);
+		for ( String id : recipeIds ) {
+			everyRecipeList.mergeRecipe(id, modifying);
 		}
 		
 		FDListManager.storeCustomerList(everyRecipeList);
@@ -884,10 +951,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			return SUCCESS;
 		}
 		
-
-		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+//		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
         
-
 		ErpAddressModel addModel = cart.getDeliveryAddress();
 		if("professional".equals(request.getParameter("serviceType"))) {
         	addModel.setWebServiceType(EnumWebServiceType.DONATION_BUSINESS);
@@ -926,11 +991,11 @@ public class SubmitOrderAction extends WebActionSupport {
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();		
 
-			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.EMPTY_SET, sendEmail,cra,status,optIn );
+			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.<String>emptySet(), sendEmail,cra,status,optIn );
 			
 			//update or create everyItemEverOrdered Customer List
 			try{
-				updateCustomerShoppingList(user, cart, modifying);
+				updateEIEO(user, cart, modifying);
 			} catch(Exception e){
 				LOGGER.error("Error handling every item ever ordered list during checkout", e);
 			}
@@ -945,7 +1010,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			user.setRedeemedPromotion(null);
 			//CLear the fake delivery address.
 			user.getDonationCart().setDeliveryAddress(null);
-			user.getDonationCart().setOrderLines(Collections.EMPTY_LIST);
+			user.getDonationCart().setOrderLines(Collections.<FDCartLineI>emptyList());
 			
 			user.invalidateCache();
 	        // make sure we're not using stale order history data.
@@ -978,33 +1043,6 @@ public class SubmitOrderAction extends WebActionSupport {
 			String fraudReason = "";
 			fraudReason = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD);
 			this.addError("fraud_check_failed", fraudReason);
-			/*if (EnumFraudReason.MAX_GC_ORDER_TOTAL.equals(ex.getFraudReason())) {
-				fraudReason = formatGCOrderMaxMsg(SystemMessageList.MSG_CHECKOUT_GC_ORDER_TOO_LARGE);
-				this.addError("gc_order_amount_fraud", fraudReason);
-			}else if (EnumFraudReason.MAX_ORDER_COUNT_LIMIT.equals(ex.getFraudReason())) {
-				fraudReason = formatGCOrderCountMsg(SystemMessageList.MSG_CHECKOUT_GC_ORDER_COUNT);
-				this.addError("gc_order_count_fraud", fraudReason);
-			}else {
-			
-				boolean callcenter = "CALLCENTER".equalsIgnoreCase((String) session.getAttribute(SessionName.APPLICATION));
-				if (callcenter) {
-					fraudReason = ex.getFraudReason().getDescription();
-					this.addError("fraud_check_failed", fraudReason);
-				} else {
-					fraudReason = formatPhoneMsg(SystemMessageList.MSG_CHECKOUT_GENERIC_FRAUD);
-					this.addError("fraud_check_failed", fraudReason);
-				}
-			}*/
-			/*if(oneStep) {
-				user.setGCSignupError(true);
-				user.setGcFraudReason(fraudReason);
-				HttpServletResponse response = this.getWebActionContext().getResponse();
-				try {
-					response.sendRedirect(this.gcFraudPage);
-				} catch (IOException ioe) {
-					throw new FDResourceException(ioe.getMessage());
-				}
-			}*/
 		} catch (ErpAuthorizationException ae) {
 			user.incrementFailedAuthorizations();
 			try {

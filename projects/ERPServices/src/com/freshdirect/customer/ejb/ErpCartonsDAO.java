@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.customer.ErpCartonDetails;
@@ -26,7 +25,7 @@ public class ErpCartonsDAO {
 		ps.close();
 	}
 
-	public static void insert(Connection conn, List cartonInfoList) throws SQLException {
+	public static void insert(Connection conn, List<ErpCartonInfo> cartonInfoList) throws SQLException {
 		if (cartonInfoList == null) {
 			return;
 		}
@@ -36,8 +35,7 @@ public class ErpCartonsDAO {
 				"INSERT INTO CUST.CARTON_INFO(SALE_ID, SAP_NUMBER, CARTON_NUMBER, CARTON_TYPE) " +
 							"VALUES (?,?,?,?)");
 			
-		for (Iterator i = cartonInfoList.iterator(); i.hasNext();) {
-			ErpCartonInfo cartonInfo = (ErpCartonInfo) i.next();
+		for ( ErpCartonInfo cartonInfo : cartonInfoList ) {
 			ps.setString(1, cartonInfo.getOrderNumber());
 			ps.setString(2, cartonInfo.getSapNumber());
 			ps.setString(3, cartonInfo.getCartonNumber());
@@ -50,8 +48,7 @@ public class ErpCartonsDAO {
 								"SALE_ID, CARTON_NUMBER, ORDERLINE_NUMBER, " +
 								"MATERIAL_NUMBER, BARCODE, ACTUAL_QUANTITY, ACTUAL_WEIGHT, SALES_UNIT" +
 								") VALUES (?,?,?,?,?,?,?,?)");
-			for(Iterator j = cartonInfo.getDetails().iterator(); j.hasNext();) {
-				ErpCartonDetails details = (ErpCartonDetails) j.next();
+			for ( ErpCartonDetails details : cartonInfo.getDetails() ) {
 				psDetails.setString(1, cartonInfo.getOrderNumber());
 				psDetails.setString(2, cartonInfo.getCartonNumber());
 				psDetails.setString(3, details.getOrderLineNumber());
@@ -73,8 +70,8 @@ public class ErpCartonsDAO {
 	}
 
 	// @return List<ErpCartonInfo>
-	public static List getCartonInfo(Connection conn, PrimaryKey salePk) throws SQLException {
-		ArrayList cartons = new ArrayList();
+	public static List<ErpCartonInfo> getCartonInfo(Connection conn, PrimaryKey salePk) throws SQLException {
+		ArrayList<ErpCartonInfo> cartons = new ArrayList<ErpCartonInfo>();
 		PreparedStatement ps =
 			conn.prepareStatement(
 				"SELECT CI.SALE_ID, CI.SAP_NUMBER, CI.CARTON_NUMBER, CI.CARTON_TYPE, " +
@@ -89,7 +86,7 @@ public class ErpCartonsDAO {
 		ResultSet rs = ps.executeQuery();
 		String currentCartonNumber = "";
 		ErpCartonInfo ci = null;
-		List cartonDetailList = null;
+		List<ErpCartonDetails> cartonDetailList = null;
 		while (rs.next()) {
 			String saleId = rs.getString("SALE_ID");
 			String sapNumber = rs.getString("SAP_NUMBER");
@@ -104,7 +101,7 @@ public class ErpCartonsDAO {
 
 			if(!cartonNumber.equals(currentCartonNumber)) {
 				ci = new ErpCartonInfo(saleId, sapNumber, cartonNumber, cartonType);
-				cartonDetailList = new ArrayList();
+				cartonDetailList = new ArrayList<ErpCartonDetails>();
 				ci.setDetails(cartonDetailList);
 				cartons.add(ci);
 				currentCartonNumber = cartonNumber;

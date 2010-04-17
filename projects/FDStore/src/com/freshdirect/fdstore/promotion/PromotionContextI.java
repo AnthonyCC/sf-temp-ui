@@ -2,9 +2,9 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -70,7 +70,7 @@ public interface PromotionContextI {
 
 	public FDIdentity getIdentity();
 	
-	public void setRulePromoCode(List rulePromoCodes);
+	public void setRulePromoCode(List<String> rulePromoCodes);
 	
 	public boolean hasRulePromoCode (String promoCode);
 
@@ -80,7 +80,7 @@ public interface PromotionContextI {
 	
 	public AssignedCustomerParam getAssignedCustomerParam(String promoId); 
 	
-	public List getEligibleLinesForDCPDiscount(String promoId, Set contentKeys);
+	public List<FDCartLineI> getEligibleLinesForDCPDiscount(String promoId, Set<ContentKey> contentKeys);
 	
 	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type);
 	

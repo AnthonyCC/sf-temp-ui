@@ -1,9 +1,3 @@
-/*
- * Created on Apr 26, 2004
- *
- * To change the template for this generated file go to
- * Window>Preferences>Java>Code Generation>Code and Comments
- */
 package com.freshdirect.fdstore.customer.adapter;
 
 import java.io.Serializable;
@@ -11,7 +5,10 @@ import java.io.Serializable;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 
-public class CustomerRatingAdaptor implements CustomerRatingI,Serializable{
+public class CustomerRatingAdaptor implements CustomerRatingI, Serializable {
+	
+	private static final long	serialVersionUID	= -818326345113597405L;
+	
 	private final ProfileModel profile;
 	private final int validOrderCount;
 	private final boolean unDeclared;

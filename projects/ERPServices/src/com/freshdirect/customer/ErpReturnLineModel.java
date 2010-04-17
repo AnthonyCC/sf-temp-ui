@@ -1,8 +1,3 @@
-/*
- * 
- * ErpReturnLineModel.java
- * Date: Oct 15, 2002 Time: 1:06:23 PM
- */
 package com.freshdirect.customer;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -13,6 +8,8 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 
 public class ErpReturnLineModel extends ModelSupport implements ErpReturnLineI {
+	
+	private static final long	serialVersionUID	= 8181551009400847010L;
 	
 	private String lineNumber;
 	private double quantity;

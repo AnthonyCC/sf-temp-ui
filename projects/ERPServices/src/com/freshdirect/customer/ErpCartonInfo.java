@@ -5,6 +5,8 @@ import java.util.*;
 
 public class ErpCartonInfo implements Serializable {
 
+	private static final long	serialVersionUID	= -2514030108616629805L;
+	
 	public static String CARTON_TYPE_REGULAR = "Regular";
 	public static String CARTON_TYPE_BEER = "Beer";
 	public static String CARTON_TYPE_FREEZER = "Freezer";
@@ -71,26 +73,26 @@ public class ErpCartonInfo implements Serializable {
 		this.cartonType = cartonType;
 	}
 
-	public void setDetails(List list) {
+	public void setDetails(List<ErpCartonDetails> list) {
 		if(list == null)
-			list = new ArrayList();
+			list = new ArrayList<ErpCartonDetails>();
 		else
 			details = list;
 	}
 	
-	public List getDetails() {
+	public List<ErpCartonDetails> getDetails() {
 		return details;
 	}
 	
 	public String toString() {
 		return "ErpCartonInfo[orderNumber: "
-			+ this.orderNumber
+			+ orderNumber
 			+ " sapNumber: "
-			+ this.sapNumber
+			+ sapNumber
 			+ " cartonNumber: "
-			+ this.cartonNumber
+			+ cartonNumber
 			+ " cartonType: "
-			+ this.cartonType
+			+ cartonType
 			+ " details: "
 			+ details.toString();
 	}
@@ -99,5 +101,5 @@ public class ErpCartonInfo implements Serializable {
 	private String sapNumber;
 	private String cartonNumber;
 	private String cartonType;
-	private List details = new ArrayList();
+	private List<ErpCartonDetails> details = new ArrayList<ErpCartonDetails>();
 }

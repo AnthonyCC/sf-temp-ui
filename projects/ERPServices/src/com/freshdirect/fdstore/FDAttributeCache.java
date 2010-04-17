@@ -81,7 +81,7 @@ public class FDAttributeCache extends FDAbstractCache {
 	
 	private AttributeFacadeHome lookupAttributeHome() {
 		try {
-			return (AttributeFacadeHome) serviceLocator.getRemoteHome("freshdirect.content.AttributeFacade", AttributeFacadeHome.class);
+			return (AttributeFacadeHome) serviceLocator.getRemoteHome("freshdirect.content.AttributeFacade");
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}

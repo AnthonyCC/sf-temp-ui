@@ -111,7 +111,7 @@
 
 			SavedRecipientModel recipModel = null;
 
-			recipModel = (SavedRecipientModel) _user.getRecipentList().getRecipientById(recipId);
+			recipModel = (SavedRecipientModel) _user.getRecipientList().getRecipientById(recipId);
 
 			
 			json.put("gcId", recipModel.getTemplateId());

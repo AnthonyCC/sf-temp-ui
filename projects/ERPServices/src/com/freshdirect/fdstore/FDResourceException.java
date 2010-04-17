@@ -1,24 +1,15 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 /**
  * Exception signalling some kind of problem accessing a resource
  * (eg. remote objects) or unexpected problems occuring in these
  * remote resources (eg. database access problems, etc).
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public class FDResourceException extends FDException {
     
-    /**
+	private static final long	serialVersionUID	= -3926618449641623809L;
+
+	/**
      * Default constructor.
      */    
     public FDResourceException() {

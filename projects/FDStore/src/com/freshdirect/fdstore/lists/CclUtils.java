@@ -2,9 +2,6 @@ package com.freshdirect.fdstore.lists;
 
 import java.util.List;
 
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
@@ -14,7 +11,7 @@ public class CclUtils {
 	public static final String CC_LIST_ID = "ccListId";
 	public static final String STARTER_LIST_ID = "starterListId";
     
-	public static boolean isCCLInExperienced(FDUserI user, List lists) throws FDResourceException {
+	public static boolean isCCLInExperienced(FDUserI user, List<FDCustomerListInfo> lists) {
 			
 		if (user.getLevel() == FDUserI.GUEST) {
 			return true;
@@ -27,7 +24,7 @@ public class CclUtils {
 		if (lists.size() > 1) {
 			return false;
 		}
-		FDCustomerCreatedList l = (FDCustomerCreatedList) lists.get(0);
+		FDCustomerList l = lists.get(0);
 		if (!l.getCreateDate().equals(l.getModificationDate())) {
 			return false;
 		}
@@ -39,6 +36,7 @@ public class CclUtils {
 	 * @return
 	 * @deprecated use {@link SiteFeatureHelper.isEnabled(EnumSiteFeature feature, FDUserI user)} instead
 	 */
+	@Deprecated
 	public static boolean isCCLEnabled(FDUserI user) {
 		return SiteFeatureHelper.isEnabled(EnumSiteFeature.CCL, user);
 	}

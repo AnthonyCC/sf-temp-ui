@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.framework.core;
 
 import java.io.Externalizable;
@@ -16,9 +7,6 @@ import java.io.ObjectOutput;
 
 /**
  * Used to provide a unique identity for all persistent objects.
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public class PrimaryKey implements Externalizable {
     
@@ -79,6 +67,7 @@ public class PrimaryKey implements Externalizable {
      *
      * @return the key's hash
      */    
+	@Override
 	public int hashCode() {
 		return this.id.hashCode();
 	}
@@ -91,6 +80,7 @@ public class PrimaryKey implements Externalizable {
      * @return true if the other primary key represents the same
      * object as this one
      */    
+	@Override
 	public boolean equals(Object o) {
 		if (o==this) {
 			return true;
@@ -109,6 +99,7 @@ public class PrimaryKey implements Externalizable {
      *
      * @return the string equivalent
      */    
+	@Override
 	public String toString() {
 		return "PrimaryKey[id " + this.id + "]";
 	}

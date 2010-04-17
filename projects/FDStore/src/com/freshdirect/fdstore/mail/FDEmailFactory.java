@@ -32,6 +32,7 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.mail.EmailAddress;
 import com.freshdirect.framework.mail.EmailSupport;
 import com.freshdirect.framework.mail.XMLEmailI;
@@ -78,6 +79,7 @@ public class FDEmailFactory {
 	}
 
 	public XMLEmailI createConfirmOrderEmail(FDCustomerInfo customer, FDOrderI order) {
+		
 		FDTransactionalEmail email = new FDTransactionalEmail(customer, order);
 
 		email.setXslPath("h_order_confirm_v1.xsl", "x_order_confirm_v1.xsl");
@@ -190,7 +192,7 @@ public class FDEmailFactory {
 		FDInfoEmail email = new FDInfoEmail(customer);
 		email.setXslPath("h_reminder_service.xsl", "x_reminder_service.xsl");
 		if(sendToAltEmail){
-			List cc = new ArrayList();
+			List<String> cc = new ArrayList<String>();
 			cc.add(customer.getAltEmailAddress());
 			email.setCCList(cc);
 		}
@@ -932,4 +934,45 @@ public class FDEmailFactory {
 		email.setSubject("We've credited your DeliveryPass.");
 		return email;
 	}
+
+	public XMLEmailI createStandingOrderErrorEmail(FDCustomerInfo customer, FDStandingOrder standingOrder) {
+		FDStandingOrderErrorEmail email = new FDStandingOrderErrorEmail(customer, standingOrder);
+
+		email.setXslPath("h_standing_order_error_v1.xsl", "x_standing_order_error_v1.xsl");
+
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		email.setSubject("A problem with your standing order for " + df.format(standingOrder.getNextDeliveryDate()));
+
+		return email;
+	}
+
+	public XMLEmailI createConfirmStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder, boolean hasUnavailableItems) {
+		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, hasUnavailableItems);
+
+		email.setXslPath("h_standing_order_confirm_v1.xsl", "x_standing_order_confirm_v1.xsl");
+
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		StringBuilder subject = new StringBuilder("Your standing order for ");
+		subject.append(df.format(order.getRequestedDate()));
+		if (hasUnavailableItems)
+			subject.append(" (some items unavailable)");
+		email.setSubject(subject.toString());
+
+		return email;
+	}
+
+	public XMLEmailI createConfirmDeliveryStandingOrderEmail(FDCustomerInfo customer, FDOrderI order, FDStandingOrder standingOrder) {
+		FDStandingOrderEmail email = new FDStandingOrderEmail(customer, order, standingOrder, false);
+
+		email.setXslPath("h_standing_order_delivery_v1.xsl", "x_standing_order_delivery_v1.xsl");
+
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+
+		email.setSubject("Reminder, your standing order for " + df.format(order.getRequestedDate()));
+
+		return email;
+	}
+	
 }

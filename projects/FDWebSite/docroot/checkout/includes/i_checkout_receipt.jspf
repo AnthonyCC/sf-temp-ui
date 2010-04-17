@@ -16,14 +16,23 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<%--
+This page is included by step_4_confirmation.jsp and step_4_receipt.jsp
+--%>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
-
 <%
-	ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
+    // FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+    FDIdentity identity  = user.getIdentity();
+    SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MM/dd/yy");
+
+    ErpCustomerInfoModel custInfo = FDCustomerFactory.getErpCustomerInfo(identity);
+
+	final String orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
 %>
-
+<fd:GetOrder id='cart' saleId='<%= orderNumber %>'>
 <%
+
+
 FDReservation reservation = cart.getDeliveryReservation();
 ErpAddressModel dlvAddress = cart.getDeliveryAddress(); 
 ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) cart.getPaymentMethod();
@@ -40,6 +49,14 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
     displayReminder = true;
 }
 
+// INCLUDE STANDING ORDER HEADER
+if (cart.getStandingOrderId() != null) {
+%><div style="width: 630px; padding-top: 15px; font-size: 10px;">
+<%@include file="../../includes/i_so_header.jspf" %>
+</div>
+<div style="width: 430px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
+<%
+}
 %>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="630">
@@ -48,17 +65,7 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 </TR>
 <TR VALIGN="top">
 	<td width="430" style="border-right: solid 1px #CCCCCC; padding-right: 10px;">
-		<%
-		if (modifyOrderMode){
-			%>
-			<FONT CLASS="title16"><BIG>Your order has been modified.</BIG></FONT><BR><BR>
-			<%
-		} else {
-			%>
-			<FONT CLASS="title16"><BIG>Your order has been placed.</BIG></FONT><BR><BR>
-			<%
-		}
-		%>
+		<FONT CLASS="title16"><BIG>Your order has been <%= modifyOrderMode ? "modified" : "placed" %>.</BIG></FONT><BR><BR>
 		<font class="text12">
 			Thank you for shopping with us! Your order is complete. To check your order status anytime, just visit the "<A HREF="/your_account/order_history.jsp">Your Orders</A>" section of Your Account.
 			<br><br>
@@ -69,15 +76,10 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 			<b>Unattended delivery service.</b> If you need to run out during your delivery time slot, we will leave your order at your home. Alcohol cannot be left unattended, and will be removed from your order if you are not home. To learn more about Unattended Delivery, click <a href="javascript:popup('/help/unattended_delivery.jsp','large')">here</a>.
 			</fd:IncludeMedia>
 			<% } %>
-			<% boolean pickupOrder = cart instanceof FDOrderI ? 
-                    EnumDeliveryType.PICKUP.equals( ((FDOrderI)cart).getDeliveryType() ) :
-                    dlvAddress instanceof ErpDepotAddressModel && ((ErpDepotAddressModel)dlvAddress).isPickup(); 
-		    boolean isHomeOrder = cart instanceof FDOrderI ? 
-                    EnumDeliveryType.HOME.equals( ((FDOrderI)cart).getDeliveryType() ) :
-                    dlvAddress instanceof ErpAddressModel;
-				boolean isCorporateOrder = cart instanceof FDOrderI ? 
-                    EnumDeliveryType.CORPORATE.equals( ((FDOrderI)cart).getDeliveryType() ) :
-                    dlvAddress instanceof ErpAddressModel;
+			<% 
+			boolean pickupOrder = EnumDeliveryType.PICKUP.equals( cart.getDeliveryType() ); 
+		    boolean isHomeOrder = EnumDeliveryType.HOME.equals( cart.getDeliveryType() );
+				boolean isCorporateOrder = EnumDeliveryType.CORPORATE.equals( cart.getDeliveryType() );
 				if (pickupOrder) {
 					DlvDepotModel dm =  com.freshdirect.fdstore.FDDepotManager.getInstance().getDepotByLocationId( ((ErpDepotAddressModel)dlvAddress).getLocationId());
 					String depotCode = dm!=null ? dm.getDepotCode() : null;
@@ -93,9 +95,9 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 		<td width="200" align="right" style="padding-left: 10px;">
 		<%
         // get all recipe sources that can be found related to this order
-        Set recipeSources = new HashSet();
+        Set<RecipeSource> recipeSources = new HashSet<RecipeSource>();
 
-		for (Iterator i = cart.getOrderLines().iterator(); i.hasNext(); ) {
+		for (Iterator<FDCartLineI> i = cart.getOrderLines().iterator(); i.hasNext(); ) {
 			FDCartLineI line = (FDCartLineI) i.next();
 			String recipeId = line.getRecipeSourceId();
 			if (recipeId != null) {
@@ -148,13 +150,13 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 					<%= recipeSource.getAuthorNames() %><br/>
 					<br/>
 					<%
-					List retailers = recipeSource.getBookRetailers();
+					List<BookRetailer> retailers = recipeSource.getBookRetailers();
 					if (!retailers.isEmpty()) {
 						%>
 						Get it online:<br/>
 						<b>
 						<%
-						for (Iterator i = retailers.iterator(); i.hasNext(); ) {
+						for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
 							BookRetailer retailer = (BookRetailer) i.next();
 							String link = retailer.createIsbnLink(recipeSource.getIsbn());
 							%><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
@@ -177,20 +179,19 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
                 <p>
                     Enjoy your recipes from
                 </p>
-            <logic:iterate id         = "recipeSource"
-                           collection = "<%= recipeSources %>"
-                           type       = "com.freshdirect.fdstore.content.RecipeSource"
-            >
+<%
+			for (RecipeSource recipeSource : recipeSources) {
+%>
                 <p>
                     <b>"<%= recipeSource.getName() %>"</b><br/>
                     <%
-                    List retailers = recipeSource.getBookRetailers();
+                    List<BookRetailer> retailers = recipeSource.getBookRetailers();
                     if (!retailers.isEmpty()) {
                         %>
                         Get it online:<br/>
                         <b>
                         <%
-                        for (Iterator i = retailers.iterator(); i.hasNext(); ) {
+                        for (Iterator<BookRetailer> i = retailers.iterator(); i.hasNext(); ) {
                             BookRetailer retailer = (BookRetailer) i.next();
                             String link = retailer.createIsbnLink(recipeSource.getIsbn());
                             %><a href="<%= link %>" target="retailer"><%= retailer.getName() %></a><%
@@ -204,16 +205,16 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
                     }
                     %>
                 </p>
-            </logic:iterate>
+<%
+	        }
+%>
             </div>
             <%
 		} else {
 			%>
-			<SCRIPT LANGUAGE=JavaScript>
-			<!--
-			OAS_AD('ReceiptTop');
-			//-->
-			</SCRIPT>
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptTop');
+</SCRIPT>
 			<%
 		}
 		%>
@@ -291,20 +292,17 @@ Before releasing your order to you - or your authorized representative - our dis
 <tr><td>
 <table width="630" cellpadding="0" cellspacing="0">
 <tr><td width="50%" style="border-right: solid 1px #CCCCCC; padding-right: 10px;" align="center">
-<SCRIPT LANGUAGE=JavaScript>
-		<!--
-		OAS_AD('ReceiptBotLeft');
-		//-->
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptBotLeft');
 </SCRIPT>
 </td>
 <td width="50%" style="padding-left: 10px;" align="center">
-<SCRIPT LANGUAGE=JavaScript>
-		<!--
-		OAS_AD('ReceiptBotRight');
-		//-->
+<SCRIPT type="text/javascript">
+OAS_AD('ReceiptBotRight');
 </SCRIPT>
 </td>		
 </table><br>
 </td></tr>
 <% } %>
 </table>
+</fd:GetOrder>

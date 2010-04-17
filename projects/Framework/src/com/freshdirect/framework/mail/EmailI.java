@@ -11,8 +11,8 @@ public interface EmailI extends Serializable {
 	
 	public String getSubject();
 	
-	public Collection getCCList();
+	public Collection<String> getCCList();
 	
-	public Collection getBCCList();
+	public Collection<String> getBCCList();
 
 }

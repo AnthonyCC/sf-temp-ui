@@ -4,7 +4,6 @@
  */
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -17,8 +16,6 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import sun.util.calendar.ZoneInfo;
-
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -26,8 +23,8 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.AddressScrubber;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
+import com.freshdirect.delivery.DlvApartmentRange;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressExceptionReason;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
@@ -50,15 +47,17 @@ import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class ZipPlus4AddressTag extends AbstractControllerTag implements SessionName {
 
+	private static final long	serialVersionUID	= -8398592411912966288L;
+
 	private static Category LOGGER = LoggerFactory.getInstance(ZipPlus4AddressTag.class);
 
 	private String id;
 	private AddressModel dlvAddress = new AddressModel();
 
-	ArrayList suggestions; // a holder for suggested addresses if the original address is not unique
+	List<AddressModel> suggestions; // a holder for suggested addresses if the original address is not unique
 	EnumAddressVerificationResult verificationResult;
 	String geocodeResult;
-	List aptRanges;
+	List<DlvApartmentRange> aptRanges;
 
 	public void setId(String id) {
 		this.id = id;
@@ -160,7 +159,7 @@ public class ZipPlus4AddressTag extends AbstractControllerTag implements Session
 				String county = FDDeliveryManager.getInstance().getCounty(dlvAddress.getCity(), dlvAddress.getState());
 				pageContext.setAttribute("county", county);
 				
-				Set availServices = FDDeliveryManager.getInstance().checkAddress(dlvAddress).getAvailableServices();
+				Set<EnumServiceType> availServices = FDDeliveryManager.getInstance().checkAddress(dlvAddress).getAvailableServices();
 				pageContext.setAttribute("availServices", availServices);
 			} catch (InvalidAddressException iae) {
 				actionResult.addError(true, EnumUserInfoName.DLV_ADDRESS_1.getCode(), SystemMessageList.MSG_INVALID_ADDRESS);

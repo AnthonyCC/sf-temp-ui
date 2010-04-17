@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 
@@ -19,7 +20,7 @@ public class CustomerCreatedListAjaxFacadeDebugWrapper extends
 
 	public FDCustomerCreatedList addItemsToList(HttpSession session, String listName, FDCustomerCreatedList items) throws FDResourceException, AjaxFacadeException, FDSkuNotFoundException, IllegalStateException {
 		failIfRequested();
-		return super.addItemsToList(session, listName, items);
+		return super.addItemsToList(session, listName, EnumCustomerListType.CC_LIST.getName(), items);
 	}
 
 
@@ -38,12 +39,12 @@ public class CustomerCreatedListAjaxFacadeDebugWrapper extends
 		return super.getListNames(session);
 	}
 
-	public CustomerCreatedListNames getListNamesWithItemCount(HttpSession session) throws FDResourceException, FDCustomerListExistsException, AjaxFacadeException {
+	public CustomerListNames getListNamesWithItemCount(HttpSession session) throws FDResourceException, FDCustomerListExistsException, AjaxFacadeException {
 		failIfRequested();
 		return super.getListNamesWithItemCount(session);
 	}
 
-	public CustomerCreatedListNames getListNamesWithItemCount(HttpSession session, String srcListName) throws FDResourceException, FDCustomerListExistsException, AjaxFacadeException {
+	public CustomerListNames getListNamesWithItemCount(HttpSession session, String srcListName) throws FDResourceException, FDCustomerListExistsException, AjaxFacadeException {
 		failIfRequested();
 		return super.getListNamesWithItemCount(session, srcListName);
 	}

@@ -155,7 +155,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
     <%
                 DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
                 if(cart.isPending()) {
-                    ListIterator i = recipients.getRecipents().listIterator();
+                    Iterator<RecipientModel> i = recipients.getRecipients().iterator();
                     while(i.hasNext()) {
                         ErpRecipentModel erm = (ErpRecipentModel)i.next();
 			%>
@@ -184,7 +184,7 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
             } else {
                 ErpGiftCardDlvConfirmModel model = cart.getGCDeliveryInfo();
                 if(model!=null && model.getDlvInfoTranactionList()!=null && model.getDlvInfoTranactionList().size()>0){
-                ListIterator j = model.getDlvInfoTranactionList().listIterator();
+                Iterator<ErpGCDlvInformationHolder> j = model.getDlvInfoTranactionList().iterator();
                 while(j.hasNext()) {
                     ErpGCDlvInformationHolder recipient = (ErpGCDlvInformationHolder)j.next();
                     ErpRecipentModel recModel =  cart.getGCResendInfoFor(recipient.getGiftCardId());
@@ -239,17 +239,6 @@ FDRecipientList recipients = cart.getGiftCardRecipients();
             }
             %>            
 </table>
-<%--
-<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle" >
-		<tr>
-			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
-		</tr>
-
-        <tr>
-            <td class="recipTotal">SUBTOTAL: <%=  recipients.getFormattedSubTotal() %></td>
-        </tr>
-</table>
---%>
 <br/>
 </fd:GetOrder>
 

@@ -10,6 +10,6 @@ public interface FDConfigurableI extends Serializable {
 	public String getSalesUnit();
 
 	/** @return Map of String (ERP characteristic) -> String (ERP char. value) */
-	public Map getOptions();
+	public Map<String,String> getOptions();
 
 }

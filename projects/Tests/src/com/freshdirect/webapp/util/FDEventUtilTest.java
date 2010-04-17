@@ -299,8 +299,6 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 
 		try {
 			OrderLineUtil.describe(cartLine);
-		} catch (FDResourceException e) {
-			// don't care
 		} catch (FDInvalidConfigurationException e) {
 			// don't care
 		}

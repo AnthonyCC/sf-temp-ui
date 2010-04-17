@@ -22,31 +22,26 @@ public class CartLineFactory {
 
 	private static Category LOGGER = LoggerFactory.getInstance( CartLineFactory.class );
 
-    public List createOrderLines(Collection products) throws FDResourceException {
-        List lines = new ArrayList();
-        for (Iterator pIter = products.iterator(); pIter.hasNext(); ) {
-            ProductModel prdModel = (ProductModel) pIter.next();
-            
-            for (Iterator sIter = prdModel.getSkus().iterator(); sIter.hasNext(); ) {
-                SkuModel sku = (SkuModel) sIter.next();
-
+    public List<FDCartLineI> createOrderLines(Collection<ProductModel> products) throws FDResourceException {
+        List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
+        for ( ProductModel prdModel : products ) {
+            for ( SkuModel sku : prdModel.getSkus() ) {
 				this.createLines(lines, sku);
             }
-        }
-        
+        }        
         return lines;
     }
 
-	public List createOrderLines(String[] materials) throws FDResourceException {
+	public List<FDCartLineI> createOrderLines(String[] materials) throws FDResourceException {
 		try {
 			Context ctx = ErpServicesProperties.getInitialContext();
 			ErpInfoHome home = (ErpInfoHome) ctx.lookup("freshdirect.erp.Info");
 			ErpInfoSB infoBean = home.create();
 			
-			List lines = new ArrayList();
+			List<FDCartLineI> lines = new ArrayList<FDCartLineI>();
 			for (int i=0; i<materials.length; i++) {		
 				String mat = materials[i];
-				Collection prods = infoBean.findProductsBySapId(mat);
+				Collection<ErpProductInfoModel> prods = infoBean.findProductsBySapId(mat);
 			
 				if (prods.isEmpty()) {
 					LOGGER.info("No product found for material "+mat+" - skipping.");
@@ -73,9 +68,8 @@ public class CartLineFactory {
 	/**
 	 * @param prods Collection of ErpProductInfoModel
 	 */
-	private SkuModel findSku(Collection prods) throws FDResourceException {
-		for (Iterator i=prods.iterator(); i.hasNext(); ) {
-			ErpProductInfoModel pim = (ErpProductInfoModel)i.next();
+	private SkuModel findSku(Collection<ErpProductInfoModel> prods) throws FDResourceException {
+		for ( ErpProductInfoModel pim : prods ) {
 			String skuCode = pim.getSkuCode();
 			try {
 				ProductModel prod = ContentFactory.getInstance().getProduct( skuCode );
@@ -84,11 +78,10 @@ public class CartLineFactory {
 			} catch (FDSkuNotFoundException ex) {
 			}
 		}
-		return null;
-		
+		return null;		
 	}
 
-	protected void createLines(List lines, SkuModel sku) throws FDResourceException {
+	protected void createLines(List<FDCartLineI> lines, SkuModel sku) throws FDResourceException {
 		FDProduct product;
 		try {
             FDProductInfo productInfo = sku.getProductInfo();
@@ -125,7 +118,7 @@ public class CartLineFactory {
 			FDSalesUnit[] units = product.getSalesUnits();
 			FDSalesUnit salesUnit = units[n % units.length];
 
-			Map optionMap = new HashMap();
+			Map<String, String> optionMap = new HashMap<String, String>();
 			for (int i=0; i<variations.length; i++) {
 			    FDVariation variation = variations[i];
 			    FDVariationOption[] options = variation.getVariationOptions();

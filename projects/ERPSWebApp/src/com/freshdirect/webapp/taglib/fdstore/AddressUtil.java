@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -41,7 +42,7 @@ public class AddressUtil {
 
 	public static boolean updateShipToAddress(HttpServletRequest request, ActionResult result, FDUserI user, String shipToAddressId, ErpAddressModel address) throws FDResourceException {
 		boolean foundFraud = false;
-        ErpAddressModel shpAddrToModify = FDCustomerManager.getShipToAddress(user.getIdentity(), shipToAddressId);
+        ErpAddressModel shpAddrToModify = FDCustomerManager.getAddress(user.getIdentity(), shipToAddressId);
         if (shpAddrToModify==null) {
             throw new FDResourceException("Unable to locate specified address for this user.");
         }
@@ -89,7 +90,7 @@ public class AddressUtil {
 
 
 	public static void deleteShipToAddress(FDIdentity identity, String shipToAddressId, ActionResult result, HttpServletRequest request) throws FDResourceException {
-        ErpAddressModel shpAddrToRemove = FDCustomerManager.getShipToAddress(identity, shipToAddressId);
+        ErpAddressModel shpAddrToRemove = FDCustomerManager.getAddress(identity, shipToAddressId);
         if (shpAddrToRemove==null) {
             throw new FDResourceException("Address not found");
         }
@@ -194,13 +195,13 @@ public class AddressUtil {
 	public static boolean validateTriState(String state) {
 		return triStateAbbrevs.contains(state.toUpperCase());
 	}
-	private final static HashSet triStateAbbrevs = new HashSet();
+	private final static Set<String> triStateAbbrevs = new HashSet<String>();
 	static {
 		triStateAbbrevs.add("NJ");
 		triStateAbbrevs.add("CT");
 		triStateAbbrevs.add("NY");
 	}
-	private final static HashSet stateAbbrevs = new HashSet();
+	private final static Set<String> stateAbbrevs = new HashSet<String>();
 	static {
 		stateAbbrevs.add("AL");
 		stateAbbrevs.add("AK");

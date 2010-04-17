@@ -190,7 +190,7 @@ public class DlvPaymentManager {
 	
 	private PaymentGatewaySB getPaymentGatewaySB() throws DlvResourceException {
 		try {
-			PaymentGatewayHome home = (PaymentGatewayHome)serviceLocator.getRemoteHome(DlvProperties.getPaymentGatewayHome(), PaymentGatewayHome.class);
+			PaymentGatewayHome home = (PaymentGatewayHome)serviceLocator.getRemoteHome(DlvProperties.getPaymentGatewayHome());
 			return home.create(); 
 		} catch (NamingException e) {
 			throw new DlvResourceException(e);
@@ -203,7 +203,7 @@ public class DlvPaymentManager {
 	
 	private ErpCustomerManagerSB getErpCustomerManagerSB() throws DlvResourceException {
 		try {
-			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome(), ErpCustomerManagerHome.class);
+			ErpCustomerManagerHome home = (ErpCustomerManagerHome)serviceLocator.getRemoteHome(DlvProperties.getCustomerManagerHome());
 			return home.create();
 		} catch (NamingException ne) {
 			throw new DlvResourceException(ne);

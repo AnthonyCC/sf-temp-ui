@@ -2,6 +2,7 @@ package com.freshdirect.webapp.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -20,12 +21,13 @@ import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.CustomerCreatedListNames;
+import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.CustomerListNames;
 import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.NameEmpty;
 import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.NameExists;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -57,6 +59,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 	protected Aspect createList = null;
 	protected Aspect deleteList = null;
 	protected Aspect getListInfos = null;
+	protected Aspect getSOListInfos = null;
 	protected Aspect renameList = null;
 	protected Aspect getList = null;
 	protected Aspect storeList = null;
@@ -83,6 +86,9 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		
 		getListInfos = new GetListInfosStub();
 		aspectSystem.add(getListInfos);
+
+		getSOListInfos = new GetSOListInfosStub();
+		aspectSystem.add(getSOListInfos);
 
 		renameList = new RenameListStub();
 		aspectSystem.add(renameList);
@@ -218,13 +224,15 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.invalidateCache();
 				
 		
-		List lists = new ArrayList();
-		FDCustomerCreatedList ccl = new FDCustomerCreatedList();
+		List<FDCustomerListInfo> lists = new ArrayList<FDCustomerListInfo>();
+		FDCustomerListInfo ccl = new FDCustomerListInfo();
 		ccl.setName("list1");
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 		
-		ccl = new FDCustomerCreatedList();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("list2");
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 		
 		user.getCustomerCreatedListInfos();
@@ -246,25 +254,30 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.invalidateCache();
 				
 		
-		List lists = new ArrayList();
-		FDCustomerCreatedListInfo ccl = new FDCustomerCreatedListInfo();
+		List<FDCustomerListInfo> lists = new ArrayList<FDCustomerListInfo>();
+		FDCustomerListInfo ccl = new FDCustomerListInfo();
 		ccl.setName("blist");
 		ccl.setCount(3);
 		ccl.setModificationDate(MOD_DATE_1);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 		
-		ccl = new FDCustomerCreatedListInfo();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("alist");
 		ccl.setCount(4);
 		ccl.setModificationDate(MOD_DATE_2);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
+
+		user.getStandingOrderListInfos();
+		userC.setReturnValue(Collections.EMPTY_LIST);
 		
 		userC.replay();
 		
-		CustomerCreatedListNames result = facade.getListNamesWithItemCount(session);	
+		CustomerListNames result = facade.getListNamesWithItemCount(session);	
 		assertEquals(2, result.getListNames().length);
 		assertEquals("alist", result.getListNames()[0][0]);
 		assertEquals("4", result.getListNames()[0][1]);
@@ -281,20 +294,22 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		userC.setReturnValue(FDUserI.RECOGNIZED);
 		user.invalidateCache();
 				
-		List lists = new ArrayList();
-		FDCustomerCreatedListInfo ccl = new FDCustomerCreatedListInfo();
+		List<FDCustomerListInfo> lists = new ArrayList<FDCustomerListInfo>();
+		FDCustomerListInfo ccl = new FDCustomerListInfo();
 		ccl.setName("blist");
 		ccl.setCount(3);
 		ccl.setModificationDate(MOD_DATE_1);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 		
-		ccl = new FDCustomerCreatedListInfo();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("alist");
 		ccl.setCount(4);
 		ccl.setModificationDate(MOD_DATE_2);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 
-		ccl = new FDCustomerCreatedListInfo();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("clist");
 		ccl.setCount(5);
 		ccl.setModificationDate(MOD_DATE_1);
@@ -303,9 +318,12 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
 		
+		user.getStandingOrderListInfos();
+		userC.setReturnValue(Collections.EMPTY_LIST);
+
 		userC.replay();
 		
-		CustomerCreatedListNames result = facade.getListNamesWithItemCount(session, "clist");	
+		CustomerListNames result = facade.getListNamesWithItemCount(session, "clist");	
 		assertEquals(2, result.getListNames().length);
 		assertEquals("alist", result.getListNames()[0][0]);
 		assertEquals("4", result.getListNames()[0][1]);
@@ -323,31 +341,37 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		userC.setReturnValue(FDUserI.RECOGNIZED);
 		user.invalidateCache();
 				
-		List lists = new ArrayList();
-		FDCustomerCreatedListInfo ccl = new FDCustomerCreatedListInfo();
+		List<FDCustomerListInfo> lists = new ArrayList<FDCustomerListInfo>();
+		FDCustomerListInfo ccl = new FDCustomerListInfo();
 		ccl.setName("blist");
 		ccl.setCount(3);
 		ccl.setModificationDate(MOD_DATE_1);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 		
-		ccl = new FDCustomerCreatedListInfo();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("alist");
 		ccl.setCount(4);
 		ccl.setModificationDate(MOD_DATE_2);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 
-		ccl = new FDCustomerCreatedListInfo();
+		ccl = new FDCustomerListInfo();
 		ccl.setName("clist");
 		ccl.setCount(5);
 		ccl.setModificationDate(MOD_DATE_1);
+		ccl.setType(EnumCustomerListType.CC_LIST);
 		lists.add(ccl);
 
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
 		
+		user.getStandingOrderListInfos();
+		userC.setReturnValue(Collections.EMPTY_LIST);
+
 		userC.replay();
 		
-		CustomerCreatedListNames result = facade.getListNamesWithItemCount(session, null);	
+		CustomerListNames result = facade.getListNamesWithItemCount(session, null);	
 		assertEquals(3, result.getListNames().length);
 		assertEquals("alist", result.getListNames()[0][0]);
 		assertEquals("4", result.getListNames()[0][1]);
@@ -465,7 +489,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
         items.addLineItem(li3);
 
         try {
-        	facade.addItemsToList(session, "blabla", items);
+        	facade.addItemsToList(session, "blabla", EnumCustomerListType.CC_LIST.getName(), items);
         	fail();
         } catch (NameEmpty e) {
         	// Pass
@@ -485,7 +509,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		returnObj = new FDCustomerCreatedList();
 		((FDCustomerCreatedList) returnObj).setName("blabla");
 		((FDCustomerCreatedList) returnObj).setId("L1");
-		facade.addItemsToList(session, "blabla", items);
+		facade.addItemsToList(session, "blabla", EnumCustomerListType.CC_LIST.getName(), items);
 		StubLogEntry gList = ((StubLogEntry)stubLog.get(stubLog.size()-3));
 		StubLogEntry sList = ((StubLogEntry)stubLog.get(stubLog.size()-2));
 		StubLogEntry gList2 = ((StubLogEntry)stubLog.get(stubLog.size()-1));
@@ -551,6 +575,18 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		
 		protected String getMethodName() {
 			return "getCustomerCreatedListInfos";
+		}
+
+		public void intercept(InvocationContext invocationContext) throws Exception {
+			super.intercept(invocationContext);
+			invocationContext.setReturnObject(returnObj);
+		}		
+	}
+
+	public class GetSOListInfosStub extends AbstractAspect {
+		
+		protected String getMethodName() {
+			return "getStandingOrderListInfos";
 		}
 
 		public void intercept(InvocationContext invocationContext) throws Exception {

@@ -1,13 +1,10 @@
 package com.freshdirect.payment;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumPaymentType;
@@ -22,15 +19,14 @@ public class AuthorizationCommand {
 	private static final Category LOGGER = LoggerFactory.getInstance(AuthorizationCommand.class);
 	
 
-	private final List authInfos;		
-	private int authCount;
-	private final List auths;
+	private final List<AuthorizationInfo>		authInfos;
+	private int									authCount;
+	private final List<ErpAuthorizationModel>	auths;
 	
-	public AuthorizationCommand(List authInfo,  int authCount) {
+	public AuthorizationCommand(List<AuthorizationInfo> authInfo, int authCount) {
 		this.authInfos = authInfo;
-
 		this.authCount = authCount;
-		this.auths = new ArrayList();
+		this.auths = new ArrayList<ErpAuthorizationModel>();
 	}
 
 	public void execute() {
@@ -38,10 +34,10 @@ public class AuthorizationCommand {
 
 		//TODO might have to rethink this try/for block
 		//declaring it over here for the logger message in catch block
-		AuthorizationInfo info = null;
+		String saleId = null;
 		try {
-			for(Iterator i = this.authInfos.iterator(); i.hasNext(); ) {
-				info = (AuthorizationInfo) i.next();
+			for ( AuthorizationInfo info : authInfos ) {
+				saleId = info.getSaleId();
 				ErpAuthorizationModel auth = this.authorize(info);
 				auth.setAffiliate(info.getAffiliate());
 				auth.setIsChargePayment(info.isAdditionalCharge());
@@ -51,21 +47,20 @@ public class AuthorizationCommand {
 					break;
 				}
 			}
-
 		} catch (ErpTransactionException te) {
-			LOGGER.warn("Placing order -ErpTransactionException encountered. saleId=" + info.getSaleId(), te);
+			LOGGER.warn("Placing order -ErpTransactionException encountered. saleId=" + saleId, te);
 			return;
 		}
 
 	}
 
-	public List getAuthorizations() {
+	public List<ErpAuthorizationModel> getAuthorizations() {
 		return this.auths;
 	}
 
 	private ErpAuthorizationModel authorize(AuthorizationInfo info) throws ErpTransactionException {
 
-		ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) info.getPaymentMethod();
+		ErpPaymentMethodI paymentMethod = info.getPaymentMethod();
 		EnumPaymentType pt = paymentMethod.getPaymentType();
 		double authAmount = info.getAmount();
 

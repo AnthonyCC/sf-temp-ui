@@ -23,16 +23,39 @@
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 <table width="575" cellpadding="0" cellspacing="0" border="0">
-<tr><td colspan="4" class="text12">
+	<tr>
+		<td colspan="4" class="text12">
 By law, purchasers of alcoholic beverages must be at least 21 years of age. You may not legally order any alcoholic beverages unless you are at least 21 years of age. Furthermore, you may not purchase alcoholic beverages for anyone who is under the age of 21. FreshDirect reserves the right to refuse service, terminate accounts, remove alcoholic beverages, or cancel orders at its sole discretion.<br><br> 
 If your order contains alcoholic beverages, the person receiving your delivery must have identification proving they are over the age of 21 and will be asked for their signature. If no one over the age of 21 can sign for delivery, the driver will remove alcoholic beverages from the order and you will be charged a 50% restocking fee.<br><br><br>
-</td></tr>
+		</td>
+	</tr>
 <form method="POST">
-<tr valign="top"><td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td><td><input id="age_verified" name="age_verified" type="checkbox"></td>
-<td width="475" class="text12">
-	<label for="age_verified"><b>I certify that I am over 21 years of age.<br>I will present identification at the time of delivery.</b></label>
-</td><td><img src="/media_stat/images/layout/clear.gif" width="50" height="1"></td></tr>
-<tr><td colspan="4" class="text12"><br><br>IT IS A VIOLATION PUNISHABLE UNDER LAW FOR ANY PERSON UNDER THE AGE OF TWENTY-ONE TO PRESENT ANY WRITTEN EVIDENCE OF AGE WHICH IS FALSE, FRAUDULENT OR NOT ACTUALLY HIS OWN FOR THE PURPOSE OF ATTEMPTING TO PURCHASE ANY ALCOHOLIC BEVERAGE.<br><br></td></tr>
+	<tr valign="top">
+		<td>
+			<img src="/media_stat/images/layout/clear.gif" width="50" height="1">
+		</td>
+		<td>
+<%
+	if (EnumCheckoutMode.NORMAL == user.getCheckoutMode()) {
+%>			<input id="age_verified" name="age_verified" type="checkbox">
+<%
+	} else {
+%>			<input id="age_verified" name="age_verified" type="checkbox" <%= user.getCurrentStandingOrder().isAlcoholAgreement() ? "checked=\"checked\"" : "" %>>
+<%
+	}
+%>		</td>
+		<td width="475" class="text12">
+			<label for="age_verified"><b>I certify that I am over 21 years of age.<br>I will present identification at the time of delivery.</b></label>
+		</td>
+		<td>
+			<img src="/media_stat/images/layout/clear.gif" width="50" height="1">
+		</td>
+	</tr>
+	<tr>
+		<td colspan="4" class="text12">
+			<br><br>IT IS A VIOLATION PUNISHABLE UNDER LAW FOR ANY PERSON UNDER THE AGE OF TWENTY-ONE TO PRESENT ANY WRITTEN EVIDENCE OF AGE WHICH IS FALSE, FRAUDULENT OR NOT ACTUALLY HIS OWN FOR THE PURPOSE OF ATTEMPTING TO PURCHASE ANY ALCOHOLIC BEVERAGE.<br><br>
+		</td>
+	</tr>
 </table>
 </td></tr>
 <tr><td colspan="4"><img src="/media_stat/images/layout/ff9933.gif" width="100%" height="1" vspace="8"></td></tr>

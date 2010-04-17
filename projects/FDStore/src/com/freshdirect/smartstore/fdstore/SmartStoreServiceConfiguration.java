@@ -52,8 +52,7 @@ public class SmartStoreServiceConfiguration {
 		try {
 			return (SmartStoreServiceConfigurationHome) new ServiceLocator(
 					FDStoreProperties.getInitialContext()).getRemoteHome(
-					"freshdirect.smartstore.SmartStoreServiceConfiguration",
-					SmartStoreServiceConfigurationHome.class);
+					"freshdirect.smartstore.SmartStoreServiceConfiguration");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

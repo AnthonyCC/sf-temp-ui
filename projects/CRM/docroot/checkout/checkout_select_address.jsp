@@ -9,40 +9,38 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.fdstore.FDReservation" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
-
+<%@ page import="com.freshdirect.webapp.util.JspLogger"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="crm" prefix="crm" %>
 
-<fd:CheckLoginStatus guestAllowed="false" redirectPage="/registration/nw_cst_check_zone.jsp" />
+<fd:CheckLoginStatus id="user" guestAllowed="false" redirectPage="/registration/nw_cst_check_zone.jsp" />
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Select Delivery Address</tmpl:put>
-
 <%  
-    FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
     FDIdentity identity = user.getIdentity();%>
 <crm:GetErpCustomer id="customer" user="<%=user%>">
 <%  
     // Get user's shipping addresses
-    List shipAddresses = customer.getShipToAddresses();
-    Map addresses = new HashMap();
+    List<ErpAddressModel> shipAddresses = customer.getShipToAddresses();
+    Map<EnumServiceType, List<ErpAddressModel>> addresses = new HashMap<EnumServiceType, List<ErpAddressModel>>();
     
-    for(Iterator i = shipAddresses.iterator(); i.hasNext(); ){
-        ErpAddressModel address = (ErpAddressModel) i.next();
+    for(Iterator<ErpAddressModel> i = shipAddresses.iterator(); i.hasNext(); ){
+        ErpAddressModel address = i.next();
         if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-            List cl = (List)addresses.get(EnumServiceType.CORPORATE);
+            List<ErpAddressModel> cl = addresses.get(EnumServiceType.CORPORATE);
             if(cl == null){
-                cl = new ArrayList();
+                cl = new ArrayList<ErpAddressModel>();
                 addresses.put(EnumServiceType.CORPORATE, cl);
             }
             cl.add(address);
         }else {
-            List hl = (List)addresses.get(EnumServiceType.HOME);
+            List<ErpAddressModel> hl = addresses.get(EnumServiceType.HOME);
             if(hl == null){
-                hl = new ArrayList();
+                hl = new ArrayList<ErpAddressModel>();
                 addresses.put(EnumServiceType.HOME, hl);
             }
             hl.add(address);
@@ -81,9 +79,7 @@
     } else {
         successPage = "checkout_select_address.jsp";
     }
-    System.out.println("Action name "+actionName);
 %>
-<%@ page import="com.freshdirect.webapp.util.JspLogger"%>
 <fd:CheckoutController actionName="<%=actionName%>" result="result" successPage="<%= successPage%>" noContactPhonePage="/checkout/checkout_edit_address.jsp">
 <%
 

@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.customer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +18,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailability;
 import com.freshdirect.delivery.restriction.FDSpecialRestrictedAvailability;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
@@ -27,14 +27,12 @@ import com.freshdirect.fdstore.atp.FDMuniAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.sap.PosexUtil;
 
-/**
- * 
- */
 class FDAvailabilityMapper {
 
-	private final static Category LOGGER = Category.getInstance(FDAvailabilityMapper.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(FDAvailabilityMapper.class);
 	
 	private FDAvailabilityMapper() {
 	}
@@ -43,8 +41,8 @@ class FDAvailabilityMapper {
 	 * @param fdInvs Map of orderLineNumber -> FDInventoryI
 	 * @return Map of cartLineId -> FDInventoryI
 	 */
-	public static Map mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map fdInvs, boolean skipModifyLines) throws FDResourceException {
-		Map cartInvMap = new HashMap();
+	public static Map<Integer, FDAvailabilityI> mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map<String,FDAvailabilityI> fdInvs, boolean skipModifyLines) throws FDResourceException {
+		Map<Integer, FDAvailabilityI> cartInvMap = new HashMap<Integer, FDAvailabilityI>();
 
 		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		MunicipalityInfoWrapper muni = FDDeliveryManager.getInstance().getMunicipalityInfos();
@@ -61,9 +59,8 @@ class FDAvailabilityMapper {
 		}
 
 		int pos = 0;
-		for (Iterator i = cart.getOrderLines().iterator(); i.hasNext();) {
+		for ( FDCartLineI cartline : cart.getOrderLines() ) {
 			String posex = PosexUtil.getPosex(pos);
-			FDCartLineI cartline = (FDCartLineI) i.next();
 			int orderlineSize = cartline.getErpOrderLineSize();
 
 			FDAvailabilityI inv;
@@ -73,18 +70,18 @@ class FDAvailabilityMapper {
 				inv = NullAvailability.AVAILABLE;
 
 			} else {
-				inv = (FDAvailabilityI) fdInvs.get(posex);
+				inv = fdInvs.get(posex);
 
 			}
 
-			Set applicableRestrictions = cartline.getApplicableRestrictions();
+			Set<EnumDlvRestrictionReason> applicableRestrictions = cartline.getApplicableRestrictions();
 			
 			LOGGER.debug(" applicable restrictions :"+applicableRestrictions);
 
 			if (!applicableRestrictions.isEmpty()) {
 
 				// apply delivery restrictions
-				List r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
+				List<RestrictionI> r = allRestrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY, applicableRestrictions);
 				
 				LOGGER.debug(" filtered applicable restrictions :"+applicableRestrictions);
 				

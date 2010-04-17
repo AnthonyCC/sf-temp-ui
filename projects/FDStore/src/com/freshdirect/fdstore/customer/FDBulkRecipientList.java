@@ -7,8 +7,6 @@ import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.FormatterUtil;
-import com.freshdirect.giftcard.EnumGCDeliveryMode;
-import com.freshdirect.giftcard.RecipientModel;
 
 public class FDBulkRecipientList extends ModelSupport{
 
@@ -27,7 +25,7 @@ public class FDBulkRecipientList extends ModelSupport{
 		this.bulkRecipentsList.addAll(recipients);
 	}
 	
-	public List getRecipents() {
+	public List getRecipients() {
 		return bulkRecipentsList;
 	}
 

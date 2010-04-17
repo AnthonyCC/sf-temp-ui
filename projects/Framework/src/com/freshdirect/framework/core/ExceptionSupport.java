@@ -1,23 +1,15 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.core;
 
 import java.io.*;
 
 /**
  * An abstract exception class that provides support for nested exceptions.
- *
- * @version $Revision$
- * @author $Author$
- */ 
+ */
+
 public abstract class ExceptionSupport extends Exception {
 
+	private static final long	serialVersionUID	= -7214832700267315648L;
+	
 	/** the nested exception */	
 	private Exception nestedException = null;
 
@@ -68,6 +60,7 @@ public abstract class ExceptionSupport extends Exception {
 	/** 
 	 * Prints the exception's stack trace to standard output
 	 */	
+	@Override
 	public void printStackTrace() {
 		super.printStackTrace();
 		if (this.nestedException != null) {
@@ -80,6 +73,7 @@ public abstract class ExceptionSupport extends Exception {
 	 *
 	 * @param s the PrintStream to dump the stack trace to
 	 */	
+	@Override
 	public void printStackTrace( PrintStream s ) {
 		super.printStackTrace( s );
 		if (this.nestedException != null) {
@@ -92,6 +86,7 @@ public abstract class ExceptionSupport extends Exception {
 	 *
 	 * @param s the PrintWriter to dump the stack trace to
 	 */	
+	@Override
 	public void printStackTrace( PrintWriter s ) {
 		super.printStackTrace( s );
 		if (this.nestedException != null) {
@@ -111,6 +106,7 @@ public abstract class ExceptionSupport extends Exception {
 	/** returns the String equivalent of the exception
 	 * @return the exception as a String
 	 */	
+	@Override
 	public String toString() {
 		String output = super.toString();
 		if (nestedException!=null) {

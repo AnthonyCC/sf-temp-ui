@@ -5,6 +5,8 @@ import java.util.Map;
 
 public final class FDConfiguration implements FDConfigurableI {
 
+	private static final long	serialVersionUID	= -6923366786443915310L;
+
 	/** quantity in sales unit */
 	private final double quantity;
 
@@ -12,10 +14,10 @@ public final class FDConfiguration implements FDConfigurableI {
 	private final String salesUnit;
 
 	/** Selected options (characteristic name / char.value name pairs) */
-	private final Map options;
+	private final Map<String,String> options;
 
 	public FDConfiguration(double quantity, String salesUnit) {
-		this(quantity, salesUnit, Collections.EMPTY_MAP);
+		this(quantity, salesUnit, Collections.<String,String>emptyMap());
 	}
 
 	/**
@@ -23,7 +25,7 @@ public final class FDConfiguration implements FDConfigurableI {
 	 * @param salesUnit Selected sales unit
 	 * @param options Map of selected options (characteristic name / char.value name pairs)
 	 */
-	public FDConfiguration(double quantity, String salesUnit, Map options) {
+	public FDConfiguration(double quantity, String salesUnit, Map<String,String> options) {
 		this.quantity = quantity;
 		this.salesUnit = salesUnit;
 		this.options = options;
@@ -43,7 +45,7 @@ public final class FDConfiguration implements FDConfigurableI {
 		return this.salesUnit;
 	}
 
-	public Map getOptions() {
+	public Map<String,String> getOptions() {
 		return Collections.unmodifiableMap(this.options);
 	}
 

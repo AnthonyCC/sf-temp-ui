@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.giftcard;
 import java.io.Serializable;
 
 import com.freshdirect.giftcard.EnumGiftCardStatus;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 
 public interface FDGiftCardI extends Serializable {
 	
@@ -21,4 +22,7 @@ public interface FDGiftCardI extends Serializable {
 	public double getHoldAmount();
 
 	public void setHoldAmount(double holdAmount);
+	
+	public ErpGiftCardModel getGiftCardModel();
+	
 }

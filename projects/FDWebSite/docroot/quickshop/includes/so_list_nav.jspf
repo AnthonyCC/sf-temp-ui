@@ -1,0 +1,36 @@
+<%-- expects selectedSoId:String --%>
+<%-- expects user:FDUser --%>
+
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
+
+<fd:ListStandingOrders id="solst">
+	<% if (!solst.isEmpty()) { %>	
+		<font class="space4pix"><br/><br/></font>		
+		<table cellpadding="0" cellspacing="0" border="0" class="text11" >
+			<tbody>
+				<%
+				for (FDStandingOrder sorder : solst) {
+					FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, sorder.getCustomerListName());					
+				 	boolean isSelected = sorder.getId().equals(selectedSoId);
+				%>
+					<tr><td class="text11">					
+						<div style="margin-left: 5px; margin-bottom: 3px; margin-right: 2px; text-indent: -5px;">
+			       			<% if (!isSelected) { %>
+			       				<a href="<%= FDURLUtil.getStandingOrderLandingPage(sorder, null) %>"><b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b></a>
+			       			<% } else { %>
+								<b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b>
+							<% } %>
+						</div>
+					</td></tr>
+				<% } %>
+			</tbody>
+		</table>
+	<% } %>
+</fd:ListStandingOrders>

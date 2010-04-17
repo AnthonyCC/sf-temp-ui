@@ -40,6 +40,7 @@ import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.erp.EnumATPRule;
+import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -234,14 +235,12 @@ public class SapOrderAdapter implements SapOrderI {
 	 * @return array of CreditMemo objects
 	 */
 	public CreditMemo[] getCreditMemos() {
-		List appliedCredits = erpOrder.getAppliedCredits();
+		List<ErpAppliedCreditModel> appliedCredits = erpOrder.getAppliedCredits();
 		CreditMemo[] creditMemos = new CreditMemo[appliedCredits.size()];
 		CreditMemo memo = null;
-		ErpAppliedCreditModel appliedCredit = null;
 		int index = 0;
-		for (Iterator i = appliedCredits.iterator(); i.hasNext();) {
-
-			appliedCredit = (ErpAppliedCreditModel) i.next();
+		
+		for ( ErpAppliedCreditModel appliedCredit : appliedCredits ) {
 			memo = new CreditMemo(
 				appliedCredit.getPK().getId(),
 				"",
@@ -368,6 +367,8 @@ public class SapOrderAdapter implements SapOrderI {
 	
 	private static class SapChargeLineAdapter implements SapChargeLineI {
 
+		private static final long	serialVersionUID	= 9206363545163217301L;
+		
 		private final ErpChargeLineModel charge;
 
 		public SapChargeLineAdapter(ErpChargeLineModel charge) {
@@ -397,11 +398,13 @@ public class SapOrderAdapter implements SapOrderI {
 
 	private static class SapOrderLineAdapter implements SapOrderLineI {
 
+		private static final long	serialVersionUID	= 6640596050684635082L;
+		
 		private final ErpOrderLineModel orderLine;
 		private final FDProduct fdProduct;
 
 		/** List of ErpInventoryModel */
-		private List inventories = Collections.EMPTY_LIST;
+		private List<ErpInventoryModel> inventories = Collections.<ErpInventoryModel>emptyList();
 
 		/**
 		 * constructor
@@ -536,7 +539,7 @@ public class SapOrderAdapter implements SapOrderI {
 		/**
 		 * Get selected variation-variation option pairs.
 		 */
-		public Map getOptions() {
+		public Map<String,String> getOptions() {
 			return this.orderLine.getOptions();
 		}
 
@@ -547,11 +550,11 @@ public class SapOrderAdapter implements SapOrderI {
 			return this.orderLine.getSalesUnit();
 		}
 
-		public List getInventories() {
+		public List<ErpInventoryModel> getInventories() {
 			return this.inventories;
 		}
 
-		public void setInventories(List inventories) {
+		public void setInventories(List<ErpInventoryModel> inventories) {
 			this.inventories = inventories;
 		}
 

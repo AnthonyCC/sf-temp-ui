@@ -27,7 +27,19 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@ page import="com.freshdirect.webapp.crm.util.DeliveryTimeWindowFormatter"%>
-<%
+<%@ page import="com.freshdirect.fdstore.standingorders.ejb.FDStandingOrdersSessionBean"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.payment.ejb.PaymentManagerSessionBean"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
+<%@ page import="com.freshdirect.customer.adapter.PaymentMethodAdapter"%>
+<%@ page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="com.freshdirect.common.address.ContactAddressModel"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerList"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerListInfo"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerCreatedList"%><%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
 
@@ -46,8 +58,7 @@ if (orderId != null) {
     String custId = order.getCustomerId();
 	user = (FDSessionUser) session.getAttribute(SessionName.USER);
     if (user == null || user.getIdentity() == null || !custId.equals(user.getIdentity().getErpCustomerPK())) {
-    	%>
-<fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
+%><fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
     	user = (FDSessionUser) session.getAttribute(SessionName.USER);
 	}
 } else {
@@ -63,7 +74,7 @@ final Map orderDlvIssueTypes = CrmManager.getInstance().getDeliveryIssueTypes(us
 // determine page layout template
 final String PAGE_TEMPLATE = "print".equalsIgnoreCase(request.getParameter("for")) ? "/template/print.jsp" : "/template/top_nav_changed_dtd.jsp";
 
-final List recentOrders = util.getRecentOrders(5);
+final List<FDOrderInfoI> recentOrders = util.getRecentOrders(5);
 %>
 <crm:GetLockedCase id="cm">
 </crm:GetLockedCase>
@@ -145,8 +156,7 @@ if (ldlv != null) {
 	if (comp != null) {
 %>			<div>
 <%
-		for (Iterator<ErpComplaintReason> rit = util.getSortedReasons(comp).iterator(); rit.hasNext(); ) {
-			ErpComplaintReason r = (ErpComplaintReason) rit.next();
+		for (ErpComplaintReason r : util.getSortedReasons(comp)) {
 			%><span style="color: green; padding-right: 1em;"><%= r.getReason() %></span><%
 		}
 %>			</div>
@@ -245,8 +255,7 @@ if (ldlv != null) {
 <%
 // List cases
 int k=0;
-for (Iterator it=util.getRecentCases(5).iterator(); it.hasNext(); ){
-	CrmCaseModel aCase = (CrmCaseModel) it.next();
+for (CrmCaseModel aCase : util.getRecentCases(5)) {
 %>				<tr id="c-tr-<%= aCase.getId() %>" class="cases-row" caseId="<%= aCase.getId() %>">
 					<td><%= CCFormatter.formatDateTime(aCase.getCreateDate()) %></td>
 					<td><%= aCase.getOrigin().getName() %></td>
@@ -268,8 +277,7 @@ for (Iterator it=util.getRecentCases(5).iterator(); it.hasNext(); ){
 <script type="text/javascript">
 var selCase = null;
 <%
-for (Iterator it=util.getRecentCases(5).iterator(); it.hasNext(); ){
-	CrmCaseModel aCase = (CrmCaseModel) it.next();
+for (CrmCaseModel aCase : util.getRecentCases(5)) {
 %>
 $E.on($('c-tr-<%= aCase.getId() %>'), 'mouseover', function(e) {
 	this.className = 'cases-row-mover';
@@ -330,6 +338,70 @@ $E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
 
 </style>
 <h2>RECENT ORDERS</h2>
+<script type="text/javascript">
+var sopanels = [];
+</script>
+<%
+// List cases
+for (FDOrderInfoI orderInfo : recentOrders) {
+	if (orderInfo.getStandingOrderId() != null) {
+		String oid = orderInfo.getStandingOrderId();
+		
+		FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(oid));
+
+		FDCustomerCreatedList cl = FDListManager.getCustomerCreatedList(user.getIdentity(), so.getCustomerListId());
+		ContactAddressModel addr = FDCustomerManager.getAddress(user.getIdentity(), so.getAddressId());
+		ErpPaymentMethodI pm = FDCustomerManager.getPaymentMethod(user.getIdentity(), so.getPaymentMethodId());
+	
+%>
+<div id="soDetailPanel-<%= oid %>"> 
+    <div class="hd"></div> 
+    <div class="bd">
+    	<table cellspacing="0" cellpadding="0" border="0">
+    		<tr>
+    			<td>Customer List:</td>
+    			<td><%= cl.getName() %></td>
+    		</tr>
+    		<tr>
+    			<td>Address:</td>
+    			<td>
+    			</td>
+    		</tr>
+    		<tr>
+    			<td>Payment Method:</td>
+    			<td><%= pm.getMaskedAccountNumber() %>
+    			</td>
+    		</tr>
+    	</table>
+    </div> 
+    <div class="ft"></div> 
+</div> 
+<script type="text/javascript">
+	//The second argument passed to the
+	//constructor is a configuration object:
+	sopanels['<%= oid %>'] = new YAHOO.widget.Panel("soDetailPanel-<%= oid %>", {
+		width:"400px", 
+		fixedcenter: true, 
+		constraintoviewport: true, 
+		underlay:"shadow", 
+		close:true, 
+		visible:false, 
+		draggable:true} );
+	//If we haven't built our panel using existing markup,
+	//we can set its content via script:
+	sopanels['<%= oid %>'].setHeader("The Panel Control");
+	// sopanels['<%= oid %>'].setBody("The Panel is a powerful UI control that enables you to create floating windows without using browser popups.  Effects like drag and drop and constrain-to-viewport are easy to configure.");
+	//Although we configured many properties in the
+	//constructor, we can configure more properties or 
+	//change existing ones after our Panel has been
+	//instantiated:
+	sopanels['<%= oid %>'].cfg.setProperty("underlay","matte");
+
+	sopanels['<%= oid %>'].render(document.body);
+</script>
+<%		}
+	}
+%>
 <table style="width: 100%;" cellspacing="0" cellpadding="0">
 	<tr class="orders-header">
 		<td>Order #</td>
@@ -344,8 +416,7 @@ $E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
 		<td>Created</td>
 		<td>by</td>
 <%
-	for (Iterator it=EnumComplaintDlvIssueType.getEnumList().iterator(); it.hasNext();) {
-		EnumComplaintDlvIssueType obj = (EnumComplaintDlvIssueType) it.next();
+	for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
 %>		<td><%= obj.getName() %></td>
 <%
 	}
@@ -353,9 +424,7 @@ $E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
 	</tr>
 <%
 // List cases
-for (Iterator it=recentOrders.iterator(); it.hasNext(); ){
-	FDOrderInfoI orderInfo = (FDOrderInfoI) it.next();
-	
+for (FDOrderInfoI orderInfo : recentOrders) {
 	// load order
 	FDOrderI order = FDCustomerManager.getOrder(orderInfo.getErpSalesId());
 %>
@@ -375,12 +444,18 @@ for (Iterator it=recentOrders.iterator(); it.hasNext(); ){
 		<td style="text-align: right;  font-weight: bold;"><%= CCFormatter.formatCurrency(orderInfo.getTotal()) %></td>
 		<td style="font-weight: bold;"><%= orderInfo.getPaymentMethodType() %></td>
 		<td><%= CCFormatter.formatDateTime(orderInfo.getCreateDate()) %></td>
-		<td style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
 <%
+	if (orderInfo.getStandingOrderId() != null) {
+%>		<td id="hs-<%= orderInfo.getStandingOrderId() %>" style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
+<%
+	} else {
+%>		<td style="font-weight: bold;"><%= util.getCreatedBy(orderInfo) %></td>
+<%
+	}
+
 	Set types = (Set) orderDlvIssueTypes.get(order.getErpSalesId());
 
-	for (Iterator eit=EnumComplaintDlvIssueType.getEnumList().iterator(); eit.hasNext();) {
-		EnumComplaintDlvIssueType obj = (EnumComplaintDlvIssueType) eit.next();
+	for (EnumComplaintDlvIssueType obj : EnumComplaintDlvIssueType.getEnumList()) {
 %>		<td class="orders-row-tickbox"><%= types != null && types.contains(obj) ? "x" : "&nbsp;" %></td>
 <%
 	}
@@ -391,7 +466,21 @@ for (Iterator it=recentOrders.iterator(); it.hasNext(); ){
 
 %>
 </table>
-	
+<script type="text/javascript">
+<%
+// List cases
+for (FDOrderInfoI orderInfo : recentOrders) {
+	if (orderInfo.getStandingOrderId() != null) {
+		String oid = orderInfo.getStandingOrderId();
+%>
+$E.addListener("hs-<%= oid %>", "mouseover", sopanels['<%= oid %>'].show, sopanels['<%= oid %>'], true); 
+$E.addListener("hs-<%= oid %>", "mouseout", sopanels['<%= oid %>'].hide, sopanels['<%= oid %>'], true); 
+
+<%
+	}
+}
+%>
+</script>
 <%-- CONTENT ENDS HERE --%>
     </tmpl:put>
 </tmpl:insert>

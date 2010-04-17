@@ -21,13 +21,13 @@ import java.util.List;
 public interface FDProductCollectionI {
 	
 	public void addProduct(FDProductSelectionI Product);
-	public void addProducts(Collection cartLines);
+	public void addProducts(Collection<FDProductSelectionI> cartLines);
 	public int numberOfProducts();
 	public FDProductSelectionI getProduct(int index);
-	public void setProducts(List lines);
+	public void setProducts(List<FDProductSelectionI> lines);
 	public void setProduct(int index, FDProductSelectionI Product);
 	public void removeProduct(int index);
 	public void clearProducts();
-	public List getProducts();
+	public List<FDProductSelectionI> getProducts();
 	
 }

@@ -65,7 +65,7 @@ public class FDNutritionCache extends FDAbstractCache {
 	
 	private ErpNutritionHome lookupNutritionHome() {
 		try {
-			return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition", ErpNutritionHome.class);
+			return (ErpNutritionHome) serviceLocator.getRemoteHome("freshdirect.content.Nutrition");
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}

@@ -130,7 +130,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                         LOGGER.debug("inside addSavedRecipient successPage: "+successPage);
                         SavedRecipientModel srm = populateSavedRecipient();
                         //FDCustomerManager.storeSavedRecipient(user, srm);
-                        user.getRecipentList().addRecipient(srm);
+                        user.getRecipientList().addRecipient(srm);
                     	//Set the last entered sender name and sender email to request.
                         fs_user.setLastSenderName(fldYourName);
                     	fs_user.setLastSenderEmail(fldYourEmail);
@@ -149,7 +149,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
                 		} else {
 	                		int repIndex = -1;
 	                		try {
-	                			repIndex = user.getRecipentList().getRecipientIndex(Integer.parseInt(repId));
+	                			repIndex = user.getRecipientList().getRecipientIndex(Integer.parseInt(repId));
 	                		} catch (NumberFormatException nfe) {
 	                			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
 	                		}
@@ -157,7 +157,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
 	                			result.addError(new ActionError("system",SystemMessageList.MSG_IDENTIFY_RECIPIENT));
 	                		} else {
 	                			//update recipient
-	                			user.getRecipentList().setRecipient(repIndex, srm);
+	                			user.getRecipientList().setRecipient(repIndex, srm);
 	                			isCartChanged = true;
 	                			fs_user.setLastRecipAdded(true);
 	                		}
@@ -207,7 +207,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
         		} else {
             		int repIndex = -1;
             		try {
-            			repIndex = user.getRecipentList().getRecipientIndex(Integer.parseInt(repId));
+            			repIndex = user.getRecipientList().getRecipientIndex(Integer.parseInt(repId));
             		} catch (NumberFormatException nfe) {
             			result.addError(new ActionError("system", SystemMessageList.MSG_IDENTIFY_RECIPIENT));
             		}
@@ -215,7 +215,7 @@ public class AddSavedRecipientControllerTag extends com.freshdirect.framework.we
             			result.addError(new ActionError("system",SystemMessageList.MSG_IDENTIFY_RECIPIENT));
             		} else {
             			//remove recipient
-            			user.getRecipentList().removeRecipient(repIndex);
+            			user.getRecipientList().removeRecipient(repIndex);
             			isCartChanged = true;
                     	fs_user.setLastRecipAdded(true);
 		                setSuccessPage(gcAddCardPage);

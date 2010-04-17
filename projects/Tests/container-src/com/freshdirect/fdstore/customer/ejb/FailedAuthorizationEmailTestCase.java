@@ -46,8 +46,7 @@ public class FailedAuthorizationEmailTestCase extends TestCase {
 		try {
 			ServiceLocator LOCATOR = new ServiceLocator(ErpServicesProperties.getInitialContext());
 			return (FDCustomerManagerHome) LOCATOR.getRemoteHome(
-				"freshdirect.fdstore.CustomerManager",
-				FDCustomerManagerHome.class);
+				"freshdirect.fdstore.CustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

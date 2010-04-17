@@ -32,8 +32,20 @@
     //String orderId = null; // needs to be declared for i_vieworder
     String ccListIdStr = (String)request.getParameter(CclUtils.CC_LIST_ID);
     String lineId = request.getParameter("lineId");
-  
-    String successPage = ccListIdStr == null ? "/quickshop/all_lists.jsp" : "/quickshop/shop_from_list.jsp?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
+	String qcType = request.getParameter("qcType");
+    
+	String successPage;
+	if (ccListIdStr == null) {
+		successPage = "/quickshop/all_lists.jsp";
+	} else {
+		if (QuickCart.PRODUCT_TYPE_SO.equals(qcType)) {
+			successPage = "/quickshop/so_details.jsp?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
+		} else {
+			successPage = "/quickshop/shop_from_list.jsp?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
+		}
+	}
+	
+    // String successPage = ccListIdStr == null ? "/quickshop/all_lists.jsp" : "/quickshop/shop_from_list.jsp?" + CclUtils.CC_LIST_ID + "=" + ccListIdStr;
     String tagAction = request.getParameter("action");
     if (tagAction == null) tagAction = "CCL:ItemManipulate";
 
@@ -44,11 +56,9 @@
 %>
 <fd:FDShoppingCart id='cart' result='result' source='CCL' action='<%= tagAction %>' successPage='<%= successPage %>'>
  <tmpl:insert template='/common/template/quick_shop.jsp'> 
-
     <tmpl:put name='title' direct='true'>
        FreshDirect - <%= CartName.ACCEPT_ALTERNATIVE.equals(cartMode) ? "Recommended Alternative" : "Modify Shopping List Item" %> - <%= productNode.getFullName() %>
     </tmpl:put>
-    <%--tmpl:put name='banner' direct='true'><a href="/newproducts.jsp"><img src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif" width="140" height="108" border="0"></a><br><img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br></tmpl:put--%>
 
 <%
    String productLink = (String)request.getAttribute("productLink");
@@ -88,6 +98,7 @@ request.setAttribute("user", user);
 request.setAttribute("productNode", productNode);
 request.setAttribute("cartMode",cartMode);
 request.setAttribute("templateLine",templateLine);
+request.setAttribute("qcType", request.getParameter("qcType"));
 
 EnumProductLayout prodPageLayout = productNode.getProductLayout();
 // if this is the wine product layout, then modification always uses the perishable product layout

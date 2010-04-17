@@ -1,44 +1,40 @@
-<%//build department navigation
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@ taglib uri='freshdirect' prefix='fd' %><%
+//build department navigation
 
-StringBuffer departmentNav = new StringBuffer();
-List storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
-String currentDepartment = ""; 
+List<DepartmentModel> storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
+
+final String qsDeptId = "";
+final boolean hasDeptId = false;
 
 
 if (storeDepartments.size() > 0) {
 	Collections.sort(storeDepartments, DepartmentModel.DepartmentNameComparator);
 
-	showLink = !hasDeptId || !qsDeptId.equalsIgnoreCase("all");
-
-	if (showLink) { 
-		departmentNav.append("<OPTION VALUE=\"");
-		departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
-		departmentNav.append("all");
-		departmentNav.append("\">");
-		departmentNav.append("ALL DEPARTMENTS");
+	if (!hasDeptId) {
+%>	<option value="/quickshop/every_item.jsp?qsDeptId=all">ALL DEPARTMENTS</option>
+<%
 	}
 
-	for (Iterator dIter = storeDepartments.iterator(); dIter.hasNext();) {
-		DepartmentModel thisDept = (DepartmentModel) dIter.next();
-
-	%>	<fd:QuickShopController id="qCart" orderId="every" action="">
+	for (DepartmentModel thisDept : storeDepartments) {
+%>	
+<fd:QuickShopController id="qCart" orderId="every" action="">
 	<%      // checks if customer has shopped from this dept.  If not, don't show dept. APPDEV-203
 		if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
 
-			showLink = !hasDeptId || !thisDept.getContentName().equalsIgnoreCase(qsDeptId);
-
 			if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
-				if (showLink) { 
-					departmentNav.append("<OPTION VALUE=\"");
-					departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 
-					departmentNav.append(thisDept.getContentName());
-					departmentNav.append("\"");
-					departmentNav.append(">"+thisDept.getFullName());
+				if (!hasDeptId) {
+%>	<option value="/quickshop/every_item.jsp?qsDeptId=<%= thisDept.getContentName() %>"><%= thisDept.getFullName() %></option>
+<%
 				}
 
 			}
 		}
-		%></fd:QuickShopController><%
+%></fd:QuickShopController><%
 	} 
 }
 %>

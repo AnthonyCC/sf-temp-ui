@@ -18,18 +18,20 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedListInfo;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
+import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -68,7 +70,13 @@ class FDCustomerListDAO {
 	}
 
 	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate) throws SQLException {
+		LOGGER.debug( "FDCustomerListDAO:createList()" );
+		LOGGER.debug( "type = " + type );
+		
+		
 		String id = getNextId(conn);
+		LOGGER.debug( "getNextId() returned :" + id );
+		
 		PreparedStatement ps = conn.prepareStatement(CREATE_LIST);
 		ps.setString(1, id);
 		ps.setString(2, customerPk.getId());
@@ -102,18 +110,15 @@ class FDCustomerListDAO {
 		return (FDCustomerCreatedList) createList(conn, customerPk, EnumCustomerListType.CC_LIST,  name, createDate, modificationDate);
 	}
 		
-	private FDCustomerRecipeList createRecipeList(Connection conn, PrimaryKey customerPk, String name, Date createDate, Date modificationDate)
-																	throws SQLException {	
-		return (FDCustomerRecipeList) createList(conn, customerPk, EnumCustomerListType.RECIPE_LIST, name, createDate, modificationDate);
-	}
-	
 	private static final String LOAD_CUSTOMER_LIST_DETAILS = "SELECT * from CUST.CUSTOMERLIST_DETAILS cld WHERE LIST_ID = ? and DELETE_DATE is null";
 	
 	private static final String LOAD_RECIPE_LIST_DETAILS = "SELECT * from CUST.CUSTOMERLIST_RECIPES clr WHERE LIST_ID = ? and DELETE_DATE is null";
 
 	private static final String LOAD_CUSTOMER_LIST = "SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = ?";
 
-	/* 2 */
+	/**
+	 * Load a list by its name
+	 */
 	public FDCustomerList load(Connection conn, FDIdentity identity, EnumCustomerListType type, String name) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_LIST);
 		ps.setString(1, identity.getErpCustomerPK());
@@ -139,12 +144,55 @@ class FDCustomerListDAO {
 		
 		if (EnumCustomerListType.RECIPE_LIST.equals(type)) {
 			return loadRecipeList(conn, customerPk, name, pk);
-		} else if (EnumCustomerListType.CC_LIST.equals(type)) {
-			return loadProductList(conn, (FDCustomerProductList) createListByType(EnumCustomerListType.CC_LIST), customerPk, name, modificationDate, pk);
-		} else if (EnumCustomerListType.SHOPPING_LIST.equals(type)) {
-			return loadProductList(conn, (FDCustomerProductList) createListByType(EnumCustomerListType.SHOPPING_LIST), customerPk, name, modificationDate, pk);
+		} else {
+			return loadProductList(conn, (FDCustomerProductList) createListByType( type ), customerPk, name, modificationDate, pk);
 		}
-		return null;
+	}
+
+	private static final String LOAD_CUSTOMER_LIST_2 = "SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.id = ? AND cl.type = ?";
+
+	/**
+	 * Load a list by its name
+	 */
+	public FDCustomerList lookupById(Connection conn, FDIdentity identity, EnumCustomerListType type, String listId) throws SQLException {
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		
+		try {
+			ps = conn.prepareStatement(LOAD_CUSTOMER_LIST_2);
+			ps.setString(1, identity.getErpCustomerPK());
+			ps.setString(2, listId);
+			ps.setString(3, type.getName());
+			rs = ps.executeQuery();
+	
+			if (!rs.next()) {
+				LOGGER.debug("Attempted to load list of type "+ type.getName()+" with ID " + listId + " for customer " + identity.getErpCustomerPK() + ": no list found.");
+				return null;
+			}
+	
+			final PrimaryKey pk					= new PrimaryKey(listId /* rs.getString("ID") */);
+			final String name					= rs.getString("NAME");
+			final Timestamp  modificationDate	= rs.getTimestamp("MODIFICATION_DATE");
+			
+			
+			
+			final PrimaryKey customerPk = new PrimaryKey(identity.getErpCustomerPK());
+			
+			if (EnumCustomerListType.RECIPE_LIST.equals(type)) {
+				return loadRecipeList(conn, customerPk, name, pk);
+			} else {
+				return loadProductList(conn, (FDCustomerProductList) createListByType( type ), customerPk, name, modificationDate, pk);
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if (rs != null){
+				rs.close();
+			}
+			if (ps != null) {
+				ps.close();
+			}
+		}
 	}
 
 	private Date getTimestamp(ResultSet rs, String field) throws SQLException {
@@ -167,7 +215,7 @@ class FDCustomerListDAO {
 		ps.setString(1, list.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 
-		List lineItems = new ArrayList();
+		List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 		while (rs.next()) {
 			PrimaryKey itemPK = new PrimaryKey(rs.getString("ID"));
 			FDCustomerProductListLineItem item = new FDCustomerProductListLineItem(
@@ -202,7 +250,7 @@ class FDCustomerListDAO {
 		ps.setString(1, list.getPK().getId());
 		ResultSet rs = ps.executeQuery();
 
-		List lineItems = new ArrayList();
+		List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 		while (rs.next()) {
 			FDCustomerRecipeListLineItem item = new FDCustomerRecipeListLineItem();
 			PrimaryKey itemPK = new PrimaryKey(rs.getString("ID"));
@@ -236,8 +284,11 @@ class FDCustomerListDAO {
 	    	return new FDCustomerCreatedList();
 	    } else if (EnumCustomerListType.RECIPE_LIST.equals(type)) {
 	    	return new FDCustomerRecipeList();
+	    } else if (EnumCustomerListType.SO.equals(type)) {
+	    	return new FDStandingOrderList();
+	    } else {
+		    return null;
 	    }
-	    return null;
 	}
 
 	private void store(Connection conn, FDCustomerProductList list) throws SQLException {
@@ -253,7 +304,7 @@ class FDCustomerListDAO {
 		}
 
 		PreparedStatement ps = conn.prepareStatement(STORE_DETAIL);
-		for (Iterator i = list.getLineItems().iterator(); i.hasNext();) {
+		for (Iterator<FDCustomerListItem> i = list.getLineItems().iterator(); i.hasNext();) {
 			FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 			String id = getNextId(conn);
 			item.setId(id);
@@ -294,7 +345,7 @@ class FDCustomerListDAO {
 		}
 
 		PreparedStatement ps = conn.prepareStatement(STORE_RECIPE);
-		for (Iterator i = list.getLineItems().iterator(); i.hasNext();) {
+		for (Iterator<FDCustomerListItem> i = list.getLineItems().iterator(); i.hasNext();) {
 			FDCustomerRecipeListLineItem item = (FDCustomerRecipeListLineItem) i.next();
 			String id = getNextId(conn);
 			item.setId(id);
@@ -313,29 +364,51 @@ class FDCustomerListDAO {
 	}
 	
 	// CCL
-	public void store(Connection conn, FDCustomerList list) throws SQLException {
+	public String store(Connection conn, FDCustomerList list) throws SQLException {
+		LOGGER.debug( "FDCustomerListDAO:store()" );
+		LOGGER.debug( "list.id = " + list.getId() ); 
+		LOGGER.debug( "list.name = " + list.getName() ); 
+		LOGGER.debug( "list.count = " + list.getCount() ); 
+		LOGGER.debug( "list.type = " + list.getType() ); 
+//		LOGGER.debug( "stacktrace = " + new FDException().getFDStackTrace() ); 
+
+		String listId = list.getId();
 		if (list.getId() != null) {
+			LOGGER.debug( "Updating already existing list. listId = " + list.getId() );
 			// Update the list if it already exists
 			updateCustomerList(conn, list);
 		} else {
-			persistList(conn, list);
+			LOGGER.debug( "Persisting list." );
+			listId = persistList(conn, list);
+			list.setId( listId );
 		}
 
 		if (list instanceof FDCustomerProductList) {
+			LOGGER.debug( "store FDCustomerProductList." );
 			store(conn, (FDCustomerProductList) list);
 		} else if (list instanceof FDCustomerRecipeList) {
+			LOGGER.debug( "store FDCustomerRecipeList." );
 			store(conn, (FDCustomerRecipeList) list);
 		} else {
+			LOGGER.debug( "Unknown list type." );
 			throw new IllegalArgumentException("Unknown list type");
 		}
+		
+		return listId;
 	}
 	
-	private void persistList(Connection conn, FDCustomerList list) throws SQLException {
+	private String persistList(Connection conn, FDCustomerList list) throws SQLException {
+		LOGGER.debug( "FDCustomerListDAO:persistList()" );
 		FDCustomerList persistedList = createList(conn, list.getCustomerPk(), list.getType(), list.getName(), list.getCreateDate(), list.getModificationDate());
-		
+		LOGGER.debug( "persistedList = " + persistedList );
+
+		LOGGER.debug( "persistedList.getPK() = " + persistedList.getPK() );		
 		list.setPK(persistedList.getPK());
 		list.setCreateDate(persistedList.getCreateDate());
 		list.setModificationDate(persistedList.getModificationDate());
+		LOGGER.debug( "persistedList = " + persistedList );
+		
+		return persistedList.getId();
 	}
 
 	// ensure list item is on a list owned by logged in user
@@ -451,14 +524,14 @@ class FDCustomerListDAO {
 	/**
 	 * @return List<FDCustomerCreatedList> 
 	 */
-	public List getCustomerCreatedLists(Connection conn, FDIdentity identity) 
+	public List<FDCustomerCreatedList> getCustomerCreatedLists(Connection conn, FDIdentity identity) 
 	throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_CREATED_LISTS);
 		ps.setString(1, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		
 		
-		List CCLists = new ArrayList(rs.getFetchSize());
+		List<FDCustomerCreatedList> CCLists = new ArrayList<FDCustomerCreatedList>(rs.getFetchSize());
 
 		while (rs.next()) {
 			FDCustomerCreatedList CCList = new FDCustomerCreatedList();
@@ -477,33 +550,37 @@ class FDCustomerListDAO {
 		ps.close();
 		
 		return CCLists;
-	 }
+	}
 
-	private static final String LOAD_CUSTOMER_CREATED_LIST_INFOS = 
+	private static final String LOAD_CUSTOMER_LIST_INFOS = 
 		"select cl.id as list_id, cl.name as name, cl.create_date as create_date," + 
 		" cl.modification_date as modification_date, count(cld.list_id) as elem_count " + 
 		" from cust.customerlist cl LEFT JOIN cust.customerlist_details cld ON cl.id = cld.list_id and cld.delete_date is null " + 
-		" where cl.customer_id = ? and cl.type = '"+ EnumCustomerListType.CC_LIST.getName() + "'" +
+		" where cl.customer_id = ? and cl.type = ? " +
 		" group by cl.id, cl.name, cl.create_date, cl.modification_date";
 	
-	public List getCustomerCreatedListInfos(Connection conn, FDIdentity identity)	throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_CREATED_LIST_INFOS);
+	public List<FDCustomerListInfo> getCustomerCreatedListInfos(Connection conn, FDIdentity identity)	throws SQLException {
+		final EnumCustomerListType type = EnumCustomerListType.CC_LIST;
+
+		PreparedStatement ps = conn.prepareStatement(LOAD_CUSTOMER_LIST_INFOS);
 		ps.setString(1, identity.getErpCustomerPK());
+		ps.setString(2, type.getName());
 		ResultSet rs = ps.executeQuery();
 		
 		
-		List cclLists = new ArrayList(rs.getFetchSize());
-
+		List<FDCustomerListInfo> cclLists = new ArrayList<FDCustomerListInfo>(rs.getFetchSize());
+		
 		while (rs.next()) {
-			FDCustomerCreatedListInfo list = new FDCustomerCreatedListInfo();
+			FDCustomerListInfo list = new FDCustomerListInfo();
 			list.setCreateDate(getTimestamp(rs, "CREATE_DATE"));
 			
+			list.setType(type);
 			list.setPK(new PrimaryKey(rs.getString("LIST_ID")));
 			list.setCustomerPk(new PrimaryKey(identity.getErpCustomerPK()));
 			list.setName(rs.getString("NAME"));
 			list.setCount(rs.getInt("ELEM_COUNT"));
 			list.setModificationDate(rs.getTimestamp("MODIFICATION_DATE"));
-
+		
 			cclLists.add(list);
 		}
 		
@@ -511,8 +588,49 @@ class FDCustomerListDAO {
 		ps.close();
 		
 		return cclLists;
-	 }
+	}
 	
+	private static final String LOAD_SO_CUSTOMER_LIST_INFOS = 
+		"select cl.id as list_id, cl.name as name, cl.create_date as create_date," + 
+		" cl.modification_date as modification_date, count(cld.list_id) as elem_count " + 
+		" from cust.customerlist cl LEFT JOIN cust.customerlist_details cld ON cl.id = cld.list_id and cld.delete_date is null " + 
+		" join CUST.STANDING_ORDER so on so.CUSTOMERLIST_ID = cl.id " +
+		" where cl.customer_id = ? and cl.type = ? " +
+		" and so.deleted = 0 " +
+		" group by cl.id, cl.name, cl.create_date, cl.modification_date";
+
+	public List<FDCustomerListInfo> getStandingOrderListInfos(Connection conn, FDIdentity identity)	throws SQLException {
+		final EnumCustomerListType type = EnumCustomerListType.SO;
+
+		PreparedStatement ps = conn.prepareStatement(LOAD_SO_CUSTOMER_LIST_INFOS);
+		ps.setString(1, identity.getErpCustomerPK());
+		ps.setString(2, type.getName());
+		ResultSet rs = ps.executeQuery();
+		
+		
+		List<FDCustomerListInfo> cclLists = new ArrayList<FDCustomerListInfo>(rs.getFetchSize());
+		
+		while (rs.next()) {
+			FDCustomerListInfo list = new FDCustomerListInfo();
+			list.setCreateDate(getTimestamp(rs, "CREATE_DATE"));
+			
+			list.setType(type);
+			list.setPK(new PrimaryKey(rs.getString("LIST_ID")));
+			list.setCustomerPk(new PrimaryKey(identity.getErpCustomerPK()));
+			list.setName(rs.getString("NAME"));
+			list.setCount(rs.getInt("ELEM_COUNT"));
+			list.setModificationDate(rs.getTimestamp("MODIFICATION_DATE"));
+		
+			cclLists.add(list);
+		}
+		
+		rs.close();
+		ps.close();
+		
+		return cclLists;
+	}
+
+
 	// CCL
 	private static final String GET_LIST_ID = "SELECT id FROM CUST.CUSTOMERLIST cl WHERE cl.name = ? AND cl.type = ? AND cl.customer_id = ?";
     private static final String DELETE_LIST = "DELETE FROM CUST.CUSTOMERLIST cl WHERE cl.id = ?";
@@ -548,14 +666,15 @@ class FDCustomerListDAO {
 	
 	
 	private static final String CUSTOMER_CREATED_LIST_EXISTS = 
-		"SELECT COUNT(*) from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = '" + EnumCustomerListType.CC_LIST.getName() + "'";
+		"SELECT COUNT(*) from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = ?";
 	
-	// CCL
-	public boolean isCustomerCreatedList(Connection conn, FDIdentity identity, String listName ) throws SQLException {
+	// CCLFDCustomerCreatedList
+	public boolean isCustomerList(Connection conn, FDIdentity identity, EnumCustomerListType type, String listName ) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(CUSTOMER_CREATED_LIST_EXISTS);
 		ps.setString(1, identity.getErpCustomerPK());
 		ps.setString(2, listName);
+		ps.setString(3, type != null ? type.getName() : EnumCustomerListType.CC_LIST.getName());
 		ResultSet rs = ps.executeQuery();
 		rs.next();
 		int count = rs.getInt(1);
@@ -570,7 +689,7 @@ class FDCustomerListDAO {
 
 
 
-// CCL 	
+	// CCL 	
 	/**
 	 * @return List<FDCustomerCreatedList> 
 	 */
@@ -597,20 +716,23 @@ class FDCustomerListDAO {
 		ps.close();
 		
 		return CCList;
-	 }
+	}
 	
-	private static final String GET_LIST_NAME = "SELECT name FROM cust.customerlist cl WHERE cl.id= ? AND cl.type= ? AND cl.customer_id = ?";
+
+	
+
+	private static final String GET_LIST_NAME = "SELECT name FROM cust.customerlist cl WHERE cl.id= ? AND cl.customer_id = ?";
 	
 	/* 2 */
-	public String getListName(Connection conn, FDIdentity identity, EnumCustomerListType type, String ccListId) throws SQLException {
+	public String getListName(Connection conn, FDIdentity identity, String ccListId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_LIST_NAME);
 		ps.setString(1, ccListId );
-		ps.setString(2, type.getName());
-		ps.setString(3, identity.getErpCustomerPK());
+		ps.setString(2, identity.getErpCustomerPK());
 		ResultSet rs = ps.executeQuery();
 		String name = null;
 
-		if (rs.next()) name = rs.getString("NAME");
+		if ( rs.next() ) 
+			name = rs.getString("NAME");
 			
 		rs.close();
 		ps.close();
@@ -618,17 +740,8 @@ class FDCustomerListDAO {
 		return name;
 	 }
 	
-	private static final String RENAME_LIST = "UPDATE cust.customerlist cl SET cl.name = ?, cl.modification_date = ?  WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = '" + EnumCustomerListType.CC_LIST.getName() + "'";
-	
 	public void renameCustomerCreatedList(Connection conn, FDIdentity identity, String oldName, String newName) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(RENAME_LIST);
-		ps.setString(1, newName);
-		ps.setTimestamp(2, new Timestamp(getCurrentDate().getTime()));
-		ps.setString(3, identity.getErpCustomerPK());
-		ps.setString(4, oldName);
-		ResultSet rs = ps.executeQuery();
-		rs.close();
-		ps.close();
+		renameCustomerList(conn, identity, EnumCustomerListType.CC_LIST, oldName, newName);
 	}
 	
 	protected Date getCurrentDate() {
@@ -643,7 +756,7 @@ class FDCustomerListDAO {
 	 * @return the line items as a product list
 	 * @throws SQLException
 	 */
-	public FDCustomerProductList getOrderDetails(Connection conn, String erpCustomerId, List skus) throws SQLException {
+	public FDCustomerProductList getOrderDetails(Connection conn, String erpCustomerId, List<String> skus) throws SQLException {
 		if (skus.size() == 0) throw new FDRuntimeException("Empty sku list");
 	
 		StringBuffer query = 
@@ -661,14 +774,14 @@ class FDCustomerListDAO {
 		PreparedStatement ps = conn.prepareStatement(query.toString());
 		ps.setString(1,erpCustomerId);
 		for(int i = 0; i< skus.size(); ++i) {
-			ps.setString(i+2,skus.get(i).toString());
+			ps.setString(i+2,skus.get(i));
 		}
 			
 		FDCustomerProductList products = new FDCustomerShoppingList();
 		
 		ResultSet rs = ps.executeQuery();
 		
-		List lineItems = new ArrayList();
+		List<FDCustomerListItem> lineItems = new ArrayList<FDCustomerListItem>();
 		while (rs.next()) {
 			PrimaryKey itemPK = new PrimaryKey(rs.getString("ID"));
 			FDCustomerProductListLineItem item = new FDCustomerProductListLineItem(
@@ -695,5 +808,68 @@ class FDCustomerListDAO {
 		return products;
 	}
 
+	// FIXME this method is not called from anywhere! why?
+	public FDStandingOrderList createStandingOrderList(Connection conn, FDIdentity identity, String name) 
+	throws SQLException {
+		return (FDStandingOrderList) createList(conn, new PrimaryKey(identity.getErpCustomerPK()), EnumCustomerListType.SO,  name, null, null);
+	}
+
+
+	private static final String LOAD_SO_LIST = 
+		"SELECT * from CUST.CUSTOMERLIST cl WHERE cl.customer_id = ? AND cl.type = '" + EnumCustomerListType.SO.getName() + "' AND cl.id=? ";
+
+	/**
+	 * @return List<FDStandingOrderList> 
+	 * @throws SQLException 
+	 */
+	public FDStandingOrderList getStandingOrderList(Connection conn, FDIdentity identity, String soListId) throws SQLException {
+		FDStandingOrderList soList=null;	
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+			ps = conn.prepareStatement(LOAD_SO_LIST);
+			ps.setString(1, identity.getErpCustomerPK());
+			ps.setString(2, soListId );
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				soList = new FDStandingOrderList();
+				soList.setCreateDate(getTimestamp(rs, "CREATE_DATE"));
+				
+				PrimaryKey pk               = new PrimaryKey(rs.getString("ID"));
+				String     name             = rs.getString("NAME");
+				Timestamp  modificationDate = rs.getTimestamp("MODIFICATION_DATE");
+				PrimaryKey customerPk		= new PrimaryKey(identity.getErpCustomerPK());
+				
+				// populate list with items
+				loadProductList(conn, soList, customerPk, name, modificationDate, pk);			
+			}
+		} catch (SQLException exc) {
+			throw exc;
+		} finally {
+			if(rs != null){
+				rs.close();
+			}
+			if(ps != null) {
+				ps.close();
+			}
+		}
+
+		return soList;
+	}
+
+	private static final String RENAME_LIST_EX = "UPDATE cust.customerlist cl SET cl.name = ?, cl.modification_date = ?  WHERE cl.customer_id = ? AND cl.name = ? AND cl.type = ?";
 	
+	public void renameCustomerList(Connection conn, FDIdentity identity, EnumCustomerListType type, String oldName, String newName) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(RENAME_LIST_EX);
+		ps.setString(1, newName);
+		ps.setTimestamp(2, new Timestamp(getCurrentDate().getTime()));
+		ps.setString(3, identity.getErpCustomerPK());
+		ps.setString(4, oldName);
+		ps.setString(5, type != null ? type.getName() : EnumCustomerListType.CC_LIST.getName());
+		ResultSet rs = ps.executeQuery();
+		rs.close();
+		ps.close();
+	}
 }

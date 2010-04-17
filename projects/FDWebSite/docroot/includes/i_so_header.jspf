@@ -1,0 +1,100 @@
+<%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@page import="com.freshdirect.fdstore.customer.FDUserI"%>					
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrdersManager"%>
+<%@page import="com.freshdirect.framework.core.PrimaryKey"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderI"%>
+<%@page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
+<%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="java.text.DateFormat"%>
+<%@page import="java.text.SimpleDateFormat"%><%
+	// is first page?
+	final boolean isViewCartPage = request.getRequestURI().indexOf("view_cart.jsp") > -1;
+	
+	// is last checkout page?
+	final boolean isFinalPage = request.getRequestURI().indexOf("step_4_receipt") > -1;
+
+	final DateFormat __dfmt = new SimpleDateFormat("EEEE, MMMM dd");
+
+	EnumCheckoutMode mode = null;
+	FDStandingOrder __so = null;
+	FDOrderI order = null;
+	if (isFinalPage) {
+		// on the ultimate page this parameter is passed along with the order submit form (see step_4_submit.jsp).
+		String cModeStr = (String) session.getAttribute("checkout_mode");
+		mode = cModeStr != null ? EnumCheckoutMode.valueOf(cModeStr) : EnumCheckoutMode.NORMAL;
+
+		// in this phase standing order no longer maintained in session cache
+		String __orderNumber = (String)session.getAttribute(SessionName.RECENT_ORDER_NUMBER);
+		order = FDCustomerManager.getOrder(__orderNumber);
+		__so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(order.getStandingOrderId()));
+	} else {
+		FDUserI __soUser = (FDUserI) session.getAttribute( SessionName.USER );
+
+		mode = __soUser.getCheckoutMode();
+		__so = __soUser.getCurrentStandingOrder();
+	}
+	
+	switch (mode) {
+		case CREATE_SO:
+			if (isViewCartPage) {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You are building a standing order to be delivered <%@include file="i_so_chgfrq.jspf" %></div>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to make this a regular order, all items will remain in your cart.</div>					
+<%
+			} else if (isFinalPage) {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You have created a standing order that will be delivered <%= __so.getFrequencyDescription() %>.</div>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">You can review or change the details or contents of your deliveries at any time<br/>through the &quot;<a href="<%= FDURLUtil.getStandingOrderLandingPage(__so, null) %>">Standing Order</a>&quot; page in Quickshop.</div>
+					<div style="margin-top: 1em; font-weight: bold;">Your first delivery is now scheduled for <%= __dfmt.format(order.getRequestedDate()) %>.</div>
+					<div>To make changes to just this specific order, visit the &quot;<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">Your Orders</a>&quot; page in Your Account.</div>
+<%			} else {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You are building a standing order that will be delivered <%= __so.getFrequencyDescription() %>.</div>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+<%
+			}
+			break;
+		case MODIFY_SO:
+			boolean __err = __so.isError();
+			String __soNextDlvDate = StandingOrderHelper.getNextDeliveryDate(__so);
+			if (isViewCartPage) {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
+						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br><%= __so.getDetailMessage() %></div><% } %>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to cancel changes to the standing order, items previously in your cart will be restored.</div>
+<%
+			} else if (isFinalPage) {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You have successfully modified <%= __so.getCustomerListName() %> to be delivered <%= __so.getFrequencyDescription() %>.</div>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">You can review or change the details or contents of your deliveries at any time<br/>through the &quot;<a href="<%= FDURLUtil.getStandingOrderLandingPage(__so, null) %>">Standing Order</a>&quot; page in Quickshop.</div>
+					<div style="margin-top: 1em; font-weight: bold;">Your next delivery is now scheduled for <%= __dfmt.format(order.getRequestedDate()) %>.</div>
+					<div>To make changes to just this specific order, visit the &quot;<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">Your Orders</a>&quot; page in Your Account.</div>
+<%			} else {
+%>					<div style="font-size: 13px; font-weight: bold;">
+						<div style="color: #996699;">You are making changes to <%= __so.getCustomerListName() %> to be delivered <%= __so.getFrequencyDescription() %>.</div>
+						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br><%= __so.getDetailMessage() %></div><% } %>
+					</div>
+					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+<%
+			}
+			break;
+	}
+
+	// purple bottom bar
+	if (isViewCartPage || isFinalPage) {
+%>					<div style="margin: 1em 0 1em 0; background-color: #996699; height: 4px; width: 100%"></div>
+<%
+	} else {
+%>					<div style="margin: 1em -5px 1em -5px; background-color: #996699; height: 4px;"></div>
+<%
+	}
+%>

@@ -11,6 +11,7 @@ import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.customer.ErpReturnLineModel;
+import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -20,6 +21,8 @@ import com.freshdirect.fdstore.content.ProductModel;
 
 public abstract class AbstractCartLine extends FDProductSelection implements FDCartLineI {
 	
+	private static final long	serialVersionUID	= -2991659761444741368L;
+
 	protected final static IDGenerator ID_GENERATOR = new HiLoGenerator("CUST", "CARTLINE_SEQ");
 	
 	private final static Random RND = new Random();
@@ -40,7 +43,6 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		this.returnLine = null;
 		
 		this.variantId = variantId;
-		//dummy();
 	}
 
 	public AbstractCartLine(
@@ -136,7 +138,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 		return this.orderLine.getMaterialNumber();
 	}
 
-	public Set getApplicableRestrictions() {
+	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
 		FDProduct fdp = this.lookupFDProduct();
 		return AvailabilityFactory.getApplicableRestrictions(fdp);
 	}

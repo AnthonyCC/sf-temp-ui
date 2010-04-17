@@ -1,35 +1,32 @@
 package com.freshdirect.giftcard;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.customer.EnumTransactionType;
 
 public class ErpEmailGiftCardModel extends ErpGiftCardTransModel {
-		
 
-	private List recepientsTranactionList;
+	private static final long	serialVersionUID	= -3843168766775401424L;
 	
-	public List getRecepientsTranactionList() {
-		return recepientsTranactionList;
+	private List<ErpGCDlvInformationHolder>	recipientsTransactionList;
+
+	public List<ErpGCDlvInformationHolder> getRecipientsTransactionList() {
+		return recipientsTransactionList;
 	}
 
-	public void setRecepientsTranactionList(List recepientsTranactionList) {
-		this.recepientsTranactionList = recepientsTranactionList;
+	public void setRecipientsTransactionList( List<ErpGCDlvInformationHolder> recepientsTranactionList ) {
+		this.recipientsTransactionList = recepientsTranactionList;
 	}
 
-	public ErpEmailGiftCardModel()
-	{
-		super(EnumTransactionType.EMAIL_GIFTCARD);
+	public ErpEmailGiftCardModel() {
+		super( EnumTransactionType.EMAIL_GIFTCARD );
 	}
-			
-	
-	public void addGiftCardDlvInfo(ErpGCDlvInformationHolder holder){
-		if(this.recepientsTranactionList==null){		
-			this.recepientsTranactionList=new ArrayList();
+
+	public void addGiftCardDlvInfo( ErpGCDlvInformationHolder holder ) {
+		if ( this.recipientsTransactionList == null ) {
+			this.recipientsTransactionList = new ArrayList<ErpGCDlvInformationHolder>();
 		}
-		this.recepientsTranactionList.add(holder);
+		this.recipientsTransactionList.add( holder );
 	}
 }

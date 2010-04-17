@@ -1,3 +1,16 @@
+<%@ page import="com.freshdirect.common.address.AddressModel"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.AddressName"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="com.freshdirect.delivery.EnumAddressVerificationResult"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SystemMessageList"%>
+<%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ page import="java.util.Date"%>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 
 	String dlvFirstName = request.getParameter(AddressName.DLV_FIRST_NAME);
@@ -27,14 +40,14 @@
 		fldCompanyName = NVL.apply(request.getParameter(EnumUserInfoName.DLV_COMPANY_NAME.getCode()), "");
 %>
 
-<table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;">
+<%@page import="com.freshdirect.customer.EnumDeliverySetting"%><table width="100%" cellpadding="0" cellspacing="0" border="0" align="center" class="register_header" style="padding: 3px; margin-bottom: 8px;">
 	<tr><td>&nbsp;&nbsp;Delivery Address <span class="register_header_detail"><%= EnumServiceType.WEB.equals(selected) ? "(Optional)" : "*&nbsp;Required information" %></span></td></tr>
 </table>
 
 <fd:ErrorHandler result='<%=result%>' name='<%=AddressName.DLV_ADDRESS_SUGGEST%>' id='errorMsg'>
 	<%
 		String addressMessage = "";
-		ArrayList suggestions = null; // a holder for suggested addresses if the original address is not unique
+		List<AddressModel> suggestions = null; // a holder for suggested addresses if the original address is not unique
 		FDDeliveryManager dlvManager = FDDeliveryManager.getInstance();
 		EnumAddressVerificationResult addressResult = null;
 		AddressModel address = new AddressModel();
@@ -63,8 +76,7 @@
 					<table border="0" cellspacing="0" cellpadding="0">
 						<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"></td></tr>
 						<%
-							for (Iterator sIter = suggestions.iterator(); sIter.hasNext(); ) {
-								AddressModel suggestion = (AddressModel) sIter.next();
+							for (AddressModel suggestion : suggestions) {
 						%>
 								<tr>
 									<td class="error_detail">
@@ -144,7 +156,7 @@
 					<%if (EnumServiceType.WEB.equals(selected)) {%>
 						<td width="65%" colspan="3">
 						<input type="text" SIZE="2" name="<%= AddressName.DLV_STATE %>" value="<%= fldState %>"><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_STATE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler>
-						<span>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="5" name="<%= AddressName.DLV_ZIPCODE %>" value="<%= fldZipCode %>"><br /><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_ZIPCODE %>' id='errorMsg'></span><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
+						<span>&nbsp;&nbsp;&nbsp;* Zip <input type="text" SIZE="5" name="<%= AddressName.DLV_ZIPCODE %>" value="<%= fldZipCode %>"></span><br /><fd:ErrorHandler result='<%=result%>' name='<%= AddressName.DLV_ZIPCODE %>' id='errorMsg'><span class="error_detail"><%= errorMsg %></span></fd:ErrorHandler></td>
 					<%}else {%>
 					<td width="65%">
 					<select class="pulldown" name="<%=AddressName.DLV_STATE%>">

@@ -8,8 +8,6 @@
  */
 package com.freshdirect.fdstore.customer;
 
-import java.util.Iterator;
-
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
@@ -24,6 +22,8 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
  */
 public class FDModifyCartModel extends FDCartModel {
 
+	private static final long	serialVersionUID	= -3926647074819221032L;
+	
 	private final FDOrderAdapter originalOrder;
 
 	/**
@@ -34,8 +34,7 @@ public class FDModifyCartModel extends FDCartModel {
 		this.originalOrder = originalOrder;
 
 		// populate orderlines from orig.order
-		for (Iterator i = originalOrder.getOrderLines().iterator(); i.hasNext();) {
-			FDCartLineI origLine = (FDCartLineI) i.next();
+		for (FDCartLineI origLine : originalOrder.getOrderLines()) {
 			FDCartLineI cartLine = new FDModifyCartLineModel(origLine);
 			Discount d = origLine.getDiscount();
 			if( d != null && !(d.getDiscountType().isSample())) {
@@ -70,6 +69,7 @@ public class FDModifyCartModel extends FDCartModel {
 		return this.originalOrder.getDeliveryReservationId();
 	}
 
+	@Override
 	public boolean isDlvPassAlreadyApplied() {
 		if(this.originalOrder.getDeliveryPassId() !=  null){
 			//Delivery pass was already applied in this order either during create

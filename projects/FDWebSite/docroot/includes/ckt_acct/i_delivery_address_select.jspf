@@ -1,25 +1,30 @@
+<%@ page import="com.freshdirect.common.customer.EnumServiceType"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%
+
 boolean isInYourAccount = (request.getRequestURI().indexOf("your_account") > -1);
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity = user.getIdentity();
 boolean allowSelection = false;
 
-Map addresses = new HashMap();
+final boolean isNormalCheckout = user.getCheckoutMode() == EnumCheckoutMode.NORMAL;
 
-for(Iterator i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.hasNext(); ){
-	ErpAddressModel address = (ErpAddressModel) i.next();
+Map<EnumServiceType,Collection<ErpAddressModel>> addresses = new HashMap<EnumServiceType,Collection<ErpAddressModel>>();
+
+for(Iterator<ErpAddressModel> i = FDCustomerManager.getShipToAddresses(identity).iterator(); i.hasNext(); ){
+	ErpAddressModel address = i.next();
 	if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-		List cl = (List)addresses.get(EnumServiceType.CORPORATE);
+		List<ErpAddressModel> cl = (List<ErpAddressModel>)addresses.get(EnumServiceType.CORPORATE);
 		if(cl == null){
-			cl = new ArrayList();
+			cl = new ArrayList<ErpAddressModel>();
 			addresses.put(EnumServiceType.CORPORATE, cl);
 		}
 		cl.add(address);
 	}else {
-		List hl = (List)addresses.get(EnumServiceType.HOME);
+		List<ErpAddressModel> hl = (List<ErpAddressModel>)addresses.get(EnumServiceType.HOME);
 		if(hl == null){
-			hl = new ArrayList();
+			hl = new ArrayList<ErpAddressModel>();
 			addresses.put(EnumServiceType.HOME, hl);
 		}
 		hl.add(address);
@@ -40,6 +45,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
     allowSelection = false;
 }
 %>
+
 <table border="0" cellspacing="0" cellpadding="2" width="675" >
 	<TR VALIGN="TOP">
 		<TD WIDTH="675">
@@ -68,7 +74,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 </table><br><br>
 
 <% // BEGINING D E P O T   L O C A T I O N S 
-if(user.isDepotUser()){
+if(isNormalCheckout && user.isDepotUser()){
 	%>
     <%@ include file="/shared/includes/i_depot_locations.jspf" %><br><br>
 	<%
@@ -77,9 +83,10 @@ if(user.isDepotUser()){
 
 <%// BEGINING C O R P ADDRESSES
 	boolean showingCorporateAddress = false;
-	List shipToAddresses = (List) addresses.get(EnumServiceType.CORPORATE);
+	List<ErpAddressModel> shipToAddresses = (List<ErpAddressModel>) addresses.get(EnumServiceType.CORPORATE);
 	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
 		showingCorporateAddress = true;
+		
 		%>
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
 			<TR VALIGN="TOP">
@@ -91,14 +98,21 @@ if(user.isDepotUser()){
 			</tr>
 		</TABLE>
 		<br>
+		<%
+		pageContext.setAttribute("__shipToAddresses", shipToAddresses);
+		pageContext.setAttribute("__showingCorporateAddress", showingCorporateAddress);
+		pageContext.setAttribute("__shipToDepotLocation", shipToDepotLocation);
+		pageContext.setAttribute("__allowSelection", allowSelection);
+		pageContext.setAttribute("__linkURL", linkURL);
+		%>
 		<%@ include file="/includes/ckt_acct/i_dlv_address_select_display.jspf" %>
 		<%
 	}%>
 <%// END C O R P ADDRESSES%>
 
 <%// BEGINING H O M E ADDRESSES
-	shipToAddresses = (List) addresses.get(EnumServiceType.HOME);
-	if (shipToAddresses != null && !shipToAddresses.isEmpty()) {
+	shipToAddresses = (List<ErpAddressModel>) addresses.get(EnumServiceType.HOME);
+	if ( isNormalCheckout && shipToAddresses != null && !shipToAddresses.isEmpty() ) {
 		showingCorporateAddress = false;
 		%>
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
@@ -114,6 +128,13 @@ if(user.isDepotUser()){
 			</tr>
 		</TABLE>
 		<br>
+		<%
+		pageContext.setAttribute("__shipToAddresses", shipToAddresses);
+		pageContext.setAttribute("__showingCorporateAddress", showingCorporateAddress);
+		pageContext.setAttribute("__shipToDepotLocation", shipToDepotLocation);
+		pageContext.setAttribute("__allowSelection", allowSelection);
+		pageContext.setAttribute("__linkURL", linkURL);
+		%>
 		<%@ include file="/includes/ckt_acct/i_dlv_address_select_display.jspf" %>
 		<%
 	}%>
@@ -121,7 +142,7 @@ if(user.isDepotUser()){
 
 <%
 // PICKUP   L O C A T I O N S
-if(user.isPickupUser()){
+if(isNormalCheckout && user.isPickupUser()){
 %>
     <%@ include file="/includes/i_pickup_depot_locations.jspf"%>
 <%

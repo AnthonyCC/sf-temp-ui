@@ -43,6 +43,26 @@ public class XSLTransformer {
 		
 		LOGGER.debug("Found stream "+stream+" for xslPath "+xslPath);
 		
+		/* uncomment this to enable debugging */
+		/*
+		tFactory.setErrorListener(new ErrorListener() {
+			@Override
+			public void error(TransformerException exception) throws TransformerException {
+				LOGGER.debug("error", exception);
+			}
+			
+			@Override
+			public void fatalError(TransformerException exception) throws TransformerException {
+				LOGGER.debug("fatalError", exception);
+			}
+			
+			@Override
+			public void warning(TransformerException exception) throws TransformerException {
+				LOGGER.debug("warning", exception);
+			}
+		});
+		*/
+		
 		Transformer transformer = tFactory.newTransformer(new StreamSource(stream));
 		transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(mailBody));
 

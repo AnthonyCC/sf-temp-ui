@@ -10,8 +10,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -31,10 +31,10 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.content.ConfiguredProduct;
+import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StarterList;
-import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -44,7 +44,10 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -75,6 +78,8 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 	
 	private String starterListId = null;
 
+	private String soListId = null;
+	
 	public void setAction(String a) {
 		this.action = a;
 	}
@@ -91,7 +96,10 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 		this.starterListId = starterListId;
 	}
 	
-
+	public void setSoListId(String soListId) {
+		this.soListId = soListId;
+	}
+	
 	public int doStartTag() throws JspException {
 
 		try {
@@ -161,10 +169,11 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					
 					if (reload) {
 						quickCart.setOrderId(this.ccListId);
+						// FIX
 						quickCart.setProductType(QuickCart.PRODUCT_TYPE_CCL);
 						quickCart.setDeliveryDate(new Date());
 						quickCart.setUserZoneId(user.getPricingZoneId());
-						quickCart.setName(FDListManager.getListName(user.getIdentity(), EnumCustomerListType.CC_LIST, ccListId));
+						quickCart.setName(FDListManager.getListName(user.getIdentity(), ccListId));
 
 					
 						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);					
@@ -181,6 +190,41 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					
 					// used by ad_server.jsp
 					request.setAttribute("loadedCclList",quickCart);
+
+			}
+			else if (this.soListId != null && this.orderId == null) {
+				
+				boolean reload = 
+					quickCart == null ||
+					!soListId.equals(quickCart.getOrderId()) || 
+					!QuickCart.PRODUCT_TYPE_SO.equals(quickCart.getProductType()) ||
+					quickCart.isEmpty();
+
+				if (quickCart == null) {
+					quickCart = new QuickCart();
+				} 
+				
+				if (reload) {
+					quickCart.setOrderId(this.soListId);
+					quickCart.setProductType(QuickCart.PRODUCT_TYPE_SO);
+					quickCart.setDeliveryDate(new Date());
+					quickCart.setName(FDListManager.getListName(user.getIdentity(), soListId));
+
+				
+					FDStandingOrderList soList = FDListManager.getStandingOrderList(user.getIdentity(), this.soListId);					
+					List<FDCustomerListItem> soLines = soList.getLineItems();	
+				
+					// convert the line items into  FDProductSelectionI and clean them as needed
+					if(soLines!=null){
+						List<FDProductSelectionI> productSelections = OrderLineUtil.getValidProductSelectionsFromCCLItems(soLines);
+						//List cartLines = OrderLineUtil.update(productSelections);
+						quickCart.setProducts(productSelections);
+					}
+					QuickCartCache.cacheInstance(session, quickCart);
+				}
+				
+				// used by ad_server.jsp
+				request.setAttribute("loadedSoList",quickCart);
 
 			}
 			else if (this.starterListId != null && 

@@ -52,6 +52,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 	private String truckNumber;
 	private String stopSequence;
 	
+	private String standingOrderId;
+	
 	public ErpSaleInfo(
 		String saleId,
 		String  erpCustomerId,
@@ -77,7 +79,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		EnumSaleType saleType,
 		String truckNumber,
 		String stopSequence,
-		boolean isMakeGood) {
+		boolean isMakeGood,
+		String standingOrderId) {
 
 		super(saleId, erpCustomerId,status);
 		this.amount = amount;
@@ -103,6 +106,8 @@ public class ErpSaleInfo extends BasicSaleInfo {
 		this.truckNumber = truckNumber;
 		this.stopSequence = stopSequence;
 		this.isMakeGood=isMakeGood;
+		
+		this.standingOrderId = standingOrderId;
 	}
 
 	public boolean isMakeGood() {
@@ -205,5 +210,9 @@ public class ErpSaleInfo extends BasicSaleInfo {
 
 	public String getStopSequence() {
 		return stopSequence;
+	}
+	
+	public String getStandingOrderId() {
+		return standingOrderId;
 	}
 }

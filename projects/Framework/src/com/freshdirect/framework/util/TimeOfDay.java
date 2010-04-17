@@ -10,13 +10,15 @@ import java.util.GregorianCalendar;
 /**
  * Represent a time of day at a one minute precision.
  */
-public class TimeOfDay implements Comparable, Serializable {
+public class TimeOfDay implements Comparable<TimeOfDay>, Serializable {
 
-	private final static GregorianCalendar EPOCH = new GregorianCalendar(1970, 0, 1, 0, 0, 0);
-	public final static TimeOfDay MIDNIGHT = new TimeOfDay(0, 0);
-	public final static TimeOfDay NEXT_MIDNIGHT = new TimeOfDay(24, 0);
+	private static final long	serialVersionUID	= 4618159356341103654L;
+	
+	private final static GregorianCalendar	EPOCH				= new GregorianCalendar( 1970, 0, 1, 0, 0, 0 );
+	public final static TimeOfDay			MIDNIGHT			= new TimeOfDay( 0, 0 );
+	public final static TimeOfDay			NEXT_MIDNIGHT		= new TimeOfDay( 24, 0 );
 
-	private static SimpleDateFormat FORMATTER = new SimpleDateFormat("hh:mm a");
+	private static SimpleDateFormat			FORMATTER			= new SimpleDateFormat( "hh:mm a" );
 
 	/** Normalized to 1970-01-01, only time portion relevant */
 	private Date normalDate;
@@ -109,8 +111,8 @@ public class TimeOfDay implements Comparable, Serializable {
 	/**
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
-	public int compareTo(Object o) {
-		return this.normalDate.compareTo(((TimeOfDay) o).normalDate);
+	public int compareTo(TimeOfDay o) {
+		return this.normalDate.compareTo(o.normalDate);
 	}
 
 	/**
@@ -138,16 +140,6 @@ public class TimeOfDay implements Comparable, Serializable {
 		return end.getAsHours() - start.getAsHours();
 	}
 
-	/*private static Date convert(String time) {
-		try {
-			synchronized (FORMATTER) {
-				return FORMATTER.parse(time);
-			}
-		} catch (ParseException pe) {
-			throw new IllegalArgumentException(pe.getMessage());
-		}
-	}*/
-	
 	private static Date convert(String time, SimpleDateFormat format) {
 		try {
 			synchronized (format) {

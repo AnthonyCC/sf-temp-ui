@@ -554,7 +554,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     
     private CrmAgentHome getCrmAgentHome() {
         try {
-            return (CrmAgentHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmAgent", CrmAgentHome.class);
+            return (CrmAgentHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmAgent");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -562,7 +562,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     
     private CrmCaseHome getCrmCaseHome() {
         try {
-            return (CrmCaseHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmCase", CrmCaseHome.class);
+            return (CrmCaseHome) LOCATOR.getRemoteHome("java:comp/env/ejb/CrmCase");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
@@ -570,7 +570,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -578,15 +578,14 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
     private DlvPassManagerHome getDlvPassManagerHome() {
         try {
-            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class);
+            return (DlvPassManagerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/DlvPassManager");
         } catch (NamingException e) {
             throw new EJBException(e);
         }
     }
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
-			//return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

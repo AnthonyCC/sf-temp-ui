@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
@@ -15,6 +6,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
+import org.apache.log4j.Logger;
+
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 
 /*
@@ -27,13 +21,15 @@ import com.freshdirect.framework.webapp.ActionResult;
 
 public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
+	private static final long	serialVersionUID	= 5372290892971245086L;
+
+	private static final Logger LOGGER = LoggerFactory.getInstance( ErrorHandlerTag.class );
+	
 	private String name = null;
 	private String[] field = null;
 	private ActionResult result = null;
 	private String id = null;
-	
-	
-	
+		
 		
 	public String getId() {
 		return this.id;
@@ -83,15 +79,15 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 		if (!result.isSuccess()) {
 			
 			if (this.field != null ) {
-				System.out.println("fields: " + this.field);
-				List currentErrors = new ArrayList();
+				LOGGER.debug("fields: " + this.field);
+				List<String> currentErrors = new ArrayList<String>();
 				for (int i = 0; i < this.field.length; i++) {
-					String errorType = (String) this.field[i];
+					String errorType = this.field[i];
 					if (result.getError(errorType) != null) {
 						currentErrors.add(errorType);
 					}
 				}
-				System.out.println("errorList: " + currentErrors);
+				LOGGER.debug("errorList: " + currentErrors);
 				
 				if (currentErrors.size() > 0) {
 					if (this.id!=null) {
@@ -103,7 +99,7 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 				}
 
 			} else if (this.name != null && result.getError(this.name) != null) {
-				System.out.println("name: " + this.name);
+				LOGGER.debug("name: " + this.name);
 				String errorDescription = result.getError(this.name).getDescription();
  
 				if (this.id!=null) {
@@ -113,7 +109,7 @@ public class ErrorHandlerTag extends com.freshdirect.framework.webapp.BodyTagSup
 			}
 		}
 		if (result.hasWarning(this.name)) {
-			System.out.println("name: " + this.name);
+			LOGGER.debug("name: " + this.name);
 			String warnDescription = result.getWarning(this.name).getDescription();
 
 			if (this.id!=null) {

@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.customer;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -11,41 +10,43 @@ import com.freshdirect.giftcard.RecipientModel;
 
 public class FDRecipientList extends ModelSupport {
 	
-    //Holds a list of gift card recipients
-	private List recipents = new ArrayList();
+	private static final long	serialVersionUID	= -377479613083237360L;
+	
+	//Holds a list of gift card recipients
+	private List<RecipientModel> recipients = new ArrayList<RecipientModel>();
 
-	public FDRecipientList(){
-		
+	public FDRecipientList() {		
 	}
 	
-	public FDRecipientList(Collection recipients){
-		this.recipents.addAll(recipients);
+	public FDRecipientList(Collection<? extends RecipientModel> recipients){
+		this.recipients.addAll(recipients);
 	}
 	
-	public List getRecipents() {
-		return recipents;
+	public List<RecipientModel> getRecipients() {
+		return recipients;
 	}
 
-	public void addRecipients(Collection recipents) {
-		this.recipents.addAll(recipents);
+	public void addRecipients(Collection<RecipientModel> recipients) {
+		this.recipients.addAll(recipients);
 	}
 	
 	public void addRecipient(RecipientModel rm) {
-		this.recipents.add(rm);
+		this.recipients.add(rm);
 	}
 	
 	public int getRecipientIndex(int randomId) {
 		int c = 0;
-		for (Iterator i = this.recipents.iterator(); i.hasNext(); c++) {
-			if (randomId == ((RecipientModel) i.next()).getRandomId()) {
+		for ( RecipientModel model : recipients ) {
+			if (randomId == model.getRandomId()) {
 				return c;
 			}
+			c++;
 		}
 		return -1;
 	}
 
 	public RecipientModel getRecipient(int index) {
-		return (RecipientModel) this.recipents.get(index);
+		return this.recipients.get(index);
 	}
 	
 	public RecipientModel getRecipientById(String randomId) {
@@ -59,11 +60,11 @@ public class FDRecipientList extends ModelSupport {
 	}
 
 	public void setRecipient(int index, RecipientModel srm) {
-		this.recipents.set(index, srm);
+		this.recipients.set(index, srm);
 	}
 
 	public void removeRecipient(int index) {
-		this.recipents.remove(index);
+		this.recipients.remove(index);
 	}
 
 	public boolean removeOrderLineById(int randomId) {
@@ -74,24 +75,24 @@ public class FDRecipientList extends ModelSupport {
 		this.removeRecipient(idx);
 		return true;
 	}
+	
 	public double getSubtotal() {
 		double subtotal = 0;
-		for(Iterator it = this.recipents.iterator(); it.hasNext();){
-			RecipientModel model = (RecipientModel)it.next();
+		for( RecipientModel model : recipients ) {
 			subtotal += model.getAmount();
 		}
 		return subtotal;
 	}
+	
 	public String getFormattedSubTotal() {
 		return FormatterUtil.formatToTwoDecimal(getSubtotal());
 	}
 	
 	public int size(){
-		return this.recipents.size();
+		return this.recipients.size();
 	}
-
 	
 	public void clear(){
-		this.recipents.clear();
+		this.recipients.clear();
 	}
 }

@@ -7,12 +7,12 @@ import javax.ejb.EJBObject;
 
 import com.freshdirect.customer.ErpActivityRecord;
 
-public interface ActivityLogSB extends EJBObject{
+public interface ActivityLogSB extends EJBObject {
 	
-    public Collection findActivityByTemplate(ErpActivityRecord template) throws RemoteException;
+    public Collection<ErpActivityRecord> findActivityByTemplate(ErpActivityRecord template) throws RemoteException;
 
     public void logActivity(ErpActivityRecord rec) throws RemoteException;
     
     public void logActivityNewTX(ErpActivityRecord rec) throws RemoteException;
-
+    
 }

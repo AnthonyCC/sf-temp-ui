@@ -1,12 +1,3 @@
-/*
- * $Workfile:ErpTransactionModel.java$
- *
- * $Date:4/2/03 8:31:35 PM$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import java.util.*;
@@ -22,7 +13,9 @@ import com.freshdirect.framework.core.ModelSupport;
  */
 public abstract class ErpTransactionModel extends ModelSupport implements ErpTransactionI {
 
-    private final EnumTransactionType transactionType;
+	private static final long	serialVersionUID	= -5023224974259751148L;
+	
+	private final EnumTransactionType transactionType;
 	private Date transactionDate;
     private EnumTransactionSource transactionSource;
     private String transactionInitiator;

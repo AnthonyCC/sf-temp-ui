@@ -4,7 +4,11 @@
 <%@ page import='java.util.List' %>
 <%@ page import='java.util.ListIterator' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
-
+<%@ page import="com.freshdirect.giftcard.RecipientModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerCreditUtil"%>
+<%@ page import="com.freshdirect.fdstore.customer.SavedRecipientModel"%>
 <%
 //for display of recipient number
 int indx = 1;
@@ -16,14 +20,13 @@ if("true".equalsIgnoreCase(gcStr)){
 
 FDUserI giftUser = (FDUserI)session.getAttribute(SessionName.USER);
 
-FDRecipientList recipList = giftUser.getRecipentList();
+FDRecipientList recipList = giftUser.getRecipientList();
 if(recipList != null) {
-	List recipients =  recipList.getRecipents();
+	List<RecipientModel> recipients =  recipList.getRecipients();
 	if(!recipients.isEmpty()) {
 		if (isConfirm) {
 			//we're on payment info page
-		%>
-		<table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
+		%><table width="675" cellspacing="0" cellpadding="0" border="0" valign="middle">
 			<tr>
 				<td><img src="/media_stat/images/giftcards/purchase/gc_review_recip_list.gif" width="176" height="13" alt="Review Your Recipient List" /><br /><br />
 					Check the names and amounts of your gifts below.
@@ -48,9 +51,8 @@ if(recipList != null) {
 				<td><div class="recipAmount right">Amount</div></td>
 			</tr>
 				<%
-				ListIterator i = recipients.listIterator();
-				while(i.hasNext()) {
-					SavedRecipientModel srm = (SavedRecipientModel)i.next();
+				for (RecipientModel rm : recipients) {
+					SavedRecipientModel srm = (SavedRecipientModel) rm;
 				%>
 			<tr>
 				<td>

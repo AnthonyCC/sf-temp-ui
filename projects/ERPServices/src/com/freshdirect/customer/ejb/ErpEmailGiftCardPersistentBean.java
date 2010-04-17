@@ -1,35 +1,25 @@
 package com.freshdirect.customer.ejb;
 
-
-
+import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.giftcard.EnumGCDeliveryMode;
-import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.EnumTransactionType;
-import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.giftcard.ErpEmailGiftCardModel;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.giftcard.ErpGiftCardDlvConfirmModel;
 import com.freshdirect.giftcard.ErpGiftCardTransModel;
-import com.freshdirect.giftcard.ErpGiftCardTransactionModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
-import com.freshdirect.giftcard.ErpRegisterGiftCardModel;
-import com.freshdirect.framework.core.ModelI;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.SequenceGenerator;
-import com.freshdirect.payment.EnumGiftCardTransactionStatus;
-import com.freshdirect.payment.EnumGiftCardTransactionType;
+
 
 public class ErpEmailGiftCardPersistentBean extends ErpGiftCardDlvConfirmPersistentBean{
-
-	
 	
 	/** Creates new ErpAuthorizationPersistentBean */
     public ErpEmailGiftCardPersistentBean() {

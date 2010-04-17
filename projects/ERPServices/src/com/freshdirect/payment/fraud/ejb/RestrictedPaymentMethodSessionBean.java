@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.CreateException;
@@ -34,7 +33,10 @@ import com.freshdirect.payment.fraud.RestrictedPaymentMethodModel;
 
 public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
+	private static final long	serialVersionUID	= -6357531295293265599L;
+	
 	private static Category LOGGER = LoggerFactory.getInstance(RestrictedPaymentMethodSessionBean.class);
+	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	/**
@@ -63,9 +65,9 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 					criteria.setAbaRouteNumber(model.getAbaRouteNumber());
 				}
 				criteria.setAccountNumber(model.getAccountNumber());
-				List list = findRestrictedPaymentMethods(criteria);
+				List<RestrictedPaymentMethodModel> list = findRestrictedPaymentMethods(criteria);
 				if (list != null && list.size() > 0) {
-					existingModel = (RestrictedPaymentMethodModel) list.get(0);
+					existingModel = list.get(0);
 				}
 			}
 			// if already exists, just update row instead of creating a new one
@@ -122,9 +124,9 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 		return model;
 	}
 
-	public List findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) {		
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethodByCustomerId(String customerId, EnumRestrictedPaymentMethodStatus status) {		
 		Connection conn = null;
-		List list = null;
+		List<RestrictedPaymentMethodModel> list = null;
 		try {
 			conn = getConnection();
 			list = RestrictedPaymentMethodDAO.findRestrictedPaymentMethodByCustomerId(conn, customerId, status);
@@ -164,9 +166,9 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 		return model;
 	}
 
-	public List findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) {		
+	public List<RestrictedPaymentMethodModel> findRestrictedPaymentMethods(RestrictedPaymentMethodCriteria criteria) {		
 		Connection conn = null;
-		List list = null;
+		List<RestrictedPaymentMethodModel> list = null;
 		try {
 			conn = getConnection();
 			list = RestrictedPaymentMethodDAO.findRestrictedPaymentMethods(conn, criteria);
@@ -187,7 +189,6 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 	
 	public void storeRestrictedPaymentMethod(RestrictedPaymentMethodModel model) {
 		Connection conn = null;
-		PrimaryKey pk = null;
 		try {
 			conn = getConnection();
 			RestrictedPaymentMethodDAO.storeRestrictedPaymentMethod(conn, model);
@@ -270,15 +271,13 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	private boolean checkBadPatterns(ErpPaymentMethodI erpPaymentMethod) {
 		
-		List patternList = (List)PaymentFraudFactory.getInstance().getPatternListFromCache();
+		List<RestrictedPaymentMethodModel> patternList = PaymentFraudFactory.getInstance().getPatternListFromCache();
 		
 		if (patternList == null || patternList.size() == 0) {
 			return false;
 		}
 		
-		Iterator iter = patternList.iterator();
-		while (iter.hasNext()) {
-			RestrictedPaymentMethodModel m = (RestrictedPaymentMethodModel) iter.next();
+		for ( RestrictedPaymentMethodModel m : patternList ) {
 		
 			if (EnumRestrictedPaymentMethodStatus.BAD.equals(m.getStatus())) {
 			
@@ -338,17 +337,17 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	private boolean checkBadAccountInCache(ErpPaymentMethodI erpPaymentMethod) {
 		
-		List badAccountList = PaymentFraudFactory.getInstance().getBadAccountListFromCache();
+		List<RestrictedPaymentMethodModel> badAccountList = PaymentFraudFactory.getInstance().getBadAccountListFromCache();
 
-		if (badAccountList != null) {
-			Iterator iter = badAccountList.iterator();
-			while (iter.hasNext()) {
+		if ( badAccountList != null ) {
+			
+			for ( RestrictedPaymentMethodModel model : badAccountList ) {
+				
 				boolean isPaymentMethodMatch = true;
 				boolean isAccountNumberMatch = true;
 				boolean isAbaRouteNumberMatch = true;
 				boolean isBankAccountTypeMatch = true;
 				
-				RestrictedPaymentMethodModel model = (RestrictedPaymentMethodModel) iter.next();
 				if (model.getPaymentMethodType() != null && erpPaymentMethod.getPaymentMethodType() != null) {
 					if (!model.getPaymentMethodType().equals(erpPaymentMethod.getPaymentMethodType())) {
 						isPaymentMethodMatch = false;
@@ -396,7 +395,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 			criteria.setAccountNumber(erpPaymentMethod.getAccountNumber());
 			criteria.setStatus(EnumRestrictedPaymentMethodStatus.BAD);
 
-			List list = RestrictedPaymentMethodDAO.findRestrictedPaymentMethods(conn, criteria);
+			List<RestrictedPaymentMethodModel> list = RestrictedPaymentMethodDAO.findRestrictedPaymentMethods(conn, criteria);
 			
 			if (list != null && list.size() > 0) {
 				return true;
@@ -420,7 +419,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 		
 	}
 
-	public List loadAllPatterns() throws EJBException {
+	public List<RestrictedPaymentMethodModel> loadAllPatterns() throws EJBException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -440,7 +439,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List loadAllRestrictedPaymentMethods() throws EJBException {
+	public List<RestrictedPaymentMethodModel> loadAllRestrictedPaymentMethods() throws EJBException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -460,7 +459,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public List loadAllBadPaymentMethods() throws EJBException {
+	public List<RestrictedPaymentMethodModel> loadAllBadPaymentMethods() throws EJBException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -576,7 +575,7 @@ public class RestrictedPaymentMethodSessionBean extends SessionBeanSupport {
 
 	private ActivityLogHome getActivityLogHome() {
 		try {
-			return (ActivityLogHome) LOCATOR.getRemoteHome("freshdirect.customer.ActivityLog", ActivityLogHome.class);
+			return (ActivityLogHome) LOCATOR.getRemoteHome("freshdirect.customer.ActivityLog");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

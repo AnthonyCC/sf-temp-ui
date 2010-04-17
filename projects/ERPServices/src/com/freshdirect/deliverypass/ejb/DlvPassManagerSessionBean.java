@@ -1,9 +1,3 @@
-/*
- * DlvManagerSessionBean.java
- *
- * Created on August 27, 2001, 6:51 PM
- */
-
 package com.freshdirect.deliverypass.ejb;
 
 /**
@@ -11,13 +5,13 @@ package com.freshdirect.deliverypass.ejb;
  * @author skrishnasamy
  * @version 1.0
  */
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -31,7 +25,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
@@ -44,13 +37,11 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-
-
-
 public class DlvPassManagerSessionBean extends SessionBeanSupport {
 
-	private static final Category LOGGER = LoggerFactory
-			.getInstance(DlvPassManagerSessionBean.class);
+	private static final long	serialVersionUID	= -8374322338305804910L;
+
+	private static final Category LOGGER = LoggerFactory.getInstance(DlvPassManagerSessionBean.class);
 	
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
@@ -83,7 +74,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			 * Make sure there is no active/pending/ready to use delivery pass more than the permissable limit..
 			 * 
 			 */
-			Map statusMap = getAllStatusMap(model.getCustomerId());
+			Map<Comparable, Serializable> statusMap = getAllStatusMap(model.getCustomerId());
 			if(statusMap != null && statusMap.size() > 0){
 				if(Integer.parseInt(statusMap.get("UsablePassCount").toString()) >=3){//make it read from property file.
 					//HAs a pending delivery pass in the system.
@@ -353,14 +344,14 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			 * account. Note: Only pending Delivery pass can be modified.
 			 * Returns a list containing one item.
 			 */
-			List deliveryPasses = DeliveryPassDAO.getDeliveryPassesByOrderId(conn, purchaseOrderId);
+			List<DeliveryPassModel> deliveryPasses = DeliveryPassDAO.getDeliveryPassesByOrderId(conn, purchaseOrderId);
 					
 			if (deliveryPasses == null || deliveryPasses.size() == 0) {
 				throw new DeliveryPassException(
 						"There is no DeliveryPass found for this purchase order id.",
 						purchaseOrderId);
 			}
-			DeliveryPassModel dlvPassInfo = (DeliveryPassModel) deliveryPasses
+			DeliveryPassModel dlvPassInfo = deliveryPasses
 					.get(0);
 			// Remove the existing delivery pass from the system.
 			DeliveryPassDAO.remove(conn, dlvPassInfo.getPK());
@@ -467,8 +458,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			LOGGER.warn("SQLException while cancelling the delivery pass.", e);
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while cancelling the delivery pass.",
-					exp);
+			LOGGER.warn( "Unknown error while cancelling the delivery pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -495,13 +485,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the delivery pass status to Active.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
 		} catch (SQLException e) {
-			LOGGER
-					.warn("SQLException while reactivating the delivery pass.",
-							e);
+			LOGGER.warn( "SQLException while reactivating the delivery pass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while reactivating the delivery pass.",
-					exp);
+			LOGGER.warn( "Unknown error while reactivating the delivery pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -527,13 +514,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the delivery pass status to Active.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
 		} catch (SQLException e) {
-			LOGGER
-					.warn("SQLException while reactivating the delivery pass.",
-							e);
+			LOGGER.warn( "SQLException while reactivating the delivery pass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while reactivating the DeliveryPass.",
-					exp);
+			LOGGER.warn( "Unknown error while reactivating the DeliveryPass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -576,16 +560,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the delivery pass remNoOfDlvs and num of credits to the db.
 			DeliveryPassDAO.update(conn, dlvPassModel,false);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while incrementing the delivery count for BSGS pass.",
-							e);
+			LOGGER.warn( "SQLException while incrementing the delivery count for BSGS pass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown error while incrementing the delivery count for BSGS pass.",
-							exp);
+			LOGGER.warn( "Unknown error while incrementing the delivery count for BSGS pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -637,16 +615,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the new expiration period to the db.
 			DeliveryPassDAO.update(conn, dlvPassModel,setOrigExpDate);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while incrementing the expiration period for unlimited pass.",
-							e);
+			LOGGER.warn( "SQLException while incrementing the expiration period for unlimited pass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown error while incrementing the expiration period for unlimited pass.",
-							exp);
+			LOGGER.warn( "Unknown error while incrementing the expiration period for unlimited pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -667,21 +639,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
 	 */
-	public List getDeliveryPasses(String customerPk) {
+	public List<DeliveryPassModel> getDeliveryPasses(String customerPk) {
 		Connection conn = null;
-		List deliveryPasses = null;
+		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			conn = getConnection();
-			deliveryPasses = DeliveryPassDAO
-					.getDeliveryPasses(conn, customerPk);
+			deliveryPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
 		} catch (SQLException e) {
-			LOGGER
-					.warn("SQLException while retreiving the delivery passes.",
-							e);
+			LOGGER.warn("SQLException while retreiving the delivery passes.", e);
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while retreiving the delivery passes.",
-					exp);
+			LOGGER.warn("Unknown error while retreiving the delivery passes.", exp);
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -703,24 +671,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
 	 */
-	public List getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) {
+	public List<DeliveryPassModel> getDlvPassesByStatus(String customerPk, EnumDlvPassStatus status) {
 		Connection conn = null;
-		List deliveryPasses = null;
+		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			conn = getConnection();
-			deliveryPasses = DeliveryPassDAO.getDlvPassesByStatus(conn,
-					customerPk, status);
+			deliveryPasses = DeliveryPassDAO.getDlvPassesByStatus(conn,	customerPk, status);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while retreiving the delivery passes based on status.",
-							e);
+			LOGGER.warn( "SQLException while retreiving the delivery passes based on status.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown errorwhile retreiving the delivery passes based on status.",
-							exp);
+			LOGGER.warn( "Unknown errorwhile retreiving the delivery passes based on status.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -750,13 +711,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			deliveryPass = DeliveryPassDAO
 					.getDeliveryPassInfo(conn, pk);
 		} catch (SQLException e) {
-			LOGGER
-					.warn("SQLException while retreiving the delivery pass information.",
-							e);
+			LOGGER.warn( "SQLException while retreiving the delivery pass information.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn("Unknown error while retreiving the delivery pass information.",
-					exp);
+			LOGGER.warn( "Unknown error while retreiving the delivery pass information.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -778,23 +736,17 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 	 * @return List - returns null if no delivery passes available for this
 	 *         customer.
 	 */
-	public List getDlvPassesByOrderId(String orderId) {
+	public List<DeliveryPassModel> getDlvPassesByOrderId(String orderId) {
 		Connection conn = null;
-		List deliveryPasses = null;
+		List<DeliveryPassModel> deliveryPasses = null;
 		try {
 			conn = getConnection();
 			deliveryPasses = DeliveryPassDAO.getDeliveryPassesByOrderId(conn, orderId);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while retreiving the delivery passes based on status.",
-							e);
+			LOGGER.warn( "SQLException while retreiving the delivery passes based on status.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown error while retreiving the delivery passes based on status.",
-							exp);
+			LOGGER.warn( "Unknown error while retreiving the delivery passes based on status.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -808,9 +760,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		return deliveryPasses;
 	}
 	
-	public Map getAllStatusMap(String customerPk){
+	public Map<Comparable, Serializable> getAllStatusMap(String customerPk){
 		Connection conn = null;
-		Map allStatusMap = new HashMap();
+		Map<Comparable, Serializable> allStatusMap = new HashMap<Comparable, Serializable>();
 		int usablePassCount=0;
 		int autoRenewUsablePassCount=0;
 		allStatusMap.put(DlvPassConstants.USABLE_PASS_COUNT, "0");
@@ -820,16 +772,13 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		allStatusMap.put(DlvPassConstants.AUTORENEW_DP_PRICE,new Double(0));
 		try {
 			conn = getConnection();
-			List dlvPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
+			List<DeliveryPassModel> dlvPasses = DeliveryPassDAO.getDeliveryPasses(conn, customerPk);
 			if(dlvPasses != null && dlvPasses.size() > 0){
-				Iterator iter = dlvPasses.iterator();
-				DeliveryPassModel model=null;
-				EnumDlvPassStatus dlvPassStatus =null;
-				String dlvPassId ="";
-				Date expDate =null;
-				Date today=null;
-				while(iter.hasNext()){
-					model = (DeliveryPassModel) iter.next();
+				EnumDlvPassStatus dlvPassStatus = null;
+				String dlvPassId = "";
+				Date expDate = null;
+				Date today = null;
+				for ( DeliveryPassModel model : dlvPasses ) {
 					dlvPassStatus = model.getStatus();
 					dlvPassId = model.getPK().getId();
 					if(model.getType().isUnlimited()){
@@ -874,16 +823,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 			//LOGGER.debug("Status Map Info "+allStatusMap);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while retreiving the delivery pass status counts.",
-							e);
+			LOGGER.warn( "SQLException while retreiving the delivery pass status counts.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown errorwhile retreiving the delivery pass status counts.",
-							exp);
+			LOGGER.warn( "Unknown errorwhile retreiving the delivery pass status counts.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -909,16 +852,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			// Update the delivery pass price.
 			DeliveryPassDAO.updatePrice(conn, dlvPassModel, newPrice);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while updating the new price for DeliveryPass.",
-							e);
+			LOGGER.warn( "SQLException while updating the new price for DeliveryPass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown error while updating the new price for Delivery pass.",
-							exp);
+			LOGGER.warn( "Unknown error while updating the new price for Delivery pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -948,16 +885,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 			DeliveryPassDAO.update(conn, dlvPass,true);
 		} catch (SQLException e) {
-			LOGGER
-					.warn(
-							"SQLException while activating the Ready To Use delivery pass.",
-							e);
+			LOGGER.warn( "SQLException while activating the Ready To Use delivery pass.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER
-					.warn(
-							"Unknown error while activating the Ready To Use delivery pass.",
-							exp);
+			LOGGER.warn( "Unknown error while activating the Ready To Use delivery pass.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -1017,9 +948,9 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			return hasPurchasedPass;
 
 	   }
-	   public List getUsableAutoRenewPasses(String customerPK ) {
+	   public List<DeliveryPassModel> getUsableAutoRenewPasses(String customerPK ) {
 		   
-		   List autoRenewPasses=null;
+		   List<DeliveryPassModel> autoRenewPasses=null;
 			Connection conn = null;
 			try {
 				conn = getConnection();
@@ -1063,8 +994,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 		
 		private ErpCustomerHome getErpCustomerHome() {
 			try {
-				//return (ErpCustomerHome) LOCATOR.getRemoteHome("java:comp/env/ejb/ErpCustomer", ErpCustomerHome.class);
-				return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+				return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
 			} catch (NamingException e) {
 				throw new EJBException(e);
 			}

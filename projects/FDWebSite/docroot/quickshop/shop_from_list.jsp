@@ -16,67 +16,47 @@
 <fd:CheckLoginStatus guestAllowed='false' recognizedAllowed='false'  />
 
 <fd:FDCustomerCreatedList id='lists' action='loadLists'>
-	<%
-        RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");
-        RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.warnOnSignatureChange('qs_cart')",";");
-	%>
-	
-	<%
-	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	//--------OAS Page Variables-----------------------
-        request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
-        request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
-	String custFirstName = user.getFirstName();
-	int firstNameLength = custFirstName.length();
-	int firstNameLastIndex = firstNameLength - 1;
+<%
+	RequestUtil.appendToAttribute(request,"bodyOnLoad","FormChangeUtil.recordSignature('qs_cart',false)",";");
+    RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.warnOnSignatureChange('qs_cart')",";");
 
-        String orderId = null;
-    	String lineId = request.getParameter("lineId");
-   	String ccListIdVal = request.getParameter(CclUtils.CC_LIST_ID);        
+    FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+			//--------OAS Page Variables-----------------------
+		        request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
+		        request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
+			String custFirstName = user.getFirstName();
+			int firstNameLength = custFirstName.length();
+			int firstNameLastIndex = firstNameLength - 1;
 
-	String actionName = request.getParameter("fdAction");
-	String listName = null;
-    	int listSize=0;    
-	for(Iterator I = lists.iterator(); I.hasNext(); ) {
-	   FDCustomerCreatedList list = (FDCustomerCreatedList)I.next();
-	   if (list.getId().equals(ccListIdVal)) {
-	      listName = list.getName();          
-          listSize = list.getCount();
-	      break;
-	   }
-	}
-    
-    	request.setAttribute("listsSize",""+lists.size());
-	if (actionName == null) {
-		actionName = "";
-	}
-    
-%>
+		        String orderId = null;
+		    	String lineId = request.getParameter("lineId");
+		   	String ccListIdVal = request.getParameter(CclUtils.CC_LIST_ID);        
+
+			String actionName = request.getParameter("fdAction");
+			String listName = null;
+		    	int listSize=0;    
+			for(Iterator<FDCustomerListInfo> I = lists.iterator(); I.hasNext(); ) {
+				FDCustomerListInfo list = (FDCustomerListInfo)I.next();
+			   if (list.getId().equals(ccListIdVal)) {
+			      listName = list.getName();          
+		          listSize = list.getCount();
+			      break;
+			   }
+			}
+		    
+		    	request.setAttribute("listsSize",""+lists.size());
+			if (actionName == null) {
+				actionName = "";
+			}
+		%>
 	<fd:QuickShopController id="quickCart" ccListId="<%= ccListIdVal %>" action="<%= actionName %>">
 		<%
-		boolean showDetails = false;
+			boolean showDetails = false;
 		%>
 
 		<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 			<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Shop from This Order</tmpl:put>
 			<tmpl:put name='side_nav' direct='true'>
-				<tmpl:put name='extrahead' direct='true'>
-					<script language="javascript"
-						src="/assets/javascript/common_javascript.js"></script>
-				</tmpl:put>
-
-				<%--
-				<tmpl:put name='banner' direct='true'>
-					<a href="/newproducts.jsp"><img
-						src="/media_stat/images/template/quickshop/qs_banner_newproduct.gif"
-						width="140" height="108" border="0"></a>
-					<br>
-					<img src="/media_stat/images/layout/clear.gif" width="1"
-						height="10">
-					<br>
-				</tmpl:put>
-				--%>
-
 				<font class="space4pix"><br />
 				</font>
 				<a href="/quickshop/all_lists.jsp"> <img
@@ -86,9 +66,9 @@
 				</font>
 
 				<%
-						{
-						String style = "text11";
-						String selectedListId = ccListIdVal;
+					{
+								String style = "text11";
+								String selectedListId = ccListIdVal;
 				%>
 				<%@ include file="/quickshop/includes/cclist_nav.jspf"%>
 				<%

@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.mail.service;
 
 import java.io.IOException;
@@ -20,8 +12,6 @@ import javax.mail.MessagingException;
 import javax.xml.transform.TransformerException;
 
 import org.apache.log4j.Category;
-
-import weblogic.auddi.util.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.content.BaseTemplateContext;
@@ -42,6 +32,8 @@ import com.freshdirect.mail.MailName;
  */
 public class MailMessageListener extends MessageDrivenBeanSupport implements MailName {
 
+	private static final long	serialVersionUID	= -5554943867597932921L;
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(MailMessageListener.class);
 
 	public void onMessage(javax.jms.Message msg) {
@@ -114,7 +106,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 			try {
 				ObjectMessage objMsg = (ObjectMessage)msg;
 				FDFtlEmail fdFtlEmail = (FDFtlEmail)objMsg.getObject();
-				Map parameters = fdFtlEmail.getParameters();
+				Map<String,Object> parameters = fdFtlEmail.getParameters();
 				if(null != (String)parameters.get(MailName.GC_FTL_PATH)) {
 					gc = true;
 				}
@@ -161,7 +153,7 @@ public class MailMessageListener extends MessageDrivenBeanSupport implements Mai
 	 * @throws IOException
 	 * @throws TemplateException
 	 */
-	private String processFtl(Map parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
+	private String processFtl(Map<String,Object> parameters, boolean gc, boolean iphone) throws IOException, TemplateException {
 		String mailBody;
 		BaseTemplateContext context = new BaseTemplateContext(parameters);
 		StringWriter writer = new StringWriter();

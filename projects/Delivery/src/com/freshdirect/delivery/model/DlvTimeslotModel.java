@@ -1,16 +1,5 @@
-/*
- * DlvTimeslotModel.java
- *
- * Created on August 27, 2001, 5:11 PM
- */
-
 package com.freshdirect.delivery.model;
 
-/**
- * 
- * @author knadeem
- * @version
- */
 import java.util.Calendar;
 import java.util.Date;
 
@@ -22,6 +11,8 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.model.IDeliverySlot;
 
 public class DlvTimeslotModel extends DlvShiftTimeslotModel {
+
+	private static final long	serialVersionUID	= 795111720212622032L;
 
 	private Date baseDate;
 

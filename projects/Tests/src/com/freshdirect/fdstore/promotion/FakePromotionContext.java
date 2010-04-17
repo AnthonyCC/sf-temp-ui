@@ -18,7 +18,7 @@ public class FakePromotionContext implements PromotionContextI {
 
 	private EnumOrderType orderType;
 	private double subTotal;
-	private List discounts = new ArrayList();
+	private List<Discount> discounts = new ArrayList<Discount>();
 	private final Date now = new Date();
 
 	public FakePromotionContext() {
@@ -103,7 +103,7 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 
 	public void setRulePromoCode(List rulePromoCodes) {
-
+		// ??
 	}
 
 	public boolean hasRulePromoCode(String promoCode) {
@@ -118,7 +118,7 @@ public class FakePromotionContext implements PromotionContextI {
 		this.discounts.add(discount);
 	}
 
-	public List getDiscounts() {
+	public List<Discount> getDiscounts() {
 		return this.discounts;
 	}
 
@@ -158,7 +158,6 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 
 	public boolean isPostPromoConflictEnabled() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -168,7 +167,6 @@ public class FakePromotionContext implements PromotionContextI {
 	}
 
 	public double getTotalLineItemDiscount() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

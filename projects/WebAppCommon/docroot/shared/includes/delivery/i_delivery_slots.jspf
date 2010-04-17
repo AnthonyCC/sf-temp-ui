@@ -28,7 +28,8 @@ if (timeslots.size() > 0) {
     request.setAttribute("AddressType",address.getServiceType().getName());
 	%>	
 
-<table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
+
+<%@page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%><table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
 	<tr>
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
 		<%

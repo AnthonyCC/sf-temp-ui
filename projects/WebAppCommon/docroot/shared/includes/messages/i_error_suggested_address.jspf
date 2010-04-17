@@ -2,7 +2,7 @@
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager" %>
 <%
 String	addressMessage = "";
-ArrayList suggestions = null;   // a holder for suggested addresses if the original address is not unique
+List<AddressModel> suggestions = null;   // a holder for suggested addresses if the original address is not unique
 AddressModel address = new AddressModel();
 
 address.setAddress1(fldAddress1);

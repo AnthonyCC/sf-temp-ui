@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ import com.freshdirect.cms.ContentKey;
 
 public class RecipeVariant extends ContentNodeModelImpl {
 
-	private final List sections = new ArrayList();
+	private final List<RecipeSection> sections = new ArrayList<RecipeSection>();
 
 	public RecipeVariant(ContentKey cKey) {
 		super(cKey);
@@ -21,16 +20,15 @@ public class RecipeVariant extends ContentNodeModelImpl {
 		return getAttribute("name", "");
 	}
 
-	public List getSections() {
+	public List<RecipeSection> getSections() {
 		ContentNodeModelUtil.refreshModels(this, "sections", sections, true);
 		return Collections.unmodifiableList(sections);
 	}
 
 	/** @return Set of SkuModel */
-	public Set getDistinctSkus() {
-		Set skus = new HashSet();
-		for (Iterator i = getSections().iterator(); i.hasNext();) {
-			RecipeSection s = (RecipeSection) i.next();
+	public Set<SkuModel> getDistinctSkus() {
+		Set<SkuModel> skus = new HashSet<SkuModel>();
+		for ( RecipeSection s : getSections() ) {
 			skus.addAll(s.getDistinctSkus());
 		}
 		return skus;
@@ -41,10 +39,9 @@ public class RecipeVariant extends ContentNodeModelImpl {
 	 *  
 	 *  @return a list of ConfiguredProduct objects.
 	 */
-	public List getAllIngredients() {
-		List l = new ArrayList();
-		for (Iterator i = getSections().iterator(); i.hasNext();) {
-			RecipeSection s = (RecipeSection) i.next();
+	public List<ConfiguredProduct> getAllIngredients() {
+		List<ConfiguredProduct> l = new ArrayList<ConfiguredProduct>();
+		for ( RecipeSection s : getSections() ) {
 			l.addAll(s.getIngredients());
 		}
 		return l;
@@ -58,8 +55,7 @@ public class RecipeVariant extends ContentNodeModelImpl {
 	 *          false otherwise
 	 */
 	public boolean isAvailable() {
-		for (Iterator i = getSections().iterator(); i.hasNext(); ) {
-			RecipeSection section = (RecipeSection) i.next();
+		for ( RecipeSection section : getSections() ) {
 			if (!section.isAvailable()) {
 				return false;
 			}
@@ -75,8 +71,7 @@ public class RecipeVariant extends ContentNodeModelImpl {
 	 *          are available, false otherwise.
 	 */
 	public boolean isAllAvailable() {
-		for (Iterator i = getSections().iterator(); i.hasNext(); ) {
-			RecipeSection section = (RecipeSection) i.next();
+		for ( RecipeSection section : getSections() ) {
 			if (!section.isAllAvailable()) {
 				return false;
 			}

@@ -40,6 +40,7 @@
 
 <script type="text/javascript" src="/assets/javascript/jsonrpc.js"></script>
 <script type="text/javascript" src="/assets/javascript/ccl.js"></script>
+<script type="text/javascript" src="/assets/javascript/fcu.js"></script>
 <%
 		} else {
 %>
@@ -47,6 +48,7 @@
 
 <script type="text/javascript" src="/assets/javascript/jsonrpc-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/ccl-min.js"></script>
+<script type="text/javascript" src="/assets/javascript/fcu-min.js"></script>
 <%
 		}
 %>

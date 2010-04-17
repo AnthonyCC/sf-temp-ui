@@ -1,0 +1,25 @@
+<%@ page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
+<%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
+<%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<% String errorMarker = "<span style=\"color:#990000; \">(!)&nbsp;</span>"; %>
+
+<fd:ListStandingOrders id="solst">
+	<% if (!solst.isEmpty()) { %>
+		<table cellpadding="0" cellspacing="0" border="0" style="padding-bottom: 1em">
+			<% for (FDStandingOrder so : solst) {
+					FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName()); %>
+				<tr>
+					<td class="text13" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
+						<%= so.isError() ? errorMarker : ""%><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= l.getName() %></a>
+					</td>
+					<td class="text11" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%= l.getLineItems().size() %> Item<%=  l.getLineItems().size() > 1 ? "s" : "" %>)</td>
+				</tr>
+			<% } %>
+		</table>
+	<% } %>
+</fd:ListStandingOrders>
+<a class="text13" style="font-weight: bold; display: block;" href="/quickshop/standing_orders.jsp">All Standing Orders &raquo;</a>

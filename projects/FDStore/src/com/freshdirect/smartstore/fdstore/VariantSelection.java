@@ -31,7 +31,7 @@ public class VariantSelection {
 	private VariantSelectionHome getVariantSelectionHome() {
 		try {
 			return (VariantSelectionHome) serviceLocator.getRemoteHome(
-				"freshdirect.smartstore.VariantSelection", VariantSelectionHome.class);
+				"freshdirect.smartstore.VariantSelection");
 		} catch (NamingException e) {
 			throw new FDRuntimeException(e);
 		}

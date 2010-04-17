@@ -29,8 +29,8 @@ public class AvailabilityFactory {
 		EnumDlvRestrictionReason.BLOCK_FRIDAY,
 		EnumDlvRestrictionReason.BLOCK_SATURDAY};
 
-	public static Set getApplicableRestrictions(FDProduct product) {
-		Set s = new HashSet();
+	public static Set<EnumDlvRestrictionReason> getApplicableRestrictions(FDProduct product) {
+		Set<EnumDlvRestrictionReason> s = new HashSet<EnumDlvRestrictionReason>();
 
 		if (product.isAlcohol()) {
 			s.add(EnumDlvRestrictionReason.ALCOHOL);

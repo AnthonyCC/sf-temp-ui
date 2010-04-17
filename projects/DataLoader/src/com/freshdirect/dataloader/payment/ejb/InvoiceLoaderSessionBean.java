@@ -165,7 +165,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 	
 	private ErpSaleHome getErpSaleHome() {
 		try {
-			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale", ErpSaleHome.class);
+			return (ErpSaleHome) LOCATOR.getRemoteHome("freshdirect.erp.Sale");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -173,7 +173,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 	
 	private ErpCustomerManagerHome getErpCustomerManagerHome() {
 		try {
-			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager", ErpCustomerManagerHome.class);
+			return (ErpCustomerManagerHome) LOCATOR.getRemoteHome("freshdirect.erp.CustomerManager");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -181,7 +181,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 	
 	private ErpCustomerHome getErpCustomerHome() {
 		try {
-			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer", ErpCustomerHome.class);
+			return (ErpCustomerHome) LOCATOR.getRemoteHome("freshdirect.erp.Customer");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}
@@ -189,7 +189,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
 	private MailerGatewayHome getMailerGatewayHome() {
 		try {
-			return (MailerGatewayHome) LOCATOR.getRemoteHome("freshdirect.mail.MailerGateway", MailerGatewayHome.class);
+			return (MailerGatewayHome) LOCATOR.getRemoteHome("freshdirect.mail.MailerGateway");
 		} catch (NamingException e) {
 			throw new EJBException(e);
 		}

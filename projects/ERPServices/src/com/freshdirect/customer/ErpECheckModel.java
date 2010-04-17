@@ -7,7 +7,8 @@ import com.freshdirect.payment.EnumPaymentMethodType;
 
 public class ErpECheckModel extends ErpPaymentMethodModel {
 
-
+	private static final long	serialVersionUID	= 4033694179515871080L;
+	
 	private String bankName;
 	private String abaRouteNumber;
 	private EnumBankAccountType bankAccountType;

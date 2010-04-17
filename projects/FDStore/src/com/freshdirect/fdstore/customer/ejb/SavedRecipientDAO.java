@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.freshdirect.giftcard.EnumGCDeliveryMode;
+import com.freshdirect.giftcard.RecipientModel;
 import com.freshdirect.fdstore.customer.SavedRecipientModel;
 import com.freshdirect.framework.core.SequenceGenerator;
 
@@ -22,18 +23,17 @@ public class SavedRecipientDAO {
 		return (str == null) ? "" : str;
 	}
 	
-	public static void storeSavedRecipients(Connection conn, String fdUserId, List recipientList) throws SQLException {
+	public static void storeSavedRecipients(Connection conn, String fdUserId, List<? extends RecipientModel> recipientList) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.SAVED_RECIPIENT WHERE FDUSER_ID = ?");
 		ps.setString(1, fdUserId);
 		ps.executeUpdate();
 		ps.close();
 
-		ps = 
-			conn.prepareStatement(INSERT_SAVED_RECIPIENT);
+		ps = conn.prepareStatement(INSERT_SAVED_RECIPIENT);
 
 		for(int i=0;i<recipientList.size();i++)
 		{
-			SavedRecipientModel model = (SavedRecipientModel) recipientList.get(i);
+			RecipientModel model = recipientList.get(i);
 			
 			String id=SequenceGenerator.getNextId(conn, "CUST");
 			
@@ -50,7 +50,7 @@ public class SavedRecipientDAO {
 			ps.addBatch();
 		} 
 			
-		int num[]=ps.executeBatch();
+		ps.executeBatch();
 		ps.close();
 	}
 	
@@ -118,10 +118,10 @@ public class SavedRecipientDAO {
 			ps.close();
 	}
 	
-private static final String SELECT_RECIPIENTS_SQL="select ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG from cust.SAVED_RECIPIENT where FDUSER_ID=?";
+	private static final String SELECT_RECIPIENTS_SQL="select ID,FDUSER_ID,SENDER_NAME,SENDER_EMAIL,RECIP_NAME,RECIP_EMAIL,TEMPLATE_ID,DELIVERY_MODE,AMOUNT,PERSONAL_MSG from cust.SAVED_RECIPIENT where FDUSER_ID=?";
 	
-	public static List loadSavedRecipients(Connection conn, String fdUserId) throws SQLException{
-		List recipientList = new ArrayList();
+	public static List<SavedRecipientModel> loadSavedRecipients(Connection conn, String fdUserId) throws SQLException{
+		List<SavedRecipientModel> recipientList = new ArrayList<SavedRecipientModel>();
 		PreparedStatement ps = conn.prepareStatement(SELECT_RECIPIENTS_SQL);
 		ps.setString(1,fdUserId);
 		ResultSet rs = ps.executeQuery();

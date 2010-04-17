@@ -1,18 +1,20 @@
 <%-- expects selectedListId:String --%>
 <%-- expects user:FDUser --%>
 <%-- expects showLists:boolean --%>
-
-
+<%@ page import="java.util.Iterator"%>
 <%@ page import='java.util.Set'%>
 <%@ page import='java.util.TreeSet'%>
 <%@ page import='com.freshdirect.fdstore.lists.FDCustomerCreatedList'%>
-
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerListInfo"%>
+<%@ page import="com.freshdirect.fdstore.lists.CclUtils"%>
+<%@ page import="com.freshdirect.framework.util.StringUtil"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <fd:FDCustomerCreatedList id="list" action="loadLists">
 <%//build order navigation
   
       if (list.size() > 0) {
-         TreeSet sorted = new TreeSet(FDCustomerCreatedList.getNameComparator());
+         TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(FDCustomerCreatedList.getNameComparator());
 	 sorted.addAll(lists);
          %>
          <!--<b><%= user.getFirstName()%>'s Lists</b> -->
@@ -21,9 +23,9 @@
          <table cellpadding="0" cellspacing="0" border="0" class="text11" >
          <tbody>
          <%
-         for (Iterator hIter = sorted.iterator(); hIter.hasNext(); ) {
-            FDCustomerCreatedList CCList = (FDCustomerCreatedList) hIter.next();
-            boolean isSelected = CCList.getId().equals(selectedListId);
+        for (Iterator<FDCustomerListInfo> hIter = sorted.iterator(); hIter.hasNext(); ) {
+        	FDCustomerListInfo CCList = (FDCustomerListInfo) hIter.next();
+         	boolean isSelected = CCList.getId().equals(selectedListId);
             %>
             <tr><td class="text11">
 	    <div style="margin-left: 5px; text-indent: -5px;">

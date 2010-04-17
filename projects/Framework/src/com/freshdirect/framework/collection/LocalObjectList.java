@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.collection;
 
 import java.util.*;
@@ -15,13 +7,10 @@ import com.freshdirect.framework.core.*;
 /**
  * Collection of Model objects.  It assumes that all objects in
  * the list are local to the same VM as the list.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class LocalObjectList extends ArrayList implements ListI {
-    
-    /** default constructor.  creates an empty list.
+
+	/** default constructor.  creates an empty list.
      */
     public LocalObjectList() {
         super();
@@ -153,8 +142,8 @@ public class LocalObjectList extends ArrayList implements ListI {
         if (pk!=null) {
             for (int i=this.size()-1; i>=0; i--) {
                 if (pk.equals( ((ModelI)this.get(i)).getPK() )) {
-                    return i;
-                }
+	                    return i;
+	                }
             }
         }
         return -1;
@@ -189,12 +178,12 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param element the model to use to update the collection's corrspeonding element
      */
     public synchronized void update(ModelI element) {
-        int idx = this.indexOf(element.getPK());
-        if (idx==-1) {
-            throw new CollectionException("Element not found, PK "+element.getPK());
-        }
-        this.set(idx, element);
-    }
+	        int idx = this.indexOf(element.getPK());
+	        if (idx==-1) {
+	            throw new CollectionException("Element not found, PK "+element.getPK());
+	        }
+	        this.set(idx, element);
+		}
     
     ////////////////// remove stuff //////////////////
     

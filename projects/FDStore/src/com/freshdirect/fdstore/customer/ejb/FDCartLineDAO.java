@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -25,9 +26,9 @@ public class FDCartLineDAO {
 		"SELECT ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID "
 			+ " FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?";
 
-	public static List loadCartLines(Connection conn, PrimaryKey fdUserPk) throws SQLException {
+	public static List<ErpOrderLineModel> loadCartLines(Connection conn, PrimaryKey fdUserPk) throws SQLException {
 
-		java.util.List lst = new java.util.LinkedList();
+		List<ErpOrderLineModel> lst = new LinkedList<ErpOrderLineModel>();
 		PreparedStatement ps = conn.prepareStatement(QUERY_CARTLINES);
 		ps.setString(1, fdUserPk.getId());
 		ResultSet rs = ps.executeQuery();
@@ -58,7 +59,7 @@ public class FDCartLineDAO {
 
 	}
 
-	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List erpOrderlines) throws SQLException {
+	public static void storeCartLines(Connection conn, PrimaryKey fdUserPk, List<ErpOrderLineModel> erpOrderlines) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.FDCARTLINE WHERE FDUSER_ID = ?");
 		ps.setString(1, fdUserPk.getId());
 		ps.executeUpdate();
@@ -68,8 +69,7 @@ public class FDCartLineDAO {
 			conn.prepareStatement(
 				"INSERT INTO CUST.FDCARTLINE (ID, FDUSER_ID, SKU_CODE, VERSION, QUANTITY, SALES_UNIT, CONFIGURATION, RECIPE_SOURCE_ID, REQUEST_NOTIFICATION, VARIANT_ID, DISCOUNT_APPLIED, SAVINGS_ID) values (?,?,?,?,?,?,?,?,?,?,?,?)");
 
-		for (Iterator i = erpOrderlines.iterator(); i.hasNext();) {
-			ErpOrderLineModel line = (ErpOrderLineModel) i.next();
+		for ( ErpOrderLineModel line : erpOrderlines ) {
 			ps.setString(1, line.getCartlineId());
 			ps.setString(2, fdUserPk.getId());
 			ps.setString(3, line.getSku().getSkuCode());
@@ -89,9 +89,9 @@ public class FDCartLineDAO {
 		ps.close();
 	}
 
-	private static HashMap convertStringToHashMap(String configuration) {
+	private static HashMap<String,String> convertStringToHashMap(String configuration) {
 		StringTokenizer st = new StringTokenizer(configuration, ",");
-		HashMap ret = new HashMap();
+		HashMap<String,String> ret = new HashMap<String,String>();
 		while (st.hasMoreTokens()) {
 			String token = st.nextToken().trim();
 			int idx = token.indexOf("=");
@@ -104,13 +104,13 @@ public class FDCartLineDAO {
 
 	}
 
-	private static String convertHashMapToString(Map map) {
+	private static String convertHashMapToString(Map<String,String> map) {
 		StringBuffer ret = new StringBuffer();
-		for (Iterator i = map.keySet().iterator(); i.hasNext();) {
+		for (Iterator<String> i = map.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
 			ret.append(key);
 			ret.append("=");
-			ret.append((String) map.get(key));
+			ret.append(map.get(key));
 			if (i.hasNext()) {
 				ret.append(",");
 			}

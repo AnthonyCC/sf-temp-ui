@@ -128,27 +128,27 @@ public class DateUtil {
 		return DATE_YEAR_FORMATTER.parse(dateValue);
 	}
 	
-	public static String format(Date dateValue) throws ParseException{
+	public static String format(Date dateValue) {
 		return DATE_YEAR_FORMATTER.format(dateValue);
 	}
 	
-	public static String formatPlain(Date dateValue) throws ParseException{
+	public static String formatPlain(Date dateValue) {
 		return DATE_PLAIN.format(dateValue);
 	}
 	
-	public static String formatDate(Date dateValue) throws ParseException{
+	public static String formatDate(Date dateValue) {
 		return MONTH_DATE_YEAR_FORMATTER.format(dateValue);
 	}
 	
-	public static String formatTime(Date dateValue) throws ParseException{
+	public static String formatTime(Date dateValue) {
 		return MIN_HOUR_FORMATTER.format(dateValue);
 	}
 	
-	public static String formatTimeAMPM(Date dateValue) throws ParseException{
+	public static String formatTimeAMPM(Date dateValue) {
 		return MIN_AMPM_FORMATTER.format(dateValue);
 	}
 	
-	public static String formatDay(Date dateValue) throws ParseException{
+	public static String formatDay(Date dateValue) {
 		return DAY_INWEEK_FORMATTER.format(dateValue);
 	}
 	

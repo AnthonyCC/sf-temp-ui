@@ -4,10 +4,8 @@
 
 package com.freshdirect.fdstore.lists;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.log4j.Category;
 
@@ -22,6 +20,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class FDCustomerProductList extends FDCustomerList {
 	
+	private static final long	serialVersionUID	= -8496978910271535604L;
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(FDCustomerProductList.class);
 
 	public void mergeSelection(FDProductSelectionI selection, boolean modifying) {
@@ -29,7 +29,7 @@ public abstract class FDCustomerProductList extends FDCustomerList {
 
 			boolean found = false;
 
-			for (Iterator i = this.getLineItems().iterator(); i.hasNext();) {
+			for (Iterator<FDCustomerListItem> i = this.getLineItems().iterator(); i.hasNext();) {
 				FDCustomerProductListLineItem item = (FDCustomerProductListLineItem) i.next();
 
 				if (item.getSkuCode().equals(selection.getSkuCode())
@@ -99,10 +99,10 @@ public abstract class FDCustomerProductList extends FDCustomerList {
 	//anything that can't be updated
 	public void cleanList() throws FDResourceException {
 		assert (getLineItems() != null);
-		Date modificationDate = getModificationDate();
+		Date modDate = getModificationDate();
 		setLineItems(OrderLineUtil.updateCCLItems(getLineItems()));
 		// the call to setLineItem will mark the list as modified
 		// this is not needed - restore the modification date to the old value
-		unmarkAsModified(modificationDate);
+		unmarkAsModified(modDate);
 	}
 }

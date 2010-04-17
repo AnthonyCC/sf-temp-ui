@@ -10,18 +10,20 @@ import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.giftcard.ErpAppliedGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.ErpRecipentModel;
 
 /**
  * @stereotype fd-model
  */
 public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
+	private static final long serialVersionUID = 2941997132034110838L;
 
 	/**
      * @associates <{ErpOrderLineModel}>
      * @link aggregationByValue
      */
-    private List orderLines;
+    private List<ErpOrderLineModel> orderLines;
     private Date requestedDate;
     private Discount discount;
     private Date pricingDate;
@@ -48,8 +50,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      * @clientCardinality 1
      * @supplierCardinality 0..*
      */
-	//List of ErpGiftCardI
-    private List appliedCredits;
+    private List<ErpAppliedCreditModel> appliedCredits;
 
     /**
      * @supplierCardinality 1
@@ -57,34 +58,35 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
      */
     private ErpDeliveryInfoModel deliveryInfo;
 
-	private List charges = null;
+	private List<ErpChargeLineModel> charges = null;
 
-	private List discounts = null;
+	private List<ErpDiscountLineModel> discounts = null;
 
-    public List getRecepientsList() {
-		return recepientsList;
+    public List<ErpRecipentModel> getRecipientsList() {
+		return recipientsList;
 	}
 
 	//List of Gift cards used for this order. Not persisted
-	private List selectedGiftCards;
+	private List<ErpGiftCardModel> selectedGiftCards;
 	
 	//usage details for each gift card applied on this order.
-	private List appliedGiftcards;
+	private List<ErpAppliedGiftCardModel> appliedGiftcards;
 	
-	public void setRecepientsList(List recepientsList) {
-		this.recepientsList = recepientsList;
+	public void setRecepientsList(List<ErpRecipentModel> recepientsList) {
+		this.recipientsList = recepientsList;
 	}
 
-	private List recepientsList=null;
+	private List<ErpRecipentModel> recipientsList = null;
 
 	public ErpAbstractOrderModel(EnumTransactionType transType) {
         super(transType);
-		appliedCredits = new ArrayList();
-		charges = new ArrayList();
-		discounts = new ArrayList();
-		selectedGiftCards =  new ArrayList();
-		appliedGiftcards = new ArrayList();
-		recepientsList = new ArrayList();
+
+		appliedCredits = new ArrayList<ErpAppliedCreditModel>();
+		charges = new ArrayList<ErpChargeLineModel>();
+		discounts = new ArrayList<ErpDiscountLineModel>();
+		selectedGiftCards =  new ArrayList<ErpGiftCardModel>();
+		appliedGiftcards = new ArrayList<ErpAppliedGiftCardModel>();
+		recipientsList = new ArrayList<ErpRecipentModel>();
     }
 
 	public void set(ErpAbstractOrderModel order, boolean isNewObject) {
@@ -106,7 +108,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 			this.setTransactionDate(order.getTransactionDate());
 			this.setTransactionInitiator(order.getTransactionInitiator());
 			this.setTransactionSource(order.getTransactionSource());
-			this.setRecepientsList(order.getRecepientsList());
+			this.setRecepientsList(order.getRecipientsList());
 			this.setSelectedGiftCards(order.getSelectedGiftCards());
 			this.setAppliedGiftcards(order.getAppliedGiftcards());
 			this.setBufferAmt(order.getBufferAmt());
@@ -122,68 +124,55 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		setPK(null);
 
 		// null out all charge line primary keys
-		List charges = getCharges();
+		List<ErpChargeLineModel> charges = getCharges();
 		if (charges != null && charges.size() > 0) {
-			Iterator iter = charges.iterator();
+			Iterator<ErpChargeLineModel> iter = charges.iterator();
 			while (iter.hasNext()) {
-				ErpChargeLineModel chargeLine = (ErpChargeLineModel) iter.next();
+				ErpChargeLineModel chargeLine = iter.next();
 				chargeLine.setPK(null);
 			}
 		}
 		// null out all order line primary keys
-		List orderLines = getOrderLines();
+		List<ErpOrderLineModel> orderLines = getOrderLines();
 		if (orderLines != null && orderLines.size() > 0) {
-			Iterator iter = orderLines.iterator();
+			Iterator<ErpOrderLineModel> iter = orderLines.iterator();
 			while (iter.hasNext()) {
 				ErpOrderLineModel orderLine = (ErpOrderLineModel) iter.next();
 				orderLine.setPK(null);
 			}
 		}
 		// null out all applied credit primary keys
-		List credits = getAppliedCredits();
+		List<ErpAppliedCreditModel> credits = getAppliedCredits();
 		if (credits != null && credits.size() > 0) {
-			Iterator iter = credits.iterator();
-			while (iter.hasNext()) {
-				ErpAppliedCreditModel credit = (ErpAppliedCreditModel) iter.next();
+			for ( ErpAppliedCreditModel credit : credits ) {
 				credit.setPK(null);
 			}
 		}
 		
 		// null out all promotion line primary keys
-		List discounts = getDiscounts();
+		List<ErpDiscountLineModel> discounts = getDiscounts();
 		if (discounts != null && discounts.size() > 0) {
-			Iterator iter = discounts.iterator();
+			Iterator<ErpDiscountLineModel> iter = discounts.iterator();
 			while (iter.hasNext()) {
-				ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+				ErpDiscountLineModel discountLine = iter.next();
 				discountLine.setPK(null);
 			}
 		}
 		
 		// null out all receipents
-		List recepients = getRecepientsList();
+		List<ErpRecipentModel> recepients = getRecipientsList();
 		if (recepients != null && recepients.size() > 0) {
-			Iterator iter = recepients.iterator();
+			Iterator<ErpRecipentModel> iter = recepients.iterator();
 			while (iter.hasNext()) {
 				ErpRecipentModel recepientsLine = (ErpRecipentModel) iter.next();
 				recepientsLine.setPK(null);
 			}
 		}
-		/*
-		System.out.println("getGiftcardPaymentMethods in ab model "+ getGiftcardPaymentMethods().size());
-		// null out all used gift cards primary keys
-		List gcPMList = getGiftcardPaymentMethods();
-		if (gcPMList != null && gcPMList.size() > 0) {
-			Iterator iter = gcPMList.iterator();
-			while (iter.hasNext()) {
-				ErpPaymentMethodModel gc = (ErpPaymentMethodModel) iter.next();
-				gc.setPK(null);
-			}
-		}
-		*/
+
 		// null out all applied credit primary keys
-		List appliedGiftcards = getAppliedGiftcards();
+		List<ErpAppliedGiftCardModel> appliedGiftcards = getAppliedGiftcards();
 		if (appliedGiftcards != null && appliedGiftcards.size() > 0) {
-			Iterator iter = appliedGiftcards.iterator();
+			Iterator<ErpAppliedGiftCardModel> iter = appliedGiftcards.iterator();
 			while (iter.hasNext()) {
 				ErpAppliedGiftCardModel gc = (ErpAppliedGiftCardModel) iter.next();
 				gc.setPK(null);
@@ -191,16 +180,15 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		}
 
 	}
-    public List getOrderLines(){ return orderLines; }
+    public List<ErpOrderLineModel> getOrderLines(){ return orderLines; }
 
-    public void setOrderLines(List orderLines){ this.orderLines = orderLines; }
+    public void setOrderLines(List<ErpOrderLineModel> orderLines){ this.orderLines = orderLines; }
 
-	public TreeSet getOrderLineDepartments(){
+	public TreeSet<String> getOrderLineDepartments(){
 
-    	TreeSet orderLineDepartments = new TreeSet();
+    	TreeSet<String> orderLineDepartments = new TreeSet<String>();
 
-		for (java.util.Iterator i= orderLines.iterator(); i.hasNext();) {
-		    ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
+		for ( ErpOrderLineModel ol : orderLines ) {
 		    orderLineDepartments.add(ol.getDepartmentDesc());
 		}
 		return orderLineDepartments;
@@ -218,9 +206,9 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
     public void setPaymentMethod(ErpPaymentMethodI paymentMethod){ this.paymentMethod = paymentMethod; }
 
-    public List getAppliedCredits() { return appliedCredits; }
+    public List<ErpAppliedCreditModel> getAppliedCredits() { return appliedCredits; }
 
-	public void setAppliedCredits(List appliedCredits){ this.appliedCredits = appliedCredits; }
+	public void setAppliedCredits(List<ErpAppliedCreditModel> appliedCredits){ this.appliedCredits = appliedCredits; }
 
     public ErpDeliveryInfoModel getDeliveryInfo() { return deliveryInfo; }
 
@@ -237,7 +225,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	public ErpOrderLineModel getOrderLine(String lineNumber){
 		
 		ErpOrderLineModel foundLine = null;
-		for(Iterator i = this.orderLines.iterator(); i.hasNext(); ){
+		for(Iterator<ErpOrderLineModel> i = this.orderLines.iterator(); i.hasNext(); ){
 			ErpOrderLineModel orderLine = (ErpOrderLineModel)i.next(); 
 			if(orderLine.getOrderLineNumber().equals(lineNumber)){
 				foundLine = orderLine;
@@ -249,7 +237,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	
 	public ErpOrderLineModel getOrderLineByPK(String id){
 		ErpOrderLineModel foundLine = null;
-		for(Iterator i = this.orderLines.iterator(); i.hasNext(); ){
+		for(Iterator<ErpOrderLineModel> i = this.orderLines.iterator(); i.hasNext(); ){
 			ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
 			if(ol.getPK().getId().equals(id)){
 				foundLine = ol;
@@ -262,7 +250,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 
 	public double getDepositValue() {
 		double deposit = 0;
-		for (Iterator i=this.orderLines.iterator(); i.hasNext(); ) {
+		for (Iterator<ErpOrderLineModel> i=this.orderLines.iterator(); i.hasNext(); ) {
 			deposit += ((ErpOrderLineModel)i.next()).getDepositValue();
 		}
 		return deposit;
@@ -273,21 +261,21 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
         double amount = 0.0;
 
         // add up orderline prices
-        for (Iterator i=this.orderLines.iterator(); i.hasNext(); ) {
+        for (Iterator<ErpOrderLineModel> i=this.orderLines.iterator(); i.hasNext(); ) {
         	double price = ((ErpOrderLineModel)i.next()).getPrice();
 			amount += price;
         }
 
         // subtract credits
         if (this.appliedCredits!=null) {
-	        for (Iterator i=this.appliedCredits.iterator(); i.hasNext(); ) {
-				amount -= ((ErpAppliedCreditModel)i.next()).getAmount();
+	        for (Iterator<ErpAppliedCreditModel> i=this.appliedCredits.iterator(); i.hasNext(); ) {
+				amount -= i.next().getAmount();
 	        }
         }
         
         if (this.discounts != null && this.discounts.size() > 0) {
-        	for (Iterator iter = this.discounts.iterator(); iter.hasNext();) {
-            	ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
+        	for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+            	ErpDiscountLineModel discountLine = iter.next();
             	amount -= discountLine.getDiscount().getAmount();
         	}
         } else if(this.discount != null){  // this is to be backward compatible
@@ -295,8 +283,8 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		}
 
         // add charges (with their discounts applied)
-        for (Iterator i=this.charges.iterator(); i.hasNext(); ) {
-        	amount += ((ErpChargeLineModel)i.next()).getTotalAmount();
+        for (Iterator<ErpChargeLineModel> i=this.charges.iterator(); i.hasNext(); ) {
+        	amount += i.next().getTotalAmount();
         }
 
         // add tax
@@ -307,14 +295,14 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
         return MathUtil.roundDecimal(amount);
 	}
 
-    public List getCharges() { return this.charges; }
-    public void setCharges(List l) { this.charges = l; }
+    public List<ErpChargeLineModel> getCharges() { return this.charges; }
+    public void setCharges(List<ErpChargeLineModel> l) { this.charges = l; }
     public void addCharge(ErpChargeLineModel charge) { this.charges.add(charge); }
-    public void addCharges(List l) { this.charges.addAll(l); }
+    public void addCharges(List<ErpChargeLineModel> l) { this.charges.addAll(l); }
 
 	public ErpChargeLineModel getCharge(EnumChargeType chargeType) {
-        for (Iterator i=this.charges.iterator(); i.hasNext(); ) {
-        	ErpChargeLineModel curr = (ErpChargeLineModel)i.next();
+        for (Iterator<ErpChargeLineModel> i=this.charges.iterator(); i.hasNext(); ) {
+        	ErpChargeLineModel curr = i.next();
         	if (chargeType.equals( curr.getType() )) {
 				return curr;
         	}
@@ -322,10 +310,10 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
         return null;
 	}
 
-	public List getCharges(EnumChargeType chargeType) {
-		List chargeList = new ArrayList();
-        for (Iterator i=this.charges.iterator(); i.hasNext(); ) {
-        	ErpChargeLineModel curr = (ErpChargeLineModel)i.next();
+	public List<ErpChargeLineModel> getCharges(EnumChargeType chargeType) {
+		List<ErpChargeLineModel> chargeList = new ArrayList<ErpChargeLineModel>();
+        for (Iterator<ErpChargeLineModel> i=this.charges.iterator(); i.hasNext(); ) {
+        	ErpChargeLineModel curr = i.next();
         	if (chargeType.equals( curr.getType() )) {
         		chargeList.add( curr );
         	}
@@ -350,14 +338,14 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
     public void setGlCode(String s) { this.glCode = s; }
     public String getGlCode(){ return this.glCode; }
     
-    public List getDiscounts() { return this.discounts; }
-    public void setDiscounts(List l) { this.discounts = l; }
+    public List<ErpDiscountLineModel> getDiscounts() { return this.discounts; }
+    public void setDiscounts(List<ErpDiscountLineModel> l) { this.discounts = l; }
     public void addDiscount(ErpDiscountLineModel discount) { this.discounts.add(discount); }
-    public void addDiscounts(List l) { this.discounts.addAll(l); }
+    public void addDiscounts(List<ErpDiscountLineModel> l) { this.discounts.addAll(l); }
 
 	public ErpDiscountLineModel getDiscount(EnumDiscountType discountType) {
-        for (Iterator i=this.discounts.iterator(); i.hasNext(); ) {
-        	ErpDiscountLineModel curr = (ErpDiscountLineModel)i.next();
+        for (Iterator<ErpDiscountLineModel> i=this.discounts.iterator(); i.hasNext(); ) {
+        	ErpDiscountLineModel curr = i.next();
         	Discount discount = curr.getDiscount();
         	if (discount != null && discountType.equals( discount.getDiscountType() )) {
 				return curr;
@@ -366,10 +354,10 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
         return null;
 	}
 
-	public List getDiscounts(EnumDiscountType discountType) {
-		List discountList = new ArrayList();
-        for (Iterator i=this.discounts.iterator(); i.hasNext(); ) {
-        	ErpDiscountLineModel curr = (ErpDiscountLineModel)i.next();
+	public List<ErpDiscountLineModel> getDiscounts(EnumDiscountType discountType) {
+		List<ErpDiscountLineModel> discountList = new ArrayList<ErpDiscountLineModel>();
+        for (Iterator<ErpDiscountLineModel> i=this.discounts.iterator(); i.hasNext(); ) {
+        	ErpDiscountLineModel curr = i.next();
         	Discount discount = curr.getDiscount();
         	if (discount != null && discountType.equals( discount.getDiscountType() )) {
         		discountList.add( curr );
@@ -402,25 +390,25 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 		this.dlvPromotionApplied = dlvPromotionApplied;
 	}
 
-	public List getSelectedGiftCards() {
+	public List<ErpGiftCardModel> getSelectedGiftCards() {
 		return selectedGiftCards;
 	}
 
-	public void setSelectedGiftCards(List selectedGiftCards) {
+	public void setSelectedGiftCards(List<ErpGiftCardModel> selectedGiftCards) {
 		this.selectedGiftCards = selectedGiftCards;
 	}
 
-	public List getAppliedGiftcards() {
+	public List<ErpAppliedGiftCardModel> getAppliedGiftcards() {
 		return appliedGiftcards;
 	}
 
-	public void setAppliedGiftcards(List appliedGiftcards) {
+	public void setAppliedGiftcards(List<ErpAppliedGiftCardModel> appliedGiftcards) {
 		this.appliedGiftcards = appliedGiftcards;
 	}
 	
 	public double getAppliedGiftCardAmount() {
 		double amount = 0.0;
-        for (Iterator i=this.appliedGiftcards.iterator(); i.hasNext(); ) {
+        for (Iterator<ErpAppliedGiftCardModel> i=this.appliedGiftcards.iterator(); i.hasNext(); ) {
         	ErpAppliedGiftCardModel curr = (ErpAppliedGiftCardModel)i.next();
         	amount += curr.getAmount();
         }
@@ -429,7 +417,7 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	
 	public ErpOrderLineModel getOrderLineByOrderLineNumber(String id){
 		ErpOrderLineModel foundLine = null;
-		for(Iterator i = this.orderLines.iterator(); i.hasNext(); ){
+		for(Iterator<ErpOrderLineModel> i = this.orderLines.iterator(); i.hasNext(); ){
 			ErpOrderLineModel ol = (ErpOrderLineModel) i.next();
 			if(ol.getOrderLineNumber().equals(id)){
 				foundLine = ol;

@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.customer;
 
 import com.freshdirect.framework.core.PrimaryKey;
@@ -76,7 +67,7 @@ public interface ErpCustomerI {
 	 *
 	 * @return collection of ShipToAddress model objects
 	 */
-	public List getShipToAddresses() throws RemoteException;
+	public List<ErpAddressModel> getShipToAddresses() throws RemoteException;
 
 	/**
 	 * Add a new ShipToAddress.
@@ -103,7 +94,7 @@ public interface ErpCustomerI {
 	 */
 	public boolean removeShipToAddress(PrimaryKey pk) throws RemoteException;
 	
-	public List getCustomerCredits() throws RemoteException;
+	public List<ErpCustomerCreditModel> getCustomerCredits() throws RemoteException;
 	
 	public void addCustomerCredit(ErpCustomerCreditModel element) throws RemoteException;
 	
@@ -111,7 +102,7 @@ public interface ErpCustomerI {
 	
 	public boolean removeCustomerCredit(PrimaryKey pk) throws RemoteException;
 	
-	public List getPaymentMethods() throws RemoteException;
+	public List<ErpPaymentMethodI> getPaymentMethods() throws RemoteException;
 	
 	public void addPaymentMethod(ErpPaymentMethodI element) throws RemoteException;
 	
@@ -122,7 +113,7 @@ public interface ErpCustomerI {
 	public ErpCustomerInfoModel getCustomerInfo() throws RemoteException;
 	public void setCustomerInfo(ErpCustomerInfoModel customerInfo) throws RemoteException;
 
-	public List getCustomerAlerts() throws RemoteException;
+	public List<ErpCustomerAlertModel> getCustomerAlerts() throws RemoteException;
 
 	public void addCustomerAlert(ErpCustomerAlertModel element) throws RemoteException;
 

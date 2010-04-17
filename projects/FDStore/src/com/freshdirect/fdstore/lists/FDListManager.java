@@ -12,6 +12,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerHome;
@@ -21,12 +22,11 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDListManager {
 
-	private final static Category LOGGER = LoggerFactory
-			.getInstance(FDListManager.class);
+	private final static Category LOGGER = LoggerFactory.getInstance(FDListManager.class);
 
 	private static FDListManagerHome managerHome = null;
 
-	public static List getEveryItemEverOrdered(FDIdentity identity)
+	public static List<FDProductSelectionI> getEveryItemEverOrdered(FDIdentity identity)
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
@@ -79,12 +79,27 @@ public class FDListManager {
 		}
 	}
 
-	public static void storeCustomerList(FDCustomerList list)
+	public static FDCustomerList getCustomerListById(FDIdentity identity,
+			EnumCustomerListType type, String listId)
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			sb.storeCustomerList(list);
+			return sb.getCustomerListById(identity, type, listId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	public static String storeCustomerList(FDCustomerList list) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			return sb.storeCustomerList(list);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -151,8 +166,8 @@ public class FDListManager {
 
 	// CCL
 	// get all customer created lists
-	public static List getCustomerCreatedLists(FDUserI user)
-			throws FDResourceException, FDCustomerListExistsException {
+	public static List<FDCustomerCreatedList> getCustomerCreatedLists(FDUserI user)
+			throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
@@ -168,8 +183,8 @@ public class FDListManager {
 
 	// CCL
 	// get all customer created list infos
-	public static List getCustomerCreatedListInfos(FDUserI user)
-			throws FDResourceException, FDCustomerListExistsException {
+	public static List<FDCustomerListInfo> getCustomerCreatedListInfos(FDUserI user)
+			throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
@@ -183,6 +198,23 @@ public class FDListManager {
 		}
 	}
 
+	// SO
+	// get all customer created list infos
+	public static List<FDCustomerListInfo> getStandingOrderListInfos(FDUserI user)
+			throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			return sb.getStandingOrderListInfos(user.getIdentity());
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
 	// CCL
 	public static void modifyCustomerCreatedList(FDCustomerList list)
 			throws FDResourceException {
@@ -204,12 +236,22 @@ public class FDListManager {
 	}
 
 	// CCL
+	/**
+	 * @deprecated Use {@link FDListManager#isCustomerList(FDUserI, EnumCustomerListType, String)} instead.
+	 */
+	@Deprecated
 	public static boolean isCustomerCreatedList(FDUserI user, String listName)
+			throws FDResourceException {
+		return isCustomerList(user, EnumCustomerListType.CC_LIST, listName);
+	}
+
+	// CCL
+	public static boolean isCustomerList(FDUserI user, EnumCustomerListType type, String listName)
 			throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.isCustomerCreatedList(user.getIdentity(), listName);
+			return sb.isCustomerList(user.getIdentity(), type != null ? type : EnumCustomerListType.CC_LIST, listName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -226,7 +268,7 @@ public class FDListManager {
 	// CCL
 	public static void copyCustomerCreatedList(FDCustomerList oldList,
 			FDCustomerList newList) throws FDResourceException,
-			RemoteException, FDCustomerListExistsException {
+			FDCustomerListExistsException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
@@ -261,22 +303,20 @@ public class FDListManager {
 		}
 	}
 
-	public static String getListName(FDIdentity identity,
-			EnumCustomerListType type, String ccListId)
-			throws FDResourceException {
+	public static String getListName( FDIdentity identity, String ccListId ) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			return sb.getListName(identity, type, ccListId);
-		} catch (CreateException ce) {
+			return sb.getListName( identity, ccListId );
+		} catch ( CreateException ce ) {
 			invalidateManagerHome();
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
+			throw new FDResourceException( ce, "Error creating session bean" );
+		} catch ( RemoteException re ) {
 			invalidateManagerHome();
-			throw new FDResourceException(re, "Error talking to session bean");
-		} catch (FDResourceException e) {
+			throw new FDResourceException( re, "Error talking to session bean" );
+		} catch ( FDResourceException e ) {
 			invalidateManagerHome();
-			throw new FDResourceException(e, "Error retrieving list name");
+			throw new FDResourceException( e, "Error retrieving list name" );
 		}
 	}
 
@@ -287,6 +327,25 @@ public class FDListManager {
 		try {
 			FDListManagerSB sb = managerHome.create();
 			sb.renameCustomerCreatedList(identity, oldName, newName);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		} catch (FDResourceException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error renaming list");
+		}
+	}
+
+	public static void renameCustomerList(FDIdentity identity, EnumCustomerListType type, 
+			String oldName, String newName)
+			throws FDCustomerListExistsException, FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			sb.renameCustomerList(identity, type, oldName, newName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -326,8 +385,7 @@ public class FDListManager {
 	}
 
 	// SmartStore
-	public static FDCustomerProductList getOrderDetails(String erpCustomerId,
-			List skus) throws FDResourceException {
+	public static FDCustomerProductList getOrderDetails(String erpCustomerId,List<String> skus) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
@@ -346,4 +404,27 @@ public class FDListManager {
 		}
 	}
 
+
+
+	/**
+	 * Returns a standing order list
+	 * 
+	 * @param identity
+	 * @param soListId
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public static FDStandingOrderList getStandingOrderList(	FDIdentity identity, String soListId ) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDListManagerSB sb = managerHome.create();
+			return sb.getStandingOrderList(identity, soListId);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }

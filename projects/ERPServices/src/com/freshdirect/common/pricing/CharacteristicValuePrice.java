@@ -1,11 +1,3 @@
-/*
- * $Workfile: CharacteristicValuePrice.java$
- *
- * $Date: 8/15/2001 7:24:47 PM$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
@@ -17,6 +9,8 @@ import java.io.Serializable;
  * @author $Author: Viktor Szathmary$
  */
 public class CharacteristicValuePrice implements Serializable {
+
+	private static final long	serialVersionUID	= 5078567556846051266L;
 
 	/** Apply price per pricing unit, using ratio */
 	public final static int PER_PRICING_UNIT = 0;
@@ -80,6 +74,7 @@ public class CharacteristicValuePrice implements Serializable {
 		return this.applyHow;
 	}
 
+	@Override
 	public String toString() {
 		return "CharacteristicValuePrice["+charName+" "+charValueName+" $"+price+" "+pricingUnit+" "+applyHow+"]";
 	}

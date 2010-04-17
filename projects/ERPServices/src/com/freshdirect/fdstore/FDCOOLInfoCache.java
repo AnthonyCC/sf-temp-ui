@@ -74,7 +74,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 	
 	private ErpCOOLManagerHome lookupCOOLInfoHome() {
 		try {
-			return (ErpCOOLManagerHome) serviceLocator.getRemoteHome(ErpServicesProperties.getCOOLManagerHome(), ErpCOOLManagerHome.class);
+			return (ErpCOOLManagerHome) serviceLocator.getRemoteHome(ErpServicesProperties.getCOOLManagerHome());
 		} catch (NamingException ne) {
 			throw new EJBException(ne);
 		}

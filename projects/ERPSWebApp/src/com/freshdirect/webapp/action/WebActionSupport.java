@@ -5,6 +5,8 @@ import com.freshdirect.framework.webapp.ActionResult;
 
 public abstract class WebActionSupport implements Action, HttpContextAware, ResultAware {
 
+	private static final long	serialVersionUID	= -7099423837132555544L;
+
 	private HttpContext webActionContext;
 	
 	private ActionResult result;
