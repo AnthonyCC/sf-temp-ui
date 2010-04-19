@@ -26,6 +26,7 @@ import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerListExistsException;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.CustomerListNames;
 import com.freshdirect.webapp.util.CustomerCreatedListAjaxFacade.NameEmpty;
@@ -60,6 +61,7 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 	protected Aspect deleteList = null;
 	protected Aspect getListInfos = null;
 	protected Aspect getSOListInfos = null;
+	protected Aspect getCurrSO = null;
 	protected Aspect renameList = null;
 	protected Aspect getList = null;
 	protected Aspect storeList = null;
@@ -89,6 +91,9 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 
 		getSOListInfos = new GetSOListInfosStub();
 		aspectSystem.add(getSOListInfos);
+
+		getCurrSO = new GetCurrentStandingOrderStub();
+		aspectSystem.add(getCurrSO);
 
 		renameList = new RenameListStub();
 		aspectSystem.add(renameList);
@@ -272,6 +277,9 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
 
+		user.getCurrentStandingOrder();
+		userC.setReturnValue(null);
+		
 		user.getStandingOrderListInfos();
 		userC.setReturnValue(Collections.EMPTY_LIST);
 		
@@ -317,6 +325,9 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
+		
+		user.getCurrentStandingOrder();
+		userC.setReturnValue(null);
 		
 		user.getStandingOrderListInfos();
 		userC.setReturnValue(Collections.EMPTY_LIST);
@@ -365,6 +376,9 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 
 		user.getCustomerCreatedListInfos();
 		userC.setReturnValue(lists);
+		
+		user.getCurrentStandingOrder();
+		userC.setReturnValue(null);
 		
 		user.getStandingOrderListInfos();
 		userC.setReturnValue(Collections.EMPTY_LIST);
@@ -587,6 +601,18 @@ public class CustomerCreatedListAjaxFacadeTest extends FDCustomerManagerTestSupp
 		
 		protected String getMethodName() {
 			return "getStandingOrderListInfos";
+		}
+
+		public void intercept(InvocationContext invocationContext) throws Exception {
+			super.intercept(invocationContext);
+			invocationContext.setReturnObject(returnObj);
+		}		
+	}
+
+	public class GetCurrentStandingOrderStub extends AbstractAspect {
+		
+		protected String getMethodName() {
+			return "getCurrentStandingOrder";
 		}
 
 		public void intercept(InvocationContext invocationContext) throws Exception {
