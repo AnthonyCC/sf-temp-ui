@@ -15,7 +15,7 @@
 			String term = (String) resIt.next();
 			//System.err.println(term + "\t" + Integer.toString(i));
 						// term				  // 'freq' ?
-			out.println( term + "\t" + Integer.toString(i) + "\n");
+			out.println( term + "\t" + Integer.toString(i));
 			i--;
 		}
 	}

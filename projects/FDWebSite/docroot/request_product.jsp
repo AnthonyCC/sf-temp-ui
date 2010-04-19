@@ -291,9 +291,45 @@
 		list-style-type: none;
 		text-indent: -8px;
 		padding: 2px;
-		padding-left: 10px;		
+		padding-left: 10px;
 		cursor: default ! important;
 	}
+	
+	.yui-ac-bd {
+		width: 204px;
+		border: 1px solid black;
+		border-top: none;
+	}
+
+	.selectFree { z-index: 2000; }
+
+	<%--
+		Here's the original css:
+
+		.selectFree IFRAME {
+			display:none;/*sorry for IE5*/ 
+			display/**/:block;/*sorry for IE5*/
+			position:absolute;/*must have*/
+			top:0;/*must have*/
+			left:0;/*must have*/
+			z-index:-1;/*must have*/
+			filter:mask();/*must have*/
+			width:2000px;/*must have for any big value*/
+			height:3000px/*must have for any big value*/;
+		}
+	--%>
+	.selectFree IFRAME {
+		display:none;
+		display/**/:block;
+		position:absolute;
+		top:0;
+		left:0;
+		z-index:-1;
+		filter:mask();
+		width:2000px;
+		height:3000px;
+	}
+
 </style>
 
 <%@ include file="/includes/product/i_request_product_dept_cat_map.jspf" %>
@@ -318,6 +354,7 @@
 	</tr>
 	<tr><td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" alt="" /></td></tr>
 <% for (int n=1; n<=prodRequests; n++) { %>
+	<% int z = (prodRequests-n)*1000+5; %>
 	<tr>
 		<td align="right" rowspan="2"><strong>Request<br /> #<%= n %><strong></td>
 		<td rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="20" height="1" alt="" /></td>
@@ -338,13 +375,14 @@
 			--%>
 			<!--
 				depts.populateDeptsList("dept_prod<%= n %>");
-				<%-- YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false)); --%>
+				YAHOO.util.Event.onDOMReady(autoCompleteFunctionFactory("/api/brandautocompleteresults.jsp","brands_prod<%= n %>","brandParams_prod<%= n %>",false));
 			//-->
-			</script>	
-			<%-- <div id="brandSearchContainer_prod<%= n %>" style="position: relative"> --%>
+			</script>
+			<div id="brandSearchContainer_prod<%= n %>" style="position: relative; z-index: <%= z %>;">
 				<input type="text" id="brandParams_prod<%= n %>" name="brandParams_prod<%= n %>" value="" style="width: 200px;" maxlength="50" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'B');" value="Brand" />
-				<%-- <div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC"></div>
-			</div> --%>
+				<div id="brands_prod<%= n %>" name="brands_prod<%= n %>" style="position: absolute;background-color: white" class="brandsAC selectFree"><!--[if lte IE 6.5]><iframe></iframe><![endif]--></div>
+			</div>
+
 		</td>
 		<td style="padding-top: 12px;">
 			<input id="descrip_prod<%= n %>" name="descrip_prod<%= n %>" style="width: 200px;" maxlength="255" class="text11" onfocus="fillVal(this.id);" onblur="fillVal(this.id, 'D');" value="Description" />
