@@ -308,7 +308,7 @@ public class FDStandingOrderDAO {
 			ps.setBoolean(counter++, so.isAlcoholAgreement());
 			ps.setBoolean(counter++, so.isDeleted());
 			ps.setString(counter++, so.getLastError());
-			ps.setString(counter++, so.getDetailMessage());
+			ps.setString(counter++, so.getErrorHeader());
 			
 			ps.execute();
 			
@@ -345,7 +345,7 @@ public class FDStandingOrderDAO {
 			ps.setBoolean(counter++, so.isAlcoholAgreement());
 			ps.setBoolean(counter++, so.isDeleted());
 			ps.setString(counter++, so.getLastError());
-			ps.setString(counter++, so.getDetailMessage());
+			ps.setString(counter++, so.getErrorHeader());
 
 			ps.setString(counter++, so.getId());
 			

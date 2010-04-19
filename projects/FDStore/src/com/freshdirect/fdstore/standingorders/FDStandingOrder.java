@@ -128,7 +128,10 @@ public class FDStandingOrder extends ModelSupport {
 	public String getLastError() {
 		return lastError;
 	}
-	public String getDetailMessage() {
+	public String getErrorHeader() {
+		return detailMessage;
+	}
+	public String getErrorDetail() {
 		return detailMessage;
 	}
 	public void setLastError( String lastErrorCode, String detailMessage ) {

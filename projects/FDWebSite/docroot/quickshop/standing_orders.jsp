@@ -59,7 +59,7 @@
 				<% if (so.isError()) { %>				
 					<div style="padding: 1em 0 1em 0">
 						<div style="color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %></div>
-						<div style="margin-top: 1em; color: #CC3300"><%= so.getDetailMessage() %></div>
+						<div style="margin-top: 1em; color: #CC3300"><%=so.getErrorHeader()%></div>
 					</div>
 				<% } else { %>				
 					<div style="text-align: left; font-weight: bold;">

@@ -57,7 +57,7 @@
 			<% if ( so.isError() ) { %>
 				<!-- error display -->
 				<div style="text-align: center; font-weight: bold; margin-top: 1em; color: #CC3300;">
-					IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%= so.getDetailMessage() %><br/>
+					IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
 				</div>			
 				<div style="text-align: center;">
 					Click the link below to modify this standing order.<br/><br/>
