@@ -113,6 +113,10 @@ public class DomainController extends AbstractMultiActionController {
 	    			{
 	    				it.remove();
 	    			}
+	    			if("a".equalsIgnoreCase(status)&&sInfo.getTrnStatus()==null&&"I".equalsIgnoreCase(sInfo.getStatus()))
+	    			{
+	    				it.remove();
+	    			}
 	    		}
         	}
         	request.setAttribute("status", status);
