@@ -30,7 +30,7 @@
 						<td>
 							<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
 
-							<p>Just a friendly reminder that
+							<p>This is just a friendly reminder that
 							<xsl:choose>
 								<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">you can pick up your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order</a></xsl:when>
 								<xsl:otherwise>your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order</a> is scheduled for delivery</xsl:otherwise>
@@ -40,18 +40,17 @@
 							</b> on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template></b>.
 							</p>
 
-							<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
-
 							<xsl:if test="order/paymentMethod/paymentType != 'M'">
-							<p>If you have last-minute updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">your account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
+							<p>If you would like to make updates or additions to your order, go to <a href="http://www.freshdirect.com/your_account/manage_account.jsp">Your Account</a> to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.</p>
 							</xsl:if>
 							
-							<p>We hope you enjoy everything in your order. Please <a href="http://www.freshdirect.com/">come back</a> soon.</p>
+							<p>As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.</p>
+
+							<p>We hope you enjoy everything in your order. Please <a href="http://www.freshdirect.com/">shop again soon</a>.</p>
 
 							<p><b>Happy eating!</b><br/>
 							<br/>
-							FreshDirect<br/>
-							<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose></p>
+							Your Customer Service Team at <a href="http://www.freshdirect.com/">FreshDirect</a><br/></p>
 
 							<p><xsl:call-template name="h_order_info_v1"/></p>
 							

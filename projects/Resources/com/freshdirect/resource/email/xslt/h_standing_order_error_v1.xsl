@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt='http://xsltsl.org/date-time'>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:dt='http://xsltsl.org/date-time' xmlns:markup='http://xsltsl.org/markup'>
 	<xsl:output method="html"/>
 	<xsl:import href='stdlib.xsl'/>
 	<xsl:include href='h_header_v1.xsl'/>
@@ -48,14 +48,14 @@
 				on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="standingOrder/nextDeliveryDate" /></xsl:call-template>.
                </p>
                
-               <p><b style="color: #990000;"><xsl:value-of select="standingOrder/detailMessage"/></b> Click the link below to modify this standing order.</p>
+               <p><b style="color: #990000;"><xsl:value-of select="standingOrder/errorHeader"/></b><markup:cdata-section text=" "/><xsl:value-of select="standingOrder/errorDetail"/></p>
                
                <p><a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">Click here to change the schedule or options for all future deliveries.</a></p>
                
                
                <p>Sincerely<br/>
                <br/>
-               Your Customer Service Team at FreshDirect</p>
+               Your Customer Service Team at <a href="http://www.freshdirect.com/">FreshDirect</a></p>
                
                <p><xsl:call-template name="h_optout_footer"/><xsl:call-template name="h_footer_v2"/></p>
 		</td>

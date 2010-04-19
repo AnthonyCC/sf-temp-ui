@@ -13,19 +13,18 @@
 
 Hello <xsl:value-of select="customer/firstName"/>,
 
-Just a friendly reminder that <xsl:choose><xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">you can pick up your standing order (http://www.freshdirect.com/quickshop/so_details.jsp?ccListId=<xsl:value-of select="standingOrder/customerListId"/>)</xsl:when><xsl:otherwise>your standing order (http://www.freshdirect.com/quickshop/so_details.jsp?ccListId=<xsl:value-of select="standingOrder/customerListId"/>) will be delivered</xsl:otherwise></xsl:choose> between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template>.
-
-As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
+This is just a friendly reminder that <xsl:choose><xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">you can pick up your standing order (http://www.freshdirect.com/quickshop/so_details.jsp?ccListId=<xsl:value-of select="standingOrder/customerListId"/>)</xsl:when><xsl:otherwise>your standing order (http://www.freshdirect.com/quickshop/so_details.jsp?ccListId=<xsl:value-of select="standingOrder/customerListId"/>) will be delivered</xsl:otherwise></xsl:choose> between <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template> and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime" /></xsl:call-template>.
 <xsl:if test="order/paymentMethod/paymentType != 'M'">
-If you have last-minute updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.
+If you would like to make updates or additions to your order, go to your account to make changes before <xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template> on <xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="order/deliveryReservation/cutoffTime" /></xsl:call-template>.
 </xsl:if>
-We hope you enjoy everything in your order. Please come back soon.
+As soon as we select and weigh your items, we'll send you an e-mail with the final order total. We'll also include an itemized, printed receipt with your delivery.
+
+We hope you enjoy everything in your order. Please shop again soon.
 
 
 Happy eating!
 
-FreshDirect
-<xsl:choose><xsl:when test="order/deliveryType != 'C'">Customer Service Group</xsl:when><xsl:otherwise>Corporate Services Group</xsl:otherwise></xsl:choose>
+Your Customer Service Team at FreshDirect
 <xsl:call-template name="x_order_info_v1"/>
 
 NOTE: If this email does not print out clearly, please go to https://www.freshdirect.com/your_account/order_history.jsp for a printer-friendly version of your order details.
