@@ -36,7 +36,7 @@ public class FulltimePunchInfo implements PunchInfoI
 	}
 
 	public Date getOutPunchDTM() {
-		if(EnumStatus.OffPremises.equals(command.getDispatchStatus())) return new Date();
+		if(EnumStatus.OffPremises.equals(command.getDispatchStatus())||EnumStatus.CheckedIn.equals(command.getDispatchStatus())) return new Date();
 		return null;
 	}
 
@@ -51,7 +51,7 @@ public class FulltimePunchInfo implements PunchInfoI
 	}
 
 	public boolean isPunchedIn() {
-		if(EnumStatus.OffPremises.equals(command.getDispatchStatus()))	return false;
+		if(EnumStatus.OffPremises.equals(command.getDispatchStatus())||EnumStatus.CheckedIn.equals(command.getDispatchStatus()))	return false;
 		return true;
 	}
 
