@@ -125,14 +125,24 @@ public class FDStandingOrder extends ModelSupport {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	public String getLastError() {
-		return lastError;
+	public ErrorCode getLastError() {
+		if ( lastError == null )
+			return null;
+		try {
+			return ErrorCode.valueOf( lastError );
+		} catch ( IllegalArgumentException e ) {
+			return ErrorCode.GENERIC;
+		} 
 	}
 	public String getErrorHeader() {
 		return detailMessage;
 	}
 	public String getErrorDetail() {
 		return detailMessage;
+	}
+	public void setLastError( ErrorCode lastErrorCode, String detailMessage ) {
+		this.lastError = lastErrorCode.name();
+		this.detailMessage = detailMessage;
 	}
 	public void setLastError( String lastErrorCode, String detailMessage ) {
 		this.lastError = lastErrorCode;
@@ -236,6 +246,32 @@ public class FDStandingOrder extends ModelSupport {
 		return "SO["+getId()+", "+customerListName+", "+nextDeliveryDate+"]";
 	}
 
+	public static enum ErrorCode { 
+		TECHNICAL( "Technical problem." ), 
+		GENERIC( "Some error." ), 
+		
+		ADDRESS( "Invalid address." ), 
+		PAYMENT( "Invalid payment method." ), 
+		ALCOHOL( "Alcohol problems." ), 
+		MINORDER( "Minimum order requirements not met." ), 		
+		TIMESLOT( "No suitable timeslot found." ),
+		CART( "Invalid cart contents." );
+		
+		private String errorText;
+		
+		private ErrorCode( String errorText ) {
+			this.errorText = errorText;
+		}
+		
+		public boolean isTechnical() {
+			return name().equals( "TECHNICAL" );
+		}
+		
+		public String getErrorText() {
+			return errorText;
+		}
+		
+	};
 	
 	
 	// more heavyweight getter methods
@@ -308,5 +344,10 @@ public class FDStandingOrder extends ModelSupport {
 	@ExcludeFromXmlSerializer
 	public List<FDOrderInfoI> getAllOrders( FDUserI user ) throws FDResourceException {
 		return FDStandingOrdersManager.getInstance().getAllOrders( user, this );		
+	}
+	
+	@ExcludeFromXmlSerializer
+	public void save() throws FDResourceException {
+		FDStandingOrdersManager.getInstance().save( this );
 	}
 }

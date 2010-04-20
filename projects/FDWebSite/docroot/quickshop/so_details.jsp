@@ -30,6 +30,7 @@
 	for (FDStandingOrder s : lists) {
 		if (s.getCustomerListId().equals(ccListId)) {
 			so = s;
+			session.setAttribute("__actual_so",so);
 			break;
 		}
 	}
@@ -82,7 +83,7 @@
 					<td style="vertical-align: top">
 						<div class="title12">Order Details</div>
 						<div style="margin-left: 1.5em">
-							<div>Delivered every <%= so.getFrequencyDescription() %></div>
+							<div>Delivered <%= so.getFrequencyDescription() %></div>
 							<% if (addr != null) { %>
 								<div><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
 							<% } %>
@@ -112,7 +113,7 @@
 					final String qsPage = "so_details.jsp";
 					final String qsDeptId = null;
 					final boolean hasDeptId = false;
-					final String orderId = null;				
+					final String orderId = null;			
 				%>
 				<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 			</fd:QuickShopController>

@@ -25,14 +25,14 @@ public class FDStandingOrderDAO {
 	private static final String LOAD_CUSTOMER_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
-		"join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
 		"order by SO.next_date";
 
 	private static final String LOAD_ACTIVE_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
-		"join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"where SO.DELETED<>1 and LAST_ERROR IS NULL " +
 		"order by SO.next_date";
 
@@ -41,7 +41,7 @@ public class FDStandingOrderDAO {
 	private static final String LOAD_STANDING_ORDER =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
-		"join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
+		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"where SO.ID=?";
 
 	private static final String INSERT_STANDING_ORDER = "insert into CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID, ADDRESS_ID, PAYMENTMETHOD_ID, START_TIME, END_TIME, NEXT_DATE, FREQUENCY, ALCOHOL_AGREEMENT, DELETED, LAST_ERROR, ERROR_DETAIL) " +
@@ -68,7 +68,7 @@ public class FDStandingOrderDAO {
 	
 	private static final String ASSIGN_SO_TO_SALE = "UPDATE CUST.SALE SET STANDINGORDER_ID=? WHERE ID=?";
 	
-
+	private static final String DELETED_LIST_NAME = "Deleted Standing Order";
 	
 	protected String getNextId(Connection conn) throws SQLException {
 		return SequenceGenerator.getNextId(conn, "CUST");
@@ -257,7 +257,10 @@ public class FDStandingOrderDAO {
 
 		so.setLastError( rs.getString( "LAST_ERROR" ), rs.getString( "ERROR_DETAIL" ) );
 		
-		so.setCustomerListName( rs.getString( "NAME" ) );
+		String listName = rs.getString( "NAME" );
+		if ( listName == null )
+			listName = DELETED_LIST_NAME;
+		so.setCustomerListName( listName );
 
 		return so;
 	}
@@ -307,7 +310,7 @@ public class FDStandingOrderDAO {
 			ps.setInt(counter++, so.getFrequency());
 			ps.setBoolean(counter++, so.isAlcoholAgreement());
 			ps.setBoolean(counter++, so.isDeleted());
-			ps.setString(counter++, so.getLastError());
+			ps.setString(counter++, so.getLastError() == null ? null : so.getLastError().name());
 			ps.setString(counter++, so.getErrorHeader());
 			
 			ps.execute();
@@ -344,7 +347,7 @@ public class FDStandingOrderDAO {
 			ps.setInt(counter++, so.getFrequency());
 			ps.setBoolean(counter++, so.isAlcoholAgreement());
 			ps.setBoolean(counter++, so.isDeleted());
-			ps.setString(counter++, so.getLastError());
+			ps.setString(counter++, so.getLastError() == null ? null : so.getLastError().name());
 			ps.setString(counter++, so.getErrorHeader());
 
 			ps.setString(counter++, so.getId());

@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderInfoI;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
@@ -59,7 +60,7 @@ import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
-import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.ErrorCode;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Result;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Status;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -182,7 +183,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					sendTechnicalMail( result.getDetailText() );
 				} else {
 					// other error -> set so to error state
-					so.setLastError( result.getErrorCode().name(), result.getDetailText() );
+					so.setLastError( result.getErrorCode(), result.getDetailText() );
 					sendErrorMail( so, result.getCustomerInfo() );
 				}
 			}
@@ -557,9 +558,24 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		// build a cart
-		FDCartModel cart = new FDCartModel();
+		FDCartModel cart = new FDTransientCartModel();
 		boolean hasInvalidItems = false;
+
+		// set cart parameters		
+		cart.setPaymentMethod( paymentMethod );
 		
+		ErpAddressModel erpDeliveryAddress;
+		if ( deliveryAddressModel instanceof ErpAddressModel ) {
+			erpDeliveryAddress = (ErpAddressModel)deliveryAddressModel;
+		} else {
+			erpDeliveryAddress = new ErpAddressModel( deliveryAddressModel );
+		}
+		
+		cart.setDeliveryAddress( erpDeliveryAddress );		
+		cart.setDeliveryReservation( reservation );
+        cart.setZoneInfo( zoneInfo );
+        
+        // fill the cart with items
 		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( soList.getLineItems() );
 		
 		try {
@@ -603,19 +619,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// ==========================
 		//    Placing the order
 		// ==========================
-		
-		cart.setPaymentMethod( paymentMethod );
-		
-		ErpAddressModel erpDeliveryAddress;
-		if ( deliveryAddressModel instanceof ErpAddressModel ) {
-			erpDeliveryAddress = (ErpAddressModel)deliveryAddressModel;
-		} else {
-			erpDeliveryAddress = new ErpAddressModel( deliveryAddressModel );
-		}
-		
-		cart.setDeliveryAddress( erpDeliveryAddress );		
-		cart.setDeliveryReservation( reservation );
-        cart.setZoneInfo( zoneInfo );
 		
 		try {
 			FDActionInfo orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order #"+so.getId(), null );
