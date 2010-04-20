@@ -2,6 +2,7 @@
 <%@page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Collections"%>
+<%@page import="java.util.Date"%>
 
 <% 
 	FDOrderInfoI lastOrder = so.getLastOrder( user );
@@ -26,10 +27,10 @@
 
 
 
-<% if ( lastOrder != null && lastOrder.isModifiable() ) { %>
+<% if ( lastOrder != null && lastOrder.getRequestedDate().after( new Date() ) ) { %>
 	
 	<div>The next delivery is scheduled for <%= FDStandingOrder.DATE_FORMATTER.format( lastOrder.getRequestedDate() ) %></div>
-	<div><a href="/your_account/order_details.jsp?orderId=<%= lastOrder.getErpSalesId() %>">Click here to modify or cancel this specific order</a></div>
+	<div><a href="/your_account/order_details.jsp?orderId=<%= lastOrder.getErpSalesId() %>">Click here to <%= lastOrder.isModifiable() ? "modify or cancel" : "view" %> this specific order</a></div>
 	
 <% } else { %>
 
