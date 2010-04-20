@@ -322,7 +322,7 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 			EnumDeliveryStatus reqStatus = serviceResult.getServiceStatus(this.serviceType);
 			EnumDeliveryStatus altStatus = serviceResult.getServiceStatus(altServiceType);
 			
-			boolean reqDeliverable = EnumDeliveryStatus.DELIVER.equals(reqStatus);
+			boolean reqDeliverable = EnumDeliveryStatus.DELIVER.equals(reqStatus) || EnumDeliveryStatus.COS_ENABLED.equals(reqStatus);
 			boolean altDeliverable = EnumDeliveryStatus.DELIVER.equals(altStatus);
 			
 			boolean validServiceType = !(EnumServiceType.HOME.equals(this.serviceType) && EnumAddressType.FIRM.equals(this.address
