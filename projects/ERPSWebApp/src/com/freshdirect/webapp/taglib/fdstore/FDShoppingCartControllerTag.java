@@ -26,12 +26,15 @@ import com.freshdirect.customer.EnumComplaintLineType;
 import com.freshdirect.customer.EnumComplaintStatus;
 import com.freshdirect.customer.EnumComplaintType;
 import com.freshdirect.customer.EnumSendCreditEmail;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
+import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
+import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -50,6 +53,8 @@ import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
+import com.freshdirect.fdstore.customer.FDProductSelectionI;
+import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
@@ -60,6 +65,8 @@ import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -198,8 +205,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		this.request = (HttpServletRequest) pageContext.getRequest();
 		this.result = new ActionResult();
 		int affectedLines = 0;
-		String application = (String) session
-				.getAttribute(SessionName.APPLICATION);
+		String application = (String) session.getAttribute(SessionName.APPLICATION);
 		boolean inCallCenter = "callcenter".equalsIgnoreCase(application);
 
 		ErpComplaintModel complaintModel = new ErpComplaintModel();
@@ -212,10 +218,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				// find suffix from request, strict check, do not use product
 				// minimum, do not skip zeros
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
-				checkResult.setSelection(getProductSelection(null, true, false,
-						false));
+				checkResult.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
+				checkResult.setSelection(getProductSelection(null, true, false,false));
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
 				request.setAttribute("check_result", checkResult);
@@ -297,6 +301,41 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					}
 
 					if (worked) {
+						
+						if ( QuickCart.PRODUCT_TYPE_SO.equals( qcType ) ) {
+							FDStandingOrder so = (FDStandingOrder)session.getAttribute( "__actual_so" );
+							
+							if ( so != null && so.getLastError() == ErrorCode.MINORDER ) {
+								
+								FDCustomerList customerList = FDListManager.getCustomerListById(user.getIdentity(),EnumCustomerListType.SO,ccListId);							
+								FDCartModel temporaryCart = new FDTransientCartModel();							
+								List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( customerList.getLineItems() );
+								try {
+									ErpAddressModel address = so.getDeliveryAddress();
+									temporaryCart.setDeliveryAddress( address );
+									temporaryCart.setZoneInfo( FDDeliveryManager.getInstance().getZoneInfo( address, so.getNextDeliveryDate() ) );
+								
+									for ( FDProductSelectionI ps : productSelectionList ) {
+										FDCartLineI cartLine = new FDCartLineModel( ps );
+										if ( !cartLine.isInvalidConfig() ) {
+											temporaryCart.addOrderLine( cartLine );
+										}
+									}
+									temporaryCart.refreshAll();			
+								} catch ( FDInvalidConfigurationException e ) {
+								} catch ( FDInvalidAddressException e ){									
+								}
+								
+								if ( temporaryCart.getSubTotal() >= user.getMinimumOrderAmount() ) {
+									try {
+										so.clearLastError();				
+										so.save();
+									} catch ( FDResourceException e ) {
+										LOGGER.warn( "Could not save standing order.", e );
+									}
+								}
+							}
+						}
 
 						HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 						String redirectURL = response.encodeRedirectURL(successPage);
@@ -335,8 +374,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 					throw new JspException("Invalid source: " + source);
 				}
 				ItemSelectionCheckResult checkResult = new ItemSelectionCheckResult();
-				checkResult
-						.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
+				checkResult.setResponseType(ItemSelectionCheckResult.SAVE_SELECTION);
 				checkResult.setSelection(selection);
 				checkResult.setErrors(result.getErrors());
 				checkResult.setWarnings(result.getWarnings());
@@ -462,6 +500,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 		} else if ((request.getParameter("removeRecipe") != null) && "GET".equalsIgnoreCase(request.getMethod())) {
 			affectedLines = this.removeRecipe();
 		}
+		
+		
 		// Handle delivery pass (if any) in the cart.
 		cart.handleDeliveryPass();
 
