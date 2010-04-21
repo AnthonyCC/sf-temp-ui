@@ -65,7 +65,7 @@
 					<div style="text-align: left; font-weight: bold;">
 						<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
 						<div style="padding: 1em 0 1em 0">
-						<div style="font-weight: normal;">Delivered every <%= so.getFrequencyDescription() %>, <%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
+						<div style="font-weight: normal;">Delivered <%= so.getFrequencyDescription() %>, <%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
 							<% if (addr != null) { %>
 								<div style="font-weight: normal;"><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
 							<% } %>				
