@@ -428,8 +428,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 					WebPlanResource wpr=new WebPlanResource();
 					wpr.setEmp(getEmployee(r.getId().getResourceId()));
 					wpr.setPlanId(p.getPlanId());
-					wpr.setPaycode("Schedule");					
-					result.add(wpr);
+					wpr.setPaycode("Schedule");	
+					if(DispatchPlanUtil.isEligibleForUnAvailable(domainManagerDao.getEmployeeRole(r.getId().getResourceId())))
+					{
+						result.add(wpr);
+					}
 				}
 			}
 		}
@@ -458,7 +461,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements EmployeeMana
 						wpr.setEmp(getEmployee(punch.getEmployeeId()));
 						wpr.setPlanId(p.getPlanId());
 						wpr.setPaycode(punch.getPaycode());
-						result.add(wpr);
+						if(DispatchPlanUtil.isEligibleForUnAvailable(domainManagerDao.getEmployeeRole(r.getId().getResourceId())))
+						{
+							result.add(wpr);
+						}
 					}
 				}
 			}
