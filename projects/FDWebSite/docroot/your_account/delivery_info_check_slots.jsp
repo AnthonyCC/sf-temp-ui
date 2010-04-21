@@ -20,13 +20,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-
-if(user.isDepotUser() || user.isCorporateUser()){
-%>
-<jsp:forward page="/your_account/delivery_info_avail_slots_b.jsp" />
-<%
-}
+	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 	String fldAddress1 = request.getParameter(EnumUserInfoName.DLV_ADDRESS_1.getCode());
 	String fldApartment = NVL.apply(request.getParameter(EnumUserInfoName.DLV_APARTMENT.getCode()), "");
