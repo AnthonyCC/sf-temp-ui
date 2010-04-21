@@ -96,9 +96,11 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 	<fd:ListStandingOrders id="solist">
 		<% for (FDStandingOrder so : solist) { %>
 			<tr bgcolor="<%= (rowCounter++ % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
-				<td><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">RECURRING</a></td>
+				<td><div style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 75px;">
+					<a title="<%= so.getCustomerListName() %>" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a>
+				</div></td>
 				<td class="text10"><%= StandingOrderHelper.getDeliveryDate(so,true) %></td>
-				<td class="text10"><%= so.getDeliveryAddress().getServiceType().getName() %></td>
+				<td class="text10">Corporate Delivery</td>
 				<td>&nbsp;</td>
 				<td>&nbsp;</td>
 				<td><%= so.isError() ? "Failure" : "Active" %></td>
