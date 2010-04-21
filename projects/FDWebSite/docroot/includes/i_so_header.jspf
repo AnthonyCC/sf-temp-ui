@@ -40,21 +40,21 @@
 		case CREATE_SO:
 			if (isViewCartPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">
-						<div style="color: #996699;">You are building a standing order to be delivered <%@include file="i_so_chgfrq.jspf" %></div>
+						<div style="color: #996699;">You are building a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
 					</div>
 					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to make this a regular order, all items will remain in your cart.</div>					
 <%
 			} else if (isFinalPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">
-						<div style="color: #996699;">You have created a standing order that will be delivered <%= __so.getFrequencyDescription() %>.</div>
+						<div style="color: #996699;">You have created a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%= __so.getFrequencyDescription() %>.</div>
 					</div>
 					<div style="margin-top: 1em; font-weight: bold;">You can review or change the details or contents of your deliveries at any time<br/>through the &quot;<a href="<%= FDURLUtil.getStandingOrderLandingPage(__so, null) %>">Standing Order</a>&quot; page in Quickshop.</div>
 					<div style="margin-top: 1em; font-weight: bold;">Your first delivery is now scheduled for <%= __dfmt.format(order.getRequestedDate()) %>.</div>
 					<div>To make changes to just this specific order, visit the &quot;<a href="/your_account/order_details.jsp?orderId=<%= order.getErpSalesId() %>">Your Orders</a>&quot; page in Your Account.</div>
 <%			} else {
 %>					<div style="font-size: 13px; font-weight: bold;">
-						<div style="color: #996699;">You are building a standing order that will be delivered <%= __so.getFrequencyDescription() %>.</div>
+						<div style="color: #996699;">You are building a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%= __so.getFrequencyDescription() %>.</div>
 					</div>
 					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 <%
@@ -65,8 +65,8 @@
 			String __soNextDlvDate = StandingOrderHelper.getNextDeliveryDate(__so);
 			if (isViewCartPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">
-						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
-						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br><%= __so.getErrorHeader() %></div><% } %>
+						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
+						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
 					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to cancel changes to the standing order, items previously in your cart will be restored.</div>
@@ -81,7 +81,7 @@
 <%			} else {
 %>					<div style="font-size: 13px; font-weight: bold;">
 						<div style="color: #996699;">You are making changes to <%= __so.getCustomerListName() %> to be delivered <%= __so.getFrequencyDescription() %>.</div>
-						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br><%= __so.getErrorHeader() %></div><% } %>
+						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
 					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 <%
