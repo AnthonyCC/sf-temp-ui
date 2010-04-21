@@ -620,7 +620,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 							Customer's tone<span class="casedisp_Err_invis" id="customerToneErr">*</span>
 						</div>
 						<div class="casedisp_text2">
-							<a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmCaseCustomerToneHelpLink() %>','715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
+							<a href="javascript:popResizeHelp(URLDecode('<%= URLEncoder.encode(FDStoreProperties.getCrmCaseCustomerToneHelpLink()) %>'),'715','940','kbit')" style='text-decoration: none;' onmouseover="return overlib('Click for Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" >What's this?</a>
 						</div>
 						<div class="casedisp_select">
 							<select name="customerTone" id="customerTone"  onchange="verifyCaseDisp();">
