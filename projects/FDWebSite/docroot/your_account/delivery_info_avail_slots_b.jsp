@@ -148,7 +148,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 </SELECT></td></FORM>
 <% } else {
 if(user.isHomeUser())
-    address = (ErpAddressModel)shipToAddresses.iterator().next();%>
+    address = user.getShoppingCart().getDeliveryAddress();%>
 <td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br><b><%=address.getAddress1()%><br><%=address.getCity()%>, <%=address.getState()%> <%=address.getZipCode()%></b></td>
 <% } %>
 </tr>
