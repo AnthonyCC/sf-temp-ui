@@ -104,7 +104,7 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 				
 				try {
 					// redirect to main page
-					response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
+					response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS"));
 
 					return SKIP_BODY;
 				} catch (IOException ioe) {
