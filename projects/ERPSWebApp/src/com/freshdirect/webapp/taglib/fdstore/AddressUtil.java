@@ -174,7 +174,7 @@ public class AddressUtil {
 			
 			EnumDeliveryStatus dlvStatus = serviceResult.getServiceStatus(addressModel.getServiceType());
 			
-			if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)) {
+			if (EnumDeliveryStatus.DELIVER.equals(dlvStatus)||EnumDeliveryStatus.COS_ENABLED.equals(dlvStatus)) {
 				return addressModel.getServiceType();
 			} else { 
 				return EnumServiceType.PICKUP;
