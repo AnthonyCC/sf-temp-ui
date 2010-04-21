@@ -10,15 +10,15 @@
 <%@ page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import="com.freshdirect.fdstore.lists.FDStandingOrderList"%>
 <%@ page import="com.freshdirect.webapp.util.FDURLUtil"%>
-<%@page import="com.freshdirect.fdstore.standingorders.EnumStandingOrderFrequency"%>
+<%@ page import="com.freshdirect.fdstore.standingorders.EnumStandingOrderFrequency"%>
+<%@ page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 
-
-<%@page import="com.freshdirect.customer.ErpAddressModel"%>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%><fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
+<fd:CheckLoginStatus id="user" guestAllowed='false' recognizedAllowed='false' redirectPage='/quickshop/index_guest.jsp?successPage=/quickshop/index.jsp' />
 <tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 
     <tmpl:put name='extrahead' direct='true'>

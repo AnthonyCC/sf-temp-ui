@@ -4,10 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -27,14 +27,14 @@ public class FDStandingOrderDAO {
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"where CCL.CUSTOMER_ID = ? and SO.DELETED<>1 " +
-		"order by SO.next_date";
+		"order by CCL.NAME";
 
 	private static final String LOAD_ACTIVE_STANDING_ORDERS =
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
 		"where SO.DELETED<>1 and LAST_ERROR IS NULL " +
-		"order by SO.next_date";
+		"order by CCL.NAME";
 
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
 	
@@ -118,7 +118,7 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		Set<FDStandingOrder> sorders = new HashSet<FDStandingOrder>();
+		List<FDStandingOrder> sorders = new ArrayList<FDStandingOrder>();
 
 		try {
 			ps = conn.prepareStatement(LOAD_ACTIVE_STANDING_ORDERS);
@@ -162,12 +162,12 @@ public class FDStandingOrderDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		
-		Set<FDStandingOrder> sorders;
+		List<FDStandingOrder> sorders;
 		try {
 			ps = conn.prepareStatement(LOAD_CUSTOMER_STANDING_ORDERS);
 			ps.setString(1, identity.getErpCustomerPK());
 
-			sorders = new HashSet<FDStandingOrder>();
+			sorders = new ArrayList<FDStandingOrder>();
 			
 			rs = ps.executeQuery();
 			
@@ -237,7 +237,7 @@ public class FDStandingOrderDAO {
 		return so;
 	}
 
-	private FDStandingOrder populate(java.sql.ResultSet rs, FDStandingOrder so) throws SQLException {
+	private FDStandingOrder populate( ResultSet rs, FDStandingOrder so ) throws SQLException {
 		
 		so.setId(rs.getString("ID"));
 

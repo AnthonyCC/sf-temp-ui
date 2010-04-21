@@ -1700,8 +1700,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 					// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
 					for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
 						LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
-						if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() )
-								|| i.getStandingOrderId() != null ) {
+						if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() ) || i.getStandingOrderId() != null ) {
 							isSOEligible = Boolean.TRUE;
 							break;
 						}
