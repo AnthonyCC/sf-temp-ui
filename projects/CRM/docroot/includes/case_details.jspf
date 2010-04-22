@@ -17,7 +17,7 @@
 <%@ page import="com.freshdirect.customer.ErpComplaintModel"%>
 <%@ page import="com.freshdirect.customer.EnumComplaintStatus"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
-<%@page import="java.net.URLEncoder"%>
+<%@ page import="java.net.URLEncoder"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
