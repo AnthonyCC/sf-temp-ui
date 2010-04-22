@@ -33,7 +33,7 @@
 							<p>This is just a friendly reminder that
 							<xsl:choose>
 								<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">you can pick up your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order</a></xsl:when>
-								<xsl:otherwise>your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order</a> is scheduled for delivery</xsl:otherwise>
+								<xsl:otherwise>your <a href="http://www.freshdirect.com/quickshop/so_details.jsp?ccListId={standingOrder/customerListId}">standing order (<xsl:value-of select="standingOrder/customerListName"/>)</a> is scheduled for delivery</xsl:otherwise>
 							</xsl:choose>
 							between <b><xsl:call-template name="format-delivery-start"><xsl:with-param name="dateTime" select="order/deliveryReservation/startTime"/></xsl:call-template>
 							and <xsl:call-template name="format-delivery-end"><xsl:with-param name="dateTime" select="order/deliveryReservation/endTime"/></xsl:call-template>

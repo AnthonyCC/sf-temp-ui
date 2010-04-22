@@ -39,11 +39,11 @@ import com.freshdirect.framework.mail.XMLEmailI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDEmailFactory {
+	
 	private static FDEmailFactory _sharedInstance; // singleton holder
-
-
-
-	public static final Category LOGGER = LoggerFactory.getInstance(FDEmailFactory.class);
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(FDEmailFactory.class);
+	
 	public static final SimpleDateFormat df = new SimpleDateFormat("EEEE, MMM d yyyy");
 	public static final SimpleDateFormat DT_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 	public static final String GENERAL_CS_EMAIL = FDStoreProperties.getCustomerServiceEmail();

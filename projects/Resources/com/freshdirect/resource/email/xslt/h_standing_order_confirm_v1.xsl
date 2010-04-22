@@ -30,7 +30,7 @@
 						<td>
 							<p><b>Hello <xsl:value-of select="customer/firstName"/></b>,</p>
 
-							<p>Your standing order has been scheduled for delivery.
+							<p>Your standing order (<xsl:value-of select="standingOrder/customerListName"/>) has been scheduled for delivery.
 							<xsl:choose>
 								<xsl:when test="order/deliveryType != 'H' and order/deliveryType != 'C'">You can pick up</xsl:when>
 								<xsl:otherwise>We will deliver</xsl:otherwise>
