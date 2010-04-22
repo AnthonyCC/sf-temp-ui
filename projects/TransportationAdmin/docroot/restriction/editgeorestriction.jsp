@@ -419,7 +419,7 @@ return true;
                   <td>Service Type</td>
                   <td>
                   	<form:select path="serviceType">
-                        <form:option value="null" label="--Please Select Service Type"/>                        
+                        <form:option value="null" label="--All Service Types--"/>                        
                     	<form:option value="<%= EnumServiceType.HOME.getName() %>" label="<%= EnumServiceType.HOME.getName() %>"/>
                     	<form:option value="<%= EnumServiceType.CORPORATE.getName() %>" label="<%= EnumServiceType.CORPORATE.getName() %>"/>
                    </form:select>
