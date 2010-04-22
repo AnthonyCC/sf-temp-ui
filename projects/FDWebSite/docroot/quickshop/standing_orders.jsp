@@ -40,7 +40,7 @@
 			<div class="title14">Hassle-free shopping just got even more, well... hassle-free.</div>
 			<div style="margin-bottom: 1em">FreshDirect's standing orders make it even easier to get everything you love without lifting a finger. There will be more copy here that describes the many benefits of standing orders. It will explain how easy they are to use and that you can update them at any time, pause or cancel them... even ask us just to skip a week</div>
 			<div style="margin-bottom: 1em">Each Standing Order uses a Shopping List and a schedule that you can update at any time. We'll automatically place your order 7 days before the next recurring delivery (and send you an email notification when we do). You'll have plenty of time to add or remove items, change that specific order, or cancel it if you don't need it at all. 
-			<a href="/media_stat/editorial/site_pages/standing_orders/so_help.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help.html','large'); return false;">Click here to learn more.</a></div>
+			<a href="/media/editorial/site_pages/standing_orders/so_help.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help.html','large'); return false;">Click here to learn more.</a></div>
 			
 <% if (user.isEligibleForStandingOrders()) { %>			
 	<fd:ManageStandingOrders id="sorders">

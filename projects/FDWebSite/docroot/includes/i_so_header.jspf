@@ -42,7 +42,7 @@
 %>					<div style="font-size: 13px; font-weight: bold;">
 						<div style="color: #996699;">You are building a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to choose a day and time by scheduling the first delivery. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to make this a regular order, all items will remain in your cart.</div>					
 <%
 			} else if (isFinalPage) {
@@ -56,7 +56,7 @@
 %>					<div style="font-size: 13px; font-weight: bold;">
 						<div style="color: #996699;">You are building a standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%= __so.getFrequencyDescription() %>.</div>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to choose a day and time by scheduling the first delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to choose a day and time by scheduling the first delivery. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 <%
 			}
 			break;
@@ -68,7 +68,7 @@
 						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
 						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to confirm the day and time by scheduling the first updated delivery. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to cancel changes to the standing order, items previously in your cart will be restored.</div>
 <%
 			} else if (isFinalPage) {
@@ -83,7 +83,7 @@
 						<div style="color: #996699;">You are making changes to <%= __so.getCustomerListName() %> to be delivered <%= __so.getFrequencyDescription() %>.</div>
 						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to confirm the day and time by scheduling the first updated delivery. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
+					<div style="margin-top: 1em; font-weight: bold;">Continue checkout below to confirm the day and time by scheduling the first updated delivery. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
 <%
 			}
 			break;

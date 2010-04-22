@@ -104,7 +104,7 @@
 			
 			<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
 			<div class="text16" style="font-weight: bold; color: #996699">
-				You can change the items in <% if ( so.isError() ) { %> future deliveries <% } else { %>all deliveries starting <%= nextDlvDateText %> <% } %>by editing this shopping list. <a href="/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media_stat/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a>
+				You can change the items in <% if ( so.isError() ) { %> future deliveries <% } else { %>all deliveries starting <%= nextDlvDateText %> <% } %>by editing this shopping list. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a>
 			</div>
 			
 			<%--LIST OF STANDING ORDER ITEMS --%>
