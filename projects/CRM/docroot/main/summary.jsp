@@ -345,60 +345,54 @@ var sopanels = [];
 // List cases
 for (FDOrderInfoI orderInfo : recentOrders) {
 	if (orderInfo.getStandingOrderId() != null) {
-		String oid = orderInfo.getStandingOrderId();
-		
+		String oid = orderInfo.getStandingOrderId();		
 		FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(oid));
-
-		FDCustomerCreatedList cl = FDListManager.getCustomerCreatedList(user.getIdentity(), so.getCustomerListId());
 		ContactAddressModel addr = FDCustomerManager.getAddress(user.getIdentity(), so.getAddressId());
-		ErpPaymentMethodI pm = FDCustomerManager.getPaymentMethod(user.getIdentity(), so.getPaymentMethodId());
-	
+		ErpPaymentMethodI pm = FDCustomerManager.getPaymentMethod(user.getIdentity(), so.getPaymentMethodId());	
 %>
-<div id="soDetailPanel-<%= oid %>"> 
-    <div class="hd"></div> 
-    <div class="bd">
-    	<table cellspacing="0" cellpadding="0" border="0">
-    		<tr>
-    			<td>Standing Order :</td>
-    			<td><%= so.getCustomerListName() %></td>
-    		</tr>
-    		<tr>
-    			<td>Address:</td>
-    			<td>
-    			</td>
-    		</tr>
-    		<tr>
-    			<td>Payment Method:</td>
-    			<td><%= pm.getMaskedAccountNumber() %>
-    			</td>
-    		</tr>
-    	</table>
-    </div> 
-    <div class="ft"></div> 
-</div> 
-<script type="text/javascript">
-	//The second argument passed to the
-	//constructor is a configuration object:
-	sopanels['<%= oid %>'] = new YAHOO.widget.Panel("soDetailPanel-<%= oid %>", {
-		width:"400px", 
-		fixedcenter: true, 
-		constraintoviewport: true, 
-		underlay:"shadow", 
-		close:true, 
-		visible:false, 
-		draggable:true} );
-	//If we haven't built our panel using existing markup,
-	//we can set its content via script:
-	sopanels['<%= oid %>'].setHeader("The Panel Control");
-	// sopanels['<%= oid %>'].setBody("The Panel is a powerful UI control that enables you to create floating windows without using browser popups.  Effects like drag and drop and constrain-to-viewport are easy to configure.");
-	//Although we configured many properties in the
-	//constructor, we can configure more properties or 
-	//change existing ones after our Panel has been
-	//instantiated:
-	sopanels['<%= oid %>'].cfg.setProperty("underlay","matte");
-
-	sopanels['<%= oid %>'].render(document.body);
-</script>
+	<div id="soDetailPanel-<%= oid %>"> 
+	    <div class="hd"></div> 
+	    <div class="bd">
+	    	<table cellspacing="0" cellpadding="0" border="0">
+	    		<tr>
+	    			<td>Standing Order :</td>
+	    			<td><%= so == null ? "-null-" : so.getCustomerListName() %></td>
+	    		</tr>
+	    		<tr>
+	    			<td>Address:</td>
+	    			<td><%= addr == null ? "-null-" : addr.getScrubbedStreet()+", "+addr.getApartment() %></td>
+	    		</tr>
+	    		<tr>
+	    			<td>Payment Method:</td>
+	    			<td><%= pm == null ? "-null-" : pm.getMaskedAccountNumber() %></td>
+	    		</tr>
+	    	</table>
+	    </div> 
+	    <div class="ft"></div> 
+	</div> 
+	<script type="text/javascript">
+		//The second argument passed to the
+		//constructor is a configuration object:
+		sopanels['<%= oid %>'] = new YAHOO.widget.Panel("soDetailPanel-<%= oid %>", {
+			width:"400px", 
+			fixedcenter: true, 
+			constraintoviewport: true, 
+			underlay:"shadow", 
+			close:true, 
+			visible:false, 
+			draggable:true} );
+		//If we haven't built our panel using existing markup,
+		//we can set its content via script:
+		sopanels['<%= oid %>'].setHeader("The Panel Control");
+		// sopanels['<%= oid %>'].setBody("The Panel is a powerful UI control that enables you to create floating windows without using browser popups.  Effects like drag and drop and constrain-to-viewport are easy to configure.");
+		//Although we configured many properties in the
+		//constructor, we can configure more properties or 
+		//change existing ones after our Panel has been
+		//instantiated:
+		sopanels['<%= oid %>'].cfg.setProperty("underlay","matte");
+	
+		sopanels['<%= oid %>'].render(document.body);
+	</script>
 <%		}
 	}
 %>
