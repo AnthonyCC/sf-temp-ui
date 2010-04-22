@@ -359,8 +359,8 @@ for (FDOrderInfoI orderInfo : recentOrders) {
     <div class="bd">
     	<table cellspacing="0" cellpadding="0" border="0">
     		<tr>
-    			<td>Customer List:</td>
-    			<td><%= cl.getName() %></td>
+    			<td>Standing Order :</td>
+    			<td><%= so.getCustomerListName() %></td>
     		</tr>
     		<tr>
     			<td>Address:</td>
