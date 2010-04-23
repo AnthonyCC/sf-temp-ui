@@ -270,7 +270,7 @@ public class RegistrationAction extends WebActionSupport {
 
 		EnumDeliveryStatus status = serviceResult.getServiceStatus(serviceType);
 		
-		if (EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)) {
+		if (EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status) || EnumDeliveryStatus.COS_ENABLED.equals(status)) {
 			user.setSelectedServiceType(serviceType);
 			//Added the following line for zone pricing to keep user service type up-to-date.
 			user.setZPServiceType(serviceType);
