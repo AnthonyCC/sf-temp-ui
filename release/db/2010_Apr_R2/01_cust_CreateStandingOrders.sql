@@ -16,6 +16,7 @@ create table cust.standing_order(
   "DELETED" char(1) default 0,
 
   "LAST_ERROR" varchar2(64),
+  "ERROR_HEADER" varchar2(1024),
   "ERROR_DETAIL" varchar2(1024),
   
   constraint "SO_FK_CUSTOMERLIST" foreign key ("CUSTOMERLIST_ID") references cust.customerlist("ID")
