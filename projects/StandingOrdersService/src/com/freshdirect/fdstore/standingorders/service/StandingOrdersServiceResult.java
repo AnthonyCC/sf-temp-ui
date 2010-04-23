@@ -18,17 +18,30 @@ public class StandingOrdersServiceResult implements Serializable {
 		
 		private Status				status;
 		private ErrorCode			errorCode;
-		private String				detailText;
+		private String				errorHeader;
+		private String				errorDetail;
 		private boolean				hasInvalidItems		= false;
 		private FDCustomerInfo 		customerInfo;
 		
-		public Result( ErrorCode errCode, String errText, FDCustomerInfo custInfo ) {
+		public Result( ErrorCode errCode, String errorHeader, String errorDetail, FDCustomerInfo custInfo ) {
+			if ( errCode == null ) {
+				throw new IllegalArgumentException( "Error code is required." );				
+			}
+			this.status = Status.FAILURE;
+			this.errorCode = errCode;
+			this.errorHeader = errorHeader;
+			this.errorDetail = errorDetail;
+			this.customerInfo = custInfo;
+		}
+		
+		public Result( ErrorCode errCode, FDCustomerInfo custInfo ) {
 			if ( errCode == null ) {
 				throw new IllegalArgumentException( "Error code is required." );				
 			}
 			status = Status.FAILURE;
 			errorCode = errCode;
-			detailText = errText;
+			errorHeader = errCode.getErrorHeader();
+			errorDetail = errCode.getErrorDetail();
 			customerInfo = custInfo;
 		}
 		
@@ -69,8 +82,11 @@ public class StandingOrdersServiceResult implements Serializable {
 		public ErrorCode getErrorCode() {
 			return errorCode;
 		}
-		public String getDetailText() {
-			return detailText;
+		public String getErrorHeader() {
+			return errorHeader;
+		}
+		public String getErrorDetail() {
+			return errorDetail;
 		}
 		
 		public FDCustomerInfo getCustomerInfo() {
@@ -80,7 +96,7 @@ public class StandingOrdersServiceResult implements Serializable {
 		
 		@Override
 		public String toString() {
-			return "SOSRR["+status+", "+errorCode+", "+detailText+"]";
+			return "SOSRR["+status+", "+errorCode+", "+errorHeader+", "+errorDetail+"]";
 		}
 	}
 	

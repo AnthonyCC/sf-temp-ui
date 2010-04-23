@@ -42,7 +42,8 @@ public class FDStandingOrder extends ModelSupport {
 	boolean deleted = false;	// deleted flag (false by default)
 	
 	String lastError = null;	// last exception or invalid condition
-	String detailMessage = null;	// detailed error message
+	String errorHeader = null;	// detailed error message header
+	String errorDetail = null;	// detailed error message detail
 
 	String customerListName;	// Only used when standing order is not yet persisted!
 
@@ -135,22 +136,25 @@ public class FDStandingOrder extends ModelSupport {
 		} 
 	}
 	public String getErrorHeader() {
-		return detailMessage;
+		return errorHeader;
 	}
 	public String getErrorDetail() {
-		return detailMessage;
+		return errorDetail;
 	}
-	public void setLastError( ErrorCode lastErrorCode, String detailMessage ) {
+	public void setLastError( ErrorCode lastErrorCode, String errorHeader, String errorDetail ) {
 		this.lastError = lastErrorCode.name();
-		this.detailMessage = detailMessage;
+		this.errorHeader = errorHeader;
+		this.errorDetail = errorDetail;
 	}
-	public void setLastError( String lastErrorCode, String detailMessage ) {
+	public void setLastError( String lastErrorCode, String errorHeader, String errorDetail ) {
 		this.lastError = lastErrorCode;
-		this.detailMessage = detailMessage;
+		this.errorHeader = errorHeader;
+		this.errorDetail = errorDetail;
 	}
 	public void clearLastError() {
 		this.lastError = null;
-		this.detailMessage = null;
+		this.errorHeader = null;
+		this.errorDetail = null;
 	}
 	public boolean isError() {
 		return lastError != null;
@@ -247,30 +251,34 @@ public class FDStandingOrder extends ModelSupport {
 	}
 
 	public static enum ErrorCode { 
-		TECHNICAL( "Technical problem." ), 
-		GENERIC( "Some error." ), 
+		TECHNICAL( "Technical failure.", "Technical failure." ), 
+		GENERIC( "Generic error.", "Generic error." ), 
 		
-		ADDRESS( "Invalid address." ), 
-		PAYMENT( "Invalid payment method." ), 
-		ALCOHOL( "Alcohol problems." ), 
-		MINORDER( "Minimum order requirements not met." ), 		
-		TIMESLOT( "No suitable timeslot found." ),
-		CART( "Invalid cart contents." );
+		ADDRESS( "We no longer deliver to the address you set up for this standing order.", "Use the link below to modify this standing order and choose a different address." ), 
+		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options." ), 
+		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age." ), 
+		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order." ), 		
+		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." );
 		
-		private String errorText;
+		private String errorHeader;
+		private String errorDetail;
 		
-		private ErrorCode( String errorText ) {
-			this.errorText = errorText;
+		private ErrorCode( String errorHeader, String errorDetail ) {
+			this.errorHeader = errorHeader;
+			this.errorDetail = errorDetail;
 		}
 		
 		public boolean isTechnical() {
 			return name().equals( "TECHNICAL" );
 		}
 		
-		public String getErrorText() {
-			return errorText;
+		public String getErrorHeader() {
+			return errorHeader;
 		}
 		
+		public String getErrorDetail() {
+			return errorDetail;
+		}
 	};
 	
 	

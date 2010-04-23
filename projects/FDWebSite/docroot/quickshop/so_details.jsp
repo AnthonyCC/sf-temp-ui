@@ -61,7 +61,7 @@
 					IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
 				</div>			
 				<div style="text-align: center;">
-					Click the link below to modify this standing order.<br/><br/>
+					<%=so.getErrorDetail()%><br/><br/>
 					<a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Click here to change the schedule or options for all future deliveries.</a><br/><br/>
 				</div>			
 			<% } else if ( addr == null ) { %>

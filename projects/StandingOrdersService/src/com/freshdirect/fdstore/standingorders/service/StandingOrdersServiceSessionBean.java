@@ -174,16 +174,16 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				invalidateMailerHome();
 				re.printStackTrace();
 				LOGGER.error( "Processing standing order failed with FDResourceException!" );
-				result = new Result( ErrorCode.TECHNICAL, "Processing standing order failed with FDResourceException!", null );
+				result = new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
 			}
 			
 			if ( result.isError() ) {
 				if ( result.isTechnicalError() ) {
 					// technical error
-					sendTechnicalMail( result.getDetailText() );
+					sendTechnicalMail( result.getErrorDetail() );
 				} else {
 					// other error -> set so to error state
-					so.setLastError( result.getErrorCode(), result.getDetailText() );
+					so.setLastError( result.getErrorCode(), result.getErrorHeader(), result.getErrorDetail() );
 					sendErrorMail( so, result.getCustomerInfo() );
 				}
 			}
@@ -216,7 +216,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		activityRecord.setDate( new Date() );
 		activityRecord.setInitiator( INITIATOR_NAME );
 		activityRecord.setSource( EnumTransactionSource.STANDING_ORDER );
-		activityRecord.setNote( result.getDetailText() );
+		activityRecord.setNote( result.getErrorHeader() + ";" + result.getErrorDetail() );
 		
 		Status status = result.getStatus();
 		
@@ -334,7 +334,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( customer == null || customerInfo == null || customerUser == null ) {
 			LOGGER.warn( "No valid customer." );
-			return new Result( ErrorCode.TECHNICAL, "No valid customer.", customerInfo );
+			return new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "No valid customer.", customerInfo );
 		}
 		
 		LOGGER.info( "Customer information is valid." );
@@ -350,7 +350,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
-			return new Result( ErrorCode.ADDRESS, "No delivery address found for this ID. ["+deliveryAddressId+"]", customerInfo );
+			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 		
 		DeliveryAddressValidator addressValidator = new DeliveryAddressValidator( deliveryAddressModel );
@@ -360,12 +360,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			addressValidator.validateAddress( addressValidatorResult );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "Address validation failed with FDResourceException ", e );
-			return new Result( ErrorCode.TECHNICAL, "Address validation failed.", customerInfo );
+			return new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Address validation failed.", customerInfo );
 		}
 		
 		if ( addressValidatorResult.isFailure() ) {
 			LOGGER.warn( "Address validation failed : " + addressValidatorResult.getFirstError().getDescription() );
-			return new Result( ErrorCode.ADDRESS, "Address validation failed : " + addressValidatorResult.getFirstError().getDescription(), customerInfo );
+			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 		
 		// continue with the scrubbed address
@@ -373,7 +373,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No valid delivery address." );
-			return new Result( ErrorCode.ADDRESS, "No valid delivery address.", customerInfo );
+			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 		
 		LOGGER.info( "Delivery address is valid: " + deliveryAddressModel );
@@ -406,7 +406,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( paymentMethodID == null || paymentMethodID.trim().equals( "" ) ) {
 			LOGGER.warn( "No payment method id." );
-			return new Result( ErrorCode.PAYMENT, "No payment method id.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		}
 
 		ErpPaymentMethodI paymentMethod = null;
@@ -414,12 +414,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			paymentMethod = FDCustomerManager.getPaymentMethod( customer, paymentMethodID );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while getting payment method", e );
-			return new Result( ErrorCode.TECHNICAL, "FDResourceException while getting payment method.", customerInfo );
+			return new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "FDResourceException while getting payment method.", customerInfo );
 		}
 		
 		if ( paymentMethod == null ) {
 			LOGGER.warn( "No valid payment method id." );
-			return new Result( ErrorCode.PAYMENT, "No valid payment method id.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		}
 
 		ActionResult paymentValidatorResult = new ActionResult();
@@ -427,12 +427,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			PaymentMethodUtil.validatePaymentMethod( paymentMethod, paymentValidatorResult, customerUser, false, false, false );
 		} catch (FDResourceException e) {
 			LOGGER.warn( "FDResourceException while validating payment method", e );
-			return new Result( ErrorCode.TECHNICAL, "FDResourceException while validating payment method.", customerInfo );
+			return new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "FDResourceException while validating payment method.", customerInfo );
 		}
 
 		if ( paymentValidatorResult.isFailure() ) {
 			LOGGER.warn( "Payment method not valid: " + paymentValidatorResult.getFirstError().getDescription() );
-			return new Result( ErrorCode.PAYMENT, "Payment method not valid: " + paymentValidatorResult.getFirstError().getDescription(), customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		}
 		
 		LOGGER.info( "Payment method is valid: " + paymentMethod );
@@ -469,7 +469,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			deliveryTimes = new DeliveryInterval( so );
 		} catch ( IllegalArgumentException ex ) {
 			LOGGER.warn( "No valid dates." );
-			return new Result( ErrorCode.TIMESLOT, "No valid dates.", customerInfo );
+			return new Result( ErrorCode.TIMESLOT, customerInfo );
 		}
 
 		// check if we are within the delivery window
@@ -490,7 +490,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				
 		if ( timeslots == null || timeslots.size() == 0 ) {
 			LOGGER.info( "No timeslots for this day: " + FDStandingOrder.DATE_FORMATTER.format( deliveryTimes.getDayStart() ) );
-			return new Result( ErrorCode.TIMESLOT, "No timeslots for this day: " + deliveryTimes.getDayStart(), customerInfo );
+			return new Result( ErrorCode.TIMESLOT, customerInfo );
 		}
 		
 		
@@ -525,7 +525,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		if ( reservation == null || selectedTimeslot == null ) {
 			LOGGER.warn( "Failed to make timeslot reservation." );
-			return new Result( ErrorCode.TIMESLOT, "Failed to make timeslot reservation.", customerInfo );
+			return new Result( ErrorCode.TIMESLOT, customerInfo );
 		}
 		
 		LOGGER.info( "Selected timeslot = " + selectedTimeslot.toString() );
@@ -543,24 +543,26 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		} catch (FDInvalidAddressException e) {
 			e.printStackTrace();
 			LOGGER.info( "Invalid zone info. - FDInvalidAddressException" );
-			return new Result( ErrorCode.ADDRESS, "Invalid zone info.", customerInfo );
+			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 		if ( zoneInfo == null ) {
 			LOGGER.info( "Missing zone info." );
-			return new Result( ErrorCode.ADDRESS, "Missing zone info.", customerInfo );			
+			return new Result( ErrorCode.ADDRESS, customerInfo );			
 		}
 		
 		FDStandingOrderList soList = so.getCustomerList();
-		
-		if ( ! OrderLineUtil.isValidCustomerList( soList.getLineItems() ) ) {
-			LOGGER.info( "Shopping list contains some unavailable/invalid items." );
-			return new Result( ErrorCode.CART, "Shopping list contains some unavailable/invalid items.", customerInfo );
-		}
 		
 		// build a cart
 		FDCartModel cart = new FDTransientCartModel();
 		boolean hasInvalidItems = false;
 
+		if ( ! OrderLineUtil.isValidCustomerList( soList.getLineItems() ) ) {
+			LOGGER.info( "Shopping list contains some unavailable/invalid items." );
+			hasInvalidItems = true;
+			// This is not an error
+			//return new Result( ErrorCode.CART, "Shopping list contains some unavailable/invalid items.", customerInfo );
+		}
+		
 		// set cart parameters		
 		cart.setPaymentMethod( paymentMethod );
 		
@@ -590,7 +592,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			cart.refreshAll();			
 		} catch ( FDInvalidConfigurationException e ) {
 			LOGGER.info( "Shopping list contains some items with invalid configuration." );
-			return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
+			hasInvalidItems = true;
+			// This is not an error
+			// return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
 		}
 
 		// check for alcohol
@@ -599,7 +603,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				cart.setAgeVerified( true );				
 			} else {
 				LOGGER.info( "Shopping list contains alcohol, and age was not verified." );
-				return new Result( ErrorCode.ALCOHOL, "Shopping list contains alcohol, and age was not verified.", customerInfo );
+				return new Result( ErrorCode.ALCOHOL, customerInfo );
 			}
 		}
 		
@@ -607,9 +611,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		double cartPrice = cart.getSubTotal();
 		double minimumOrder = customerUser.getMinimumOrderAmount();
 		if ( cartPrice < minimumOrder ) {
-			String msg = "Order total [$"+cartPrice+"] is below required minimum amount [$"+minimumOrder+"].";
+			String msg = "The order subtotal ($"+cartPrice+") was below our $"+minimumOrder+" minimum."; 
 			LOGGER.info( msg );
-			return new Result( ErrorCode.MINORDER, msg, customerInfo );
+			return new Result( ErrorCode.MINORDER, msg, ErrorCode.MINORDER.getErrorDetail(), customerInfo );
 		}
 		
 		LOGGER.info( "Cart contents are valid." );
@@ -637,30 +641,30 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		} catch ( DeliveryPassException e ) {
 			e.printStackTrace();
 			LOGGER.info( "DeliveryPassException while placing order." );
-			return new Result( ErrorCode.PAYMENT, "Delivery pass error.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpFraudException e ) {
 			e.printStackTrace();
 			LOGGER.info( "ErpFraudException while placing order." );
-			return new Result( ErrorCode.PAYMENT, "Fraud rule violations.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpAuthorizationException e ) {
 			e.printStackTrace();
 			LOGGER.info( "ErpAuthorizationException while placing order." );
-			return new Result( ErrorCode.TECHNICAL, "Authorization error.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( FDPaymentInadequateException e ) {
 			LOGGER.info( "FDPaymentInadequateException while placing order." );
-			return new Result( ErrorCode.PAYMENT, "Payment is inadequate.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpTransactionException e ) {
 			e.printStackTrace();
 			LOGGER.info( "ErpTransactionException while placing order." );
-			return new Result( ErrorCode.PAYMENT, "Business rule violations.", customerInfo );
+			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ReservationException e ) {
 			e.printStackTrace();
 			LOGGER.info( "ReservationException while placing order." );
-			return new Result( ErrorCode.TIMESLOT, "Reservation error.", customerInfo );
+			return new Result( ErrorCode.TIMESLOT, customerInfo );
 		} catch ( ErpAddressVerificationException e ) {
 			e.printStackTrace();
 			LOGGER.info( "ErpAddressVerificationException while placing order." );
-			return new Result( ErrorCode.ADDRESS, "Invalid address.", customerInfo );
+			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 	}
 	
