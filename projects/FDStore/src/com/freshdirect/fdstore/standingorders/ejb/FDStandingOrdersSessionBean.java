@@ -142,8 +142,10 @@ public class FDStandingOrdersSessionBean extends SessionBeanSupport {
 			
 			if (so.getId() == null) {
 				// create object
+				LOGGER.debug( "Creating new standing order." );
 				primaryKey = dao.createStandingOrder(conn, so);
 			} else {
+				LOGGER.debug( "Updating existing standing order." );
 				dao.updateStandingOrder(conn, so);
 				primaryKey = so.getId();
 			}
