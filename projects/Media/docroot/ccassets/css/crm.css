@@ -96,7 +96,7 @@ overflow:auto;
 	border-top: 1px #000000 solid;
 	padding: 0;
 	background-color: #FFFFFF;
-	position: absolute;
+	position: relative;
 	bottom: 0;
 /*
 position: relative;
