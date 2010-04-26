@@ -158,7 +158,9 @@ if (suggestions != null) {  %>
 %>
   <table align="center">
   	<tr>
-  		<td>(Zone Code=<%=zoneInfo.getZoneCode()%>)</td><td>&nbsp;</td>
+  	<%if(zoneInfo.getZoneCode()!=null && !" ".equals(zoneInfo.getZoneCode())){ %>
+  		<td>(Zone Code=<%=zoneInfo.getZoneCode()%>)</td><td>&nbsp;</td> 
+  	<% }%>
   		<td>(County:</td>&nbsp;<td><%=county%>)</td>
 	  		<%String COSStatus="";
 	  		  if(zoneInfo.isCosEnabled()){
