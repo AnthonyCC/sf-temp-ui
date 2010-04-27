@@ -410,9 +410,6 @@ public class OrderLineUtil {
 			}
 		}
 
-		prodSel.setQuantity(Math.max(prodSel.getQuantity(), prodNode.getQuantityMinimum()));
-		prodSel.setQuantity(Math.min(prodSel.getQuantity(), prodNode.getQuantityMaximum()));
-
 		prodSel.refreshConfiguration();
 	}
 
