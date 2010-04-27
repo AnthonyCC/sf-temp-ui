@@ -27,7 +27,7 @@ if (submitted) {
    if(showSurvey) {
         survey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.POST_ORDER_SURVEY, user);
         int coverage=com.freshdirect.fdstore.survey.SurveyHtmlHelper.getResponseCoverage(survey,FDSurveyFactory.getCustomerProfileSurveyInfo(user));
-        showSurvey = survey != null &&  ( coverage < survey.getAcceptableCoverage() ? true : false );
+        showSurvey = survey != null && coverage < survey.getAcceptableCoverage();
    }
    
    if (showSurvey) {	
