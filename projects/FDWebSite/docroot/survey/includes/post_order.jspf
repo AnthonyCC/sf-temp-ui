@@ -22,16 +22,15 @@ if (submitted) {
 <%	
 } else if (!skipped) {
 
-   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus)   &   ((FDSessionUser)user).getDeliveredOrderCount()>2;
-   FDSurvey survey =null;
+   boolean showSurvey = !alreadyTookSecondSurvey  && !"skip_3".equalsIgnoreCase(surveyStatus) && !"FILL".equalsIgnoreCase(surveyStatus) && ((FDSessionUser)user).getDeliveredOrderCount() > 2;
+   FDSurvey survey = null;
    if(showSurvey) {
         survey = FDSurveyFactory.getInstance().getSurvey(EnumSurveyType.POST_ORDER_SURVEY, user);
         int coverage=com.freshdirect.fdstore.survey.SurveyHtmlHelper.getResponseCoverage(survey,FDSurveyFactory.getCustomerProfileSurveyInfo(user));
-        showSurvey = survey == null || ( coverage < survey.getAcceptableCoverage() ? true : false );
+        showSurvey = survey != null &&  ( coverage < survey.getAcceptableCoverage() ? true : false );
    }
    
-   if (showSurvey) {
-	
+   if (showSurvey) {	
 %>
 
 <table width="630" cellpadding="0" cellspacing="0" border="0" class="text12">
