@@ -512,13 +512,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			// this condition is equal to that SO exists but it does not have PK yet
 			standingOrder.setCustomerId(user.getIdentity().getErpCustomerPK());
 			
-			// get default payment method already set by CheckoutControllerTag
-			String pmPK = (String)session.getAttribute("__default_payment_method_pk");
-			if (pmPK == null) {
-				// if not found then request it from the customer manager
-				pmPK = FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity());
-			}
-			standingOrder.setPaymentMethodId(pmPK);
+			standingOrder.setPaymentMethodId( FDCustomerManager.getDefaultPaymentMethodPK(user.getIdentity()) );
 
 			standingOrder.setAddressId(cart.getDeliveryAddress().getPK().getId());
 

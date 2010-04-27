@@ -157,9 +157,6 @@ public class PaymentMethodManipulator extends CheckoutManipulator {
 		final PrimaryKey pmPK = ( (ErpPaymentMethodModel)paymentMethod ).getPK();
 		FDCustomerManager.setDefaultPaymentMethod( info, pmPK );
 
-		// store value for further reference
-		session.setAttribute("__default_payment_method_pk", pmPK.getId());
-		
 		/*if ( user.isDepotUser() ) {
 			if ( user.isEligibleForSignupPromotion() ) {
 				if ( FDCustomerManager.checkBillToAddressFraud( info, paymentMethod ) ) {
