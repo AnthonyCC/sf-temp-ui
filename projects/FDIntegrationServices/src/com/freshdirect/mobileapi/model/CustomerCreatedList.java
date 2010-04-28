@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
+import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 
 /**
  * Wrapper for FDCustomerCreatedList 
@@ -15,13 +16,13 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
  */
 public class CustomerCreatedList {
 
-    private FDCustomerCreatedList target;
+    private FDCustomerList target;
 
     /**
      * @param list
      * @return
      */
-    public static CustomerCreatedList wrap(FDCustomerCreatedList list) {
+    public static CustomerCreatedList wrap(FDCustomerList list) {
         CustomerCreatedList newInstance = new CustomerCreatedList();
         newInstance.target = list;
 
@@ -32,13 +33,13 @@ public class CustomerCreatedList {
      * @param lists
      * @return
      */
-    public static List<CustomerCreatedList> wrap(List<FDCustomerCreatedList> lists) {
+    public static List<CustomerCreatedList> wrap(List<FDCustomerList> lists) {
         List<CustomerCreatedList> wrappedItems = new ArrayList<CustomerCreatedList>();
         
-        TreeSet<FDCustomerCreatedList> sortedLists = new TreeSet<FDCustomerCreatedList>(FDCustomerCreatedList.getModificationDateComparator());
+        TreeSet<FDCustomerList> sortedLists = new TreeSet<FDCustomerList>(FDCustomerCreatedList.getModificationDateComparator());
         sortedLists.addAll(lists);
 
-        for (FDCustomerCreatedList list : sortedLists) {
+        for (FDCustomerList list : sortedLists) {
             wrappedItems.add(wrap(list));
         }
         return wrappedItems;
@@ -66,7 +67,8 @@ public class CustomerCreatedList {
     }
 
     public List<CustomerProductListLineItem> getLineItems() {
-        return CustomerProductListLineItem.wrap((List<FDCustomerProductListLineItem>)(List)this.target.getLineItems());
+                                                 
+        return CustomerProductListLineItem.wrap((List<FDCustomerListItem>)(List)this.target.getLineItems());
     }
 
 }

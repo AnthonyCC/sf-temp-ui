@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
+import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.mobileapi.model.CustomerCreatedList;
 import com.freshdirect.mobileapi.model.SessionUser;
 import com.freshdirect.webapp.taglib.fdstore.FDCustomerCreatedListTag;
@@ -23,6 +25,6 @@ public class FDCustomerCreatedListTagWrapper extends GetterTagWrapper implements
         addExpectedRequestValues(new String[] { REQ_PARAM_CUSTOMER_LIST }, new String[] { REQ_PARAM_CUSTOMER_LIST });//gets,sets
 
         ((FDCustomerCreatedListTag) this.wrapTarget).setAction("loadLists");
-        return CustomerCreatedList.wrap((List<FDCustomerCreatedList>) getResult());
+        return CustomerCreatedList.wrap((List<FDCustomerList>) getResult());
     }
 }
