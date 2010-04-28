@@ -50,7 +50,7 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 }
 
 // INCLUDE STANDING ORDER HEADER
-if (cart.getStandingOrderId() != null) {
+if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL ) {
 %><div style="width: 630px; padding-top: 15px; font-size: 10px;">
 <%@include file="../../includes/i_so_header.jspf" %>
 </div>

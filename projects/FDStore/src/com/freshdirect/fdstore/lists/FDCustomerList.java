@@ -28,7 +28,7 @@ public abstract class FDCustomerList extends ModelSupport {
 	
 	
 	private static class CompareByModificationDate implements Comparator<FDCustomerList> {
-
+		
 		public int compare( FDCustomerList l1, FDCustomerList l2 ) {
 
 			if ( l1 == null || l1.getModificationDate() == null ) {
@@ -39,12 +39,6 @@ public abstract class FDCustomerList extends ModelSupport {
 			}
 
 			return -l1.getModificationDate().compareTo( l2.getModificationDate() );
-		}
-
-		@Override
-		public boolean equals( Object o ) {
-			// there is only one static instance
-			return o == this;
 		}
 	}
 	
@@ -60,12 +54,6 @@ public abstract class FDCustomerList extends ModelSupport {
 			}
 			// should not return 0, since YoYo and yoyo than would be treated equal
 			return l1.getName().compareToIgnoreCase( l2.getName() ) < 0 ? -1 : 1;
-		}
-
-		@Override
-		public boolean equals( Object o ) {
-			// there is only one static instance
-			return o == this;
 		}
 	}
 	
@@ -84,12 +72,6 @@ public abstract class FDCustomerList extends ModelSupport {
 			int c2 = l2.getCount(); 
 			
 			return c1 < c2 ? 1 : -1;				
-		}
-
-		@Override
-		public boolean equals( Object o ) {
-			// there is only one static instance
-			return o == this;
 		}
 	}
 

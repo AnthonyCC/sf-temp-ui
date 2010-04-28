@@ -24,20 +24,22 @@
 		<td width="20"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
 
 		<td width="247" class="text13">
-			<!-- STANDING ORDERS SECTION -->
-			<div id="standingorders-section">
-				<div class="text15" style="font-weight: bold;">Your Standing Orders</div>
-				<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933">AUTOMATIC RECURRING DELIVERIES</div>
-<%@ include file="/quickshop/includes/so_lists.jspf" %>
-			</div>
-			<div style="height: 25px"></div>
+			<% if ( user.isSOEnabled() ) { %>					
+				<!-- STANDING ORDERS SECTION -->
+				<div id="standingorders-section">
+					<div class="text15" style="font-weight: bold;">Your Standing Orders</div>
+					<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933">AUTOMATIC RECURRING DELIVERIES</div>
+					<%@ include file="/quickshop/includes/so_lists.jspf" %>
+				</div>
+				<div style="height: 25px"></div>
+			<% } %>
 			<!-- SHOPPING LISTS SECTION -->
 			<div id="shopping-list-section">
 				<fd:CCLCheck>			
 					<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
 					<font class="space2pix"><br><br></font>
 					<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
-<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
+					<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 				</fd:CCLCheck>
 			</div>
 			<div style="height: 25px"></div>
@@ -48,7 +50,7 @@
 				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
 				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
 					<OPTION>Choose Department...
-<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
+					<%@ include file="/quickshop/includes/department_nav_select_box.jspf" %>
 				</SELECT>
 			</div>
 		</td>

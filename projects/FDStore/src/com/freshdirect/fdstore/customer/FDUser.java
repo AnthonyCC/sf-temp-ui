@@ -1669,7 +1669,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	 * 
 	 * @return
 	 */
-	private boolean isSOEnabled() {
+	public boolean isSOEnabled() {
 		// Check personal flag in user profile
 		try {
 			boolean isEnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO_KEY)).booleanValue();

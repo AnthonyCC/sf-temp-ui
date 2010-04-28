@@ -91,11 +91,15 @@ else{
 						<% for (int i=0; i<brs; i++) { %><BR><% } %>
 					</TD>
 					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
-					<TD valign="top">
-						<A HREF="/quickshop/standing_orders.jsp">Your Standing Orders</A>
-						<br>
-						<br>
-					</TD>
+
+					<% if ( user.isSOEnabled() ) { %>					
+						<TD valign="top">
+							<A HREF="/quickshop/standing_orders.jsp">Your Standing Orders</A>
+							<br>
+							<br>
+						</TD>
+					<% } %>
+					
 				</TR>
 				<TR>
 					<TD><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0"></TD>

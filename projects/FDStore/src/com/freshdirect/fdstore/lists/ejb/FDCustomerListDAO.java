@@ -18,13 +18,12 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
-import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductList;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
@@ -70,9 +69,7 @@ class FDCustomerListDAO {
 	}
 
 	private FDCustomerList createList(Connection conn, PrimaryKey customerPk, EnumCustomerListType type, String name, Date createDate, Date modificationDate) throws SQLException {
-		LOGGER.debug( "FDCustomerListDAO:createList()" );
-		LOGGER.debug( "type = " + type );
-		
+		LOGGER.debug( "FDCustomerListDAO:createList() - type = " + type );
 		
 		String id = getNextId(conn);
 		LOGGER.debug( "getNextId() returned :" + id );
@@ -365,12 +362,7 @@ class FDCustomerListDAO {
 	
 	// CCL
 	public String store(Connection conn, FDCustomerList list) throws SQLException {
-		LOGGER.debug( "FDCustomerListDAO:store()" );
-		LOGGER.debug( "list.id = " + list.getId() ); 
-		LOGGER.debug( "list.name = " + list.getName() ); 
-		LOGGER.debug( "list.count = " + list.getCount() ); 
-		LOGGER.debug( "list.type = " + list.getType() ); 
-//		LOGGER.debug( "stacktrace = " + new FDException().getFDStackTrace() ); 
+		LOGGER.debug( "FDCustomerListDAO:store() - " + list.getId() + ", " + list.getName() );
 
 		String listId = list.getId();
 		if (list.getId() != null) {
@@ -382,6 +374,7 @@ class FDCustomerListDAO {
 			listId = persistList(conn, list);
 			list.setId( listId );
 		}
+		
 
 		if (list instanceof FDCustomerProductList) {
 			LOGGER.debug( "store FDCustomerProductList." );
@@ -400,13 +393,10 @@ class FDCustomerListDAO {
 	private String persistList(Connection conn, FDCustomerList list) throws SQLException {
 		LOGGER.debug( "FDCustomerListDAO:persistList()" );
 		FDCustomerList persistedList = createList(conn, list.getCustomerPk(), list.getType(), list.getName(), list.getCreateDate(), list.getModificationDate());
-		LOGGER.debug( "persistedList = " + persistedList );
 
-		LOGGER.debug( "persistedList.getPK() = " + persistedList.getPK() );		
 		list.setPK(persistedList.getPK());
 		list.setCreateDate(persistedList.getCreateDate());
 		list.setModificationDate(persistedList.getModificationDate());
-		LOGGER.debug( "persistedList = " + persistedList );
 		
 		return persistedList.getId();
 	}
