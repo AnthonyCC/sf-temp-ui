@@ -173,25 +173,6 @@ if (currentCategory != null) {
 			String fiProdPrice = null;
 			String fiProdBasePrice=null;
 			boolean fiIsDeal=false;	// is deal?
-			
-			//
-			// APPDEV-1039 DEBUG CODE
-			//
-			try {
-				if (productNode.getDefaultSku() == null) {
-					System.out.println("[FI/"+ord+"] product " + productNode.getContentKey().getId() + " has no default SKU, will crash!");
-					System.out.println("  UA? " + productNode.isUnavailable() + "; TEMP UA? " + productNode.isTempUnavailable());
-					for (SkuModel aSku : productNode.getSkus()) {
-						System.out.println("  [" + aSku.getContentKey().getId() + "] UA? " + aSku.isUnavailable() + "; TEMP UA? " + aSku.isTempUnavailable());
-					}
-				}
-			} catch (Exception exc) {
-				System.out.println("APPDEV-1039 DEBUG CODE CRASHED; prd=" + productNode.getContentKey().getId());
-				exc.printStackTrace();
-			}
-			//
-			// APPDEV-1039 DEBUG CODE
-			//
 	%><fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>"><%
 		fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) /** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/;
 			
