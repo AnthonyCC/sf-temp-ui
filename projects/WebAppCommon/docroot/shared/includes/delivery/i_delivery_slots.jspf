@@ -140,7 +140,7 @@ if (timeslots.size() > 0) {
 							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;padding:1px;padding-top:2px;padding-bottom:2px;">
 								<span class="control">
 									<% 
-									if (!availCapacity && !(selectedSlot || preReservedSlot) 
+									if (!availCapacity && !(selectedSlot || (preReservedSlot && hasPreReserved)) 
 												&& (!isForce || (slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null
 																	&& (slot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
 																	|| !slot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
