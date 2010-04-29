@@ -179,16 +179,16 @@ public abstract class AbstractNavigator {
 
 		/* filters */
 
-		val = (String) params.get("catId");
-		if (val != null && val.length() > 0) {
-			categoryFilter = val;
-			deptFilter = null;
-		}
-
 		val = (String) params.get("deptId");
 		if (val != null && val.length() > 0) {
 			categoryFilter = null;
 			deptFilter = val;
+		}
+
+		val = (String) params.get("catId");
+		if (val != null && val.length() > 0) {
+			categoryFilter = val;
+			deptFilter = null;
 		}
 		
 		val = (String) params.get("brandValue");
