@@ -24,7 +24,7 @@ public class ProductAvailabilityFilterEx extends ProductAvailabilityFilter {
 
 		for (ContentNodeModel alternativeModel : model.getRecommendedAlternatives()) {
 			if (alternativeModel instanceof ProductModel && available((ProductModel) alternativeModel)) {
-				LOGGER.debug("substituted: " + model.getContentKey());
+				LOGGER.debug("substituted: " + model.getContentKey() +" -> "+alternativeModel.getContentKey()+" "+alternativeModel.getFullName());
 				return (ProductModel) alternativeModel;
 			} else if (alternativeModel instanceof SkuModel) {
 				return filter((ProductModel) alternativeModel.getParentNode());

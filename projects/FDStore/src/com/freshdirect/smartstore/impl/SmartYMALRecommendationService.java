@@ -13,6 +13,7 @@ import java.util.Set;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recommender;
@@ -27,6 +28,7 @@ import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 /**
@@ -62,10 +64,13 @@ public class SmartYMALRecommendationService extends
 						.getRelatedProducts() : new ArrayList();
 		for (int i = 0; i < relatedProducts.size(); i++) {
 			ProductModel pm = (ProductModel) relatedProducts.get(i);
-			if (filter.filter(pm.getContentKey()) != null) {
-				ProductModel p = SmartStoreUtil.addConfiguredProductToCache(pm);
-				if (p != null)
-					prodList.add(p);
+			ContentKey replacedKey = filter.filter(pm.getContentKey());
+			if (replacedKey != null) {
+			    pm = (ProductModel) HelperFunctions.getContentNodeModelOrLookup(replacedKey, pm);
+			    ProductModel p = SmartStoreUtil.addConfiguredProductToCache(pm);
+			    if (p != null) {
+			        prodList.add(p);
+			    }
 			}
 		}
 		availSlots -= prodList.size();

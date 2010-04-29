@@ -44,6 +44,11 @@ public abstract class RankedContent implements Comparable<RankedContent> {
 			this.score = score;
 			this.model = model;
 		}
+		
+		public void setModel(ContentNodeModel model) {
+                    this.id = model.getContentKey();
+                    this.model = model;
+		}
 
 		public double getScore() {
 			return score;

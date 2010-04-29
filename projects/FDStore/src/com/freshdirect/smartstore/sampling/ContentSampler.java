@@ -9,6 +9,7 @@ import java.util.ListIterator;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.smartstore.filter.ContentFilter;
+import com.freshdirect.smartstore.scoring.HelperFunctions;
 
 /**
  * Sampler for lists of ranked content.
@@ -42,8 +43,13 @@ public class ContentSampler {
 				else
 					total += aggregateItem.getCount();
 			} else { // Single
-				if (filter.filter(((RankedContent.Single) item).getContentKey()) == null)
+				final RankedContent.Single single = (RankedContent.Single) item;
+                                final ContentKey replacedKey = filter.filter(single.getContentKey());
+                                if (replacedKey == null) {
 					continue;
+                                } else {
+                                    single.setModel(HelperFunctions.getContentNodeModelOrLookup(replacedKey, single.getModel()));
+                                }
 				total++;
 			}
 

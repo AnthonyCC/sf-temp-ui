@@ -27,9 +27,10 @@ public class ProductAvailabilityFilter extends ContentFilter {
 	final public ContentKey filter(ContentKey key) {
 		ProductModel model = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(key);
 
-		if (filter(model) != null)
-			return key;
-		else {
+		ProductModel filtered = filter(model);
+		if (filtered != null) {
+			return filtered.getContentKey();
+		} else {
 			LOGGER.debug("not available: " + key);
 			return null;
 		}
@@ -42,11 +43,12 @@ public class ProductAvailabilityFilter extends ContentFilter {
 	 *            can be null
 	 * @return null if filter applies, <i>model</i> otherwise
 	 */
-	protected Object filter(ProductModel model) {
-		if (model == null || available(model))
+	protected ProductModel filter(ProductModel model) {
+		if (model == null || available(model)) {
 			return model;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/**

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -458,8 +459,9 @@ public class HelperFunctions {
 
 					ProductModel pm = (ProductModel) product;
 					// it does all checks against cart include, displaying, uniqueness, etc.
-					if (filter.filter(pm.getContentKey()) != null) {
-						nodes.add(pm);
+					ContentKey replacedKey = filter.filter(pm.getContentKey());
+					if (replacedKey != null) {
+						nodes.add(HelperFunctions.getContentNodeModelOrLookup(replacedKey, pm));
 						slots--;
 					}
 				}
@@ -512,11 +514,13 @@ public class HelperFunctions {
 		while (topN > 0 && it.hasNext()) {
     		RankedContent.Single rc = (RankedContent.Single) it.next();
     		ContentNodeModel node = rc.getModel();
-			if (node instanceof ProductModel
-					&& filter.filter(node.getContentKey()) != null) {
-	    		results.add(node);
+		if (node instanceof ProductModel) {
+		    ContentKey replacedKey = filter.filter(node.getContentKey()); 
+		    if (replacedKey != null){
+	    		results.add(HelperFunctions.getContentNodeModelOrLookup(replacedKey, node));
 	    		topN--;
-			}
+		    }
+		}
     	}
     	return results;
     }
@@ -535,6 +539,16 @@ public class HelperFunctions {
             }
         }
         return false;
+    }
+    
+    /**
+     * @param model
+     * @param key
+     * @return the model, if it's the same as the key refers , or look up the model from the ContentFactory. 
+     */
+    public static ContentNodeModel getContentNodeModelOrLookup(ContentKey key, ContentNodeModel model) {
+        ContentNodeModel result = key.equals(model.getContentKey()) ? model : ContentFactory.getInstance().getContentNodeByKey(key);
+        return result;
     }
     
     /**

@@ -5,7 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.SessionInput;
@@ -35,13 +37,16 @@ public class PrioritizedDataAccess implements DataAccess {
 
 	@Override
 	public boolean addPrioritizedNode(ContentNodeModel model) {
-		if (model instanceof ProductModel
-				&& filter.filter(model.getContentKey()) != null) {
-			nodes.add(model);
-			return true;
-		} else
-			return false;
+            if (model instanceof ProductModel) {
+                ContentKey key = filter.filter(model.getContentKey());
+                if (key != null) {
+                    nodes.add(HelperFunctions.getContentNodeModelOrLookup(key, model));
+                    return true;
+                }
+            }
+            return false;
 	}
+
 
 	@Override
 	public List<ContentNodeModel> getPrioritizedNodes() {
