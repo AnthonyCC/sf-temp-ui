@@ -102,11 +102,11 @@ public class GeographyRestriction extends ModelSupport   {
 	
 	public static boolean isTimeSlotGeoRestricted(List<GeographyRestriction> geographicRestrictions
 			, FDTimeslot timeslot
-			, List<String> messages, DateRange baseRange) {
+			, List<String> messages, DateRange baseRange, List comments) {
 		boolean isRestricted = false;
 		if(geographicRestrictions != null && timeslot != null && messages != null) {
 			for ( GeographyRestriction geoRestriction : geographicRestrictions ) {
-				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages, baseRange)) {
+				if(isTimeSlotGeoRestricted(geoRestriction, timeslot, messages, baseRange, comments)) {
 					isRestricted = true;
 					break;
 				}
@@ -117,7 +117,7 @@ public class GeographyRestriction extends ModelSupport   {
 	
 	public static boolean isTimeSlotGeoRestricted(GeographyRestriction geographicRestrictions
 												, FDTimeslot timeslot
-												, List<String> messages, DateRange baseRange) {
+												, List<String> messages, DateRange baseRange, List comments) {
 		
 		boolean isRestricted = false;
 		if(geographicRestrictions != null) {
@@ -129,9 +129,16 @@ public class GeographyRestriction extends ModelSupport   {
 							if(geographicRestrictions.contains(timeslot.getBaseDate())) {
 								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
-								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())
-										&& "X".equalsIgnoreCase(geographicRestrictions.getShowMessage())) {
-									messages.add(geographicRestrictions.getMessage());
+								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate()) 
+										&& "X".equalsIgnoreCase(geographicRestrictions.getMessage())) {
+									
+									GeographyRestrictionMessage _tmpMessage = new GeographyRestrictionMessage();
+									_tmpMessage.setMessage(geographicRestrictions.getMessage());
+									_tmpMessage.setShowMessage(geographicRestrictions.getShowMessage());
+									messages.add(_tmpMessage.getMessage());								
+								}
+								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate())) {
+									comments.add(geographicRestrictions.getComments());
 								}
 								if(isRestricted) {
 									break;

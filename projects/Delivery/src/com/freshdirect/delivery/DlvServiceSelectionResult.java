@@ -50,7 +50,7 @@ public class DlvServiceSelectionResult implements Serializable {
 		Set<EnumServiceType> s = new HashSet<EnumServiceType>();
 		for ( EnumServiceType service : serviceStatus.keySet() ) {
 			EnumDeliveryStatus status = this.getServiceStatus(service);
-			if(EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)){
+			if(EnumDeliveryStatus.DELIVER.equals(status) || EnumDeliveryStatus.PARTIALLY_DELIVER.equals(status)|| EnumDeliveryStatus.COS_ENABLED.equals(status)){
 				s.add(service);
 			}
 		}

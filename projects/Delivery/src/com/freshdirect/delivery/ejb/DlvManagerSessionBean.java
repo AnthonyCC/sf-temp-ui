@@ -619,7 +619,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
 						for(Iterator<FDTimeslot> i = routingTimeslots.iterator(); i.hasNext();) {
 							FDTimeslot ts = (FDTimeslot)i.next();
-							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, errMessages, null)) {
+							if (GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, ts, errMessages, null,null)) {
 								// filter off empty timeslots (unless they must be retained)
 								i.remove();
 							}

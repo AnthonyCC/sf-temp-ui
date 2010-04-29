@@ -14,6 +14,7 @@
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <%@ page import='com.freshdirect.delivery.EnumReservationType' %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
@@ -165,6 +166,7 @@ List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 Map zones = DeliveryTimeSlotResult.getZones();
 boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 List messages = DeliveryTimeSlotResult.getMessages();
+List comments = DeliveryTimeSlotResult.getComments();
 %>
 
 <%
@@ -293,6 +295,10 @@ List messages = DeliveryTimeSlotResult.getMessages();
 <!-- Bryan Restriction Message Added -->
 <% if(messages != null && messages.size() >= 1) { %>
 	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+<% } %>
+<!-- Geo Restriction Comment Added -->
+<% if(comments != null && comments.size() >= 1) { %>
+	<%@ include file="/shared/includes/delivery/i_restriction_comment.jspf"%>
 <% } %>
 
 <table cellpadding="0" cellspacing="0" width="675">

@@ -9,6 +9,7 @@
 <%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ page import='com.freshdirect.delivery.depot.*' %>
 <%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import="com.freshdirect.framework.util.*"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>

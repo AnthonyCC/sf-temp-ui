@@ -162,6 +162,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		List geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
 		List messages = new ArrayList();
+		List comments = new ArrayList();
 		for (Iterator i = timeslotList.iterator(); i.hasNext();) {
 			FDTimeslotList list = (FDTimeslotList) i.next();
 			for (Iterator j = list.getTimeslots().iterator(); j.hasNext();) {
@@ -172,7 +173,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					
 					
 					if ((ts.getCapacity() <= 0 ||  
-							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange)) 
+							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange, comments)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
 						// filter off empty timeslots (unless they must be retained)
 						k.remove();
@@ -194,7 +195,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			}
 		}  
 		
-		return new Result(timeslotList, zonesMap, ctActive, messages);
+		return new Result(timeslotList, zonesMap, ctActive, messages, comments);
 	}
 
 	private ErpAddressModel performCosResidentialMerge()
