@@ -2,7 +2,7 @@
 create table cust.standing_order(
   "ID" varchar2(16) primary key,
   "CUSTOMER_ID" varchar2(16) not null,
-  "CUSTOMERLIST_ID" varchar2(16) not null,
+  "CUSTOMERLIST_ID" varchar2(16),
   "ADDRESS_ID" varchar2(16) not null,
   "PAYMENTMETHOD_ID" varchar2(16) not null,
 
