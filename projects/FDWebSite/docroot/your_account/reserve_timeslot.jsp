@@ -13,6 +13,7 @@
 <%@ page import="com.freshdirect.fdstore.FDTimeslot" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ taglib uri="template" prefix="tmpl" %>

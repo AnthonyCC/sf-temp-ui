@@ -111,6 +111,7 @@
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	FDReservation rsv = user.getReservation();
 	List messages = DeliveryTimeSlotResult.getMessages();
+	List comments = DeliveryTimeSlotResult.getComments();
 	%>
 					<table width="90%" cellpadding="0" cellspacing="0" border="0"
 						align="center">
@@ -245,6 +246,10 @@
 					<% if(messages != null && messages.size() >= 1) { %>
 						<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
 					<% } %>
+					<% if(comments != null && comments.size() >= 1) { %>
+						<%@ include file="/shared/includes/delivery/i_restriction_comment.jspf"%>
+					<% } %>
+					
 					<table width="90%" cellpadding="0" cellspacing="0" border="0"
 						align="center">
 						<tr>

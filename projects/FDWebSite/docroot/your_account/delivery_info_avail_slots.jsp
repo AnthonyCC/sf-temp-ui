@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.framework.webapp.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

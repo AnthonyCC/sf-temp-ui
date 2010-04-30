@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
 <%@ page import='com.freshdirect.webapp.util.JspMethods'%>
 <%@ page import="com.freshdirect.webapp.util.AccountUtil" %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

@@ -13,6 +13,7 @@
 <%@ page import='com.freshdirect.delivery.DlvZoneInfoModel' %>
 <%@ page import='com.freshdirect.fdstore.FDDeliveryManager' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 
 <%@ page import='com.freshdirect.fdstore.*' %>
 
