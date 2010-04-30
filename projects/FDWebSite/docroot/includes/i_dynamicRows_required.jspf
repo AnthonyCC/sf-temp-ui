@@ -1,0 +1,121 @@
+<%@ page import='com.freshdirect.fdstore.content.*' %>
+<%@ page import='com.freshdirect.fdstore.content.util.SortStrategyElement' %>
+<%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings' %>
+<%@ page import='com.freshdirect.webapp.util.ProductImpression' %>
+<%@ page import='com.freshdirect.webapp.util.prodconf.SmartStoreConfigurationStrategy' %>
+<%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import='java.util.*' %>
+<%@ page import='org.apache.log4j.Category' %>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
+<%@ page import='com.freshdirect.customer.*' %>
+<%@ page import='com.freshdirect.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
+<%@ page import='com.freshdirect.fdstore.FDReservation' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='com.freshdirect.fdstore.attributes.*' %>
+<%@ page import='com.freshdirect.fdstore.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.promotion.*' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
+<%@ page import='java.text.*' %>
+<%@ page import='java.io.Writer' %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
+<fd:CheckLoginStatus />
+<%!
+	static Category LOGGER = LoggerFactory.getInstance("DYN_ROW");
+
+	public void log (boolean debug, String strToPrint) {
+		if (debug) { LOGGER.debug(strToPrint); }
+	}
+%>
+<%
+
+	boolean myDebug = false;
+	boolean myDebugPrint = false; //prints to page as well as log
+	String myDebugStr = "";
+	String prefix = "DYNROW";
+	
+	/* */
+		String deptId = null; //department ID
+		String catId=NVL.apply(request.getParameter("catId"), ""); //category id
+	/*
+	 *	These are subAttributes, see comments further down for defs
+	 */
+		boolean isTransactionalRow = true;
+		int minForRowVisibility = 0; //set by "min" sub attribute
+		int grabberDepth        = 0; //set by "depth" sub attribute
+		boolean dealsOnly       = false; //set by "deals" sub attribute
+		boolean featuredOnly    = false; //set by "feats" sub attribute
+		boolean showDescrips    = true; //set by "descrips" sub attribute
+		int perRow              = 5; //used in generic_row
+		int perRowPP            = 6; //used in peak_produce
+		String dealsFrom        = "gro"; //set by "from" sub attritbute
+		String showInContextOf  = null; //set by "context" sub attritbute
+		String sortBy           = ""; //set by "sortBy" sub attribute
+		int maxRows             = 1; //used in generic_row
+		int colIdx              = 1; //column counter
+		int rowsShown           = 1; //row counter
+		boolean uniqG           = true; //check uniqueness on a Global level
+		boolean uniqR           = true; // check uniqueness on a Row level
+		String add              = ""; //add on additional Ids (& seperated)
+		boolean exFro           = false; //exclude "frozen" items
+		boolean exPer           = false; //exclude "perishable" items
+	/* Deals values */
+		int favoritesToShow		= 0;
+		int FAVS_PER_LINE		= 5; //number of products to show per line
+		int MAX_FAVSLINES2SHOW	= 1; //number of lines of featured products
+		int MIN_FAVS2SHOW		= 1; //minimum featured products required to show featured section, effected by "min" sub attritbute
+		int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
+
+	/* default collection declares */
+		Collection sortedColl=null;
+		Collection globalColl=new ArrayList(); //for page uniqueness
+		ArrayList rowColl=null;  //for row transactional
+		Collection rowCollIds=null; //for checking via id
+		HashMap globalRowColl=new HashMap(); //
+
+	/*  general */
+		FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
+		boolean onlyOneProduct =false;
+		ProductModel theOnlyProduct =  null;
+		ContentNodeModel currentFolder;
+		CategoryModel currentCAT =  null;
+		DepartmentModel currentDEPT =  null;
+		boolean isDept;
+		boolean isCat;
+		String trkCode= "";
+		boolean sortDescending;
+		String sortNameAttrib;
+		Settings layoutSettings;
+		String mediaPath;
+		boolean emailPage = false;
+		Map params = new HashMap();
+		String baseUrl = "";
+		boolean pricingScriptIncluded = false; //pricing js for transactional, included once
+
+	/* Transactional stuff */
+		List impressions = new ArrayList();
+		ProductImpression pi = null;
+		int nConfProd = 0;
+		ConfigurationContext confContext = new ConfigurationContext();
+		ConfigurationStrategy cUtil = SmartStoreConfigurationStrategy.getInstance();
+		String successPage = "/grocery_cart_confirm.jsp?catId="+catId; //successPage when adding to cart
+
+		String TX_FORM_NAME        = "DYNROW_form"; // impression form name
+		String TX_JS_NAMESPACE     = "DYNROW_JSnamespace"; // impression javascript namespace
+
+	/* media stuff */
+		String mediaPathTemp="";
+		String mediaPathTempBase="";
+
+	String strDynRows = ""; //variable that holds the unparsed row(s)
+
+
+%>

@@ -254,7 +254,9 @@ public class ProductPriceTag extends BodyTagSupport {
 					if (wasString!=null && wasString!="") { styleAbout = styleRegularWithWas; }
 					
 					buf.append(
-							"<div" + styleAbout + ">about<br />" + 
+							//remove initial "about"
+							//"<div" + styleAbout + ">about<br />" + 
+							"<div" + styleAbout + ">" + 
 							aboutPriceString +
 							"</div>"
 					);

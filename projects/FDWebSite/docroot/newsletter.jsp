@@ -16,28 +16,32 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
+<%@ include file="/includes/i_dynamicRows_required.jspf" %>
 <%
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-String custFirstName = user.getFirstName();
-int validOrderCount = user.getAdjustedValidOrderCount();
-boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
+	user = (FDUserI)session.getAttribute(SessionName.USER);
+	String custFirstName = user.getFirstName();
+	int validOrderCount = user.getAdjustedValidOrderCount();
+	boolean mainPromo = user.getLevel() < FDUserI.RECOGNIZED && user.isEligibleForSignupPromotion();
 
 
-/*
-if we're on the email.jsp, set the product base urls to PROD
-set true in email.jsp, false in newsletter.jsp
-*/
-boolean emailpage = false;
+	/*
+	if we're on the email.jsp, set the product base urls to PROD
+	set true in email.jsp, false in newsletter.jsp
+	*/
+	boolean emailpage = false;
 
-Map params = new HashMap();
-params.put("baseUrl", "");
+	params = new HashMap();
+	params.put("baseUrl", "");
+
+	//set media path base
+	mediaPathTempBase="/media/editorial/picks/pres_picks/";
 %>
-
 <tmpl:insert template='/common/template/dnav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - President's Picks</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 	
-	<fd:IncludeMedia name="/media/editorial/picks/pres_picks/pres_picks.ftl" parameters="<%=params%>"/>
+	<% mediaPathTemp=mediaPathTempBase+"pres_picks.ftl"; %>
+	<fd:IncludeMedia name="<%=mediaPathTemp%>" parameters="<%=params%>"/>
 	
 <%-- //Featured Products moved into Include --%>
 	<%
@@ -45,7 +49,7 @@ params.put("baseUrl", "");
         Image groDeptImage = null;
 		boolean isDepartment = false;
 		
-		String trkCode = (String)request.getAttribute("trk");
+		trkCode = (String)request.getAttribute("trk");
 
 		if (trkCode!=null && !"".equals(trkCode.trim()) ) {
 			trkCode = "&trk="+trkCode.trim();
@@ -53,26 +57,34 @@ params.put("baseUrl", "");
 			trkCode = "";
 		}
 
-		String catId = request.getParameter("catId");
-		String deptId = request.getParameter("deptId");
+		catId = request.getParameter("catId");
+		deptId = request.getParameter("deptId");
 
-		ContentNodeModel currentFolder = null;
-		if (catId!=null) {
-			currentFolder=ContentFactory.getInstance().getContentNode(catId);
-			if ("picks_love".equalsIgnoreCase(catId)) {
-				deptId = "gro";
-				isDepartment = true;
-				request.setAttribute("sitePage", "www.freshdirect.com/wgd/picks_love");
-			%>
-				<%@ include file="/includes/layouts/i_featured_products_picks.jspf" %>
-				<fd:IncludeMedia name="/media/editorial/picks/pres_picks/pres_picks_footer.ftl" parameters="<%=params%>"/>
-			<%
+		request.setAttribute("sitePage", "www.freshdirect.com/wgd/picks_love");
+
+		//get the WG prop.
+		strDynRows = FDStoreProperties.getWhatsGoodRows();
+		//parse out only the property we want
+		if (strDynRows.indexOf("picks_pres")>-1) {
+			strDynRows = strDynRows.substring(strDynRows.indexOf("picks_pres"));
+			String[] temp = strDynRows.split(",");
+			//temp[0] should now be the property
+			strDynRows = temp[0];
+			if (strDynRows.toLowerCase().indexOf("istx")==-1) {
+				//turn off transactional
+				strDynRows += ":isTx=false";
 			}
-		} else {
-			currentFolder=ContentFactory.getInstance().getContentNode(catId);
+		}else{
+			strDynRows = "";
 		}
-	%>
+
 		
+		%>
+		<tr><td colspan="4" align="center">
+		<%@ include file="/includes/i_dynamicRows_logic.jspf"%>
+		</td></tr>
+		<% mediaPathTemp=mediaPathTempBase+"pres_picks_footer.ftl"; %>
+		<fd:IncludeMedia name="<%=mediaPathTemp%>" parameters="<%=params%>"/>
 
 <%-- //END Featured Products --%>
 </tmpl:put>

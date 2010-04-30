@@ -24,11 +24,11 @@
     /// ContentNodeModel prodParent = null;
     ContentFactory contentFactory = ContentFactory.getInstance();
     Comparator priceComp = new ProductModel.PriceComparator();
-    int favoritesToShow		= 0;
-    int FAVS_PER_LINE		= DealsHelper.getMaxFeaturedDealsPerLine(); //number of products to show per line
-    int MAX_FAVSLINES2SHOW	= DealsHelper.getMaxFeaturedDealsForPage()/FAVS_PER_LINE; //number of lines of featured products
-    int MIN_FAVS2SHOW		= DealsHelper.getMinFeaturedDealsForPage(); //minimum featured products required to show featured section
-    int	MAX_FAVS2SHOW		= FAVS_PER_LINE * MAX_FAVSLINES2SHOW; //to keep each row matching
+    favoritesToShow		= 0;
+    FAVS_PER_LINE		= DealsHelper.getMaxFeaturedDealsPerLine(); //number of products to show per line
+    MAX_FAVSLINES2SHOW	= DealsHelper.getMaxFeaturedDealsForPage()/FAVS_PER_LINE; //number of lines of featured products
+    MIN_FAVS2SHOW		= DealsHelper.getMinFeaturedDealsForPage(); //minimum featured products required to show featured section
+    MAX_FAVS2SHOW		= FAVS_PER_LINE * MAX_FAVSLINES2SHOW; //to keep each row matching
     
 	ProductModel product;
 
@@ -71,7 +71,7 @@
 		%></fd:FDProductInfo><%
         
         if(!isDeal) {
-            continue;
+            //continue;
         }
 		String dealsCat="";
 		

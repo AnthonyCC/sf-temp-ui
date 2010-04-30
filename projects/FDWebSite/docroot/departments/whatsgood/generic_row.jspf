@@ -1,6 +1,13 @@
 <%
 	int tempCounter=0;
 	rowColl = new ArrayList();
+	rowCollIds = new ArrayList(); //holds each prodId to check for dupes
+	//check if we've processed this row already
+	if (globalRowColl.get(curRow) != null && uniqG) {
+		//we have, fetch the contents used from before
+		rowCollIds.addAll((ArrayList)globalRowColl.get(curRow));
+	}
+
 	sortedColl = null; 
 	onlyOneProduct = false;
 	theOnlyProduct = null;
@@ -9,19 +16,15 @@
 	isCat = (currentFolder instanceof CategoryModel);
 	trkCode= "";
 
-	/* row specifics are not implemented */
-		//boolean usePerRowLimit = true;
-		//boolean useRowLimit = true;
+	//int maxToShow = perRow;
+	int maxToShow = perRow*maxRows;
 
-		//usePerRowLimit = (perRow>0)?true:false;
-		//useRowLimit = (maxRows>0)?true:false;
-
-	int maxToShow = perRow;
-		//maxToShow = (useRowLimit) ? perRow*maxRows : 999999999;
+	boolean showMaxMsg = true;
 
 	boolean skipExecution = false; //used for skipping sections of code
 	
-	log(myDebug, "ROW "+curRow+": maxToShow : "+maxToShow);
+	myDebugStr = "ROW "+curRow+": maxToShow : "+maxToShow;
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 	//needed for transactional
 		impressions = new ArrayList();
@@ -36,8 +39,6 @@
 		TX_FORM_NAME        = catId+rowId+"_form"; // impression form name
 		TX_JS_NAMESPACE     = catId+rowId+"_JSnamespace"; // impression javascript namespace
 
-
-
 	/* pass the code that should be used as the tracking code */
 	if (isDept) {
 		trkCode = "dpage";
@@ -47,64 +48,180 @@
 		request.setAttribute("trk","cpage");
 	}
 
-
 	List tmpList=new ArrayList();
-%>
-<% log(myDebug, "ROW "+curRow+": currentFolder : "+currentFolder); %>
-<% log(myDebug, "ROW "+curRow+": isDept : "+isDept); %>
-<% log(myDebug, "ROW "+curRow+": isCat : "+isCat); %>
 
-	<%
-		/* check if we only want featured items */
-		if (featuredOnly) {
-			//featured only
+	myDebugStr = "rowColl: "+rowColl+"<br />"+"globalRowColl: "+globalRowColl;
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
-			if (isCat) { currentCAT = (CategoryModel)currentFolder; sortedColl = currentCAT.getFeaturedProducts(); }
-			if (isDept) { currentDEPT = (DepartmentModel)currentFolder; sortedColl = currentDEPT.getFeaturedProducts(); }
-			log(myDebug, "ROW "+curRow+": feats list : "+sortedColl);
-			request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+	myDebugStr = "ROW "+curRow+": currentFolder : "+currentFolder;
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
+	myDebugStr = "ROW "+curRow+": isDept : "+isDept;
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
-		}else{
-			//all products
+	myDebugStr = "ROW "+curRow+": isCat : "+isCat;
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
-			sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
-			sortNameAttrib = ((ProductContainer)currentFolder).getListAs();
+	/* check if we only want featured items */
+	if (featuredOnly) {
+		//featured only
+
+		if (isCat) { currentCAT = (CategoryModel)currentFolder; sortedColl = currentCAT.getFeaturedProducts(); }
+		if (isDept) { currentDEPT = (DepartmentModel)currentFolder; sortedColl = currentDEPT.getFeaturedProducts(); }
+		
+		myDebugStr = "ROW "+curRow+": feats list : "+sortedColl;
+			log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+		request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+	}else{
+	%>
+		<fd:ItemGrabber
+			category='<%=currentFolder %>' 
+			id='rtnColl' 
+			depth='<%=layoutSettings.getGrabberDepth()%>'
+			ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+			filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+			returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+			ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+			returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+			returnSkus='<%=layoutSettings.isReturnSkus()%>'
+			workSet='<%=tmpList%>'
+		>
+			<%
+				sortedColl = rtnColl;
+
+				myDebugStr = "ROW "+curRow+": sortedColl ("+sortedColl.size()+"): "+sortedColl;
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 				
-			layoutSettings = new Settings();
-			layoutSettings.setGrabberDepth(grabberDepth); //use passed value
-			layoutSettings.setIgnoreDuplicateProducts(true);
-			layoutSettings.setIgnoreShowChildren(false);
-			layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
-			layoutSettings.setReturnHiddenFolders(false);
-	%>
-			<fd:ItemGrabber
-				category='<%=currentFolder %>' 
-				id='rtnColl' 
-				depth='<%=layoutSettings.getGrabberDepth()%>'
-				ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
-				filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
-				returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-				ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-				returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
-				returnSkus='<%=layoutSettings.isReturnSkus()%>'
-				workSet='<%=tmpList%>'
-			>
-				<%
-					sortedColl = rtnColl;
+				request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+				
+				myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts();
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+			%>
+		</fd:ItemGrabber>
+		
+		<%
+			//sorting...
+			if (!"".equals(sortBy)) {
+				//if this is excluded, you end up with a sort by 0 attributes, which alphabetizes by the productId
+				%><fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/><%
+
+				myDebugStr = "ROW "+curRow+": sortedColl after ("+sortedColl.size()+"): "+sortedColl;
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+			}
+
+	}
+
+
+	//check here for adds
+	if (!"".equals(add)) {
+		//we have additionals, loop and gather the data
+		//check for attributes
+		if (add.indexOf("&") > 0) { //zero since it can't START with a ampersand (correctly)
+			//log(myDebug, "found colon_ ");
+			String[] rowSub = add.split("&"); //found sub attrs
+
+			for (int r=0;r<rowSub.length; r++) {
+				currentFolder = ContentFactory.getInstance().getContentNode(rowSub[r]);
+				
+				myDebugStr = "ROW "+curRow+": add ("+rowSub[r]+")";
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				/* check if we only want featured items */
+				if (featuredOnly) {
+					//featured only
+
+					if (isCat) { currentCAT = (CategoryModel)currentFolder; sortedColl.addAll(currentCAT.getFeaturedProducts()); }
+					if (isDept) { currentDEPT = (DepartmentModel)currentFolder; sortedColl.addAll(currentDEPT.getFeaturedProducts()); }
 					
-					request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
-					
-					log(myDebug, "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts());
+					myDebugStr = "ROW "+curRow+": feats list : "+sortedColl;
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				}else{
+					//ignore parent's depth, use a depth of only the specified ID here
 				%>
-			</fd:ItemGrabber>
+					<fd:ItemGrabber
+						category='<%=currentFolder %>' 
+						id='rtnColl' 
+						depth='0'
+						ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+						filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+						returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+						ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+						returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+						returnSkus='<%=layoutSettings.isReturnSkus()%>'
+						workSet='<%=tmpList%>'
+					>
+						<%
+							sortedColl.addAll(rtnColl);
+
+							myDebugStr = "ROW "+curRow+": sortedColl ("+sortedColl.size()+"): "+sortedColl;
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							
+							request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+							
+							myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+						%>
+					</fd:ItemGrabber>
+				<%
+				}
+			}
+		}else{
+			//we just have one add
+			currentFolder = ContentFactory.getInstance().getContentNode(add);
 			
-			<fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
-	<%
+			myDebugStr = "ROW "+curRow+": add ("+add+")";
+				log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+			/* check if we only want featured items */
+			if (featuredOnly) {
+				//featured only
+
+				if (isCat) { currentCAT = (CategoryModel)currentFolder; sortedColl.addAll(currentCAT.getFeaturedProducts()); }
+				if (isDept) { currentDEPT = (DepartmentModel)currentFolder; sortedColl.addAll(currentDEPT.getFeaturedProducts()); }
+				
+				myDebugStr = "ROW "+curRow+": feats list : "+sortedColl;
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+			}else{
+				//ignore parent's depth, use a depth of only the specified ID here
+			%>
+				<fd:ItemGrabber
+					category='<%=currentFolder %>' 
+					id='rtnColl' 
+					depth='0'
+					ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
+					filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
+					returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
+					ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
+					returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' 
+					returnSkus='<%=layoutSettings.isReturnSkus()%>'
+					workSet='<%=tmpList%>'
+				>
+					<%
+						sortedColl.addAll(rtnColl);
+
+						myDebugStr = "ROW "+curRow+": sortedColl ("+sortedColl.size()+"): "+sortedColl;
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						
+						request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+						
+						myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts();
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+					%>
+				</fd:ItemGrabber>
+			<%
+			}
 		}
+		//change back to original context
+		currentFolder = ContentFactory.getInstance().getContentNode(catId);
+	}
 	%>
 
-	
 	<%
 		/* check returned list size first to see if we're above minmum needed before we start removing products */
 		if (minForRowVisibility > 0 && sortedColl.size() < minForRowVisibility ) { skipExecution=true; }
@@ -113,7 +230,8 @@
 
 	<%
 		if (skipExecution) {
-			log(myDebug, "ROW "+curRow+": skipExecution 00 : "+skipExecution);
+			myDebugStr = "ROW "+curRow+": skipExecution 00 : "+skipExecution;
+				log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 		}else{
 			/*
 			 *	We need to loop twice here, the first time to make sure we have a min for the row
@@ -127,12 +245,66 @@
 			%>
 					<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 						<%
-							if (minCheckTempCount >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+							if (minCheckTempCount >= maxToShow || (contentNode instanceof CategoryModel)) {
+								if (tempCounter >= maxToShow && showMaxMsg) {
+									myDebugStr = "ROW "+curRow+": maxToShow reached : "+maxToShow;
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									showMaxMsg = false;
+								}
+								if (contentNode instanceof CategoryModel) {
+									myDebugStr = "ROW "+curRow+": contentNode is a category : "+contentNode;
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+								}
+								continue;
+							}
+							if (uniqG) {
+								if(globalColl.contains(contentNode)) {
+									myDebugStr = "ROW "+curRow+": contentNode is already in globalColl : "+contentNode;
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+							if (uniqR) {
+								if(rowCollIds.contains(contentNode.toString())) {
+									myDebugStr = "ROW "+curRow+": contentNode is already in rowCollIds : "+contentNode.toString();
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+
 							ProductModel pm = (ProductModel) contentNode;
 							//skip if discontinued or unavailable
-							if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+							if (pm.isDiscontinued() || pm.isUnavailable()) {
+								myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") or isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+								continue;
+							}
 							//if dealsOnly is true, skip if not a deal
-							if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+							if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) {
+								myDebugStr = "ROW "+curRow+": dealsOnly ("+dealsOnly+") or contentNode getHighestDealPercentage < 1 ("+ pm.getHighestDealPercentage()+") : "+contentNode;
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+								continue;
+							}
+							if (exPer) {
+								if(pm.isPerishable()) {
+									myDebugStr = "ROW "+curRow+": contentNode isPerishable ("+pm.isPerishable()+") : "+contentNode.toString();
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+							if (exFro) {
+								if(pm.isFrozen()) {
+									myDebugStr = "ROW "+curRow+": contentNode isFrozen ("+pm.isFrozen()+") : "+contentNode.toString();
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+
+							if (uniqR) { 
+								//add to rowCollIds for ROW dupe check
+								rowCollIds.add(contentNode.toString());
+							}
+
 							minCheckTempCount++;
 						%>
 					</logic:iterate>
@@ -145,27 +317,82 @@
 
 	<%
 		if (skipExecution) {
-			log(myDebug, "ROW "+curRow+": skipExecution 01 : "+skipExecution);
+			myDebugStr = "ROW "+curRow+": skipExecution 01 : "+skipExecution;
+				log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 		}else{
 			/* loop 2 */
+			
+			rowColl = new ArrayList(); //reset row list
 	%>
 			<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 				<%
-						//log(myDebug, "ROW "+curRow+": maxToShow1 : "+maxToShow);
-						//log(myDebug, "ROW "+curRow+": tempCounter1 : "+tempCounter);
-					// skip if more than 5, is a category or already used on page
-					if (tempCounter >= maxToShow || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+					// skip if more than 5, is a category or already used on page, or already used in row
+					if (tempCounter >= maxToShow || (contentNode instanceof CategoryModel)) {
+						if (tempCounter >= maxToShow && showMaxMsg) {
+							myDebugStr = "ROW "+curRow+": maxToShow reached : "+maxToShow;
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							showMaxMsg = false;
+						}
+						if (contentNode instanceof CategoryModel) {
+							myDebugStr = "ROW "+curRow+": contentNode is a category : "+contentNode;
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						}
+						continue;
+					}
+					if (uniqG) {
+						if(globalColl.contains(contentNode)) {
+							myDebugStr = "ROW "+curRow+": contentNode is already in globalColl : "+contentNode;
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
+					if (uniqR) {
+						if(rowCollIds.contains(contentNode.toString())) {
+							myDebugStr = "ROW "+curRow+": contentNode is already in rowCollIds : "+contentNode.toString();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
+
 					ProductModel pm = (ProductModel) contentNode;
 					//skip if discontinued or unavailable
-					if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
+					if (pm.isDiscontinued() || pm.isUnavailable()) {
+						myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") or isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						continue;
+					}
 					//if dealsOnly is true, skip if not a deal
-					if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) { continue; }
+					if ( dealsOnly && pm.getHighestDealPercentage() < 1 ) {
+						myDebugStr = "ROW "+curRow+": dealsOnly ("+dealsOnly+") or contentNode getHighestDealPercentage < 1 ("+ pm.getHighestDealPercentage()+") : "+contentNode;
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						continue;
+					}
+					if (exPer) {
+						if(pm.isPerishable()) {
+							myDebugStr = "ROW "+curRow+": contentNode isPerishable ("+pm.isPerishable()+") : "+contentNode.toString();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
+					if (exFro) {
+						if(pm.isFrozen()) {
+							myDebugStr = "ROW "+curRow+": contentNode isFrozen ("+pm.isFrozen()+") : "+contentNode.toString();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
 
-					//add to global collection for dupe check
-					globalColl.add(contentNode);
 					//add to pageColl for prices ref
 					rowColl.add(contentNode);
 
+					if (uniqG) { 
+						//add to global collection for dupe check
+						globalColl.add(contentNode);
+					}
+					if (uniqR) { 
+						//add to rowCollIds for ROW dupe check
+						rowCollIds.add(contentNode.toString());
+					}
 
 					pi = cUtil.configure((ProductModel) pm, confContext);
 					impressions.add(pi);
@@ -194,95 +421,171 @@
 				//if we have any items to show, display them
 				if (rowColl.size() > 0) {
 			%>
-				<fd:IncludeMedia name="/media/editorial/whats_good/whats_good_line.html" />
-				<% mediaPath = "/media/editorial/whats_good/whats_good_"+ catId + "_above.html"; %>
-				<fd:IncludeMedia name="<%=mediaPath%>" />
+				<%
+					//add an id to params
+					params.put("rowId", String.valueOf(rowId) );
+					params.put("rowName", curRow);
+
+					mediaPathTemp=mediaPathTempBase+prefix+"_"+catId+"_above.ftl";
+					myDebugStr = "ROW: including: mediaPath:"+mediaPathTemp;
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+				%>
+				<fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>" withErrorReport="true" />
 				
 				<% if (isTransactionalRow) { %>
-					<form class="wgForm" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
+					<form class="DYNROW_form <%= TX_FORM_NAME+"_"+catId %>" name="<%= TX_FORM_NAME %>" method="post" action="<%= base_url %>">
 						<input name="catId" type="hidden" value="<%= (showInContextOf == null)?catId:showInContextOf %>" />
 				<% } %>
 				
 
-				<table cellpadding="0" cellspacing="0" border="0">
-				<tr valign="bottom">
+				<%
+					colIdx = 1;
+					rowsShown=1;
+					int txCount = 0;
+					boolean imgRow = true;
+					int piCnIdx = 0;
+					int rowCollSize = rowColl.size();
+					for (int cn=0; cn<rowColl.size(); cn++) {
 
-					<% log(myDebug, "ROW "+curRow+": rowColl : "+catId+" : "+(List)rowColl); %>
-					<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
+						if (cn==0) {
+							//start table
+							%><table><%
+						}
+							
+						if (cn==0) {
+							//start row
+							%><tr><%
+						}
 
-					<%
-						//log(myDebug, "ROW "+curRow+": contentNode : "+contentNode);
-						//log(myDebug, "ROW "+curRow+": instanceof CategoryModel : "+(contentNode instanceof CategoryModel));
-						//log(myDebug, "ROW "+curRow+": instanceof globalColl.contains : "+globalColl.contains(contentNode));
-						
-						//we don't need checks here, we did it previously
-
-						ProductModel pm = (ProductModel) contentNode;
+						ProductModel pm = (ProductModel) rowColl.get(cn);
 						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
 						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,false);
 						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
 						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-						log(myDebug, "ROW "+curRow+": showInContextOf: "+showInContextOf+" | catId: "+catId);
-						if (showInContextOf != catId && showInContextOf != null) {
+						//don't print if using ADD, save some debug space
+						if (!"".equals(showInContextOf) && showInContextOf != null && !catId.equals(showInContextOf) && "".equals(add)) {
+							myDebugStr = "ROW "+curRow+": showInContextOf: "+showInContextOf+" | catId: "+catId+" ("+rowColl.get(cn).toString()+")";
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						}
+						if (!catId.equals(showInContextOf) && showInContextOf != null) {
 								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
 								actionURI = actionURI.replace("product.jsp", "category.jsp");
 						}
-					%>
-
+						/* ALTERNATIVE
+							if (!catId.equals(pm.getParentNode().toString())) {
+								catId = pm.getParentNode().toString();
+							}
+							if (!catId.equals(showInContextOf) && showInContextOf != null) {
+									actionURI = actionURI.replace("catId="+catId, "catId="+showInContextOf+"&prodCatId="+catId);
+									actionURI = actionURI.replace("product.jsp", "category.jsp");
+							}
+						*/
+						%>
+						
+						
 						<td align="center" width="<%=adjustedImgWidth%>" style="padding-left:5px; padding-right:5px;">
+							<%
+								myDebugStr = "|cn="+cn+"|col="+colIdx+"|"; //say col, but we're showing colIdx
+									if (myDebugPrint) { out.println("<span class=\"myDebug\">"+myDebugStr+"</span>"); } //this is page only debug
+							%>
 							<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
 						</td>
-					
-					</logic:iterate>
-				</tr>
-				<tr>
-					
-					<% int txCount = 0; %>
-					<logic:iterate id="contentNode" collection="<%= rowColl %>" type="java.lang.Object" indexId="idx">
-					<%
-
-						//log(myDebug, "ROW "+curRow+": contentNode2 : "+contentNode);
-						//log(myDebug, "ROW "+curRow+": contentNode2 : "+(contentNode instanceof CategoryModel));
-						//log(myDebug, "ROW "+curRow+": instanceof globalColl.contains2 : "+rowColl.contains(contentNode));
-
-						ProductModel pm = (ProductModel) contentNode;
 						
+						<%
 
-						String prodNameAttribute = JspMethods.getProductNameToUse(pm);
-						DisplayObject displayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,pm,prodNameAttribute,true);
-						int adjustedImgWidth = displayObj.getImageWidthAsInt()+6+10;
-						String actionURI = FDURLUtil.getProductURI( pm, trkCode );
-						if (showInContextOf != catId && showInContextOf != null) {
-								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
-								actionURI = actionURI.replace("product.jsp", "category.jsp");
+						if (cn == (rowCollSize-1)) {
+							int rcSTest = (perRow>rowCollSize)?rowCollSize:perRow;
+							if (rcSTest>colIdx) {
+								//fill out cols
+								%><td colspan="<%=rcSTest-colIdx%>"><!-- --></td><%
+								//end row
+								%></tr><tr><%
+
+								imgRow = !imgRow;
+							}
+
 						}
 
-					%>
+						if (colIdx==perRow || colIdx == rowCollSize) {
+							//end row
+							%></tr><tr><%
 
-						<td valign="top" width="<%=adjustedImgWidth%>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
-							<div class="WG_deals">
-								<% if (impressions.get(idx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
-									<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(idx) %>"/>
-									
-									<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
-									<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
-									<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(idx) %>" showDescription="<%= showDescrips %>" />
-								<% 
-									txCount++;
-								} else { %>
-									<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
+							colIdx=0;
+							rowsShown++;
+							imgRow = !imgRow;
+						}
 
-									<display:ProductRating product="<%= pm %>" action="<%= actionURI %>" />
-									<display:ProductName product="<%= pm %>" action="<%= actionURI %>" showNew="true" />
-									<display:ProductPrice impression="<%= new ProductImpression(pm) %>" showDescription="<%= showDescrips %>" />
-								<% } %>
-							</div>
-						</td>
-					</logic:iterate>
-				</tr>
+						if (!imgRow) {
+							int rcSTest = (perRow>rowCollSize)?rowCollSize:perRow;
+							for (int piCn=cn-rcSTest; piCn<cn; piCn++) {
+								
+								if (piCnIdx >= rowCollSize) {
+									if (rcSTest>colIdx) {
+										//fill out cols
+										%><td colspan="<%=rcSTest-colIdx%>"><!--  --></td><%
+										//end row
+										%></tr><%
+										//end loop
+										break;
+									}
+								}
+
+								ProductModel piPm = (ProductModel) rowColl.get(piCnIdx);
+								String piProdNameAttribute = JspMethods.getProductNameToUse(piPm);
+								DisplayObject piDisplayObj = JspMethods.loadLayoutDisplayStrings(response,showInContextOf,piPm,piProdNameAttribute,false);
+								int piAdjustedImgWidth = piDisplayObj.getImageWidthAsInt()+6+10;
+								String piActionURI = FDURLUtil.getProductURI( piPm, trkCode );
+								//don't print if using ADD, save some debug space
+								if (!"".equals(showInContextOf) && showInContextOf != null && !catId.equals(showInContextOf) && "".equals(add)) {
+									myDebugStr = "ROW "+curRow+": showInContextOf: "+showInContextOf+" | catId: "+catId;
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+								}
+								if (!catId.equals(showInContextOf) && showInContextOf != null) {
+										piActionURI = piActionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
+										piActionURI = piActionURI.replace("product.jsp", "category.jsp");
+								}
+							%>
+								<td valign="top" width="<%= piAdjustedImgWidth %>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
+								<%
+									myDebugStr = "|cn="+piCnIdx+"|"; //say cn, but we're showing piCnIdx
+										if (myDebugPrint) { out.println("<span class=\"myDebug\">"+myDebugStr+"</span>"); } //this is page only debug
+								%>
+									<div class="WG_deals">
+										<% if (impressions.get(piCnIdx) instanceof TransactionalProductImpression && isTransactionalRow) { %>
+											<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>"/>
+											
+											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
+											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="true" />
+											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
+										<% 
+											txCount++;
+										} else { %>
+											<% if (isTransactionalRow) { %>
+												<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
+											<% } %>
+											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
+											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="true" />
+											<display:ProductPrice impression="<%= new ProductImpression(piPm) %>" showDescription="<%= showDescrips %>" />
+										<% } %>
+									</div>
+								</td>
+							<%
+								piCnIdx++;
+							}
+							if (maxToShow-(perRow*rowsShown) > 0) {
+								%></tr><tr><%
+							}else{
+								%></tr><%
+							}
+							imgRow = !imgRow;
+						}
+
+						colIdx++;
+					}
+				%>
 				<% if (isTransactionalRow) { %>
 				<tr>
-					<td class="wgd_addtocart" class="text11bold" colspan="<%=maxToShow%>">
+					<td class="wgd_addtocart" class="text11bold" colspan="<%=perRow%>">
 						<table width="100%">
 							<tr>
 								<td align="center">
@@ -299,9 +602,26 @@
 
 				<% if (isTransactionalRow) { %></form><% } %>
 
+				<%
+					mediaPathTemp=mediaPathTempBase+prefix+"_"+catId+"_below.ftl";
+					myDebugStr = "ROW: including: mediaPath:"+mediaPathTemp;
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+				%>
+				<fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>" withErrorReport="true" />
+
 			<%
 				}
 			%>
 			
-			<% log(myDebug, "ROW "+curRow+": END : "); %>
+			<%
+				myDebugStr = "ROW "+curRow+": END : ";
+					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+			%>
 		<% } %>
+<%
+	//add row collection to global storage
+	if (uniqG) { globalRowColl.put(curRow, rowCollIds); }
+
+	myDebugStr = "curRow: "+curRow+"</br />rowColl: "+rowColl+"<br />globalRowColl: "+globalRowColl+"<hr class=\"myDebug\" />";
+		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+%>

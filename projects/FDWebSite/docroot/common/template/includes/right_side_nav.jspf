@@ -210,6 +210,7 @@ if(weRecommendImgProds.size() > 0) {
     	}
     }
   }
+  if (deptName == null) { deptName = ""; }
 %>
 <a href="javascript:pop('/request_product.jsp?department=<%=URLEncoder.encode(deptName).replace("%27","\\%27")%>',400,585);">Click here.</a>
 <br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></div>

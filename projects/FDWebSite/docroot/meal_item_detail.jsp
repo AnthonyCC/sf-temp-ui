@@ -185,7 +185,7 @@ int prodCount = 0;%>
 		compProduct =  ContentFactory.getInstance().getProduct(skuCode);
 		prodImg = compProduct.getDetailImage();
 		prodDescription = ((Html)compProduct.getProductDescription()).getPath();	
-        SkuModel selectSku = (SkuModel)compProduct.getSkus().get(0);
+        SkuModel selectSku = (SkuModel)compProduct.getSku(skuCode);
         FDProduct fdprd = null;
         try {
             fdprd = selectSku.getProduct();

@@ -230,7 +230,7 @@ public class CorporateServiceSurveyTag extends AbstractControllerTag implements 
 		
 		LOGGER.debug("CorpServTag err ");
 		LOGGER.debug("actionName "+actionName);
-		user.setLastCOSSurveySuccess(false);
+		if (user!= null) { user.setLastCOSSurveySuccess(false); }
 	}
 	
 	protected void storeCorporateServiceInfo(HttpServletRequest request, ActionResult result) throws FDResourceException {

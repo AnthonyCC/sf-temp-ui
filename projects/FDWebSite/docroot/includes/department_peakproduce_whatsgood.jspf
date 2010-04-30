@@ -18,6 +18,12 @@
 	Collection fruColl = new ArrayList();
 
 	rowColl = new ArrayList();
+	rowCollIds = new ArrayList(); //holds each prodId to check for dupes
+	//check if we've processed this row already
+	if (globalRowColl.get(curRow) != null) {
+		//we have, fetch the contents used from before
+		rowCollIds.addAll((ArrayList)globalRowColl.get(curRow));
+	}
   
 	currentFolder = ContentFactory.getInstance().getContentNode(catId);
 	isDept = (currentFolder instanceof DepartmentModel);
@@ -178,7 +184,7 @@
 	Iterator iteratorVeg = vegColl.iterator();
 	while (iteratorVeg.hasNext()) {
 		Object element = iteratorVeg.next();
-		if (fruColl.contains(element) || globalColl.contains(element)) {
+		if (fruColl.contains(element) || globalColl.contains(element) || rowCollIds.contains(element.toString())) {
 			iteratorVeg.remove();
 		}
 	}
@@ -187,7 +193,7 @@
 	Iterator iteratorFru = fruColl.iterator();
 	while (iteratorFru.hasNext()) {
 		Object element = iteratorFru.next();
-		if (globalColl.contains(element)) {
+		if (globalColl.contains(element) || rowCollIds.contains(element.toString())) {
 			iteratorFru.remove();
 		}
 	}
@@ -234,7 +240,7 @@
 	<logic:iterate id="contentNode" collection="<%= fruColl %>" type="java.lang.Object" indexId="idx">
 		<%
 			// skip if more than we want for fruit, is a category or already used on page
-			if (tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			if (tempCounter >= ppFru || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
 			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
@@ -245,6 +251,8 @@
 			globalColl.add(contentNode);
 			//add to pageColl for prices ref
 			rowColl.add(contentNode);
+			//add to rowCollIds for ROW dupe check
+			rowCollIds.add(contentNode.toString());
 
 
 			//needed for transactional
@@ -264,7 +272,7 @@
 	<logic:iterate id="contentNode" collection="<%= vegColl %>" type="java.lang.Object" indexId="idx">
 		<%
 			// skip if more than we want for fruit, is a category or already used on page
-			if (tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode)) { continue; }
+			if (tempCounter >= ppVeg || (contentNode instanceof CategoryModel) || globalColl.contains(contentNode) || rowCollIds.contains(contentNode.toString())) { continue; }
 			ProductModel pm = (ProductModel) contentNode;
 			//skip if discontinued or unavailable
 			if (pm.isDiscontinued() || pm.isUnavailable()) { continue; }
@@ -275,6 +283,8 @@
 			globalColl.add(contentNode);
 			//add to pageColl for prices ref
 			rowColl.add(contentNode);
+			//add to rowCollIds for ROW dupe check
+			rowCollIds.add(contentNode.toString());
 
 
 			//needed for transactional
@@ -396,3 +406,8 @@
 		<% if (isTransactionalRow) { %></form><% } %>
 		<% } %>
 <% } %>
+
+<%
+	//add row collection to global storage
+	globalRowColl.put(curRow, rowCollIds);
+%>

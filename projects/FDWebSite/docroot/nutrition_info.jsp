@@ -12,41 +12,32 @@
 		<table width="220" border="0" cellspacing="0" cellpadding="0">
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="15" height="1" alt="" border="0"></td>
-			<td align=left>
-                        
-<%                      SkuModel aSku = productNode.getDefaultSku();
-                        if (aSku==null ) aSku = (SkuModel)productNode.getSkus().get(0);
-			FDProduct fdprd = aSku.getProduct();
-                        if (fdprd!=null) {
-                            if (fdprd.hasNutritionFacts()) {
-%>
-                                    <font class="space4pix"><br></font>
-    
-                                    <%@ include file="/shared/includes/i_nutrition_sheet.jspf" %>
-    								
-                                    <br>
-<%			        }
-                            if (fdprd.hasIngredients()) { %>
-                            <table BORDER="0" CELLSPACING="0" CELLPADDING="2">
-                              <tr VALIGN="top">
-                                    <td CLASS="text9" align="center">
-                                            <font CLASS="title18">Ingredients:</font><br>
-											<img src="media_stat/images/layout/330000.gif" height="4" width="220" vspace="4"></td>
-                                    </td>
-                              </tr>
-                              <tr><td>
-                                    <%= fdprd.getIngredients() %>
-                              </td></tr>
-                            </table>
-<%
-                            } 
-                        }
-%>
-
-				<%@ include file="/shared/includes/product/allergens.jspf" %>
-				<br>
-				<a href="product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br>
-                                    
+			<td align="left">
+			<%
+				SkuModel aSku = productNode.getDefaultSku();
+				if (aSku==null ) aSku = (SkuModel)productNode.getSku(aSku.getSkuCode());
+				FDProduct fdprd = aSku.getProduct();
+				if (fdprd!=null) {
+					if (fdprd.hasNutritionFacts()) {
+			%>
+						<font class="space4pix"><br></font>
+							<%@ include file="/shared/includes/i_nutrition_sheet.jspf" %><br />
+				<%
+					}
+					if (fdprd.hasIngredients()) { %>
+						<table BORDER="0" CELLSPACING="0" CELLPADDING="2">
+							<tr VALIGN="top">
+								<td class="text9" align="center">
+									<font class="title18">Ingredients:</font><br />
+									<img src="media_stat/images/layout/330000.gif" height="4" width="220" vspace="4">
+								</td>
+							</tr>
+							<tr><td><%= fdprd.getIngredients() %></td></tr>
+						</table>
+					<% }
+				}
+				%><%@ include file="/shared/includes/product/allergens.jspf" %><br />
+				<a href="product_nutrition_note.jsp">An important note about our nutrition and ingredients information.</a><br />
 			</td>
 		</tr>
 		</table>	
