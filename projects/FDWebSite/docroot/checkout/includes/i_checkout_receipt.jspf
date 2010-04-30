@@ -50,14 +50,16 @@ if (user.getAdjustedValidOrderCount() > 1 && custInfo.getReminderFrequency() == 
 }
 
 // INCLUDE STANDING ORDER HEADER
-if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL ) {
-%><div style="width: 630px; padding-top: 15px; font-size: 10px;">
-<%@include file="../../includes/i_so_header.jspf" %>
-</div>
-<div style="width: 430px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
-<%
-}
-%>
+if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckoutMode.NORMAL ) { %>
+	<div style="width: 630px; padding-top: 15px; font-size: 10px;">
+		<%@ include file="../../includes/i_so_header.jspf" %>
+	</div>
+	<div style="width: 430px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
+	<% 
+		// standing orders - return to normal mode
+		user.setCheckoutMode( EnumCheckoutMode.NORMAL );
+		session.setAttribute( "checkout_mode", EnumCheckoutMode.NORMAL );
+} %>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="630">
 <TR valign="top">

@@ -688,12 +688,6 @@ public class SubmitOrderAction extends WebActionSupport {
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
 			
-
-			// standing orders - return to normal mode
-			if (EnumCheckoutMode.NORMAL != mode && this.getResult().isSuccess()) {
-				user.setCurrentStandingOrder(null);
-				user.setCheckoutMode(EnumCheckoutMode.NORMAL);
-			}
 		} catch (FDAuthenticationException fdae) {
 			LOGGER.warn("Error recalling original cart", fdae);
 			throw new FDResourceException("Error recalling original cart " + fdae.getMessage());

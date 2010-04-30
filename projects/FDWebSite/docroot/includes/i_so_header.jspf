@@ -8,7 +8,8 @@
 <%@page import="com.freshdirect.webapp.util.StandingOrderHelper"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="java.text.DateFormat"%>
-<%@page import="java.text.SimpleDateFormat"%><%
+<%@page import="java.text.SimpleDateFormat"%>
+<%
 	// is first page?
 	final boolean isViewCartPage = request.getRequestURI().indexOf("view_cart.jsp") > -1;
 	
