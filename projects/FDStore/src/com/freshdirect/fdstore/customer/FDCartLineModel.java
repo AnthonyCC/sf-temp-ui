@@ -25,6 +25,7 @@ public class FDCartLineModel extends AbstractCartLine {
 	private static final long	serialVersionUID	= 6554964787371568944L;
 	
 	private EnumEventSource source;
+	private String cartonNumber;
 	
 	public FDCartLineModel(ErpOrderLineModel orderLine) {
 		this(orderLine, null, null, null);
@@ -135,6 +136,16 @@ public class FDCartLineModel extends AbstractCartLine {
 			return true;	
 		}
 		return false;
+	}
+
+	public String getCartonNumber() {
+		// TODO Auto-generated method stub
+		return cartonNumber;
+	}
+
+	public void setCartonNumber(String no) {
+		// TODO Auto-generated method stub
+		this.cartonNumber=no;
 	}
 
  

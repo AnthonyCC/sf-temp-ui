@@ -150,5 +150,7 @@ public interface FDCartLineI extends FDProductSelectionI {
 	//Returns the zone under which this product has been priced.
 	public PricingContext getPricingContext();
 	
+	public void setCartonNumber(String no);
+	public String getCartonNumber();
 
 }

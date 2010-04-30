@@ -29,6 +29,7 @@ import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -50,6 +51,8 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCartonInfo;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
@@ -58,6 +61,7 @@ import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.CclUtils;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
@@ -1184,6 +1188,8 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 
 			theCartLine.setDiscountFlag(discountApplied);
+			String cartonNumber=request.getParameter("cartonNumber");
+			if(cartonNumber!=null)	theCartLine.setCartonNumber(cartonNumber);
 		}
 
 		return theCartLine;
@@ -1557,8 +1563,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 	private void parseOrderLines(ActionResult result, ErpComplaintModel complaintModel) throws FDResourceException {
 
 		ArrayList<ErpComplaintLineModel> lines = new ArrayList<ErpComplaintLineModel>();
-		// FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(this.orderId);
-
+		//FDOrderAdapter order = (FDOrderAdapter) FDCustomerManager.getOrder(request.getParameter("orig_sale_id"));
+		List<FDCartLineI> lineItems=new ArrayList<FDCartLineI>(this.cart.getOrderLines());
+		
 		for (int i = 0; i < orderLineReason.length; i++) {
 
 			ErpComplaintLineModel line = new ErpComplaintLineModel();
@@ -1600,6 +1607,21 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 				result.addError(new ActionError("ol_error_" + i, "Missing or invalid data in this line."));
 				addGeneralError(result);
 			}
+			//add carton id for makegood orders
+			try
+			{				
+				if(lineItems!=null)
+				{
+					for(FDCartLineI lineItem :lineItems)
+					{
+						if(this.orderLineId[i].equals(lineItem.getOrderLineId()))
+						{
+							lineItems.remove(lineItem);
+							line.setCartonNumber(lineItem.getCartonNumber());
+						}
+					}
+				}				
+			}catch(Exception e){}
 
 		}
 
