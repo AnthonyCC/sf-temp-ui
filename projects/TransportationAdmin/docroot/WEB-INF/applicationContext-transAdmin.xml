@@ -160,9 +160,15 @@
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>	
 	
+	<!--Zone Expansion  -->
+	<bean id="zoneExpansionDAO" class="com.freshdirect.transadmin.dao.oracle.ZoneExpansionDaoOracleImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
+        <property name="zoneExpansionDao" ref="zoneExpansionDAO"/>
     </bean>
 
    <bean id="restrictionManager" class="com.freshdirect.transadmin.service.impl.RestrictionManagerImpl">
@@ -197,7 +203,16 @@
         class="org.springframework.transaction.jta.WebLogicJtaTransactionManager"
     />  -->  
    
- 
+ 	<bean id="zoneExpansionBase" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="target" ref="domainManager"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
     <bean id="domainManagerBase" abstract="true" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
         <property name="target" ref="domainManager"/>
         <property name="transactionManager" ref="txManager"/>

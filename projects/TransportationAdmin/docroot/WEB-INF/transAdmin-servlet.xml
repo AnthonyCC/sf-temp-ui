@@ -122,6 +122,9 @@
                 <prop key="/timeslotlog.do">adminController</prop>
                 <prop key="/notification.do">adminController</prop>
                 <prop key="/gpsadmin.do">dispatchController</prop>
+                
+                <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
+               
 			</props>
 		</property>
 	</bean>
@@ -489,8 +492,19 @@
         <property name="formView" value="geoRestrictionEdit" />
 	</bean>
 	
+	<bean id="zoneExpansionFormController" class="com.freshdirect.transadmin.web.ZoneExpansionFormController">
+		<property name="sessionForm" value="true"/>
+        <property name="domainManagerService" ref="domainManager"/>
+        <property name="commandName" value="zoneExpansionForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.ZoneWorkTableForm"/>
+        <property name="validator" ref="zoneWorkTableValidator"/>
+        <property name="successView" value="zoneexpansionView" />
+        <property name="formView" value="zoneexpansionView" />
+	</bean>
+	
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
-		<property name="restrictionManagerService" ref="restrictionManager"/>		
+		<property name="restrictionManagerService" ref="restrictionManager"/>
+	  	<property name="domainManagerService" ref="zoneExpansionBase"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncGeographyProvider" value="com.freshdirect.transadmin.web.json.IGeographyProvider" />				
@@ -583,4 +597,6 @@
 	<bean id="scribValidator" class="com.freshdirect.transadmin.web.validation.ScribValidator"/>
 	<bean id="scheduleValidator" class="com.freshdirect.transadmin.web.validation.ScheduleValidator"/>
 	
+	<bean id="zoneWorkTableValidator" class="com.freshdirect.transadmin.web.validation.ZoneWorkTableValidator"/>
+		
 </beans>

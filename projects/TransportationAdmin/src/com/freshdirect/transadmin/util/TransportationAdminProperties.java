@@ -175,6 +175,9 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_DEFAULT_GPSPLUGINKEY		= "transportation.default.gpspluginkey";
 	private final static String PROP_TRANSPORTATION_GPSUPLOAD_FILENAME		= "transportation.gpsupload.filename";
 
+	//Zone Expansion
+	private final static String PROP_ZONE_EXPANSION_WORKTABLES		= "transportation.zoneexpansion.worktables";
+	
 	static {
 
 
@@ -629,6 +632,10 @@ public class TransportationAdminProperties {
 			e.printStackTrace();
 		}
 		return get(temp);
+	}
+	
+	public static String getZoneExpansionTables(){
+		return get(PROP_ZONE_EXPANSION_WORKTABLES);
 	}
 
 	public static String getDefaultGpsDomain() {

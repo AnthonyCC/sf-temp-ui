@@ -9,4 +9,6 @@ public interface IGeographyProvider {
 	SpatialBoundary getGeoRestrictionBoundary(String code);
 	SpatialBoundary getZoneBoundary(String code);
 	List getBoundaries(String code);
+	boolean doZoneExpansion(String worktable, String zone[][], String deliveryFee, String expansionType);
+	boolean generateTimeslots(String zone[][]);
 }

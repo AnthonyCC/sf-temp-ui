@@ -157,6 +157,11 @@
      	  <menu id="ADO003" title="Notification" orientation="RIGHT" link="notification.do">
 	     	<access-uris>notification.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>
+	     </menu>
+	     
+		 <menu id="ADO004" title="Zone Expansion" orientation="RIGHT" link="zoneexpansion.do">
+	     	<access-uris>zoneexpansion.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>	     
 	     </menu>    	     
          
 </menu>

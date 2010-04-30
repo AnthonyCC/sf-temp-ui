@@ -102,4 +102,20 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getUPSRouteInfo(String routeDate);
 	
 	Collection getEmployeeRole(String empId);
+	
+	Collection getZoneWorkTableInfo(String worktable, String regionId);
+	
+	Collection getZoneRegionInfo(String regionId);
+	
+	Collection checkPolygons();
+	
+	void refreshDev(String worktable);
+	
+	void doZoneExpansion(String worktable, String zoneCode[][], String regionId, String deliveryFee, String expansionType);
+	
+	String getDeliveryCharge(String regionId);
+	
+	Collection getCommonList(String worktable, String regionId);
+	
+	void rollbackTimeslots(String zone[][]);
 }
