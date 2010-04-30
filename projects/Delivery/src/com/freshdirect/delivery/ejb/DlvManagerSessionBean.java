@@ -2297,4 +2297,23 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
+	
+	public List getActiveZoneCodes() throws RemoteException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvManagerDAO.getActiveZoneCodes(conn);
+
+		} catch (SQLException e) {
+			throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+	}
 }

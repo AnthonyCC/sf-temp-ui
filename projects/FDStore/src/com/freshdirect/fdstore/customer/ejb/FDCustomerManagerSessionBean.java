@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer.ejb;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,6 +35,8 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
+import com.freshdirect.crm.CrmClick2CallModel;
+import com.freshdirect.crm.CrmClick2CallTimeModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -5584,6 +5587,54 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 		}
+	}
+	
+	private static final String CLICK2CALL_QUERY = "select * from CUST.CLICK2CALL where cro_mod_date = (select max(cro_mod_date) from CUST.CLICK2CALL)";
+	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException{
+		Connection conn = null;
+		CrmClick2CallModel click2callModel = new CrmClick2CallModel();
+		try{
+			conn = this.getConnection();
+			PreparedStatement ps = conn.prepareStatement(CLICK2CALL_QUERY);
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()){
+				click2callModel.setId(rs.getString(1));
+				click2callModel.setStatus(("Y".equalsIgnoreCase(rs.getString(2)))?true:false);
+				click2callModel.setEligibleCustomers(rs.getString(3));
+				click2callModel.setNextDayTimeSlot(("Y".equalsIgnoreCase(rs.getString(5)))?true:false);
+				click2callModel.setUserId(rs.getString(6));
+				click2callModel.setCroModDate(rs.getTimestamp(7));
+				Array array = rs.getArray(4);
+				String[] zoneCodes = (String[])array.getArray();	
+				click2callModel.setDeliveryZones(zoneCodes);
+				PreparedStatement ps1 = conn.prepareStatement("select * from CUST.CLICK2CALL_TIME where click2call_id="+rs.getString(1));
+				ResultSet rs1 = ps1.executeQuery();
+				CrmClick2CallTimeModel[] click2CallTimeModel = new CrmClick2CallTimeModel[7];
+				int i=0;
+				while(rs1.next()){
+					click2CallTimeModel[i++] = new CrmClick2CallTimeModel(rs1.getString(1),rs1.getString(2),rs1.getString(3),("Y".equalsIgnoreCase(rs1.getString(4)))?true:false,rs1.getString(5));					
+				}
+				click2callModel.setDays(click2CallTimeModel);
+				rs1.close();
+				ps1.close();
+			}
+			rs.close();
+			ps.close();
+		}catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+		
+		return click2callModel;
 	}
 }
 

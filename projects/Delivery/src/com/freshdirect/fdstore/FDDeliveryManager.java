@@ -1019,5 +1019,16 @@ public class FDDeliveryManager {
 			throw new FDResourceException(re);
 		}
 	}
+	
+	public List getActiveZoneCodes() throws FDResourceException{
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+			return sb.getActiveZoneCodes();
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
 
 }

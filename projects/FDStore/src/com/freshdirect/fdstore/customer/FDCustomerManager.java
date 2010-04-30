@@ -27,6 +27,7 @@ import weblogic.auddi.util.Logger;
 import com.freshdirect.common.address.AddressI;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumDeliveryType;
@@ -91,6 +92,7 @@ import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
+import com.freshdirect.fdstore.customer.ejb.CallCenterManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
@@ -3425,6 +3427,24 @@ public class FDCustomerManager {
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
 				return sb.getTopFaqs();
+
+			} catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to bean");
+			}
+		}
+		
+		
+		
+		public static CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
+			lookupManagerHome();
+		
+			try {
+				FDCustomerManagerSB sb = managerHome.create();
+				return sb.getClick2CallInfo();
 
 			} catch (CreateException ce) {
 				invalidateManagerHome();

@@ -14,6 +14,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -718,5 +719,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     public List productRequestFetchAllDepts() throws FDResourceException, RemoteException;
     public List productRequestFetchAllCats() throws FDResourceException, RemoteException;
     public List productRequestFetchAllMappings() throws FDResourceException, RemoteException;
+    
+    public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 }
 

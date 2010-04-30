@@ -14,6 +14,7 @@ import java.util.*;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.*;
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.customer.*;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
 import com.freshdirect.delivery.restriction.RestrictionI;
@@ -108,4 +109,11 @@ public interface CallCenterManagerSB extends EJBObject {
 	public int fixSettlemnentBatch(String batch_id) throws FDResourceException, RemoteException;	
 	
 	public void saveTopFaqs(List faqIds) throws FDResourceException, RemoteException;
+	
+	public void saveClick2CallInfo(CrmClick2CallModel click2CallModel) throws FDResourceException, RemoteException;
+	
+	public void saveClick2CallStatus(String id, String userId, boolean status) throws FDResourceException, RemoteException;
+	
+//	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
+	
 }

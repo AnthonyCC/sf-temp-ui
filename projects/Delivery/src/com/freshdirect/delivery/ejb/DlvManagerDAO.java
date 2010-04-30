@@ -1156,4 +1156,16 @@ public class DlvManagerDAO {
 		ps.close();
 		return count.length;
 	}
+	
+	private static final String SELECT_ACTIVE_ZONES = "select ZONE_CODE from TRANSP.Zone where OBSOLETE IS NULL Order By ZONE_CODE";
+	
+	public static List getActiveZoneCodes(Connection conn)throws SQLException{
+		PreparedStatement ps = conn.prepareStatement(SELECT_ACTIVE_ZONES);
+		ResultSet rs =ps.executeQuery();
+		List zoneCodes = new ArrayList();
+		while(rs.next()){
+			zoneCodes.add(rs.getString(1));
+		}
+		return zoneCodes;
+	}
 }

@@ -156,7 +156,7 @@ if(request.getParameter("message")!=null){
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Change delivery info</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
-					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/manage_account.jsp">Change credit card info</a><br>
+					<img src="/media_stat/images/layout/orangedot.gif" width="8" height="8" border="0" ALIGN="BOTTOM">&nbsp;&nbsp;<a href="/your_account/payment_information.jsp">Change credit card info</a><br>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="4" BORDER="0"><br>
 					
 		<!--<%	if(user.isDepotUser()){%>	
@@ -238,7 +238,7 @@ if(request.getParameter("message")!=null){
 		<TD valign="top" width="370" colspan="3">
 		            <a href='index.jsp'><img src="/media_stat/images/template/help/hdr_contact_us.gif" border="0" width="204" height="14" alt="CONTACT US"></a>
 					<br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
-	            	    FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>The best way to get help is through email.</b> Please select an order number and include as much specific information as possible to ensure a prompt response to your inquiry.<br>
+	            	    FreshDirect Customer Service is standing by to answer your questions, seven days a week.  <b>The best way to get help is through email. Our dedicated service team generally responds within 1 to 3 hours during our business day.</b> <br>
 	            	    <br>
                         
                         <img src="/media_stat/images/template/help/enter_message.gif" width="120" height="9" border="0" alt="ENTER YOUR MESSAGE">&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br>

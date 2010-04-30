@@ -163,4 +163,6 @@ public interface DlvManagerSB extends EJBObject {
 	
 	void setReservationUpdateStatusInfo(String reservationId, double orderSize, double serviceTime, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
 	
+	public List getActiveZoneCodes() throws RemoteException;
+	
 }   

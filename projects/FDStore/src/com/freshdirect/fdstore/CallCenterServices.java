@@ -22,6 +22,7 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -806,5 +807,56 @@ public class CallCenterServices {
 		}
 	}
 
+	public static void saveClick2CallInfo(CrmClick2CallModel click2CallModel) throws FDResourceException{
+		
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.saveClick2CallInfo(click2CallModel);
 
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
+
+	public static CrmClick2CallModel getClick2CallInfo() throws FDResourceException {
+		/*if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			return sb.getClick2CallInfo();
+
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}*/
+		return FDCustomerManager.getClick2CallInfo();
+	}
+	
+	public static void saveClick2CallStatus(String id, String userId, boolean status) throws FDResourceException{
+		if (callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.saveClick2CallStatus(id, userId, status);
+
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to bean");
+		}
+	}
 } // class CallCenterServices
