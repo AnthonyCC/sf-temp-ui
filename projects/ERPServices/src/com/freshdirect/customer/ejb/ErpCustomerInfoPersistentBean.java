@@ -53,6 +53,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	private boolean reminderAltEmail;
 
 	private boolean recieveOptinNewslettert;
+
+    private String receive_emailLevel;
+    private boolean noContactMail;
+    private boolean noContactPhone;
 	
 	//Recurring Reservation fields
 	private int rsvDayOfWeek;
@@ -97,6 +101,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.reminderAltEmail = false;
 
 		this.recieveOptinNewslettert = false;
+		this.receive_emailLevel = null;
+	    this.noContactMail = false;
+	    this.noContactPhone = false;
 		
 		rsvStartTime = null;
 		rsvEndTime = null;
@@ -162,6 +169,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		model.setReminderAltEmail(this.reminderAltEmail);
 
 		model.setReceiveOptinNewsletter(this.recieveOptinNewslettert);
+		model.setEmailPreferenceLevel(this.receive_emailLevel);
+		model.setNoContactMail(this.noContactMail);
+		model.setNoContactPhone(this.noContactPhone);
 		
 		model.setRsvDayOfWeek(this.rsvDayOfWeek);
 		model.setRsvStartTime(this.rsvStartTime);
@@ -211,6 +221,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		this.reminderAltEmail = m.isReminderAltEmail();
 
 		this.recieveOptinNewslettert = m.isReceiveOptinNewsletter();
+		this.receive_emailLevel = m.getEmailPreferenceLevel();
+		this.noContactMail = m.isNoContactMail();
+		this.noContactPhone = m.isNoContactPhone();
 		
 		this.rsvDayOfWeek = m.getRsvDayOfWeek();
 		this.rsvStartTime = m.getRsvStartTime();
@@ -268,8 +281,12 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		//String id = this.getNextId(conn);
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.CUSTOMERINFO (CUSTOMER_ID, TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL, ALT_EMAIL, EMAIL_PLAIN_TEXT, RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER) "
-					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.CUSTOMERINFO (CUSTOMER_ID, TITLE, FIRST_NAME, MIDDLE_NAME, LAST_NAME, EMAIL, ALT_EMAIL, EMAIL_PLAIN_TEXT, "
+				+ " RECEIVE_NEWS, HOME_PHONE, HOME_EXT, BUSINESS_PHONE, BUSINESS_EXT, CELL_PHONE, CELL_EXT, OTHER_PHONE, OTHER_EXT, FAX, "
+				+ " FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, "
+				+ " RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, "
+				+ " REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE) "
+					+ " values (?,?,?,?,?,?,?,?,?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,replace(replace(replace(replace(?,'('),')'),' '),'-'),?,replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'),?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
 		ps.setString(1, this.getParentPK().getId());
 		ps.setString(2, this.title);
@@ -345,6 +362,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 		ps.setString(34, this.recieveOptinNewslettert ? "X" : "");
 		
+		ps.setString(35, this.receive_emailLevel);
+		ps.setString(36, this.noContactMail ? "X" : "");
+		ps.setString(37, this.noContactPhone ? "X" : "");
+		
 		
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not created");
@@ -365,7 +386,10 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 					+ " '('||substr(BUSINESS_PHONE,1,3)||') '||substr(BUSINESS_PHONE,4,3)||'-'||substr(BUSINESS_PHONE,7,4) as BUSINESS_PHONE, BUSINESS_EXT, "
 					+ " '('||substr(CELL_PHONE,1,3)||') '||substr(CELL_PHONE,4,3)||'-'||substr(CELL_PHONE,7,4) as CELL_PHONE, CELL_EXT, "
 					+ " '('||substr(OTHER_PHONE,1,3)||') '||substr(OTHER_PHONE,4,3)||'-'||substr(OTHER_PHONE,7,4) as OTHER_PHONE, OTHER_EXT, "
-					+ " '('||substr(FAX,1,3)||') '||substr(FAX,4,3)||'-'||substr(FAX,7,4) as FAX, FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE"
+					+ " '('||substr(FAX,1,3)||') '||substr(FAX,4,3)||'-'||substr(FAX,7,4) as FAX, FAX_EXT, WORK_DEPARTMENT, EMPLOYEE_ID, "
+					+ " REMINDER_LAST_SEND, REMINDER_FREQUENCY, REMINDER_DAY_OF_WEEK, REMINDER_ALT_EMAIL, RSV_DAY_OF_WEEK, RSV_START_TIME, "
+					+ " RSV_END_TIME, RSV_ADDRESS_ID, UNSUBSCRIBE_DATE, REG_REF_TRACKING_CODE, REG_REF_PROG_ID, REF_PROG_INVT_ID, "
+					+ " RECEIVE_OPTINNEWSLETTER, HAS_AUTORENEW_DP, AUTORENEW_DP_TYPE, EMAIL_LEVEL, NO_CONTACT_MAIL, NO_CONTACT_PHONE"
 					+ " FROM CUST.CUSTOMERINFO WHERE CUSTOMER_ID = ?");
 		ps.setString(1, this.getPK().getId());
 		ResultSet rs = ps.executeQuery();
@@ -392,6 +416,9 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 			this.reminderAltEmail = ("X".equals(rs.getString("REMINDER_ALT_EMAIL")) ? true : false);
 			
 			this.recieveOptinNewslettert = ("X".equalsIgnoreCase(rs.getString("RECEIVE_OPTINNEWSLETTER")));
+			this.receive_emailLevel = (rs.getString("EMAIL_LEVEL"));
+			this.noContactMail = ("X".equalsIgnoreCase(rs.getString("NO_CONTACT_MAIL")));
+			this.noContactPhone = ("X".equalsIgnoreCase(rs.getString("NO_CONTACT_PHONE")));
 			
 			this.rsvDayOfWeek = rs.getInt("RSV_DAY_OF_WEEK");
 			this.rsvStartTime = rs.getTimestamp("RSV_START_TIME");
@@ -418,7 +445,17 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 	public void store(Connection conn) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"UPDATE CUST.CUSTOMERINFO SET TITLE=?, FIRST_NAME=?, MIDDLE_NAME=?, LAST_NAME=?, EMAIL=?, ALT_EMAIL=?, EMAIL_PLAIN_TEXT=?, RECEIVE_NEWS=?, HOME_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), HOME_EXT=?, BUSINESS_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), BUSINESS_EXT=?, CELL_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), CELL_EXT=?, OTHER_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), OTHER_EXT=?, FAX=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), FAX_EXT=? , WORK_DEPARTMENT=?, EMPLOYEE_ID=? , REMINDER_LAST_SEND=?, REMINDER_FREQUENCY=?, REMINDER_DAY_OF_WEEK=?, REMINDER_ALT_EMAIL=?, RSV_DAY_OF_WEEK=?, RSV_START_TIME=?, RSV_END_TIME=?, RSV_ADDRESS_ID=?, UNSUBSCRIBE_DATE=?, REG_REF_TRACKING_CODE=?, REG_REF_PROG_ID=?, REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?,HAS_AUTORENEW_DP=?,AUTORENEW_DP_TYPE=?  WHERE CUSTOMER_ID=?");
+				"UPDATE CUST.CUSTOMERINFO SET TITLE=?, FIRST_NAME=?, MIDDLE_NAME=?, LAST_NAME=?, EMAIL=?, ALT_EMAIL=?, "
+				+ " EMAIL_PLAIN_TEXT=?, RECEIVE_NEWS=?, HOME_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), "
+				+ " HOME_EXT=?, BUSINESS_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), BUSINESS_EXT=?, "
+				+ " CELL_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), CELL_EXT=?, "
+				+ " OTHER_PHONE=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), OTHER_EXT=?, "
+				+ " FAX=replace(replace(replace(replace(replace(?,'('),')'),' '),'-'),'.'), FAX_EXT=? , WORK_DEPARTMENT=?, EMPLOYEE_ID=?, "
+				+ " REMINDER_LAST_SEND=?, REMINDER_FREQUENCY=?, REMINDER_DAY_OF_WEEK=?, REMINDER_ALT_EMAIL=?, RSV_DAY_OF_WEEK=?, "
+				+ " RSV_START_TIME=?, RSV_END_TIME=?, RSV_ADDRESS_ID=?, UNSUBSCRIBE_DATE=?, REG_REF_TRACKING_CODE=?, REG_REF_PROG_ID=?, "
+				+ " REF_PROG_INVT_ID=?, RECEIVE_OPTINNEWSLETTER=?, HAS_AUTORENEW_DP=?, AUTORENEW_DP_TYPE=?, "
+				+" EMAIL_LEVEL=?, NO_CONTACT_MAIL=?, NO_CONTACT_PHONE=?"
+				+" WHERE CUSTOMER_ID=?");
 		//ps.setString(, this.getPK().getId() );
 
 		ps.setString(1, this.title);
@@ -512,7 +549,14 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 		else {
 			ps.setString(35,this.autoRenewDPSKU);
 		}
-		ps.setString(36, this.getPK().getId());
+		ps.setString(36, this.receive_emailLevel);
+		
+
+		ps.setString(37, this.noContactMail ? "X" : "");
+
+		ps.setString(38, this.noContactPhone ? "X" : "");
+		
+		ps.setString(39, this.getPK().getId());
 
 		
         if (ps.executeUpdate() != 1) {
@@ -536,6 +580,22 @@ public class ErpCustomerInfoPersistentBean extends DependentPersistentBeanSuppor
 
 	public PrimaryKey getPK() {
 		return this.getParentPK();
+	}
+
+	public boolean isNoContactMail() {
+		return noContactMail;
+	}
+
+	public void setNoContactMail(boolean noContactMail) {
+		this.noContactMail = noContactMail;
+	}
+
+	public boolean isNoContactPhone() {
+		return noContactPhone;
+	}
+
+	public void setNoContactPhone(boolean noContactPhone) {
+		this.noContactPhone = noContactPhone;
 	}
 
 }

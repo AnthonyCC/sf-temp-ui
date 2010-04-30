@@ -116,6 +116,12 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 				
 			} else if ("changeEmailPreference".equalsIgnoreCase(actionName)) {
 				this.performChangeEmailPreference(request, actionResult);
+			
+			} else if ("changeMailPhonePreference".equalsIgnoreCase(actionName)) {
+				this.changeMailPhonePreference(request, actionResult);
+
+			} else if ("changeEmailPreferenceLevel".equalsIgnoreCase(actionName)) {
+				this.changeEmailPreferenceLevel(request, actionResult);
 			}
 
 		} catch (Exception ex) {
@@ -204,7 +210,7 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 
 		return erpAddress;
 	}
-	
+
 
 	protected void performEditDeliveryAddress(HttpServletRequest request, ActionResult actionResult) throws FDResourceException {
 		HttpSession session = (HttpSession) pageContext.getSession();
@@ -505,7 +511,50 @@ public class RegistrationControllerTag extends AbstractControllerTag implements 
 		}
 
 	}
+	
+	protected void changeEmailPreferenceLevel(HttpServletRequest request, ActionResult result) throws FDResourceException {
 
+		//get value
+		String receive_emailLevel = NVL.apply(request.getParameter("receive_emailLevel"), "0");
+		
+		if (!result.isSuccess()) {
+			return;
+		}
+
+		FDIdentity identity = getIdentity();
+		ErpCustomerInfoModel cim = null;
+		cim = FDCustomerFactory.getErpCustomerInfo(identity);
+
+		cim.setEmailPreferenceLevel(receive_emailLevel);
+
+		LOGGER.debug("Updating customer email level preference");
+		FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+		LOGGER.debug("Customer email preference level updated");
+	}
+
+	protected void changeMailPhonePreference(HttpServletRequest request, ActionResult result) throws FDResourceException {
+
+		//get values
+
+		boolean noContactMail = "yes".equalsIgnoreCase(request.getParameter("noContactMail"));
+		boolean noContactPhone = "yes".equalsIgnoreCase(request.getParameter("noContactPhone"));
+		
+		if (!result.isSuccess()) {
+			return;
+		}
+
+		FDIdentity identity = getIdentity();
+		ErpCustomerInfoModel cim = null;
+		cim = FDCustomerFactory.getErpCustomerInfo(identity);
+
+		cim.setNoContactMail(noContactMail);
+		cim.setNoContactPhone(noContactPhone);
+
+		LOGGER.debug("Updating customer mail/phone preferences");
+		FDCustomerManager.updateCustomerInfo(AccountActivityUtil.getActionInfo(pageContext.getSession()), cim);
+		LOGGER.debug("Customer mail/phone preferences updated");
+	}
+	
 	protected FDIdentity getIdentity() {
 		HttpSession session = pageContext.getSession();
 		FDSessionUser user = (FDSessionUser) session.getAttribute(USER);

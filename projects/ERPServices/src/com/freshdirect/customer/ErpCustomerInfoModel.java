@@ -51,6 +51,9 @@ public class ErpCustomerInfoModel extends ModelSupport {
     private Date rsvEndTime;
     private String rsvAddressId;
     private java.util.Date unsubscribeDate;
+    private String receive_emailLevel;
+    private boolean noContactMail;
+    private boolean noContactPhone;
     
     private boolean receiveOptinNewsletter;
     private String regRefTrackingCode;  // referral tracking code when registration
@@ -184,6 +187,14 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setUnsubscribeDate(java.util.Date unsubscribeDate) {
 		this.unsubscribeDate = unsubscribeDate;
 	}
+	
+	public String getEmailPreferenceLevel(){
+    	return this.receive_emailLevel;
+    }
+	
+	public void setEmailPreferenceLevel(String receive_emailLevel) {
+		this.receive_emailLevel = receive_emailLevel;
+	}
 
     public String getRegRefTrackingCode(){
     	return this.regRefTrackingCode;
@@ -233,4 +244,21 @@ public class ErpCustomerInfoModel extends ModelSupport {
 	public void setHasAutoRenewDP(String hasAutoRenewDP) {
 		this.hasAutoRenewDP = hasAutoRenewDP;
 	}
+
+	public boolean isNoContactMail() {
+		return noContactMail;
+	}
+
+	public void setNoContactMail(boolean noContactMail) {
+		this.noContactMail = noContactMail;
+	}
+
+	public boolean isNoContactPhone() {
+		return noContactPhone;
+	}
+
+	public void setNoContactPhone(boolean noContactPhone) {
+		this.noContactPhone = noContactPhone;
+	}
+
 }

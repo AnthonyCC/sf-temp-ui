@@ -42,10 +42,15 @@ String userName = "";
 String workDept = "";
 String employeeId = "";
 
+String receive_emailLevel =""; //
+String noContactMail = ""; //
+String noContactPhone = ""; //
+
+
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-System.out.println("This is the CM in the JSP:  " + cm.isReceiveNewsletter());
+//System.out.println("This is the CM in the JSP:  " + cm.isReceiveNewsletter());
 
 lastName = cm.getLastName();
 firstName = cm.getFirstName();
@@ -134,6 +139,31 @@ if (request.getParameter(EnumUserInfoName.DLV_WORK_DEPARTMENT.getCode()) != null
 if (request.getParameter("employeeId") != null) {
     employeeId = request.getParameter("employeeId");
 }
+
+//email preference level
+	if (request.getParameter("receive_emailLevel")!=null) {
+		receive_emailLevel = request.getParameter("receive_emailLevel");
+	}
+	receive_emailLevel = cm.getEmailPreferenceLevel();
+	//if (receive_emailLevel == null) { receive_emailLevel = "2"; }
+
+//no contact via mail
+	if (request.getParameter("noContactMail")!=null) {
+		noContactMail = request.getParameter("noContactMail");
+	}
+	noContactMail= cm.isNoContactMail()?"yes":"no";
+	if ("yes".equalsIgnoreCase(noContactMail)) {
+		noContactMail = "checked";
+	} else noContactMail = "";
+//no contact via phone
+	if (request.getParameter("noContactPhone")!=null) {
+		noContactPhone = request.getParameter("noContactPhone");
+	}
+	noContactPhone= cm.isNoContactPhone()?"yes":"no";
+	if ("yes".equalsIgnoreCase(noContactPhone)) {
+		noContactPhone = "checked";
+	} else noContactPhone = "";
+
 %>
 <%// CONFIRMATION MESSAGE %>
 <%if(result.isSuccess() && "POST".equalsIgnoreCase(request.getMethod())){
@@ -325,28 +355,75 @@ String[] checkInfoForm = 	{EnumUserInfoName.EMAIL.getCode(), EnumUserInfoName.EM
     }    %>
 </form>
 
-<form name="update_email_preference" method="post">
-<input type="hidden" name="actionName" value="changeEmailPreference">
+
+<form id="update_email_preference_level" name="update_email_preference_level" method="post">
+	<input type="hidden" name="actionName" value="changeEmailPreferenceLevel">
+	<tr>
+		<td colspan="6"><br /><br />
+			<img src="/media_stat/images/navigation/email_preferences.gif" width="122" height="9" border="0" alt="EMAIL PREFERENCES"><br />
+			<img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0" vspace="5"><br />
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+			<input class="radio" type="radio" id="receive_emailLevel2" name="receive_emailLevel" value="2" <%="2".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">
+			<strong>It's okay for FreshDirect to send me food offers, news and updates from time to time.</strong><br />
+			You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else. <a href="/help/privacy_policy.jsp">Click here to view our Privacy Policy.</a><br /><br />
+		</td>
+		<td align="right">
+			<a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0">
+		</td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+			<input class="radio" type="radio" id="receive_emailLevel1" name="receive_emailLevel" value="1" <%="1".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">
+			<strong>It's okay for FreshDirect to email me, but no more than one newsletter or offer each week.</strong><br /><br />
+		</td>
+		<td><!--  --></td>
+	</tr>
+	<tr valign="top">
+		<td align="right" style="padding-top:5px; padding-right:5px;">
+			<input class="radio" type="radio" id="receive_emailLevel0" name="receive_emailLevel" value="0" <%="0".equals(receive_emailLevel) ? "checked=\"true\"":""%> /></td>
+		<td colspan="4" style="padding-top:5px;" class="text12">
+			<strong>Please don't send me emails unless they are directly related to my orders or important service information.</strong><br /><br />
+		</td>
+		<td><!--  --></td>
+	</tr>
+</form>
+
+
+
+<form id="update_mail_phone_preference" name="update_mail_phone_preference" method="post">
+<input type="hidden" name="actionName" value="changeMailPhonePreference">
 <tr>
-	<td colspan="6"><br><br>
-		<img src="/media_stat/images/navigation/email_preferences.gif" width="122" height="9" border="0" alt="EMAIL PREFERENCES"><br>
-		<img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0" vspace="5"><br>
+	<td colspan="6"><br /><br />
+		[THIS IMAGE NEEDS TO BE DEFINED]<!-- <img src="/media_stat/images/navigation/mail_phone_preferences.gif" width="122" height="9" border="0" alt="MAIL & PHONE PREFERENCES"> --><br />
+		<img src="/media_stat/images/layout/cccccc.gif" width="675" height="1" border="0" vspace="5"><br />
 	</td>
 </tr>
 <tr valign="top">
-	<td align="right" style="padding-top:5px; padding-right:5px;"><input class="radio" type="checkbox" name="receive_mail" value="yes" <%="yes".equalsIgnoreCase(sendNewsLetter) ? "checked":""%>></td>
-	<td colspan="4" style="padding-top:5px;" class="text12"><b>Please send me food offers, news and updates from time to time.</b><br>
-	You can unsubscribe anytime &mdash; and, of course, we'll never share your information with anyone else.<br><br>
+	<td align="right" style="padding-top:5px; padding-right:5px;">
+		<input class="radio" type="checkbox" id="noContactMail" name="noContactMail" value="yes" <%=noContactMail%>>
+	</td>
+	<td colspan="4" style="padding-top:5px;" class="text12">
+		<strong>Please do not send me offers, and marketing messages in the mail.</strong><br /><br />
 	</td>
 	<td align="right"><a href="<%=response.encodeURL("/your_account/manage_account.jsp")%>"><img src="/media_stat/images/buttons/cancel.gif" width="54" height="16" vspace="3" hspace="3" border="0" alt="CANCEL"></a><input type="image" name="update_email_preference" src="/media_stat/images/buttons/save_changes.gif" width="84" height="16"  alt="Save Changes" vspace="3" hspace="3" border="0"></td>
 </tr>
 <tr valign="top">
-	<td style="padding-right: 5px;" align="right"><input class="radio" type="checkbox" name="isSendPlainTextEmail" value="yes" <%=sendPlainTextEmail%>></td>
-	<td colspan="4" class="text12"><b>Send me plain text e-mail.</b><br>
-	Select this option if your e-mail program is unable to receive HTML formatted e-mail.<br><br></td>
-	<td></td>
+	<td style="padding-right: 5px;" align="right">
+		<input class="radio" type="checkbox" id="noContactPhone" name="noContactPhone" value="yes" <%=noContactPhone%>>
+	</td>
+	<td colspan="4" class="text12">
+		<strong>Please do not contact me by phone about offers and other updates.</strong><br />
+		We may still attempt to call you about issues or problems with a specific order you have scheduled for delivery.<br /><br />
+	</td>
+	<td><!--  --></td>
 </tr>
 </form>
+
 </table>
 
 <script type="text/javascript">

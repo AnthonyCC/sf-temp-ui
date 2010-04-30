@@ -144,11 +144,6 @@ your account information, this is the place to do it.<br></td>
 		Change your user name, password, and contact info.
 		<br><br>
 		<font class="text13bold">
-		<a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's Picks Newsletter</a>
-		</font><br>
-				Subscribe to the President's Picks alert to get each week's deals delivered right to your inbox.
-		<br><br>
-		<font class="text13bold">
 		<a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder Service</a>
 		</font><br>
 		Change your e-mail reminder preferences.
