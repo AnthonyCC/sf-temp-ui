@@ -1419,9 +1419,11 @@ CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, conte
 	
     aPanel.states["shown"] = function(self, event_type, orig) {
         if (event_type == "click" && orig == self.sources["dropdown"]) {
+			var freqOrd = self.sources.dropdown.value;
+
             // User picked a frequency
             self.makeBody(self.createWaitAnimation());
-
+			
 			// let FD know
 	        YAHOO.util.Connect.asyncRequest(
 	            "POST",
@@ -1445,7 +1447,7 @@ CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, conte
 			        },
 	                argument: { ptr: self}
 	            },
-	            "action=setFrequency&soId="+self.soId+"&freqOrd="+self.sources.dropdown.value
+	            "action=setFrequency&soId="+self.soId+"&freqOrd="+freqOrd
 	        );
 			
 			self.currentState = "complete";
