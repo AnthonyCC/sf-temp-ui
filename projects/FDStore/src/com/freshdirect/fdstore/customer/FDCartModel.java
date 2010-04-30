@@ -288,14 +288,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	 *          a recipe, false otherwise
 	 */
 	public boolean containsRecipeItems() {
-		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
-			
+		for ( FDCartLineI line : orderLines ) {
 			if (line.getRecipeSourceId() != null) {
 				return true;
 			}
-		}
-		
+		}		
 		return false;
 	}
 	
@@ -677,7 +674,6 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			return false;
 		}
 
-		ErpPaymentMethodI paymentMethod = (ErpPaymentMethodI) this.paymentMethod;
 		AddressModel billAddr = paymentMethod.getAddress();
 
 		return !this.deliveryAddress.isSameLocation(billAddr);

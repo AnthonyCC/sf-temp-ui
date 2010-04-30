@@ -1,12 +1,3 @@
-/*
- * $Workfile:$
- *
- * $Date:$
- *
- * Copyright (c) 2003 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.Date;
@@ -22,11 +13,6 @@ import javax.servlet.jsp.tagext.VariableInfo;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.content.ConfiguredProduct;
-import com.freshdirect.fdstore.content.ConfiguredProductGroup;
-import com.freshdirect.fdstore.content.ProxyProduct;
-
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -35,6 +21,7 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.StarterList;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
@@ -43,32 +30,20 @@ import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
-import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.QuickCartCache;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class QuickShopControllerTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3424186319116152768L;
 
-
-
 	private static Category LOGGER = LoggerFactory.getInstance(QuickShopControllerTag.class);
-	
 	
 
 	private String action;
@@ -124,12 +99,12 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 				
 
 				if ("every".equalsIgnoreCase(this.orderId)) {
-					List originalLines = FDListManager.getEveryItemEverOrdered(user.getIdentity());
+					List<FDProductSelectionI> originalLines = FDListManager.getEveryItemEverOrdered(user.getIdentity());
 					quickCart.setDeliveryDate(new Date());
 					quickCart.setProducts(originalLines);
 				} else if (this.orderId != null && !"".equals(this.orderId)) {
 					FDOrderI order = FDCustomerManager.getOrder(user.getIdentity(), this.orderId);
-					List originalLines = order.getOrderLines();
+					List<FDCartLineI> originalLines = order.getOrderLines();
 					/*
 					if(originalLines!=null && originalLines.size()>0){						
 						for(int i=0;i<originalLines.size();i++){
@@ -145,7 +120,7 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 					// clean and remove duplicate product selections 
 					//
 					if (originalLines != null) {
-						List cleanLines = OrderLineUtil.cleanAndRemoveDuplicateProductSelections(originalLines,false);
+						List<FDCartLineI> cleanLines = OrderLineUtil.cleanAndRemoveDuplicateProductSelections(originalLines,false);
 						quickCart.setProducts(cleanLines);
 					}
 				}
@@ -177,11 +152,11 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 
 					
 						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);					
-						List cclLines = ccList.getLineItems();	
+						List<FDCustomerListItem> cclLines = ccList.getLineItems();	
 					
 						// convert the line items into  FDProductSelectionI and clean them as needed
 						if(cclLines!=null){
-							List productSelections = OrderLineUtil.getValidProductSelectionsFromCCLItems(cclLines);
+							List<FDProductSelectionI> productSelections = OrderLineUtil.getValidProductSelectionsFromCCLItems(cclLines);
 							//List cartLines = OrderLineUtil.update(productSelections);
 							quickCart.setProducts(productSelections);
 						}

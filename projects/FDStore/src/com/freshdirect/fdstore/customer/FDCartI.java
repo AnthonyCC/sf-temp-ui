@@ -1,40 +1,25 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.customer;
 
 import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.affiliate.ErpAffiliate;
-import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.fdstore.FDReservation;
 
 public interface FDCartI extends java.io.Serializable {
-	/**
-	 * @associates <{com.freshdirect.fdstore.customer.FDCartLineI}>
-	 * @link aggregationByValue
-	 * @clientCardinality 1
-	 * @supplierCardinality 0..*
-	 */
-    /*#FDCartLineI lnkFDOrderLineI;*/
 
 	public int numberOfOrderLines();
 
 	public FDCartLineI getOrderLine(int index);
 
-	public List getOrderLines();
+	public List<FDCartLineI> getOrderLines();
 	
-	public List getSampleLines();
+	public List<FDCartLineI> getSampleLines();
 	
 	public FDReservation getDeliveryReservation();
 	
@@ -58,7 +43,7 @@ public interface FDCartI extends java.io.Serializable {
 	/**
 	 * @return collection of ErpChargeLineModel objects
 	 */
-	public Collection getCharges();
+	public Collection<ErpChargeLineModel> getCharges();
 
 	public double getPhoneCharge();
 
@@ -104,11 +89,11 @@ public interface FDCartI extends java.io.Serializable {
 	//
 	
 	/** @return List of WebOrderViewI */
-	public List getOrderViews();
+	public List<WebOrderViewI> getOrderViews();
 
 	public WebOrderViewI getOrderView(ErpAffiliate affiliate);
 
-	public List getDiscounts();
+	public List<ErpDiscountLineModel> getDiscounts();
 	
 	public double getTotalDiscountValue();
 	
@@ -119,7 +104,6 @@ public interface FDCartI extends java.io.Serializable {
 	public double getTotalLineItemsDiscountAmount();
 	
 	public double getBufferAmt();
-//	public void setBufferAmt(double bufferAmt);
 	
 	public double getTotalAppliedGCAmount();
 	

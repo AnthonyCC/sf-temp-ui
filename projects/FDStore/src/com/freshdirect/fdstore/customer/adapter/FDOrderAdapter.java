@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +43,7 @@ import com.freshdirect.customer.ErpReturnOrderModel;
 import com.freshdirect.customer.ErpSaleModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpSubmitFailedModel;
+import com.freshdirect.customer.ErpTransactionI;
 import com.freshdirect.customer.ErpTransactionModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
@@ -112,8 +112,8 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	/** Adapt a sale */
-	protected void init(ErpSaleModel sale) {
-		this.sale = sale;
+	protected void init(ErpSaleModel saleModel) {
+		this.sale = saleModel;
 		erpOrder = sale.getRecentOrderTransaction();
 
 		ErpDeliveryInfoModel delInfo = erpOrder.getDeliveryInfo();
@@ -150,10 +150,9 @@ public class FDOrderAdapter implements FDOrderI {
 		}
 
 		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(sale.getTransactions());
-		Collections.sort(txList, ErpTransactionModel.TX_DATE_COMPARATOR);
-		for (Iterator<ErpTransactionModel> i = txList.iterator(); i.hasNext();) {
-			Object obj = i.next();
-
+		Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
+		for ( ErpTransactionModel obj : txList ) {
+			
 			if (obj instanceof ErpReturnOrderModel) {
 				returnOrder = (ErpReturnOrderModel)obj;
 				continue;
@@ -262,7 +261,10 @@ public class FDOrderAdapter implements FDOrderI {
 
 	private ErpReturnLineModel getReturnLine(String orderLineNumber) {
 		if (hasReturn()) {
-			// FIXME types are mixed up a little here ( ErpInvoiceLineModel <-> ErpReturnLineModel )
+			// FIXME types are mixed up a little here! ( ErpInvoiceLineModel <-> ErpReturnLineModel )
+			// getInvoiceLines() should return ErpInvoiceLineModels-s, 
+			// why are there ErpReturnLineModel-s in the list??
+			// code is not type-safe this way!
 			List returnLines = returnOrder.getInvoiceLines();
 			for (int i = 0, size = returnLines.size(); i < size; i++) {
 				ErpReturnLineModel returnLine = (ErpReturnLineModel) returnLines.get(i);
@@ -286,7 +288,7 @@ public class FDOrderAdapter implements FDOrderI {
 		// SORT TRANSACTIONS BY DATE
 		//
 		List<ErpTransactionModel> txList = new ArrayList<ErpTransactionModel>(sale.getTransactions());
-		Collections.sort(txList, ErpTransactionModel.TX_DATE_COMPARATOR);
+		Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
 		Collections.reverse(txList);
 		//
 		// FIND ALL SUBMIT FAILED MODELS
@@ -354,8 +356,8 @@ public class FDOrderAdapter implements FDOrderI {
 				}
 			}
 		}
-		if ("LAST_MODIFIED".equalsIgnoreCase(criteria)) {
-			return (lastTransaction.getTransactionSource());
+		if ( lastTransaction != null && "LAST_MODIFIED".equalsIgnoreCase(criteria) ) {
+			return lastTransaction.getTransactionSource();
 		} else {
 			return null;
 		}
@@ -378,8 +380,8 @@ public class FDOrderAdapter implements FDOrderI {
 				}
 			}
 		}
-		if ("LAST_MODIFIED".equalsIgnoreCase(criteria)) {
-			return (lastTransaction.getTransactionInitiator());
+		if ( lastTransaction != null && "LAST_MODIFIED".equalsIgnoreCase(criteria) ) {
+			return lastTransaction.getTransactionInitiator();
 		} else {
 			return null;
 		}
@@ -663,8 +665,7 @@ public class FDOrderAdapter implements FDOrderI {
 		if(hasInvoice()){
 			return false;
 		}
-		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
+		for ( FDCartLineI line : orderLines ) {
 			if (line.isEstimatedPrice()) {
 				return true;
 			}
@@ -793,8 +794,7 @@ public class FDOrderAdapter implements FDOrderI {
 	}
 
 	public boolean containsAlcohol() {
-		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
+		for ( FDCartLineI line : orderLines ) {
 			if (line.isAlcohol()) {
 				return true;
 			}
@@ -1067,15 +1067,13 @@ public class FDOrderAdapter implements FDOrderI {
 
 	public boolean containsDeliveryPass() {
 		boolean deliveryPass = false;
-		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI line = i.next();
+		for ( FDCartLineI line : orderLines ) {
 			if (line.lookupFDProduct().isDeliveryPass()) {
 				deliveryPass = true;
 				break;
 			}
 		}
-		return deliveryPass;
-		
+		return deliveryPass;		
 	}
 
 	/*
@@ -1100,8 +1098,7 @@ public class FDOrderAdapter implements FDOrderI {
 	
 	public int getLineItemDiscountCount(String promoCode){
 		Set<String> uniqueDiscountedProducts =new HashSet<String>(); 
-		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = i.next();
+		for ( FDCartLineI cartLine : orderLines ) {
 			if(cartLine.hasDiscount(promoCode)) {
 				uniqueDiscountedProducts.add(cartLine.getProductRef().getContentKey().getId());
 			}
@@ -1111,8 +1108,7 @@ public class FDOrderAdapter implements FDOrderI {
 
 	public double getTotalLineItemsDiscountAmount() {
 		double discountAmt=0;
-		for (Iterator<FDCartLineI> i = orderLines.iterator(); i.hasNext();) {
-			FDCartLineI cartLine = i.next();
+		for ( FDCartLineI cartLine : orderLines ) {
 			if(cartLine.getDiscount() !=  null){
 				discountAmt+=cartLine.getDiscountAmount();
 			}

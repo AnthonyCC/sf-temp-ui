@@ -78,7 +78,7 @@ public class QuickCart implements FDProductCollectionI {
 		//this.reSort();
 	}
 
-	public void addProducts(Collection<FDProductSelectionI> cartLines) {
+	public void addProducts(Collection<? extends FDProductSelectionI> cartLines) {
 		this.orderLines.addAll(cartLines);
 	}
 
@@ -98,18 +98,17 @@ public class QuickCart implements FDProductCollectionI {
 		return (FDProductSelectionI) this.getProducts(deptId).get(index);
 	}
 
-	// List<FDProductSelectionI>
-	public void setProducts(List<FDProductSelectionI> lines) {
+	public void setProducts(List<? extends FDProductSelectionI> lines) {
 		this.orderLines.clear();
-		for (Iterator<FDProductSelectionI> i = lines.iterator(); i.hasNext();) {
-			FDProductSelectionI product = (FDProductSelectionI) i.next();
-			if(getUserZoneId()!=null) product.setPricingContext(new PricingContext(getUserZoneId()));
-			this.orderLines.add(product);
+		for ( FDProductSelectionI product : lines ) {
+			if ( getUserZoneId() != null )
+				product.setPricingContext( new PricingContext( getUserZoneId() ) );
+			this.orderLines.add( product );
 		}
-		this.sort(PRODUCT_COMPARATOR);
+		this.sort( PRODUCT_COMPARATOR );
 	}
 
-	public void sort(Comparator comparator) {
+	public void sort(Comparator<FDProductSelectionI> comparator) {
 		Collections.sort(orderLines, comparator);
 	}
 
