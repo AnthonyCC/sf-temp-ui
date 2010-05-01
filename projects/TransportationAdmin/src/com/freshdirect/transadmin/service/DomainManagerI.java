@@ -105,8 +105,6 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getZoneWorkTableInfo(String worktable, String regionId);
 	
-	Collection getZoneRegionInfo(String regionId);
-	
 	Collection checkPolygons();
 	
 	void refreshDev(String worktable);

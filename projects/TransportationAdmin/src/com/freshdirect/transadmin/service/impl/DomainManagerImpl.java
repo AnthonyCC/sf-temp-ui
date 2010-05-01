@@ -1,19 +1,27 @@
 package com.freshdirect.transadmin.service.impl;
 
-import java.util.ArrayList;import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;import java.util.Iterator;
-import java.util.List;import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.springframework.dao.DataAccessException;import com.freshdirect.content.attributes.AttributeComparator.Selected;import com.freshdirect.customer.ErpRouteMasterInfo;
+import org.springframework.dao.DataAccessException;
+import com.freshdirect.content.attributes.AttributeComparator.Selected;
+import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
-import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;import com.freshdirect.transadmin.datamanager.model.WorkTableModel;import com.freshdirect.transadmin.model.DispositionType;
-import com.freshdirect.transadmin.model.EnumWorkTableType;import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
+import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
+import com.freshdirect.transadmin.model.DispositionType;
+import com.freshdirect.transadmin.model.EnumWorkTableType;
+import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -31,7 +39,17 @@ public class DomainManagerImpl
 	
 	private DomainManagerDaoI domainManagerDao = null;
 	
-	private ZoneExpansionDaoI zoneExpansionDao = null;		public ZoneExpansionDaoI getZoneExpansionDao() {		return zoneExpansionDao;	}	public void setZoneExpansionDao(ZoneExpansionDaoI zoneExpansionDao) {		this.zoneExpansionDao = zoneExpansionDao;	}	public DomainManagerDaoI getDomainManagerDao() {
+	private ZoneExpansionDaoI zoneExpansionDao = null;		
+	
+	public ZoneExpansionDaoI getZoneExpansionDao() {	
+		return zoneExpansionDao;
+	}
+
+	public void setZoneExpansionDao(ZoneExpansionDaoI zoneExpansionDao) {
+		this.zoneExpansionDao = zoneExpansionDao;
+	}
+
+	public DomainManagerDaoI getDomainManagerDao() {
 		return domainManagerDao;
 	}
 
@@ -249,5 +267,231 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getEmployeeRole(empId);
 	}
 	
-	public Collection getZoneWorkTableInfo(String worktable, String regionId){		return this.compareAndaddZones(worktable, regionId);	}		public Collection checkPolygons(){		return getZoneExpansionDao().checkPolygons();	}		public Collection getZoneRegionInfo(String regionId){		return getZoneExpansionDao().getZoneRegionInfo(regionId);	}		public String getDeliveryCharge(String regionId){		return getZoneExpansionDao().getDeliveryCharge(regionId);	}		private Collection compareAndaddZones(String worktable, String regionId){				Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);				Set result=new HashSet();				for(WorkTableModel model: workTableList){			if(zoneList.contains(model)){				model.setCommonInboth("X");			}else{				model.setNewZone("X");			}			result.add(model);		}				for(WorkTableModel model: zoneList){			if(workTableList.contains(model)){				//model.setCommonInBoth(true);			}else{				model.setZoneTblOnly("X");				result.add(model);			}					}				return result;	}			public void refreshDev(String worktable){		getZoneExpansionDao().refreshDev(worktable);	}			public void doZoneExpansion(String worktable, String zone[][], String regionId, String deliveryFee, String expansionType) throws DataAccessException{				if("rollout".equalsIgnoreCase(expansionType)){						if(zone.length > 0 && deliveryFee!=null){								List selZoneList=new ArrayList();				for(int i=0;i<zone.length;i++){					String[] zoneSel=zone[i];					selZoneList.add(zoneSel[0]);				}								Set<WorkTableModel> TotalList=(Set)this.compareAndaddZones(worktable, regionId);				Set<WorkTableModel> workTblList=(Set)this.getOnlyWorkTableList(worktable, regionId);				Set<WorkTableModel> commonList =(Set)this.getCommonList(worktable, regionId);				Set<WorkTableModel> zonetblList=(Set)this.getOnlyZoneList(worktable, regionId);				boolean newRegionId=false;												for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {					String zoneCode = (String) iterator.next();					boolean isMatched= false;										//Iterate through worktable list and compare with this id					for (Iterator iterator2 = workTblList.iterator(); iterator2.hasNext();) {						WorkTableModel workTableModel = (WorkTableModel) iterator2.next();						if(workTableModel.getCode().equalsIgnoreCase(zoneCode)){							isMatched = true;							break;						}										}//End workTblList loop										if(isMatched){						if(!newRegionId){							getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);							newRegionId=true;						}						//execute the corresponding query						getZoneExpansionDao().insertNewZone(worktable, regionId, zoneCode);						getZoneExpansionDao().deleteFromZoneDesc(zoneCode);						getZoneExpansionDao().insertIntoZoneDesc(zoneCode);						getZoneExpansionDao().deleteFromTranspZone(zoneCode);						getZoneExpansionDao().insertIntoTranspZone(zoneCode, worktable);											}else{						//Get the next list and iterate through it as above.						for (Iterator iterator2 = commonList.iterator(); iterator2.hasNext();) {							WorkTableModel workTableModel = (WorkTableModel) iterator2.next();							if(workTableModel.getCode().equals(zoneCode)){								isMatched=true;								break;							}						}//End commonList loop						if(isMatched){							if(!newRegionId){								getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);								newRegionId=true;							}							//execute the corresponding query							getZoneExpansionDao().insertCommonZoneSelected(worktable, regionId, zoneCode);													} else {							//Get the next list and iterate through it as above.							for (Iterator iterator2 = zonetblList.iterator(); iterator2.hasNext();) {								WorkTableModel workTableModel = (WorkTableModel) iterator2.next();								if(workTableModel.getCode().equals(zoneCode)){									isMatched=true;									break;								}							}//End zonetblList loop							if (isMatched) {								//discard the zone							}						}					 						}									}//end For(selZoneList) loop												//Non selected zones.									for (Iterator iterator = TotalList.iterator(); iterator.hasNext();) {					WorkTableModel workTableModel = (WorkTableModel) iterator.next();					boolean isMatched= false;					for (Iterator itr = selZoneList.iterator(); itr.hasNext();) {						String zoneCode = (String) itr.next();						if(workTableModel.getCode().equals(zoneCode)){							isMatched = true;							break;						}											}//End (selZoneList) loop					if(!isMatched && !workTblList.contains(workTableModel)){						if(!newRegionId){							getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);							newRegionId=true;						}						//execute queries for unchecked zones except New zones unchecked 						getZoneExpansionDao().insertUncheckedZones(workTableModel.getCode(), regionId);					}											}//end (TotalList) for loop							}//End main if					}else if("zExpansion".equalsIgnoreCase(expansionType)){			if(zone.length > 0){				List selZoneList=new ArrayList();				for(int i=0;i<zone.length;i++){					String[] zoneSel=zone[i];					selZoneList.add(zoneSel[0]);				}											Set<WorkTableModel> commonList =(Set)this.getCommonList(worktable, regionId);								for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {					String zoneCode = (String) iterator.next();					boolean isMatched= false;															for (Iterator itr = commonList.iterator(); itr.hasNext();) {							WorkTableModel workTableModel = (WorkTableModel) itr.next();							if(workTableModel.getCode().equals(zoneCode)){								isMatched=true;								break;							}						}						if(isMatched){							getZoneExpansionDao().doExpansion(worktable,zoneCode);						}				}			}//end if		}//end else block			}		public Collection getCommonList(String worktable, String regionId){				Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);				Set commonList=new HashSet();		for(WorkTableModel model: workTableList){			if(zoneList.contains(model)){				//model.setCommonInBoth(true);				model.setCommonInboth("X");				commonList.add(model);			}		}		return commonList;	}		private Collection getOnlyWorkTableList(String worktable, String regionId){				Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);				Set workTblList=new HashSet();				for(WorkTableModel model: workTableList){			if(zoneList.contains(model)){				//			}else{				model.setWorkTableOnly(true);				workTblList.add(model);			}		}				return workTblList;	}		private Collection getOnlyZoneList(String worktable, String regionId){				Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);						Set zoneTblList=new HashSet();		for(WorkTableModel model: zoneList){			if(workTableList.contains(model)){				//model.setCommonInBoth(true);			}else{				model.setZoneOnly(true);				zoneTblList.add(model);			}					}				return zoneTblList;	}		public void rollbackTimeslots(String zone[][]){				if(zone.length > 0){						List selZoneList=new ArrayList();			for(int i=0;i<zone.length;i++){				String[] zoneSel=zone[i];				selZoneList.add(zoneSel[0]);			}						for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {				String zoneCode = (String) iterator.next();				//Avoid duplicate timslot				getZoneExpansionDao().deleteTimeslot(zoneCode);				getZoneExpansionDao().deleteTrunkResource(zoneCode);				getZoneExpansionDao().deletePlanningResource(zoneCode);								//Rollback timeslot				getZoneExpansionDao().updatePlanningResource(zoneCode);				getZoneExpansionDao().updateTimeslot(zoneCode);			}		}	}	
+	public Collection getZoneWorkTableInfo(String worktable, String regionId){		
+		return this.compareAndaddZones(worktable, regionId);
 	}
+	
+	public Collection checkPolygons(){
+		return getZoneExpansionDao().checkPolygons();
+	}
+	
+	public String getDeliveryCharge(String regionId){
+		return getZoneExpansionDao().getDeliveryCharge(regionId);
+	}
+	
+	private Collection compareAndaddZones(String worktable, String regionId){
+	
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);
+		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);	
+		Set result=new HashSet();	
+		
+		for(WorkTableModel model: workTableList){
+			if(zoneList.contains(model)){
+				model.setCommonInboth("X");
+			}else{
+				model.setNewZone("X");
+			}			
+			result.add(model);
+		}
+		
+		for(WorkTableModel model: zoneList){
+			if(workTableList.contains(model)){
+				//model.setCommonInBoth(true);
+			}else{
+				model.setZoneTblOnly("X");
+			    result.add(model);
+			}
+		}
+		return result;
+	}
+	
+	
+	public void refreshDev(String worktable){		
+		getZoneExpansionDao().refreshDev(worktable);
+	}
+
+	public void doZoneExpansion(String worktable, String zone[][], String regionId, String deliveryFee, String expansionType) throws DataAccessException{	
+		if("rollout".equalsIgnoreCase(expansionType)){	
+			if(zone.length > 0 && deliveryFee!=null){
+				List selZoneList=new ArrayList();
+				for(int i=0;i<zone.length;i++){
+					String[] zoneSel=zone[i];
+					selZoneList.add(zoneSel[0]);
+				}
+
+				Set<WorkTableModel> TotalList=(Set)this.compareAndaddZones(worktable, regionId);
+				Set<WorkTableModel> workTblList=(Set)this.getOnlyWorkTableList(worktable, regionId);
+				Set<WorkTableModel> commonList =(Set)this.getCommonList(worktable, regionId);
+				Set<WorkTableModel> zonetblList=(Set)this.getOnlyZoneList(worktable, regionId);
+				boolean newRegionId=false;
+
+				for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {
+					String zoneCode = (String) iterator.next();
+					boolean isMatched= false;
+					//Iterate through worktable list and compare with this id
+					for (Iterator iterator2 = workTblList.iterator(); iterator2.hasNext();) {
+						WorkTableModel workTableModel = (WorkTableModel) iterator2.next();	
+						if(workTableModel.getCode().equalsIgnoreCase(zoneCode)){
+							isMatched = true;
+							break;
+						}
+						}//End workTblList loop
+						if(isMatched){
+							if(!newRegionId){
+								getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);	
+								newRegionId=true;
+							}
+							//execute the corresponding query
+							getZoneExpansionDao().insertNewZone(worktable, regionId, zoneCode);
+							getZoneExpansionDao().deleteFromZoneDesc(zoneCode);
+							getZoneExpansionDao().insertIntoZoneDesc(zoneCode);
+							getZoneExpansionDao().deleteFromTranspZone(zoneCode);
+							getZoneExpansionDao().insertIntoTranspZone(zoneCode, worktable);	
+						}else{
+							//Get the next list and iterate through it as above.
+							for (Iterator iterator2 = commonList.iterator(); iterator2.hasNext();) {		
+								WorkTableModel workTableModel = (WorkTableModel) iterator2.next();	
+								if(workTableModel.getCode().equals(zoneCode)){
+									isMatched=true;
+									break;
+								}
+							}//End commonList loop
+							if(isMatched){
+								if(!newRegionId){
+									getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);	
+									newRegionId=true;
+								}
+								//execute the corresponding query
+								getZoneExpansionDao().insertCommonZoneSelected(worktable, regionId, zoneCode);
+							} else {
+								//Get the next list and iterate through it as above.
+								for (Iterator iterator2 = zonetblList.iterator(); iterator2.hasNext();) {
+									WorkTableModel workTableModel = (WorkTableModel) iterator2.next();
+									if(workTableModel.getCode().equals(zoneCode)){
+										isMatched=true;
+										break;
+									}
+								}//End zonetblList loop
+									if (isMatched) {
+										//discard the zone
+									}
+								}
+							}
+				}//end For(selZoneList) loop
+				
+				//Non selected zones.
+				for (Iterator iterator = TotalList.iterator(); iterator.hasNext();) {
+					WorkTableModel workTableModel = (WorkTableModel) iterator.next();
+					boolean isMatched= false;
+					for (Iterator itr = selZoneList.iterator(); itr.hasNext();) {
+						String zoneCode = (String) itr.next();
+						if(workTableModel.getCode().equals(zoneCode)){
+							isMatched = true;
+							break;	
+						}
+					}//End (selZoneList) loop	
+					if(!isMatched && !workTblList.contains(workTableModel)){	
+						if(!newRegionId){
+							getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);
+							newRegionId=true;
+						}
+						//execute queries for unchecked zones except New zones unchecked
+ 						getZoneExpansionDao().insertUncheckedZones(workTableModel.getCode(), regionId);
+					}
+				}//end (TotalList) for loop
+			}//End main if
+		}else if("zExpansion".equalsIgnoreCase(expansionType)){
+				if(zone.length > 0){
+					List selZoneList=new ArrayList();
+					for(int i=0;i<zone.length;i++){
+						String[] zoneSel=zone[i];
+						selZoneList.add(zoneSel[0]);
+					}
+					Set<WorkTableModel> commonList =(Set)this.getCommonList(worktable, regionId);
+					for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {
+						String zoneCode = (String) iterator.next();
+						boolean isMatched= false;	
+						for (Iterator itr = commonList.iterator(); itr.hasNext();) {
+							WorkTableModel workTableModel = (WorkTableModel) itr.next();
+							if(workTableModel.getCode().equals(zoneCode)){
+								isMatched=true;
+								break;
+							}
+						}
+						if(isMatched){
+							getZoneExpansionDao().doExpansion(worktable,zoneCode);
+						}
+					}
+			        }//end if
+		}//end else if block
+	}
+	
+	public Collection getCommonList(String worktable, String regionId){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);
+		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);
+		Set commonList=new HashSet();
+		for(WorkTableModel model: workTableList){
+			if(zoneList.contains(model)){
+				//model.setCommonInBoth(true);
+				model.setCommonInboth("X");
+				commonList.add(model);
+			}
+		}
+		return commonList;
+	}
+
+	private Collection getOnlyWorkTableList(String worktable, String regionId){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);
+		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);
+		Set workTblList=new HashSet();
+		for(WorkTableModel model: workTableList){
+			if(zoneList.contains(model)){
+			
+			}else{
+				model.setNewZone("X");
+				workTblList.add(model);	
+			}
+		}
+		return workTblList;
+	}
+
+	private Collection getOnlyZoneList(String worktable, String regionId){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getZoneWorkTableInfo(worktable);
+		Set<WorkTableModel> zoneList =(Set)getZoneExpansionDao().getZoneRegionInfo(regionId);
+		Set zoneTblList=new HashSet();	
+
+		for(WorkTableModel model: zoneList){
+			if(workTableList.contains(model)){
+				//model.setCommonInBoth(true);
+			}else{
+				model.setZoneTblOnly("X");
+				zoneTblList.add(model);
+			}
+		}
+		return zoneTblList;
+	}
+
+	public void rollbackTimeslots(String zone[][]){
+
+		if(zone.length > 0){
+			List selZoneList=new ArrayList();
+			for(int i=0;i<zone.length;i++){
+				String[] zoneSel=zone[i];
+				selZoneList.add(zoneSel[0]);
+			}
+
+			for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {
+				String zoneCode = (String) iterator.next();
+				//Avoid duplicate timslot
+				getZoneExpansionDao().deleteTimeslot(zoneCode);	
+				getZoneExpansionDao().deleteTrunkResource(zoneCode);
+				getZoneExpansionDao().deletePlanningResource(zoneCode);
+				//Rollback timeslot
+				getZoneExpansionDao().updatePlanningResource(zoneCode);
+				getZoneExpansionDao().updateTimeslot(zoneCode);
+			}
+		}	
+	}
+
+}
+
