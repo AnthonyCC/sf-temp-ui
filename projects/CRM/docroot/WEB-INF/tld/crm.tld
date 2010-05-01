@@ -1226,4 +1226,21 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
     </tag>
+    <tag>
+        <name>CrmClick2CallController</name>
+        <tagclass>com.freshdirect.webapp.taglib.crm.CrmClick2CallControllerTag</tagclass>
+        <teiclass>com.freshdirect.webapp.taglib.crm.CrmClick2CallControllerTag$TagEI</teiclass>
+        <bodycontent>JSP</bodycontent>
+        <info></info>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
 </taglib>
