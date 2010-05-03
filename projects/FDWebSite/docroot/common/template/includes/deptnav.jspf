@@ -39,11 +39,12 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 	                      <%if(!user.isEligibleForPreReservation()){%>
 	                         <a href="<%=response.encodeURL("/your_account/payment_information.jsp")%>">Payment Options</a><br />
 	                         <a href="<%=response.encodeURL("/your_account/signin_information.jsp")%>">User&nbsp;Name,&nbsp;Password&nbsp;&&nbsp;Contact&nbsp;Information</a><br />
+							 <% if (!FDStoreProperties.isEmailOptdownEnabled()) { %><a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><% } %>
 				<%}%>
 			</td>
 			<td style="padding-left:2px;"><img src="/media_stat/images/layout/999966.gif" width="1" height="51" border="0" hspace="0" vspace="0" ALIGN="TOP"></td>
 			<td class="text9_lh12" valign="top" style="padding-left:3px; padding-right:3px;">
-	                 <%if(user.isEligibleForPreReservation()){%>
+	                 <%if(user.isEligibleForPreReservation()){%><% if (!FDStoreProperties.isEmailOptdownEnabled()) { %><a href="<%=response.encodeURL("/your_account/newsletter.jsp")%>">President's&nbsp;Picks&nbsp;Newsletter</a><% } %><br />
 					<%}%>                    
 	                 <a href="<%=response.encodeURL("/your_account/reminder_service.jsp")%>">Reminder&nbsp;Service</a><br />
 	                 <a href="<%=response.encodeURL("/your_account/customer_profile_summary.jsp")%>">Your&nbsp;Profile</a>
