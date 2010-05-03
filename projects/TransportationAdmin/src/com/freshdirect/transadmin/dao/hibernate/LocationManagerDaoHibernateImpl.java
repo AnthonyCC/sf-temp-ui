@@ -9,13 +9,12 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.dao.LocationManagerDaoI;
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.util.TransStringUtil;
-
-import com.freshdirect.transadmin.model.DlvBuildingDtl;
 
 
 public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl  implements LocationManagerDaoI  {
@@ -141,9 +140,9 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return new String[]{"HOME","CORPORATE","DEPOT","PICKUP"};
 	}
 
-    public DlvBuildingDtl getDlvBuildingDtl(String id) throws DataAccessException {
+    public DlvBuildingDetail getDlvBuildingDtl(String id) throws DataAccessException {
 		//return (DlvBuildingDtl)getEntityById("DlvBuildingDtl","dlvBuildingDtlId",id);
-		return (DlvBuildingDtl)getEntityById("DlvBuildingDtl","building.buildingId",id);
+		return (DlvBuildingDetail)getEntityById("DlvBuildingDetail","building.buildingId",id);
 	}
 	public Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();

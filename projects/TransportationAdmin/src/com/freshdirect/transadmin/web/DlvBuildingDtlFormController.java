@@ -5,6 +5,7 @@ package com.freshdirect.transadmin.web;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +17,12 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
+import com.freshdirect.transadmin.model.BuildingOperationHours;
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.service.LocationManagerI;
+import com.freshdirect.transadmin.util.EnumDayOfWeek;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.TimeOfDayPropertyEditor;
 
@@ -335,13 +339,234 @@ protected void onBind(HttpServletRequest request, Object command) {
 
 		return refData;
 	}
+	
+	private DlvBuildingDtl decode(DlvBuildingDetail buildingDetail) {
+		
+		DlvBuildingDtl result=new DlvBuildingDtl();
+		result.setBuilding(buildingDetail.getBuilding());
+		result.setAddrType(buildingDetail.getAddrType());
+		result.setCompanyName(buildingDetail.getCompanyName());
+		result.setSvcScrubbedStreet(buildingDetail.getSvcScrubbedStreet());
+		result.setSvcCrossStreet(buildingDetail.getSvcCrossStreet());
+		result.setSvcCity(buildingDetail.getSvcCity());
+		result.setSvcZip(buildingDetail.getSvcZip());
+		result.setDoorman(buildingDetail.getDoorman());
+		result.setWalkup(buildingDetail.getWalkup());
+		result.setElevator(buildingDetail.getElevator());
+		result.setSvcEnt(buildingDetail.getSvcEnt());
+		result.setHouse(buildingDetail.getHouse());
+		result.setFreightElevator(buildingDetail.getFreightElevator());
+		result.setHandTruckAllowed(buildingDetail.getHandTruckAllowed());
+		result.setWalkUpFloors(buildingDetail.getWalkUpFloors());
+		result.setOther(buildingDetail.getOther());
+		result.setDifficultReason(buildingDetail.getDifficultReason());
+		result.setDifficultToDeliver(buildingDetail.getDifficultToDeliver());
+		result.setServiceTimeOverride(buildingDetail.getServiceTimeOverride());
+		result.setAdditional(buildingDetail.getAdditional());
+		result.setIsNew(buildingDetail.getIsNew());
+		result.setCrossStreet(buildingDetail.getCrossStreet());
+		
+		result=setDefaultOperations(result);
+		
+		if(buildingDetail.getOperationHours()!=null && !buildingDetail.getOperationHours().isEmpty()) {
+			BuildingOperationHours opsHours=null;
+			for(Iterator<BuildingOperationHours> i = buildingDetail.getOperationHours().iterator(); i.hasNext();){
+				opsHours=i.next();
+				if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_MON.getName())) {
+					result.setCommentMon(opsHours.getBldgComments());
+					result.setHoursOpenMon(opsHours.getBldgStartHour());
+					result.setHoursCloseMon(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenMon(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseMon(opsHours.getServiceEndHour());
+					result.setSvcCommentMon(opsHours.getServiceComments());
+					result.setIncludeMon("1");
+					result.setSvcIncludeMon("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_TUE.getName())) {
+					result.setCommentTue(opsHours.getBldgComments());
+					result.setHoursOpenTue(opsHours.getBldgStartHour());
+					result.setHoursCloseTue(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenTue(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseTue(opsHours.getServiceEndHour());
+					result.setSvcCommentTue(opsHours.getServiceComments());
+					result.setIncludeTue("1");
+					result.setSvcIncludeTue("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_WED.getName())) {
+					result.setCommentWed(opsHours.getBldgComments());
+					result.setHoursOpenWed(opsHours.getBldgStartHour());
+					result.setHoursCloseWed(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenWed(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseWed(opsHours.getServiceEndHour());
+					result.setSvcCommentWed(opsHours.getServiceComments());
+					result.setIncludeWed("1");
+					result.setSvcIncludeWed("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_THUR.getName())) {
+					result.setCommentThu(opsHours.getBldgComments());
+					result.setHoursOpenThu(opsHours.getBldgStartHour());
+					result.setHoursCloseThu(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenThu(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseThu(opsHours.getServiceEndHour());
+					result.setSvcCommentThu(opsHours.getServiceComments());
+					result.setIncludeThu("1");
+					result.setSvcIncludeThu("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_FRI.getName())) {
+					result.setCommentFri(opsHours.getBldgComments());
+					result.setHoursOpenFri(opsHours.getBldgStartHour());
+					result.setHoursCloseFri(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenFri(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseFri(opsHours.getServiceEndHour());
+					result.setSvcCommentFri(opsHours.getServiceComments());
+					result.setIncludeFri("1");
+					result.setSvcIncludeFri("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_SAT.getName())) {
+					result.setCommentSat(opsHours.getBldgComments());
+					result.setHoursOpenSat(opsHours.getBldgStartHour());
+					result.setHoursCloseSat(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenSat(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseSat(opsHours.getServiceEndHour());
+					result.setSvcCommentSat(opsHours.getServiceComments());
+					result.setIncludeSat("1");
+					result.setSvcIncludeSat("1");
+					
+				}
+				if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_SUN.getName())) {
+					result.setCommentSun(opsHours.getBldgComments());
+					result.setHoursOpenSun(opsHours.getBldgStartHour());
+					result.setHoursCloseSun(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenSun(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseSun(opsHours.getServiceEndHour());
+					result.setSvcCommentSun(opsHours.getServiceComments());
+					result.setIncludeSun("1");
+					result.setSvcIncludeSun("1");
+					
+				}
+			}
+			
+		}
+		
+		return result;
+	}
 
+private DlvBuildingDtl encode(DlvBuildingDetail buildingDetail) {
+		
+		DlvBuildingDtl result=new DlvBuildingDtl();
+		result.setBuilding(buildingDetail.getBuilding());
+		result.setAddrType(buildingDetail.getAddrType());
+		result.setCompanyName(buildingDetail.getCompanyName());
+		result.setSvcScrubbedStreet(buildingDetail.getSvcScrubbedStreet());
+		result.setSvcCrossStreet(buildingDetail.getSvcCrossStreet());
+		result.setSvcCity(buildingDetail.getSvcCity());
+		result.setSvcZip(buildingDetail.getSvcZip());
+		result.setDoorman(buildingDetail.getDoorman());
+		result.setWalkup(buildingDetail.getWalkup());
+		result.setElevator(buildingDetail.getElevator());
+		result.setSvcEnt(buildingDetail.getSvcEnt());
+		result.setHouse(buildingDetail.getHouse());
+		result.setFreightElevator(buildingDetail.getFreightElevator());
+		result.setHandTruckAllowed(buildingDetail.getHandTruckAllowed());
+		result.setWalkUpFloors(buildingDetail.getWalkUpFloors());
+		result.setOther(buildingDetail.getOther());
+		result.setDifficultReason(buildingDetail.getDifficultReason());
+		result.setDifficultToDeliver(buildingDetail.getDifficultToDeliver());
+		result.setServiceTimeOverride(buildingDetail.getServiceTimeOverride());
+		result.setAdditional(buildingDetail.getAdditional());
+		result.setIsNew(buildingDetail.getIsNew());
+		result.setCrossStreet(buildingDetail.getCrossStreet());
+		
+		if(buildingDetail.getOperationHours()!=null && !buildingDetail.getOperationHours().isEmpty()) {
+			BuildingOperationHours opsHours=null;
+			for(Iterator<BuildingOperationHours> i = buildingDetail.getOperationHours().iterator(); i.hasNext();){
+				opsHours=i.next();
+				if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_MON)) {
+					result.setCommentMon(opsHours.getBldgComments());
+					result.setHoursOpenMon(opsHours.getBldgStartHour());
+					result.setHoursCloseMon(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenMon(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseMon(opsHours.getServiceEndHour());
+					result.setSvcCommentMon(opsHours.getServiceComments());
+					result.setIncludeMon("1");
+					result.setSvcIncludeMon("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_TUE)) {
+					result.setCommentTue(opsHours.getBldgComments());
+					result.setHoursOpenTue(opsHours.getBldgStartHour());
+					result.setHoursCloseTue(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenTue(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseTue(opsHours.getServiceEndHour());
+					result.setSvcCommentTue(opsHours.getServiceComments());
+					result.setIncludeTue("1");
+					result.setSvcIncludeTue("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_WED)) {
+					result.setCommentWed(opsHours.getBldgComments());
+					result.setHoursOpenWed(opsHours.getBldgStartHour());
+					result.setHoursCloseWed(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenWed(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseWed(opsHours.getServiceEndHour());
+					result.setSvcCommentWed(opsHours.getServiceComments());
+					result.setIncludeWed("1");
+					result.setSvcIncludeWed("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_THUR)) {
+					result.setCommentThu(opsHours.getBldgComments());
+					result.setHoursOpenThu(opsHours.getBldgStartHour());
+					result.setHoursCloseThu(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenThu(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseThu(opsHours.getServiceEndHour());
+					result.setSvcCommentThu(opsHours.getServiceComments());
+					result.setIncludeThu("1");
+					result.setSvcIncludeThu("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_FRI)) {
+					result.setCommentFri(opsHours.getBldgComments());
+					result.setHoursOpenFri(opsHours.getBldgStartHour());
+					result.setHoursCloseFri(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenFri(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseFri(opsHours.getServiceEndHour());
+					result.setSvcCommentFri(opsHours.getServiceComments());
+					result.setIncludeFri("1");
+					result.setSvcIncludeFri("1");
+					
+				} else if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_SAT)) {
+					result.setCommentSat(opsHours.getBldgComments());
+					result.setHoursOpenSat(opsHours.getBldgStartHour());
+					result.setHoursCloseSat(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenSat(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseSat(opsHours.getServiceEndHour());
+					result.setSvcCommentSat(opsHours.getServiceComments());
+					result.setIncludeSat("1");
+					result.setSvcIncludeSat("1");
+					
+				}
+				if(opsHours.getId().getDayOfWeek().equals(EnumDayOfWeek.ENUM_DAYOFWEEK_SUN)) {
+					result.setCommentSun(opsHours.getBldgComments());
+					result.setHoursOpenSun(opsHours.getBldgStartHour());
+					result.setHoursCloseSun(opsHours.getBldgStartHour());
+					result.setSvcHoursOpenSun(opsHours.getServiceStartHour());
+					result.setSvcHoursCloseSun(opsHours.getServiceEndHour());
+					result.setSvcCommentSun(opsHours.getServiceComments());
+					result.setIncludeSun("1");
+					result.setSvcIncludeSun("1");
+					
+				}
+			}
+			
+		}
+		
+		return result;
+	}
 	public Object getBackingObject(String id) {
 		//System.out.println("#########entering getBackingObject");
 
 		//return getLocationManagerService().getDlvBuildingDtl(id);
-		DlvBuildingDtl result = getLocationManagerService().getDlvBuildingDtl(id);
-		if(null == result){
+		DlvBuildingDetail buildingDetail=getLocationManagerService().getDlvBuildingDtl(id);
+		
+		DlvBuildingDtl result = null;
+		if(null == buildingDetail){
 			DlvBuilding building = getLocationManagerService().getDlvBuilding(id);
 			result = new DlvBuildingDtl();
 			result.setBuilding(building);
@@ -387,6 +612,8 @@ protected void onBind(HttpServletRequest request, Object command) {
 			result.setAddrType("Residential");
 			result.setIsNew("true");
 			return result;
+		} else {
+			result=decode(buildingDetail);
 		}
 
 		result.setIsNew("false");
@@ -430,7 +657,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 
 	public List saveDomainObject(Object domainObject) {
 
-		//System.out.println("entering to save");
+		System.out.println("entering to save");
 		List errorList = new ArrayList();
 		DlvBuildingDtl modelIn = (DlvBuildingDtl)domainObject;
 		if("true".equalsIgnoreCase(modelIn.getSvcValidate())){
@@ -450,6 +677,48 @@ protected void onBind(HttpServletRequest request, Object command) {
 			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{getDomainObjectName()}));
 		}
 		return errorList;
+	}
+	
+	private DlvBuildingDtl setDefaultOperations(DlvBuildingDtl result) {
+		result.setHoursOpenMon(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseMon(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenTue(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseTue(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenWed(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseWed(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenThu(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseThu(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenFri(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseFri(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenSat(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseSat(new TimeOfDay("00:00 AM"));
+		result.setHoursOpenSun(new TimeOfDay("00:00 AM"));
+		result.setHoursCloseSun(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenTue(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseTue(new TimeOfDay("00:00 AM"));
+
+		result.setSvcHoursOpenMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenTue(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseTue(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenWed(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseWed(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenThu(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseThu(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenFri(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseFri(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenSat(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseSat(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenSun(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseSun(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseMon(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursOpenTue(new TimeOfDay("00:00 AM"));
+		result.setSvcHoursCloseTue(new TimeOfDay("00:00 AM"));
+		
+		return result;
 	}
 
 

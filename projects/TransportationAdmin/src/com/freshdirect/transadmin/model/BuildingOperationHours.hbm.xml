@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Apr 6, 2010 4:02:25 PM by Hibernate Tools 3.2.4.GA -->
+<hibernate-mapping>
+    <class name="com.freshdirect.transadmin.model.BuildingOperationHours" table="DELIVERY_BUILDING_DETAIL_OPS" schema="DLV">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.BuildingOperationHoursId">
+            <key-property name="dayOfWeek" type="string">
+                <column name="DAY_OF_WEEK" length="1" />
+            </key-property>
+            <key-property name="deliveryBuildingId" type="string">
+                <column name="DELIVERY_BUILDING_ID" length="16" />
+            </key-property>
+        </composite-id>
+        <component name="bldgStartHour" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="BLDG_START_HOUR" type="timestamp" not-null="true"/>
+        </component>
+        <component name="bldgEndHour" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="BLDG_END_HOUR" type="timestamp" not-null="true"/>
+        </component>
+        <component name="serviceStartHour" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="SERVICE_START_HOUR" type="timestamp" not-null="true"/>
+        </component>
+        <component name="serviceEndHour" class="com.freshdirect.framework.util.TimeOfDay"> 
+        	<property name="normalDate" column="SERVICE_END_HOUR" type="timestamp" not-null="true"/>
+        </component>
+        <property name="bldgComments" type="string">
+            <column name="BLDG_COMMENTS" length="30" />
+        </property> 
+        
+        <property name="serviceComments" type="string">
+            <column name="SERVICE_COMMENTS" length="30" />
+        </property> 
+        <!-- <many-to-one name="deliveryBuilding" class="com.freshdirect.transadmin.model.DlvBuilding" update="false" insert="false" fetch="select">
+            <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
+        </many-to-one>-->
+    </class>
+</hibernate-mapping>

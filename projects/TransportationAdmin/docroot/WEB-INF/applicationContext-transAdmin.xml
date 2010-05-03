@@ -54,7 +54,9 @@
 				<value>com/freshdirect/transadmin/model/TimeslotLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TimeslotLogDtl.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/UPSRouteInfo.hbn.xml</value>
+				<value>com/freshdirect/transadmin/model/DlvBuildingDetail.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/EmployeeStatus.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/BuildingOperationHours.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

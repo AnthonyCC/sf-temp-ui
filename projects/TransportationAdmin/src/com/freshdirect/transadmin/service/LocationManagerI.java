@@ -4,12 +4,11 @@ import java.util.Collection;
 import java.util.List;
 
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
-import com.freshdirect.transadmin.model.DlvBuildingDtl;
-import com.freshdirect.transadmin.model.GeoRestriction;
 
 public interface LocationManagerI  extends BaseManagerI {
 	
@@ -47,7 +46,7 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getDeliveryLocations(String buildingId);
     
-   	DlvBuildingDtl getDlvBuildingDtl(String id);		//agb
+   	DlvBuildingDetail getDlvBuildingDtl(String id);		//agb
    	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
    	
  

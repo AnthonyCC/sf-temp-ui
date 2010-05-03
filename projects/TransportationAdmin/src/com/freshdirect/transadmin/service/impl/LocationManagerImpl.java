@@ -10,13 +10,12 @@ import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.LocationManagerDaoI;
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.service.LocationManagerI;
-
-import com.freshdirect.transadmin.model.DlvBuildingDtl;
 
 
 public class LocationManagerImpl extends BaseManagerImpl  implements LocationManagerI  {
@@ -103,7 +102,7 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getDeliveryLocations(buildingId);
 	}
 
-  	public DlvBuildingDtl getDlvBuildingDtl(String id) {			//agb
+  	public DlvBuildingDetail getDlvBuildingDtl(String id) {			//agb
 		return getLocationManagerDao().getDlvBuildingDtl(id);
 	}
   

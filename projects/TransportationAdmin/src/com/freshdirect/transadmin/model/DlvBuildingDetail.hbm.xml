@@ -1,0 +1,97 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jul 30, 2007 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvBuildingDetail" table="DELIVERY_BUILDING_DETAIL">
+        <id name="dlvBuildingDtlId" type="string">
+            <column name="DELIVERY_BUILDING_ID" length="16" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="building" class="com.freshdirect.transadmin.model.DlvBuilding" lazy="false" update="false" insert="false" fetch="select">
+            <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
+        </many-to-one>               
+        <property name="addrType" type="string">
+            <column name="ADDR_TYPE" length="16" />
+        </property> 
+      <property name="difficultReason" type="string">
+            <column name="DIFFICULT_REASON" length="55" />
+        </property> 
+       <property name="companyName" type="string">
+            <column name="COMPANY_NAME" length="55" />
+        </property> 
+        
+             <property name="svcScrubbedStreet" type="string">
+            <column name="SVC_SCRUBBED_STREET" length="255" />
+        </property>
+        <property name="svcCrossStreet" type="string">
+            <column name="SVC_CROSS_STREET" length="255" />
+        </property>
+        <property name="svcCity" type="string">
+            <column name="SVC_CITY" length="55" />
+        </property>
+        <property name="svcState" type="string">
+            <column name="SVC_STATE" length="2" />
+        </property> 
+        <property name="svcZip" type="string">
+            <column name="SVC_ZIP" length="10" />
+        </property>
+ 
+        <property name="doorman" type="string">
+            <column name="IS_DOORMAN" length="1" />
+        </property> 
+ 
+        <property name="elevator" type="string">
+            <column name="IS_ELEVATOR" length="1" />
+        </property> 
+ 
+       <property name="walkup" type="string">
+            <column name="IS_WALKUP" length="1" />
+        </property> 
+ 
+       <property name="svcEnt" type="string">
+            <column name="SVC_ENT" length="1" />
+        </property> 
+ 
+       <property name="house" type="string">
+            <column name="IS_HOUSE" length="1" />
+        </property> 
+        <property name="freightElevator" type="string">
+            <column name="IS_FREIGHT_ELEVATOR" length="1" />
+        </property> 
+       <property name="difficultToDeliver" type="string">
+            <column name="DIFFICULT_TO_DELIVER" length="1" />
+        </property> 
+        
+      <property name="serviceTimeOverride" type="string">
+            <column name="SVC_TIME_OVERRIDE" length="255" />
+        </property>
+        <property name="additional" type="string">
+            <column name="ADDITIONAL" length="255" />
+        </property>
+        
+      <property name="handTruckAllowed" type="string">
+            <column name="HAND_TRUCK_ALLOWED" length="1" />
+      </property> 
+        
+        
+      <property name="walkUpFloors" type="integer">
+            <column name="WALK_UP_FLOORS" />
+        </property> 
+         
+         <property name="crossStreet" type="string">
+            <column name="CROSS_STREET" length="255" />
+        </property>
+         <property name="other" type="string">
+            <column name="OTHER" length="255" />
+        </property>
+            <set name="operationHours" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.BuildingOperationHours" />
+        </set>   
+    </class>
+</hibernate-mapping>
+
+

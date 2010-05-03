@@ -99,6 +99,11 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private String crossStreet;
 	
+	private String freightElevator;
+	
+	private String other;
+	private String serviceTimeOverride;
+	private String additional;
 	public String getIsNew() {
 		return isNew;
 	}
@@ -747,9 +752,35 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 		this.crossStreet = crossStreet;
 	}
 
+	public String getFreightElevator() {
+		return freightElevator;
+	}
 
+	public void setFreightElevator(String freightElevator) {
+		this.freightElevator = freightElevator;
+	}
 		
-	
+	public void setOther(String other) {
+		this.other = other;
+	}
 
+	public String getOther() {
+		return other;
+	}
+
+	public void setServiceTimeOverride(String serviceTimeOverride) {
+		this.serviceTimeOverride = serviceTimeOverride;
+	}
+
+	public String getServiceTimeOverride() {
+		return serviceTimeOverride;
+	}
+	public void setAdditional(String additional) {
+		this.additional = additional;
+	}
+
+	public String getAdditional() {
+		return additional;
+	}
 
 }
