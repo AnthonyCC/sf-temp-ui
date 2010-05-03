@@ -76,9 +76,11 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		return true;
 	}
 	
-	public boolean generateTimeslots(String zone[][]) {
+	public boolean generateTimeslots(String zone[][],String worktable) {
+		String regionId = ZoneWorkTableUtil.getRegionId(worktable);
 		try{
 			domainManagerService.rollbackTimeslots(zone);
+			domainManagerService.makeDevLive(regionId);
 		}catch(Exception ex){
 			ex.printStackTrace();
 			return false;

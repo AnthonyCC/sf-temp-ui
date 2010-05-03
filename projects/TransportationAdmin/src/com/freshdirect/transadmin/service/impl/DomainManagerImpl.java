@@ -32,6 +32,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.web.util.ZoneWorkTableUtil;
 
 public class DomainManagerImpl  
 		extends BaseManagerImpl  implements DomainManagerI {
@@ -491,6 +492,9 @@ public class DomainManagerImpl
 			}
 		}	
 	}
-
+	
+	public void makeDevLive(String regionId){
+		 getZoneExpansionDao().makeDevLive(regionId);
+	}
 }
 

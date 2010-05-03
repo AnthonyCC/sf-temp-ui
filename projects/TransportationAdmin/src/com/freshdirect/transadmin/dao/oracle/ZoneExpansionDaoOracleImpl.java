@@ -414,12 +414,35 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		   "update dlv.planning_resource set day=day-7 where zone_code=? and day > trunc(sysdate)", new Object[] {zoneCode});
 	}
 	
+	//make dev live
+	public void makeDevLive(final String regionId){
+		
+		final List result=new ArrayList();
+		
+		PreparedStatementCreator ctr=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(MAX_REGION_ID);
+				ps.setString(1, regionId);
+				return ps;
+			}  
+		};
+		
+		jdbcTemplate.query(ctr, new RowCallbackHandler(){
+			public void processRow(ResultSet rs) throws SQLException{
+				do{
+					String id=rs.getString("id");
+					result.add(id);
+				}while(rs.next());
+			}
+		
+		});
 	
-	
-	
-	
-	
-	
+	    String maxId= (String)result.get(0);
+		
+		this.jdbcTemplate.update(
+		   "update dlv.region_data set start_date=trunc(sysdate) where id=?", new Object[] {maxId});
+	}
 	
 	
 }

@@ -43,5 +43,7 @@ public interface ZoneExpansionDaoI {
 	void updateTimeslot(String zoneCode) throws DataAccessException;
 	
 	void updatePlanningResource(String zoneCode) throws DataAccessException;
+	
+	void makeDevLive(String regionId) throws DataAccessException;
 
 }

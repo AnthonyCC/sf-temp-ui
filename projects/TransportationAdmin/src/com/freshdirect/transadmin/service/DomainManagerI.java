@@ -116,4 +116,6 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getCommonList(String worktable, String regionId);
 	
 	void rollbackTimeslots(String zone[][]);
+	
+	void makeDevLive(String regionId);
 }
