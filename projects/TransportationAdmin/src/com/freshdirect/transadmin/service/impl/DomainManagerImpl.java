@@ -20,7 +20,6 @@ import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.ZoneExpansionDaoI;
 import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
 import com.freshdirect.transadmin.model.DispositionType;
-import com.freshdirect.transadmin.model.EnumWorkTableType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
