@@ -82,7 +82,7 @@ public class ClickToCallUtil {
 				if(startHour <= currentHour && currentHour <= endHour){
 					String[] dlvZones = click2CallModel.getDeliveryZones();
 					if(null !=dlvZones && dlvZones.length > 0){
-						AddressModel address = user.getAddress();
+						AddressModel address = user.getShoppingCart().getDeliveryAddress();
 						try {
 							DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
 							if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
@@ -154,7 +154,7 @@ public class ClickToCallUtil {
 				begCal.add(Calendar.DATE, 1);
 				begCal = DateUtil.truncate(begCal);
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), begCal.getTime(), (ContactAddressModel)address);
-				if(null != timeSlots && timeSlots.size()>0){
+				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}
 			}

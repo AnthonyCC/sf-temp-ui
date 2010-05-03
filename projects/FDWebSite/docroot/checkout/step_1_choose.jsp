@@ -174,7 +174,7 @@ while (e.hasMoreElements()) {
 	</table>
 	
 	<%
-	if(ClickToCallUtil.isBusinessHour()) {
+	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(yuzer)) {
 	%>
 		<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
 	<% } else { %>

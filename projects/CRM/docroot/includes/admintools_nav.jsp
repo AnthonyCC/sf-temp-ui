@@ -10,6 +10,7 @@ boolean delivery_restrictions = snav_pageURI.indexOf("delivery_restrictions") > 
 boolean address_restrictions = snav_pageURI.indexOf("address_restrictions") > -1;
 boolean settlement_batch = snav_pageURI.indexOf("settlement_batch") > -1;
 boolean top_faqs = snav_pageURI.indexOf("top_faqs") > -1;
+boolean click_to_call = snav_pageURI.indexOf("click_to_call") > -1;
 %>
 <crm:GetCurrentAgent id='currentAgent'>
 <div class="sup_nav_bg">
@@ -22,5 +23,6 @@ boolean top_faqs = snav_pageURI.indexOf("top_faqs") > -1;
 <a href="/admintools/address_restrictions.jsp" class="<%=address_restrictions?"sup_nav_on":"sup_nav"%>">Address Restrictions</a>
 <a href="/admintools/settlement_batch.jsp?method=GET" class="<%=settlement_batch?"sup_nav_on":"sup_nav"%>">settlement batch</a>
 <a href="/admintools/top_faqs.jsp" class="<%=top_faqs?"sup_nav_on":"sup_nav"%>">Top 5 FAQ</a>
+<a href="/admintools/click_to_call.jsp" class="<%=click_to_call?"sup_nav_on":"sup_nav"%>">Click to Call Campaign</a>
 </div>
 </crm:GetCurrentAgent>

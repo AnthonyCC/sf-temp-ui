@@ -567,7 +567,7 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 </TR>
 </TABLE>
 <%
-if(ClickToCallUtil.isBusinessHour()) {
+if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user)) {
 %>
 	<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
 <% } else { %>
