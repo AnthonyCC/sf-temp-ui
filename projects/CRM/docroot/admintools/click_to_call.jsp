@@ -173,7 +173,7 @@ function delAttribute(){
 			
 			<td colspan="4" align="left" width="63%">
 			<% if(null !=pageContext.getAttribute("mode") && "EDIT".equalsIgnoreCase((String)pageContext.getAttribute("mode"))){ %>
-			<b><input type="submit" name="save" value="Save Changes" class="click2Call_button_orange"/></b>&nbsp;&nbsp;<b><input type="submit" name="cancel" value="Cancel Changes" class="click2Call_button_orange" onclick="clearCheckbox(this.form.faqId)"/></b>
+			<b><input type="submit" name="save" value="Save Changes" class="click2Call_button_orange"/></b>&nbsp;&nbsp;<b><input type="submit" name="cancel" value="Cancel Changes" class="click2Call_button_grey" onclick="clearCheckbox(this.form.faqId)"/></b>
 			<% } else if(!click2CallModel.isStatus()) { %>
 			<b><input type="submit" name="edit" value="Edit Settings" class="click2Call_button_orange"/></b>
 			<% } %>
@@ -192,7 +192,7 @@ function delAttribute(){
 		</tr>  
 		
 	<tr><td colspan="8"><br/></td></tr>
-	 <tr><td colspan="8" class="click2call_bold">Display Day & Hours: *required</td></tr>
+	 <tr><td colspan="8" ><span class="click2call_bold">Display Day & Hours:</span><% if(true==edit){ %><span class="not_set"> *Required</span><% } %></td></tr>
 	  <tr><td colspan="8" class="click2call_bold"><br/></td></tr>
 	  <tr><td colspan="8"><table width="100%">
 	 <tr>
@@ -343,7 +343,7 @@ function delAttribute(){
 	 <tr><td colspan="8"><br/></td></tr>
 	 <tr><td colspan="8">&nbsp;<br/></td></tr>
 	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td>
-	 <tr><td colspan="8" class="click2call_bold">Eligible Delivery Zone(s): *required<br/></td></tr>
+	 <tr><td colspan="8" ><span class="click2call_bold">Eligible Delivery Zone(s): </span><% if(true==edit){ %><span class="not_set">*Required</span><% } %><br/></td></tr>
 	 <tr><td colspan="8">&nbsp;<br/></td></tr>
 	 <% String[] selectedZones = click2CallModel.getDeliveryZones();
 		    List selected = new ArrayList();
@@ -443,7 +443,7 @@ function delAttribute(){
 	 </td></tr>
 	 <% } %>
 	 <tr><td colspan="8"><br/></td></tr>
-	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td>
+	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td></tr>
 	 <tr><td colspan="8" class="click2call_bold">Check if next day timeslots are sold out:<br/></td></tr>
 	 <% if(false==edit){ %>
 	 <tr><td >&nbsp;</td><td colspan="7" align="left"><%= click2CallModel.isNextDayTimeSlot()?"Yes":"No" %><br/></td></tr>

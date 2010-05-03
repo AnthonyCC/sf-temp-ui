@@ -227,7 +227,7 @@ if(request.getParameter("message")!=null){
 					<p/><br/><b>Search our FAQs</b><br/>
 					<table><tr>
 					<td><input type="text" class="search" value="" maxlength="100" style="width: 100px;" name="searchFAQ" /></td>
-					<td><input type="image" name="searchFAQButton" style="border: 0pt none ; padding: 3px; width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()"/></td>
+					<td><input type="image" name="searchFAQButton" style="width: 35px; height: 14px;" src="/media_stat/images/template/search/search_find_button.gif" onclick="submitForm()"/></td>
 					</tr></table>
 	    </td>
 	    
@@ -366,7 +366,7 @@ if(request.getParameter("message")!=null){
 				<td width="25%"></td>
 				<td width="50%" align="center">
 				<a href="/help/index.jsp?home_phone=&home_phone_ext=&alt_phone=&alt_phone_ext=&body="><img src="/media_stat/images/template/help/clear.gif" width="46" height="16" border="0" alt="CLEAR"></A>&nbsp;&nbsp;
-				<input type="image" src="/media_stat/images/template/help/send_message.gif" width="90" height="16"></td>
+				<input type="image" name="sendMessage" src="/media_stat/images/template/help/send_message.gif" width="90" height="16"></td>
 				<td width="25%"></td>
 			</tr>
 		</table>

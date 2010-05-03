@@ -61,49 +61,19 @@ public class ContactFdControllerTag extends AbstractControllerTag implements Ses
 			
 			ContactForm form = new ContactForm(identity == null);
 			form.populateForm(request);
-			if(null !=request.getParameter("searchFAQButton.x")){
+			if(null !=request.getParameter("sendMessage.x")){
+				form.validateForm(actionResult);
+				
+				if (actionResult.isSuccess()) {
+					this.performContactFd(form, user);
+				}
+	
+			}else{
 //				return false;
 				String faqKeyword = request.getParameter("searchFAQ");
 				faqKeyword = NVL.apply(faqKeyword, "");
 				faqKeyword = ContentSearchUtil.normalizeTerm(faqKeyword);
-				this.redirectTo("/help/faq_search.jsp?searchFAQ="+faqKeyword);
-				
-				/*if(null ==faqKeyword || "".equals(faqKeyword.trim())){
-					actionResult.addError(true,"search_faq_empty","Search term can't be empty or blank");
-				}*/
-				/*if (actionResult.isSuccess()) {
-					//search for faq
-					
-					Collection hits = CmsManager.getInstance().search(faqKeyword, 2000);
-					Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
-
-					String[] tokens = ContentSearchUtil.tokenizeTerm(faqKeyword);
-
-					// TODO : refactor, this way, we load ContentNodes twice, here, and in the upper method.
-					List faqs = ContentSearchUtil.filterRelevantNodes(
-							ContentSearchUtil.resolveHits((List) hitsByType
-									.get(FDContentTypes.FAQ)), tokens, SearchQueryStemmer.LowerCase);
-					
-					Set keys = new HashSet(faqs.size());
-					for (Iterator i=faqs.iterator(); i.hasNext(); ) {
-						SearchHit r = (SearchHit) i.next();
-						keys.add(r.getContentKey());
-					}
-					Predicate predicate = new ContentKeysPredicate(keys);
-					Predicate searchPredicate = new AllPredicate(new Predicate[]{predicate});
-					CmsManager manager = CmsManager.getInstance();
-					Map result = manager.queryContentNodes(FDContentTypes.FAQ, searchPredicate);
-					
-					pageContext.setAttribute("searchResult", result);
-					pageContext.setAttribute("keywords", faqKeyword);
-					
-				}*/
-			}else{
-				form.validateForm(actionResult);
-	
-				if (actionResult.isSuccess()) {
-					this.performContactFd(form, user);
-				}
+				this.redirectTo("/help/faq_search.jsp?searchFAQ="+faqKeyword);				
 			}
 		} catch (FDResourceException e) {
 			LOGGER.warn("FDResourceException occured", e);
