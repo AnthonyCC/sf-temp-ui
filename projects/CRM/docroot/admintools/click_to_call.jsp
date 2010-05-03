@@ -43,7 +43,12 @@ function delAttribute(){
 		   if(true==selectedList.item(i).selected){
 	        availableList.appendChild(selectedList.item(i));
 		   }
+		   
 	    }
+	   len = selectedList.length -1;
+	   for(i=len; i>=0; i--){
+		   selectedList.item(i).selected="selected";
+	   }
 	   //if(selIndex < 0)
 	     // return;
 	   //availableList.appendChild(
@@ -64,6 +69,10 @@ function delAttribute(){
 		    	 selectedList.appendChild(availableList.item(i));
 		    }
 	    }
+	    len = selectedList.length -1;
+		   for(i=len; i>=0; i--){
+			   selectedList.item(i).selected="selected";
+		   }
 	   //if(addIndex < 0)
 	    //  return;
 	   //selectedList.appendChild( 
@@ -129,9 +138,11 @@ function delAttribute(){
 	}
 
 	function checkEligibleCustomers(){
+		
 		for (var i=0; i <document.frmClick2Call.eligibleCustType.length; i++)
 		   {
 			document.getElementById("segments").style.display="none";
+		
 		   if (document.frmClick2Call.eligibleCustType[i].checked)
 		      {
 		      var rad_val = document.frmClick2Call.eligibleCustType[i].value;
@@ -419,10 +430,10 @@ function delAttribute(){
 	    <% } %>
 	 <%} else { %>
 	 <tr><td colspan="8"><input type="radio" name="eligibleCustType" id="eligibleCustType" value="everyone" <%= eligibleList.contains("everyone")?"checked":" " %> onclick="checkEligibleCustomers()"> Everyone<br/></input></td></tr>
-	 <tr><td colspan="8"><input type="radio" name="eligibleCustType" id="eligibleCustType" value="selected" <%= !eligibleList.contains("everyone")?"checked":" " %> onclick="checkEligibleCustomers()">Selected Segments<br/></input></td></tr>
+	 <tr><td colspan="8"><input type="radio" name="eligibleCustType" id="eligibleCustType" value="selected" <%= !eligibleList.contains("everyone")?"checked":" " %> onclick="checkEligibleCustomers()"> Selected Segments<br/></input></td></tr>
 	 <tr><td colspan="8">
-	 <%  if(!eligibleList.contains("everyone")){ %>
-	 <div id="segments" >
+	 
+	 <div id="segments">
 	 
 	 <table>
 	<tr>
@@ -439,7 +450,7 @@ function delAttribute(){
 	 </tr> 
 	 </table>
 	 </div>
-	 <% } %>
+	 
 	 </td></tr>
 	 <% } %>
 	 <tr><td colspan="8"><br/></td></tr>
