@@ -88,12 +88,12 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	private String house;
 	
 	private String handTruckAllowed;
-	private String aptDlvAllowed;
+	//private String aptDlvAllowed;
 	private Integer walkUpFloors;
 	
 	private String difficultReason;
 	private String difficultToDeliver;
-	private Integer extraTimeNeeded;
+	//private Integer extraTimeNeeded;
 
 	private String isNew;
 	
@@ -344,21 +344,8 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 		this.walkup = walkup;
 	}
 
-	public Integer getExtraTimeNeeded() {
-		return extraTimeNeeded;
-	}
+	
 
-	public void setExtraTimeNeeded(Integer extraTimeNeeded) {
-		this.extraTimeNeeded = extraTimeNeeded;
-	}
-
-	public String getAptDlvAllowed() {
-		return aptDlvAllowed;
-	}
-
-	public void setAptDlvAllowed(String aptDlvAllowed) {
-		this.aptDlvAllowed = aptDlvAllowed;
-	}
 
 	public String getHandTruckAllowed() {
 		return handTruckAllowed;

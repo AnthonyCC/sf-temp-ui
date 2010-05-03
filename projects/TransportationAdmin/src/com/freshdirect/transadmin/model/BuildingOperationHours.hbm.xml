@@ -13,16 +13,16 @@
             </key-property>
         </composite-id>
         <component name="bldgStartHour" class="com.freshdirect.framework.util.TimeOfDay"> 
-        	<property name="normalDate" column="BLDG_START_HOUR" type="timestamp" not-null="true"/>
+        	<property name="normalDate" column="BLDG_START_HOUR" type="timestamp" not-null="false"/>
         </component>
         <component name="bldgEndHour" class="com.freshdirect.framework.util.TimeOfDay"> 
-        	<property name="normalDate" column="BLDG_END_HOUR" type="timestamp" not-null="true"/>
+        	<property name="normalDate" column="BLDG_END_HOUR" type="timestamp" not-null="false"/>
         </component>
         <component name="serviceStartHour" class="com.freshdirect.framework.util.TimeOfDay"> 
-        	<property name="normalDate" column="SERVICE_START_HOUR" type="timestamp" not-null="true"/>
+        	<property name="normalDate" column="SERVICE_START_HOUR" type="timestamp" not-null="false"/>
         </component>
         <component name="serviceEndHour" class="com.freshdirect.framework.util.TimeOfDay"> 
-        	<property name="normalDate" column="SERVICE_END_HOUR" type="timestamp" not-null="true"/>
+        	<property name="normalDate" column="SERVICE_END_HOUR" type="timestamp" not-null="false"/>
         </component>
         <property name="bldgComments" type="string">
             <column name="BLDG_COMMENTS" length="30" />

@@ -146,7 +146,7 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	}
 	public Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from DlvBuildingDtl dl");
+		strBuf.append("from DlvBuildingDetail dl");
 		boolean hasCondition = false;
 
 		hasCondition = appendLocationQuery(strBuf, "building.srubbedStreet", srubbedAddress, hasCondition);

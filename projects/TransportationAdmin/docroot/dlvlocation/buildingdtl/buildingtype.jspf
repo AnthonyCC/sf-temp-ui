@@ -10,8 +10,8 @@ function housef(checked) {
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=true;
 	  }
  	}
 	else {
@@ -29,15 +29,13 @@ function doormanf(checked) {
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=false;
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=false;
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=false;
 	  }
 	  if(document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[0].checked==false &&
 	     document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[1].checked==false)
 			document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[1].checked=true;	  
-	  if(document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[0].checked==false &&
-	     document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[1].checked==false)
-			document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[1].checked=true;	  
+	  	  
   	}
 	else {
 	  document.getElementById('house').disabled=false;
@@ -45,9 +43,9 @@ function doormanf(checked) {
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
 		//document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].checked=false
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
-		//document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].checked=false;
+      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
+		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=true;
+		
 	  }
    	}
 }

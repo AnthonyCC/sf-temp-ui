@@ -8,16 +8,24 @@
 					    <td>&nbsp;</td>
 				  </tr>				 							  							 
  				  
- 				  <tr>
-				    <td><align="left">Deliveries are allowed to Apartment</td>
-					    <td><form:radiobutton id="aptDlvAllowed" path="aptDlvAllowed" value="1" disabled="true"/>Yes
-					    	&nbsp;&nbsp;&nbsp;&nbsp;
-					        <form:radiobutton id="aptDlvAllowed" path="aptDlvAllowed" value="0" disabled="true"/>No </td>
-					    <td>&nbsp;</td>
-				  </tr>							  							 
+ 				
+							  
 				</table>				 							  							 
  
- 			  	
+ 			  	<table class="t_Hours">
+				  <tr>
+				    <td><align="left">OTHER</td>
+				    <td> 								  
+				  	 	<form:input disabled="false" maxlength="50" size="30" path="other" disabled="true" />
+				 	</td>
+					<td>
+						&nbsp;<div class="wspacer"><!--  --></div>
+					</td>
+					<td>
+						<div class="bld_err_messages"><form:errors path="other" /></div>
+				 	</td>
+				  </tr>				 
+				</table>	
 				  <br><br><b>Walk up Details</b>
 
  				  <table class="t_Hours">

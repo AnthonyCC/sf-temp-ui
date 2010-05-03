@@ -23,9 +23,9 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 		   //validateIntegerMinMax("walkUpFloors", model.getWalkUpFloors(), 1, 20, errors);
 
 		if("1".equals(model.getDifficultToDeliver())) {
-			  ValidationUtils.rejectIfEmpty(errors, "extraTimeNeeded", "app.error.112", new Object[]{"Extra Time Needed"},"required field");
-			  if(model.getExtraTimeNeeded() != null && !"".equals(model.getExtraTimeNeeded()))
-				  validateIntegerMinMax("extraTimeNeeded", "extra Time Needed", model.getExtraTimeNeeded(), 1, 60, errors);
+			 // ValidationUtils.rejectIfEmpty(errors, "extraTimeNeeded", "app.error.112", new Object[]{"Extra Time Needed"},"required field");
+			  //if(model.getExtraTimeNeeded() != null && !"".equals(model.getExtraTimeNeeded()))
+				  //validateIntegerMinMax("extraTimeNeeded", "extra Time Needed", model.getExtraTimeNeeded(), 1, 60, errors);
 			  ValidationUtils.rejectIfEmpty(errors, "difficultReason", "app.error.112", new Object[]{"Reason For Difficulty"},"required field");
 		}
 		
@@ -35,11 +35,11 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 					  validateIntegerMinMax("walkUpFloors", "Walk Up Floors", model.getWalkUpFloors(), 1, 20, errors);
 		}
 		
-		if ("1".equals(model.getSvcEnt())) {
+		/*--What ? if ("1".equals(model.getSvcEnt())) {
 		     ValidationUtils.rejectIfEmpty(errors, "svcScrubbedStreet", "app.error.112", new Object[]{"Location/Address"},"required field");
 		     ValidationUtils.rejectIfEmpty(errors, "svcCity", "app.error.112", new Object[]{"City"},"required field");
 		     ValidationUtils.rejectIfEmpty(errors, "svcState", "app.error.112", new Object[]{"State"},"required field");
 		     ValidationUtils.rejectIfEmpty(errors, "svcZip", "app.error.112", new Object[]{"Zip Code"},"required field");
-		}
+		}*/
 	}
 }

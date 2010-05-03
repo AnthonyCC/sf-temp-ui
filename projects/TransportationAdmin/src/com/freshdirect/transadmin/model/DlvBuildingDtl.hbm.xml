@@ -238,17 +238,13 @@
             <column name="DIFFICULT_TO_DELIVER" length="1" />
         </property> 
         
-      <property name="extraTimeNeeded" type="integer">
-            <column name="EXTRA_TIME_NEEDED" />
-       </property> 
+     
         
       <property name="handTruckAllowed" type="string">
             <column name="HAND_TRUCK_ALLOWED" length="1" />
       </property> 
         
-      <property name="aptDlvAllowed" type="string">
-            <column name="APT_DLV_ALLOWED" length="1" />
-        </property> 
+     
         
       <property name="walkUpFloors" type="integer">
             <column name="WALK_UP_FLOORS" />

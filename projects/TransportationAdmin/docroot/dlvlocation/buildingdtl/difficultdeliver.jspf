@@ -8,6 +8,16 @@ function togglediff(checked, field1, field2) {
         document.getElementById(field1).disabled=document.getElementById(field2).disabled=true;
 	}
 }
+
+function togglediff(checked, field1) {
+    if(checked){
+      document.getElementById(field1).disabled=false;
+	}
+	else {
+        document.getElementById(field1).disabled=true;
+	}
+}
+
  </script>
 
 <b>Difficult to Deliver building</b>
@@ -15,8 +25,8 @@ function togglediff(checked, field1, field2) {
  				  <tr>
 				    <td><align="left">Building is Difficult to Deliver</td>
 					    <td width="125">
-						<form:radiobutton id="difficultToDeliver" path="difficultToDeliver" value="1" onClick="togglediff(true, 'difficultReason', 'extraTimeNeeded')"  />Yes
-							<form:radiobutton id="difficultToDeliver" path="difficultToDeliver" value="0" onClick="togglediff(false, 'difficultReason', 'extraTimeNeeded')" />No 
+						<form:radiobutton id="difficultToDeliver" path="difficultToDeliver" value="1" onClick="togglediff(true, 'difficultReason')"  />Yes
+							<form:radiobutton id="difficultToDeliver" path="difficultToDeliver" value="0" onClick="togglediff(false, 'difficultReason')" />No 
 					    </td>
 						<td width="50"><!--  --></td>
 						<td><div class="wspacer"><!--  --></div></td>
@@ -27,21 +37,32 @@ function togglediff(checked, field1, field2) {
 				  <tr>
 				    <td><align="left">Reason for Difficulty</td>
 				    <td colspan="5"> 								  
-				  	 	<form:input disabled="false" maxlength="100" size="85" path="difficultReason" disabled="1"/>
+				  	 	<!--<form:input disabled="false" maxlength="100" size="85" path="difficultReason" disabled="1"/>-->
+						<form:select path="difficultReason" disabled="1">
+						  	  		<form:option value="null" label="--Please Select"/>
+									<form:options items="${difficultyReasons}" />
+						     </form:select>
 				 	</td>
 					<td><div class="wspacer"><!--  --></div></td>
 					<td><div class="bld_err_messages"><form:errors path="difficultReason" /></div>
 				 	</td>
 				  </tr>		
 				  
-				  <tr>
-				    <td><align="left">Extra Time Needed in mins (1-60) </td>
-				    <td colspan="2" width="175"> 								  
-				  	 	<form:input disabled="false" maxlength="50" size="30" path="extraTimeNeeded" disabled="1" />
+				   <td><align="left">Service Time Override</td>
+				    <td colspan="5"> 								  
+				  	 	<form:input disabled="false" maxlength="100" size="85" path="serviceTimeOverride" disabled="1"/>
 				 	</td>
-					<td colspan="5"><div class="bld_err_messages">&nbsp;&nbsp;&nbsp;<form:errors path="extraTimeNeeded" /></td></div>
-				  </tr>				 							  							 
-				  
-				  
+					<td><div class="wspacer"><!--  --></div></td>
+					<td><div class="bld_err_messages"><form:errors path="serviceTimeOverride" /></div>
+				 	</td>
+				  </tr>	
+				   <td><align="left">Additional</td>
+				    <td colspan="5"> 								  
+				  	 	<form:input disabled="false" maxlength="100" size="85" path="additional" disabled="1"/>
+				 	</td>
+					<td><div class="wspacer"><!--  --></div></td>
+					<td><div class="bld_err_messages"><form:errors path="additional" /></div>
+				 	</td>
+				  </tr>	
 				  		 							  							 
 				</table>							

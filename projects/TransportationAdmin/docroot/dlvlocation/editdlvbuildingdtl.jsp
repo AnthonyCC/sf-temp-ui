@@ -44,20 +44,25 @@ function $() {
 function do_refresh()
 {
 	   //alert("difficultToDeliver[0].checked="+document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked);
-  	   if(document.getElementById('extraTimeNeeded').value == "0")
-		  document.getElementById('extraTimeNeeded').value = "";   
+  	  // if(document.getElementById('extraTimeNeeded').value == "0")
+		//  document.getElementById('extraTimeNeeded').value = "";   
 		
 	   if(document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked==true){
 	        //alert("if->");
 	        $('difficultToDeliver').checked = true;
 	        $('difficultReason').disabled=false;
- 			$('extraTimeNeeded').disabled=false; 
+		 $('serviceTimeOverride').disabled=false;
+		  $('additional').disabled=false;
+ 			//$('extraTimeNeeded').disabled=false; 
 	   }
 	   else {
    	        //alert("else->");
    	        $('difficultToDeliver').checked = false;
-			$('difficultReason').disabled=true;
- 			$('extraTimeNeeded').disabled=true; 
+		$('difficultReason').disabled=true;
+	         $('serviceTimeOverride').disabled=true;
+		  $('additional').disabled=true;
+ 			//$('extraTimeNeeded').disabled=true; 
+			//serviceTimeOverride
 	   }
 	   //alert("doorman.checked="+document.getElementById("deliveryBuildingDtlForm").doorman.checked);
 	   doormanf(document.getElementById("deliveryBuildingDtlForm").doorman.checked);
@@ -225,16 +230,19 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.
 	document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].checked=false;
 	
 }
-for (i=0; i<document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed.length; i++){
-	document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].disabled=true;
-	document.getElementById("deliveryBuildingDtlForm").aptDlvAllowed[i].checked=false;
+for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
+	document.getElementById("deliveryBuildingDtlForm").other[i].disabled=true;
+	document.getElementById("deliveryBuildingDtlForm").other[i].checked=false;
 }
  
  $('difficultReason').value="";
- $('extraTimeNeeded').value="";
+ $('serviceTimeOverride').value="";
+ $('additional').value="";
+ //$('extraTimeNeeded').value="";
  $('difficultReason').disabled=true;
- $('extraTimeNeeded').disabled=true; 
-
+ //$('extraTimeNeeded').disabled=true; 
+ $('serviceTimeOverride').disabled=true;
+ $('additional').disabled=true;
 }
 
 

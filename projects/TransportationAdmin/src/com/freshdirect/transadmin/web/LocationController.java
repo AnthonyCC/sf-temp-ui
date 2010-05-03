@@ -28,6 +28,7 @@ import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.DlvBuilding;
+import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvServiceTime;
@@ -549,9 +550,9 @@ public class LocationController extends AbstractMultiActionController  {
  */			
 			
 			Iterator iterator = dataList.iterator();
-			DlvBuildingDtl type = null;
+			DlvBuildingDetail type = null;
 			while(iterator.hasNext()) {
-				type = (DlvBuildingDtl)iterator.next();
+				type = (DlvBuildingDetail)iterator.next();
 				type.setDoorman( type.getDoorman() != null && type.getDoorman().equals("1")  ? "Yes" : "No");
 				type.setWalkup( type.getWalkup() != null && type.getWalkup().equals("1")  ? "Yes" : "No");
 				type.setElevator( type.getElevator() != null && type.getElevator().equals("1")  ? "Yes" : "No");
