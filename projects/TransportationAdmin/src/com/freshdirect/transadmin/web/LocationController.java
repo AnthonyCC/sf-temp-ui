@@ -558,6 +558,7 @@ public class LocationController extends AbstractMultiActionController  {
 				type.setElevator( type.getElevator() != null && type.getElevator().equals("1")  ? "Yes" : "No");
 				type.setSvcEnt( type.getSvcEnt() != null && type.getSvcEnt().equals("1")  ? "Yes" : "No");
 				type.setHouse( type.getHouse() != null && type.getHouse().equals("1")  ? "Yes" : "No");
+				type.setFreightElevator( type.getFreightElevator() != null && type.getFreightElevator().equals("1")  ? "Yes" : "No");
 				type.setDifficultToDeliver( type.getDifficultToDeliver() != null && type.getDifficultToDeliver().equals("1")  ? "Yes" : "No");
 			}
 		

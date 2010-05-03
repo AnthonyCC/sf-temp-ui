@@ -89,6 +89,7 @@
                 <ec:column property="elevator" title="Elevator" width="5px"/>                           
                 <ec:column property="svcEnt" title="SvcEnt" width="5px"/> 
               <ec:column property="house" title="House" width="5px"/> 
+	      <ec:column property="freightElevator" title="Freight Elevator" width="5px"/> 
               <ec:column property="difficultToDeliver" title="Difficult" width="5px"/>  
               <ec:column property="difficultReason" title="Reason" width="35px"/>             
             </ec:row>

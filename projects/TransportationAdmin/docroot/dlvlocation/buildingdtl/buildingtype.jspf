@@ -5,6 +5,7 @@ function housef(checked) {
       document.getElementById("walkup").checked=false;
       document.getElementById("elevator").checked=false;
       document.getElementById("svcEnt").checked=false;
+      document.getElementById("freightElevator").checked=false;
       svcEntf(false);
       document.getElementById('walkUpFloors').disabled=true;
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
@@ -19,6 +20,21 @@ function housef(checked) {
       document.getElementById("walkup").disabled=false;
       document.getElementById("elevator").disabled=false;
       document.getElementById("svcEnt").disabled=false;
+      document.getElementById("freightElevator").disabled=false;
+   	}
+}
+
+function freightElevatorf(checked) {
+    if(checked){
+	document.getElementById('house').checked=false; 
+     
+    }
+    else {
+      document.getElementById("doorman").disabled=false;
+      document.getElementById("walkup").disabled=false;
+      document.getElementById("elevator").disabled=false;
+      document.getElementById("svcEnt").disabled=false;
+      document.getElementById("freightElevator").disabled=false;
    	}
 }
 
@@ -59,6 +75,7 @@ function walkupf(checked) {
       document.getElementById('house').checked=false;
       document.getElementById('elevator').checked=false;
       document.getElementById('walkUpFloors').disabled=false;
+      document.getElementById("freightElevator").disabled=false;
  
 	}
 	else {
@@ -417,6 +434,8 @@ function svcEntf(checked) {
           <td><td><form:checkbox id="svcEnt" path="svcEnt" value="1" onClick="svcEntf(checked)"/></td></td>
  		  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;House</td></td>
           <td><td><form:checkbox id="house" path="house" value="1" onClick="housef(checked)"/></td></td>
+	  <td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Freight Elevator</td></td>
+	  <td><td><form:checkbox id="freightElevator" path="freightElevator" value="1" onClick="freightElevatorf(checked)"/></td></td>
           
           
   </tr>							 
