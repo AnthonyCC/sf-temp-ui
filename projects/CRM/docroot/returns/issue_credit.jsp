@@ -777,6 +777,24 @@ if(EnumPaymentMethodType.ECHECK.equals(paymentMethod.getPaymentMethodType())){
 		<b>6. Initiate Credit Processing:</b> <button id="process-button" class="submit">PROCESS CREDIT</button>
 	</td>
 </tr>
+<tr VALIGN="middle">
+	
+	<td colspan="8">
+		&nbsp;
+	</td>
+</tr>
+<tr VALIGN="middle">
+	
+	<td colspan="8">
+		&nbsp;
+	</td>
+</tr>
+<tr VALIGN="middle">
+	
+	<td colspan="8">
+		&nbsp;
+	</td>
+</tr>
 </TABLE>
 <!-- additional fields -->
 <%
