@@ -47,9 +47,12 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 				click2CallModel.setUserId(agent.getUserId());
 				String eligibleCustType = request.getParameter("eligibleCustType");
 				StringBuffer eligibleCustomers = new StringBuffer();
+				
 				if("selected".equalsIgnoreCase(eligibleCustType)){
+					boolean isEligibleCustSelected = false;
 					String chefstable = request.getParameter("chefsTable");
-					if(null != chefstable){						
+					if(null != chefstable){		
+						isEligibleCustSelected = true;
 						String ctDlvPass = request.getParameter("ct_dp");
 						if(null !=ctDlvPass){
 							eligibleCustomers.append("ct_dp").append(",");
@@ -62,6 +65,7 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 					
 					String nonChefsTable = request.getParameter("nonChefsTable");
 					if(null !=nonChefsTable){
+						isEligibleCustSelected = true;
 						String nCtDlvPass = request.getParameter("nct_dp");
 						if(null !=nCtDlvPass){
 							eligibleCustomers.append("nct_dp").append(",");
@@ -70,6 +74,9 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 						if(null !=nCtNonDlvPass){
 							eligibleCustomers.append("nct_ndp").append(",");
 						}
+					}
+					if(!isEligibleCustSelected){
+						actionResult.addError(true, "noSelectedCustomers", "Please select atleast one segment for Eligible Customers.");
 					}
 				}else{
 					eligibleCustomers.append(eligibleCustType);
@@ -89,10 +96,13 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 					
 				String nextDayTimeSlot = request.getParameter("nextDayTimeSlot");
 				if(null !=nextDayTimeSlot){
-				click2CallModel.setNextDayTimeSlot(("Y".equalsIgnoreCase(nextDayTimeSlot)?true:false));
+				click2CallModel.setNextDayTimeSlot(("Yes".equalsIgnoreCase(nextDayTimeSlot)?true:false));
 				}
 				
 				String[] selectedZones = request.getParameterValues("selectedZones");
+				if(null == selectedZones || selectedZones.length>0){
+					actionResult.addError(true, "noSelectedZones", "Please select atleast one Delivery Zone.");
+				}
 				/*if(null != selectedZones && selectedZones.length>0){
 					StringBuffer zoneIdBuffer = new StringBuffer();
 					for(int i=0;i<selectedZones.length-1;i++){
@@ -106,9 +116,12 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 		//		selectedZones.toString();
 				
 		//		request.getParameter("selectedZones");
-				request.getParameter("");
+				if(actionResult.isSuccess()){
 				click2CallModel.setStatus(true);
 				CallCenterServices.saveClick2CallInfo(click2CallModel);
+				}else{
+					pageContext.setAttribute("mode", "EDIT");
+				}
 		 
 				
 			}

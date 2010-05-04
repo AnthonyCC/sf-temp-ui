@@ -79,7 +79,7 @@ public class ClickToCallUtil {
 				String endTime = click2CallDay.getEndTime();
 				Integer endHour = Integer.parseInt(endTime);
 				Integer currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-				if(startHour <= currentHour && currentHour <= endHour){
+				if(startHour <= currentHour && (currentHour < endHour || endHour == 0)){
 					String[] dlvZones = click2CallModel.getDeliveryZones();
 					if(null !=dlvZones && dlvZones.length > 0){
 						AddressModel address = user.getShoppingCart().getDeliveryAddress();
@@ -118,25 +118,57 @@ public class ClickToCallUtil {
 				if(elgCustList.contains("everyone")){
 					displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
 					
-				}else if(elgCustList.contains("ct_dp")){
-					if(user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
-						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-					}
+				}else{
 					
-				}else if(elgCustList.contains("ct_ndp")){
-					if(user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
-						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+					if(elgCustList.contains("ct_dp") || elgCustList.contains("ct_ndp")){
+						if(user.isChefsTable()){
+							if(elgCustList.contains("ct_dp") && (user.isDlvPassActive()||user.isDlvPassPending()) ){
+								displayClick2CallInfo = true;
+							}
+							if(!displayClick2CallInfo){
+							if(elgCustList.contains("ct_ndp") && (!user.isDlvPassActive()&& !user.isDlvPassPending()) ){
+								displayClick2CallInfo = true;
+							}
+							}
+						}
 					}
-					
-				}else if(elgCustList.contains("nct_dp")){
-					if(!user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
-						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+					if(!displayClick2CallInfo){
+						if(elgCustList.contains("nct_dp") || elgCustList.contains("nct_ndp")){
+							if(!user.isChefsTable()){
+								if(elgCustList.contains("nct_dp") && (user.isDlvPassActive()||user.isDlvPassPending()) ){
+									displayClick2CallInfo = true;
+								}
+								if(!displayClick2CallInfo){
+								if(elgCustList.contains("nct_ndp") && (!user.isDlvPassActive()&& !user.isDlvPassPending()) ){
+									displayClick2CallInfo = true;
+								}
+								}
+							}
+						}
 					}
-					
-				}else if(elgCustList.contains("nct_ndp")){
-					if(!user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
-						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+					if(displayClick2CallInfo){
+						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,false, address);
 					}
+					/*if(elgCustList.contains("ct_dp")){
+						if(user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
+							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+						}
+						
+					}else if(elgCustList.contains("ct_ndp")){
+						if(user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
+							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+						}
+						
+					}else if(elgCustList.contains("nct_dp")){
+						if(!user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
+							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+						}
+						
+					}else if(elgCustList.contains("nct_ndp")){
+						if(!user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
+							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+						}
+					}*/
 				}
 					
 			}

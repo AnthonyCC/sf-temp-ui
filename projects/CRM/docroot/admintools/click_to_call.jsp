@@ -27,6 +27,13 @@
 <tmpl:put name='title' direct='true'> Click to Call</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
+<style type="text/css">
+.case_content_red_field {
+color: #CC0000;
+font-weight: bold;
+font-size: 10pt;
+}
+</style>
 <script language="javascript">
 var selectedList;
 var availableList;
@@ -82,7 +89,13 @@ function delAttribute(){
 	   sortItems();
 }
 
-
+function selectZones(){
+	var selectedList = document.getElementById("selectedZones");
+	var len = selectedList.length -1;
+	for(i=len; i>=0; i--){
+		   selectedList.item(i).selected="selected";
+	}
+}
 	function setSize(list1,list2){
 	    list1.size = getSize(list1);
 	    list2.size = getSize(list2);
@@ -156,7 +169,7 @@ function delAttribute(){
 
 </script>
 <jsp:include page="/includes/admintools_nav.jsp" />
-<crm:CrmClick2CallController id="availableDeliveryZones" actionName='<%="saveFaqs"%>' result="saveFaqResult" >
+<crm:CrmClick2CallController id="availableDeliveryZones" actionName='<%="saveFaqs"%>' result="saveClick2CallResult" >
 <form method='POST' name="frmClick2Call">
 		<% CrmClick2CallModel click2CallModel = (CrmClick2CallModel)pageContext.getAttribute("click2CallInfo");
 		boolean edit = false;		
@@ -184,7 +197,7 @@ function delAttribute(){
 			
 			<td colspan="4" align="left" width="63%">
 			<% if(null !=pageContext.getAttribute("mode") && "EDIT".equalsIgnoreCase((String)pageContext.getAttribute("mode"))){ %>
-			<b><input type="submit" name="save" value="Save Changes" class="click2Call_button_orange"/></b>&nbsp;&nbsp;<b><input type="submit" name="cancel" value="Cancel Changes" class="click2Call_button_grey" onclick="clearCheckbox(this.form.faqId)"/></b>
+			<b><input type="submit" name="save" value="Save Changes" class="click2Call_button_orange" onclick="selectZones()"/></b>&nbsp;&nbsp;<b><input type="submit" name="cancel" value="Cancel Changes" class="click2Call_button_grey" onclick="clearCheckbox(this.form.faqId)"/></b>
 			<% } else if(!click2CallModel.isStatus()) { %>
 			<b><input type="submit" name="edit" value="Edit Settings" class="click2Call_button_orange"/></b>
 			<% } %>
@@ -195,7 +208,16 @@ function delAttribute(){
 	<div id="result" class="list_content" style="height:70%;">
 	<table align="center" width="95%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">     
        
-    
+    <%	if (!saveClick2CallResult.isSuccess() ) {	%>
+		<logic:iterate id="errs" collection="<%= saveClick2CallResult.getErrors() %>" type="com.freshdirect.framework.webapp.ActionError" indexId="idx">
+		<tr>
+			
+			<td colspan="8" align="left" class="case_content_red_field"><%=errs.getDescription()%><br/></td>
+			
+		</tr>         
+		</logic:iterate>
+        
+<%   }   %> 
 		<tr>
 		
 			<td colspan="8" align="left" class="case_content_field"><%= pageContext.getAttribute("SUCCESS_MSG")%></td>
@@ -437,8 +459,8 @@ function delAttribute(){
 	 
 	 <table>
 	<tr>
-	 	<td colspan="1" ><input type="checkbox" name="chefsTable" id="chefsTable" <%= (eligibleList.contains("ct_dp")|| eligibleList.contains("ct_ndp"))?"checked":" " %>/>Chef's Table</td>
-	 	<td colspan="6" ><input type="checkbox" name="nonChefsTable" id="nonChefsTable" <%= (eligibleList.contains("nct_dp")|| eligibleList.contains("nct_ndp"))?"checked":" " %>/>Non Chef's Table</td>
+	 	<td colspan="1" >&nbsp;&nbsp;<input type="checkbox" name="chefsTable" id="chefsTable" <%= (eligibleList.contains("ct_dp")|| eligibleList.contains("ct_ndp"))?"checked":" " %>/>Chef's Table</td>
+	 	<td colspan="6" >&nbsp;&nbsp;<input type="checkbox" name="nonChefsTable" id="nonChefsTable" <%= (eligibleList.contains("nct_dp")|| eligibleList.contains("nct_ndp"))?"checked":" " %>/>Non Chef's Table</td>
 	 </tr>
 	 <tr>
 	 	<td colspan="1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="ct_dp" id="ct_dp" <%= eligibleList.contains("ct_dp")?"checked":" " %>/>Delivery Pass</td>
@@ -460,8 +482,8 @@ function delAttribute(){
 	 <tr><td >&nbsp;</td><td colspan="7" align="left"><%= click2CallModel.isNextDayTimeSlot()?"Yes":"No" %><br/></td></tr>
 	 
 	 <% }else { %>
-	 <tr><td colspan="8"><input type="radio" name="nextDayTimeSlot" id="nextDayTimeSlot" value="no" <%= click2CallModel.isNextDayTimeSlot()?"checked":" " %>>No<br/></input></td></tr>
-	 <tr><td colspan="8"><input type="radio" name="nextDayTimeSlot" id="nextDayTimeSlot" value="yes" <%= !click2CallModel.isNextDayTimeSlot()?"checked":" " %>>Yes<br/></input></td></tr>
+	 <tr><td colspan="8"><input type="radio" name="nextDayTimeSlot" id="nextDayTimeSlot" value="no" <%= !click2CallModel.isNextDayTimeSlot()?"checked":" " %>>No<br/></input></td></tr>
+	 <tr><td colspan="8"><input type="radio" name="nextDayTimeSlot" id="nextDayTimeSlot" value="yes" <%= click2CallModel.isNextDayTimeSlot()?"checked":" " %>>Yes<br/></input></td></tr>
 	 <% } %>
 	 <tr><td colspan="8" >&nbsp;</td></tr>
 	</table>
