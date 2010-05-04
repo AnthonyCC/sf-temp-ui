@@ -225,7 +225,6 @@ public class FDStoreProperties {
 
 	private static long lastRefresh = 0;
 	private final static long REFRESH_PERIOD = 5 * 60 * 1000;
-
 	//Added for controlling number of orders processed during Mass Cancellation and Mass Returns.
 	private final static String PROP_CRM_ORDER_PRC_LIMIT = "fdstore.orderProcessingLimit";
 
@@ -424,6 +423,9 @@ public class FDStoreProperties {
 	private static final String PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY ="crm.help.link.resol.satisfactory";
 	private static final String PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST ="crm.help.link.resolv.first";
 	private static final String PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT ="crm.help.link.first.contact";
+	
+	//Email Opt-Down (APPDEV-662)
+	private static final String PROP_EMAIL_OPTDOWN_ENABLED ="fdstore.email.optdown.enabled";
 	
 	
 
@@ -751,6 +753,9 @@ public class FDStoreProperties {
 		defaults.put(PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY, "http://home.freshdirect.com/confluence/display/CRM/Resolution+satisfactory");
 		defaults.put(PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST, "http://home.freshdirect.com/confluence/display/CRM/Resolved+on+first+contact");
 		defaults.put(PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT, "http://home.freshdirect.com/confluence/display/CRM/First+contact+for+issue");
+
+		//Email Opt-Down (APPDEV-662)
+		defaults.put(PROP_EMAIL_OPTDOWN_ENABLED, "false");
 		
 		refresh();
 	}
@@ -1734,5 +1739,10 @@ public class FDStoreProperties {
 	}
 	public static String getCrmResolutionSatisfHelpLink(){
 		return get(PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY);
+	}
+	
+	//Email Opt-Down (APPDEV-662)
+	public static boolean isEmailOptdownEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_EMAIL_OPTDOWN_ENABLED)).booleanValue();
 	}
 }
