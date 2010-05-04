@@ -44,6 +44,8 @@ public class DataGeneratorCompiler extends CompilerBase {
     static final String FN_PERSONALIZED_ITEMS_PREFIX = "PersonalizedItems_";
     static final String FN_RELATED_ITEMS_PREFIX = "RelatedItems_";
     static final String FN_TO_LIST = "toList";
+    private static final String FN_PRODUCT_RECOMMENDATION = "ProductRecommendation";
+    private static final String FN_USER_RECOMMENDATION = "PersonalRecommendation";
     
     private static final String EXPLICIT_LIST = "explicitList";
     private static final String CURRENT_PRODUCT = "currentProduct";
@@ -486,7 +488,27 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
         });
         parser.getContext().addFunctionDef("Top", new TopFunction());
-        
+
+        parser.getContext().addFunctionDef(FN_PRODUCT_RECOMMENDATION, new Context.FunctionDef(2, 2, Expression.RET_SET) {
+            public String toJavaCode(String name, List parameters) throws CompileException {
+                Expression param0 = (Expression) parameters.get(0);
+                Expression param1 = (Expression) parameters.get(1);
+                if (param0.getReturnType() != Expression.RET_STRING) {
+                    throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
+                }
+                return "  HelperFunctions.getProductRecommendationFromVendor(" + param0.toJavaCode() + ',' + createScriptConvertToNode(param1) + ")";
+            }
+        });
+
+        parser.getContext().addFunctionDef(FN_USER_RECOMMENDATION, new Context.FunctionDef(1, 1, Expression.RET_SET) {
+            public String toJavaCode(String name, List parameters) throws CompileException {
+                Expression param0 = (Expression) parameters.get(0);
+                if (param0.getReturnType() != Expression.RET_STRING) {
+                    throw new CompileException(CompileException.TYPE_ERROR, "First parameter should be a string for " + name + "!");
+                }
+                return "  HelperFunctions.getUserRecommendationFromVendor(" + param0.toJavaCode() + ", sessionInput.getCustomerId())";
+            }
+        });        
         parser.getContext().addFunctionDef("matchSkuPrefix", new SkuPrefixFilter());
         
         Set<String> personalizedRecommenders = ExternalRecommenderRegistry.getRegisteredRecommenders(ExternalRecommenderType.PERSONALIZED);
@@ -598,7 +620,8 @@ public class DataGeneratorCompiler extends CompilerBase {
     private boolean isCacheableByFunctions(Set<String> functions) {
     	for (String function : functions)
     		if (function.startsWith(FN_PERSONALIZED_ITEMS_PREFIX)
-    				|| function.startsWith(FN_RELATED_ITEMS_PREFIX))
+    				|| function.startsWith(FN_RELATED_ITEMS_PREFIX)
+    				|| function.equals(FN_USER_RECOMMENDATION))
     			return false;
         return true;
     }
