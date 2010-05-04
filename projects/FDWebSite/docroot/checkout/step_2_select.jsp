@@ -72,6 +72,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	FDStandingOrder currentStandingOrder = null;
 
 	String timeSlotId = request.getParameter("deliveryTimeslotId");
+	
 	if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
 		rsv = user.getReservation();
 
@@ -84,7 +85,8 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		if (cart.getDeliveryReservation() != null) {
 			rsv = cart.getDeliveryReservation();
 		}
-		if (timeSlotId == null) {
+		if (timeSlotId == null && (address != null && address.getPK() != null && address.getPK().getId() != null 
+					&& address.getPK().getId().equals(rsv.getAddressId()))) {
 			if(rsv != null){
 				timeSlotId = rsv.getTimeslotId();
 			}else{
