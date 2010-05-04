@@ -11,4 +11,5 @@ public interface IGeographyProvider {
 	List getBoundaries(String code);
 	boolean doZoneExpansion(String worktable, String zone[][], String deliveryFee, String expansionType);
 	boolean generateTimeslots(String zone[][], String worktable);
+	boolean doGeoRestriction(String zone[][]);
 }

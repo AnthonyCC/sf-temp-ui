@@ -18,6 +18,25 @@ public class WorkTableModel {
 	private String commonInboth;
 	private String zoneTblOnly;
 	
+	private String boundaryTblOnly;
+	private String newRestriction;
+	
+	public String getNewRestriction() {
+		return newRestriction;
+	}
+
+	public void setNewRestriction(String newRestriction) {
+		this.newRestriction = newRestriction;
+	}
+
+	public String getBoundaryTblOnly() {
+		return boundaryTblOnly;
+	}
+
+	public void setBoundaryTblOnly(String boundaryTblOnly) {
+		this.boundaryTblOnly = boundaryTblOnly;
+	}
+
 	public String getDeliveryFee() {
 		return deliveryFee;
 	}

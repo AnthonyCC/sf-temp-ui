@@ -162,7 +162,12 @@
 		 <menu id="ADO004" title="Zone Expansion" orientation="RIGHT" link="zoneexpansion.do">
 	     	<access-uris>zoneexpansion.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>	     
-	     </menu>    	     
+	     </menu>
+	     
+	     <menu id="ADO005" title="Geo Restriction" orientation="RIGHT" link="geographyrestriction.do">
+	     	<access-uris>geographyrestriction.do</access-uris>
+	     	<access-roles>TrnAdmin</access-roles>	     
+	     </menu>       	     
          
 </menu>
 </menus>

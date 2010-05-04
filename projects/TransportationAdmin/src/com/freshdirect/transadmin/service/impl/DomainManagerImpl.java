@@ -496,5 +496,149 @@ public class DomainManagerImpl
 	public void makeDevLive(String regionId){
 		 getZoneExpansionDao().makeDevLive(regionId);
 	}
+	
+	
+	//Geo Restrictions
+	
+	public Collection getGeoRestrictions(){
+		
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getGeoRestrictionWorkTableInfo();
+		Set<WorkTableModel> boudaryList =(Set)getZoneExpansionDao().getGeoRestrictionBoundaryInfo();	
+		Set result=new HashSet();	
+		
+		for(WorkTableModel model: workTableList){
+			if(boudaryList.contains(model)){
+				model.setCommonInboth("X");
+			}else{
+				model.setNewRestriction("X");
+			}			
+			result.add(model);
+		}
+		
+		for(WorkTableModel model: boudaryList){
+			if(workTableList.contains(model)){
+				//model.setCommonInboth("X");
+			}else{
+				model.setBoundaryTblOnly("X");
+				result.add(model);
+			}			
+		}
+		
+		return result;
+	}
+	
+	public void doGeoRestriction(String zone[][]) throws DataAccessException{	
+			
+			if(zone.length > 0){
+				List selZoneList=new ArrayList();
+				for(int i=0;i<zone.length;i++){
+					String[] zoneSel=zone[i];
+					selZoneList.add(zoneSel[0]);
+				}
+
+				Set<WorkTableModel> workTblList=(Set)this.getGeoRestrictionsWorkTableList();
+				Set<WorkTableModel> commonList =(Set)this.getCommonGeoRestrictionsList();
+				Set<WorkTableModel> zonetblList=(Set)this.getGeoRestrictionsBoundaryList();
+				
+				for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {
+					String zoneCode = (String) iterator.next();
+					boolean isMatched= false;
+					//Iterate through worktable list and compare with this id
+					for (Iterator iterator2 = workTblList.iterator(); iterator2.hasNext();) {
+						WorkTableModel workTableModel = (WorkTableModel) iterator2.next();	
+						if(workTableModel.getCode().equalsIgnoreCase(zoneCode)){
+							isMatched = true;
+							break;
+						}
+						}//End workTblList loop
+						if(isMatched){
+							
+							//execute the corresponding query
+							getZoneExpansionDao().insertNewGeoRestriction(zoneCode);
+						}else{
+							//Get the next list and iterate through it as above.
+							for (Iterator iterator2 = commonList.iterator(); iterator2.hasNext();) {		
+								WorkTableModel workTableModel = (WorkTableModel) iterator2.next();	
+								if(workTableModel.getCode().equals(zoneCode)){
+									isMatched=true;
+									break;
+								}
+							}//End commonList loop
+							if(isMatched){
+								
+								//execute the corresponding query
+								getZoneExpansionDao().updateGeoRestriction(zoneCode);
+							} else {
+								//Get the next list and iterate through it as above.
+								for (Iterator iterator2 = zonetblList.iterator(); iterator2.hasNext();) {
+									WorkTableModel workTableModel = (WorkTableModel) iterator2.next();
+									if(workTableModel.getCode().equals(zoneCode)){
+										isMatched=true;
+										break;
+									}
+								}//End zonetblList loop
+									if (isMatched) {
+										//discard the zone
+									}
+								}
+						}//end else block
+				}//end For(selZoneList) loop
+			}//End main if
+    }
+	
+	
+	private Collection getCommonGeoRestrictionsList(){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getGeoRestrictionWorkTableInfo();
+		Set<WorkTableModel> boudaryList =(Set)getZoneExpansionDao().getGeoRestrictionBoundaryInfo();	
+		Set commonList=new HashSet();
+		for(WorkTableModel model: workTableList){
+			if(boudaryList.contains(model)){
+				//model.setCommonInBoth(true);
+				model.setCommonInboth("X");
+				commonList.add(model);
+			}
+		}
+		return commonList;
+	}
+
+	private Collection getGeoRestrictionsWorkTableList(){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getGeoRestrictionWorkTableInfo();
+		Set<WorkTableModel> boudaryList =(Set)getZoneExpansionDao().getGeoRestrictionBoundaryInfo();	
+		
+		Set workTblList=new HashSet();
+		for(WorkTableModel model: workTableList){
+			if(boudaryList.contains(model)){
+			
+			}else{
+				model.setNewRestriction("X");
+				workTblList.add(model);	
+			}
+		}
+		return workTblList;
+	}
+
+	private Collection getGeoRestrictionsBoundaryList(){
+		Set<WorkTableModel> workTableList =(Set)getZoneExpansionDao().getGeoRestrictionWorkTableInfo();
+		Set<WorkTableModel> boudaryList =(Set)getZoneExpansionDao().getGeoRestrictionBoundaryInfo();	
+		
+		Set zoneTblList=new HashSet();	
+
+		for(WorkTableModel model: boudaryList){
+			if(workTableList.contains(model)){
+				//model.setCommonInBoth(true);
+			}else{
+				model.setBoundaryTblOnly("X");
+				zoneTblList.add(model);
+			}
+		}
+		return zoneTblList;
+	}
+	
+	public void refreshGeoRestrictionWorktable(){
+		String worktable="DLV.GEO_RESTRICTION_WORKTAB";
+		getZoneExpansionDao().refreshGeoRestrictionWorktable(worktable);
+	}
+
+	
 }
 

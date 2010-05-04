@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
@@ -118,4 +119,10 @@ public interface DomainManagerI extends BaseManagerI {
 	void rollbackTimeslots(String zone[][]);
 	
 	void makeDevLive(String regionId);
+	
+	Collection getGeoRestrictions();
+	
+	void refreshGeoRestrictionWorktable();
+	
+	void doGeoRestriction(String zone[][]);	
 }

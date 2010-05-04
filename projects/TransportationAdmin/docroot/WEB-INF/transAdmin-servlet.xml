@@ -124,6 +124,7 @@
                 <prop key="/gpsadmin.do">dispatchController</prop>
                 
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
+                 <prop key="/geographyrestriction.do">adminController</prop>
                
 			</props>
 		</property>
@@ -247,7 +248,8 @@
             <prop key="/timeslotlog.do">timeslotLogHandler</prop>
             <prop key="/notification.do">notificationHandler</prop>
             <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>
-		</props>
+            <prop key="/geographyrestriction.do">geographyRestrictionsHandler</prop>
+        </props>
 		</property>
 	</bean>
        	

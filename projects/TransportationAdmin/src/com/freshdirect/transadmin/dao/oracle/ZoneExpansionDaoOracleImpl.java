@@ -445,4 +445,88 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	}
 	
 	
+	
+	//Geo Restrictions
+	
+	private static String GRO_RESTRICTION_WORK_TABLE = "select CODE, NAME from DLV.GEO_RESTRICTION_WORKTAB";
+	
+	public Collection getGeoRestrictionWorkTableInfo(){
+		final Set result=new HashSet();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GRO_RESTRICTION_WORK_TABLE);
+	                return ps;
+	            }  
+	    };
+	    
+	    jdbcTemplate.query(creator,
+				new RowCallbackHandler(){
+					public void processRow(ResultSet rs) throws SQLException{
+						WorkTableModel workTableInfo;
+						do{
+							workTableInfo=new WorkTableModel(rs.getString("CODE"),rs.getString("NAME"));
+							result.add(workTableInfo);
+						}while(rs.next());
+					}
+				});
+		return result;
+	}
+	
+	private static String GEO_RESTRICTION_BOUNDARY_INFO = "select CODE, NAME from DLV.GEO_RESTRICTION_BOUNDARY";
+	
+	public Collection  getGeoRestrictionBoundaryInfo(){
+		final Set result=new HashSet();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(GEO_RESTRICTION_BOUNDARY_INFO);
+	                return ps;
+	            }  
+	    };
+	    
+	    jdbcTemplate.query(creator,
+				new RowCallbackHandler(){
+					public void processRow(ResultSet rs) throws SQLException{
+						WorkTableModel workTableInfo;
+						do{
+							workTableInfo=new WorkTableModel(rs.getString("code"),rs.getString("NAME"));
+							result.add(workTableInfo);
+						}while(rs.next());
+					}
+				});
+		return result;
+	}
+	
+	//Insert new Geo Restriction
+	public void insertNewGeoRestriction(final String zoneCode){
+		
+		this.jdbcTemplate.update(
+				   "INSERT into DLV.GEO_RESTRICTION_BOUNDARY select code, name, geoloc from DLV.GEO_RESTRICTION_WORKTAB t where t.code=?", new Object[] {zoneCode});
+	}
+	
+	
+	//Update Geo Restriction
+	public void updateGeoRestriction(final String zoneCode){
+		
+		this.jdbcTemplate.update(
+				   "UPDATE DLV.GEO_RESTRICTION_BOUNDARY t set t.geoloc =(select geoloc from DLV.GEO_RESTRICTION_WORKTAB where code=?) where t.code=?", new Object[] {zoneCode, zoneCode});
+	}
+	
+	@Override
+	public void refreshGeoRestrictionWorktable(final String worktable) throws DataAccessException {
+		CallableStatementCreator creator=new CallableStatementCreator(){
+			public CallableStatement createCallableStatement(Connection connection) throws SQLException{
+				CallableStatement cs=
+						connection.prepareCall("{ call DLV.REFRESH_WORKTABLE(?) }");
+				cs.setString(1, worktable);
+				return cs;
+			}
+			
+		};
+		List params=new ArrayList();
+		jdbcTemplate.call(creator,params);
+		
+	}
+	
 }

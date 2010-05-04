@@ -45,5 +45,15 @@ public interface ZoneExpansionDaoI {
 	void updatePlanningResource(String zoneCode) throws DataAccessException;
 	
 	void makeDevLive(String regionId) throws DataAccessException;
+	
+	Collection getGeoRestrictionWorkTableInfo() throws DataAccessException;
+	
+	Collection getGeoRestrictionBoundaryInfo() throws DataAccessException;
+	
+	void insertNewGeoRestriction(String zoneCode) throws DataAccessException;
+	
+	void updateGeoRestriction(String zoneCode) throws DataAccessException;
+	
+	void refreshGeoRestrictionWorktable(String worktable) throws DataAccessException;
 
 }

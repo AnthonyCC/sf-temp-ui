@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -99,6 +100,47 @@ public class AdminController extends AbstractMultiActionController {
 			mav.getModel().put("notifications", proxy.retrieveNotifications());
 			
 		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	
+	/**
+	 * Custom handler for early warning
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
+	public ModelAndView geographyRestrictionsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		ModelAndView mav = new ModelAndView("geographyRestrictionsView");
+		
+		try {
+			//Environment
+			String url=request.getRequestURL().toString();
+		    if(url.indexOf("dev")>-1 || url.indexOf("stg")>-1 || url.indexOf("trn")>-1){
+		    	request.setAttribute("rightEnvironment", true);
+		    	String envName="";
+		    	if(url.indexOf("dev")>-1){
+		    		envName = "DEV";
+		    	}else if(url.indexOf("stg")>-1){
+		    		envName = "STAGE";
+		    	}else if(url.indexOf("trn")>-1){
+		    		envName = "PROD";
+		    	}
+		    	request.setAttribute("environment", envName);
+		    }
+		    
+		    
+		    if(request.getAttribute("environment")!=null && ("DEV".equals((String)request.getAttribute("environment")))){
+				domainManagerService.refreshGeoRestrictionWorktable();
+			}
+			
+			Collection zoneList= domainManagerService.getGeoRestrictions();
+			mav.getModel().put("zones", zoneList);
+			
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

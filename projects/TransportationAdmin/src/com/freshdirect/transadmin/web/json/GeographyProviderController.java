@@ -87,5 +87,17 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		}
 		return true;
 	}
+	
+	public boolean doGeoRestriction(String zone[][]) {
+		
+		try{
+			domainManagerService.doGeoRestriction(zone);
+			//saveMessage(request, getMessage("app.actionmessage.153", new Object[]{}));
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 
 }
