@@ -4,8 +4,8 @@
 	if(messages != null) {
 		Iterator _iteratorMsg = messages.iterator();
 		while(_iteratorMsg.hasNext()) {
-			GeographyRestrictionMessage _message = (GeographyRestrictionMessage)_iteratorMsg.next();
-			messagesToDisplay.add(_message.getMessage());					
+			String _message = (String)_iteratorMsg.next();
+			messagesToDisplay.add(_message);
 		}
 	}
 	if(messagesToDisplay != null && messagesToDisplay.size() > 0) { 

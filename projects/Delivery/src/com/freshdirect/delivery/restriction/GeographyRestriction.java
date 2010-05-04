@@ -130,7 +130,7 @@ public class GeographyRestriction extends ModelSupport   {
 								//System.out.println("Check Passed >"+DateUtil.format(timeslot.getBaseDate()));
 								isRestricted = restrictedDay.isMatching(timeslot.getDlvTimeslot().getStartTime());
 								if(isRestricted && isWithinBaseRange(baseRange, timeslot.getBaseDate()) 
-										&& "X".equalsIgnoreCase(geographicRestrictions.getMessage())) {
+										&& "X".equalsIgnoreCase(geographicRestrictions.getShowMessage())) {
 									
 									GeographyRestrictionMessage _tmpMessage = new GeographyRestrictionMessage();
 									_tmpMessage.setMessage(geographicRestrictions.getMessage());
