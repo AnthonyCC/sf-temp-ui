@@ -75,34 +75,62 @@ public class TimeSlotLogDAO {
 		    	else {
 		    		ps.setString(5, EMPTY_TIMESLOT);
 		    	}
-		    	if(isAnalyseCall) {
+		    	if(isAnalyseCall ) {
 		    		IDeliverySlotCost cost=slot.getDeliveryCost();
-		    		
-		    		ps.setInt(6, cost.getAdditionalDistance());
-		    		ps.setInt(7, cost.getAdditionalRunTime());
-		    		ps.setInt(8, cost.getAdditionalStopCost());
-		    		ps.setInt(9, cost.getCapacity());
-		    		ps.setInt(10, cost.getCostPerMile());
-		    		ps.setInt(11, cost.getFixedRouteSetupCost());
-		    		ps.setInt(12, cost.getMaxRunTime());
-		    		ps.setInt(13, cost.getOvertimeHourlyWage());
-		    		ps.setDouble(14, cost.getPercentageAvailable());
-		    		ps.setInt(15, cost.getPrefRunTime());
-		    		ps.setInt(16, cost.getRegularHourlyWage());
-		    		ps.setInt(17, cost.getRegularWageDurationSeconds());
-		    		ps.setInt(18, cost.getRouteId());
-		    		ps.setInt(19, cost.getStopSequence());
-		    		ps.setInt(20, cost.getTotalDistance());
-		    		ps.setInt(21, cost.getTotalPUQuantity());
-		    		ps.setInt(22, cost.getTotalQuantity());
-		    		ps.setInt(23, cost.getTotalRouteCost());
-		    		ps.setInt(24, cost.getTotalRunTime());
-		    		ps.setInt(25, cost.getTotalServiceTime());
-		    		ps.setInt(26, cost.getTotalTravelTime());
-		    		ps.setInt(27, cost.getTotalWaitTime());
-		    		ps.setString(28, get(cost.isAvailable()));
-		    		ps.setString(29, get(cost.isFiltered()));
-		    		ps.setString(30, get(cost.isMissedTW()));
+		    		if(cost!=null) {
+			    		ps.setInt(6, cost.getAdditionalDistance());
+			    		ps.setInt(7, cost.getAdditionalRunTime());
+			    		ps.setInt(8, cost.getAdditionalStopCost());
+			    		ps.setInt(9, cost.getCapacity());
+			    		ps.setInt(10, cost.getCostPerMile());
+			    		ps.setInt(11, cost.getFixedRouteSetupCost());
+			    		ps.setInt(12, cost.getMaxRunTime());
+			    		ps.setInt(13, cost.getOvertimeHourlyWage());
+			    		ps.setDouble(14, cost.getPercentageAvailable());
+			    		ps.setInt(15, cost.getPrefRunTime());
+			    		ps.setInt(16, cost.getRegularHourlyWage());
+			    		ps.setInt(17, cost.getRegularWageDurationSeconds());
+			    		ps.setInt(18, cost.getRouteId());
+			    		ps.setInt(19, cost.getStopSequence());
+			    		ps.setInt(20, cost.getTotalDistance());
+			    		ps.setInt(21, cost.getTotalPUQuantity());
+			    		ps.setInt(22, cost.getTotalQuantity());
+			    		ps.setInt(23, cost.getTotalRouteCost());
+			    		ps.setInt(24, cost.getTotalRunTime());
+			    		ps.setInt(25, cost.getTotalServiceTime());
+			    		ps.setInt(26, cost.getTotalTravelTime());
+			    		ps.setInt(27, cost.getTotalWaitTime());
+			    		ps.setString(28, get(cost.isAvailable()));
+			    		ps.setString(29, get(cost.isFiltered()));
+			    		ps.setString(30, get(cost.isMissedTW()));
+		    		} else {
+		    			ps.setInt(6, 0);
+			    		ps.setInt(7, 0);
+			    		ps.setInt(8, 0);
+			    		ps.setInt(9, 0);
+			    		ps.setInt(10, 0);
+			    		ps.setInt(11, 0);
+			    		ps.setInt(12,0);
+			    		ps.setInt(13, 0);
+			    		ps.setDouble(14, 0);
+			    		ps.setInt(15, 0);
+			    		ps.setInt(16, 0);
+			    		ps.setInt(17, 0);
+			    		ps.setInt(18, 0);
+			    		ps.setInt(19, 0);
+			    		ps.setInt(20,0);
+			    		ps.setInt(21, 0);
+			    		ps.setInt(22, 0);
+			    		ps.setInt(23, 0);
+			    		ps.setInt(24, 0);
+			    		ps.setInt(25, 0);
+			    		ps.setInt(26, 0);
+			    		ps.setInt(27, 0);
+  		    		    ps.setNull(28, java.sql.Types.VARCHAR);
+			    		ps.setNull(29, java.sql.Types.VARCHAR);
+			    		ps.setNull(30, java.sql.Types.VARCHAR);
+
+		    		}
 		    		
 		    	}
 		    	
