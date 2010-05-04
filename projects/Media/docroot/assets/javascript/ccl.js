@@ -1902,7 +1902,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
             // save automatically on one list, then do that
             if (self.autoSaveOnOneItem && result.listNames.length == 1) {
                 self.the_list = result.listNames[0][0];
-                self.the_list_type = self.dropdownTypes[self.the_list];
+                self.the_list_type = result.listNames[0][2];
                 self.currentState = "wait_save_response";
                 self.modify_list(self);
                 return;
