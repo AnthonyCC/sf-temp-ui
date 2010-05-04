@@ -363,6 +363,7 @@ protected void onBind(HttpServletRequest request, Object command) {
 		result.setSvcScrubbedStreet(buildingDetail.getSvcScrubbedStreet());
 		result.setSvcCrossStreet(buildingDetail.getSvcCrossStreet());
 		result.setSvcCity(buildingDetail.getSvcCity());
+		result.setSvcState(buildingDetail.getSvcState());
 		result.setSvcZip(buildingDetail.getSvcZip());
 		result.setDoorman(buildingDetail.getDoorman());
 		result.setWalkup(buildingDetail.getWalkup());
@@ -488,6 +489,7 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		buildingDetail.setSvcScrubbedStreet(buildingDtl.getSvcScrubbedStreet());
 		buildingDetail.setSvcCrossStreet(buildingDtl.getSvcCrossStreet());
 		buildingDetail.setSvcCity(buildingDtl.getSvcCity());
+		buildingDetail.setSvcState(buildingDtl.getSvcState());
 		buildingDetail.setSvcZip(buildingDtl.getSvcZip());
 		buildingDetail.setDoorman(buildingDtl.getDoorman());
 		buildingDetail.setWalkup(buildingDtl.getWalkup());
