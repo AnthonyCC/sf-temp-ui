@@ -52,26 +52,30 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 					boolean isEligibleCustSelected = false;
 					String chefstable = request.getParameter("chefsTable");
 					if(null != chefstable){		
-						isEligibleCustSelected = true;
+						
 						String ctDlvPass = request.getParameter("ct_dp");
 						if(null !=ctDlvPass){
+							isEligibleCustSelected = true;
 							eligibleCustomers.append("ct_dp").append(",");
 						}
 						String ctNonDlvPass = request.getParameter("ct_ndp");
 						if(null !=ctNonDlvPass){
+							isEligibleCustSelected = true;
 							eligibleCustomers.append("ct_ndp").append(",");
 						}
 					}
 					
 					String nonChefsTable = request.getParameter("nonChefsTable");
 					if(null !=nonChefsTable){
-						isEligibleCustSelected = true;
+						
 						String nCtDlvPass = request.getParameter("nct_dp");
 						if(null !=nCtDlvPass){
+							isEligibleCustSelected = true;
 							eligibleCustomers.append("nct_dp").append(",");
 						}
 						String nCtNonDlvPass = request.getParameter("nct_ndp");
 						if(null !=nCtNonDlvPass){
+							isEligibleCustSelected = true;
 							eligibleCustomers.append("nct_ndp").append(",");
 						}
 					}
