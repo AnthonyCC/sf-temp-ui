@@ -215,8 +215,9 @@ public class FDPromotionVisitor {
 		eligibilities.removeAppliedPromo(headerPromoCode);
 		/** Clear redeemed promotion only when it's a header discount */
 		PromotionI redeemedPromo=context.getUser().getRedeemedPromotion();
-		if(redeemedPromo.isHeaderDiscount())
+		if(redeemedPromo != null && redeemedPromo.isHeaderDiscount()) {
 			context.getUser().setRedeemedPromotion(null);
+		}
 		
 		PromotionI headerPromo = PromotionFactory.getInstance().getPromotion(headerPromoCode);
 		if(headerPromo.apply(context)){		
