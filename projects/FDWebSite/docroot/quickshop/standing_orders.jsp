@@ -35,8 +35,8 @@
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<div id="inner-container" style="width: 100%">
-			<div class="title18" style="padding-top: 1em">Standing Orders</div>
-			<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
+			<div class="title18" style="padding-top: 1em">Standing Orders</div>			
+			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>			
 			<div class="title14">Hassle-free shopping just got even more, well... hassle-free.</div>
 			<div style="margin-bottom: 1em">FreshDirect's standing orders make it even easier to get everything you love without lifting a finger. Simply fill your shopping cart with the items you'd like us to deliver. When you place your first order, you'll let us know the day and time you want to receive future deliveries. A Standing Order is simple to set up and, of course, you can update it, pause it or cancel it at any time. You can even ask us to just skip a week.</div>
 			<div style="margin-bottom: 1em">Each Standing Order uses a Shopping List and a schedule that you can update at any time. We'll automatically place your order 7 days before the next recurring delivery (and send you an email notification when we do). You'll have plenty of time to add or remove items, change that specific order, or cancel it if you don't need it at all. 
@@ -53,7 +53,7 @@
 		    ErpAddressModel addr = so.getDeliveryAddress();		
 			final String nextDlvDateText = new SimpleDateFormat("EEEE, MMMM d.").format( so.getNextDeliveryDate() );
 			%>			
-			<h2><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
+			<h2><a class="title16" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
 			<div class="title12" style="margin: 1em 1em 2em 1em">
 				
 				<% if (so.isError()) { %>				
@@ -78,7 +78,7 @@
 		<% } %>
 	</fd:ManageStandingOrders>
 
-	<div style="margin: 2em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
+	<hr style="margin: 2em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 	
 	<fd:CreateStandingOrder result="result">
 		<div id="create-so-box" style="padding: 1em 1em">

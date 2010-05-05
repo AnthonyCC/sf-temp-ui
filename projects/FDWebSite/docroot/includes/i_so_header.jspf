@@ -91,11 +91,8 @@
 	}
 
 	// purple bottom bar
-	if (isViewCartPage || isFinalPage) {
-%>					<div style="margin: 1em 0 1em 0; background-color: #996699; height: 4px; width: 100%"></div>
-<%
-	} else {
-%>					<div style="margin: 1em -5px 1em -5px; background-color: #996699; height: 4px;"></div>
-<%
-	}
-%>
+	if (isViewCartPage || isFinalPage) { %>
+		<hr style="margin: 1em 0 1em 0; width: 100%; height: 4px; line-height: 4px; background-color: #996699; color: #996699; border: none;"/>			
+	<% } else { %>					
+		<hr style="margin: 1em 0 1em 0 width: 100%; height: 4px; line-height: 4px; background-color: #996699; color: #996699; border: none;"/>			
+	<% } %>
