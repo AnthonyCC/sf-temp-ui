@@ -71,7 +71,7 @@ public class ErpNutritionType {
     public final static String CHLORIDE = "CHLORIDE";
     public final static String IGNORE = "IGNORE";
     
-    public static TreeSet nutritionTypes = new TreeSet(new TypeComparator());
+    public static TreeSet<Type> nutritionTypes = new TreeSet<Type>(new TypeComparator());
     
     static{
         nutritionTypes.add(new Type(IGNORE, "Ignore", "", false, nutritionTypes.size(), false, false));
@@ -145,7 +145,7 @@ public class ErpNutritionType {
     
     public static Type getType(String name){
         Type type = null;
-        for(Iterator i = nutritionTypes.iterator(); i.hasNext();){
+        for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
             type = (Type)i.next();
             if(name.equalsIgnoreCase(type.getName())){
                 break;
@@ -154,17 +154,17 @@ public class ErpNutritionType {
         return type;
     }
     
-    public static Iterator getTypesIterator(){
-        List ret = new ArrayList();
-        for(Iterator i = nutritionTypes.iterator(); i.hasNext();){
+    public static Iterator<String> getTypesIterator(){
+        List<String> ret = new ArrayList<String>();
+        for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
             ret.add(((Type)i.next()).getName());
         }
         return ret.iterator();
     }
     
-    public static Iterator getStarterSet(){
-        List ret = new ArrayList();
-        for(Iterator i = nutritionTypes.iterator(); i.hasNext();){
+    public static Iterator<String> getStarterSet(){
+        List<String> ret = new ArrayList<String>();
+        for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
             Type type = (Type)i.next();
             if(type.getStartingSet()){
                 ret.add(type.getName());
@@ -173,9 +173,9 @@ public class ErpNutritionType {
         return ret.iterator();
     }
     
-    public static List getStarterSetList(){
-        List ret = new ArrayList();
-        for(Iterator i = nutritionTypes.iterator(); i.hasNext();){
+    public static List<String> getStarterSetList(){
+        List<String> ret = new ArrayList<String>();
+        for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
             Type type = (Type)i.next();
             if(type.getStartingSet()){
                 ret.add(type.getName());
@@ -184,9 +184,9 @@ public class ErpNutritionType {
         return ret;
     }
     
-	public static List getCommonList(){
-		List ret = new ArrayList();
-		for(Iterator i = nutritionTypes.iterator(); i.hasNext();){
+	public static List<Type> getCommonList(){
+		List<Type> ret = new ArrayList<Type>();
+		for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
 			Type type = (Type)i.next();
 			if(type.isCommon()){
 				ret.add(type);
@@ -238,10 +238,8 @@ public class ErpNutritionType {
         }
     }
     
-    static class TypeComparator implements Comparator {
-        public int compare(Object o1, Object o2){
-            Type type1 = (Type)o1;
-            Type type2 = (Type)o2;
+    static class TypeComparator implements Comparator<Type> {
+        public int compare(Type type1, Type type2){
             if(type1.getPriority() < type2.getPriority()){
                 return -1;
             }else if(type1.getPriority() > type2.getPriority()){

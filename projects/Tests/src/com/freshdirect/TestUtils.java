@@ -1,6 +1,7 @@
 package com.freshdirect;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -243,7 +244,11 @@ public class TestUtils {
     public static String getId(List<ContentNodeModel> nodes, int pos) {
         return (nodes.get(pos)).getContentKey().getId();
     }
-    
+
+    public static Set toSet(Object[] arr) {
+        return new HashSet(Arrays.asList(arr));
+    }
+
     
     public static XmlContentService initCmsManagerFromXmls(String xmlPath) {
         List list = new ArrayList();

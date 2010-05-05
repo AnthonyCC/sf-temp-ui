@@ -525,7 +525,7 @@ public class Product {
             }
         }
 
-        this.hideForMobile = productModel.hideIphone();
+        this.hideForMobile = productModel.isHideIphone();
 
         // Getting any notice message that neeed to be displayed on screen:
         //rsung

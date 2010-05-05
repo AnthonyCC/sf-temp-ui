@@ -60,7 +60,10 @@ public class FDContentTypes {
    	public static final ContentType RECOMMENDER_STRATEGY = ContentType.get("RecommenderStrategy");   	
    	
    	public static final ContentType FAQ = ContentType.get("FAQ");
-   	
+ 
+        public final static ContentType PRODUCER = ContentType.get("Producer");
+        public final static ContentType PRODUCER_TYPE = ContentType.get("ProducerType");
+
 	private FDContentTypes() {
 	}
 

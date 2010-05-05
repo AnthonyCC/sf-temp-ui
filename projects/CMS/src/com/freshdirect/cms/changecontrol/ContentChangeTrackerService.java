@@ -11,14 +11,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponseI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.service.ProxyContentService;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 
@@ -48,14 +52,41 @@ public class ContentChangeTrackerService extends ProxyContentService {
 		Collection<ContentNodeI> reqNodes = request.getNodes();
 
 		Set<ContentKey> keys = new HashSet<ContentKey>();
+		List<ContentNodeChange> extraChanges = new ArrayList<ContentNodeChange>();
 		for (Iterator<ContentNodeI> i = reqNodes.iterator(); i.hasNext();) {
 			ContentNodeI node = i.next();
 			keys.add(node.getKey());
+			final ContentTypeDefI definition = node.getDefinition();
+			// handle bi-directional references
+                        for (String name : definition.getAttributeNames()) {
+                            AttributeDefI attributeDef = definition.getAttributeDef(name);
+                            if (attributeDef instanceof BidirectionalRelationshipDefI) {
+                                BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
+                                if (b.isWritableSide()) {
+                                    // get the new referant 
+                                    ContentKey refs = (ContentKey) node.getAttributeValue(name);
+                                    // get the old refering node
+                                    
+                                    BidirectionalReferenceHandler handler = getProxiedService().getTypeService().getReferenceHandler(definition.getType(), name);
+                                    ContentKey key = handler.getInverseReference(refs);
+                                    
+                                    ContentNodeChange nodeChange = new ContentNodeChange();
+                                    nodeChange.setChangeType(EnumContentNodeChangeType.MODIFY);
+                                    nodeChange.setContentKey(key);
+                                    nodeChange.addDetail(new ChangeDetail(name, refs.toString(), null));
+                                    
+                                    extraChanges.add(nodeChange);
+                                }
+                            }
+			}
 		}
 
 		Map oldNodes = super.getContentNodes(keys);
 
 		ChangeSet changeSet = createChangeSet(request, oldNodes);
+		for (ContentNodeChange c : extraChanges) {
+		    changeSet.addChange(c);
+		}
 
 		CmsResponseI response = super.handle(request);
 

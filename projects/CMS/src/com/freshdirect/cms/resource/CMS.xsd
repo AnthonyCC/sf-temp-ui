@@ -63,6 +63,11 @@
 					<xsd:documentation>String</xsd:documentation>
 				</xsd:annotation>
 			</xsd:enumeration>
+			<xsd:enumeration value="TXT">
+				<xsd:annotation>
+					<xsd:documentation>String</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
 			<xsd:enumeration value="DT">
 				<xsd:annotation>
 					<xsd:documentation>Date</xsd:documentation>
@@ -118,6 +123,7 @@
 								<xsd:extension base="BaseElementOnlyType">
 									<xsd:choice minOccurs="0" maxOccurs="unbounded">
 										<xsd:element name="AttributeDef" type="AttributeDefType"/>
+										<xsd:element name="EnumDef" type="EnumDefType"/>
 									</xsd:choice>
 								</xsd:extension>
 							</xsd:complexContent>
@@ -136,6 +142,22 @@
 					</xsd:element>
 				</xsd:sequence>
 				<xsd:attribute name="name" type="xsd:string"/>
+				<xsd:attribute name="generateId" use="optional" default="false">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="false">
+								<xsd:annotation>
+									<xsd:documentation>Do not generate id automaticly</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+							<xsd:enumeration value="true">
+								<xsd:annotation>
+									<xsd:documentation>Generate id automaticly</xsd:documentation>
+								</xsd:annotation>
+							</xsd:enumeration>
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:attribute>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -153,6 +175,32 @@
 	</xsd:complexType>
 	<!--
 
+		EnumDef type structure
+
+	-->
+	<xsd:complexType name="EnumDefType">
+		<xsd:complexContent>
+			<xsd:extension base="AttributeDefType">
+				<xsd:sequence>
+					<xsd:element name="EnumValue" minOccurs="1" maxOccurs="unbounded">
+						<xsd:complexType>
+							<xsd:complexContent>
+								<xsd:extension base="BaseElementOnlyType">
+									<xsd:attribute name="value" use="required"/>
+									<xsd:attribute name="label" use="required"/>
+									<xsd:attribute name="description" use="optional" />
+								</xsd:extension>
+							</xsd:complexContent>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+
+	<!--
+
 		Relationship type structure
 
 	-->
@@ -166,6 +214,8 @@
 							<xsd:complexContent>
 								<xsd:extension base="BaseElementOnlyType">
 									<xsd:attribute name="contentType"/>
+									<xsd:attribute name="reverseAttributeName"/>
+									<xsd:attribute name="reverseAttributeLabel"/>
 								</xsd:extension>
 							</xsd:complexContent>
 						</xsd:complexType>

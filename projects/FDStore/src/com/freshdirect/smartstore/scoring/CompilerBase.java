@@ -133,11 +133,15 @@ public abstract class CompilerBase {
     }
 
     protected CtMethod createToStringMethod(CtClass class1, String toStringValue) throws CannotCompileException {
-        return CtNewMethod.make("public String toString() { \n" +
-                "  return \""+toStringValue.replace('"', '\'')+"\";\n" +
-                                "}", class1);
+        return createReturningStringMethod(class1, "toString", toStringValue);
     }
 
+    protected CtMethod createReturningStringMethod(CtClass class1, String methodName, String toStringValue) throws CannotCompileException {
+        return CtNewMethod.make("public String "+methodName+"() { \n" +
+                "  return \""+toStringValue.replace('"', '\'').replaceAll("\n", "\\\\n")+"\";\n" +
+                                "}", class1);
+    }
+    
     public synchronized Class generateClass(String name, String expression) throws CompileException {
         BlockExpression ast = parse(expression);
         return compileAlgorithm(name, ast, expression);

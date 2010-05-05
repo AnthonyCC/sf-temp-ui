@@ -640,7 +640,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								} else {
 									parsedValue = handleSimpleValue(attributeName, doubleValue, status, rowStatus);
 								}
-							} else if (attributeType == EnumAttributeType.STRING) {
+							} else if (attributeType == EnumAttributeType.STRING || attributeType == EnumAttributeType.LONG_TEXT) {
 								parsedValue = handleSimpleValue(attributeName, stringValue, status, rowStatus);
 							} else if (attributeType == EnumAttributeType.DATE) {
 								Date dateValue = parseDateValue(cell, type, stringValue, status);
@@ -725,6 +725,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 
 	private boolean isSupportedAttribute(AttributeDefI attributeDef) {
 		return (attributeDef.getAttributeType() == EnumAttributeType.STRING
+		                || attributeDef.getAttributeType() == EnumAttributeType.LONG_TEXT
 				|| attributeDef.getAttributeType() == EnumAttributeType.RELATIONSHIP
 				|| attributeDef.getAttributeType() == EnumAttributeType.ENUM
 				|| attributeDef.getAttributeType() == EnumAttributeType.INTEGER

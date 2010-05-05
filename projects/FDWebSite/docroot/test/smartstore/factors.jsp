@@ -13,6 +13,7 @@
 %><%@page import="java.io.PrintWriter"
 %><%@page import="java.text.DecimalFormat"
 %><%@page import="java.text.NumberFormat"
+%><%@page import="jxl.write.WriteException"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoreProvider"
 %><%@page import="com.freshdirect.smartstore.fdstore.ScoresTable"
 %><%@page import="com.freshdirect.framework.util.CSVUtils"%><%!

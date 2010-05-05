@@ -33,6 +33,8 @@
 				<DestinationDef contentType="RecommenderStrategy"/>
 				<DestinationDef contentType="WordStemmingException"/>
 				<DestinationDef contentType="FAQ"/>
+				<DestinationDef contentType="Producer"/>
+				<DestinationDef contentType="ProducerType"/>
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -209,6 +211,7 @@
 			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
 			<AttributeDef type="B" name="FAKE_ALL_FOLDER" label="Fake All Folder"/>
 			<AttributeDef type="B" name="SHOW_SIDE_NAV"  label="Show Side Nav" inheritable="true"/>
+			<AttributeDef type="B" name="HIDE_INACTIVE_SIDE_NAV"  label="Hide Inactive Category in Side Nav" inheritable="true"/>
 			<AttributeDef type="B" name="TREAT_AS_PRODUCT"  label="Treat as Product" inheritable="true"/>
 			<AttributeDef type="B" name="NUTRITION_SORT"  label="Nutrition Sort" inheritable="true"/>
 			<AttributeDef type="B" name="SIDENAV_BOLD"  label="Side Nav Bold"/>
@@ -254,7 +257,9 @@
 			<!-- SmartStore -->
 			<AttributeDef type="B" name="SS_LEVEL_AGGREGATION" label="Level Aggregation" inheritable="false"/>
 			
-			<AttributeDef type="I" name="MANUAL_SELECTION_SLOTS" label="Manual Selection Slots" inheritable="false"/>"
+			<AttributeDef type="I" name="MANUAL_SELECTION_SLOTS" label="Manual Selection Slots" inheritable="false"/>
+			
+			<AttributeDef type="B" name="SHOW_EMPTY_CATEGORY" label="Show Empty Category" inheritable="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -1487,6 +1492,7 @@
 				<DestinationDef contentType="Category" />
 				<DestinationDef contentType="Department" />
 				<DestinationDef contentType="FavoriteList" />
+				<DestinationDef contentType="Brand" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -1515,9 +1521,50 @@
 			<AttributeDef type="I" name="top_n" label="Top N" required="false" />
 			<AttributeDef type="D" name="top_percent" label="Top percent" required="false" />
 			<AttributeDef type="D" name="exponent" label="Exponent (for power sampling)" required="false" />
+			<AttributeDef type="B" name="show_temp_unavailable" label="Show Temporary Unavailable" required="false" />
 		</AttributeDefs>
 	</ContentTypeDef>	
 	
-	
+	<ContentTypeDef name="Producer">
+		<AttributeDefs>
+			<AttributeDef name="FULL_NAME" type="S" label="Name"/>
+			<AttributeDef name="ADDRESS" type="TXT" label="Address"/>
+			<AttributeDef name="GMAPS_LOCATION" type="S" label="Google Maps Location"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="bubble_content" cardinality="One" navigable="false" label="Bubble Content">
+				<DestinationDef contentType="Html"/>
+			</RelationshipDef>
+			<RelationshipDef name="icon" cardinality="One" navigable="false" label="Icon">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="icon_shadow" cardinality="One" navigable="false" label="Icon Shadow">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="producer_type" cardinality="One" navigable="false" label="Producer Type">
+				<DestinationDef contentType="ProducerType"/>
+			</RelationshipDef>
+			<RelationshipDef name="brand_category" cardinality="One" navigable="false" label="Brand Category">
+				<DestinationDef contentType="Category"/>
+			</RelationshipDef>
+			<RelationshipDef name="brand" cardinality="One" navigable="false" label="Brand" inheritable="false" >
+				<DestinationDef contentType="Brand" reverseAttributeName="producer" reverseAttributeLabel="Brand Producer"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+		
+	<ContentTypeDef name="ProducerType">
+		<AttributeDefs>
+			<AttributeDef name="FULL_NAME" type="S" label="Name"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="icon" cardinality="One" navigable="false" label="Icon">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+			<RelationshipDef name="icon_shadow" cardinality="One" navigable="false" label="Icon Shadow">
+				<DestinationDef contentType="Image"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
 	
 </CMSDef>

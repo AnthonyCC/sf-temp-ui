@@ -71,8 +71,7 @@ FDSessionUser user = (FDSessionUser)session.getAttribute(SessionName.USER);
 	<%
 	try {
 		if (isIncludeMediaLayout) {
-			%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%
-   
+			%><img src="/media_stat/images/layout/clear.gif" width="1" height="10" /> <%@ include file="/common/template/includes/catLayoutManager.jspf" %><br /><%  
 		} else {
 			Html introCopyAttribute = department.getEditorial();
 			String introCopy = (introCopyAttribute == null ? "" : introCopyAttribute.getPath());
@@ -178,7 +177,10 @@ if (introTitle != null || !"".equals(introTitle)) {
 		
 		if ("local".equals(deptId)) { 
 					//featured item footer
-					%><%@ include file="/includes/department_bottom_featured.jspf"%><%
+					%>
+					<%@ include file="/includes/department_brand_category_dropdown.jspf" %> 
+					
+					<%@ include file="/includes/department_bottom_featured.jspf"%><%
 				} else if("fdi".equals(deptId)) {
 					%><%@ include file="/includes/department_fea_edit_bottom.jspf"%><%
 				} else { 

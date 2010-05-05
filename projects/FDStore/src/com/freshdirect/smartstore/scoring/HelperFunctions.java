@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -356,6 +357,40 @@ public class HelperFunctions {
         return result;
     }
     
+    /**
+     * used by 'MatchBrandFilter'
+     * 
+     * @param models
+     * @return
+     */
+    public static ContentNodeModel findBrand(List<ContentNodeModel> models) {
+        for (ContentNodeModel m : models) {
+            if (m instanceof BrandModel) {
+                return m;
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * used by 'MatchBrandFilter'
+     * 
+     * @param model
+     * @param filterBrand
+     * @return
+     */
+    public static boolean matchBrand(ContentNodeModel model, ContentNodeModel filterBrand) {
+        if (model instanceof ProductModel) {
+            List<BrandModel> brands = ((ProductModel) model).getBrands();
+            for (BrandModel brand : brands) {
+                if (brand.equals(filterBrand)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
     public static List<ContentNodeModel> toList(ContentNodeModel model) {
         ArrayList<ContentNodeModel> a = new ArrayList<ContentNodeModel>();
         a.add(model);
@@ -448,7 +483,7 @@ public class HelperFunctions {
 			CategoryModel category = (CategoryModel) model;
 			int slots = category.getManualSelectionSlots();
 			if (slots > 0) {
-				ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
+				ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable());
 				List fprods = category.getFeaturedProducts();
 				Random rnd = new Random();
 
@@ -459,10 +494,10 @@ public class HelperFunctions {
 
 					ProductModel pm = (ProductModel) product;
 					// it does all checks against cart include, displaying, uniqueness, etc.
-					ContentKey replacedKey = filter.filter(pm.getContentKey());
-					if (replacedKey != null) {
-						nodes.add(HelperFunctions.getContentNodeModelOrLookup(replacedKey, pm));
-						slots--;
+					final ProductModel filteredModel = filter.filter(pm);
+                                        if (filteredModel != null) {
+                                            nodes.add(filteredModel);
+                                            slots--;
 					}
 				}
 			}
@@ -496,35 +531,33 @@ public class HelperFunctions {
 		return nodes;
 	}
     
-    public static List getTopN(List nodes, String factorName, int n,
-    		SessionInput input, final DataAccess dataAccess) {
-    	String userId = input.getCustomerId();
-    	PricingContext pricingCtx = input.getPricingContext();
-    	String[] variables = { factorName };
-    	OrderingFunction of = new OrderingFunction();
-    	for (Object node : nodes) {
-    		ContentNodeModel model = (ContentNodeModel) node;
-    		of.addScore(model, dataAccess.getVariables(userId, pricingCtx, model, variables));
-    	}
-    	List results = new ArrayList(n);
-    	List ranked = of.getRankedContents();
-    	int topN = Math.min(n, ranked.size());
-		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
-		Iterator it = ranked.iterator();
-		while (topN > 0 && it.hasNext()) {
-    		RankedContent.Single rc = (RankedContent.Single) it.next();
-    		ContentNodeModel node = rc.getModel();
-		if (node instanceof ProductModel) {
-		    ContentKey replacedKey = filter.filter(node.getContentKey()); 
-		    if (replacedKey != null){
-	    		results.add(HelperFunctions.getContentNodeModelOrLookup(replacedKey, node));
-	    		topN--;
-		    }
-		}
-    	}
-    	return results;
-    }
-    
+    public static List getTopN(List nodes, String factorName, int n, SessionInput input, final DataAccess dataAccess) {
+        String userId = input.getCustomerId();
+        PricingContext pricingCtx = input.getPricingContext();
+        String[] variables = { factorName };
+        OrderingFunction of = new OrderingFunction();
+        for (Object node : nodes) {
+            ContentNodeModel model = (ContentNodeModel) node;
+            of.addScore(model, dataAccess.getVariables(userId, pricingCtx, model, variables));
+        }
+        List results = new ArrayList(n);
+        List ranked = of.getRankedContents();
+        int topN = Math.min(n, ranked.size());
+        ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable());
+        Iterator it = ranked.iterator();
+        while (topN > 0 && it.hasNext()) {
+            RankedContent.Single rc = (RankedContent.Single) it.next();
+            ContentNodeModel node = rc.getModel();
+            if (node instanceof ProductModel) {
+                ProductModel filteredModel = filter.filter((ProductModel) node); 
+                if (filteredModel != null) {
+                    results.add(filteredModel);
+                    topN--;
+                }
+            }
+        }
+        return results;
+    }    
     
     public static boolean matchSkuPrefix(ContentNodeModel model, String[] prefixes) {
         if (model instanceof ProductModel) {

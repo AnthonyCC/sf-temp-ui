@@ -6,17 +6,22 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.reverse.BackReference;
+import com.freshdirect.cms.reverse.BidirectionalReference;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 
 /**
  * Simple implementation of {@link com.freshdirect.cms.ContentNodeI}.
@@ -57,9 +62,16 @@ public class ContentNode implements ContentNodeI {
 		}
 		for ( String atrName : def.getAttributeNames() ) {
 			AttributeDefI atrDef = def.getAttributeDef(atrName);
-			Attribute atr;
+			AttributeI atr;
 			if (atrDef instanceof RelationshipDefI) {
+			    if (atrDef instanceof BidirectionalRelationshipDefI) {
+			        BidirectionalRelationshipDefI br = (BidirectionalRelationshipDefI) atrDef;
+			        BidirectionalRelationshipDefI writable = br.isWritableSide() ? br : br.getOtherSide();
+			        BidirectionalReferenceHandler handler = typeService.getReferenceHandler(writable.getType(), writable.getName());
+			        atr = br.isWritableSide() ? new BidirectionalReference(this, handler) : new BackReference(this, handler);
+			    } else {
 				atr = new Relationship(this, (RelationshipDefI) atrDef);
+			    }
 			} else {
 				atr = new Attribute(this, atrDef);
 			}

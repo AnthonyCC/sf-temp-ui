@@ -70,7 +70,7 @@ public class ShoppingListValidator {
 			try {
 				final ProductModel product = item.getProduct();
 
-				if (!product.isDisplayable()) {
+				if (!product.isFullyAvailable()) {
 					result.addWarning(true, Validations.SHOPPING_LIST_ITEM, "product " + product.getFullName()
 							+ " is unavailable -- will be removed from the order");
 					it.remove();

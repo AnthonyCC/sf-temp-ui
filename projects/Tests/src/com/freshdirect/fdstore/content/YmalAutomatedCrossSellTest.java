@@ -330,7 +330,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		recipeVariantDef = typeService.getContentTypeDefinition(
 												FDContentTypes.RECIPE_VARIANT);
 		recipeSectionDef = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE_VARIANT);
+												FDContentTypes.RECIPE_SECTION);
 		configuredProductDef = typeService.getContentTypeDefinition(
 												FDContentTypes.CONFIGURED_PRODUCT);
 		
@@ -394,7 +394,7 @@ public class YmalAutomatedCrossSellTest extends FDCustomerManagerTestSupport {
 		recipeVariantDef = typeService.getContentTypeDefinition(
 												FDContentTypes.RECIPE_VARIANT);
 		recipeSectionDef = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE_VARIANT);
+												FDContentTypes.RECIPE_SECTION);
 		configuredProductDef = typeService.getContentTypeDefinition(
 												FDContentTypes.CONFIGURED_PRODUCT);
 		

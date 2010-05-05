@@ -19,9 +19,9 @@ public class PrioritizedDataAccess implements DataAccess {
 	private List<ContentNodeModel> nodes;
 	ContentFilter filter;
 
-	public PrioritizedDataAccess(Collection cartItems, boolean useAlternatives) {
+	public PrioritizedDataAccess(Collection cartItems, boolean useAlternatives, boolean showTempUnavailable) {
 		nodes = new ArrayList<ContentNodeModel>();
-		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives);
+		filter = FilterFactory.getInstance().createFilter(cartItems, useAlternatives, showTempUnavailable);
 	}
 
 	@Override
@@ -37,14 +37,14 @@ public class PrioritizedDataAccess implements DataAccess {
 
 	@Override
 	public boolean addPrioritizedNode(ContentNodeModel model) {
-            if (model instanceof ProductModel) {
-                ContentKey key = filter.filter(model.getContentKey());
-                if (key != null) {
-                    nodes.add(HelperFunctions.getContentNodeModelOrLookup(key, model));
-                    return true;
-                }
-            }
-            return false;
+		if (model instanceof ProductModel) {
+		    ContentNodeModel filteredModel = filter.filter(model);
+		    if (filteredModel != null) {
+		        nodes.add(filteredModel);
+		        return true;
+		    }
+		} 
+		return false;
 	}
 
 

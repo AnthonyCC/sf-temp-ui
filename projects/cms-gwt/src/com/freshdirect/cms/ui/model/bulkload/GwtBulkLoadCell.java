@@ -32,7 +32,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 		super();
 		// "_K" is a special value denoting keys
 		// "_U" is a special value denoting unsupported types
-		if ("S".equals(attributeType) || "R".equals(attributeType) || "_K".equals(attributeType) || "E".equals(attributeType)
+		if ("S".equals(attributeType) || "TXT".equals(attributeType) || "R".equals(attributeType) || "_K".equals(attributeType) || "E".equals(attributeType)
 				|| "I".equals(attributeType) || "D".equals(attributeType) || "B".equals(attributeType)
 				|| "DT".equals(attributeType) || "_U".equals(attributeType) || "_RR".equals(attributeType)) {
 			this.columnName = columnName;
@@ -50,7 +50,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 			set("parsedValue", parsedValue);
 			this.status = status;
 		} else {
-			throw new IllegalArgumentException("unsupported type");
+                        throw new IllegalArgumentException("unsupported type:" + attributeType);
 		}
 	}
 
@@ -91,7 +91,7 @@ public class GwtBulkLoadCell extends BaseModelData implements Serializable {
 				return Integer.toString((Integer) value);
 			else if ("D".equals(type))
 				return Double.toString((Double) value);
-			else if ("_K".equals(type) || "S".equals(type) || "E".equals(type) || "DT".equals(type) || "_U".equals(type)
+			else if ("_K".equals(type) || "S".equals(type) || "TXT".equals(type) || "E".equals(type) || "DT".equals(type) || "_U".equals(type)
 					|| "_RR".equals(type))
 				return value.toString();
 			else if ("R".equals(type))

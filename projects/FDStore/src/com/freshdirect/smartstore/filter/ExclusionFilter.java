@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -22,11 +23,11 @@ public final class ExclusionFilter extends ContentFilter {
         this.cartItems = cartItems;
     }
 
-    public ContentKey filter(ContentKey key) {
-    	boolean exclude = key == null || cartItems.contains(key);
-    	if (exclude)
-    		LOGGER.debug("excluded: " + key);
-    		
-		return exclude ? null : key;
+    public <X extends ContentNodeModel> X filter(X model) {
+    	boolean exclude = model == null || cartItems.contains(model.getContentKey());
+    	if (exclude) {
+    	    LOGGER.debug("excluded: " + model);
+    	}
+	return exclude ? null : model;
     }
 }

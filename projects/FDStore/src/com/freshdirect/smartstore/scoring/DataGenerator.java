@@ -22,4 +22,8 @@ public class DataGenerator {
     public Set<String> getFactors() {
         return factors;
     }
+    
+    public String getGeneratedCode() {
+        return "";
+    }
 }

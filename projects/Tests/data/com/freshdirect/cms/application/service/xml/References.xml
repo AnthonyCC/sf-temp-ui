@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Content>
+	<Foo id="fooNode1">
+		<label>Foo Label</label>
+	</Foo>
+	<Foo id="fooNode2">
+		<label>Foo Label</label>
+	</Foo>
+	<Foo id="fooNode3">
+		<label>Foo 3</label>
+	</Foo>
+	<Foo id="fooNode4">
+		<label>Foo 4</label>
+	</Foo>
+	<Foo id="fooNode5">
+		<label>Foo 5</label>
+	</Foo>
+
+	<Bar id="barNode">
+		<foo>
+			<Foo ref="fooNode1"/>
+		</foo>
+	</Bar>
+	
+	<Bar id="barNode2">
+		<foo>
+			<Foo ref="fooNode3"/>
+		</foo>
+	</Bar>
+	
+	<Bar id="barNode3">
+	</Bar>
+	
+	
+</Content>

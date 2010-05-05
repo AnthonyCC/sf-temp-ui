@@ -155,7 +155,7 @@ public class Context {
         
 
         
-        public String getPreparingCode(FunctionCall call, List<Expression> parameters) {
+        public String getPreparingCode(FunctionCall call, List<Expression> parameters) throws CompileException {
             return "";
         }
     }

@@ -40,7 +40,7 @@ if (erp_id != null) {
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Find User by ERP ID</title>
 	<meta name="generator" content="TextMate http://macromates.com/">
-	<meta name="author" content="Sebestyén Gábor">
+	<meta name="author" content="SebestyÃ©n GÃ¡bor">
 	<!-- Date: 2008-05-21 -->
 </head>
 <body>

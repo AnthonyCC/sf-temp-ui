@@ -414,7 +414,7 @@ p.fi{margin:20px 0px;}
 					<%-- display a product --%>
 					<td align="center" WIDTH="105">
 					<%
-						if (productNode.isDisplayable()) {
+						if (productNode.isFullyAvailable()) {
 					%>
 					<div>
 						<display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/>

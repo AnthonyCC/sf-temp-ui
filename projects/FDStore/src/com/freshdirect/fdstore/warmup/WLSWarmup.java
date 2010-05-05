@@ -9,10 +9,14 @@
 
 package com.freshdirect.fdstore.warmup;
 
-import com.freshdirect.fdstore.FDStoreProperties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import weblogic.application.ApplicationLifecycleListener;
 import weblogic.application.ApplicationLifecycleEvent;
+import weblogic.application.ApplicationLifecycleListener;
+import weblogic.logging.LoggingHelper;
+
+import com.freshdirect.fdstore.FDStoreProperties;
 
 /**
  * WLSWarmup
@@ -23,6 +27,7 @@ import weblogic.application.ApplicationLifecycleEvent;
 public class WLSWarmup extends ApplicationLifecycleListener {
 
 	public void postStart(ApplicationLifecycleEvent evt) {
+		Logger logger = LoggingHelper.getServerLogger();
 
 		if (FDStoreProperties.performStorePreLoad()) {
 			Class warmupClass = Warmup.class;
@@ -31,17 +36,17 @@ public class WLSWarmup extends ApplicationLifecycleListener {
 				try {
 					warmupClass = Class.forName(className);
 				} catch (Exception e) {
-					System.err.println("Could not find Warmup class "+ className +" fallback to default.");
-					e.printStackTrace();
-					
+					logger.log(Level.SEVERE, "Could not find Warmup class "+ className +" fallback to default.", e);
 				}
 			}
 			try {
+				logger.info("initiating warmup using class '" + warmupClass.getName() + "'");
 				Warmup warmup = (Warmup) warmupClass.newInstance();
 				warmup.warmup();
+				logger.info("warmup completed");
 			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e.getMessage());
+				logger.log(Level.SEVERE, "error during warmup", e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

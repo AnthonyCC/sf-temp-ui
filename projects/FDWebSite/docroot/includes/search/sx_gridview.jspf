@@ -91,7 +91,7 @@ int rank = nav.getPageOffset()+1;
 							</td>
 						</tr>
 					</table>
-					<% if (pi.getProductModel().isDisplayable()) { %>	
+					<% if (pi.getProductModel().isFullyAvailable()) { %>	
 						<display:ProductRating product="<%= productNode %>"/>
 						<display:ProductName product="<%= productNode %>" action="<%= prdURI %>" />
 					<% } else { %>
@@ -102,7 +102,7 @@ int rank = nav.getPageOffset()+1;
 					// Configuration description
 					//
 					if (pi.getConfigurationDescription() != null) {
-						%><div style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
+						%><div style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">(<%= pi.getConfigurationDescription() %>)</div>
 					<% }
 	
 					// Default price

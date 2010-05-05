@@ -1,7 +1,6 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -13,23 +12,26 @@ import junit.framework.TestCase;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.CompositeTypeService;
+import com.freshdirect.cms.application.service.xml.FlexContentHandler;
+import com.freshdirect.cms.application.service.xml.XmlContentService;
+import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.smartstore.ConfigurationStatus;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
-import com.freshdirect.smartstore.filter.ArrayFilter;
-import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.sampling.AbstractImpressionSampler;
 import com.freshdirect.smartstore.sampling.ConsiderationLimit;
 import com.freshdirect.smartstore.sampling.ImpressionSampler;
 import com.freshdirect.smartstore.sampling.RankedContent;
 import com.freshdirect.smartstore.sampling.RankedContent.Single;
+import com.freshdirect.smartstore.scoring.MockFilterFactory;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 public class SamplingTestsBase extends TestCase {
-
 	protected static ContentKey BANAN = new ContentKey(FDContentTypes.PRODUCT, "BANAN");
 	protected static ContentKey CITROM = new ContentKey(FDContentTypes.PRODUCT, "CITROM");
 
@@ -96,15 +98,16 @@ public class SamplingTestsBase extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-    	FilterFactory.mockInstance(new FilterFactory() {
-    		@Override
-    		public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
-    			return new ArrayFilter() {
-    				// we mock the filter not to apply availability filtering
-    			};
-    		}
-    	});
+    	FilterFactory.mockInstance(new MockFilterFactory());
     	
+        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
+        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
+
+        CompositeTypeService typeService = new CompositeTypeService(list);
+
+        XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/SamplingTest.xml");
+
+        CmsManager.setInstance(new CmsManager(service, null));
 
 		candidates.clear();
 		for (ContentKey key : scoreMap.keySet()) {
@@ -150,8 +153,8 @@ public class SamplingTestsBase extends TestCase {
 		}
 
 		@Override
-		public List<ContentKey> sample(List<Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions) {
-			return mockedSampler.sample(rankedContent, aggregatable, exclusions);
+		public List<ContentKey> sample(List<Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions, boolean showTempUnavailable) {
+			return mockedSampler.sample(rankedContent, aggregatable, exclusions, showTempUnavailable);
 		}
 
 		public void setAggregationMarker(ContentKey key) {

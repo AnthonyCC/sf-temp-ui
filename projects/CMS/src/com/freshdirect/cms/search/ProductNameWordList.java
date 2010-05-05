@@ -141,7 +141,7 @@ public class ProductNameWordList implements WordListI{
             if (nodeModel instanceof ProductModel) {
                 ProductModel pm = (ProductModel) nodeModel;
                 //if (pm.isDisplayableBasedOnCms()) {
-                if (pm.isDisplayable()) {
+                if (pm.isFullyAvailable()) {
                     words.add(pm.getFullName());
                 }
             }

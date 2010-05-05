@@ -37,7 +37,7 @@
 	 <% if (productList!=null && productList.size() > 0) {  %>
 	  <table id="searchResultTable">
 	  <tr>
-	  	<td>Image</td><td>Name</td><td>Product Key</td><td>Category Key</td><td>Category Score</td><td>Displayable</td>
+	  	<td>Image</td><td>Name</td><td>Product Key</td><td>Category Key</td><td>Term Score</td><td>Category Score</td><td>Displayable</td>
 	  	<%
 	  	ScoringAlgorithm global = SearchScoringRegistry.getInstance().getGlobalScoringAlgorithm();
 	  	String[] globExpr = global.getExpressions();
@@ -68,6 +68,11 @@
 				<td class="categoryKey">
 					<%=
 						productNode.getParentNode().getContentKey().getId()
+					%>
+				</td>
+				<td class="termScore">
+					<%=
+						results.getTermScore(productNode)
 					%>
 				</td>
 				

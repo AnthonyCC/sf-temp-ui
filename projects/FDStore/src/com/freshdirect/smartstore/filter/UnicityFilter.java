@@ -6,6 +6,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -23,12 +24,12 @@ public final class UnicityFilter extends ContentFilter {
 		this.keys = new HashSet<ContentKey>();
 	}
 
-	public ContentKey filter(ContentKey key) {
-		if (!keys.contains(key)) {
-			keys.add(key);
-			return key;
+	public <X extends ContentNodeModel> X filter(X model) {
+		if (!keys.contains(model.getContentKey())) {
+			keys.add(model.getContentKey());
+			return model;
 		}
-		LOGGER.debug("not unique: " + key);
+		LOGGER.debug("not unique: " + model.getContentKey());
 		return null;
 	}
 

@@ -31,7 +31,7 @@ public class RelevancyComparator extends PopularityComparator {
 //    Map<ContentKey,Integer> categoryScores  = new HashMap();
     
     public RelevancyComparator(boolean inverse, String searchTerm, PricingContext pricingContext,
-    		CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ContentNodeModel> products, String originalSearchTerm) {
+    		CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ProductModel> products, String originalSearchTerm) {
         super(inverse, true, products, pricingContext);
         this.terms = StringUtils.split(searchTerm);
         this.searchTerm = searchTerm.toLowerCase();
@@ -44,6 +44,11 @@ public class RelevancyComparator extends PopularityComparator {
     public int getTermScore(ProductModel product) {
         return getTermScore(product.getParentNode(), 1);
     }
+    
+    public Integer getCategoryScore(ProductModel product) {
+        return predefinedScores != null && product != null ? predefinedScores.get(product.getParentNode().getContentKey()) : null;
+    }
+    
 
     int getTermScore(ContentNodeModel model, int level) {
         if (model == null) {

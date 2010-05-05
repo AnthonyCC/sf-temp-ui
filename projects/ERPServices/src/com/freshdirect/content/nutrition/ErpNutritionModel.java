@@ -1,21 +1,29 @@
 package com.freshdirect.content.nutrition;
 
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
-import com.freshdirect.framework.core.*;
+import java.util.Map;
+import java.util.Set;
+
+import com.freshdirect.framework.core.ModelSupport;
 
 public class ErpNutritionModel extends ModelSupport {
-	/** String skuCode to wich this nutrition model belongs to */
+	private static final long serialVersionUID = 165757752576184510L;
+
+	/** String skuCode to which this nutrition model belongs to */
 	private String skuCode;
-	/** HashMap of nutrition values keyed by nutriotn types from ErpNutritionType */
-	private HashMap values;
+	/** HashMap of nutrition values keyed by nutrition types from ErpNutritionType */
+	private HashMap<String,Object> values;
 	/** HashMap of nutrition unit of measures keyed by nutrition types from ErpNutritionType */
-	private HashMap uom;
+	private HashMap<String,String> uom;
 	/** String corresponding upc for this skuCode */
 	private String upc;
-	/** HashMap<String,String> of assorted product information */
-	private HashMap info;
+	/** HashMap of assorted product information */
+	private HashMap<ErpNutritionInfoType,NutritionInfoAttribute> info;
 	
 	private Date lastModifiedDate;
 
@@ -23,15 +31,15 @@ public class ErpNutritionModel extends ModelSupport {
 	 * Constructor to create a new object.
 	 */
 	public ErpNutritionModel() {
-		values = new HashMap();
-		uom = new HashMap();
-		info = new HashMap();
+		values = new HashMap<String,Object>();
+		uom = new HashMap<String,String>();
+		info = new HashMap<ErpNutritionInfoType,NutritionInfoAttribute>();
 	}
 
 	/**
 	 * to get skuCode for this nutrition model
 	 *
-	 * @retrun String skuCode
+	 * @return String skuCode
 	 */
 	public String getSkuCode() {
 		return skuCode;
@@ -61,7 +69,7 @@ public class ErpNutritionModel extends ModelSupport {
 				return -999;
 			}
 		} else {
-			List lst = ErpNutritionType.getStarterSetList();
+			List<String> lst = ErpNutritionType.getStarterSetList();
 			if (lst.contains(key)) {
 				return 0;
 			} else {
@@ -304,7 +312,7 @@ public class ErpNutritionModel extends ModelSupport {
 	}
 
 	public List getAllergens() {
-		Object value = info.get(ErpNutritionInfoType.ALLERGEN);
+		NutritionInfoAttribute value = info.get(ErpNutritionInfoType.ALLERGEN);
 		if (value == null) {
 			return Collections.EMPTY_LIST;
 		} else {
@@ -322,10 +330,8 @@ public class ErpNutritionModel extends ModelSupport {
 	}
 
 	public boolean hasAllergen(EnumAllergenValue allergen) {
-		Object value = info.get(ErpNutritionInfoType.ALLERGEN);
-		if (value == null) {
-			return false;
-		} else {
+		NutritionInfoAttribute value = info.get(ErpNutritionInfoType.ALLERGEN);
+		if (value instanceof NutritionInfoMultiAttribute) {
 			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
 			for (Iterator aIter = multi.getValues().iterator(); aIter.hasNext();) {
 				EnumAllergenValue a = (EnumAllergenValue) aIter.next();
@@ -333,8 +339,8 @@ public class ErpNutritionModel extends ModelSupport {
 					return true;
 				}
 			}
-			return false;
 		}
+		return false;
 	}
 
 	public List getOrganicStatements() {
@@ -371,7 +377,7 @@ public class ErpNutritionModel extends ModelSupport {
 		}
 	}
 
-	public Map getNutritionInfo() {
+	public Map<ErpNutritionInfoType,NutritionInfoAttribute> getNutritionInfo() {
 		return info;
 	}
 
@@ -380,9 +386,9 @@ public class ErpNutritionModel extends ModelSupport {
 	 *
 	 * @return Iterator over keys of values HashMap
 	 */
-	public Iterator getKeyIterator() {
-		List ret = new ArrayList();
-		for (Iterator i = ErpNutritionType.getTypesIterator(); i.hasNext();) {
+	public Iterator<String> getKeyIterator() {
+		List<String> ret = new ArrayList<String>();
+		for (Iterator<String> i = ErpNutritionType.getTypesIterator(); i.hasNext();) {
 			String key = (String) i.next();
 			double value = getValueFor(key);
 			if (value > -999) {
@@ -419,12 +425,6 @@ public class ErpNutritionModel extends ModelSupport {
 	public boolean hasInfo() {
 		return (values.size() > 0);
 	}
-
-	/*
-	public void addInfo(ErpNutritionInfoType type, String info) {
-	    this.info.put(type, info);
-	}
-	*/
 
 	public void addNutritionAttribute(NutritionInfoAttribute attribute) {
 		if (!attribute.getNutritionInfoType().isMultiValued()) {
@@ -480,14 +480,14 @@ public class ErpNutritionModel extends ModelSupport {
 	}
 
 	public String getInfo(ErpNutritionInfoType type) {
-		String retval = (String) this.info.get(type);
+		NutritionInfoAttribute retval = this.info.get(type);
 		if (retval != null) {
-			return retval;
+			return retval.toString();
 		}
 		return "";
 	}
 
-	public Iterator getInfoKeyIterator() {
+	public Iterator<ErpNutritionInfoType> getInfoKeyIterator() {
 		return this.info.keySet().iterator();
 	}
 	
@@ -505,7 +505,7 @@ public class ErpNutritionModel extends ModelSupport {
 		}
 	}
 	
-	public Set getNutritionInfoNames() {
+	public Set<ErpNutritionInfoType> getNutritionInfoNames() {
 		return this.info.keySet();
 	}
 	
@@ -528,16 +528,4 @@ public class ErpNutritionModel extends ModelSupport {
 	public boolean hasNutritionInfo(ErpNutritionInfoType type) {
 		return this.info.get(type) != null;
 	}
-
-
-	/*
-	public String debug() {
-	    StringBuffer buff = new StringBuffer();
-	    for (Iterator i = getInfoKeyIterator(); i.hasNext(); ) {
-	        ErpNutritionInfoType et = (ErpNutritionInfoType) i.next();
-	        buff.append(skuCode).append(" ").append(et.getCode()).append(" ").append(getInfo(et)).append("\n");
-	    }
-	    return buff.toString();
-	}
-	*/
 }

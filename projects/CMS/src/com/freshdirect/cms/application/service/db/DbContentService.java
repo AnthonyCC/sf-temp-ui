@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,11 +24,13 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.EnumCardinality;
+import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.RelationshipI;
 import com.freshdirect.cms.application.CmsRequestI;
 import com.freshdirect.cms.application.CmsResponse;
@@ -38,6 +41,7 @@ import com.freshdirect.cms.application.service.AbstractContentService;
 import com.freshdirect.cms.classgenerator.ContentNodeGenerator;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.node.ContentNode;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.DaoUtil;
 
 /**
@@ -86,9 +90,51 @@ public class DbContentService extends AbstractContentService implements ContentS
 	}
 
 	public void initialize() {
+	    Collection<BidirectionalReferenceHandler> handlers = this.typeService.getAllReferenceHandler();
+	    for (BidirectionalReferenceHandler handler : handlers) {
+	        preloadHandler(handler);
+	    }
 	}
 
-	private final static String QUERY_ALL_KEYS = "select id, contenttype_id from cms_contentnode";
+    private void preloadHandler(BidirectionalReferenceHandler handler) {
+        Connection conn = null;
+        try {
+            conn = getConnection();
+            PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.cms_contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
+            ps.setString(1, handler.getSourceType().getName());
+            ps.setString(2, handler.getDestinationType().getName());
+            ps.setString(3, handler.getRelationName());
+            ResultSet resultSet = ps.executeQuery();
+            
+            while(resultSet.next()) {
+                ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
+                ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
+                handler.addRelation(sourceKey, destKey);
+            }
+            resultSet.close();
+            ps.close();
+        } catch (SQLException e) {
+            throw new CmsRuntimeException(e);
+        } finally {
+            close(conn);
+        }
+        return;
+    }
+
+    /**
+     * @param conn
+     */
+    private void close(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.close();
+            } catch (SQLException e) {
+                throw new CmsRuntimeException(e);
+            }
+        }
+    }
+
+    private final static String QUERY_ALL_KEYS = "select id, contenttype_id from cms_contentnode";
 
 	private final static String QUERY_KEYS_BY_TYPE = QUERY_ALL_KEYS + " where contenttype_id = ?";
 
@@ -114,13 +160,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new CmsRuntimeException(e);
-				}
-			}
+			close(conn);
 		}
 		return returnSet;
 	}
@@ -181,13 +221,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					throw new CmsRuntimeException(e);
-				}
-			}
+			close(conn);
 		}
 	}
 	
@@ -208,13 +242,7 @@ public class DbContentService extends AbstractContentService implements ContentS
 		} catch (SQLException e) {
 			throw new CmsRuntimeException(e);
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException sqle2) {
-					throw new CmsRuntimeException(sqle2);
-				}
-			}
+			close(conn);
 		}
 
 		return set;
@@ -258,6 +286,8 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 	private final static String INSERT_RELATIONSHIP = "insert into cms_relationship(id, parent_contentnode_id, def_name, def_contenttype, child_contentnode_id, ordinal) "
 		+ "values (cms_system_seq.nextVal, ?, ?, ?, ?, ?)";
+	
+	private final static String DELETE_PREV_OTHER_REL = "delete from cms_relationship where def_name = ? and def_contenttype = ? and child_contentnode_id = ? and ordinal = ?";
 
 	private void storeContentNode(ContentNodeI node) {
 		//System.out.println("Storing content node in DB: " + node.getKey());
@@ -279,38 +309,48 @@ public class DbContentService extends AbstractContentService implements ContentS
 			PreparedStatement insPs = conn.prepareStatement(INSERT_NODE);
 			addInsBatch(insPs, node.getKey());
 
-			Map attrMap = node.getAttributes();
 			PreparedStatement atrPs = conn.prepareStatement(INSERT_ATTRIBUTE);
 			PreparedStatement relPs = conn.prepareStatement(INSERT_RELATIONSHIP);
-			for (Iterator i = attrMap.values().iterator(); i.hasNext();) {
-				AttributeI attr = (AttributeI) i.next();
-				//System.out.println("Saving attribute - " + node.getKey() + ":"+ attr.getName());
-				if (attr.getValue() == null) {
-					continue;
-				}
-				if (attr instanceof RelationshipI) {
-					RelationshipI rel = (RelationshipI) attr;
-					if (EnumCardinality.ONE.equals(rel.getDefinition().getCardinality())) {
-						ContentKey k = (ContentKey) rel.getValue();
-						addInsBatch(insPs, k);
-						addRelBatch(relPs, rel, k, 0);
-					} else {
-						List l = (List) rel.getValue();
-						for (int m = 0; m < l.size(); m++) {
-							ContentKey k = (ContentKey) l.get(m);
-							addInsBatch(insPs, k);
-							addRelBatch(relPs, rel, k, m);
-						}
-					}
-				} else {
-					atrPs.setString(1, node.getKey().getEncoded());
-					atrPs.setString(2, attr.getName());
-					atrPs.setString(3, node.getKey().getType().getName());
-					atrPs.setString(4, ContentTypeUtil.attributeToString(attr));
-					atrPs.setInt(5, 0);
-					atrPs.addBatch();
-				}
-			}
+			PreparedStatement delInvPs = conn.prepareStatement(DELETE_PREV_OTHER_REL);
+			
+			//Map attrMap = node.getAttributes();
+			Set<String> names = node.getDefinition().getAttributeNames();
+                        for (String name : names) {
+                            Object value = node.getAttributeValue(name);
+                            // System.out.println("Saving attribute - " + node.getKey() +
+                            // ":"+ attr.getName());
+                            if (value == null) {
+                                continue;
+                            }
+                            AttributeDefI def = node.getDefinition().getAttributeDef(name);
+                            if (def instanceof RelationshipDefI) {
+                                if (def instanceof BidirectionalRelationshipDefI && !((BidirectionalRelationshipDefI) def).isWritableSide()) {
+                                    continue;
+                                }
+                                if (EnumCardinality.ONE.equals(def.getCardinality())) {
+                                    ContentKey k = (ContentKey) value;
+                                    addInsBatch(insPs, k);
+                                    addRelBatch(relPs, node.getKey(), name, k, 0);
+                                    if (def instanceof BidirectionalRelationshipDefI) {
+                                        addInverseDelBatch(delInvPs, name, k, 0);
+                                    }
+                                } else {
+                                    List l = (List) value;
+                                    for (int m = 0; m < l.size(); m++) {
+                                        ContentKey k = (ContentKey) l.get(m);
+                                        addInsBatch(insPs, k);
+                                        addRelBatch(relPs, node.getKey(), name, k, m);
+                                    }
+                                }
+                            } else {
+                                atrPs.setString(1, node.getKey().getEncoded());
+                                atrPs.setString(2, name);
+                                atrPs.setString(3, node.getKey().getType().getName());
+                                atrPs.setString(4, ContentTypeUtil.attributeToString(def, value));
+                                atrPs.setInt(5, 0);
+                                atrPs.addBatch();
+                            }
+                        }
 
 			insPs.executeBatch();
 			insPs.close();
@@ -318,6 +358,9 @@ public class DbContentService extends AbstractContentService implements ContentS
 			atrPs.executeBatch();
 			atrPs.close();
 
+			delInvPs.executeBatch();
+			delInvPs.close();
+			
 			relPs.executeBatch();
 			relPs.close();
 
@@ -337,7 +380,15 @@ public class DbContentService extends AbstractContentService implements ContentS
 
 	}
 
-	private void addInsBatch(PreparedStatement insPs, ContentKey key) throws SQLException {
+    private void addInverseDelBatch(PreparedStatement delInvPs, String relationshipName, ContentKey destKey, int ordinal) throws SQLException {
+        delInvPs.setString(1, relationshipName);
+        delInvPs.setString(2, destKey.getType().getName());
+        delInvPs.setString(3, destKey.getEncoded());
+        delInvPs.setInt(4, ordinal);
+        delInvPs.addBatch();
+    }
+
+    private void addInsBatch(PreparedStatement insPs, ContentKey key) throws SQLException {
 		String id = key.getEncoded();
 		insPs.setString(1, id);
 		insPs.setString(2, key.getType().getName());
@@ -345,10 +396,10 @@ public class DbContentService extends AbstractContentService implements ContentS
 		insPs.addBatch();
 	}
 
-	private void addRelBatch(PreparedStatement relPs, RelationshipI relationship, ContentKey destKey, int ordinal)
+	private void addRelBatch(PreparedStatement relPs, ContentKey parent, String relationshipName, ContentKey destKey, int ordinal)
 		throws SQLException {
-		relPs.setString(1, relationship.getContentNode().getKey().getEncoded());
-		relPs.setString(2, relationship.getName());
+		relPs.setString(1, parent.getEncoded());
+		relPs.setString(2, relationshipName);
 		relPs.setString(3, destKey.getType().getName());
 		relPs.setString(4, destKey.getEncoded());
 		relPs.setInt(5, ordinal);
@@ -400,17 +451,16 @@ public class DbContentService extends AbstractContentService implements ContentS
 		}
 	}
 
-	private void recordAttribute(Map nodeMap, ContentKey key, String attrName, List value) {
-		ContentNodeI node = (ContentNodeI) nodeMap.get(key);
-		AttributeI attrib = node.getAttribute(attrName);
+    private void recordAttribute(Map<ContentKey, ContentNodeI> nodeMap, ContentKey key, String attrName, List value) {
+        ContentNodeI node = (ContentNodeI) nodeMap.get(key);
 
-		AttributeDefI aDef = typeService.getContentTypeDefinition(node.getKey().getType()).getAttributeDef(attrName);
-		if (aDef == null) {
-			return;
-		}
+        AttributeDefI aDef = typeService.getContentTypeDefinition(node.getKey().getType()).getAttributeDef(attrName);
+        if (aDef == null) {
+            return;
+        }
 
-		attrib.setValue(ContentTypeUtil.convertAttributeValues(aDef, value));
-	}
+        node.setAttributeValue(attrName, ContentTypeUtil.convertAttributeValues(aDef, value));
+    }
 
 	public CmsResponseI handle(CmsRequestI request) {
 		// TODO distinguish create/update/delete

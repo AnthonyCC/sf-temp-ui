@@ -144,6 +144,10 @@ public class RecommendationServiceConfig implements Serializable {
 		return get(RecommendationServiceFactory.CKEY_PREZ_FOOTER);
 	}
 	
+	public boolean isShowTempUnavailable() {
+	    return "true".equals(get(RecommendationServiceFactory.CKEY_SHOW_TEMP_UNAVAILABLE));
+	}
+	
 	public RecommendationServiceConfig set(String key, String value) {
 		if (params == null) {
 			params = new HashMap<String,String>();

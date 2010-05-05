@@ -53,7 +53,7 @@ public class SmartYMALRecommendationService extends
 		final ProductModel selectedProduct = (ProductModel) input
 				.getCurrentNode();
 		int availSlots = input.getMaxRecommendations();
-		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives());
+		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable());
 
 		SmartStoreUtil.clearConfiguredProductCache();
 
@@ -64,13 +64,12 @@ public class SmartYMALRecommendationService extends
 						.getRelatedProducts() : new ArrayList();
 		for (int i = 0; i < relatedProducts.size(); i++) {
 			ProductModel pm = (ProductModel) relatedProducts.get(i);
-			ContentKey replacedKey = filter.filter(pm.getContentKey());
-			if (replacedKey != null) {
-			    pm = (ProductModel) HelperFunctions.getContentNodeModelOrLookup(replacedKey, pm);
-			    ProductModel p = SmartStoreUtil.addConfiguredProductToCache(pm);
-			    if (p != null) {
-			        prodList.add(p);
-			    }
+			final ProductModel filteredModel = filter.filter(pm);
+                        if (filteredModel != null) {
+                            ProductModel p = SmartStoreUtil.addConfiguredProductToCache(filteredModel);
+                            if (p != null) {
+				prodList.add(p);
+                            }
 			}
 		}
 		availSlots -= prodList.size();
@@ -169,7 +168,7 @@ public class SmartYMALRecommendationService extends
 			List ymalProducts = ymalSource.getYmalProducts();
 			for (ListIterator it = ymalProducts.listIterator(); it.hasNext();) {
 				ProductModel pm = (ProductModel) it.next();
-				if (filter.filter(pm.getContentKey()) != null) {
+				if (filter.filter(pm) != null) {
 					ProductModel q = SmartStoreUtil.addConfiguredProductToCache((ProductModel) pm);
 					if (prodList.contains(q) || q == null)
 						it.remove();

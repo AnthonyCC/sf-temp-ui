@@ -138,7 +138,16 @@ public class ContentKey implements Serializable {
 
 		return key;
 	}
-	
+
+	/**
+	 * Null safe equality.
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	public static boolean equals(ContentKey a, ContentKey b) {
+	    return (a==null && b==null) || (a != null && a.equals(b)); 
+	}
 
 	public static class InvalidContentKeyException extends FDException {
 	}

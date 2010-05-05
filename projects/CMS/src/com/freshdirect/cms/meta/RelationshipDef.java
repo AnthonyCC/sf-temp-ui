@@ -16,10 +16,12 @@ import com.freshdirect.cms.RelationshipDefI;
  */
 public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 
+        ContentType sourceType;
 	private final boolean navigable;
 	private final Set<ContentType> contentTypes = new HashSet<ContentType>();
 
 	public RelationshipDef(
+	        ContentType sourceType,
 		String name,
 		String label,
 		boolean required,
@@ -29,12 +31,17 @@ public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 		EnumCardinality cardinality) {
 		super(EnumAttributeType.RELATIONSHIP, name, label, required, inheritable, readOnly, cardinality);
 		this.navigable = navigable;
+		this.sourceType = sourceType;
 		if (navigable && inheritable) throw new IllegalArgumentException("Relationship "+ name + " cannot be both navigable and inheritable");
 	}
 
 	public boolean isNavigable() {
 		return navigable;
 	}
+	
+	public ContentType getSourceType() {
+            return sourceType;
+        }
 
 	public Set<ContentType> getContentTypes() {
 		return this.contentTypes;

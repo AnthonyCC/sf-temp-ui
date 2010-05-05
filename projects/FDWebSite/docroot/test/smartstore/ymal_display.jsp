@@ -156,7 +156,7 @@
 				<td style="<%= bkg %> vertical-align: top; text-align: left;">
 				<% if (mdl instanceof ProductModel) {
 					ProductModel prd = (ProductModel) mdl;
-					if (prd.isDisplayable()) {
+					if (prd.isFullyAvailable()) {
 						%><%= prd.getParentNode().getFullName() %> &gt; <a href="<%= FDURLUtil.getProductURI(prd, "test") %>" target="prodwin"><%= prd.getFullName() %></a><%
 					} else {
 						%><span style="color: gray;"><%= prd.getFullName() %></span><%

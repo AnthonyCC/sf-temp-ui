@@ -3,7 +3,9 @@
  */
 package com.freshdirect.cms.application.service.xml;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Stack;
@@ -19,6 +21,7 @@ import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.meta.AttributeDef;
+import com.freshdirect.cms.meta.BidirectionalReferenceDef;
 import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.meta.EnumDef;
@@ -57,8 +60,83 @@ public class ContentTypeContentHandler extends DefaultHandler {
 
 	private final ContentTypeServiceI typeService;
 
+	private static class ContentReference {
+	    private ContentType sourceType;
+	    private String sourceAttributeName;
+	    private ContentType destinationType;
+	    private String reverseAttributeName;
+	    private BidirectionalReferenceDef relation;
+	    private String reverseAttributeLabel;
+
+	    public ContentReference(ContentType type, String reverseAttributeName, String reverseAttributeLabel) {
+                this.destinationType = type;
+                this.reverseAttributeName = reverseAttributeName;
+                this.reverseAttributeLabel = reverseAttributeLabel;
+            }
+
+            /**
+             * @return the sourceType
+             */
+            public ContentType getSourceType() {
+                return sourceType;
+            }
+    
+            /**
+             * @return the sourceAttributeName
+             */
+            public String getSourceAttributeName() {
+                return sourceAttributeName;
+            }
+    
+            /**
+             * @return the destinationType
+             */
+            public ContentType getDestinationType() {
+                return destinationType;
+            }
+    
+            /**
+             * @return the reverseAttributeName
+             */
+            public String getReverseAttributeName() {
+                return reverseAttributeName;
+            }
+            
+            /**
+             * @return the reverseAttributeLabel
+             */
+            public String getReverseAttributeLabel() {
+                return reverseAttributeLabel;
+            }
+
+            /**
+             * @param sourceType the sourceType to set
+             */
+            public void setSourceType(ContentType sourceType) {
+                this.sourceType = sourceType;
+            }
+
+            /**
+             * @param sourceAttributeName the sourceAttributeName to set
+             */
+            public void setSourceAttributeName(String sourceAttributeName) {
+                this.sourceAttributeName = sourceAttributeName;
+            }
+
+            public BidirectionalReferenceDef getRelation() {
+                return relation;
+            }
+            
+            public void setRelation(BidirectionalReferenceDef relation) {
+                this.relation = relation;
+            }
+	}
+	
+	
 	/** Map of ContentType -> ContentTypeDef */
 	private Map<ContentType,ContentTypeDefI> types = new HashMap<ContentType,ContentTypeDefI>();
+	
+	private Collection<ContentReference> bidirectional = new HashSet<ContentReference>();
 
 	@SuppressWarnings("unchecked")
 	private Stack stack = new Stack();
@@ -105,7 +183,8 @@ public class ContentTypeContentHandler extends DefaultHandler {
 
 			if ("RelationshipDef".equals(localName)) {
 				boolean navigable = Boolean.valueOf(atts.getValue("navigable")).booleanValue();
-				obj = new RelationshipDef(name, label, required, inheritable, navigable, readOnly, cardinality);
+				ContentTypeDef ct = (ContentTypeDef) stack.peek();
+				obj = new RelationshipDef(ct.getType(), name, label, required, inheritable, navigable, readOnly, cardinality);
 			} else if ("EnumDef".equals(localName)) {
 				EnumAttributeType valueType = EnumAttributeType.getEnum(atts.getValue("type"));
 				Map values = new LinkedHashMap();
@@ -118,7 +197,7 @@ public class ContentTypeContentHandler extends DefaultHandler {
 
 		} else if ("DestinationDef".equals(localName)) {
 			String contentType = atts.getValue("contentType");
-			obj = ContentType.get(contentType);
+			obj = new ContentReference(ContentType.get(contentType), atts.getValue("reverseAttributeName"), atts.getValue("reverseAttributeLabel"));
 		} else if ("EnumValue".equals(localName)) {
 			EnumDef enumDef = (EnumDef) stack.peek();
 			Map m = (Map)stack.get(stack.size()-2);
@@ -162,9 +241,21 @@ public class ContentTypeContentHandler extends DefaultHandler {
 			
 
 		} else if ("DestinationDef".equals(localName)) {
-			ContentType dest = (ContentType) stack.pop();
-			RelationshipDef rel = (RelationshipDef) stack.peek();
-			rel.addContentType(dest);
+			ContentReference dest = (ContentReference) stack.pop();
+			if (dest.getReverseAttributeName() != null) {
+			    // remove the RelationshipDef
+			    RelationshipDef rel = (RelationshipDef) stack.pop();
+			    ContentTypeDef ctd = (ContentTypeDef) stack.peek();
+			    BidirectionalReferenceDef brel = new BidirectionalReferenceDef(ctd.getType(), rel.getName(), rel.getLabel(), rel.isReadOnly(), true, dest.getDestinationType(), dest.getReverseAttributeName(), dest.getReverseAttributeLabel());
+			    stack.push(brel);
+			    dest.setSourceAttributeName(rel.getName());
+			    dest.setRelation(brel);
+			    dest.setSourceType(ctd.getType());
+			    bidirectional.add(dest);
+			} else {
+			    RelationshipDef rel = (RelationshipDef) stack.peek();
+			    rel.addContentType(dest.destinationType);
+			}
 		}
 	}
 

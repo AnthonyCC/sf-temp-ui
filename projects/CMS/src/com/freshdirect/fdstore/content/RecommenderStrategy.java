@@ -52,4 +52,8 @@ public class RecommenderStrategy extends ContentNodeModelImpl {
 		return getAttribute("exponent", 0.66 );
 	}
 	
+	public boolean isShowTemporaryUnavailable() {
+	    return getAttribute("show_temp_unavailable", false);
+	}
+	
 }

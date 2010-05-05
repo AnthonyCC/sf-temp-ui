@@ -5,6 +5,7 @@ import java.util.List;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.FilteredSearchResults.CategoryScoreOracle;
 import com.freshdirect.smartstore.scoring.Score;
 
@@ -12,7 +13,7 @@ public class UserRelevancyComparator extends RelevancyComparator {
 
     final ScriptedContentNodeComparator userComparator;
 
-    public UserRelevancyComparator(boolean inverse, String searchTerm, String userId, PricingContext pricingContext, CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ContentNodeModel> products, String originalSearchTerm) {
+    public UserRelevancyComparator(boolean inverse, String searchTerm, String userId, PricingContext pricingContext, CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ProductModel> products, String originalSearchTerm) {
         super(inverse, searchTerm, pricingContext, oracle, cnt, products, originalSearchTerm);
         this.userComparator = ScriptedContentNodeComparator.createComparator(userId, pricingContext, false);
     }

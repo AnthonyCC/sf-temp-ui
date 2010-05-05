@@ -76,7 +76,7 @@ int rank = nav.getPageOffset()+1;
 	<td style="vertical-align: middle; text-align:left">
 		<div class="text13" style="padding-left:10px; text-indent: -10px;">
 			<%
-			if (pi.getProductModel().isDisplayable()) {
+			if (pi.getProductModel().isFullyAvailable()) {
 			%>
 				<display:ProductName product="<%= productNode %>" action="<%= actionURL %>" />
 			<%
@@ -86,7 +86,7 @@ int rank = nav.getPageOffset()+1;
 			<%
 			} 
 			%>
-			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
+			<span style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">
 			<% if (pi.getConfigurationDescription() != null && !pi.getConfigurationDescription().equals("")) {%>
 				- <%=pi.getConfigurationDescription() %>
 			<% } %>

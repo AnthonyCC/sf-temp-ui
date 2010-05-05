@@ -77,7 +77,7 @@ int k = 0;
 			<div>
 			<%
 				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
-				if (productNode.isDisplayable()) {
+				if (productNode.isFullyAvailable()) {
 				%>
 					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" showNew="true" />&nbsp;<%=aka %>
 				<% } else {	%>

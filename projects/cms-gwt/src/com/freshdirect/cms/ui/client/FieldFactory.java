@@ -9,6 +9,7 @@ import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.form.DateField;
 import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.NumberField;
+import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.freshdirect.cms.ui.client.fields.CustomGridField;
 import com.freshdirect.cms.ui.client.fields.EnumField;
@@ -103,6 +104,10 @@ public final class FieldFactory {
 				TextField<String> field = new TextField<String>();				
 				field.setValue((String) value);
 				aField = field;
+			} else if ("text".equals(type)) {
+                            TextArea field = new TextArea();                              
+                            field.setValue((String) value);
+                            aField = field;
 			} else if ("double".equals(type)) {
 				NumberField field = new NumberField();	
 				field.setPropertyEditorType(Double.class);			

@@ -51,7 +51,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 	}
 
 	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
-		return recommendNodes(input, new PrioritizedDataAccess(input.getExclusions(), input.isUseAlternatives()));
+		return recommendNodes(input, new PrioritizedDataAccess(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable()));
 	}
 
 	public List<ContentNodeModel> recommendNodes(SessionInput input, DataAccess dataAccess) {

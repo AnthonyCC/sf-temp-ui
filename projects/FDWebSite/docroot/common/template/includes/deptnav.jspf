@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%
 //doing a check for your account pages, making static department nav, otherwise, build one for departments below
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
@@ -97,16 +98,12 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 									<%
 									for ( int colIndex = 0; colIndex < maxCols && ((maxRows * colIndex) + rowIndex) < folderList.size(); colIndex++ ) {
 										CategoryModel folder = (CategoryModel)folderList.get((maxRows * colIndex) + rowIndex);
-										ContentNodeModel alias = folder.getAlias();
+										CategoryModel alias = folder.getAlias();
 										String folderLink = null;
 										if ( alias != null ) {
-											if (alias instanceof CategoryModel) {
-											    folderLink = response.encodeURL("/category.jsp?catId=" + alias.getContentKey().getId() + "&trk=dnav");
-											} else if (alias instanceof DepartmentModel) {
-											    folderLink = response.encodeURL("/department.jsp?deptId=" + alias.getContentKey().getId() + "&trk=dnav");
-											}
+											folderLink = FDURLUtil.getCategoryURI(alias.getContentName(), "dnav");
 										} else {
-											folderLink = response.encodeURL("/category.jsp?catId=" + folder+"&trk=dnav");
+											folderLink = FDURLUtil.getCategoryURI(folder.getContentName(), "dnav");
 										}
 										%>
 										<td class="deptNav"><a href="<%= folderLink %>"><%= folder.getFullName() %></a></td>

@@ -78,7 +78,7 @@
 // -- sort out non displayable items --
 for (Iterator it = relatedProducts.iterator(); it.hasNext();) {
 	ProductModel prd = (ProductModel) it.next();
-	if (!prd.isDisplayable()) {
+	if (!prd.isFullyAvailable()) {
 		LOG.error("Throwing non disp prod " + prd.getContentName());
 		%><div>Skip Product <span style="font-weight: bold;"><%= prd %></span></div><%
 		it.remove();

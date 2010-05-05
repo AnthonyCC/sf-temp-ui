@@ -58,6 +58,8 @@ public class SessionInput {
 	private boolean includeCartItems = false;
 
 	private boolean useAlternatives = true;
+	
+	private boolean showTemporaryUnavailable = false;
 
 	// private Set eligiblePromotions = null;
 	
@@ -290,6 +292,14 @@ public class SessionInput {
 
 	public boolean isUseAlternatives() {
 		return useAlternatives;
+        }
+	
+	public boolean isShowTemporaryUnavailable() {
+            return showTemporaryUnavailable;
+        }
+	
+	public void setShowTemporaryUnavailable(boolean showTemporaryUnavailable) {
+            this.showTemporaryUnavailable = showTemporaryUnavailable;
         }
 
 	public PricingContext getPricingContext() {

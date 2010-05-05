@@ -9,14 +9,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.node.ContentNodeUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SearchRelevancyList {
+    
+    final static Logger LOGGER = LoggerFactory.getInstance(SearchRelevancyList.class);
 
     public static final String SEARCH_RELEVANCY_KEY = "FDFolder:searchRelevancyList";
     public static final String WORD_STEMMING_EXCEPTION = "FDFolder:wordStemmingException";
@@ -61,21 +65,24 @@ public class SearchRelevancyList {
      * @return Map<String,SearchRelevancyList>
      */
     public static Map<String, SearchRelevancyList> createFromCms() {
+        LOGGER.info("SearchRelevancyList::createFromCms started");
         Map<String, SearchRelevancyList> result = new HashMap<String, SearchRelevancyList>();
 
         CmsManager instance = CmsManager.getInstance();
 
         ContentNodeI searchRelRootNode = instance.getContentNode(ContentKey.decode(SearchRelevancyList.SEARCH_RELEVANCY_KEY));
         if (searchRelRootNode!=null) {
+            LOGGER.info("SearchRelevancyList:: " + searchRelRootNode + " located.");
+            
             Set<ContentKey> searchRelKeys = ContentNodeUtil.collectReachableKeys(searchRelRootNode, FDContentTypes.SEARCH_RELEVANCY_LIST);
             Map<ContentKey, ContentNodeI> searchRelNodes = instance.getContentNodes(searchRelKeys);
-    
+            LOGGER.info("found " + searchRelNodes.size() + " nodes.");
             for (Iterator<ContentNodeI> contentNodeIterator = searchRelNodes.values().iterator(); contentNodeIterator.hasNext();) {
                 ContentNodeI node = contentNodeIterator.next();
                 String keywords = ContentNodeUtil.getStringAttribute(node, KEYWORDS).toLowerCase();
                 String[] kw = StringUtils.split(keywords, ",");
                 if (kw.length>0) {
-                    List<ContentKey> hints = (List<ContentKey>) node.getAttribute(HINTS).getValue();
+                    List<ContentKey> hints = (List<ContentKey>) node.getAttributeValue(HINTS);
                     if (hints != null) {
                         Map<ContentKey, Integer> scores = new HashMap<ContentKey, Integer>();
                         for (int i = 0; i < hints.size(); i++) {
@@ -98,6 +105,7 @@ public class SearchRelevancyList {
                 }
             }
         }
+        LOGGER.info("SearchRelevancyList::createFromCms finished:"+result.size());
         return result;
     }
 

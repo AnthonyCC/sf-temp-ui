@@ -12,6 +12,7 @@ public class EnumAttributeType extends Enum {
 	public static final EnumAttributeType INTEGER = new EnumAttributeType("I", "Integer", new Integer(0));
 	public static final EnumAttributeType DOUBLE = new EnumAttributeType("D", "Double", new Double(0));
 	public static final EnumAttributeType STRING = new EnumAttributeType("S", "String", "");
+        public static final EnumAttributeType LONG_TEXT = new EnumAttributeType("TXT", "Text", "");
 	public static final EnumAttributeType RELATIONSHIP = new EnumAttributeType("R", "Relationship", null);
 	public static final EnumAttributeType TABLE = new EnumAttributeType("T", "Table", null);
 	public static final EnumAttributeType ENUM = new EnumAttributeType("E", "Enumeration", null);

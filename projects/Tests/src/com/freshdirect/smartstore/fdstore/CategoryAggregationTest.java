@@ -1,16 +1,9 @@
 package com.freshdirect.smartstore.fdstore;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.ContentTypeServiceI;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.smartstore.sampling.RankedContent;
 
 public class CategoryAggregationTest extends SamplingTestsBase {
@@ -18,21 +11,12 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-
-        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
-        list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
-
-        CompositeTypeService typeService = new CompositeTypeService(list);
-
-        XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/smartstore/SamplingTest.xml");
-
-        CmsManager.setInstance(new CmsManager(service, null));
 	}
 		
 	public void testNoAggregationMarkers() {
 		MockedImpressionSampler sampler = MockedImpressionSampler.create("deterministic");
 
-		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
+		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET, false);
 		
 		assertTrue(items.size() == 8);
 		assertEqualsReverse(getLabel(items.get(0)),getLabel(CITROMIZUBANAN));
@@ -70,7 +54,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		sampler.setAggregationMarker(PIROS_GYUMOLCS);
 		sampler.setAggregationMarker(ZOLD_GYUMOLCS);
 		
-		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
+		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET, false);
 
 		assertTrue(items.size() == 8);
 		assertEqualsReverse(getLabel(items.get(0)),getLabel(CITROMIZUBANAN));
@@ -90,7 +74,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		assertEqualsReverse(getLabel(items2.get(2)),getLabel(CITROMIZUBANAN));
 		assertEqualsReverse(getLabel(items2.get(3)),getLabel(SARGA_GYUMOLCS));
 
-		items = sampler.sample(sampler.getCandidates(), true, Collections.EMPTY_SET);
+		items = sampler.sample(sampler.getCandidates(), true, Collections.EMPTY_SET, false);
 
 		assertTrue(items.size() == 8);
 		assertEqualsReverse(getLabel(items.get(0)),getLabel(MEGGY));
@@ -111,7 +95,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		sampler.resetAggregationMarker(ZOLD_GYUMOLCS);
 		sampler.setAggregationMarker(GYUMOLCS);
 		
-		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
+		List<ContentKey> items = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET, false);
 
 		assertTrue(items.size() == 8);
 		assertEqualsReverse(getLabel(items.get(0)),getLabel(CITROMIZUBANAN));
@@ -129,7 +113,7 @@ public class CategoryAggregationTest extends SamplingTestsBase {
 		assertEqualsReverse(getLabel(items2.get(0)),getLabel(GYUMOLCS));
 		assertEqualsReverse(getLabel(items2.get(1)),getLabel(CITROMIZUBANAN));
 
-		items = sampler.sample(sampler.getCandidates(), true, Collections.EMPTY_SET);
+		items = sampler.sample(sampler.getCandidates(), true, Collections.EMPTY_SET, false);
 
 		assertEqualsReverse(getLabel(items.get(0)),getLabel(EGRES));
 		assertEqualsReverse(getLabel(items.get(1)),getLabel(ZOLDALMA));

@@ -17,11 +17,11 @@ import com.freshdirect.fdstore.content.ProductModel;
  * @author segabor
  */
 public class SaleComparator extends PopularityComparator {
-    SaleComparator(boolean inverse, boolean hideUnavailable, List<ContentNodeModel> products, PricingContext pricingContext) {
+    SaleComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext) {
         super(inverse, hideUnavailable, products, pricingContext);
     }
 
-    public SaleComparator(boolean inverse, List<ContentNodeModel> products, PricingContext pricingContext) {
+    public SaleComparator(boolean inverse, List<ProductModel> products, PricingContext pricingContext) {
         super(inverse, products, pricingContext);
     }
 

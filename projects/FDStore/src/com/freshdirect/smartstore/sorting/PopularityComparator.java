@@ -8,6 +8,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.smartstore.scoring.Score;
 
 public class PopularityComparator implements Comparator<ContentNodeModel> {
@@ -17,19 +18,19 @@ public class PopularityComparator implements Comparator<ContentNodeModel> {
     final Set<ContentKey>     displayable;
     final ScriptedContentNodeComparator globalComparator;
 
-    public PopularityComparator(boolean inverse, List<ContentNodeModel> products, PricingContext pricingContext) {
+    public PopularityComparator(boolean inverse, List<ProductModel> products, PricingContext pricingContext) {
         this(inverse, false, products, pricingContext);
     }
 
-    public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ContentNodeModel> products, PricingContext pricingContext) {
+    public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext) {
         this.inverse = inverse;
         this.hideUnavailable = hideUnavailable;
         this.displayable = new HashSet<ContentKey>();
         this.globalComparator = ScriptedContentNodeComparator.createComparator(null, pricingContext, true);
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
-                ContentNodeModel c = (ContentNodeModel) products.get(i);
-                if (c.isDisplayable()) {
+                ProductModel c = products.get(i);
+                if (c.isFullyAvailable()) {
                     displayable.add(c.getContentKey());
                 }
             }

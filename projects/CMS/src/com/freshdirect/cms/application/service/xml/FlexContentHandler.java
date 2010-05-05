@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
@@ -44,7 +43,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class FlexContentHandler extends CmsNodeHandler {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(FlexContentHandler.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FlexContentHandler.class);
 
 	private static long ID_GENERATOR = 0;
 	

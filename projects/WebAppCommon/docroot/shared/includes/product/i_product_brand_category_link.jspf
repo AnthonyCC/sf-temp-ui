@@ -1,0 +1,20 @@
+<%@page import="java.util.List"
+%><%@page import="com.freshdirect.webapp.util.FDURLUtil"
+%><%@page import="com.freshdirect.fdstore.content.BrandModel"
+%><%@page import="com.freshdirect.fdstore.content.CategoryModel"
+%><%@page import="com.freshdirect.fdstore.content.ProducerModel"%><%
+{
+	List<BrandModel> _brands = productNode.getBrands();
+	if (!_brands.isEmpty()) {
+	    for (BrandModel brand : _brands) { 
+	        ProducerModel producer = brand.getProducer();
+	        if (producer != null) {
+	            CategoryModel category = producer.getBrandCategory();
+	            if (category != null) {
+	            	%><a href="<%= FDURLUtil.getCategoryURI(category, null)%>"><%= producer.getFullName() %></a><br><br><%  
+	 			}
+	        }
+	    }
+	}
+}
+%>

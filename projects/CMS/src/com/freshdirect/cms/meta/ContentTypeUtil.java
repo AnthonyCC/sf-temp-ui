@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -91,6 +90,8 @@ public class ContentTypeUtil {
 			String str = (String)value;
 			if (EnumAttributeType.STRING.equals(type)) {
 				return str;
+                        } else if (EnumAttributeType.LONG_TEXT.equals(type)) {
+                            return str;
 			} else if (EnumAttributeType.BOOLEAN.equals(type)) {
 				return Boolean.valueOf(str);
 			} else if (EnumAttributeType.INTEGER.equals(type)) {
@@ -125,8 +126,10 @@ public class ContentTypeUtil {
 			} else if (value instanceof Number) {
 				return new Integer(((Number) value).intValue());
 			}
-		} else if (EnumAttributeType.STRING.equals(type)) {
-			return value.toString();
+                } else if (EnumAttributeType.STRING.equals(type)) {
+                    return value.toString();
+                } else if (EnumAttributeType.LONG_TEXT.equals(type)) {
+                    return value.toString();
 		} else if (EnumAttributeType.DATE.equals(type)) {
 			if (value instanceof java.sql.Date) {
 				return new Date(((java.sql.Date) value).getTime());
@@ -165,13 +168,23 @@ public class ContentTypeUtil {
 		return values;
 	}
 	
+	@Deprecated
 	public static String attributeToString(AttributeI attr) {
 		AttributeDefI atrDef = attr.getDefinition();
 		Object value = attr.getValue();
-		if (EnumAttributeType.DATE.equals(atrDef.getAttributeType())) {
-			return dateFormat.format((Date) value);
-		}
-		return String.valueOf(value);
+		return attributeToString(atrDef, value);
 	}
+
+    /**
+     * @param atrDef
+     * @param value
+     * @return
+     */
+    public static String attributeToString(AttributeDefI atrDef, Object value) {
+        if (EnumAttributeType.DATE.equals(atrDef.getAttributeType())) {
+            return dateFormat.format((Date) value);
+        }
+        return String.valueOf(value);
+    }
 
 }

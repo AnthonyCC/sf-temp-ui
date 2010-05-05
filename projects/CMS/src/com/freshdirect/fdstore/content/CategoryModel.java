@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.conf.FDRegistry;
@@ -56,10 +55,9 @@ public class CategoryModel extends ProductContainer {
 		@Override
 		protected Object load() {
 			CmsRecommenderService recommenderService = getRecommenderService();
-			String categoryId = CategoryModel.this.getContentName();
-			String recommenderId = CategoryModel.this.getRecommender() != null ?
-					CategoryModel.this.getRecommender().getContentName()
-					: null;
+			ContentKey categoryId = CategoryModel.this.getContentKey();
+			final Recommender recommender = CategoryModel.this.getRecommender();
+                        ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
 			LOGGER.debug("loader started for category " + categoryId + ", zone " + zoneId + ", recommender: " + recommenderId);
 			if ( recommenderService != null && recommenderId != null ) {
 				List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
@@ -180,15 +178,6 @@ public class CategoryModel extends ProductContainer {
 		return getAttribute("FAKE_ALL_FOLDER", false);
 	}
 	
-	public EnumShowChildrenType getSideNavShowChildren() {
-		return EnumShowChildrenType.getShowChildrenType(getAttribute("SIDENAV_SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS
-			.getId()));
-	}
-
-	public boolean getSideNavShowSelf() {
-		return getAttribute("SIDENAV_SHOWSELF", false);
-	}
-
 	/**
 	 * 
 	 * @return CAT_LABEL
@@ -249,7 +238,7 @@ public class CategoryModel extends ProductContainer {
 	    return FDAttributeFactory.constructHtml(this, "SEPARATOR_MEDIA");
 	}
 
-	public List getSubcategories() {
+	public List<CategoryModel> getSubcategories() {
 		ContentNodeModelUtil.refreshModels(this, "subcategories", subcategoriesModels, true);
 
 		return new ArrayList(subcategoriesModels);
@@ -303,12 +292,12 @@ public class CategoryModel extends ProductContainer {
 		return new ArrayList(wineFilterCriteriaList);		
 	}
 
-	public List getWineSideNavSections() {
+	public List<DomainValue> getWineSideNavSections() {
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_SECTIONS", wineSideNavSectionsList, false);
 		return new ArrayList(wineSideNavSectionsList);		
 	}
 
-	public List getWineSideNavFullList() {
+	public List<Domain> getWineSideNavFullList() {
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_FULL_LIST", wineSideNavFullsList, false);
 		return new ArrayList(wineSideNavFullsList);		
 	}
@@ -606,6 +595,22 @@ public class CategoryModel extends ProductContainer {
 
 	}
 
+	/**
+	 * a category is active, if there is at least one item in it regardless of availability. Discontinued items are already filtered out.
+	 * @return
+	 */
+	public boolean isActive() {
+	    if (!getProducts().isEmpty()) {
+	        return true;
+	    }
+	    for (CategoryModel subCat : getSubcategories()) {
+	        if (subCat.isActive()) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	/**
          * 
          * @return CategoryModel looked up by RATING_HOME

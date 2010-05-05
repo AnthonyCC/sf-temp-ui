@@ -18,6 +18,7 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -41,6 +42,7 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class MockProductModel extends MockContentNodeModel implements ProductModel, Cloneable {
 
     private List<SkuModel> skuModels;
+    private List<BrandModel> brands = new ArrayList();
 
     /**
      * 
@@ -176,8 +178,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getBrands() {
-        // TODO Auto-generated method stub
-        return null;
+        return brands;
     }
 
     /* (non-Javadoc)
@@ -1601,6 +1602,14 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
         return this;
     }
 
+    public MockProductModel addBrand(BrandModel brand) {
+        if (brands==null) {
+            brands = new ArrayList();
+        }
+        brands.add(brand);
+        return this;
+    }
+
 	@Override
 	public List getGiftcardType() {
 		return null;
@@ -1662,10 +1671,12 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     }
 
     @Override
-    public boolean hideIphone() {
+    public boolean isHideIphone() {
         return false;
     }
 
+    
+    
 	@Override
 	public String getFreshnessGuaranteed() throws FDResourceException {
 		// TODO Auto-generated method stub
@@ -1713,6 +1724,16 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     @Override
     public PriceCalculator getPriceCalculator(String skuCode) {
         return new PriceCalculator(getPricingContext(), this, getValidSkuCode(getPricingContext(), skuCode));
+    }
+
+    @Override
+    public boolean isFullyAvailable() {
+        return isDisplayable();
+    }
+
+    @Override
+    public boolean isTemporaryUnavailableOrAvailable() {
+        return isFullyAvailable();
     }
     
     

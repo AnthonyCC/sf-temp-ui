@@ -126,8 +126,6 @@ public interface ContentNodeModel {
 
 	public boolean isHidden();
 
-	public boolean isDisplayable();
-	
 	public String getHideUrl();
 	
 	public Image getSideNavImage();

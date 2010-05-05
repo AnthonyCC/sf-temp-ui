@@ -98,23 +98,28 @@ public abstract class AbstractImpressionSampler implements ImpressionSampler {
 
 	protected abstract ListSampler createSampler(List<RankedContent> limitedRankedContent);
 
-	public final List<ContentKey> sample(List<RankedContent.Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions) {
+	@Override
+	public final List<ContentKey> sample(List<RankedContent.Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions, boolean showTempUnavailable) {
 		List<? extends RankedContent> rankedAggregatedContent = categoryAggregationEnabled && aggregatable ? aggregateContentList(rankedContent) : rankedContent;
-		ContentFilter filter = FilterFactory.getInstance().createFilter(exclusions, useAlternatives);
+		ContentFilter filter = FilterFactory.getInstance().createFilter(exclusions, useAlternatives, showTempUnavailable);
 		ContentSampler sampler = new ContentSampler(rankedAggregatedContent, filter, getConsiderationLimit());
 		return sampler.drawWithoutReplacement(createSampler(sampler.getSortedItems()));
 	}
 
+	@Override
 	public abstract boolean isDeterministic();
 
+	@Override
 	public ConsiderationLimit getConsiderationLimit() {
 		return considerationLimit;
 	}
 
+	@Override
 	public boolean isCategoryAggregationEnabled() {
 		return categoryAggregationEnabled;
 	}
 	
+	@Override
 	public boolean isUseAlternatives() {
 		return useAlternatives;
 	}

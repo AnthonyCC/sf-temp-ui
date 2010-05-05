@@ -3,7 +3,7 @@ package com.freshdirect.smartstore.filter;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class ArrayFilter extends ContentFilter {
 	List<ContentFilter> filters;
@@ -12,7 +12,7 @@ public class ArrayFilter extends ContentFilter {
 		filters = new ArrayList<ContentFilter>();
 	}
 
-	public ContentKey filter(ContentKey key) {
+	public <X extends ContentNodeModel> X filter(X key) {
 		for (int i = 0; i < filters.size(); i++) {
 			key = filters.get(i).filter(key);
 			if (key == null) {

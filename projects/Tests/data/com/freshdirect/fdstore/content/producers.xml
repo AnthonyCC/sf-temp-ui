@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content xmlns:dc="http://purl.org/dc/elements/1.1">
+	<!-- BRANDS -->
+	<Brand id="bd_coach_farm">
+		<FULL_NAME>Coach Farm</FULL_NAME>
+		<BRAND_POPUP_CONTENT>
+			<Html ref="/media/brands/coach/coach.html"/>
+		</BRAND_POPUP_CONTENT>
+		<BRAND_LOGO_MEDIUM>
+			<Image ref="/media/images/brands/coach_farm/bd_coach_farm_m.gif"/>
+		</BRAND_LOGO_MEDIUM>
+		<BRAND_LOGO_SMALL>
+			<Image ref="/media/images/brands/coach_farm/bd_coach_farm_s.gif"/>
+		</BRAND_LOGO_SMALL>
+	</Brand>
+	
+	<!-- Producer Types -->
+	<ProducerType id="pt1">
+	    <FULL_NAME>Producer Type #1</FULL_NAME>
+		<icon><Image ref="/media/images/brands/coach_farm/bd_coach_farm_m.gif"/></icon>
+		<!-- <icon_shadow></icon_shadow> -->
+	</ProducerType>
+
+	<!-- Producers -->
+	<Producer id="CoachFarm">
+	    <FULL_NAME>Full Name</FULL_NAME>
+		<ADDRESS>105 Mill Hill Road, Pine Plains, NY 12567</ADDRESS>
+		<GMAPS_LOCATION>42.02803,-73.66614</GMAPS_LOCATION>
+		<icon><Image ref="/media/images/brands/coach_farm/bd_coach_farm_m.gif"/></icon>
+		<!-- <icon_shadow></icon_shadow> -->
+		
+		<bubble_content>
+			<Html id="content1">
+				<path>coachfarm.html</path>
+			</Html>
+		</bubble_content>
+		
+		<producer_type ref="pt1"/>
+
+		<brand ref="bd_coach_farm"/>	
+	</Producer>
+</Content>

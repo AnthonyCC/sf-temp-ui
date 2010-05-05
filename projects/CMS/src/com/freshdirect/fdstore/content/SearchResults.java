@@ -82,7 +82,7 @@ public class SearchResults implements Serializable {
 		
 	};
 	
-	private List products;
+	private List<ProductModel> products;
 	private final List<Recipe> recipes;
 	
 	private final boolean productsRelevant;
@@ -97,11 +97,11 @@ public class SearchResults implements Serializable {
         private final List<SearchHit> productSearchHit;
         private final List<SearchHit> recipeSearchHit;
 	
-        public SearchResults(List products, List<Recipe> recipes, boolean productsRelevant, String searchTerm) {
+        public SearchResults(List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm) {
             this(products, recipes, productsRelevant, searchTerm, null, null);
         }
     
-        public SearchResults(List products, List<Recipe> recipes, boolean productsRelevant, String searchTerm, List<SearchHit> productSearchHit,
+        public SearchResults(List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm, List<SearchHit> productSearchHit,
                 List<SearchHit> recipeSearchHit) {
             this.products = products;
             this.recipes = recipes;
@@ -129,11 +129,11 @@ public class SearchResults implements Serializable {
 		this.spellingResultsDifferences = diffs;
 	}
 	
-	public List getProducts() {
+	public List<ProductModel> getProducts() {
 		return this.products;
 	}
 	
-	void setProducts(List products) {
+	void setProducts(List<ProductModel> products) {
 		this.products = products;
 	}
 	

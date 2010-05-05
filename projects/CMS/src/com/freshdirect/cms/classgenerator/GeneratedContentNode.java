@@ -9,7 +9,7 @@ import com.freshdirect.cms.ContentTypeDefI;
 
 public abstract class GeneratedContentNode implements ContentNodeI {
 
-    ContentKey key;
+    protected ContentKey key;
     private boolean delete;    
 
     public GeneratedContentNode() {
@@ -48,7 +48,7 @@ public abstract class GeneratedContentNode implements ContentNodeI {
     public abstract void setAttributeDefs(Map defs);
 
     
-    public abstract void setContentNodeGenerator(ContentNodeGenerator generator);
+    public abstract void setContentNodeGenerator(NodeGeneratorI generator);
     
 
     public abstract Object getAttributeValue(String name);

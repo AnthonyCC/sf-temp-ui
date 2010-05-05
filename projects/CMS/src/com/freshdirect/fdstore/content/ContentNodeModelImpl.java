@@ -295,10 +295,6 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         return this.getAttribute("HIDE_URL", null);
 	}
 
-	public boolean isDisplayable() {
-		return true;
-	}
-	
 	public String getPath() {
 		if (!this.getContentType().equals(ContentNodeModel.TYPE_DEPARTMENT)
 			&& !this.getContentType().equals(ContentNodeModel.TYPE_CATEGORY)

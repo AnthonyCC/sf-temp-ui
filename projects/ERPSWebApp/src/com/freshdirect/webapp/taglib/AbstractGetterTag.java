@@ -20,9 +20,9 @@ import org.apache.log4j.*;
  * @version $Revision$
  * @author $Author$
  */
-public abstract class AbstractGetterTag extends com.freshdirect.framework.webapp.BodyTagSupport {
+public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.webapp.BodyTagSupport {
 
-	private static Category LOGGER = LoggerFactory.getInstance( AbstractGetterTag.class );
+	private static Logger LOGGER = LoggerFactory.getInstance( AbstractGetterTag.class );
 
 	// 'id' is already defined in TagSupport class therefore no need to overlap it
 	// private String id = null;
@@ -52,7 +52,7 @@ public abstract class AbstractGetterTag extends com.freshdirect.framework.webapp
 		return EVAL_BODY_BUFFERED;
 	}
 
-	protected abstract Object getResult() throws Exception;
+	protected abstract X getResult() throws Exception;
 
 	protected static abstract class TagEI extends TagExtraInfo {
 

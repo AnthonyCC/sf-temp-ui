@@ -1,10 +1,12 @@
 package com.freshdirect.cms.application;
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 
 /**
  * Repository interface for type definitions.
@@ -58,4 +60,16 @@ public interface ContentTypeServiceI {
 	 */
 	public ContentTypeDefI getContentTypeDefinition(ContentType type);
 
+	
+	/**
+	 * Get the reference handler
+	 * 
+	 * @param type
+	 * @param attribute
+	 * @return the handler or null if type is unsupported
+	 */
+	public BidirectionalReferenceHandler getReferenceHandler(ContentType type, String attribute);
+	
+	
+	public Collection<BidirectionalReferenceHandler> getAllReferenceHandler();
 }

@@ -27,8 +27,6 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
 import com.freshdirect.smartstore.dsl.Expression;
-import com.freshdirect.smartstore.filter.ArrayFilter;
-import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
 import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
@@ -42,14 +40,7 @@ public class GlobalCompilerTest extends TestCase {
     private DataAccess input;
     
     protected void setUp() throws Exception {
-    	FilterFactory.mockInstance(new FilterFactory() {
-    		@Override
-    		public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
-    			return new ArrayFilter() {
-    				// we mock the filter not to apply availability filtering
-    			};
-    		}
-    	});
+    	FilterFactory.mockInstance(new MockFilterFactory());
     	
         List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));

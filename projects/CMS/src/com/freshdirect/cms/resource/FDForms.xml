@@ -168,6 +168,7 @@
 							<CmsField><attribute>SIDENAV_LINK</attribute></CmsField>
 							<CmsField><attribute>SIDENAV_BOLD</attribute></CmsField>
 							<CmsField><attribute>SIDENAV_SHOWCHILDREN</attribute></CmsField>
+							<CmsField><attribute>HIDE_INACTIVE_SIDE_NAV</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>
@@ -604,6 +605,7 @@
 				<fields>
 					<CmsField><attribute>SHOWSELF</attribute></CmsField>
 					<CmsField><attribute>SHOW_SIDE_NAV</attribute></CmsField>
+					<CmsField><attribute>HIDE_INACTIVE_SIDE_NAV</attribute></CmsField>
 					<CmsField><attribute>LIST_AS</attribute></CmsField>
 					<CmsField><attribute>TEMPLATE_TYPE</attribute></CmsField>
 					<CmsField><attribute>PRODUCT_LAYOUT</attribute></CmsField>
@@ -1189,6 +1191,7 @@
                             <CmsField><attribute>FULL_NAME</attribute></CmsField>
                             <CmsField><attribute>generator</attribute></CmsField>
                             <CmsField><attribute>scoring</attribute></CmsField>
+                            <CmsField><attribute>show_temp_unavailable</attribute></CmsField>
                         </fields>
                     </CmsSection>
                     <CmsSection>

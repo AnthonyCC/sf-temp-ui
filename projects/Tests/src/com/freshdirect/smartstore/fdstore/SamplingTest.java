@@ -11,12 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.ContentTypeServiceI;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 
 /**
  * Test distributions.
@@ -25,11 +19,6 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
  *
  */
 public class SamplingTest extends SamplingTestsBase {
-
-	
-	private int N = 30000;
-	private double maximumAverageError = 15;
-	
 	private static Map<ContentKey, Integer> indexMap = new HashMap<ContentKey, Integer>();
 	
 	static {
@@ -43,10 +32,13 @@ public class SamplingTest extends SamplingTestsBase {
 		indexMap.put(CITROMIZUBANAN, new Integer(7));		
 	}
 	
+	private int N = 30000;
+	private double maximumAverageError = 15;
+	
 	public void testDeterministic() {
 		MockedImpressionSampler sampler = MockedImpressionSampler.create("deterministic");
 		
-		List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
+		List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET, false);
 		
 		assertTrue(keys.size() == 8);
 		assertEquals(getLabel(keys.get(0)),getLabel(CITROMIZUBANAN));
@@ -90,7 +82,7 @@ public class SamplingTest extends SamplingTestsBase {
 		String[] stuff = new String[expected.length];
 		
 		for(int x=0; x< N; ++x) {
-			List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET);
+			List<ContentKey> keys = sampler.sample(sampler.getCandidates(), false, Collections.EMPTY_SET, false);
 			
 			int c = 0;
 			for(Iterator<ContentKey> i = keys.iterator(); i.hasNext();++c) {

@@ -256,6 +256,7 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 	 */
 	public PrimaryKey ejbCreate(PrimaryKey customerPk, ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes, String dlvPassId,EnumSaleType saleType)
 		throws CreateException {
+	    
 		Connection conn = null;
 		try {
 			initialize();

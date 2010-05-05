@@ -8,10 +8,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Basic implementation of {@link com.freshdirect.cms.ContentTypeDefI}.
@@ -21,12 +24,14 @@ import com.freshdirect.cms.application.ContentTypeServiceI;
  */
 public class ContentTypeDef implements ContentTypeDefI {
 
+    final static Logger LOG = LoggerFactory.getInstance(ContentTypeDef.class);
+    
 	private final ContentTypeServiceI typeService;
 
 	private final ContentType type;
 
 	private final String label;
-	private final Map attributeDefs = new HashMap();
+	private final Map<String, AttributeDefI> attributeDefs = new HashMap<String, AttributeDefI>();
 
 	private boolean idGenerated = false;
 
@@ -53,57 +58,65 @@ public class ContentTypeDef implements ContentTypeDefI {
 		return label == null ? getName() : label;
 	}
 
-	public Collection getSelfAttributeDefs() {
+	public Collection<AttributeDefI> getSelfAttributeDefs() {
 		return Collections.unmodifiableCollection(this.attributeDefs.values());
 	}
 
 	public AttributeDefI getSelfAttributeDef(String name) {
-		return (AttributeDefI) this.attributeDefs.get(name);
+		return this.attributeDefs.get(name);
+	}
+	
+	public AttributeDefI removeSelfAttributeDef(String name) {
+	    return this.attributeDefs.remove(name);
 	}
 
-	public AttributeDefI getAttributeDef(String name) {
-		AttributeDefI def = getSelfAttributeDef(name);
-		if (def != null) {
-			return def;
-		}
-		for (Iterator i = ContentTypeUtil.getReachableContentTypes(typeService, this).iterator(); i.hasNext();) {
-			ContentType t = (ContentType) i.next();
-			ContentTypeDefI typeDef = typeService.getContentTypeDefinition(t);
-			if (typeDef != null) {
-				def = typeDef.getSelfAttributeDef(name);
-				if (def != null) {
-					return def;
-				}
-			}
-		}
-		return null;
-	}
-
-	public Set getAttributeNames() {
-		Set s = new HashSet();
+        /**
+         * Get the definition of a specific attribute, with
+         * contextual acquisition (inheritance) applied. 
+         * 
+         * @param name attribute name
+         * @return the attribute definition, or null if no such attribute is defined
+         */
+        public AttributeDefI getAttributeDef(String name) {
+            AttributeDefI def = getSelfAttributeDef(name);
+            if (def != null) {
+                return def;
+            }
+            for (ContentType t : ContentTypeUtil.getReachableContentTypes(typeService, this)) {
+                ContentTypeDefI typeDef = typeService.getContentTypeDefinition(t);
+                if (typeDef != null) {
+                    def = typeDef.getSelfAttributeDef(name);
+                    if (def != null && def.isInheritable()) {
+                        return def;
+                    }
+                }
+            }
+            return null;
+        }	
+	
+	public Set<String> getAttributeNames() {
+		Set<String> s = new HashSet<String>();
 		s.addAll(this.attributeDefs.keySet());
-		for (Iterator i = ContentTypeUtil.getReachableContentTypes(typeService, this).iterator(); i.hasNext();) {
-			ContentType t = (ContentType) i.next();
-			ContentTypeDef typeDef = (ContentTypeDef) typeService.getContentTypeDefinition(t);
-			s.addAll(typeDef.getInheritableAttributeNames());
-		}
+                for (ContentType t : ContentTypeUtil.getReachableContentTypes(typeService, this)) {
+                    ContentTypeDef typeDef = (ContentTypeDef) typeService.getContentTypeDefinition(t);
+                    s.addAll(typeDef.getInheritableAttributeNames());
+                }
 		return s;
 	}
 
-	public void addAttributeDef(AttributeDef attrDef) {
+	public void addAttributeDef(AttributeDefI attrDef) {
 		attributeDefs.put(attrDef.getName(), attrDef);
 	}
 
-	private Set getInheritableAttributeNames() {
-		Set s = new HashSet();
-		for (Iterator i = attributeDefs.values().iterator(); i.hasNext();) {
-			AttributeDefI def = (AttributeDefI) i.next();
-			if (def.isInheritable()) {
-				s.add(def.getName());
-			}
-		}
-		return s;
-	}
+        private Set<String> getInheritableAttributeNames() {
+            Set<String> s = new HashSet<String>();
+            for (AttributeDefI def : attributeDefs.values()) {
+                if (def.isInheritable()) {
+                    s.add(def.getName());
+                }
+            }
+            return s;
+        }
 
 	public String toString() {
 		return "ContentTypeDef[" + type + ", " + attributeDefs + "]";

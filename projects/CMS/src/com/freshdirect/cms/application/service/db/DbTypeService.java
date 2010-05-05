@@ -8,7 +8,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -17,17 +16,15 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.safehaus.uuid.UUID;
-import org.safehaus.uuid.UUIDGenerator;
-
 import com.freshdirect.cms.CmsRuntimeException;
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.AbstractTypeService;
 import com.freshdirect.cms.meta.AttributeDef;
+import com.freshdirect.cms.meta.BidirectionalReferenceDef;
 import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.meta.ContentTypeUtil;
 import com.freshdirect.cms.meta.EnumDef;
@@ -46,11 +43,9 @@ import com.freshdirect.cms.meta.RelationshipDef;
  * cms_lookup
  * </pre>
  */
-public class DbTypeService implements ContentTypeServiceI {
+public class DbTypeService extends AbstractTypeService implements ContentTypeServiceI {
 
 	private DataSource dataSource = null;
-
-	private Map<ContentType,ContentTypeDefI> defsByType;
 
 	public DbTypeService() {
 		super();
@@ -75,7 +70,7 @@ public class DbTypeService implements ContentTypeServiceI {
 				defs.put(type, loadContentTypeDefinitionFromDb(conn, type));
 			}
 			
-			this.defsByType = defs;
+			this.setContentTypes(defs);
 			
 		} catch (SQLException sqle1) {
 			throw new CmsRuntimeException(sqle1);
@@ -116,12 +111,12 @@ public class DbTypeService implements ContentTypeServiceI {
 		+ "from cms_contenttype ct, cms_attributedefinition ad "
 		+ "where ct.id=ad.contenttype_id and ct.id=? ";
 
-	private final static String relationshipDefQuery = "select rdef.id, rdef.name, rdef.required, rdef.inheritable, rdef.navigable, rdef.cardinality_code, rdef.label "
+	private final static String relationshipDefQuery = "select rdef.id, rdef.name, rdef.required, rdef.inheritable, rdef.navigable, rdef.cardinality_code, rdef.label, rdef.readonly "
 		+ "from cms_contenttype ct, cms_relationshipdefinition rdef "
 		+ "where ct.id=rdef.contenttype_id and ct.id=? "
 		+ "order by ct.id, rdef.id";
 
-	private final static String relationshipDestQuery = "select rdef.name, rdest.id, rdest.contenttype_id "
+	private final static String relationshipDestQuery = "select rdef.name, rdest.id, rdest.contenttype_id, rdest.reverse_attribute_name, rdest.reverse_attribute_label "
 		+ "from cms_contenttype ct, cms_relationshipdefinition rdef, cms_relationshipdestination rdest "
 		+ "where ct.id=rdef.contenttype_id and rdef.id=rdest.relationshipdefinition_id and ct.id=? "
 		+ "order by rdef.name";
@@ -182,12 +177,11 @@ public class DbTypeService implements ContentTypeServiceI {
 			boolean inheritable = stringToBoolean(rs.getString("inheritable"));
 			boolean navigable = stringToBoolean(rs.getString("navigable"));
 
-			// TODO read readOnly flag from DB typedef
-			boolean readOnly = false;
+			boolean readOnly = stringToBoolean(rs.getString("readonly"));
 
 			EnumCardinality cardinality = EnumCardinality.getEnum(rs.getString("cardinality_code"));
 
-			RelationshipDef rDef = new RelationshipDef(name, label, required, inheritable, navigable, readOnly, cardinality);
+			RelationshipDef rDef = new RelationshipDef(typeDef.getType(), name, label, required, inheritable, navigable, readOnly, cardinality);
 			typeDef.addAttributeDef(rDef);
 
 		}
@@ -197,15 +191,23 @@ public class DbTypeService implements ContentTypeServiceI {
 		ps = conn.prepareStatement(relationshipDestQuery);
 		ps.setString(1, type.getName());
 		rs = ps.executeQuery();
-		while (rs.next()) {
-
-			ContentType rDest = ContentType.get(rs.getString("contenttype_id"));
-
-			RelationshipDef rDef = (RelationshipDef) typeDef.getSelfAttributeDef(rs.getString("name"));
-			if (rDef != null)
-				rDef.addContentType(rDest);
-
-		}
+                while (rs.next()) {
+        
+                    ContentType rDest = ContentType.get(rs.getString("contenttype_id"));
+                    String reverseAttributeName = rs.getString("reverse_attribute_name");
+                    String reverseAttributeLabel = rs.getString("reverse_attribute_label");
+                    String name = rs.getString("name"); 
+                    if (reverseAttributeName != null) {
+                        RelationshipDef attributeDef = (RelationshipDef) typeDef.removeSelfAttributeDef(name);
+                        BidirectionalReferenceDef br = new BidirectionalReferenceDef (attributeDef, rDest, reverseAttributeName, reverseAttributeLabel); 
+                        typeDef.addAttributeDef(br);
+                    } else {
+                        RelationshipDef rDef = (RelationshipDef) typeDef.getSelfAttributeDef(name);
+                        if (rDef != null) {
+                            rDef.addContentType(rDest);
+                        }
+                    }
+                }
 		rs.close();
 		ps.close();
 
@@ -228,22 +230,6 @@ public class DbTypeService implements ContentTypeServiceI {
 		return m;
 	}
 
-	public Set<ContentType> getContentTypes() {
-		return Collections.unmodifiableSet(defsByType.keySet());
-	}
-
-	/* (non-Javadoc)
-	 * @see com.freshdirect.cms.application.ContentTypeServiceI#getContentTypeDefinitions()
-	 */
-	public Set<ContentTypeDefI> getContentTypeDefinitions() {
-	    return new HashSet<ContentTypeDefI>(defsByType.values());
-		//return Collections.unmodifiableSet(defsByType.entrySet());
-	}
-
-	public ContentTypeDefI getContentTypeDefinition(ContentType type) {
-		return (ContentTypeDefI) defsByType.get(type);
-	}
-
 	private static boolean stringToBoolean(String s) {
 		if (s==null || "".equals(s.trim()))
 			return false;
@@ -251,24 +237,5 @@ public class DbTypeService implements ContentTypeServiceI {
 		return 't' == c ? true : false;
 	}
 
-	public String generateUniqueId(ContentType type) {
-		ContentTypeDefI def = getContentTypeDefinition(type);
-		if (def == null || !def.isIdGenerated()) {
-			return null;
-		}
-		
-		// generate a UUID
-		UUIDGenerator idGenerator = UUIDGenerator.getInstance();
-		UUID          id          = idGenerator.generateRandomBasedUUID();
-		
-		return id.toString();
-	}
-
-	public ContentKey generateUniqueContentKey(ContentType type) throws UnsupportedOperationException {
-		String id = generateUniqueId(type);
-		
-		return id == null ? null
-				          : new ContentKey(type, id);
-	}
 
 }

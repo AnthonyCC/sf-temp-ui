@@ -12,7 +12,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.hibernate.EntityMode;
 import org.hibernate.MappingException;
@@ -23,12 +22,12 @@ import org.hibernate.persister.entity.BasicEntityPersister;
 import org.hibernate.type.AssociationType;
 import org.hibernate.type.Type;
 
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.BaseContentTypeService;
 import com.freshdirect.cms.meta.AttributeDef;
 import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.meta.RelationshipDef;
@@ -40,7 +39,7 @@ import com.freshdirect.cms.util.CollectionUtil;
  * 
  * @author lpekowsky
  */
-public class HibernateTypeService implements ContentTypeServiceI {
+public class HibernateTypeService extends BaseContentTypeService implements ContentTypeServiceI {
 
 	private final Map<ContentType,ContentTypeDefI> defsByType = new HashMap<ContentType,ContentTypeDefI>();
 	@SuppressWarnings("unchecked")
@@ -101,6 +100,7 @@ public class HibernateTypeService implements ContentTypeServiceI {
 			if (attrType.isEntityType()) {
 
 				RelationshipDef def = new RelationshipDef(
+				        contDef.getType(),
 					attrName,
 					attrName,
 					false,
@@ -123,6 +123,7 @@ public class HibernateTypeService implements ContentTypeServiceI {
 					//				}
 
 					RelationshipDef def = new RelationshipDef(
+					        contDef.getType(),
 						attrName,
 						attrName,
 						false,
@@ -187,16 +188,6 @@ public class HibernateTypeService implements ContentTypeServiceI {
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {
 		return (ContentTypeDefI) defsByType.get(type);
-	}
-	
-	public String generateUniqueId(ContentType type) {
-		// TODO implement
-		return null;
-	}
-
-	public ContentKey generateUniqueContentKey(ContentType type) throws UnsupportedOperationException {
-		// TODO implement
-		return null;
 	}
 
 }

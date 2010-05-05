@@ -200,7 +200,7 @@ because otherwise the external modifications of the slide database won't get pic
 
 	<service-point id="StoreContent" interface="com.freshdirect.cms.application.ContentServiceI">
 		<invoke-factory>
-			<construct class="com.freshdirect.cms.application.service.db.DbContentService" service-id-property="name">
+			<construct class="com.freshdirect.cms.application.service.db.DbContentService" service-id-property="name" initialize-method="initialize">
 				<set-service property="contentTypeService" service-id="StoreDef" />
 				<set-service property="dataSource" service-id="cmsdatasource" />
 			</construct>

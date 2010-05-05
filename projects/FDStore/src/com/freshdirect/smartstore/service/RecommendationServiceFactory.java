@@ -61,6 +61,8 @@ public class RecommendationServiceFactory {
 	public static final String CKEY_PREZ_TITLE = "prez_title";
 	public static final String CKEY_PREZ_FOOTER = "prez_footer";
 	public static final String CKEY_FI_LABEL = "fi_label";
+	
+	public static final String CKEY_SHOW_TEMP_UNAVAILABLE = "show_temp_unavailable";
 
 	public static final String CKEY_CAT_AGGR = "cat_aggr";
 	public static final String CKEY_INCLUDE_CART_ITEMS = "include_cart_items";
@@ -100,6 +102,7 @@ public class RecommendationServiceFactory {
 		CONFIG_LABELS.put(CKEY_SCORING, "Scoring Function");
 		CONFIG_LABELS.put(CKEY_USE_ALTS, "Use Alternative Products");
 		CONFIG_LABELS.put(CKEY_HIDE_BURSTS, "Hide Bursts");
+		CONFIG_LABELS.put(CKEY_SHOW_TEMP_UNAVAILABLE, "Show Temporary Unavailable Products");
 	}
 
 	public static final int DEFAULT_TOP_N = 20;
@@ -873,6 +876,7 @@ public class RecommendationServiceFactory {
 		config.set(CKEY_TOP_N, Integer.toString(strat.getTopN()));
 		config.set(CKEY_TOP_PERC, Double.toString(strat.getTopPercent()));
 		config.set(CKEY_EXPONENT, Double.toString(strat.getExponent()));
+		config.set(CKEY_SHOW_TEMP_UNAVAILABLE, Boolean.toString(strat.isShowTemporaryUnavailable()));
 		config.set(CKEY_GENERATOR, strat.getGenerator());
 		config.set(CKEY_SCORING, strat.getScoring());
 		return config;

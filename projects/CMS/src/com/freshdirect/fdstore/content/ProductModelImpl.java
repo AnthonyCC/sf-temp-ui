@@ -50,7 +50,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class ProductModelImpl extends AbstractProductModelImpl {
 	private static final long serialVersionUID = 2103318183933323914L;
 
-	private static final Logger LOG = LoggerFactory.getInstance( ProductModelImpl.class ); 
+	@SuppressWarnings("unused")
+	private static final Logger LOGGER = LoggerFactory.getInstance( ProductModelImpl.class ); 
 	
 	private static final Random rnd = new Random();
 	
@@ -529,9 +530,83 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 
+
+	protected static final String DOMAIN_ORGANIC_NAME = "source_Organic";
+	protected static final String DOMAIN_LOCAL_NAME = "source_Local";
+
+	
+	@Override
 	public String getFullName() {
-		String fullName = super.getFullName();
-		return fullName != null ? fullName : "";
+		String theFullName = null;
+		final String origFullName = super.getFullName() != null ? super.getFullName() : "";
+
+		
+		// does it have 'source' domain which can have either local or organic values?
+		boolean hasSourceDomain = false;
+		for (Domain d : getVariationMatrix()) {
+			if ("source".equals(d.getContentName())) {
+				hasSourceDomain = true;
+				break;
+			}
+		}
+
+
+		if (hasSourceDomain) {
+			int availableSkus = 0;
+			SkuModel firstAvailableSku = null;
+			for (SkuModel sku : getSkus()) {
+				if (!sku.isUnavailable()) {
+					availableSkus++;
+					if (firstAvailableSku == null)
+						firstAvailableSku = sku;
+					else
+						break;
+				}
+			}
+
+
+			// only one available sku required
+			if (availableSkus == 1) {
+				final String[] wordList = origFullName.split("\\s+");
+				boolean hasLocalInName = false;
+				boolean hasOrgInName = false;
+				for (String w : wordList) {
+					if ("local".equalsIgnoreCase(w)) {
+						hasLocalInName = true;
+					} else if ("organic".equalsIgnoreCase(w)) {
+						hasOrgInName = true;
+					}
+				}
+
+
+				// local ...
+				if (!hasLocalInName) {
+					for (DomainValue dv : firstAvailableSku.getVariationMatrix()) {
+						if (DOMAIN_LOCAL_NAME.equals(dv.getContentName())) {
+							theFullName = origFullName + ", Local";
+							break;
+						}
+					}
+				}
+
+				// organic ...
+				if (theFullName == null && !hasOrgInName) {
+					for (DomainValue dv : firstAvailableSku.getVariationMatrix()) {
+						if (DOMAIN_ORGANIC_NAME.equals(dv.getContentName())) {
+							theFullName = origFullName + ", Organic";
+							break;
+						}
+					}
+				}
+			}
+		}
+		
+		// fall back to original name
+		if (theFullName == null) {
+			theFullName = origFullName;
+		}
+		
+		return theFullName;
 	}
 
 	/**

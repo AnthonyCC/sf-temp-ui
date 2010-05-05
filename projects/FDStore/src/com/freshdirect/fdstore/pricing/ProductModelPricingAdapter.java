@@ -838,8 +838,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public boolean hideIphone() {
-		return this.prodModel.hideIphone();
+	public boolean isHideIphone() {
+		return this.prodModel.isHideIphone();
 	}
 
 	@Override
@@ -850,11 +850,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	@Override
 	public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
 		return this.prodModel.isCharacteristicsComponentsAvailable(config);
-	}
-
-	@Override
-	public boolean isDisplayable() {
-		return this.prodModel.isDisplayable();
 	}
 
 	@Override
@@ -1164,6 +1159,16 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
     @Override
     public Image getSideNavImage() {
         return prodModel.getSideNavImage();
+    }
+    
+    @Override
+    public boolean isFullyAvailable() {
+        return prodModel.isFullyAvailable();
+    }
+    
+    @Override
+    public boolean isTemporaryUnavailableOrAvailable() {
+        return prodModel.isTemporaryUnavailableOrAvailable();
     }
 
 }

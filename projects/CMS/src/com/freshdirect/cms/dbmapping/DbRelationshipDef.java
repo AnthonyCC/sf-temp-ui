@@ -29,7 +29,7 @@ public class DbRelationshipDef extends RelationshipDef {
 	 * @param mapping relationship mapping descriptor
 	 */
 	public DbRelationshipDef(RelationshipMapping mapping) {
-		super(mapping.getName(), mapping.getLabel(), false, false, mapping.isNavigable(), true, EnumCardinality.MANY);
+		super(ContentType.get(mapping.getSourceContentType()), mapping.getName(), mapping.getLabel(), false, false, mapping.isNavigable(), true, EnumCardinality.MANY);
 		this.query = mapping.getQuery();
 		this.destinationType = ContentType.get(mapping.getDestinationContentType());
 		addContentType(destinationType);

@@ -294,6 +294,8 @@ public class TranslatorToGwt {
         if (type == EnumAttributeType.STRING) {
             attr = new SimpleAttribute<String>("string", (String) value, name);
             
+        } else if (type == EnumAttributeType.LONG_TEXT) {
+            attr = new SimpleAttribute<String>("text", (String) value, name);
         } else if (type == EnumAttributeType.DOUBLE) {
             attr = new SimpleAttribute<Double>("double", (Double) value, name);
             

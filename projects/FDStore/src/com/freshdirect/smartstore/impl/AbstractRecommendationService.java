@@ -76,10 +76,13 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	}
 
 	final public List<ContentNodeModel> recommendNodes(SessionInput input) {
-		if (!input.isIncludeCartItems())
+		if (!input.isIncludeCartItems()) {
 			input.setIncludeCartItems(includeCartItems);
-		if (sampler != null)
+		}
+		if (sampler != null) {
 			input.setUseAlternatives(sampler.isUseAlternatives());
+		}
+		input.setShowTemporaryUnavailable(variant.getServiceConfig().isShowTempUnavailable());
 		return doRecommendNodes(input);
 	}
 
@@ -117,7 +120,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	}
 
 	private List<ContentNodeModel> sample(SessionInput input, List<RankedContent.Single> nodes, boolean aggregatable, Set<ContentKey> exclusions) {
-		List<ContentKey> samplingResult = (input.isNoShuffle() ? deterministicSampler : sampler).sample(nodes, aggregatable, exclusions);
+		List<ContentKey> samplingResult = (input.isNoShuffle() ? deterministicSampler : sampler).sample(nodes, aggregatable, exclusions, input.isShowTemporaryUnavailable());
 		List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(samplingResult.size());
 		for (ContentKey contentKey : samplingResult) {
 			ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(contentKey);

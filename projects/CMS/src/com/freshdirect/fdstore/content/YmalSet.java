@@ -289,7 +289,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		recipeVariantDef = typeService.getContentTypeDefinition(
 												FDContentTypes.RECIPE_VARIANT);
 		recipeSectionDef = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE_VARIANT);
+												FDContentTypes.RECIPE_SECTION);
 		configuredProductDef = typeService.getContentTypeDefinition(
 												FDContentTypes.CONFIGURED_PRODUCT);
 		configuredProductGroupDef = typeService.getContentTypeDefinition(

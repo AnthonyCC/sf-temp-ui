@@ -57,15 +57,8 @@ public class DeptNavTag extends AbstractGetterTag {
 			// !!! filter off stuff based on hide flags?
 			catList = dept.getCategories();
 		} else {
-//			List refList = (List)deptNavAttrib;
-			catList = new ArrayList( deptNavAttrib.size() );
-			for ( Iterator i = deptNavAttrib.iterator(); i.hasNext(); ) {
-			    Object ref = i.next();
-			    if (ref instanceof CategoryModel) { 
-			        CategoryModel cat = (CategoryModel) ref;
-			        catList.add(cat);
-			    }
-			}
+			catList = new ArrayList<CategoryModel>( deptNavAttrib.size() );
+			catList.addAll(deptNavAttrib);
 		}
 
 		pageContext.setAttribute( this.categoryList, catList );
@@ -82,7 +75,7 @@ public class DeptNavTag extends AbstractGetterTag {
 									true, 
 									VariableInfo.NESTED ),
 					new VariableInfo( data.getAttributeString( "categoryList" ), 
-									"java.util.List", 
+									"java.util.List<com.freshdirect.fdstore.content.CategoryModel>", 
 									true,
 									VariableInfo.NESTED ) 
 				};

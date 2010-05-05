@@ -233,7 +233,7 @@ table.rec-inner td {padding: 0px 2px !important; vertical-align: top !important;
     		ProductModel p = (ProductModel) ContentFactory.getInstance().getContentNode(key.getId());
     		YmalSet set = p.getActiveYmalSet();
 
-    		if (p != null && p.isDisplayable() && set != null
+    		if (p != null && p.isFullyAvailable() && set != null
     				&& set.getRecommenders() != null && set.getRecommenders().size() != 0
     				&& !sets.containsKey(set))
     			sets.put(set, p);

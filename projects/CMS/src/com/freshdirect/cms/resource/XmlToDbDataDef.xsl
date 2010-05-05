@@ -257,7 +257,7 @@ where exists
 <xsl:template name="insert_relationshipdefinitions">
 <xsl:for-each select="//CMS:RelationshipDef">
     <!-- the insert header -->
-    <xsl:text>INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,LABEL,CARDINALITY_CODE) VALUES (</xsl:text>
+    <xsl:text>INSERT INTO cms.relationshipdefinition (NAME,ID,CONTENTTYPE_ID,INHERITABLE,REQUIRED,NAVIGABLE,READONLY,LABEL,CARDINALITY_CODE) VALUES (</xsl:text>
 
     <!-- name -->
     <xsl:value-of select="concat(&quot;'&quot;, @name, &quot;',&quot;)"/>
@@ -291,6 +291,16 @@ where exists
     <!-- navigable -->
     <xsl:choose>
         <xsl:when test="@navigable='true'">
+            <xsl:text>'T',</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+            <xsl:text>'F',</xsl:text>
+        </xsl:otherwise>
+    </xsl:choose>
+
+    <!-- navigable -->
+    <xsl:choose>
+        <xsl:when test="@readonly='true'">
             <xsl:text>'T',</xsl:text>
         </xsl:when>
         <xsl:otherwise>
@@ -371,20 +381,38 @@ where exists
 <xsl:template name="insert_destinationdefs">
 <xsl:for-each select="//CMS:DestinationDef">
     <!-- the insert header -->
-    <xsl:text>INSERT INTO cms.relationshipdestination (RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,LABEL,ID) VALUES (</xsl:text>
+    <xsl:text>INSERT INTO cms.relationshipdestination (ID, RELATIONSHIPDEFINITION_ID,CONTENTTYPE_ID,REVERSE_ATTRIBUTE_NAME,REVERSE_ATTRIBUTE_LABEL) VALUES (</xsl:text>
     
+    <!-- id, which is contenttype_id.relationshipname.contentType -->
+    <xsl:value-of select="concat(&quot;'&quot;, ../../../@name, '.', ../@name, '.', @contentType, &quot;'&quot;)"/>
+
     <!-- relationshiddefinition id, which is:
          contenttype_id.relationshipname -->
-    <xsl:value-of select="concat(&quot;'&quot;, ../../../@name, '.', ../@name, &quot;',&quot;)"/>
+    <xsl:value-of select="concat(',',&quot;'&quot;, ../../../@name, '.', ../@name, &quot;',&quot;)"/>
 
     <!-- target contentType -->
     <xsl:value-of select="concat(&quot;'&quot;, @contentType, &quot;',&quot;)"/>
 
-    <!-- label -->
-    <xsl:text>NULL,</xsl:text>
+    <!-- REVERSE_ATTRIBUTE_NAME -->
+    <xsl:choose>
+        <xsl:when test="@reverseAttributeName">
+        	<xsl:value-of select="concat(&quot;'&quot;, @reverseAttributeName, &quot;',&quot;)"/>
+        </xsl:when>
+        <xsl:otherwise>
+		    <xsl:text>NULL,</xsl:text>
+        </xsl:otherwise>
+    </xsl:choose>
 
-    <!-- id, which is contenttype_id.relationshipname.contentType -->
-    <xsl:value-of select="concat(&quot;'&quot;, ../../../@name, '.', ../@name, '.', @contentType, &quot;'&quot;)"/>
+    <!-- REVERSE_ATTRIBUTE_LABEL -->
+    <xsl:choose>
+        <xsl:when test="@reverseAttributeLabel">
+        	<xsl:value-of select="concat(&quot;'&quot;, @reverseAttributeLabel, &quot;'&quot;)"/>
+        </xsl:when>
+        <xsl:otherwise>
+		    <xsl:text>NULL</xsl:text>
+        </xsl:otherwise>
+    </xsl:choose>
+
 
     <!-- the end of the statement, including a linefeed -->
     <xsl:text>);

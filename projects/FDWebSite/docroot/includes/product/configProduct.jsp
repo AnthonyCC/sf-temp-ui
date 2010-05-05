@@ -56,22 +56,8 @@ int templateType = productNode.getTemplateType(1);
 		<TD WIDTH="20"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="20" HEIGHT="1" BORDER="0" HSPACE="0" VSPACE="0"></TD>
 		<TD WIDTH="200" CLASS="text12">&nbsp;<BR>
 <% if (!_isModifyCart && isWebApp) { %>
-
-        <%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
-        <!-- Content start -->
-   		<% if ( FDStoreProperties.useOscache() ) { %> 
-	        <oscache:cache time="300">
-				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-			</oscache:cache>
-			<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-	        <oscache:cache time="300">
-				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-			</oscache:cache>
-   		<% } else { %>			        
-				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-   		<% } %>
+        <%@ include file="/shared/includes/product/i_product_right_column.jspf" %>
+        
 <% } else { %>
 		<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 		<%	Html productDesc = productNode.getProductDescription();	%>

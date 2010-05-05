@@ -204,23 +204,7 @@
 		<td width="200" class="text12">&nbsp;<br/>
 
 			<% if ( cartMode.equals( CartName.ADD_TO_CART ) && isWebApp ) { %>
-
-         		<%@ include file="/shared/includes/product/i_show_promo_flag.jspf" %>
-
-        		<!-- Content start -->
-        		<% if ( FDStoreProperties.useOscache() ) { %>
-        			<oscache:cache time="300">
-						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-        			</oscache:cache>
-					<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-        			<oscache:cache time="300">
-						<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-        			</oscache:cache>
-        		<% } else { %>
-						<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
-						<%@ include file="/shared/includes/product/i_product_image.jspf" %>
-						<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
-        		<% } %>
+		        <%@ include file="/shared/includes/product/i_product_right_column.jspf" %>
 
 			<% } else {
 

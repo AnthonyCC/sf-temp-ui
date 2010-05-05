@@ -18,4 +18,12 @@
 		</cms:RelationshipDefs>
 	</cms:ContentTypeDef>
 
+	<cms:ContentTypeDef name="Bar">
+		<cms:RelationshipDefs>
+			<cms:RelationshipDef name="foo" cardinality="One">
+				<cms:DestinationDef contentType="Foo" reverseAttributeName="bar"/>
+			</cms:RelationshipDef>
+		</cms:RelationshipDefs>
+	
+	</cms:ContentTypeDef>
 </cms:CMSDef>

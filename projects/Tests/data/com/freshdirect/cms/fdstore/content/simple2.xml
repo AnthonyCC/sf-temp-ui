@@ -70,5 +70,8 @@
 	<Sku id="e1sku"/>
 	<Sku id="e2sku"/>
 	<Sku id="e3sku"/>
+	
+	<Brand id="brand"/>
+	<Brand id="brand2"/>
 
 </Content>

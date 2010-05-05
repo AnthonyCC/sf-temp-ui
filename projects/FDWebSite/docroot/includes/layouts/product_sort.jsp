@@ -124,7 +124,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 							<display:ProductImage product="<%= productNode %>" action="<%= actionURI %>" hideBursts="<%= recommendations.getVariant().getHideBursts() %>"/></p>
 							<display:ProductRating product="<%= productNode %>" />
 			<%			// product name
-					if (productNode.isDisplayable()) { %>
+					if (productNode.isFullyAvailable()) { %>
 						<div><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>
 			<%		} else { %>
 						<div style="color: #999999"><display:ProductName product="<%= productNode %>" action="<%= actionURI %>"/></div>

@@ -32,6 +32,11 @@ public class BrandModel extends ContentNodeModelImpl {
             return FDAttributeFactory.constructHtml(this, "BRAND_POPUP_CONTENT");
         }
 	
+        public ProducerModel getProducer() {
+            Object value = getCmsAttributeValue("producer");
+            return value instanceof ContentKey ? (ProducerModel) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value) : null;
+        }
+        
 	
 	public List<ProductModel> getFeaturedProducts() {
             ContentNodeModelUtil.refreshModels(this, "FEATURED_PRODUCTS", featuredProducts, false);

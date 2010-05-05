@@ -22,7 +22,7 @@ public interface ImpressionSampler {
 	 *            items to be excluded from the sampled list
 	 * @return the sampled items
 	 */
-	public List<ContentKey> sample(List<RankedContent.Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions);
+	public List<ContentKey> sample(List<RankedContent.Single> rankedContent, boolean aggregatable, Set<ContentKey> exclusions, boolean showTempUnavailable);
 
 	public boolean isDeterministic();
 

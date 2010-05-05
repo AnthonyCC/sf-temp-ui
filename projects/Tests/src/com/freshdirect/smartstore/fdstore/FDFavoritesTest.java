@@ -4,7 +4,6 @@
 package com.freshdirect.smartstore.fdstore;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.naming.Context;
@@ -30,9 +29,8 @@ import com.freshdirect.smartstore.RecommendationServiceType;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.dsl.CompileException;
-import com.freshdirect.smartstore.filter.ArrayFilter;
-import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
+import com.freshdirect.smartstore.scoring.MockFilterFactory;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 
 /**
@@ -51,14 +49,7 @@ public class FDFavoritesTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-    	FilterFactory.mockInstance(new FilterFactory() {
-    		@Override
-    		public ContentFilter createFilter(Collection<ContentKey> exclusions, boolean useAlternatives) {
-    			return new ArrayFilter() {
-    				// we mock the filter not to apply availability filtering
-    			};
-    		}
-    	});
+    	FilterFactory.mockInstance(new MockFilterFactory());
     	
 
         List list = new ArrayList();

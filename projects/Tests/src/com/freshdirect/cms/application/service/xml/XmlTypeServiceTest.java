@@ -1,12 +1,10 @@
 package com.freshdirect.cms.application.service.xml;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.freshdirect.TestUtils;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
@@ -23,12 +21,12 @@ public class XmlTypeServiceTest extends TestCase {
 				"classpath:/com/freshdirect/cms/application/service/xml/TestDefinition.xml");
 
 		ContentType fooType = ContentType.get("Foo");
-		assertEquals(toSet(new ContentType[] { fooType }), typeService
+                ContentType barType = ContentType.get("Bar");
+		assertEquals(TestUtils.toSet(new ContentType[] { fooType , barType }), typeService
 				.getContentTypes());
 
 		ContentTypeDefI def = typeService.getContentTypeDefinition(fooType);
-		assertEquals(
-				toSet(new String[] { "label", "date", "enum", "children" }),
+		assertEquals(TestUtils.toSet(new String[] { "label", "date", "enum", "children", "bar" }),
 				def.getAttributeNames());
 
 		AttributeDefI attrDef = def.getAttributeDef("label");
@@ -50,11 +48,14 @@ public class XmlTypeServiceTest extends TestCase {
 		assertEquals(2, enumValues.size());
 		assertEquals("ten", (String) enumValues.get(new Integer(10)));
 		assertEquals("twenty", (String) enumValues.get(new Integer(20)));
+		
+		
+                ContentTypeDefI barDef = typeService.getContentTypeDefinition(barType);
+                assertEquals(TestUtils.toSet(new String[] { "foo" }),
+                        barDef.getAttributeNames());
+		
 	}
 
-	private Set toSet(Object[] arr) {
-		return new HashSet(Arrays.asList(arr));
-	}
 	
 	public void testIdGeneration() {
 

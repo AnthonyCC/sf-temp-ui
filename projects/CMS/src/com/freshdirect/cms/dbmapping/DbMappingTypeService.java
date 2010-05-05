@@ -3,6 +3,8 @@ package com.freshdirect.cms.dbmapping;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -17,13 +19,15 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.application.service.BaseContentTypeService;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.cms.util.CollectionUtil;
 
 /**
  * Type service that automatically discovers definitions based on
  * JDBC metadata.
  */
-public class DbMappingTypeService implements ContentTypeServiceI {
+public class DbMappingTypeService extends BaseContentTypeService implements ContentTypeServiceI {
 
 	/** Map of {@link ContentType} -> {@link DbContentTypeDef} */
 	private final Map<ContentType,DbContentTypeDef> typeDefinitions = new HashMap<ContentType,DbContentTypeDef>();
@@ -110,16 +114,6 @@ public class DbMappingTypeService implements ContentTypeServiceI {
 
 	public ContentTypeDefI getContentTypeDefinition(ContentType type) {
 		return (ContentTypeDefI) typeDefinitions.get(type);
-	}
-
-	public String generateUniqueId(ContentType type) {
-		// read-only service: unsupported
-		return null;
-	}
-
-	public ContentKey generateUniqueContentKey(ContentType type) {
-		// read-only service: unsupported
-		return null;
 	}
 
 }

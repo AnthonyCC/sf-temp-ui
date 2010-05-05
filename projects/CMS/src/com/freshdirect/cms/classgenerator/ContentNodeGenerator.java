@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
@@ -35,9 +36,11 @@ import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.RelationshipI;
+import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 
-public class ContentNodeGenerator {
+public class ContentNodeGenerator implements NodeGeneratorI {
 
     private final static boolean DEBUG = false;
     private final static boolean UNSAFE = true;
@@ -81,10 +84,6 @@ public class ContentNodeGenerator {
     private ClassPool           pool;
     
     private String              packageName;
-
-    public ContentNodeGenerator(ContentTypeServiceI service) {
-        this(service,"");
-    }
     
     interface ClassInitializer { 
         void initClass (GeneratedContentNode instance, ContentType type);
@@ -200,6 +199,14 @@ public class ContentNodeGenerator {
     /**
      * 
      * @param service
+     */
+    public ContentNodeGenerator(ContentTypeServiceI service) {
+        this(service, "");
+    }
+
+    /**
+     * 
+     * @param service
      * @param prefix
      */
     public ContentNodeGenerator(ContentTypeServiceI service, String prefix) {
@@ -218,6 +225,7 @@ public class ContentNodeGenerator {
 
         try {
             fieldTypes.put(EnumAttributeType.STRING, pool.get("java.lang.String"));
+            fieldTypes.put(EnumAttributeType.LONG_TEXT, pool.get("java.lang.String"));
             fieldTypes.put(EnumAttributeType.BOOLEAN, pool.get("java.lang.Boolean"));
             fieldTypes.put(EnumAttributeType.INTEGER, pool.get("java.lang.Integer"));
             fieldTypes.put(EnumAttributeType.DOUBLE, pool.get("java.lang.Double"));
@@ -264,11 +272,10 @@ public class ContentNodeGenerator {
         }
     }
 
-    Map createAttributeMap(ContentTypeDefI def) {
-        Set attributeNames = def.getAttributeNames();
-        Map result = new TreeMap();
-        for (Iterator iter = attributeNames.iterator(); iter.hasNext();) {
-            String name = (String) iter.next();
+    Map<String, AttributeDefI> createAttributeMap(ContentTypeDefI def) {
+        Set<String> attributeNames = def.getAttributeNames();
+        Map<String, AttributeDefI> result = new TreeMap<String, AttributeDefI>();
+        for (String name : attributeNames) {
             AttributeDefI attributeDef = def.getAttributeDef(name);
             result.put(name, attributeDef);
         }
@@ -318,6 +325,8 @@ public class ContentNodeGenerator {
         String implementationClassName = getImplementationClassName(def.getType());
         ci.setImplementationName(implementationClassName);
         
+        boolean specialCopy = isSpecialCopyNeeded(def);
+        
         CtClass class1 = pool.get(implementationClassName);
         {
             // static Map<String,AttributeDef> attributeDefs;
@@ -326,10 +335,17 @@ public class ContentNodeGenerator {
             class1.addField(f);
         }
         {
-            CtField f = new CtField(pool.get(ContentNodeGenerator.class.getName()), "__nodeGenerator", class1);
+            CtField f = new CtField(pool.get(NodeGeneratorI.class.getName()), "__nodeGenerator", class1);
             f.setModifiers(f.getModifiers() | Modifier.STATIC);
             class1.addField(f);
         }
+        {
+            if (specialCopy) {
+                CtField f = new CtField(pool.get("boolean"), "__copy", class1);
+                class1.addField(f);
+            }
+        }
+        
         {
             // String getLabel()
             CtMethod method = CtNewMethod.make("public String getLabel() {\n" + "return com.freshdirect.cms.node.ContentNodeUtil.getLabel(this);\n" + "}",
@@ -358,7 +374,7 @@ public class ContentNodeGenerator {
             class1.addMethod(method);
         }
         {
-            CtMethod method = CtNewMethod.make("public void setContentNodeGenerator("+ContentNodeGenerator.class.getName()+" value) { \n"
+            CtMethod method = CtNewMethod.make("public void setContentNodeGenerator("+NodeGeneratorI.class.getName()+" value) { \n"
                     +" if ( "+implementationClassName + ".__nodeGenerator != null) { throw new RuntimeException(\"Node generator is already set!\"); }\n" 
                     + " " + implementationClassName + ".__nodeGenerator = value; "
                     + "}", class1);
@@ -413,11 +429,16 @@ public class ContentNodeGenerator {
             StringBuffer copy = new StringBuffer();
             copy.append("public com.freshdirect.cms.ContentNodeI copy() {\n ")
                 .append(implementationClassName).append(" result = new ").append(implementationClassName).append("();\n result.initAttributes();\n result.setKey(this.getKey()); \n");
+            if (specialCopy) {
+                copy.append(" result.__copy = true;\n");
+            }
             
             for (Iterator iter = attributeMap.keySet().iterator(); iter.hasNext();) {
                 String name = (String) iter.next();
                 AttributeDefI attributeDef = (AttributeDefI) attributeMap.get(name);
-                CtField field = createField(def.getType(), class1, attributeDef);
+                CtClass fieldType = getType(attributeDef);
+                String fieldName = getFieldName(attributeDef);
+                createField(def.getType(), class1, fieldType, fieldName, attributeDef);
 
                 String attributeFieldName = lazy ? getCreateAttribute(def.getType(), attributeDef) :  getAttributeFieldName(attributeDef);
                 if (!lazy) {
@@ -431,8 +452,8 @@ public class ContentNodeGenerator {
                 setAttributeValue.append(" case ").append(name.hashCode()).append(" : { \n");
                 if (UNSAFE) {
                     getAttribute.append("   return ").append(attributeFieldName).append(";\n  }\n");
-                    getAttributeValue.append("   return ").append(getReturnsAsObject(attributeDef)+ ";\n  }\n");
-                    setAttributeValue.append("   ").append(getFieldName(attributeDef) + " = " + getSetStatement(field.getType()) + " ;\n" +
+                    getAttributeValue.append("   return ").append(getReturnsAsObject(attributeDef)+ "\n  }\n");
+                    setAttributeValue.append("   ").append(getSetStatement(attributeDef, fieldName, fieldType)).append("\n" +
                     		"    return true;\n  }\n");
                 } else {
                     getAttribute.append(" if (\"").append(name).append("\".equals(name)) { \n" +
@@ -441,13 +462,12 @@ public class ContentNodeGenerator {
                     getAttribute.append("\n break; \n }\n");
                     
                     getAttributeValue.append(" if (\"").append(name).append("\".equals(name)) { \n" +
-                            "   return ").append(getReturnsAsObject(attributeDef)).append("; \n" +
+                            "   return ").append(getReturnsAsObject(attributeDef)).append(" \n" +
                                     "}");
                     getAttributeValue.append("\n break; \n }\n");
                     
                     setAttributeValue.append(" if (\"").append(name).append("\".equals(name)) { \n")
-                            .append("   ").append(getFieldName(attributeDef) + " = " + getSetStatement(field.getType()) + " \n    return true; \n" +
-                            "}");
+                            .append("   ").append(getSetStatement(attributeDef, fieldName, fieldType) + " \n    return true; \n}");
                     setAttributeValue.append("\n break; \n }\n");
                     
                 }
@@ -457,17 +477,20 @@ public class ContentNodeGenerator {
                     RelationshipDefI r = (RelationshipDefI) attributeDef;
                     if (r.isNavigable()) {
                         if (EnumCardinality.ONE==r.getCardinality()) {
-                            getChildKeys.append(" if (").append(field.getName()).append("!=null) { \n")
-                                .append("  result.add(").append(field.getName()).append("); \n }");
+                            getChildKeys.append(" if (").append(fieldName).append("!=null) { \n")
+                                .append("  result.add(").append(fieldName).append("); \n }");
                         } else {
-                            getChildKeys.append(" if (").append(field.getName()).append("!=null) { \n")
-                            .append("  result.addAll((java.util.Collection)").append(field.getName()).append("); \n }");
+                            getChildKeys.append(" if (").append(fieldName).append("!=null) { \n")
+                            .append("  result.addAll((java.util.Collection)").append(fieldName).append("); \n }");
                         }
                     }
                 }
-                String fieldName = getFieldName(attributeDef);
-                
-                copy.append(" result.").append(fieldName).append(" = ").append(createCopyStatement(fieldName, field, attributeDef)).append(";\n");
+                if (!(attributeDef instanceof BidirectionalRelationshipDefI)) { 
+                    copy.append(" result.").append(fieldName).append(" = ").append(createCopyStatement(fieldName, fieldType, attributeDef)).append(";\n");
+                } else {
+                    BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
+                    copy.append(" result.").append(fieldName).append(" = ").append(getReturnsAsObject(attributeDef)).append(";\n");
+                }
             }
 
             initAttributes.append(" }\n");
@@ -521,15 +544,22 @@ public class ContentNodeGenerator {
         return ci;
     }
 
-    private String createCopyStatement(String fieldName, CtField field, AttributeDefI attributeDef) {
-        try {
-            if (field.getType().getName().equals("java.util.List")) {
-                return "(this."+fieldName +" != null ? new java.util.ArrayList(this."+fieldName+") : null)";
+    private boolean isSpecialCopyNeeded(ContentTypeDefI def) {
+        for (AttributeDefI a : def.getSelfAttributeDefs()) {
+            if (a instanceof BidirectionalRelationshipDefI) {
+//                if (((BidirectionalRelationshipDefI)a).isWritableSide()) {
+                    return true;
+//                }
             }
-            return "this."+fieldName;
-        } catch (NotFoundException e) {
-            throw new ClassGeneratorException("NotFoundException " + e.getMessage(), e);
         }
+        return false;
+    }
+
+    private String createCopyStatement(String fieldName, CtClass type, AttributeDefI attributeDef) {
+        if (type.getName().equals("java.util.List")) {
+            return "(this." + fieldName + " != null ? new java.util.ArrayList(this." + fieldName + ") : null)";
+        }
+        return "this." + fieldName;
     }
 
     private void createPrefixSearchMethod(ContentTypeDefI def, CtClass class1, ClassInfo ci) throws CannotCompileException {
@@ -711,14 +741,15 @@ public class ContentNodeGenerator {
     }
     
     
-    private CtField createField(ContentType contentType, CtClass class1, AttributeDefI attributeDef) throws CannotCompileException, NotFoundException {
-        CtClass type = getType(attributeDef);
+    private void createField(ContentType contentType, CtClass class1, CtClass type, String fieldName, AttributeDefI attributeDef) throws CannotCompileException, NotFoundException {
         boolean debug = isDebugContentType(contentType);
         LOG.info("create field " + type.getName() + " : " + attributeDef.getName());
-        String fieldName = getFieldName(attributeDef);
-        CtField f = new CtField(type, fieldName, class1);
+        boolean skipFieldCreation = attributeDef instanceof BidirectionalRelationshipDefI;
+        {
+            CtField f = new CtField(type, fieldName, class1);
         
-        class1.addField(f);
+            class1.addField(f);
+        }
         
         {
             CtMethod method = CtNewMethod.make("public java.lang.Object getAttributeValue_"+attributeDef.getName()+"() { " +
@@ -733,21 +764,30 @@ public class ContentNodeGenerator {
                     "   System.out.println(\""+contentType.getName() + "." + attributeDef.getName()+"("+type.getName()+"):=\"+value + \"(\"+value.getClass().getName()+\")[\"+getKey()+\"]\");\n"+
                     " } ");
             }
-            //if (!attributeDef.isReadOnly()) {
-                buf.append(" this."+fieldName+ " = "+getSetStatement(type));
-            //}
+            buf.append(getSetStatement(attributeDef, fieldName, type));
             buf.append("}");
             
             class1.addMethod(CtNewMethod.make(buf.toString(), class1));
         }
+        
         CtClass attrClass = createAttributeClass( contentType, class1, attributeDef, type);
 
         if (!lazy) {
             CtField f2 = new CtField(attrClass, getAttributeFieldName(attributeDef), class1);
             class1.addField(f2);
         }
-        
-        return f;
+    }
+    
+    private String getSetStatement(AttributeDefI attributeDef, String fieldName, CtClass fieldType) throws NotFoundException {
+        if (attributeDef instanceof BidirectionalRelationshipDefI) {
+            BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
+            if (b.isWritableSide()) {
+                return "if (__copy) { \n" + fieldName+ " = " + getSetStatement(fieldType)+";\n } else {\n __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").addRelation(key, (com.freshdirect.cms.ContentKey) value); }";
+            }
+            return "";
+        } else {
+            return fieldName+ " = "+getSetStatement(fieldType)+';';
+        }
     }
 
     private boolean isDebugContentType(ContentType contentType) {
@@ -836,41 +876,22 @@ public class ContentNodeGenerator {
         
         return atClass;
     }
-    private String getReturnsAsObject(AttributeDefI attributeDef) {
-        if (attributeDef instanceof EnumDefI) {
-            EnumDefI ed = (EnumDefI) attributeDef;
-            return getReturnsAsObject(attributeDef, ed.getValueType());
-        }
-        return getReturnsAsObject(attributeDef, attributeDef.getAttributeType());
-    }
     
-    private String getReturnsAsObject(AttributeDefI attributeDef, EnumAttributeType type) {
-        /*if (type==EnumAttributeType.BOOLEAN) {
-            return "Boolean.valueOf("+getFieldName(attributeDef)+");";
-        } 
-        if (type==EnumAttributeType.INTEGER) {
-            // TODO: For Java 1.5 Integer.valueOf is preferred
-            return "new Integer("+getFieldName(attributeDef)+");";
+    private String getReturnsAsObject(AttributeDefI attributeDef) {
+        if (attributeDef instanceof BidirectionalRelationshipDefI) {
+            BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
+            if (b.isWritableSide()) {
+                return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").getReference(key);";
+            } else {
+                return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(com.freshdirect.cms.ContentType.get(\""+b.getOtherSide().getType().getName()+"\"), \"" + b.getOtherSide().getName() + "\").getInverseReference(key);";
+            }
         }
-        if (type==EnumAttributeType.DOUBLE) {
-            return "new Double("+getFieldName(attributeDef)+");";
-        }*/
         return getFieldName(attributeDef)+";";
     }
     
     
 
     private String getSetStatement(CtClass fieldType) {
-        /*if (type==EnumAttributeType.BOOLEAN) {
-            return "((Boolean)value).booleanValue();";
-        } 
-        if (type==EnumAttributeType.INTEGER) {
-            // TODO: For Java 1.5 Integer.valueOf is preferred
-            return "((Number)value).intValue();";
-        }
-        if (type==EnumAttributeType.DOUBLE) {
-            return "((Number)value).doubleValue();";
-        }*/
         return "("+fieldType.getName()+") value;";
     }
 
@@ -878,13 +899,7 @@ public class ContentNodeGenerator {
         CtClass type = (CtClass) fieldTypes.get(attributeDef.getAttributeType());
         if (type == null) {
             if (attributeDef instanceof RelationshipDefI) {
-                RelationshipDefI rd = (RelationshipDefI) attributeDef;
                 if (attributeDef.getCardinality() == EnumCardinality.ONE) {
-//                    if (rd.getContentTypes().size() == 1) {
-//                        ContentType ctype = (ContentType) rd.getContentTypes().iterator().next();
-//                        return pool.get(getImplementationClassName(ctype));
-//                    }
-//                    return pool.get(ContentNodeI.class.getName());
                     return pool.get(ContentKey.class.getName());
                 } else {
                     return pool.get("java.util.List");
@@ -913,8 +928,14 @@ public class ContentNodeGenerator {
         return typeService.getContentTypeDefinition(type);
     }
 
+    @Override
     public ContentTypeDefI getDefinition(String name) {
         return typeService.getContentTypeDefinition(ContentType.get(name));
+    }
+    
+    @Override
+    public BidirectionalReferenceHandler getReferenceHandler(ContentType type, String attributeName) {
+        return typeService.getReferenceHandler(type, attributeName);
     }
 
 }

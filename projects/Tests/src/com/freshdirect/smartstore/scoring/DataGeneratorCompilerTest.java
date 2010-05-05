@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +10,10 @@ import java.util.Set;
 
 import javax.naming.Context;
 
+import junit.framework.TestCase;
+
 import org.mockejb.MockContainer;
 import org.mockejb.interceptor.AspectSystem;
-
-import junit.framework.TestCase;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
@@ -24,6 +25,8 @@ import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModelImpl;
 import com.freshdirect.fdstore.content.SkuModel;
@@ -109,14 +112,19 @@ public class DataGeneratorCompilerTest extends TestCase {
                     return set;
                 }
                 if ("content3".equals(name)) {
+                    BrandModel b = new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand")); 
+                    BrandModel b2 = new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand2"));
+                    
                     set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e1"))
                         .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_01")))
                         .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "fru_01"))));
                     set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e2"))
                     .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "bela_02")))
-                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc"))));
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc"))).addBrand(b));
                     set.add(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "e3"))
-                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc_02"))));
+                    .addSku(new SkuModel(new ContentKey(FDContentTypes.SKU, "cucc_02")))
+                    .addBrand(b).addBrand(b2));
+                    
                     return set;
                 }
                 return null;
@@ -140,7 +148,7 @@ public class DataGeneratorCompilerTest extends TestCase {
             }
 
         };
-
+        ContentFactory.setInstance(new ContentFactory());
     }
 
     public void testSimpleCompilers() throws CompileException {
@@ -394,7 +402,7 @@ public class DataGeneratorCompilerTest extends TestCase {
         input.reset();
         List<ContentNodeModel> result = dataGenerator.generate(s, input);
         assertNotNull("result not null", result);
-        assertEquals("result length 2", 5, result.size());
+        assertEquals("result length 5", 5, result.size());
         Set<String> resultNodes = TestUtils.convertToStringList(result);
         assertTrue("e1", resultNodes.contains("e1"));
         assertTrue("e2", resultNodes.contains("e2"));
@@ -411,10 +419,40 @@ public class DataGeneratorCompilerTest extends TestCase {
         assertNotNull("dataGenerator", dataGenerator);
 
         DataGenerator dataGenerator2 = comp.createDataGenerator("recCall2", "RecursiveNodes(explicitList)");
-        assertNotNull("dataGenerator", dataGenerator);
-        
-        
+        assertNotNull("dataGenerator", dataGenerator2);
     }
     
+    @SuppressWarnings("unchecked")
+    public void testBrandFilterCall() throws CompileException {
+        DataGenerator dataGenerator = comp.createDataGenerator("brandFilter", "content3:matchBrand(\"brand\")");
+        System.out.println(dataGenerator + " ->\n" + dataGenerator.getGeneratedCode());
+        assertNotNull("dataGenerator", dataGenerator);
+        input.reset();
+        {
+            List<ContentNodeModel> result = dataGenerator.generate(s, input);
+            assertNotNull("result not null", result);
+            assertEquals("result length 2", 2, result.size());
+            Set<String> resultNodes = TestUtils.convertToStringList(result);
+            assertTrue("e2", resultNodes.contains("e2"));
+            assertTrue("e3", resultNodes.contains("e3"));
+        }
+        
+
+        DataGenerator dataGenerator2 = comp.createDataGenerator("brandFilter2", "content3:matchBrand(explicitList)");
+        assertNotNull("dataGenerator", dataGenerator2);
+        input.reset();
+        
+        final List<ContentNodeModel> asList = (List) Arrays.asList(new MockProductModel(new ContentKey(FDContentTypes.PRODUCT, "ize")), new BrandModel(new ContentKey(FDContentTypes.BRAND, "brand2")));
+        s.setExplicitList(asList); 
+        {
+            List<ContentNodeModel> result = dataGenerator2.generate(s, input);
+            s.setExplicitList(null);
+            assertNotNull("result not null", result);
+            assertEquals("result length 1", 1, result.size());
+            Set<String> resultNodes = TestUtils.convertToStringList(result);
+            assertTrue("e3", resultNodes.contains("e3"));
+        }
+
+    }
     
 }

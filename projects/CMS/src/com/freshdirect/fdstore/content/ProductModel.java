@@ -167,11 +167,11 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
                     }
                 }
                 
-                if (!model1.isDisplayable() && model2.isDisplayable()) {
+                if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
                 	return 1;
                 }
                 
-                if (model1.isDisplayable() && !model2.isDisplayable()) {
+                if (model1.isFullyAvailable() && !model2.isFullyAvailable()) {
                 	return -1;
                 }
                 
@@ -299,7 +299,13 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getSeafoodOrigin();
 	
-        public boolean isDisplayable();
+        public boolean isFullyAvailable();
+        
+        /**
+         * The product is temporary unavailable or available.
+         * @return
+         */
+        public boolean isTemporaryUnavailableOrAvailable();
 
         public boolean isDisplayableBasedOnCms();
 	
@@ -342,7 +348,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 */
 	public Image getAlternateProductImage();
 	
-	public boolean hideIphone();
+	public boolean isHideIphone();
 	
 	
 	/**
@@ -678,11 +684,11 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public List getNewWineType();
 	
-	public List getWineVarietal();
+	public List<DomainValue> getWineVarietal();
 	
 	public List getWineVintage();
 	
-	public List getNewWineRegion();
+	public List<DomainValue> getNewWineRegion();
 	
 	public List getWineRating1();
 	

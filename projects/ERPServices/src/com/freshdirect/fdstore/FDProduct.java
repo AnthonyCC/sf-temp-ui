@@ -8,7 +8,6 @@
  */
 package com.freshdirect.fdstore;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -34,6 +33,7 @@ import com.freshdirect.erp.EnumAlcoholicContent;
  * @author $Author$
  */
 public class FDProduct extends FDSku implements AttributesI {
+	private static final long serialVersionUID = -6190779000162681376L;
 
 	private final Date pricingDate;
 
@@ -57,7 +57,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	private final FDMaterial material;
 
 	/** nutrition. List<FDNutrition> */
-	private final ArrayList nutrition;
+	private final List<FDNutrition> nutrition;
 
 	private FDSalesUnit[] displaySalesUnits;
 	
@@ -71,7 +71,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		FDVariation[] variations,
 		FDSalesUnit[] salesUnits,
 		Pricing pricing,
-		ArrayList nutrition) {
+		List<FDNutrition> nutrition) {
 		super(skuCode, version);
 		this.pricingDate = pricingDate;
 		this.material = material;
@@ -91,7 +91,7 @@ public class FDProduct extends FDSku implements AttributesI {
 			FDVariation[] variations,
 			FDSalesUnit[] salesUnits,
 			Pricing pricing,
-			ArrayList nutrition,
+			List<FDNutrition> nutrition,
 			FDSalesUnit[] displaySalesUnits) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
@@ -155,7 +155,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		FDConfiguration ret = null;
 		
 		if (isSoldBySalesUnit) {
-			ret = new FDConfiguration(quantity, salesUnits[0].getName(), Collections.EMPTY_MAP);
+			ret = new FDConfiguration(quantity, salesUnits[0].getName(), Collections.<String,String>emptyMap());
 		} else {
 			ret = new FDConfiguration(quantity,
 				getDefaultSalesUnit().getName() /* salesUnits[0].getName() */,
@@ -173,8 +173,8 @@ public class FDProduct extends FDSku implements AttributesI {
 	 *  @return an options map reflecting the first variation options.
 	 *  @see #getAutoconfiguration
 	 */
-	private Map getOptions() {
-		Map options = new HashMap();
+	private Map<String,String> getOptions() {
+		Map<String,String> options = new HashMap<String,String>();
 		
 		for (int i = 0; i < variations.length; i++) {
 			FDVariation         variation = variations[i];
@@ -329,7 +329,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		return new FDKosherInfo(kSym, kTyp, kPrd, kPri);
 	}
 
-	public ArrayList getNutrition() {
+	public List<FDNutrition> getNutrition() {
 		return this.nutrition;
 	}
 
@@ -337,8 +337,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		if (nutrition.size() == 0)
 			return false;
 		boolean result = false;
-		for (java.util.Iterator nIter = nutrition.iterator(); nIter.hasNext();) {
-			FDNutrition nutr = (FDNutrition) nIter.next();
+		for (FDNutrition nutr : nutrition) {
 			if (nutr.getName().equals("Ignore"))
 				return false;
 			if (nutr.getValue() != 0)

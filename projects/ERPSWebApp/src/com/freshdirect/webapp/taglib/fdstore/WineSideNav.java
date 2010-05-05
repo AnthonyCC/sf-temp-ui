@@ -3,7 +3,6 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,14 +13,12 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.content.ArticleMedia;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumShowChildrenType;
@@ -29,37 +26,19 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
- * TODO: refactor the code, to extend the SideNav instead of duplicate everything !
  * @author zsombor
  *
  */
-public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport {
+public class WineSideNav extends BaseSideNav {
 
-	private final static Category LOGGER = LoggerFactory.getInstance( WineSideNav.class );
+	private final static Logger LOGGER = LoggerFactory.getInstance( WineSideNav.class );
 
-	private static final int COMPARE_PRIORITY = 1;
-	private static final int COMPARE_NAME = 2;
-	private final static Comparator NAV_NAME_COMPARATOR = new NavigationSorter(COMPARE_NAME);
-	private final static Comparator NAV_PRIORITY_COMPARATOR = new NavigationSorter(COMPARE_PRIORITY);
 	
-	private boolean startFromDept = false;
-	private String catId;
-	private String navListName;
 	private String childCatMapName;
 	private String showMoreOptionsName;
-	private String unavailableListName;
-	private String topCategoryName;
-    private boolean returnEmptyFolders=false;
-    private Map childCatMap=new HashMap();
-	private boolean sortByPriority = false;
+	private Map<String, List<CategoryModel>> childCatMap=new HashMap<String, List<CategoryModel>>();
 	
-	/** List of the resulting NavigationElement objects */
-	private List navList = new ArrayList();
-	
-	/** List of ProductNavigationElement objects, that are temporarily unavailable */
-	private List unavailableList = new ArrayList();
-
-	private Boolean showMoreOptions=new Boolean(false);
+	private Boolean showMoreOptions=Boolean.FALSE;
 	
 	private boolean moreOptions=false;
 	
@@ -70,251 +49,109 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
 	public void setMoreOptions(boolean flag) {
 		this.moreOptions=flag;
 	}
-	
-    public void setReturnEmptyFolders(boolean flag) {
-       this.returnEmptyFolders=flag;
-    }
-        
-	public void setCatId(String catId) {
-		this.catId = catId;
-	}
-
-	public void setNavList(String navList) {
-		this.navListName = navList;
-	}
 
 	public void setChildCatMap(String childCatMap) {
 		this.childCatMapName = childCatMap;
 	}
-	public void setUnavailableList(String unavList) {
-		this.unavailableListName = unavList;	
-	}
-
-	public void setTopCategory(String topCategory) {
-		this.topCategoryName = topCategory;	
-	}
-
-	public void setStartFromDept(boolean flag){
-		this.startFromDept = flag;
-	}
-
-	public void setSortByPriority(boolean flag) {
-		this.sortByPriority = flag;	
-	}
-
 	
-	private static class NavigationSorter implements Comparator {
-		private int compareBy;
+    /**
+     * @param folder
+     * @param topCategory
+     * @throws FDResourceException
+     */
+    @Override
+    protected void startRecursiveWalking(CategoryModel folder, CategoryModel topCategory) throws FDResourceException {
+        // watch out, it's got a funky beat
+        if (startFromDept) {
+            this.fillFolderInfo(true, 0, folder.getDepartment(), /* folder.getDepartment() */folder);
+        } else {
+            this.fillFolderInfo(true, 0, topCategory, folder);
+        }
 
-    	public NavigationSorter(int compareBy) {
-    		this.compareBy = compareBy;
-    	}
+        // Collections.sort(this.navList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
+        // Collections.sort(this.unavailableList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
+    }	
+	
+    /**
+     * @param depth
+     * @param currentFolder
+     * @param showProducts
+     * @param isDept
+     * @param indent
+     * @param p
+     * @throws FDResourceException
+     */
+    @Override
+    protected void fillProducts(int depth, CategoryModel currentFolder, boolean showProducts, int indent, ProductCounts p) throws FDResourceException {
+        String _catId = ((CategoryModel) currentFolder).getContentKey().getId();
 
-    	public int compare(Object o1, Object o2) {
-    		NavigationElement n1 = (NavigationElement) o1;
-    		NavigationElement n2 = (NavigationElement) o2;
-
-    		String n1Path = n1.getSortString();
-    		String n2Path = n2.getSortString();
-    		int pathCompare = n1Path.compareTo(n2Path);
-    		if (pathCompare != 0) return pathCompare;
-
-			switch (compareBy) {
-				case COMPARE_PRIORITY:
-					int priorityDifference = n1.getPriority() - n2.getPriority();
-					if (priorityDifference != 0) return priorityDifference;
-					//Fall through
-				case COMPARE_NAME:
-					int comp = n1.getDisplayString().compareTo(n2.getDisplayString());
-					if(comp == 0) {
-						comp = n1.getContentName().compareTo(n2.getContentName());
-					}
-					return comp;
-				default:
-					return 0;
-			}
-    	}
-    }
-
-	/**
-	 * Fill up this.navList and this.unavailableList.
-	 *
-	 * @return topmost category
-	 */ 
-	private CategoryModel fillFolderInfo(CategoryModel folder) throws FDResourceException {
-		// find the topmost category (one below dept, in path)
-		ContentNodeModel topNode = null;
-		ContentNodeModel tempNode = folder;
-		
-		while (!(tempNode instanceof DepartmentModel)) {
-			topNode = tempNode;
-			//LOGGER.debug(" tempNode: "+tempNode.getPK());
-			tempNode = tempNode.getParentNode();
-		}
-		CategoryModel topCategory = (CategoryModel)topNode;
-		
-		// watch out, it's got a funky beat
-		if (startFromDept) {
-			this.fillFolderInfo(true, 0, folder.getDepartment(), /*folder.getDepartment()*/folder);
-		} else {
-			this.fillFolderInfo(true, 0, topCategory, folder);
-		}
-		
-		//Collections.sort(this.navList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
-		//Collections.sort(this.unavailableList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
-		
-		if (topCategory==null) {
-			return folder ;
-		} else {
-			return topCategory;
-		}
-	}
-
-	/**
-	 * Recursive method for filling up folder info.
-	 * Adds elements to this.navList and this.unavailableList.
-	 * 
-	 * @param firstIteration must be true on first call, will be false on recursion
-	 * @param depth current display depth, starting with zero
-	 * @param f current category (start recursion with topmost category)
-	 * @param displayedFolder the folder the 
-	 */
-    private void fillFolderInfo(boolean firstIteration, int depth, ContentNodeModel f, ContentNodeModel displayedFolder) throws FDResourceException {
-
-
-		boolean showFolders = false;
-		boolean showProducts = false;
-		boolean isDept = ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(f.getContentType());
-
-		EnumShowChildrenType sc =isDept ? EnumShowChildrenType.ALWAYS_FOLDERS : ((CategoryModel)f).getSideNavShowChildren();
-		if (EnumShowChildrenType.BROWSE_PATH.equals(sc)) {
-			//Only show, if f is one of the parents of displayedFolder
-			ContentNodeModel tempNode = displayedFolder;
-			while (tempNode!=null) {
-				if ( f.getContentName().equals(tempNode.getContentName()) ) {
-					showFolders = true;
-					showProducts = true;
-					break;
-				}
-				tempNode = tempNode.getParentNode();
-			}
-		} else if (EnumShowChildrenType.ALWAYS_FOLDERS.equals(sc)) {
-			showFolders = true;
-		} else if (EnumShowChildrenType.ALWAYS.equals(sc)) {
-			showFolders = true;
-			showProducts = true;
-		}
-
-		int indent = 0;
-		if (!isDept && !firstIteration && ((CategoryModel)f).getSideNavShowSelf() ) {
-			indent++;
-			this.navList.add( new FolderNavigationElement(depth, (CategoryModel)f, showFolders || showProducts) );
-		}
-
-        // get any articles from the article attribute
-	List articles = (f instanceof CategoryModel) ? ((CategoryModel)f).getArticles() : null;
-        if (articles != null) {
-            int articleIdx = 0;
-            for (Iterator ai = articles.iterator(); ai.hasNext();) {
-                this.navList.add(new ArticleNavigationElement(depth + indent, (ArticleMedia) ai.next(), articleIdx, f));
-                articleIdx++;
+        if (catId.equals(_catId)) {
+            if (childCatMap.containsKey(catId)) {
+                childCatMap.remove(catId);
+            } else if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(currentFolder.getParentNode().getParentNode().getContentType())) {
+                childCatMap.remove(currentFolder.getParentNode().getContentName());
+            }
+            List sideNavDomainVals = new ArrayList();
+            List<DomainValue> sideNavUsableDomainVals = new ArrayList<DomainValue>();
+            List<DomainNavigationElement> domainNavElem = new ArrayList<DomainNavigationElement>();
+            sideNavDomainVals = getSideNavDomainValues((CategoryModel) currentFolder);
+            Collection<ProductModel> products = ((CategoryModel) currentFolder).getProducts();
+            p.prodCount = products.size();
+            p.displayableProds = p.prodCount;
+            boolean hasDomainVals = false;
+            if (sideNavDomainVals != null && sideNavDomainVals.size() > 0) {
+                hasDomainVals = true;
+            }
+            for (Iterator<ProductModel> i = products.iterator(); i.hasNext();) {
+                ProductModel prod = i.next();
+                if (prod.isDiscontinued() || prod.isInvisible()) {
+                    p.displayableProds--; // ok..decrement now
+                    continue;
+                }
+                List<DomainValue> prodDomainValue = new ArrayList<DomainValue>();
+                if (showProducts && hasDomainVals) {// Category has filter by
+                                                    // (wine region and wine
+                                                    // varietal) domain.
+                    prodDomainValue = prod.getNewWineRegion();
+                    prodDomainValue.addAll(prod.getWineVarietal());
+                    if (prodDomainValue != null && prodDomainValue.size() > 0) {
+                        for (int j = 0; j < prodDomainValue.size(); j++) {
+                            DomainValue dValue = (DomainValue) prodDomainValue.get(j);
+                            if (sideNavDomainVals.contains(dValue) && !sideNavUsableDomainVals.contains(dValue)) {
+                                sideNavUsableDomainVals.add(dValue);
+                                domainNavElem.add(new DomainNavigationElement(depth + indent, (CategoryModel) currentFolder, false, dValue, moreOptions));
+                                // this.navList.add(new
+                                // DomainNavigationElement(depth+indent,
+                                // (CategoryModel) f, isDept,dValue ));
+                            }
+                        }
+                    }
+                }
+                if (prod.isUnavailable()) {
+                    if (showProducts) {
+                        p.displayableProds--; // decrement if we would have
+                                              // displayed this prod
+                        this.unavailableList.add(new ProductNavigationElement(1, prod));
+                    }
+                } else if (showProducts && !hasDomainVals) {
+                    this.navList.add(new ProductNavigationElement(depth + indent, prod));
+                }
+            }
+            if (showProducts && hasDomainVals) {
+                Collections.sort(domainNavElem, NAV_NAME_COMPARATOR);
+                this.navList.addAll(domainNavElem);
+            }
+        } else if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(currentFolder.getParentNode().getContentType())) {
+            if (EnumShowChildrenType.ALWAYS.equals(((CategoryModel) currentFolder).getShowChildren())) {
+                List<CategoryModel> childCategories = ((CategoryModel) currentFolder).getSubcategories();
+                if (!childCatMap.containsKey(((CategoryModel) currentFolder).getContentName())) {
+                    childCatMap.put(((CategoryModel) currentFolder).getContentName(), childCategories);
+                }
             }
         }
-		
-		int displayableProds = 0;  // count number of displayed products instead
-		int prodCount=0;
-		
-        if (!isDept) {        
-        	String _catId=((CategoryModel)f).getContentKey().getId();
-        	
-        	if(catId.equals(_catId)) {
-        		if(childCatMap.containsKey(catId)) {
-        			childCatMap.remove(catId);
-        		}
-        		else if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(f.getParentNode().getParentNode().getContentType())) {
-        			childCatMap.remove(f.getParentNode().getContentName());
-        		}
-        		List sideNavDomainVals=new ArrayList();
-        		List sideNavUsableDomainVals=new ArrayList();
-        		List domainNavElem=new ArrayList();
-        		sideNavDomainVals=getSideNavDomainValues((CategoryModel)f);
-        		Collection products = ((CategoryModel)f).getProducts();
-        		prodCount = products.size();
-        		displayableProds = prodCount;
-        		boolean hasDomainVals=false;
-        		if(sideNavDomainVals!=null && sideNavDomainVals.size()>0) {
-        			hasDomainVals=true;   
-        		}
-                for (Iterator i = products.iterator(); i.hasNext();) {
-                	ProductModel prod = (ProductModel) i.next();
-                	if (prod.isDiscontinued() || prod.isInvisible()) {
-                		displayableProds--; //ok..decrement now
-                	    continue;
-                	}
-                	List prodDomainValue=new ArrayList();
-                	if(showProducts && hasDomainVals) {// Category has filter by (wine region and wine varietal) domain.
-                		prodDomainValue=prod.getNewWineRegion();
-                		prodDomainValue.addAll(prod.getWineVarietal());
-                    	if(prodDomainValue!=null && prodDomainValue.size()>0) {
-                    		for (int j=0;j<prodDomainValue.size();j++) {
-                    			DomainValue dValue=(DomainValue)prodDomainValue.get(j);
-                    			if(sideNavDomainVals.contains(dValue) && !sideNavUsableDomainVals.contains(dValue)) { 
-                    				sideNavUsableDomainVals.add(dValue);
-                    				domainNavElem.add(new DomainNavigationElement(depth+indent, (CategoryModel) f, isDept,dValue,moreOptions ));
-                    				//this.navList.add(new DomainNavigationElement(depth+indent, (CategoryModel) f, isDept,dValue ));
-                    			}
-                    		}
-            			}
-                	}
-                	if (prod.isUnavailable()) {
-    					if (showProducts ) {
-    	                    displayableProds--;  //decrement if we would have displayed this prod
-    						this.unavailableList.add(new ProductNavigationElement(1, prod));
-    					}
-    				} else if (showProducts && !hasDomainVals) {
-    					this.navList.add(new ProductNavigationElement(depth + indent, prod));
-    				}
-                }
-                if(showProducts && hasDomainVals) {
-                	Collections.sort(domainNavElem, NAV_NAME_COMPARATOR);
-                	this.navList.addAll(domainNavElem);
-                }
-			}
-        	else if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(f.getParentNode().getContentType())){
-        		if(EnumShowChildrenType.ALWAYS.equals(((CategoryModel)f).getShowChildren())) {
-            		List childCategories=((CategoryModel)f).getSubcategories();
-            		if(!childCatMap.containsKey(((CategoryModel)f).getContentName())) {
-            			childCatMap.put(((CategoryModel)f).getContentName(), childCategories);
-            		}
-        		}
-        	}
-	    }
-        
-		boolean childrenRendered = false;
-		if (showFolders) {
-		//LOGGER.debug("..in logic for showFolders");
-            long lastNavListSize = this.navList.size();
-			Iterator catItr = isDept ? ((DepartmentModel)f).getCategories().iterator()  : ((CategoryModel)f).getSubcategories().iterator();                    
-			for (;catItr.hasNext();) {
-				// recursion here
-				this.fillFolderInfo(
-					false,
-					depth + indent,
-					(CategoryModel) catItr.next(),
-					displayedFolder);
-			}
-			childrenRendered = lastNavListSize != this.navList.size();
-		}
+    }
 
-		if (!returnEmptyFolders && !childrenRendered && displayableProds == 0 && prodCount>0) {
-			if (!isDept && !firstIteration && ((CategoryModel)f).getSideNavShowSelf()) {
-				this.navList.remove(navList.size() - 1);
-			}
-		}
-	}
-
-
-    private List getSideNavDomainValues(CategoryModel model) {
+    private List<DomainValue> getSideNavDomainValues(CategoryModel model) {
     	
     	/*List domainValues=new ArrayList();
     	domainValues=model.getWineSideNavSections();
@@ -328,36 +165,34 @@ public class WineSideNav extends com.freshdirect.framework.webapp.BodyTagSupport
     	}
 		return domainValues;
 		*/
-    	List domainValues=new ArrayList();
-    	if(moreOptions) {
-        	domainValues=model.getWineSideNavFullList();
-        	if(domainValues!=null && domainValues.size()>0) {
-        		Domain dName=(Domain)domainValues.get(0);
-        		domainValues=dName.getDomainValues();
-        		showMoreOptions=new Boolean(false);
-        	}
-    	}
-    	else {
-    		domainValues=model.getWineSideNavSections();
-    		if(domainValues!=null && domainValues.size()==0) {
-        		
-            	domainValues=model.getWineSideNavFullList();
-            	if(domainValues!=null && domainValues.size()>0) {
-            		Domain dName=(Domain)domainValues.get(0);
-            		domainValues=dName.getDomainValues();
-            		showMoreOptions=new Boolean(false);
-            	}
-        	}
-    		else {
-    			List _dVal=model.getWineSideNavFullList();
-    			if(_dVal!=null && _dVal.size()>0) {
-    				showMoreOptions=new Boolean(true);
-    			}
-    		}
-    	}
-    	return domainValues;
-    	
-	}
+        List<DomainValue> domainValues = new ArrayList<DomainValue>();
+        if (moreOptions) {
+            List<Domain> domains = model.getWineSideNavFullList();
+            if (domains != null && domains.size() > 0) {
+                Domain dName = domains.get(0);
+                domainValues = dName.getDomainValues();
+                showMoreOptions = Boolean.FALSE;
+            }
+        } else {
+            domainValues = model.getWineSideNavSections();
+            if (domainValues != null && domainValues.size() == 0) {
+
+                List<Domain> domains = model.getWineSideNavFullList();
+                if (domains != null && domains.size() > 0) {
+                    Domain dName = domains.get(0);
+                    domainValues = dName.getDomainValues();
+                    showMoreOptions = Boolean.FALSE;
+                }
+            } else {
+                List<Domain> _dVal = model.getWineSideNavFullList();
+                if (_dVal != null && _dVal.size() > 0) {
+                    showMoreOptions = Boolean.TRUE;
+                }
+            }
+        }
+        return domainValues;
+
+    }
 
 	public int doStartTag() throws JspException {
 

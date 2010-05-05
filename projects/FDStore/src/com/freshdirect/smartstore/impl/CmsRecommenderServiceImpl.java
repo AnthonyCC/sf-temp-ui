@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.smartstore.CmsRecommenderService;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -25,9 +25,9 @@ public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 	private static final long serialVersionUID = 7555105742910594364L;
 
 	@Override
-	public List<String> recommendNodes(String recommenderId, String categoryId, String zoneId) {
+	public List<String> recommendNodes(ContentKey recommenderId, ContentKey categoryId, String zoneId) {
 		// TODO handle zoneId
-		ContentNodeModel node = ContentFactory.getInstance().getContentNode(
+		ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(
 				recommenderId);
 		if (node instanceof Recommender) {
 			Recommender recommenderNode = (Recommender) node;
@@ -36,9 +36,9 @@ public class CmsRecommenderServiceImpl implements CmsRecommenderService {
 				return Collections.emptyList();
 			RecommendationService recommender = CmsRecommenderRegistry
 					.getInstance().getService(
-							recommenderNode.getStrategy().getContentName());
+							strategy.getContentName());
 			if (recommender != null) {
-				node = ContentFactory.getInstance().getContentNode(categoryId);
+				node = ContentFactory.getInstance().getContentNodeByKey(categoryId);
 				CategoryModel category = null;
 				if (node instanceof CategoryModel)
 					category = (CategoryModel) node;

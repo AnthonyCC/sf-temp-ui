@@ -40,7 +40,8 @@ public class XmlToDbContentTypeDefTest extends DbTestCaseSupport {
 		
 		xmlDataDefPath = ResourceUtil.readResource(XML_DATA_DEF_RESOURCE);
 		dbDataDef = xslTransformer.transform(xmlDataDefPath, XSLT_RESOURCE);
-		executeSqlScript(dbDataDef);
+		System.out.println(dbDataDef);
+		//executeSqlScript(dbDataDef);
 	}
 
 	protected String getSchema() {

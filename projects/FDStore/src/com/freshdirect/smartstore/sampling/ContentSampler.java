@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.scoring.HelperFunctions;
 
@@ -38,17 +39,15 @@ public class ContentSampler {
 			if (item instanceof RankedContent.Aggregate) {
 				RankedContent.Aggregate aggregateItem = (RankedContent.Aggregate) item;
 				aggregateItem.filterWith(filter);
-				if (aggregateItem.getCount() == 0)
+				if (aggregateItem.getCount() == 0) {
 					continue;
-				else
+				} else {
 					total += aggregateItem.getCount();
+				}
 			} else { // Single
-				final RankedContent.Single single = (RankedContent.Single) item;
-                                final ContentKey replacedKey = filter.filter(single.getContentKey());
-                                if (replacedKey == null) {
-					continue;
-                                } else {
-                                    single.setModel(HelperFunctions.getContentNodeModelOrLookup(replacedKey, single.getModel()));
+				final RankedContent.Single singleItem = (RankedContent.Single) item;
+                                if (!singleItem.filter(filter)) {
+                                    continue;
                                 }
 				total++;
 			}

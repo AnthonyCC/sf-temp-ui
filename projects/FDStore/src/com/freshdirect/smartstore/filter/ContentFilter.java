@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.filter;
 
-import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+
 
 /**
  * Filtering predicate for product models
@@ -11,7 +12,7 @@ public abstract class ContentFilter {
 	protected ContentFilter() {
 	}
 
-    public abstract ContentKey filter(ContentKey key);
+    public abstract <X extends ContentNodeModel> X filter(X key);
     
     public void reset() {
     }

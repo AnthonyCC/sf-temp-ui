@@ -98,6 +98,9 @@
  		<p>
 		<span class="bull">&bull;</span> <a href="../search/compare.jsp"><span>Search Compare Page</span></a>
 		</p>
+ 		<p>
+		<span class="bull">&bull;</span> <a href="../search/category_scoring.jsp"><span>Search Category Scoring</span></a>
+		</p>
     	
     </div>
 </body>

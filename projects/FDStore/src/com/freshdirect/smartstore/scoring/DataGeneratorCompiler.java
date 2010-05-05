@@ -1,6 +1,7 @@
 package com.freshdirect.smartstore.scoring;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,6 +52,13 @@ public class DataGeneratorCompiler extends CompilerBase {
     private static final String CURRENT_PRODUCT = "currentProduct";
     private static final String CURRENT_NODE = "currentNode"; // alias to currentProduct (which is not necessarily a product)
 
+
+    private final static Collection<String> GLOBAL_VARIABLES = new HashSet<String>(); 
+    {
+        GLOBAL_VARIABLES.add(CURRENT_NODE);
+        GLOBAL_VARIABLES.add(CURRENT_PRODUCT);
+        GLOBAL_VARIABLES.add(EXPLICIT_LIST);
+    }
     
     private static final String ITERATION_VARIABLE = "obj";
     
@@ -317,6 +325,24 @@ public class DataGeneratorCompiler extends CompilerBase {
         }
     }
     
+    private class MatchBrandFilter extends NodeFunction {
+        public MatchBrandFilter () {
+            super(1, 1, Expression.RET_INT);
+        }
+
+        @Override
+        public String toJavaCode(FunctionCall call, List<Expression> parameters) throws CompileException {
+            String tempVariable = call.getContext().createTempVariable(call);
+            return "HelperFunctions.matchBrand("+ITERATION_VARIABLE+","+tempVariable+")";
+        }
+
+        @Override
+        public String getPreparingCode(FunctionCall call, List<Expression> parameters) throws CompileException {
+            String tempVariable = call.getContext().createTempVariable(call);
+            return "  "+ NODE_TYPE + ' '+ tempVariable + " = HelperFunctions.findBrand("+createScriptConvertToSet( parameters.get(0))+");\n"; 
+        }
+    }
+    
     /**
      * Create a java fragment which converts the given expression to an expression which returns a content node.
      * 
@@ -335,7 +361,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     }
 
     /**
-     * Create a java fragment which converts the given expression to an expression which returns a set of content nodes.
+     * Create a java fragment which converts the given expression to an expression which returns a set of content nodes or an unique node.
      * 
      * @param param
      * @return
@@ -354,6 +380,13 @@ public class DataGeneratorCompiler extends CompilerBase {
         throw new CompileException(CompileException.TYPE_ERROR, "Node or string parameter expected (" + param + ")!");
     }
     
+    /**
+     * Create a java fragment which converts the given expression to an expression which returns a set of content nodes.
+     * 
+     * @param param
+     * @return
+     * @throws CompileException if the given expression expression type is not a string or a node or a set of content nodes. 
+     */
     static String createScriptConvertToSet(Expression param) throws CompileException {
         if (param.getReturnType() == Expression.RET_NODE) {
             return "HelperFunctions.toList((" + NODE_TYPE + ")" + param.toJavaCode() + ")";
@@ -510,6 +543,7 @@ public class DataGeneratorCompiler extends CompilerBase {
             }
         });        
         parser.getContext().addFunctionDef("matchSkuPrefix", new SkuPrefixFilter());
+        parser.getContext().addFunctionDef("matchBrand", new MatchBrandFilter());
         
         Set<String> personalizedRecommenders = ExternalRecommenderRegistry.getRegisteredRecommenders(ExternalRecommenderType.PERSONALIZED);
         for (String providerName : personalizedRecommenders) {
@@ -671,6 +705,9 @@ public class DataGeneratorCompiler extends CompilerBase {
         buffer.append("\n  return ").append(oc.tempVariableName).append(";\n");
         buffer.append("}");
         try {
+            CtMethod method = createReturningStringMethod(class1, "getGeneratedCode", buffer.toString());
+            class1.addMethod(method);
+            
             return CtNewMethod.make(buffer.toString(), class1);
         } catch (CannotCompileException e) {
             throw new CompileException("Compiling "+ast.toCode()+", generated code:"+buffer.toString()+", error:"+e.getMessage(), e);
@@ -820,7 +857,7 @@ public class DataGeneratorCompiler extends CompilerBase {
         
         VariableCollector vc = new VariableCollector();
         xpr.visit(null, vc);
-        
+        vc.getVariables().removeAll(GLOBAL_VARIABLES);
         boolean constantExpression = vc.getVariables().isEmpty();
         if (!constantExpression) {
             buffer.append("  ").append(arrayName).append(" = new String[] {\n");

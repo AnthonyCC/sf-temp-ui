@@ -111,7 +111,7 @@ ContentNodeModel lastSubCategory = null;
 			<%
 				String aka = pi.getProductModel().getAka() != null && !pi.getProductModel().getAka().equals("") ? "(" + pi.getProductModel().getAka() + ")" : "";
 				String actionURI = FDURLUtil.getProductURI(pi.getProductModel(), trk, (isYourFave ? "fave" : nav.getSortByName()), rank);
-				if (pi.getProductModel().isDisplayable()) {
+				if (pi.getProductModel().isFullyAvailable()) {
 			%>
 					<display:ProductName product="<%= productNode %>" action="<%= actionURI %>" showNew="true" />
 					<%=aka %>
@@ -123,7 +123,7 @@ ContentNodeModel lastSubCategory = null;
 			<%
 				}
 			%>
-			<span style="color: <%=pi.getProductModel().isDisplayable() ? "black" : "#999999" %>">
+			<span style="color: <%=pi.getProductModel().isFullyAvailable() ? "black" : "#999999" %>">
 			<% if (pi.getConfigurationDescription() != null && pi.getConfigurationDescription() != "") {%>
 				(<%= pi.getConfigurationDescription() %>)
 			<% }

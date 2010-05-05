@@ -45,9 +45,25 @@ public abstract class RankedContent implements Comparable<RankedContent> {
 			this.model = model;
 		}
 		
-		public void setModel(ContentNodeModel model) {
-                    this.id = model.getContentKey();
-                    this.model = model;
+
+		void setModel(ContentNodeModel m) {
+                    this.id = m.getContentKey();
+                    this.model = m;
+                }
+		
+		/**
+		 * Filter the internal product node with the given filter.
+		 * @param filter
+		 * @return
+		 */
+		public boolean filter(ContentFilter filter) {
+		    ContentNodeModel newModel = filter.filter(getModel());
+		    if (newModel != null) {
+		        setModel(newModel);
+		        return true;
+		    } else {
+		        return false;
+		    }
 		}
 
 		public double getScore() {
@@ -76,11 +92,13 @@ public abstract class RankedContent implements Comparable<RankedContent> {
 			return id.toString() + ' ' + score;
 		}
 
-		public ContentNodeModel getModel() {
-			if (model == null)
-				model = ContentFactory.getInstance().getContentNode(id.getId());
-			return model;
-		}
+                public ContentNodeModel getModel() {
+                    if (model == null) {
+                        model = ContentFactory.getInstance().getContentNodeByKey(id);
+                    }
+                    return model;
+                }
+
 	};
 
 	/**
@@ -131,10 +149,14 @@ public abstract class RankedContent implements Comparable<RankedContent> {
 		public void filterWith(ContentFilter filter) {
 			for (Iterator<Single> i = items.iterator(); i.hasNext();) {
 				Single stored = i.next();
-				if (filter.filter(stored.getContentKey()) == null) {
-					totalScore -= stored.getScore();
-					i.remove();
-				}
+                                if (!stored.filter(filter)) {
+                                    totalScore -= stored.getScore();
+                                    i.remove();
+                                }
+//                                if (filter.filter(stored.getModel()) == null) {
+//                                    totalScore -= stored.getScore();
+//                                    i.remove();
+//                            }
 			}
 		}
 

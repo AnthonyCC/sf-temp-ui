@@ -183,6 +183,33 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
     public final Html getMediaContent() {
         return FDAttributeFactory.constructHtml(this, "MEDIA_CONTENT");
     }
+    
+    /**
+     * Inheritable attribute, defined in Category
+     * @return
+     */
+    public final boolean isHideInactiveSideNav() {
+        return getAttribute("HIDE_INACTIVE_SIDE_NAV", false);
+    }
+    
+    
+    /**
+     * Inheritable attribute, defined in Category
+     * @return
+     */
+    public final boolean getSideNavShowSelf() {
+        return getAttribute("SIDENAV_SHOWSELF", false);
+    }
+
+    /**
+     * Inheritable attribute, defined in Category
+     * @return
+     */
+    public EnumShowChildrenType getSideNavShowChildren() {
+        return EnumShowChildrenType.getShowChildrenType(getAttribute("SIDENAV_SHOWCHILDREN", EnumShowChildrenType.ALWAYS_FOLDERS
+                .getId()));
+    }
+    
 
     public int getColumnNum() {
         return getAttribute("COLUMN_NUM", 1);

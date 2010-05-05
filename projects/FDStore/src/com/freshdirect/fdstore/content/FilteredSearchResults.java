@@ -233,7 +233,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 	}
 	
     public void sortProductsBy(SearchSortType code, boolean inverse) {
-        List<ContentNodeModel> products = getProducts();
+        List<ProductModel> products = getProducts();
         currentComparator = getComparator(code, inverse, products);
         Collections.sort(products, currentComparator);
     }
@@ -257,7 +257,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     }
 
     @SuppressWarnings("unchecked")
-	private Comparator<ContentNodeModel> getComparator(SearchSortType sort, boolean inverse, List<ContentNodeModel> products) {
+	private Comparator<ContentNodeModel> getComparator(SearchSortType sort, boolean inverse, List<ProductModel> products) {
         Comparator<ContentNodeModel> c = null;
         
         if (sort == null)
@@ -422,12 +422,24 @@ public class FilteredSearchResults extends SearchResults implements Serializable
      * @param model
      * @return
      */
-    public int getCategoryScore(ProductModel model) {
+    public int getTermScore(ProductModel model) {
         if (currentComparator instanceof RelevancyComparator) {
             return ((RelevancyComparator)currentComparator).getTermScore(model);
         }
         return -1;  
     }
+    /**
+     * Just for testing ...
+     * @param model
+     * @return
+     */
+    public Integer getCategoryScore(ProductModel model) {
+        if (currentComparator instanceof RelevancyComparator) {
+            return ((RelevancyComparator)currentComparator).getCategoryScore(model);
+        }
+        return null;  
+    }
+    
 
     /**
      * Just for testing ...

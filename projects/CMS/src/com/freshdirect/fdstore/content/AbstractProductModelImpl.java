@@ -173,10 +173,34 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
             }
         }	
 	
-	
+        
+        public boolean isFullyAvailable() {
+            return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
+        }
+        
+	/**
+	 * Better name would be : 'IsAvailable'.
+	 */
 	public boolean isDisplayable() {
-		return !(isHidden() || isDiscontinued() || isUnavailable() || isOrphan() || isInvisible());
+		return isFullyAvailable();
 	}
+	
+	/**
+	 * temporary unavailable = unavailable but not discontinued and not hidden and not discontinued and not orphan and not invisible 
+	 * @return
+	 */
+	public boolean isTemporaryUnavailable() {
+            return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
+	}
+	
+	/**
+	 * The product is temporary unavailable or available.
+	 * @return
+	 */
+	public boolean isTemporaryUnavailableOrAvailable() {
+	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued());
+	}
+	
 	
     public boolean isDisplayableBasedOnCms() {        
         return !(isHidden() ||  isOrphan() || isInvisible());
@@ -411,7 +435,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 
 	@Override
-	public boolean hideIphone() {
+	public boolean isHideIphone() {
 	    return getAttribute("HIDE_IPHONE", false);
 	}
 }

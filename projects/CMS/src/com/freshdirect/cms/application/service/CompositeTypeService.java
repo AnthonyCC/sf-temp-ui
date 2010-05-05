@@ -16,6 +16,7 @@ import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.meta.AttributeDef;
 import com.freshdirect.cms.meta.ContentTypeDef;
+import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -104,6 +105,26 @@ public class CompositeTypeService implements ContentTypeServiceI {
 		
 		return id == null ? null
 				          : new ContentKey(type, id);
+	}
+	
+	@Override
+	public BidirectionalReferenceHandler getReferenceHandler(ContentType type, String attribute) {
+	    for (ContentTypeServiceI serv : contentTypeServices) {
+                BidirectionalReferenceHandler handler = serv.getReferenceHandler(type, attribute);
+                if (handler != null) {
+                    return handler;
+                }
+            }
+	    return null;
+	}
+	
+	@Override
+	public Collection<BidirectionalReferenceHandler> getAllReferenceHandler() {
+	    Set<BidirectionalReferenceHandler> handlers = new HashSet<BidirectionalReferenceHandler> ();
+            for (ContentTypeServiceI serv : contentTypeServices) {
+                handlers.addAll(serv.getAllReferenceHandler());
+            }
+	    return handlers;
 	}
 
 }

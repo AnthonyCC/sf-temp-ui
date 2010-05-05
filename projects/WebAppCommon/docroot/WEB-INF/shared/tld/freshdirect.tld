@@ -3843,7 +3843,17 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
-	
+	<tag>
+		<name>ProducerList</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.ProducerListTag</tagclass>
+ 		<teiclass>com.freshdirect.webapp.taglib.fdstore.ProducerListTag$TagEI</teiclass>
+ 		<bodycontent>JSP</bodycontent>
+ 		<attribute>
+ 			<name>id</name>
+ 			<required>true</required>
+ 			<rtexprvalue>false</rtexprvalue>
+ 		</attribute>
+	</tag>	
 	<tag>
 		<name>SmartSavingsUpdate</name>
 		<tagclass>com.freshdirect.webapp.taglib.fdstore.SmartSavingsUpdateTag</tagclass>
