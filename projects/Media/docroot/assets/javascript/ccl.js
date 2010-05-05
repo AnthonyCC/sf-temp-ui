@@ -2057,6 +2057,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
                         qarr.push('productId=' + escape(it.productID));
                         qarr.push('ccListId=' + escape(this.listId));
                         qarr.push('lineId=' + escape(it.lineID));
+                        qarr.push('qcType=' + escape(self.the_list_type));
                         if (it.recipeSourceId) qarr.push('recipeId=' + escape(it.recipeSourceId));
 
                         flattenHash(it.configuration, qarr);
