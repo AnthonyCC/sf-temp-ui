@@ -100,7 +100,7 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 				}
 				
 				String[] selectedZones = request.getParameterValues("selectedZones");
-				if(null == selectedZones || selectedZones.length>0){
+				if(null == selectedZones || selectedZones.length==0){
 					actionResult.addError(true, "noSelectedZones", "Please select atleast one Delivery Zone.");
 				}
 				/*if(null != selectedZones && selectedZones.length>0){
