@@ -67,24 +67,23 @@
 	<%
 	//FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	//--------OAS Page Variables-----------------------
-        request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
-        request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
+	request.setAttribute("sitePage", "www.freshdirect.com/quickshop");
+	request.setAttribute("listPos", "QSBottom,SystemMessage,LittleRandy,QSTopRight");
 	String custFirstName = user.getFirstName();
 	int firstNameLength = custFirstName.length();
 	int firstNameLastIndex = firstNameLength - 1;
-	String ccListIdVal = request.getParameter(CclUtils.CC_LIST_ID);        
+	String ccListIdVal = request.getParameter(CclUtils.CC_LIST_ID);   
 	String orderId = ccListIdVal;
-        String lineId = request.getParameter("lineId");
+	String lineId = request.getParameter("lineId");
 
 	String actionName = request.getParameter("fdAction");
 	String listName = null;
-    int listSize=0;    
-	for(Iterator I = lists.iterator(); I.hasNext(); ) {
-		FDCustomerListInfo list = (FDCustomerListInfo)I.next();
+	int listSize=0;    
+	for ( FDCustomerListInfo list : lists ) {
 		if (list.getId().equals(ccListIdVal)) {
-	      listName = list.getName();          
-              listSize = list.getCount();
-	      break;
+			listName = list.getName();          
+			listSize = list.getCount();
+			break;
 	   }
 	}
     
@@ -99,7 +98,7 @@
 
 <fd:QuickShopController id="quickCart" ccListId="<%= ccListIdVal %>" action="<%= actionName %>">
 <%	
-        String qsPage = "shop_from_list.jsp"; 
+	String qsPage = "shop_from_list.jsp"; 
 	String qsDeptId = null;
 	boolean hasDeptId = false;
 %>
