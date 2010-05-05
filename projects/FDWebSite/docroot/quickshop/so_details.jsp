@@ -50,11 +50,11 @@
 		<tmpl:put name='content' direct='true'>
 		<div id="inner-container" style="width: 100%">
 			<div style="padding-top: 1em; overflow: hidden;">
-				<div class="title18" style="float: left; width: 100%"><%= so.getCustomerListName() %><div class="text12" style="float: right;">
+				<div class="title18" style="float: left; width: 100%"><span style="float: left;"><%= so.getCustomerListName() %></span><div class="text12" style="float: right;">
 					<a href="/unsupported.jsp" onclick="FormChangeUtil.checkSignature('qs_cart',false); return CCL.rename_so_list('<%= StringUtil.escapeHTML(StringUtil.escapeJavaScript(so.getCustomerListName()))%>', this);">RENAME</a>
 				</div></div>
 			</div>
-			<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
+			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			<% if ( so.isError() ) { %>
 				<!-- error display -->
 				<div style="text-align: center; font-weight: bold; margin-top: 1em; color: #CC3300;">
@@ -75,7 +75,7 @@
 					<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
 				</div>
 			<% } %>
-			<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
+			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			
 			<!-- details -->
 			<table id="so-details" style="border: 0; width: 100%">
@@ -92,7 +92,7 @@
 					</td>
 					<td style="vertical-align: top">
 						<div class="title12">Need to make changes?</div>
-						<ul style="margin: 0 0">
+						<ul style="margin-top: 0; margin-bottom: 0; margin-right 0; list-style: disc;">
 							<li><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Change the schedule or options for all future deliveries.</a></li>
 							<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.shift_so_delivery('<%= so.getId() %>', '<%= nextDlvDateText %>', this); return false;">Skip an upcoming delivery ...</a></li><% } %>
 							<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.change_so_frequency('<%= so.getId() %>', <%= so.getFrequency() %>, '<%= nextDlvDateText %>', this); return false;">Change the frequency of deliveries.</a></li><% } %>
@@ -102,7 +102,7 @@
 				</tr>
 			</table>
 			
-			<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
+			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			<div class="text16" style="font-weight: bold; color: #996699">
 				You can change the items in <% if ( so.isError() ) { %> future deliveries <% } else { %>all deliveries starting <%= nextDlvDateText %> <% } %>by editing this shopping list. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a>
 			</div>
