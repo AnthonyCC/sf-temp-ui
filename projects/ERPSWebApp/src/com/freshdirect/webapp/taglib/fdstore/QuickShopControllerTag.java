@@ -150,17 +150,21 @@ public class QuickShopControllerTag extends com.freshdirect.framework.webapp.Bod
 						quickCart.setUserZoneId(user.getPricingZoneId());
 						quickCart.setName(FDListManager.getListName(user.getIdentity(), ccListId));
 
-					
-						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);					
-						List<FDCustomerListItem> cclLines = ccList.getLineItems();	
-					
-						// convert the line items into  FDProductSelectionI and clean them as needed
-						if(cclLines!=null){
-							List<FDProductSelectionI> productSelections = OrderLineUtil.getValidProductSelectionsFromCCLItems(cclLines);
-							//List cartLines = OrderLineUtil.update(productSelections);
-							quickCart.setProducts(productSelections);
+						FDCustomerCreatedList ccList = FDListManager.getCustomerCreatedList(user.getIdentity(), this.ccListId);
+						
+						if ( ccList != null ) {
+							List<FDCustomerListItem> cclLines = ccList.getLineItems();	
+						
+							// convert the line items into  FDProductSelectionI and clean them as needed
+							if ( cclLines != null ) {
+								List<FDProductSelectionI> productSelections = OrderLineUtil.getValidProductSelectionsFromCCLItems( cclLines );
+								// List cartLines = OrderLineUtil.update(productSelections);
+								quickCart.setProducts( productSelections );
+							}
+							QuickCartCache.cacheInstance(session, quickCart);
+						} else {
+							LOGGER.warn( "ccListId was null or invalid!" );
 						}
-						QuickCartCache.cacheInstance(session, quickCart);
 					}
 					
 					// used by ad_server.jsp
