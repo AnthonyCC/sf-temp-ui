@@ -30,7 +30,12 @@ public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
                 result.add(p);
             }
         }
-        return result;
+        if (result.size()==0) {
+            // returning null will results in SKIP_BODY
+            return null;
+        } else {
+            return result;
+        }
     }
     
     

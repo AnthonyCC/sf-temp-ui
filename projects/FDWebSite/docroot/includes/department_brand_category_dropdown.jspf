@@ -1,5 +1,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<fd:ProducerList id="producers">
 <div class="brandSelectorDropdown">
 	<script type="text/javascript">
 		function producerChanged() {
@@ -14,11 +15,10 @@
 	<form id="producerDropdown" action="category.jsp" method="get">
 		<select id="producerDropdown_catId" name="catId" onchange="producerChanged()">
 			<option value="">CHOOSE A FARM/BRAND:</option>
-		<fd:ProducerList id="producers">
 			<logic:iterate collection="<%=producers %>" id="producer" type="com.freshdirect.fdstore.content.ProducerModel">
 				<option value="<%= producer.getBrandCategory().getContentName() %>"><%= producer.getFullName() %></option> 
 			</logic:iterate>
-		</fd:ProducerList>
 		</select>
 	</form>
 </div>
+</fd:ProducerList>
