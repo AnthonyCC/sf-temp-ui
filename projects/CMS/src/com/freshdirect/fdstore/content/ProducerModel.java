@@ -61,5 +61,44 @@ public class ProducerModel extends ContentNodeModelImpl {
         CategoryModel brandCategory = getBrandCategory();
         return brandCategory != null && brandCategory.isActive();
     }
+
+
+    public static class Geolocation {
+    	public double lat; // latitude
+    	public double lng;	// longitude
+    	
+    	public Geolocation(double lat, double lng) {
+    		this.lat = lat;
+    		this.lng = lng;
+    	}
+    	
+    	public static Geolocation parse(String address) {
+        	if (address == null || "".equals(address))
+        		return null;
+        	
+        	String[] coords = address.split(",");
+        	if (coords.length != 2)
+        		return null;
+        	
+        	try {
+	        	double lat = Double.parseDouble(coords[0]);
+	        	double lng = Double.parseDouble(coords[1]);
+        	
+	        	if (Double.NaN == lat || Double.NaN == lng)
+	        		return null;
+	        	
+	        	return new Geolocation(lat, lng);
+        	} catch(NumberFormatException exc) {
+        		return null;
+        	}
+    	}
+    }
+
+    public boolean isAddressGeolocation() {
+    	return Geolocation.parse(getLocation()) != null;
+    }
     
+    public Geolocation getGeolocation() {
+    	return Geolocation.parse(getLocation());
+    }
 }

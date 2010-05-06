@@ -26,7 +26,7 @@
 	// sort out bad producers
 	for (ContentKey k : keys) {
 		ProducerModel p = (ProducerModel) ContentFactory.getInstance().getContentNode(k.getType(), k.getId());
-		if (p.getLocation() != null) {
+		if (p.isAddressGeolocation()) {
 			prods.add(p);
 		}
 	}
@@ -43,8 +43,9 @@
 	var FD_ICON = new GIcon(G_DEFAULT_ICON);
 	FD_ICON.image = 'http://www.google.com/mapfiles/marker.png';
 
-    // initialize map
-    function initialize() {
+
+	// initialize map
+	function initialize() {
 		if (GBrowserIsCompatible()) {
 			var map = new GMap2(document.getElementById("map_canvas"));
 			map.setCenter(new GLatLng(41.75902,-72.625122), 8);
@@ -60,43 +61,40 @@
 
 			// put markers
 			var boundz = new GLatLngBounds();
-			var n_producers = <%= prods.size() %>;
+
+			var point, ic, marker;
+
 <%
 	for (ProducerModel p : prods) {
-%>
-			geocoder.getLatLng('<%= StringEscapeUtils.escapeJavaScript(p.getLocation()) %>', function(point) {
-				n_producers--;
-				if (point) {
-					boundz.extend(point);
+		ProducerModel.Geolocation loc = p.getGeolocation();
+		if (loc != null) {
+%>			// '<%= p.getFullName() %>'
+			point = new GLatLng(<%= loc.lat %>, <%= loc.lng %>);
+			boundz.extend(point);
 
 <%		if (p.getProducerType().getIconImage() != null) {
-%>					var ic = new GIcon(G_DEFAULT_ICON);
-					ic.image = '<%= StringEscapeUtils.escapeJavaScript( p.getProducerType().getIconImage().getPath())  %>';
+%>			ic = new GIcon(G_DEFAULT_ICON);
+			ic.image = '<%= StringEscapeUtils.escapeJavaScript( p.getProducerType().getIconImage().getPath())  %>';
+			marker = new GMarker(point, { icon: ic });
 <%
 		} else {
-%>					var ic = FD_ICON;
+%>			marker = new GMarker(point, { icon: FD_ICON });
 <%
 		}
-%>					var marker = new GMarker(point, { icon: ic });
-	
-					GEvent.addListener(marker, "click", function() {
-						var kontent = document.getElementById('prod-<%= p.getContentKey().getId() %>');
-						marker.openInfoWindowHtml(kontent.innerHTML);
-					});
-	
-					map.addOverlay(marker);
-
-				}
-
-				// fit all markers
-				if (n_producers == 0) {
-					map.setZoom(map.getBoundsZoomLevel(boundz));
-					map.setCenter(boundz.getCenter());
-				}
+%>			GEvent.addListener(marker, "click", function() {
+				var kontent = document.getElementById('prod-<%= p.getContentKey().getId() %>');
+				this.openInfoWindowHtml(kontent.innerHTML);
 			});
+
+			map.addOverlay(marker);
+
 <%
+		}
 	}
 %>
+			// fit all markers
+			map.setZoom(map.getBoundsZoomLevel(boundz));
+			map.setCenter(boundz.getCenter());
 
 		}
     }
