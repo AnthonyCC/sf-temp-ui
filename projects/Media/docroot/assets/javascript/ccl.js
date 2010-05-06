@@ -57,7 +57,7 @@ var CCLLinkTargets = new CCLLinkTargetsClass();
 CCLLinkTargets.targets = {
     visitLists      : "/quickshop/all_lists.jsp",
     visitThisList   : "/quickshop/shop_from_list.jsp",
-    visitThisSOList : "/quickshop/so_list.jsp",
+    visitThisSOList : "/quickshop/so_details.jsp",
     selection_check : "/api/check_selection.jsp",
     goToQS          : "/quickshop/index.jsp",
     modifyItem      : "/quickshop/ccl_item_modify.jsp"
