@@ -237,17 +237,17 @@ function selectZones(){
 	 	
 	 	%>
 	 	<% if(i%2==0){ %>
-	 	<td align="center" style="background-color: #999999;"><%= wkName %></td>
+	 	<td align="center" style="background-color: #999999;"><b><%= wkName %></b></td>
 	 	<% } else { %>
-	 	<td align="center" style="background-color: #CCCCCC;"><%= wkName %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"><b><%= wkName %></b></td>
 	 	<% } %>
 	 	<% } %>
 	 	<% String wkName = weekNames[0].name();%>
-	 	<td align="center" style="background-color: #CCCCCC;"><%= wkName %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"><b><%= wkName %></b></td>
 	 </tr>
 	 <tr>
 	 <% String[] timings = CrmClick2CallTimeModel.TIMINGS; %>
-	 	<td align="center">Start</td>
+	 	<td align="center"><b>Start</b></td>
 	 	<% if(false==edit){ %>
 	 	<td align="center" style="background-color: #CCCCCC;"><%= timings[Integer.parseInt(click2CallModel.getDays()[1].getStartTime())] %></td>
 	 	<td align="center" style="background-color: #999999;"><%= timings[Integer.parseInt(click2CallModel.getDays()[2].getStartTime())] %></td>
@@ -297,7 +297,7 @@ function selectZones(){
 	 </tr>
 	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td></tr>
 	 <tr>
-	 	<td align="center">End</td>
+	 	<td align="center"><b>End</b></td>
 	 	<% if( false==edit){ %>
 	 	<td align="center" style="background-color: #CCCCCC;"><%= timings[Integer.parseInt(click2CallModel.getDays()[1].getEndTime())] %></td>
 	 	<td align="center" style="background-color: #999999;"><%= timings[Integer.parseInt(click2CallModel.getDays()[2].getEndTime())] %></td>
@@ -354,15 +354,15 @@ function selectZones(){
 	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td>
 	 	</tr>
 	 <tr>
-	 	<td align="center">Show</td>
+	 	<td align="center"><b>Show</b></td>
 	 	<% if( false==edit){ %>
-	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[1].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[2].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[3].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[4].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[5].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[6].isShow()?"Enabled":" " %></td>
-	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[0].isShow()?"Enabled":" " %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[1].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[2].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[3].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[4].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[5].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #999999;"> <%= click2CallModel.getDays()[6].isShow()?"Yes":"No" %></td>
+	 	<td align="center" style="background-color: #CCCCCC;"> <%= click2CallModel.getDays()[0].isShow()?"Yes":"No" %></td>
 	 	<% }else{ %>
 	 	<td align="center" style="background-color: #CCCCCC;"><input type="checkbox" name="monShow" id="monShow" <%= click2CallModel.getDays()[1].isShow()?"checked":" " %>/></td>
 	 	<td align="center" style="background-color: #999999;"><input type="checkbox" name="tueShow" id="tueShow" <%= click2CallModel.getDays()[2].isShow()?"checked":" " %>/></td>
