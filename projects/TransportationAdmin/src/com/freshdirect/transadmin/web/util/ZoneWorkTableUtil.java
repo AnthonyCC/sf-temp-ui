@@ -13,7 +13,10 @@ public class ZoneWorkTableUtil {
 		
 //		Map refData = new HashMap();
 		String expansionData=TransportationAdminProperties.getZoneExpansionTables();
-		String[] worktableData=expansionData.split("\\,");
+		String[] worktableData=null;
+		if(expansionData!=null){
+			worktableData=expansionData.split("\\,");
+		}
 		for (int i = 0; i < worktableData.length; i++) {
 			String workTable=worktableData[i].trim();
 			String[] regionData = workTable.split("\\=");
