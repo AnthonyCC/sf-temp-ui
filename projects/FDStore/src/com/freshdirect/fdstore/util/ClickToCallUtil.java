@@ -84,6 +84,10 @@ public class ClickToCallUtil {
 					if(null !=dlvZones && dlvZones.length > 0){
 						AddressModel address = user.getShoppingCart().getDeliveryAddress();
 						try {
+							if(null == address){
+								String addrId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
+								address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
+							}
 							DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
 							if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
 								List dlvZonesList =Arrays.asList(dlvZones);
@@ -95,8 +99,9 @@ public class ClickToCallUtil {
 //									displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
 								}
 							}
+							
 						} catch (FDInvalidAddressException e) {
-							throw new FDResourceException(e);
+//							throw new FDResourceException(e);
 						}
 					}
 				}
@@ -185,7 +190,10 @@ public class ClickToCallUtil {
 				Calendar begCal = Calendar.getInstance();
 				begCal.add(Calendar.DATE, 1);
 				begCal = DateUtil.truncate(begCal);
-				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), begCal.getTime(), (ContactAddressModel)address);
+				Calendar endCal = Calendar.getInstance();
+				endCal.add(Calendar.DATE, 2);
+				endCal = DateUtil.truncate(endCal);
+				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), (ContactAddressModel)address);
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}
