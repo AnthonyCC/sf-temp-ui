@@ -334,7 +334,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		    +" (select name from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as name,"
 		    +" (select geoloc from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as geoloc,"
 		    +" (select zone_code from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as zone_code,"
-		    +" (select region_data_id from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as region_data_id,"  
+		    +"  XYZ,"  
             +" (select plan_id from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as plan_id,"
 		    +" (select ct_active from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_active,"
 		    +" (select ct_release_time from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_release_time"
@@ -362,7 +362,10 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 		});
 		
+		String maxId= (String)result.get(0);
 		String secondMaxId=(String)result.get(1);
+		
+		INSERT_REMAINING_ZONES=INSERT_REMAINING_ZONES.replace("XYZ", maxId);
 		
 		this.jdbcTemplate.update(INSERT_REMAINING_ZONES, new Object[]{zoneCode, secondMaxId});
 		
