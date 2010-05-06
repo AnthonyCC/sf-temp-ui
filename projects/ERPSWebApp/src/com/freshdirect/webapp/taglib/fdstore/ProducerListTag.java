@@ -12,25 +12,30 @@ import com.freshdirect.fdstore.content.ProducerModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
-
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
+    boolean needsValidGeolocation = false;
+    boolean skipBodyOnEmptyResult = true;
 
+    public void setNeedsValidGeolocation(boolean needsValidGeolocation) {
+		this.needsValidGeolocation = needsValidGeolocation;
+	}
+
+    public void setSkipBodyOnEmptyResult(boolean skipBodyOnEmptyResult) {
+		this.skipBodyOnEmptyResult = skipBodyOnEmptyResult;
+	}
+    
     @Override
     protected List<ProducerModel> getResult() throws Exception {
         Set<ContentKey> contentKeysByType = CmsManager.getInstance().getContentKeysByType(FDContentTypes.PRODUCER);
         List<ProducerModel> result = new ArrayList<ProducerModel>(contentKeysByType.size());
         for (ContentKey key : contentKeysByType) {
             ProducerModel p = (ProducerModel) ContentFactory.getInstance().getContentNodeByKey(key);
-            if (p.isActive()) {
-//                if (p.getBrandCategory() != null) {
+            if (p.isActive() && (!needsValidGeolocation || p.isAddressGeolocation())) {
                 result.add(p);
             }
         }
-        if (result.size()==0) {
+        if (skipBodyOnEmptyResult && result.size()==0) {
             // returning null will results in SKIP_BODY
             return null;
         } else {
@@ -43,7 +48,7 @@ public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
 
         @Override
         protected String getResultType() {
-            return "java.util.List";
+            return "java.util.List<com.freshdirect.fdstore.content.ProducerModel>";
         }
         
     }

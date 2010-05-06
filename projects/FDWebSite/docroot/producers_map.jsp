@@ -1,43 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
-<%@page import="com.freshdirect.cms.ContentType"%>
-<%@page import="com.freshdirect.cms.ContentKey"%>
-<%@page import="java.util.Set"%>
-<%@page import="com.freshdirect.cms.application.CmsManager"%>
-<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
-<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
-<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
-<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="java.util.Set"%>
+<%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus />
 <%
-	// prepare data
-	CmsManager mgr = CmsManager.getInstance();
-	final Set<ContentKey> keys = mgr.getContentKeysByType(ContentType.get("Producer"));
-
-	List<ProducerModel> prods = new ArrayList<ProducerModel>();
-	
-	// sort out bad producers
-	for (ContentKey k : keys) {
-		ProducerModel p = (ProducerModel) ContentFactory.getInstance().getContentNode(k.getType(), k.getId());
-		if (p.isAddressGeolocation()) {
-			prods.add(p);
-		}
-	}
-
 	final BrowserInfo bi = new BrowserInfo(request);
-	
-%><tmpl:insert template='/common/template/gmap_nav.jsp'>
+%><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
+<tmpl:insert template='/common/template/gmap_nav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
 	<tmpl:put name='title' direct='true'>FreshDirect - What's Local</tmpl:put>
 	<%-- SCRIPTS IN HEADER --%>
 	<tmpl:put name='head_content'>
+
 <script type="text/javascript">
 	// define default FD marker icon
 	var FD_ICON = new GIcon(G_DEFAULT_ICON);
@@ -65,7 +48,7 @@
 			var point, ic, marker;
 
 <%
-	for (ProducerModel p : prods) {
+	for (ProducerModel p : prodz) {
 		ProducerModel.Geolocation loc = p.getGeolocation();
 		if (loc != null) {
 %>			// '<%= p.getFullName() %>'
@@ -99,6 +82,7 @@
 		}
     }
 </script>
+
 	</tmpl:put>
 	<%-- CONTENT --%>
 	<tmpl:put name='content' direct='true'>
@@ -118,7 +102,7 @@
 	</div>
 <div id="les_bubbles" style="display: none">
 <%
-	for (ProducerModel p : prods) {
+	for (ProducerModel p : prodz) {
 %>
 	<div id="prod-<%= p.getContentKey().getId() %>">
 		<div class="title12" style="text-align: left"><%= p.getFullName() %></div>
@@ -164,3 +148,4 @@
 	
 	</tmpl:put>
 </tmpl:insert>
+</fd:ProducerList>
