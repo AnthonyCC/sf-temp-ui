@@ -69,26 +69,27 @@ public class ContentChangeTrackerService extends ProxyContentService {
                                     
                                     BidirectionalReferenceHandler handler = getProxiedService().getTypeService().getReferenceHandler(definition.getType(), name);
                                     ContentKey key = handler.getInverseReference(refs);
-                                    
-                                    ContentNodeChange nodeChange = new ContentNodeChange();
-                                    nodeChange.setChangeType(EnumContentNodeChangeType.MODIFY);
-                                    nodeChange.setContentKey(key);
-                                    nodeChange.addDetail(new ChangeDetail(name, refs.toString(), null));
-                                    
-                                    extraChanges.add(nodeChange);
+                                    if (key != null && !node.getKey().equals(key)) {
+                                        ContentNodeChange nodeChange = new ContentNodeChange();
+                                        nodeChange.setChangeType(EnumContentNodeChangeType.MODIFY);
+                                        nodeChange.setContentKey(key);
+                                        nodeChange.addDetail(new ChangeDetail(name, refs.toString(), null));
+                                        
+                                        extraChanges.add(nodeChange);
+                                    }
                                 }
                             }
 			}
 		}
 
-		Map oldNodes = super.getContentNodes(keys);
+		Map oldNodes = getProxiedService().getContentNodes(keys);
 
 		ChangeSet changeSet = createChangeSet(request, oldNodes);
 		for (ContentNodeChange c : extraChanges) {
 		    changeSet.addChange(c);
 		}
 
-		CmsResponseI response = super.handle(request);
+		CmsResponseI response = getProxiedService().handle(request);
 
 		if (changeSet.getNodeChanges().size() > 0) {
 			PrimaryKey changeSetId = changeLogservice.storeChangeSet(changeSet);
