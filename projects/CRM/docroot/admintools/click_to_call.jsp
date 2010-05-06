@@ -434,19 +434,19 @@ function selectZones(){
 	    	<tr><td >&nbsp;</td><td colspan="7"><b>Selected segments</b></td></tr>
 	    	<tr><td colspan="8">&nbsp;<br/></td></tr>
 	    	<% if(eligibleList.contains("ct_dp")||eligibleList.contains("ct_ndp")){ %>
-	    	<tr><td colspan="2">&nbsp;</td><td colspan="6">Chef's Table</td></tr>
+	    	<tr><td colspan="2">&nbsp;</td><td colspan="6"><b>Chef's Table</b></td></tr>
 	    		<%if(eligibleList.contains("ct_dp")){ %>
-	    		<tr><td colspan="2">&nbsp;</td><td colspan="6">Delivery Pass</td></tr>
+	    		<tr><td colspan="2">&nbsp;&nbsp;&nbsp;</td><td colspan="6">Delivery Pass</td></tr>
 	    	   	<% } if(eligibleList.contains("ct_ndp")){ %>
-	    		<tr><td colspan="2">&nbsp;</td><td colspan="6">No Delivery Pass</td></tr>
+	    		<tr><td colspan="2">&nbsp;&nbsp;&nbsp;</td><td colspan="6">No Delivery Pass</td></tr>
 	    		<% } %>
 	    	<% } %>
 	    	<% if(eligibleList.contains("nct_dp")||eligibleList.contains("nct_ndp")){ %>
-	    	<tr><td colspan="2">&nbsp;</td><td colspan="6">Non Chef's Table</td></tr>
+	    	<tr><td colspan="2">&nbsp;</td><td colspan="6"><b>Non Chef's Table</b></td></tr>
 	    		<%if(eligibleList.contains("nct_dp")){ %>
-	    		<tr><td colspan="2">&nbsp;</td><td colspan="6">Delivery Pass</td></tr>
+	    		<tr><td colspan="2">&nbsp;&nbsp;&nbsp;</td><td colspan="6">Delivery Pass</td></tr>
 	    	   	<% } if(eligibleList.contains("nct_ndp")){ %>
-	    		<tr><td colspan="2">&nbsp;</td><td colspan="6">No Delivery Pass</td></tr>
+	    		<tr><td colspan="2">&nbsp;&nbsp;&nbsp;</td><td colspan="6">No Delivery Pass</td></tr>
 	    		<% } %>
 	    	<% } %>
 	    <% } %>
