@@ -40,7 +40,7 @@
 
 				 var deliveryFee = document.getElementById('deliveryFee').value;
 
-				 var expansionType = document.getElementById('type').value;
+				 var expansionType = (document.getElementById('type').checked)?"zExpansion":"rollout";
 					
 				 var cbs = formElem.getElementsByTagName('input');				 	
 				 var cnt = 0;
@@ -192,7 +192,7 @@
 									  <tr><td>&nbsp;</td></tr>
 									  <tr><td align="right"><b>Please Select a Expansion Type:&nbsp;&nbsp;&nbsp;</b></td>
 									  	  <td>
-									  	  		<form:radiobutton id="type" path="type" value="rollout"/>8 Day Rollout
+									  	  		<form:radiobutton path="type" value="rollout"/>8 Day Rollout
 									  	  	    <form:radiobutton id="type" path="type" value="zExpansion"/>Zone Expansion
 									  	  </td>
 									  	  <td>
@@ -316,6 +316,19 @@
 				<div class="cont_row">
 					<span class="scrTitle"></span>
 				</div>
+				<table width="95%" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+					
+						<td align="right" width="90%">
+							<input id="expansionButton" type ="button" value="&nbsp;Expansion &nbsp;" onClick="javascript:doExpansion()" style="display:none;" />&nbsp;
+						</td>
+						<%if(request.getAttribute("rightEnvironment")!=null && (true==(Boolean)request.getAttribute("rightEnvironment"))&& request.getAttribute("environment")!=null && "DEV".equalsIgnoreCase((String)request.getAttribute("environment"))){ %>
+						<td align="right">
+							<input id="generateTimeslots" type ="button" value="&nbsp;Rollback Timeslots &nbsp;" onClick="javascript:doGenerateTimeSlots()" style="display:none;"/>
+						</td>
+						<%}%>
+					</tr>						
+				</table>	
 				
 				<div class="cont_topright">
 					<div class="cont_row">

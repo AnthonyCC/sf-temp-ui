@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 
@@ -117,6 +118,10 @@ public interface DomainManagerI extends BaseManagerI {
 	Collection getCommonList(String worktable, String regionId);
 	
 	void rollbackTimeslots(String zone[][]);
+	
+	List getStartDateForRegion(String regionId);
+	
+	void updateStartDate(String regionId);
 	
 	void makeDevLive(String regionId);
 	

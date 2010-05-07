@@ -372,14 +372,46 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 	}
 	
-	//Zone Expansion
-	private static String ZONE_EXPANSION="update dlv.zone set geoloc=(select geoloc from DLV.WORKTABLE where code=?) where region_data_id=? and zone_code=?";
+	private final static String MULTIPLE_UPDATES = "update dlv.region_data set start_date = (select min(start_date)-1 from dlv.region_data where region_id = ?)" 
+							+" where start_date = trunc(sysdate+8) and region_id = ? and id not in" 
+							+" (select max(id) from dlv.region_data where region_id = ? and start_date  = trunc(sysdate+8))";
 	
-	public void doExpansion(String worktable, String zoneCode){
+	public void updateMultipleDays(String regionId){
 		
-		ZONE_EXPANSION = ZONE_EXPANSION.replace("WORKTABLE", worktable);
+		this.jdbcTemplate.update(MULTIPLE_UPDATES, new Object[] {regionId, regionId, regionId});
+	}
+	
+	//Zone Expansion
+	private final static String ZONE_EXPANSION="update dlv.zone set geoloc=(select geoloc from DLV.WORKTABLE where code=?) where region_data_id=? and zone_code=?";
+	
+	public void doExpansion(String worktable, final String regionId, String zoneCode){
 		
-		this.jdbcTemplate.update(ZONE_EXPANSION, new Object[]{zoneCode, zoneCode});
+		final List result=new ArrayList();
+		
+		PreparedStatementCreator ctr=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(MAX_REGION_ID);
+				ps.setString(1, regionId);
+				return ps;
+			}  
+		};
+		
+		jdbcTemplate.query(ctr, new RowCallbackHandler(){
+			public void processRow(ResultSet rs) throws SQLException{
+				do{
+					String id = rs.getString("id");
+					result.add(id);
+				}while(rs.next());
+			}
+		
+		});
+		
+		String maxId= (String)result.get(0);
+		
+		String ZONE_EXPANSION_01 = ZONE_EXPANSION.replace("WORKTABLE", worktable);
+		
+		this.jdbcTemplate.update(ZONE_EXPANSION_01, new Object[]{zoneCode,maxId,zoneCode});
 		
 	}
 	
@@ -416,6 +448,37 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		this.jdbcTemplate.update(
 		   "update dlv.planning_resource set day=day-7 where zone_code=? and day > trunc(sysdate)", new Object[] {zoneCode});
 	}
+	
+	private final static String START_DATE_QUERY ="select id from dlv.region_data where region_id = ? and start_date <= trunc(sysdate+8) and start_date > trunc(sysdate)";
+	
+	public List getStartDateForRegion(final String regionId){
+		final List result=new ArrayList();
+		
+		PreparedStatementCreator ctr=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(START_DATE_QUERY);
+				ps.setString(1, regionId);
+				return ps;
+			}  
+		};
+		
+		jdbcTemplate.query(ctr, new RowCallbackHandler(){
+			public void processRow(ResultSet rs) throws SQLException{
+				do{
+					String id=rs.getString("id");
+					result.add(id);
+				}while(rs.next());
+			}
+		
+		});
+		return result;
+	}
+	public void updateStartDate(String regionId){
+		this.jdbcTemplate.update(
+				   "update dlv.region_data set START_DATE=trunc(sysdate)-1 where region_id=? and start_date = trunc(sysdate)", new Object[] {regionId});
+	}
+	
 	
 	//make dev live
 	public void makeDevLive(final String regionId){

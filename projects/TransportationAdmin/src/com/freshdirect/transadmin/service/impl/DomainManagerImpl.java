@@ -400,6 +400,9 @@ public class DomainManagerImpl
 					}
 				}//end (TotalList) for loop
 			}//End main if
+			
+			getZoneExpansionDao().updateMultipleDays(regionId);
+			
 		}else if("zExpansion".equalsIgnoreCase(expansionType)){
 				if(zone.length > 0){
 					List selZoneList=new ArrayList();
@@ -419,7 +422,7 @@ public class DomainManagerImpl
 							}
 						}
 						if(isMatched){
-							getZoneExpansionDao().doExpansion(worktable,zoneCode);
+							getZoneExpansionDao().doExpansion(worktable,regionId,zoneCode);
 						}
 					}
 			        }//end if
@@ -491,6 +494,14 @@ public class DomainManagerImpl
 				getZoneExpansionDao().updateTimeslot(zoneCode);
 			}
 		}	
+	}
+	
+	public List getStartDateForRegion(String regionId){
+		 return getZoneExpansionDao().getStartDateForRegion(regionId);
+	}
+	
+	public void updateStartDate(String regionId){
+		 getZoneExpansionDao().updateStartDate(regionId);
 	}
 	
 	public void makeDevLive(String regionId){

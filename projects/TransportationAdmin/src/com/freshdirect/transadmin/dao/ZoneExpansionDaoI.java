@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 
@@ -32,7 +33,7 @@ public interface ZoneExpansionDaoI {
 	
 	void insertIntoTranspZone(String zoneCode, String worktable)throws DataAccessException;
 	
-	void doExpansion(String worktable, String zoneCode);
+	void doExpansion(String worktable,String regionId, String zoneCode);
 	
 	void deleteTimeslot(String zoneCode) throws DataAccessException;
 	
@@ -44,7 +45,13 @@ public interface ZoneExpansionDaoI {
 	
 	void updatePlanningResource(String zoneCode) throws DataAccessException;
 	
+	List getStartDateForRegion (String regionId) throws DataAccessException;
+	
+	void updateStartDate(String regionId) throws DataAccessException;
+	
 	void makeDevLive(String regionId) throws DataAccessException;
+	
+	void updateMultipleDays(String regionId) throws DataAccessException;
 	
 	Collection getGeoRestrictionWorkTableInfo() throws DataAccessException;
 	

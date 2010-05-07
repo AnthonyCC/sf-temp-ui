@@ -49,7 +49,10 @@ public class ZoneExpansionFormController extends BaseFormController {
 	
 	protected Object formBackingObject(HttpServletRequest request)
 															throws Exception {
-		return super.formBackingObject(request);
+		ZoneWorkTableForm command = new ZoneWorkTableForm();
+		command.setType("rollout");
+		return command;
+		//return super.formBackingObject(request);
 	}
 	
    	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,

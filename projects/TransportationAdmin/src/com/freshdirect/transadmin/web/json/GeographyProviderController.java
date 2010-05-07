@@ -80,7 +80,17 @@ public class GeographyProviderController extends JsonRpcController  implements I
 		String regionId = ZoneWorkTableUtil.getRegionId(worktable);
 		try{
 			domainManagerService.rollbackTimeslots(zone);
-			domainManagerService.makeDevLive(regionId);
+			
+			boolean temp=false;
+			List query_list = domainManagerService.getStartDateForRegion(regionId);
+			if(query_list!=null && !query_list.isEmpty()){ 
+				temp=true;
+			}
+			if(temp){
+				domainManagerService.updateStartDate(regionId);
+				domainManagerService.makeDevLive(regionId);
+			}
+			
 		}catch(Exception ex){
 			ex.printStackTrace();
 			return false;
