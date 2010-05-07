@@ -24,35 +24,34 @@
                     <tr>
                         <td width="12"><img src="/media_stat/images/layout/dot_white.gif" width="10" height="1"><br></td>
                         <td width="118" class="text9_lh12">
-                        <%
-                        boolean modifyOrderMode = false;
-                            FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
-                            FDCartModel mCart = (FDCartModel) mUser.getShoppingCart();
-                            
-                            if (mCart instanceof FDModifyCartModel) {
-                                modifyOrderMode = true;
-                        }
-                        %>
-                        
-                        <% if (modifyOrderMode){%>
-                        <b>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</b><br>
-                        <%}%>
-						
-						<%
-						String lastDept = null;
-						boolean firstRecipe = true;
-						%>
-                        <logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
-                         <fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
-                        <%
-							if (lastDept==null || !lastDept.equalsIgnoreCase(orderLine.getDepartmentDesc())) {
-								lastDept = orderLine.getDepartmentDesc();  %>
-									<br><b><%= lastDept %></b><br>
-<%						} %>
-
-                        <A HREF="/product_modify.jsp?cartLine=<%=orderLine.getRandomId()%>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=sidcrt" title="<%=productNode.getFullName()%>"><%= productNode.getGlanceName() %></a><br>
-     </fd:ProductGroup>             
-    </logic:iterate>
+	                        <%
+	                        boolean modifyOrderMode = false;
+	                            FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
+	                            FDCartModel mCart = (FDCartModel) mUser.getShoppingCart();
+	                            
+	                            if (mCart instanceof FDModifyCartModel) {
+	                                modifyOrderMode = true;
+	                        }
+	                        %>
+	                        
+	                        <% if (modifyOrderMode){ %>
+		                        <b>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</b><br>
+	                        <% } %>
+							
+							<%
+								String lastDept = null;
+								boolean firstRecipe = true;
+							%>
+							<logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
+								<fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
+									<%
+										if (lastDept==null || !lastDept.equalsIgnoreCase(orderLine.getDepartmentDesc())) {
+											lastDept = orderLine.getDepartmentDesc();  %>
+											<br/><b><%= lastDept %></b><br/>
+									<% } %>
+			                        <A HREF="/product_modify.jsp?cartLine=<%=orderLine.getRandomId()%>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=sidcrt" title="<%=productNode.getFullName().replace("\"","&quot;")%>"><%= productNode.getGlanceName() %></a><br>
+								</fd:ProductGroup>             
+							</logic:iterate>
                         </td>
                     </tr>
                 </table><br><A HREF="/view_cart.jsp?trk=sidcrt"><img src="/media_stat/images/template/lists/cart_lg.gif" width="67" height="56" border="0" alt="Shopping Cart"></A><br>
