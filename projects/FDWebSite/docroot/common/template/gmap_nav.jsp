@@ -4,15 +4,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
-	String gmap_api_key = null;
-	final String hostName = request.getServerName();
-	if (hostName.matches(".*\\.internal\\.euedge\\.com$") ) {
-		gmap_api_key = "ABQIAAAA_vQMRhd3qlUmT3zj0jdnbRQ_Otc3iLgBzHJWFB--uAmRBu3eWhQE2TzLNhULb6hoCW_ruK3nho0pDg";
-	} else if (hostName.matches(".*\\.freshdirect\\.com$") ) {
-		gmap_api_key = "ABQIAAAA_vQMRhd3qlUmT3zj0jdnbRShkV_BBriD-K84_m69ZxxDSwv_NBRiIslYcdNcD4w-a30G9NW8jVOt2Q";
-	} else {
-		throw new JspException("This page cannot be called from this host " + hostName);
-	}
+	final String gmap_api_key = FDStoreProperties.getGoogleMapsAPIKey();
 %>
 <html>
 <head>

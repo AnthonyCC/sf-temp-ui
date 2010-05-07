@@ -427,7 +427,9 @@ public class FDStoreProperties {
 	//Email Opt-Down (APPDEV-662)
 	private static final String PROP_EMAIL_OPTDOWN_ENABLED ="fdstore.email.optdown.enabled";
 	
-	
+	//Google Maps API key
+	// It can be obtained from http://code.google.com/apis/maps/signup.html
+	private static final String GMAPS_API_KEY = "gmaps.api.key";
 
 	
 	static {
@@ -1744,5 +1746,15 @@ public class FDStoreProperties {
 	//Email Opt-Down (APPDEV-662)
 	public static boolean isEmailOptdownEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_EMAIL_OPTDOWN_ENABLED)).booleanValue();
+	}
+
+	/**
+	 * Returns API key to access Google Maps service
+	 * No default value.
+	 * 
+	 * @return
+	 */
+	public static String getGoogleMapsAPIKey() {
+		return get(GMAPS_API_KEY);
 	}
 }
