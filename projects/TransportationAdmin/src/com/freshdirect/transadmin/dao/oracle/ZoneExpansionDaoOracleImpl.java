@@ -230,13 +230,13 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		String maxId= (String)result.get(0);
 		String secondMaxId=(String)result.get(1);
 		
-		INSERT_NEW_ZONE = INSERT_NEW_ZONE.replace("XYZ", maxId);
+		String INSERT_NEW_ZONE_01 = INSERT_NEW_ZONE.replace("XYZ", maxId);
 		
-		INSERT_NEW_ZONE = INSERT_NEW_ZONE.replace("WORKTABLE", worktable);
+		String INSERT_NEW_ZONE_02 = INSERT_NEW_ZONE_01.replace("WORKTABLE", worktable);
 		
-		System.out.println("INSERT NEW ZONE QUERY"+INSERT_NEW_ZONE);
+		System.out.println("INSERT NEW ZONE QUERY"+INSERT_NEW_ZONE_02);
 		
-		this.jdbcTemplate.update(INSERT_NEW_ZONE, new Object[]{secondMaxId, zoneCode});
+		this.jdbcTemplate.update(INSERT_NEW_ZONE_02, new Object[]{secondMaxId, zoneCode});
 		System.out.println("Zone inserted");
 		LOGGER.debug("NEW ZONE INSERTED");
 		
@@ -272,9 +272,9 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	
 	public void insertIntoTranspZone(final String zoneCode, final String worktable){
 		
-		INSERT_ZONE_TRANSPZONE=INSERT_ZONE_TRANSPZONE.replace("WORKTABLE", worktable);
+		String INSERT_ZONE_TRANSPZONE_01=INSERT_ZONE_TRANSPZONE.replace("WORKTABLE", worktable);
 		
-		this.jdbcTemplate.update(INSERT_ZONE_TRANSPZONE, new Object[]{zoneCode, zoneCode});
+		this.jdbcTemplate.update(INSERT_ZONE_TRANSPZONE_01, new Object[]{zoneCode, zoneCode});
 	}
 	
 	
@@ -317,24 +317,24 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		String maxId= (String)result.get(0);
 		String secondMaxId=(String)result.get(1);
 		
-		INSERT_COMMON_ZONES = INSERT_COMMON_ZONES.replace("XYZ", maxId);
+		String INSERT_COMMON_ZONES_01 = INSERT_COMMON_ZONES.replace("XYZ", maxId);
 		
-		INSERT_COMMON_ZONES = INSERT_COMMON_ZONES.replace("WORKTABLE", worktable);
+		String INSERT_COMMON_ZONES_02 = INSERT_COMMON_ZONES_01.replace("WORKTABLE", worktable);
 		
-		this.jdbcTemplate.update(INSERT_COMMON_ZONES, new Object[]{secondMaxId, secondMaxId, secondMaxId,zoneCode});
+		this.jdbcTemplate.update(INSERT_COMMON_ZONES_02, new Object[]{secondMaxId, secondMaxId, secondMaxId,zoneCode});
 		
 		LOGGER.debug("ZONE INFO FROM WORKTABLE INSERTED");
 
 	}
 	
 	//Unchecked zones from zone table
-	private static String INSERT_REMAINING_ZONES=
+	private final static String INSERT_REMAINING_ZONES=
 		" insert into dlv.zone (id, name, geoloc, zone_code, region_data_id, plan_id, ct_active, ct_release_time)"
 			+" select dlv.system_seq.nextval,"
 		    +" (select name from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as name,"
 		    +" (select geoloc from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as geoloc,"
 		    +" (select zone_code from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as zone_code,"
-		    +"  XYZ,"  
+		    +" XYZ,"  
             +" (select plan_id from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as plan_id,"
 		    +" (select ct_active from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_active,"
 		    +" (select ct_release_time from dlv.zone where zone_code = z.zone_code and region_data_id = z.region_data_id) as ct_release_time"
@@ -365,9 +365,9 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		String maxId= (String)result.get(0);
 		String secondMaxId=(String)result.get(1);
 		
-		INSERT_REMAINING_ZONES=INSERT_REMAINING_ZONES.replace("XYZ", maxId);
+		String INSERT_REMAINING_ZONES_01=INSERT_REMAINING_ZONES.replace("XYZ", maxId);
 		
-		this.jdbcTemplate.update(INSERT_REMAINING_ZONES, new Object[]{zoneCode, secondMaxId});
+		this.jdbcTemplate.update(INSERT_REMAINING_ZONES_01, new Object[]{zoneCode, secondMaxId});
 		
 		
 	}
