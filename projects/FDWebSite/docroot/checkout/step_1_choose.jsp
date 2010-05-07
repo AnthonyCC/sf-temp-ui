@@ -174,7 +174,7 @@ while (e.hasMoreElements()) {
 	</table>
 	
 	<%
-	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(yuzer)) {
+	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(yuzer,null)) {
 	%>
 		<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
 	<% } else { %>

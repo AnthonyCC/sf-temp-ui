@@ -61,7 +61,7 @@ public class ClickToCallUtil {
 
 	}
 	
-	public static boolean evaluateClick2CallInfoDisplay(FDUserI user) throws FDResourceException{
+	public static boolean evaluateClick2CallInfoDisplay(FDUserI user,AddressModel address) throws FDResourceException{
 		CrmClick2CallModel click2CallModel = FDCustomerManager.getClick2CallInfo();
 //		FDUserI user = getUser();
 		boolean displayClick2CallInfo = false;
@@ -73,41 +73,63 @@ public class ClickToCallUtil {
 			WeekDay weekDayEnum[] = WeekDay.values();
 			CrmClick2CallTimeModel click2CallTime[] = click2CallModel.getDays();
 			CrmClick2CallTimeModel click2CallDay = click2CallTime[day-1];
-			if(click2CallDay.isShow()){
-				String startTime = click2CallDay.getStartTime();
-				Integer startHour = Integer.parseInt(startTime);
-				String endTime = click2CallDay.getEndTime();
-				Integer endHour = Integer.parseInt(endTime);
-				Integer currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-				if(startHour <= currentHour && (currentHour < endHour || endHour == 0)){
-					String[] dlvZones = click2CallModel.getDeliveryZones();
-					if(null !=dlvZones && dlvZones.length > 0){
-						AddressModel address = user.getShoppingCart().getDeliveryAddress();
-						try {
-							if(null == address){
-								String addrId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
-								address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
-							}
-							DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
-							if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
-								List dlvZonesList =Arrays.asList(dlvZones);
-								if(dlvZonesList.contains(dlvZoneInfo.getZoneCode())){
-									//Eligibility Check
-									displayClick2CallInfo = checkEligibleCustomers(
-											user, click2CallModel,
-											displayClick2CallInfo, address);
-//									displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-								}
-							}
-							
-						} catch (FDInvalidAddressException e) {
-//							throw new FDResourceException(e);
+			displayClick2CallInfo = checkDisplayDayAndHrs(user,
+					click2CallModel, displayClick2CallInfo, calendar, date,
+					click2CallDay,address);
+			
+		}
+		return displayClick2CallInfo;
+	}
+
+	private static boolean checkDisplayDayAndHrs(FDUserI user,
+			CrmClick2CallModel click2CallModel, boolean displayClick2CallInfo,
+			Calendar calendar, Date date, CrmClick2CallTimeModel click2CallDay,AddressModel address)
+			throws FDResourceException {
+		if(click2CallDay.isShow()){
+			String startTime = click2CallDay.getStartTime();
+			Integer startHour = Integer.parseInt(startTime);
+			String endTime = click2CallDay.getEndTime();
+			Integer endHour = Integer.parseInt(endTime);
+			Integer currentHour = calendar.get(Calendar.HOUR_OF_DAY);
+			if(startHour <= currentHour && (currentHour < endHour || endHour == 0)){
+				String[] dlvZones = click2CallModel.getDeliveryZones();
+				displayClick2CallInfo = checkDeliveryZones(user,
+						click2CallModel, displayClick2CallInfo, date,
+						dlvZones,address);
+			}
+			
+		}
+		return displayClick2CallInfo;
+	}
+
+	private static boolean checkDeliveryZones(FDUserI user,
+			CrmClick2CallModel click2CallModel, boolean displayClick2CallInfo,
+			Date date, String[] dlvZones,AddressModel address) throws FDResourceException {
+		if(null !=dlvZones && dlvZones.length > 0){
+			if(null == address){
+				address = user.getShoppingCart().getDeliveryAddress();
+			}
+			try {
+				if(null == address){
+					String addrId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity());
+					address = FDCustomerManager.getAddress(user.getIdentity(), addrId);
+				}
+				if(null != address){
+					DlvZoneInfoModel dlvZoneInfo = FDDeliveryManager.getInstance().getZoneInfo(address, date);
+					if(null != dlvZoneInfo && null !=dlvZoneInfo.getZoneCode()){
+						List dlvZonesList =Arrays.asList(dlvZones);
+						if(dlvZonesList.contains(dlvZoneInfo.getZoneCode())){
+							//Eligibility Check
+							displayClick2CallInfo = checkEligibleCustomers(
+									user, click2CallModel,
+									displayClick2CallInfo, address);
+	//									displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
 						}
 					}
 				}
-				
+			} catch (FDInvalidAddressException e) {
+//							throw new FDResourceException(e);
 			}
-			
 		}
 		return displayClick2CallInfo;
 	}
