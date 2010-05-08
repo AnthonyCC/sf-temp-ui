@@ -161,6 +161,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 		
 		List geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
+		if(address != null) {
+			LOGGER.debug("GeoRestriction Address :"+address);
+			LOGGER.debug("GeoRestriction Restrictions :"+geographicRestrictions);
+		}
+				
 		List messages = new ArrayList();
 		List comments = new ArrayList();
 		for (Iterator i = timeslotList.iterator(); i.hasNext();) {
@@ -176,6 +181,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange, comments)) 
 								&& !retainTimeslotIds.contains(ts.getId())) {
 						// filter off empty timeslots (unless they must be retained)
+						LOGGER.debug("Timeslot Removed By Tag :"+ts);
 						k.remove();
 					}
 					String zoneCode = timeslot.getZoneId();

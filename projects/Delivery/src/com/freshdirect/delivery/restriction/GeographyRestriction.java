@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
@@ -13,7 +15,7 @@ import com.freshdirect.framework.util.DateRange;
 public class GeographyRestriction extends ModelSupport   {
 	
 	private static final long	serialVersionUID	= 1923999018513521720L;
-	
+	private final static Category LOGGER = Category.getInstance(GeographyRestriction.class);
 	private String name;  
 	private String active;	  
 	private String comments;
@@ -147,6 +149,7 @@ public class GeographyRestriction extends ModelSupport   {
 						} catch(Exception e) {
 							//Timeslot filtering failed should display ignore filtering
 							e.printStackTrace();
+							LOGGER.debug("GeoRestriction Restrictions Error :"+e.getMessage());
 						}
 					}
 				}
