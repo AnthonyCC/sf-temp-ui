@@ -115,15 +115,20 @@ public class ZoneExpansionFormController extends BaseFormController {
 			HttpServletResponse response) throws Exception {
 		// validate for polygons.
 		//if errors create a view and return
-		Collection dataList=new ArrayList();
+		List<ZoneWorktableModel> dataList=new ArrayList();
 		if("GET".equalsIgnoreCase(request.getMethod())){
-			dataList=domainManagerService.checkPolygons();
+			dataList=(List)domainManagerService.checkPolygons();
 			if(dataList==null || dataList.isEmpty()){
 				saveMessage(request, getMessage("app.actionmessage.152",new Object[] { }));
 			}
 		}
 		if(!dataList.isEmpty()){
-			saveErrorMessage(request, "Drawn Polygons as some errors. Please check it before proceeding.");
+			String str="";
+			for(ZoneWorktableModel model: dataList){
+				if(model!= null)
+				str= str+model.getCode()+",";
+			}	
+			saveErrorMessage(request, "Drawn Polygons as some errors. Please check the zones {"+str+"} before proceeding.");
 		}
 		
 		return super.handleRequestInternal(request, response);

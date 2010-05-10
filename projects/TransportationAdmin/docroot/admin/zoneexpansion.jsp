@@ -129,7 +129,7 @@
 				 }
 				 if(checked){
 					 document.getElementById('expansionButton').style.display='';
-					 document.getElementById('generateTimeslots').style.display='';
+					 (document.getElementById("generateTimeslots")!=null)? document.getElementById('generateTimeslots').style.display='':"";
 				 }else{
 				  	 document.getElementById('expansionButton').style.display='none';
 				   	 document.getElementById('generateTimeslots').style.display='none';

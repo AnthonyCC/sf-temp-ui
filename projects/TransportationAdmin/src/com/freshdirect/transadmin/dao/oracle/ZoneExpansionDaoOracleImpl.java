@@ -415,8 +415,8 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 	}
 	
-	private static String DELETE_TIMESLOTS = "delete from dlv.timeslot where base_date >= trunc(sysdate) and resource_id in"
-				+" (select id from dlv.planning_resource where zone_code=? and day >=trunc(sysdate))";
+	private static String DELETE_TIMESLOTS = "delete from dlv.timeslot where base_date <= trunc(sysdate) and resource_id in"
+				+" (select id from dlv.planning_resource where zone_code=? and day <=trunc(sysdate))";
 	
     public void deleteTimeslot(String zoneCode) {
     	
@@ -424,13 +424,13 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
     }
 	
     private static String DELETE_TRUCKRESOURCE = "delete from dlv.truck_resource where resource_id in" 
-    	+" (select id from dlv.planning_resource where zone_code=? and day >=trunc(sysdate))";
+    	+" (select id from dlv.planning_resource where zone_code=? and day <=trunc(sysdate))";
     
 	public void deleteTrunkResource(String zoneCode){
 		this.jdbcTemplate.update(DELETE_TRUCKRESOURCE,new Object[]{zoneCode});
 	}
 	
-	private static String DELETE_PLANNING_RESOURCE="delete from dlv.planning_resource where day >= trunc(sysdate) and zone_code=?";
+	private static String DELETE_PLANNING_RESOURCE="delete from dlv.planning_resource where day <= trunc(sysdate) and zone_code=?";
 	
 	public void deletePlanningResource(String zoneCode){
 		this.jdbcTemplate.update(DELETE_TRUCKRESOURCE, new Object[]{zoneCode});		
