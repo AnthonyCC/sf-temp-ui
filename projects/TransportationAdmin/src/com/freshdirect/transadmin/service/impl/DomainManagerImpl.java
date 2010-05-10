@@ -10,10 +10,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.log4j.Category;
 import org.springframework.dao.DataAccessException;
+
+import weblogic.auddi.util.Logger;
+
 import com.freshdirect.content.attributes.AttributeComparator.Selected;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.constants.EnumBalanceBy;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
@@ -36,6 +41,8 @@ import com.freshdirect.transadmin.web.util.ZoneWorkTableUtil;
 
 public class DomainManagerImpl  
 		extends BaseManagerImpl  implements DomainManagerI {
+	
+	private final static Category LOGGER = LoggerFactory.getInstance(DomainManagerImpl.class);
 	
 	private DomainManagerDaoI domainManagerDao = null;
 	
@@ -338,15 +345,21 @@ public class DomainManagerImpl
 						}//End workTblList loop
 						if(isMatched){
 							if(!newRegionId){
-								getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);	
+								getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);
+								LOGGER.debug("Inserting new Region_data_ID for "+regionId+" is successfull!!");
 								newRegionId=true;
 							}
 							//execute the corresponding query
 							getZoneExpansionDao().insertNewZone(worktable, regionId, zoneCode);
+							LOGGER.debug(zoneCode + " is inserted into ZONE table.");
 							getZoneExpansionDao().deleteFromZoneDesc(zoneCode);
+							LOGGER.debug(zoneCode + " is deleted from ZONE_DESC");
 							getZoneExpansionDao().insertIntoZoneDesc(zoneCode);
+							LOGGER.debug(zoneCode + " is inserted into ZONE_DESC");
 							getZoneExpansionDao().deleteFromTranspZone(zoneCode);
-							getZoneExpansionDao().insertIntoTranspZone(zoneCode, worktable);	
+							LOGGER.debug(zoneCode + " is deleted from TRANSP_ZONE table");
+							getZoneExpansionDao().insertIntoTranspZone(zoneCode, worktable);
+							LOGGER.debug(zoneCode + " is inserted into TRANSP_ZONE table");							
 						}else{
 							//Get the next list and iterate through it as above.
 							for (Iterator iterator2 = commonList.iterator(); iterator2.hasNext();) {		
@@ -358,11 +371,13 @@ public class DomainManagerImpl
 							}//End commonList loop
 							if(isMatched){
 								if(!newRegionId){
-									getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);	
+									getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);
+									LOGGER.debug("Inserting new Region_data_ID for "+regionId+" is successfull!!");
 									newRegionId=true;
 								}
 								//execute the corresponding query
 								getZoneExpansionDao().insertCommonZoneSelected(worktable, regionId, zoneCode);
+								LOGGER.debug(zoneCode + " is inserted from WORKTABLE into ZONE (Common) table");			
 							} else {
 								//Get the next list and iterate through it as above.
 								for (Iterator iterator2 = zonetblList.iterator(); iterator2.hasNext();) {
@@ -393,14 +408,16 @@ public class DomainManagerImpl
 					if(!isMatched && !workTblList.contains(workTableModel)){	
 						if(!newRegionId){
 							getZoneExpansionDao().insertNewRegionDataId(regionId, deliveryFee);
+							LOGGER.debug("Inserting new Region_data_ID for "+regionId+" is successfull!!");
 							newRegionId=true;
 						}
 						//execute queries for unchecked zones except New zones unchecked
  						getZoneExpansionDao().insertUncheckedZones(workTableModel.getCode(), regionId);
+ 						LOGGER.debug(workTableModel.getCode() + "is copied from ZONE table into ZONE table with new REGION_DATA_ID");			
 					}
 				}//end (TotalList) for loop
 			}//End main if
-			
+			LOGGER.debug("8 Day rollout for zones chosen is successfull");
 			getZoneExpansionDao().updateMultipleDays(regionId);
 			
 		}else if("zExpansion".equalsIgnoreCase(expansionType)){
@@ -423,9 +440,11 @@ public class DomainManagerImpl
 						}
 						if(isMatched){
 							getZoneExpansionDao().doExpansion(worktable,regionId,zoneCode);
+							LOGGER.debug("For >> "+zoneCode + "geoloc is copied from WORKTABLE table into ZONE table");
 						}
 					}
 			        }//end if
+				LOGGER.debug("Zone Expansion for zones chosen is successfull");
 		}//end else if block
 	}
 	
@@ -486,12 +505,14 @@ public class DomainManagerImpl
 			for (Iterator iterator = selZoneList.iterator(); iterator.hasNext();) {
 				String zoneCode = (String) iterator.next();
 				//Avoid duplicate timslot
-				getZoneExpansionDao().deleteTimeslot(zoneCode);	
-				getZoneExpansionDao().deleteTrunkResource(zoneCode);
+				getZoneExpansionDao().deleteTimeslot(zoneCode);
+				LOGGER.debug("PRIOR TIMESLOTS for  "+zoneCode+" are deleted");
+				getZoneExpansionDao().deleteTrunkResource(zoneCode);				
 				getZoneExpansionDao().deletePlanningResource(zoneCode);
 				//Rollback timeslot
 				getZoneExpansionDao().updatePlanningResource(zoneCode);
 				getZoneExpansionDao().updateTimeslot(zoneCode);
+				LOGGER.debug("ROLLING BACK timeslots to current date for "+zoneCode+" is Successfull");
 			}
 		}	
 	}
@@ -506,6 +527,7 @@ public class DomainManagerImpl
 	
 	public void makeDevLive(String regionId){
 		 getZoneExpansionDao().makeDevLive(regionId);
+		 LOGGER.debug("Making DEV live for testing!!");
 	}
 	
 	
@@ -566,6 +588,7 @@ public class DomainManagerImpl
 							
 							//execute the corresponding query
 							getZoneExpansionDao().insertNewGeoRestriction(zoneCode);
+							LOGGER.debug("Inserting new new geoRestriction for "+zoneCode+" is successfull!!");
 						}else{
 							//Get the next list and iterate through it as above.
 							for (Iterator iterator2 = commonList.iterator(); iterator2.hasNext();) {		
@@ -579,6 +602,7 @@ public class DomainManagerImpl
 								
 								//execute the corresponding query
 								getZoneExpansionDao().updateGeoRestriction(zoneCode);
+								LOGGER.debug("Updating new goeRestriction for "+zoneCode+" is successfull!!");
 							} else {
 								//Get the next list and iterate through it as above.
 								for (Iterator iterator2 = zonetblList.iterator(); iterator2.hasNext();) {
@@ -594,6 +618,7 @@ public class DomainManagerImpl
 								}
 						}//end else block
 				}//end For(selZoneList) loop
+				LOGGER.debug("Adding or updating Geo Restrictions are successfull");
 			}//End main if
     }
 	
