@@ -297,6 +297,8 @@ outer:		while(tokens.hasMoreTokens()){
 				filtered = getProductsBetween(tempList, range.getDaysRangeFrom() - COVER_UP_DAYS, range.getDaysRangeTo() + COVER_UP_DAYS);
 			}
 			if(filtered != null && filtered.size() > 0){
+				//sort items according to their primary home departments in ascending alphabetical order. APPDEV-1008
+				Collections.sort(filtered, ProductModel.DEPTFULL_COMPARATOR);
 				groupedMap.put(range, filtered);
 				//remove filtered from main list.
 				tempList.removeAll(filtered);
