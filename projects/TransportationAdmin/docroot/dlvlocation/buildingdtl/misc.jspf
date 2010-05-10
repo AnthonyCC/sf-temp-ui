@@ -16,7 +16,7 @@
 				  <tr>
 				    <td><align="left">OTHER</td>
 				    <td> 								  
-				  	 	<form:input disabled="false" maxlength="50" size="30" path="other" disabled="true" />
+				  	 	<form:input id="other" disabled="false" maxlength="50" size="30" path="other" disabled="true" />
 				 	</td>
 					<td>
 						&nbsp;<div class="wspacer"><!--  --></div>

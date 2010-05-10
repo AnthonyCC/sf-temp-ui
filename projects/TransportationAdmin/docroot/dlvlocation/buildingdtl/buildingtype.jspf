@@ -11,9 +11,7 @@ function housef(checked) {
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=true;
-	  }
+      document.getElementById("deliveryBuildingDtlForm").other.disabled=true;
  	}
 	else {
       document.getElementById("doorman").disabled=false;
@@ -45,9 +43,8 @@ function doormanf(checked) {
       for (i=0; i<document.getElementById("deliveryBuildingDtlForm").handTruckAllowed.length; i++){
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=false;
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=false;
-	  }
+      document.getElementById("deliveryBuildingDtlForm").other.disabled=false;
+      
 	  if(document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[0].checked==false &&
 	     document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[1].checked==false)
 			document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[1].checked=true;	  
@@ -59,10 +56,7 @@ function doormanf(checked) {
 		document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].disabled=true;
 		//document.getElementById("deliveryBuildingDtlForm").handTruckAllowed[i].checked=false
 	  }
-      for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++){
-		document.getElementById("deliveryBuildingDtlForm").other[i].disabled=true;
-		
-	  }
+      document.getElementById("deliveryBuildingDtlForm").other.disabled=true;
    	}
 }
 

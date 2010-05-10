@@ -281,46 +281,47 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 
 	}
 
-protected void onBind(HttpServletRequest request, Object command) {
-	//System.out.println("@@@@@@@entering on Bind");
-	DlvBuildingDtl model = (DlvBuildingDtl) command;
-
-	model.setSvcEnt(request.getParameter("svcEnt"));
-	if(!"1".equals(model.getSvcEnt())){
-	    model.setSvcScrubbedStreet("");
-		model.setSvcCity("");
-		model.setSvcState("");
-		model.setSvcZip("");
-	}
-
-	model.setDoorman(request.getParameter("doorman"));
-	if(!"1".equals(model.getDoorman())){
-		model.setHandTruckAllowed("");
-		//model.setAptDlvAllowed("");
-		model.setOther("");
-	}
-
-
-	model.setWalkup(request.getParameter("walkup"));
-	if(!"1".equals(model.getWalkup())){
-		model.setWalkUpFloors(new Integer(0));
-	}
-
-	model.setElevator(request.getParameter("elevator"));
-	model.setSvcEnt(request.getParameter("svcEnt"));
-	model.setHouse(request.getParameter("house"));
-
-	model.setDifficultToDeliver(request.getParameter("difficultToDeliver"));
-	if(!"1".equals(model.getDifficultToDeliver())){
-		model.setDifficultReason("");
-		
-	}
-
-	setEntFields(request, model);
-	setSvcEntFields(request, model);
+	protected void onBind(HttpServletRequest request, Object command) {
+		//System.out.println("@@@@@@@entering on Bind");
+		DlvBuildingDtl model = (DlvBuildingDtl) command;
+	
+		model.setSvcEnt(request.getParameter("svcEnt"));
+		if(!"1".equals(model.getSvcEnt())){
+		    model.setSvcScrubbedStreet("");
+			model.setSvcCity("");
+			model.setSvcState("");
+			model.setSvcZip("");
+		}
+	
+		model.setDoorman(request.getParameter("doorman"));
+		if(!"1".equals(model.getDoorman())){
+			model.setHandTruckAllowed("");
+			//model.setAptDlvAllowed("");
+			model.setOther("");
+		}
+	
+	
+		model.setWalkup(request.getParameter("walkup"));
+		if(!"1".equals(model.getWalkup())){
+			model.setWalkUpFloors(new Integer(0));
+		}
+	
+		model.setElevator(request.getParameter("elevator"));
+		model.setSvcEnt(request.getParameter("svcEnt"));
+		model.setHouse(request.getParameter("house"));
+	
+		model.setDifficultToDeliver(request.getParameter("difficultToDeliver"));
+		if(!"1".equals(model.getDifficultToDeliver())){
+			model.setDifficultReason("");
+			model.setServiceTimeOverride("");
+			model.setAdditional("");
+		}
+	
+		setEntFields(request, model);
+		setSvcEntFields(request, model);
 
 	//System.out.println("$$$$$$$$$$$$Exiting onBind()");
-}
+	}
 
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
