@@ -47,7 +47,8 @@ public class ComplaintDAO implements java.io.Serializable {
 		"  ( " +
 		"    select cc.* from cust.complaint_code cc " +
 		"    join cust.case_subject s on(cc.subject_code=s.code) " +
-		"    where subject_code is not null and (s.cartons_req<>'X' or s.cartons_req is null) " +
+		"    where subject_code is not null and (s.cartons_req<>'X' or s.cartons_req is null " +
+		"		or cc.code in ('DAMBOXC','DAMBOXD','PRDDAM','DAMBOPRD','MISBOX','MISFRZ')) " +
 		"  ) cc, " +
 		"  cust.complaint_dept_code cdc " +
 		"where cc.code=cdc.comp_code " +
