@@ -5,13 +5,16 @@
 <%@page import="com.freshdirect.fdstore.content.ProducerModel"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus />
+
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%><fd:CheckLoginStatus />
 <%
 	final BrowserInfo bi = new BrowserInfo(request);
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
@@ -124,12 +127,14 @@
 			if (content.getHeight() > 0) {
 				dimStr += "height: "+content.getHeight()+"px; ";
 			}
-		
+
 		%>
 		<div style="overflow: hidden; <%= dimStr %>">
 			<fd:IncludeMedia name='<%=p.getBubbleContent().getPath() %>'/>
 		</div>
-		<% } %>
+		<% }
+		
+		%>
 		<div style="padding: 1em 0 1em 0; text-align: left">
 			<a href="<%= FDURLUtil.getCategoryURI(p.getBrandCategory(), "lpmp") %>" style="font-weight: bold"><%= p.getFullName() %></a>
 <%
@@ -137,8 +142,18 @@
 %>			<div><%= line %></div>
 <%
 	}
-%>			<a href="<%= FDURLUtil.getCategoryURI(p.getBrandCategory(), "lpmp") %>" style="padding-top: 1em; display: block; font-weight: bold">Learn more &hellip;</a>
-		</div>
+
+	// Show brand popup
+	BrandModel bm = p.getBrand();
+	if (bm != null) {
+		Html popupContent = bm.getPopupContent();
+		
+        TitledMedia tm = (TitledMedia)popupContent;
+        // EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
+%>			<a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="padding-top: 1em; display: block; font-weight: bold">Learn more &hellip;</a>
+<%
+	}
+%>		</div>
 	</div>
 
 <%	
