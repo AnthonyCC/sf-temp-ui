@@ -45,6 +45,8 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
 			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.CT_ZONE_WORKTABLE"
 			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
+			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.CTCOS_ZONE_WORKTABLE"
+			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
 			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.COS_ZONE_WORKTABLE"
 			+" where SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) <> 'TRUE' union all"
 			+" select code, name, SDO_GEOM.VALIDATE_GEOMETRY(geoloc, 0.5) from DLV.NJ_ZONE_WORKTABLE"
