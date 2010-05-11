@@ -35,6 +35,10 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		setLabel( node.getLabel() );
 		setKey( node.getKey() );
 		setType( node.getType() );
+		
+		setWidth( node.getWidth() );
+		setHeight( node.getHeight() );
+		setPreviewUrl( node.getPreviewUrl() );
     }
     	
 	public void setType(String type) {
@@ -181,7 +185,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 		return getKey();
 	}
 	
-	protected boolean checkPreviewTypes( String previewUrl ) {
+	protected static boolean checkPreviewTypes( String previewUrl ) {
 		return previewUrl != null && ( previewUrl.endsWith( "gif" ) || previewUrl.endsWith( "jpg" ) || previewUrl.endsWith( "jpeg" )
 				|| previewUrl.endsWith( "htm" ) || previewUrl.endsWith( "html" ) || previewUrl.endsWith( "txt" ) );		
 	}
