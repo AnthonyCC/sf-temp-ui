@@ -506,14 +506,7 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 120l * 24l * 3600000l);
-			Map<String, Date> overridden = sb.getOverriddenNewSkus();
-			Map<String, Date> results = new HashMap<String, Date>(overridden.size() * 4 / 3);
-			for (Map.Entry<String, Date> entry : overridden.entrySet())
-				if (entry.getValue().after(first) && entry.getValue().before(now))
-					results.put(entry.getKey(), entry.getValue());
-			return results;
+			return sb.getOverriddenNewSkus();
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -529,14 +522,7 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-			Date now = new Date();
-			Date first = new Date(now.getTime() - 30l * 24l * 3600000l);
-			Map<String, Date> overridden = sb.getOverriddenBackInStockSkus();
-			Map<String, Date> results = new HashMap<String, Date>(overridden.size() * 4 / 3);
-			for (Map.Entry<String, Date> entry : overridden.entrySet())
-				if (entry.getValue().after(first) && entry.getValue().before(now))
-					results.put(entry.getKey(), entry.getValue());
-			return results;
+			return sb.getOverriddenBackInStockSkus();
 		} catch (CreateException ce) {
 			factoryHome=null;
 			throw new FDResourceException(ce, "Error creating session bean");

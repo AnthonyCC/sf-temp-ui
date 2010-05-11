@@ -16,6 +16,7 @@ class SkuEntry {
 	Date date = null;
 	String age = null;
 	boolean overridden = false;
+	boolean overriddenOld = false;
 	boolean unavailable = false;
 }
 
@@ -68,6 +69,8 @@ List<SkuEntry> calcSkuEntries(Map<String, Date> skus, Map<String, Date> overridd
 			e.product = sku.getProductModel() != null ? sku.getProductModel().getContentKey().getId() : null;
 		}
 		e.overridden = overridden.containsKey(e.sku);
+		if (e.overridden && !skus.containsKey(e.sku))
+			e.overriddenOld = true;
 		entries.add(e);
 	}
 	Collections.sort(entries, new Comparator<SkuEntry>() {
@@ -299,8 +302,13 @@ table {
 .no-wrap {
 	white-space: nowrap;
 }
+
 .overridden {
 	background-color: #FF9999;
+}
+
+.overridden-old {
+	background-color: #9999FF;
 }
 
 .legend {
@@ -417,7 +425,9 @@ boolean orderAsc = true;
 	String nullValue = "<span style=\"color: gray;\">(null)</null>";
 	Date now = new Date();
 	Map<String, Date> newSkus = FDCachedFactory.getNewSkus();
-	Map<String, Date> backInStockSkus = FDCachedFactory.getBackInStockSkus();
+	Map<String, Date> backSkus = FDCachedFactory.getBackInStockSkus();
+	Map<String, Date> newOverridden = FDCachedFactory.getOverriddenNewSkus();
+	Map<String, Date> backOverridden = FDCachedFactory.getOverdiddenBackInStockSkus();
 	if (!showProducts) {
 	if (searchTerm.length() > 0) {
 	%>
@@ -457,7 +467,30 @@ boolean orderAsc = true;
 			skuCode = null;
 		}
 		if (skuCode != null) {
+			String newOverClass = newOverridden.containsKey(skuCode) ? (newSkus.containsKey(skuCode) ? " overridden" : " overridden-old" ) : "";
+			String backOverClass = backOverridden.containsKey(skuCode) ? (backSkus.containsKey(skuCode) ? " overridden" : " overridden-old" ) : "";
 	%>
+	<h2><%= skuCode %> Manual Override</h2>
+	<table class="data">
+		<tr>
+			<td class="text12 bold<%= newOverClass %>">Date of becoming new</td>
+			<td class="text12 bold<%= newOverClass %>"><% if (newOverridden.containsKey(skuCode)) { %><%= dateFormat.format(newOverridden.get(skuCode)) %><% } else { %>Not overridden.<% } %></td>
+		</tr>
+		<tr>
+			<td class="text12 bold<%= backOverClass %>">Back-in-stock date</td>
+			<td class="text12 bold<%= backOverClass %>"><% if (backOverridden.containsKey(skuCode)) { %><%= dateFormat.format(backOverridden.get(skuCode)) %><% } else { %>Not overridden.<% } %></td>
+		</tr>
+	</table>
+	<table class="legend">
+		<tr>
+			<td class="text12 color"><div class="overridden color">&nbsp;</div></td>
+			<td class="text12">&nbsp;&ndash;&nbsp;manually overridden</td>
+		</tr>
+		<tr>
+			<td class="text12 color"><div class="overridden-old color">&nbsp;</div></td>
+			<td class="text12">&nbsp;&ndash;&nbsp;manually overridden and not new or back-in-stock</td>
+		</tr>
+	</table>
 	<h2><%= skuCode %> History</h2>
 	<%
 			List<SkuAvailabilityHistory> history = FDCachedFactory.getSkuAvailabilityHistory(skuCode);
@@ -497,7 +530,6 @@ boolean orderAsc = true;
 	<div class="section-break">
 	<h2>New SKUs</h2>
 	<%
-	Map<String, Date> newOverridden = FDCachedFactory.getOverriddenNewSkus();
 	if (!newSkus.isEmpty()) {
 	 %>
 	<table class="data">
@@ -551,8 +583,7 @@ boolean orderAsc = true;
 	<div class="section-break">
 	<h2>Back-in-Stock SKUs</h2>
 	<%
-	Map<String, Date> backOverridden = FDCachedFactory.getOverdiddenBackInStockSkus();
-	if (!backInStockSkus.isEmpty()) {
+	if (!backSkus.isEmpty()) {
 	 %>
 	<table class="data">
 		<tr>
@@ -566,7 +597,7 @@ boolean orderAsc = true;
 			<% if (FDStoreProperties.isAnnotationMode()) { %><th class="text12"></th><% } %>
 		</tr>
 		<%
-		List<SkuEntry> entries = calcSkuEntries(backInStockSkus, backOverridden, now, orderBy, orderAsc);
+		List<SkuEntry> entries = calcSkuEntries(backSkus, backOverridden, now, orderBy, orderAsc);
 		for (SkuEntry entry: entries) {
 		 %>
 		<%
@@ -715,7 +746,7 @@ boolean orderAsc = true;
 					it.remove();
 					continue;
 				}
-				if (!backInStockSkus.containsKey(sku.getContentKey().getId()))
+				if (!backSkus.containsKey(sku.getContentKey().getId()))
 					it.remove();
 			}
 			Collections.sort(skus, new Comparator<SkuModel>() {
