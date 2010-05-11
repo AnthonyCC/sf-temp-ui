@@ -1,18 +1,16 @@
-<!--    //--------- Common JavaScript functions  ------------------
-
 var id= "";
 var css="";
 
 function soon() { alert("Coming soon"); }
 
-//peffered rollover swap technique..
+//preferred roll-over swap technique..
 function swapImage(imgName,imgURL){
 	if (imgURL.length>0) {
     		document.images[imgName].src = imgURL;
     	}
 }
 
-//rollover swap with width check
+//roll-over swap with width check
 function swapImage2(imgName,imgURL, w, h){
 	var noW;
 
@@ -35,7 +33,7 @@ function swapImage2sup( imgName, w, noW ){
 	return true;
 }
 
-//rollover swap with width check + burst swap
+//roll-over swap with width check + burst swap
 function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL ) {
 	
 	var noW;
@@ -53,7 +51,7 @@ function swapImageAndBurst( imgName, imgURL, w, h, hasBurst, burstName, burstURL
 		document.images[burstName].src = burstURL;		
 		document.images[burstName].style.display = "";
 	} else {
-		document.images[burstName].style.display="none"
+		document.images[burstName].style.display="none";
 	}
 }
 
@@ -73,7 +71,7 @@ function pop(URL, h, w, name) {
 function popold(URL,h,w) {
 
 	if(isIE){
-		if (window.newWin) { window.newWin.close() }
+		if (window.newWin) { window.newWin.close(); }
 	}else{
         //for Netscape	
 		if(window.newWin){
@@ -83,7 +81,6 @@ function popold(URL,h,w) {
 		}
 	}
 	specs = "HEIGHT=" + h + ",WIDTH=" + w + ",resizable,scrollbars";
-	//var newWin =  window.open(URL,"newWin",specs);
 	newWin =  window.open(URL,"newWin",specs);
 	if (newWin.opener == null) newWin.opener = self;
 	newWin.focus();
@@ -91,7 +88,7 @@ function popold(URL,h,w) {
 
 function popResize(URL,h,w,name) {
 	if(isIE){
-		if (window.newWin) { window.newWin.close() }
+		if (window.newWin) { window.newWin.close(); }
 	}else{
         //for Netscape	
 		if(window.newWin){
@@ -204,7 +201,6 @@ function changeColors(currentId, currentCss){
   document.getElementById(currentId).className="case_selected_header";
 }
 
-// -->
  
  
  /*****************************************************************/
@@ -262,5 +258,3 @@ function changeColors(currentId, currentCss){
     };
   }
 })();
-
-//  End of Common JavaScript Functions       -------->
