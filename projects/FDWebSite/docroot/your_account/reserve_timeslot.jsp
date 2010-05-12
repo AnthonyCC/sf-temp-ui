@@ -16,6 +16,7 @@
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
