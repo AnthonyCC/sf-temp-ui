@@ -574,8 +574,7 @@ if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
 	Boolean isNextDayTimeSlotNotAvailable0 = false;
 	if(null !=request.getAttribute("isNextDayTimeSlotNotAvailable")){
 		isNextDayTimeSlotNotAvailable0 =(Boolean)request.getAttribute("isNextDayTimeSlotNotAvailable");
-	}
-	System.out.println("*******************************************"+isNextDayTimeSlotNotAvailable0);
+	}	
 	if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
 	{
 %>

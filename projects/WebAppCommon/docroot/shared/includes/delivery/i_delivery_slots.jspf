@@ -156,8 +156,7 @@ if (timeslots.size() > 0) {
 										}
 										if(!isNextDayTimeSlotNotAvailable){
 											isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
-										}
-										System.out.println("************ In Delivery Slots:"+isNextDayTimeSlotNotAvailable);
+										}										
 									} else {
 										if (isStaticSlot){
 											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= !normalAvailCapacity && availCapacity ? " - Chef's Table Only":"" %>"><%
