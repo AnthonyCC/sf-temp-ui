@@ -50,7 +50,8 @@
     String timeSlotId = request.getParameter("deliveryTimeslotId");
     if (timeSlotId == null) {
         rsv  = cart.getDeliveryReservation();
-        if(rsv != null){
+        if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
+				&& address.getPK().getId().equals(rsv.getAddressId()))){
             timeSlotId = rsv.getTimeslotId();
         }else{
             timeSlotId = "";

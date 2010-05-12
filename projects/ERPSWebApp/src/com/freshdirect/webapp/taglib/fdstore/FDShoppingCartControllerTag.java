@@ -1188,8 +1188,11 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 			}
 
 			theCartLine.setDiscountFlag(discountApplied);
-			String cartonNumber=request.getParameter("cartonNumber");
-			if(cartonNumber!=null)	theCartLine.setCartonNumber(cartonNumber);
+			
+			String cartonNumber = request.getParameter("cartonNumber");
+			if(cartonNumber!=null)	{ 
+				theCartLine.setCartonNumber(cartonNumber);
+			}
 		}
 
 		return theCartLine;

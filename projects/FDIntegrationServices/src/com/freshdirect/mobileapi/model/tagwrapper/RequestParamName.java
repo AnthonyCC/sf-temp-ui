@@ -194,5 +194,9 @@ public interface RequestParamName {
     public static final String REQ_PARAM_ADDRESS_ID = "addressId";
     
     public static final String REQ_PARAM_DEBUG = "debug";
+    
+  //Add To Cart
+    public static final String REQ_PARAM_CARTONNUMBER = "cartonNumber";
+    
 
 }
