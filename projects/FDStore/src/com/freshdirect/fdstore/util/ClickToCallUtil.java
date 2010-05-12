@@ -143,7 +143,7 @@ public class ClickToCallUtil {
 			if(null != eligibleCustomer && eligibleCustomer.length > 0){
 				List elgCustList = Arrays.asList(eligibleCustomer);
 				if(elgCustList.contains("everyone")){
-					displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
+					displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address,user);
 					
 				}else{
 					
@@ -174,7 +174,7 @@ public class ClickToCallUtil {
 						}
 					}
 					if(displayClick2CallInfo){
-						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,false, address);
+						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,false, address,user);
 					}
 					/*if(elgCustList.contains("ct_dp")){
 						if(user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
@@ -206,7 +206,7 @@ public class ClickToCallUtil {
 
 	private static boolean checkNextDayTimeSlots(
 			CrmClick2CallModel click2CallModel, boolean displayClick2CallInfo,
-			AddressModel address) throws FDResourceException {
+			AddressModel address,FDUserI user) throws FDResourceException {
 		if(click2CallModel.isNextDayTimeSlot()){
 			if(address instanceof ContactAddressModel){
 				Calendar begCal = Calendar.getInstance();
@@ -218,6 +218,26 @@ public class ClickToCallUtil {
 				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), (ContactAddressModel)address);
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
+				}else{
+					boolean isAvailable = false;
+					if(user.isChefsTable()){
+					for (FDTimeslot timeslot : timeSlots) {
+						if(timeslot.getTotalAvailable()>0){
+							isAvailable = true;
+							break;
+						}
+					}
+					}else{
+						for (FDTimeslot timeslot : timeSlots) {
+							if(timeslot.getBaseAvailable()>0){
+								isAvailable = true;
+								break;
+							}
+						}
+					}
+					if(!isAvailable){
+						displayClick2CallInfo = true;
+					}
 				}
 			}
 		}else{
@@ -225,5 +245,8 @@ public class ClickToCallUtil {
 		}
 		return displayClick2CallInfo;
 	}
+	
+	
+	
 
 }
