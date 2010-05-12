@@ -7,14 +7,15 @@
 <%@page import="com.freshdirect.fdstore.content.Html"%>
 <%@page import="com.freshdirect.fdstore.content.BrandModel"%>
 <%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
-<%@page import="com.freshdirect.fdstore.content.TitledMedia"%><fd:CheckLoginStatus />
+<fd:CheckLoginStatus />
 <%
 	final BrowserInfo bi = new BrowserInfo(request);
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
@@ -58,9 +59,22 @@
 			point = new GLatLng(<%= loc.lat %>, <%= loc.lng %>);
 			boundz.extend(point);
 
-<%		if (p.getProducerType().getIconImage() != null) {
+<%			Image icon = p.getIconImage();
+			Image shadow = p.getIconShadowImage();
+			if (icon != null) {
+			
 %>			ic = new GIcon(G_DEFAULT_ICON);
-			ic.image = '<%= StringEscapeUtils.escapeJavaScript( p.getProducerType().getIconImage().getPath())  %>';
+			ic.image = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath())  %>';
+			ic.iconSize = new GSize(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
+<%
+			if (shadow != null) {
+%>			ic.shadowImage = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath())  %>';
+			ic.shadowSize = new GSize(<%= icon.getWidth() %>, <%= shadow.getHeight() %>);
+<%
+			}
+%>			ic.iconAnchor = new GPoint(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
+
+			
 			marker = new GMarker(point, { icon: ic });
 <%
 		} else {
@@ -109,9 +123,6 @@
 %>
 	<div id="prod-<%= p.getContentKey().getId() %>">
 		<div class="title12" style="text-align: left"><%= p.getFullName() %></div>
-		<% if (p.getIconImage() != null) { %><div style="text-align: center;">
-			<img src="<%= p.getIconImage().getPath() %>"></img>
-		</div><% } %>
 		<% if (p.getBubbleContent() != null ) {
 			Html content = p.getBubbleContent();
 			String dimStr = "";
@@ -145,15 +156,12 @@
 
 	// Show brand popup
 	BrandModel bm = p.getBrand();
-	if (bm != null) {
-		Html popupContent = bm.getPopupContent();
+	Html popupContent = bm.getPopupContent();
 		
-        TitledMedia tm = (TitledMedia)popupContent;
-        // EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
+	TitledMedia tm = (TitledMedia)popupContent;
+	// EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
 %>			<a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="padding-top: 1em; display: block; font-weight: bold">Learn more &hellip;</a>
-<%
-	}
-%>		</div>
+		</div>
 	</div>
 
 <%	
