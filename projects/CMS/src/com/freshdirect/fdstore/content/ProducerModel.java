@@ -57,9 +57,18 @@ public class ProducerModel extends ContentNodeModelImpl {
         return value instanceof ContentKey ? (BrandModel) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value) : null;
     }
     
+    /**
+     * Producer is regarded active if
+     * - it has a brand category and it is active (e.g. has at least one available item)
+     * - it has a producer type
+     * - it has a brand
+     * 
+     * @return
+     */
     public boolean isActive() {
         CategoryModel brandCategory = getBrandCategory();
-        return brandCategory != null && brandCategory.isActive();
+        return brandCategory != null && brandCategory.isActive() &&
+        getProducerType() != null && getBrand() != null;
     }
 
 
@@ -71,7 +80,15 @@ public class ProducerModel extends ContentNodeModelImpl {
     		this.lat = lat;
     		this.lng = lng;
     	}
-    	
+
+
+    	/**
+    	 * Parses geolocation
+    	 * Format: FLOAT,FLOAT
+    	 * 
+    	 * @param address
+    	 * @return
+    	 */
     	public static Geolocation parse(String address) {
         	if (address == null || "".equals(address))
         		return null;
