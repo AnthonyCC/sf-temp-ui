@@ -65,7 +65,7 @@ public class ClickToCallUtil {
 		CrmClick2CallModel click2CallModel = FDCustomerManager.getClick2CallInfo();
 //		FDUserI user = getUser();
 		boolean displayClick2CallInfo = false;
-		if(null != user && click2CallModel.isStatus()){			
+		if(null != user && click2CallModel.isStatus() && FDStoreProperties.getClickToCall()){			
 			Calendar calendar = Calendar.getInstance();
 			Date date = new Date();
 			calendar.setTime(date);
@@ -123,7 +123,6 @@ public class ClickToCallUtil {
 							displayClick2CallInfo = checkEligibleCustomers(
 									user, click2CallModel,
 									displayClick2CallInfo, address);
-	//									displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
 						}
 					}
 				}
@@ -143,7 +142,7 @@ public class ClickToCallUtil {
 			if(null != eligibleCustomer && eligibleCustomer.length > 0){
 				List elgCustList = Arrays.asList(eligibleCustomer);
 				if(elgCustList.contains("everyone")){
-					displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address,user);
+					displayClick2CallInfo = true;//checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address,user);
 					
 				}else{
 					
@@ -173,29 +172,10 @@ public class ClickToCallUtil {
 							}
 						}
 					}
-					if(displayClick2CallInfo){
+					/*if(displayClick2CallInfo){
 						displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,false, address,user);
-					}
-					/*if(elgCustList.contains("ct_dp")){
-						if(user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
-							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-						}
-						
-					}else if(elgCustList.contains("ct_ndp")){
-						if(user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
-							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-						}
-						
-					}else if(elgCustList.contains("nct_dp")){
-						if(!user.isChefsTable() && (user.isDlvPassActive()||user.isDlvPassPending())){
-							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-						}
-						
-					}else if(elgCustList.contains("nct_ndp")){
-						if(!user.isChefsTable() && !user.isDlvPassActive()&& !user.isDlvPassPending()){
-							displayClick2CallInfo = checkNextDayTimeSlots(click2CallModel,displayClick2CallInfo, address);
-						}
 					}*/
+					
 				}
 					
 			}
@@ -246,7 +226,10 @@ public class ClickToCallUtil {
 		return displayClick2CallInfo;
 	}
 	
-	
+	public static boolean isNextDayTimeSlotsCheckRequired() throws FDResourceException{
+		CrmClick2CallModel click2CallModel = FDCustomerManager.getClick2CallInfo();		
+		return FDStoreProperties.getClickToCall() && click2CallModel.isStatus() && click2CallModel.isNextDayTimeSlot();			
+	}
 	
 
 }

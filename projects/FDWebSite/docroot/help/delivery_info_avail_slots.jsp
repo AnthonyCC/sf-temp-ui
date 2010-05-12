@@ -100,7 +100,24 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 }
 %>
 </td></tr></table>
-
+<script language="javascript">
+	
+	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
+	var timeslotvalue=c2ctimeslot.value;	
+	if(timeslotvalue==1){
+		if(document.getElementById("loyalty1")){
+			document.getElementById("loyalty1").style.display="block";
+		}
+		if(document.getElementById("loyalty3")){
+			document.getElementById("loyalty3").style.display="block";
+		}
+	}else{
+		if(document.getElementById("loyalty2")){
+			document.getElementById("loyalty2").style.display="block";
+		}
+	}
+	
+	</script>
 </fd:DeliveryTimeSlot>
 </tmpl:put>
 </tmpl:insert>

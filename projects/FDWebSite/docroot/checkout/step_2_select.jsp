@@ -317,6 +317,7 @@ if (errorMsg!=null) {%>
 <%}%>
 <tr>
 <td colspan="2">
+
 <%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 </td>
 </tr>
@@ -570,13 +571,38 @@ if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) {
 </TABLE>
 <%
 if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
+	Boolean isNextDayTimeSlotNotAvailable0 = false;
+	if(null !=request.getAttribute("isNextDayTimeSlotNotAvailable")){
+		isNextDayTimeSlotNotAvailable0 =(Boolean)request.getAttribute("isNextDayTimeSlotNotAvailable");
+	}
+	System.out.println("*******************************************"+isNextDayTimeSlotNotAvailable0);
+	if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
+	{
 %>
 	<%@ include file="/checkout/includes/i_click2call_footer_text.jspf" %>
-<% } else { %>
+<% } } else { %>
 	<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 <% } %>
 
 </FORM>
+<script language="javascript">
+	
+	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
+	var timeslotvalue=c2ctimeslot.value;	
+	if(timeslotvalue==1){
+		if(document.getElementById("loyalty1")){
+			document.getElementById("loyalty1").style.display="block";
+		}
+		if(document.getElementById("loyalty3")){
+			document.getElementById("loyalty3").style.display="block";
+		}
+	}else{
+		if(document.getElementById("loyalty2")){
+			document.getElementById("loyalty2").style.display="block";
+		}
+	}
+	
+</script>
 </fd:CheckoutController>
 </tmpl:put>
 </tmpl:insert>

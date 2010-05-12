@@ -100,6 +100,25 @@ request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
 	<% if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) { %>
 	<%@ include file="/shared/includes/delivery/i_loyalty_button.jspf" %>
 	<% } %>
+	
+	<script language="javascript">
+	
+	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
+	var timeslotvalue=c2ctimeslot.value;	
+	if(timeslotvalue==1){
+		if(document.getElementById("loyalty1")){
+			document.getElementById("loyalty1").style.display="block";
+		}
+		if(document.getElementById("loyalty3")){
+			document.getElementById("loyalty3").style.display="block";
+		}
+	}else{
+		if(document.getElementById("loyalty2")){
+			document.getElementById("loyalty2").style.display="block";
+		}
+	}
+	
+	</script>
 </fd:DeliveryTimeSlot>
 
 <table width="693" cellpadding="0" cellspacing="0" border="0"><tr><td colspan="7""><img src="/media_stat/images/layout/clear.gif" width="1" height="14">

@@ -90,6 +90,12 @@ public class DateUtil {
 		return cal.getTime();
 	}
 	
+	public static Date getNextDate() {
+		Calendar cal = Calendar.getInstance();
+		cal = truncate(cal);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
 	
 
 	public static boolean isSameDay(Date d1, Date d2) {

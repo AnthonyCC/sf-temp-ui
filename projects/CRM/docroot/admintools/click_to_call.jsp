@@ -477,7 +477,7 @@ function selectZones(){
 	 <% } %>
 	 <tr><td colspan="8"><br/></td></tr>
 	 <tr><td align="center" style="background-color: #000000;" colspan="8"></td></tr>
-	 <tr><td colspan="8" class="click2call_bold">Check if next day timeslots are sold out:<br/></td></tr>
+	 <tr><td colspan="8" class="click2call_bold">Check if there is a next day timeslot sold out:<br/></td></tr>
 	 <% if(false==edit){ %>
 	 <tr><td >&nbsp;</td><td colspan="7" align="left"><%= click2CallModel.isNextDayTimeSlot()?"Yes":"No" %><br/></td></tr>
 	 

@@ -19,6 +19,8 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 %>
 <%
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
+boolean isNextDayTimeSlotNotAvailable = false;
+Date nextDay = DateUtil.getNextDate();
 if (timeslots.size() > 0) { 
 	DlvZoneModel zoneModel = null;
 	Calendar today=Calendar.getInstance();
@@ -68,6 +70,9 @@ if (timeslots.size() > 0) {
 						Date cutoffTime = null;
 						boolean firstSlot = true;
 						boolean needsTagging=false;
+						if(day != null && nextDay != null && day.equals(nextDay) && (null == timeslots.getTimeslotsForDate(day) || timeslots.getTimeslotsForDate(day).size()==0)){
+							isNextDayTimeSlotNotAvailable = true;
+						}
 						%>
 						<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDate(day) %>" type="com.freshdirect.fdstore.FDTimeslot">
 							<%
@@ -149,6 +154,10 @@ if (timeslots.size() > 0) {
 										} else {
 											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"><%
 										}
+										if(!isNextDayTimeSlotNotAvailable){
+											isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
+										}
+										System.out.println("************ In Delivery Slots:"+isNextDayTimeSlotNotAvailable);
 									} else {
 										if (isStaticSlot){
 											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= !normalAvailCapacity && availCapacity ? " - Chef's Table Only":"" %>"><%
@@ -163,6 +172,7 @@ if (timeslots.size() > 0) {
 												<%= (selectedSlot || (preReservedSlot && "".equals(timeSlotId) && hasPreReserved)) ? "checked" : "" %>
 												value="<%= (isForce && !availCapacity ? ("f_"+ slot.getTimeslotId()) : slot.getTimeslotId()) %>"><%											
 										}
+										//isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
 									}
 									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);
 									
@@ -209,4 +219,10 @@ nextDayVal.add(Calendar.DATE, 1);
 	 	// Don't have to worry about invalid addresses for zone check
 	 } 	 
 }
+ request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
+ if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable)){
  %>
+<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
+<% } else { %>
+<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
+<% } %>

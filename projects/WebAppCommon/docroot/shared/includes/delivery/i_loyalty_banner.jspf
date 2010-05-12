@@ -6,7 +6,6 @@
 
 <%
 	
-
 if (user.isChefsTable() && zoneCtActive ) { 
 	%>
 	<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
@@ -46,15 +45,18 @@ if (user.isChefsTable() && zoneCtActive ) {
             
 	       if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
 			{
+	    	  // if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
+	   		//{
 			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" />            
+			<div id="loyalty1" style="display:none;" >	<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_pre_click2call.html" /></div>
+			<div id="loyalty2" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>            
 			<%        
-
+	   		//}
 			}else
 			{
 
 			%>
-				<fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" />                        
+				<div id="loyalty2" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/ct/timeslot_note_post.html" /></div>                        
 			<%                            
 			}   
 			}
@@ -67,10 +69,13 @@ if (user.isChefsTable() && zoneCtActive ) {
 } else {
 	if(!user.isChefsTable() && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address))
 	{
+	
+	//	if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||( ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable0))
+	//	{
 	%>
-		<fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" />            
+		<div id="loyalty3" style="display:none;" ><fd:IncludeMedia name="/media/editorial/site_pages/click_to_call/timeslot_note_click2call.html" /></div>            
 	<%        
-
+		//}
 	}
 }
 %>
