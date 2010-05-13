@@ -39,18 +39,19 @@ public class CategoryModel extends ProductContainer {
 	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
 	
 	private final class RecommendedProductsRef extends BalkingExpiringReference {
-		String zoneId;
+	    String zoneId;
 
-		private RecommendedProductsRef(Executor executor, String zoneId) {
-			super(FIVE_MINUTES, executor);
-			this.zoneId = zoneId;
-			// synchronous load
-			try {
-				set(load());
-			} catch (RuntimeException e) {
-				LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId + " synchronously");
-			}
-		}
+            private RecommendedProductsRef(Executor executor, String zoneId) {
+                super(FIVE_MINUTES, executor);
+                this.zoneId = zoneId;
+                // synchronous load
+                try {
+                    set(load());
+                } catch (RuntimeException e) {
+                    LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
+                            + " synchronously");
+                }
+            }
 
 		@Override
 		protected Object load() {
@@ -318,6 +319,41 @@ public class CategoryModel extends ProductContainer {
 	}
 
     public List getProducts() {
+        List<ContentNodeModel> prodList = getStaticProducts();
+
+        Recommender recommender = getRecommender();
+        if (recommender != null) {
+            String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
+            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+            synchronized (recommendedProductsSync) {
+                if (recommendedProductsRefMap.get(zoneId) == null)
+                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
+            }
+
+            try {
+                List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
+                if (recProds != null) {
+                    for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
+                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
+                        newProd.setParentNode(this);
+                        if (!prodList.contains(newProd)) {
+                            newProd.setPriority(prodList.size());
+                            prodList.add(newProd);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                LOGGER.warn("exception during smart category recommendation", e);
+            }
+        }
+
+        return prodList;
+    }
+
+    /**
+     * @return all, non smart products.
+     */
+    public List<ContentNodeModel> getStaticProducts() {
         List<ContentNodeModel> prodList = getPrivateProducts();
 
         if (categoryAlias == null) {
@@ -354,33 +390,6 @@ public class CategoryModel extends ProductContainer {
                 LOGGER.warn("exception during category aliasing", ex);
             }
         }
-
-        Recommender recommender = getRecommender();
-        if (recommender != null) {
-            String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
-            LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
-            synchronized (recommendedProductsSync) {
-                if (recommendedProductsRefMap.get(zoneId) == null)
-                    recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
-            }
-
-            try {
-                List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
-                if (recProds != null) {
-                    for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
-                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
-                        newProd.setParentNode(this);
-                        if (!prodList.contains(newProd)) {
-                            newProd.setPriority(prodList.size());
-                            prodList.add(newProd);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                LOGGER.warn("exception during smart category recommendation", e);
-            }
-        }
-
         return prodList;
     }
 

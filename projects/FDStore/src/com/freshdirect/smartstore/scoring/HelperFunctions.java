@@ -189,7 +189,7 @@ public class HelperFunctions {
             result.add(SmartStoreUtil.addConfiguredProductToCache((ProductModel) model));
         } else if (model instanceof CategoryModel) {
             CategoryModel cat = (CategoryModel) model;
-            for (Iterator iter = cat.getProducts().iterator(); iter.hasNext();) {
+            for (Iterator iter = cat.getStaticProducts().iterator(); iter.hasNext();) {
                 result.add(iter.next());
             }
             for (Iterator iter = cat.getSubcategories().iterator(); iter.hasNext();) {
