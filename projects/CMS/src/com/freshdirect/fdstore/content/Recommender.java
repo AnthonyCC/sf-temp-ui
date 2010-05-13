@@ -25,7 +25,7 @@ public class Recommender extends ContentNodeModelImpl {
 
 	private static final long serialVersionUID = 7406701239902892409L;
 	
-	private final List scope = new ArrayList();
+	private final List<ContentNodeModel> scope = new ArrayList<ContentNodeModel>();
 
 	public Recommender(ContentKey key) {
 		super(key);
@@ -40,7 +40,7 @@ public class Recommender extends ContentNodeModelImpl {
 		return key == null ? null : (RecommenderStrategy) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 	
-	public List getScope() {
+	public List<ContentNodeModel> getScope() {
 		ContentNodeModelUtil.refreshModels(this, "scope", scope, false);
 		return Collections.unmodifiableList(scope);
 	}
