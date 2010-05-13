@@ -4,18 +4,15 @@ CREATE OR REPLACE TYPE cust.click2CallZoneCodes AS VARRAY(1000)  OF varchar2(5);
 create table cust.Click2Call(id varchar2(16) primary key, status char(1),eligible_customers varchar2(200),delivery_zones click2CallZoneCodes,nextday_timeslot char(1),userId varchar2(100),cro_mod_date Date);
 create table cust.Click2Call_TIME(day_name varchar2(15),start_time varchar2(15), end_time varchar2(15), show_flag char(1), click2call_id references cust.Click2Call(id));
 
-grant execute on cust.click2CallZoneCodes to fdstore_prda;
-grant execute on cust.click2CallZoneCodes to fdstore_prdb;
+grant execute on cust.click2CallZoneCodes to fdstore_stprd01;
 grant execute on cust.click2CallZoneCodes to fdstore_ststg01;
 grant execute on cust.click2CallZoneCodes to appdev;
 
-grant insert,select,delete,update on cust.Click2Call to fdstore_prda;
-grant insert,select,delete,update on cust.Click2Call to fdstore_prdb;
+grant insert,select,delete,update on cust.Click2Call to fdstore_stprd01;
 grant insert,select,delete,update on cust.Click2Call to fdstore_ststg01;
 grant select on cust.Click2Call to appdev;
 
-grant insert,select,delete,update on cust.Click2Call_TIME to fdstore_prda;
-grant insert,select,delete,update on cust.Click2Call_TIME to fdstore_prdb;
+grant insert,select,delete,update on cust.Click2Call_TIME to fdstore_stprd01;
 grant insert,select,delete,update on cust.Click2Call_TIME to fdstore_ststg01;
 grant select on cust.Click2Call_TIME to appdev;
 
