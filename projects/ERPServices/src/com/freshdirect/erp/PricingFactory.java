@@ -30,6 +30,7 @@ import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.erp.model.ErpMaterialPriceModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
 import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.erp.model.ErpProductInfoModel.ErpMaterialPrice;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -164,7 +165,28 @@ public class PricingFactory {
 					return d1.compareTo(d2);
 				}
 			} );
-
+			
+			
+			if(erpPrices.length>1)
+			{
+				List newSubList=new ArrayList();												
+				ErpMaterialPriceModel basePrice=(ErpMaterialPriceModel)erpPrices[0];
+				newSubList.add(basePrice);						
+				for(int i=1;i<erpPrices.length;i++){								
+					ErpMaterialPriceModel nextPrice=(ErpMaterialPriceModel)erpPrices[i];
+					if(basePrice.getPromoPrice()>0){
+						if(basePrice.getPromoPrice()>=nextPrice.getPrice())
+						    newSubList.add(nextPrice);
+					}else if(basePrice.getPrice() >=nextPrice.getPrice()){
+						newSubList.add(nextPrice);
+					}else{
+						LOGGER.debug("scale price is less then promo price :"+basePrice.getSapId());
+					}
+				}
+				erpPrices=(ErpMaterialPriceModel[])newSubList.toArray(new ErpMaterialPriceModel[0]);
+				prices = new MaterialPrice[ erpPrices.length ];
+			}								 												
+			
 			double lower;
 			double upper;
 			for (int i=0; i<prices.length; i++) {

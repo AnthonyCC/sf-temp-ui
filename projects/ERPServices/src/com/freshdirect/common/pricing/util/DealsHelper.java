@@ -18,6 +18,20 @@ public class DealsHelper {
 		return ( (FDStoreProperties.getDealsLowerLimit()<=p) && (FDStoreProperties.getDealsUpperLimit()>=p) );
 	}
 	
+	
+	
+	public static boolean isShowBurstImage(double sellingPrice, double promoPrice) {
+		if (!isValidInput(promoPrice) || !isValidInput(sellingPrice) ||  sellingPrice<=promoPrice) {
+			return false;
+		}
+
+		int p = getVariancePercentage(sellingPrice,promoPrice);
+		
+		return ( (FDStoreProperties.getBurstsLowerLimit()<p) && (FDStoreProperties.getDealsUpperLimit()>p) );
+	}
+	
+	
+	
 	/**
 	 * Returns a -ve integer if either the basePrice or sellingPrice is zero or 
 	 * if the sellingPrice is greater than or equal to basePrice.
