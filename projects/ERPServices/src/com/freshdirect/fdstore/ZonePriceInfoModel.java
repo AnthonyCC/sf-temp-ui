@@ -23,9 +23,11 @@ public class ZonePriceInfoModel implements Serializable {
 	/** Default price unit of measure */
 	private final String defaultPriceUnit;
 	
+	private final boolean showBurstImage;
+	
 
 	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
-			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId) {
+			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId, boolean showBurstImage) {
 		this.defaultPriceUnit = defaultPriceUnit != null ? defaultPriceUnit.intern() : null;
 		this.displayableDefaultPriceUnit = displayableDefaultPriceUnit != null ? displayableDefaultPriceUnit.intern() : null;
 		this.sellingPrice = sellingPrice;
@@ -35,7 +37,7 @@ public class ZonePriceInfoModel implements Serializable {
         this.tieredDealPercentage=tieredDealPercentage;
         this.highestDealPercentage=Math.max(dealPercentage, tieredDealPercentage);
         this.sapZoneId = sapZoneId != null ? sapZoneId.intern() : null;
-
+        this.showBurstImage=showBurstImage;
 	}
 	
 	/**
@@ -98,5 +100,9 @@ public class ZonePriceInfoModel implements Serializable {
 
 	public String getSapZoneId() {
 		return sapZoneId;
+	}
+
+	public boolean isShowBurstImage() {
+		return showBurstImage;
 	}
 }

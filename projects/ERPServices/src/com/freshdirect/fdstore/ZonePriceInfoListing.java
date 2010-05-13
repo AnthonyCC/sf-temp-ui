@@ -36,7 +36,7 @@ public class ZonePriceInfoListing implements Serializable {
 	
 	public static ZonePriceInfoListing getDummy() {
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.99, 1.99, "LB", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.99, 1.99, "LB", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE,false);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
 		return dummyList;
 	}

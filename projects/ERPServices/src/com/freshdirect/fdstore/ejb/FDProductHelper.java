@@ -195,6 +195,16 @@ class FDProductHelper {
 		);
 	
 	}
+	
+	 private Comparator matlPriceComparator = new Comparator() {
+	        public int compare(Object obj1, Object obj2) {
+	        	ErpMaterialPrice price1 = (ErpMaterialPrice) obj1;
+	        	ErpMaterialPrice price2 = (ErpMaterialPrice) obj2;
+	            if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
+	            else if (price1.getScaleQuantity() < price2.getScaleQuantity()) return -1;
+	            else return 1;
+	        }
+	    };
 
 	private ZonePriceInfoModel buildZonePriceInfo(String skuCode, List matPriceList, String sapZoneId) {
 		double defaultPrice=0.0;
@@ -202,6 +212,34 @@ class FDProductHelper {
 		double promoPrice = 0.0;
 		if(matPriceList == null || matPriceList.size() == 0)
 			return null;
+						
+//		Form zone price listing only if product is not discontinued.		
+		
+		if(matPriceList.size()>1)
+		{
+			List newSubList=new ArrayList();
+			Collections.sort(matPriceList, matlPriceComparator);												
+			ErpMaterialPrice basePrice=(ErpMaterialPrice)matPriceList.get(0);
+			newSubList.add(basePrice);						
+			for(int i=1;i<matPriceList.size();i++){								
+				ErpProductInfoModel.ErpMaterialPrice nextPrice=(ErpProductInfoModel.ErpMaterialPrice)matPriceList.get(i);								
+				//ErpMaterialPriceModel nextPrice=(ErpMaterialPriceModel)erpPrices[i];
+				if(basePrice.getPromoPrice()>0){
+				    if(basePrice.getPromoPrice()>=nextPrice.getPrice())
+					       newSubList.add(nextPrice);
+				}else if(basePrice.getPrice() >=nextPrice.getPrice()){
+					newSubList.add(nextPrice);
+				}else{
+					LOGGER.debug("scale price is less then promo price :"+sapZoneId);
+				}
+				
+				if(nextPrice.getPrice()<=basePrice.getPrice()){
+					newSubList.add(basePrice);
+				}
+			}
+			matPriceList=newSubList;
+		}										 						
+		
 		ErpMaterialPrice matPrice = (ErpMaterialPrice) matPriceList.get(0);
 		if(matPrice.getScaleUnit().length() == 0){
 			//no scales
@@ -209,8 +247,9 @@ class FDProductHelper {
 			defaultPriceUnit = matPrice.getUnit();
 			promoPrice = matPrice.getPromoPrice();
 		} else {
-			//has scales. sort by scale quantity and take lowest scale quantity 
-			Collections.sort(matPriceList, PricingFactory.scaleQuantityComparator);
+			//has scales. sort by scale quantity and take lowest scale quantity
+											
+			//Collections.sort(matPriceList, PricingFactory.scaleQuantityComparator);
 			//Get the lowet scale quantity element from the list which is the first element after sorting.
 			matPrice = (ErpProductInfoModel.ErpMaterialPrice) matPriceList.get(0);
 			defaultPrice = matPrice.getPrice();
@@ -224,6 +263,9 @@ class FDProductHelper {
 			//LOGGER.debug("has was price for SKU " + erpProductInfo.getSkuCode());			
 			dealsPercentage=Math.max(DealsHelper.getVariancePercentage(defaultPrice, promoPrice), 0);
 		}
+		
+		boolean isShowBurstImage = DealsHelper.isShowBurstImage(defaultPrice,promoPrice);;
+		
 		ErpMaterialPrice[] matPrices = (ErpMaterialPrice[]) matPriceList.toArray(new ErpMaterialPrice[0]);
 		int tieredDeal = DealsHelper.determineTieredDeal(defaultPrice, matPrices);
 		if (tieredDeal > 0 && DealsHelper.isDealOutOfBounds(tieredDeal)) {
@@ -244,7 +286,9 @@ class FDProductHelper {
 				itemOnSale, 
 				dealsPercentage, 
 				tieredDeal, 
-				sapZoneId);
+				sapZoneId,
+				isShowBurstImage
+				);
 	}
 	
 	protected void bindAttributes(ErpProductModel product) throws FDResourceException {

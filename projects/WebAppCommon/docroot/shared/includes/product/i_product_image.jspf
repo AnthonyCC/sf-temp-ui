@@ -3,12 +3,19 @@
 	Image productImage = productNode.getDetailImage();
 	Image zoomImage=(Image) productNode.getZoomImage();
 	
+	
+	
 	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
 	//boolean isDeal = productNode.hasWasPrice();
 	int dealPercentage = productNode.getHighestDealPercentage();
-	boolean isDeal = dealPercentage > 0;
+	//boolean isDeal = dealPercentage > 0;
+	boolean isDeal = false;
+	if ( (FDStoreProperties.getBurstsLowerLimit()<dealPercentage) && (FDStoreProperties.getDealsUpperLimit()>dealPercentage )){
+               isDeal = true;
+	}
+	
 	String burstImage = "/media_stat/images/deals/brst_lg_" + dealPercentage + (supportsPNG ? ".png" : ".gif");
         
 	if ( zoomImage != null && zoomImage.getPath().indexOf("clear.gif") == -1 ) {

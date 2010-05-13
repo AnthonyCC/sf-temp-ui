@@ -304,6 +304,10 @@ public class FDStoreProperties {
 	private static final String DEALS_SKU_PREFIX="fdstore.deals.skuPrefix";
 	private static final String DEALS_LOWER_LIMIT="fdstore.deals.lowerLimit";;
 	private static final String DEALS_UPPER_LIMIT="fdstore.deals.upperLimit";
+
+	private static final String BURST_LOWER_LIMIT="fdstore.burst.lowerLimit";;
+	private static final String BURST_UPPER_LIMIT="fdstore.burst.upperLimit";	
+	
 	private static final String MAX_FEATURED_DEALS_FOR_PAGE="fdstore.deals.maxFeaturedDeals";
 	private static final String MAX_FEATURED_DEALS_PER_LINE="fdstore.deals.maxFeaturedDealsPerLine";
 	private static final String MIN_FEATURED_DEALS_FOR_PAGE ="fdstore.deals.minFeaturedDeals";
@@ -650,8 +654,10 @@ public class FDStoreProperties {
 
 		//deals
 		defaults.put(DEALS_SKU_PREFIX,"GRO,FRO,SPE,DAI,HBA");
-		defaults.put(DEALS_LOWER_LIMIT,"10");
-		defaults.put(DEALS_UPPER_LIMIT,"75");
+		defaults.put(DEALS_LOWER_LIMIT,"1");
+		defaults.put(DEALS_UPPER_LIMIT,"95");
+		defaults.put(BURST_LOWER_LIMIT,"10");
+		defaults.put(BURST_UPPER_LIMIT,"75");
 		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"5");
 		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
 		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
@@ -1395,6 +1401,14 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(DEALS_UPPER_LIMIT));
 	}	
     
+	public static int getBurstsLowerLimit(){
+		return Integer.parseInt(get(BURST_LOWER_LIMIT));
+	}
+	public static int getBurstUpperLimit(){
+		return Integer.parseInt(get(BURST_UPPER_LIMIT));
+	}	
+
+	
 	public static final int getMaxFeaturedDealsForPage() {
 		return Integer.parseInt(get(MAX_FEATURED_DEALS_FOR_PAGE));
 	}

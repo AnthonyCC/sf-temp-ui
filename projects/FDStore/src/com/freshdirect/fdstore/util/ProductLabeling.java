@@ -3,6 +3,11 @@ package com.freshdirect.fdstore.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -90,8 +95,20 @@ public class ProductLabeling {
 		displayFave = false;
 		displayNew = false;
 		displaybackInStock = false;
-
-		int deal = (hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL) ) ? product.getHighestDealPercentage() : 0;
+        boolean showBurstImage=true; 
+		try {
+			FDProductInfo info= FDCachedFactory.getProductInfo(product.getDefaultSkuCode());			
+			ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
+			showBurstImage=model.isShowBurstImage();			
+		} catch (FDResourceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FDSkuNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		int deal = ((hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL)) && showBurstImage ) ? product.getHighestDealPercentage() : 0;
 		boolean isNew = (hideBursts == null || !hideBursts.contains(EnumBurstType.NEW) ) && product.isNew();
 		boolean isYourFave = (hideBursts == null || !hideBursts.contains(EnumBurstType.YOUR_FAVE) ) && DYFUtil.isFavorite(product, customer);
 		boolean isBackInStock = (hideBursts == null || !hideBursts.contains(EnumBurstType.BACK_IN_STOCK) ) && product.isBackInStock();
