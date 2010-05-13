@@ -339,6 +339,7 @@ because otherwise the external modifications of the slide database won't get pic
 		<Object value="instance:com.freshdirect.cms.fdstore.ConfiguredProductValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.DateIntervalValidator"/>
 		<Object value="instance:com.freshdirect.cms.fdstore.SearchRelevancyScoreValidator"/>
+		<Object value="instance:com.freshdirect.cms.fdstore.CmsRecommenderValidator"/>
 	</contribution>
 
 	<service-point id="Validator" interface="com.freshdirect.cms.application.ContentServiceI">
