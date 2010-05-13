@@ -100,6 +100,9 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 		loader = null;		
 	}
 
+	/**
+	 * Initiate asynchronous loading, if it's not loaded already, or it's expired.
+	 */
 	public synchronized void reload() {
 		if (loader == null && (referent == null || isExpired())) {
 			loader = new AsyncLoader();
@@ -107,6 +110,9 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 		}
 	}
 	
+	/**
+	 * force asynchronous loading.
+	 */
 	public synchronized void forceRefresh() {
 		if (loader == null) {
 			super.forceRefresh();
