@@ -140,7 +140,7 @@
 			}
 
 		%>
-		<div style="overflow: hidden; <%= dimStr %>">
+		<div style="text-align: left; overflow: hidden; <%= dimStr %>">
 			<fd:IncludeMedia name='<%=p.getBubbleContent().getPath() %>'/>
 		</div>
 		<% }
