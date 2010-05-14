@@ -1,3 +1,4 @@
+<%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
 <%-- Dependencies
     Host page must :
         - bring in the common_javascript.js file 
@@ -106,7 +107,7 @@
 		<!-- if we have a billing address -->
 		<b>Billing Address:</b><br>
 		<%=paymentM.getName()%><BR>
-		<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, Apt. <%=paymentM.getApartment()%><% } %>
+		<%=paymentM.getAddress1()%><% if(paymentM.getApartment()!=null && paymentM.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentM.getApartment()%><% } %>
 		<BR>
 <%        if(paymentM.getAddress2()!=null && paymentM.getAddress2().trim().length()>0) { %>
 		<%=paymentM.getAddress2()%><BR>

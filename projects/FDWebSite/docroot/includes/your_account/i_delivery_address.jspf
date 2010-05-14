@@ -25,7 +25,7 @@ for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 		<%if(showingCorporateAddress){%>
 			<%=shipAddress.getCompanyName()%><br>
 		<%}%>
-		<%=shipAddress.getAddress1()%><% if(shipAddress.getApartment()!=null && shipAddress.getApartment().trim().length()>0) { %>, Apt. <%=shipAddress.getApartment()%><% } %><BR>
+		<%=shipAddress.getAddress1()%><% if(shipAddress.getApartment()!=null && shipAddress.getApartment().trim().length()>0) { %>, <% if(showingCorporateAddress){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=shipAddress.getApartment()%><% } %><BR>
 		<%if(shipAddress.getAddress2()!=null && shipAddress.getAddress2().trim().length()>0) { %>
 			<%=shipAddress.getAddress2()%><br>
 			<%  

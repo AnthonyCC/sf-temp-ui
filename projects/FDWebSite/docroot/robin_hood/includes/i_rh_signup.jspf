@@ -17,14 +17,14 @@ String[] checkGiftCardBuyerForm = {
 		EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
 						
 %>
-<% System.out.println("a"); %>
+<% //System.out.println("a"); %>
 
 <%
 
- System.out.println("b");
+ //System.out.println("b");
 
 
-System.out.println("c");
+//System.out.println("c");
 String fldTitle 			= request.getParameter("title");
 String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
 String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
@@ -48,14 +48,14 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 } else {
     fldTermsAndConditions = "";
 }
-System.out.println("d");
+//System.out.println("d");
 
- System.out.println("f");
+ //System.out.println("f");
 
 %>
 
 
-<% System.out.println("g"); %>
+<% //System.out.println("g"); %>
 
 
 
@@ -253,7 +253,7 @@ System.out.println("d");
 <br />
 <br />
 
-<% System.out.println("h"); %>
+<% //System.out.println("h"); %>
 <% // Donator Payment Info %>
 <fd:CheckoutController actionName="rh_onestep_submitDonationOrder" result="result" successPage="/robin_hood/rh_receipt.jsp" ccdProblemPage="/robin_hood/rh_add_creditcard.jsp">
 <fd:ErrorHandler result='<%=result%>' field='<%=checkGiftCardBuyerForm%>'>

@@ -117,7 +117,7 @@ int idx = 0;
 	                <b>Billing Address:</b><BR>
 	                <font class="space4pix"><br></font>
 	                <%= paymentMethod.getName() %><BR>
-	                <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+	                <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentMethod.getApartment()%><% } %><BR>
 	                <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
 	                <%=paymentMethod.getAddress2()%><BR>
 	                <%}%>

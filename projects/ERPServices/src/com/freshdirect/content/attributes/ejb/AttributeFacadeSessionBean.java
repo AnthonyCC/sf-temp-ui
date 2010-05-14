@@ -270,11 +270,12 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 				ps.setString(5, ra.getAttributeType().getName());
 				ps.setString(6, ra.getName());
 				ps.setString(7, ra.getValue().toString());
-
-				if (ps.executeUpdate() != 1) {
-					getSessionContext().setRollbackOnly();
-					throw new AttributeException("Update failed");
-				}
+			}
+			
+			//this should be outside of the loop so it commits them all at once
+			if (ps.executeUpdate() != 1) {
+				getSessionContext().setRollbackOnly();
+				throw new AttributeException("Update failed");
 			}
 
 			ps.close();

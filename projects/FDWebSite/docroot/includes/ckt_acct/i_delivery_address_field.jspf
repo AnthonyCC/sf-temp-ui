@@ -221,7 +221,24 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
     <tr valign="MIDDLE">
         <td align="right" class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="6" border="0"><br><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>* Service&nbsp;Type&nbsp;&nbsp;</td>
         <td colspan="2">
-            <input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %>><b>Residential</b>&nbsp;&nbsp;<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %>><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a><br>
+			<script type="text/javascript">
+			<!--
+				function cosApt(e) {
+					if (e.checked) {
+						var aText = document.getElementById('aptText');
+						var aTextAlt = document.getElementById('aptTextAlt');
+						if (e.value=="HOME") {
+							aText.innerHTML="Apt. #";
+							aTextAlt.innerHTML="Apt. #";
+						}else{
+							aText.innerHTML="Floor/Suite&nbsp;#";
+							aTextAlt.innerHTML="Floor/Suite&nbsp;#";
+						}
+					}
+				}
+			//-->
+			</script>
+            <input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %> onchange="cosApt(this);"><b>Residential</b>&nbsp;&nbsp;<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %> onchange="cosApt(this);"><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a><br>
             <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
         </td>
     </tr>
@@ -244,7 +261,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
         <input type="text" SIZE="21" maxlength="50" class="text11" name="<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>" required="true" value="<%= fldAddress1 %>">&nbsp;&nbsp;
         <fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>&nbsp;&nbsp;
         <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
-        &nbsp;Apt. #
+        &nbsp;<span id="aptText"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>
         <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
         &nbsp;&nbsp;<input type="text" maxlength="10" class="text11" size="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%= fldApartment %>">&nbsp;&nbsp;
         <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
@@ -520,7 +537,7 @@ You may authorize FreshDirect to deliver to someone else in your building in the
 <tr>
     <td width="115" align="right" class="text12">
         <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
-        *Apt. #&nbsp;&nbsp;
+        *<span id="aptTextAlt"><%= EnumServiceType.HOME.equals(fldServiceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>&nbsp;&nbsp;
         <fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>"></span></fd:ErrorHandler>
     </td>
     <td width="565"><input type="text" maxlength="10" class="text11" size="4" name="<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>" value="<%=fldAltApartment%>"> <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ALT_APARTMENT.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>

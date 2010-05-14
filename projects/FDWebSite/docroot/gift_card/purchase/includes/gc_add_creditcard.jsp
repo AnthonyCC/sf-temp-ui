@@ -13,6 +13,7 @@
 String success_page = "/gift_card/purchase/purchase_giftcard.jsp";
 request.setAttribute("giftcard", "true");
 FDSessionUser sessionuser = (FDSessionUser)session.getAttribute(SessionName.USER);
+
 %>
 
 <fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='<%=success_page%>'>

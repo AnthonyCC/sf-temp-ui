@@ -91,7 +91,7 @@ String lineWidth = isShowSmaller?"290":"310";
 <b>Address:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<% if (showModify) {%><A HREF="/checkout/step_1_choose.jsp">Modify</A><%}%><font class="space4pix"><br><br></font>
             <%= dlvAddress.getFirstName() %> <%= dlvAddress.getLastName() %><br>
             <%if(depotName != null || depotName.length() > 1){%><%=depotName%><br><%}%>         
-            <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, Apt. <%=dlvAddress.getApartment()%><% } %><BR>
+            <%= dlvAddress.getAddress1() %><% if(dlvAddress.getApartment()!=null && dlvAddress.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getApartment()%><% } %><BR>
             <% if(dlvAddress.getAddress2()!=null && dlvAddress.getAddress2().trim().length()>0) {
             %><%= dlvAddress.getAddress2() %><br>
             <% }%>
@@ -138,7 +138,7 @@ String lineWidth = isShowSmaller?"290":"310";
             <%= dlvAddress.getAltDelivery().getName()%><br><br> 
 <%           if("NEIGHBOR".equalsIgnoreCase(dlvAddress.getAltDelivery().getDeliveryCode())) {%>
                 <%=dlvAddress.getAltFirstName()%> <%=dlvAddress.getAltLastName()%><br>
-                Apt. #: <%=dlvAddress.getAltApartment()%><br>
+                <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=dlvAddress.getAltApartment()%><br>
                 <%if (dlvAddress.getAltPhone()!=null) {%><%=dlvAddress.getAltPhone().getPhone()%> <%if( !"".equals(dlvAddress.getAltPhone().getExtension()) ){%>Ext. <%= dlvAddress.getAltPhone().getExtension() %> <%}}%><br><br>
             <%}%>
         <%}%></FONT>
@@ -206,7 +206,7 @@ String lineWidth = isShowSmaller?"290":"310";
             <b>Account Address:</b><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName() %><BR>
-            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentMethod.getApartment()%><% } %><BR>
             <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
             <%=paymentMethod.getAddress2()%><BR>
             <%}%>
@@ -216,7 +216,7 @@ String lineWidth = isShowSmaller?"290":"310";
             <b>Billing Address:</b><BR>
             <font class="space4pix"><br></font>
             <%= paymentMethod.getName() %><BR>
-            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, Apt. <%=paymentMethod.getApartment()%><% } %><BR>
+            <%= paymentMethod.getAddress1() %><% if(paymentMethod.getApartment()!=null && paymentMethod.getApartment().trim().length()>0) { %>, <% if(EnumServiceType.CORPORATE.equals(user.getSelectedServiceType())){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=paymentMethod.getApartment()%><% } %><BR>
             <% if(paymentMethod.getAddress2()!=null && paymentMethod.getAddress2().trim().length()>0) { %>
             <%=paymentMethod.getAddress2()%><BR>
             <%}%>

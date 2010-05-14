@@ -6,6 +6,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import="com.freshdirect.framework.util.NVL" %>
 
 <%!
 String[] checkPaymentMethodForm = {PaymentMethodName.ACCOUNT_HOLDER, PaymentMethodName.CARD_BRAND, PaymentMethodName.ACCOUNT_NUMBER, "expiration", EnumUserInfoName.BIL_ADDRESS_1.getCode(), EnumUserInfoName.BIL_CITY.getCode(), EnumUserInfoName.BIL_STATE.getCode(), EnumUserInfoName.BIL_ZIPCODE.getCode()};
@@ -35,6 +36,7 @@ String ccExpireYear = "";
 Date ccExpireDate = null;
 String custFname = null;
 String custLname = null;
+EnumServiceType serviceTypeRH = (EnumServiceType)NVL.apply(EnumServiceType.getEnum(request.getParameter(EnumUserInfoName.DLV_SERVICE_TYPE.getCode())), EnumServiceType.CORPORATE.equals(sessionuser.getSelectedServiceType()) ? sessionuser.getSelectedServiceType() : EnumServiceType.HOME);
 
     if(sessionuser.getInvalidPaymentMethod() != null) {
         //Redirected from signup page due to invalid credit card.
@@ -94,7 +96,6 @@ String custLname = null;
         }
     }
 %>
-
     <%-- error system messages happen here --%>
     <fd:ErrorHandler result='<%=result%>' name='matching_addresses' id='errorMsg'>
 		<br><span class="text11rbold"><%= errorMsg %></span><br><br>
@@ -222,7 +223,7 @@ String custLname = null;
 				</fd:ErrorHandler> &nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>">
 					<span class="text11rbold">
-				</fd:ErrorHandler>Apt./Floor Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
+				</fd:ErrorHandler><%= EnumServiceType.HOME.equals(serviceTypeRH) ? "Apt. #" : "Floor/Suite&nbsp;#" %>&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>"
 					name="<%=EnumUserInfoName.BIL_APARTMENT.getCode()%>">
 					</span>
 				</fd:ErrorHandler><input type="text" maxlength="10" size="4" class="text11"

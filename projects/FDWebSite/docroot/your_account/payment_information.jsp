@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
+<%@ page import='com.freshdirect.common.customer.EnumServiceType' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>

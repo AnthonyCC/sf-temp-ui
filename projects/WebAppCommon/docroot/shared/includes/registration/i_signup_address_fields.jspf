@@ -4,12 +4,24 @@
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>'></span></fd:ErrorHandler>
 	</td>
 	<td class="text12" colspan="2">
-
+		<script type="text/javascript">
+		<!--
+			function cosApt(e) {
+				if (e.checked) {
+					var aText = document.getElementById('aptText');
+					(e.value=="HOME")
+						?aText.innerHTML="Apt.#"
+						:aText.innerHTML="Floor/Suite&nbsp;#";
+				}
+				console.log(e, e.checked, aText );
+			}
+		//-->
+		</script>
 		<table>
 			<tr>
-				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this)"></td>
+				<td><input <%=EnumServiceType.HOME.equals(serviceType)? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.HOME.getName()%>" onchange="showSurveys(this); cosApt(this);"></td>
 				<td><b>Residential</b></td>
-				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this)"></td>
+				<td><input <%=EnumServiceType.CORPORATE.equals(serviceType) ? "checked" : ""%> type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>" required="true" value="<%=EnumServiceType.CORPORATE.getName()%>" onchange="showSurveys(this); cosApt(this);"></td>
 				<td><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a></td>
 			</tr>
 		</table>
@@ -33,7 +45,7 @@
 		<fd:ErrorHandler result='<%=result%>' name='<%= EnumUserInfoName.DLV_ADDRESS_1.getCode() %>' id ='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
  
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>'><span class="text11rbold"></fd:ErrorHandler>
-		&nbsp;&nbsp;Apt./Ste.#
+		&nbsp;&nbsp;<span id="aptText"><%= EnumServiceType.HOME.equals(serviceType) ? "Apt. #" : "Floor/Suite&nbsp;#" %></span>
 		<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>'></span></fd:ErrorHandler>
 		&nbsp;&nbsp;<input type="text" maxlength="10" class="text9" SIZE="4" name="<%= EnumUserInfoName.DLV_APARTMENT.getCode() %>" value="<%=fldApartment%>"> 
 	

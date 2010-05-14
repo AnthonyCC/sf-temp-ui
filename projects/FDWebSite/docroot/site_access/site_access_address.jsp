@@ -7,7 +7,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
-    String successPage = request.getParameter("successPage");
+    String successPage = NVL.apply(request.getParameter("successPage"), "").trim();
 	String serviceType = NVL.apply(request.getParameter("serviceType"), "").trim();
 	String corpServiceType = NVL.apply(request.getParameter("corpServiceType"), "").trim();
     boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
@@ -87,7 +87,7 @@ Please enter your street address so that we can make sure your building is in a 
 							<td width="130" ALIGN="RIGHT" class="bodyCopy">* Street Address</td>
 							<td><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 							</td>
-							<td align="right" class="bodyCopy">&nbsp;&nbsp;Apt./Ste.#</td>
+							<td align="right" class="bodyCopy">&nbsp;&nbsp;Floor/Suite #</td>
 							<td><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text" class="text11" maxlength="10" size="8" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" value="<%=fldApartment%>"><fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_APARTMENT.getCode()%>" id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 							</td>
 						</tr>
