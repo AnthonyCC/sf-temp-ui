@@ -27,6 +27,11 @@ public class ZonePriceInfoModel implements Serializable {
 	
 
 	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
+			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId) {
+		this( sellingPrice, promoPrice, defaultPriceUnit, displayableDefaultPriceUnit, itemOnSale, dealPercentage, tieredDealPercentage, sapZoneId, true );
+	}
+	
+	public ZonePriceInfoModel(double sellingPrice, double promoPrice, String defaultPriceUnit,String displayableDefaultPriceUnit, 
 			boolean itemOnSale, int dealPercentage, int tieredDealPercentage, String sapZoneId, boolean showBurstImage) {
 		this.defaultPriceUnit = defaultPriceUnit != null ? defaultPriceUnit.intern() : null;
 		this.displayableDefaultPriceUnit = displayableDefaultPriceUnit != null ? displayableDefaultPriceUnit.intern() : null;
