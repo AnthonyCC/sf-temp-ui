@@ -80,6 +80,8 @@ public class FDSurveyFactory {
     public FDSurvey getSurvey(EnumSurveyType surveyType, EnumServiceType userType) throws FDResourceException {
         userType = correctServiceType(userType);
         SurveyKey key = new SurveyKey(surveyType, userType);
+        FDSurvey survey= getSurvey(key);
+        if(survey!=null && survey.getKey()!=null  && survey.getKey().getUserType()==null) survey.getKey().setUserType(userType); 
         return getSurvey(key);
     }
 

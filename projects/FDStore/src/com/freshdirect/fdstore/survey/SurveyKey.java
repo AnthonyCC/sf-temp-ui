@@ -57,4 +57,8 @@ public class SurveyKey implements Serializable {
         return "SurveyKey[" + surveyType + ',' + userType + ']';
     }
 
+	public void setUserType(EnumServiceType userType) {
+		this.userType = userType;
+	}
+
 }
