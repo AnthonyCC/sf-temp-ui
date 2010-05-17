@@ -51,7 +51,8 @@
 						currentDepartment = thisDept.getFullName();
 					}
 
-					if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+					//if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+					if (!thisDept.isHidden() && !thisDept.isHidddenInQuickshop()) {
 						if (showLink) { 
 							departmentNav.append("<a href=\"");
 							departmentNav.append("/quickshop/every_item.jsp?qsDeptId="); 

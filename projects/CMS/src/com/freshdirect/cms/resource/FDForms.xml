@@ -53,6 +53,7 @@
 							<CmsField><attribute>REDIRECT_URL</attribute></CmsField>
                             <CmsField><attribute>MEDIA_CONTENT</attribute></CmsField><!-- [APPREQ-77] -->
 							<CmsField><attribute>USE_ALTERNATE_IMAGES</attribute></CmsField>
+							<CmsField><attribute>HIDE_IN_QUICKSHOP</attribute></CmsField>
 						</fields>
 					</CmsSection>
 					<CmsSection>

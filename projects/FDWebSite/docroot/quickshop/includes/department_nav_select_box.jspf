@@ -26,7 +26,8 @@ if (storeDepartments.size() > 0) {
 	<%      // checks if customer has shopped from this dept.  If not, don't show dept. APPDEV-203
 		if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
 
-			if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+			//if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+			if (!thisDept.isHidden() && !thisDept.isHidddenInQuickshop()) {
 				if (!hasDeptId) {
 %>	<option value="/quickshop/every_item.jsp?qsDeptId=<%= thisDept.getContentName() %>"><%= thisDept.getFullName() %></option>
 <%

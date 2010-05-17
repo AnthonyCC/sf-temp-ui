@@ -126,7 +126,8 @@
 			ContentNodeModel cn = (ContentNodeModel)li.next();
 			if (cn.isHidden()) {
 				li.remove();
-			} else if ("[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp]".indexOf("["+cn.getContentName().toLowerCase()+"]") > -1) { // hide depts, match QS selection
+//			} else if ("[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp]".indexOf("["+cn.getContentName().toLowerCase()+"]") > -1) { // hide depts, match QS selection
+    		} else if ((cn instanceof DepartmentModel) && (((DepartmentModel)cn).isHidddenInQuickshop())) {   
 				li.remove();
 			}
 		}

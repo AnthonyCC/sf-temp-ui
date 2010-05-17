@@ -123,6 +123,7 @@
 			<AttributeDef type="I" name="MAX_ROWCOUNT"  label="Max Rowcount" />
 			<AttributeDef type="I" name="PRIORITY"  label="Priority" />
 			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
+			<AttributeDef type="B" name="HIDE_IN_QUICKSHOP" label="Hide in Quickshop"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">

@@ -50,6 +50,10 @@ public class DepartmentModel extends ProductContainer {
 		return getAttribute( "USE_ALTERNATE_IMAGES", false );
 	}
 	
+	public boolean isHidddenInQuickshop() {
+	    return getAttribute("HIDE_IN_QUICKSHOP", false);
+	}
+	
        /**
          * this is a Department level attribute, ASSOC_EDITORIAL
          */
