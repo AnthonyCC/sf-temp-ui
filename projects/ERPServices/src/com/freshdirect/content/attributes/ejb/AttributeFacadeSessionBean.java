@@ -239,7 +239,10 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 
 			// store new attributes			
 			ps = conn.prepareStatement(
-					"insert into erps.attributes (id, root_id, child1_id, child2_id, atr_type, atr_name, atr_value, date_modified) values (?, ?, ?, ?, ?, ?, ?, sysdate)");
+					"insert into erps.attributes (id, root_id, child1_id, child2_id, atr_type, atr_name, atr_value, date_modified) values (?, ?, ?, ?, ?, ?, ?, ?)");
+			
+			//get timestamp to replace sysdate
+			Timestamp ts = new Timestamp(new Date().getTime());
 
 			for (int i = 0; i < rawAttributes.length; i++) {
 				FlatAttribute ra = rawAttributes[i];
@@ -270,6 +273,8 @@ public class AttributeFacadeSessionBean extends SessionBeanSupport {
 				ps.setString(5, ra.getAttributeType().getName());
 				ps.setString(6, ra.getName());
 				ps.setString(7, ra.getValue().toString());
+				//use timestamp instead of sysdate
+				ps.setTimestamp(8, ts);
 
 				if (ps.executeUpdate() != 1) {
 					getSessionContext().setRollbackOnly();
