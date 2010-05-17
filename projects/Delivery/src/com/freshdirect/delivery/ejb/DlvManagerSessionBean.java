@@ -2267,7 +2267,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public void processCancelNotifications(List<IRoutingNotificationModel> notifications) throws DlvResourceException {
+	public void processCancelNotifications(List<IRoutingNotificationModel> notifications, List<IRoutingNotificationModel> unUsedNotifications) throws DlvResourceException {
 		
 		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 		if(notifications != null) {
@@ -2289,6 +2289,9 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					}
 				}
 				proxy.deleteNotifications(notifications);
+				if(unUsedNotifications != null && unUsedNotifications.size() > 0) {
+					proxy.deleteNotifications(unUsedNotifications);
+				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -93,10 +93,11 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					
 					for(int i=0; i<DEFAULT_DAYS; i++) {
 						
-						List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
+						List<DlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime());
 						System.out.println("Total unassigned reservations for :"+startDate.getTime()+"->"+(_unassignedReservations!=null ? _unassignedReservations.size() : 0));
-						if(_unassignedReservations!=null && !_unassignedReservations.isEmpty())
+						if(_unassignedReservations!=null && !_unassignedReservations.isEmpty()) {
 							unassignedReservations.addAll(_unassignedReservations);
+						}
 						startDate.add(Calendar.DATE, 1);
 					}
 				}
@@ -115,15 +116,18 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 			try {
 				List<IRoutingNotificationModel> notifications = dlvManager.retrieveNotifications();
 				List<IRoutingNotificationModel> cancelledNotifications = new ArrayList<IRoutingNotificationModel>();
+				List<IRoutingNotificationModel> unUsedNotifications = new ArrayList<IRoutingNotificationModel>();
 				
 				for (IRoutingNotificationModel notification : notifications) {
 					if(notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
 						cancelledNotifications.add(notification);
+					} else {
+						unUsedNotifications.add(notification);
 					}
 				}
-				System.out.println("Total no of notifications processed :"+cancelledNotifications.size());
+				System.out.println("Total no of notifications processed :"+cancelledNotifications.size()+ " , Unused:"+unUsedNotifications.size());
 				if(cancelledNotifications.size() > 0) {
-					dlvManager.processCancelNotifications(cancelledNotifications);
+					dlvManager.processCancelNotifications(cancelledNotifications, unUsedNotifications);
 				}
 			} catch (Exception e) {
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with notification exception : ").append(e.toString()).toString());
