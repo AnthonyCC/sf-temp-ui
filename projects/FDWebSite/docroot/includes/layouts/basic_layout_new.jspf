@@ -41,7 +41,7 @@ int n_cols = 0; // number of columns
 boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
 boolean sort = request.getParameter("sort") != null;
 Map groupedMap = null;
-if(showGroup && !sort) {
+if(showGroup) {
     NewProductsGrouping grouping = new NewProductsGrouping();
     groupedMap = grouping.groupBy(products, reverseOrder);
 } 
@@ -172,6 +172,8 @@ int rank = nav.getPageOffset()+1;
 					}
 					rank++;
 					%>
+					<!-- temporary display. Need to be removed after testing APPDEV-1008. -->
+					<br><%= productNode.getDepartment().getFullName() %>
 				</td>
 			</fd:PIPRow>
 		</tr>

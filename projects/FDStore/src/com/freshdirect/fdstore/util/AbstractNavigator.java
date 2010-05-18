@@ -179,16 +179,16 @@ public abstract class AbstractNavigator {
 
 		/* filters */
 
-		val = (String) params.get("deptId");
-		if (val != null && val.length() > 0) {
-			categoryFilter = null;
-			deptFilter = val;
-		}
-
 		val = (String) params.get("catId");
 		if (val != null && val.length() > 0) {
 			categoryFilter = val;
 			deptFilter = null;
+		}
+
+		val = (String) params.get("deptId");
+		if (val != null && val.length() > 0) {
+			categoryFilter = null;
+			deptFilter = val;
 		}
 		
 		val = (String) params.get("brandValue");
@@ -624,7 +624,7 @@ public abstract class AbstractNavigator {
 	}
 
 
-	private void append(JspWriter out, String name, String value) throws IOException {
+	protected void append(JspWriter out, String name, String value) throws IOException {
 		if (out != null && name != null && value != null) {
 			out.write("<input type=\"hidden\" name=\""+name+"\" value=\""+value+"\">\n");
 		}

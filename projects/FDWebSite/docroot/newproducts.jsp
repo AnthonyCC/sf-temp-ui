@@ -30,7 +30,7 @@
 	request.setAttribute("sitePage", "www.freshdirect.com/newproducts.jsp");
 	request.setAttribute("listPos", "SystemMessage,LittleRandy,CategoryNote");
 %>
-<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav">
+<fd:GetNewProducts searchResults="results" productList="products" categorySet="categorySet" brandSet="brandSet" categoryTree="categoryTree" filteredCategoryTreeName="filteredCategoryTree" navigator="nav" showGroup="showGroup">
 <%
 	//set some top-level variables to remove them from includes
 	String deptId = NVL.apply(request.getParameter("deptId"), "");
@@ -39,7 +39,6 @@
 	String deptRefUrl ="";
 	String trk="newp";
 	boolean isBrand = false;
-    boolean showGroup = true;
 
 	if ("".equals(deptId)) {
 		deptId = null; //no deptId, fallback by using null
@@ -103,9 +102,6 @@
 	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
 	String refineValue = NVL.apply(request.getParameter("refinement"), "");
 	String filteredHeader = "";
-    if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId)) {
-        showGroup=false;
-    }
 	if (!"".equals(brandValue) || deptId!=null || !(FDStoreProperties.getNewProductsCatId()).equals(catId) || !"".equals(refineValue)) {
 		showFeatNew = false;
 		useSmallBurst = true;

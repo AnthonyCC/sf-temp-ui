@@ -14,12 +14,18 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Category;
 import org.hibernate.Criteria;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
+import com.freshdirect.fdstore.content.SearchSortType;
 import com.freshdirect.fdstore.util.AbstractNavigator;
+import com.freshdirect.fdstore.util.NewProductsDFGSNavigator;
+import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.fdstore.util.NewProductsNavigator;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -28,15 +34,14 @@ public class GetNewProductsTag extends AbstractNavigationTag {
 
 	private static Category LOGGER = LoggerFactory.getInstance( GetNewProductsTag.class );
 
-	//private int days = 120;
 	private String department = null;
 	
+
 	public void setDepartment(String department) {
 		this.department = department;
 	}
 
     public SearchResults getResults(Map<String, String> criteria) {
-    	//int days = new Integer(criteria.get("days")).intValue();
     	String department =  criteria.get("deptId");
 		List<ProductModel> prods = new ArrayList<ProductModel>(ContentFactory.getInstance().getNewProducts().keySet());
 		prods.addAll(ContentFactory.getInstance().getBackInStockProducts().keySet()); 
@@ -48,12 +53,36 @@ public class GetNewProductsTag extends AbstractNavigationTag {
     
     public Map getCriteria(ServletRequest request){
     	Map criteria = new HashMap<String, String>();
-    	//criteria.put("days", String.valueOf(days));
     	criteria.put("deptId", this.department);
     	return criteria;
     }
     
     public AbstractNavigator getNavigator(){
-    	return new NewProductsNavigator((HttpServletRequest)pageContext.getRequest());
+    	if(this.department != null){
+    		//Request from DFGS page.
+    		return new NewProductsDFGSNavigator((HttpServletRequest)pageContext.getRequest()); 
+    	} else {
+    		return new NewProductsNavigator((HttpServletRequest)pageContext.getRequest());
+    	}
+    }
+    
+    public Boolean getShowGroup(){
+        ServletRequest request = pageContext.getRequest();
+    	String deptId = NVL.apply(request.getParameter("deptId"), "");
+    	String catId = NVL.apply(request.getParameter("catId"), "");
+    	String brandValue = NVL.apply(request.getParameter("brandValue"), "");
+    	boolean sort = request.getParameter("sort") != null;
+    	if (this.department != null || sort || !"".equals(brandValue) || !"".equals(deptId) || 
+    			(!"".equals(catId) && !(FDStoreProperties.getNewProductsCatId()).equals(catId))) {
+            return false;
+        }    	
+    	
+    	return true;
+    }
+    public void performGrouping(FilteredSearchResults fres,  boolean reverseOrder){
+		//Request from non DFGS page. Groups has to be sorted by department names.
+        NewProductsGrouping grouping = new NewProductsGrouping(reverseOrder);
+        grouping.sortByDepartmentNamesWithinGroup(fres.getProducts());
+
     }
 }

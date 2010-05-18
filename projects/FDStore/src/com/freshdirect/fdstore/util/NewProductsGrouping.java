@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -37,12 +38,18 @@ public class NewProductsGrouping {
 	
 	public static final Logger LOGGER = Logger.getLogger(AbstractNavigator.class);
 	
-	private final static int COVER_UP_DAYS = 1;
-	
+
 	public NewProductsGrouping() {
 		init();
 	}
 	
+	public NewProductsGrouping(boolean reverseOrder) {
+		init();
+		if(reverseOrder){
+		    Collections.reverse(timeRanges);
+		}
+		
+	}
 	private void init() {
 		/*
 		// Eg: <W2,W2-W4,M1-M2,M2-M3,>M3
@@ -227,7 +234,7 @@ outer:		while(tokens.hasMoreTokens()){
 		List<ProductModel> products = new ArrayList<ProductModel>(prods.size());
 		for(Iterator<ProductModel> it = prods.iterator(); it.hasNext();){
 			ProductModel pm = (ProductModel) it.next();
-			if(Math.ceil(pm.getAge()) <= inDays) {
+			if(Math.ceil(pm.getAge()) < inDays) {
 				products.add(pm);
 				//break;
 			}
@@ -246,8 +253,9 @@ outer:		while(tokens.hasMoreTokens()){
 		List<ProductModel> products = new ArrayList<ProductModel>(prods.size());
 		for(Iterator<ProductModel> it = prods.iterator(); it.hasNext();){
 			ProductModel pm = (ProductModel) it.next();
-			if(Math.ceil(pm.getAge()) >= inDays) {
+			if(Math.ceil(pm.getAge()) > inDays) {
 				products.add(pm);
+			
 				//break;
 			}
 			
@@ -290,26 +298,46 @@ outer:		while(tokens.hasMoreTokens()){
 			TimeRange range = (TimeRange) it.next();
 			List filtered = null;
 			if(range.getFromValue() > 0 && range.getToValue() == 0 && range.getRecencyType() == TimeRange.NEWER_THAN){
-				filtered = getProductsNewerThan(tempList, range.getDaysRangeFrom() + COVER_UP_DAYS);
+				filtered = getProductsNewerThan(tempList, range.getDaysRangeFrom() );
 			} else if(range.getFromValue() > 0 && range.getToValue() == 0 && range.getRecencyType() == TimeRange.OLDER_THAN){
-				filtered = getProductsOlderThan(tempList, range.getDaysRangeFrom() - COVER_UP_DAYS);
+				filtered = getProductsOlderThan(tempList, range.getDaysRangeFrom());
 			} else {
-				filtered = getProductsBetween(tempList, range.getDaysRangeFrom() - COVER_UP_DAYS, range.getDaysRangeTo() + COVER_UP_DAYS);
+				filtered = getProductsBetween(tempList, range.getDaysRangeFrom() , range.getDaysRangeTo());
 			}
 			if(filtered != null && filtered.size() > 0){
-				//sort items according to their primary home departments in ascending alphabetical order. APPDEV-1008
-				Collections.sort(filtered, ProductModel.DEPTFULL_COMPARATOR);
 				groupedMap.put(range, filtered);
+				//remove filtered from main list.
+				tempList.removeAll(filtered);  
+			}
+		}
+		return groupedMap;
+	}
+	
+	//Added for APPDEV-1008.
+	public void sortByDepartmentNamesWithinGroup(List<ProductModel> prods){  
+		if(this.timeRanges.isEmpty()) return ;
+		List tempList = new LinkedList<ProductModel>(prods);
+		List sortedList = new LinkedList<ProductModel>();
+		//if(inverse) Collections.reverse(timeRanges);
+		for(Iterator<TimeRange> it = timeRanges.iterator(); it.hasNext();){
+			TimeRange range = (TimeRange) it.next();
+			List filtered = null;
+			if(range.getFromValue() > 0 && range.getToValue() == 0 && range.getRecencyType() == TimeRange.NEWER_THAN){
+				filtered = getProductsNewerThan(tempList, range.getDaysRangeFrom() );
+			} else if(range.getFromValue() > 0 && range.getToValue() == 0 && range.getRecencyType() == TimeRange.OLDER_THAN){
+				filtered = getProductsOlderThan(tempList, range.getDaysRangeFrom());
+			} else {
+				filtered = getProductsBetween(tempList, range.getDaysRangeFrom(), range.getDaysRangeTo());
+			}
+			if(filtered != null && filtered.size() > 0){
+				//sort items according to their primary home departments in ascending alphabetical order. 
+				Collections.sort(filtered, ProductModel.DEPTFULL_COMPARATOR);
+				sortedList.addAll(filtered);
 				//remove filtered from main list.
 				tempList.removeAll(filtered);
 			}
 		}
-		/*
-		if(inverse) {
-			List mapKeys = new ArrayList(groupedMap.keySet());
-			Collections.sort(mapKeys); 
-		}*/
-		return groupedMap;
+		prods.clear();
+		prods.addAll(sortedList);
 	}
-
 }

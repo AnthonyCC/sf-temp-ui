@@ -36,6 +36,7 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.AbstractNavigator;
+import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
@@ -127,6 +128,8 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     
     private String 			 navigator;
 
+	private String showGroup;
+	
     private String filteredCategoryTreeName;
     
     public void setSearchResults(String s) {
@@ -161,6 +164,12 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         this.navigator = navigator;
     }
     
+
+    public void setShowGroup(String showGroup) {
+        this.showGroup = showGroup;
+    }
+    
+    
     public int doStartTag() throws JspException {
 
         ServletRequest request = pageContext.getRequest();
@@ -181,10 +190,17 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
         //fres.sortProductsBy(SearchSortType.findByLabel(request.getParameter("sort")), reverseOrder);
+
         String sort = request.getParameter("sort");
         SearchSortType sortType = sort != null ? SearchSortType.findByLabel(sort) : getNavigator().getDefaultSortType();
+        //do sorting
         fres.sortProductsBy(sortType, reverseOrder);
+        if(getShowGroup()){
+        	performGrouping(fres, reverseOrder);
+        }
         pageContext.setAttribute(navigator, getNavigator());
+        if(showGroup != null)
+        	pageContext.setAttribute(showGroup, getShowGroup());
         
         fres.setStart(Math.max(getIntParameter("start", 0), 0));
         {
@@ -360,4 +376,8 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     public abstract Map getCriteria(ServletRequest request);
     
     public abstract AbstractNavigator getNavigator();
+    
+    public abstract Boolean getShowGroup();
+    
+    public abstract void performGrouping(FilteredSearchResults fres, boolean reverseOrder);
 }
