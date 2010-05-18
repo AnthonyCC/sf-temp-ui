@@ -13,7 +13,6 @@
 						?aText.innerHTML="Apt.#"
 						:aText.innerHTML="Floor/Suite&nbsp;#";
 				}
-				console.log(e, e.checked, aText );
 			}
 		//-->
 		</script>
