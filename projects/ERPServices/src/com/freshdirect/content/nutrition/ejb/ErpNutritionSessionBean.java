@@ -30,7 +30,7 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 
-/** This class have diferent methods for MappingLoader and KwikeeLoader to
+/** This class have different methods for MappingLoader and KwikeeLoader to
  * call in order to persist Nutrition data in database.
  */
 public class ErpNutritionSessionBean extends SessionBeanSupport {
@@ -58,7 +58,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     public void ejbRemove() {
     }
     
-    /** Gets the nutritional informatin about the given sku from the database and
+    /** Gets the nutrition information about the given SKU from the database and
      * populates a ErpNutritionModel Object.
      * @param skuCode skuCode for which nutrition info is needed
      * @return ErpNutritionModel filled with nutrition info
@@ -243,8 +243,12 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             ps.executeUpdate();
             ps.close();
             
-            ps = con.prepareStatement("insert into erps.nutrition (SKU_CODE, NUTRITION_TYPE, VALUE, UOM, DATE_MODIFIED) values (?, ?, ?, ?, sysdate )");
+            ps = con.prepareStatement("insert into erps.nutrition (SKU_CODE, NUTRITION_TYPE, VALUE, UOM, DATE_MODIFIED) values (?, ?, ?, ?, ? )");
             Iterator it = nutrition.getKeyIterator();
+
+			//get timestamp to replace sysdate
+			Timestamp ts = new Timestamp(new Date().getTime());
+			
             while (it.hasNext()) {
                 String nutritionType = (String) it.next();
                 double value = nutrition.getValueFor(nutritionType);
@@ -255,7 +259,9 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                 ps.setString(1, skuCode);
                 ps.setString(2, nutritionType);
                 ps.setDouble(3, value);
-                ps.setString(4, uom);                
+                ps.setString(4, uom);
+				//use timestamp instead of sysdate
+				ps.setTimestamp(5, ts);
                 
                 try {
                     ps.executeUpdate();
@@ -271,7 +277,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             ps.executeUpdate();
             ps.close();
             
-            ps = con.prepareStatement("insert into erps.nutrition_info (skucode, type, priority, info, DATE_MODIFIED) values (?,?,?,?,sysdate)");
+            ps = con.prepareStatement("insert into erps.nutrition_info (skucode, type, priority, info, DATE_MODIFIED) values (?,?,?,?,?)");
             for (Iterator iIter = nutrition.getNutritionAttributes().iterator(); iIter.hasNext(); ) {
                 NutritionInfoAttribute attr = (NutritionInfoAttribute) iIter.next();
                 if ((attr != null) && attr.getValue() != null) {
@@ -284,6 +290,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                     } else {
                         ps.setString(4, (String) attr.getValue());
                     }
+    				//use timestamp instead of sysdate
+    				ps.setTimestamp(5, ts);
                     ps.executeUpdate();
                 }
             }
@@ -297,8 +305,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
         }
     }
     
-    /** deletes nutrion information from database for a given skuCode
-     * @param skuCode skuCode of Nutrion info to be removed
+    /** deletes nutrition information from database for a given skuCode
+     * @param skuCode skuCode of Nutrition info to be removed
      * @throws EJBException throws EJBException if there is any problem in accessing database resources
      */
     public void removeNutrition(String skuCode) {
@@ -328,8 +336,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     }
     
     /** Creates an entry in UPC_SKU table in the database
-     * for the given upc sku pair that is used to map FD
-     * skus to their upc.
+     * for the given UPC SKU pair that is used to map FD
+     * SKUs to their UPC.
      * @param skuCode skuCode
      * @param upc UPC
      * @throws EJBException throws EJBException if there is an exception accessing database resources.
@@ -363,10 +371,10 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     }
     /** returns a skuCode from the mapping table for a given upc,
      * if there is a entry in UPC_SKU table otherwise throws FinderException.
-     * @param upc upc to return skuCode for
-     * @throws FinderException throws FinderException if there is no entry in the table for given upc
+     * @param upc UPC to return skuCode for
+     * @throws FinderException throws FinderException if there is no entry in the table for given UPC
      * @throws EJBException throws EJBException if there is an exception accessing database resources
-     * @return returns a skucode for given upc
+     * @return returns a SKU code for given UPC
      */
     public String getSkuCodeForUpc(String upc) throws FinderException{
         Connection con = null;
