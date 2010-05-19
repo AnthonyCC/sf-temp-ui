@@ -27,7 +27,7 @@ public class DealsHelper {
 
 		int p = getVariancePercentage(sellingPrice,promoPrice);
 		
-		return ( (FDStoreProperties.getBurstsLowerLimit()<=p) && (FDStoreProperties.getDealsUpperLimit()>=p) );
+		return ( (FDStoreProperties.getBurstsLowerLimit()<=p) && (FDStoreProperties.getBurstUpperLimit()>=p) );
 	}
 	
 	

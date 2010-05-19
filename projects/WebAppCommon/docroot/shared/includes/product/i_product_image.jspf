@@ -12,7 +12,7 @@
 	int dealPercentage = productNode.getHighestDealPercentage();
 	//boolean isDeal = dealPercentage > 0;
 	boolean isDeal = false;
-	if ( (FDStoreProperties.getBurstsLowerLimit()<dealPercentage) && (FDStoreProperties.getDealsUpperLimit()>dealPercentage )){
+	if ( (FDStoreProperties.getBurstsLowerLimit()<dealPercentage) && (FDStoreProperties.getBurstUpperLimit()>dealPercentage )){
                isDeal = true;
 	}
 	
