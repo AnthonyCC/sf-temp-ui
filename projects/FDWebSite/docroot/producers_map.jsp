@@ -18,6 +18,7 @@
 <fd:CheckLoginStatus />
 <%
 	final BrowserInfo bi = new BrowserInfo(request);
+	System.err.println(bi);
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
 <tmpl:insert template='/common/template/gmap_nav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
@@ -73,7 +74,9 @@
 <%
 			}
 %>			ic.iconAnchor = new GPoint(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
-
+<% 			if (bi.isFirefox()) {%>
+			ic.imageMap = [0, 0, <%= icon.getWidth()-1 %>, 0, <%= icon.getWidth()-1 %>, <%= icon.getHeight()-1 %>, 0, <%= icon.getHeight()-1 %>];
+<% } %>
 			
 			marker = new GMarker(point, { icon: ic });
 <%
@@ -105,10 +108,9 @@
 	<tmpl:put name='content' direct='true'>
 	<div id="inner-container" style="width: 720px">
 		<div id="inner-header" style="text-align: left;">
-			<div class="title16">Location, Location, Location</div>
+			<div class="title16">We’ve Made a Stand for Local Farms!</div>
 			<div>
-			Freshdirect local products are, of course, local &ndash; only items raised, fished or made in New York, New Jersey and Connecticut are considered for inclusion.
-			You'll find seafood and produce from the East End of Long Island, wine from the vineyards of the Finger Lakes region. artisanal cheeses from the dairy farms of the Hudson Valley, and much more.
+			From the Finger Lakes to the tip of Long Island, FreshDirect has traveled within 300 miles of New York City to source our Local Market products from the best farms, dairies and artisans. Click the icons on this map to learn more about our favorite local producers.
 			</div>
 		</div>
 		<!-- MAP -->
@@ -125,22 +127,8 @@
 		<div class="title12" style="text-align: left"><%= p.getFullName() %></div>
 		<% if (p.getBubbleContent() != null ) {
 			Html content = p.getBubbleContent();
-			String dimStr = "";
-			
-			if (content.getWidth() > 0) {
-				int w = content.getWidth();
-				if (w > 300)
-					w = 300;
-				dimStr += "width: "+w+"px; ";
-			} else {
-				dimStr += bi.isInternetExplorer() ? "width: 300px; " : "max-width: 300px; ";
-			}
-			if (content.getHeight() > 0) {
-				dimStr += "height: "+content.getHeight()+"px; ";
-			}
-
 		%>
-		<div style="text-align: left; overflow: hidden; <%= dimStr %>">
+		<div style="text-align: left; overflow: hidden;">
 			<fd:IncludeMedia name='<%=p.getBubbleContent().getPath() %>'/>
 		</div>
 		<% }
@@ -160,7 +148,7 @@
 		
 	TitledMedia tm = (TitledMedia)popupContent;
 	// EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
-%>			<a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="padding-top: 1em; display: block; font-weight: bold">Learn more &hellip;</a>
+%>			<div><br><a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="font-weight: bold;">Learn more &hellip;</a></div>
 		</div>
 	</div>
 
