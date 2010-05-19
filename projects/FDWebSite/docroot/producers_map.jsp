@@ -65,18 +65,18 @@
 			if (icon != null) {
 			
 %>			ic = new GIcon(G_DEFAULT_ICON);
-			ic.image = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath())  %>';
+			ic.image = '<%= StringEscapeUtils.escapeJavaScript( icon.getPath() )  %>';
 			ic.iconSize = new GSize(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
 <%
 			if (shadow != null) {
-%>			ic.shadowImage = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath())  %>';
-			ic.shadowSize = new GSize(<%= icon.getWidth() %>, <%= shadow.getHeight() %>);
+%>				ic.shadowImage = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath() )  %>';
+				ic.shadowSize = new GSize(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
 <%
 			}
 %>			ic.iconAnchor = new GPoint(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
 <% 			if (bi.isFirefox()) {%>
-			ic.imageMap = [0, 0, <%= icon.getWidth()-1 %>, 0, <%= icon.getWidth()-1 %>, <%= icon.getHeight()-1 %>, 0, <%= icon.getHeight()-1 %>];
-<% } %>
+				ic.imageMap = [0, 0, <%= icon.getWidth()-1 %>, 0, <%= icon.getWidth()-1 %>, <%= icon.getHeight()-1 %>, 0, <%= icon.getHeight()-1 %>];
+<% 			} %>
 			
 			marker = new GMarker(point, { icon: ic });
 <%
