@@ -31,7 +31,9 @@ public class Depot {
         Collection<DlvDepotModel> pickupDepots = FDDepotManager.getInstance().getPickupDepots();
         List<Depot> newList = new ArrayList<Depot>();
         for (DlvDepotModel pickupDepot : pickupDepots) {
-            if ((!theHamptonsIsOn) && (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()))) {
+            //if ((!theHamptonsIsOn) && (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode()))) {
+        	// Filtering Hamptons pickup forever use the previous if hamtopns pickup needs to be handled
+        	if (HAMPTONS_DEPOT_CODE.equalsIgnoreCase(pickupDepot.getDepotCode())) {
                 //Skip since HAMPTON is OFF
             } else {
                 newList.add(Depot.wrap(pickupDepot));
