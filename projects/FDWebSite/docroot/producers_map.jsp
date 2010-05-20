@@ -9,6 +9,8 @@
 <%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
 <%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
 <%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
@@ -17,8 +19,17 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus />
 <%
-	final BrowserInfo bi = new BrowserInfo(request);
-	System.err.println(bi);
+BrowserInfo bi = new BrowserInfo(request);
+
+String catId = request.getParameter("catId");
+
+if (catId == null)
+	throw new JspException("Missing category identifier.");
+
+CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
+if (cat == null)
+	throw new JspException("Missing category " + catId);
+
 %><fd:ProducerList id="prodz" needsValidGeolocation="<%= true %>" skipBodyOnEmptyResult="<%= false %>">
 <tmpl:insert template='/common/template/gmap_nav.jsp'>
 	<tmpl:put name='leftnav' direct='true'> <%-- <<< some whitespace is needed here --%></tmpl:put>
@@ -69,8 +80,8 @@
 			ic.iconSize = new GSize(<%= icon.getWidth() %>, <%= icon.getHeight() %>);
 <%
 			if (shadow != null) {
-%>				ic.shadowImage = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath() )  %>';
-				ic.shadowSize = new GSize(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
+%>			ic.shadow = '<%= StringEscapeUtils.escapeJavaScript( shadow.getPath() )  %>';
+			ic.shadowSize = new GSize(<%= shadow.getWidth() %>, <%= shadow.getHeight() %>);
 <%
 			}
 %>			ic.iconAnchor = new GPoint(<%= icon.getWidth()/2 %>, <%= icon.getHeight() %>);
@@ -107,12 +118,38 @@
 	<%-- CONTENT --%>
 	<tmpl:put name='content' direct='true'>
 	<div id="inner-container" style="width: 720px">
-		<div id="inner-header" style="text-align: left;">
-			<div class="title16">We’ve Made a Stand for Local Farms!</div>
-			<div>
-			From the Finger Lakes to the tip of Long Island, FreshDirect has traveled within 300 miles of New York City to source our Local Market products from the best farms, dairies and artisans. Click the icons on this map to learn more about our favorite local producers.
-			</div>
+		<%-- CATEGORY HEADER START--%>
+		<div id="category-header">
+<%
+if (cat != null) {
+    //
+    // Category Label (Image)
+    //
+    if (cat.getCategoryLabel() != null) {
+        String categoryLabelPath = cat.getCategoryLabel().getPath();
+%>
+            <IMG SRC="<%= categoryLabelPath %>" border="0" ALT="<%= cat.getFullName() %>"><br>
+<%
+    }
+    
+    //
+    // Render Editorial (partial HTML)
+    //
+    Html editorialMedia = cat.getEditorial();
+    if (true &&
+    		editorialMedia != null &&
+    		cat.getCategoryLabel() != null &&
+    		!editorialMedia.isBlank()) {
+%>
+            <div style="padding: 5px 0 8px 0">
+	            <fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/><br>
+            </div>
+<%
+    }
+}
+%>
 		</div>
+		<%-- CATEGORY HEADER END --%>
 		<!-- MAP -->
 		<div style="padding: 1em 0 1em 0;">
 			<div id="map_canvas" style="width: 718px; height: 718px; border: 2px solid #aaa"></div>
