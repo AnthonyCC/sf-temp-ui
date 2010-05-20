@@ -50,7 +50,7 @@ public class DealsHelper {
 		int val = (int) ((sellingPrice - promoPrice) * 100.0 / sellingPrice + 0.2);
 		if( ((val%5)==0)||((val%2)==0))
 			return val;
-		return val;
+		return val-1;
 	}
 	
 	public static double determineBasePrice(double sellingPrice, double promoPrice) {
