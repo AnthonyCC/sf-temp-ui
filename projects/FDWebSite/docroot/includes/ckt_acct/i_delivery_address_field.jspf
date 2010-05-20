@@ -238,7 +238,7 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 				}
 			//-->
 			</script>
-            <input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %> onchange="cosApt(this);"><b>Residential</b>&nbsp;&nbsp;<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %> onchange="cosApt(this);"><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a><br>
+            <input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.HOME.getName()%>" <%= EnumServiceType.HOME.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><b>Residential</b>&nbsp;&nbsp;<input type="radio" class="text11" name="<%= EnumUserInfoName.DLV_SERVICE_TYPE.getCode() %>" value="<%= EnumServiceType.CORPORATE.getName()%>" <%= EnumServiceType.CORPORATE.equals(fldServiceType) ? "CHECKED" : "" %> onclick="cosApt(this);"><a href="javascript:popup('/cos_info.jsp','small')"><b>Commercial</b></a><br>
             <fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_SERVICE_TYPE.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
         </td>
     </tr>
