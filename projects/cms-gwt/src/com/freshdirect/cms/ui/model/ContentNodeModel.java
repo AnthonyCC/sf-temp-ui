@@ -186,7 +186,7 @@ public class ContentNodeModel extends BaseModel implements Comparable<ContentNod
 	}
 	
 	protected static boolean checkPreviewTypes( String previewUrl ) {
-		return previewUrl != null && ( previewUrl.endsWith( "gif" ) || previewUrl.endsWith( "jpg" ) || previewUrl.endsWith( "jpeg" )
+		return previewUrl != null && ( previewUrl.endsWith( "gif" ) || previewUrl.endsWith( "jpg" ) || previewUrl.endsWith( "jpeg" ) || previewUrl.endsWith( "png" )
 				|| previewUrl.endsWith( "htm" ) || previewUrl.endsWith( "html" ) || previewUrl.endsWith( "txt" ) );		
 	}
 	

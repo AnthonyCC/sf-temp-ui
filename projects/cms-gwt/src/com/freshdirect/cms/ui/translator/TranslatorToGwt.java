@@ -84,8 +84,7 @@ public class TranslatorToGwt {
     
     public static final DateFormat US_DATE_FORMAT = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, Locale.US);
     
-    @SuppressWarnings( "unused" )
-	private static final Logger LOGGER = LoggerFactory.getInstance( TranslatorToGwt.class );
+    private static final Logger LOGGER = LoggerFactory.getInstance( TranslatorToGwt.class );
     
 	
 	// =========================== GwtNodeData ===========================
@@ -234,7 +233,12 @@ public class TranslatorToGwt {
 		Collection<Context> contexts = (Collection<Context>)ContextService.getInstance().getAllContextsOf( key );
 		
 		for ( Context cx : contexts ) {
-			ContextualContentNodeI cxNode = ContextService.getInstance().getContextualizedContentNode( cx );
+			ContextualContentNodeI cxNode = null;
+			try { 
+				cxNode = ContextService.getInstance().getContextualizedContentNode( cx );
+			} catch ( IllegalArgumentException e ) {
+				LOGGER.warn( "Invalid context found, skipping.", e );
+			}
 			if ( cxNode == null )
 				break;
 			Map<String,AttributeI> inheritedAttributes = (Map<String,AttributeI>)cxNode.getParentInheritedAttributes();			

@@ -96,6 +96,7 @@ public class PublishMediaTask extends DbService implements PublishTask {
 					childPath = childPath.substring(1, childPath.length());
 				}
 
+				// TODO maybe we should skip any *Thumbs.db* files here to avoid issues (?)
 				URL url = new URL(basePath, URLEncoder.encode(childPath, "UTF-8") ); //  "http://<dav-host>/<slide-path>/files/file1.ext"
 				webdav.setPath(URLDecoder.decode(url.getPath(), "UTF-8") ); //  "/<slide-path>/files/file1.ext"
 

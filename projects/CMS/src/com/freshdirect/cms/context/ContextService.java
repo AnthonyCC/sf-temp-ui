@@ -61,7 +61,7 @@ public class ContextService {
 	 * 
 	 * @throws IllegalArgumentException if the context path is not valid
 	 */
-	public ContextualContentNodeI getContextualizedContentNode(String path) {
+	public ContextualContentNodeI getContextualizedContentNode(String path) throws IllegalArgumentException {
 		ContextualContentNode lastNode = null;
 		StringTokenizer stoke = new StringTokenizer(path, "/");
 		while (stoke.hasMoreTokens()) {
@@ -94,7 +94,7 @@ public class ContextService {
 	}
 
 	// convenience method
-	public ContextualContentNodeI getContextualizedContentNode(Context ctx) {
+	public ContextualContentNodeI getContextualizedContentNode(Context ctx) throws IllegalArgumentException {
 		return getContextualizedContentNode(ctx.getPath());
 	}
 }
