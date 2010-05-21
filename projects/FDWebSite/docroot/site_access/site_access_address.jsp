@@ -64,7 +64,7 @@
 					<% } %>
 				<% } %>
 				<br>
-				<img src="/media_stat/images/layout/<%= isCorporate ? "999966" : "clear"%>.gif" width="<%= isCorporate ? "450" : "400"%>" height="1" border="0"><br>
+				<img src="/media_stat/images/layout/<%= isCorporate ? "999966" : "clear"%>.gif" width="450" height="1" border="0"><br>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" border="0"><br>
 
 					<% if (isCorporate) { %>
@@ -82,7 +82,7 @@ Please enter your street address so that we can make sure your building is in a 
 							<%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %>
 						</fd:ErrorHandler>
 
-						<table border="0" cellspacing="01" cellpadding="0" width="400">
+						<table border="0" cellspacing="01" cellpadding="0" width="100%">
 						<tr valign="top">
 							<td width="130" ALIGN="RIGHT" class="bodyCopy">* Street Address</td>
 							<td><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt=""><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><br><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
