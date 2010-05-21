@@ -96,8 +96,11 @@ if (cat == null)
 <%
 		}
 %>			GEvent.addListener(marker, "click", function() {
-				var kontent = document.getElementById('prod-<%= p.getContentKey().getId() %>');
-				this.openInfoWindowHtml(kontent.innerHTML);
+				var winId = 'prod-<%= p.getContentKey().getId() %>';
+				var kontent = document.getElementById(winId);
+				var klone = kontent.cloneNode(true);
+				klone.setAttribute("id", winId+'-act');
+				this.openInfoWindowHtml(klone);
 			});
 
 			map.addOverlay(marker);
@@ -160,18 +163,20 @@ if (cat != null) {
 <%
 	for (ProducerModel p : prodz) {
 %>
-	<div id="prod-<%= p.getContentKey().getId() %>">
+	<div id="prod-<%= p.getContentKey().getId() %>" style="clear:both; line-height: 12px">
 		<div class="title12" style="text-align: left"><%= p.getFullName() %></div>
 		<% if (p.getBubbleContent() != null ) {
 			Html content = p.getBubbleContent();
 		%>
-		<div style="text-align: left; overflow: hidden;">
+		<br>
+		<div style="text-align: left;">
 			<fd:IncludeMedia name='<%=p.getBubbleContent().getPath() %>'/>
 		</div>
 		<% }
 		
 		%>
-		<div style="padding: 1em 0 1em 0; text-align: left">
+		<br>
+		<div style="text-align: left">
 			<a href="<%= FDURLUtil.getCategoryURI(p.getBrandCategory(), "lpmp") %>" style="font-weight: bold"><%= p.getFullName() %></a>
 <%
 	for (String line : p.getAddress().split("\n")) {
@@ -185,8 +190,9 @@ if (cat != null) {
 		
 	TitledMedia tm = (TitledMedia)popupContent;
 	// EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
-%>			<div><br><a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="font-weight: bold;">Learn more &hellip;</a></div>
+%>			<br><a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="font-weight: bold;">Learn more &hellip;</a>
 		</div>
+		<br>
 	</div>
 
 <%	
