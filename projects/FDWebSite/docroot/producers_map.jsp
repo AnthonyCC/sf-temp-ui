@@ -123,34 +123,20 @@ if (cat == null)
 	<div id="inner-container" style="width: 720px">
 		<%-- CATEGORY HEADER START--%>
 		<div id="category-header">
-<%
-if (cat != null) {
-    //
-    // Category Label (Image)
-    //
-    if (cat.getCategoryLabel() != null) {
-        String categoryLabelPath = cat.getCategoryLabel().getPath();
-%>
-            <IMG SRC="<%= categoryLabelPath %>" border="0" ALT="<%= cat.getFullName() %>"><br>
-<%
-    }
-    
-    //
-    // Render Editorial (partial HTML)
-    //
-    Html editorialMedia = cat.getEditorial();
-    if (true &&
-    		editorialMedia != null &&
-    		cat.getCategoryLabel() != null &&
-    		!editorialMedia.isBlank()) {
-%>
-            <div style="padding: 5px 0 8px 0">
-	            <fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/><br>
-            </div>
-<%
-    }
-}
-%>
+			<% if (cat != null) {
+			    // Category Label (Image)
+			    if (cat.getCategoryLabel() != null) {
+			        String categoryLabelPath = cat.getCategoryLabel().getPath();
+					%><img src="<%= categoryLabelPath %>" border="0" alt="<%= cat.getFullName() %>"><br/><%
+    			}    
+			    // Render Editorial (partial HTML)
+			    Html editorialMedia = cat.getEditorial();
+			    if ( editorialMedia != null && !editorialMedia.isBlank() ) { %>
+		            <div style="padding: 5px 0 8px 0">
+			            <fd:IncludeMedia name='<%= editorialMedia.getPath() %>'/><br/>
+		            </div>
+				<% }
+			} %>
 		</div>
 		<%-- CATEGORY HEADER END --%>
 		<!-- MAP -->
