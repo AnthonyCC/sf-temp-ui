@@ -97,9 +97,12 @@ public class ProductLabeling {
 		displaybackInStock = false;
         boolean showBurstImage=true; 
 		try {
-			FDProductInfo info= FDCachedFactory.getProductInfo(product.getDefaultSkuCode());			
-			ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
-			showBurstImage=model.isShowBurstImage();			
+			String skuCode = product.getDefaultSkuCode();
+			if(skuCode != null) {
+				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
+				showBurstImage=model.isShowBurstImage();			
+			}		
 		} catch (FDResourceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

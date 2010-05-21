@@ -1086,8 +1086,10 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	
     @Override
     public String getDefaultSkuCode() {
-        return getDefaultSku().getSkuCode();
+	    SkuModel sku = getDefaultSku();
+	    return sku != null ? sku.getSkuCode() : null;
     }
+    
     @Override
     public Html getFddefSource() {
         return prodModel.getFddefSource();
