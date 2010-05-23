@@ -1644,7 +1644,9 @@ public class Product {
          */
 
         Image image = null;
-        if (getHighestDealPercentage() > 0) {
+        ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
+                .getHideBursts()));
+        if (productLabeling.isDisplayDeal()) {
             image = new Image("/media_stat/images/deals/brst_lg_" + getHighestDealPercentage() + ".png", 55, 55);
         }
         return image;
@@ -1656,7 +1658,7 @@ public class Product {
         ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
                 .getHideBursts()));
 
-        if (getHighestDealPercentage() > 0) {
+        if ( productLabeling.isDisplayDeal()) {                   	
             image = new Image("/media_stat/images/deals/brst_sm_" + getHighestDealPercentage() + ".png", 35, 35);
         } else if (productLabeling.isDisplayFave()) {
             image = new Image("/media_stat/images/bursts/brst_sm_fave.png", 35, 35);
