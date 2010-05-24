@@ -31,9 +31,9 @@ public interface SystemMessageList {
 	// Address
 	public final static String MSG_UNRECOGNIZE_ADDRESS					= "Sorry, we're unable to recognize this <b>address</b>. Please make sure it's entered correctly.";
 	public final static String MSG_UNRECOGNIZE_STREET_NUMBER			= "Sorry, we're unable to recognize this address. Please make sure the <b>building number</b> is correct.";
-	public final static String MSG_UNRECOGNIZE_APARTMENT_NUMBER			= "Sorry, we're unable to recognize this apartment #. Please make sure it's entered correctly.";
+	public final static String MSG_UNRECOGNIZE_APARTMENT_NUMBER			= "Sorry, we're unable to recognize this Apt/Suite #. Please make sure it's entered correctly.";
 	public final static String MSG_UNRECOGNIZE_STATE					= "Sorry, we're unable to recognize this state - please make sure it's entered correctly.";
-	public final static String MSG_APARTMENT_REQUIRED					= "An apartment # is required for this address.";
+	public final static String MSG_APARTMENT_REQUIRED					= "An Apt/Suite # is required for this address.";
 	public final static String MSG_UNRECOGNIZE_ADDRESS_POSSIBLE_MATCHES	= "Sorry, we're unable to recognize this address. Did you mean to enter one of the following instead?";
 	public final static String MSG_ZIP_CODE								= "Sorry, we're unable to recognize this zip code. Please make sure it's entered correctly.";
 	public final static String MSG_DEPOT_CODE							= "Sorry, we're unable to recognize this code.  Please make sure it's entered correctly.";
