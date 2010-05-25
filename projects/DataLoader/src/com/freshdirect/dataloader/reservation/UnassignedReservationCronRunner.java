@@ -105,12 +105,11 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
 			}
-			if(unassignedReservations==null || unassignedReservations.isEmpty())
-				return;
+			if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 			
-			
-			for (DlvReservationModel reservation : unassignedReservations) {
-				cron.processReservation(dlvManager,custManager,reservation);
+				for (DlvReservationModel reservation : unassignedReservations) {
+					cron.processReservation(dlvManager,custManager,reservation);
+				}
 			}
 			
 			try {
@@ -119,14 +118,15 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				List<IRoutingNotificationModel> unUsedNotifications = new ArrayList<IRoutingNotificationModel>();
 				
 				for (IRoutingNotificationModel notification : notifications) {
-					if(notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
+					if(notification.getNotificationType() != null 
+							&& notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
 						cancelledNotifications.add(notification);
 					} else {
 						unUsedNotifications.add(notification);
 					}
 				}
 				System.out.println("Total no of notifications processed :"+cancelledNotifications.size()+ " , Unused:"+unUsedNotifications.size());
-				if(cancelledNotifications.size() > 0) {
+				if(cancelledNotifications.size() > 0 || unUsedNotifications.size() > 0) {
 					dlvManager.processCancelNotifications(cancelledNotifications, unUsedNotifications);
 				}
 			} catch (Exception e) {

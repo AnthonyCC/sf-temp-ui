@@ -2288,7 +2288,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 						objExp.printStackTrace();
 					}
 				}
-				proxy.deleteNotifications(notifications);
+				if(notifications != null && notifications.size() > 0) {
+					proxy.deleteNotifications(notifications);
+				}
+				
 				if(unUsedNotifications != null && unUsedNotifications.size() > 0) {
 					proxy.deleteNotifications(unUsedNotifications);
 				}

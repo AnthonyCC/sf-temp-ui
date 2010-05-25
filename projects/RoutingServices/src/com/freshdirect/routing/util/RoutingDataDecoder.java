@@ -324,7 +324,14 @@ public class RoutingDataDecoder {
 						_tmpModel.setSchedulerId(new RoutingSchedulerIdentity());
 						result.add(_tmpModel);
 					}
-				}
+				}  else {
+					Notification _tmpNotification = (Notification)notification;
+					IRoutingNotificationModel _tmpModel = new RoutingNotificationModel();
+						
+					_tmpModel.setNotificationId(_tmpNotification.getNotificationIdentity().getIdentity());
+					_tmpModel.setSchedulerId(new RoutingSchedulerIdentity());
+					result.add(_tmpModel);
+				}   
 			}			
 		}
 		return result;
