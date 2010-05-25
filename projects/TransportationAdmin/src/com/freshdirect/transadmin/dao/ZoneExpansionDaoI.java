@@ -15,6 +15,8 @@ public interface ZoneExpansionDaoI {
 	
 	void refreshDev(String worktable) throws DataAccessException;
 	
+	void refreshProd(String worktable) throws DataAccessException;
+	
 	void insertNewRegionDataId(String regionId, String dlvCharge) throws DataAccessException;
 	
 	String getDeliveryCharge(String regionId) throws DataAccessException;

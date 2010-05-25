@@ -316,6 +316,10 @@ public class DomainManagerImpl
 	public void refreshDev(String worktable){		
 		getZoneExpansionDao().refreshDev(worktable);
 	}
+	
+	public void refreshProd(String worktable){		
+		getZoneExpansionDao().refreshProd(worktable);
+	}
 
 	public void doZoneExpansion(String worktable, String zone[][], String regionId, String deliveryFee, String expansionType) throws DataAccessException{	
 		if("rollout".equalsIgnoreCase(expansionType)){	

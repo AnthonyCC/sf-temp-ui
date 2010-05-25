@@ -86,10 +86,14 @@ public class ZoneExpansionFormController extends BaseFormController {
 		ModelAndView mav = new ModelAndView(getSuccessView(),errors.getModel());
    		
 		Collection zoneList= new ArrayList();
-		if("rollout".equalsIgnoreCase(expansionType)){
-	   		if(request.getAttribute("environment")!=null && ("DEV".equals((String)request.getAttribute("environment")))){
-				domainManagerService.refreshDev(workTable);
-			}
+		if(request.getAttribute("environment")!=null && ("DEV".equalsIgnoreCase((String)request.getAttribute("environment")))){
+			domainManagerService.refreshDev(workTable);
+		}
+	   	if(request.getAttribute("environment")!=null && ("trn".equalsIgnoreCase((String)request.getAttribute("environment")))){
+			domainManagerService.refreshProd(workTable);
+		}
+		
+	   	if("rollout".equalsIgnoreCase(expansionType)){
 	   		zoneList =domainManagerService.getZoneWorkTableInfo(workTable, regionId);
 	   	}else if("zExpansion".equalsIgnoreCase(expansionType)){
 	   		zoneList =domainManagerService.getCommonList(workTable, regionId);

@@ -111,6 +111,8 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	void refreshDev(String worktable);
 	
+	void refreshProd(String worktable);
+	
 	void doZoneExpansion(String worktable, String zoneCode[][], String regionId, String deliveryFee, String expansionType);
 	
 	String getDeliveryCharge(String regionId);

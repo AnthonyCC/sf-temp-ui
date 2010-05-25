@@ -152,6 +152,21 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 		
 	}
 	
+	public void refreshProd(final String worktable) throws DataAccessException {
+		CallableStatementCreator creator=new CallableStatementCreator(){
+			public CallableStatement createCallableStatement(Connection connection) throws SQLException{
+				CallableStatement cs=
+						connection.prepareCall("{ call DLV.REFRESH_WORKTABLE(?) }");
+				cs.setString(1, worktable);
+				return cs;
+			}
+			
+		};
+		List params=new ArrayList();
+		jdbcTemplate.call(creator,params);
+		
+	}
+	
 	private static String SELECT_DELIVERY_CHARGE="select unique(rd.delivery_charges) as DeliveryFee" 
 	+" from dlv.region_data rd, dlv.region r"
 	+" where  RD.ID IN (select id from dlv.region_data where start_date =(select max(start_date) from dlv.region_data where region_id=? and start_date <=trunc(sysdate+8))and region_id=?)"
