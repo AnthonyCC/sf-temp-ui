@@ -172,8 +172,7 @@ int rank = nav.getPageOffset()+1;
 					}
 					rank++;
 					%>
-					<!-- temporary display. Need to be removed after testing APPDEV-1008. -->
-					<br><%= productNode.getDepartment().getFullName() %>
+                <!-- Department name : $$$$$$$$$$$$$$ <%= productNode.getDepartment().getFullName() %> -->
 				</td>
 			</fd:PIPRow>
 		</tr>
