@@ -1651,7 +1651,7 @@ public class Product {
         if (productLabeling.isDisplayDeal()) {
         */
         
-        LOG.debug("product is :"+product);
+        LOG.debug("product is :"+product.getProductModel().getClass());
         if( (FDStoreProperties.getBurstsLowerLimit()<=this.getHighestDealPercentage()) && (FDStoreProperties.getBurstUpperLimit()>=this.getHighestDealPercentage()) ){
             image = new Image("/media_stat/images/deals/brst_lg_" + getHighestDealPercentage() + ".png", 55, 55);
         }
@@ -1663,6 +1663,8 @@ public class Product {
 
         ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
                 .getHideBursts()));
+        
+        LOG.debug("product is :"+product.getProductModel().getClass());
 
         if ( productLabeling.isDisplayDeal()) {                   	
             image = new Image("/media_stat/images/deals/brst_sm_" + getHighestDealPercentage() + ".png", 35, 35);
