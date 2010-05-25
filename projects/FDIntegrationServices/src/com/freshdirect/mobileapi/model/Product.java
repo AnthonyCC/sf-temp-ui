@@ -51,6 +51,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
@@ -1644,9 +1645,14 @@ public class Product {
          */
 
         Image image = null;
+        /*
         ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
                 .getHideBursts()));
         if (productLabeling.isDisplayDeal()) {
+        */
+        
+        LOG.debug("product is :"+product);
+        if( (FDStoreProperties.getBurstsLowerLimit()<=this.getHighestDealPercentage()) && (FDStoreProperties.getBurstUpperLimit()>=this.getHighestDealPercentage()) ){
             image = new Image("/media_stat/images/deals/brst_lg_" + getHighestDealPercentage() + ".png", 55, 55);
         }
         return image;
