@@ -3,14 +3,18 @@ package com.freshdirect.fdstore.util;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
+import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * Product display helper class
@@ -19,8 +23,11 @@ import com.freshdirect.fdstore.customer.FDUserI;
  *
  */
 public class ProductLabeling {
-	FDUserI customer;
-	ProductModel product;
+    private final static Logger LOG = LoggerFactory.getInstance(ProductLabeling.class);
+    
+	private FDUserI customer;
+	private String pricingZoneId;
+	private ProductModel product;
 	
 	Set<EnumBurstType> hideBursts;
 	
@@ -42,7 +49,7 @@ public class ProductLabeling {
 	 * @param hideYourFave Hide Your Fave burst
 	 */
 	public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
-		this.customer = customer;
+	    setCustomer(customer);
 		this.product = product;
 
 		this.hideBursts = new HashSet<EnumBurstType>();
@@ -72,13 +79,22 @@ public class ProductLabeling {
 	 * @param hideBursts Set of burst types to hide. Can be null.
 	 */
 	public ProductLabeling(FDUserI customer, ProductModel product, Set<EnumBurstType> hideBursts) {
-		this.customer = customer;
+		setCustomer(customer);
 		this.product = product;
 
 		this.hideBursts = hideBursts;
 
 		setDisplayFlags();
 	}
+
+
+    /**
+     * @param customer
+     */
+    private void setCustomer(FDUserI customer) {
+        this.customer = customer;
+        this.pricingZoneId = customer != null ? customer.getPricingZoneId() : ZonePriceListing.MASTER_DEFAULT_ZONE; 
+    }
 	
 	
 	
@@ -95,20 +111,19 @@ public class ProductLabeling {
 		displayFave = false;
 		displayNew = false;
 		displaybackInStock = false;
-        boolean showBurstImage=true; 
+                boolean showBurstImage=true;
+                
 		try {
 			String skuCode = product.getDefaultSkuCode();
 			if(skuCode != null) {
 				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
-				ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
+				ZonePriceInfoModel model=info.getZonePriceInfo(pricingZoneId);
 				showBurstImage=model.isShowBurstImage();			
 			}		
 		} catch (FDResourceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		} catch (FDSkuNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+                    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		}
 		
 		int deal = ((hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL)) && showBurstImage ) ? product.getHighestDealPercentage() : 0;
