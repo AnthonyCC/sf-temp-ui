@@ -2233,6 +2233,13 @@
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jxl.jar"/>
+
+				<include name="${scarab.jar}"/>
+<!-- scarab runtime dependencies -->
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>
+
 			</lib>
 		</makeEar>
 	</target>
