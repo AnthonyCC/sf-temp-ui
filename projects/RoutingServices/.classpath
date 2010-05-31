@@ -7,7 +7,7 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-beanutils-1.7.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-codec-1.3.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-lang-2.3.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/JFEP-0.1.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/spring.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>

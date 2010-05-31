@@ -19,6 +19,7 @@ import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
+import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
@@ -81,6 +82,7 @@ final public class VariantRegistry {
 
 	private void load() {
 		try {
+			ScarabInfrastructure.reload();
 			SmartStoreServiceConfigurationSB sb;
 
 			sb = getServiceConfigurationHome().create();

@@ -8,5 +8,6 @@
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/RoutingServices"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/scarab-java-client-2.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

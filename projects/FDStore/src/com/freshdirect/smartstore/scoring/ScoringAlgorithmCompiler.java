@@ -277,6 +277,8 @@ public class ScoringAlgorithmCompiler extends CompilerBase {
     private String generateGetExpressionsMethodBody(BlockExpression xp) {
         String s = "public String[] getExpressions() {\n";
         int size = xp.size();
+        if (size == 0)
+        	return s + "  return new String[0];\n}";
         s += "  String[] result = new String[] { \n";
         for (int i=0;i<size;i++) {
             if (i>0) {

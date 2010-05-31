@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,8 @@ import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
@@ -455,4 +458,37 @@ public class DataGeneratorCompilerTest extends TestCase {
 
     }
     
+    public void testCartContentsVariable() throws CompileException, InvalidContentKeyException {
+    	DataGenerator generator = comp.createDataGenerator("cartContents1", "cartContents");
+        assertNotNull("generator", generator);
+        input.reset();
+        HashSet<ContentKey> cartContents = new HashSet<ContentKey>();
+        cartContents.add(ContentKey.create(ContentType.get("Product"), "a1"));
+        cartContents.add(ContentKey.create(ContentType.get("Product"), "a2"));
+        s.setCartContents(cartContents);
+        List<ContentNodeModel> result = generator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 2", 2, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("a1", resultNodes.contains("a1"));
+        assertTrue("a2", resultNodes.contains("a2"));
+        assertEquals("0", "a1", TestUtils.getId(result, 0));
+        assertEquals("1", "a2", TestUtils.getId(result, 1));
+    }
+
+    public void testRecentItemsVariable() throws CompileException, InvalidContentKeyException {
+    	DataGenerator generator = comp.createDataGenerator("recentItems1", "recentItems");
+        assertNotNull("generator", generator);
+        input.reset();
+        HashSet<ContentKey> recentItems = new HashSet<ContentKey>();
+        recentItems.add(ContentKey.create(ContentType.get("Product"), "a3"));
+        s.setRecentItems(recentItems);
+        List<ContentNodeModel> result = generator.generate(s, input);
+        assertNotNull("result not null", result);
+        assertEquals("result length 2", 1, result.size());
+        Set<String> resultNodes = TestUtils.convertToStringList(result);
+        assertTrue("a3", resultNodes.contains("a3"));
+        assertEquals("0", "a3", TestUtils.getId(result, 0));
+    }
+
 }

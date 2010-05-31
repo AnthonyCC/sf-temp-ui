@@ -12,6 +12,9 @@ import junit.framework.TestCase;
 import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
+import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
@@ -351,6 +354,29 @@ public class ExternalRecommenderTest extends TestCase {
 			assertEquals("e3", nodes.get(5).getContentKey().getId());
 		} catch (CompileException e) {
 			fail("should compile registered recommender properly");
+		}
+		try {
+			DataGenerator generator = compiler.createDataGenerator("ext8", "RelatedItems_baz(recentItems)");
+			SessionInput input = new SessionInput("456", EnumServiceType.CORPORATE, PricingContext.DEFAULT);
+			Set<ContentKey> recentItems = new HashSet<ContentKey>();
+			input.setRecentItems(recentItems);
+			recentItems.add(ContentKey.create(ContentType.get("Product"), "a1"));
+			List<ContentNodeModel> nodes = generator.generate(input, new MockDataAccess());
+			assertEquals(3, nodes.size());
+			assertEquals("a1", nodes.get(0).getContentKey().getId());
+			assertEquals("a2", nodes.get(1).getContentKey().getId());
+			assertEquals("a3", nodes.get(2).getContentKey().getId());
+			recentItems.clear();
+			recentItems.add(ContentKey.create(ContentType.get("Product"), "e1"));
+			nodes = generator.generate(input, new MockDataAccess());
+			assertEquals(3, nodes.size());
+			assertEquals("e1", nodes.get(0).getContentKey().getId());
+			assertEquals("e2", nodes.get(1).getContentKey().getId());
+			assertEquals("e3", nodes.get(2).getContentKey().getId());
+		} catch (CompileException e) {
+			fail("should compile registered recommender properly 2");
+		} catch (InvalidContentKeyException e) {
+			fail("should have content key been created properly 2");
 		}
 	}
 	

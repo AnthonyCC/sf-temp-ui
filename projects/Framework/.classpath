@@ -5,7 +5,7 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-lang-2.3.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-httpclient-2.0.2.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-net-1.0.jar"/>
-	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-logging-1.0.3.jar"/>
+	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="var" path="WL_HOME/lib/weblogic.jar"/>
 	<classpathentry exported="true" kind="var" path="WL_HOME/lib/ojdbc6.jar"/>
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/jakarta-oro-2.0.5.jar"/>

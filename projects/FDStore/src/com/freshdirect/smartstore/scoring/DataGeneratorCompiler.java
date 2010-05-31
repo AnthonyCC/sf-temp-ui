@@ -51,6 +51,8 @@ public class DataGeneratorCompiler extends CompilerBase {
     private static final String EXPLICIT_LIST = "explicitList";
     private static final String CURRENT_PRODUCT = "currentProduct";
     private static final String CURRENT_NODE = "currentNode"; // alias to currentProduct (which is not necessarily a product)
+    private static final String CART_CONTENTS = "cartContents";
+    private static final String RECENT_ITEMS = "recentItems";
 
 
     private final static Collection<String> GLOBAL_VARIABLES = new HashSet<String>(); 
@@ -560,6 +562,8 @@ public class DataGeneratorCompiler extends CompilerBase {
         
         parser.getContext().addVariable(CURRENT_PRODUCT, Expression.RET_NODE);
         parser.getContext().addVariable(EXPLICIT_LIST, Expression.RET_SET);
+        parser.getContext().addVariable(CART_CONTENTS, Expression.RET_SET);
+        parser.getContext().addVariable(RECENT_ITEMS, Expression.RET_SET);
 
         // you have to add alias variables here
         parser.getContext().addVariable(CURRENT_NODE, Expression.RET_NODE);
@@ -699,6 +703,12 @@ public class DataGeneratorCompiler extends CompilerBase {
         if (vc.getVariables().contains(EXPLICIT_LIST)) {
             buffer.append(" "+SET_TYPE+ ' ' + EXPLICIT_LIST+ "  = sessionInput.getExplicitList();\n");
         }
+        if (vc.getVariables().contains(CART_CONTENTS)) {
+			buffer.append(" " + SET_TYPE + ' ' + CART_CONTENTS + "  = HelperFunctions.toList(sessionInput.getCartContents());\n");
+		}
+        if (vc.getVariables().contains(RECENT_ITEMS)) {
+			buffer.append(" " + SET_TYPE + ' ' + RECENT_ITEMS + "  = HelperFunctions.toList(sessionInput.getRecentItems());\n");
+		}
         buffer.append(initCode);
         
         buffer.append(oc.codeFragment);
@@ -770,7 +780,7 @@ public class DataGeneratorCompiler extends CompilerBase {
     }
     
     protected boolean isVariableFromDatasource(String name) {
-        return !EXPLICIT_LIST.equals(name);
+        return !EXPLICIT_LIST.equals(name) && !CART_CONTENTS.equals(name) && !RECENT_ITEMS.equals(name);
     }
     
     private OperationCompileResult compileBinaryOperation(CompileState c, BinaryExpression expression) throws CompileException {
@@ -891,7 +901,8 @@ public class DataGeneratorCompiler extends CompilerBase {
                 + "   }");
     }
 
-    private OperationCompileResult compileOperation(CompileState c, Operation expression) throws CompileException {
+    @SuppressWarnings("unused")
+	private OperationCompileResult compileOperation(CompileState c, Operation expression) throws CompileException {
         String arrayName = "arr"+c.lastTempVariable;
         String varName = "tmp" + c.lastTempVariable++;
         

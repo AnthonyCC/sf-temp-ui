@@ -45,7 +45,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 			throw new IllegalArgumentException("generator cannot be null");
 		}
 		this.generator = GlobalCompiler.getInstance().createDataGenerator(generator);
-		if (scoring != null) {
+		if (scoring != null && scoring.trim().length() != 0) {
 			this.scoring = GlobalCompiler.getInstance().createScoringAlgorithm(scoring);
 		}
 	}
@@ -63,7 +63,7 @@ public class ScriptedRecommendationService extends AbstractRecommendationService
 		List<RankedContent.Single> rankedContents;
 
 		boolean aggregatable;
-		if (scoring != null) {
+		if (scoring != null && scoring.getReturnSize() > 0) {
 			String[] variableNames = scoring.getVariableNames();
 
 			if (scoring.getReturnSize() > 1) {

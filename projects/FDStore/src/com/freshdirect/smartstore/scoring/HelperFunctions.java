@@ -402,6 +402,16 @@ public class HelperFunctions {
         a.add(lookup(id));
         return a;
     }
+    
+    public static List<ContentNodeModel> toList(Collection<ContentKey> keys) {
+    	List<ContentNodeModel> nodes = new ArrayList<ContentNodeModel>(keys.size());
+    	for (ContentKey key : keys) {
+    		ContentNodeModel node = ContentFactory.getInstance().getContentNodeByKey(key);
+    		if (node != null)
+    			nodes.add(node);
+    	}
+    	return nodes;
+    }
 
     /**
      * Return the part of the cache key for the current node.

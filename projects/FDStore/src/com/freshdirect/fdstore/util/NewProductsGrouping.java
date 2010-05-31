@@ -4,11 +4,7 @@
 package com.freshdirect.fdstore.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -16,17 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.util.AbstractNavigator.SortDisplay;
-import com.freshdirect.framework.util.DateUtil;
-import com.sun.org.apache.bcel.internal.generic.ISTORE;
 
 /**
  * @author skrishnasamy

@@ -20,6 +20,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.Variant;
+import com.freshdirect.smartstore.external.scarab.ScarabInfrastructure;
 import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
@@ -43,6 +44,7 @@ public class CmsRecommenderRegistry {
 	}
 
 	private void load(boolean forceReload) {
+		ScarabInfrastructure.reload();
 		Map<String, RecommendationService> tmpSmartCatVariants = new HashMap();
 		Set rss = CmsManager.getInstance().getContentKeysByType(
 				FDContentTypes.RECOMMENDER_STRATEGY);
