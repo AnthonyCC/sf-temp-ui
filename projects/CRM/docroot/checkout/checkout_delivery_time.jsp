@@ -19,6 +19,19 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %> 
 <%@ taglib uri='crm' prefix='crm' %>
+
+<style>
+
+span.control img{
+margin: 8px 6px 0 3px;
+}
+
+.time {
+float:left;
+position:relative;
+top:2px;
+}
+</style>
 <%
     String successPage = "checkout_select_payment.jsp";
     successPage = "checkout_ATP_check.jsp?successPage="+URLEncoder.encode(successPage);

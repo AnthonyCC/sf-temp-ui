@@ -1566,16 +1566,32 @@ font-size: 10pt;
 	padding: 0 4px;
 }
 .timeslot .slotRow .control input {
-	margin: 0;
+	margin: 4px 5px 0 2px;
 	padding: 0;
 }
-.timeslot .slotRow .control img {
-	margin: 0 2px 0 1px;
-}
 .timeslot .slotRow .time {
-	width: 100%;
 	margin-left: -4px;
 }
+
+.slotRow, .cutoffTime {
+clear:both;
+}
+
+.slotRow {
+float:left;
+width:98%;
+}
+
+.control {
+float:left;
+}
+
+.time {
+float:left;
+position:relative;
+top:2px;
+}
+
 .click2call_bold {
 color: #000000;
 font-weight: bold;

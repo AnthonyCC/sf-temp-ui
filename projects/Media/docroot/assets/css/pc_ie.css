@@ -628,6 +628,29 @@ p.tab_text_simple {
 	margin: 0px;
 }
 
+.slotRow, .cutoffTime {
+clear:both;
+}
+
+.slotRow {
+float:left;
+width:98%;
+}
+
+.control {
+float:left;
+}
+
+.control img{
+margin: 4px 5px 0px 6px;
+}
+
+.time {
+float:left;
+position:relative;
+top:3px;
+}
+
 a.tab:link		{ color : #845286; }
 a.tab:visited	{ color : #845286; }
 a.tab:active	{ color : #845286; }

@@ -22,6 +22,8 @@
 <%@ page import='java.net.URLEncoder'%>
 <%@ page import='java.text.MessageFormat' %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
+<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -37,6 +39,7 @@ if("true".equals(request.getParameter("chefstable"))) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 }
 
+TimeslotContext timeSlotCtx= TimeslotContext.CHECKOUT_TIMESLOTS;
 DateRange advOrdRange = FDStoreProperties.getAdvanceOrderRange();
 Calendar tomorrow = Calendar.getInstance();
 tomorrow.add(Calendar.DATE, 1);
@@ -67,7 +70,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	boolean hasPreReserved = false;
 	// export
 	String preReserveSlotId = "";
-	
+	String addressId="";
 	//export
 	FDStandingOrder currentStandingOrder = null;
 
@@ -76,7 +79,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
 		rsv = user.getReservation();
 
-		address = cart.getDeliveryAddress();
+		address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx);
 
 		if(rsv != null){
 			preReserveSlotId = rsv.getTimeslotId();

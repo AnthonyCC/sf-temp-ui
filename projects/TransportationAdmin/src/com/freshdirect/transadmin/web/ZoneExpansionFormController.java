@@ -89,7 +89,7 @@ public class ZoneExpansionFormController extends BaseFormController {
 		if(request.getAttribute("environment")!=null && ("DEV".equalsIgnoreCase((String)request.getAttribute("environment")))){
 			domainManagerService.refreshDev(workTable);
 		}
-	   	if(request.getAttribute("environment")!=null && ("trn".equalsIgnoreCase((String)request.getAttribute("environment")))){
+	   	if(request.getAttribute("environment")!=null && ("PROD".equalsIgnoreCase((String)request.getAttribute("environment")))){
 			domainManagerService.refreshProd(workTable);
 		}
 		

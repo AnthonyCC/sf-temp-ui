@@ -420,6 +420,30 @@ table.smartstore .body1 {
 	padding-bottom: 2px;
 }
 
+
+.slotRow, .cutoffTime {
+clear:both;
+}
+
+.slotRow {
+float:left;
+width:98%;
+}
+
+.control {
+float:left;
+}
+
+.control img{
+margin: 4px 5px 0px 6px;
+}
+
+.time {
+float:left;
+position:relative;
+top:3px;
+}
+
 /** WINE PAGES **/
 /** Side navigation **/
 .usq_left_nav_menu

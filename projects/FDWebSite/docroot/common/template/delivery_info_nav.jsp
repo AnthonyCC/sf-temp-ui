@@ -44,7 +44,7 @@
 					<td><img src="/media_stat/images/layout/clear.gif" width="8" height="1" border="0"></td>
                                         <td class="text9_lh12" <%=user.isEligibleForPreReservation()?"colspan=\"5\"":""%>><a href="/help/delivery_lic_pickup.jsp">Pickup at FreshDirect</a><br>
 										<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>
-											<a href="/your_account/delivery_info<% if (user.getAdjustedValidOrderCount() >= 1 && (user.getLevel() >= FDUserI.RECOGNIZED)) { %>_avail_slots<% } else { %>_check_slots<% } %>.jsp">Available Delivery Slots</a>
+											<a href="/your_account/delivery_info<% if (user.getLevel() >= FDUserI.RECOGNIZED) { %>_avail_slots<% } else { %>_check_slots<% } %>.jsp">Available Delivery Slots</a>
 										<% } else { %>
 											<a href="/help/delivery_info_check_slots.jsp">Available Delivery Slots</a>
 										<% } %>

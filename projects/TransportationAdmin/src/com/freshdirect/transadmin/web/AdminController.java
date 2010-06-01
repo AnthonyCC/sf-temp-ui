@@ -133,11 +133,11 @@ public class AdminController extends AbstractMultiActionController {
 		    }
 		    
 		    
-		    if(request.getAttribute("environment")!=null && ("DEV".equals((String)request.getAttribute("environment")))){
+		    if(request.getAttribute("environment")!=null && ("DEV".equals((String)request.getAttribute("environment"))||"PROD".equals((String)request.getAttribute("environment")))){
 				domainManagerService.refreshGeoRestrictionWorktable();
 			}
-			
-			Collection zoneList= domainManagerService.getGeoRestrictions();
+		    
+		    Collection zoneList= domainManagerService.getGeoRestrictions();
 			mav.getModel().put("zones", zoneList);
 			
 		} catch (Exception e) {

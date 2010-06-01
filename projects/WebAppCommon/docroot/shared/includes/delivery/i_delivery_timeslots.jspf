@@ -1,0 +1,168 @@
+<%
+//get amount for zone promotion
+double zonePromoAmount=AddressFinder.getZonePromoAmount(user, address, timeSlotCtx);
+System.out.println("zonePromoAmount>>>>>"+zonePromoAmount);
+String zonePromoString=null;
+%>
+
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>">
+	<%
+	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
+	Map zones = DeliveryTimeSlotResult.getZones();
+	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
+	List messages = DeliveryTimeSlotResult.getMessages();
+	List comments = DeliveryTimeSlotResult.getComments();
+	%>
+<% if(timeSlotCtx!=null){
+
+	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
+		if(zonePromoAmount>0)
+		{
+			zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
+			request.setAttribute("SHOW_WINDOWS_STEERING","true");
+		}
+%>
+		<script>
+			var zonePromoString=""; 
+			var zonePromoEnabled=false;
+			<%if(zonePromoAmount>0){ %>
+				zonePromoString="<%=zonePromoString %>"; 
+				zonePromoEnabled=true;
+			<%} %>
+		</script>
+	<% } %>
+
+	<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)|| timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
+		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
+	<%}%>
+	
+	<%@ include file="/shared/includes/delivery/i_timeslot_header.jspf"%>
+	
+	<%if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
+		<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+				<%@ include file="/includes/i_error_messages.jspf" %>
+		</fd:ErrorHandler>
+	<%}%>
+	
+	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
+		
+		<%
+		 if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){
+			if(rsv == null && hasWeeklyReservation){
+					String foundId = "";
+					int dayOfWeek = customerInfo.getRsvDayOfWeek();
+					Calendar cal = Calendar.getInstance();
+					if(cal.get(Calendar.DAY_OF_WEEK) == dayOfWeek){
+						cal.add(Calendar.DATE, 1);
+					}
+					while (cal.get(Calendar.DAY_OF_WEEK) != dayOfWeek) {
+						cal.add(Calendar.DATE, 1);
+					}
+					for(Iterator i = timeslots.getDays().iterator(); i.hasNext(); ){
+						Date day = (Date)i.next();
+						for(Iterator j = timeslots.getTimeslotsForDate(day).iterator(); j.hasNext(); ){
+							FDTimeslot slot = (FDTimeslot)j.next();
+							if(slot.isMatching(cal.getTime(), customerInfo.getRsvStartTime(), customerInfo.getRsvEndTime())){
+								foundId = slot.getTimeslotId();
+								break;
+							}
+						}
+					}
+					if(!"".equals(foundId)){
+						timeSlotId = foundId;
+						preReserveSlotId = foundId;
+						hasPreReserved = true;
+					}else{
+						hasWeeklyReservation = false;
+					}
+			}%>
+		<%}%>
+		
+		<% // fix for advance orders showing on this page
+		if (idx.intValue() == timeslotList.size()-1 && timeslotList.size() > idx.intValue()) { %>
+			<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+		<% } %>
+	</logic:iterate>
+	
+	
+	<!--Geo Restriction Message Display -->
+	<% if(messages != null && messages.size() >= 1) { %>
+		<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+	<% } %>
+
+	<!-- Geo Restriction Comment Display -->
+	<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
+		 if(comments != null && comments.size() >= 1) { %>
+			<%@ include file="/shared/includes/delivery/i_restriction_comment.jspf"%>
+	<% } }%>
+
+
+
+<%if(!timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
+	<table cellpadding="0" cellspacing="0" width="693" border="0">
+		<tr>
+			<td align="left">
+				<img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" border="0" valign="bottom" alt="Green">
+				TimeSlot Available*
+				&nbsp;
+				<img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" border="0" valign="bottom" alt="Orange">
+				TimeSlot Full
+			</td>
+			<td align="right" width="450">You must complete checkout for next-day deliveries before the "Order by" time.</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+			<br>
+			* <b>You will select a delivery timeslot at Checkout.</b> Delivery timeslots are not guaranteed until completion of Checkout.
+			</td>
+		</tr>
+	</table>
+	<br/>
+
+	<%if(zonePromoAmount>0){ %>
+		<fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_delinfo_adv.html" />
+	<%}%>
+
+	<% if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) { %>
+		<%@ include file="/shared/includes/delivery/i_loyalty_button.jspf" %>
+	<% } %>
+<% } %>
+
+<% if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){%>
+
+		<table width="693" border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td align="left">
+					<IMG src="/media_stat/images/template/checkout/x_trans.gif" WIDTH="9" HEIGHT="9" BORDER="0" hspace="5"> = Delivery slot full
+				</td>
+				<td align="right">
+					You must complete checkout for next-day deliveries before the "Order by" time.
+				</td>
+			</tr>
+		</table>
+		<br/>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+			<img src="/media_stat/images/layout/ff9933.gif" width="693" height="1" border="0"><br/>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br/>
+
+<% } %>
+<% } //end context%>
+<script language="javascript">
+	
+	var c2ctimeslot = document.getElementById("c2cnextdaytimeslot");	
+	var timeslotvalue=c2ctimeslot.value;	
+	if(timeslotvalue==1){
+		if(document.getElementById("loyalty1")){
+			document.getElementById("loyalty1").style.display="block";
+		}
+		if(document.getElementById("loyalty3")){
+			document.getElementById("loyalty3").style.display="block";
+		}
+	}else{
+		if(document.getElementById("loyalty2")){
+			document.getElementById("loyalty2").style.display="block";
+		}
+	}
+	
+	</script>
+</fd:DeliveryTimeSlot>

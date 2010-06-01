@@ -789,14 +789,15 @@ public class FDCustomerManager {
 		FDTimeslot timeslot,
 		EnumReservationType rsvType,
 		String addressId,
-		FDActionInfo aInfo)
+		FDActionInfo aInfo,
+		boolean chefstable)
 		throws FDResourceException, ReservationException {
 		lookupManagerHome();
 
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			return sb.changeReservation(identity, oldReservation, timeslot, rsvType, addressId, aInfo);
+			return sb.changeReservation(identity, oldReservation, timeslot, rsvType, addressId, aInfo, chefstable);
 		} catch (RemoteException e) {
 			invalidateManagerHome();
 			throw new FDResourceException(e, "Error talking to session bean");

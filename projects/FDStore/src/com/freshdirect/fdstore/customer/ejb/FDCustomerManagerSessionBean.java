@@ -3345,12 +3345,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public FDReservation changeReservation(FDIdentity identity,
 			FDReservation oldReservation, FDTimeslot timeslot,
-			EnumReservationType rsvType, String addressId, FDActionInfo aInfo)
+			EnumReservationType rsvType, String addressId, FDActionInfo aInfo, boolean chefstable)
 			throws FDResourceException, ReservationException {
 		this.cancelReservation(identity, oldReservation, rsvType, aInfo);
 		aInfo.setNote("Make Pre-Reservation");
 		return this.makeReservation(identity, timeslot, rsvType, addressId,
-				aInfo, false);
+				aInfo, chefstable);
 	}
 
 	public FDReservation makeReservation(FDIdentity identity,

@@ -1,0 +1,52 @@
+			
+<%
+if(timeSlotCtx!=null){
+
+if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){
+
+%>
+<table  width="693" border="0" cellspacing="0" cellpadding="0">
+<tr>
+	<td colspan="3" class="text12">
+		<%
+		String timeMsg = java.text.MessageFormat.format( "{0,choice,1#one hour|1<{0,number,integer} hours}", new Object[] { new Integer(FDStoreProperties.getPreReserveHours()) });
+		
+		if(hasReservation) {
+		%>
+			You can use this page to update or cancel your reservation. Please note that <b>your reservation will expire at
+			<%= CCFormatter.formatDeliveryTime(rsv.getExpirationDateTime()) %> on <%= CCFormatter.formatDayName(rsv.getExpirationDateTime()) %>
+			(<%= timeMsg %> prior to cutoff),</b> so be sure to complete checkout by that time to guarantee your timeslot remains available.
+			Timeslots unavailable for reservation now may become available at time of checkout.
+		<%} else { %>
+			You can use this page to place a standing weekly timeslot reservation or to reserve a time for just this week. Please note
+			that <b>delivery timeslot reservations expire <%= timeMsg %> prior to cutoff</b>, so be sure to complete checkout by that time
+			to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout.
+		
+		<%} if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>  
+			<fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_chefstable_header.html" />
+		
+		<%} if (hasPreReserved) {%>
+			<br><img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your <%= EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot </b>
+		
+		<%} if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
+			<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b><br/><br/>
+		<%}%>	
+	</td>
+</tr>
+</table>
+<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) || timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){%>
+
+	<table width="693"><tr>
+		<td>
+			<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
+				<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
+			<%}%>
+		</td>	
+		<td align="right">
+			<%if(zonePromoAmount>0){ %>
+				<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+			<%}%>
+		</td>
+	</tr></table>
+
+<%}}%>

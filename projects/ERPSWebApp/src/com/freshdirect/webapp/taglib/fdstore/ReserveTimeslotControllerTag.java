@@ -102,7 +102,7 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	
 	private void changeReservation(FDUserI user, FDReservation reservation, FDTimeslot timeslot) throws FDResourceException, ReservationException {
 		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, user.getIdentity(), "SYSTEM", "Changed Pre-Reservation", null);
-		FDReservation rsv = FDCustomerManager.changeReservation(user.getIdentity(), reservation, timeslot, this.rsvType, this.addressId, aInfo);
+		FDReservation rsv = FDCustomerManager.changeReservation(user.getIdentity(), reservation, timeslot, this.rsvType, this.addressId, aInfo, chefstable);
 		user.setReservation(rsv);
 	}
 

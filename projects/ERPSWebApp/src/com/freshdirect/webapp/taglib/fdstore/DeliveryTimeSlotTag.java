@@ -207,20 +207,22 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	private ErpAddressModel performCosResidentialMerge()
 			throws FDResourceException {
 		ErpAddressModel timeslotAddress=address;
-		if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
-			try{
-				DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
-		 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
-		 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
-		 			//Clone the address model object
-		 			timeslotAddress=cloneAddress(address);
-		 			timeslotAddress.setServiceType(EnumServiceType.HOME);
-		 		}
-		 		
-			}catch (FDInvalidAddressException iae) {
-				LOGGER
-				.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
-						+ address + "EXCEPTION :" + iae);
+		if(address!=null){
+			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+				try{
+					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
+			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
+			 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
+			 			//Clone the address model object
+			 			timeslotAddress=cloneAddress(address);
+			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
+			 		}
+			 		
+				}catch (FDInvalidAddressException iae) {
+					LOGGER
+					.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
+							+ address + "EXCEPTION :" + iae);
+				}
 			}
 		}
 		return timeslotAddress;

@@ -10,6 +10,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -65,7 +66,15 @@ public class CheckAvailableTimeslotsTag extends AbstractControllerTag {
 	 		if(result.isSuccess()){
 
 	 			FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
-	 			user.getShoppingCart().setDeliveryAddress(form.getAddress());
+	 			DlvAddressGeocodeResponse response=null;
+	 			try{
+	 				response=FDDeliveryManager.getInstance().geocodeAddress(form.getAddress());
+	 			} catch (FDInvalidAddressException fdiae) {
+		 			result.addError(new ActionError(EnumUserInfoName.DLV_CANT_GEOCODE.getCode(), SystemMessageList.MSG_UNRECOGNIZE_ADDRESS));
+		 		} catch (FDResourceException fdre) {
+		 			result.addError(new ActionError("technicalDifficulty", SystemMessageList.MSG_TECHNICAL_ERROR));
+		 		}
+	 			user.getShoppingCart().setDeliveryAddress((ErpAddressModel)response.getAddress());
 	 			pageContext.getSession().setAttribute(SessionName.USER, user);
 	 		}
 	 	}
