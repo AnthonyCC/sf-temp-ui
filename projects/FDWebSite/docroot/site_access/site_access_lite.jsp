@@ -110,7 +110,7 @@ request.setAttribute("listPos", "CategoryNote");
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
 				<tr><td align="left"><img src="/media/editorial/site_access/images/siteaccess_aboutus_mangrs.jpg" width="550" height="220" alt="Managers" border="0"><br></td></tr>
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
-				<tr><td align="left"><font class="text12"><b>Before we direct to you to our store, please enter your ZIP code and hit "Go" to<br>
+				<tr><td align="left"><font class="text12"><b>Before we direct you to our store, please enter your ZIP code and hit "Go" to<br>
 				see if you are within our delivery area. We will automatically redirect you to the<br>page you requested. </b></font></td></tr>
 				<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"><br></td></tr>
 			</table>
