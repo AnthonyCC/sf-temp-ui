@@ -29,7 +29,7 @@ public class AddressFinder {
 		
 		Collection shipToAddresses = new ArrayList();
 		ErpAddressModel address = null;
-		if(timeslotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeslotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){
+		if(timeslotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeslotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
 			if(user.isHomeUser()){
 				shipToAddresses=FDCustomerManager.getShipToAddresses(user.getIdentity());
 				//check whether Customer having more than one address else get from shoppingCart address

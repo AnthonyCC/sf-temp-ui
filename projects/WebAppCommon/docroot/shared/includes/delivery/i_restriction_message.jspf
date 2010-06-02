@@ -17,7 +17,7 @@
 				<br />
 				<b><font class="text12" color="#CC0000">PLEASE NOTE: </font></b>
 				<%= messagesToDisplay.get(0) %><br /><br />
-				<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="100%" HEIGHT="1" BORDER="0"><br /><br />
+				<IMG src="/media_stat/images/layout/cccccc.gif" WIDTH="100%" HEIGHT="1" BORDER="0"><br />
 			</td>
 		</tr>
 	</table>

@@ -10,6 +10,7 @@ public class TimeslotContext {
 	public static final TimeslotContext CHECKOUT_TIMESLOTS = new TimeslotContext("CKT TIMESLOTS");
 	public static final TimeslotContext CHECK_AVAILABLE_TIMESLOTS = new TimeslotContext("WEB AVLTIMESLOTS");
 	public static final TimeslotContext RESERVE_TIMESLOTS = new TimeslotContext("RSV TIMESLOT");
+	public static final TimeslotContext RESERVE_TIMESLOTS_CRM = new TimeslotContext("RSV TIMESLOT CRM");
 	public static final TimeslotContext CHECK_AVAIL_SLOTS_NO_USER = new TimeslotContext("USR UNRECOGNIZED");
 	public static final TimeslotContext CHECK_AVAL_SLOTS_CRM = new TimeslotContext("CRM AVLTIMESLOTS");
 	public static final TimeslotContext CHECK_SLOTS_FOR_ADDRESS_CRM = new TimeslotContext("CRM CHECK TIMESLOTS");

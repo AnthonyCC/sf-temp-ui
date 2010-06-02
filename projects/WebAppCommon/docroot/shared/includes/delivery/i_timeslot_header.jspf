@@ -2,7 +2,7 @@
 <%
 if(timeSlotCtx!=null){
 
-if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){
+if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
 
 %>
 <table  width="693" border="0" cellspacing="0" cellpadding="0">
@@ -23,7 +23,22 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)){
 			to guarantee your timeslot remains open. Timeslots unavailable for reservation now may become available at time of checkout.
 		
 		<%} if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>  
-			<fd:IncludeMedia name="/media/editorial/site_pages/timeslots/timeslot_chefstable_header.html" />
+			<br><br>
+			<table cellspacing="0" cellpadding="0" border="0" width="695">
+				<tr>
+					<td colspan="3" align="left">
+						 <img src="/media/editorial/site_pages/ct/ct_timeslot_note_hdr.gif" alt="Preferred access to our best delivery times." width="628" height="15" border="0">			
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3" align="left">
+					 We've <a href="javascript:popup('/shared/template/generic_popup.jsp?contentPath=/media/editorial/site_pages/ct/preferred_access.html&windowSize=large&name=Chefs+Table','large')"><b>held space for you</b></a> in our most popular time slots. 
+					 You can call us at <b>1-212-796-8002</b> until 9pm (6pm on Fridays and
+					 Saturdays) if there are no timeslots open for the next day and we'll open a space for you.
+					</td>
+				</tr>
+			</table>
+			<br>
 		
 		<%} if (hasPreReserved) {%>
 			<br><img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b> Your <%= EnumReservationType.RECURRING_RESERVATION.equals(rsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot </b>
