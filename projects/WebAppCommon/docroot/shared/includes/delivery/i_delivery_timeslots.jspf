@@ -22,7 +22,7 @@ String zonePromoString=null;
 			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 %>
-		<script>
+		<script type="text/javascript" language="javascript">
 			var zonePromoString=""; 
 			var zonePromoEnabled=false;
 			<%if(zonePromoAmount>0){ %>
