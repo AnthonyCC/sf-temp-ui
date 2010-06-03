@@ -93,13 +93,16 @@ if(isCheckAddress){
 	<div class="content_fixed">
 	<table width="90%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
-			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td>
+			<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 		</tr>
 		<tr>
-			
-			<%//Finds the address%>
-			<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td>
 		</tr>
+			
+		<%//Finds the address%>
+		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
+		
 
 <%  
    if(user.isHomeUser())

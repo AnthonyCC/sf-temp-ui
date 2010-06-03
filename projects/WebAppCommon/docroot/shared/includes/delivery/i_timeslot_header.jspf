@@ -46,6 +46,7 @@ if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)|| timeSlotCtx.equals(Ti
 		<%} if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){%>
 			<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b><br/><br/>
 		<%}%>	
+			<img height="1" border="0" width="693" src="/media_stat/images/layout/ff9933.gif"><br><br>
 	</td>
 </tr>
 </table>

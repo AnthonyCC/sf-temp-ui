@@ -35,7 +35,7 @@
 
 		span.control img{
 			margin: 7px 8px 0 4px;
-			}
+		}
 
 		span.time {
 		float:left;
@@ -92,6 +92,10 @@
 			
 			<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 				<tr>
+					<td colspan="2" class="text12" align="left" width="29%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+					<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				</tr>
+				<tr>
 					<td>		
 					<%//Finds the address%>
 					<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
@@ -126,7 +130,7 @@
 				
 			</table>		
 					
-					<table cellpadding="0" cellspacing="0" border="0" align="center">
+					<table width="90%" cellpadding="0" cellspacing="0" border="0" align="center">
 						<tr>
 							<td colspan="7"><img src="/media_stat/images/template/youraccount/choose_reservation_type.gif"
 								width="256" height="10" vspace="10"></td>

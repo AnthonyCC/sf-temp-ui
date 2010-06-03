@@ -2,19 +2,15 @@
 
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
-System.out.println("timeSlotCtx>>>>"+timeSlotCtx);
 if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
 	if(user.isHomeUser()){
 	    shipToAddresses = AddressFinder.getShipToAddresses(user);
 	} 
 	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx);
-	System.out.println("Address1>>>>"+address);
 }else{
 	address = ((FDUserI)session.getAttribute(SessionName.USER)).getShoppingCart().getDeliveryAddress();
-	System.out.println("Address2>>>>"+address);
 }
 
-System.out.println("isCheckAddress>>>>"+isCheckAddress);
 %>
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
 <table width="693" cellpadding="0" cellspacing="0" border="0">
@@ -69,7 +65,10 @@ System.out.println("isCheckAddress>>>>"+isCheckAddress);
 				 <%}else{%>
 				     <FORM name="addressForm" method="POST" action="/main/delivery_available_slots.jsp">
 				 <%}%>
-					
+				<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
+					<tr>
+						<td>&nbsp;</td>
+				<%}%>
 					<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
 						<SELECT name="addressId" onChange="javascript:submit()" CLASS="text12">
 							<% 
@@ -119,4 +118,6 @@ System.out.println("isCheckAddress>>>>"+isCheckAddress);
 					<td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td>
 				</tr>
 			<% } %>
-<table
+<%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
+</table>
+<%}%>
