@@ -178,7 +178,7 @@ if (currentCategory != null) {
 			
 			fiIsDeal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
 			if (fiIsDeal) {
-				fiProdBasePrice	= JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice())+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
+				 fiProdBasePrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
 			}
 	%></fd:FDProductInfo><%
 String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
