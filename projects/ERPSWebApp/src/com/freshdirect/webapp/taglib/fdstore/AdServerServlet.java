@@ -3,6 +3,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.naming.Context;
@@ -29,6 +30,7 @@ public class AdServerServlet extends HttpServlet{
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
+			int[] result = {};
 			PreparedStatement  ps = null;
 			System.out.println("Zone Pricing Enabled:"+zonePricingEnabled);
 			if(null ==zonePricingEnabled || "false".equalsIgnoreCase(zonePricingEnabled)){
@@ -39,21 +41,32 @@ public class AdServerServlet extends HttpServlet{
 					ps.setString(3, price[counter]);
 					ps.addBatch();
 				}
+				result = ps.executeBatch();
 								
 			}else {
 				String[] zoneId = request.getParameterValues("zoneId");
 				String[] zoneType = request.getParameterValues("zoneType");
-				ps = conn.prepareStatement("Insert into CreativeUpdate_Zone (ProductId, Available, Price, ZoneId, ZoneType) values (?,?,?,?,?)");
-				for (int counter = 0; counter < prodId.length; counter++) {
-					ps.setString(1, prodId[counter]);
-					ps.setString(2, avail[counter]);
-					ps.setString(3, price[counter]);
-					ps.setString(4, zoneId[counter]);
-					ps.setString(5, zoneType[counter]);
-					ps.addBatch();
+				ps = conn.prepareStatement("select count(*) from CreativeUpdate_Zone");
+				ResultSet rs =ps.executeQuery();
+				int count = 0;
+				if(rs.next()){
+					count = rs.getInt(1);
+				}
+				System.out.println("Count from CreativeUpdate_Zone table:"+count);
+				if(count <= 0){
+					ps = conn.prepareStatement("Insert into CreativeUpdate_Zone (ProductId, Available, Price, ZoneId, ZoneType) values (?,?,?,?,?)");
+					for (int counter = 0; counter < prodId.length; counter++) {
+						ps.setString(1, prodId[counter]);
+						ps.setString(2, avail[counter]);
+						ps.setString(3, price[counter]);
+						ps.setString(4, zoneId[counter]);
+						ps.setString(5, zoneType[counter]);
+						ps.addBatch();
+					}
+					result = ps.executeBatch();
 				}
 			}
-			int[] result = ps.executeBatch();
+//			int[] result = ps.executeBatch();
 			ps.close();
 			
 			System.out.println("-=Batch update complete=- Inserted " + result.length + " records into CreativeUpdate table");

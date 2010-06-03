@@ -61,15 +61,21 @@ public class AdServerSweeperCronRunner {
 	
 	private static void updateOASdatabase(Connection conn, String campaigns) throws SQLException{
 		
-		System.out.println("Inside updateOASdatabase() method.");		
+		System.out.println("Inside updateOASdatabase() method.");	
+		long time= System.currentTimeMillis();
 		removeZoneTermFromSearchTerm(conn);
+		System.out.println("Query Time for Removing:"+(System.currentTimeMillis()-time)/1000+ "secs");
 		PreparedStatement  ps = null;
+		time= System.currentTimeMillis();
 		if(null != campaigns && campaigns.trim().length()>0){
 			ps = conn.prepareStatement("select c.CampaignKey, c.SearchTerm from Campaign c where c.CampaignKey in("+campaigns+")");			
 		}else{
+			
 			ps = conn.prepareStatement("select distinct c.CampaignKey, c.SearchTerm from Campaign c,Campaign_Creative cc where c.CampaignKey = cc.CampaignKey and cc.CreativeKey in(Select Distinct(CreativeKey) From Creative c1, CreativeUpdate_Zone cu where c1.DisplayFlag ='Yes' and instr(c1.extraHtml, Concat('productId=', cu.ProductId, '&')) and cu.ZONETYPE<>'M' and cu.ZONETYPE<>'')");
+			
 		}
 		ResultSet rs = ps.executeQuery();
+		System.out.println("Query Time:"+(System.currentTimeMillis()-time)/1000+ "secs");
 		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ?,c.SearchAnyAll='LOG' where c.CampaignKey=?");
 		PreparedStatement iczps = conn.prepareStatement("insert into CampaignZoneTerm(CampaignKey,ZoneSearchTerm,TimeStamp) values(?,?,?)");
 		Date date = new Date();		
@@ -99,9 +105,13 @@ public class AdServerSweeperCronRunner {
 
 
 	private static void removeZoneTermFromSearchTerm(Connection conn) throws SQLException{
-		PreparedStatement ps = conn.prepareStatement("select c.CampaignKey,c.SearchTerm,czt.ZoneSearchTerm from Campaign c, CampaignZoneTerm czt where c.SearchTerm like '%zonelevel%' and c.CampaignKey=czt.CampaignKey and czt.TimeStamp =(select max(TimeStamp) from CampaignZoneTerm where CampaignKey=c.CampaignKey) order by c.CampaignKey");
+		long time= System.currentTimeMillis();
+		//PreparedStatement ps = conn.prepareStatement("select c.CampaignKey,c.SearchTerm,czt.ZoneSearchTerm from Campaign c, CampaignZoneTerm czt where c.SearchTerm like '%zonelevel%' and c.CampaignKey=czt.CampaignKey and czt.TimeStamp =(select max(TimeStamp) from CampaignZoneTerm where CampaignKey=c.CampaignKey) order by c.CampaignKey");
+		PreparedStatement ps = conn.prepareStatement("SELECT c.CampaignKey, c.SearchTerm, czt.ZoneSearchTerm FROM Campaign c, CampaignZoneTerm czt WHERE c.SearchTerm like '%zonelevel%' AND c.CampaignKey=czt.CampaignKey AND czt.TimeStamp =(SELECT TimeStamp FROM tmp_MaxTime t WHERE CampaignKey=c.CampaignKey) ORDER BY c.CampaignKey;");
+		
 		PreparedStatement  ucps = conn.prepareStatement("update Campaign c set c.SearchTerm = ? where c.CampaignKey=?");
 		ResultSet rs =ps.executeQuery();
+		System.out.println("Query Time in Removing:"+(System.currentTimeMillis()-time)/1000+ "secs");
 		while(rs.next()){
 			int campaignKey = rs.getInt(1);
 			String searchTerm = rs.getString(2);
