@@ -914,18 +914,7 @@ public class FDDeliveryManager {
 	}
 
 	public List<FDTimeslot> getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
-		try {
-
-			DlvManagerSB sb = getDlvManagerHome().create();
-			return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, address);
-
-		} catch (RemoteException re) {
-			re.printStackTrace();
-			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			ce.printStackTrace();
-			throw new FDResourceException(ce);
-		}
+		return RoutingUtil.getInstance().getTimeslotsForDateRangeAndZoneEx(timeSlots, address);
 	}
 
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {

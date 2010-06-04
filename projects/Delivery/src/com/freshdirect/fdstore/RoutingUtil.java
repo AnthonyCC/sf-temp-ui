@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,6 +17,8 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.ContactAddressModel;
+import com.freshdirect.delivery.ejb.DlvManagerHome;
+import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
@@ -48,7 +49,8 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 public class RoutingUtil {
 
 	private static RoutingUtil _instance = null;
-	private RoutingGatewayHome home=null;
+	private RoutingGatewayHome home = null;
+	private DlvManagerHome dlvHome = null;
 	private Context routingProvider=null;
 	private Context altProvider=null;
 	private boolean useAltProvider=false;
@@ -116,6 +118,17 @@ public class RoutingUtil {
 		try {
 			if(home==null) {
 				home = (RoutingGatewayHome) getContext().lookup( FDStoreProperties.getRoutingGatewayHome());
+			}
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		}
+	}
+	
+	public void lookupDlvManagerHome() throws FDResourceException {
+
+		try {
+			if(dlvHome==null) {
+				dlvHome = (DlvManagerHome) getContext().lookup( FDStoreProperties.getDeliveryManagerHome());
 			}
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
@@ -347,6 +360,23 @@ public class RoutingUtil {
 		return data;
 	}
 	
+	public List<FDTimeslot> getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) {
+
+		try {
+				DlvManagerSB sb = getDlvManagerHome().create();
+				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, address);
+
+			} catch (Exception ce) {
+				dlvHome = null;
+				/*if(useAltProvider==false) {
+					setUseAltProvider(true);
+				}*/
+				ce.printStackTrace();
+
+			}
+			return new ArrayList<FDTimeslot>();
+	}
+	
 	public   void sendDateRangeAndZoneForTimeslots(List<FDTimeslot> timeSlots, ContactAddressModel address) {
 
 		try {
@@ -508,6 +538,12 @@ public class RoutingUtil {
 	private  RoutingGatewayHome getRoutingGatewayHome() throws FDResourceException {
 			lookupRoutingGatewayHome();
 			return home;
+
+	}
+	
+	private  DlvManagerHome getDlvManagerHome() throws FDResourceException {
+		lookupDlvManagerHome();
+		return dlvHome;
 
 	}
 
