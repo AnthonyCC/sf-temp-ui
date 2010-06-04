@@ -1558,39 +1558,45 @@ font-size: 10pt;
 	font-size: 9px;
 	font-weight: bold;
 }
-.timeslot .slotRow {
-	line-height: 20px;
-}
-.timeslot .slotRow .control {
-	text-align: center;
-	padding: 0 4px;
-}
-.timeslot .slotRow .control input {
-	margin: 4px 5px 0 2px;
-	padding: 0;
-}
-.timeslot .slotRow .time {
-	margin-left: -4px;
-}
 
 .slotRow, .cutoffTime {
 clear:both;
 }
 
 .slotRow {
-float:left;
-width:98%;
+	float:left;
+	width:98%;
+	height: 20px;
 }
 
+div.control, div.slotRow, div.time {
+	margin: 0px; 
+}
 .control {
-float:left;
+	padding: 1px 2px 0px 2px;
+	float:left;
+	width: 18px;
+	text-align: center;
+	height: 20px;
+}
+.control img {
+	margin-top: 4px;
+	margin-left: 2px;
+}
+
+.control input { 
+	margin: 0px;
+	height: 20px;
+	padding: 0px;
 }
 
 .time {
-float:left;
-position:relative;
-top:2px;
-font-size: 9pt;
+	padding-top: 3px;
+	float:left;
+	height: 20px;
+	top: 0px;
+	line-height: 16px;
+
 }
 
 .click2call_bold {

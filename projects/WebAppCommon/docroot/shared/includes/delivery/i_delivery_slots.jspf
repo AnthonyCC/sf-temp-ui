@@ -142,8 +142,8 @@ if (timeslots.size() > 0) {
 								zonePromoAmountSpec=FDPromotionZoneRulesEngine.getDiscount(user_ct,slot);
 							
 							%>
-							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;padding:1px;padding-top:2px;padding-bottom:2px;">
-								<span class="control">
+							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;">
+								<div class="control">
 									<% 
 									if (!availCapacity && !(selectedSlot || (preReservedSlot && hasPreReserved)) 
 												&& (!isForce || (slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null
@@ -177,7 +177,7 @@ if (timeslots.size() > 0) {
 									
 									%>		
 								
-								</span><span class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type_ct %> --><%= slot.getDisplayString(firstSlot) %></span>
+								</div><div class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type_ct %> --><%= slot.getDisplayString(firstSlot) %></div>
 							</div>
 							<%
 							firstSlot = false;

@@ -31,19 +31,7 @@
 		<crm:GetFDUser id="user">
 		<%String actionName = request.getParameter("actionName");%>
 		<fd:ReserveTimeslotController	actionName="<%=actionName%>" result="result">
-	<style>
-
-		span.control img{
-			margin: 7px 8px 0 4px;
-		}
-
-		span.time {
-		float:left;
-		position:relative;
-		top:1px;
-		}
-	</style>
-		
+			
 		<%
 			boolean isStaticSlot = false;
 			boolean isCheckAddress =false;
