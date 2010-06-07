@@ -123,10 +123,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			//+ ") group by code, name, st, et order by code "
 			;
 			
-	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(NUM_REGULAR_CARTONS)) CCOUNT, " +
-			" Ceil(Avg(NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(NUM_ALCOHOL_CARTONS)) ACOUNT" +
-			" from cust.sale s where s.CUSTOMER_ID = ? and s.STATUS = 'STL' " +
-			" and ROWNUM <= ? order by s.CROMOD_DATE desc";
+	private static final String ORDERSIZE_ESTIMATION_QUERY = "select Ceil(Avg(tbl.NUM_REGULAR_CARTONS)) CCOUNT, " +
+			"Ceil(Avg(tbl.NUM_FREEZER_CARTONS)) FCOUNT, Ceil(Avg(tbl.NUM_ALCOHOL_CARTONS)) ACOUNT " +
+			"from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s " +
+			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
 	
 	public IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException {
 		
