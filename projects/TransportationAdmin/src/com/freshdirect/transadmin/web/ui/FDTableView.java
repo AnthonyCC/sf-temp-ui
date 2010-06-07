@@ -19,7 +19,7 @@ public class FDTableView extends HtmlView {
 	protected void init(HtmlBuilder html, TableModel model) {
         setTableBuilder(new FDTableBuilder(html, model));
         setRowBuilder(new RowBuilder(html, model));
-        setCalcBuilder(new CalcBuilder(html, model));
+        setCalcBuilder(new CalcBuilder(html, model));        
     }
 
 }

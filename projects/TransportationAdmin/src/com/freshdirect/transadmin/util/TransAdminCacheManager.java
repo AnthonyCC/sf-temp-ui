@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Category;
 
@@ -93,21 +95,47 @@ public class TransAdminCacheManager {
 	};
 
 //	 make the time constant in property
-	private CustomExpiringReference activeInactivedEmployeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+	
+	class EmployeeActiveInactiveReference extends CustomExpiringReference {
+		
+		public EmployeeActiveInactiveReference(long refreshPeriod) {
+			super(refreshPeriod);
+			// TODO Auto-generated constructor stub
+		}
 
+		private Map<String, EmployeeInfo> employeeMapping = new HashMap<String, EmployeeInfo>();
+		
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
 					return this.getEx();
 				} else {
-					return loadActiveInactiveEmployeeData();
+					List <EmployeeInfo> _listInfo = loadActiveInactiveEmployeeData();
+					if(_listInfo != null) {
+						for(EmployeeInfo _info : _listInfo){
+							employeeMapping.put(_info.getEmployeeId(), _info);
+						}
+					}
+					return _listInfo;
 				}				
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
 			return Collections.EMPTY_LIST;
 		}
-	};	
+
+		protected Map<String, EmployeeInfo> getEmployeeMapping() {
+			return employeeMapping;
+		}
+
+		protected void setEmployeeMapping(Map<String, EmployeeInfo> employeeMapping) {
+			this.employeeMapping = employeeMapping;
+		}
+
+	}
+	
+	private EmployeeActiveInactiveReference activeInactivedEmployeeDataHolder = new EmployeeActiveInactiveReference
+																					(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000);	
 
 	private TransAdminCacheManager(){
 	}
@@ -219,23 +247,15 @@ public class TransAdminCacheManager {
 		if(empList==null) return null;
 		for(int i=0;i<empList.size();i++){
 			EmployeeInfo info=(EmployeeInfo)empList.get(i);
-			if(info.getEmployeeId().equalsIgnoreCase(empId))
+			if(info != null && info.getEmployeeId().equalsIgnoreCase(empId))
 				return info;
 		}
 		return null;
 	}
 
-	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,EmployeeManagerI mgr)
-	{
+	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,EmployeeManagerI mgr) {
 		this.manager=mgr;
-		List empList = (List) this.activeInactivedEmployeeDataHolder.get();
-		if(empList==null) return null;
-		for(int i=0;i<empList.size();i++){
-			EmployeeInfo info=(EmployeeInfo)empList.get(i);
-			if(info.getEmployeeId().equalsIgnoreCase(empId))
-				return info;
-		}
-		return null;
+		return this.activeInactivedEmployeeDataHolder.getEmployeeMapping().get(empId);
 	}	
 	
 	public ErpRouteMasterInfo getRouteMasterInfo(String routeNumber,Date requestedDate)
@@ -256,5 +276,5 @@ public class TransAdminCacheManager {
 			throw new RuntimeException("Exception Occurred while getting Route details for route number "+routeNumber);
 		}
 		return null;
-	}
+	}	
 }

@@ -24,20 +24,26 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
+import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
+import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
+import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
+import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchProviderController extends JsonRpcController implements
@@ -52,6 +58,14 @@ public class DispatchProviderController extends JsonRpcController implements
 
 	private ZoneManagerI zoneManagerService;
 	
+	private EmployeeManagerI employeeManagerService;
+		
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
 	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
 		this.zoneManagerService = zoneManagerService;
 	}
@@ -355,6 +369,72 @@ public class DispatchProviderController extends JsonRpcController implements
 			e.printStackTrace();
 			return -1;
 		}
+	}
+	
+	public WebPlanInfo getPlanForResource(String date, String resourceId, String planId) {
+		List planInfos = new ArrayList();
+		try {
+			Collection plans = dispatchManagerService.getPlanForResource(TransStringUtil.getServerDate(date), resourceId);
+						
+			Iterator it=plans.iterator();
+			while(it.hasNext()) {
+
+				Plan plan=(Plan)it.next();
+				Zone zone=null;
+				if(plan.getZone()!=null) {
+					zone = domainManagerService.getZone(plan.getZone().getZoneCode());
+				}
+				WebPlanInfo planInfo = DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
+				planInfos.add(planInfo);
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		WebPlanInfo resultPlan = null;
+		Iterator _itr = planInfos.iterator();
+		while(_itr.hasNext()) {
+			WebPlanInfo _tmpPlan = (WebPlanInfo)_itr.next();
+			if(!_tmpPlan.getPlanId().equalsIgnoreCase(planId) || planId == null) {
+				resultPlan = _tmpPlan;
+				break;
+			}
+		}
+		return resultPlan;
+	}
+	
+	public DispatchCommand getDispatchForResource(String date, String resourceId, String dispatchId) {
+		List dispatchInfos = new ArrayList();
+		try {
+			Collection dispatches = dispatchManagerService.getDispatchForResource(TransStringUtil.getServerDate(date), resourceId);
+						
+			Iterator it = dispatches.iterator();
+			while(it.hasNext()) {
+
+				Dispatch dispatch = (Dispatch) it.next();
+				Zone zone=null;
+				if(dispatch.getZone()!=null) {
+					zone = domainManagerService.getZone(dispatch.getZone().getZoneCode());
+				}
+				DispatchCommand command = DispatchPlanUtil.getDispatchCommand(dispatch, zone, employeeManagerService,null,null,null);
+				dispatchInfos.add(command);
+			}
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DispatchCommand resultDispatch = null;
+		Iterator _itr = dispatchInfos.iterator();
+		while(_itr.hasNext()) {
+			DispatchCommand _tmpDispatch = (DispatchCommand)_itr.next();
+			if(!_tmpDispatch.getDispatchId().equalsIgnoreCase(dispatchId) || dispatchId == null) {
+				resultDispatch = _tmpDispatch;
+				break;
+			}
+		}
+		return resultDispatch;
 	}
 	
 }

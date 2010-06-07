@@ -1,31 +1,37 @@
 <head>
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/logger.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/datatable.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/button.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/paginator.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/container.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/calendar.css" />
-<link rel="stylesheet" type="text/css" href="css/yui/assets/skins/sam/fonts-min.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/logger.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/datatable.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/button.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/paginator.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/container.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/calendar.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/fonts-min.css" />
+
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/tabview/assets/skins/sam/tabview.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/treeview/assets/skins/sam/treeview.css" />
+<link rel="stylesheet" type="text/css" href="resources/yui2_8_1/datatable/assets/skins/sam/datatable.css" />
 
 <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 <script src="js/json2.js" language="javascript" type="text/javascript"></script>  
-  
-<script type="text/javascript" src="js/yui/yuiloader-min.js"></script>
-<script type="text/javascript" src="js/yui/utilities.js"></script>
 
-<script type="text/javascript" src="js/yui/event-min.js"></script>
-<script type="text/javascript" src="js/yui/dom-min.js"></script>
-<script type="text/javascript" src="js/yui/logger-min.js"></script>
-<script type="text/javascript" src="js/yui/connection-min.js"></script>
-<script type="text/javascript" src="js/yui/json-min.js"></script>
-<script type="text/javascript" src="js/yui/element-min.js"></script>
-<script type="text/javascript" src="js/yui/datasource-debug.js"></script>
-<script type="text/javascript" src="js/yui/paginator-debug.js"></script>
-<script type="text/javascript" src="js/yui/datatable-debug.js"></script>
-<script type="text/javascript" src="js/yui/button-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/element/element-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/tabview/tabview-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/treeview/treeview-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/datasource/datasource-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/datatable/datatable-min.js"></script>
 
-<script type="text/javascript" src="js/yui/yahoo-dom-event.js"></script>
-<script type="text/javascript" src="js/yui/container-min.js"></script>
-<script type="text/javascript" src="js/yui/dragdrop-debug.js"></script> 
-<script type="text/javascript" src="js/yui/calendar-min.js"></script> 
+<script type="text/javascript" src="resources/yui2_8_1/dragdrop/dragdrop-min.js"></script>
+
+<script type="text/javascript" src="resources/yui2_8_1/utilities/utilities.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/dom/dom-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/logger/logger-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/connection/connection-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/json/json-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/paginator/paginator-debug.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/button/button-debug.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/container/container-min.js"></script>
+<script type="text/javascript" src="resources/yui2_8_1/calendar/calendar-min.js"></script>
+
+<!--  <script type="text/javascript" src="js/yui/yahoo-dom-event.js"></script>  -->
 </head>

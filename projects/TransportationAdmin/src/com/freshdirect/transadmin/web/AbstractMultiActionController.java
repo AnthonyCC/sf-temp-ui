@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,16 @@ public class AbstractMultiActionController extends MultiActionController impleme
 		return null;
 	}
 	
+	protected Date getWeekOf(String clientDate) {
+		Date retDate = null;
+		try {
+			retDate = TransStringUtil.getWeekOf(getServerDate(clientDate));
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
+	}
+	
 	protected String getServerDate(String dispDate) {
 		String retDate = null;
 		try {
@@ -49,5 +60,14 @@ public class AbstractMultiActionController extends MultiActionController impleme
 		return retDate;
 	}
 	
+	protected String getClientDate(Date rootDate) {
+		String retDate = null;
+		try {
+			retDate = TransStringUtil.getDate(rootDate);
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
+	}
 	
 }

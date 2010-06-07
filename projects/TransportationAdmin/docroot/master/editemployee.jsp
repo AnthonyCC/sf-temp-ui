@@ -109,7 +109,21 @@
 							 	<td>
 							 		&nbsp;<form:errors path="empRole" />
 							 	</td>
+							 </tr>							 
+							 <tr>
+							    <td>Team Lead</td>
+							    <td> 
+							    	 <form:select path="leadId">
+                        				<form:option value="null" label="--Please Select Team Lead"/>
+                    					<form:options items="${employees}" itemLabel="name" itemValue="employeeId" />
+                   					</form:select>	
+                                         
+                               </td>
+							 	<td>
+							 		&nbsp;<form:errors path="leadId" />
+							 	</td>
 							 </tr>
+							 
 							 <tr>
 							    <td>Status</td>
 							    <td> 

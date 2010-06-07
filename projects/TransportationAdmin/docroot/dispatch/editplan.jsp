@@ -11,6 +11,7 @@
 %>
 <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
 <script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
+<script src="js/resourceedit.js" language="javascript" type="text/javascript"></script>
 <style>
 	* {font-family:Arial, Helvetica, sans-serif;
 		font-size:9pt;}
@@ -50,6 +51,7 @@
 	<div align="center">
 		<form:form commandName = "planForm" method="post">
 		<form:hidden path="planId"/>
+		<form:hidden path="referenceContextId"/>
 		<form:hidden path="ignoreErrors"/>
 		<form:hidden path="errorDate"/>
 		<form:hidden path="zoneModified"/>
@@ -151,7 +153,7 @@
 									<c:forEach items="${planForm.drivers}" var="driver" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.drivers[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('drivers[<c:out value="${gridRow.index}"/>]');">
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('drivers[<c:out value="${gridRow.index}"/>]', this);">
 													<option value="">Select Drivers</option>          
 													<c:forEach var="driverEmp" items="${drivers}">
 														<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
@@ -172,7 +174,7 @@
 									<c:forEach items="${planForm.helpers}" var="helper" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.helpers[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('helpers[<c:out value="${gridRow.index}"/>]');">
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>"  onchange="enableAdjustmentTime('helpers[<c:out value="${gridRow.index}"/>]', this);">
 													<OPTION value="">Select Helpers</OPTION>          
 													<c:forEach var="helperEmp" items="${helpers}">
 														<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
@@ -193,7 +195,7 @@
 									<c:forEach items="${planForm.runners}" var="helper" varStatus="gridRow">
 										<div class="dipatch_AddEdit_row">
 											<spring:bind path="planForm.runners[${gridRow.index}].employeeId">
-												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="enableAdjustmentTime('runners[<c:out value="${gridRow.index}"/>]');">
+												<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="enableAdjustmentTime('runners[<c:out value="${gridRow.index}"/>]', this);">
 													<OPTION value="">Select Runners</OPTION>          
 													<c:forEach var="runnerEmp" items="${runners}">
 														<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>
@@ -287,7 +289,7 @@
 	      	}     	      	
 	      	planForm.submit();
 	    }
-	    function enableAdjustmentTime(target)
+	    function enableAdjustmentTime(target, src)
 		{
 			var f=document.forms["planForm"];	
 			var value=eval("f['"+target+".employeeId']");
@@ -303,7 +305,7 @@
 					eval("f['"+target+".adjustmentTimeS'].value=''");
 				}
 			}
-				
+			resoureChangeEvent(src, 'P', document.getElementById('planDate'), document.getElementById('planId'));	
 		}
 	    function disableAdjustmentTime()
 		{

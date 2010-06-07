@@ -167,10 +167,13 @@ public class DispatchFormController extends AbstractFormController {
 				if(old.getDispatchTime()!=null&&domainObject.getDispatchTime()!=null)domainObject.setDispatchTime(old.getDispatchTime());
 				if(old.getCheckedInTime()!=null&&domainObject.getCheckedInTime()!=null)domainObject.setCheckedInTime(old.getCheckedInTime());
 			}
-			getDispatchManagerService().saveDispatch(domainObject);
+			getDispatchManagerService().saveDispatch(domainObject, command.getReferenceContextId());
 			command.setDispatchId(domainObject.getDispatchId());
-			boolean isToday=TransStringUtil.isToday(command.getDispatchDate());			
-			if(isToday) DispatchPlanUtil.setDispatchStatus(command);
+			command.setReferenceContextId(null);
+			boolean isToday = TransStringUtil.isToday(command.getDispatchDate());			
+			if(isToday) {
+				DispatchPlanUtil.setDispatchStatus(command);
+			}
 		} catch (TransAdminApplicationException objExp) {
 			errorList = new ArrayList();
 			errorList.add(objExp.getMessage());

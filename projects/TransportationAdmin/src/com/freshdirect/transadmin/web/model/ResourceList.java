@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web.model;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import com.freshdirect.transadmin.model.ResourceInfoI;
 

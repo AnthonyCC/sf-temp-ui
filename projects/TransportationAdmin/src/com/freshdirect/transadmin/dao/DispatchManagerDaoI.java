@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.dao;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.dao.DataAccessException;
 
@@ -13,12 +14,20 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	Collection getPlan(String day, String zone, String date) throws DataAccessException;
 	
 	Collection getPlanList(String date) throws DataAccessException;
+	
+	Collection getPlanForResource(String date, String resourceId) throws DataAccessException;
+	
+	Collection getDispatchForResource(String date, String resourceId) throws DataAccessException;
 
 	Dispatch getDispatch(String dispatchId) throws DataAccessException;
+	
+	Collection getDispatch(Date dispatchDate, Date startTime, boolean isBullPen) throws DataAccessException;
 
 	Collection getPlan() throws DataAccessException;
 	
 	Collection getPlan(String dateRange, String zoneLst) throws DataAccessException;
+	
+	Collection getPlan(Date planDate, Date startTime, boolean isBullPen) throws DataAccessException;
 
 	Plan getPlan(String id) throws DataAccessException;
 

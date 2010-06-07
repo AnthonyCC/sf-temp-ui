@@ -1,8 +1,10 @@
 package com.freshdirect.transadmin.web.ui;
 
+import org.extremecomponents.table.core.TableConstants;
 import org.extremecomponents.table.core.TableModel;
 import org.extremecomponents.table.view.html.BuilderConstants;
 import org.extremecomponents.table.view.html.BuilderUtils;
+import org.extremecomponents.table.view.html.TableActions;
 import org.extremecomponents.table.view.html.ToolbarBuilder;
 import org.extremecomponents.table.view.html.toolbar.ImageItem;
 import org.extremecomponents.table.view.html.toolbar.ToolbarItem;
@@ -173,7 +175,56 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
     	return formattedAction;
     }
 
+    public void rowsDisplayedDroplist() {
+        int rowsDisplayed = this.getTableModel().getTableHandler().getTable().getRowsDisplayed();
+        int medianRowsDisplayed = this.getTableModel().getTableHandler().getTable().getMedianRowsDisplayed();
+        //int maxRowsDisplayed = this.getTableModel().getTableHandler().getTable().getMaxRowsDisplayed();
+        // Custom implementation to add the max rows as total row count
+        int maxRowsDisplayed = this.getTableModel().getLimit().getTotalRows();
+        int currentRowsDisplayed = this.getTableModel().getLimit().getCurrentRowsDisplayed();
 
+        this.getHtmlBuilder().select().name(this.getTableModel().getTableHandler().prefixWithTableId() + TableConstants.ROWS_DISPLAYED);
+
+        StringBuffer onchange = new StringBuffer();
+        onchange.append(new TableActions(this.getTableModel()).getRowsDisplayedAction());
+        this.getHtmlBuilder().onchange(onchange.toString());
+
+        this.getHtmlBuilder().close();
+
+        this.getHtmlBuilder().newline();
+        this.getHtmlBuilder().tabs(4);
+
+        // default rows
+        this.getHtmlBuilder().option().value(String.valueOf(rowsDisplayed));
+        if (currentRowsDisplayed == rowsDisplayed) {
+        	this.getHtmlBuilder().selected();
+        }
+        this.getHtmlBuilder().close();
+        this.getHtmlBuilder().append(String.valueOf(rowsDisplayed));
+        this.getHtmlBuilder().optionEnd();
+
+        // median rows
+        this.getHtmlBuilder().option().value(String.valueOf(medianRowsDisplayed));
+        if (currentRowsDisplayed == medianRowsDisplayed) {
+        	this.getHtmlBuilder().selected();
+        }
+        this.getHtmlBuilder().close();
+        this.getHtmlBuilder().append(String.valueOf(medianRowsDisplayed));
+        this.getHtmlBuilder().optionEnd();
+
+        // max rows
+        this.getHtmlBuilder().option().value(String.valueOf(maxRowsDisplayed));
+        if (currentRowsDisplayed == maxRowsDisplayed) {
+        	this.getHtmlBuilder().selected();
+        }
+        this.getHtmlBuilder().close();
+        this.getHtmlBuilder().append(String.valueOf(maxRowsDisplayed));
+        this.getHtmlBuilder().optionEnd();
+
+        this.getHtmlBuilder().newline();
+        this.getHtmlBuilder().tabs(4);
+        this.getHtmlBuilder().selectEnd();
+    }
 
 
 }

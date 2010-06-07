@@ -57,6 +57,8 @@
 				<value>com/freshdirect/transadmin/model/DlvBuildingDetail.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/EmployeeStatus.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/BuildingOperationHours.hbm.xml</value>
+								
+				<value>com/freshdirect/transadmin/model/EmployeeTeam.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">

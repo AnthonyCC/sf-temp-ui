@@ -31,7 +31,7 @@ function getFilterValue(ecForm,isEscape)
 	for(var i=0;i<ecElements.length;i++)
 	{
 		var element=ecElements[i];
-		if(element.name.indexOf("ec_f_")!=-1&&element.name!='ec_f_a')
+		if(element.name.indexOf("ec_f_") !=-1 && element.name != 'ec_f_a')
 		{		
 			if(element.value.length>0)
 			result+=element.name+"="+element.value+"&";			

@@ -24,6 +24,9 @@
         </property>
         <property name="time" type="timestamp">
             <column name="TIME" length="7" />
-        </property>    
+        </property> 
+        <property name="weekOf" type="date">
+            <column name="WEEK_OF" length="7" not-null="true" />
+        </property>   
     </class>
 </hibernate-mapping>

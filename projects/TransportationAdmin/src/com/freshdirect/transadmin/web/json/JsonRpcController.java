@@ -81,6 +81,7 @@ public abstract class JsonRpcController extends AbstractController implements
 			logger.debug("Registered : Ajax Services for ["
 					+ jsonRpcControllerName + "].");
 		}
+		j.setDebug(true);
 	}
 
 	

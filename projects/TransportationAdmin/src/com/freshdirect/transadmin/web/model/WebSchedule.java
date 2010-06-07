@@ -2,9 +2,11 @@ package com.freshdirect.transadmin.web.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
@@ -22,18 +24,47 @@ public class WebSchedule
 	private ScheduleEmployee sat;
 	private ScheduleEmployee sun;
 	
-	public WebSchedule()
+	private Date weekOf;
+	
+	private String employeeIds;
+	
+	public WebSchedule(String employeeIds, Date weekOf)
 	{
-		empInfo=new EmployeeInfo();
-		mon=new ScheduleEmployee();
-		tue=new ScheduleEmployee();
-		wed=new ScheduleEmployee();
-		thu=new ScheduleEmployee();
-		fri=new ScheduleEmployee();
-		sat=new ScheduleEmployee();
-		sun=new ScheduleEmployee();
+		empInfo = new EmployeeInfo();
+		mon = initSchedule(weekOf);
+		tue = initSchedule(weekOf);
+		wed = initSchedule(weekOf);
+		thu = initSchedule(weekOf);
+		fri = initSchedule(weekOf);
+		sat = initSchedule(weekOf);
+		sun = initSchedule(weekOf);
+		
+		this.weekOf = weekOf;
+		this.employeeIds = employeeIds;
 	}
 	
+	private ScheduleEmployee initSchedule(Date weekOf) {
+		ScheduleEmployee _sch = new ScheduleEmployee(); 
+		_sch.setWeekOf(weekOf);
+		return _sch;
+	}
+	
+	public String getEmployeeIds() {
+		return employeeIds;
+	}
+
+	public void setEmployeeIds(String employeeIds) {
+		this.employeeIds = employeeIds;
+	}
+
+	public Date getWeekOf() {
+		return weekOf;
+	}
+
+	public void setWeekOf(Date weekOf) {
+		this.weekOf = weekOf;
+	}
+
 	public EmployeeInfo getEmpInfo() {
 		return empInfo;
 	}
@@ -118,5 +149,15 @@ public class WebSchedule
 		if(!sat.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[5]))l.add(sat);
 		if(!sun.isEmpty(empInfo,ScheduleEmployeeInfo.DAY[6]))l.add(sun);
 		return l;
+	}
+	
+	public boolean getIsMultiEdit() {
+		if(employeeIds != null) {
+			String[] ids = StringUtil.decodeStrings(employeeIds);
+			if(ids != null && ids.length > 1) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

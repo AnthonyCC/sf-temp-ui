@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -87,49 +87,62 @@ public class DomainController extends AbstractMultiActionController {
         String empStatus = request.getParameter("empstatus");
         Collection dataList = null;
        
-        if("T".equalsIgnoreCase(empStatus)) 
-        {
+        if("T".equalsIgnoreCase(empStatus)) {
         	dataList = employeeManagerService.getTerminatedEmployees();
-        } 
-        else if("S".equalsIgnoreCase(empStatus)) 
-        {
-        	dataList = employeeManagerService.getScheduleEmployees();
+        } else if("S".equalsIgnoreCase(empStatus)) {
+        	String scheduleDate = request.getParameter("scheduleDate");
+        	Date _scheduleWeekOf = null;
+        	if(!TransStringUtil.isEmpty(scheduleDate)) {
+        		_scheduleWeekOf = getWeekOf(scheduleDate);
+        	} 
+        	
+        	if(_scheduleWeekOf == null) {
+	        	int dayOfWeek = TransStringUtil.getDayOfWeek(Calendar.getInstance().getTime());
+	        	
+	        	if(dayOfWeek == Calendar.FRIDAY || dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY) {
+	        		_scheduleWeekOf = TransStringUtil.getAdjustedWeekOf(Calendar.getInstance().getTime(), 14);
+	        	} else {
+	        		_scheduleWeekOf = TransStringUtil.getAdjustedWeekOf(Calendar.getInstance().getTime(), 7);
+	        	}
+        	}
+        	
+        	dataList = employeeManagerService.getScheduleEmployees(_scheduleWeekOf);
         	String status=request.getParameter("status");
-        	if(status==null)status="a";
-        	if("a".equalsIgnoreCase(status)||"i".equalsIgnoreCase(status))
-        	{
-	        	for(Iterator it=dataList.iterator();it.hasNext();)
-	    		{
-	        		ScheduleEmployeeInfo sInfo=(ScheduleEmployeeInfo)it.next();
-	    			if("a".equalsIgnoreCase(status)&&"false".equalsIgnoreCase(sInfo.getTrnStatus()))
-	    			{
-	    				it.remove();
-	    			}
-	    			if("i".equalsIgnoreCase(status)&&("true".equalsIgnoreCase(sInfo.getTrnStatus())))
-	    			{
-	    				it.remove();
-	    			}
-	    			if("i".equalsIgnoreCase(status)&&sInfo.getTrnStatus()==null&&"A".equalsIgnoreCase(sInfo.getStatus()))
-	    			{
-	    				it.remove();
-	    			}
-	    			if("a".equalsIgnoreCase(status)&&sInfo.getTrnStatus()==null&&"I".equalsIgnoreCase(sInfo.getStatus()))
-	    			{
-	    				it.remove();
-	    			}
-	    		}
+        	if(status == null) {
+        		status="a";
         	}
+			if ("a".equalsIgnoreCase(status) || "i".equalsIgnoreCase(status)) {
+				for (Iterator it = dataList.iterator(); it.hasNext();) {
+					ScheduleEmployeeInfo sInfo = (ScheduleEmployeeInfo) it.next();
+					if ("a".equalsIgnoreCase(status)
+							&& "false".equalsIgnoreCase(sInfo.getTrnStatus())) {
+						it.remove();
+					}
+					if ("i".equalsIgnoreCase(status)
+							&& ("true".equalsIgnoreCase(sInfo.getTrnStatus()))) {
+						it.remove();
+					}
+					if ("i".equalsIgnoreCase(status)
+							&& sInfo.getTrnStatus() == null
+							&& "A".equalsIgnoreCase(sInfo.getStatus())) {
+						it.remove();
+					}
+					if ("a".equalsIgnoreCase(status)
+							&& sInfo.getTrnStatus() == null
+							&& "I".equalsIgnoreCase(sInfo.getStatus())) {
+						it.remove();
+					}
+				}
+			}
         	request.setAttribute("status", status);
+        	request.setAttribute("scheduleDate", getClientDate(_scheduleWeekOf));
         	return new ModelAndView("scheduleView","employees",dataList);
-        } 
-        else 
-        {
-        	if("true".equalsIgnoreCase(request.getParameter("sync")))
-        	{
-        		employeeManagerService.syncEmployess();
-        	}
-        	dataList = employeeManagerService.getEmployees();
-        }
+		} else {
+			if ("true".equalsIgnoreCase(request.getParameter("sync"))) {
+				employeeManagerService.syncEmployess();
+			}
+			dataList = employeeManagerService.getEmployees();
+		}
         return new ModelAndView("employeeView","employees",dataList);
 	}
 

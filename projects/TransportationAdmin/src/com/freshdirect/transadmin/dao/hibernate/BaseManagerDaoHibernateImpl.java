@@ -14,11 +14,17 @@ public class BaseManagerDaoHibernateImpl extends HibernateDaoSupport implements 
 		getHibernateTemplate().deleteAll(employees);
 
 	}
-
-	public void saveEntity(Object entity) throws DataAccessException {
-		getHibernateTemplate().merge(entity);
-		getHibernateTemplate().flush();
+	
+	public void removeEntityEx(Object entity) throws DataAccessException {
+		getHibernateTemplate().delete(entity);
 	}
+
+	public Object saveEntity(Object entity) throws DataAccessException {
+		Object result = getHibernateTemplate().merge(entity);
+		getHibernateTemplate().flush();
+		return result;
+	}
+	
 	public void saveEntityEx(Object entity)throws DataAccessException {
 		getHibernateTemplate().save(entity);
 	

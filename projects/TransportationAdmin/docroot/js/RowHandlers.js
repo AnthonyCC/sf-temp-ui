@@ -5,6 +5,44 @@ function addRowHandlers(tableId, rowClassName, url, paramName, columnIndex, chec
    addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, false);
 }
 
+function addRangeHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, rangeCol, needKeyPress) {
+	
+	var previousClass = null;
+    var table = document.getElementById(tableId);
+    
+    if(table != null) {
+	    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+	    for (i = 0; i < rows.length; i++) {	    	
+	        var cells = rows[i].getElementsByTagName("td");
+	        
+	        for (j = 1; j < cells.length; j++) {
+	        	
+	            cells[j].onmouseover = function () {
+	            	previousClass = this.parentNode.className;
+	            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+	            };
+	        
+	            cells[j].onmouseout = function () {
+	              	this.parentNode.className = previousClass;
+	            };
+	        
+	            if((checkCol == -1 || checkCol != j) && (rangeCol == -1 || j <= rangeCol)) {
+					if(!(needKeyPress && (j == (cells.length-1)))) {	            
+				    	cells[j].onclick = function () {			    		
+				      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+				      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
+				      		
+				      		location.href = url+"?"+ paramName + "=" + selectBox.name;			      		
+				    	};
+				    }
+		    	}
+		    	
+		    		    	
+	        }
+	    }
+	}
+}
+
 function addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
 	
 	var previousClass = null;
@@ -81,16 +119,8 @@ function addRowHandlersFilterTest(tableId, rowClassName, url, paramName, columnI
 					    	cells[j].onclick = function () {			    		
 					      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
 					      		var selectBox = this.parentNode.getElementsByTagName("input")[0];
-					      		
-					      		/*if(needKeyPress) {
-						      		var param1 = this.parentNode.getElementsByTagName("td")[1];			      		
-						      		var param2 = this.parentNode.getElementsByTagName("td")[5];
-						      		var param3 = this.parentNode.getElementsByTagName("td")[7];	
-						      		var param4 = this.parentNode.getElementsByTagName("td")[8];
-						      		javascript:pop('common/geography.jsp?address='+param1.innerHTML+' '
-						      							+param2.innerHTML+'&latitude='+param3.innerHTML+'&longitude='+param4.innerHTML, 600,500);			      		
-						      	}*/
-					      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();	;			      		
+					      							      		
+					      		location.href = url+"?"+ paramName + "=" + selectBox.name+"&filter="+getFilterTestValue();			      		
 					    	};
 					    }
 			    	}

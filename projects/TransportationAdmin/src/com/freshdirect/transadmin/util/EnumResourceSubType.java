@@ -49,29 +49,38 @@ public final class EnumResourceSubType extends Enum {
 		return this.desc;
 	}
 	
-	public static boolean isSchedule(EnumResourceSubType temp)
-	{
-		if(temp==MANAGER||temp==YARD_WORKER)return false;
+	public static boolean isSchedule(EnumResourceSubType temp) {
+		if (temp == MANAGER || temp == YARD_WORKER) {
+			return false;
+		}
 		return true;
 	}
-	public static boolean isKronosFileGeneration(EnumResourceSubType temp)
-	{
-		if(temp==MANAGER||temp==YARD_WORKER)return false;
+
+	public static boolean isKronosFileGeneration(EnumResourceSubType temp) {
+		if (temp == MANAGER || temp == YARD_WORKER) {
+			return false;
+		}
 		return true;
 	}
-	public static boolean isUnassignedEmployees(EnumResourceSubType temp)
-	{
-		if(temp==MANAGER||temp==YARD_WORKER)return false;
+
+	public static boolean isUnassignedEmployees(EnumResourceSubType temp) {
+		if (temp == MANAGER || temp == YARD_WORKER) {
+			return false;
+		}
 		return true;
 	}
-	public static boolean isUnAvailable(EnumResourceSubType temp)
-	{
-		if(temp==MANAGER||temp==YARD_WORKER)return false;
+
+	public static boolean isUnAvailable(EnumResourceSubType temp) {
+		if (temp == MANAGER || temp == YARD_WORKER) {
+			return false;
+		}
 		return true;
 	}
-	public static boolean ignorePunch(EnumResourceSubType temp)
-	{
-		if(temp==MANAGER||temp==VENDING)return true;
+
+	public static boolean ignorePunch(EnumResourceSubType temp) {
+		if (temp == MANAGER || temp == VENDING) {
+			return true;
+		}			
 		return false;
 	}
 }

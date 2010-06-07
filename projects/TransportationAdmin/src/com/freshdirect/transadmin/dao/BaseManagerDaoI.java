@@ -6,9 +6,11 @@ import org.springframework.dao.DataAccessException;
 
 public interface BaseManagerDaoI {
 
-	void saveEntity(Object entity) throws DataAccessException;
+	Object saveEntity(Object entity) throws DataAccessException;
 
 	void removeEntity(Collection employees) throws DataAccessException;
+	
+	void removeEntityEx(Object entity) throws DataAccessException;
 
 	void saveEntityList(Collection entity) throws DataAccessException;
 	

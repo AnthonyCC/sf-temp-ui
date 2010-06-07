@@ -13,9 +13,6 @@ import java.util.TreeSet;
 import org.apache.log4j.Category;
 import org.springframework.dao.DataAccessException;
 
-import weblogic.auddi.util.Logger;
-
-import com.freshdirect.content.attributes.AttributeComparator.Selected;
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -27,6 +24,7 @@ import com.freshdirect.transadmin.datamanager.model.WorkTableModel;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -37,7 +35,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
-import com.freshdirect.transadmin.web.util.ZoneWorkTableUtil;
+import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class DomainManagerImpl  
 		extends BaseManagerImpl  implements DomainManagerI {
@@ -677,6 +675,82 @@ public class DomainManagerImpl
 	public void refreshGeoRestrictionWorktable(){
 		String worktable="DLV.GEO_RESTRICTION_WORKTAB";
 		getZoneExpansionDao().refreshGeoRestrictionWorktable(worktable);
+	}
+	
+	
+	public void saveScheduleGroup(WebSchedule model, String[] employeeIds, Date weekOf) {
+		
+		Collection<ScheduleEmployee> _masterSchedule = model.getSchedules();
+		
+		String strWeekOf = getParsedDate(weekOf);
+		if(employeeIds != null && _masterSchedule != null 
+										&& _masterSchedule.size() > 0 && strWeekOf != null) {
+			Collection<ScheduleEmployee> _clonedSchedule = new ArrayList<ScheduleEmployee>(); 
+			for(ScheduleEmployee _cloneSch : _masterSchedule) {
+				try {
+					_clonedSchedule.add((ScheduleEmployee)_cloneSch.clone());
+				} catch (CloneNotSupportedException notSupported) {
+					// No Supposed to Happen
+				}
+			}
+			for(String empId : employeeIds) {
+				Collection schedules = getDomainManagerDao().getScheduleEmployee(empId, strWeekOf);
+				if(schedules != null && schedules.size() > 0) {
+					this.removeEntity(schedules);
+				}
+				for(ScheduleEmployee _schEmp : _clonedSchedule) {
+					_schEmp.setEmployeeId(empId);
+					_schEmp.setScheduleId(null);
+				}
+				this.saveEntityList(_clonedSchedule);
+			}
+		}
+		model.setSchdules(_masterSchedule);
+	}
+	
+	public void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf) {
+		
+		Collection<ScheduleEmployee> _toDeleteSchedule = new ArrayList<ScheduleEmployee>();
+		Collection<ScheduleEmployee> _toSaveSchedule = new ArrayList<ScheduleEmployee>();
+		
+		String strSourceWeekOf = getParsedDate(sourceWeekOf);
+		String strDestinationWeekOf = getParsedDate(destinationWeekOf);
+		if(employeeIds != null) {
+			for(String empId : employeeIds) {
+				_toDeleteSchedule.addAll(getDomainManagerDao().getScheduleEmployee(empId, strDestinationWeekOf));
+			}
+			if(_toDeleteSchedule.size() > 0) {
+				this.removeEntity(_toDeleteSchedule);
+			}
+			for(String empId : employeeIds) {
+				Collection<ScheduleEmployee> _masterSchedule = getDomainManagerDao().getScheduleEmployee(empId, strSourceWeekOf);
+				ScheduleEmployee _tmpSchedule = null;
+				if(_masterSchedule != null) {
+					for(ScheduleEmployee _cloneSch : _masterSchedule) {
+						try {
+							_tmpSchedule = (ScheduleEmployee)_cloneSch.clone();
+							_tmpSchedule.setWeekOf(destinationWeekOf);
+							_tmpSchedule.setScheduleId(null);
+							_toSaveSchedule.add(_tmpSchedule);
+							
+						} catch (CloneNotSupportedException notSupported) {
+							// No Supposed to Happen
+						}
+					}
+				}
+			}
+			if(_toSaveSchedule.size() > 0) {
+				this.saveEntityList(_toSaveSchedule);
+			}
+		}
+	}
+	
+	public Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException {
+		return getDomainManagerDao().getScheduleEmployee(employeeId, weekOf);
+	}
+	
+	public Collection getTeamInfo() {
+		return getDomainManagerDao().getTeamInfo();
 	}
 
 	

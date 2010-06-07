@@ -1,5 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 
 <%    
@@ -50,14 +51,41 @@
 			<div class="cont_row">
 				<div class="cont_Litem">
 					<span class="scrTitle">
-						<%=pageTitle%>
+						Schedule
 					</span>
-					<span>
-					Status : <select id="statusFilter" onchange="javascript:doFilter()"><option value="a">TransApp Active</option>
+					<span style="vertical-align:middle;">Week Of :<input maxlength="10" size="10" name="scheduleDate" id="scheduleDate" value='<c:out value="${scheduleDate}"/>' />
+                    <a href="#" id="trigger_scheduleDate" style="font-size: 9px;">
+                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    </a>
+                     <script language="javascript">                 
+                      Calendar.setup(
+                      {
+                        showsTime : false,
+                        electric : false,
+                        inputField : "scheduleDate",
+                        ifFormat : "%m/%d/%Y",
+                        singleClick: true,
+                        button : "trigger_scheduleDate" 
+                       }
+                      );
+                      </script>
+                      &nbsp;Status : 
+										
+					<select id="statusFilter" ><option value="a">TransApp Active</option>
 													   <option value="i">TransApp Inactive</option>
 													   <option value="ae">All Employees</option>
 													   </select>
 					</span>
+					
+					<span>
+                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter()" />
+                  </span> 
+                  <span>
+                     <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
+                  </span>
+                  <span>
+                     <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
+                  </span> 
 				</div>
 			</div>
 		</div>
@@ -71,7 +99,7 @@
            
 						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do?empstatus=S"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
-						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="false" rowsDisplayed="25"  >
+						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 									<ec:exportPdf fileName="transportationSchedule.pdf" tooltip="Export PDF" 
 									  headerTitle="" />
 							  <ec:exportXls fileName="transportationemployee.xls" tooltip="Export PDF" />
@@ -79,7 +107,7 @@
 								
 							<ec:row interceptor="obsoletemarker">            								
 								<ec:column title=" " width="5px" 
-										filterable="false" sortable="false" cell="selectcol"
+										filtercell="selectcol" sortable="false" cell="selectcol"
 										property="employeeId" />
 								<ec:column property="status" title="Status"/>						
 								<ec:column property="firstName" title="First Name"/>
@@ -103,16 +131,45 @@
 		</div>
 	</div>	
 		<script>
+		   function massEdit() {
+			var table_schedule = document.getElementById("ec_table");
+			var checked = "";  
+			if(table_schedule.tBodies[0] != null) {						
+	            var checkboxList_Schedule = table_schedule.tBodies[0].getElementsByTagName("input");
+	           	         
+	            for (i = 0; i < checkboxList_Schedule.length; i++) {            
+	              if (checkboxList_Schedule[i].type == "checkbox")  {
+	              	if(checkboxList_Schedule[i].checked) {
+	              		checked += checkboxList_Schedule[i].name+",";
+	              	}                          	
+	              }
+	            }
+	        }
+            
+            if(checked.length == 0) {
+             	alert('Please Select a Row!');
+            }  else {
+                location.href = "editschedule.do?id="+checked.substring(0,checked.length-1)+"&"+getFilterTestValue();
+            }
+		}
 		   addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editschedule.do','id',0, 0);
-		     function getFilterTestValue()
-		      {
-		      	var filters=getFilterValue(document.getElementById("employeeListForm"),false);		      
-		      	return escape(filters)
+		     function getFilterTestValue() {
+		      	var filters = getFilterValue(document.getElementById("employeeListForm"),false);
+		      	var param1 = document.getElementById("statusFilter").value;
+		        var param2 = document.getElementById("scheduleDate").value;
+		      	filters+="&status="+param1;
+      			filters+="&scheduleDate="+param2;		      			      	  		      
+		      	return escape(filters) + "&status="+param1+"&scheduleDate="+param2;
 		      }
-		     function doFilter() 
-		     {
+		     function doFilter() {
 		          var param1 = document.getElementById("statusFilter").value;
-		          location.href = "employee.do?empstatus=S&status="+param1;    
+		          var param2 = document.getElementById("scheduleDate").value;
+		          location.href = "employee.do?empstatus=S&status="+param1+"&scheduleDate="+param2;    
+		     }
+		     function doMasterFilter() {
+		          var param1 = document.getElementById("statusFilter").value;
+		          var param2 = '01/01/1900';
+		          location.href = "employee.do?empstatus=S&status="+param1+"&scheduleDate="+param2;    
 		     }
 		     document.getElementById("statusFilter").value='<%=request.getAttribute("status")%>'
 		</script>	

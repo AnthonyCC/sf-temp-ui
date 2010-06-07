@@ -18,6 +18,10 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getPlanList(String date);
 	
+	Collection getPlanForResource(String date, String resourceId);
+	
+	Collection getDispatchForResource(String date, String resourceId);
+	
 	Dispatch getDispatch(String dispatchId);
 	
 	Collection getPlan(String dateRange, String zoneLst);
@@ -41,6 +45,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException;
 	
+	void saveDispatch(Dispatch dispatch, String referenceContextId) throws TransAdminApplicationException;
+	
 	Collection getAssignedTrucks(String date);
 	
 	Collection getAssignedRoutes(String date);
@@ -50,6 +56,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	Collection getAvailableTrucks(String date);
 	
 	void savePlan(Plan plan);
+	
+	void savePlan(Plan plan, String referencePlanId);
 	
 	Collection getUnusedDispatchRoutes(String dispatchDate);
 	

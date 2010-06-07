@@ -1,12 +1,13 @@
 package com.freshdirect.transadmin.model;
 
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.Date;
 
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class ScheduleEmployee 
-{
+public class ScheduleEmployee implements Serializable, Cloneable {
+	
 	private String scheduleId;
 	private String employeeId;
 	private Region region;
@@ -14,8 +15,31 @@ public class ScheduleEmployee
 	private Zone depotZone;
 	private String day;
 	
-
+	private Date weekOf;
 	
+	public ScheduleEmployee() {
+		super();
+	}
+	
+	public ScheduleEmployee(String scheduleId, String employeeId,
+			Region region, Date time, Zone depotZone, String day, Date weekOf) {
+		super();
+		this.scheduleId = scheduleId;
+		this.employeeId = employeeId;
+		this.region = region;
+		this.time = time;
+		this.depotZone = depotZone;
+		this.day = day;
+		this.weekOf = weekOf;
+	}
+	
+	
+	public Date getWeekOf() {
+		return weekOf;
+	}
+	public void setWeekOf(Date weekOf) {
+		this.weekOf = weekOf;
+	}
 	public String getDay() {
 		return day;
 	}
@@ -115,4 +139,12 @@ public class ScheduleEmployee
 		}
 		return true;
 	}
+	
+	public Object clone() throws CloneNotSupportedException {
+		
+		ScheduleEmployee _clone = new ScheduleEmployee(this.getScheduleId(), this.getEmployeeId(),
+											this.getRegion(), this.getTime(), this.getDepotZone(), this.getDay(), this.getWeekOf());
+		return _clone;
+	}
+	
 }

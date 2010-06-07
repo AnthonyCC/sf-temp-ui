@@ -153,6 +153,7 @@ public class ScribController extends AbstractMultiActionController
 		PlanTree tree=new PlanTree();
 		tree.prepare(scribs);
 		tree.prepare(employees);
+		tree.prepareTeam(domainManagerService.getTeamInfo());
 		Collection plans=tree.getPlan();
 		for(Iterator i=plans.iterator();i.hasNext();)
 		getDispatchManagerService().savePlan((Plan)i.next());

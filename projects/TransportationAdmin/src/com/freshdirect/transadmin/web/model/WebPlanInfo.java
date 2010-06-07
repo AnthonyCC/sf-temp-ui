@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web.model;
 
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -65,6 +64,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private String overrideReasonCode;
 	private String overrideUser;
 	
+	private String referenceContextId;
+	
 	public String getOpen()
 	{		
 		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)
@@ -115,54 +116,8 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 		return new Tooltip("Bullpen","");
 
 	}
-	class Tooltip implements IToolTip,Comparable {
-		
-		Object value = null;
-		String toolTip = null;
-		
-		Tooltip(Object value, String tooltip) {
-			this.value = value;
-			this.toolTip = tooltip;
-		}
-
-		
-
-		public Object getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
-		}
-
-
-
-		public String getToolTip() {
-			return toolTip;
-		}
-
-
-
-		public void setToolTip(String toolTip) {
-			this.toolTip = toolTip;
-		}
-		
-		public String toString() {
-			if(value!=null)
-				return getValue().toString();
-			return "";
-		}
-		
-		public int compareTo(Object o) {
-			if(o instanceof Tooltip) {
-				String _val=((Tooltip)o).getValue().toString();
-				return ((String)value).compareTo(_val);
-			}
-			return 0;
-			
-		}
-	}
 	
+		
    /* public static class MyList {
     	
     	public static ResourceList decorate(ResourceList list,org.apache.commons.collections.Factory factory) {
@@ -736,4 +691,12 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	public void setOverrideUser(String overrideUser) {
 		this.overrideUser = overrideUser;
 	}
+	public String getReferenceContextId() {
+		return referenceContextId;
+	}
+	public void setReferenceContextId(String referenceContextId) {
+		this.referenceContextId = referenceContextId;
+	}
+	
+	
 }

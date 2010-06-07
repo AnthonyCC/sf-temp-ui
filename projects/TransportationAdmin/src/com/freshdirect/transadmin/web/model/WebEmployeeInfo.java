@@ -49,12 +49,35 @@ private String employeeId;
 	private EmployeeInfo empInfo;
 	private Collection  empRole;
 	private String trnStatus;
+	private EmployeeInfo leadInfo;
 
 	public WebEmployeeInfo(EmployeeInfo eInfo,Collection eRole){
 		this.empInfo=eInfo;
 		this.empRole=eRole;
 
 	}
+
+	
+	public EmployeeInfo getLeadInfo() {		
+		return leadInfo;
+	}
+	
+	public String getLeadId() {	
+		if(leadInfo != null) {
+			return leadInfo.getEmployeeId();
+		} else {
+			return null;
+		}
+	}
+	
+	public void setLeadId() {	
+		//Dummy Method
+	}
+
+	public void setLeadInfo(EmployeeInfo leadInfo) {
+		this.leadInfo = leadInfo;
+	}
+
 
 	public EmployeeInfo getEmpInfo() {
 		return empInfo;

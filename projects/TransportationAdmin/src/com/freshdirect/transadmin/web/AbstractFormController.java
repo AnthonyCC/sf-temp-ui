@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +10,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public abstract class AbstractFormController extends BaseFormController {
 
@@ -60,5 +64,15 @@ public abstract class AbstractFormController extends BaseFormController {
 	
 	protected String getIdFromRequest(HttpServletRequest request){
 		return request.getParameter("id");
+	}
+	
+	protected Date getFromClientDate(String clientDate) {
+		Date retDate = null;
+		try {
+			retDate = TransStringUtil.getDate(clientDate);
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
 	}
 }

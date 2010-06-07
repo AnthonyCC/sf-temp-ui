@@ -89,6 +89,14 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getEmployeeStatus(String empId)  throws DataAccessException;
 	
+	Collection getTeamByEmployee(String empId)  throws DataAccessException;
+	
+	Collection getTeamByLead(String leadId) throws DataAccessException;
+	
+	Collection getTeamMembersByEmployee(String empId)  throws DataAccessException;
+	
+	Collection getTeamInfo()  throws DataAccessException;
+	
 	Collection getEmployeesByRoleType(String roleTypeId) throws DataAccessException;
 
 	Collection getDispositionTypes() throws DataAccessException;
@@ -100,8 +108,9 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getActiveZones() throws DataAccessException;
 	
 	Collection getRouteMappingByCutOff(String routeDate, String cutOff) throws DataAccessException;
-	public Collection getScheduleEmployee(String employeeId) throws DataAccessException;
-	public Collection getScheduleEmployee(String employeeId,String day) throws DataAccessException;
-	public Collection getScheduleEmployees(String day) throws DataAccessException;
+	Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException;
+	Collection getScheduleEmployee(String employeeId, String weekOf, String day) throws DataAccessException;
+	Collection getScheduleEmployees(String weekOf, String day) throws DataAccessException;
 	Collection getUPSRouteInfo(String routeDate);
+		
 }

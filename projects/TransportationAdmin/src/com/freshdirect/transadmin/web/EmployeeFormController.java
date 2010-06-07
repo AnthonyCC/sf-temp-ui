@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
-import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.EmployeeroleId;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class EmployeeFormController extends AbstractFormController {
@@ -23,10 +26,14 @@ public class EmployeeFormController extends AbstractFormController {
 	private EmployeeManagerI employeeManagerService;
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
-//		System.out.println("referenceData");
+
 		Map refData = new HashMap();
 		//refData.put("supervisors", getDomainManagerService().getSupervisors());
 		//refData.put("region", getDomainManagerService().getR);
+		Collection<WebEmployeeInfo> activeEmployees = employeeManagerService.getEmployees();
+		Collection<WebEmployeeInfo> terminatedEmployees = employeeManagerService.getTerminatedEmployees();
+		
+		refData.put("employees", DispatchPlanUtil.getSortedResources(ModelUtil.getEmployees(activeEmployees, terminatedEmployees)));
 		refData.put("roleTypes", getEmployeeManagerService().getEmployeeSubRoleTypes());
 		return refData;
 	}
@@ -56,18 +63,17 @@ public class EmployeeFormController extends AbstractFormController {
 		//System.out.println("On Bind");
 		WebEmployeeInfo model = (WebEmployeeInfo) command;
 
-		String roleTypeCodes[]=request.getParameterValues("employeeRoleTypes");
-		String empId=request.getParameter("employeeId");
-		String toggle=request.getParameter("toggle");
-
-		if(toggle!=null)
-		{
+		String roleTypeCodes[] = request.getParameterValues("employeeRoleTypes");
+		String empId = request.getParameter("employeeId");
+		String toggle = request.getParameter("toggle");
+		String leadId = request.getParameter("leadId");
+		
+		if(toggle!=null) {
 			model.toggleStatus();
 		}
 		List roleList=null;
 
-		if(roleTypeCodes!=null)
-		{
+		if(roleTypeCodes!=null)	{
 			roleList=new ArrayList();
 
 			for(int i=0;i<roleTypeCodes.length;i++){
@@ -81,10 +87,16 @@ public class EmployeeFormController extends AbstractFormController {
 			}
 		}
 
-		if(roleList!=null && roleList.size()>0)
+		if(roleList!=null && roleList.size()>0) {
 			   model.setEmpRole(roleList);
-			else
+		} else {
 				model.setEmpRole(null);
+		}
+		if(leadId != null && leadId.trim().length() > 0) {
+			EmployeeInfo leadInfo = new EmployeeInfo();
+			leadInfo.setEmployeeId(leadId);
+			model.setLeadInfo(leadInfo);
+		}
 
 	}
 
@@ -103,7 +115,7 @@ public class EmployeeFormController extends AbstractFormController {
 		//binder.registerCustomEditor(Region.class, new RegionPropertyEditor());
     }
 
-public List saveDomainObject(Object domainObject) {
+	public List saveDomainObject(Object domainObject) {
 
 		//System.out.println("trying to save the domain object"+domainObject);
 
@@ -117,13 +129,13 @@ public List saveDomainObject(Object domainObject) {
 		return errorList;
 	}
 
-public EmployeeManagerI getEmployeeManagerService() {
-	return employeeManagerService;
-}
-
-public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
-	this.employeeManagerService = employeeManagerService;
-}
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+	
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
 
 
 

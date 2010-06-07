@@ -19,8 +19,8 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 
     <tmpl:put name='title' direct='true'> Operations : Employee : <%=pageTitle%></tmpl:put>
-
-<tmpl:put name='hasSubs' direct='true'>subs</tmpl:put>
+		
+	<tmpl:put name='hasSubs' direct='true'>subs</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
   
@@ -60,7 +60,7 @@
 					</span>
 					<span >
 						<a href="employee.do?sync=true">Sync Employees</a>
-					</span>
+					</span>					
 				</div>
 			</div>
 		</div>
@@ -96,6 +96,7 @@
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
                                 <ec:column property="terminationDate" title="Terminated"/>
+                                <ec:column property="leadInfo.name" title="Lead"/>                                                                										
 							</ec:row>
 						</ec:table>
                      <%
@@ -118,15 +119,15 @@
 										filterable="false" sortable="false" cell="selectcol"
 										property="employeeId" />  
 								<% } %>		
-								<ec:column property="trnStatus1" title="Status"/>	
+								<ec:column property="trnStatus1" title="Status" width="5px"/>	
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
-								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>                                  
+								<ec:column alias="kronosId" property="employeeId" title="KronosID" width="5px"/>                                  
 								<ec:column property="hireDate" title="Hire Date"/>
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
-                           
+                           		<ec:column property="leadInfo.name" title="Lead"/>
 							</ec:row>
 						</ec:table>
                       <% } %>
@@ -136,9 +137,10 @@
 			</div>
 		</div>
 	</div>
+	
 	<% if(!"T".equalsIgnoreCase(request.getParameter("empstatus"))) { %>
 		<script>
-			addRowHandlers('ec_table', 'rowMouseOver', 'editemployee.do','id',0, 0);
+			addRangeHandlers('ec_table', 'rowMouseOver', 'editemployee.do','id',0, 0, 8, false);			
 		</script>
 	<% } %>
   </tmpl:put>

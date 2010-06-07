@@ -5,14 +5,20 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
 
 public class TransStringUtil {
 	
@@ -95,6 +101,7 @@ public class TransStringUtil {
 	public static String getCurrentDate() {		
 		return dateFormat.format(new Date());
 	}
+	
 	public static String getDispatchCurrentDate()
 	{
 		clientCalendar.setTimeInMillis(System.currentTimeMillis());
@@ -552,5 +559,58 @@ public class TransStringUtil {
 		if(todayStartTime<=toCalculate&&toCalculate<=todayEndTime) return true;
 		
 		return false;
+	}
+	
+	public static int getDayOfWeek(Date _date) {
+		clientCalendar.setTime(_date);
+		return clientCalendar.get( Calendar.DAY_OF_WEEK ) ;        
+	}
+	
+	public static Date getAdjustedWeekOf(Date _date, int days) {
+		clientCalendar.setTime(_date);
+		int adjust = Calendar.MONDAY - clientCalendar.get( Calendar.DAY_OF_WEEK ) ;
+        if (adjust > 0)  adjust -= 7 ;
+        clientCalendar.add(Calendar.DATE, adjust) ;
+        clientCalendar.add(Calendar.DATE, days) ;
+        return clientCalendar.getTime();
+	}
+	
+	public static Date getWeekOf(Date _date) {
+		clientCalendar.setTime(_date);
+		int adjust = Calendar.MONDAY - clientCalendar.get( Calendar.DAY_OF_WEEK ) ;
+        if (adjust > 0)  adjust -= 7 ;
+        clientCalendar.add(Calendar.DATE, adjust) ;
+        return clientCalendar.getTime();
+	}
+	
+	public static Date getWeekOf(String _date) throws ParseException {
+		clientCalendar.setTime(getServerDateString(_date));
+		int adjust = Calendar.MONDAY - clientCalendar.get( Calendar.DAY_OF_WEEK ) ;
+        if (adjust > 0) {
+        	adjust = adjust - 7 ;
+        }
+        clientCalendar.add(Calendar.DATE, adjust) ;
+        return clientCalendar.getTime();
+	}
+	
+		
+	public static void main(String args[]) throws Exception {
+		/*Calendar cal = Calendar.getInstance();
+		Date _tmpDate = getDate("05/09/2010");
+		cal.setTime(_tmpDate);
+		
+		int adjust = Calendar.MONDAY - cal.get( Calendar.DAY_OF_WEEK ) ;
+		if (adjust > 0) {
+        	adjust = adjust - 7 ;
+        }
+        cal.add(Calendar.DATE, adjust) ;
+        cal.add(Calendar.DATE, 7) ;
+        System.out.println(getDate(cal.getTime()));*/
+		
+		GregorianCalendar delWindCal = new GregorianCalendar();
+		delWindCal.add(Calendar.DAY_OF_YEAR, 7);
+		java.util.Date deliveryWindow = delWindCal.getTime();
+		System.out.println("deliveryWindow >>"+deliveryWindow);
+
 	}
  }

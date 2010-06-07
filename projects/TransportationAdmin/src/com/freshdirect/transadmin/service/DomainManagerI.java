@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
@@ -17,6 +18,7 @@ import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
+import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public interface DomainManagerI extends BaseManagerI {
 	
@@ -132,4 +134,12 @@ public interface DomainManagerI extends BaseManagerI {
 	void refreshGeoRestrictionWorktable();
 	
 	void doGeoRestriction(String zone[][]);	
+			
+	void saveScheduleGroup(WebSchedule model, String[] employeeIds, Date weekOf);
+	
+	void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf);
+	
+	Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException;
+	
+	Collection getTeamInfo();
 }

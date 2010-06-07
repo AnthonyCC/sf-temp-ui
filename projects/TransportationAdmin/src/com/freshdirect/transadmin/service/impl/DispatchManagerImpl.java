@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.dao.DataAccessException;
-
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
@@ -20,10 +18,13 @@ import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.PunchInfoI;
 import com.freshdirect.transadmin.model.ResourceI;
+import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -35,7 +36,6 @@ import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
-import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class DispatchManagerImpl extends BaseManagerImpl implements DispatchManagerI {
 	
@@ -89,6 +89,14 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	
 	public Collection getPlanList(String date) {
 		return getDispatchManagerDao().getPlanList(date);
+	}
+	
+	public Collection getPlanForResource(String date, String resourceId) {
+		return getDispatchManagerDao().getPlanForResource(date, resourceId);
+	}
+	
+	public Collection getDispatchForResource(String date, String resourceId) {
+		return getDispatchManagerDao().getDispatchForResource(date, resourceId);
 	}
 	
 	public Collection getPlan(String day, String zone, String date) {
@@ -270,8 +278,13 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return false;
 	}
 
-	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
-		// Check if a route is already is assigned to a dispatch before you save the dispatch
+	public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException {
+		// Check if a route is already is assigned to a dispatch before you save the dispatch		
+		validateDispatchRoute(dispatch);
+		getDispatchManagerDao().saveDispatch(dispatch);
+	}
+	
+	private void validateDispatchRoute(Dispatch dispatch) throws TransAdminApplicationException {
 		try{
 			boolean routeChanged = false;
 			Collection assignedRoutes = getAssignedRoutes(TransStringUtil.getServerDate(dispatch.getDispatchDate()));
@@ -289,16 +302,73 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}catch(ParseException exp){
 			//Ignore it
 		}
-		
-		getDispatchManagerDao().saveDispatch(dispatch);
 	}
 
-	/*public void saveDispatch(Dispatch dispatch) throws TransAdminApplicationException{
-		// Check if a route is already is assigned to a dispatch before you save the dispatch
-		
-		
+	public void saveDispatch(Dispatch dispatch, String referenceContextId) throws TransAdminApplicationException  {
+		validateDispatchRoute(dispatch);
+		if (!TransStringUtil.isEmpty(dispatch.getDispatchId())) {
+			
+			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
+			Dispatch currentDispatch = this.getDispatch(dispatch.getDispatchId());
+			if(referenceDispatch != null && currentDispatch != null) {
+				Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
+																		currentDispatch.getStartTime(), 
+																		true);
+				Dispatch bullPen = null;
+				if(bullpens != null && bullpens.size() > 0) {
+					bullPen = (Dispatch)bullpens.iterator().next();
+					Set currentResources = currentDispatch.getDispatchResources();
+					if(currentResources != null) {
+						Iterator _itr = currentResources.iterator();
+						while(_itr.hasNext()) {
+							DispatchResource _oldResource = (DispatchResource)_itr.next();
+							DispatchResource dispatchResource = new DispatchResource();
+							
+							ResourceId resource = new ResourceId();
+							resource.setResourceId(_oldResource.getId().getResourceId());
+							resource.setContextId(bullPen.getDispatchId());
+							resource.setAdjustmentTime(_oldResource.getId().getAdjustmentTime());
+							dispatchResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
+							dispatchResource.setId(resource);
+							dispatchResource.setNextTelNo(_oldResource.getNextTelNo());
+							dispatchResource.setDispatch(bullPen);
+							bullPen.getDispatchResources().add(dispatchResource);
+						}
+					}					
+				} else {
+					
+					bullPen = new Dispatch();
+					
+					bullPen.setDispatchDate(currentDispatch.getDispatchDate());
+
+					bullPen.setRegion(currentDispatch.getRegion());
+					bullPen.setStartTime(currentDispatch.getStartTime());
+					bullPen.setFirstDlvTime(currentDispatch.getFirstDlvTime());
+					bullPen.setBullPen(true);
+					for (Iterator i = currentDispatch.getDispatchResources().iterator(); i.hasNext();) {
+						DispatchResource _oldResource = (DispatchResource)i.next();
+						DispatchResource dispatchResource = new DispatchResource();
+						ResourceId resource = new ResourceId();
+						resource.setResourceId(_oldResource.getId().getResourceId());	
+						resource.setAdjustmentTime(_oldResource.getId().getAdjustmentTime());
+						dispatchResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
+						dispatchResource.setId(resource);
+						dispatchResource.setNextTelNo(_oldResource.getNextTelNo());
+						dispatchResource.setDispatch(bullPen);
+						bullPen.getDispatchResources().add(dispatchResource);
+					}
+				}
+				if(bullPen != null) {
+					this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+					getDispatchManagerDao().saveDispatch(bullPen);
+				}
+			}
+		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
+			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
+			this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+		}
 		getDispatchManagerDao().saveDispatch(dispatch);
-	}*/
+	}
 	
 	public Collection getAssignedTrucks(String date) {
 		return getDispatchManagerDao().getAssignedTrucks(date);
@@ -342,10 +412,68 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		DispatchManagerImpl impl=new DispatchManagerImpl();
 		impl.autoDisptch("11/26/2008");
 	}
+	
 	public void savePlan(Plan	plan) {
 		getDispatchManagerDao().savePlan(plan);
 	}
-	 
+	
+	public void savePlan(Plan plan, String referencePlanId) {
+		if (!TransStringUtil.isEmpty(plan.getPlanId())) {
+			
+			Plan referencePlan = this.getPlan(referencePlanId);
+			Plan currentPlan = this.getPlan(plan.getPlanId());
+			if(referencePlan != null && currentPlan != null) {
+				Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
+																		currentPlan.getStartTime(), 
+																		true);
+				Plan bullPen = null;
+				if(bullpens != null && bullpens.size() > 0) {
+					bullPen = (Plan)bullpens.iterator().next();
+					Set currentResources = currentPlan.getPlanResources();
+					if(currentResources != null) {
+						Iterator _itr = currentResources.iterator();
+						while(_itr.hasNext()) {
+							PlanResource _oldResource = (PlanResource)_itr.next();
+							PlanResource planResource = new PlanResource();
+							ResourceId resource = new ResourceId();
+							resource.setResourceId(_oldResource.getId().getResourceId());
+							resource.setContextId(bullPen.getPlanId());
+							planResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
+							planResource.setId(resource);
+							bullPen.getPlanResources().add(planResource);
+						}
+					}					
+				} else {
+					
+					bullPen = new Plan();
+					
+					bullPen.setPlanDate(currentPlan.getPlanDate());
+
+					bullPen.setRegion(currentPlan.getRegion());
+					bullPen.setStartTime(currentPlan.getStartTime());
+					bullPen.setFirstDeliveryTime(currentPlan.getFirstDeliveryTime());
+					bullPen.setIsBullpen("Y");
+					for (Iterator i = currentPlan.getPlanResources().iterator(); i.hasNext();) {
+						PlanResource _oldResource = (PlanResource)i.next();
+						PlanResource planResource = new PlanResource();
+						ResourceId resource = new ResourceId();
+						resource.setResourceId(_oldResource.getId().getResourceId());						
+						planResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
+						planResource.setId(resource);
+						bullPen.getPlanResources().add(planResource);
+					}
+				}
+				if(bullPen != null) {
+					this.getDispatchManagerDao().removeEntityEx(referencePlan);
+					getDispatchManagerDao().savePlan(bullPen);
+				}
+			}
+		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
+			Plan referencePlan = this.getPlan(referencePlanId);
+			this.getDispatchManagerDao().removeEntityEx(referencePlan);
+		}
+		getDispatchManagerDao().savePlan(plan);
+	}
 	
 	public Collection getUnusedDispatchRoutes(String dispatchDate) {
 		
@@ -424,7 +552,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 						{
 							if(DispatchPlanUtil.isEligibleForUnassignedEmployees(domainManagerService.getEmployeeRole(_punchInfo.getEmployeeId())))
 							{
-								ScheduleEmployee s=employeeManagerService.getSchedule(_punchInfo.getEmployeeId(), day);	
+								ScheduleEmployee s = employeeManagerService.getSchedule(_punchInfo.getEmployeeId()
+																	, TransStringUtil.getServerDate(TransStringUtil.getWeekOf(date)), day);	
 								if(s!=null)
 								webEmpInfo.setRegion(s.getRegionS());
 								for(Iterator i=dispList.iterator();i.hasNext();)

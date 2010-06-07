@@ -191,7 +191,7 @@
 		}
 		function back()
 	    {
-	      	var filters=unescape(getParameter("filter"));      	
+	      	var filters=unescape(getParameter("filter"));	      	     	
 	      	var params=filters.split("&");
 	      	var planForm=document.forms["scrib"];
 	      	for(var i=0;i<params.length;i++)

@@ -6,7 +6,9 @@ public interface BaseManagerI {
 	
 	void saveEntity(Object entity);
 	
-	void removeEntity(Collection employees);
+	void removeEntity(Collection entities);
+	
+	void removeEntityEx(Object entity);
 	
 	void saveEntityList(Collection entity);
 	

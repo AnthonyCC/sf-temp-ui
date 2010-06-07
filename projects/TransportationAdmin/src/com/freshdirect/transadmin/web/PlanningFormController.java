@@ -172,15 +172,11 @@ public class PlanningFormController extends AbstractFormController {
 		List errorList = null;
 
 		try {
-			WebPlanInfo _command=(WebPlanInfo)command;
-			boolean isNew = isNew(command);
-			Plan domainObject=getPlan(_command);
-			if(!isNew) {
-				getDispatchManagerService().saveEntity(domainObject);
-			} else {
-				getDispatchManagerService().savePlan(domainObject);
-				_command.setPlanId(domainObject.getPlanId());
-			}
+			WebPlanInfo _command = (WebPlanInfo)command;
+			Plan domainObject = getPlan(_command);
+			getDispatchManagerService().savePlan(domainObject, _command.getReferenceContextId());
+			_command.setPlanId(domainObject.getPlanId());
+			_command.setReferenceContextId(null);
 		} catch (Exception objExp) {
 			objExp.printStackTrace();
 			errorList = new ArrayList();

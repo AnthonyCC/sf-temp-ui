@@ -107,6 +107,7 @@
 				<prop key="/geographyprovider.ax">asyncGeographyController</prop>
 				<prop key="/dispatchprovider.ax">asyncDispatchController</prop>
 				<prop key="/capacityprovider.ax">asyncCapacityController</prop>
+				<prop key="/domainprovider.ax">asyncDomainController</prop>
 				
 				<prop key="/gmap.do">geographyController</prop>
 				<prop key="/gmapexport.do">geographyController</prop>
@@ -519,6 +520,7 @@
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="logManager" ref="logManagerBase"/>
+		<property name="employeeManagerService" ref="employeeManager"/>
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDispatchProvider" value="com.freshdirect.transadmin.web.json.IDispatchProvider" />				
@@ -531,6 +533,16 @@
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncCapacityProvider" value="com.freshdirect.transadmin.web.json.ICapacityProvider" />				
+			</map>
+		</property>
+	</bean>
+	
+	<bean name="asyncDomainController" class="com.freshdirect.transadmin.web.json.DomainProviderController">
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="employeeManagerService" ref="employeeManager"/>
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncDomainProvider" value="com.freshdirect.transadmin.web.json.IDomainProvider" />				
 			</map>
 		</property>
 	</bean>

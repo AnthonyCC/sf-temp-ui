@@ -10,6 +10,7 @@
  %>
  <script src="js/jsonrpc.js" language="javascript" type="text/javascript"></script>
  <script src="js/activeZone.js" language="javascript" type="text/javascript"></script>
+ <script src="js/resourceedit.js" language="javascript" type="text/javascript"></script>
         <script language="javascript">         
         function setTruckNumber(truckNo) {
             dispatchForm.truck.value = truckNo;
@@ -127,6 +128,10 @@
           }
       }
       
+      function handleResoureChangeEvent(target, src) {			
+			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
+	  }
+      
       </script>
       <style>
         .time_picker_div {padding:5px;
@@ -141,6 +146,7 @@
     <div align="center">
       <form:form commandName = "dispatchForm" method="post">
       <form:hidden path="dispatchId" />
+      <form:hidden path="referenceContextId"/>
       <input type=hidden name="routeNo" value="" />
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
@@ -409,7 +415,7 @@
 									<spring:bind path="dispatchForm.drivers[${gridRow.index}].employeeId">
 									 <c:choose>                    
 									   <c:when test='${dispatchForm.confirmed == "false"}'> 
-										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="handleResoureChangeEvent('drivers[<c:out value="${gridRow.index}"/>]', this);">
 											<OPTION value="">Select Drivers</OPTION>          
 											<c:forEach var="driverEmp" items="${drivers}">
 												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
@@ -418,7 +424,7 @@
 										</SELECT>
 									   </c:when>
 									   <c:otherwise> 
-										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true" onchange="handleResoureChangeEvent('drivers[<c:out value="${gridRow.index}"/>]', this);">
 											<OPTION value="">Select Drivers</OPTION>          
 											<c:forEach var="driverEmp" items="${drivers}">
 												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
@@ -457,7 +463,7 @@
 								<spring:bind path="dispatchForm.helpers[${gridRow.index}].employeeId">
 								 <c:choose>                    
 								   <c:when test='${dispatchForm.confirmed == "false"}'> 
-									<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" >
+									<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="handleResoureChangeEvent('helpers[<c:out value="${gridRow.index}"/>]', this);">
 										<OPTION value="">Select Helpers</OPTION>          
 										<c:forEach var="helperEmp" items="${helpers}">
 											<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
@@ -466,7 +472,7 @@
 										</SELECT>
 									   </c:when>
 									   <c:otherwise> 
-										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true">
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" disabled="true" onchange="handleResoureChangeEvent('helpers[<c:out value="${gridRow.index}"/>]', this);">
 											<OPTION value="">Select Helpers</OPTION>          
 											<c:forEach var="helperEmp" items="${helpers}">
 												<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 

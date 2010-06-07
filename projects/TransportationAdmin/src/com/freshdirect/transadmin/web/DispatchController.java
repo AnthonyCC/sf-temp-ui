@@ -2,7 +2,6 @@ package com.freshdirect.transadmin.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -31,8 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
-
-
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
@@ -48,7 +45,6 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
@@ -74,7 +70,6 @@ import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
-import com.freshdirect.transadmin.web.model.WebSchedule;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
@@ -205,8 +200,10 @@ public class DispatchController extends AbstractMultiActionController {
 						if(DispatchPlanUtil.isEligibleForKronosFileGeneration(domainManagerService.getEmployeeRole(r.getId().getResourceId())))
 						{
 							if(kronos.get(r.getId().getResourceId())!=null) continue;
-							String day=new SimpleDateFormat("EEE").format(TransStringUtil.getDate(daterange)).toUpperCase();
-							ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),day);
+							Date _tmpRange = TransStringUtil.getDate(daterange);
+							String day=new SimpleDateFormat("EEE").format(_tmpRange).toUpperCase();
+							ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),
+														TransStringUtil.getServerDate(TransStringUtil.getWeekOf(_tmpRange)),day);
 							Scrib s=new Scrib();
 							s.setScribId(r.getId().getResourceId());
 							s.setScribDate(p.getPlanDate());

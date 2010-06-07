@@ -1,7 +1,11 @@
 package com.freshdirect.transadmin.service;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
+import java.util.Set;
 
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRoleType;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
@@ -35,15 +39,18 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getSupervisors();
 	
 	Collection getPunchInfo(String date);
-	public Collection getScheduleEmployees();
+	Collection getScheduleEmployees(Date weekOf);	
+	WebSchedule getSchedule(String id, Date weekOf);
+	ScheduleEmployee getSchedule(String id, String weekOf, String day);
 	
-	public WebSchedule getSchedule(String id);
-	public Collection getScheduledEmployees(String day,String date);
-	public Collection getUnAvailableEmployees(Collection plans,String date);
-	public ScheduleEmployee getSchedule(String id,String day);
+	Collection getScheduledEmployees(String day, String date);
+	Collection getUnAvailableEmployees(Collection plans,String date);
 	
-	public Collection getKronosActiveInactiveEmployees();
-	public void syncEmployess();
+	
+	Collection getKronosActiveInactiveEmployees();
+	void syncEmployess();
 	Collection getEmployeeRole(String empId);
-	public Collection getTransAppActiveEmployees();
+	Collection getTransAppActiveEmployees();
+	
+	Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String empId);
 }

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.EmployeeTeam" table="EMPLOYEETEAM">
+        <id name="kronosId" type="string">
+            <column name="KRONOS_ID" length="15" />            
+        </id>
+        <property name="leadKronosId" type="string">
+            <column name="LEAD_KRONOS_ID" length="15" />
+        </property>   
+    </class>
+</hibernate-mapping>

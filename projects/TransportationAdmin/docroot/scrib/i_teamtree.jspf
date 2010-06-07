@@ -1,0 +1,53 @@
+  <script>
+      var jsonrpcClienExt = new JSONRpcClient("domainprovider.ax");
+      var treePanel;
+      function showTeamTree() {
+		var result = jsonrpcClienExt.AsyncDomainProvider.getTeamMapping(document.getElementById("employeeIds").value);
+		showTree(result);														
+	  }
+			
+      function showTree(_data) {
+         
+		 treePanel = new YAHOO.widget.Panel("panel-tree", {
+		                width: "250px",
+		                height: "300px",
+		                fixedcenter: true, 
+		                close: true, 
+		                draggable: false, 
+		                zindex:4,
+		                modal: true,
+		                visible: false,
+		                effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+		 
+		var tree = new YAHOO.widget.TreeView("treecontainer");
+		
+		var root = tree.getRoot();
+		
+		for (var _lead in _data.map) {
+			var _leadNode = new YAHOO.widget.TextNode(_lead, root, false);
+			for (var _member in _data.map[_lead].set) {				
+				var _memberNode = new YAHOO.widget.TextNode(_member, _leadNode, false);
+			}			
+		}
+		tree.draw();
+        treePanel.render(document.body);
+    	treePanel.show(); 
+      }              
+  
+    </script>
+ <div style='display:none;height:0px;width:0px;'>
+ 	<div id="panel-tree">
+ 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Team Tree</div>
+      <div class="bd">
+      	<div id="parentTreeDiv" style="height:240px;overflow-y:auto;">
+	 		<div id="treecontainer"></div>
+	 	</div>
+		<div style="text-align:center;vertical-align: bottom; ">
+				</br>		       
+			   <input type = "button" value="&nbsp;Close&nbsp;" onclick="javascript:treePanel.hide();" />
+		    </div>
+	  </div>
+	</div>  
+</div>  		
+ 	
+ 

@@ -124,41 +124,7 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnCutOff Order By  sequenceNo");
 	}
 
-	/*public Map getRouteNumberGroup(String date, String cutOff, String groupCode) throws DataAccessException {
 		
-		final Map result = new HashMap();
-		final StringBuffer strBuf = new StringBuffer();
-		strBuf.append("select tr.rd, tr.ci , tr.gc, count(*) from (");
-		strBuf.append("select tx.routeMappingId.routeDate rd, tx.routeMappingId.cutOffId ci, tx.routeMappingId.groupCode gc, tx.routeMappingId.routeID ri");
-		strBuf.append(" from RouteMapping tx ");
-		strBuf.append(" where tx.route_date='").append(date).append("'");
-
-		if(cutOff != null) {
-			strBuf.append(" and tx.cutoff_id='").append(cutOff).append("'");
-		}
-
-		if(groupCode != null) {
-			strBuf.append(" and tx.group_code='").append(groupCode).append("'");
-		}
-		
-		strBuf.append(" group by tx.route_date, tx.cutoff_id , tx.group_code, tx.route_id) tr");
-		strBuf.append(" group by tr.rd, tr.ci , tr.gc");
-		strBuf.append(" order by tr.rd, tr.ci , tr.gc ");
-		this.getHibernateTemplate().execute(new HibernateCallback() {
-			 public Object doInHibernate(Session session) throws HibernateException, SQLException {
-			 
-				 Query query = session.createQuery(strBuf.toString());
-				 for (Iterator it = query.iterate(); it.hasNext();) {
-					 Object[] row = (Object[]) it.next();
-					 result.put(new RouteMappingId((Date)row[0], (String)row[1], (String)row[2], null, null), row[3]);
-				 }
-				 return null;
-			 }
-		});
-			 
-		return result;
-	}*/
-	
 	public void saveRouteNumberGroup(final Map routeMapping) throws DataAccessException {
 		
 		List _routeMapping = new ArrayList();
@@ -269,6 +235,37 @@ public class DomainManagerDaoHibernateImpl
 		}
 		return c;
 	}
+	
+	public Collection getTeamInfo()  throws DataAccessException {
+		
+		return getDataList("EmployeeTeam t ORDER BY t.leadKronosId");
+	}
+	
+	public Collection getTeamMembersByEmployee(String empId)  throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeTeam te ");
+		if(empId!=null)
+			strBuf.append("where  te.leadKronosId =(select tx.leadKronosId " +
+										"from EmployeeTeam tx where tx.kronosId ='").append(empId).append("')");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getTeamByEmployee(String empId)  throws DataAccessException {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeTeam te ");
+		if(empId!=null)
+			strBuf.append("where  te.kronosId ='").append(empId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getTeamByLead(String leadId) throws DataAccessException {
+		// TODO Auto-generated method stub
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from EmployeeTeam te where  te.leadKronosId ='").append(leadId).append("'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());		
+	}
 
 
 	public Collection getEmployeeRoles() throws DataAccessException {
@@ -336,17 +333,18 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("Zone where OBSOLETE IS NULL Order By ZONE_CODE");
 	}
 	
-	public Collection getScheduleEmployee(String employeeId) throws DataAccessException {
+	public Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException {
 		// TODO Auto-generated method stub
-		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"'");
+		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"' and week_of='"+weekOf+"'");
 	}
-	public Collection getScheduleEmployees(String day) throws DataAccessException {
+	
+	public Collection getScheduleEmployees(String weekOf, String day) throws DataAccessException {
 		// TODO Auto-generated method stub
-		return getDataList("ScheduleEmployee where day='"+day+"' and region is not null" );
+		return getDataList("ScheduleEmployee where day='"+day+"' and week_of='"+weekOf+"' and region is not null" );
 	}
 
-	public Collection getScheduleEmployee(String employeeId, String day) throws DataAccessException {
-		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"' and day='"+day+"'");
+	public Collection getScheduleEmployee(String employeeId, String weekOf, String day) throws DataAccessException {
+		return getDataList("ScheduleEmployee where employeeId ='"+employeeId+"' and day='"+day+"' and week_of='"+weekOf+"'");
 	}
 
 	public Collection getUPSRouteInfo(String routeDate) {

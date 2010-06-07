@@ -29,6 +29,7 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceId;
@@ -593,6 +594,50 @@ public class ModelUtil {
 			}
 		}
 		return output;
+	}
+	
+	public static Map<String, EmployeeInfo> getIdMappedEmployees(
+			Collection<WebEmployeeInfo> activeEmployees,
+			Collection<WebEmployeeInfo> terminatedEmployees) {
+		Map<String, EmployeeInfo> result = new HashMap<String, EmployeeInfo>();
+		if (activeEmployees != null) {
+			for (WebEmployeeInfo emp : activeEmployees) {
+				result.put(emp.getEmployeeId(), emp.getEmpInfo());
+			}
+		}
+		if (terminatedEmployees != null) {
+			for (WebEmployeeInfo emp : terminatedEmployees) {
+				result.put(emp.getEmployeeId(), emp.getEmpInfo());
+			}
+		}
+		return result;
+	}
+	
+	public static Map<String, String> getIdMappedTeam(Collection<EmployeeTeam> teamInfos) {
+		Map<String, String> result = new HashMap<String, String>();
+		if (teamInfos != null) {
+			for (EmployeeTeam emp : teamInfos) {
+				result.put(emp.getKronosId(), emp.getLeadKronosId());
+			}
+		}
+		return result;
+	}
+
+	public static Collection<EmployeeInfo> getEmployees(
+			Collection<WebEmployeeInfo> activeEmployees,
+			Collection<WebEmployeeInfo> terminatedEmployees) {
+		Collection<EmployeeInfo> result = new ArrayList<EmployeeInfo>();
+		if (activeEmployees != null) {
+			for (WebEmployeeInfo emp : activeEmployees) {
+				result.add(emp.getEmpInfo());
+			}
+		}
+		if (terminatedEmployees != null) {
+			for (WebEmployeeInfo emp : terminatedEmployees) {
+				result.add(emp.getEmpInfo());
+			}
+		}
+		return result;
 	}
 
 }
