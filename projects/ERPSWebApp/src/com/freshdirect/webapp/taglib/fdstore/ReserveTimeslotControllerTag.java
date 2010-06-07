@@ -107,10 +107,17 @@ public class ReserveTimeslotControllerTag extends AbstractControllerTag {
 	}
 
 	private void populate(HttpServletRequest request) {
+		HttpSession session = pageContext.getSession();
+		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+				
 		this.timeslotId = NVL.apply(request.getParameter("deliveryTimeslotId"), "");
 		this.addressId = NVL.apply(request.getParameter("addressId"), "");
 		this.rsvType = EnumReservationType.getEnum(NVL.apply(request.getParameter("reservationType"), ""));
-		this.chefstable = "true".equals(request.getParameter("chefstable"));
+		try {
+			this.chefstable = user.isChefsTable()||"true".equals(request.getParameter("chefstable"));
+		} catch (FDResourceException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void validate(ActionResult actionResult) {
