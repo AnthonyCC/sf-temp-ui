@@ -338,7 +338,7 @@ if (errorMsg!=null) {%>
 	<% if(user.isEligibleForPreReservation()){
 	 		FDReservation userRsv = user.getReservation();
 			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>		
-				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12">  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
+				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12"> <b>  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot </b>
 		<% } 
 	}%>
 	</td>

@@ -1,7 +1,6 @@
 <%
 //get amount for zone promotion
 double zonePromoAmount=AddressFinder.getZonePromoAmount(user, address, timeSlotCtx);
-System.out.println("zonePromoAmount>>>>>"+zonePromoAmount);
 String zonePromoString=null;
 %>
 

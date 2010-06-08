@@ -70,7 +70,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.
 						<td>&nbsp;</td>
 				<%}%>
 					<td class="text12"><img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-						<SELECT name="addressId" onChange="javascript:submit()" CLASS="text12">
+						<SELECT name="addressId" onChange="javascript:submit()" CLASS="text12" style="width: 250px;">
 							<% 
 							for(Iterator saItr=shipToAddresses.iterator();saItr.hasNext();) {
 								ErpAddressModel addr = (ErpAddressModel)saItr.next();
