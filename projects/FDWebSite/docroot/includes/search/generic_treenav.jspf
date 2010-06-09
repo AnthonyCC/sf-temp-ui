@@ -42,18 +42,36 @@ List clss			= results.getRecipeClassifications(); // got from SmartSearchTag
 <%
 	}
 %>
+<%
+    String navDeptId = "";
+    if(deptId != null) 
+        navDeptId = deptId;
+    else if(catId != null) {
+        CategoryModel cm = (CategoryModel) ContentFactory.getInstance().getContentNode(catId);
+        if(cm != null)
+            navDeptId = cm.getDepartment().getContentName();
+    }
+        
+%>
  <fd:ContentTreeTag tree="categoryTree" contentNodeName="te" expandToDepth="1" depthName="depth" nextDepthName="nextDepth" selectedName="selected" childCountName="childCount">
 <% int d=depth.intValue(); if (d==0) {
 		// department node
 %>		<div class="text12bold" style="margin: 0px; padding: 1em 5px 2px 5px; background-color: #E0E3D0;width: 145px ! important">
-			<a href="<%= nav.getDepartmentAction(te.getContentKey().getId()) %>"><%= te.getFullName().toUpperCase() %></a>
+			<a href="<%= nav.getDepartmentAction(te.getContentKey().getId()) %>"><%= te.getFullName().toUpperCase() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
 		</div>
 <%
 	} else {
+        String parentDeptId = "";
+        if(te instanceof CategoryModel){
+            CategoryModel cm = (CategoryModel)te;
+            parentDeptId = cm.getDepartment().getContentName();
+        }
+        if(navDeptId != null && navDeptId.equals(parentDeptId)) {
 %>		<div style="font-weight: <%= selected.booleanValue() ? "bold": "normal"%>; margin: 0px;background-color: #E0E3D0;padding-left:20px;text-indent:-10px;width: 135px ! important">
 			<a style="margin-left: <%= d-1 %>em;" href="<%= nav.getCategoryAction(te.getContentKey().getId()) %>"><%= te.getFullName() %></a>&nbsp;<span style="color:grey">(<%= childCount %>)</span>
 		</div>
 <% 
+        }
 	} 
 
 	%>
