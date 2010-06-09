@@ -219,7 +219,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<% } %>
 											HOME ZIP CODE:<br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="1">
+											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" tabindex="1">
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6">				
 										</td>
 									</tr>
@@ -234,7 +234,7 @@ request.setAttribute("listPos", "CategoryNote");
 										<input type="hidden" name="corpServiceType" value="<%= EnumServiceType.CORPORATE.getName()%>">
 										<td colspan="3" align="center" class="text10bold">CORPORATE ZIP CODE:<br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" required="true" tabindex="1"><br>
+											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" tabindex="1"><br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
@@ -282,7 +282,7 @@ request.setAttribute("listPos", "CategoryNote");
 													<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
 												<%}%>
 											<% } %>
-											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="3"><br />
+											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" tabindex="3"><br />
 											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br />
 											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4"/>
 										</td>

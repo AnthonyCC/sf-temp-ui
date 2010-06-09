@@ -149,7 +149,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<td align="center" class="text10bold">HOME ZIP CODE:
 												<br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-												<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" required="true" tabindex="1">
+												<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" tabindex="1">
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="10">
 											</td>
 										</tr>
@@ -158,7 +158,7 @@ request.setAttribute("listPos", "CategoryNote");
 											<input type="hidden" name="corpServiceType" value="<%= EnumServiceType.CORPORATE.getName()%>">
 											<td align="center" class="text10bold">CORPORATE ZIP CODE:<br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-												<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" required="true" tabindex="1"><br>
+												<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" tabindex="1"><br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 												<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
 												<img src="/media_stat/images/layout/clear.gif" width="1" height="10"><br>	
