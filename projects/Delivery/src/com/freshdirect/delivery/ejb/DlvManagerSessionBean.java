@@ -29,6 +29,7 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
+import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
@@ -39,6 +40,7 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -593,7 +595,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		return DateUtil.truncate(cal).getTime();
 	}
 
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address) {
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, boolean chefstable) {
 		try {
 			Date startDate = getDateByNextDayOfWeek(dayOfWeek);
 			Date endDate = DateUtil.addDays(startDate, 1);
@@ -670,7 +672,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				customerId,
 				duration,
 				EnumReservationType.RECURRING_RESERVATION,
-				address, false,null, false);
+				address, chefstable,null, false);
 
 			logActivity(EnumTransactionSource.SYSTEM, EnumAccountActivityType.MAKE_PRE_RESERVATION,"SYSTEM", customerId,
 								"Made recurring reservation");

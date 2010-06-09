@@ -104,7 +104,7 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public void removeReservation(String reservationId) throws RemoteException;
 	
-	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address) throws RemoteException;
+	public boolean makeRecurringReservation(String customerId, int dayOfWeek, Date startTime, Date endTime, ContactAddressModel address, boolean chefstable) throws RemoteException;
 	
 	public void addExceptionAddress(ExceptionAddress ex) throws RemoteException;
 

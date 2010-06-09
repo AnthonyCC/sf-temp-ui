@@ -3466,9 +3466,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	private static final String RECURRING_RSV_QUERY = "SELECT CI.CUSTOMER_ID, CI.EMAIL, CI.RSV_DAY_OF_WEEK, CI.RSV_START_TIME, CI.RSV_END_TIME, "
-			+ "A.ID AS ADDRESS_ID, A.ADDRESS1, A.ADDRESS2, A.APARTMENT, A.CITY, A.STATE, A.ZIP, A.SCRUBBED_ADDRESS, A.LONGITUDE, A.LATITUDE, A.SERVICE_TYPE,A.FIRST_NAME,A.LAST_NAME  "
-			+ "FROM CUST.CUSTOMERINFO CI, CUST.ADDRESS A "
-			+ "WHERE RSV_ADDRESS_ID IS NOT NULL AND CI.RSV_ADDRESS_ID = A.ID and CI.RSV_DAY_OF_WEEK = ?";
+			+ "A.ID AS ADDRESS_ID, A.ADDRESS1, A.ADDRESS2, A.APARTMENT, A.CITY, A.STATE, A.ZIP, A.SCRUBBED_ADDRESS, A.LONGITUDE, A.LATITUDE, A.SERVICE_TYPE,A.FIRST_NAME,A.LAST_NAME, FDC.ID FDCID  "
+			+ "FROM CUST.CUSTOMERINFO CI, CUST.ADDRESS A, CUST.FDCUSTOMER FDC "
+			+ "WHERE RSV_ADDRESS_ID IS NOT NULL AND CI.RSV_ADDRESS_ID = A.ID and CI.CUSTOMER_ID = FDC.ERP_CUSTOMER_ID and CI.RSV_DAY_OF_WEEK = ?";
 
 	public List<ReservationInfo> getRecurringReservationList()
 			throws FDResourceException {
@@ -3493,10 +3493,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			List<ReservationInfo> rsvInfo = new ArrayList<ReservationInfo>();
 			while (rs.next()) {
 				String customerId = rs.getString("CUSTOMER_ID");
+				String fdCustomerId = rs.getString("FDCID");
 				int dayOfWeek = rs.getInt("RSV_DAY_OF_WEEK");
 				Date startTime = rs.getTimestamp("RSV_START_TIME");
 				Date endTime = rs.getTimestamp("RSV_END_TIME");
-				rsvInfo.add(new ReservationInfo(customerId, dayOfWeek,
+				rsvInfo.add(new ReservationInfo(customerId, fdCustomerId, dayOfWeek,
 						startTime, endTime, getAddressFromResultSet(rs)));
 			}
 			rs.close();
@@ -3935,6 +3936,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		private static final long serialVersionUID = 5124744242444131295L;
 
 		private final String customerId;
+		
+		private final String fdCustomerId;
 
 		private final int dayOfWeek;
 
@@ -3944,9 +3947,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		private final ContactAddressModel address;
 
-		public ReservationInfo(String customerId, int dayOfWeek,
+		public ReservationInfo(String customerId, String fdCustomerId, int dayOfWeek,
 				Date startTime, Date endTime, ContactAddressModel address) {
 			this.customerId = customerId;
+			this.fdCustomerId = fdCustomerId;
 			this.dayOfWeek = dayOfWeek;
 			this.startTime = startTime;
 			this.endTime = endTime;
@@ -3972,6 +3976,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		public Date getStartTime() {
 			return startTime;
 		}
+
+		public String getFdCustomerId() {
+			return fdCustomerId;
+		}
+		
 	}
 
 	/**

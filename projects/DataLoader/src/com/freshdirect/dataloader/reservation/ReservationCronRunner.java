@@ -18,6 +18,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
+import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSessionBean.ReservationInfo;
@@ -49,10 +51,11 @@ public class ReservationCronRunner {
 			
 			for (Iterator i = rsvInfo.iterator(); i.hasNext();) {
 				ReservationInfo info = (ReservationInfo) i.next();
-								
+				FDIdentity Identity=new FDIdentity(info.getCustomerId(), info.getFdCustomerId());
+				FDUserI user=sb.recognize(Identity);
 				try {
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
-															, info.getEndTime(), info.getAddress());
+															, info.getEndTime(), info.getAddress(), user.isChefsTable());
 					
 				} catch(Exception e) {
 					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId(), e);			
