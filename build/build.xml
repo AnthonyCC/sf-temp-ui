@@ -2174,6 +2174,8 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>
+                <include name="${scarab.jar}"/>
+			<!-- scarab runtime dependencies -->
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
@@ -2203,7 +2205,9 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
 				<include name="lucene-core-${lucene.version}.jar"/>
-                <include name="givexclient.jar"/>                
+                <include name="givexclient.jar"/> 
+                <include name="${scarab.jar}"/>
+			<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 			</lib>
@@ -2264,7 +2268,9 @@
 			<lib>
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
-                <include name="givexclient.jar"/>                
+                <include name="givexclient.jar"/>
+                <include name="${scarab.jar}"/>
+		<!-- scarab runtime dependencies -->
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>
@@ -2833,7 +2839,8 @@
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
 				<include name="jstl.jar"/>		
-				
+				<include name="${scarab.jar}"/>
+			<!-- scarab runtime dependencies -->
 				<include name="poi-3.5-FINAL-20090928.jar"/>
 
 				<include name="lucene-core-${lucene.version}.jar"/>
