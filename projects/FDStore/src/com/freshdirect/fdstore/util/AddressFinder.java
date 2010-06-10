@@ -89,7 +89,9 @@ public class AddressFinder {
 			} catch (FDInvalidAddressException e) {
 				e.printStackTrace();
 			}    
-			zonePromoAmount = FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+			if(zInfo!=null){
+				zonePromoAmount = FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+			}
 		}
 		return zonePromoAmount;
 		
