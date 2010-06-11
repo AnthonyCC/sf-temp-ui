@@ -93,7 +93,7 @@ else{
 						<% for (int i=0; i<brs; i++) { %><BR><% } %>
 					</TD>
 					<TD WIDTH="11" ALIGN="CENTER" VALIGN="BOTTOM"><img src="/media_stat/images/layout/cccccc.gif" width="1" height="28" border="0" HSPACE="7"><BR></TD>
-					<% if ( user.isSOEnabled() ) { %>					
+					<% if ( user.isEligibleForStandingOrders() ) { %>					
 						<TD valign="top">
 							<A HREF="/quickshop/standing_orders.jsp">Your Standing Orders</A>
 							<br>

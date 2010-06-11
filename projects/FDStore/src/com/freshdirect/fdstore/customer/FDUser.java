@@ -1662,14 +1662,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 
 	/**
-	 * Ensures StandingOrder feature is available for the customer
+	 * Ensures StandingOrder feature is enabled for the customer
 	 * 
-	 * 1. Check personal availability in profiles
+	 * 1. Check personal availability in profile attributes
 	 * 2. Check global availability in fdstore.properties
 	 * 
-	 * @return
 	 */
-	public boolean isSOEnabled() {
+	protected boolean isSOEnabled() {
 		// Check personal flag in user profile
 		try {
 			boolean isEnabledInProfile = Boolean.valueOf(getFDCustomer().getProfile().getAttribute(PROFILE_SO_KEY)).booleanValue();
@@ -1688,6 +1687,13 @@ public class FDUser extends ModelSupport implements FDUserI {
 	}
 
 
+	/**
+	 * Ensures customer is eligible for StandingOrder feature.
+	 * 
+	 * 1. Check if so is enabled (globally or for the user)
+	 * 2. Check if customer satisfies every requirement.
+	 * 
+	 */
 	@Override
 	public boolean isEligibleForStandingOrders() {
 		if (isSOEligible == null) {

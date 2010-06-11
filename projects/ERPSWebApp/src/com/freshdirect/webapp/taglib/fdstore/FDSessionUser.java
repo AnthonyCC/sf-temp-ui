@@ -1062,10 +1062,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isEligibleForStandingOrders() {
 		return user.isEligibleForStandingOrders();
 	}
-	/** Is Standing Orders service enabled for the customer or globally? */
-	public boolean isSOEnabled() {
-		return user.isSOEnabled();
-	}
 
 	
 	@Override

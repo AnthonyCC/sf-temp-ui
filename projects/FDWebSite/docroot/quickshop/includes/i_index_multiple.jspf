@@ -24,7 +24,7 @@
 		<td width="20"><img src="/media_stat/images/layout/clear.gif" width="15" height="1"></td>
 
 		<td width="247" class="text13">
-			<% if ( user.isSOEnabled() ) { %>					
+			<% if ( user.isEligibleForStandingOrders() ) { %>					
 				<!-- STANDING ORDERS SECTION -->
 				<div id="standingorders-section">
 					<div class="text15" style="font-weight: bold;">Your Standing Orders</div>
