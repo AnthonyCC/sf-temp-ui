@@ -33,7 +33,7 @@ import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
-import com.freshdirect.transadmin.util.scrib.SchdeuleEmployeeDetails;
+import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanResource;
 import com.freshdirect.transadmin.web.model.WebSchedule;
@@ -78,8 +78,15 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			}
 			webInfo.setLeadInfo(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo
 												(employeeTeamMapping.get(webInfo.getEmployeeId()), this));
+			if(employeeTeamMapping.containsValue(webInfo.getEmployeeId())) {
+				webInfo.setLead(true);
+			}
 		}
 		return finalList;
+	}
+	
+	public Map<String, String> getTeamMapping() {
+		return ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 	}
 	
 	public Collection getTerminatedEmployees() {
@@ -98,6 +105,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			WebEmployeeInfo webInfo = (WebEmployeeInfo) iterator.next();			
 			webInfo.setLeadInfo(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo
 												(employeeTeamMapping.get(webInfo.getEmployeeId()), this));
+			if(employeeTeamMapping.containsValue(webInfo.getEmployeeId())) {
+				webInfo.setLead(true);
+			}
 		}
 		return finalList;
 	}
@@ -186,6 +196,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return webInfo;
 	}
 	
+	public WebEmployeeInfo getEmployeeEx(String id) {
+		
+		EmployeeInfo info = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id, this);		
+		return new WebEmployeeInfo(info, null);
+	}
 	
 
 	public EmployeeRoleType getEmployeeRoleType(String roleTypeId) {
@@ -232,6 +247,12 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		
 		Collection<EmployeeTeam> _teamForLead = getDomainManagerDao().getTeamByLead(employeeInfo.getEmployeeId());
 		Collection<EmployeeTeam> _currentTeamForEmployee = getDomainManagerDao().getTeamByEmployee(employeeInfo.getEmployeeId());
+		if(employeeInfo.getLeadInfo() != null) {
+			Collection<EmployeeTeam> _teamLeadAsMember = getDomainManagerDao().getTeamByEmployee(employeeInfo.getLeadInfo().getEmployeeId());
+			if(_teamLeadAsMember != null && _teamLeadAsMember.size() > 0) {
+				removeEntity(_teamLeadAsMember);
+			}
+		}
 		//Check if the current employee is a lead
 		if(_teamForLead != null && _teamForLead.size() > 0) {
 			if(employeeInfo.getLeadInfo() != null 
@@ -333,7 +354,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 	public Collection getScheduleEmployees(Date weekOf) {
 		List result = new ArrayList();
 		Collection employeeInfos = getActiveInactiveEmployees();
-		System.out.println(" >> "+employeeInfos.size());
+		
 		for (Iterator it = employeeInfos.iterator(); it.hasNext();) {
 			EmployeeInfo eInfo = (EmployeeInfo) it.next();
 			Collection schedules = getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId(), getParsedDate(weekOf));
@@ -430,7 +451,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 					}
 				if (isOff)
 					continue;
-				SchdeuleEmployeeDetails detail = new SchdeuleEmployeeDetails();
+				ScheduleEmployeeDetails detail = new ScheduleEmployeeDetails();
 				detail.setSchedule(se);
 				detail.setEmpRoles(this.domainManagerDao.getEmployeeRole(se
 						.getEmployeeId()));

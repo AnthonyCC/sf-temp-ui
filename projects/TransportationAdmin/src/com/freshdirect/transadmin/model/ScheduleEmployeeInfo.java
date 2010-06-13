@@ -165,4 +165,20 @@ public class ScheduleEmployeeInfo
 		}
 		return null;
 	}
+	
+	public boolean isSameSchedule(ScheduleEmployeeInfo inSchedule) {
+		if(inSchedule != null) {
+			if(this.getMon().equalsIgnoreCase(inSchedule.getMon())
+					&& this.getTue().equalsIgnoreCase(inSchedule.getTue())
+						&& this.getWed().equalsIgnoreCase(inSchedule.getWed())
+							&& this.getThu().equalsIgnoreCase(inSchedule.getThu())
+								&& this.getFri().equalsIgnoreCase(inSchedule.getFri())
+									&& this.getSat().equalsIgnoreCase(inSchedule.getSat())
+										&& this.getSun().equalsIgnoreCase(inSchedule.getSun())) {
+				return true;
+			}
+		}
+		return false;
+		
+	}
 }

@@ -35,6 +35,7 @@ public class Dispatch implements java.io.Serializable{
 	private Date checkedInTime;
 	
 	private Boolean isOverride;
+	private Boolean isTeamOverride;
 	private DispatchReason overrideReason;
 	private String overrideUser;
 	
@@ -277,6 +278,14 @@ public class Dispatch implements java.io.Serializable{
 
 	public void setOverrideUser(String overrideUser) {
 		this.overrideUser = overrideUser;
+	}
+
+	public Boolean getIsTeamOverride() {
+		return isTeamOverride;
+	}
+
+	public void setIsTeamOverride(Boolean isTeamOverride) {
+		this.isTeamOverride = isTeamOverride;
 	}
 
 }

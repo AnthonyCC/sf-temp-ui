@@ -41,14 +41,36 @@
 				<a href="employee.do?empstatus=S" class="MNM001">Schedule</a>
 			</div>
 			<div class="sub_tabright sub_tabR_MNM001 activeR">&nbsp;</div>
+			
+			<div class="sub_tableft sub_tabL_MNM001 ">&nbsp;</div>
+			<div class="subtab ">
+				<div class="minwidth"><!-- --></div>
+				<a href="employee.do?empstatus=C" class="">Team</a>
+			</div>
+			<div class="sub_tabright sub_tabR_MNM001 ">&nbsp;</div>
 		</div>
 	</div>
 
 	<div class="contentroot">		
 		<div class="cont_row">
-
-		<br/>	
-		<div align="center">
+		<br/>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+			<tr>
+					<td class="screentitle">Add/Edit Schedule</td>
+			</tr>
+		</table>
+		<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+		<td width="25%" style="vertical-align: top;">
+			<div id="treediv" style="margin:10px">
+				<div id="parentTreeDiv" style="height:240px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+	 				<div id="treecontainer"></div>
+				</div>	
+			</div>
+		</td>
+		
+		<td width="50%" align="center">		
+		
 			<form:form commandName = "scheduleForm" method="post">
 			
 			<% 
@@ -61,12 +83,7 @@
 					}
 				}
 			 %>
-			<table width="100%" cellpadding="0" cellspacing="0" border="0">
-					<tr>
-						<td class="screentitle"><span><a href="javascript:showTeamTree()">
-                        	<img src="./images/info.gif" border="0" alt="Team" title="Team" />
-                        </a></span>Add/Edit Schedule</td>
-					</tr>
+			<table width="90%" cellpadding="0" cellspacing="0" border="0">					
 					<tr>
 						<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
 					</tr>
@@ -269,8 +286,7 @@
 								   <input type = "submit" value="&nbsp;Save&nbsp;"  />										
 								
 							   <input type = "button" value="&nbsp;Back&nbsp;" onclick="javascript:back();" />
-							   <input type = "button" value="Copy From Master" onclick="javascript:copyFromMaster();" />
-							   <input type = "button" value="Copy To Master" onclick="javascript:copyToMaster();" /> 
+							    
 							   </td>   
 							</tr>
 							 </table>
@@ -279,19 +295,73 @@
 													
 				</table>
 			</form:form>
-		</div>
-
-			
+		
+		</td>
+		<td width="25%" style="vertical-align: top;padding-right:10px;">		
+		<div style="background-color:#F2F2F2; border:1px solid #000;height:240px;overflow-y:auto;">
+				<br/>
+				
+				<table cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td class="screencontent" colspan="3">
+							Select a week to copy schedule from/to the current week/employee which is under edit 
+						</td>
+					</tr>	
+					<tr>
+						<td class="screencontent" colspan="3">
+							<span ><input maxlength="10" size="10" name="cpScheduleDate" id="cpScheduleDate" />
+                    			<a href="#" id="trigger_cpScheduleDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="15" height="15" border="0" alt="Select Date" title="Select Date" />
+                    			</a>
+                     			<script language="javascript">                 
+                     		 		Calendar.setup(
+                      				{
+                        				showsTime : false,
+                       					electric : false,
+                        				inputField : "cpScheduleDate",
+                        				ifFormat : "%m/%d/%Y",
+                        				singleClick: true,
+                        				button : "trigger_cpScheduleDate" 
+                       				}
+                      				);
+                      			</script>
+                  			</span>
+                  		</td>
+                 	</tr> 
+                 <tr><td colspan="3">&nbsp;</td></tr> 
+                 <tr> 
+                  	<td class="screencontent"><input type = "button" value="To Week" onclick="javascript:copyToWeek();" /></td>
+                  	<td class="screencontent">&nbsp;</td>
+                  	<td class="screencontent" style="padding-right:25px;"><input type = "button" value="From Week" onclick="javascript:copyFromWeek();" /></td>
+				 </tr>
+				 <tr>
+						<td class="screencontent" colspan="3">
+							&nbsp; 
+						</td>
+				</tr>
+				 <tr>
+						<td class="screencontent" colspan="3">
+							Use the below buttons to copy schedule from/to the master schedule 
+						</td>
+				</tr>
+				<tr><td colspan="3">&nbsp;</td></tr> 
+				 <tr> 
+                  		<td class="screencontent"><input type = "button" value="To Master" onclick="javascript:copyToMaster();" /></td>
+                  		<td class="screencontent">&nbsp;</td>	
+                  		<td class="screencontent" style="padding-right:25px;"><input type = "button" value="From Master" onclick="javascript:copyFromMaster();" /></td>                  	
+				  </tr>
+				</table>	
+			</div>
+			</td>
+			</tr>
+			</table>
 		 </div>
 		 </div>
 		 <%@ include file='i_schedulecopy.jspf'%>
 		 <%@ include file='i_teamtree.jspf'%>
-	</tmpl:put>
-	 
-</tmpl:insert>
-<script>
+		 <script>
 		
-	function disableTimeZone(day) {
+		function disableTimeZone(day) {
 		var f=document.forms["scheduleForm"];	
 		var value=eval("f['"+day+".regionS'].value");
 		if(value=='OFF') {	   
@@ -331,5 +401,9 @@
 	  	}     	      	
 	  	planForm.submit();
 	}
-</script>
-<form name="employee" action="employee.do?empstatus=S" method="post">  </form>
+	showTeamTree();
+	</script>
+	<form name="employee" action="employee.do?empstatus=S" method="post">  </form>
+	</tmpl:put>
+	 
+</tmpl:insert>

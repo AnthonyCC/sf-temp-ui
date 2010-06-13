@@ -50,6 +50,21 @@ public class AbstractMultiActionController extends MultiActionController impleme
 		return retDate;
 	}
 	
+	protected Date getCurrentWeekOf() {
+		
+		return TransStringUtil.getCurrentWeekOf();
+	}
+	
+	protected Date getMasterWeekOf() {
+		Date retDate = null;
+		try {
+			retDate = TransStringUtil.getMasterWeekOf();
+		} catch(ParseException parExp) {
+			parExp.printStackTrace();
+		}
+		return retDate;
+	}
+	
 	protected String getServerDate(String dispDate) {
 		String retDate = null;
 		try {

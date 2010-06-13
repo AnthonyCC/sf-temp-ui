@@ -1,34 +1,67 @@
  <script type="text/javascript" src="js/dataTable.js"></script> 
  <script>
       var jsonrpcClient = new JSONRpcClient("domainprovider.ax");
-      var isCopyFromMaster = true;
-      var panel;
-      function copyFromMaster() {
-		var result = jsonrpcClient.AsyncDomainProvider.checkSchedule(document.getElementById("employeeIds").value 
-																, "01/01/1900"
-																, document.getElementById("weekOf").value );
-			showForm(result.map.S.list, result.map.D.list);
-			isCopyFromMaster = true;														
+      var CP_TYPE = "CP_TOMASTER";
+      var cpPanel;
+      
+      	function copyDataEx(source, destination, cpType) {
+      		try { 
+      			var result = jsonrpcClient.AsyncDomainProvider.checkSchedule(document.getElementById("employeeIds").value 
+																					, source, destination);
+				showForm(result.map.S.list, result.map.D.list);
+				CP_TYPE = cpType;
+			} catch(exp) {
+				alert("System Error. Please check the week of date!");
+			}
+      	}
+      	
+      	function copyFromWeek() {
+      		if(document.getElementById("cpScheduleDate").value.trim().length > 0) {
+				copyDataEx(document.getElementById("cpScheduleDate").value
+										, document.getElementById("weekOf").value
+										, "CP_FROMWEEK");
+			} else {
+				alert("Select a copy week of!");
+			}														
+		}
+	
+		function copyToWeek() {
+			if(document.getElementById("cpScheduleDate").value.trim().length > 0) {
+				copyDataEx(document.getElementById("weekOf").value
+										, document.getElementById("cpScheduleDate").value
+										, "CP_TOWEEK");
+				
+			} else {
+				alert("Select a copy week of!");
+			}			
+		}
+		
+      	function copyFromMaster() {
+			copyDataEx("01/01/1900", document.getElementById("weekOf").value, "CP_FROMMASTER");								
 		}
 	
 		function copyToMaster() {
-			var result = jsonrpcClient.AsyncDomainProvider.checkSchedule(document.getElementById("employeeIds").value 
-																	, document.getElementById("weekOf").value 
-																	, "01/01/1900");
-			showForm(result.map.S.list, result.map.D.list);
-			isCopyFromMaster = false;
+			copyDataEx(document.getElementById("weekOf").value, "01/01/1900", "CP_TOMASTER");
 		}
 		
 		function copyData() {
 			var result;
-			if(isCopyFromMaster) {
+			if(CP_TYPE == "CP_FROMMASTER") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																, "01/01/1900"
 																, document.getElementById("weekOf").value );
-			} else {
+			} else if(CP_TYPE == "CP_TOMASTER") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																	, document.getElementById("weekOf").value 
 																	, "01/01/1900");
+			} else if(CP_TYPE == "CP_FROMWEEK") {
+				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
+																	, document.getElementById("cpScheduleDate").value 
+																	, document.getElementById("weekOf").value);
+			} else if(CP_TYPE == "CP_TOWEEK") {
+				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
+																	, document.getElementById("weekOf").value 
+																	, document.getElementById("cpScheduleDate").value);
 			}
 		}
 		
@@ -38,14 +71,14 @@
               alert('Unable to connect to host system. Please contact system administrator!');               
               return;
           } else {          	 
-			panel.hide();
+			cpPanel.hide();
 			window.location.href=window.location.href;
           }                          
       }
 		
       function showForm(sourceData, destinationData) {
          
-           panel = new YAHOO.widget.Panel("panel-1", {
+           cpPanel = new YAHOO.widget.Panel("panel-1", {
                          width: "450px",
                          height: "400px",
                          fixedcenter: true, 
@@ -84,14 +117,15 @@
          myTabView.getTab(0).addListener("click", function() {sDataTable.onShow()}); 	
          myTabView.getTab(1).addListener("click", function() {dDataTable.onShow()});
          
-         panel.render(document.body);
-    	 panel.show(); 
+         cpPanel.render(document.body);
+    	 cpPanel.show(); 
       }              
   
     </script>
- <div style='display:none;height:0px;width:0px;'>
+ <div style="display:none;height:0px;width:0px;">
  	<div id="panel-1">
- 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Schedule Copy Console</div>
+ 	  <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+ 	  				&nbsp;&nbsp;&nbsp;Schedule Copy Console</div>
       <div class="bd">
 	 	<div id="tvcontainer" class="yui-navset">
 		    <ul class="yui-nav">
@@ -105,7 +139,7 @@
 		    </div>
 		    <div style="text-align:center;vertical-align: bottom; ">
 		       <input type = "button" value="&nbsp;Copy&nbsp;" onclick="javascript:copyData();" />
-			   <input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:panel.hide();" />
+			   <input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:cpPanel.hide();" />
 		    </div>
 		</div>
 	  </div>

@@ -97,9 +97,7 @@ public class TransAdminCacheManager {
 //	 make the time constant in property
 	
 	class EmployeeActiveInactiveReference extends CustomExpiringReference {
-		
-		boolean initialized = false;
-		
+				
 		public EmployeeActiveInactiveReference(long refreshPeriod) {
 			super(refreshPeriod);			
 			// TODO Auto-generated constructor stub
@@ -127,10 +125,7 @@ public class TransAdminCacheManager {
 		}
 
 		protected Map<String, EmployeeInfo> getEmployeeMapping() {
-			if(!initialized && employeeMapping.size() == 0) {
-				initialized = true;
-				load();
-			}
+			this.get();
 			return employeeMapping;
 		}
 

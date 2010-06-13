@@ -3,12 +3,15 @@ package com.freshdirect.transadmin.web;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletException;
@@ -31,8 +34,11 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
+import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+import com.freshdirect.transadmin.web.model.WebTeamSchedule;
 
 /**
  * <code>MultiActionController</code> that handles all non-form URL's.
@@ -137,6 +143,44 @@ public class DomainController extends AbstractMultiActionController {
         	request.setAttribute("status", status);
         	request.setAttribute("scheduleDate", getClientDate(_scheduleWeekOf));
         	return new ModelAndView("scheduleView","employees",dataList);
+		} else if("C".equalsIgnoreCase(empStatus)) {
+        	
+        	Date _currentScheduleWeekOf = getCurrentWeekOf();
+        	Date _masterScheduleWeekOf = getMasterWeekOf();
+        	Collection<WebTeamSchedule> result = new ArrayList<WebTeamSchedule>();
+        	
+        	WebTeamSchedule sTeamInfo = null;
+        	
+        	if(_currentScheduleWeekOf != null && _masterScheduleWeekOf != null) {
+        		Collection<ScheduleEmployeeInfo> masterSchedule = employeeManagerService
+        															.getScheduleEmployees(_masterScheduleWeekOf);
+        		Collection<ScheduleEmployeeInfo> currentSchedule = employeeManagerService
+        															.getScheduleEmployees(_currentScheduleWeekOf);
+        		Map<String, String> teamMapping = employeeManagerService.getTeamMapping();
+        		
+        		if(masterSchedule != null && currentSchedule != null && teamMapping != null) {
+        			Map<String, ScheduleEmployeeInfo> masterSchMapping = ModelUtil.getIdMappedSchedule(masterSchedule);
+        			Map<String, ScheduleEmployeeInfo> currentSchMapping = ModelUtil.getIdMappedSchedule(currentSchedule);
+        			Map<String, WebTeamSchedule> leadTeamScheduleMp = new HashMap<String, WebTeamSchedule>();
+        			String leadId = null;
+        			for(String member : teamMapping.keySet()) {
+        				leadId = teamMapping.get(member);
+        				if(!leadTeamScheduleMp.containsKey(leadId)) {
+        					sTeamInfo =  new WebTeamSchedule();
+        					sTeamInfo.setLeadMasterSchedule(masterSchMapping.get(leadId));
+        					sTeamInfo.setLeadSchedule(currentSchMapping.get(leadId));
+        					sTeamInfo.setLead(employeeManagerService.getEmployeeEx(leadId));
+        					leadTeamScheduleMp.put(leadId, sTeamInfo);
+        				}
+        				leadTeamScheduleMp.get(leadId).getMemberMasterSchedule().add(masterSchMapping.get(member));
+        				leadTeamScheduleMp.get(leadId).getMemberSchedule().add(currentSchMapping.get(member));
+        				leadTeamScheduleMp.get(leadId).getMembers().add(employeeManagerService.getEmployeeEx(member));
+        			}
+        			result = leadTeamScheduleMp.values();
+        		}
+        	}
+        	
+        	return new ModelAndView("teamScheduleView","employees",result);
 		} else {
 			if ("true".equalsIgnoreCase(request.getParameter("sync"))) {
 				employeeManagerService.syncEmployess();

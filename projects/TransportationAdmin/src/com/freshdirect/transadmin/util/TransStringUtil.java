@@ -68,6 +68,8 @@ public class TransStringUtil {
 	public final static long HOUR = 60 * MINUTE;
 	public final static long DAY = 24 * HOUR;
 	
+	public static String MASTER_WEEKOF = "01/01/1900";
+	
 	static {
 			for(int intCount=0;intCount<daysList.length;intCount++) {
 				daysMap.put(daysList[intCount], new Integer(intCount));
@@ -593,6 +595,14 @@ public class TransStringUtil {
         return clientCalendar.getTime();
 	}
 	
+	public static Date getCurrentWeekOf() {
+		Calendar baseDate = DateUtil.truncate(Calendar.getInstance());						
+		return getWeekOf(baseDate.getTime());
+	}
+	
+	public static Date getMasterWeekOf() throws ParseException {							
+		return getWeekOf(getServerDate(MASTER_WEEKOF));
+	}
 		
 	public static void main(String args[]) throws Exception {
 		/*Calendar cal = Calendar.getInstance();

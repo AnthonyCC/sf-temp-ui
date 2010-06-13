@@ -52,6 +52,7 @@
 		<form:form commandName = "planForm" method="post">
 		<form:hidden path="planId"/>
 		<form:hidden path="referenceContextId"/>
+		<form:hidden path="isTeamOverride"/>
 		<form:hidden path="ignoreErrors"/>
 		<form:hidden path="errorDate"/>
 		<form:hidden path="zoneModified"/>

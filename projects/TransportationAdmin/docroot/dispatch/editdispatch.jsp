@@ -147,6 +147,7 @@
       <form:form commandName = "dispatchForm" method="post">
       <form:hidden path="dispatchId" />
       <form:hidden path="referenceContextId"/>
+      <form:hidden path="isTeamOverride"/>
       <input type=hidden name="routeNo" value="" />
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />

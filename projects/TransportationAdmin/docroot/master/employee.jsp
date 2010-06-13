@@ -47,6 +47,13 @@
 				<a href="employee.do?empstatus=S" class="<% if("S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Schedule</a>
 			</div>
 			<div class="sub_tabright sub_tabR_MNM001 <% if("S".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>
+			
+			<div class="sub_tableft sub_tabL_MNM001 <% if("C".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeL<% } %>">&nbsp;</div>
+			<div class="subtab <% if("C".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeT<% } %>">
+				<div class="minwidth"><!-- --></div>
+				<a href="employee.do?empstatus=C" class="<% if("C".equalsIgnoreCase(request.getParameter("empstatus"))) { %>MNM001<% } %>">Team</a>
+			</div>
+			<div class="sub_tabright sub_tabR_MNM001 <% if("C".equalsIgnoreCase(request.getParameter("empstatus"))) { %>activeR<% } %>">&nbsp;</div>
 		</div>
 	</div>
 	<div class="cont_row_bottomline"><!--  --></div>
@@ -96,7 +103,7 @@
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
                                 <ec:column property="terminationDate" title="Terminated"/>
-                                <ec:column property="leadInfo.name" title="Lead"/>                                                                										
+                                <ec:column property="leadInfoEx.name" title="Lead"/>                                                                										
 							</ec:row>
 						</ec:table>
                      <%
@@ -127,7 +134,7 @@
 								<ec:column property="jobType" title="JobType"/>              
 								<ec:column property="supervisorFirstName" title="supervisor"/>
 								<ec:column property="employeeRoleType" title="roles"/>
-                           		<ec:column property="leadInfo.name" title="Lead"/>
+                           		<ec:column property="leadInfoEx.name" title="Lead"/>
 							</ec:row>
 						</ec:table>
                       <% } %>

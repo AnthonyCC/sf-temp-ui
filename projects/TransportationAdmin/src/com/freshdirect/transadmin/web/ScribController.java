@@ -27,7 +27,7 @@ import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.scrib.PlanTree;
-import com.freshdirect.transadmin.util.scrib.SchdeuleEmployeeDetails;
+import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ScribController extends AbstractMultiActionController
@@ -189,7 +189,7 @@ public class ScribController extends AbstractMultiActionController
 	{
 		for(Iterator it=c.iterator();it.hasNext();)
 		{
-			SchdeuleEmployeeDetails detail=( SchdeuleEmployeeDetails)it.next();
+			ScheduleEmployeeDetails detail=( ScheduleEmployeeDetails)it.next();
 			detail.setDate(date);
 		}
 	}

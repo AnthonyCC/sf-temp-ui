@@ -38,6 +38,11 @@ function resoureChangeEvent(src, view, actionDate, srcId) {
 						refContext.value = result.dispatchId;
 					}
 				}
+			} else {
+				var refTeamOverride = document.getElementById("isTeamOverride");				
+				if(refTeamOverride != null) {
+					refTeamOverride.value = 'true';
+				}				
 			}
 		}
 	}

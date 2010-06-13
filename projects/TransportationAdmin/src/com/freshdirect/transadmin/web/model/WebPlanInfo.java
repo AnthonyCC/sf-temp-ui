@@ -65,7 +65,15 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private String overrideUser;
 	
 	private String referenceContextId;
+	private boolean isTeamOverride;
 	
+	
+	public boolean getIsTeamOverride() {
+		return isTeamOverride;
+	}
+	public void setIsTeamOverride(boolean isTeamOverride) {
+		this.isTeamOverride = isTeamOverride;
+	}
 	public String getOpen()
 	{		
 		if(getResourceSize(drivers)<driverReq||getResourceSize(helpers)<helperReq||getResourceSize(runners)<runnerReq)

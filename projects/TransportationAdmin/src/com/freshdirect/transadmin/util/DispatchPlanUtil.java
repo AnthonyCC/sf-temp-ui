@@ -93,6 +93,8 @@ public class DispatchPlanUtil {
 		planInfo.setResourceRequirements(resourceReqs);
 		planInfo.setResources(employeeManagerService,resources,resourceReqs);
 		setResourceReq(planInfo,plan.getZone());
+		
+		planInfo.setIsTeamOverride(plan.getIsTeamOverride() != null &&  plan.getIsTeamOverride() ? true : false);
 		return planInfo;
 	}
 
@@ -179,6 +181,7 @@ public class DispatchPlanUtil {
 		if(dispatch.getIsOverride()!=null)command.setIsOverride(dispatch.getIsOverride());
 		if(dispatch.getOverrideReason()!=null)command.setOverrideReasonCode(dispatch.getOverrideReason().getCode());
 		command.setOverrideUser(dispatch.getOverrideUser());
+		command.setIsTeamOverride(dispatch.getIsTeamOverride() != null &&  dispatch.getIsTeamOverride() ? true : false);
 		return command;
 	}
 
@@ -213,6 +216,7 @@ public class DispatchPlanUtil {
 		plan.setPlanResources(planInfo.getResources());
 		plan.setUserId(planInfo.getUserId());	
 		plan.setOpen(planInfo.getOpen());
+		plan.setIsTeamOverride(planInfo.getIsTeamOverride());
 		return plan;
 
 	}
@@ -280,6 +284,8 @@ public class DispatchPlanUtil {
 			dispatch.setOverrideUser(null);
 			dispatch.setOverrideReason(null);
 		}
+		
+		dispatch.setIsTeamOverride(command.getIsTeamOverride());
 		return dispatch;
 
 	}

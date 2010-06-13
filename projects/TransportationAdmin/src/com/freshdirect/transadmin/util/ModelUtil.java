@@ -36,6 +36,7 @@ import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.Route;
 import com.freshdirect.transadmin.model.RouteDecorator;
 import com.freshdirect.transadmin.model.RouteInfo;
+import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -618,6 +619,16 @@ public class ModelUtil {
 		if (teamInfos != null) {
 			for (EmployeeTeam emp : teamInfos) {
 				result.put(emp.getKronosId(), emp.getLeadKronosId());
+			}
+		}
+		return result;
+	}
+	
+	public static Map<String, ScheduleEmployeeInfo> getIdMappedSchedule(Collection<ScheduleEmployeeInfo> schedule) {
+		Map<String, ScheduleEmployeeInfo> result = new HashMap<String, ScheduleEmployeeInfo>();
+		if (schedule != null) {
+			for (ScheduleEmployeeInfo sch : schedule) {
+				result.put(sch.getEmployeeId(), sch);
 			}
 		}
 		return result;

@@ -26,6 +26,7 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 	private String userId;
 	private Date maxTime;
 	private String isOpen;
+	private Boolean isTeamOverride;
 	
 	public String getSupervisorId() {
 		return supervisorId;
@@ -192,6 +193,14 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 
 	public void setOpen(String isOpen) {
 		this.isOpen = isOpen;
+	}
+
+	public Boolean getIsTeamOverride() {
+		return isTeamOverride;
+	}
+
+	public void setIsTeamOverride(Boolean isTeamOverride) {
+		this.isTeamOverride = isTeamOverride;
 	}
 
 

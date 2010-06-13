@@ -49,8 +49,8 @@ public class PlanTree {
 					d.put(key, value);
 				}
 				value.prepare(s);
-			} else if (next instanceof SchdeuleEmployeeDetails) {
-				SchdeuleEmployeeDetails s = (SchdeuleEmployeeDetails) next;
+			} else if (next instanceof ScheduleEmployeeDetails) {
+				ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) next;
 				key = s.getDate();
 				DateNode value = (DateNode) d.get(key);
 				if (value == null) {
@@ -126,7 +126,7 @@ class DateNode extends PlanTreeNode {
 		}
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		String key = s.getSchedule().getRegion().getCode();
 		if (ScheduleEmployeeInfo.DEPOT.equalsIgnoreCase(key)) {
 			if (s.getSchedule().getDepotZone() != null) {
@@ -187,7 +187,7 @@ class RegionNode extends PlanTreeNode  {
 
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		Date key = s.getSchedule().getTime();
 		TimeNode value = (TimeNode) times.get(key);
 		if (value == null) {
@@ -226,7 +226,7 @@ class DepotNode extends PlanTreeNode  {
 		value.prepare(s);
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		String key = s.getSchedule().getDepotZone().getZoneCode();
 		ZoneNode value = (ZoneNode) zones.get(key);
 		if (value == null) {
@@ -253,7 +253,7 @@ class ZoneNode  extends PlanTreeNode {
 	}
 
 	Map<Date, DepotTimeNode> times = new HashMap<Date, DepotTimeNode>();
-	Map<Date, List<SchdeuleEmployeeDetails>> runners = new HashMap<Date, List<SchdeuleEmployeeDetails>>();
+	Map<Date, List<ScheduleEmployeeDetails>> runners = new HashMap<Date, List<ScheduleEmployeeDetails>>();
 
 	public void prepare(Scrib s) {
 		Date key = s.getStartTime();
@@ -265,7 +265,7 @@ class ZoneNode  extends PlanTreeNode {
 		value.prepare(s);
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		if (TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, s.getEmpRoles())) {
 			Date key = s.getSchedule().getTime();
 			List value = (List) runners.get(key);
@@ -302,12 +302,12 @@ class TimeNode extends PlanTreeNode  {
 	}
 
 	List<TruckNode> trucks = new ArrayList<TruckNode>();
-	List<SchdeuleEmployeeDetails> employees = new ArrayList<SchdeuleEmployeeDetails>();
+	List<ScheduleEmployeeDetails> employees = new ArrayList<ScheduleEmployeeDetails>();
 	List<Plan> plans = new ArrayList<Plan>();
 
 	public Collection getPlan() {
 		Collections.sort(trucks, new ZoneComparator());
-		Set<SchdeuleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);		
+		Set<ScheduleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);		
 		assemble(resources);
 		return plans;
 	}
@@ -321,13 +321,16 @@ class TimeNode extends PlanTreeNode  {
 		}
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		employees.add(s);
 	}
 
-	public void assemble(Set<SchdeuleEmployeeDetails> resources) {
+	public void assemble(Set<ScheduleEmployeeDetails> resourcesIn) {
 		
 		int rank = 1;
+		List<ScheduleEmployeeDetails> resources = new ArrayList<ScheduleEmployeeDetails>();
+		resources.addAll(resourcesIn);
+		Collections.sort(resources, new HireDateComparator());
 				
 		for (Iterator i = trucks.iterator(); i.hasNext();) {
 			Scrib s = ((TruckNode) i.next()).s;
@@ -347,13 +350,13 @@ class TimeNode extends PlanTreeNode  {
 			}
 			Set zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
 			
-			SchdeuleEmployeeDetails _currResource = null;
+			ScheduleEmployeeDetails _currResource = null;
 			PlanResource _tmpPlanResource = null;
 			if(resources.size() > 0) {
-				_currResource = (SchdeuleEmployeeDetails)resources.toArray()[0];
+				_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
 				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
 					
-					for(SchdeuleEmployeeDetails _members : _currResource.getMembers()) {
+					for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
 						_tmpPlanResource = TreeDataUtil.matchResource(_members);
 						if(_tmpPlanResource != null) {
 							p.getPlanResources().add(_tmpPlanResource);							
@@ -370,7 +373,7 @@ class TimeNode extends PlanTreeNode  {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
-								SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k.next();
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 								if(se.getMembers() == null || se.getMembers().size() == 0) {
 									if (count >= min)
 										break;
@@ -391,7 +394,7 @@ class TimeNode extends PlanTreeNode  {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
-								SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k.next();
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 								if(se.getMembers() == null || se.getMembers().size() == 0) {
 									if (count >= min)
 										break;
@@ -412,7 +415,7 @@ class TimeNode extends PlanTreeNode  {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
-								SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k.next();
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 								if(se.getMembers() == null || se.getMembers().size() == 0) {
 									if (count >= min)
 										break;
@@ -436,7 +439,7 @@ class TimeNode extends PlanTreeNode  {
 		// add bullpen for remaining employees
 
 		if (resources != null && resources.size() > 0) {
-			SchdeuleEmployeeDetails s = (SchdeuleEmployeeDetails) resources.toArray()[0];
+			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
 			plans.add(p);
 			p.setPlanDate(s.getDate());
@@ -446,7 +449,7 @@ class TimeNode extends PlanTreeNode  {
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
 			p.setIsBullpen("Y");
 			for (Iterator i = resources.iterator(); i.hasNext();) {
-				SchdeuleEmployeeDetails ss = (SchdeuleEmployeeDetails) i.next();
+				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
 				PlanResource planResource = new PlanResource();
 				EmployeeRoleType type = new EmployeeRoleType();
 				for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
@@ -466,7 +469,7 @@ class TimeNode extends PlanTreeNode  {
 
 class DepotTimeNode extends PlanTreeNode  {
 	List<TruckNode> trucks = new ArrayList<TruckNode>();
-	List<SchdeuleEmployeeDetails> employees = new ArrayList<SchdeuleEmployeeDetails>();
+	List<ScheduleEmployeeDetails> employees = new ArrayList<ScheduleEmployeeDetails>();
 	List<Plan> plans = new ArrayList<Plan>();
 
 	ZoneNode parent;
@@ -478,7 +481,7 @@ class DepotTimeNode extends PlanTreeNode  {
 
 	public Collection getPlan() {
 		Collections.sort(trucks, new ZoneComparator());
-		Set<SchdeuleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);
+		Set<ScheduleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);
 		assemble(resources);
 		return plans;
 	}
@@ -492,12 +495,15 @@ class DepotTimeNode extends PlanTreeNode  {
 		}
 	}
 
-	public void prepare(SchdeuleEmployeeDetails s) {
+	public void prepare(ScheduleEmployeeDetails s) {
 		employees.add(s);
 	}
 
-	public void assemble(Set<SchdeuleEmployeeDetails> resources) {
+	public void assemble(Set<ScheduleEmployeeDetails> resourcesIn) {
 		int rank = 1;
+		List<ScheduleEmployeeDetails> resources = new ArrayList<ScheduleEmployeeDetails>();
+		resources.addAll(resourcesIn);
+		Collections.sort(resources, new HireDateComparator());
 		for (Iterator i = trucks.iterator(); i.hasNext();) {
 			Scrib s = ((TruckNode) i.next()).s;
 
@@ -514,13 +520,13 @@ class DepotTimeNode extends PlanTreeNode  {
 			if (s.getZone().getTrnZoneType() == null)
 				continue;
 			Set zoneTypeResources = s.getZone().getTrnZoneType().getZonetypeResources();
-			SchdeuleEmployeeDetails _currResource = null;
+			ScheduleEmployeeDetails _currResource = null;
 			PlanResource _tmpPlanResource = null;
 			if(resources.size() > 0) {
-				_currResource = (SchdeuleEmployeeDetails)resources.toArray()[0];
+				_currResource = (ScheduleEmployeeDetails)resources.toArray()[0];
 				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
 					
-					for(SchdeuleEmployeeDetails _members : _currResource.getMembers()) {
+					for(ScheduleEmployeeDetails _members : _currResource.getMembers()) {
 						_tmpPlanResource = TreeDataUtil.matchResource(_members);
 						if(_tmpPlanResource != null) {
 							p.getPlanResources().add(_tmpPlanResource);							
@@ -536,7 +542,7 @@ class DepotTimeNode extends PlanTreeNode  {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
-								SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k.next();
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 								if(se.getMembers() == null || se.getMembers().size() == 0) {
 									if (count >= min)
 										break;
@@ -557,7 +563,7 @@ class DepotTimeNode extends PlanTreeNode  {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
-								SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k.next();
+								ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k.next();
 								if(se.getMembers() == null || se.getMembers().size() == 0) {
 									if (count >= min)
 										break;
@@ -577,7 +583,7 @@ class DepotTimeNode extends PlanTreeNode  {
 					List runners = getRunners(s.getFirstDlvTime());
 					if (runners != null) {
 						for (Iterator k = runners.iterator(); k.hasNext();) {
-							SchdeuleEmployeeDetails se = (SchdeuleEmployeeDetails) k
+							ScheduleEmployeeDetails se = (ScheduleEmployeeDetails) k
 									.next();
 							PlanResource planResource = new PlanResource();
 							EmployeeRoleType type = new EmployeeRoleType();
@@ -595,7 +601,7 @@ class DepotTimeNode extends PlanTreeNode  {
 		
 		// add bullpen for remaining employees
 		if (resources != null && resources.size() > 0) {
-			SchdeuleEmployeeDetails s = (SchdeuleEmployeeDetails) resources.toArray()[0];
+			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
 			Plan p = new Plan();
 			plans.add(p);
 			p.setPlanDate(s.getDate());
@@ -605,7 +611,7 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
 			p.setIsBullpen("Y");
 			for (Iterator i = resources.iterator(); i.hasNext();) {
-				SchdeuleEmployeeDetails ss = (SchdeuleEmployeeDetails) i.next();
+				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
 				Collection c = ss.getEmpRoles();
 				if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
 					PlanResource planResource = new PlanResource();
@@ -683,10 +689,10 @@ class ZoneComparator implements Comparator {
 class HireDateComparator implements Comparator {
 
 	public int compare(Object obj, Object obj1) {
-		if (obj instanceof SchdeuleEmployeeDetails
-				&& obj1 instanceof SchdeuleEmployeeDetails) {
-			SchdeuleEmployeeDetails s1 = (SchdeuleEmployeeDetails) obj;
-			SchdeuleEmployeeDetails s2 = (SchdeuleEmployeeDetails) obj1;
+		if (obj instanceof ScheduleEmployeeDetails
+				&& obj1 instanceof ScheduleEmployeeDetails) {
+			ScheduleEmployeeDetails s1 = (ScheduleEmployeeDetails) obj;
+			ScheduleEmployeeDetails s2 = (ScheduleEmployeeDetails) obj1;
 			long z1 = 0;
 			long z2 = 0;
 			if (s1.getInfo() != null && s1.getInfo().getHireDate() != null)
@@ -780,28 +786,30 @@ class TreeDataUtil {
 		return result;
 	}
 	
-	public static Set<SchdeuleEmployeeDetails> teamUp(PlanTree tree, List<SchdeuleEmployeeDetails> employees) {
+	public static Set<ScheduleEmployeeDetails> teamUp(PlanTree tree, List<ScheduleEmployeeDetails> employees) {
 		
-		Set<SchdeuleEmployeeDetails> resources = new TreeSet<SchdeuleEmployeeDetails>();
-		List<SchdeuleEmployeeDetails> cloneEmployees = new ArrayList<SchdeuleEmployeeDetails>();
+		Set<ScheduleEmployeeDetails> resources = new HashSet<ScheduleEmployeeDetails>();
+		List<ScheduleEmployeeDetails> cloneEmployees = new ArrayList<ScheduleEmployeeDetails>();
+		List<ScheduleEmployeeDetails> memberEmployees = new ArrayList<ScheduleEmployeeDetails>();
 		
-		Map<String, SchdeuleEmployeeDetails> leads = new HashMap<String, SchdeuleEmployeeDetails>();
+		Map<String, ScheduleEmployeeDetails> leads = new HashMap<String, ScheduleEmployeeDetails>();
 		
 		if(employees != null) {
 			cloneEmployees.addAll(employees);
 			// Collect Leads
-			Iterator<SchdeuleEmployeeDetails> _rowItr = cloneEmployees.iterator();
-			SchdeuleEmployeeDetails _row;
+			Iterator<ScheduleEmployeeDetails> _rowItr = cloneEmployees.iterator();
+			ScheduleEmployeeDetails _row;
 			while(_rowItr.hasNext()) {
 				_row = _rowItr.next();
 				if(tree.getLeads().contains(_row.getInfo().getEmployeeId())) {
 					leads.put(_row.getInfo().getEmployeeId(), _row);
-					_rowItr.remove();
 					_row.addMember(_row);
 					resources.add(_row);
+				} else {
+					memberEmployees.add(_row);
 				}
 			}
-			_rowItr = cloneEmployees.iterator();
+			_rowItr = memberEmployees.iterator();
 			String leadId;
 			// Match members and orphans
 			while(_rowItr.hasNext()) {
@@ -815,14 +823,13 @@ class TreeDataUtil {
 					}
 					resources.add(_row);
 				}
-				_rowItr.remove();
 			}
 		}
 		
 		return resources;
 	}
 	
-	public static PlanResource matchResource(SchdeuleEmployeeDetails se) {
+	public static PlanResource matchResource(ScheduleEmployeeDetails se) {
 		
 		Collection c = se.getEmpRoles();
 		if (TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c)) {
@@ -856,7 +863,7 @@ class TreeDataUtil {
 		return null;
 	}
 	
-	public static PlanResource matchResource(SchdeuleEmployeeDetails se, String role) {
+	public static PlanResource matchResource(ScheduleEmployeeDetails se, String role) {
 		
 		Collection c = se.getEmpRoles();
 		if (TreeDataUtil.isRole(role, c)) {

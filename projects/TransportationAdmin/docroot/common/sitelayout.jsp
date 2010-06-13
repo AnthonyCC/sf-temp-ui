@@ -36,9 +36,7 @@
 	</script>
 	<tmpl:get name='yui-lib'/>
 	<tmpl:get name='gmap-lib'/>
-	
-	
-	
+
 </head>
 
 <body id="body1" class="" marginwidth="0" marginheight="0" border="0">
@@ -144,9 +142,9 @@
 					}%>
 					</div>
 				</div>
-		<br style="clear:both;">
+		<br style="clear:both;"/>
     <tmpl:get name='content'/>
-	<br>
+	<br/>
 	 <%@ include file='i_userPref.jspf'%> 
 </body>
 </html>

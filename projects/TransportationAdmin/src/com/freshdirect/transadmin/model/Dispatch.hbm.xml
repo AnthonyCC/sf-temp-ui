@@ -67,6 +67,9 @@
          <property name="isOverride" type="yes_no">
             <column name="ISOVERRIDE" length="1" />
         </property>
+        <property name="isTeamOverride" type="yes_no">
+            <column name="ISTEAMOVERRIDE" length="1" />
+        </property>
         <many-to-one name="overrideReason" class="com.freshdirect.transadmin.model.DispatchReason" fetch="select" lazy="false">
             <column name="OVERRIDE_REASON_ID" length="5" />
         </many-to-one>   

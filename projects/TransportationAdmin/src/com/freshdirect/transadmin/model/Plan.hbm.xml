@@ -40,6 +40,9 @@
         <property name="open" type="string">
             <column name="IS_OPEN" length="1" />
         </property>
+        <property name="isTeamOverride" type="yes_no">
+            <column name="ISTEAMOVERRIDE" length="1" />
+        </property>
         <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="PLAN_ID" length="10" not-null="true" />

@@ -8,12 +8,12 @@ import java.util.List;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 
-public class SchdeuleEmployeeDetails implements Comparable {
+public class ScheduleEmployeeDetails {
 	ScheduleEmployee schedule;
 	Date date;
 	EmployeeInfo info;
 	Collection empRoles;
-	List<SchdeuleEmployeeDetails> members;
+	List<ScheduleEmployeeDetails> members;
 	
 	public Date getDate() {
 		return date;
@@ -39,16 +39,16 @@ public class SchdeuleEmployeeDetails implements Comparable {
 	public void setSchedule(ScheduleEmployee schedule) {
 		this.schedule = schedule;
 	}
-	public List<SchdeuleEmployeeDetails> getMembers() {
+	public List<ScheduleEmployeeDetails> getMembers() {
 		return members;
 	}
-	public void setMembers(List<SchdeuleEmployeeDetails> members) {
+	public void setMembers(List<ScheduleEmployeeDetails> members) {
 		this.members = members;
 	}
 	
-	public void addMember(SchdeuleEmployeeDetails member) {
+	public void addMember(ScheduleEmployeeDetails member) {
 		if(members == null) {
-			members = new ArrayList<SchdeuleEmployeeDetails>();
+			members = new ArrayList<ScheduleEmployeeDetails>();
 		}
 		members.add(member);
 	}
@@ -68,7 +68,7 @@ public class SchdeuleEmployeeDetails implements Comparable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SchdeuleEmployeeDetails other = (SchdeuleEmployeeDetails) obj;
+		ScheduleEmployeeDetails other = (ScheduleEmployeeDetails) obj;
 		if (date == null) {
 			if (other.date != null)
 				return false;
@@ -81,23 +81,6 @@ public class SchdeuleEmployeeDetails implements Comparable {
 			return false;
 		return true;
 	}
-	@Override
-	public int compareTo(Object o) {
-		
-		if (o instanceof SchdeuleEmployeeDetails) {			
-			SchdeuleEmployeeDetails s2 = (SchdeuleEmployeeDetails) o;
-			long z1 = 0;
-			long z2 = 0;
-			if (this.getInfo() != null && this.getInfo().getHireDate() != null)
-				z1 = this.getInfo().getHireDate().getTime();
-			if (s2.getInfo() != null && s2.getInfo().getHireDate() != null)
-				z2 = s2.getInfo().getHireDate().getTime();
-			int result = -1;
-			if (z1 > z2)
-				result = 1;
-			return result;
-		}
-		return 0;
-	}
+	
 	
 }

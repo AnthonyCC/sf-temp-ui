@@ -1,4 +1,3 @@
-<head>
 <link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/logger.css" />
 <link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/datatable.css" />
 <link rel="stylesheet" type="text/css" href="resources/yui2_8_1/assets/skins/sam/button.css" />
@@ -34,4 +33,3 @@
 <script type="text/javascript" src="resources/yui2_8_1/calendar/calendar-min.js"></script>
 
 <!--  <script type="text/javascript" src="js/yui/yahoo-dom-event.js"></script>  -->
-</head>

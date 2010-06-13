@@ -50,16 +50,32 @@ private String employeeId;
 	private Collection  empRole;
 	private String trnStatus;
 	private EmployeeInfo leadInfo;
+	private boolean isLead;
 
+	
 	public WebEmployeeInfo(EmployeeInfo eInfo,Collection eRole){
 		this.empInfo=eInfo;
 		this.empRole=eRole;
 
 	}
-
+	
+	public boolean isLead() {
+		return isLead;
+	}
+	public void setLead(boolean isLead) {
+		this.isLead = isLead;
+	}
 	
 	public EmployeeInfo getLeadInfo() {		
 		return leadInfo;
+	}
+	
+	public EmployeeInfo getLeadInfoEx() {
+		if(this.isLead()) {
+			return this.getEmpInfo();
+		} else {
+			return leadInfo;
+		}
 	}
 	
 	public String getLeadId() {	
@@ -273,5 +289,9 @@ private String employeeId;
 			if(trnStatus==null) { trnStatus="false" ; return ;}
 			
 		}
+	}
+	
+	public String toString() {
+		return this.getEmpInfo() != null ? this.getEmpInfo().toString() : "";
 	}
 }
