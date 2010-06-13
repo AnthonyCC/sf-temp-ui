@@ -9,6 +9,7 @@ import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 
 public class ScheduleEmployeeDetails {
+	
 	ScheduleEmployee schedule;
 	Date date;
 	EmployeeInfo info;
@@ -82,5 +83,9 @@ public class ScheduleEmployeeDetails {
 		return true;
 	}
 	
+	@Override
+	public String toString() {
+		return (info != null ? info.getEmployeeId() : "");
+	}
 	
 }

@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.util.scrib;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 
@@ -25,6 +25,7 @@ import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.util.ModelUtil;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class PlanTree {
 	
@@ -77,6 +78,9 @@ public class PlanTree {
 			DateNode value = (DateNode) i.next();
 			result.addAll(value.getPlan());
 		}
+		/*System.out.println(" ========================= PRINT PLANTREE START ==============================");
+		System.out.println(this.toString());
+		System.out.println(" ========================= PRINT PLANTREE END ==============================");*/
 		return result;
 	}
 	
@@ -94,6 +98,21 @@ public class PlanTree {
 
 	public void setLeads(Set<String> leads) {
 		this.leads = leads;
+	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("\n");
+		try {
+			for (Map.Entry<Date, DateNode> entry : d.entrySet()) {
+				Date key = entry.getKey();
+				DateNode value = entry.getValue();
+				strBuf.append(TransStringUtil.getDate(key)).append(" -> ").append(value.toString());
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strBuf.toString();
 	}
 }
 
@@ -166,6 +185,26 @@ class DateNode extends PlanTreeNode {
 		}
 		return result;
 	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("\n\t");
+		try {
+			for (Map.Entry<String, RegionNode> entry : regions.entrySet()) {
+				String key = entry.getKey();
+				RegionNode value = entry.getValue();
+				strBuf.append("\n\t").append(key).append(" -> ").append(value.toString());
+			}
+			for (Map.Entry<String, DepotNode> entry : depot.entrySet()) {
+				String key = entry.getKey();
+				DepotNode value = entry.getValue();
+				strBuf.append("\n\t").append(key).append(" -> ").append(value.toString());
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strBuf.toString();
+	}
 }
 
 class RegionNode extends PlanTreeNode  {
@@ -206,6 +245,21 @@ class RegionNode extends PlanTreeNode  {
 		}
 		return result;
 	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		//strBuf.append("\n\t\t");
+		try {
+			for (Map.Entry<Date, TimeNode> entry : times.entrySet()) {
+				Date key = entry.getKey();
+				TimeNode value = entry.getValue();
+				strBuf.append("\n\t\t").append(TransStringUtil.getTime(key)).append(" -> ").append(value.toString());
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strBuf.toString();
+	}
 }
 
 class DepotNode extends PlanTreeNode  {
@@ -243,6 +297,21 @@ class DepotNode extends PlanTreeNode  {
 			result.addAll(value.getPlan());
 		}
 		return result;
+	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("\n\t\t");
+		try {
+			for (Map.Entry<String, ZoneNode> entry : zones.entrySet()) {
+				String key = entry.getKey();
+				ZoneNode value = entry.getValue();
+				strBuf.append("\n\t\t").append(key).append(" -> ").append(value.toString());
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strBuf.toString();
 	}
 }
 
@@ -293,6 +362,26 @@ class ZoneNode  extends PlanTreeNode {
 		}
 		return result;
 	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		//strBuf.append("\n\t\t\t");
+		try {
+			for (Map.Entry<Date, DepotTimeNode> entry : times.entrySet()) {
+				Date key = entry.getKey();
+				DepotTimeNode value = entry.getValue();
+				strBuf.append("\n\t\t\t").append(TransStringUtil.getTime(key)).append(" -> ").append(value.toString());
+			}
+			for (Map.Entry<Date, List<ScheduleEmployeeDetails>> entry : runners.entrySet()) {
+				Date key = entry.getKey();
+				List<ScheduleEmployeeDetails> value = entry.getValue();
+				strBuf.append("\n\t\t\t").append(TransStringUtil.getTime(key)).append(" -> ").append(value.toString());
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		return strBuf.toString();
+	}
 }
 
 class TimeNode extends PlanTreeNode  {
@@ -304,7 +393,7 @@ class TimeNode extends PlanTreeNode  {
 	List<TruckNode> trucks = new ArrayList<TruckNode>();
 	List<ScheduleEmployeeDetails> employees = new ArrayList<ScheduleEmployeeDetails>();
 	List<Plan> plans = new ArrayList<Plan>();
-
+	
 	public Collection getPlan() {
 		Collections.sort(trucks, new ZoneComparator());
 		Set<ScheduleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);		
@@ -464,6 +553,14 @@ class TimeNode extends PlanTreeNode  {
 
 			}
 		}
+	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		//strBuf.append("\n\t\t\t");
+		strBuf.append("TRUCKS == ").append(trucks);
+		strBuf.append("EMPLOYEES == ").append(employees);
+		return strBuf.toString();
 	}
 }
 
@@ -651,7 +748,14 @@ class DepotTimeNode extends PlanTreeNode  {
 		return (List) r.get(key);
 
 	}
-
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+		//strBuf.append("\n\t\t\t");
+		strBuf.append("TRUCKS == ").append(trucks);
+		strBuf.append("EMPLOYEES == ").append(employees);
+		return strBuf.toString();
+	}
 }
 
 class TruckNode extends PlanTreeNode {
@@ -664,6 +768,13 @@ class TruckNode extends PlanTreeNode {
 
 	public void prepare(Scrib s) {
 		this.s = s;
+	}
+	
+	public String toString() {
+		StringBuffer strBuf = new StringBuffer();
+	//	strBuf.append("\n\t\t\t\t");
+		strBuf.append(s.getCount());		
+		return strBuf.toString();
 	}
 }
 
@@ -789,15 +900,14 @@ class TreeDataUtil {
 	public static Set<ScheduleEmployeeDetails> teamUp(PlanTree tree, List<ScheduleEmployeeDetails> employees) {
 		
 		Set<ScheduleEmployeeDetails> resources = new HashSet<ScheduleEmployeeDetails>();
-		List<ScheduleEmployeeDetails> cloneEmployees = new ArrayList<ScheduleEmployeeDetails>();
+		
 		List<ScheduleEmployeeDetails> memberEmployees = new ArrayList<ScheduleEmployeeDetails>();
 		
 		Map<String, ScheduleEmployeeDetails> leads = new HashMap<String, ScheduleEmployeeDetails>();
 		
-		if(employees != null) {
-			cloneEmployees.addAll(employees);
+		if(employees != null) {			
 			// Collect Leads
-			Iterator<ScheduleEmployeeDetails> _rowItr = cloneEmployees.iterator();
+			Iterator<ScheduleEmployeeDetails> _rowItr = employees.iterator();
 			ScheduleEmployeeDetails _row;
 			while(_rowItr.hasNext()) {
 				_row = _rowItr.next();

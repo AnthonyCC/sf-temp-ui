@@ -102,21 +102,20 @@ public class TransAdminCacheManager {
 			super(refreshPeriod);			
 			// TODO Auto-generated constructor stub
 		}
-
-		private Map<String, EmployeeInfo> employeeMapping = new HashMap<String, EmployeeInfo>();
-		
+				
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
 					return this.getEx();
 				} else {
 					List <EmployeeInfo> _listInfo = loadActiveInactiveEmployeeData();
+					Map<String, EmployeeInfo> employeeMapping = new HashMap<String, EmployeeInfo>();
 					if(_listInfo != null) {
 						for(EmployeeInfo _info : _listInfo){
 							employeeMapping.put(_info.getEmployeeId(), _info);
 						}
 					}
-					return _listInfo;
+					return employeeMapping;
 				}				
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
@@ -125,14 +124,8 @@ public class TransAdminCacheManager {
 		}
 
 		protected Map<String, EmployeeInfo> getEmployeeMapping() {
-			this.get();
-			return employeeMapping;
+			return (Map<String, EmployeeInfo>)this.get();
 		}
-
-		protected void setEmployeeMapping(Map<String, EmployeeInfo> employeeMapping) {
-			this.employeeMapping = employeeMapping;
-		}
-
 	}
 	
 	private EmployeeActiveInactiveReference activeInactivedEmployeeDataHolder = new EmployeeActiveInactiveReference
@@ -231,7 +224,7 @@ public class TransAdminCacheManager {
 	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  new ArrayList((List)this.activeInactivedEmployeeDataHolder.get());
+		return  new ArrayList(((Map)this.activeInactivedEmployeeDataHolder.get()).values());
 	}
 
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
