@@ -127,6 +127,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			  int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId()); 
 			  
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+				 SessionContext ctx = getSessionContext();
+				    ctx.setRollbackOnly();
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");				
 			}
 
@@ -535,6 +537,8 @@ public class PaymentManagerSessionBean extends SessionBeanSupport {
 			int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(getConnection(), sale.getCustomerPk().getId());  
 			
 			if(payment.isAvsCkeckFailed() && !payment.isBypassAVSCheck() && orderCount<ErpServicesProperties.getAvsErrorOrderCountLimit()){
+				 SessionContext ctx = getSessionContext();
+				    ctx.setRollbackOnly();
 				throw new ErpAddressVerificationException("The address you entered does not match the information on file with your card provider, please contact a FreshDirect representative at 9999 for assistance.");
 				
 			}
