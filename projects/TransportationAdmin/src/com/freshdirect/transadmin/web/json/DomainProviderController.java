@@ -93,24 +93,29 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 	}
 	
 	public Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String ids) {
+		
 		Map<EmployeeInfo, Set<EmployeeInfo>> result = new HashMap<EmployeeInfo, Set<EmployeeInfo>>();
+		Map<EmployeeInfo, Set<EmployeeInfo>> teams = getEmployeeManagerService().getTeams();
+		
 		String[] employeeIds = StringUtil.decodeStrings(ids);
-		Map<EmployeeInfo, Set<EmployeeInfo>> additionalResults = null;
-		if(employeeIds != null && employeeIds.length > 0) {
-			result = this.getEmployeeManagerService().getTeamMapping(employeeIds[0]);
-			for(int intCount=1; intCount < employeeIds.length ; intCount++) {
-				additionalResults = this.getEmployeeManagerService().getTeamMapping(employeeIds[intCount]);
-				if(additionalResults != null) {
-					for(EmployeeInfo empKey : additionalResults.keySet()) {
-						if(result.containsKey(empKey)) {
-							result.get(empKey).addAll(additionalResults.get(empKey));
-						} else {
-							result.put(empKey, additionalResults.get(empKey));
-						}						
+		
+		if(teams != null && employeeIds != null && employeeIds.length > 0) {			
+			for(String empId : employeeIds) {				
+				EmployeeInfo _member = getEmployeeManagerService().getEmployeeEx(empId).getEmpInfo();
+				if(_member != null) {
+					if(teams.containsKey(_member) && !result.containsKey(_member)) {
+						result.put(_member, teams.get(_member));
+					} else {
+						for (Map.Entry<EmployeeInfo, Set<EmployeeInfo>> entry : teams.entrySet()) {
+							if(entry.getValue().contains(_member)
+									&& !result.containsKey(entry.getKey())) {
+								result.put(entry.getKey(), entry.getValue());
+							}
+						}
 					}
 				}
-			}			
-		}
+			}
+		}		
 		return result;
 	}
 	

@@ -13,7 +13,7 @@
 		var root = tree.getRoot();
 		
 		for (var _lead in _data.map) {
-			var _leadNode = new YAHOO.widget.TextNode(_lead, root, false);
+			var _leadNode = new YAHOO.widget.TextNode(_lead, root, true);
 			for (var _member in _data.map[_lead].set) {				
 				var _memberNode = new YAHOO.widget.TextNode(_member, _leadNode, false);
 			}			

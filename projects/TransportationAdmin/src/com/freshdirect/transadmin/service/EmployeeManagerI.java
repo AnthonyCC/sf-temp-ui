@@ -54,7 +54,7 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getEmployeeRole(String empId);
 	Collection getTransAppActiveEmployees();
 	
-	Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String empId);
+	Map<EmployeeInfo, Set<EmployeeInfo>> getTeams();
 	Map<String, String> getTeamMapping();
 	
 }

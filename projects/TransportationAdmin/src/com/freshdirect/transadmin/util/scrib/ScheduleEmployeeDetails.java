@@ -85,7 +85,19 @@ public class ScheduleEmployeeDetails {
 	
 	@Override
 	public String toString() {
-		return (info != null ? info.getEmployeeId() : "");
+		StringBuffer strBuf = new StringBuffer();
+		if(info != null) {
+			strBuf.append("<").append(info.getEmployeeId());
+		}
+		if(members != null && members.size() > 0) {
+			strBuf.append("{[MEM]");
+			for(ScheduleEmployeeDetails sch : members) {
+				strBuf.append(",").append(sch.getInfo().getEmployeeId());
+			}
+			strBuf.append("}");
+		}
+		strBuf.append(">");
+		return strBuf.toString();
 	}
 	
 }

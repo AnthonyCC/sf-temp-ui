@@ -393,11 +393,12 @@ class TimeNode extends PlanTreeNode  {
 	List<TruckNode> trucks = new ArrayList<TruckNode>();
 	List<ScheduleEmployeeDetails> employees = new ArrayList<ScheduleEmployeeDetails>();
 	List<Plan> plans = new ArrayList<Plan>();
+	Set<ScheduleEmployeeDetails> resourceTeams = null;
 	
 	public Collection getPlan() {
 		Collections.sort(trucks, new ZoneComparator());
-		Set<ScheduleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);		
-		assemble(resources);
+		resourceTeams  = TreeDataUtil.teamUp(this.getTree(), employees);		
+		assemble(resourceTeams);
 		return plans;
 	}
 
@@ -449,9 +450,9 @@ class TimeNode extends PlanTreeNode  {
 						_tmpPlanResource = TreeDataUtil.matchResource(_members);
 						if(_tmpPlanResource != null) {
 							p.getPlanResources().add(_tmpPlanResource);							
-						}
+						} 
 					}
-					resources.remove(_currResource);
+					resources.remove(_currResource);					
 				} else {
 					
 					for (Iterator j = zoneTypeResources.iterator(); j.hasNext();) {
@@ -559,7 +560,7 @@ class TimeNode extends PlanTreeNode  {
 		StringBuffer strBuf = new StringBuffer();
 		//strBuf.append("\n\t\t\t");
 		strBuf.append("TRUCKS == ").append(trucks);
-		strBuf.append("EMPLOYEES == ").append(employees);
+		strBuf.append("EMPLOYEES == ").append(resourceTeams);
 		return strBuf.toString();
 	}
 }
@@ -568,7 +569,7 @@ class DepotTimeNode extends PlanTreeNode  {
 	List<TruckNode> trucks = new ArrayList<TruckNode>();
 	List<ScheduleEmployeeDetails> employees = new ArrayList<ScheduleEmployeeDetails>();
 	List<Plan> plans = new ArrayList<Plan>();
-
+	Set<ScheduleEmployeeDetails> resourceTeams = null;
 	ZoneNode parent;
 
 	public DepotTimeNode(PlanTree tree, ZoneNode parent) {
@@ -578,8 +579,8 @@ class DepotTimeNode extends PlanTreeNode  {
 
 	public Collection getPlan() {
 		Collections.sort(trucks, new ZoneComparator());
-		Set<ScheduleEmployeeDetails> resources  = TreeDataUtil.teamUp(this.getTree(), employees);
-		assemble(resources);
+		resourceTeams = TreeDataUtil.teamUp(this.getTree(), employees);
+		assemble(resourceTeams);
 		return plans;
 	}
 
@@ -753,7 +754,7 @@ class DepotTimeNode extends PlanTreeNode  {
 		StringBuffer strBuf = new StringBuffer();
 		//strBuf.append("\n\t\t\t");
 		strBuf.append("TRUCKS == ").append(trucks);
-		strBuf.append("EMPLOYEES == ").append(employees);
+		strBuf.append("EMPLOYEES == ").append(resourceTeams);
 		return strBuf.toString();
 	}
 }
@@ -903,7 +904,7 @@ class TreeDataUtil {
 		
 		List<ScheduleEmployeeDetails> memberEmployees = new ArrayList<ScheduleEmployeeDetails>();
 		
-		Map<String, ScheduleEmployeeDetails> leads = new HashMap<String, ScheduleEmployeeDetails>();
+		Map<String, ScheduleEmployeeDetails> currentLeads = new HashMap<String, ScheduleEmployeeDetails>();
 		
 		if(employees != null) {			
 			// Collect Leads
@@ -912,7 +913,7 @@ class TreeDataUtil {
 			while(_rowItr.hasNext()) {
 				_row = _rowItr.next();
 				if(tree.getLeads().contains(_row.getInfo().getEmployeeId())) {
-					leads.put(_row.getInfo().getEmployeeId(), _row);
+					currentLeads.put(_row.getInfo().getEmployeeId(), _row);
 					_row.addMember(_row);
 					resources.add(_row);
 				} else {
@@ -925,11 +926,11 @@ class TreeDataUtil {
 			while(_rowItr.hasNext()) {
 				_row = _rowItr.next();
 				leadId = tree.getEmployeeToLead().get(_row.getInfo().getEmployeeId());
-				if(leadId != null && leads.containsKey(leadId)) {
-					leads.get(leadId).addMember(_row);					
+				if(leadId != null && currentLeads.containsKey(leadId)) {
+					currentLeads.get(leadId).addMember(_row);					
 				} else {
-					if(leadId != null && !leads.containsKey(leadId)) {
-						logger.warn("Team Mismatch Lead ID>"+leadId+" Member> "+_row.getInfo().getEmployeeId()+" LEADS> "+leads.keySet());
+					if(leadId != null && !currentLeads.containsKey(leadId)) {						
+						logger.warn(employees+" -> "+"Team Mismatch Lead ID>"+leadId+" Member> "+_row.getInfo().getEmployeeId()+" LEADS> "+currentLeads.keySet());
 					}
 					resources.add(_row);
 				}
@@ -942,17 +943,18 @@ class TreeDataUtil {
 	public static PlanResource matchResource(ScheduleEmployeeDetails se) {
 		
 		Collection c = se.getEmpRoles();
+		PlanResource planResource = null;
 		if (TreeDataUtil.isRole(ScheduleEmployeeInfo.DRIVER, c)) {
-			PlanResource planResource = new PlanResource();
+			planResource = new PlanResource();
 			EmployeeRoleType type = new EmployeeRoleType();
 			type.setCode(ScheduleEmployeeInfo.DRIVER);
 			ResourceId resource = new ResourceId();
 			resource.setResourceId(se.info.getEmployeeId());
 			planResource.setEmployeeRoleType(type);
 			planResource.setId(resource);
-			return planResource;
+			
 		} else if (TreeDataUtil.isRole(ScheduleEmployeeInfo.HELPER, c)) {
-			PlanResource planResource = new PlanResource();
+			planResource = new PlanResource();
 			EmployeeRoleType type = new EmployeeRoleType();
 			type.setCode(ScheduleEmployeeInfo.HELPER);
 			ResourceId resource = new ResourceId();
@@ -961,16 +963,16 @@ class TreeDataUtil {
 			planResource.setId(resource);
 			
 		} else if (TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
-			PlanResource planResource = new PlanResource();
+			planResource = new PlanResource();
 			EmployeeRoleType type = new EmployeeRoleType();
 			type.setCode(ScheduleEmployeeInfo.RUNNER);
 			ResourceId resource = new ResourceId();
 			resource.setResourceId(se.info.getEmployeeId());
 			planResource.setEmployeeRoleType(type);
-			planResource.setId(resource);			
+			planResource.setId(resource);
 		}
 		
-		return null;
+		return planResource;
 	}
 	
 	public static PlanResource matchResource(ScheduleEmployeeDetails se, String role) {

@@ -80,7 +80,7 @@
            
 						<ec:table items="employees"   action="${pageContext.request.contextPath}/employee.do?empstatus=C"
 						imagePath="${pageContext.request.contextPath}/images/table/*.gif" title=""		
-						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="true" rowsDisplayed="50"  >
+						width="98%"  view="fd" form="employeeListForm" autoIncludeParameters="true" rowsDisplayed="25"  >
 									<ec:exportPdf fileName="transportationTeamSchedule.pdf" tooltip="Export PDF" 
 									  headerTitle="" />
 							  <ec:exportXls fileName="transportationteamschedule.xls" tooltip="Export PDF" />

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
 import com.freshdirect.transadmin.dao.EmployeeManagerDaoI;
@@ -85,10 +86,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return finalList;
 	}
 	
-	public Map<String, String> getTeamMapping() {
-		return ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
-	}
-	
+		
 	public Collection getTerminatedEmployees() {
 		// first get the kornos data
 		// then get the role for the kornos data
@@ -663,14 +661,14 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return getDomainManagerDao().getEmployeeRole(empId);
 	}
 	
-	public Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String empId) {
+	public Map<EmployeeInfo, Set<EmployeeInfo>> getTeams() {
 		
 		Map<EmployeeInfo, Set<EmployeeInfo>> result = new HashMap<EmployeeInfo, Set<EmployeeInfo>>();
-		Collection<EmployeeTeam> _currentTeamForEmployee = getDomainManagerDao().getTeamMembersByEmployee(empId);
+		Collection<EmployeeTeam> teams = getDomainManagerDao().getTeamInfo();
 		EmployeeInfo _lead = null;
 		EmployeeInfo _member = null;
-		if(_currentTeamForEmployee != null) {
-			for(EmployeeTeam _tmpTeam : _currentTeamForEmployee) {
+		if(teams != null) {
+			for(EmployeeTeam _tmpTeam : teams) {
 				_lead = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(_tmpTeam.getLeadKronosId(), this);
 				_member = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(_tmpTeam.getKronosId(), this);
 				if(_lead != null && _member != null) {
@@ -683,4 +681,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		}
 		return result;
 	}
+	
+	public Map<String, String> getTeamMapping() {
+		return ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
+	}
+		
 }
