@@ -33,6 +33,23 @@
 				border-width: 0px;
 			}
 		</style>
+		<script type="text/javascript">
+		<!--
+			function $(e){
+				return document.getElementById(e);
+			}
+
+			function disableFields(f) {
+				var form = $(f);
+				for (var i = 0; i<form.elements.length; i++) {
+					if (form.elements[i].value == '') {
+						form.elements[i].disabled = true;
+					}
+				}
+				return true;
+			}
+		//-->
+		</script>
 	</head>
 <body>
 
@@ -41,88 +58,50 @@
 	//defaults
 		String queryString = NVL.apply(request.getQueryString(), "");
 		String imgPath = "/test/graphics_testing/generateImage.jsp?"+queryString;
-		int prodWidth = 0;
-		int prodHeight = 0;
-		String pSize = "c"; //this is the code-letter (cx,p,c,cr,z, etc)
-		String pSizeTemp = "";
-		int pOx = 0;
-		int pOy = 0;
+		String prodWidth = NVL.apply(request.getParameter("prodWidth"), "");
+		String prodHeight = NVL.apply(request.getParameter("prodHeight"), "");
+		//check for a passed pSize
+			String pSize =  NVL.apply(request.getParameter("pSize"), ""); //this is the code-letter (cx,p,c,cr,z, etc)
+			String pSizeTemp = "";
+		//check for a passed pOx
+			String pOx = NVL.apply(request.getParameter("pOx"), "");
+		//check for a passed pOy
+			String pOy = NVL.apply(request.getParameter("pOy"), "");
 
-		String bType = "deal";
-		String bSize = "";
-		String bVal = "-1";
-		int bValTemp = 0;
-		String pId = "";
-		int overlayWidth = 0;
-		int overlayHeight = 0;
-		int bOx = 0;
-		int bOy = 0;
+		//check for a passed bType
+			String bType = NVL.apply(request.getParameter("bType"), "");
+		//check for a passed bSize
+			String bSize =  NVL.apply(request.getParameter("bSize"), "");
+		//check for a passed bVal
+			String bVal = NVL.apply(request.getParameter("bVal"), "-1");
+			int bValTemp = 0;
+		//check for a passed pId
+			String pId = NVL.apply(request.getParameter("pId"), "");
+		String overlayWidth = NVL.apply(request.getParameter("overlayWidth"), "");
+		String overlayHeight = NVL.apply(request.getParameter("overlayHeight"), "");
+		//check for a passed bOx
+			String bOx = NVL.apply(request.getParameter("bOx"), "");
+		//check for a passed bOy
+			String bOy = NVL.apply(request.getParameter("bOy"), "");
 
-		int iW = 0;
-		int iH = 0;
-		float iQ = 1;
-		String bgColorString = "ffffff"; //default to white
+		//check for a passed retImageWidth
+			String iW = NVL.apply(request.getParameter("iW"), "");
+		//check for a passed retImageHeight
+			String iH = NVL.apply(request.getParameter("iH"), "");
+		//check for a passed iQ
+			String iQ = NVL.apply(request.getParameter("iQ"), "");
 
-		
-	//check for a passed pId
-	if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
-		pId = request.getParameter("pId");
-	}
-	//check for a passed pSize
-	if (request.getParameter("pSize") != null && request.getParameter("pSize") != "") {
-		pSize = request.getParameter("pSize");
-	}
-	//check for a passed iQ
-	if (request.getParameter("iQ") != null && request.getParameter("iQ") != "") {
-		iQ = Float.valueOf(request.getParameter("iQ")).floatValue();
-	}
-	//check for a passed retImageWidth
-	if (request.getParameter("iW") != null && request.getParameter("iW") != "") {
-		iW = Integer.valueOf(request.getParameter("iW")).intValue();
-	}
-	//check for a passed retImageHeight
-	if (request.getParameter("iH") != null && request.getParameter("iH") != "") {
-		iH = Integer.valueOf(request.getParameter("iH")).intValue();
-	}
-	//check for a passed bgColor
-	if (request.getParameter("iBG") != null && request.getParameter("iBG") != "") {
-		bgColorString = request.getParameter("iBG");
-	}
-	//check for a passed bSize
-	if (request.getParameter("bSize") != null) {
-		bSize = request.getParameter("bSize");
-	}
-	//check for a passed bType
-	if (request.getParameter("bType") != null && request.getParameter("bType") != "") {
-		bType = request.getParameter("bType");
-	}
-	//check for a passed bVal
-	if (request.getParameter("bVal") != null && request.getParameter("bVal") != "") {
-		bVal = request.getParameter("bVal");
-	}
-	//check for a passed bOx
-	if (request.getParameter("bOx") != null && request.getParameter("bOx") != "") {
-		bOx = Integer.valueOf(request.getParameter("bOx")).intValue();
-	}
-	//check for a passed bOy
-	if (request.getParameter("bOy") != null && request.getParameter("bOy") != "") {
-		bOy = Integer.valueOf(request.getParameter("bOy")).intValue();
-	}
-	//check for a passed pOx
-	if (request.getParameter("pOx") != null && request.getParameter("pOx") != "") {
-		pOx = Integer.valueOf(request.getParameter("pOx")).intValue();
-	}
-	//check for a passed pOy
-	if (request.getParameter("pOy") != null && request.getParameter("pOy") != "") {
-		pOy = Integer.valueOf(request.getParameter("pOy")).intValue();
-	}
+		//check for a passed bgColor
+			String bgColorString = NVL.apply(request.getParameter("iBG"), "");
+
+
 
 %>
 
 <table width="100%">
 	<tr>
 		<td valign="top" align="center">
-			<form method="GET" action="./index.jsp" id="graphics_form">
+			<form method="GET" action="./index.jsp" name="graphics_form" id="graphics_form" onSubmit="return disableFields(this.id);" >
 			<table>	
 				<tr>
 					<th>Background</th>
@@ -151,6 +130,7 @@
 					<td>
 						Size: 
 						<select id="pSize" name="pSize">
+							<option value=""<%="".equalsIgnoreCase(pSize)?" selected=\"selected\"":""%>></option>
 							<option value="a"<%="a".equalsIgnoreCase(pSize)?" selected=\"selected\"":""%>>a</option>
 							<option value="c"<%="c".equalsIgnoreCase(pSize)?" selected=\"selected\"":""%>>c</option>
 							<option value="cr"<%="cr".equalsIgnoreCase(pSize)?" selected=\"selected\"":""%>>cr</option>
@@ -170,11 +150,20 @@
 				</tr>
 				<tr>
 					<td>
-						Type:
-						<input type="radio" id="bTypeD" name="bType" value="deal" <%="deal".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />deal
-						<input type="radio" id="bTypeF" name="bType" value="fave" <%="fave".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />fave
-						<input type="radio" id="bTypeN" name="bType" value="new" <%="new".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />new
-						<input type="radio" id="bTypeX" name="bType" value="X" <%="X".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />force none
+						<table width="100%">
+							<tr>
+								<td>Type:</td>
+								<td>
+									<input type="radio" id="bTypeA" name="bType" value="" <%="".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />auto
+									<input type="radio" id="bTypeD" name="bType" value="deal" <%="deal".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />deal
+									<input type="radio" id="bTypeF" name="bType" value="fave" <%="fave".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />fave
+									<br />
+									<input type="radio" id="bTypeN" name="bType" value="new" <%="new".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />new
+									<input type="radio" id="bTypeX" name="bType" value="X" <%="X".equalsIgnoreCase(bType)?"checked=\"true\"":""%> />force none
+								</td>
+							</tr>
+						</table>
+						
 					</td>
 				</tr>
 				<tr>
@@ -196,7 +185,7 @@
 							</tr>
 							<tr>
 								<td>
-									<input type="radio" id="bSizeX" name="bSize" value="" <%="".equalsIgnoreCase(bSize)?"checked=\"true\"":""%> />none
+									<input type="radio" id="bSizeX" name="bSize" value="" <%="".equalsIgnoreCase(bSize)?"checked=\"true\"":""%> />auto
 								</td>
 								<td>
 									&nbsp;

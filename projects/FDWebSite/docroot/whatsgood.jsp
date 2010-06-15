@@ -85,9 +85,13 @@
 		
 		//get property with rows
 		strDynRows = FDStoreProperties.getWhatsGoodRows();
+		//strDynRows = "useConfig:test";
 
 		//set prefix
 		prefix = "whats_good";
+
+		//set debug out to page
+		myDebugPrint = true;
 	%>
 
 

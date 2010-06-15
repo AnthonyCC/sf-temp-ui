@@ -1,63 +1,5 @@
 <%
 
-	/*
-	 *	Use property to control page functionality on a row per row basis
-	 *
-	 *	property: 
-	 *		fdstore.fdwhatsgood.rows
-	 *
-	 *	A comma seperated list of values of one of the following:
-	 *		CONFIG (this value takes priority over all others)
-	 *			useConfig:DOMAINVALUE_ID
-	 *				DOMAINVALUE_ID = the ID of the domain value to use
-	 *				This will take configuration from the VALUE of this domain value
-	 *		SPECIAL (one of the following three)
-	 *			wgd_produce	-> /includes/department_peakproduce_whatsgood.jspf
-	 *			wg_deals	-> /includes/layouts/i_featured_products_whatsgood.jspf
-	 *			wg_ads		-> (if email) mediaPathTempBase+whats_good_ads_off_space.ftl
-	 *						   (if NOT email) mediaPathTempBase+whats_good_ads_on_space.ftl
-	 *		CATEGORY
-	 *			ANY_CATID	-> /departments/whatsgood/generic_row.jspf
-	 *		MEDIA FILE
-	 *			ANY_MEDIA	->  mediaPathTempBase+ANY_MEDIA
-	 *
-	 *	Inside of each value attributes are available, seperated by a colon as
-	 *	KEY=VALUE pairs. KEY is case insensitive (and so is VALUE, assuming VALUE doesn't
-	 *	NEED to be case sensitve for it's use. so true == TRUE == TrUe)
-	 *	
-	 *	These can be any of the following:
-	 *		isTx = [true|false]   DEFAULT: true
-	 *			Show row as transactional.
-	 *			on (true) or off (false) 
-	 *			NOTE: email=true AND isTx=true results in transactional in email mode
-	 *		min  = [INT]   DEFAULT: 0 (no min)
-	 *			the minimum products required to show row.
-	 *		max  = [INT]   DEFAULT: 5/6 (5 in GENERIC/6 in PEAK PRODUCE)
-	 *			the maximum products for a row. (currently does not wrap products)
-	 *		from  = [STRING]   DEFAULT: "gro"
-	 *			where the deal products are pulled from (for wg_deals) //phased out
-	 *		depth  = [INT]   DEFAULT: 0 (no children)
-	 *			the depth the item grabber should use for fetching products
-	 *		context = [STRING]   DEFAULT: NULL
-	 *			used for faking the context (sets catId = VALUE).
-	 *			if null, sets to current catId (if not null)
-	 *			flips over to category page
-	 *			Results in:
-	 *				category.jsp?catId=CONTEXT&prodCatId=CATID&trk=cpage&productId=PRODID
-	 *					Where CONTEXT = VALUE and CATID = catId
-	 *		deals = [true|false]   DEFAULT: false
-	 *			Show ONLY deal products
-	 *			on (true) or off (false) 
-	 *		feats = [true|false]   DEFAULT: false
-	 *			Show featured products instead of normal children products
-	 *			on (true) or off (false)
-	 *		descrips = [true|false]   DEFAULT: true
-	 *			Show descriptions (each/4pk/fillet/etc)
-	 *			on (true) or off (false)
-	 *		sortBy = []   DEFAULT: ""
-	 */
-
-	
 	if (myDebugPrint) { out.println("<style>.myDebug { font-family: monospace; color: #0c0; background-color: #000; width: 725px; word-wrap: break-word; white-space: -moz-pre-wrap; white-space: pre-wrap; text-align: left; }</style>"); }
 
 	//check for config
@@ -95,7 +37,7 @@
 		
 	}
 
-	myDebugStr = "PAGE property: fdstore.fdwhatsgood.rows="+strDynRows;
+	myDebugStr = "PAGE property: "+strDynRows;
 		log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 	//if there are rows, use them
@@ -132,6 +74,14 @@
 				add = "";
 				exFro = false;
 				exPer = false;
+				newOnly = false;
+				bisOnly = false;
+				igShowCh = false;
+				retHidFolds = false;
+				retSecFolds = false;
+				exDisc = true;
+				showNewText = true;
+				catId = null; //clear here so showInContextOf doesn't get set in following row
 
 			//get current row
 			curRow=resultDynRows[rowId];
@@ -154,7 +104,7 @@
 
 					if(resultSub.length>1){
 
-						myDebugStr =  "found additional resultSubs: "+resultSub.length;
+						myDebugStr =  "found additional resultSubs: "+(resultSub.length-1); //-1 since the first var is the catId
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 
@@ -188,10 +138,16 @@
 										minForRowVisibility = Integer.parseInt(resultSubSub[1]);
 										if (minForRowVisibility > 0) { MIN_FAVS2SHOW = minForRowVisibility; }
 								}else if ("perRow".equalsIgnoreCase(resultSubSub[0])) {
-									myDebugStr = "found perRow: "+Integer.parseInt(resultSubSub[1]);
+									myDebugStr = "found perRow: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										perRow = Integer.parseInt(resultSubSub[1]);
+										try {perRow = Integer.parseInt(resultSubSub[1]);}
+										catch(NumberFormatException e){
+											myDebugStr = "found perRow is not an Integer";
+												log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										}
+										
 										perRowPP = perRow;
+										perRowString = resultSubSub[1];
 								}else if ("from".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found from: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
@@ -207,23 +163,43 @@
 								}else if ("deals".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found deals: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {dealsOnly = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {dealsOnly = false;}
+										dealsOnly = isTrue(resultSubSub[1]);
 								}else if ("feats".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found feats: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {featuredOnly = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {featuredOnly = false;}
+										featuredOnly = isTrue(resultSubSub[1]);
+								}else if ("newOnly".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found newOnly: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										newOnly = isTrue(resultSubSub[1]);
+								}else if ("bisOnly".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found bisOnly: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										bisOnly = isTrue(resultSubSub[1]);
 								}else if ("exPer".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found exPer: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {exPer = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {exPer = false;}
+										exPer = isTrue(resultSubSub[1]);
 								}else if ("exFro".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found exFro: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {exFro = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {exFro = false;}
+										exFro = isTrue(resultSubSub[1]);
+								}else if ("exDisc".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found exDisc: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										exDisc = isTrue(resultSubSub[1]);
+								}else if ("igShowCh".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found igShowCh: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										igShowCh = isTrue(resultSubSub[1]);
+								}else if ("retHidFolds".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found retHidFolds: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										retHidFolds = isTrue(resultSubSub[1]);
+								}else if ("retSecFolds".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found retSecFolds: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										retSecFolds = isTrue(resultSubSub[1]);
 								}else if ("sortBy".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found sortBy: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
@@ -235,18 +211,23 @@
 								}else if ("descrips".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found descrips: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {showDescrips = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {showDescrips = false;}
+										showDescrips = isTrue(resultSubSub[1]);
 								}else if ("uniqG".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found uniqG: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {uniqG = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {uniqG = false;}
+										uniqG = isTrue(resultSubSub[1]);
 								}else if ("uniqR".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found uniqR: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-										if ("true".equalsIgnoreCase(resultSubSub[1])) {uniqR = true;}
-										if ("false".equalsIgnoreCase(resultSubSub[1])) {uniqR = false;}
+										uniqR = isTrue(resultSubSub[1]);
+								}else if ("showNewText".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found showNewText: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										showNewText = isTrue(resultSubSub[1]);
+								}else if ("dynImg".equalsIgnoreCase(resultSubSub[0])) {
+									myDebugStr = "found dynImg: "+resultSubSub[1];
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+										dynImg = isTrue(resultSubSub[1]);
 								}else if ("add".equalsIgnoreCase(resultSubSub[0])) {
 									myDebugStr = "found add: "+resultSubSub[1];
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
@@ -278,11 +259,36 @@
 				log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 			//setup layout settings
-				
+							
+				//depth to grab from default: 1
 				layoutSettings.setGrabberDepth(grabberDepth); //use passed value
-				layoutSettings.setIgnoreDuplicateProducts(true);
-				layoutSettings.setIgnoreShowChildren(false);
-				layoutSettings.setReturnHiddenFolders(false);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.getGrabberDepth() : "+layoutSettings.getGrabberDepth();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				//ignore the 'showChildren' setting? default: false
+				layoutSettings.setIgnoreShowChildren(igShowCh);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreShowChildren() : "+layoutSettings.isIgnoreShowChildren();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				//return hidden folders? default: false
+				layoutSettings.setReturnHiddenFolders(retHidFolds);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isReturnHiddenFolders() : "+layoutSettings.isReturnHiddenFolders();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				//return secondary folders? default: false
+				layoutSettings.setReturnSecondaryFolders(retSecFolds);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isReturnSecondaryFolders() : "+layoutSettings.isReturnSecondaryFolders();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+				
+				//filter out disc. products? default: true
+				layoutSettings.setFilterDiscontinued(exDisc);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isFilterDiscontinued() : "+layoutSettings.isFilterDiscontinued();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+
+				//ignore dupe products? default: false (use false here, we'll use uniqR and uniqG to determine the logic later)
+				layoutSettings.setIgnoreDuplicateProducts(false);
+					myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts();
+						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 				//sorting...
 				if (!"".equals(sortBy)) {
@@ -426,6 +432,25 @@
 					%><fd:IncludeMedia name="<%= mediaPathTemp %>" parameters="<%=params%>" withErrorReport="false" /><%
 				//END AD spots
 
+			//special : MULTI
+			}else if ("!MULTI!".equals(curRow)) {
+
+				//do MULTI row
+					/*
+					 *	This feature is not 100% ready, skip out.
+					 */
+				
+				if (false) {
+					//START multi
+						//use multi
+						myDebugStr = "???: including: MULTI:/includes/i_dynamicRows_multi.jspf";
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						myDebugStr = "???: including: MULTI:deptId="+deptId+", catId="+catId;
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						%><%@include file="/includes/i_dynamicRows_multi.jspf" %><%
+					//END multi
+				}
+
 			//no specials
 			}else{
 				//see if row is a category
@@ -449,11 +474,11 @@
 					catId = curRow; /* catId is used even if it's a department */
 
 					//we know it's a category or department, so use it in the generic row
-					myDebugStr = "???: including: GENERIC:/departments/whatsgood/generic_row.jspf";
+					myDebugStr = "???: including: GENERIC:/includes/i_dynamicRows_generic.jspf";
 						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 					myDebugStr = "???: including: GENERIC:deptId="+deptId+", catId="+catId;
 						log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
-					%><%@include file="/departments/whatsgood/generic_row.jspf" %><%
+					%><%@include file="/includes/i_dynamicRows_generic.jspf" %><%
 
 				}else{
 					//is NOT a category

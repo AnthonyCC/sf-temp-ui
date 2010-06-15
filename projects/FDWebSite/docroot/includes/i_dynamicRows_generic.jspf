@@ -94,9 +94,6 @@
 					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 				
 				request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
-				
-				myDebugStr = "ROW "+curRow+": ItemGrabber layoutSettings.isIgnoreDuplicateProducts() : "+layoutSettings.isIgnoreDuplicateProducts();
-					log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 
 			%>
 		</fd:ItemGrabber>
@@ -273,9 +270,15 @@
 							}
 
 							ProductModel pm = (ProductModel) contentNode;
-							//skip if discontinued or unavailable
-							if (pm.isDiscontinued() || pm.isUnavailable()) {
-								myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") or isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
+							//skip if discontinued and we're excluding
+							if (exDisc && pm.isDiscontinued()) {
+								myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") and exDisc ("+exDisc+") : "+contentNode;
+									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+								continue;
+							}
+							//skip if unavailable
+							if (pm.isUnavailable()) {
+								myDebugStr = "ROW "+curRow+": contentNode isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 								continue;
 							}
@@ -285,6 +288,23 @@
 									log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 								continue;
 							}
+							//if new only is true, skip if not new
+							if (newOnly) {
+								if(!pm.isNew()) {
+									myDebugStr = "ROW "+curRow+": contentNode isNew ("+pm.isNew()+") : "+contentNode.toString();
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+							//if bis only is true, skip if not bis
+							if (bisOnly) {
+								if(!pm.isBackInStock()) {
+									myDebugStr = "ROW "+curRow+": contentNode isBackInStock ("+pm.isBackInStock()+") : "+contentNode.toString();
+										log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+									continue;
+								}
+							}
+							//if exclude perishables is true, skip products with perishable flag
 							if (exPer) {
 								if(pm.isPerishable()) {
 									myDebugStr = "ROW "+curRow+": contentNode isPerishable ("+pm.isPerishable()+") : "+contentNode.toString();
@@ -355,9 +375,15 @@
 					}
 
 					ProductModel pm = (ProductModel) contentNode;
-					//skip if discontinued or unavailable
-					if (pm.isDiscontinued() || pm.isUnavailable()) {
-						myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") or isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
+					//skip if discontinued and we're excluding
+					if (exDisc && pm.isDiscontinued()) {
+						myDebugStr = "ROW "+curRow+": contentNode isDiscontinued ("+pm.isDiscontinued()+") and exDisc ("+exDisc+") : "+contentNode;
+							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+						continue;
+					}
+					//skip if unavailable
+					if (pm.isUnavailable()) {
+						myDebugStr = "ROW "+curRow+": contentNode isUnavailable ("+pm.isUnavailable()+") : "+contentNode;
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 						continue;
 					}
@@ -366,6 +392,22 @@
 						myDebugStr = "ROW "+curRow+": dealsOnly ("+dealsOnly+") or contentNode getHighestDealPercentage < 1 ("+ pm.getHighestDealPercentage()+") : "+contentNode;
 							log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
 						continue;
+					}
+					//if new only is true, skip if not new
+					if (newOnly) {
+						if(!pm.isNew()) {
+							myDebugStr = "ROW "+curRow+": contentNode isNew ("+pm.isNew()+") : "+contentNode.toString();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
+					}
+					//if bis only is true, skip if not bis
+					if (bisOnly) {
+						if(!pm.isBackInStock()) {
+							myDebugStr = "ROW "+curRow+": contentNode isBackInStock ("+pm.isBackInStock()+") : "+contentNode.toString();
+								log(myDebug, myDebugStr);if (myDebugPrint) { out.println("<div class=\"myDebug\">"+myDebugStr+"</div>"); }
+							continue;
+						}
 					}
 					if (exPer) {
 						if(pm.isPerishable()) {
@@ -471,6 +513,8 @@
 								actionURI = actionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
 								actionURI = actionURI.replace("product.jsp", "category.jsp");
 						}
+						actionURI = prefixURI+actionURI;
+						
 						/* ALTERNATIVE
 							if (!catId.equals(pm.getParentNode().toString())) {
 								catId = pm.getParentNode().toString();
@@ -488,7 +532,11 @@
 								myDebugStr = "|cn="+cn+"|col="+colIdx+"|"; //say col, but we're showing colIdx
 									if (myDebugPrint) { out.println("<span class=\"myDebug\">"+myDebugStr+"</span>"); } //this is page only debug
 							%>
-							<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" />
+							<% if (dynImg) { %>
+								<img src="<%= prefixURI %>/test/graphics_testing/generateImage.jsp?pId=<%=pm%>" />
+							<% } else { %>
+								<display:ProductImage product="<%= pm %>" showRolloverImage="false" action="<%= actionURI %>" prefix="<%= prefixURI %>" />
+							<% } %>
 						</td>
 						
 						<%
@@ -544,6 +592,7 @@
 										piActionURI = piActionURI.replace(catId, showInContextOf+"&prodCatId="+catId);
 										piActionURI = piActionURI.replace("product.jsp", "category.jsp");
 								}
+								piActionURI = prefixURI+piActionURI;
 							%>
 								<td valign="top" width="<%= piAdjustedImgWidth %>" align="center" style="padding-left:5px; padding-right:5px;padding-bottom:10px;">
 								<%
@@ -555,7 +604,7 @@
 											<fd:TxProductControl txNumber="<%= txCount %>" namespace="<%= TX_JS_NAMESPACE %>" impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>"/>
 											
 											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
-											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="true" />
+											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="<%= showNewText %>" style="<%= emailStyle %>" />
 											<display:ProductPrice impression="<%= (TransactionalProductImpression) impressions.get(piCnIdx) %>" showDescription="<%= showDescrips %>" />
 										<% 
 											txCount++;
@@ -564,7 +613,7 @@
 												<div style="margin: 0pt; padding: 0pt; height: 28px; text-align: center; vertical-align: middle;"><span class="text8">(click name to buy)</span></div>
 											<% } %>
 											<display:ProductRating product="<%= piPm %>" action="<%= piActionURI %>" />
-											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="true" />
+											<display:ProductName product="<%= piPm %>" action="<%= piActionURI %>" showNew="<%= showNewText %>" style="<%= emailStyle %>" />
 											<display:ProductPrice impression="<%= new ProductImpression(piPm) %>" showDescription="<%= showDescrips %>" />
 										<% } %>
 									</div>

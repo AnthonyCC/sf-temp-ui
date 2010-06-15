@@ -44,12 +44,23 @@
         Image groDeptImage = null;
 		boolean isDepartment = false;
 		deptId = "gro";
+		String targetId = "";
 
 		//get the WG prop.
 		strDynRows = FDStoreProperties.getWhatsGoodRows();
+
+		/*
+		 * point targetId at the id you want to fetch from the property line.
+		 * it will then parse out the sub attributes so the products match on both pages
+		 */
+		/* pres picks */
+			//targetId = "picks_pres";
+		/* brand name deals */
+			targetId = "wgd_deals";
+
 		//parse out only the property we want
-		if (strDynRows.indexOf("picks_pres")>-1) {
-			strDynRows = strDynRows.substring(strDynRows.indexOf("picks_pres"));
+		if (strDynRows.indexOf(targetId)>-1) {
+			strDynRows = strDynRows.substring(strDynRows.indexOf(targetId));
 			String[] temp = strDynRows.split(",");
 			//temp[0] should now be the property
 			strDynRows = temp[0];
@@ -58,12 +69,16 @@
 				strDynRows += ":isTx=false";
 			}
 		}else{
-			strDynRows = "";
+			strDynRows = ""; //show nothing
 		}
+
+		//make sure images have prefixes
+		prefixURI = "http://www.freshdirect.com";
+		emailStyle = "color: #336600; font-size: 8pt; font-family: Verdana,Arial,sans-serif;";
 		
 		%>
 		<tr><td colspan="4" align="center">
-		<%@ include file="/includes/i_dynamicRows_logic.jspf"%>
+			<%@ include file="/includes/i_dynamicRows_logic.jspf"%>
 		</td></tr>
 		<% mediaPathTemp=mediaPathTempBase+"pres_picks_footer.ftl"; %>
 		<fd:IncludeMedia name="<%=mediaPathTemp%>" parameters="<%=params%>"/>

@@ -70,24 +70,55 @@ URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //defau
 //defaults
 	int prodWidth = 0;
 	int prodHeight = 0;
-	String pSize = "c"; //this is the code-letter (cx,p,c,ct,cr,z, etc)
+	String pSize = NVL.apply(request.getParameter("pSize"), "c"); //this is the code-letter (cx,p,c,ct,cr,z, etc)
 	String pSizeTemp = "";
-	int pOx = 0;
-	int pOy = 0;
 
-	String bType = "deal";
-	String bSize = "sm";
+	//check for a passed pOx
+		int pOx = 0;
+		String pOxTemp = NVL.apply(request.getParameter("pOx"), "0");
+		pOx = Integer.valueOf(pOxTemp).intValue();
+
+	//check for a passed pOy
+		int pOy = 0;
+		String pOyTemp = NVL.apply(request.getParameter("pOy"), "0");
+		pOy = Integer.valueOf(pOyTemp).intValue();
+
+	String bType = NVL.apply(request.getParameter("bType"), "auto");
+	String bSize = NVL.apply(request.getParameter("bSize"), "sm");
 	String bVal = "-1";
 	int bValTemp = 0;
-	String id = "";
+
+	//check for a passed pId
+	String id = NVL.apply(request.getParameter("pId"), "");
+
 	int overlayWidth = 0;
 	int overlayHeight = 0;
-	int bOx = 0;
-	int bOy = 0;
 
-	int retImageWidth = 0;
-	int retImageHeight = 0;
-	float iQ = 1;
+	//check for a passed bOx
+		int bOx = 0;
+		String bOxTemp = NVL.apply(request.getParameter("bOx"), "0");
+		bOx = Integer.valueOf(bOxTemp).intValue();
+
+	//check for a passed bOy
+		int bOy = 0;
+		String bOyTemp = NVL.apply(request.getParameter("bOy"), "0");
+		bOy = Integer.valueOf(bOyTemp).intValue();
+
+	//check for a passed retImageWidth
+		int retImageWidth = 0;
+		String retImageWidthTemp = NVL.apply(request.getParameter("iW"), "0");
+		retImageWidth = Integer.valueOf(retImageWidthTemp).intValue();
+
+	//check for a passed retImageHeight
+		int retImageHeight = 0;
+		String retImageHeightTemp = NVL.apply(request.getParameter("iH"), "0");
+		retImageHeight = Integer.valueOf(retImageHeightTemp).intValue();
+
+	//check for a passed iQ
+		float iQ = 1;
+		String iQTemp = NVL.apply(request.getParameter("iQ"), "1");
+		iQ = Float.valueOf(iQTemp).floatValue();
+
 	String bgColorString = "";
 	int bgR = 255;
 	int bgG = 255;
@@ -95,57 +126,28 @@ URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //defau
 
 	Color bgColor = new Color(bgR, bgG, bgB); //default to white
 
+	//check for a passed bgColor
+	if (request.getParameter("iBG") != null && request.getParameter("iBG") != "") {
+		//parse bgColor into rgb
 
-//check for a passed iQ
-if (request.getParameter("iQ") != null && request.getParameter("iQ") != "") {
-	iQ = Float.valueOf(request.getParameter("iQ")).floatValue();
-}
-//check for a passed retImageWidth
-if (request.getParameter("iW") != null && request.getParameter("iW") != "") {
-	retImageWidth = Integer.valueOf(request.getParameter("iW")).intValue();
-}
-//check for a passed retImageHeight
-if (request.getParameter("iH") != null && request.getParameter("iH") != "") {
-	retImageHeight = Integer.valueOf(request.getParameter("iH")).intValue();
-}
-//check for a passed bgColor
-if (request.getParameter("iBG") != null && request.getParameter("iBG") != "") {
-	//parse bgColor into rgb
+		bgColorString = request.getParameter("iBG");
 
-	bgColorString = request.getParameter("iBG");
+		if (bgColorString.length() == 3) {
+			bgR = Integer.valueOf(bgColorString.substring(0,1)+bgColorString.substring(0,1), 16).intValue();
+			bgG = Integer.valueOf(bgColorString.substring(1,2)+bgColorString.substring(1,2), 16).intValue();
+			bgB = Integer.valueOf(bgColorString.substring(2,3)+bgColorString.substring(2,3), 16).intValue();
+		}else if (bgColorString.length() == 6) {
+			bgR = Integer.valueOf(bgColorString.substring(0,2), 16).intValue();
+			bgG = Integer.valueOf(bgColorString.substring(2,4), 16).intValue();
+			bgB = Integer.valueOf(bgColorString.substring(4,6), 16).intValue();
+		}
+		
+		bgColor = new Color(bgR, bgG, bgB);
 
-	if (bgColorString.length() == 3) {
-		bgR = Integer.valueOf(bgColorString.substring(0,1)+bgColorString.substring(0,1), 16).intValue();
-		bgG = Integer.valueOf(bgColorString.substring(1,2)+bgColorString.substring(1,2), 16).intValue();
-		bgB = Integer.valueOf(bgColorString.substring(2,3)+bgColorString.substring(2,3), 16).intValue();
-	}else if (bgColorString.length() == 6) {
-		bgR = Integer.valueOf(bgColorString.substring(0,2), 16).intValue();
-		bgG = Integer.valueOf(bgColorString.substring(2,4), 16).intValue();
-		bgB = Integer.valueOf(bgColorString.substring(4,6), 16).intValue();
 	}
-	
-	bgColor = new Color(bgR, bgG, bgB);
 
-}
-//check for a passed bOx
-if (request.getParameter("bOx") != null && request.getParameter("bOx") != "") {
-	bOx = Integer.valueOf(request.getParameter("bOx")).intValue();
-}
-//check for a passed bOy
-if (request.getParameter("bOy") != null && request.getParameter("bOy") != "") {
-	bOy = Integer.valueOf(request.getParameter("bOy")).intValue();
-}
-//check for a passed pOx
-if (request.getParameter("pOx") != null && request.getParameter("pOx") != "") {
-	pOx = Integer.valueOf(request.getParameter("pOx")).intValue();
-}
-//check for a passed pOy
-if (request.getParameter("pOy") != null && request.getParameter("pOy") != "") {
-	pOy = Integer.valueOf(request.getParameter("pOy")).intValue();
-}
 
-//check for a passed pId
-if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
+if ( !"".equals(id) ) {
 	
 	//hard-coding as a product here
 	id = "Product:"+request.getParameter("pId");
@@ -156,8 +158,8 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 	//check if product model is null
 	if (product != null) {
 		//check for pSize
-		if (request.getParameter("pSize") != null && request.getParameter("pSize") != "") {
-			pSizeTemp = request.getParameter("pSize");
+		if ( !"".equals(pSize) ) {
+			pSizeTemp = pSize;
 			if ("a".equals(pSizeTemp) || "c".equals(pSizeTemp) || "cr".equals(pSizeTemp) || "ct".equals(pSizeTemp) || "cx".equals(pSizeTemp) || "p".equals(pSizeTemp) || "f".equals(pSizeTemp) || "z".equals(pSizeTemp)) {
 				pSize = pSizeTemp;
 			}
@@ -234,7 +236,7 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 		if (request.getParameter("bVal") != null && request.getParameter("bVal") != "") { bVal = request.getParameter("bVal"); }
 
 		//check for passed bType
-		if (request.getParameter("bType") != null) { 
+		if ( !"auto".equals(bType) ) { 
 			if ( "deal".equalsIgnoreCase(request.getParameter("bType")) ) {
 				if ("".trim().equals(bVal)) { bVal = "-1"; }
 				//check for no bVal
@@ -256,10 +258,25 @@ if (request.getParameter("pId") != null && request.getParameter("pId") != "") {
 				overlayUrl = null;
 			}
 		}else{
+			//do logic to determine which busrt to show
+				//isInCart
+				//deal
+				//isDisplayFave
+				//isDisplayNew
+				//isDisplayBackinStock
+			
+			//skipping isInCart
+				//skipping is fave
+
 			//try to get product's deal amount
 			bValTemp = product.getHighestDealPercentage();
-			if (bValTemp>=0) {
+			if (bValTemp>0) {
+				//is deal
 				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/deals/brst_"+bSize+"_"+bValTemp+".gif");
+			}else if (product.isNew()){
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_new.gif");
+			}else if (product.isBackInStock()) {
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_bis.gif");
 			}
 		}
 

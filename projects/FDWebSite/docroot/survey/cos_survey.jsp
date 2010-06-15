@@ -36,7 +36,9 @@
 		redirectSuccessPage = "/index.jsp";
 	}
 
-	String survey_source = NVL.apply((String)request.getAttribute("survey_source"), "cos_survey_source");
+	String survey_source = NVL.apply((String)request.getAttribute("survey_source"), NVL.apply(request.getParameter("survey_source"), "cos_survey_source"));
+	//reset attribute to be sure it's current
+		request.setAttribute("survey_source", survey_source);
 	
 	String survey_name = NVL.apply(request.getParameter("survey_name"), "cos_survey_name");
 	
@@ -245,9 +247,6 @@
 							<input type="image" value="clear" src="/media/images/buttons/COS_clear.gif" width="88" height="22" onclick="document.corporateServiceSurvey.reset(); return false;" />
 
 							<input type="hidden" name="successPage" value="<%= customSuccessPage %>" />
-							<% if(survey_source!=null && survey_source.trim().length()>0) { %>
-								<input type="hidden" name="survey_source" value="<%=survey_source%>" />
-							<% } %> 
 						</td>
 					</tr>
 				</form>
@@ -265,7 +264,6 @@
 				}
 			}
 		%>
-		
 	</tmpl:put>
 	
 </tmpl:insert>

@@ -34,6 +34,15 @@
 	public void log (boolean debug, String strToPrint) {
 		if (debug) { LOGGER.debug(strToPrint); }
 	}
+
+	public boolean isTrue (String testStr) {
+		return ("true".equalsIgnoreCase(testStr) || "t".equalsIgnoreCase(testStr));
+	}
+
+	public int retLesser(int a, int b) {
+		return (a<=b)?a:b;
+	}
+
 %>
 <%
 
@@ -46,7 +55,7 @@
 		String deptId = null; //department ID
 		String catId=NVL.apply(request.getParameter("catId"), ""); //category id
 	/*
-	 *	These are subAttributes, see comments further down for defs
+	 *	These are subAttributes, see comments in logic for defs
 	 */
 		boolean isTransactionalRow = true;
 		int minForRowVisibility = 0; //set by "min" sub attribute
@@ -55,6 +64,7 @@
 		boolean featuredOnly    = false; //set by "feats" sub attribute
 		boolean showDescrips    = true; //set by "descrips" sub attribute
 		int perRow              = 5; //used in generic_row
+		String perRowString     = ""; //used in multi_row
 		int perRowPP            = 6; //used in peak_produce
 		String dealsFrom        = "gro"; //set by "from" sub attritbute
 		String showInContextOf  = null; //set by "context" sub attritbute
@@ -67,6 +77,14 @@
 		String add              = ""; //add on additional Ids (& seperated)
 		boolean exFro           = false; //exclude "frozen" items
 		boolean exPer           = false; //exclude "perishable" items
+		boolean exDisc          = true; //exclude disc. products
+		boolean dynImg          = false; //use dynamic images
+		boolean newOnly         = false; //only new products
+		boolean showNewText     = true; //show NEW! on new products (text)
+		boolean bisOnly         = false; //only back in stock products
+		boolean igShowCh        = false; //ignore showChildren setting
+		boolean retHidFolds     = false; //return hidden folders
+		boolean retSecFolds     = false; //return secondary folders
 	/* Deals values */
 		int favoritesToShow		= 0;
 		int FAVS_PER_LINE		= 5; //number of products to show per line
@@ -99,6 +117,8 @@
 		Map params = new HashMap();
 		String baseUrl = "";
 		boolean pricingScriptIncluded = false; //pricing js for transactional, included once
+		String prefixURI = ""; //prefix for URLs (see: productImageTag.java)
+		String emailStyle = ""; //style to pass into ProductName tags
 
 	/* Transactional stuff */
 		List impressions = new ArrayList();

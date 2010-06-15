@@ -8,8 +8,8 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumDlvRestrictionType extends Enum {
 
-	public static final EnumDlvRestrictionType RECURRING_RESTRICTION = new EnumDlvRestrictionType("RRN", "Recurring Restriction");
 	public static final EnumDlvRestrictionType ONE_TIME_RESTRICTION = new EnumDlvRestrictionType("OTR", "One time Restriction");
+	public static final EnumDlvRestrictionType RECURRING_RESTRICTION = new EnumDlvRestrictionType("RRN", "Recurring Restriction");
 
 	private final String description;
 

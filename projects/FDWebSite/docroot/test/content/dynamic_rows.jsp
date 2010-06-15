@@ -1,5 +1,13 @@
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%
+	/*
+		Things that need to be added:
+
+			String prefixURI = ""; //prefix for URLs (see: productImageTag.java)
+			String emailStyle = ""; //style to pass into ProductName tags
+			MULTI
+	 */
+
 	String dyn_catId = NVL.apply(request.getParameter("dyn_catId"), "");
 
 	String dyn_min = NVL.apply(request.getParameter("dyn_min"), "");
@@ -18,13 +26,28 @@
 	String dyn_isTx = NVL.apply(request.getParameter("dyn_isTx"), "def");
 	String dyn_deals = NVL.apply(request.getParameter("dyn_deals"), "def");
 	String dyn_feats = NVL.apply(request.getParameter("dyn_feats"), "def");
+
+	String dyn_newOnly = NVL.apply(request.getParameter("dyn_newOnly"), "def");
+	String dyn_bisOnly = NVL.apply(request.getParameter("dyn_bisOnly"), "def");
+
 	String dyn_descrips = NVL.apply(request.getParameter("dyn_descrips"), "def");
 
 	String dyn_exPer = NVL.apply(request.getParameter("dyn_exPer"), "def");
 	String dyn_exFro = NVL.apply(request.getParameter("dyn_exFro"), "def");
+	String dyn_exDisc = NVL.apply(request.getParameter("dyn_exDisc"), "def");
 
 	String dyn_uniqG = NVL.apply(request.getParameter("dyn_uniqG"), "def");
 	String dyn_uniqR = NVL.apply(request.getParameter("dyn_uniqR"), "def");
+
+	String dyn_igShowCh = NVL.apply(request.getParameter("dyn_igShowCh"), "def");
+
+	String dyn_retHidFolds = NVL.apply(request.getParameter("dyn_retHidFolds"), "def");
+	String dyn_retSecFolds = NVL.apply(request.getParameter("dyn_retSecFolds"), "def");
+
+	String dyn_dynImg = NVL.apply(request.getParameter("dyn_dynImg"), "def");
+	String dyn_shortBools = NVL.apply(request.getParameter("dyn_shortBools"), "def");
+
+	String dyn_showNewText = NVL.apply(request.getParameter("dyn_showNewText"), "def");
 
 	String dyn_rowList = NVL.apply(request.getParameter("dyn_rowList"), "");
 	
@@ -59,7 +82,7 @@
 		}
 
 		var txtFields = new Array("dyn_catId", "dyn_context", "dyn_depth", "dyn_sortBy", "dyn_min", "dyn_perRow", "dyn_rows", "dyn_add");
-		var cbFields = new Array("dyn_isTx", "dyn_deals", "dyn_feats", "dyn_descrips", "dyn_uniqG", "dyn_uniqR", "dyn_exPer", "dyn_exFro");
+		var cbFields = new Array("dyn_isTx", "dyn_deals", "dyn_feats", "dyn_newOnly", "dyn_bisOnly", "dyn_descrips", "dyn_uniqG", "dyn_uniqR", "dyn_exPer", "dyn_exFro", "dyn_dynImg", "dyn_igShowCh", "dyn_retHidFolds", "dyn_retSecFolds", "dyn_exDisc", "dyn_igShowCh", "dyn_showNewText");
 
 		function constructAdd() {
 			var rowString = '';
@@ -78,11 +101,15 @@
 					if ($(cbFields[i]+'_T')) {
 						if ($(cbFields[i]+'_T').checked) {
 							if (rowString!='') { rowString += ':'; }
-							rowString += cbFields[i].replace("dyn_","")+"=true";
+							var TF = "";
+							($('dyn_shortBools_T').checked)?TF = "=t":TF = "=true";
+							rowString += cbFields[i].replace("dyn_","")+TF;
 						}
 						if ($(cbFields[i]+'_F').checked) {
 							if (rowString!='') { rowString += ':'; }
-							rowString += cbFields[i].replace("dyn_","")+"=false";
+							var TF = "";
+							($('dyn_shortBools_T').checked)?TF = "=f":TF = "=false";
+							rowString += cbFields[i].replace("dyn_","")+TF;
 						}
 					}
 				}
@@ -100,6 +127,8 @@
 			}
 			//and clear debug messages which is not in the cbFields list
 			$('dyn_myDebugPrint_D').checked = true;
+			//and clear short bools which is not in the cbFields list
+			$('dyn_shortBools_D').checked = true;
 		}
 
 		var cX = 0; var cY = 0; var rX = 0; var rY = 0;
@@ -169,10 +198,9 @@
 			}
 			return true;
 		}
-		function disableFields() {
-			var form = $('choices');
+		function disableFields(f) {
+			var form = $(f);
 			for (var i = 0; i<form.elements.length; i++) {
-				console.log(form.elements[i]);
 				if (form.elements[i].value == '') {
 					form.elements[i].disabled = true;
 				}
@@ -215,6 +243,24 @@
 			-webkit-border-top-left-radius: 5px;
 			-moz-border-radius-topright: 5px;
 			-webkit-border-top-right-radius: 5px;
+		}
+		.roundedBot {
+			-moz-border-radius-bottomleft: 5px;
+			-webkit-border-bottom-left-radius: 5px;
+			-moz-border-radius-bottomright: 5px;
+			-webkit-border-bottom-right-radius: 5px;
+		}
+		.roundedLeft {
+			-moz-border-radius-topleft: 5px;
+			-webkit-border-top-left-radius: 5px;
+			-moz-border-radius-bottomleft: 5px;
+			-webkit-border-bottom-left-radius: 5px;
+		}
+		.roundedRight {
+			-moz-border-radius-topright: 5px;
+			-webkit-border-top-right-radius: 5px;
+			-moz-border-radius-bottomright: 5px;
+			-webkit-border-bottom-right-radius: 5px;
 		}
 	</style>
 
@@ -377,6 +423,20 @@
 			on (true) or off (false) 
 		</div>
 	</div>
+	<div class="help" id="dyn_newOnly_help">
+		<div>newOnly = [true|false]   DEFAULT: false</div>
+		<div class="ind">
+			Show ONLY new products<br />
+			on (true) or off (false) 
+		</div>
+	</div>
+	<div class="help" id="dyn_bisOnly_help">
+		<div>bisOnly = [true|false]   DEFAULT: false</div>
+		<div class="ind">
+			Show ONLY back in stock products<br />
+			on (true) or off (false) 
+		</div>
+	</div>
 	<div class="help" id="dyn_exPer_help">
 		<div>exPer = [true|false]   DEFAULT: false</div>
 		<div class="ind">
@@ -393,11 +453,12 @@
 			on (true) or off (false) 
 		</div>
 	</div>
-	<div class="help" id="dyn_myDebugPrint_help">
-		Outputs debug messages directly to the page.<br />
-		DEFAULT: false (off)<br /><br />
-		Debug Messages look like:
-		<div class="myDebug" style="width: 150px; margin-left: 20px;">This is a debug message.</div>
+	<div class="help" id="dyn_exDisc_help">
+		<div>exDisc = [true|false]   DEFAULT: true</div>
+		<div class="ind">
+			Exclude Discontinued products<br />
+			on (true) or off (false) 
+		</div>
 	</div>
 	<div class="help" id="dyn_feats_help">
 		<div>feats = [true|false]   DEFAULT: false</div>
@@ -428,8 +489,70 @@
 		included in uniqueness check, then row2 will not recognize the<br />
 		products from row1 as duplicates.
 	</div>
+	<div class="help" id="dyn_igShowCh_help">
+		<div>igShowCh = [true|false]   DEFAULT: false</div>
+		<div class="ind">
+			Ignore the category's attribute "SHOWCHILDREN" setting<br />
+			on (true) or off (false) 
+		</div>
+	</div>
+	<div class="help" id="dyn_retHidFolds_help">
+		<div>retHidFolds = [true|false]   DEFAULT: false</div>
+		<div class="ind">
+			Gets folders with the "HIDDEN" attribute set to true<br />
+			on (true) or off (false) 
+		</div>
+	</div>
+	<div class="help" id="dyn_retSecFolds_help">
+		<div>retSecFolds = [true|false]   DEFAULT: false</div>
+		<div class="ind">
+			Gets folders with the "SECONDARY_CATEGORY" attribute set to true<br />
+			on (true) or off (false) 
+		</div>
+	</div>
+	<div class="help" id="dyn_showNewText_help">
+		<div>showNewText = [true|false]   DEFAULT: true</div>
+		<div class="ind">
+			Show the "NEW!" text on new product text links<br />
+			on (true) or off (false) 
+		</div>
+	</div>
 
-	<form action="/test/content/dynamic_rows.jsp" id="choices" name="choices" onSubmit="return disableFields();">
+	<div class="help" id="dyn_mediaPath_help">
+		<div>mediaPath</div>
+		<div class="ind">
+			Sets the path where media is pulled from.
+		</div>
+		<br />
+		This value does not come from the property, but is only set in code.
+	</div>
+
+
+	<div class="help" id="dyn_shortBools_help">
+		Use short Boolean values.<br />
+		DEFAULT: false (off)<br /><br />
+		This simply makes add choices use "t" and "f"<br />
+		instead of the whole words.<br /><br />
+		Either "true" or "t" are valid regardless of<br />
+		this setting.
+	</div>
+	<div class="help" id="dyn_dynImg_help">
+		Use dynamic image generation.<br />
+		DEFAULT: false (off)<br /><br />
+		This is also available independently at it's test page:
+		<div class="ind">
+			/test/graphics_testing/index.jsp
+		</div>
+	</div>
+	<div class="help" id="dyn_myDebugPrint_help">
+		Outputs debug messages directly to the page.<br />
+		DEFAULT: false (off)<br /><br />
+		Debug Messages look like:
+		<div class="myDebug" style="width: 150px; margin-left: 20px;">This is a debug message.</div>
+	</div>
+
+
+	<form action="/test/content/dynamic_rows.jsp" id="choices" name="choices" onSubmit="return disableFields(this.id);">
 		<table width="75%" border="0">
 			<tr>
 				<td>catId: <a href="#" onclick="return false;" onmouseover="helper('dyn_catId');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
@@ -473,112 +596,278 @@
 		<table width="75%" border="0">
 			<tr>
 				<td valign="top">
-					<table border="0" cellspacing="0" cellpadding="0">
+					<table width="100%">
 						<tr>
-							<td width="20%"><!--  --></td><td width="1%" align="center" class="roundedTop bgCCC"> </td><td width="1%" align="center">T</td><td width="1%" align="center">F</td>
-							<td width="10%" rowspan="6"><!--  --></td>
-							<td width="20%"><!--  --></td><td width="1%" align="center" class="roundedTop bgCCC"> </td><td width="1%" align="center">T</td><td width="1%" align="center">F</td>
-						</tr>
-						<tr>
-							<td>isTx:<a href="#" onclick="return false;" onmouseover="helper('dyn_isTx');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_isTx_D" name="dyn_isTx" value="" <%= ("def".equals(dyn_isTx))?"checked=\"true\"":"" %> />
+							<td valign="top">
+								<table border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<th colspan="4" align="center" class="roundedLeft roundedRight bgCCC">SUB-ATTRIBUTES</th>
+									</tr>
+									<tr>
+										<td colspan="4" align="center"><img src="/media_stat/images/layout/clear.gif" width="5" height="3" border="0" alt="" /></td>
+									</tr>
+									<tr>
+										<td width="10%"><!--  --></td><td width="1%" align="center" class="roundedTop bgCCC"> </td><td width="1%" align="center">T</td><td width="1%" align="center">F</td>
+										<td width="1%" rowspan="12"><!--  --></td>
+									</tr>
+									<tr>
+										<td>isTx:<a href="#" onclick="return false;" onmouseover="helper('dyn_isTx');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_isTx_D" name="dyn_isTx" value="" <%= ("def".equals(dyn_isTx))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_isTx_T" name="dyn_isTx" value="true" <%= ("true".equals(dyn_isTx))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_isTx_F" name="dyn_isTx" value="false" <%= ("false".equals(dyn_isTx))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>deals:<a href="#" onclick="return false;" onmouseover="helper('dyn_deals');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_deals_D" name="dyn_deals" value="" <%= ("def".equals(dyn_deals))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_deals_T" name="dyn_deals" value="true" <%= ("true".equals(dyn_deals))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_deals_F" name="dyn_deals" value="false" <%= ("false".equals(dyn_deals))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>feats:<a href="#" onclick="return false;" onmouseover="helper('dyn_feats');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_feats_D" name="dyn_feats" value="" <%= ("def".equals(dyn_feats))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_feats_T" name="dyn_feats" value="true" <%= ("true".equals(dyn_feats))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_feats_F" name="dyn_feats" value="false" <%= ("false".equals(dyn_feats))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>newOnly:<a href="#" onclick="return false;" onmouseover="helper('dyn_newOnly');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_newOnly_D" name="dyn_newOnly" value="" <%= ("def".equals(dyn_newOnly))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_newOnly_T" name="dyn_newOnly" value="true" <%= ("true".equals(dyn_newOnly))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_newOnly_F" name="dyn_newOnly" value="false" <%= ("false".equals(dyn_newOnly))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>bisOnly:<a href="#" onclick="return false;" onmouseover="helper('dyn_bisOnly');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_bisOnly_D" name="dyn_bisOnly" value="" <%= ("def".equals(dyn_bisOnly))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_bisOnly_T" name="dyn_bisOnly" value="true" <%= ("true".equals(dyn_bisOnly))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_bisOnly_F" name="dyn_bisOnly" value="false" <%= ("false".equals(dyn_bisOnly))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>showNewText:<a href="#" onclick="return false;" onmouseover="helper('dyn_showNewText');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_showNewText_D" name="dyn_showNewText" value="" <%= ("def".equals(dyn_showNewText))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_showNewText_T" name="dyn_showNewText" value="true" <%= ("true".equals(dyn_showNewText))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_showNewText_F" name="dyn_showNewText" value="false" <%= ("false".equals(dyn_showNewText))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>exPer:<a href="#" onclick="return false;" onmouseover="helper('dyn_exPer');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_exPer_D" name="dyn_exPer" value="" <%= ("def".equals(dyn_exPer))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exPer_T" name="dyn_exPer" value="true" <%= ("true".equals(dyn_exPer))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exPer_F" name="dyn_exPer" value="false" <%= ("false".equals(dyn_exPer))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>exFro:<a href="#" onclick="return false;" onmouseover="helper('dyn_exFro');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_exFro_D" name="dyn_exFro" value="" <%= ("def".equals(dyn_exFro))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exFro_T" name="dyn_exFro" value="true" <%= ("true".equals(dyn_exFro))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exFro_F" name="dyn_exFro" value="false" <%= ("false".equals(dyn_exFro))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>exDisc:<a href="#" onclick="return false;" onmouseover="helper('dyn_exDisc');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_exDisc_D" name="dyn_exDisc" value="" <%= ("def".equals(dyn_exDisc))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exDisc_T" name="dyn_exDisc" value="true" <%= ("true".equals(dyn_exDisc))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_exDisc_F" name="dyn_exDisc" value="false" <%= ("false".equals(dyn_exDisc))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>igShowCh:<a href="#" onclick="return false;" onmouseover="helper('dyn_igShowCh');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_igShowCh_D" name="dyn_igShowCh" value="" <%= ("def".equals(dyn_igShowCh))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_igShowCh_T" name="dyn_igShowCh" value="true" <%= ("true".equals(dyn_igShowCh))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_igShowCh_F" name="dyn_igShowCh" value="false" <%= ("false".equals(dyn_igShowCh))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td class="roundedBot bgCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+									</tr>
+								</table>
 							</td>
-							<td>
-								<input type="radio" id="dyn_isTx_T" name="dyn_isTx" value="true" <%= ("true".equals(dyn_isTx))?"checked=\"true\"":"" %> />
+							<td valign="top">
+								<img src="/media_stat/images/layout/clear.gif" width="5" height="3" border="0" alt="" />
 							</td>
-							<td>
-								<input type="radio" id="dyn_isTx_F" name="dyn_isTx" value="false" <%= ("false".equals(dyn_isTx))?"checked=\"true\"":"" %> />
-							</td>
-							<td>uniqG:<a href="#" onclick="return false;" onmouseover="helper('dyn_uniqG');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_uniqG_D" name="dyn_uniqG" value="" <%= ("def".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_uniqG_T" name="dyn_uniqG" value="true" <%= ("true".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_uniqG_F" name="dyn_uniqG" value="false" <%= ("false".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
-							</td>
-						</tr>
-						<tr>
-							<td>deals:<a href="#" onclick="return false;" onmouseover="helper('dyn_deals');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_deals_D" name="dyn_deals" value="" <%= ("def".equals(dyn_deals))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_deals_T" name="dyn_deals" value="true" <%= ("true".equals(dyn_deals))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_deals_F" name="dyn_deals" value="false" <%= ("false".equals(dyn_deals))?"checked=\"true\"":"" %> />
-							</td>
-							<td>uniqR:<a href="#" onclick="return false;" onmouseover="helper('dyn_uniqR');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_uniqR_D" name="dyn_uniqR" value="" <%= ("def".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_uniqR_T" name="dyn_uniqR" value="true" <%= ("true".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_uniqR_F" name="dyn_uniqR" value="false" <%= ("false".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
-							</td>
-						</tr>
-						<tr>
-							<td>exPer:<a href="#" onclick="return false;" onmouseover="helper('dyn_exPer');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_exPer_D" name="dyn_exPer" value="" <%= ("def".equals(dyn_exPer))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_exPer_T" name="dyn_exPer" value="true" <%= ("true".equals(dyn_exPer))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_exPer_F" name="dyn_exPer" value="false" <%= ("false".equals(dyn_exPer))?"checked=\"true\"":"" %> />
-							</td>
-							<td>exFro:<a href="#" onclick="return false;" onmouseover="helper('dyn_exFro');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_exFro_D" name="dyn_exFro" value="" <%= ("def".equals(dyn_exFro))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_exFro_T" name="dyn_exFro" value="true" <%= ("true".equals(dyn_exFro))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_exFro_F" name="dyn_exFro" value="false" <%= ("false".equals(dyn_exFro))?"checked=\"true\"":"" %> />
-							</td>
-						</tr>
-						<tr>
-							<td>feats:<a href="#" onclick="return false;" onmouseover="helper('dyn_feats');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_feats_D" name="dyn_feats" value="" <%= ("def".equals(dyn_feats))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_feats_T" name="dyn_feats" value="true" <%= ("true".equals(dyn_feats))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_feats_F" name="dyn_feats" value="false" <%= ("false".equals(dyn_feats))?"checked=\"true\"":"" %> />
-							</td>
-							<td><!--  --></td>
-							<td class="bgCCC"><!--  --></td><td><!--  --></td><td><!--  --></td>
-						</tr>
-						<tr>
-							<td>descrips:<a href="#" onclick="return false;" onmouseover="helper('dyn_descrips');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_descrips_D" name="dyn_descrips" value="" <%= ("def".equals(dyn_descrips))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_descrips_T" name="dyn_descrips" value="true" <%= ("true".equals(dyn_descrips))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_descrips_F" name="dyn_descrips" value="false" <%= ("false".equals(dyn_descrips))?"checked=\"true\"":"" %> />
-							</td>
-							<td>print debug msgs:<a href="#" onclick="return false;" onmouseover="helper('dyn_myDebugPrint');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
-							<td class="bgCCC">
-								<input type="radio" id="dyn_myDebugPrint_D" name="dyn_myDebugPrint" value="" <%= ("def".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_myDebugPrint_T" name="dyn_myDebugPrint" value="true" <%= ("true".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
-							</td>
-							<td>
-								<input type="radio" id="dyn_myDebugPrint_F" name="dyn_myDebugPrint" value="false" <%= ("false".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
+							<td valign="top" align="right">
+								<table border="0" cellspacing="0" cellpadding="0">
+									<tr>
+										<td width="10%"><!--  --></td><td width="1%" align="center" class="roundedTop bgCCC"> </td><td width="1%" align="center">T</td><td width="1%" align="center">F</td>
+										<td width="1%" rowspan="12"><!--  --></td>
+									</tr>
+									<tr>
+										<td>uniqG:<a href="#" onclick="return false;" onmouseover="helper('dyn_uniqG');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_uniqG_D" name="dyn_uniqG" value="" <%= ("def".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_uniqG_T" name="dyn_uniqG" value="true" <%= ("true".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_uniqG_F" name="dyn_uniqG" value="false" <%= ("false".equals(dyn_uniqG))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>uniqR:<a href="#" onclick="return false;" onmouseover="helper('dyn_uniqR');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_uniqR_D" name="dyn_uniqR" value="" <%= ("def".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_uniqR_T" name="dyn_uniqR" value="true" <%= ("true".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_uniqR_F" name="dyn_uniqR" value="false" <%= ("false".equals(dyn_uniqR))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>descrips:<a href="#" onclick="return false;" onmouseover="helper('dyn_descrips');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_descrips_D" name="dyn_descrips" value="" <%= ("def".equals(dyn_descrips))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_descrips_T" name="dyn_descrips" value="true" <%= ("true".equals(dyn_descrips))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_descrips_F" name="dyn_descrips" value="false" <%= ("false".equals(dyn_descrips))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>retHidFolds:<a href="#" onclick="return false;" onmouseover="helper('dyn_retHidFolds');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_retHidFolds_D" name="dyn_retHidFolds" value="" <%= ("def".equals(dyn_retHidFolds))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_retHidFolds_T" name="dyn_retHidFolds" value="true" <%= ("true".equals(dyn_retHidFolds))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_retHidFolds_F" name="dyn_retHidFolds" value="false" <%= ("false".equals(dyn_retHidFolds))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>retSecFolds:<a href="#" onclick="return false;" onmouseover="helper('dyn_retSecFolds');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_retSecFolds_D" name="dyn_retSecFolds" value="" <%= ("def".equals(dyn_retSecFolds))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_retSecFolds_T" name="dyn_retSecFolds" value="true" <%= ("true".equals(dyn_retSecFolds))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_retSecFolds_F" name="dyn_retSecFolds" value="false" <%= ("false".equals(dyn_retSecFolds))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td class="roundedBot bgCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+									</tr>
+									<tr>
+										<td colspan="4" align="center"><img src="/media_stat/images/layout/clear.gif" width="5" height="3" border="0" alt="" /></td>
+									</tr>
+									<tr>
+										<th colspan="4" align="center" class="roundedLeft roundedRight bgCCC">DEBUG</th>
+									</tr>
+									<tr>
+										<td colspan="4" align="center"><img src="/media_stat/images/layout/clear.gif" width="5" height="3" border="0" alt="" /></td>
+									</tr>
+									<tr>
+										<td width="20%"><!--  --></td><td width="1%" align="center" class="roundedTop bgCCC"> </td><td width="1%" align="center">T</td><td width="1%" align="center">F</td>
+									</tr>
+									<tr>
+										<td>use short bools:<a href="#" onclick="return false;" onmouseover="helper('dyn_shortBools');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_shortBools_D" name="dyn_shortBools" value="" <%= ("def".equals(dyn_shortBools))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_shortBools_T" name="dyn_shortBools" value="true" <%= ("true".equals(dyn_shortBools))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_shortBools_F" name="dyn_shortBools" value="false" <%= ("false".equals(dyn_shortBools))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>use dynamic images:<a href="#" onclick="return false;" onmouseover="helper('dyn_dynImg');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_dynImg_D" name="dyn_dynImg" value="" <%= ("def".equals(dyn_dynImg))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_dynImg_T" name="dyn_dynImg" value="true" <%= ("true".equals(dyn_dynImg))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_dynImg_F" name="dyn_dynImg" value="false" <%= ("false".equals(dyn_dynImg))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td>print debug msgs:<a href="#" onclick="return false;" onmouseover="helper('dyn_myDebugPrint');" onmouseout="javascript: hideContent('overDiv');">?</a></td>
+										<td class="bgCCC">
+											<input type="radio" id="dyn_myDebugPrint_D" name="dyn_myDebugPrint" value="" <%= ("def".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_myDebugPrint_T" name="dyn_myDebugPrint" value="true" <%= ("true".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
+										</td>
+										<td>
+											<input type="radio" id="dyn_myDebugPrint_F" name="dyn_myDebugPrint" value="false" <%= ("false".equals(dyn_myDebugPrint))?"checked=\"true\"":"" %> />
+										</td>
+									</tr>
+									<tr>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td class="roundedBot bgCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+										<td><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt="" /></td>
+									</tr>
+								</table>
 							</td>
 						</tr>
 					</table>

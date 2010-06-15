@@ -294,16 +294,31 @@ public class ProductImageTag extends BodyTagSupport {
 			if (this.isInCart) {
 				// Smart Savings - display "In Cart" burst
 				// No opacity needed since burst image is already faded
-				buf.append("<img alt=\"IN CART\" src=\"/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
+				buf.append("<img alt=\"IN CART\" src=\"");
+					if (this.prefix != null)
+						buf.append(this.prefix);
+				buf.append("/media_stat/images/bursts/in_cart" + (supportsPNG ? ".png" : ".gif") + "\" width=\"35px\" height=\"35px\" style=\"border:0;\">\n");
 			} else if (deal > 0) {
 				String burstImage = "/media_stat/images/deals/brst_sm_" + deal + (supportsPNG ? ".png" : ".gif");
-				buf.append("<img alt=\"SAVE " + deal + "\" src=\""+burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"SAVE " + deal + "\" src=\"");
+					if (this.prefix != null)
+						buf.append(this.prefix);
+				buf.append(burstImage+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			} else if (pl.isDisplayFave()) {
-				buf.append("<img alt=\"FAVE\" src=\"/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"FAVE\" src=\"");
+					if (this.prefix != null)
+						buf.append(this.prefix);
+				buf.append("/media_stat/images/bursts/brst_sm_fave"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			} else if (pl.isDisplayNew() && !this.isNewProductPage) {
-				buf.append("<img alt=\"NEW\" src=\"/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"NEW\" src=\"");
+					if (this.prefix != null)
+						buf.append(this.prefix);
+				buf.append("/media_stat/images/bursts/brst_sm_new"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}else if (pl.isDisplayBackinStock()) {
-				buf.append("<img alt=\"BACK\" src=\"/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
+				buf.append("<img alt=\"BACK\" src=\"");
+					if (this.prefix != null)
+						buf.append(this.prefix);
+				buf.append("/media_stat/images/bursts/brst_sm_bis"+(supportsPNG ? ".png" : ".gif")+"\" width=\"35px\" height=\"35px\" style=\""+ burstImageStyle +"\">\n");
 			}
 			if (shouldGenerateAction) {
 				buf.append("</a>\n");
