@@ -62,6 +62,7 @@ import com.freshdirect.cms.ui.translator.TranslatorFromGwt;
 import com.freshdirect.cms.ui.translator.TranslatorToGwt;
 import com.freshdirect.cms.validation.ContentValidationException;
 import com.freshdirect.cms.validation.ContentValidationMessage;
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -86,6 +87,10 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
         CmsManager.getInstance();
     }
     
+    
+    public String getGoogleMapsApiKey() {
+    	return FDStoreProperties.getGoogleMapsAPIKey();
+    }
 
     
     

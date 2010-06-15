@@ -15,6 +15,7 @@ import com.freshdirect.cms.ui.client.fields.CustomGridField;
 import com.freshdirect.cms.ui.client.fields.EnumField;
 import com.freshdirect.cms.ui.client.fields.FieldResetPlugin;
 import com.freshdirect.cms.ui.client.fields.InheritanceField;
+import com.freshdirect.cms.ui.client.fields.LocationField;
 import com.freshdirect.cms.ui.client.fields.OneToManyRelationField;
 import com.freshdirect.cms.ui.client.fields.OneToOneRelationField;
 import com.freshdirect.cms.ui.client.fields.PrimaryHomeSelectorField;
@@ -90,6 +91,11 @@ public final class FieldFactory {
 				
 				aField = editor;
 				break;
+			case GmapsLocation:
+				aField = new LocationField();
+				aField.setOriginalValue(attribute.getValue());
+				aField.setValue(attribute.getValue());
+				break;
 			}
 		}
 
@@ -104,10 +110,11 @@ public final class FieldFactory {
 				TextField<String> field = new TextField<String>();				
 				field.setValue((String) value);
 				aField = field;
-			} else if ("text".equals(type)) {
-                            TextArea field = new TextArea();                              
-                            field.setValue((String) value);
-                            aField = field;
+			} else if ("text".equals(type)) {				
+                TextArea field = new TextArea();                              
+                field.setValue((String) value);
+                aField = field;
+                            
 			} else if ("double".equals(type)) {
 				NumberField field = new NumberField();	
 				field.setPropertyEditorType(Double.class);			

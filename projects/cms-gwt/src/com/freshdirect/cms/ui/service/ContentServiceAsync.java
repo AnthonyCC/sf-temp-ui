@@ -49,4 +49,6 @@ public interface ContentServiceAsync {
 	void getPublishData(ChangeSetQuery publishId, AsyncCallback<GwtPublishData> callback);
 
     void getNavigableRelations(String contentType, AsyncCallback<NavigableRelationInfo> callback);
+    
+    void getGoogleMapsApiKey(AsyncCallback<String> callback);
 }

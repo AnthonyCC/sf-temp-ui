@@ -1633,7 +1633,7 @@
 	        <classpath>
                     <pathelement location="projects/@{project}/src"/>
                     <path refid="@{classpathref}"/>
-                    <pathelement location="${thirdparty.home}/gwt/gwt-dev-oophm.jar"/>
+                    <pathelement location="${thirdparty.home}/gwt/gwt-dev.jar"/>
                 </classpath>
                 <!-- add jvmarg -Xss16M or similar if you see a StackOverflowError -->
                 <jvmarg value="-Xmx512M"/>
@@ -1661,6 +1661,7 @@
             <pathelement location="${work.dir}/ERPServices.jar"/>
 			<pathelement location="${thirdparty.home}/gxt.jar"/>
 			<pathelement location="${thirdparty.home}/gwt/gwt-user.jar"/>
+            <pathelement location="${thirdparty.home}/gwt/gwt-maps.jar"/>
             		<pathelement location="${thirdparty.home}/poi-3.5-FINAL-20090928.jar"/> 
 		</path>
             <property name="cms-gwt.path" value="projects/cms-gwt" />

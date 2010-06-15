@@ -32,6 +32,8 @@ public interface ContentService extends RemoteService {
 
     String generateUniqueId(String type) throws ServerException;
 
+    String getGoogleMapsApiKey() throws ServerException;
+    
     /**
      * 
      * @param models

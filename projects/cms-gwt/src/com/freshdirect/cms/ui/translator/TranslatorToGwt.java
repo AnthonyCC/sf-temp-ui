@@ -181,12 +181,14 @@ public class TranslatorToGwt {
 					
 					tabDef.addAttributeKey( sectionId, attributeKey );
 					
-					String attrType = attrKey.getType().getName();
+					String attrType = attrKey.getType().getName();								
+					
 					if ( !"CmsField".equals( attrType ) ) {
-						// we have to figure out, what type .. it must be a Relationship ...
-						RelationshipDefI attributeDef = (RelationshipDefI)typeDef.getAttributeDef( attributeKey );
-
+						
 						if ( "CmsGridField".equals( attrType ) ) {
+							// we have to figure out, what type .. it must be a Relationship ...
+							RelationshipDefI attributeDef = (RelationshipDefI)typeDef.getAttributeDef( attributeKey );
+							
 							if ( attributeDef.getContentTypes().size() != 1 ) {
 								throw new ServerException( "Relation from " + typeDef.getName() + "::" + attributeKey
 										+ " contains more than 1 type: " + attributeDef.getContentTypes() );

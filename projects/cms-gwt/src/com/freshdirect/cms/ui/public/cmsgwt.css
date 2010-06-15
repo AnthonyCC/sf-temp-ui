@@ -715,3 +715,9 @@ dl.bulk-loader-preview-legend dd {
 	padding: 0px;
 }
 
+.google-maps-panel {
+	border: 1px solid lightgrey;
+	padding: 10px;
+	margin-top: 10px;
+	background-color: #F2F2F2;
+}

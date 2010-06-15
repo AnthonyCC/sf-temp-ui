@@ -12,6 +12,7 @@
 	  
       <!-- Other module inherits                                      -->
       <inherits name='com.extjs.gxt.ui.GXT'/>	   
+      <inherits name='com.google.gwt.maps.GoogleMaps' />
 
       <!-- Specify the app entry point class.                         -->
       <entry-point class='com.freshdirect.cms.ui.client.CmsGwt'/>

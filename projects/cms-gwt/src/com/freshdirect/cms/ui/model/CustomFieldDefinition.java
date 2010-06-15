@@ -9,7 +9,7 @@ public class CustomFieldDefinition implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public enum Type {
-        ProductConfigEditor, PrimaryHomeSelection, VariationMatrix, Grid
+        ProductConfigEditor, PrimaryHomeSelection, VariationMatrix, Grid, GmapsLocation
     }
 
     Type                        type;

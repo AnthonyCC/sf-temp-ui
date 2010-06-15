@@ -112,6 +112,33 @@
 		</pages>
 	</CmsEditor>
 	
+	<CmsEditor id="producer">
+		<contentType>Producer</contentType>
+		<pages>
+			<CmsPage>
+				<title>Core Attributes</title>
+				<sections>
+					<CmsSection>
+						<title>Core</title>
+						<fields>
+							<CmsField><attribute>ADDRESS</attribute></CmsField>
+							<CmsField><attribute>FULL_NAME</attribute></CmsField>
+							<CmsCustomField>
+								<attribute>GMAPS_LOCATION</attribute>
+								<component>GmapsLocation</component>
+							</CmsCustomField>							
+							<CmsField><attribute>brand</attribute></CmsField>
+							<CmsField><attribute>brand_category</attribute></CmsField>
+							<CmsField><attribute>bubble_content</attribute></CmsField>
+							<CmsField><attribute>icon</attribute></CmsField>
+							<CmsField><attribute>icon_shadow</attribute></CmsField>
+							<CmsField><attribute>producer_type</attribute></CmsField>
+						</fields>
+					</CmsSection>
+				</sections>
+			</CmsPage>
+		</pages>
+	</CmsEditor>
 	
 	<CmsEditor id="category">
 		<contentType>Category</contentType>
@@ -308,8 +335,8 @@
 			</CmsPage>
 			<CmsPage ref="product_setup"/>
 		</pages>
-	</CmsEditor>
-		
+	</CmsEditor>	
+	
 	<CmsEditor id="product">
 		<contentType>Product</contentType>
 		<pages>

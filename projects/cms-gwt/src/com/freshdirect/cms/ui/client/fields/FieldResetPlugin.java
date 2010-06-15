@@ -10,6 +10,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ComponentPlugin;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.form.Field;
+import com.freshdirect.cms.ui.client.CmsGwt;
 import com.google.gwt.user.client.Event;
 
 public class FieldResetPlugin extends ToolButton implements ComponentPlugin {
@@ -21,7 +22,7 @@ public class FieldResetPlugin extends ToolButton implements ComponentPlugin {
 		public void handleEvent(BaseEvent be) {
 			Serializable oldValue = field.getOriginalValue();
 			Serializable fieldValue = field.getValue();
-			System.out.println("changed: " + field.getFieldLabel() + " " + oldValue +" -> " + fieldValue);
+			CmsGwt.consoleLog("changed: " + field.getFieldLabel() + " " + oldValue +" -> " + fieldValue);
 			if( (fieldValue!=null && fieldValue.equals(oldValue)) || (fieldValue==null && oldValue==null) ) {
 				hide();
 			}
