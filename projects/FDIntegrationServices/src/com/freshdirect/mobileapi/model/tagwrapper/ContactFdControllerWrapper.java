@@ -29,6 +29,7 @@ public class ContactFdControllerWrapper extends ControllerTagWrapper implements 
 
         addRequestValue("salePK", orderId);
         addRequestValue("message", message);
+	addRequestValue("sendMessage.x",10);
 
         addExpectedRequestValues(new String[] { "email", "first_name", "last_name", "home_phone", "home_phone_ext", "work_phone",
                 "work_phone_ext", "alt_phone", "alt_phone_ext" }, new String[] {});

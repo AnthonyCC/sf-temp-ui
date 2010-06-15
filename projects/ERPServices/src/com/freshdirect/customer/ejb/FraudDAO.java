@@ -127,7 +127,7 @@ public class FraudDAO implements java.io.Serializable {
 		if (erpCustomerId != null) {
 			dlvQ.append("AND S.CUSTOMER_ID <> ? ");
 		}
-		dlvQ.append("AND SA.ACTION_DATE < ? ");
+		dlvQ.append("AND SA.ACTION_DATE > ? ");
 		/*dlvQ.append("UNION ALL ");
 		dlvQ.append("SELECT count(ID) AS CNT FROM CUST.ADDRESS A ");
 		dlvQ.append("WHERE A.SCRUBBED_ADDRESS = ? ");
