@@ -7,7 +7,16 @@ import org.extremecomponents.table.view.html.ColumnBuilder;
 public class FDBooleanCell extends FDBaseCell  {
 	
 	public String getExportDisplay(TableModel model, Column column) {
-        return null;
+		
+        try {        	
+        	Boolean cellValue = (Boolean)column.getPropertyValue();
+        	if(cellValue != null && cellValue) {
+        		return "Match";
+        	} else {
+        		return "NoMatch";
+        	}
+        } catch (Exception e) {e.printStackTrace();}
+        return "None";
     }
 
     public String getHtmlDisplay(TableModel model, Column column) {    	
