@@ -89,9 +89,6 @@
 
 		//set prefix
 		prefix = "whats_good";
-
-		//set debug out to page
-		myDebugPrint = true;
 	%>
 
 
