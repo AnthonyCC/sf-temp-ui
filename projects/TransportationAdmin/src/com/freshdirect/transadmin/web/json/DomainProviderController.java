@@ -38,13 +38,15 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 		this.domainManagerService = domainManagerService;
 	}
 	
-	public boolean copySchedule(String ids, String sourceWeekOf, String destinationWeekOf) {
+	public boolean copySchedule(String ids, String sourceWeekOf, String destinationWeekOf, String day) {
 		String[] employeeIds = StringUtil.decodeStrings(ids);
-		getDomainManagerService().copyScheduleGroup(employeeIds, getFromClientDate(sourceWeekOf), getFromClientDate(destinationWeekOf));
+		getDomainManagerService().copyScheduleGroup(employeeIds, getFromClientDate(sourceWeekOf)
+																		, getFromClientDate(destinationWeekOf)
+																		, day);
 		return false;
 	}
 	
-	public Map<String, List<ScheduleCheckResult>> checkSchedule(String ids, String sourceWeekOf,String destinationWeekOf) {
+	public Map<String, List<ScheduleCheckResult>> checkSchedule(String ids, String sourceWeekOf,String destinationWeekOf, String day) {
 		
 		String[] employeeIds = StringUtil.decodeStrings(ids);
 		Map<String, List<ScheduleCheckResult>> result = new HashMap<String, List<ScheduleCheckResult>>();
@@ -57,7 +59,7 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 		if(employeeIds != null) {
 			for(String empId : employeeIds) {
 				EmployeeInfo info = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(empId, getEmployeeManagerService());
-				Collection sourceEmpSchedule = getDomainManagerService().getScheduleEmployee(empId, getParsedDate(sSourceWeekOf));
+				Collection sourceEmpSchedule = getScheduleEmployee(empId, sSourceWeekOf, day);
 				
 				if(info != null) {
 					if(sourceEmpSchedule != null && sourceEmpSchedule.size() > 0) {
@@ -71,7 +73,7 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 								, info.getEmployeeId()
 								, null));
 					}
-					Collection destinationEmpSchedule = getDomainManagerService().getScheduleEmployee(empId, getParsedDate(dSourceWeekOf));
+					Collection destinationEmpSchedule = getScheduleEmployee(empId, dSourceWeekOf, day);
 					
 					if(destinationEmpSchedule != null && destinationEmpSchedule.size() > 0) {
 						destinationMessages.add(new ScheduleCheckResult(info.getFirstName()
@@ -90,6 +92,14 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 		result.put("S", sourceMessages);
 		result.put("D", destinationMessages);
 		return result;
+	}
+	
+	private Collection getScheduleEmployee(String empId, Date weekOf, String day) {
+		if(day != null && !day.equalsIgnoreCase("ALL")) {
+			return getDomainManagerService().getScheduleEmployee(empId, getParsedDate(weekOf), day);
+		} else {
+			return getDomainManagerService().getScheduleEmployee(empId, getParsedDate(weekOf));
+		}
 	}
 	
 	public Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String ids) {

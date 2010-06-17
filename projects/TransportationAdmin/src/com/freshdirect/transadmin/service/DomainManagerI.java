@@ -137,7 +137,9 @@ public interface DomainManagerI extends BaseManagerI {
 			
 	void saveScheduleGroup(Collection schedules, String[] employeeIds, Date weekOf);
 	
-	void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf);
+	void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf, String day);
+	
+	Collection getScheduleEmployee(String employeeId, String weekOf, String day) throws DataAccessException;
 	
 	Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException;
 	

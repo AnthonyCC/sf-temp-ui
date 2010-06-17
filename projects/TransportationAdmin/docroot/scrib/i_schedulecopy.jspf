@@ -4,10 +4,10 @@
       var CP_TYPE = "CP_TOMASTER";
       var cpPanel;
       
-      	function copyDataEx(source, destination, cpType) {
+      	function copyDataEx(source, destination, cpType, dayOfWeek) {
       		try { 
       			var result = jsonrpcClient.AsyncDomainProvider.checkSchedule(document.getElementById("employeeIds").value 
-																					, source, destination);
+																					, source, destination, dayOfWeek);
 				showForm(result.map.S.list, result.map.D.list);
 				CP_TYPE = cpType;
 			} catch(exp) {
@@ -19,7 +19,8 @@
       		if(document.getElementById("cpScheduleDate").value.trim().length > 0) {
 				copyDataEx(document.getElementById("cpScheduleDate").value
 										, document.getElementById("weekOf").value
-										, "CP_FROMWEEK");
+										, "CP_FROMWEEK"
+										, document.getElementById("scribDay").value);
 			} else {
 				alert("Select a copy week of!");
 			}														
@@ -29,7 +30,8 @@
 			if(document.getElementById("cpScheduleDate").value.trim().length > 0) {
 				copyDataEx(document.getElementById("weekOf").value
 										, document.getElementById("cpScheduleDate").value
-										, "CP_TOWEEK");
+										, "CP_TOWEEK"										
+										, document.getElementById("scribDay").value);
 				
 			} else {
 				alert("Select a copy week of!");
@@ -37,11 +39,11 @@
 		}
 		
       	function copyFromMaster() {
-			copyDataEx("01/01/1900", document.getElementById("weekOf").value, "CP_FROMMASTER");								
+			copyDataEx("01/01/1900", document.getElementById("weekOf").value, "CP_FROMMASTER", document.getElementById("scribDayMaster").value);								
 		}
 	
 		function copyToMaster() {
-			copyDataEx(document.getElementById("weekOf").value, "01/01/1900", "CP_TOMASTER");
+			copyDataEx(document.getElementById("weekOf").value, "01/01/1900", "CP_TOMASTER", document.getElementById("scribDayMaster").value);
 		}
 		
 		function copyData() {
@@ -49,19 +51,23 @@
 			if(CP_TYPE == "CP_FROMMASTER") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																, "01/01/1900"
-																, document.getElementById("weekOf").value );
+																, document.getElementById("weekOf").value 
+																, document.getElementById("scribDayMaster").value);
 			} else if(CP_TYPE == "CP_TOMASTER") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																	, document.getElementById("weekOf").value 
-																	, "01/01/1900");
+																	, "01/01/1900"
+																	, document.getElementById("scribDayMaster").value);
 			} else if(CP_TYPE == "CP_FROMWEEK") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																	, document.getElementById("cpScheduleDate").value 
-																	, document.getElementById("weekOf").value);
+																	, document.getElementById("weekOf").value
+																	, document.getElementById("scribDay").value);
 			} else if(CP_TYPE == "CP_TOWEEK") {
 				result = jsonrpcClient.AsyncDomainProvider.copySchedule(copyDataCallback, document.getElementById("employeeIds").value 
 																	, document.getElementById("weekOf").value 
-																	, document.getElementById("cpScheduleDate").value);
+																	, document.getElementById("cpScheduleDate").value
+																	, document.getElementById("scribDay").value);
 			}
 		}
 		

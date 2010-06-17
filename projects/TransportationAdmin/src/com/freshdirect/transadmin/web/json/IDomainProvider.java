@@ -9,9 +9,9 @@ import com.freshdirect.transadmin.web.model.ScheduleCheckResult;
 
 public interface IDomainProvider {
 	
-	boolean copySchedule(String employeeIds, String sourceWeekOf, String destinationWeekOf);
+	boolean copySchedule(String employeeIds, String sourceWeekOf, String destinationWeekOf, String day);
 	
-	Map<String, List<ScheduleCheckResult>> checkSchedule(String employeeIds, String sourceWeekOf, String destinationWeekOf);
+	Map<String, List<ScheduleCheckResult>> checkSchedule(String employeeIds, String sourceWeekOf, String destinationWeekOf, String day);
 	
 	Map<EmployeeInfo, Set<EmployeeInfo>> getTeamMapping(String ids);
 }

@@ -709,7 +709,7 @@ public class DomainManagerImpl
 		}		
 	}
 	
-	public void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf) {
+	public void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf, String day) {
 		
 		Collection<ScheduleEmployee> _toDeleteSchedule = new ArrayList<ScheduleEmployee>();
 		Collection<ScheduleEmployee> _toSaveSchedule = new ArrayList<ScheduleEmployee>();
@@ -718,13 +718,22 @@ public class DomainManagerImpl
 		String strDestinationWeekOf = getParsedDate(destinationWeekOf);
 		if(employeeIds != null) {
 			for(String empId : employeeIds) {
-				_toDeleteSchedule.addAll(getDomainManagerDao().getScheduleEmployee(empId, strDestinationWeekOf));
+				if(day != null && !day.equalsIgnoreCase("ALL")) {
+					_toDeleteSchedule.addAll(getDomainManagerDao().getScheduleEmployee(empId, strDestinationWeekOf, day));
+				} else {
+					_toDeleteSchedule.addAll(getDomainManagerDao().getScheduleEmployee(empId, strDestinationWeekOf));
+				}
 			}
 			if(_toDeleteSchedule.size() > 0) {
 				this.removeEntity(_toDeleteSchedule);
 			}
 			for(String empId : employeeIds) {
-				Collection<ScheduleEmployee> _masterSchedule = getDomainManagerDao().getScheduleEmployee(empId, strSourceWeekOf);
+				Collection<ScheduleEmployee> _masterSchedule = null;getDomainManagerDao().getScheduleEmployee(empId, strSourceWeekOf);
+				if(day != null && !day.equalsIgnoreCase("ALL")) {
+					_masterSchedule = getDomainManagerDao().getScheduleEmployee(empId, strSourceWeekOf, day);
+				} else {
+					_masterSchedule = getDomainManagerDao().getScheduleEmployee(empId, strSourceWeekOf);
+				}
 				ScheduleEmployee _tmpSchedule = null;
 				if(_masterSchedule != null) {
 					for(ScheduleEmployee _cloneSch : _masterSchedule) {
@@ -744,6 +753,10 @@ public class DomainManagerImpl
 				this.saveEntityList(_toSaveSchedule);
 			}
 		}
+	}
+	
+	public Collection getScheduleEmployee(String employeeId, String weekOf, String day) throws DataAccessException {
+		return getDomainManagerDao().getScheduleEmployee(employeeId, weekOf, day);
 	}
 	
 	public Collection getScheduleEmployee(String employeeId, String weekOf) throws DataAccessException {

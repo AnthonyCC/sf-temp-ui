@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import='com.freshdirect.transadmin.web.model.*' %>
+<%@ page import='com.freshdirect.transadmin.util.*' %>
 <%@ page import='com.freshdirect.framework.util.*' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
@@ -14,6 +15,7 @@
 <tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
 <% 
 	String pageTitle = "Edit Schedule";
+	String copyWeekOf = "";
 %>
     <tmpl:put name='title' direct='true'> Operations : Schedule : <%=pageTitle%></tmpl:put>
 
@@ -77,6 +79,7 @@
 				boolean isMassEdit = false;
 				WebSchedule _tmpSchedule = (WebSchedule)request.getAttribute("scheduleForm");
 				if(_tmpSchedule != null) {
+					copyWeekOf = TransStringUtil.getDate(_tmpSchedule.getWeekOf());
 					String[] employeeIds = StringUtil.decodeStrings(_tmpSchedule.getEmployeeIds());
 					if(employeeIds != null && employeeIds.length > 1) {
 						isMassEdit = true;
@@ -304,7 +307,7 @@
 				<table cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screencontent" colspan="3">
-							Select a week to copy schedule from/to the current week/employee which is under edit 
+							Select a week to copy schedule from/to the week of <b> <%= copyWeekOf %> </b>  
 						</td>
 					</tr>	
 					<tr>
@@ -326,6 +329,16 @@
                       				);
                       			</script>
                   			</span>
+                  			<select id="scribDay" name="scribDay" >
+                          			<option value="All">--All Days</option>
+                      				<option value="MON">Monday</option>
+                      				<option value="TUE">Tuesday</option>
+                      				<option value="WED">Wednesday</option>
+                      				<option value="THU">Thurdsay</option>
+                      				<option value="FRI">Friday</option>
+                      				<option value="SAT">Saturday</option>
+                      				<option value="SUN">Sunday</option>
+                    	 	</select>
                   		</td>
                  	</tr> 
                  <tr><td colspan="3">&nbsp;</td></tr> 
@@ -342,9 +355,21 @@
 				 <tr>
 						<td class="screencontent" colspan="3">
 							Use the below buttons to copy schedule from/to the master schedule 
+							<select id="scribDayMaster" name="scribDayMaster" >
+                          		<option value="All">--All Days</option>
+                      			<option value="MON">Monday</option>
+                      			<option value="TUE">Tuesday</option>
+                      			<option value="WED">Wednesday</option>
+                      			<option value="THU">Thurdsay</option>
+                      			<option value="FRI">Friday</option>
+                      			<option value="SAT">Saturday</option>
+                      			<option value="SUN">Sunday</option>
+                    	 	</select>
 						</td>
 				</tr>
-				<tr><td colspan="3">&nbsp;</td></tr> 
+				<tr>
+						<td colspan="3">&nbsp;</td>
+                 </tr> 
 				 <tr> 
                   		<td class="screencontent"><input type = "button" value="To Master" onclick="javascript:copyToMaster();" /></td>
                   		<td class="screencontent">&nbsp;</td>	
