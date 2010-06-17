@@ -120,7 +120,8 @@
 								<ec:column property="firstName" title="First Name"/>
 								<ec:column property="lastName" title="Last Name"/>
 								<ec:column alias="kronosId" property="employeeId" title="KronosID"/>   
-								<ec:column  property="employeeRoleType" title="Role"/>                                  								
+								<ec:column  property="employeeRoleType" title="Role"/> 
+								<ec:column property="leadInfoEx.name" title="Lead"/>                                  								
                                 <ec:column property="mon" title="MON"/>
                                 <ec:column property="tue" title="TUE"/>
                                 <ec:column property="wed" title="WED"/>

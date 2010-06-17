@@ -1,11 +1,12 @@
 package com.freshdirect.transadmin.web.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
 
-public class WebPlanResource 
+public class WebPlanResource  implements Serializable
 {
 	String planId;
 	WebEmployeeInfo emp;

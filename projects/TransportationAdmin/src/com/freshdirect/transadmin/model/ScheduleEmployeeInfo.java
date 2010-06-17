@@ -24,7 +24,21 @@ public class ScheduleEmployeeInfo
 	private Collection  empRole;
 	private String trnStatus;
 	
+	private EmployeeInfo leadInfo;
+	private boolean isLead;
 	
+	public EmployeeInfo getLeadInfo() {
+		return leadInfo;
+	}
+	public void setLeadInfo(EmployeeInfo leadInfo) {
+		this.leadInfo = leadInfo;
+	}
+	public boolean isLead() {
+		return isLead;
+	}
+	public void setLead(boolean isLead) {
+		this.isLead = isLead;
+	}
 	public String getEmployeeId()
 	{
 		return empInfo!=null?empInfo.getEmployeeId():"";
@@ -180,5 +194,13 @@ public class ScheduleEmployeeInfo
 		}
 		return false;
 		
+	}
+	
+	public EmployeeInfo getLeadInfoEx() {
+		if(this.isLead()) {
+			return this.getEmpInfo();
+		} else {
+			return leadInfo;
+		}
 	}
 }

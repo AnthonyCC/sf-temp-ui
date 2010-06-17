@@ -135,7 +135,7 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	void doGeoRestriction(String zone[][]);	
 			
-	void saveScheduleGroup(WebSchedule model, String[] employeeIds, Date weekOf);
+	void saveScheduleGroup(Collection schedules, String[] employeeIds, Date weekOf);
 	
 	void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf);
 	

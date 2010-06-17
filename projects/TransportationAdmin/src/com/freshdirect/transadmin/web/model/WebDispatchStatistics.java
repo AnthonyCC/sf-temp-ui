@@ -1,11 +1,12 @@
 package com.freshdirect.transadmin.web.model;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;
 
 import com.freshdirect.transadmin.model.Plan;
 
-public class WebDispatchStatistics 
+public class WebDispatchStatistics  implements Serializable 
 {
 	private int paycodeEx;
 	private int plannedRoute;

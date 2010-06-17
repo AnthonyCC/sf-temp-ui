@@ -128,11 +128,11 @@ public class ScheduleFormController extends AbstractFormController {
 				if (c.size() > 0) {
 					getDomainManagerService().saveEntityList(c);
 				}
-				model.setSchdules(c);
+				
 			} else {
-				getDomainManagerService().saveScheduleGroup(model, employeeIds, model.getWeekOf());
+				getDomainManagerService().saveScheduleGroup(c, employeeIds, model.getWeekOf());
 			}
-						
+			model.setSchdules(c);			
 		} catch (DataIntegrityViolationException objExp) {
 			objExp.printStackTrace();
 			errorList = new ArrayList();

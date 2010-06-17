@@ -358,6 +358,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			Collection schedules = getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId(), getParsedDate(weekOf));
 			ScheduleEmployeeInfo sInfo = new ScheduleEmployeeInfo();
 			Collection empRoles = this.domainManagerDao.getEmployeeRole(eInfo.getEmployeeId());
+			Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
 			
 			if (empRoles != null && empRoles.size() > 0) {
 				if (EnumResourceSubType.isSchedule((EnumResourceSubType.getEnum(((EmployeeRole) empRoles.toArray()[0])
@@ -371,6 +372,12 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			Collection empStatus = this.domainManagerDao.getEmployeeStatus(eInfo.getEmployeeId());
 			if (empStatus != null && empStatus.size() > 0) {
 				sInfo.setTrnStatus(""+ ((EmployeeStatus) (empStatus.toArray()[0])).isStatus());
+			}
+			
+			sInfo.setLeadInfo(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo
+										(employeeTeamMapping.get(sInfo.getEmployeeId()), this));
+			if(employeeTeamMapping.containsValue(sInfo.getEmployeeId())) {
+				sInfo.setLead(true);
 			}
 		}
 		return result;

@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -12,8 +13,8 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 
-public class WebSchedule 
-{
+public class WebSchedule implements Serializable {
+	
 	private EmployeeInfo empInfo;
 	
 	private ScheduleEmployee mon;

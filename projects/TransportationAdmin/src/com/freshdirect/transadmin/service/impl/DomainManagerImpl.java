@@ -678,19 +678,21 @@ public class DomainManagerImpl
 	}
 	
 	
-	public void saveScheduleGroup(WebSchedule model, String[] employeeIds, Date weekOf) {
+	public void saveScheduleGroup(Collection _masterSchedule, String[] employeeIds, Date weekOf) {
 		
-		Collection<ScheduleEmployee> _masterSchedule = model.getSchedules();
-		
+				
 		String strWeekOf = getParsedDate(weekOf);
 		if(employeeIds != null && _masterSchedule != null 
 										&& _masterSchedule.size() > 0 && strWeekOf != null) {
 			Collection<ScheduleEmployee> _clonedSchedule = new ArrayList<ScheduleEmployee>(); 
-			for(ScheduleEmployee _cloneSch : _masterSchedule) {
+			Iterator _itr = _masterSchedule.iterator();
+			while(_itr.hasNext()) {
+				ScheduleEmployee _cloneSch = (ScheduleEmployee)_itr.next();
 				try {
 					_clonedSchedule.add((ScheduleEmployee)_cloneSch.clone());
 				} catch (CloneNotSupportedException notSupported) {
 					// No Supposed to Happen
+					notSupported.printStackTrace();
 				}
 			}
 			for(String empId : employeeIds) {
@@ -704,8 +706,7 @@ public class DomainManagerImpl
 				}
 				this.saveEntityList(_clonedSchedule);
 			}
-		}
-		model.setSchdules(_masterSchedule);
+		}		
 	}
 	
 	public void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf) {
