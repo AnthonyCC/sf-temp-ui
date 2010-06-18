@@ -245,7 +245,9 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		
 		Collection<EmployeeTeam> _teamForLead = getDomainManagerDao().getTeamByLead(employeeInfo.getEmployeeId());
 		Collection<EmployeeTeam> _currentTeamForEmployee = getDomainManagerDao().getTeamByEmployee(employeeInfo.getEmployeeId());
-		if(employeeInfo.getLeadInfo() != null) {
+		
+		if(employeeInfo.getLeadInfo() != null && 
+				!TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId())) {
 			Collection<EmployeeTeam> _teamLeadAsMember = getDomainManagerDao().getTeamByEmployee(employeeInfo.getLeadInfo().getEmployeeId());
 			if(_teamLeadAsMember != null && _teamLeadAsMember.size() > 0) {
 				removeEntity(_teamLeadAsMember);
@@ -254,8 +256,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		//Check if the current employee is a lead
 		if(_teamForLead != null && _teamForLead.size() > 0) {
 			if(employeeInfo.getLeadInfo() != null 
-							&& employeeInfo.getLeadInfo().getEmployeeId() != null 
-									&& employeeInfo.getLeadInfo().getEmployeeId().trim().length() > 0
+							&& !TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId())
 										&& !employeeInfo.getEmployeeId().equalsIgnoreCase(employeeInfo.getLeadInfo().getEmployeeId())) {
 				removeEntity(_teamForLead);
 				Collection<EmployeeTeam> _teamForJoin = getDomainManagerDao().getTeamByLead(employeeInfo.getLeadInfo().getEmployeeId());
@@ -277,8 +278,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		} else { // not a lead now so join a new team and remove from old team if needed			
 			if(_currentTeamForEmployee != null && _currentTeamForEmployee.size() > 0
 					&& (employeeInfo.getLeadInfo() == null 
-							|| employeeInfo.getLeadInfo().getEmployeeId() == null
-								|| employeeInfo.getLeadInfo().getEmployeeId().trim().length() == 0)) {
+							|| TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId()))) {
 				// he is part of team now
 				for(EmployeeTeam _empTeam : _currentTeamForEmployee) {
 					
@@ -289,8 +289,7 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				}
 			} 
 			if(employeeInfo.getLeadInfo() != null 
-					&& employeeInfo.getLeadInfo().getEmployeeId() != null 
-					&& employeeInfo.getLeadInfo().getEmployeeId().trim().length() > 0) {
+					&& !TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId())) {
 				EmployeeTeam _newMemberMapping = new EmployeeTeam(employeeInfo.getEmployeeId()
 																	, employeeInfo.getLeadInfo().getEmployeeId());
 				saveEntity(_newMemberMapping);

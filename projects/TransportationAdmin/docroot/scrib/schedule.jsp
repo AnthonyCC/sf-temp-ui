@@ -157,7 +157,7 @@
             if(checked.length == 0) {
              	alert('Please Select a Row!');
             }  else {
-                location.href = "editschedule.do?id="+checked.substring(0,checked.length-1)+"&"+getFilterTestValue();
+                location.href = "editschedule.do?filter="+getFilterTestValue()+"&id="+checked.substring(0,checked.length-1);
             }
 		}
 		   addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editschedule.do','id',0, 0);
