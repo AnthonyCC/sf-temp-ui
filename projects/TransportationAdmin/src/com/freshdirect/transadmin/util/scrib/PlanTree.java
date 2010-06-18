@@ -78,9 +78,9 @@ public class PlanTree {
 			DateNode value = (DateNode) i.next();
 			result.addAll(value.getPlan());
 		}
-		/*System.out.println(" ========================= PRINT PLANTREE START ==============================");
-		System.out.println(this.toString());
-		System.out.println(" ========================= PRINT PLANTREE END ==============================");*/
+		//System.out.println(" ========================= PRINT PLANTREE START ==============================");
+		//System.out.println(this.toString());
+		//System.out.println(" ========================= PRINT PLANTREE END ==============================");
 		return result;
 	}
 	
@@ -479,8 +479,7 @@ class TimeNode extends PlanTreeNode  {
 						}
 
 						// Helper
-						if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId()
-								.getRole())) {
+						if (ScheduleEmployeeInfo.HELPER.equalsIgnoreCase(r.getId().getRole())) {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
@@ -500,8 +499,7 @@ class TimeNode extends PlanTreeNode  {
 						}
 
 						// Runner
-						if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId()
-								.getRole())) {
+						if (ScheduleEmployeeInfo.RUNNER.equalsIgnoreCase(r.getId().getRole())) {
 							int min = r.getRequiredNo().intValue();
 							int count = 0;
 							for (Iterator k = resources.iterator(); k.hasNext();) {
@@ -526,7 +524,37 @@ class TimeNode extends PlanTreeNode  {
 			p.setOpen(TreeDataUtil.isOpen(p, zoneTypeResources));
 		}
 
-		// add bullpen for remaining employees
+		// Create Team Bullpen
+		if (resources != null && resources.size() > 0) {
+			for (Iterator i = resources.iterator(); i.hasNext();) {
+				ScheduleEmployeeDetails _currResource = (ScheduleEmployeeDetails) i.next();
+				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+					Plan p = new Plan();
+					plans.add(p);
+					p.setPlanDate(_currResource.getDate());
+
+					p.setRegion(_currResource.getSchedule().getRegion());
+					p.setStartTime(_currResource.getSchedule().getTime());
+					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
+					p.setIsBullpen("Y");
+					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
+						PlanResource planResource = new PlanResource();
+						EmployeeRoleType type = new EmployeeRoleType();
+						for (Iterator si = ss.getEmpRoles().iterator(); si.hasNext();) {
+							type.setCode(((EmployeeRole) (si.next())).getId().getRole());
+							break;
+						}
+						ResourceId resource = new ResourceId();
+						resource.setResourceId(ss.info.getEmployeeId());
+						planResource.setEmployeeRoleType(type);
+						planResource.setId(resource);
+						p.getPlanResources().add(planResource);
+					}
+					i.remove();					
+				} 
+			}
+		}
+		// add rest of bullpen for remaining employees
 
 		if (resources != null && resources.size() > 0) {
 			ScheduleEmployeeDetails s = (ScheduleEmployeeDetails) resources.toArray()[0];
@@ -628,7 +656,7 @@ class DepotTimeNode extends PlanTreeNode  {
 						_tmpPlanResource = TreeDataUtil.matchResource(_members);
 						if(_tmpPlanResource != null) {
 							p.getPlanResources().add(_tmpPlanResource);							
-						}
+						} 
 					}
 					resources.remove(_currResource);
 				} else {
@@ -694,6 +722,42 @@ class DepotTimeNode extends PlanTreeNode  {
 						}
 					}
 				}
+			}
+		}
+		
+		// Create Team Bullpen
+		if (resources != null && resources.size() > 0) {
+			for (Iterator i = resources.iterator(); i.hasNext();) {
+				ScheduleEmployeeDetails _currResource = (ScheduleEmployeeDetails) i.next();
+				if(_currResource.getMembers() != null && _currResource.getMembers().size() > 0) {
+					Plan p = new Plan();
+					plans.add(p);
+					p.setPlanDate(_currResource.getDate());
+
+					p.setRegion(_currResource.getSchedule().getRegion());
+					p.setStartTime(_currResource.getSchedule().getTime());
+					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
+					p.setIsBullpen("Y");
+					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
+						Collection c = ss.getEmpRoles();
+						if (!TreeDataUtil.isRole(ScheduleEmployeeInfo.RUNNER, c)) {
+							PlanResource planResource = new PlanResource();
+							EmployeeRoleType type = new EmployeeRoleType();
+							for (Iterator si = ss.getEmpRoles().iterator(); si
+									.hasNext();) {
+								type.setCode(((EmployeeRole) (si.next())).getId()
+										.getRole());
+								break;
+							}
+							ResourceId resource = new ResourceId();
+							resource.setResourceId(ss.info.getEmployeeId());
+							planResource.setEmployeeRoleType(type);
+							planResource.setId(resource);
+							p.getPlanResources().add(planResource);
+						}
+					}
+					i.remove();					
+				} 
 			}
 		}
 		

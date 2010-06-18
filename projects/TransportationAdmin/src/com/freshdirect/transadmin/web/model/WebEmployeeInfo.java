@@ -10,7 +10,7 @@ import java.util.List;
 import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeRole;
 
-public class WebEmployeeInfo implements Serializable {
+public class WebEmployeeInfo implements Serializable, Comparable<WebEmployeeInfo> {
 
 
 private String employeeId;
@@ -292,5 +292,11 @@ private String employeeId;
 	
 	public String toString() {
 		return this.getEmpInfo() != null ? this.getEmpInfo().toString() : "";
+	}
+
+	@Override
+	public int compareTo(WebEmployeeInfo o) {
+		// TODO Auto-generated method stub
+		return this.toString().compareTo(o.toString());
 	}
 }
