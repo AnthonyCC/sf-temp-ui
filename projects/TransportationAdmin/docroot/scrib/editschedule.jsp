@@ -304,10 +304,18 @@
 		<div style="background-color:#F2F2F2; border:1px solid #000;height:240px;overflow-y:auto;">
 				<br/>
 				
-				<table cellpadding="0" cellspacing="0" border="0">
+				<table width="100%" cellpadding="0" cellspacing="0" border="0">
 					<tr>
 						<td class="screencontent" colspan="3">
-							Select a week to copy schedule from/to the week of <b> <%= copyWeekOf %> </b>  
+							Copy <b> <%= copyWeekOf %> </b>  
+						</td>
+					</tr>
+					<tr>
+						<td class="screencontent" colspan="3">
+							<select id="fromTo" name="fromTo" >
+                          		<option value="FROM">From</option>
+                          		<option value="TO">To</option>                      			
+                      		</select>		  
 						</td>
 					</tr>	
 					<tr>
@@ -329,7 +337,7 @@
                       				);
                       			</script>
                   			</span>
-                  			<select id="scribDay" name="scribDay" >
+                  			&nbsp;&nbsp;<select id="scribDay" name="scribDay" >
                           			<option value="All">--All Days</option>
                       				<option value="MON">Monday</option>
                       				<option value="TUE">Tuesday</option>
@@ -343,19 +351,31 @@
                  	</tr> 
                  <tr><td colspan="3">&nbsp;</td></tr> 
                  <tr> 
-                  	<td class="screencontent"><input type = "button" value="To Week" onclick="javascript:copyToWeek();" /></td>
-                  	<td class="screencontent">&nbsp;</td>
-                  	<td class="screencontent" style="padding-right:25px;"><input type = "button" value="From Week" onclick="javascript:copyFromWeek();" /></td>
+                  	<td colspan="3" align="center"><input type = "button" value="Execute" onclick="javascript:copyWeek();" /></td>
 				 </tr>
+				
 				 <tr>
-						<td class="screencontent" colspan="3">
+						<td class="screencontent" style="border-bottom:1px solid #000" colspan="3">
 							&nbsp; 
 						</td>
 				</tr>
+				<tr>
+						<td class="screencontent" colspan="3">
+							Copy <b> <%= copyWeekOf %> </b>  
+						</td>
+					</tr>
+					<tr>
+						<td class="screencontent" colspan="3">
+							<select id="fromToMaster" name="fromToMaster" >
+                          		<option value="FROM">From</option>
+                          		<option value="TO">To</option>                      			
+                      		</select>		  
+						</td>
+					</tr>	
 				 <tr>
 						<td class="screencontent" colspan="3">
-							Use the below buttons to copy schedule from/to the master schedule 
-							<select id="scribDayMaster" name="scribDayMaster" >
+							&nbsp;&nbsp;&nbsp;&nbsp;<b>Master(01/01/1900)</b> 
+							&nbsp;&nbsp;<select id="scribDayMaster" name="scribDayMaster" >
                           		<option value="All">--All Days</option>
                       			<option value="MON">Monday</option>
                       			<option value="TUE">Tuesday</option>
@@ -371,9 +391,7 @@
 						<td colspan="3">&nbsp;</td>
                  </tr> 
 				 <tr> 
-                  		<td class="screencontent"><input type = "button" value="To Master" onclick="javascript:copyToMaster();" /></td>
-                  		<td class="screencontent">&nbsp;</td>	
-                  		<td class="screencontent" style="padding-right:25px;"><input type = "button" value="From Master" onclick="javascript:copyFromMaster();" /></td>                  	
+                  		<td colspan="3" align="center"><input type = "button" value="Execute" onclick="javascript:copyMaster();" /></td>             	
 				  </tr>
 				</table>	
 			</div>

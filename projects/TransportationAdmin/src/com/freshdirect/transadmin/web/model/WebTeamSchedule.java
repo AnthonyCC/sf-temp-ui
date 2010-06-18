@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 
-public class WebTeamSchedule implements java.io.Serializable  {
+public class WebTeamSchedule implements java.io.Serializable, Comparable<WebTeamSchedule>  {
 	
 	/**
 	 * 
@@ -103,6 +103,12 @@ public class WebTeamSchedule implements java.io.Serializable  {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public int compareTo(WebTeamSchedule o) {
+		// TODO Auto-generated method stub
+		return (lead != null && o.getLead() != null ?  lead.compareTo(o.getLead()) : 0);
 	}
 	
 }

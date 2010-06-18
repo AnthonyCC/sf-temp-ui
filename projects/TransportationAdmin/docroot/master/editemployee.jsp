@@ -143,12 +143,13 @@
 							<tr><td colspan="3">&nbsp;</td></tr>
 							<tr>
 							<td colspan="3" align="center">
+								 <input type = "submit" value="&nbsp;Save Changes&nbsp;"  />
 							 <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%>							
 							
                              <input type = "submit" value="&nbsp;Change Status&nbsp;"  onclick="javascript:setStatus()"/>         
                              
 							  <%}%>  
-								 <input type = "submit" value="&nbsp;Save&nbsp;"  />
+								
 								</td>			
 							</tr>
 							</table>				

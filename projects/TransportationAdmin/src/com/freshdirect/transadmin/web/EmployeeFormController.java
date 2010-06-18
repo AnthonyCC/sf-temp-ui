@@ -40,7 +40,14 @@ public class EmployeeFormController extends AbstractFormController {
 
 	public Object getBackingObject(String id) {
 		//System.out.println("getBackingObject:"+id);
-		return getEmployeeManagerService().getEmployee(id);
+		Map<String, String> employeeTeamMapping = employeeManagerService.getTeamMapping();
+		WebEmployeeInfo info = getEmployeeManagerService().getEmployee(id);
+		if(employeeTeamMapping != null  && info != null 
+											&& employeeTeamMapping.containsValue(info.getEmployeeId())) {
+			info.setLead(true);
+			info.setLeadInfo(info.getEmpInfo());
+		}
+		return info;
 	}
 
 	public Object getDefaultBackingObject() {

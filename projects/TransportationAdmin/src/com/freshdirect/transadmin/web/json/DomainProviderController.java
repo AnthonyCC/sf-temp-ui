@@ -40,8 +40,10 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 	
 	public boolean copySchedule(String ids, String sourceWeekOf, String destinationWeekOf, String day) {
 		String[] employeeIds = StringUtil.decodeStrings(ids);
-		getDomainManagerService().copyScheduleGroup(employeeIds, getFromClientDate(sourceWeekOf)
-																		, getFromClientDate(destinationWeekOf)
+		Date sSourceWeekOf = getWeekOf(getFromClientDate(sourceWeekOf));
+		Date dSourceWeekOf = getWeekOf(getFromClientDate(destinationWeekOf));
+		getDomainManagerService().copyScheduleGroup(employeeIds, sSourceWeekOf
+																		, dSourceWeekOf
 																		, day);
 		return false;
 	}
@@ -53,8 +55,8 @@ public class DomainProviderController extends BaseJsonRpcController  implements 
 		List<ScheduleCheckResult> sourceMessages = new ArrayList<ScheduleCheckResult>();
 		List<ScheduleCheckResult> destinationMessages = new ArrayList<ScheduleCheckResult>();
 		
-		Date sSourceWeekOf = getFromClientDate(sourceWeekOf);
-		Date dSourceWeekOf = getFromClientDate(destinationWeekOf);
+		Date sSourceWeekOf = getWeekOf(getFromClientDate(sourceWeekOf));
+		Date dSourceWeekOf = getWeekOf(getFromClientDate(destinationWeekOf));
 		
 		if(employeeIds != null) {
 			for(String empId : employeeIds) {

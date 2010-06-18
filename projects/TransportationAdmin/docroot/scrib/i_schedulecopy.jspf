@@ -15,6 +15,22 @@
 			}
       	}
       	
+      	function copyWeek() {
+      		if(document.getElementById("fromTo").value == 'TO') {
+      			copyToWeek();
+      		} else {
+      			copyFromWeek();
+      		}
+      	}
+      	
+      	function copyMaster() {
+      		if(document.getElementById("fromToMaster").value == 'TO') {
+      			copyToMaster();
+      		} else {
+      			copyFromMaster();
+      		}
+      	}
+      	
       	function copyFromWeek() {
       		if(document.getElementById("cpScheduleDate").value.trim().length > 0) {
 				copyDataEx(document.getElementById("cpScheduleDate").value
@@ -85,7 +101,7 @@
       function showForm(sourceData, destinationData) {
          
            cpPanel = new YAHOO.widget.Panel("panel-1", {
-                         width: "450px",
+                         width: "480px",
                          height: "400px",
                          fixedcenter: true, 
                          close: true, 

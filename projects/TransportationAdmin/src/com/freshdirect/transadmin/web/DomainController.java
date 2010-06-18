@@ -3,7 +3,6 @@ package com.freshdirect.transadmin.web;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
@@ -13,6 +12,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,6 @@ import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
-import com.freshdirect.transadmin.util.TransAdminCacheManager;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebTeamSchedule;
@@ -147,7 +146,7 @@ public class DomainController extends AbstractMultiActionController {
         	
         	Date _currentScheduleWeekOf = getCurrentWeekOf();
         	Date _masterScheduleWeekOf = getMasterWeekOf();
-        	Collection<WebTeamSchedule> result = new ArrayList<WebTeamSchedule>();
+        	Collection<WebTeamSchedule> result = new TreeSet<WebTeamSchedule>();
         	
         	WebTeamSchedule sTeamInfo = null;
         	
@@ -176,7 +175,7 @@ public class DomainController extends AbstractMultiActionController {
         				leadTeamScheduleMp.get(leadId).getMemberSchedule().add(currentSchMapping.get(member));
         				leadTeamScheduleMp.get(leadId).getMembers().add(employeeManagerService.getEmployeeEx(member));
         			}
-        			result = leadTeamScheduleMp.values();
+        			result.addAll(leadTeamScheduleMp.values());
         		}
         	}
         	

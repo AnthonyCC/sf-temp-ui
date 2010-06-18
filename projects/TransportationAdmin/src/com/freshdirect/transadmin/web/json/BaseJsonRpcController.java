@@ -26,4 +26,8 @@ public class BaseJsonRpcController extends JsonRpcController {
 			return null;
 		}
 	}
+	
+	protected Date getWeekOf(Date clientDate) {
+		return TransStringUtil.getWeekOf(clientDate);
+	}
 }
