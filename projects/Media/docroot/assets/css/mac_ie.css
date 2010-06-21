@@ -429,6 +429,10 @@ div.control, div.slotRow, div.time {
 	width: 18px;
 	text-align: center;
 	height: 20px;
+	clear:left;
+}
+.cutoffTime {
+	clear:left;
 }
 .control img {
 	margin-top: 4px;
