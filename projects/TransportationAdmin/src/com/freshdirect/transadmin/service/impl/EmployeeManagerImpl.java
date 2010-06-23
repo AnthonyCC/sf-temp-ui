@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DomainManagerDaoI;
@@ -250,7 +252,11 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				!TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId())) {
 			Collection<EmployeeTeam> _teamLeadAsMember = getDomainManagerDao().getTeamByEmployee(employeeInfo.getLeadInfo().getEmployeeId());
 			if(_teamLeadAsMember != null && _teamLeadAsMember.size() > 0) {
-				removeEntity(_teamLeadAsMember);
+				if(employeeInfo.getEmployeeId().equalsIgnoreCase(employeeInfo.getLeadInfo().getEmployeeId())) {
+					throw new DataIntegrityViolationException("Cannot assign member to himself");
+				} else {
+					removeEntity(_teamLeadAsMember);
+				}
 			}
 		}
 		//Check if the current employee is a lead
@@ -290,9 +296,13 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 			} 
 			if(employeeInfo.getLeadInfo() != null 
 					&& !TransStringUtil.isEmpty(employeeInfo.getLeadInfo().getEmployeeId())) {
-				EmployeeTeam _newMemberMapping = new EmployeeTeam(employeeInfo.getEmployeeId()
-																	, employeeInfo.getLeadInfo().getEmployeeId());
-				saveEntity(_newMemberMapping);
+				if(employeeInfo.getEmployeeId().equalsIgnoreCase(employeeInfo.getLeadInfo().getEmployeeId())) {
+					throw new DataIntegrityViolationException("Cannot assign member to himself");
+				} else {
+					EmployeeTeam _newMemberMapping = new EmployeeTeam(employeeInfo.getEmployeeId()
+							, employeeInfo.getLeadInfo().getEmployeeId());
+					saveEntity(_newMemberMapping);
+				}
 			}
 		}
 	}

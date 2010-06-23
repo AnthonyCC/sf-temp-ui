@@ -128,7 +128,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		List dateRanges = getDateRanges(baseRange, (containsSpecialHoliday && !deliveryInfo), restrictions, specialHoliday, containsAdvanceOrderItem);
 
 		List timeslotList = new ArrayList();
-		if(address != null && user != null && user.getIdentity() != null 
+		if(address == null) {
+			return null;
+		}
+		if(user != null && user.getIdentity() != null 
 									&& !StringUtil.isEmpty(user.getIdentity().getErpCustomerPK())) {
 			address.setCustomerId(user.getIdentity().getErpCustomerPK());
 		}

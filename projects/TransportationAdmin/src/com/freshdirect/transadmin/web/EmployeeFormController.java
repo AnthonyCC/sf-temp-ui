@@ -131,7 +131,8 @@ public class EmployeeFormController extends AbstractFormController {
 			getEmployeeManagerService().storeEmployees((WebEmployeeInfo)domainObject);
 		} catch (DataIntegrityViolationException objExp) {
 			errorList = new ArrayList();
-			errorList.add(this.getMessage("app.actionmessage.119", new Object[]{this.getDomainObjectName()}));
+			//errorList.add(this.getMessage("app.actionmessage.119", new Object[]{this.getDomainObjectName()}));
+			errorList.add(objExp.getMessage());
 		}
 		return errorList;
 	}
