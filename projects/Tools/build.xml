@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     Jun 22, 2010 12:54:39 PM                                                        
+
+     FreshDirect-Tools    
+     Tools
+                   
+     zsombor                                                                
+     ====================================================================== -->
+<project name="FreshDirect-Tools" default="jar">
+    <description>
+            Tools
+    </description>
+
+    <!-- ================================= 
+          target: jar              
+         ================================= -->
+    <target name="jar" depends="compile" description="Tools">
+        <jar destfile="target/mediasync.jar">
+        	<manifest>
+        		<attribute name="Main-Class" value="com.freshdirect.tools.mediasync.MediaDbExport"/>
+        	</manifest>
+        	<fileset dir="target/classes">
+        		<include name="com/freshdirect/tools/mediasync/*"/>
+        	</fileset>
+        </jar>
+    </target>
+
+	<target name="_init">
+		<mkdir dir="target"/>
+		<mkdir dir="target/classes"/>
+	</target>
+	
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: compile                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="compile" depends="_init">
+    	<javac destdir="target/classes" srcdir="src">
+			<include name="com/freshdirect/tools/mediasync/*"/>
+    	</javac>
+    </target>
+
+</project>
