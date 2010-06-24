@@ -236,6 +236,7 @@ public class ContentServiceImpl extends RemoteServiceServlet implements ContentS
     
     public GwtSaveResponse save(Collection<GwtContentNode> nodes) throws ServerException {
 		GwtUser user = getUser();
+		
 		List<ContentNodeI> contentNodes = new ArrayList<ContentNodeI>(nodes.size());
 		for (GwtContentNode gwtNode : nodes) {
 			ContentNodeI node = TranslatorFromGwt.getContentNodeI(gwtNode);

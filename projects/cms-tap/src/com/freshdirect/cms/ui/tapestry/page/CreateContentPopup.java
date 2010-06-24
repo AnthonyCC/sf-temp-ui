@@ -66,7 +66,7 @@ public abstract class CreateContentPopup extends BasePopupPage implements IExter
 		if (ctx == null) {
 			return null;
 		}
-		ContextualContentNodeI ctxNode = ContextService.getInstance().getContextualizedContentNode(ctx.getPath());
+		ContextualContentNodeI ctxNode = ContextService.getInstance().getContextualizedContentNode(ctx);
 		return ctxNode;
 	}
 

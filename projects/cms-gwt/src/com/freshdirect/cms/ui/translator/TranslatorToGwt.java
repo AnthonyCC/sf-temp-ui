@@ -134,12 +134,11 @@ public class TranslatorToGwt {
 		GwtContentNode gwtNode = new GwtContentNode( contentKey.getType().getName(), contentKey.getId() );
 		gwtNode.setLabel( node.getLabel() );
 		
-		for ( String key : (Set<String>)node.getDefinition().getAttributeNames() ) {
-			AttributeI attribute = node.getAttribute( key );
-			if ( attribute != null ) {
-				ModifiableAttributeI attr = translateAttribute(attribute.getDefinition(), attribute.getValue(), tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
-				gwtNode.setOriginalAttribute( key, attr );
-			}
+		final ContentTypeDefI definition = node.getDefinition();
+		for ( String key : (Set<String>)definition.getAttributeNames() ) {
+			Object value = node.getAttributeValue( key );
+			ModifiableAttributeI attr = translateAttribute(definition.getAttributeDef(key), value, tabDefs != null ? tabDefs.getCustomFieldDefinition(key) : null, contentKey);
+			gwtNode.setOriginalAttribute( key, attr );
 		}
 
 		return gwtNode;

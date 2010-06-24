@@ -107,7 +107,7 @@ public abstract class EditContent extends BasePage implements IExternalPage {
 		if (ctx == null) {
 			return null;
 		}
-		return (ContextualContentNodeI) ContextService.getInstance().getContextualizedContentNode(ctx.getPath()).getParentNode();
+		return (ContextualContentNodeI) ContextService.getInstance().getContextualizedContentNode(ctx).getParentNode();
 	}
 
 	private Context[] allContexts;

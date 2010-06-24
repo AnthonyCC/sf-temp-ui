@@ -141,5 +141,10 @@ class ContextualContentNode implements ContextualContentNodeI {
 		// unmutable
 		return this;
 	}
+	
+	@Override
+	public String toString() {
+	    return "ContextualContentNode["+node.getKey()+','+parent+']';
+	}
 
 }
