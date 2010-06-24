@@ -28,8 +28,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 			// ProductModel p1 = (ProductModel) o1;
 			// ProductModel p2 = (ProductModel) o2;
-
-			int ret = NVL.apply(p1.getDepartment().getFullName(), "").compareTo(NVL.apply(p2.getDepartment().getFullName(), ""));
+			String p1Dept = "";
+			String p2Dept = "";
+			
+			//check that getDepartment != null (fix for new prods in cmsTest)
+			p1Dept = (p1.getDepartment() != null) ? NVL.apply(p1.getDepartment().getFullName(), "") : "";
+			p2Dept = (p2.getDepartment() != null) ? NVL.apply(p2.getDepartment().getFullName(), "") : "";
+			
+			int ret = p1Dept.compareTo(p2Dept);
 
 			if (ret == 0) {
 				ret = p1.getFullName().compareTo(p2.getFullName());

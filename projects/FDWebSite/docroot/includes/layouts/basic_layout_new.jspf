@@ -184,7 +184,6 @@ shouldRenderBlankCells = (itr.hasNext() || shouldRenderBlankCells); //check if b
 						}
 						rank++;
 						%>
-                <!-- Department name : $$$$$$$$$$$$$$ <%= productNode.getDepartment().getFullName() %> -->
 					</td>
 				<% } %>
 			</fd:PIPRow>

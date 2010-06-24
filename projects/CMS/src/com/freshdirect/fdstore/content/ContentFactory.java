@@ -85,8 +85,10 @@ public class ContentFactory {
 		if (departmentId != null)
 			for (ListIterator<ProductModel> li = products.listIterator(); li.hasNext();) {
 				ProductModel p = li.next();
-				if (!departmentId.equals(p.getDepartment().getContentName()))
-					li.remove();
+				if (p.getDepartment() != null) {
+					if (!departmentId.equals(p.getDepartment().getContentName()))
+						li.remove();
+				}
 			}
 		return products;
 	}
