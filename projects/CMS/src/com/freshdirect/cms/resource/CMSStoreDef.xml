@@ -427,7 +427,6 @@
 			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
 			<AttributeDef type="S" name="SUBTITLE" label="Subtitle"/>
 
-			<AttributeDef type="B" name="EXCLUDED_RECOMMENDATION" label="Excluded Recommendation" inheritable="false"/>
 			<!-- layout -->
 			<AttributeDef type="S" name="HIDE_URL"  label="Hide URL" inheritable="true"/>
 			<EnumDef type="I" name="PRODUCT_LAYOUT" label="Prod Layout" inheritable="true">
@@ -534,6 +533,7 @@
             <AttributeDef type="S" name="WINE_AGING" label="Wine Aging Notes" />    
             <AttributeDef type="S" name="WINE_CITY" label="Wine City" />
             <!--  SmartStore  -->
+			<AttributeDef type="B" name="EXCLUDED_RECOMMENDATION" label="Excluded Recommendation" inheritable="true"/>
 			<EnumDef type="I" name="SS_EXPERT_WEIGHTING" label="Expert Weighting" inheritable="true">
 				<EnumValue value="-5" label="-5"/>
 				<EnumValue value="-4" label="-4"/>

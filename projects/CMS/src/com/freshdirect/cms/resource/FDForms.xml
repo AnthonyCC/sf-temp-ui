@@ -391,6 +391,7 @@
 						<title>SMART STORE</title>
 						<fields>
 							<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
+							<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -704,6 +705,7 @@
 				<title>SMART STORE</title>
 				<fields>
 					<CmsField><attribute>SS_EXPERT_WEIGHTING</attribute></CmsField>
+					<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
 				</fields>
 			</CmsSection>
 		</sections>
