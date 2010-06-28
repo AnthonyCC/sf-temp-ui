@@ -65,8 +65,9 @@ public class Warmup {
 	public void warmup() {
 
 		LOGGER.info("Warmup started");
-
+		long time = System.currentTimeMillis();
 		contentFactory.getStore();
+		LOGGER.info("Store warmup in "+ (System.currentTimeMillis() - time) + " ms");
 
 		Set skuContentKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.SKU);
 		for (Iterator i=skuContentKeys.iterator(); i.hasNext(); ) {
@@ -86,6 +87,7 @@ public class Warmup {
 		if (FDStoreProperties.isPreloadAutocompletions()) {
 			ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
 		}
+		LOGGER.info("main warmup in " + (System.currentTimeMillis() - time) + " ms");
 		
 		new Thread("warmup-step-2") {
 			public void run() {

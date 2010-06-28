@@ -59,10 +59,12 @@ public class Counter implements Cloneable, CounterMBean {
         return System.currentTimeMillis();
     }
 
-    public void end(long startime) {
+    public long end(long startime) {
+        long elapsed = System.currentTimeMillis() - startime;
         if (PROFILE) {
-            call(System.currentTimeMillis() - startime);
+            call(elapsed);
         }
+        return elapsed;
     }
 
     @Override
