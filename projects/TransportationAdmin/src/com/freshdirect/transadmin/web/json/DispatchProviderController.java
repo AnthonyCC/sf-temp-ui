@@ -447,11 +447,10 @@ public class DispatchProviderController extends JsonRpcController implements
 	public int addScenarioDayMapping(String sCode, String sDay, String sDate) {
 		int result = 0;
 		BigDecimal sdayOfWeek=new BigDecimal(sDay);
-		DlvScenarioDaysId id=new DlvScenarioDaysId(sCode,sdayOfWeek);
 		DlvServiceTimeScenario scenario=new DlvServiceTimeScenario();
 		scenario.setCode(sCode);
 		try {
-			DlvScenarioDay scenarioDay=new DlvScenarioDay(id,TransStringUtil.getDate(sDate),scenario);
+			DlvScenarioDay scenarioDay=new DlvScenarioDay(sdayOfWeek,TransStringUtil.getDate(sDate),scenario);
 			result = getDispatchManagerService().addScenarioDayMapping(
 					scenarioDay);
 		} catch (ParseException parseExp) {

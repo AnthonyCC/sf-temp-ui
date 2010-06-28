@@ -246,8 +246,8 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 		Iterator iterator = scenarioDays.iterator();
 		while(iterator.hasNext()) {
 			DlvScenarioDay var= (DlvScenarioDay)iterator.next();
-			result.append(" \nscenarioId="+ var.getScenariodaysId().getScenarioId());
-			result.append(" dayOfWeek="+ var.getScenariodaysId().getDayOfWeek());
+			result.append(" \nscenarioCode="+ var.getScenario().getCode());
+			result.append(" dayOfWeek="+ var.getDayOfWeek());
 			result.append(" date="+ var.getNormalDate());
 		}
 		

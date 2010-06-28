@@ -10,11 +10,44 @@ import com.freshdirect.transadmin.util.EnumDayOfWeek;
 
 public class DlvScenarioDay implements java.io.Serializable{
 	
-	private DlvScenarioDaysId scenariodaysId = new DlvScenarioDaysId();
-	
+	private String scenariodayId;
+	private BigDecimal dayOfWeek;
+	private String dayOfWeekStr;
 	private Date normalDate;
 	private String normalDateStr;
-	private DlvServiceTimeScenario scenario;
+	private DlvServiceTimeScenario scenario;	
+	
+	public DlvScenarioDay() {
+	}
+	
+	public DlvScenarioDay(BigDecimal dayOfWeek,
+			Date normalDate, DlvServiceTimeScenario scenario) {
+		super();
+		this.dayOfWeek = dayOfWeek;
+		this.normalDate = normalDate;
+		this.scenario = scenario;
+	}
+	
+	
+	public String getScenariodayId() {
+		return scenariodayId;
+	}
+	public void setScenariodayId(String scenariodayId) {
+		this.scenariodayId = scenariodayId;
+	}
+	
+	public String getDayOfWeekStr() {
+		return dayOfWeekStr;
+	}
+
+	public BigDecimal getDayOfWeek() {
+		return dayOfWeek;
+	}	
+	
+	public void setDayOfWeek(BigDecimal dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+		this.dayOfWeekStr=dayOfWeek.toString();
+	}	
 	
 	public DlvServiceTimeScenario getScenario() {
 		return scenario;
@@ -34,37 +67,16 @@ public class DlvScenarioDay implements java.io.Serializable{
 		String date = formatter.format(normalDate);
 		this.normalDateStr= date;
 	}
-	public DlvScenarioDaysId getScenariodaysId() {
-		return scenariodaysId;
-	}
-	public void setScenariodaysId(DlvScenarioDaysId scenariodaysId) {
-		this.scenariodaysId = scenariodaysId;
-	}
 	
-	public DlvScenarioDay(DlvScenarioDaysId scenariodaysId, Date normalDate,
-			DlvServiceTimeScenario scenario) {
-		super();
-		this.scenariodaysId = scenariodaysId;
-		this.normalDate = normalDate;
-		this.scenario = scenario;
-	}
-	public DlvScenarioDay() {
-		
-	}
-	public DlvScenarioDay(DlvScenarioDaysId Id) {
-		this.scenariodaysId = Id;
-	}
 	
 	public String getDayOfWeekInText(){
-		if(this.scenariodaysId==null) return "";
+		if(this==null) return "";
 
-		EnumDayOfWeek dow=EnumDayOfWeek.getEnum(Integer.toString(scenariodaysId.getDayOfWeek().intValue()));
+		EnumDayOfWeek dow=EnumDayOfWeek.getEnum(Integer.toString(this.getDayOfWeek().intValue()));
 		if(dow!=null)
 			return dow.getDesc();
 		else
 			return "";
 	}
-	
-	
 	
 }

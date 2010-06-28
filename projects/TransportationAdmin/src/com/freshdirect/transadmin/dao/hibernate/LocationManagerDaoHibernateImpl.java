@@ -78,7 +78,7 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DlvServiceTimeScenario s, DlvScenarioDay sd");
 		strBuf.append(" where s.code=sd.scenario.code");
-		strBuf.append(" and sd.scenariodaysId.dayOfWeek=").append(dayOfWeek);
+		strBuf.append(" and sd.dayOfWeek=").append(dayOfWeek);
 		strBuf.append(" Order By s.code");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}

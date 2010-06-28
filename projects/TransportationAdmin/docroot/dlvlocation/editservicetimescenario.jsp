@@ -462,7 +462,7 @@
 			                   <td><input type="text" id="serviceTimeOverride" name="serviceTimeOverride" value="" style="width: 95px;" ></td>
 			                   <td>                 
 				                   <select name="ServiceTimeOperatorList" id="ServiceTimeOperatorList" style="width: 100%;">                     
-				                  	 <option value="null">--Select Operator--</option>
+				                  	 <option value="null"></option>
 				                  	 <c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
 						             		<OPTION value="<c:out value="${serviceTimeOperator.name}"/>"><c:out value="${serviceTimeOperator.description}"/></OPTION>
 							         </c:forEach>                                      

@@ -44,7 +44,7 @@
         <property name="lateDeliveryFactor" type="big_decimal">
             <column name="LATEDELIVERY_FACTOR" precision="10" />
         </property>   
-        <set name="scenarioDays" lazy="false">
+        <set name="scenarioDays" inverse="true" lazy="false">
             <key>
                 <column name="SCENARIO_CODE" length="8" not-null="true" />
             </key>
