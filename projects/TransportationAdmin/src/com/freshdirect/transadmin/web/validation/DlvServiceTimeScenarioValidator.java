@@ -31,14 +31,6 @@ public class DlvServiceTimeScenarioValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "defaultFreezerCount", "app.error.112", new Object[]{"Default Freezer Count"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "orderSizeFormula", "app.error.112", new Object[]{"Order Size Formula"},"required field");
 				
-		if(model != null && (model.getZoneType() == null || model.getZoneType() == null) || "null".equals(model.getZoneType())) {
-			errors.rejectValue("zoneType", "app.error.112", new Object[]{"Zone Type"},"required field");
-		}
-		
-		if(model != null && (model.getServiceTimeType() == null || model.getServiceTimeType() == null) || "null".equals(model.getServiceTimeType())) {
-			errors.rejectValue("serviceTimeType", "app.error.112", new Object[]{"Service Time Type"},"required field");
-		}
-		
 		UtilityManager manager = new UtilityManager();
 		if(!manager.isValidExpression(model.getServiceTimeFactorFormula(), getServiceTimeFactorVariables())) {
 			errors.rejectValue("serviceTimeFactorFormula", "app.error.124", new Object[]{},"Invalid Service Time Factor Formula");
