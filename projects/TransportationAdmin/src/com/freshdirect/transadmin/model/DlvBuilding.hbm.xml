@@ -39,7 +39,16 @@
         </property> 
         <property name="geocodeQuality" type="string">
             <column name="GEO_QUALITY" length="55" />
-        </property> 
-    </class>
+        </property>
+        <property name="serviceTimeOverride" type="big_decimal">
+            <column name="SERVICETIME_OVERRIDE" precision="10" />
+        </property>
+        <property name="serviceTimeOperator" type="string">
+            <column name="SERVICETIME_OPERATOR" length="1"/>
+        </property>
+        <property name="serviceTimeAdjustable" type="big_decimal">
+            <column name="SERVICETIME_ADJUSTMENT" precision="10" />
+        </property>
+     </class>
 </hibernate-mapping>
 

@@ -90,6 +90,17 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getServiceTimeScenarios();
 	}
 	
+	public Collection getServiceTimeScenarios(String date) {
+		return getLocationManagerDao().getServiceTimeScenarios(date);
+	}
+	public Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek){
+		return getLocationManagerDao().getServiceTimeScenariosForDayofWeek(dayOfWeek);
+	}
+	
+	public Collection getDlvServiceTimeScenarioDays(){
+		return getLocationManagerDao().getDlvServiceTimeScenarioDays();
+	}
+	
 	public Collection getServiceTimesForZoneTypes(List zoneTypeLst) {
 		return getLocationManagerDao().getServiceTimesForZoneTypes(zoneTypeLst);
 	}
@@ -110,4 +121,7 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getDeliveryBuildingDetails(srubbedAddress, zipCode);
 	}
     
+    public Collection getDlvScenarioZones(String scenarioId)  {
+		return getLocationManagerDao().getDlvScenarioZones(scenarioId);
+	}
 }

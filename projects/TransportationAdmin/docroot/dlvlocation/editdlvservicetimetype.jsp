@@ -56,7 +56,27 @@
                   &nbsp;<form:errors path="description" />
                 </td>
                </tr>
-                              
+               
+               <tr>
+                  <td>Fixed Service Time(in minutes)</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="fixedServiceTime" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="fixedServiceTime" />
+                </td>
+               </tr>
+               
+                <tr>
+                  <td>Variable Service Time(in minutes)</td>
+                  <td>                  
+                    <form:input maxlength="50" size="30" path="variableServiceTime" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="variableServiceTime" />
+                </td>
+               </tr>
+                                        
                
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

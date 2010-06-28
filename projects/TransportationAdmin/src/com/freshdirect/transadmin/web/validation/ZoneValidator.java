@@ -28,8 +28,10 @@ public class ZoneValidator extends AbstractValidator {
 		if(model != null && (model.getRegion() == null || model.getRegion() == null) || "null".equals(model.getRegion())) {
 			errors.rejectValue("region", "app.error.112", new Object[]{"Region"},"required field");
 		}
-						
 		
+		if(model != null && (model.getDefaultServiceTimeType()== null || model.getDefaultServiceTimeType() == null) || "null".equals(model.getDefaultServiceTimeType())) {
+			errors.rejectValue("defaultServiceTimeType", "app.error.112", new Object[]{"ServiceTimeType"},"required field");
+		}
 	}
 	
 

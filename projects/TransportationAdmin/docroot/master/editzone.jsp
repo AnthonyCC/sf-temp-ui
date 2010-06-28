@@ -105,6 +105,19 @@
                   &nbsp;<form:errors path="region" />
                 </td>
                </tr>
+               
+               <tr>
+                  <td>Service Time Type</td>
+                  <td> 
+                  	<form:select path="serviceTimeType">
+                        <form:option value="null" label="--Please Select Service Time Type"/>
+                    <form:options items="${servicetimetypes}" itemLabel="name" itemValue="code" />
+                   </form:select>
+                </td>
+                <td>
+                  &nbsp;<form:errors path="serviceTimeType" />
+                </td>
+               </tr>
 
                <tr>
                   <td>Unattended Delivery</td>

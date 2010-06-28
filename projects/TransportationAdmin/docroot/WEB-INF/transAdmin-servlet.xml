@@ -91,6 +91,7 @@
  		 	    <prop key="/editdlvbuildingdtl.do">deliveryBuildingDtlFormController</prop> 
  		 	    <prop key="/deletedlvbuildingdtl.do">locationController</prop> 
  		 	    <prop key="/dlvservicetimescenario.do">locationController</prop>
+ 		 	    <prop key="/dlvservicetimescenariodisplay.do">locationController</prop>
  		 	    <prop key="/deletedlvservicetimescenario.do">locationController</prop>					                
 				<prop key="/editdlvservicetimescenario.do">dlvServiceTimeScenarioFormController</prop> 
 				<prop key="/cutoff.do">domainController</prop>
@@ -125,7 +126,7 @@
                 <prop key="/gpsadmin.do">dispatchController</prop>
                 
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
-                 <prop key="/geographyrestriction.do">adminController</prop>
+                <prop key="/geographyrestriction.do">adminController</prop>
                
 			</props>
 		</property>
@@ -227,7 +228,8 @@
 	 	    <prop key="/deletedlvbuildingdtl.do">dlvBuildingDtlDeleteHandler</prop>
 	 	    <prop key="/geocodedlvbuilding.do">dlvBuildingGeocodeHandler</prop>	
 	 	    <prop key="/dlvbuildinglocation.do">dlvBuildingLocationHandler</prop>	 
-	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>					                
+	 	    <prop key="/dlvservicetimescenario.do">dlvServiceTimeScenarioHandler</prop>
+	 	    <prop key="/dlvservicetimescenariodisplay.do">dlvServiceTimeScenarioDisplayHandler</prop>
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
@@ -266,6 +268,7 @@
 	
 	<bean id="zoneFormController" class="com.freshdirect.transadmin.web.ZoneFormController">
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="locationManagerService" ref="locationManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="zoneForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Zone"/>

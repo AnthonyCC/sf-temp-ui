@@ -1,6 +1,11 @@
 package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEntityI {
 
@@ -26,6 +31,36 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private String needsLoadBalance;
 	
 	private String isNew;
+	
+	private Set scenarioDays = new HashSet(0);
+	
+	private Set scenarioZones = new HashSet(0);
+	
+	//private DlvScenarioDays scenarioDay;
+	
+
+	public DlvServiceTimeScenario(String code, String description,
+			String isDefault, String serviceTimeFactorFormula,
+			String serviceTimeFormula, String isNew, Set scenarioDays,
+			Set scenarioZones) {
+		super();
+		this.code = code;
+		this.description = description;
+		this.isDefault = isDefault;
+		this.serviceTimeFactorFormula = serviceTimeFactorFormula;
+		this.serviceTimeFormula = serviceTimeFormula;
+		this.isNew = isNew;
+		this.scenarioDays = scenarioDays;
+		this.scenarioZones = scenarioZones;
+	}
+
+	public Set getScenarioZones() {
+		return scenarioZones;
+	}
+
+	public void setScenarioZones(Set scenarioZones) {
+		this.scenarioZones = scenarioZones;
+	}
 
 	public String getIsNew() {
 		return isNew;
@@ -199,7 +234,44 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	public void setLateDeliveryFactor(BigDecimal lateDeliveryFactor) {
 		this.lateDeliveryFactor = lateDeliveryFactor;
 	}
-
 	
+	public String toString() {
+		StringBuffer result = new StringBuffer();
+		result.append("DlvServiceTimeScenario: ");
+		result.append("code="+code);
+		result.append(" description= "+ description);
+	
+		result.append(" \nDays: ");
+		
+		Iterator iterator = scenarioDays.iterator();
+		while(iterator.hasNext()) {
+			DlvScenarioDay var= (DlvScenarioDay)iterator.next();
+			result.append(" \nscenarioId="+ var.getScenariodaysId().getScenarioId());
+			result.append(" dayOfWeek="+ var.getScenariodaysId().getDayOfWeek());
+			result.append(" date="+ var.getNormalDate());
+		}
+		
+		
+		result.append(" \nZones: ");	
+		
+		Iterator itr = scenarioZones.iterator();
+		while(itr.hasNext()) {
+			DlvScenarioZones var= (DlvScenarioZones)itr.next();
+			result.append(" \nZoneCode="+ var.getScenarioZonesId().getZoneCode());
+			result.append(" serviceTimeType="+ var.getServiceTimeType());
+			result.append(" serviceTimeOverride="+ var.getServiceTimeOverride());
+			result.append(" serviceTimeOperator="+ var.getServiceTimeOperator());
+			result.append(" serviceTimeAdjustment="+ var.getServiceTimeAdjustment());
+		}
+		return result.toString();
+		
+	}
 
+	public Set getScenarioDays() {
+		return scenarioDays;
+	}
+
+	public void setScenarioDays(Set scenarioDays) {
+		this.scenarioDays = scenarioDays;
+	}
 }

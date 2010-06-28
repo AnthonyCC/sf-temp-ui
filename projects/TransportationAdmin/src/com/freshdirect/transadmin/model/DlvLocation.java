@@ -11,6 +11,28 @@ public class DlvLocation implements java.io.Serializable, TrnBaseEntityI  {
 	
 	private DlvBuilding building;
 		
+	private BigDecimal serviceTimeOverride;
+	private BigDecimal serviceTimeAdjustable;
+	private String serviceTimeOperator;
+	
+	public String getServiceTimeOperator() {
+		return serviceTimeOperator;
+	}
+	public void setServiceTimeOperator(String serviceTimeOperator) {
+		this.serviceTimeOperator = serviceTimeOperator;
+	}
+	public BigDecimal getServiceTimeOverride() {
+		return serviceTimeOverride;
+	}
+	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
+		this.serviceTimeOverride = serviceTimeOverride;
+	}
+	public BigDecimal getServiceTimeAdjustable() {
+		return serviceTimeAdjustable;
+	}
+	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
+		this.serviceTimeAdjustable = serviceTimeAdjustable;
+	}
 	public String getApartment() {
 		return apartment;
 	}

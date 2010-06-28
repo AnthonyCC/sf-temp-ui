@@ -1,10 +1,14 @@
 package com.freshdirect.transadmin.web;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +35,7 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.TrnZoneType;
@@ -367,8 +372,62 @@ public class LocationController extends AbstractMultiActionController  {
 	 */
 	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
 		
-		Collection dataList = locationManagerService.getServiceTimeScenarios();
+		Collection dataList = locationManagerService.getDlvServiceTimeScenarioDays();
 		return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",dataList);
+	}
+
+	public ModelAndView dlvServiceTimeScenarioDisplayHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
+		try{
+			String daterange = request.getParameter("daterange");
+			if(daterange==null)
+				daterange=TransStringUtil.getCurrentDate();
+			String day=request.getParameter("scenarioDay");
+			if(day==null)
+				day="0";
+			//String[] dates=getDates(daterange,day);
+			Date date=TransStringUtil.getDate(daterange);
+			Calendar calendar=Calendar.getInstance();
+			calendar.setTime(date);
+			int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
+			
+			List allScenarios=new ArrayList();
+			
+			if(daterange!=null){
+				Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(daterange);
+				for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
+
+					
+					Object[] object = (Object[])itr.next();
+					if(null != object && object.length > 0){
+						DlvScenarioDay scenario=(DlvScenarioDay)object[1];
+						allScenarios.add(scenario);
+					}
+				}
+				if(allScenarios.isEmpty() && dayOfweek!=0){
+					Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
+					for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
+						Object[] object = (Object[])itr.next();
+						if(null != object && object.length > 0){
+							DlvScenarioDay scenario=(DlvScenarioDay)object[1];
+							allScenarios.add(scenario);
+						}
+					}
+				}
+				if(allScenarios.isEmpty()){
+					DlvServiceTimeScenario defaultScenario = locationManagerService.getDefaultServiceTimeScenario();
+					allScenarios.add(defaultScenario);
+				}
+			}
+			
+			
+			//Collection dataList = locationManagerService.getServiceTimeScenarios();
+			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",allScenarios);
+		}catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			saveMessage(request, getMessage("app.actionmessage.154", null));
+			return new ModelAndView("dlvServiceTimeScenarioView");	
+		}		
 	}
 	
 	/**

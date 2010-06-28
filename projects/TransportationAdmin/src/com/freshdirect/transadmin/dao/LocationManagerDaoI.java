@@ -34,6 +34,10 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getServiceTimeScenarios() throws DataAccessException;
 	
+	Collection getServiceTimeScenarios(String date) throws DataAccessException;
+	
+	Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek) throws DataAccessException;
+	
 	DlvServiceTimeScenario getServiceTimeScenario(String code) throws DataAccessException;
 	
 	DlvServiceTimeScenario getDefaultServiceTimeScenario() throws DataAccessException;
@@ -47,6 +51,9 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
    	DlvBuildingDetail getDlvBuildingDtl(String id) throws DataAccessException;		//agb
     
    	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode) throws DataAccessException;
-
+   	
+   	Collection getDlvScenarioZones(String scenarioCode) throws DataAccessException;
+   	
+   	Collection getDlvServiceTimeScenarioDays() throws DataAccessException;
 
 }

@@ -44,11 +44,17 @@
         <property name="lateDeliveryFactor" type="big_decimal">
             <column name="LATEDELIVERY_FACTOR" precision="10" />
         </property>   
-        <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
-            <column name="DEFAULT_SERVICETIME_TYPE" length="8" />
-        </many-to-one> 
-        <many-to-one name="defaultZoneType" class="com.freshdirect.transadmin.model.TrnZoneType" fetch="select" lazy="false">
-            <column name="DEFAULT_ZONE_TYPE" length="25" />
-        </many-to-one>       
+        <set name="scenarioDays" lazy="false">
+            <key>
+                <column name="SCENARIO_CODE" length="8" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.DlvScenarioDay" />
+        </set>        
+        <set name="scenarioZones" inverse="true" lazy="false">
+            <key>
+                <column name="CODE" length="8" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.DlvScenarioZones" />
+        </set>            
     </class>
 </hibernate-mapping>

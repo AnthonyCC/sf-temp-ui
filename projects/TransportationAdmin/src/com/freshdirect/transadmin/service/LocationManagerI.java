@@ -36,6 +36,10 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getServiceTimeScenarios();
 	
+	Collection getServiceTimeScenarios(String date);
+	
+	Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek);
+	
 	DlvServiceTimeScenario getServiceTimeScenario(String code);
 	
 	DlvServiceTimeScenario getDefaultServiceTimeScenario();
@@ -49,6 +53,8 @@ public interface LocationManagerI  extends BaseManagerI {
    	DlvBuildingDetail getDlvBuildingDtl(String id);		//agb
    	Collection getDeliveryBuildingDetails(String srubbedAddress, String zipCode);
    	
- 
+   	Collection getDlvScenarioZones(String scenarioId);
+   	
+   	Collection getDlvServiceTimeScenarioDays();
 
 }

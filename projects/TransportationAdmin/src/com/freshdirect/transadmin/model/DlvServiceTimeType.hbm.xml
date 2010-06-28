@@ -13,6 +13,12 @@
         </property>
         <property name="description" type="string">
             <column name="DESCRIPTION" length="256" />
-        </property>        
+        </property>
+        <property name="fixedServiceTime" type="big_decimal">
+            <column name="FIXED_SERVICE_TIME" precision="10" />
+        </property>
+        <property name="variableServiceTime" type="big_decimal">
+            <column name="VARIABLE_SERVICE_TIME" precision="10" />
+        </property>
     </class>
 </hibernate-mapping>

@@ -19,4 +19,5 @@ public interface IDispatchProvider {
 	int setReasonCode(String code,String reason, boolean enable);
 	WebPlanInfo getPlanForResource(String date, String resourceId, String planId);
 	DispatchCommand getDispatchForResource(String date, String resourceId, String dispatchId);
+	int addScenarioDayMapping(String sCode, String sDay, String sDate);
 }

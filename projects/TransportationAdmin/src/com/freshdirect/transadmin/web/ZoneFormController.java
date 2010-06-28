@@ -11,6 +11,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 
+import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnZoneType;
@@ -30,6 +31,7 @@ public class ZoneFormController extends AbstractDomainFormController {
 		refData.put("zonetypes", getDomainManagerService().getZoneTypes());
 		refData.put("areas", getDomainManagerService().getAreas());
 		refData.put("regions", getDomainManagerService().getRegions());
+		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());		
 		return refData;
 	}
 
@@ -58,17 +60,19 @@ public class ZoneFormController extends AbstractDomainFormController {
 		String areaCode=request.getParameter("area");
 		String trnZoneType=request.getParameter("trnZoneType");
 		String regionCode=request.getParameter("region");
-
+		String defaultServiceTimeType=request.getParameter("serviceTimeType");
+		
 		String unattended=request.getParameter("unattended");
 
 		TrnArea area= getDomainManagerService().getArea(areaCode);
 		TrnZoneType zoneType= getDomainManagerService().getZoneType(trnZoneType);
 		Region region= getDomainManagerService().getRegion(regionCode);
-
+		DlvServiceTimeType serviceTimeType= getLocationManagerService().getServiceTimeType(defaultServiceTimeType);
 
 		model.setArea(area);
 		model.setTrnZoneType(zoneType);
 		model.setRegion(region);
+		model.setDefaultServiceTimeType(serviceTimeType);
 		model.setUnattended(unattended);
 	}
 

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Jan 7, 2009 10:45:25 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvScenarioDay" table="SCENARIO_DAYS">
+        
+        <composite-id name="scenariodaysId" class="com.freshdirect.transadmin.model.DlvScenarioDaysId">
+            <key-property name="dayOfWeek" type="big_decimal">
+                <column name="DAY_OF_WEEK" precision="22" scale="0" />
+            </key-property>
+        </composite-id>                
+                      
+     	<property name="normalDate" column="SCENARIO_DATE" not-null="true"/>  
+          
+        <many-to-one name="scenario" class="com.freshdirect.transadmin.model.DlvServiceTimeScenario" fetch="select" lazy="false">
+            <column name="SCENARIO_CODE" length="8" />
+        </many-to-one>          
+    </class>
+</hibernate-mapping>

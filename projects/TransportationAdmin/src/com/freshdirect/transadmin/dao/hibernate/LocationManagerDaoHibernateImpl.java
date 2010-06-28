@@ -55,9 +55,32 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return this.getHibernateTemplate().findByCriteria(crit);
 	}
 
-
 	public Collection getServiceTimeScenarios() throws DataAccessException {
-		return getDataList("DlvServiceTimeScenario Order By CODE");
+		
+		return getDataList("DlvServiceTimeScenario Order By code");
+	}
+	
+	public Collection getDlvServiceTimeScenarioDays() throws DataAccessException {
+		
+		return getDataList("DlvScenarioDay");
+	}
+	
+	public Collection getServiceTimeScenarios(String date) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvServiceTimeScenario s, DlvScenarioDay sd");
+		strBuf.append(" where s.code=sd.scenario.code");
+		strBuf.append(" and sd.normalDate=TO_DATE('").append(date).append("','mm/dd/yyyy')");
+		strBuf.append(" Order By s.code");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvServiceTimeScenario s, DlvScenarioDay sd");
+		strBuf.append(" where s.code=sd.scenario.code");
+		strBuf.append(" and sd.scenariodaysId.dayOfWeek=").append(dayOfWeek);
+		strBuf.append(" Order By s.code");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 
 	public DlvServiceTime getServiceTime(String code, String zoneType) throws DataAccessException {
@@ -157,6 +180,14 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		//strBuf.append(" order by dl.building.srubbedStreet desc");
 //		System.out.println("getHibernateTemplate().find(strBuf.toString()) >"+getHibernateTemplate().find(strBuf.toString()));
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getDlvScenarioZones(String scenarioId)  throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvScenarioZones sz");
+		//strBuf.append(" where gd.restrictionId='").append(restrictionId).append("'");		
+		strBuf.append(" where sz.scenarioZonesId.scenarioId='").append(scenarioId).append("'");		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 

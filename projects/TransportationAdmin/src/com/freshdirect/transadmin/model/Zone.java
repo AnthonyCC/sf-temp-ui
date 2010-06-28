@@ -24,9 +24,34 @@ public class Zone implements java.io.Serializable {
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
     private BigInteger stemFromTime;
     private BigInteger stemToTime;
+    private DlvServiceTimeType defaultServiceTimeType;
 	
 	
-    public String getCosEnabled() {
+    public DlvServiceTimeType getDefaultServiceTimeType() {
+		return defaultServiceTimeType;
+	}
+
+	public void setDefaultServiceTimeType(DlvServiceTimeType defaultServiceTimeType) {
+		this.defaultServiceTimeType = defaultServiceTimeType;
+	}
+	public String getServiceTimeType() {
+		if(getDefaultServiceTimeType() == null) {
+			return null;
+		}
+		return getDefaultServiceTimeType().getCode();
+	}
+
+	public void setServiceTimeType(String trnServiceTimeTypeId) {
+		if("null".equals(trnServiceTimeTypeId)) {
+			setDefaultServiceTimeType(null);
+		} else {
+			DlvServiceTimeType trnServiceTimeType = new DlvServiceTimeType();
+			trnServiceTimeType.setCode(trnServiceTimeTypeId);
+			setDefaultServiceTimeType(trnServiceTimeType);
+		}
+	}
+
+	public String getCosEnabled() {
 		return cosEnabled;
 	}
 

@@ -19,6 +19,7 @@ import com.freshdirect.transadmin.dao.SpatialManagerDaoI;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
@@ -616,4 +617,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return getDispatchManagerDao().getDispatchReasons(active);
 	}
 	
+	public int addScenarioDayMapping(DlvScenarioDay scenarioDay) {
+		return getDispatchManagerDao().addScenarioDayMapping(scenarioDay);
+	}
 }

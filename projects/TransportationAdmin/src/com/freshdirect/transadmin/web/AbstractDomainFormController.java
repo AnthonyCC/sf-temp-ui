@@ -6,10 +6,13 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 
 public abstract class AbstractDomainFormController extends AbstractFormController {
 
 	private DomainManagerI domainManagerService;
+	
+	private LocationManagerI locationManagerService;
 
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
@@ -17,6 +20,14 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
+	}
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
 	}
 
 	public List saveDomainObject(Object domainObject) {

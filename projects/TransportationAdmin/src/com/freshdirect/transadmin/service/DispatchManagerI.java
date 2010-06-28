@@ -9,6 +9,7 @@ import org.springframework.dao.DataAccessException;
 
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Scrib;
 
@@ -82,4 +83,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	public Collection getUserPref(String userId);
 	
 	public Collection getDispatchReasons(boolean active);
+	
+	int addScenarioDayMapping(DlvScenarioDay scenarioDay);
 }

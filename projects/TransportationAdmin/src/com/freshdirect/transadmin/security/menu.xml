@@ -63,13 +63,14 @@
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	     
-	     <menu id="RUT005" title="Service Time" orientation="LEFT" link="dlvservicetime.do">
+	     <!--
+		 <menu id="RUT005" title="Service Time" orientation="LEFT" link="dlvservicetime.do">
 	     	<access-uris>dlvservicetime.do,deletedlvservicetime.do,editdlvservicetime.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
-	     
+	     -->
 	     <menu id="RUT006" title="Service Time Scenario" orientation="LEFT" link="dlvservicetimescenario.do">
-	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do</access-uris>
+	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	          

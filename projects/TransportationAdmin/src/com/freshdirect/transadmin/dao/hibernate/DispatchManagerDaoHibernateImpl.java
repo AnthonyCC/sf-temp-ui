@@ -10,6 +10,7 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchResource;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.Scrib;
@@ -300,5 +301,14 @@ public class DispatchManagerDaoHibernateImpl extends
 			return getDataList("DispatchReason ds where ds.active is null or ds.active='Y' order by ds.code");
 		else
 			return getDataList("DispatchReason ds where ds.active='N' order by ds.code");
+	}
+	
+	public int addScenarioDayMapping(DlvScenarioDay scenarioDay) {
+		if (scenarioDay!=null){
+			saveEntity(scenarioDay);
+			return 1;
+		}
+		else
+			return 0;
 	}
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated June 11, 2010 6:23:08 PM by Hibernate Tools 3.2.0.b9 -->
+<hibernate-mapping schema="dlv">
+    <class name="com.freshdirect.transadmin.model.DlvScenarioZones" table="SCENARIO_ZONES">
+      	 <composite-id name="scenarioZonesId" class="com.freshdirect.transadmin.model.ScenarioZonesId">
+            <key-property name="scenarioId" type="string">
+                <column name="CODE" length="8" />
+            </key-property>
+             <key-property name="zoneCode" type="string">
+                <column name="ZONE_CODE" length="5" />
+            </key-property>
+         </composite-id>  
+      	      	
+        <property name="serviceTimeType" type="string">
+            <column name="SERVICETIME_TYPE" length="8" />
+        </property>        
+        <property name="serviceTimeOverride" type="big_decimal">
+            <column name="SERVICETIME_OVERRIDE" precision="10" />
+        </property>
+        <property name="serviceTimeOperator" column="SERVICETIME_OPERATOR" type="com.freshdirect.transadmin.datamanager.util.EnumLogicalOperatorDataType" />
+        <property name="serviceTimeAdjustment" type="big_decimal">
+            <column name="SERVICETIME_ADJUSTMENT" precision="10" />
+        </property>         
+    </class>
+</hibernate-mapping>
+

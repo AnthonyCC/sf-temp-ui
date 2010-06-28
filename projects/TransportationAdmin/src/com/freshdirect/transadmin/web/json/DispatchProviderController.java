@@ -1,5 +1,9 @@
+
+
+
 package com.freshdirect.transadmin.web.json;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -26,6 +30,9 @@ import com.freshdirect.transadmin.datamanager.report.ICommunityReport;
 import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
+import com.freshdirect.transadmin.model.DlvScenarioDaysId;
+import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -435,6 +442,23 @@ public class DispatchProviderController extends JsonRpcController implements
 			}
 		}
 		return resultDispatch;
+	}
+	
+	public int addScenarioDayMapping(String sCode, String sDay, String sDate) {
+		int result = 0;
+		BigDecimal sdayOfWeek=new BigDecimal(sDay);
+		DlvScenarioDaysId id=new DlvScenarioDaysId(sCode,sdayOfWeek);
+		DlvServiceTimeScenario scenario=new DlvServiceTimeScenario();
+		scenario.setCode(sCode);
+		try {
+			DlvScenarioDay scenarioDay=new DlvScenarioDay(id,TransStringUtil.getDate(sDate),scenario);
+			result = getDispatchManagerService().addScenarioDayMapping(
+					scenarioDay);
+		} catch (ParseException parseExp) {
+			parseExp.printStackTrace();
+			// Do Nothing Return 0;
+		}
+		return result;
 	}
 	
 }

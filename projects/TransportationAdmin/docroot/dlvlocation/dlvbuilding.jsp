@@ -146,6 +146,8 @@
               <ec:column property="geocodeConfidence" title="Confidence" width="10px"/>
               <ec:column property="geocodeQuality" title="Quality" width="10px"/>             
               <ec:column alias="serviceTimeType" property="serviceTimeType.name" title="Service Time Type"/>
+              <ec:column alias="serviceTimeOverride" property="serviceTimeOverride" title="Override ServiceTimeType"/>
+              <ec:column alias="serviceTimeAdjustable" property="serviceTimeAdjustable" title="Service Time Adjustment"/>
               <ec:column sortable="false" alias="geocode" property="buildingId" title=" " filterable="false" cell="geocodecol" width="5px" />
               <ec:column sortable="false" alias="showloc" property="buildingId" title=" " filterable="false" cell="locationcol" width="5px" />
               <ec:column sortable="false" alias="showdtl" property="buildingId" title=" " filterable="false" cell="buildingdtlcol" width="5px" />
