@@ -1,0 +1,125 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editPanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editPanel = new YAHOO.widget.Panel("panel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        //editPanel.render();
+        initCustomCalendar("trigger_rDate","rDate","calContainer");	
+        
+        fillOptions("code", "sCode");	        		 
+	}
+     
+     function fillOptions(src, dest) {
+     
+    	 document.getElementById(dest).value = document.getElementById(src).value;
+     }	
+	
+
+     function showForm() {          
+          addSysMessage("", false);
+          editPanel.render(document.body);
+          editPanel.show();
+     }
+             
+      function sendForm() {       	                           
+      	  
+      	  var p_code = YAHOO.util.Dom.get("sCode").value;
+       	  var p_day = YAHOO.util.Dom.get("sDay").value;
+		  var p_date = YAHOO.util.Dom.get("rDate").value;		  
+  		    		  
+      	  if(p_code.trim().length == 0 ||
+      			p_day.trim().length == 0
+      	  			|| p_date.trim().length == 0) {
+      	  	addSysMessage("Please enter the required values", true);		
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScenarioDayMapping(sendFormCallback
+						    	  											, p_code ,p_day, p_date);  
+		  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result == 0) {
+          	addSysMessage("Scenario to Day Mapping failed", true);
+          } else {
+          	addSysMessage("Scenario to Day Mapping added successfully", false);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+          editPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="panel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Scenario Day Mapping</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	  <tr>
+		                  <td>Scenario Code</td>
+		                  <td><input type="text" size="29" id="sCode" value="" readonly="readonly"/></td> 
+		         </tr>
+		      	 <tr>
+		                  <td>Day</td>
+		                  <td>
+		                  	<select id="sDay" name="sDay" >
+                          		<option value="0">All</option>
+                      			<option value="1">Sun</option><option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option>
+                    	 	</select>	
+                    	 </td> 
+		         </tr>	        
+		         <tr>
+		                  <td>Date</td>
+		                  <td>
+		                  	<div id="calContainer"></div>
+		                  	<span><input maxlength="10" size="10" name="rDate" id="rDate" value='' /></span>
+                    		<span><a id="trigger_rDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                       			 </a>
+                       		</span>
+                      </td> 
+		         </tr> 
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendForm()" /> </td>
+		         </tr> 
+		      </table>   
+	      </div>      
+        </div>
+    </div>
+    </div>
