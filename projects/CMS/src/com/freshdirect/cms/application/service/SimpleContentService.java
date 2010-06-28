@@ -3,7 +3,6 @@ package com.freshdirect.cms.application.service;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -44,13 +43,12 @@ public class SimpleContentService extends AbstractContentService implements Cont
 	}
 
 	public ContentNodeI getContentNode(ContentKey key) {
-		return (ContentNodeI) nodesByKey.get(key);
+		return nodesByKey.get(key);
 	}
 
 	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		Map<ContentKey,ContentNodeI> m = new HashMap<ContentKey,ContentNodeI>(keys.size());
-		for (Iterator<ContentKey> i = keys.iterator(); i.hasNext();) {
-			ContentKey key = i.next();
+		for (ContentKey key : keys) {
 			ContentNodeI node = getContentNode(key);
 			if (node != null) {
 				m.put(key, node);
@@ -61,8 +59,7 @@ public class SimpleContentService extends AbstractContentService implements Cont
 
 	public Set<ContentKey> getContentKeysByType(ContentType type) {
 		Set<ContentKey> keys = new HashSet<ContentKey>();
-		for (Iterator<ContentKey> i = nodesByKey.keySet().iterator(); i.hasNext();) {
-			ContentKey key = i.next();
+		for (ContentKey key : nodesByKey.keySet()) {
 			if (key.getType().equals(type)) {
 				keys.add(key);
 			}
@@ -87,8 +84,7 @@ public class SimpleContentService extends AbstractContentService implements Cont
 	}
 
 	public CmsResponseI handle(CmsRequestI request) {
-		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
-			ContentNodeI node = (ContentNodeI) i.next();
+		for (ContentNodeI node : request.getNodes()) {
 			nodesByKey.put(node.getKey(), node);
 		}
 		buildNodeIndex();

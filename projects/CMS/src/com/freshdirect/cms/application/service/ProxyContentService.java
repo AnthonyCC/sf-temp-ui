@@ -33,15 +33,15 @@ public class ProxyContentService implements ContentServiceI {
 		this.service = service;
 	}
 
-	public Set getContentKeys() {
+	public Set<ContentKey> getContentKeys() {
 		return getProxiedService().getContentKeys();
 	}
 
-	public Set getContentKeysByType(ContentType type) {
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
 		return getProxiedService().getContentKeysByType(type);
 	}
 
-	public Set getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key) {
 		return getProxiedService().getParentKeys(key);
 	}
 
@@ -49,11 +49,11 @@ public class ProxyContentService implements ContentServiceI {
 		return getProxiedService().getContentNode(key);
 	}
 
-	public Map getContentNodes(Set keys) {
+	public Map<ContentKey,ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 		return getProxiedService().getContentNodes(keys);
 	}
 	
-	public Map queryContentNodes(ContentType type, Predicate criteria) {
+	public Map<ContentKey, ContentNodeI> queryContentNodes(ContentType type, Predicate criteria) {
 		return getProxiedService().queryContentNodes(type, criteria);
 	}
 
@@ -85,5 +85,5 @@ public class ProxyContentService implements ContentServiceI {
 	public ContentServiceI getSelf() {
 		return this;
 	}
-
+	
 }

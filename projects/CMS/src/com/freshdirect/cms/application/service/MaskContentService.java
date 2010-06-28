@@ -41,24 +41,24 @@ public class MaskContentService extends AbstractContentService implements Conten
 		return mask.getTypeService();
 	}
 
-	public Set getContentKeys() {
-		Set s = new HashSet();
+	public Set<ContentKey> getContentKeys() {
+		Set<ContentKey> s = new HashSet<ContentKey>();
 		s.addAll(base.getContentKeys());
 		s.addAll(mask.getContentKeys());
 		return s;
 	}
 
-	public Set getContentKeysByType(ContentType type) {
-		Set s = new HashSet();
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
+		Set<ContentKey> s = new HashSet<ContentKey>();
 		s.addAll(base.getContentKeysByType(type));
 		s.addAll(mask.getContentKeysByType(type));
 		return s;
 	}
 
-	public Set getParentKeys(ContentKey key) {
+	public Set<ContentKey> getParentKeys(ContentKey key) {
 		// get all potential parents from both and recalculate based on masked node data
 
-		Set s = new HashSet();
+		Set<ContentKey> s = new HashSet<ContentKey>();
 		s.addAll(base.getParentKeys(key));
 		s.addAll(mask.getParentKeys(key));
 
@@ -76,8 +76,8 @@ public class MaskContentService extends AbstractContentService implements Conten
 		return n;
 	}
 
-	public Map getContentNodes(Set keys) {
-		Map m = new HashMap(keys.size());
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
+		Map<ContentKey, ContentNodeI> m = new HashMap<ContentKey, ContentNodeI>(keys.size());
 		m.putAll(base.getContentNodes(keys));
 		m.putAll(mask.getContentNodes(keys));
 		return m;

@@ -70,7 +70,7 @@ public class CmsManager implements ContentServiceI {
 	/**
 	 * Default initialization based on {@link FDRegistry}.
 	 */
-	private void initialize() {
+	public void initialize() {
 		Registry registry = FDRegistry.getInstance();
 		ContentServiceI mgr = (ContentServiceI) registry.getService("com.freshdirect.cms.CmsManager", ContentServiceI.class);
 		ContentSearchServiceI search = (ContentSearchServiceI) registry.getService(ContentSearchServiceI.class);

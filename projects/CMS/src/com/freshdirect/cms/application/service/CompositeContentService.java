@@ -37,25 +37,24 @@ public class CompositeContentService extends AbstractContentService implements C
 	
 	private final CompositeTypeService typeService;
 
-	private final List contentServices;
+	private final List<ContentServiceI> contentServices;
 
-	private final Map contentServicesByName;
+	private final Map<String, ContentServiceI> contentServicesByName;
 
 	/**
 	 * 
 	 * @param contentServices List of {@link ContentServiceI}
 	 */
-	public CompositeContentService(List contentServices) {
+	public CompositeContentService(List<ContentServiceI> contentServices) {
 		if (contentServices == null || contentServices.size() < 2) {
 			throw new IllegalArgumentException("Need at least two content services");
 		}
 
 		this.contentServices = contentServices;
-		contentServicesByName = new HashMap(contentServices.size());
-		List typeServices = new ArrayList(contentServices.size());
+		contentServicesByName = new HashMap<String, ContentServiceI>(contentServices.size());
+		List<ContentTypeServiceI> typeServices = new ArrayList<ContentTypeServiceI>(contentServices.size());
 
-		for (Iterator i = contentServices.iterator(); i.hasNext();) {
-			ContentServiceI service = (ContentServiceI) i.next();
+		for (ContentServiceI service : contentServices) {
 			Object o = contentServicesByName.put(service.getName(), service);
 			if (o != null) {
 				throw new IllegalArgumentException("Duplicate service name " + service.getName());
@@ -69,7 +68,7 @@ public class CompositeContentService extends AbstractContentService implements C
 	public ContentTypeServiceI getTypeService() {
 		return typeService;
 	}
-
+	
 	public ContentNodeI getContentNode(ContentKey cKey) {
 		Map nodes = new LinkedHashMap();
 		boolean found = false;
@@ -94,12 +93,12 @@ public class CompositeContentService extends AbstractContentService implements C
 		return new CompositeContentNode(this, cKey, nodes);
 	}
 
-	public Map getContentNodes(Set keys) {
+	public Map<ContentKey, ContentNodeI> getContentNodes(Set<ContentKey> keys) {
 
-		Set foundKeys = new HashSet(keys.size());
+		Set<ContentKey> foundKeys = new HashSet<ContentKey>(keys.size());
 
 		/** Map of ContentKey -> (Map of String (service name) -> ContentNodeI) */
-		Map nodeMapsByKey = new HashMap(keys.size());
+		Map<ContentKey, Map> nodeMapsByKey = new HashMap(keys.size());
 		for (Iterator j = contentServices.iterator(); j.hasNext();) {
 			ContentServiceI service = (ContentServiceI) j.next();
 
@@ -156,8 +155,8 @@ public class CompositeContentService extends AbstractContentService implements C
 		return new CompositeContentNode(this, cKey, nodes);
 	}
 
-	public Set getContentKeysByType(ContentType type) {
-		Set set = new HashSet();
+	public Set<ContentKey> getContentKeysByType(ContentType type) {
+		Set<ContentKey> set = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
 			set.addAll(service.getContentKeysByType(type));
@@ -165,8 +164,8 @@ public class CompositeContentService extends AbstractContentService implements C
 		return set;
 	}
 
-	public Set getContentKeys() {
-		Set set = new HashSet();
+	public Set<ContentKey> getContentKeys() {
+		Set<ContentKey> set = new HashSet<ContentKey>();
 		for (Iterator i = contentServices.iterator(); i.hasNext();) {
 			ContentServiceI service = (ContentServiceI) i.next();
 			set.addAll(service.getContentKeys());
@@ -174,11 +173,11 @@ public class CompositeContentService extends AbstractContentService implements C
 		return set;
 	}
 
-	public Set getParentKeys(ContentKey key) {
-		Set keySet = new HashSet();
+	public Set<ContentKey> getParentKeys(ContentKey key) {
+		Set<ContentKey> keySet = new HashSet<ContentKey>();
 		for (int i = 0; i < contentServices.size(); i++) {
 			ContentServiceI service = (ContentServiceI) contentServices.get(i);
-			Set keys = service.getParentKeys(key);
+			Set<ContentKey> keys = service.getParentKeys(key);
 
 			keySet.addAll(keys);
 		}
@@ -188,11 +187,10 @@ public class CompositeContentService extends AbstractContentService implements C
 
 	public CmsResponseI handle(CmsRequestI request) {
 
-		Map reqByService = decomposeRequest(request);
+		Map<String, CmsRequest> reqByService = decomposeRequest(request);
 
 		// execute requests
-		for (Iterator i = contentServices.iterator(); i.hasNext();) {
-			ContentServiceI service = (ContentServiceI) i.next();
+		for (ContentServiceI service : contentServices) {
 			CmsRequestI serviceReq = (CmsRequestI) reqByService.get(service.getName());
 			if (serviceReq == null) {
 				continue;
@@ -207,8 +205,8 @@ public class CompositeContentService extends AbstractContentService implements C
 	/**
 	 * @return Map of String (serviceName) -> CmsRequest
 	 */
-	private Map decomposeRequest(CmsRequestI request) {
-		Map reqByService = new HashMap();
+	private Map<String, CmsRequest> decomposeRequest(CmsRequestI request) {
+		Map<String, CmsRequest> reqByService = new HashMap<String, CmsRequest>();
 
 		// decompose request with composite nodes
 		for (Iterator i = request.getNodes().iterator(); i.hasNext();) {
