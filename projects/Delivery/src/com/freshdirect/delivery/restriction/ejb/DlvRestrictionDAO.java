@@ -9,6 +9,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.delivery.InvalidAddressException;
+import com.freshdirect.delivery.ejb.DlvManagerDAO;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
@@ -100,7 +102,16 @@ public class DlvRestrictionDAO {
 //	select * from dlv.GEO_RESTRICTION_BOUNDARY gr where mdsys.sdo_relate(gr.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(-73.952006,40.59712,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'
 	//1910 AVE V  	11229  	40.59712  	-73.952006
 	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
-
+		
+		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
+			try {
+				DlvManagerDAO.geocodeAddress(conn, address, false);
+			} catch (Exception e) {
+				// If Invalid Address Exception or SQL Exception was thrown it would have never reached this section
+				// So this error can be safely ignored
+				e.printStackTrace();
+			}
+		}
 		PreparedStatement ps = conn.prepareStatement(GEOGRAPHY_RESTRICTION);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDouble(2, address.getLongitude());

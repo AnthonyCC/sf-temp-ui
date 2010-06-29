@@ -205,7 +205,7 @@ public class DlvManagerDAO {
 		return timeslots;
 	}
 
-	private static void geocodeAddress(Connection conn, AddressModel address, boolean useApartment)
+	public static void geocodeAddress(Connection conn, AddressModel address, boolean useApartment)
 		throws SQLException, InvalidAddressException {
 		GeographyDAO dao = new GeographyDAO();
 
