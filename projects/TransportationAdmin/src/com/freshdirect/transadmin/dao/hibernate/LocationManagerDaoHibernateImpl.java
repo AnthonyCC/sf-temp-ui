@@ -65,6 +65,22 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return getDataList("DlvScenarioDay");
 	}
 	
+	public Collection getScenariosWithNoDay() throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvServiceTimeScenario s");
+		strBuf.append(" where 0=(select count(*) from DlvScenarioDay sd where sd.scenario.code=s.code)");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	
+	public Collection getDefaultServiceTimeScenarioDay() throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from DlvServiceTimeScenario s");
+		strBuf.append(" where 0=(select count(*) from DlvScenarioDay sd where sd.scenario.code=s.code)");
+		strBuf.append(" and s.isDefault='X'");
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
 	public Collection getServiceTimeScenarios(String date) throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DlvServiceTimeScenario s, DlvScenarioDay sd");

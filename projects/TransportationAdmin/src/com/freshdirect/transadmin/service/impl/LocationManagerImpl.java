@@ -46,8 +46,16 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getServiceTimeScenario(code);
 	}
 	
+	public Collection getScenariosWithNoDay() {
+		return getLocationManagerDao().getScenariosWithNoDay();
+	}
+	
 	public DlvServiceTimeScenario getDefaultServiceTimeScenario() {
 		return getLocationManagerDao().getDefaultServiceTimeScenario();
+	}
+	
+	public Collection getDefaultServiceTimeScenarioDay() {
+		return getLocationManagerDao().getDefaultServiceTimeScenarioDay();
 	}
 	
 	public Collection getServiceTimes() {

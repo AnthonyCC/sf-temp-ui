@@ -38,11 +38,15 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getServiceTimeScenarios(String date);
 	
+	Collection getScenariosWithNoDay();
+	
 	Collection getServiceTimeScenariosForDayofWeek(int dayOfWeek);
 	
 	DlvServiceTimeScenario getServiceTimeScenario(String code);
 	
 	DlvServiceTimeScenario getDefaultServiceTimeScenario();
+	
+	Collection getDefaultServiceTimeScenarioDay();
 	
 	Collection getServiceTimesForZoneTypes(List zoneTypeLst);
 	

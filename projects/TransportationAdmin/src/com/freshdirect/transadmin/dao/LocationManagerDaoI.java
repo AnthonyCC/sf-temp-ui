@@ -42,6 +42,10 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	
 	DlvServiceTimeScenario getDefaultServiceTimeScenario() throws DataAccessException;
 	
+	Collection getScenariosWithNoDay() throws DataAccessException;
+	
+	Collection getDefaultServiceTimeScenarioDay() throws DataAccessException;
+	
 	Collection getServiceTimesForZoneTypes(List zoneTypeLst) throws DataAccessException;
 	
 	Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException; 

@@ -370,9 +370,19 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @param response current HTTP response
 	 * @return a ModelAndView to render the response
 	 */
-	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
+	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) 
+									throws ServletException {		
 		
-		Collection dataList = locationManagerService.getDlvServiceTimeScenarioDays();
+		Collection dataList  = locationManagerService.getDlvServiceTimeScenarioDays();
+		Collection scenarios = locationManagerService.getScenariosWithNoDay();		
+				
+		DlvScenarioDay sd=null;
+		for(Iterator itr=scenarios.iterator();itr.hasNext();){
+			DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
+			sd=new DlvScenarioDay();
+			sd.setScenario(scenario);
+			dataList.add(sd);
+		}
 		return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",dataList);
 	}
 
@@ -384,7 +394,7 @@ public class LocationController extends AbstractMultiActionController  {
 			String day=request.getParameter("scenarioDay");
 			if(day==null)
 				day="0";
-			//String[] dates=getDates(daterange,day);
+			
 			Date date=TransStringUtil.getDate(daterange);
 			Calendar calendar=Calendar.getInstance();
 			calendar.setTime(date);
@@ -395,15 +405,13 @@ public class LocationController extends AbstractMultiActionController  {
 			if(daterange!=null){
 				Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(daterange);
 				for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
-
-					
 					Object[] object = (Object[])itr.next();
 					if(null != object && object.length > 0){
 						DlvScenarioDay scenario=(DlvScenarioDay)object[1];
 						allScenarios.add(scenario);
 					}
 				}
-				if(allScenarios.isEmpty() && dayOfweek!=0){
+				if(allScenarios.isEmpty()&& dayOfweek!=0){
 					Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfweek);
 					for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
 						Object[] object = (Object[])itr.next();
@@ -414,13 +422,17 @@ public class LocationController extends AbstractMultiActionController  {
 					}
 				}
 				if(allScenarios.isEmpty()){
-					DlvServiceTimeScenario defaultScenario = locationManagerService.getDefaultServiceTimeScenario();
-					allScenarios.add(defaultScenario);
+					Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
+					DlvScenarioDay sd=null;
+					for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
+						DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
+						sd=new DlvScenarioDay();
+						sd.setScenario(scenario);
+						allScenarios.add(sd);
+					}				
 				}
 			}
-			
-			
-			//Collection dataList = locationManagerService.getServiceTimeScenarios();
+						
 			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",allScenarios);
 		}catch (Exception e) {
 			// TODO Auto-generated catch block
