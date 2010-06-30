@@ -119,16 +119,19 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 				String sTimeAdjustment = request.getParameter("attributeList["
 						+ (indexSize) + "].sTimeAdjustment");
 
-				if (null == zonecode || "".equals(zonecode)) { // tbr
-					break;
-				}
 				if ((null == sTimeType || "".equals(sTimeType))&&(null == sTimeOverride || "".equals(sTimeOverride))&&
 							(null == sTimeOperator || "".equals(sTimeOperator))&&(null == sTimeAdjustment || "".equals(sTimeAdjustment))) { 
 					break;
 				}
 				
-				BigDecimal objsTimeOverride = new BigDecimal(sTimeOverride);
-				BigDecimal objsTimeAdjustment = new BigDecimal(sTimeAdjustment);
+				BigDecimal objsTimeOverride = null;
+				if(!"".equals(sTimeOverride)){
+					objsTimeOverride = new BigDecimal(sTimeOverride);
+				}
+				BigDecimal objsTimeAdjustment = null;
+				if(!"".equals(sTimeAdjustment)){
+					objsTimeAdjustment = new BigDecimal(sTimeAdjustment);
+				}
 				ScenarioZonesId Id = new ScenarioZonesId(scenarioId, zonecode);
 				
 				DlvScenarioZones zone = null;
