@@ -67,6 +67,30 @@ public abstract class AbstractValidator implements Validator  {
 			
 		
 	}
+	
+	protected void validateServiceTimeGroup(String field,String value1, BigDecimal value2, BigDecimal value3, String displayField, Errors errors) {
+		String v2="";
+		String v3="";
+		if(value2==null){ v2="";}else{	v2=value2.toString();};
+		if(value3==null){ v3="";}else{	v3=value3.toString();};
+		
+		if(value1!=null && !TransStringUtil.isEmpty(v2) && TransStringUtil.isEmpty(v3)){
+			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
+		}
+		if(value1!=null && TransStringUtil.isEmpty(v2) && !TransStringUtil.isEmpty(v3)){
+			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
+		}
+		if(null==value1 && !TransStringUtil.isEmpty(v2) && !TransStringUtil.isEmpty(v3)){
+			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
+		}
+		if(null==value1 && TransStringUtil.isEmpty(v2) && TransStringUtil.isEmpty(v3)){
+			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
+		}
+		if(value1!=null && !TransStringUtil.isEmpty(v2) && !TransStringUtil.isEmpty(v3)){
+			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
+		}
+		
+	}
     
     
 }

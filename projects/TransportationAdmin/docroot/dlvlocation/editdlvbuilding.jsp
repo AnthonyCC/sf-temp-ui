@@ -5,10 +5,10 @@
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 
-    <tmpl:put name='title' direct='true'>Add/Edit Delivery Building</tmpl:put>
+  <tmpl:put name='title' direct='true'>Add/Edit Delivery Building</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <br/> 
+  	<br/> 
     <div align="center">
       <form:form commandName = "deliveryBuildingForm" method="post">
       <form:hidden path="buildingId"/>
@@ -111,9 +111,8 @@
                   &nbsp;<form:errors path="geocodeQuality" />
                 </td>
                </tr>
-                   
-               
-                             
+                     
+                                             
                <tr>
                   <td>Service Time Type</td>
                   <td> 
@@ -158,7 +157,7 @@
             </td>
           </tr>               
         </table>
-      
+               
       </form:form>
      </div>
      

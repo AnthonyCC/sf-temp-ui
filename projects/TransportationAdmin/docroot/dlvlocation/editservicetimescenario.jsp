@@ -67,8 +67,24 @@
       
       
           function validateUserFields(){
-              
-              
+
+        	  var sType     =  document.getElementById('ServiceTimeTypeList').selectedIndex;
+        	  var sTimeOver =  document.getElementById('serviceTimeOverride').value;
+        	  var sTimeOptr =  document.getElementById('ServiceTimeOperatorList').selectedIndex;
+        	  var sTimeAdj  =  document.getElementById('serviceTimeAdjustment').value;
+        	  
+        	  if(sType==0 && sTimeOver==''&& sTimeOptr==0 && sTimeAdj==''){ 
+                  alert("Service Time group cannot be empty. Please choose one from the group!!");   
+                  return false;
+              } 
+        	  if((sType!=0 && sTimeOver!=''&& sTimeOptr==0 && sTimeAdj=='') || (sType!=0 && sTimeOver!=''&& sTimeOptr!=0 && sTimeAdj!='')
+                	  ||(sType!=0 && sTimeOver==''&& sTimeOptr==0 && sTimeAdj!='')||(sType==0 && sTimeOver!=''&& sTimeOptr==0 && sTimeAdj!='')
+                	  ||(sType==0 && sTimeOver==''&& sTimeOptr!=0 && sTimeAdj=='')||(sType!=0 && sTimeOver==''&& sTimeOptr!=0 && sTimeAdj=='')
+                	  ||(sType==0 && sTimeOver!=''&& sTimeOptr!=0 && sTimeAdj=='')||(sType!=0 && sTimeOver!=''&& sTimeOptr==0 && sTimeAdj!='')
+                	  ||(sType!=0 && sTimeOver!=''&& sTimeOptr!=0 && sTimeAdj=='')){ 
+                  alert("Please choose only one from ServiceTime group!!");   
+                  return false;
+              }
               return true;
           }
       
@@ -138,11 +154,17 @@
   									    var td1 = document.createElement('td');
   									    td1.appendChild(document.createTextNode(zonecode.text));
   									    var td2 = document.createElement('td');
+										if(sTimeType.text!=null && sTimeType.text=='-Please Select'){
+											sTimeType.text='';	
+										}
                                         td2.appendChild(document.createTextNode(sTimeType.text));    
    									    var td3 = document.createElement('td');
-  									    td3.appendChild (document.createTextNode(sTimeOverride));
+   									    td3.appendChild (document.createTextNode(sTimeOverride));
   									    var td4 = document.createElement('td');
-                                        td4.appendChild(document.createTextNode(sTimeOptr.text)); 
+  									    if(sTimeOptr.text!=null && sTimeOptr.text=='-Please Select'){
+  									    	sTimeOptr.text='';	
+										}
+  	                                    td4.appendChild(document.createTextNode(sTimeOptr.text)); 
   									    var td5 = document.createElement('td');
   									    td5.appendChild (document.createTextNode(sTimeAdjustment));
   									    var td6 = document.createElement('td');
@@ -445,7 +467,7 @@
 		                   <tr>
 			                   <td>                   
 			                      <select id="ZoneList" style="width: 50;" name="ZoneList">  
-			                    	<option value="null">All</option>
+			                    	<option value="All">All</option>
 			                   		<c:forEach var="zone" items="${zones}">       
 					              		<OPTION value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/></OPTION>
 						        	</c:forEach>                                      
@@ -453,7 +475,7 @@
 			                   </td>                               
 			                   <td>                 
 				                   <select name="ServiceTimeTypeList" id="ServiceTimeTypeList" style="width: 90%;">                     
-				                  	 <option value="null">-Please select ST Type-</option>
+				                  	 <option value="">-Please Select</option>
 				                  	 <c:forEach var="serviceTimeType" items="${servicetimetypes}">       
 						             		<OPTION value="<c:out value="${serviceTimeType.code}"/>"><c:out value="${serviceTimeType.name}"/></OPTION>
 							         </c:forEach>                                      
@@ -462,7 +484,7 @@
 			                   <td><input type="text" id="serviceTimeOverride" name="serviceTimeOverride" value="" style="width: 95px;" ></td>
 			                   <td>                 
 				                   <select name="ServiceTimeOperatorList" id="ServiceTimeOperatorList" style="width: 100%;">                     
-				                  	 <option value="null"></option>
+				                  	 <option value="">-Please Select</option>
 				                  	 <c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
 						             		<OPTION value="<c:out value="${serviceTimeOperator.name}"/>"><c:out value="${serviceTimeOperator.description}"/></OPTION>
 							         </c:forEach>                                      
@@ -522,14 +544,43 @@
 		                        </script>		
 						     </tbody> 				
 						</table>
-		             	</td>
-             	
-              </tr>
+						</td>
+   					</tr>
               <tr>
                   <td colspan="3" align="center">
                    	<input type = "submit" value="&nbsp;Save&nbsp;"  />
                   </td>     
               </tr>
+              <tr>
+                  <td colspan="3" align="center">
+                  		<table cellpadding="0" cellspacing="0" border="1" width="50%">
+                              <tr>
+			                    <td class="legend">x</td>
+			                    <td>No of Cartons</td>
+			                  </tr>
+			                  <tr>
+			                    <td class="legend">y</td>
+			                    <td>No of Cases</td>
+			                  </tr>
+			                  <tr>
+			                    <td class="legend">z</td>
+			                    <td>No of Freezers</td>
+			                  </tr>
+			                  <tr>
+			                    <td class="legend">a</td>
+			                    <td>Fixed Service Time</td>
+			                  </tr>
+			                  <tr>
+			                    <td class="legend">b</td>
+			                    <td>Variable Service Time</td>
+			                  </tr>
+			                  <tr>
+			                    <td class="legend">m</td>
+			                    <td>Service Time Factor</td>
+			                  </tr>                 
+			              </table>
+                  </td>
+                  </tr>
               </table>        
               
             </td>
@@ -537,8 +588,9 @@
         </table>
       	<br/>				
       </form:form>
-          
+         
      </div>
+      
       <%@ include file='i_scenariodaymapping.jspf'%>
      <script>loadBalanceEvent();</script>
   </tmpl:put>
