@@ -22,6 +22,8 @@ import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
 
 public class FDServiceLocator extends ServiceLocator {
 
@@ -161,6 +163,24 @@ public class FDServiceLocator extends ServiceLocator {
     public FDCustomerManagerSB getFDCustomerManagerSessionBean() {
         try {
             return getFDCustomerManagerHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public OfflineRecommenderHome getOfflineRecommenderHome() {
+        try {
+            return (OfflineRecommenderHome) getRemoteHome(OfflineRecommenderHome.JNDI_HOME);
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public OfflineRecommenderSB getOfflineRecommender() {
+        try {
+            return getOfflineRecommenderHome().create();
         } catch (RemoteException e) {
             throw new EJBException(e);
         } catch (CreateException e) {

@@ -9,6 +9,7 @@ import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ConfiguredProductGroup;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProxyProduct;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -25,12 +26,18 @@ public class ProductDisplayUtil {
 
 	public final static ProductModel.RatingComparator RATING_COMP = new ProductModel.RatingComparator();
 
+
+        public static String getProductBurstCode(FDUserI user,
+                EnumSiteFeature siteFeature, ProductModel product) {
+            return getProductBurstCode(user, siteFeature, product,  product.getPriceCalculator());
+        }
+        
 	public static String getProductBurstCode(FDUserI user,
-			EnumSiteFeature siteFeature, ProductModel product) {
+			EnumSiteFeature siteFeature, ProductModel product, PriceCalculator calculator) {
 		Set<EnumBurstType> hb = new HashSet<EnumBurstType>();
 		if (EnumSiteFeature.DYF.equals(siteFeature))
 			hb.add(EnumBurstType.YOUR_FAVE);
-		return new ProductLabeling(user, product, hb).getBurstCode();
+		return new ProductLabeling(user, product, calculator, hb).getBurstCode();
 	}
 
 	public static String getProductRatingCode(FDUserI user, ProductModel product)

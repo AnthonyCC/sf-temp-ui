@@ -37,12 +37,6 @@ public class PriceCalculator {
         this.skuModel = product.getDefaultSku(ctx);
     }
 
-    public PriceCalculator(ProductModel product, SkuModel sku) {
-        this.product = product;
-        this.ctx = product.getPricingContext();
-        this.skuModel = product.getDefaultSku(ctx);
-    }
-
     
     /**
      * @return

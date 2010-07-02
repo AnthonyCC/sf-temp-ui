@@ -1751,7 +1751,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 			}
 		}catch (FDResourceException e) {
-			throw new FDRuntimeException(e.getMessage());
+			throw new FDRuntimeException(e, e.getMessage());
 		}
 		return this.pricingContext;
 	}

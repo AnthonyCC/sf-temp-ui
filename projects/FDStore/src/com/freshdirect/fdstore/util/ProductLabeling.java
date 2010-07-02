@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.EnumBurstType;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -28,7 +29,7 @@ public class ProductLabeling {
 	private FDUserI customer;
 	private String pricingZoneId;
 	private ProductModel product;
-	
+	private PriceCalculator calculator; 
 	Set<EnumBurstType> hideBursts;
 	
 	// display flags
@@ -51,6 +52,7 @@ public class ProductLabeling {
 	public ProductLabeling(FDUserI customer, ProductModel product, boolean hideBursts, boolean hideNew, boolean hideDeals, boolean hideYourFave) {
 	    setCustomer(customer);
 		this.product = product;
+		this.calculator = product.getPriceCalculator();
 
 		this.hideBursts = new HashSet<EnumBurstType>();
 
@@ -75,18 +77,29 @@ public class ProductLabeling {
 	/**
 	 * @param customer
 	 * @param product
+	 * @param calculator the price calculator
 	 * 
 	 * @param hideBursts Set of burst types to hide. Can be null.
 	 */
-	public ProductLabeling(FDUserI customer, ProductModel product, Set<EnumBurstType> hideBursts) {
+	public ProductLabeling(FDUserI customer, ProductModel product, PriceCalculator calculator, Set<EnumBurstType> hideBursts) {
 		setCustomer(customer);
 		this.product = product;
+                this.calculator = calculator;
 
 		this.hideBursts = hideBursts;
 
 		setDisplayFlags();
 	}
 
+        /**
+         * @param customer
+         * @param product
+         * 
+         * @param hideBursts Set of burst types to hide. Can be null.
+         */
+        public ProductLabeling(FDUserI customer, ProductModel product, Set<EnumBurstType> hideBursts) {
+            this(customer, product, product.getPriceCalculator(), hideBursts);
+        }
 
     /**
      * @param customer
@@ -114,7 +127,8 @@ public class ProductLabeling {
                 boolean showBurstImage=true;
                 
 		try {
-			String skuCode = product.getDefaultSkuCode();
+		    
+			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
 				ZonePriceInfoModel model=info.getZonePriceInfo(pricingZoneId);
@@ -126,7 +140,7 @@ public class ProductLabeling {
                     LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		}
 		
-		int deal = ((hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL)) && showBurstImage ) ? product.getHighestDealPercentage() : 0;
+		int deal = ((hideBursts == null || !hideBursts.contains(EnumBurstType.DEAL)) && showBurstImage ) ? calculator.getHighestDealPercentage() : 0;
 		boolean isNew = (hideBursts == null || !hideBursts.contains(EnumBurstType.NEW) ) && product.isNew();
 		boolean isYourFave = (hideBursts == null || !hideBursts.contains(EnumBurstType.YOUR_FAVE) ) && DYFUtil.isFavorite(product, customer);
 		boolean isBackInStock = (hideBursts == null || !hideBursts.contains(EnumBurstType.BACK_IN_STOCK) ) && product.isBackInStock();

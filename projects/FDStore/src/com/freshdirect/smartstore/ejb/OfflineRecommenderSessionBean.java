@@ -131,9 +131,8 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 				} catch (FDSkuNotFoundException e) {
 					ps.setNull(11, Types.VARCHAR);
 				}
-				//Get Product Pricing Adapter based on pricing context.
-				ProductModel adapter = ProductPricingFactory.getInstance().getPricingAdapter(product,user.getPricingContext());
-				PriceCalculator pc = adapter.getPriceCalculator();
+				//Get Product Pricing calculator
+				PriceCalculator pc = new PriceCalculator(user.getPricingContext(), product);
 				// price, pricing
 				ps.setString(12, pc.getPriceFormatted(0));
 				ps.setString(13, pc.getWasPriceFormatted(0));
@@ -142,7 +141,7 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 
 				// burst
 				String burst = ProductDisplayUtil.getProductBurstCode(user,
-						siteFeature, adapter);
+						siteFeature, product, pc);
 				if (burst == null)
 					ps.setNull(16, Types.VARCHAR);
 				else

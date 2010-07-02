@@ -35,6 +35,9 @@ import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
+import com.freshdirect.deliverypass.ejb.DlvPassManagerSessionBean;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.ejb.ErpZoneInfoSessionBean;
@@ -65,6 +68,9 @@ import com.freshdirect.fdstore.lists.ejb.FDListManagerSessionBean;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerHome;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSessionBean;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSessionBean;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
@@ -72,6 +78,9 @@ import com.freshdirect.mail.ejb.MailerGatewaySessionBean;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
 import com.freshdirect.smartstore.ejb.DyfModelSessionBean;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
+import com.freshdirect.smartstore.ejb.OfflineRecommenderSessionBean;
 import com.freshdirect.smartstore.ejb.ScoreFactorHome;
 import com.freshdirect.smartstore.ejb.ScoreFactorSB;
 import com.freshdirect.smartstore.ejb.ScoreFactorSessionBean;
@@ -174,9 +183,15 @@ public class TestUtils {
                 ErpZoneInfoSessionBean.class);
         container.deploy(zoneInfoDesc);
         
+        container.deploy(new SessionBeanDescriptor("freshdirect.fdstore.ZoneInfoManager", FDZoneInfoHome.class, FDZoneInfoSB.class, FDZoneInfoSessionBean.class));
+        
         // added for promotion manager
         container.deploy(new SessionBeanDescriptor("freshdirect.fdstore.PromotionManager", FDPromotionManagerHome.class, FDPromotionManagerSB.class, FDPromotionManagerSessionBean.class));
         
+        container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class, DlvPassManagerSB.class, DlvPassManagerSessionBean.class));
+        
+        // added for offline recommendation 
+        container.deploy(new SessionBeanDescriptor(OfflineRecommenderHome.JNDI_HOME, OfflineRecommenderHome.class, OfflineRecommenderSB.class, OfflineRecommenderSessionBean.class));
 
         return container;
     }
