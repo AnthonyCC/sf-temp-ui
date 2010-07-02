@@ -1,7 +1,5 @@
 package com.freshdirect.dataloader.geocodeloader;
 
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Hashtable;
 
 import javax.naming.Context;
@@ -13,10 +11,6 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderHome;
 import com.freshdirect.dataloader.geocodeloader.ejb.GeoCodeLoaderSB;
-import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
-import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.fdstore.CallCenterServices;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class GeoCodeLoaderThread implements Runnable {
@@ -75,7 +69,7 @@ public class GeoCodeLoaderThread implements Runnable {
 	}
 
 	 public Context getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);

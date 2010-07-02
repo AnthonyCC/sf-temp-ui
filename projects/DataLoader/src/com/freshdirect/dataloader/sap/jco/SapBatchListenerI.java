@@ -8,7 +8,7 @@
  */
 package com.freshdirect.dataloader.sap.jco;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.LoaderException;
 
 /**
  *

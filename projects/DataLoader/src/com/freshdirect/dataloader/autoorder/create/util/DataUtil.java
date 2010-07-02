@@ -39,7 +39,7 @@ public class DataUtil {
 		ResultSet rs = ps.executeQuery();
 		OrderBean orderBean = null;
 			
-		Map custMap = new HashMap();
+		Map<String, OrderBean> custMap = new HashMap<String, OrderBean>();
 		while (rs.next()) {				
 			orderBean = new OrderBean();						
 			orderBean.setErpCustomerPK(getString(rs.getString("ERPID")));
@@ -49,7 +49,7 @@ public class DataUtil {
 		}
 		System.out.println("totalCount>>"+totalCount);
 		for(int intCount=1; intCount<=totalCount; intCount++) {
-			accept.accept((OrderBean)custMap.get(prefix+intCount+"@freshdirect.com"));
+			accept.accept(custMap.get(prefix+intCount+"@freshdirect.com"));
 		}
 		rs.close();
 		ps.close();			

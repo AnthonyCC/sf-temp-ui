@@ -16,6 +16,7 @@ public class GFTask {
      */
     public void go() {
         final SwingWorker worker = new SwingWorker() {
+            @Override
             public Object construct() {
                 return new ActualTask();
             }

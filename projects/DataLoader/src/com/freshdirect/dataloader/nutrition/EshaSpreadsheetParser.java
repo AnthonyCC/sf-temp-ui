@@ -19,6 +19,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ErpNutritionType;
@@ -37,12 +38,12 @@ public class EshaSpreadsheetParser {
     
     /** Creates new PoiTest */
     public EshaSpreadsheetParser() {
-        nutrition = new ArrayList();
+        nutrition = new ArrayList<ErpNutritionModel>();
     }
     
-    ArrayList nutrition = null;
+    ArrayList<ErpNutritionModel> nutrition = null;
     
-    public ArrayList getNutrition() {
+    public ArrayList<ErpNutritionModel> getNutrition() {
         return this.nutrition;
     }
     
@@ -70,14 +71,14 @@ public class EshaSpreadsheetParser {
         int n = xls.getNumberOfSheets();
         for (int i=0; i<n; i++) {
             ErpNutritionModel enm = new ErpNutritionModel();
-            ArrayList skuList = new ArrayList();
+            ArrayList<String> skuList = new ArrayList<String>();
             HSSFSheet sheet = xls.getSheetAt(i);
             try {
             	boolean hasHeating = false;
                 for (Iterator rIter = sheet.rowIterator(); rIter.hasNext(); ) {
                     HSSFRow row = (HSSFRow) rIter.next();
                     HSSFCell testCell = row.getCell((short)0);
-                    if ((testCell == null) || (testCell.getCellType() != HSSFCell.CELL_TYPE_STRING)) continue;
+                    if ((testCell == null) || (testCell.getCellType() != Cell.CELL_TYPE_STRING)) continue;
                     String testString = testCell.getStringCellValue();
                     if ("".equals(testString.trim())) {
                         continue;
@@ -111,9 +112,9 @@ public class EshaSpreadsheetParser {
                 enm.setValueFor(ErpNutritionType.SOURCE, 0.0);
                 enm.setUomFor(ErpNutritionType.SOURCE, "ESHA");
                 
-                for (Iterator sIter = skuList.iterator(); sIter.hasNext(); ) {
+                for (String string : skuList) {
                     ErpNutritionModel model = new ErpNutritionModel();
-                    model.setSkuCode((String) sIter.next());
+                    model.setSkuCode(string);
                     model.setHeatingInstructions(enm.getHeatingInstructions());
                     model.setHiddenIngredients(enm.getHiddenIngredients());
                     model.setIngredients(enm.getIngredients());
@@ -238,10 +239,10 @@ public class EshaSpreadsheetParser {
         if (quantCell != null) {
             ErpNutritionType.Type nType = getNutritionType(nnameCell.getStringCellValue().trim() + " quantity");
             if (nType == null) nType = getNutritionType(nnameCell.getStringCellValue().trim());
-            if (quantCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+            if (quantCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                 //System.out.println(quantCell.getNumericCellValue());
                 nutrition.setValueFor(nType.getName(), quantCell.getNumericCellValue());
-            } else if (quantCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+            } else if (quantCell.getCellType() == Cell.CELL_TYPE_STRING) {
                 String quant = quantCell.getStringCellValue().trim();
                 //System.out.println(quantCell.getStringCellValue());
                 String quantVal = "";
@@ -281,11 +282,11 @@ public class EshaSpreadsheetParser {
             ErpNutritionType.Type nType = getNutritionType(nnameCell.getStringCellValue().trim() + " value");
             if (nType == null) nType = getNutritionType(nnameCell.getStringCellValue().trim());
             //System.out.println(nType);
-            if (valueCell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
+            if (valueCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                 //System.out.println(valueCell.getNumericCellValue());
                 nutrition.setValueFor(nType.getName(), 100. * valueCell.getNumericCellValue());
                 nutrition.setUomFor(nType.getName(), "%");
-            } else if (valueCell.getCellType() == HSSFCell.CELL_TYPE_STRING) {
+            } else if (valueCell.getCellType() == Cell.CELL_TYPE_STRING) {
                 //System.out.println(valueCell.getStringCellValue());
             }
         }
@@ -294,15 +295,15 @@ public class EshaSpreadsheetParser {
     private static String[] skuPrefixes = {"BAK","CAN","CAT","CBL","CHE","COF","DAI","DEL","FDM","FRO","FRU","GRO","HBA","HMR","KOS","MEA","MKT","PAS","SEA","SMP","SPE","TEA","TST","VAR","VEG","YEL"};
     
     protected boolean isSkuCode(String skuCode) {
-        for (int i=0; i<skuPrefixes.length; i++) {
-            if (skuCode.startsWith(skuPrefixes[i]) && Character.isDigit(skuCode.charAt(skuPrefixes[i].length()))) {
+        for (String skuPrefixe : skuPrefixes) {
+            if (skuCode.startsWith(skuPrefixe) && Character.isDigit(skuCode.charAt(skuPrefixe.length()))) {
                 return true;
             }
         }
         return false;
     }
     
-    protected void doSkuCode(String skuCodeList, ArrayList list) {
+    protected void doSkuCode(String skuCodeList, ArrayList<String> list) {
         StringTokenizer stoke = new StringTokenizer(skuCodeList, " ");
         while (stoke.hasMoreTokens()) {
             String code = stoke.nextToken();

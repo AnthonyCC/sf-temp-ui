@@ -8,7 +8,11 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumPaymentechCategory extends Enum {
 	
-	public static final EnumPaymentechCategory SALES = new EnumPaymentechCategory("SALE");
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    public static final EnumPaymentechCategory SALES = new EnumPaymentechCategory("SALE");
 	public static final EnumPaymentechCategory REFUNDS = new EnumPaymentechCategory("REF");
 	public static final EnumPaymentechCategory NET_SETTLED_DEPOSIT = new EnumPaymentechCategory("NET");
 	public static final EnumPaymentechCategory INTERCHANGE_ASSESSMENT_FEES = new EnumPaymentechCategory("IA");

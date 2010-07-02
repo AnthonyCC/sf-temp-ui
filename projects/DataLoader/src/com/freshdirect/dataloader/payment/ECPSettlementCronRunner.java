@@ -6,15 +6,15 @@ package com.freshdirect.dataloader.payment;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Calendar;
-import java.util.ArrayList;
 
 import org.apache.log4j.Category;
 
@@ -23,11 +23,11 @@ import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.SapFileBuilder;
+import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.reconciliation.detail.CCDetailOne;
-import com.freshdirect.dataloader.payment.reconciliation.SettlementLoaderUtil;
 
 /**
  * @author jng
@@ -48,17 +48,17 @@ public class ECPSettlementCronRunner {
 		String inputFileName = null;
 		
 		if (args.length >= 1) {
-			for (int i = 0; i < args.length; i++) {
+			for (String arg : args) {
 				try { 
-					if (args[i].startsWith("numDaysBack=")) {
-							numDaysBack = Integer.parseInt(args[i].substring("numDaysBack=".length()));
-					} else if (args[i].startsWith("maxNumSales=")) {
-						maxNumSales = Integer.parseInt(args[i].substring("maxNumSales=".length()));
-					} else if (args[i].startsWith("sendToSap=")) {
+					if (arg.startsWith("numDaysBack=")) {
+							numDaysBack = Integer.parseInt(arg.substring("numDaysBack=".length()));
+					} else if (arg.startsWith("maxNumSales=")) {
+						maxNumSales = Integer.parseInt(arg.substring("maxNumSales=".length()));
+					} else if (arg.startsWith("sendToSap=")) {
 						
-						sendToSap = new Boolean(args[i].substring("sendToSap=".length())).booleanValue(); 
-					} else if (args[i].startsWith("inputFileName=")) {
-						inputFileName = args[i].substring("inputFileName=".length()); 
+						sendToSap = new Boolean(arg.substring("sendToSap=".length())).booleanValue(); 
+					} else if (arg.startsWith("inputFileName=")) {
+						inputFileName = arg.substring("inputFileName=".length()); 
 					}
 				} catch (Exception e) {
 					System.err.println("Usage: java com.freshdirect.dataloader.payment.ECPSettlementCronRunner [numDaysBack={int value}] [maxNumSales={int value}] [sendToSap={true | false}] [ignorePaymentRecharge={true | false}] [inputFileName={filename of sale ids(one per line)}] ");
@@ -79,7 +79,7 @@ public class ECPSettlementCronRunner {
 			// process settlement transactions
 			if (inputFileName != null) {
 				LOGGER.debug("ECPSettlementCronRunner.main:  Loading sale ids in file " + inputFileName);						
-				List saleIds = getSaleIdsFromFile(inputFileName);				
+				List<String> saleIds = getSaleIdsFromFile(inputFileName);				
 				txnList = reconciliationSB.loadReadyToSettleECPSales(saleIds);
 			} else {
 				startDate = calcWeekDaysBack(startDate, numDaysBack);			
@@ -164,9 +164,9 @@ public class ECPSettlementCronRunner {
 			
 	}
 
-	private static List getSaleIdsFromFile(String inputFileName) throws FileNotFoundException, IOException {
+	private static List<String> getSaleIdsFromFile(String inputFileName) throws FileNotFoundException, IOException {
 
-		List saleIds = new ArrayList();
+		List<String> saleIds = new ArrayList<String>();
 		File file = new File(inputFileName);
 		FileInputStream ifs = new FileInputStream(file);
 		BufferedReader bfr = new BufferedReader(new InputStreamReader(ifs));

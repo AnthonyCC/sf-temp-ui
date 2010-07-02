@@ -28,8 +28,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.EnumZoneServiceType;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.erp.EnumApprovalStatus;
@@ -46,6 +44,11 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /** logger for messages
      */
     private static Category LOGGER = LoggerFactory.getInstance( SAPZoneInfoLoaderSessionBean.class );
@@ -60,6 +63,7 @@ public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport {
      *
      * @return the bean's home interface name
      */
+    @Override
     protected String getResourceCacheKey() {
         return "com.freshdirect.dataloader.sap.ejb.SAPLoaderHome";
     }
@@ -213,9 +217,9 @@ public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport {
     }
     
     public static final String DEFAULT_ZONE_ID="0000100000";
-    public static  Map  zoneLevelMap=null;
+    public static  Map<String, String>  zoneLevelMap=null;
     static{
-    	zoneLevelMap=new HashMap();
+    	zoneLevelMap=new HashMap<String, String>();
     	zoneLevelMap.put("00", "0000100000");
     	zoneLevelMap.put("01", "0000100001");
     	zoneLevelMap.put("02", "0000100002");
@@ -237,7 +241,7 @@ public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport {
         		   String sapId=zoneInfo.getSapId();
         		   if(!zoneLevelMap.containsValue(sapId)){
         			   String  enumServType=zoneInfo.getServiceType().getCode();
-        			   String zoneId=(String)zoneLevelMap.get(enumServType);        			  
+        			   String zoneId=zoneLevelMap.get(enumServType);        			  
         			   ErpZoneMasterInfo zInfo= ErpZoneInfoDAO.getZoneInfoDetails(conn, zoneId);
         			   zoneInfo.setParentZone(zInfo);        			  
         		   }else{

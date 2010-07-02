@@ -32,7 +32,12 @@ import com.michaelbaranov.microba.common.CommitListener;
 
 public class AutoGui extends JFrame implements ActionListener {
 	
-	private final DurationFormat TIME_FORMATTER = new DurationFormat();
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    private final DurationFormat TIME_FORMATTER = new DurationFormat();
 		
 	//private Color skyblue = new Color(135, 206, 235);
 

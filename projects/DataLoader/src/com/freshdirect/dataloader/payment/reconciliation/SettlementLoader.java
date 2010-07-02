@@ -25,8 +25,6 @@ import com.freshdirect.dataloader.DataLoaderProperties;
 import com.freshdirect.dataloader.payment.reconciliation.detail.DetailParser;
 import com.freshdirect.dataloader.payment.reconciliation.summary.SummaryParser;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.sap.command.SapSendSettlement;
@@ -249,7 +247,7 @@ public class SettlementLoader {
 	 */
 	protected Context getInitialContext() throws NamingException {
 
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL()); //t3://localhost:7006
 		env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
 		return new InitialContext(env);

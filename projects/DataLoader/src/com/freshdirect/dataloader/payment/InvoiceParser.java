@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import com.freshdirect.common.pricing.Discount;
@@ -45,15 +46,15 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
     //predefined material numbers provided by SAP for different charges/promotions
 	private final static String PROMOTION		= "000000000000009999";
 	 
-	private List headerFields = new ArrayList();
-	private List lineFields = new ArrayList();
-	private List creditFields = new ArrayList();
+	private List<Field> headerFields = new ArrayList<Field>();
+	private List<Field> lineFields = new ArrayList<Field>();
+	private List<Field> creditFields = new ArrayList<Field>();
 	private ConsumerI consumer = null;
 	private String pk = null;
 	private String billingType = null;
 	private ErpShippingInfo shippingInfo = null;
 	private ErpInvoiceModel invoice = null;
-	private List invoiceLines = new ArrayList();
+	private List<ErpInvoiceLineModel> invoiceLines = new ArrayList<ErpInvoiceLineModel>();
 	
 	public static final String CREDIT_MEMO = "C";
 	public static final String INVOICE_HEADER = "H";
@@ -71,13 +72,15 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		
 	}
 	
-	public void parseFile(String filename) {
+	@Override
+    public void parseFile(String filename) {
 		super.parseFile(filename);
 		invoice.setInvoiceLines(invoiceLines);
 		this.consumer.consume(invoice, pk, billingType, this.shippingInfo);
 	}
 
-	protected BufferedReader createReader(String fileName) throws IOException {
+	@Override
+    protected BufferedReader createReader(String fileName) throws IOException {
 		return new BufferedReader(
 			new InputStreamReader(
 				new GZIPInputStream(
@@ -96,18 +99,19 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 	 * @return a HashMap of String tokens from a line of a text file,
 	 * keyed by their field names
 	 */
-	protected HashMap tokenize(String line) throws BadDataException {
+	@Override
+    protected HashMap<String, String> tokenize(String line) throws BadDataException {
 		//
 		// iterate through the list of fields are read each token
 		// from the line
 		//
-	Iterator iter = fields.iterator();
-		HashMap retval = new HashMap();
+	Iterator<Field> iter = fields.iterator();
+		HashMap<String, String> retval = new HashMap<String, String>();
 		String type = line.substring(0, 1);
 		int startPosition = 0;
 		if(!CREDIT_MEMO.equals(type)){
 			while (iter.hasNext()) {
-				Field f = (Field) iter.next();
+				Field f = iter.next();
 				String name = f.getName();
 				int endPosition = startPosition + f.getLength();
 				try {
@@ -129,10 +133,9 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		return retval;
 	}
 	
-	protected void tokenizeInvoiceHeader(HashMap retval, String line, int startPosition) throws BadDataException {
+	protected void tokenizeInvoiceHeader(HashMap<String, String> retval, String line, int startPosition) throws BadDataException {
 		int endPosition;
-		for(Iterator i = headerFields.iterator(); i.hasNext(); ){
-			Field f = (Field) i.next();
+		for (Field f : headerFields) {
 			String name = f.getName();
 			endPosition = startPosition + f.getLength();
 			try{
@@ -150,9 +153,8 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		}
 	}
 	
-	protected void tokenizeInvoiceLine(HashMap retval, String line, int startPosition) throws BadDataException {
-		for(Iterator i = lineFields.iterator(); i.hasNext(); ){
-			Field f = (Field) i.next();
+	protected void tokenizeInvoiceLine(HashMap<String, String> retval, String line, int startPosition) throws BadDataException {
+		for (Field f : lineFields) {
 			String name = f.getName();
 			int endPosition = startPosition + f.getLength();
 			try{
@@ -170,10 +172,9 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		}
 	}
 	
-	protected void tokenizeCreditMemo(HashMap retval, String line) throws BadDataException {
+	protected void tokenizeCreditMemo(HashMap<String, String> retval, String line) throws BadDataException {
 		int startPosition = 0;
-		for(Iterator i = creditFields.iterator(); i.hasNext(); ){
-			Field f = (Field) i.next();
+		for (Field f : creditFields) {
 			String name = f.getName();
 			int endPosition = startPosition + f.getLength();
 			try{
@@ -201,14 +202,15 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 	 * @throws BadDataException an problems while trying to assemble objects from the
 	 * supplied tokens
 	 */
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 						
-		String type = (String)tokens.get(TYPE_INDICATOR);
+		String type = tokens.get(TYPE_INDICATOR);
 		if(CREDIT_MEMO.equalsIgnoreCase(type)){
 			ErpInvoicedCreditModel credit = new ErpInvoicedCreditModel();
 			credit.setAmount(getDouble(tokens, CREDIT_AMOUNT));
 			credit.setOriginalCreditId(getString(tokens, WEB_REFERENCE_NUMBER));
-			String creditMemoNumber = ((String)tokens.get(CREDIT_MEMO_NUMBER)).trim();
+			String creditMemoNumber = tokens.get(CREDIT_MEMO_NUMBER).trim();
 			
 			if (invoice.getAmount() > 0 && "".equals(creditMemoNumber)) {
 				throw new BadDataException("Invoice "
@@ -219,14 +221,12 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 			credit.setSapNumber(creditMemoNumber);
 			invoice.addAppliedCredit(credit);
 			
-			for(Iterator i = creditFields.iterator(); i.hasNext(); ){
-				Field f = (Field)i.next();
+			for (Field f : creditFields) {
 				String name = f.getName();
 				System.out.println(name+": "+tokens.get(name));
 			}
 		}else{ 
-			for(Iterator i = fields.iterator(); i.hasNext(); ){
-				Field f = (Field)i.next();
+			for (Field f : fields) {
 				String name = f.getName();
 				System.out.println(name+": "+tokens.get(name));
 			}
@@ -247,7 +247,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 					
 					invoice.setInvoiceLines(invoiceLines);
 					this.consumer.consume(invoice, pk, billingType, this.shippingInfo);
-					invoiceLines = new ArrayList();
+					invoiceLines = new ArrayList<ErpInvoiceLineModel>();
 				}
 				invoice = new ErpInvoiceModel();
 				pk = getString(tokens, WEB_ORDER_NUMBER);
@@ -264,8 +264,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 				invoice.setTransactionDate(new Date(System.currentTimeMillis()));
 				invoice.setTransactionSource(EnumTransactionSource.SYSTEM);
 								
-				for(Iterator i = headerFields.iterator(); i.hasNext(); ){
-					Field f = (Field)i.next();
+				for (Field f : headerFields) {
 					String name = f.getName();
 					System.out.println(name+": "+tokens.get(name));
 				}
@@ -326,8 +325,7 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 					}
 				}
 					
-				for(Iterator i = lineFields.iterator(); i.hasNext(); ){
-					Field f = (Field)i.next();
+				for (Field f : lineFields) {
 					String name = f.getName();
 					System.out.println(name+": "+tokens.get(name));
 				}
@@ -344,14 +342,15 @@ public class InvoiceParser extends FlatFileParser implements SAPConstants, Produ
 		this.consumer = consumer;
 	}
 	
-	 protected String getString(HashMap tokens, String fieldName) throws BadDataException {
+	 @Override
+    protected String getString(Map<String, String> tokens, String fieldName) throws BadDataException {
         System.out.println("fieldName :"+fieldName);
-        String s = ((String)tokens.get(fieldName)).trim();
+        String s = tokens.get(fieldName).trim();
         //
         // check if this is a required field
         //
         if (s.equals("")) {
-            throw new BadDataException("Required field \"" + fieldName + "\" was empty for order# "+((String)tokens.get(WEB_ORDER_NUMBER)));
+            throw new BadDataException("Required field \"" + fieldName + "\" was empty for order# "+tokens.get(WEB_ORDER_NUMBER));
         }
         return s;
     }

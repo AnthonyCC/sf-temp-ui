@@ -7,7 +7,11 @@ import com.freshdirect.framework.util.TimeOfDay;
 
 public class PaymentechHeader implements Serializable {
 	
-	private final EnumPaymentechRecordType recordType;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private final EnumPaymentechRecordType recordType;
 	private String companyId;
 	private Date fromDate;
 	private Date toDate;
@@ -62,7 +66,8 @@ public class PaymentechHeader implements Serializable {
 		this.generationTime = generationTime;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("PaymentechHeader Type: ").append(this.recordType.getName()).append("\n");

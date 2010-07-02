@@ -9,10 +9,12 @@
 package com.freshdirect.dataloader.sap.jco;
 
 import java.util.Hashtable;
-import weblogic.common.T3StartupDef;
-import weblogic.common.T3ServicesDef;
 
-import com.freshdirect.dataloader.bapi.*;
+import weblogic.common.T3ServicesDef;
+import weblogic.common.T3StartupDef;
+
+import com.freshdirect.dataloader.bapi.BapiRepository;
+import com.freshdirect.dataloader.bapi.BapiServer;
 
 /**
  * Sample configuration:
@@ -48,7 +50,8 @@ public class T3SapBatchServer implements T3StartupDef {
 
 		new BapiServer(gwHost, gwServ, progId) {
 		
-			protected BapiRepository getRepository() {
+			@Override
+            protected BapiRepository getRepository() {
 				BapiRepository repo = new BapiRepository("FDLoaderRepository");
 				repo.addFunction( new BapiErpsBatch(listenerInstance) );
 				return repo;

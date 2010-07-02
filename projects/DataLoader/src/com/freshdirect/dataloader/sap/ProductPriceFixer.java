@@ -6,20 +6,37 @@
 
 package com.freshdirect.dataloader.sap;
 
-import java.util.*;
-import java.sql.*;
-
-import javax.ejb.*;
-import javax.naming.*;
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
-import com.freshdirect.erp.*;
-import com.freshdirect.erp.model.*;
-import com.freshdirect.erp.ejb.*;
+import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.PricingEngine;
+import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.erp.PricingFactory;
+import com.freshdirect.erp.ejb.ErpMaterialEB;
+import com.freshdirect.erp.ejb.ErpMaterialHome;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.ZonePriceListing;
-
-import com.freshdirect.common.pricing.*;
 
 
 /**
@@ -46,7 +63,7 @@ public class ProductPriceFixer {
             //
             // get the material numbers
             //
-            ArrayList matlIds = new ArrayList();
+            ArrayList<String> matlIds = new ArrayList<String>();
             PreparedStatement ps = conn.prepareStatement("select distinct sap_id from material");
             ResultSet rs = ps.executeQuery();
             while (rs.next())
@@ -70,14 +87,14 @@ public class ProductPriceFixer {
             //
             // loop through the materials
             //
-            Iterator iter = matlIds.iterator();
+            Iterator<String> iter = matlIds.iterator();
             //int count = 0;
             while (iter.hasNext()) {
                 //if (++count > 25) break;
                 //
                 // get a material
                 //
-                String matlId = (String) iter.next();
+                String matlId = iter.next();
                 ErpMaterialEB erpMatlEB = matlHome.findBySapId(matlId);
                 ErpMaterialModel erpMatl = (ErpMaterialModel) erpMatlEB.getModel();
                 
@@ -170,7 +187,7 @@ public class ProductPriceFixer {
     }
     
     protected Context getInitialContext() throws NamingException {
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, "t3://127.0.0.1:7005");
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

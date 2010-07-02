@@ -39,7 +39,7 @@ public class MissingInvoiceCron extends DBReportCreator {
 			criteria.setDeliveryDate(Calendar.getInstance().getTime());
 			
 			List orders = sb.locateOrders(criteria);
-			List missingOrders = new ArrayList();
+			List<String> missingOrders = new ArrayList<String>();
 
 			int processed = 0;
 			int invoiced = 0;
@@ -73,8 +73,8 @@ public class MissingInvoiceCron extends DBReportCreator {
 			
 			buff.append("Missing: ").append(missingOrders.size()).append("\n");
 			int count = 1;
-			for(Iterator ri = missingOrders.iterator(); ri.hasNext(); count++){
-				String id = (String) ri.next();
+			for(Iterator<String> ri = missingOrders.iterator(); ri.hasNext(); count++){
+				String id = ri.next();
 				buff.append("\t").append(count).append(".  ").append(id);
 			}
 			buff.append("---------------------------------------------\n");
@@ -103,7 +103,7 @@ public class MissingInvoiceCron extends DBReportCreator {
 	}
 
 	static public Context getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);

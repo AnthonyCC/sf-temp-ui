@@ -6,9 +6,15 @@
 
 package com.freshdirect.dataloader.sap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -17,7 +23,7 @@ import com.freshdirect.dataloader.*;
  */
 public class VirtualProductParser extends TabDelimitedFileParser {
     
-    private HashMap products = null;
+    private Map<String, Map<String, Object>> products = null;
     
     public static String ORIGINAL_SKU   = "ORIGINAL_SKU";
     public static String VIRTUAL_SKU    = "VIRTUAL_SKU";
@@ -28,7 +34,7 @@ public class VirtualProductParser extends TabDelimitedFileParser {
     /** Creates new NutritionParser */
     public VirtualProductParser() {
         super();
-        products = new HashMap();
+        products = new HashMap<String, Map<String, Object>>();
         
         fields.add(new Field(ORIGINAL_SKU,  0, true));
         fields.add(new Field(VIRTUAL_SKU,   0, true));
@@ -46,29 +52,30 @@ public class VirtualProductParser extends TabDelimitedFileParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
-        HashMap extraInfo = new HashMap();
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
+        HashMap<String, Object> extraInfo = new HashMap<String, Object>();
         
         String vSku = getString(tokens, VIRTUAL_SKU);
         
         extraInfo.put(ORIGINAL_SKU, getString(tokens, ORIGINAL_SKU));
         
         StringTokenizer suStoke = new StringTokenizer(getString(tokens, SALES_UNITS), ",");
-        LinkedList sUnits = new LinkedList();
+        LinkedList<String> sUnits = new LinkedList<String>();
         while (suStoke.hasMoreTokens()) {
             sUnits.add(suStoke.nextToken());
         }
         extraInfo.put(SALES_UNITS, sUnits);
         
         StringTokenizer chStoke = new StringTokenizer(getString(tokens, CHAR_VALUES), ",");
-        ArrayList cVals = new ArrayList();
+        List<Map<String, String>> cVals = new ArrayList<Map<String, String>>();
         while (chStoke.hasMoreTokens()) {
             String cvPair = chStoke.nextToken();
             int comma = cvPair.indexOf(":");
             if (comma <= 0) throw new BadDataException("Can't understand characteristic/characteristic value pair \"" + cvPair + "\"");
             String charac = cvPair.substring(0, comma);
             String charVal = cvPair.substring(comma+1);
-            HashMap cVal = new HashMap();
+            HashMap<String, String> cVal = new HashMap<String, String>();
             cVal.put(charac, charVal);
             cVals.add(cVal);
         }
@@ -79,7 +86,7 @@ public class VirtualProductParser extends TabDelimitedFileParser {
     }
     
     
-    public HashMap getProducts(){
+    public Map<String, Map<String, Object>> getProducts(){
         return products;
     }
     

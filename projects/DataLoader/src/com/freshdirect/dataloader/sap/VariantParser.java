@@ -10,9 +10,11 @@ package com.freshdirect.dataloader.sap;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import com.freshdirect.erp.model.*;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
 
 /** a parser that deals with SAP variant export files
  *
@@ -24,18 +26,18 @@ public class VariantParser extends SAPParser {
     
     /** a collection of characteristic model objects parsed from the file
      */    
-    HashMap characteristics = null;
+    Map<ErpCharacteristicModel, Map<String, String>> characteristics = null;
     
     /** a collection of material-class associations parsed froma file
      */    
-    HashMap materialClasses = null;
+    Map<String, Set<String>> materialClasses = null;
     
     /** Creates new VariantParser
      */
     public VariantParser() {
         super();
-        characteristics = new HashMap();
-        materialClasses = new HashMap();
+        characteristics = new HashMap<ErpCharacteristicModel, Map<String, String>>();
+        materialClasses = new HashMap<String, Set<String>>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Variant_Export_CSD.doc in VSS repository
          */
@@ -50,14 +52,14 @@ public class VariantParser extends SAPParser {
     /** gets the collection of characteristic model objects parsed from a file
      * @return the collection of characteristics
      */    
-    public HashMap getCharacteristics() {
+    public Map<ErpCharacteristicModel, Map<String, String>> getCharacteristics() {
         return characteristics;
     }
     
     /** gets the collection of material-class associations parsed from a file
      * @return the material-class associations
      */    
-    public HashMap getMaterialClasses() {
+    public Map<String, Set<String>> getMaterialClasses() {
         return materialClasses;
     }
     
@@ -65,7 +67,8 @@ public class VariantParser extends SAPParser {
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
      */
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         
         /*
          * from ERP Services/Technical Specs/Mapping Docs/ERPS_SAP_BATCH_MAP.xls in VSS repository
@@ -85,7 +88,7 @@ public class VariantParser extends SAPParser {
         //
         // grab the extra info the builders will need later on
         //
-        HashMap extraInfo = new HashMap();
+        HashMap<String, String> extraInfo = new HashMap<String, String>();
         extraInfo.put(CLASS, getString(tokens, CLASS));
         extraInfo.put(MATERIAL_NUMBER, getString(tokens, MATERIAL_NUMBER));
         extraInfo.put(CONFIGURATION_PROFILE_NAME, getString(tokens, CONFIGURATION_PROFILE_NAME));
@@ -98,12 +101,12 @@ public class VariantParser extends SAPParser {
         //
         String matlNumber = getString(tokens, MATERIAL_NUMBER);
         String className = getString(tokens, CLASS);
-        HashSet classes = null;
+        Set<String> classes = null;
         if (!materialClasses.containsKey(matlNumber)) {
-            classes = new HashSet();
+            classes = new HashSet<String>();
             materialClasses.put(matlNumber, classes);
         }
-        classes = (HashSet) materialClasses.get(matlNumber);
+        classes = materialClasses.get(matlNumber);
         classes.add(className);
         
     }

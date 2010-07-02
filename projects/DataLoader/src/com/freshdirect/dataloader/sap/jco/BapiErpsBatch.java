@@ -1,13 +1,12 @@
 package com.freshdirect.dataloader.sap.jco;
 
 import org.apache.log4j.Category;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
-import com.sap.mw.jco.JCO;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.bapi.BapiFunctionI;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.sap.mw.jco.JCO;
 
 public class BapiErpsBatch implements BapiFunctionI {
 

@@ -5,7 +5,6 @@ package com.freshdirect.dataloader.geocodeloader.ejb;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,12 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 
-	private final static Logger LOGGER = LoggerFactory.getInstance(GeoCodeLoaderSessionBean.class);
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    private final static Logger LOGGER = LoggerFactory.getInstance(GeoCodeLoaderSessionBean.class);
 
 //	private final static String QUERY_SELECT_DELIVERYINFO =
 //		" select *   from  ( select a.*, rownum rnum   from  ( "+ 
@@ -55,9 +59,9 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 		// start geocoding for the records retrieved 
 		// once done finish quietly
 		System.out.println("geoCodeDeliveryInfo  startIndex :"+startIndex+"endIndex :"+endIndex);
-		List geoCodeList=new ArrayList();
+		List<AddressModel> geoCodeList=new ArrayList<AddressModel>();
 	
-		List addressList=getDeliveryInfoModel(startIndex,endIndex);
+		List<AddressModel> addressList=getDeliveryInfoModel(startIndex,endIndex);
 		
 		// iterate through the list and generate geocode
 		
@@ -65,7 +69,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 			
 			for (int i=0;i<addressList.size();i++){
 				
-				AddressModel model=(AddressModel)addressList.get(i);
+				AddressModel model=addressList.get(i);
 				try
 				{
 					geoCodeAddress(model);
@@ -94,7 +98,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 	}
 	
 	
-	public void updateDeliveryInfoModel(List addressList){
+	public void updateDeliveryInfoModel(List<AddressModel> addressList){
 		Connection con = null;
 		//List addressList = new ArrayList();
 		//UserTransaction utx = null;
@@ -107,7 +111,7 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 			
 			for(int i=0;i<addressList.size();i++){
 			 
-			    AddressModel model=(AddressModel)addressList.get(i);
+			    AddressModel model=addressList.get(i);
 			    ps.setDouble(1, model.getAddressInfo().getLongitude());
 				ps.setDouble(2, model.getAddressInfo().getLatitude());
 //				ps.setString(3,model.getScrubbedStreet());
@@ -151,10 +155,10 @@ public class GeoCodeLoaderSessionBean extends SessionBeanSupport {
 	}	
 	
 	
-	private List getDeliveryInfoModel(int startIndex, int endIndex)
+	private List<AddressModel> getDeliveryInfoModel(int startIndex, int endIndex)
 	{
 		Connection con = null;
-		List addressList = new ArrayList();
+		List<AddressModel> addressList = new ArrayList<AddressModel>();
 
 		//UserTransaction utx = null;
 		try {

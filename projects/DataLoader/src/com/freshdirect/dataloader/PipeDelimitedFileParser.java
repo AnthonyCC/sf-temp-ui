@@ -8,11 +8,12 @@ public abstract class PipeDelimitedFileParser extends FlatFileParser {
 		super();
 	}
 
-	protected HashMap tokenize(String line) throws BadDataException {
-		HashMap tokenMap = new HashMap();
+	@Override
+    protected HashMap<String, String> tokenize(String line) throws BadDataException {
+		HashMap<String, String> tokenMap = new HashMap<String, String>();
 		String[] tokens = line.split("\\|", -2);
 		for(int i = 0, size = this.fields.size(); i < size; i++){
-			Field f = (Field)this.fields.get(i);
+			Field f = this.fields.get(i);
 			String v = tokens[i].trim();
 			tokenMap.put(f.getName(), v);
 		}

@@ -5,7 +5,11 @@ import com.freshdirect.framework.core.ExceptionSupport;
 
 public class GeoCodeFailedException extends ExceptionSupport{
 
-	private BadDataException[] badDataExceptions;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private BadDataException[] badDataExceptions;
 	
 	  public GeoCodeFailedException() {
 	        super();

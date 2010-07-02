@@ -12,14 +12,22 @@ package com.freshdirect.dataloader.nutrition;
  * @version
  */
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
-import javax.naming.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 
-import com.freshdirect.dataloader.*;
-import com.freshdirect.content.nutrition.ejb.*;
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 
 public class MappingLoader implements SynchronousParserClient {
     
@@ -113,7 +121,7 @@ public class MappingLoader implements SynchronousParserClient {
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

@@ -6,11 +6,12 @@
 
 package com.freshdirect.dataloader.usps.zipcode;
 
-import java.util.*;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.dataloader.usps.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
+import com.freshdirect.dataloader.usps.USPSFileParser;
 
 /**
  *
@@ -43,7 +44,8 @@ public class ZipPlus4Parser extends USPSFileParser implements SynchronousParserC
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         String recType = getString(tokens, RECORD_TYPE);
         if ("D".equals(recType)) {
             parser.parseLine(getString(tokens, RECORD_BODY));

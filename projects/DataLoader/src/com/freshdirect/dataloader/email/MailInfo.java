@@ -51,6 +51,7 @@ public class MailInfo {
         this.html = html;
     }
     
+    @Override
     public String toString() {
         return email + " : " + firstName + " : " + html;
     }

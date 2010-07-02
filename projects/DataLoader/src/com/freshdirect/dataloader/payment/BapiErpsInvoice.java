@@ -1,11 +1,10 @@
 package com.freshdirect.dataloader.payment;
 
 import org.apache.log4j.Category;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.bapi.BapiFunctionI;
-
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.sap.mw.jco.JCO;
 
 public class BapiErpsInvoice implements BapiFunctionI {

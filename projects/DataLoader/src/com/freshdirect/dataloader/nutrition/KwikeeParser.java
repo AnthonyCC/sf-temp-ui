@@ -6,10 +6,16 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import com.freshdirect.dataloader.*;
-import com.freshdirect.content.nutrition.*;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -18,12 +24,12 @@ import com.freshdirect.content.nutrition.*;
  */
 public class KwikeeParser extends TabDelimitedFileParser {
     
-    private ArrayList nutritionModels = null;
+    private ArrayList<ErpNutritionModel> nutritionModels = null;
     
     /** Creates new NutritionParser */
     public KwikeeParser() {
         super();
-        nutritionModels = new ArrayList();
+        nutritionModels = new ArrayList<ErpNutritionModel>();
     }
     
     
@@ -34,6 +40,7 @@ public class KwikeeParser extends TabDelimitedFileParser {
      * @param lineNumber the line number of the file the parsing in currently operating on
      * @param line the contents of the current line before it is tokenized/parsed
      */
+    @Override
     protected boolean processLine(int lineNumber, String line) {
         System.out.println(lineNumber);
         boolean process = true;
@@ -54,13 +61,14 @@ public class KwikeeParser extends TabDelimitedFileParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         ErpNutritionModel nutritionModel = new ErpNutritionModel();
         nutritionModel.setUpc(getString(tokens, "UPC"));
         //clean up the tokens hashmap
-        Iterator it = tokens.keySet().iterator();
+        Iterator<String> it = tokens.keySet().iterator();
         while (it.hasNext()) {
-            String name = (String)it.next();
+            String name = it.next();
             if (name.endsWith("UOM")) {
                 String fdKey = KwikeeToFDMapping.getFDUomKey(name);
                 if(fdKey != null)
@@ -70,7 +78,7 @@ public class KwikeeParser extends TabDelimitedFileParser {
         }
         it = tokens.keySet().iterator();
         while (it.hasNext()) {
-            String name = (String)it.next();
+            String name = it.next();
             String fdKey = KwikeeToFDMapping.getFDValueKey(name);
             if(fdKey != null){
                 double value = getDouble(tokens, name);
@@ -91,13 +99,13 @@ public class KwikeeParser extends TabDelimitedFileParser {
         }
     }
     
-    public ArrayList getNutritionModels(){
+    public ArrayList<ErpNutritionModel> getNutritionModels(){
         return nutritionModels;
     }
     
     static class KwikeeToFDMapping{
-        public static HashMap kwikeeToFD = new HashMap();
-        public static HashMap kwikeeUomToFDUom = new HashMap();
+        public static HashMap<String, String> kwikeeToFD = new HashMap<String, String>();
+        public static HashMap<String, String> kwikeeUomToFDUom = new HashMap<String, String>();
         static{
             kwikeeUomToFDUom.put("SERVING_SIZE_UOM", ErpNutritionType.SERVING_SIZE);
             kwikeeUomToFDUom.put("SATURATED_FAT_UOM", ErpNutritionType.TOTAL_SATURATED_FAT_QUANTITY);
@@ -174,10 +182,10 @@ public class KwikeeParser extends TabDelimitedFileParser {
         }
         
         public static String getFDUomKey(String kwikeeKey){
-            return (String)kwikeeUomToFDUom.get(kwikeeKey);
+            return kwikeeUomToFDUom.get(kwikeeKey);
         }
         public static String getFDValueKey(String kwikeeKey){
-            return (String)kwikeeToFD.get(kwikeeKey);
+            return kwikeeToFD.get(kwikeeKey);
         }
         
         

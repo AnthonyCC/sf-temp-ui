@@ -72,7 +72,8 @@ public class CancelReservationCronRunner extends BaseReservationCronRunner {
     
     	
 	
-	protected void processReservation(DlvManagerSB dlvManager,
+	@Override
+    protected void processReservation(DlvManagerSB dlvManager,
 			FDCustomerManagerSB sb, DlvReservationModel reservation) {
 		try {
     		

@@ -6,9 +6,12 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -17,7 +20,7 @@ import com.freshdirect.dataloader.*;
  */
 public class KosherParser extends TabDelimitedFileParser {
     
-    ArrayList kosherInfo = null;
+    ArrayList<HashMap<String, String>> kosherInfo = null;
     
     protected static String SKU_CODE    = "sku_code";
     protected static String K_SYMBOL    = "kosher_symbol";
@@ -29,7 +32,7 @@ public class KosherParser extends TabDelimitedFileParser {
     public KosherParser() {
         super();
         
-        kosherInfo = new ArrayList();
+        kosherInfo = new ArrayList<HashMap<String, String>>();
         
         fields.add(new Field(SKU_CODE, 0, true));
         fields.add(new Field(DESCRIPTION, 0, true));
@@ -40,11 +43,12 @@ public class KosherParser extends TabDelimitedFileParser {
     }
     
     
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         //
         // create the attribute row
         //
-        HashMap ingr = new HashMap();
+        HashMap<String, String> ingr = new HashMap<String, String>();
         ingr.put(SKU_CODE, getString(tokens, SKU_CODE).trim());
         ingr.put(K_SYMBOL, getString(tokens, K_SYMBOL).trim());
         ingr.put(K_TYPE,   getString(tokens, K_TYPE).trim());
@@ -53,7 +57,7 @@ public class KosherParser extends TabDelimitedFileParser {
         
     }
     
-    public ArrayList getKosherInfo() {
+    public ArrayList<HashMap<String, String>> getKosherInfo() {
         return this.kosherInfo;
     }
 

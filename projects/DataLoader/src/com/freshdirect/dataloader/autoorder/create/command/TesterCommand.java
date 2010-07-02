@@ -3,15 +3,14 @@ package com.freshdirect.dataloader.autoorder.create.command;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.dataloader.autoorder.create.util.DataUtil;
 import com.freshdirect.dataloader.autoorder.create.util.IConstants;
 import com.freshdirect.dataloader.autoorder.create.util.ResourceUtil;
-
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class TesterCommand implements ITesterCommand,IAccept {
 	
@@ -35,7 +34,7 @@ public class TesterCommand implements ITesterCommand,IAccept {
     
     private int maxRecords=10000;
     
-    private final BlockingQueue queue = new LinkedBlockingQueue();
+    private final BlockingQueue<Object> queue = new LinkedBlockingQueue<Object>();
             
     private IConsumer consumerProxy = null;
         
@@ -166,10 +165,10 @@ public class TesterCommand implements ITesterCommand,IAccept {
 	
 	private class Consumer implements Runnable {
 		Connection conn = null;		
-		private final BlockingQueue queue;
+		private final BlockingQueue<Object> queue;
 		private int localCount = 0;
 		
-		public Consumer(BlockingQueue q) { 
+		public Consumer(BlockingQueue<Object> q) { 
 			queue = q; 
 		}
 

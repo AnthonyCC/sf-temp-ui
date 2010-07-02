@@ -11,10 +11,11 @@ package com.freshdirect.dataloader.sap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
-import com.freshdirect.erp.model.*;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
 
 /** a parser that deals with SAP material price export files
  *
@@ -26,16 +27,16 @@ public class MaterialPriceParser extends SAPParser {
     
     /** a collection of material prices
      */    
-    HashMap materialPrices = null;
+    Map<String, Set<ErpMaterialPriceModel>> materialPrices = null;
     
-    private Map materialBasePrices=null;
+    private Map<String, Set<BasePriceInfo>> materialBasePrices=null;
     private static final String BASE_PRICE="PBBS";
     
     /** Creates new MaterialPriceParser */
     public MaterialPriceParser() {
         super();
-        materialPrices = new HashMap();
-        materialBasePrices=new HashMap();
+        materialPrices = new HashMap<String, Set<ErpMaterialPriceModel>>();
+        materialBasePrices=new HashMap<String, Set<BasePriceInfo>>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Price_CSD.doc in VSS repository
          */
@@ -60,11 +61,11 @@ public class MaterialPriceParser extends SAPParser {
     /** gets a collection of material prices parsed from a file
      * @return the collection of material prices found in the file
      */    
-    public HashMap getMaterialPrices() {
+    public Map<String, Set<ErpMaterialPriceModel>> getMaterialPrices() {
         return materialPrices;
     }
     
-    public Map getMaterialBasePrices() {
+    public Map<String, Set<BasePriceInfo>> getMaterialBasePrices() {
     	return materialBasePrices;
     }
     
@@ -72,7 +73,8 @@ public class MaterialPriceParser extends SAPParser {
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
      */
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         
         /*
          * from ERP Services/Technical Specs/Mapping Docs/ERPS_SAP_BATCH_MAP.xls in VSS repository
@@ -100,19 +102,19 @@ public class MaterialPriceParser extends SAPParser {
         	  String zoneId=getString(tokens, ZONE_ID);
             String matlNumber = getString(tokens, MATERIAL_NUMBER);
             if (BASE_PRICE.equals(priceType)) {
-            	  HashSet basePrices = null;
+            	  Set<BasePriceInfo> basePrices = null;
             	  if (!materialBasePrices.containsKey(matlNumber)) {
   	                //
   	                // no prices yet for this material
   	                // create a new set and add it to the collection
   	                //
-            		  basePrices = new HashSet();
+            		  basePrices = new HashSet<BasePriceInfo>();
             		  materialBasePrices.put(matlNumber, basePrices);
   	            } else {
   	                //
   	                // find the price set for this material
   	                //
-  	            	basePrices = (HashSet) materialBasePrices.get(matlNumber);
+  	            	basePrices = materialBasePrices.get(matlNumber);
   	            }
             	
             	basePrices.add(new BasePriceInfo(matlNumber,getDouble(tokens, PRICE),getString(tokens, CONDITION_UNIT),zoneId));
@@ -143,19 +145,19 @@ public class MaterialPriceParser extends SAPParser {
 	            // since there are multiple prices for each material at different quantities
 	            // we need to make the material prices we collect a hash of sets
 	            //
-	            HashSet prices = null;
+	            Set<ErpMaterialPriceModel> prices = null;
 	            if (!materialPrices.containsKey(matlNumber)) {
 	                //
 	                // no prices yet for this material
 	                // create a new set and add it to the collection
 	                //
-	                prices = new HashSet();
+	                prices = new HashSet<ErpMaterialPriceModel>();
 	                materialPrices.put(matlNumber, prices);
 	            } else {
 	                //
 	                // find the price set for this material
 	                //
-	                prices = (HashSet) materialPrices.get(matlNumber);
+	                prices = materialPrices.get(matlNumber);
 	            }
 	            //
 	            // add the new price to the set

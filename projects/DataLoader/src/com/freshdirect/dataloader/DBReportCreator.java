@@ -12,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 public abstract class DBReportCreator {
@@ -38,8 +37,8 @@ public abstract class DBReportCreator {
 			this.day = day;
 			this.file = file;
 			//append the header row
-			for (Iterator i = this.getHeaders().iterator(); i.hasNext();) {
-				sb.append(i.next()).append("\t");
+			for (String string : this.getHeaders()) {
+				sb.append(string).append("\t");
 			}
 			sb.append("\n");
 		}
@@ -75,7 +74,7 @@ public abstract class DBReportCreator {
 		protected abstract void processRow(ResultSet rs) throws SQLException;
 		protected abstract String getQuery();
 		protected abstract Object[] getParams();
-		protected abstract List getHeaders();
+		protected abstract List<String> getHeaders();
 		protected String getFooter(){
 			return null;
 		}

@@ -10,11 +10,11 @@ package com.freshdirect.dataloader.sap;
 
 import java.io.File;
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -25,6 +25,9 @@ import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.sap.ejb.SAPLoaderHome;
 import com.freshdirect.dataloader.sap.ejb.SAPLoaderSB;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
 
 /**
  * this class processes a set of batch export files from SAP grouped together
@@ -54,7 +57,7 @@ public class SAPLoader {
 	//
 	/** a list of exceptions that occurred during parsing
 	 */
-	List exceptionList = null;
+	List<BadDataException> exceptionList = null;
 
 	/** run me
 	 * @link dependency
@@ -114,7 +117,7 @@ public class SAPLoader {
 		//
 		// list of exceptions found parsing a file
 		//
-		this.exceptionList = new LinkedList();
+		this.exceptionList = new LinkedList<BadDataException>();
 		//
 		// create builder and parsers
 		//
@@ -148,17 +151,17 @@ public class SAPLoader {
 	 *
 	 */
 	public void reportParsingExceptions() {
-		Iterator exIter = exceptionList.iterator();
+		Iterator<BadDataException> exIter = exceptionList.iterator();
 		while (exIter.hasNext()) {
-			BadDataException bde = (BadDataException) exIter.next();
+			BadDataException bde = exIter.next();
 			System.out.println(bde);
 		}
 	}
 
 	public void reportBuildExceptions() {
-		Iterator exIter = this.treeBuilder.getBuildExceptions().iterator();
+		Iterator<BadDataException> exIter = this.treeBuilder.getBuildExceptions().iterator();
 		while (exIter.hasNext()) {
-			BadDataException bde = (BadDataException) exIter.next();
+			BadDataException bde = exIter.next();
 			System.out.println(bde);
 		}
 	}
@@ -234,9 +237,9 @@ public class SAPLoader {
 
 		System.out.println("\n----- starting doLoad() -----");
 
-		HashMap classes = treeBuilder.getClasses();
-		HashMap activeMaterials = treeBuilder.getActiveMaterials();
-		HashMap characteristicValuePrices = treeBuilder.getCharacteristicValuePrices();
+		Map<String, ErpClassModel> classes = treeBuilder.getClasses();
+		Map<ErpMaterialModel, Map<String, Object>> activeMaterials = treeBuilder.getActiveMaterials();
+		Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices = treeBuilder.getCharacteristicValuePrices();
 
 		Context ctx = null;
 		try {
@@ -270,7 +273,7 @@ public class SAPLoader {
 	 */
 	protected Context getInitialContext() throws NamingException {
 
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.PROVIDER_URL, serverUrl);
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		return new InitialContext(env);

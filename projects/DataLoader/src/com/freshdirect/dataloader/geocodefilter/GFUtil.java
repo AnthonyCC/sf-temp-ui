@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Map.Entry;
 
@@ -44,8 +43,8 @@ public class GFUtil {
 	        properties.load(configStream);
 	        
 			System.out.println("Loaded with the following properties:");
-			for(Iterator i = properties.entrySet().iterator(); i.hasNext();){
-				Entry e = (Entry) i.next();
+			for (Object element : properties.entrySet()) {
+				Entry e = (Entry) element;
 				System.out.println(e.getKey() + ":    " + e.getValue());
 			}
 	}

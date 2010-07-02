@@ -11,9 +11,10 @@ import com.freshdirect.common.address.AddressModel;
 
 public class GFCSVValidator extends GFBaseValidator  {
 		
-	private List results = null;
+	private List<String[]> results = null;
 	
-	public AddressModel getAddressModel(GFRecord record) {
+	@Override
+    public AddressModel getAddressModel(GFRecord record) {
 		
 		AddressModel address = new AddressModel();
 		address.setAddress1(record.getStreetAddress());
@@ -23,15 +24,18 @@ public class GFCSVValidator extends GFBaseValidator  {
 		return address;
 	}
 	
-	public boolean isAddressValid(boolean homeDelivery, boolean corporateDelivery) {
+	@Override
+    public boolean isAddressValid(boolean homeDelivery, boolean corporateDelivery) {
 		return homeDelivery || corporateDelivery;
 	}
 	
-	public void initialize() {
-		results = new ArrayList();
+	@Override
+    public void initialize() {
+		results = new ArrayList<String[]>();
 	}
 	
-	public synchronized void addResult(GFRecord record, boolean homeDelivery, boolean corporateDelivery) {
+	@Override
+    public synchronized void addResult(GFRecord record, boolean homeDelivery, boolean corporateDelivery) {
 		
 		String[] originalRow = (String[])record.getSource();
 		String[] newRow = new String[originalRow.length+2];

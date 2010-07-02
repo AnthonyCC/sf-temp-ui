@@ -3,7 +3,11 @@ package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 import java.io.Serializable;
 
 public class DFRStartEnd implements Serializable {
-	private String presenterId;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private String presenterId;
 	private String frequency;
 	private String companyId;
 	
@@ -31,7 +35,8 @@ public class DFRStartEnd implements Serializable {
 		this.companyId = companyId;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("Presenter Id: ").append(this.presenterId).append("\n");
 		buf.append("Frequency: ").append(this.frequency).append("\n");

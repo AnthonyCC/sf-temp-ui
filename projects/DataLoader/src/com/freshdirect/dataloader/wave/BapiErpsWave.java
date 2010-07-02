@@ -2,28 +2,25 @@ package com.freshdirect.dataloader.wave;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.ejb.CreateException;
-import javax.ejb.FinderException;
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
-import com.freshdirect.customer.ErpShippingInfo;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 import com.freshdirect.dataloader.bapi.BapiFunctionI;
-import com.sap.mw.jco.JCO;
-
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.sap.mw.jco.JCO;
 
 public class BapiErpsWave implements BapiFunctionI {
 
@@ -60,7 +57,7 @@ public class BapiErpsWave implements BapiFunctionI {
 		waveTable.firstRow();
 
 		// build waves
-		Map waveEntries = new HashMap(waveTable.getNumRows());
+		Map<String, ErpShippingInfo> waveEntries = new HashMap<String, ErpShippingInfo>(waveTable.getNumRows());
 		for (int i = 0; i < waveTable.getNumRows(); i++) {
 			String webOrderNo = waveTable.getString("BSTNK");
 			String sapOrderNo = waveTable.getString("VBELN");
@@ -94,16 +91,15 @@ public class BapiErpsWave implements BapiFunctionI {
 		}
 	}
 
-	private void updateWaveInfo(Map waveEntries) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
+	private void updateWaveInfo(Map<String, ErpShippingInfo> waveEntries) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
 	Context ctx = null;
 	try {
 		ctx = ErpServicesProperties.getInitialContext();
 		ErpCustomerManagerHome mgr = (ErpCustomerManagerHome) ctx.lookup("freshdirect.erp.CustomerManager");
 		ErpCustomerManagerSB sb = mgr.create();
 
-		for(Iterator i = waveEntries.keySet().iterator(); i.hasNext(); ) { 
-			String saleId = (String)i.next();			
-			sb.updateWaveInfo(saleId, (ErpShippingInfo)waveEntries.get(saleId));
+		for (String saleId : waveEntries.keySet()) { 
+			sb.updateWaveInfo(saleId, waveEntries.get(saleId));
 		}
 	} finally {
 		if (ctx != null) {

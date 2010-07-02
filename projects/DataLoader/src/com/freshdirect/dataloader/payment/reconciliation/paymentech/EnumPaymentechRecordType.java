@@ -8,7 +8,11 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumPaymentechRecordType extends Enum {
 	
-	public static final EnumPaymentechRecordType DFR_START 				= new EnumPaymentechRecordType("*DFRBEG", false);
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    public static final EnumPaymentechRecordType DFR_START 				= new EnumPaymentechRecordType("*DFRBEG", false);
 	public static final EnumPaymentechRecordType FIN0010_HEADER			= new EnumPaymentechRecordType("HFIN0010", true);
 	public static final EnumPaymentechRecordType FIN0010_DATA			= new EnumPaymentechRecordType("RFIN0010", false);
 	public static final EnumPaymentechRecordType LNK010A_HEADER			= new EnumPaymentechRecordType("HLNK010A", true);

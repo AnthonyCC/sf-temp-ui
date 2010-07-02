@@ -104,7 +104,8 @@ public class GFRecord {
 		this.zpf = zpf;
 	}
 	
-	public String toString(){
+	@Override
+    public String toString(){
 		return "Record: zip:" + this.zip + 
 				" zpf:" + this.zpf + 
 				" seqNum:" + this.seqNum + 

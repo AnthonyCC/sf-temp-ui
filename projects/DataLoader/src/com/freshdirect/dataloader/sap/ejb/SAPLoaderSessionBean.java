@@ -8,27 +8,63 @@
  */
 package com.freshdirect.dataloader.sap.ejb;
 
-import javax.ejb.*;
-import javax.transaction.*;
 import java.rmi.RemoteException;
-import javax.naming.*;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.framework.core.*;
-import com.freshdirect.dataloader.*;
-import com.freshdirect.dataloader.sap.*;
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.ejb.FinderException;
+import javax.ejb.ObjectNotFoundException;
+import javax.ejb.RemoveException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
-import com.freshdirect.erp.*;
-import com.freshdirect.erp.model.*;
-import com.freshdirect.erp.ejb.*;
+import org.apache.log4j.Category;
 
-import com.freshdirect.common.pricing.*;
-
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.dataloader.sap.SAPConstants;
+import com.freshdirect.erp.EnumApprovalStatus;
+import com.freshdirect.erp.PricingFactory;
+import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB;
+import com.freshdirect.erp.ejb.ErpCharacteristicValuePriceHome;
+import com.freshdirect.erp.ejb.ErpClassEB;
+import com.freshdirect.erp.ejb.ErpClassHome;
+import com.freshdirect.erp.ejb.ErpMaterialEB;
+import com.freshdirect.erp.ejb.ErpMaterialHome;
+import com.freshdirect.erp.ejb.ErpProductEB;
+import com.freshdirect.erp.ejb.ErpProductHome;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
 /**
  * A session bean that takes a set of anonymous models representing erp objects to be created
@@ -39,6 +75,11 @@ import org.apache.log4j.*;
  */
 public class SAPLoaderSessionBean extends SessionBeanSupport {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /** logger for messages
      */
     private static Category LOGGER = LoggerFactory.getInstance( SAPLoaderSessionBean.class );
@@ -70,10 +111,10 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     
     /** a cache of models of classes created during this batch
      */
-    private transient HashMap createdClasses = null;
+    private transient HashMap<String, ErpClassModel> createdClasses = null;
     /** a cache of materials created during this batch
      */
-    private transient HashMap createdMaterials = null;
+    private transient HashMap<String, ErpMaterialModel> createdMaterials = null;
     
     
     /**
@@ -85,8 +126,10 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
      * @param characteristicValuePrices the collection of characteristic value prices to create or update in this batch
      * @throws LoaderException any problems encountered while creating or updating objects in the system
      */
-    public void loadData(HashMap classes, HashMap materials, HashMap characteristicValuePrices) throws LoaderException {
-        
+    public void loadData(Map<String, ErpClassModel> classes, Map<ErpMaterialModel, 
+            Map<String, Object>> materials, 
+            Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws LoaderException {
+    
         LOGGER.debug("\nBeginning SAPLoaderSessionBean loadData\n");
         
         try {
@@ -275,20 +318,20 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     /**
      * @param classes
      * @throws LoaderException  */
-    private void processClasses(HashMap classes) throws LoaderException {
+    private void processClasses(Map<String, ErpClassModel> classes) throws LoaderException {
         //
         // create a new HashMap of models of classes so that subsequent loader steps can
         // form the proper foreign key relationships in the database
         //
-        createdClasses = new HashMap();
+        createdClasses = new HashMap<String, ErpClassModel>();
         try {
             LOGGER.info("\nStarting to process Classes for batch number " + this.batchNumber + "\n");
             LOGGER.info("\nProcessing " + classes.size() + " classes\n");
             ErpClassHome classHome = (ErpClassHome) initCtx.lookup("java:comp/env/ejb/ErpClass");
             
-            Iterator classKeyIter = classes.keySet().iterator();
+            Iterator<String> classKeyIter = classes.keySet().iterator();
             while (classKeyIter.hasNext()) {
-                ErpClassModel erpClsModel = (ErpClassModel) classes.get(classKeyIter.next());
+                ErpClassModel erpClsModel = classes.get(classKeyIter.next());
                 //
                 // create the new class
                 //
@@ -318,32 +361,32 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     /**
      * @param activeMaterials
      * @throws LoaderException  */
-    private void processMaterials(HashMap activeMaterials) throws LoaderException {
+    private void processMaterials(Map<ErpMaterialModel, Map<String, Object>> activeMaterials) throws LoaderException {
         //
         // create a new HashMap of models of materials so that subsequent loader steps can
         // form the proper foreign key relationships in the database
         //
-        createdMaterials = new HashMap();
+        createdMaterials = new HashMap<String, ErpMaterialModel>();
         try {
             LOGGER.info("\nStarting to process Materials for batch number " + this.batchNumber + "\n");
             LOGGER.info("\nProcessing " + activeMaterials.size() + " materials\n");
             ErpMaterialHome matlHome = (ErpMaterialHome) initCtx.lookup("java:comp/env/ejb/ErpMaterial");
             
-            Iterator matlIter = activeMaterials.keySet().iterator();
+            Iterator<ErpMaterialModel> matlIter = activeMaterials.keySet().iterator();
             while (matlIter.hasNext()) {
-                ErpMaterialModel erpMatlModel = (ErpMaterialModel) matlIter.next();
-                HashMap extraInfo = (HashMap) activeMaterials.get(erpMatlModel);
+                ErpMaterialModel erpMatlModel = matlIter.next();
+                Map<String, Object> extraInfo = activeMaterials.get(erpMatlModel);
                 //
                 // set some additional properties on the material model that couldn't have been set
                 // until the classes had been created first
                 //
-                HashSet classNames = (HashSet) extraInfo.get(SAPConstants.CLASS);
+                Set<String> classNames = (Set<String>) extraInfo.get(SAPConstants.CLASS);
                 if (classNames != null) {
-                    LinkedList matlClasses = new LinkedList();
-                    Iterator matlClassIter = classNames.iterator();
+                    LinkedList<ErpClassModel> matlClasses = new LinkedList<ErpClassModel>();
+                    Iterator<String> matlClassIter = classNames.iterator();
                     while (matlClassIter.hasNext()) {
-                        String className = (String) matlClassIter.next();
-                        ErpClassModel erpClsModel = (ErpClassModel) createdClasses.get(className);
+                        String className = matlClassIter.next();
+                        ErpClassModel erpClsModel = createdClasses.get(className);
                         if (erpClsModel == null) {
                             throw new LoaderException("Unable to form an association between Material number " + erpMatlModel.getSapId() + " and Class " + className);
                         }
@@ -380,24 +423,24 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     /**
      * @param characteristicValuePrices
      * @throws LoaderException  */
-    private void processCharacteristicValuePrices(HashMap characteristicValuePrices) throws LoaderException {
+    private void processCharacteristicValuePrices(Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws LoaderException {
         try {
             LOGGER.info("\nStarting to process CharacteristicValuePrices for batch number " + this.batchNumber + "\n");
             LOGGER.info("\nProcessing " + characteristicValuePrices.size() + " characteristic value prices\n");
             ErpCharacteristicValuePriceHome cvpHome = (ErpCharacteristicValuePriceHome) initCtx.lookup("java:comp/env/ejb/ErpCharacteristicValuePrice");
             
-            Iterator cvpKeyIter = characteristicValuePrices.keySet().iterator();
+            Iterator<ErpCharacteristicValuePriceModel> cvpKeyIter = characteristicValuePrices.keySet().iterator();
             while (cvpKeyIter.hasNext()) {
-                ErpCharacteristicValuePriceModel erpCvpModel = (ErpCharacteristicValuePriceModel) cvpKeyIter.next();
-                HashMap extraInfo = (HashMap) characteristicValuePrices.get(erpCvpModel);
+                ErpCharacteristicValuePriceModel erpCvpModel = cvpKeyIter.next();
+                Map<String,String> extraInfo = characteristicValuePrices.get(erpCvpModel);
                 //
                 // set some additional properties on the characteristic value price model that couldn't have been set
                 // until the classes and materials had been created first
                 //
                 //  find the material for this characteristic value price
                 //
-                String matlNumber = (String) extraInfo.get(SAPConstants.MATERIAL_NUMBER);
-                ErpMaterialModel erpMatl = (ErpMaterialModel) createdMaterials.get(matlNumber);
+                String matlNumber = extraInfo.get(SAPConstants.MATERIAL_NUMBER);
+                ErpMaterialModel erpMatl = createdMaterials.get(matlNumber);
                 //
                 // if erpMatl wasn't in the list of created materials, this
                 // characteristic value price was exported as part of a discontinued material.
@@ -408,11 +451,11 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                     //
                     // find the characteristic value for this characteristic value price
                     //
-                    String charValueName = (String) extraInfo.get(SAPConstants.CHARACTERISTIC_VALUE);
+                    String charValueName = extraInfo.get(SAPConstants.CHARACTERISTIC_VALUE);
                     try {
-                        String clsName = (String) extraInfo.get(SAPConstants.CLASS);
-                        ErpClassModel erpClass = (ErpClassModel) createdClasses.get(clsName);
-                        String characName = (String) extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
+                        String clsName = extraInfo.get(SAPConstants.CLASS);
+                        ErpClassModel erpClass = createdClasses.get(clsName);
+                        String characName = extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
                         ErpCharacteristicModel erpCharac = erpClass.getCharacteristic(characName);
                         ErpCharacteristicValueModel erpCharVal = erpCharac.getCharacteristicValue(charValueName);
                         erpCvpModel.setCharacteristicValueId(erpCharVal.getPK().getId());
@@ -453,7 +496,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
     /**
      * @param activeMaterials
      * @throws LoaderException  */
-    private void processProducts(HashMap activeMaterials) throws LoaderException {
+    private void processProducts(Map<ErpMaterialModel, Map<String, Object>> activeMaterials) throws LoaderException {
         
         Connection conn = null;
 
@@ -465,19 +508,19 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
             
             conn = getConnection();
             
-            Iterator matlIter = activeMaterials.keySet().iterator();
+            Iterator<ErpMaterialModel> matlIter = activeMaterials.keySet().iterator();
             while (matlIter.hasNext()) {
                 //
                 // list of all products that are affected by activating this material
                 //
-                HashSet affectedSkus = new HashSet();
+                Set<String> affectedSkus = new HashSet<String>();
                 //
                 // first get the anonymous material model so we can get the SKU of the default product
                 // from its extra info
                 //
-                ErpMaterialModel anonMatlModel = (ErpMaterialModel) matlIter.next();
-                HashMap extraInfo = (HashMap) activeMaterials.get(anonMatlModel);
-                affectedSkus.add(extraInfo.get(SAPConstants.SKU));
+                ErpMaterialModel anonMatlModel = matlIter.next();
+                Map<String, Object> extraInfo = activeMaterials.get(anonMatlModel);
+                affectedSkus.add((String) extraInfo.get(SAPConstants.SKU));
                 String unavailStatus = (String) extraInfo.get("UNAVAILABILITY_STATUS");
                 java.util.Date unavailDate = (java.util.Date) extraInfo.get("UNAVAILABILITY_DATE");
                 String unavailReason = (String) extraInfo.get("UNAVAILABILITY_REASON");
@@ -488,7 +531,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                 // now get the real material model that we created previously to we can create the
                 // material proxy and product objects that relate to a material
                 //
-                ErpMaterialModel erpMatlModel = (ErpMaterialModel) createdMaterials.get(anonMatlModel.getSapId());
+                ErpMaterialModel erpMatlModel = createdMaterials.get(anonMatlModel.getSapId());
                 //
                 // find the sku codes of the other products affected by this material
                 //
@@ -506,9 +549,9 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                     LOGGER.error("Unable to find virtual products to create for material " + anonMatlModel.getSapId(), sqle);
                     throw new LoaderException("Unable to find virtual products to create for material " + anonMatlModel.getSapId() + "\n" + sqle.getMessage());
                 }
-                Iterator skuIter = affectedSkus.iterator();
+                Iterator<String> skuIter = affectedSkus.iterator();
                 while (skuIter.hasNext()) {
-                    String skuCode = (String) skuIter.next();
+                    String skuCode = skuIter.next();
 
 					ErpProductModel erpProductModel = new ErpProductModel();
 					erpProductModel.setProxiedMaterial(erpMatlModel);
@@ -522,29 +565,29 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                         ErpProductModel origPrdModel = (ErpProductModel) origPrdEB.getModel();
 
                         // keep track of used to be hidden
-                        List origHiddenSalesUnits = new ArrayList();
-                        List origHiddenCharVals = new ArrayList();
+                        List<ErpSalesUnitModel> origHiddenSalesUnits = new ArrayList<ErpSalesUnitModel>();
+                        List<ErpCharacteristicValueModel> origHiddenCharVals = new ArrayList<ErpCharacteristicValueModel>();
 
                         ///if (origPrdModel.getMaterialProxies().size() > 0) {
                         {
                             // if there is a material proxy, figure out what should be hidden
 
                             VersionedPrimaryKey[] hiddenSuPKs = origPrdModel.getHiddenSalesUnitPKs();
-                            for (int i=0; i<hiddenSuPKs.length; i++) {
+                            for (VersionedPrimaryKey hiddenSuPK : hiddenSuPKs) {
                                 for (Iterator suIter = origPrdModel.getProxiedMaterial().getSalesUnits().iterator(); suIter.hasNext();) {
                                     ErpSalesUnitModel origSu = (ErpSalesUnitModel) suIter.next();
-                                    if (hiddenSuPKs[i].getId().equals(origSu.getPK().getId())) {
+                                    if (hiddenSuPK.getId().equals(origSu.getPK().getId())) {
                                         origHiddenSalesUnits.add(origSu);
                                     }
                                 }
                             }
                             VersionedPrimaryKey[] hiddenCvPKs = origPrdModel.getHiddenCharacteristicValuePKs();
-                            for (int j=0; j<hiddenCvPKs.length; j++) {
+                            for (VersionedPrimaryKey hiddenCvPK : hiddenCvPKs) {
                                 for (Iterator chIter = origPrdModel.getProxiedMaterial().getCharacteristics().iterator(); chIter.hasNext();) {
                                     ErpCharacteristicModel origChar = (ErpCharacteristicModel) chIter.next();
-                                    for (Iterator cvIter = origChar.getCharacteristicValues().iterator(); cvIter.hasNext();) {
-                                        ErpCharacteristicValueModel origCharVal = (ErpCharacteristicValueModel) cvIter.next();
-                                        if (hiddenCvPKs[j].getId().equals(origCharVal.getPK().getId())) {
+                                    for (Iterator<ErpCharacteristicValueModel> cvIter = origChar.getCharacteristicValues().iterator(); cvIter.hasNext();) {
+                                        ErpCharacteristicValueModel origCharVal = cvIter.next();
+                                        if (hiddenCvPK.getId().equals(origCharVal.getPK().getId())) {
                                             origHiddenCharVals.add(origCharVal);
                                         }
                                     }
@@ -554,44 +597,44 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                         //
                         // find hidden sales unit PKs in new version
                         //
-                        ArrayList hiddenSuPKs = new ArrayList();
+                        ArrayList<PrimaryKey> hiddenSuPKs = new ArrayList<PrimaryKey>();
                         Iterator newSuIter = erpMatlModel.getSalesUnits().iterator();
                         while (newSuIter.hasNext()) {
                             ErpSalesUnitModel newSu = (ErpSalesUnitModel) newSuIter.next();
-                            Iterator hiddenSuIter = origHiddenSalesUnits.iterator();
+                            Iterator<ErpSalesUnitModel> hiddenSuIter = origHiddenSalesUnits.iterator();
                             while (hiddenSuIter.hasNext()) {
-                                ErpSalesUnitModel hiddenSu = (ErpSalesUnitModel) hiddenSuIter.next();
+                                ErpSalesUnitModel hiddenSu = hiddenSuIter.next();
                                 if (newSu.getAlternativeUnit().equalsIgnoreCase(hiddenSu.getAlternativeUnit())) {
                                     hiddenSuPKs.add(newSu.getPK());
                                     System.out.println("hiding sales unit " + newSu.getAlternativeUnit());
                                 }
                             }
                         }
-						erpProductModel.setHiddenSalesUnitPKs((VersionedPrimaryKey[]) hiddenSuPKs.toArray(new VersionedPrimaryKey[0]));
+						erpProductModel.setHiddenSalesUnitPKs(hiddenSuPKs.toArray(new VersionedPrimaryKey[0]));
                         
                         //if (origPxyModel != null) {
                        	{
                             //
                             // find hidden characteristic value PKs in new version
                             //
-                            ArrayList hiddenCvPKs = new ArrayList();
+                            ArrayList<PrimaryKey> hiddenCvPKs = new ArrayList<PrimaryKey>();
                             Iterator newCharIter = erpMatlModel.getCharacteristics().iterator();
                             while(newCharIter.hasNext()) {
                                 ErpCharacteristicModel newCharac = (ErpCharacteristicModel) newCharIter.next();
-                                Iterator newCvIter = newCharac.getCharacteristicValues().iterator();
+                                Iterator<ErpCharacteristicValueModel> newCvIter = newCharac.getCharacteristicValues().iterator();
                                 while (newCvIter.hasNext()) {
-                                    ErpCharacteristicValueModel newCharVal = (ErpCharacteristicValueModel) newCvIter.next();
+                                    ErpCharacteristicValueModel newCharVal = newCvIter.next();
                                     
                                     Iterator origCharIter = origPrdModel.getProxiedMaterial().getCharacteristics().iterator();
                                     while (origCharIter.hasNext()) {
                                         ErpCharacteristicModel origCharModel = (ErpCharacteristicModel) origCharIter.next();
-                                        Iterator origCvIter = origCharModel.getCharacteristicValues().iterator();
+                                        Iterator<ErpCharacteristicValueModel> origCvIter = origCharModel.getCharacteristicValues().iterator();
                                         while (origCvIter.hasNext()) {
-                                            ErpCharacteristicValueModel origCvModel = (ErpCharacteristicValueModel) origCvIter.next();
+                                            ErpCharacteristicValueModel origCvModel = origCvIter.next();
                                             
-                                            Iterator origHiddenCharValsIter = origHiddenCharVals.iterator();
+                                            Iterator<ErpCharacteristicValueModel> origHiddenCharValsIter = origHiddenCharVals.iterator();
                                             while (origHiddenCharValsIter.hasNext()) {
-                                                ErpCharacteristicValueModel origHiddenCv = (ErpCharacteristicValueModel) origHiddenCharValsIter.next();
+                                                ErpCharacteristicValueModel origHiddenCv = origHiddenCharValsIter.next();
                                                 
                                                 if ( newCharac.getName().equalsIgnoreCase(origCharModel.getName())
                                                 && newCharVal.getName().equalsIgnoreCase(origCvModel.getName())
@@ -606,7 +649,7 @@ public class SAPLoaderSessionBean extends SessionBeanSupport {
                                     
                                 }
                             }
-							erpProductModel.setHiddenCharacteristicValuePKs((VersionedPrimaryKey[]) hiddenCvPKs.toArray(new VersionedPrimaryKey[0]));
+							erpProductModel.setHiddenCharacteristicValuePKs(hiddenCvPKs.toArray(new VersionedPrimaryKey[0]));
                         }
                     } catch (ObjectNotFoundException onfe) {
                         // no such sku, no big deal

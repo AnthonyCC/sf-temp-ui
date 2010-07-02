@@ -6,12 +6,12 @@
 
 package com.freshdirect.dataloader.payment.reconciliation.summary;
 
-import java.util.*;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.payment.reconciliation.summary.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParser;
+import com.freshdirect.payment.reconciliation.summary.NovusSummary;
 
 /**
  *
@@ -49,7 +49,8 @@ public class NovusSummaryParser extends SettlementParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         summary = new NovusSummary();
         summary.setNumberOfNovusItems(getInt(tokens, NUMBER_NOVUS_ITEMS));
         summary.setNovusNetSalesAmount(getSignedDouble(tokens, NOVUS_NET_SALES_AMOUNT, 2));
@@ -59,6 +60,7 @@ public class NovusSummaryParser extends SettlementParser {
         client.accept(summary);
     }
     
+    @Override
     public String debug() {
         return this.summary.toString();
     }

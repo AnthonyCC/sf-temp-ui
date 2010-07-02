@@ -10,10 +10,11 @@ package com.freshdirect.dataloader.inventory;
 
 import java.util.Hashtable;
 
-import com.freshdirect.dataloader.bapi.*;
-
-import weblogic.common.T3StartupDef;
 import weblogic.common.T3ServicesDef;
+import weblogic.common.T3StartupDef;
+
+import com.freshdirect.dataloader.bapi.BapiRepository;
+import com.freshdirect.dataloader.bapi.BapiServer;
 
 /**
  * Sample configuration:
@@ -47,7 +48,8 @@ public class T3SapInventoryChangeServer implements T3StartupDef {
 
 		new BapiServer(gwHost, gwServ, progId) {
 
-			protected BapiRepository getRepository() {
+			@Override
+            protected BapiRepository getRepository() {
 				BapiRepository repo = new BapiRepository("FDInventoryChangeRepo");
 				repo.addFunction(new BapiErpsInventoryChange());
 				return repo;

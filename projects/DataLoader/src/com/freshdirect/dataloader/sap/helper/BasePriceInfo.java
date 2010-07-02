@@ -2,7 +2,11 @@ package com.freshdirect.dataloader.sap.helper;
 
 public class BasePriceInfo implements java.io.Serializable {
 	
-	private String materialID;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private String materialID;
 	private double price;
 	private String unit;
 	private String zoneId;
@@ -45,7 +49,8 @@ public class BasePriceInfo implements java.io.Serializable {
 		this.zoneId = zoneId;
 	}
 	
-	public int hashCode() {
+	@Override
+    public int hashCode() {
 		
 		final int PRIME = 31;
 		int result = 1;
@@ -57,7 +62,8 @@ public class BasePriceInfo implements java.io.Serializable {
 		return result;
 	}
 
-	public boolean equals(Object obj) {
+	@Override
+    public boolean equals(Object obj) {
 		
 		if (this == obj)
 			return true;

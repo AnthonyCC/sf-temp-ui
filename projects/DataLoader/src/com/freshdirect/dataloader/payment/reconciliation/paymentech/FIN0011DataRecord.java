@@ -2,7 +2,11 @@ package com.freshdirect.dataloader.payment.reconciliation.paymentech;
 
 public class FIN0011DataRecord extends DFRDataRecord {
 	
-	private EnumPaymentechSubCategory subCategory;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private EnumPaymentechSubCategory subCategory;
 	private int feeSchedule;
 	private String interchangeQualification;
 	private String feeTypeDescription;

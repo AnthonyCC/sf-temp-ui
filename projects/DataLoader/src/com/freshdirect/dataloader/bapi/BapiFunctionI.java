@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.bapi;
 
-import com.sap.mw.jco.*;
+import com.sap.mw.jco.JCO;
 
 public interface BapiFunctionI {
 

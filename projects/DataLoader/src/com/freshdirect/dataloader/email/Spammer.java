@@ -12,7 +12,6 @@ package com.freshdirect.dataloader.email;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
@@ -72,7 +71,7 @@ public class Spammer {
     public void sendEmailTo(String fileName, String subject, String htmlStyleSheet, String textStyleSheet) {
         
         ListBuilder builder = new ListBuilder();
-        List emailAddresses = builder.parseEmailList(new File(fileName));
+        List<MailInfo> emailAddresses = builder.parseEmailList(new File(fileName));
         spamEmailList(emailAddresses, subject, htmlStyleSheet, textStyleSheet);
         
     }
@@ -81,7 +80,7 @@ public class Spammer {
 	 * Sends copy of this email to selected FD employees.
 	 */
 	public void spamMe(String subject, String htmlStyleSheet, String textStyleSheet) {
-		List fdList = new ArrayList();
+		List<MailInfo> fdList = new ArrayList<MailInfo>();
 		fdList.add(new MailInfo("jangela@freshdirect.com", "Jeannice", true));
 		fdList.add(new MailInfo("jangela@freshdirect.com", "Jeannice", false));
         //fdList.add(new MailInfo("mrose@freshdirect.com", "Mike", true));
@@ -91,7 +90,7 @@ public class Spammer {
 	}
     
     public void spamFDPeople(String subject, String htmlStyleSheet, String textStyleSheet) {
-		List fdList = new ArrayList();
+		List<MailInfo> fdList = new ArrayList<MailInfo>();
 		//fdList.add(new MailInfo("mtrachtenberg@freshdirect.com", "Marc", true));
 		 //fdList.add(new MailInfo("mtrachtenberg@freshdirect.com", "Marc", false));
 		 fdList.add(new MailInfo("akwok@freshdirect.com", "Alvin", true));
@@ -184,12 +183,11 @@ public class Spammer {
             }
     }
     
-	private void spamEmailList(List emailAddresses, String subject, String htmlStyleSheet, String textStyleSheet) {
+	private void spamEmailList(List<MailInfo> emailAddresses, String subject, String htmlStyleSheet, String textStyleSheet) {
 		if (emailAddresses != null) {
 			System.out.println("Preparing to spam "+ emailAddresses.size() +" email addresses...");
             int count = 0;
-			for (Iterator it = emailAddresses.iterator(); it.hasNext(); ) {
-                MailInfo mi = (MailInfo) it.next();
+			for (MailInfo mi : emailAddresses) {
                 //System.out.println(mi);
 				spamPerson(mi, subject, htmlStyleSheet, textStyleSheet);
                 count++;

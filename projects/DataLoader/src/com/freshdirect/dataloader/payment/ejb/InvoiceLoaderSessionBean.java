@@ -43,7 +43,11 @@ import com.freshdirect.mail.ejb.MailerGatewaySB;
 
 public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
-	private static Category LOGGER = LoggerFactory.getInstance(InvoiceLoaderSessionBean.class);
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private static Category LOGGER = LoggerFactory.getInstance(InvoiceLoaderSessionBean.class);
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
 	public void addAndReconcileInvoice(String saleId, ErpInvoiceModel invoice, ErpShippingInfo shippingInfo)
@@ -89,7 +93,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 
 				// FIXME furhter validation should be performed to ensure discount lines match up (no can do, w/o promo codes)
 
-				List pList = new ArrayList();
+				List<ErpDiscountLineModel> pList = new ArrayList<ErpDiscountLineModel>();
 				for (Iterator invPromosIter = invDiscountLines.iterator(), oldPromosIter = oldDiscountLines.iterator(); 
 					invPromosIter.hasNext() && oldPromosIter.hasNext(); ) {
 					ErpDiscountLineModel  invDiscountLine = (ErpDiscountLineModel) invPromosIter.next();
@@ -105,8 +109,8 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			double tax = invoice.getTax();
 			if(tax > 0){
 				ErpAbstractOrderModel order = saleModel.getRecentOrderTransaction();
-				for(Iterator i = invoice.getCharges().iterator(); i.hasNext(); ) {
-					ErpChargeLineModel invCharge = (ErpChargeLineModel) i.next();
+				for (Object element : invoice.getCharges()) {
+					ErpChargeLineModel invCharge = (ErpChargeLineModel) element;
 					ErpChargeLineModel orderCharge = order.getCharge(invCharge.getType());
 					
 					if(orderCharge != null) {
@@ -137,7 +141,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			
 			// collect recipes that will be sent to the users
 			List orderLines = fdOrder.getOrderLines();
-			Set  recipes    = new HashSet();
+			Set<Recipe>  recipes    = new HashSet<Recipe>();
 			for (Iterator it = orderLines.iterator(); it.hasNext();) {
 				FDCartLineI cartLine = (FDCartLineI) it.next();
 				String		recipeId = cartLine.getRecipeSourceId();
@@ -149,9 +153,7 @@ public class InvoiceLoaderSessionBean extends SessionBeanSupport {
 			}
 			
 			// send recipe e-mails on delivery for those which were requested
-			for (Iterator it = recipes.iterator(); it.hasNext();) {
-				Recipe recipe = (Recipe) it.next();
-				
+			for (Recipe recipe : recipes) {
 				mailBean.enqueueEmail(FDEmailFactory.getInstance().createRecipeEmail(fdInfo, recipe));
 			}
 				

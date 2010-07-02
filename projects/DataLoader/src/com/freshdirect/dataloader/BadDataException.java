@@ -8,7 +8,7 @@
  */
 package com.freshdirect.dataloader;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ExceptionSupport;
 
 /** 
  * an exception that indicates something was wrong with the
@@ -18,6 +18,11 @@ import com.freshdirect.framework.core.*;
  * @author $Author: Mike Rose$
  */
 public class BadDataException extends ExceptionSupport {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
 
     /** default constructor
      */

@@ -8,7 +8,7 @@
  */
 package com.freshdirect.dataloader;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ExceptionSupport;
 
 /** an exception that indicates a loader component ran into a problem
  * creating or updating entities in the system
@@ -18,7 +18,11 @@ import com.freshdirect.framework.core.*;
  * @author $Author$
  */
 public class LoaderException extends ExceptionSupport {
-	private BadDataException[] badDataExceptions;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private BadDataException[] badDataExceptions;
 
     /** Creates new BadDataException */
     public LoaderException() {

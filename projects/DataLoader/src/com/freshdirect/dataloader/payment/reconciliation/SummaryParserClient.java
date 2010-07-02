@@ -14,7 +14,6 @@ import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackResponse;
 import com.freshdirect.customer.ErpChargebackReversalModel;
 import com.freshdirect.customer.ErpTransactionException;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
@@ -60,7 +59,7 @@ class SummaryParserClient extends SettlementParserClient {
 
 	private Chargeback chgBackTx;
 
-	private List invoices = new ArrayList();
+	private List<ErpSettlementInvoiceModel> invoices = new ArrayList<ErpSettlementInvoiceModel>();
 	private ErpAdjustmentModel adjustmentModel = null;
 
 	public void process(SummaryHeader trans) {

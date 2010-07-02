@@ -6,8 +6,13 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * loads atributes from a textfile into erps db
@@ -49,10 +54,10 @@ public class KosherLoader {
                 return;
             }
             
-            List kosherInfo = parser.getKosherInfo();
-            Iterator iIter = kosherInfo.iterator();
+            List<HashMap<String, String>> kosherInfo = parser.getKosherInfo();
+            Iterator<HashMap<String, String>> iIter = kosherInfo.iterator();
             while (iIter.hasNext()) {
-                HashMap kosher = (HashMap) iIter.next();
+                HashMap kosher = iIter.next();
                 String skuCode = (String) kosher.get("sku_code");
                 String kosherSymbol = (String) kosher.get("kosher_symbol");
                 String kosherType = (String) kosher.get("kosher_type");

@@ -57,19 +57,19 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
 
 			if (args.length >= 1) {
-				for (int i = 0; i < args.length; i++) {
+				for (String arg : args) {
 					try { 
-						if (args[i].startsWith("jobDate=")) {
+						if (arg.startsWith("jobDate=")) {
 							jobDate.add(DateUtil.truncate(DateUtil.toCalendar
-																(DateUtil.parse(args[i].substring("jobDate=".length())))).getTime());
-						} else if (args[i].startsWith("trail=")) {
-							isTrialRun =  new Boolean(args[i].substring("trail=".length())).booleanValue(); 
-						} else if (args[i].startsWith("purge=")) {								
-							isPurgeEnabled = new Boolean(args[i].substring("purge=".length())).booleanValue(); 
-						}  else if (args[i].startsWith("reverse=")) {								
-							isReverse = new Boolean(args[i].substring("reverse=".length())).booleanValue(); 
-						}  else if (args[i].startsWith("sendEmail=")) {								
-							isSendEmail = new Boolean(args[i].substring("sendEmail=".length())).booleanValue(); 
+																(DateUtil.parse(arg.substring("jobDate=".length())))).getTime());
+						} else if (arg.startsWith("trail=")) {
+							isTrialRun =  new Boolean(arg.substring("trail=".length())).booleanValue(); 
+						} else if (arg.startsWith("purge=")) {								
+							isPurgeEnabled = new Boolean(arg.substring("purge=".length())).booleanValue(); 
+						}  else if (arg.startsWith("reverse=")) {								
+							isReverse = new Boolean(arg.substring("reverse=".length())).booleanValue(); 
+						}  else if (arg.startsWith("sendEmail=")) {								
+							isSendEmail = new Boolean(arg.substring("sendEmail=".length())).booleanValue(); 
 						}
 					} catch (Exception e) {
 						System.err.println("Usage: java com.freshdirect.dataloader.reservation.CapacityControllerCronRunner [jobDate={date value}] [trail={true | false}] [purge={true | false}] [reverse={true | false}] [sendEmail={true | false}]");

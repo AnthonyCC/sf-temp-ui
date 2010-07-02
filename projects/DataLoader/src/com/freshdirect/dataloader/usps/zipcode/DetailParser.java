@@ -6,9 +6,13 @@
 
 package com.freshdirect.dataloader.usps.zipcode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
+import com.freshdirect.dataloader.SynchronousParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
 
 /**
  *
@@ -104,7 +108,8 @@ public class DetailParser extends FieldDelimitedFileParser implements Synchronou
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         record = new ZipPlus4Record();
         String recordType = getString(tokens, RECORD_TYPE_CODE);
         //

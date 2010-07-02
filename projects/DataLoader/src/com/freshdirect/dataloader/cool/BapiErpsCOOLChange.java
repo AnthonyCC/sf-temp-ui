@@ -1,6 +1,9 @@
 package com.freshdirect.dataloader.cool;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
@@ -8,17 +11,13 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.dataloader.bapi.BapiFunctionI;
 import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.erp.ejb.ErpCOOLManagerHome;
 import com.freshdirect.erp.ejb.ErpCOOLManagerSB;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
-import com.freshdirect.dataloader.bapi.BapiFunctionI;
-import com.sap.mw.jco.JCO;
-
 import com.freshdirect.framework.util.StringUtil;
-import java.util.ArrayList;
-import java.util.List;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.sap.mw.jco.JCO;
 
 public class BapiErpsCOOLChange implements BapiFunctionI {
 
@@ -40,9 +39,9 @@ public class BapiErpsCOOLChange implements BapiFunctionI {
 			new DataStructure("COUNTRY5", JCO.TYPE_CHAR, 15, 0, "COUNTRY5"),
 			};
 		smeta = new JCO.MetaData("COOLDETAILS");//Structure Name
-		for(int i = 0; i < sapData.length; i++) {
-			smeta.addInfo(sapData[i].fieldName, sapData[i].type, sapData[i].length, totalSize, sapData[i].decimal);
-			totalSize += sapData[i].length;
+		for (DataStructure element : sapData) {
+			smeta.addInfo(element.fieldName, element.type, element.length, totalSize, element.decimal);
+			totalSize += element.length;
 		}
 	}
 
@@ -65,7 +64,7 @@ public class BapiErpsCOOLChange implements BapiFunctionI {
 		coolTable.firstRow();
 
 		// build COOL Info
-		List erpCOOLInfoList = new ArrayList();
+		List<ErpCOOLInfo> erpCOOLInfoList = new ArrayList<ErpCOOLInfo>();
 		ErpCOOLInfo erpCOOLInfo = null;
 		for (int i = 0; i < coolTable.getNumRows(); i++) {
 			
@@ -79,7 +78,7 @@ public class BapiErpsCOOLChange implements BapiFunctionI {
 			String country3 = coolTable.getString("COUNTRY3").trim();
 			String country4 = coolTable.getString("COUNTRY4").trim();
 			String country5 = coolTable.getString("COUNTRY5").trim();
-			List countryInfo=getCountryInfo(country1,country2,country3,country4,country5);
+			List<String> countryInfo=getCountryInfo(country1,country2,country3,country4,country5);
 			erpCOOLInfo=new ErpCOOLInfo(matNum,matDesc,countryInfo);
 			erpCOOLInfoList.add(erpCOOLInfo);
 			
@@ -106,7 +105,7 @@ public class BapiErpsCOOLChange implements BapiFunctionI {
 		}
 	}
 
-	private void storeCOOLInfo(List erpCOOLInfoList) {
+	private void storeCOOLInfo(List<ErpCOOLInfo> erpCOOLInfoList) {
 		Context ctx = null;
 		
 		try {
@@ -127,10 +126,10 @@ public class BapiErpsCOOLChange implements BapiFunctionI {
 		}
 	}
 
-	private List getCountryInfo(String country1, String country2, String country3, String country4, String country5) {
+	private List<String> getCountryInfo(String country1, String country2, String country3, String country4, String country5) {
 		
 		
-		List countryInfo=new ArrayList(3);
+		List<String> countryInfo=new ArrayList<String>(3);
 		
 		
 		if(!StringUtil.isEmpty(country1))

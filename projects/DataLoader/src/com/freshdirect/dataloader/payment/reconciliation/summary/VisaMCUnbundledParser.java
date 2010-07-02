@@ -6,12 +6,12 @@
 
 package com.freshdirect.dataloader.payment.reconciliation.summary;
 
-import java.util.*;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.payment.reconciliation.summary.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParser;
+import com.freshdirect.payment.reconciliation.summary.VisaMCUnbundled;
 
 /**
  *
@@ -54,7 +54,8 @@ public class VisaMCUnbundledParser extends SettlementParser{
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         record = new VisaMCUnbundled();
         record.setUnbundledOption(getString(tokens, UNBUNDLED_OPTION));
         record.setVisaInterchangeFee(getSignedDouble(tokens, VISA_INT_FEE_AMOUNT, 2));
@@ -67,6 +68,7 @@ public class VisaMCUnbundledParser extends SettlementParser{
         client.accept(record);
     }
     
+    @Override
     public String debug() {
         return this.record.toString();
     }

@@ -6,13 +6,17 @@
 
 package com.freshdirect.dataloader.payment.reconciliation.summary;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.payment.reconciliation.summary.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParser;
+import com.freshdirect.payment.reconciliation.summary.EnumSummaryRecordType;
+import com.freshdirect.payment.reconciliation.summary.ReconciliationBatch;
 
 
 /**
@@ -100,7 +104,8 @@ public class SummaryParser extends SettlementParser implements SynchronousParser
         }
     }
     
-    protected HashMap tokenize(String line) throws BadDataException {
+    @Override
+    protected Map<String, String> tokenize(String line) throws BadDataException {
         //
         // this is necessary because Chase can't provide us with a proper test file
         //
@@ -123,7 +128,8 @@ public class SummaryParser extends SettlementParser implements SynchronousParser
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         String recType = getString(tokens, RECORD_TYPE);
         EnumSummaryRecordType rrt = EnumSummaryRecordType.getRecordType(recType);
         if (rrt == null) {

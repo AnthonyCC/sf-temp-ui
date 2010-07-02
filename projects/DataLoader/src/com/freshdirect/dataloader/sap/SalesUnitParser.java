@@ -10,10 +10,10 @@ package com.freshdirect.dataloader.sap;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
-
-import com.freshdirect.erp.model.*;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 
 /** a parser that deals with SAP sales unit export files
  *
@@ -24,13 +24,13 @@ public class SalesUnitParser extends SAPParser {
 
     /** a collection of sales unit objects parsed from a file
      */    
-    HashMap salesUnits = null;
+    HashMap<String, HashSet<ErpSalesUnitModel>> salesUnits = null;
     
     /** Creates new SalesUnitParser
      */
     public SalesUnitParser() {
         super();
-        salesUnits = new HashMap();
+        salesUnits = new HashMap<String, HashSet<ErpSalesUnitModel>>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Export_CSD.doc in VSS repository
          */
@@ -46,7 +46,7 @@ public class SalesUnitParser extends SAPParser {
     /** gets the collection of sales unit object parsed from a file
      * @return the sales unit models
      */    
-    public HashMap getSalesUnits() {
+    public HashMap<String, HashSet<ErpSalesUnitModel>> getSalesUnits() {
         return salesUnits;
     }
     
@@ -54,7 +54,8 @@ public class SalesUnitParser extends SAPParser {
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
      */
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         
         /*
          * from ERP Services/Technical Specs/Mapping Docs/ERPS_SAP_BATCH_MAP.xls in VSS repository
@@ -87,19 +88,19 @@ public class SalesUnitParser extends SAPParser {
 	            // since there are multiple sales units for each material
 	            // we need to make the sales units we collect a hash of sets
 	            //
-	            HashSet units = null;
+	            HashSet<ErpSalesUnitModel> units = null;
 	            if (!salesUnits.containsKey(matlNumber)) {
 	                //
 	                // no sales units yet for this material
 	                // create a new set and add it to the collection
 	                //
-	                units = new HashSet();
+	                units = new HashSet<ErpSalesUnitModel>();
 	                salesUnits.put(matlNumber, units);
 	            } else {
 	                //
 	                // find the sales unit set for this material
 	                //
-	                units = (HashSet) salesUnits.get(matlNumber);
+	                units = salesUnits.get(matlNumber);
 	            }
 	            //
 	            // add the new sales unit to the set
@@ -121,11 +122,12 @@ public class SalesUnitParser extends SAPParser {
 	 * @return
 	 * @throws BadDataException
 	 */
-	private boolean isForDisplay(HashMap tokens) throws BadDataException {
+	private boolean isForDisplay(Map<String, String> tokens) throws BadDataException {
 		return ("EA".equalsIgnoreCase(getString(tokens, BASE_UNIT)))&&("LB".equalsIgnoreCase(getString(tokens, ALTERNATIVE_UOM)))&&("w1".equalsIgnoreCase(getString(tokens,DISPLAY_IND)));
 	}
     
-    protected int tokenize(String line, HashMap retval, int startPosition,
+    @Override
+    protected int tokenize(String line, Map<String, String> retval, int startPosition,
 			String name, int length) throws BadDataException{
     	if(name.equals(DISPLAY_IND)){    	
     		int endPosition = startPosition+length;

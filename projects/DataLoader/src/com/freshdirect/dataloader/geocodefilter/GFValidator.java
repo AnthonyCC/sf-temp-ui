@@ -13,7 +13,8 @@ public class GFValidator extends GFBaseValidator {
 	
 	private StringBuffer results = null;
 	
-	public AddressModel getAddressModel(GFRecord record) {
+	@Override
+    public AddressModel getAddressModel(GFRecord record) {
 		AddressModel address = new AddressModel();
 		address.setAddress1(record.getBldgNum() + " "
 				+ (record.getDirectional() != null ? record.getDirectional() + " " : "")
@@ -24,15 +25,18 @@ public class GFValidator extends GFBaseValidator {
 		return address;
 	}
 	
-	public boolean isAddressValid(boolean homeDelivery, boolean corporateDelivery) {
+	@Override
+    public boolean isAddressValid(boolean homeDelivery, boolean corporateDelivery) {
 		return homeDelivery;
 	}
 	
-	public void initialize() {
+	@Override
+    public void initialize() {
 		results = new StringBuffer();
 	}
 	
-	public synchronized void addResult(GFRecord record,boolean homeDelivery, boolean corporateDelivery) {
+	@Override
+    public synchronized void addResult(GFRecord record,boolean homeDelivery, boolean corporateDelivery) {
 		StringBuffer resultLine = new StringBuffer();
 		resultLine.append(StringUtils.rightPad(record.getZip(),6))
 		   .append(StringUtils.rightPad(record.getZpf(),5))

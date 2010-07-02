@@ -1,8 +1,8 @@
 package com.freshdirect.dataloader.bapi;
 
 import org.apache.log4j.Category;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.sap.mw.jco.JCO;
 
 public abstract class BapiServer implements JCO.ServerExceptionListener, JCO.ServerStateChangedListener {
@@ -37,7 +37,8 @@ public abstract class BapiServer implements JCO.ServerExceptionListener, JCO.Ser
 		final BapiRepository repository = this.getRepository();
 
 		this.server = new JCO.Server(this.gwHost, this.gwServ, this.progId, repository) {
-			protected void handleRequest(JCO.Function function) {
+			@Override
+            protected void handleRequest(JCO.Function function) {
 		
 				String funcName = function.getName();
 				LOGGER.debug("handleRequest " + BapiServer.this.progId + " " + funcName + ")");

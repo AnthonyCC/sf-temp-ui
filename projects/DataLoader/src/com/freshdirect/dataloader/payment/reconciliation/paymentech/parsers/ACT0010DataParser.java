@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -54,7 +54,8 @@ public class ACT0010DataParser extends PaymentechSettlementParser {
 
 	}
 	
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		CCDetailOne record = new CCDetailOne();
 		
 		record.setProductCode(getString(tokens, MOP));

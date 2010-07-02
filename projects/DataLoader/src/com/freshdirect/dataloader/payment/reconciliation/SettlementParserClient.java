@@ -7,7 +7,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 
 public abstract class SettlementParserClient implements SynchronousParserClient {

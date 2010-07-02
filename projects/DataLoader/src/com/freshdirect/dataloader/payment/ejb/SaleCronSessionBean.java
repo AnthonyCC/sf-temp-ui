@@ -48,7 +48,12 @@ import com.freshdirect.payment.ejb.PaymentSB;
 
 public class SaleCronSessionBean extends SessionBeanSupport {
 
-	private final static Category LOGGER = LoggerFactory.getInstance(SaleCronSessionBean.class);
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    private final static Category LOGGER = LoggerFactory.getInstance(SaleCronSessionBean.class);
 
 	private final static ServiceLocator LOCATOR = new ServiceLocator();
 
@@ -149,7 +154,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	 */
 	public void authorizeSales(long timeout) {
 		Connection con = null;
-		List saleIds = new ArrayList();
+		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
 		try {
@@ -189,7 +194,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		if (saleIds.size() > 0) {
 			long startTime = System.currentTimeMillis();
-			for (Iterator i = saleIds.iterator(); i.hasNext();) {
+			for (Iterator<String> i = saleIds.iterator(); i.hasNext();) {
 				if (System.currentTimeMillis() - startTime > timeout) {
 					LOGGER.warn("Authorization process was running longer than" + timeout / 60 / 1000);
 					break;
@@ -199,7 +204,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					utx = this.getSessionContext().getUserTransaction();
 					utx.begin();
 
-					String saleId = (String) i.next();
+					String saleId = i.next();
 					LOGGER.info("Going to authorize: " + saleId);
 					sb.authorizeSale(saleId);
 					utx.commit();
@@ -225,7 +230,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 			
 		Connection con = null;
-		List saleIds = new ArrayList();
+		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
 		try {
@@ -265,7 +270,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
 		if (saleIds.size() > 0) {
 			long startTime = System.currentTimeMillis();
-			for (Iterator i = saleIds.iterator(); i.hasNext();) {
+			for (Iterator<String> i = saleIds.iterator(); i.hasNext();) {
 				if (System.currentTimeMillis() - startTime > timeout) {
 					LOGGER.warn("Authorization process was running longer than" + timeout / 60 / 1000);
 					break;
@@ -275,7 +280,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					utx = this.getSessionContext().getUserTransaction();
 					utx.begin();
 
-					String saleId = (String) i.next();
+					String saleId = i.next();
 					LOGGER.info("Going to authorize: " + saleId);
 					sb.preAuthorizeSales(saleId);
 					utx.commit();
@@ -303,7 +308,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		}
 		
 		Connection con = null;
-		List saleIds = new ArrayList();
+		List<String> saleIds = new ArrayList<String>();
 
 		UserTransaction utx = null;
 		try {
@@ -343,7 +348,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		GiftCardManagerSB sb = this.getGiftCardManagerSB();
 		if (saleIds.size() > 0) {
 			long startTime = System.currentTimeMillis();
-			for (Iterator i = saleIds.iterator(); i.hasNext();) {
+			for (Iterator<String> i = saleIds.iterator(); i.hasNext();) {
 				if (System.currentTimeMillis() - startTime > timeout) {
 					LOGGER.warn("Reverse Authorization process was running longer than" + timeout / 60 / 1000);
 					break;
@@ -353,7 +358,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					utx = this.getSessionContext().getUserTransaction();
 					utx.begin();
 
-					String saleId = (String) i.next();
+					String saleId = i.next();
 					LOGGER.info("Going to reverse authorize: " + saleId);
 					sb.reversePreAuthForCancelOrders(saleId);
 					utx.commit();
@@ -374,8 +379,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	
 	public void authorizeSubscriptions(long timeout) {
 		Connection con = null;
-		List saleIds = new ArrayList();
-		List customerIds=new ArrayList();
+		List<String> saleIds = new ArrayList<String>();
+		List<String> customerIds=new ArrayList<String>();
 
 		UserTransaction utx = null;
 		try {
@@ -427,8 +432,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					utx = this.getSessionContext().getUserTransaction();
 					utx.begin();
 
-					String saleId = (String)saleIds.get(i);
-					String customerId=(String)customerIds.get(i);
+					String saleId = saleIds.get(i);
+					String customerId=customerIds.get(i);
 					FDIdentity identity=getFDIdentity(customerId);
 					FDUser user=FDCustomerManager.getFDUser(identity);
 					CustomerRatingAdaptor cra=new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
@@ -467,8 +472,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		return affected;
 	}
 
-	private List querySalesInStatusCPG(Connection conn, EnumSaleStatus status) throws SQLException {
-		List saleIds = new ArrayList();
+	private List<String> querySalesInStatusCPG(Connection conn, EnumSaleStatus status) throws SQLException {
+		List<String> saleIds = new ArrayList<String>();
 		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_CPG_STATUS);
 		ps.setString(1, status.getStatusCode());
 		ps.setInt(2, ErpServicesProperties.getWaitingTimeAfterConfirm());
@@ -484,9 +489,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 	}
 
 
-	private Map querySalesInStatusRPG(Connection conn) throws SQLException {
+	private Map<String, Double> querySalesInStatusRPG(Connection conn) throws SQLException {
 		//saleId -> FDIdentity
-		Map sales = new HashMap();
+		Map<String, Double> sales = new HashMap<String, Double>();
 		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_IN_RPG_STATUS);
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
@@ -495,9 +500,9 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		return sales;
 	}
 	
-	private Map querySaleAndIdentityByStatus(Connection conn, EnumSaleStatus status) throws SQLException {
+	private Map<String, FDIdentity> querySaleAndIdentityByStatus(Connection conn, EnumSaleStatus status) throws SQLException {
 		//saleId -> FDIdentity
-		Map sales = new HashMap();
+		Map<String, FDIdentity> sales = new HashMap<String, FDIdentity>();
 		PreparedStatement ps = conn.prepareStatement(QUERY_SALE_AND_IDENTITY_BY_STATUS);
 		ps.setString(1, status.getStatusCode());
 		ResultSet rs = ps.executeQuery();
@@ -517,7 +522,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		Connection con = null;
 		UserTransaction utx = null;
 
-		Map saleIds;
+		Map<String, FDIdentity> saleIds;
 		try {
 			utx = this.getSessionContext().getUserTransaction();
 			utx.begin();
@@ -550,13 +555,13 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 
 		// cancel all LOCKED sales
 		FDCustomerManagerSB sb = this.getFDCustomerManagerSB();
-		for (Iterator i = saleIds.keySet().iterator(); i.hasNext();) {
+		for (Iterator<String> i = saleIds.keySet().iterator(); i.hasNext();) {
 			utx = null;
 			try {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
-				String saleId = (String) i.next();
-				FDIdentity identity = (FDIdentity) saleIds.get(saleId);
+				String saleId = i.next();
+				FDIdentity identity = saleIds.get(saleId);
 				FDActionInfo info =
 					new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "SYSTEM", "Could not get AUTHORIZATION", null);
 
@@ -623,7 +628,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		Connection con = null;
 		UserTransaction utx = null;
 
-		List saleIds;
+		List<String> saleIds;
 
 		try {
 			utx = this.getSessionContext().getUserTransaction();
@@ -675,11 +680,11 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
 				if(useQueue){
-					command = new Capture((String) saleIds.get(i));
+					command = new Capture(saleIds.get(i));
 					sb.updateSaleDlvStatus(command);
 					LOGGER.info("*******sending message to capture Queue for order:"+saleIds.get(i));
 				}else{
-					psb.captureAuthorization((String) saleIds.get(i));
+					psb.captureAuthorization(saleIds.get(i));
 					LOGGER.info("*******do capture transaction for order:"+saleIds.get(i));
 				}
 
@@ -708,7 +713,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		Connection con = null;
 		UserTransaction utx = null;
 
-		List saleIds;
+		List<String> saleIds;
 
 		try {
 			utx = this.getSessionContext().getUserTransaction();
@@ -752,7 +757,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			try {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
-				gsb.postAuthorizeSales((String) saleIds.get(i));
+				gsb.postAuthorizeSales(saleIds.get(i));
 				LOGGER.info("*******do post authorize transaction for order:"+saleIds.get(i));
 
 				utx.commit();
@@ -780,7 +785,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		Connection con = null;
 		UserTransaction utx = null;
 
-		Map saleIds;
+		Map<String, Double> saleIds;
 
 		try {
 			utx = this.getSessionContext().getUserTransaction();
@@ -820,7 +825,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			gmb = this.getGiftCardManagerSB();
 		}
 		//LOGGER.info("********** use queue:"+ErpServicesProperties.isUseQueue());
-		for (Iterator i = saleIds.keySet().iterator(); i.hasNext();) {
+		for (Iterator<String> i = saleIds.keySet().iterator(); i.hasNext();) {
 
 			if (System.currentTimeMillis() - startTime > timeout) {
 				LOGGER.warn("Gift Card Register transaction was running longer than" + timeout / 60 / 1000);
@@ -831,8 +836,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			try {
 				utx = this.getSessionContext().getUserTransaction();
 				utx.begin();
-				String saleId = (String) i.next();
-				Double subTotal = (Double) saleIds.get(saleId);
+				String saleId = i.next();
+				Double subTotal = saleIds.get(saleId);
 				if(useQueue){
 					gsb.sendRegisterGiftCard(saleId, subTotal.doubleValue());
 					LOGGER.info("*******sending message to register Queue for order:"+saleIds.get(i));

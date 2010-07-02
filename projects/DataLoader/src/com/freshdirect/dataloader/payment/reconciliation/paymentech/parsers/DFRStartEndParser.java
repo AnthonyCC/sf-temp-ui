@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -25,7 +25,8 @@ public class DFRStartEndParser extends PaymentechSettlementParser {
 		fields.add(new Field(COMPANY_ID, 13, true));
 	}
 
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		DFRStartEnd record = null;
 		if(EnumPaymentechRecordType.DFR_START.equals(type)){
 			record = new DFRStart();

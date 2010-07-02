@@ -1,12 +1,10 @@
 package com.freshdirect.dataloader.geocodefilter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
-import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
 
 public class GFParser extends FieldDelimitedFileParser implements IParser{
     public final static String ZIP_CODE                = "ZIP_CODE";
@@ -36,7 +34,8 @@ public class GFParser extends FieldDelimitedFileParser implements IParser{
     SynchronousParserClient client;
     GFRecord record;
     
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		record = new GFRecord();
 		
 		record.setZip(getString(tokens, ZIP_CODE));

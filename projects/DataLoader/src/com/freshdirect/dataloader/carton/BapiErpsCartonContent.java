@@ -1,33 +1,30 @@
 package com.freshdirect.dataloader.carton;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.CreateException;
-import javax.ejb.FinderException;
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ErpCartonDetails;
 import com.freshdirect.customer.ErpCartonInfo;
-import com.freshdirect.customer.ErpShippingInfo;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
+import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
+import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.dataloader.bapi.BapiFunctionI;
-import com.sap.mw.jco.JCO;
-
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.StringUtil;
-import java.util.ArrayList;
-import java.util.List;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.sap.mw.jco.JCO;
 
 public class BapiErpsCartonContent implements BapiFunctionI {
 
@@ -54,9 +51,9 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			new DataStructure("ZZPLATTER", JCO.TYPE_CHAR, 1, 0, "Platter indicator"),
 		};
 		smeta = new JCO.MetaData("CARTONDETAILS");
-		for(int i = 0; i < sapData.length; i++) {
-			smeta.addInfo(sapData[i].fieldName, sapData[i].type, sapData[i].length, totalSize, sapData[i].decimal);
-			totalSize += sapData[i].length;
+		for (DataStructure element : sapData) {
+			smeta.addInfo(element.fieldName, element.type, element.length, totalSize, element.decimal);
+			totalSize += element.length;
 		}
 	}
 
@@ -79,9 +76,9 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 		cartonTable.firstRow();
 
 		// build carton details
-		List cartonDetails = new ArrayList();
-		List cartonInfos = new ArrayList();
-		HashMap cartons = new HashMap();
+		List<ErpCartonDetails> cartonDetails = new ArrayList<ErpCartonDetails>();
+		List<ErpCartonInfo> cartonInfos = new ArrayList<ErpCartonInfo>();
+		HashMap<String, List> cartons = new HashMap<String, List>();
 		String currentOrderNo = "";
 		String currentCartonNo = "";
 		ErpCartonInfo cartonInfo = null;
@@ -114,14 +111,14 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			
 			// Now process data
 			if(!currentOrderNo.equals(webOrderNo)) {
-				cartonInfos = new ArrayList();
+				cartonInfos = new ArrayList<ErpCartonInfo>();
 				cartons.put(webOrderNo,cartonInfos);
 				currentOrderNo = webOrderNo;
 			}
 
 			if(!currentCartonNo.equals(cartonNo)) {
 				cartonInfo = new ErpCartonInfo(webOrderNo, sapOrderNo, cartonNo, cartonType);
-				cartonDetails = new ArrayList();
+				cartonDetails = new ArrayList<ErpCartonDetails>();
 				cartonInfo.setDetails(cartonDetails);
 				cartonInfos.add(cartonInfo);
 				currentCartonNo = cartonNo;
@@ -152,7 +149,7 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 		}
 	}
 
-	private void storeCartonInfo(Map cartons) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
+	private void storeCartonInfo(Map<String, List> cartons) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
 		Context ctx = null;
 		String saleId = null;
 		try {
@@ -160,9 +157,9 @@ public class BapiErpsCartonContent implements BapiFunctionI {
 			ErpCustomerManagerHome mgr = (ErpCustomerManagerHome) ctx.lookup("freshdirect.erp.CustomerManager");
 			ErpCustomerManagerSB sb = mgr.create();
 	
-			for(Iterator i = cartons.keySet().iterator(); i.hasNext(); ) { 
-				saleId = (String)i.next();			
-				sb.updateCartonInfo(saleId, (List)cartons.get(saleId));
+			for(Iterator<String> i = cartons.keySet().iterator(); i.hasNext(); ) { 
+				saleId = i.next();			
+				sb.updateCartonInfo(saleId, cartons.get(saleId));
 			}
 		} catch(Exception ex) {
 			throw new EJBException("Failed to store: " + saleId + "Msg: " + ex.toString());

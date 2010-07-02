@@ -6,8 +6,13 @@
 
 package com.freshdirect.dataloader.attributes;
 
-import java.util.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * loads atributes from a textfile into erps db

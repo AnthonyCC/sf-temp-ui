@@ -11,22 +11,34 @@ package com.freshdirect.dataloader.payment;
  * @author  knadeem
  * @version
  */
-import java.util.*;
-
-import javax.ejb.*;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.rmi.RemoteException;
-import javax.naming.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.ejb.CreateException;
+import javax.ejb.EJBException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.customer.*;
-import com.freshdirect.dataloader.*;
-import com.freshdirect.dataloader.payment.ejb.*;
-
+import com.freshdirect.customer.ErpInvoiceModel;
+import com.freshdirect.customer.ErpShippingInfo;
+import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderHome;
+import com.freshdirect.dataloader.payment.ejb.InvoiceLoaderSB;
+import com.freshdirect.framework.core.ExceptionSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
 
 public class InvoiceLoader implements ConsumerI {
@@ -35,21 +47,21 @@ public class InvoiceLoader implements ConsumerI {
 	
 	private final String INVOICE = "F2";
 	private final String RETURN = "RE";
-	private List exceptionList = null;
+	private List<ExceptionSupport> exceptionList = null;
 	private InvoiceParser invoiceParser = null;
-	private HashMap invoiceMap = null;
-	private HashMap returnsMap = null;
-	private HashMap shippingInfoMap = null;
+	private HashMap<String, Object> invoiceMap = null;
+	private HashMap<String, Object> returnsMap = null;
+	private HashMap<String, ErpShippingInfo> shippingInfoMap = null;
 	private InvoiceLoaderHome invoiceLoaderHome = null;
 	
 	
 	/** Creates new InvoiceLoader */
 	public InvoiceLoader() {
-		this.exceptionList = new LinkedList();
+		this.exceptionList = new LinkedList<ExceptionSupport>();
 		invoiceParser = new InvoiceParser();
-		invoiceMap = new HashMap();
-		returnsMap = new HashMap();
-		shippingInfoMap = new HashMap();
+		invoiceMap = new HashMap<String, Object>();
+		returnsMap = new HashMap<String, Object>();
+		shippingInfoMap = new HashMap<String, ErpShippingInfo>();
 	}
 	
 	public void processInvoiceBatch(String fileName) throws LoaderException {
@@ -60,7 +72,7 @@ public class InvoiceLoader implements ConsumerI {
                 String msg = this.createErrorMessage(this.exceptionList);
                 throw new LoaderException(msg);
 			} else {
-				List eList = this.doLoad();
+				List<ExceptionSupport> eList = this.doLoad();
 				if(!eList.isEmpty()){
 					this.logExceptions(eList);
 					String msg = this.createErrorMessage(eList);
@@ -72,18 +84,18 @@ public class InvoiceLoader implements ConsumerI {
 		}
 	}
 	
-	private void logExceptions(List eList){
-		for(Iterator i = eList.iterator(); i.hasNext(); ){
-			Exception e = (Exception) i.next();
+	private void logExceptions(List<ExceptionSupport> eList){
+		for(Iterator<ExceptionSupport> i = eList.iterator(); i.hasNext(); ){
+			Exception e = i.next();
 			LOGGER.warn("Error occured", e);
 		}
 	}
 	
-	private String createErrorMessage(List eList){
+	private String createErrorMessage(List<ExceptionSupport> eList){
 		StringBuffer msg = new StringBuffer();
 		msg.append("Invoice batch contained errors:\n");
-		for(Iterator i = eList.iterator(); i.hasNext(); ){
-			Exception e = (Exception) i.next();
+		for(Iterator<ExceptionSupport> i = eList.iterator(); i.hasNext(); ){
+			Exception e = i.next();
 			StringWriter sw = new StringWriter();
 			e.printStackTrace(new PrintWriter(sw));
 			msg.append(sw.getBuffer());
@@ -119,8 +131,8 @@ public class InvoiceLoader implements ConsumerI {
 		
 	}
 	
-	public List doLoad() throws LoaderException{
-		List eList = new ArrayList();
+	public List<ExceptionSupport> doLoad() throws LoaderException{
+		List<ExceptionSupport> eList = new ArrayList<ExceptionSupport>();
 		if(this.invoiceLoaderHome == null){
 			this.lookupInvoiceLoaderHome();
 		}
@@ -134,9 +146,8 @@ public class InvoiceLoader implements ConsumerI {
 		}
 
 		try{
-			for(Iterator i = this.invoiceMap.keySet().iterator(); i.hasNext(); ){ 
-				String saleId = (String)i.next();
-				ErpShippingInfo shippingInfo = (ErpShippingInfo)this.shippingInfoMap.get(saleId);
+			for (String saleId : this.invoiceMap.keySet()) { 
+				ErpShippingInfo shippingInfo = this.shippingInfoMap.get(saleId);
 				sb.addAndReconcileInvoice(saleId, (ErpInvoiceModel)this.invoiceMap.get(saleId), shippingInfo);
 			}
 		}catch(ErpTransactionException e){
@@ -168,7 +179,7 @@ public class InvoiceLoader implements ConsumerI {
 	private void lookupInvoiceLoaderHome() throws EJBException {
 		Context ctx = null;
 		try {
-			Hashtable h = new Hashtable();
+			Hashtable<String, String> h = new Hashtable<String, String>();
 			h.put( Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory" );
 			h.put( Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 			ctx = new InitialContext(h);

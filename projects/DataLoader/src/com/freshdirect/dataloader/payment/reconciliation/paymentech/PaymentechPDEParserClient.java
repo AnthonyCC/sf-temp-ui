@@ -15,7 +15,6 @@ import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 
 public class PaymentechPDEParserClient extends SettlementParserClient {

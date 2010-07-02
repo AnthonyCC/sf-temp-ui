@@ -8,10 +8,7 @@ import java.io.InputStream;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Properties;
 import java.util.Map.Entry;
 import java.util.zip.ZipException;
@@ -127,8 +124,7 @@ public class USPSLoader {
 	
 	private void loadZipPlus4(){
 		File[] files = zpfTempDir.listFiles();
-		for(int i = 0; i < files.length; i++){
-			File file = files[i];
+		for (File file : files) {
 			if(file.getName().indexOf(".txt") > -1){
 				ZipPlus4Loader loader = new ZipPlus4Loader();
 				loader.load(file.getAbsolutePath());
@@ -138,8 +134,7 @@ public class USPSLoader {
 	
 	private void loadCityState(){
 		File[] files = csTempDir.listFiles();
-		for(int i = 0; i < files.length; i++){
-			File file = files[i];
+		for (File file : files) {
 			if(file.getName().indexOf(".txt") > -1){
 				CityStateLoader loader = new CityStateLoader();
 				loader.load(file.getAbsolutePath());
@@ -149,8 +144,7 @@ public class USPSLoader {
 	
 	private void unzipAllFiles(File dir, File destDir, boolean zpf) throws ZipException, IOException{
 		File[] files = dir.listFiles();
-		for(int i = 0; i < files.length; i++){
-			File file = files[i];
+		for (File file : files) {
 			if(zpf){
 				int name = Integer.parseInt(file.getName().substring(0, file.getName().indexOf(".")));
 				if(name < Integer.parseInt(properties.getProperty(PROP_ZIPLOW)) || name > Integer.parseInt(properties.getProperty(PROP_ZIPHIGH))){
@@ -171,8 +165,8 @@ public class USPSLoader {
 	        properties.load(configStream);
 	        
 			System.out.println("Loaded with the following properties:");
-			for(Iterator i = properties.entrySet().iterator(); i.hasNext();){
-				Entry e = (Entry) i.next();
+			for (Object element : properties.entrySet()) {
+				Entry e = (Entry) element;
 				System.out.println(e.getKey() + ":    " + e.getValue());
 			}
 	}

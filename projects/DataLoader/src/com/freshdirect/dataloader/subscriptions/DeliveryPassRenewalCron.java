@@ -45,7 +45,6 @@ import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -55,13 +54,13 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDOrderI;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.mail.ErpMailSender;
 
 public class DeliveryPassRenewalCron {
@@ -223,7 +222,7 @@ public class DeliveryPassRenewalCron {
 		ProductModel prodNode = null;
 		FDProduct product=null;
 		FDSalesUnit salesUnit = null;
-		HashMap varMap = new HashMap();
+		HashMap<String, String> varMap = new HashMap<String, String>();
 		double quantity = 1.0D;
 
 		prodNode = ContentFactory.getInstance().getProduct(skuCode);
@@ -253,7 +252,7 @@ public class DeliveryPassRenewalCron {
 
 	private static synchronized Context getInitialContext() throws NamingException {
 
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);

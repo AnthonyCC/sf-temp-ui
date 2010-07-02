@@ -8,13 +8,21 @@
  */
 package com.freshdirect.dataloader.payment.reconciliation.detail;
 
-import java.io.*;
-import java.util.*;
-
+import java.io.InputStream;
 import java.rmi.RemoteException;
-import javax.naming.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.freshdirect.dataloader.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.dataloader.SynchronousParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
 
 /**
  *
@@ -224,7 +232,7 @@ public class DetailLoader implements SynchronousParser, SynchronousParserClient 
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

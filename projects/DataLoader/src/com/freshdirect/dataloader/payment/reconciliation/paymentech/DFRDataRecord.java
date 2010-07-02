@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class DFRDataRecord implements Serializable {
 	
-	private String entityType;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private String entityType;
 	private String entityNumber;
 	private String fundTransferInsNum;
 	private String secureBANum;
@@ -76,7 +80,8 @@ public class DFRDataRecord implements Serializable {
 		this.settledConveyed = settledConveyed;
 	}
 	
-	public String toString() {
+	@Override
+    public String toString() {
 		StringBuffer buf = new StringBuffer();
 		
 		buf.append("Entity Type: ").append(entityType).append("\n");

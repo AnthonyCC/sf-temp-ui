@@ -12,15 +12,24 @@ package com.freshdirect.dataloader.nutrition;
  * @version
  */
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
-import javax.naming.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-import com.freshdirect.dataloader.*;
-import com.freshdirect.content.nutrition.*;
-import com.freshdirect.content.nutrition.ejb.*;
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
+import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.LoaderException;
 
 public class KwikeeLoader {
     
@@ -131,7 +140,7 @@ public class KwikeeLoader {
         
         System.out.println("\n----- starting doLoad() -----");
         
-        ArrayList nutritionModels = kwikeeParser.getNutritionModels();
+        ArrayList<ErpNutritionModel> nutritionModels = kwikeeParser.getNutritionModels();
         ErpNutritionModel model;
         
         Context ctx = null;
@@ -141,7 +150,7 @@ public class KwikeeLoader {
             
             ErpNutritionSB sb = home.create();
             for(int i = 0, size = nutritionModels.size(); i < size; i++){
-                model = (ErpNutritionModel)nutritionModels.get(i);
+                model = nutritionModels.get(i);
                 //System.out.println(model.getUpc());
                 try{
                     String skuCode = sb.getSkuCodeForUpc(model.getUpc());
@@ -180,7 +189,7 @@ public class KwikeeLoader {
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

@@ -8,14 +8,22 @@
  */
 package com.freshdirect.dataloader.sap;
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
-import javax.naming.*;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-import com.freshdirect.dataloader.sap.ejb.*;
+import javax.ejb.CreateException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderHome;
+import com.freshdirect.dataloader.sap.ejb.VirtualProductLoaderSB;
 
 /**
  *
@@ -55,12 +63,12 @@ public class VirtualProductLoader {
         String inputFile = "c:\\temp\\virt_skus.txt";
         
         if (args.length > 0) {
-        	for (int i = 0; i < args.length; i++) {
-        		if (args[i].startsWith("serverURL=")) {
-        			loader.serverUrl = args[i].substring("serverURL=".length());
+        	for (String arg : args) {
+        		if (arg.startsWith("serverURL=")) {
+        			loader.serverUrl = arg.substring("serverURL=".length());
         		}
-        		else if (args[i].startsWith("inputFile=")) {
-        			inputFile = args[i].substring("inputFile=".length());
+        		else if (arg.startsWith("inputFile=")) {
+        			inputFile = arg.substring("inputFile=".length());
         		}
         	}
         }
@@ -151,7 +159,7 @@ public class VirtualProductLoader {
         
         System.out.println("\n----- starting doLoad() -----");
         
-        HashMap products = parser.getProducts();
+        Map<String, Map<String, Object>> products = parser.getProducts();
         
         Context ctx = null;
         try {
@@ -180,11 +188,10 @@ public class VirtualProductLoader {
     }
     
     public void debug() {
-        HashMap products = parser.getProducts();
-        for (Iterator pIter = products.keySet().iterator(); pIter.hasNext();) {
-            String vSku = (String) pIter.next();
+        Map<String, Map<String, Object>> products = parser.getProducts();
+        for (String vSku : products.keySet()) {
             System.out.println("virtual sku :  " + vSku);
-            HashMap extraInfo = (HashMap) products.get(vSku);
+            Map<String, Object> extraInfo = products.get(vSku);
             System.out.println("original sku : " + extraInfo.get(VirtualProductParser.ORIGINAL_SKU));
             System.out.println("hidden sales units : ");
             List units = (List) extraInfo.get(VirtualProductParser.SALES_UNITS);
@@ -212,7 +219,7 @@ public class VirtualProductLoader {
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

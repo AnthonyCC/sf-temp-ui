@@ -10,6 +10,7 @@ package com.freshdirect.dataloader;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /** base class for loader components that read data from text files
  * it can return a list of exceptions found while parsing a file
@@ -35,16 +36,17 @@ public abstract class FieldDelimitedFileParser extends FlatFileParser {
      * @return a HashMap of String tokens from a line of a text file,
      * keyed by their field names
      */
-    protected HashMap tokenize(String line) throws BadDataException {
+    @Override
+    protected Map<String, String> tokenize(String line) throws BadDataException {
         //
         // iterate through the list of fields are read each token
         // from the line
         //
-        Iterator iter = fields.iterator();
-        HashMap retval = new HashMap();
+        Iterator<Field> iter = fields.iterator();
+        HashMap<String, String> retval = new HashMap<String, String>();
         int startPosition = 0;
         while (iter.hasNext()) {
-            Field f = (Field) iter.next();
+            Field f = iter.next();
             String name = f.getName();
             int length = f.getLength();
             if (length == -1) {
@@ -67,7 +69,7 @@ public abstract class FieldDelimitedFileParser extends FlatFileParser {
         return retval;
     }
     
-    protected int tokenize(String line, HashMap retval, int startPosition,
+    protected int tokenize(String line, Map<String, String> retval, int startPosition,
 			String name, int length) throws BadDataException {
 		int endPosition = startPosition + length;
 		try {

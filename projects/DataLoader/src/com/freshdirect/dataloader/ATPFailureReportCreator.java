@@ -41,7 +41,8 @@ public class ATPFailureReportCreator extends DBReportCreator {
 			super(day, f);
 		}
 
-		protected void processRow(ResultSet rs) throws SQLException {
+		@Override
+        protected void processRow(ResultSet rs) throws SQLException {
 
 			sb.append(rs.getDate("DELIVERY_DATE")).append("\t");
 			sb.append(rs.getTimestamp("FIRST_CHECK")).append("\t");
@@ -53,7 +54,8 @@ public class ATPFailureReportCreator extends DBReportCreator {
 
 		}
 
-		protected String getQuery() {
+		@Override
+        protected String getQuery() {
 			return "select af.requested_date as delivery_date, min(af.timestamp) first_check, max(af.timestamp) last_check, sum(1) total_checks, af.material_sap_id as material_number, m.description "
 				+ "from erps.atp_failure af, erps.material m "
 				+ "where trunc(af.timestamp) = ? "
@@ -63,14 +65,16 @@ public class ATPFailureReportCreator extends DBReportCreator {
 				+ "order by max(af.timestamp) ";
 		}
 
-		protected Object[] getParams() {
+		@Override
+        protected Object[] getParams() {
 			Object[] params = new Object[1];
 			params[0] = new java.sql.Date(day.getTime());
 			return params;
 		}
 
-		protected List getHeaders() {
-			List lst = new ArrayList();
+		@Override
+        protected List<String> getHeaders() {
+			List<String> lst = new ArrayList<String>();
 
 			lst.add("delivery_date");
 			lst.add("time_of_first_check");

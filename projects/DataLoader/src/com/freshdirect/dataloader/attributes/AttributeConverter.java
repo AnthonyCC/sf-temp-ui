@@ -6,8 +6,15 @@
 
 package com.freshdirect.dataloader.attributes;
 
-import java.util.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.ListIterator;
 
 /**
  * converts and loads atributes from old db into new db
@@ -63,7 +70,7 @@ public class AttributeConverter {
         ResultSet rs = oldStmt.executeQuery("select ch.NAME, cv.CHAR_VALUE, a.KEY, a.VALUE, SYSDATE " +
         "from characteristic ch, characteristic_value cv, attributes a " +
         "where ch.id=cv.CHARACTERISTIC_ID and cv.ID=a.ENTITY_ID");
-        ArrayList charAttrs = new ArrayList();
+        ArrayList<AttributeRow> charAttrs = new ArrayList<AttributeRow>();
         while (rs.next()) {
             AttributeRow ar = new AttributeRow();
             ar.child1Id = rs.getString(1);
@@ -85,9 +92,9 @@ public class AttributeConverter {
         //
         PreparedStatement newPs = newConn.prepareStatement("select cl.sap_id, ch.NAME, cv.NAME from " +
         "class cl, characteristic ch, charvalue cv where ch.name=? and cv.name=? and cl.ID=ch.CLASS_ID and cv.CHAR_ID=ch.ID");
-        ListIterator oldIter = charAttrs.listIterator();
+        ListIterator<AttributeRow> oldIter = charAttrs.listIterator();
         while (oldIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) oldIter.next();
+            AttributeRow ar = oldIter.next();
             newPs.clearParameters();
             newPs.setString(1, ar.child1Id);
             newPs.setString(2, ar.child2Id);
@@ -104,9 +111,9 @@ public class AttributeConverter {
         //
         // assign ids to the rows in the new system
         //
-        Iterator charAttrIter = charAttrs.iterator();
+        Iterator<AttributeRow> charAttrIter = charAttrs.iterator();
         while (charAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) charAttrIter.next();
+            AttributeRow ar = charAttrIter.next();
             ar.id = getNextId(newConn);
         }
         //
@@ -115,7 +122,7 @@ public class AttributeConverter {
         newPs = newConn.prepareStatement("insert into attributes (id,root_id,child1_id,child2_id,atr_type,atr_name,atr_value,date_modified) values (?,?,?,?,?,?,?,?)");
         charAttrIter = charAttrs.iterator();
         while (charAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) charAttrIter.next();
+            AttributeRow ar = charAttrIter.next();
             System.out.println("Inserting attribute " + ar.rootId + " " + ar.child1Id + " " + ar.child2Id + " " + ar.atrName + " into new db");
             newPs.clearParameters();
             newPs.setString(1, ar.id);
@@ -141,7 +148,7 @@ public class AttributeConverter {
         ResultSet rs = oldStmt.executeQuery("select c.NAME, a.KEY, a.VALUE, SYSDATE " +
         "from characteristic c, attributes a " +
         "where c.ID=a.ENTITY_ID");
-        ArrayList charAttrs = new ArrayList();
+        ArrayList<AttributeRow> charAttrs = new ArrayList<AttributeRow>();
         while (rs.next()) {
             AttributeRow ar = new AttributeRow();
             ar.child1Id = rs.getString(1);
@@ -161,9 +168,9 @@ public class AttributeConverter {
         // find the classes that these characteristics belong to in the new system
         //
         PreparedStatement newPs = newConn.prepareStatement("select cl.sap_id, ch.NAME from class cl, characteristic ch where ch.name=? and cl.ID=ch.CLASS_ID");
-        ListIterator oldIter = charAttrs.listIterator();
+        ListIterator<AttributeRow> oldIter = charAttrs.listIterator();
         while (oldIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) oldIter.next();
+            AttributeRow ar = oldIter.next();
             newPs.clearParameters();
             newPs.setString(1, ar.child1Id);
             rs = newPs.executeQuery();
@@ -179,9 +186,9 @@ public class AttributeConverter {
         //
         // assign ids to the rows in the new system
         //
-        Iterator charAttrIter = charAttrs.iterator();
+        Iterator<AttributeRow> charAttrIter = charAttrs.iterator();
         while (charAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) charAttrIter.next();
+            AttributeRow ar = charAttrIter.next();
             ar.id = getNextId(newConn);
         }
         //
@@ -190,7 +197,7 @@ public class AttributeConverter {
         newPs = newConn.prepareStatement("insert into attributes (id,root_id,child1_id,atr_type,atr_name,atr_value,date_modified) values (?,?,?,?,?,?,?)");
         charAttrIter = charAttrs.iterator();
         while (charAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) charAttrIter.next();
+            AttributeRow ar = charAttrIter.next();
             System.out.println("Inserting attribute " + ar.rootId + " " + ar.child1Id + " " + ar.atrName + " into new db");
             newPs.clearParameters();
             newPs.setString(1, ar.id);
@@ -216,7 +223,7 @@ public class AttributeConverter {
         ResultSet rs = oldStmt.executeQuery("select m.MATERIAL_NUMBER, su.ALTERNATIVE_UMO, a.KEY, a.VALUE, SYSDATE " +
         "from material m, sales_unit su, attributes a " +
         "where a.OBJECT_NAME=6 and m.ID=su.MATERIAL_ID and su.ID=a.ENTITY_ID");
-        ArrayList matlAttrs = new ArrayList();
+        ArrayList<AttributeRow> matlAttrs = new ArrayList<AttributeRow>();
         while (rs.next()) {
             AttributeRow ar = new AttributeRow();
             ar.rootId = rs.getString(1);
@@ -236,9 +243,9 @@ public class AttributeConverter {
         //
         // assign ids to the rows in the new system
         //
-        Iterator matlAttrIter = matlAttrs.iterator();
+        Iterator<AttributeRow> matlAttrIter = matlAttrs.iterator();
         while (matlAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) matlAttrIter.next();
+            AttributeRow ar = matlAttrIter.next();
             ar.id = getNextId(newConn);
         }
         //
@@ -247,7 +254,7 @@ public class AttributeConverter {
         PreparedStatement newPs = newConn.prepareStatement("insert into attributes (id,root_id,child1_id,atr_type,atr_name,atr_value,date_modified) values (?,?,?,?,?,?,?)");
         matlAttrIter = matlAttrs.iterator();
         while (matlAttrIter.hasNext()) {
-            AttributeRow ar = (AttributeRow) matlAttrIter.next();
+            AttributeRow ar = matlAttrIter.next();
             System.out.println("Inserting attribute " + ar.rootId + " " + ar.child1Id + " " + ar.atrName + " into new db");
             newPs.clearParameters();
             newPs.setString(1, ar.id);

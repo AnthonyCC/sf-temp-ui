@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -26,7 +26,8 @@ public class PaymentechHeaderParser extends PaymentechSettlementParser {
 		fields.add(new Field(GENERATION_TIME, 8, true));
 	}
 
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		
 		this.header.setCompanyId(getString(tokens, COMPANY_ID));
 		this.header.setFromDate(getDate(tokens, FROM_DATE, "MM/dd/yyyy"));

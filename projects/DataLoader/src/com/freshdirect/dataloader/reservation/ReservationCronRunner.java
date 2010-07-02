@@ -80,7 +80,7 @@ public class ReservationCronRunner {
 	
 	
 	static public Context getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);

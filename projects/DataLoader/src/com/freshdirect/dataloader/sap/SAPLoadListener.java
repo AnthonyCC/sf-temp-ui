@@ -15,9 +15,9 @@ import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -312,9 +312,9 @@ public class SAPLoadListener implements SapBatchListenerI {
 
 		LOGGER.info("----- starting doLoad() -----");
 
-		HashMap classes = treeBuilder.getClasses();
-		HashMap activeMaterials = treeBuilder.getActiveMaterials();
-		HashMap characteristicValuePrices = treeBuilder.getCharacteristicValuePrices();
+		Map classes = treeBuilder.getClasses();
+		Map activeMaterials = treeBuilder.getActiveMaterials();
+		Map characteristicValuePrices = treeBuilder.getCharacteristicValuePrices();
 
 		Context ctx = null;
 		try {

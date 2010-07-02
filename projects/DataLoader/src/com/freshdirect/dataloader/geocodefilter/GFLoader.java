@@ -8,6 +8,8 @@ import java.io.StringWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import org.apache.log4j.Category;
 
@@ -16,9 +18,6 @@ import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 public class GFLoader implements SynchronousParserClient {
 	private IParser parser;
 	private IGeoValidator validator;
@@ -26,7 +25,7 @@ public class GFLoader implements SynchronousParserClient {
 	private String destination;
     //private StringBuffer results;
     private DlvManagerSessionBean dlvManager;
-    private final BlockingQueue queue = new LinkedBlockingQueue();
+    private final BlockingQueue<Object> queue = new LinkedBlockingQueue<Object>();
     
 	private int count = 0;
 	private int invalids = 0;
@@ -208,10 +207,10 @@ public class GFLoader implements SynchronousParserClient {
 	
 	private class Consumer implements Runnable {
 		private Connection conn;
-		private final BlockingQueue queue;
+		private final BlockingQueue<Object> queue;
 		private int localCount = 0;
 		
-		public Consumer(BlockingQueue q) { 
+		public Consumer(BlockingQueue<Object> q) { 
 			queue = q; 
 		}
 

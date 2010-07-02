@@ -9,6 +9,7 @@
 package com.freshdirect.dataloader.sap;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.erp.EnumATPRule;
@@ -27,13 +28,13 @@ public class MaterialParser extends SAPParser {
     
     /** a collection of materials that need to be added or updated from an export
      */
-    private HashMap activeMaterials = null;
+    private Map<ErpMaterialModel, Map<String, Object>> activeMaterials = null;
     
     /** creates a new material export parser
      */
     public MaterialParser() {
         super();
-        activeMaterials = new HashMap();
+        activeMaterials = new HashMap<ErpMaterialModel, Map<String, Object>>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Material_Export_CSD.doc in VSS repository
          */
@@ -80,7 +81,7 @@ public class MaterialParser extends SAPParser {
     /** gets the collection of materials that need to be created or updated in an export
      * @return the collection of active materials
      */
-    public HashMap getActiveMaterials() {
+    public Map<ErpMaterialModel, Map<String, Object>> getActiveMaterials() {
         return activeMaterials;
     }
     
@@ -88,7 +89,8 @@ public class MaterialParser extends SAPParser {
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
      */
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         
         /*
          * from ERP Services/Technical Specs/Mapping Docs/ERPS_SAP_BATCH_MAP.xls in VSS repository
@@ -178,7 +180,7 @@ public class MaterialParser extends SAPParser {
         // and hang on to it so the builders can access it later and
         // place the material and its extra info to the active materials map
         //
-        HashMap extraInfo = new HashMap();
+        Map<String, Object> extraInfo = new HashMap<String, Object>();
         String sku = getString(tokens, SKU);
         String rating=getString(tokens,RATING);
         String days_fresh = getString(tokens,DAYS_FRESH);

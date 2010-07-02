@@ -209,8 +209,8 @@ public class SAPZoneInfoLoaderDAO {
 			   }
 		   }		   		   		   		   
 		   System.out.println("defaultZone length:"+defaultZone.length);
-		   for(int i=0;i<defaultZone.length;i++){
-			  if(defaultZone[i].equalsIgnoreCase(sapId))  return true;			  		 
+		   for (String element : defaultZone) {
+			  if(element.equalsIgnoreCase(sapId))  return true;			  		 
 		   }
 		   return false;
 	   }

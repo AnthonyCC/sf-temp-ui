@@ -8,15 +8,31 @@
  */
 package com.freshdirect.dataloader.sap;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.erp.model.*;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
+import com.freshdirect.erp.model.ErpMaterialPriceModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  *
@@ -25,7 +41,7 @@ import com.freshdirect.dataloader.sap.helper.BasePriceInfo;
  */
 public class TreeBuilder {
 
-	private static Category LOGGER = LoggerFactory.getInstance( TreeBuilder.class );    
+	private static Logger LOGGER = LoggerFactory.getInstance( TreeBuilder.class );    
 	    
     private MaterialParser materialParser = null;
     private MaterialPriceParser materialPriceParser = null;
@@ -33,62 +49,54 @@ public class TreeBuilder {
     private VariantParser variantParser = null;
     private VariantPriceParser variantPriceParser = null;
     
-    private LinkedList exceptionList = null;
+    private LinkedList<BadDataException> exceptionList = null;
     
     /**
      * The collection of all classes in a batch
      * contains ErpClassModels keyed by their name
      */
-    private HashMap classes = null;
+    private HashMap<String, ErpClassModel> classes = null;
     
     /**
      * The collection of all materials in a batch
      * contains ErpMaterialModels keyed by their material number
      */
-    private HashMap materials = null;
+    private HashMap<String, ErpMaterialModel> materials = null;
     
     //
     // some comparators for sorting stuff
     //
-    private Comparator charComparator = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            ErpCharacteristicModel char1 = (ErpCharacteristicModel) obj1;
-            ErpCharacteristicModel char2 = (ErpCharacteristicModel) obj2;
+    private Comparator<ErpCharacteristicModel> charComparator = new Comparator<ErpCharacteristicModel>() {
+        public int compare(ErpCharacteristicModel char1, ErpCharacteristicModel char2) {
             return char1.getName().compareTo(char2.getName());
         }
     };
     
-    private Comparator charValueComparator = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            ErpCharacteristicValueModel val1 = (ErpCharacteristicValueModel) obj1;
-            ErpCharacteristicValueModel val2 = (ErpCharacteristicValueModel) obj2;
+    private Comparator<ErpCharacteristicValueModel> charValueComparator = new Comparator<ErpCharacteristicValueModel>() {
+        public int compare(ErpCharacteristicValueModel val1, ErpCharacteristicValueModel val2) {
             return val1.getName().compareTo(val2.getName());
         }
     };
     
-    private Comparator matlPriceComparator = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            ErpMaterialPriceModel price1 = (ErpMaterialPriceModel) obj1;
-            ErpMaterialPriceModel price2 = (ErpMaterialPriceModel) obj2;
+    private Comparator<ErpMaterialPriceModel> matlPriceComparator = new Comparator<ErpMaterialPriceModel>() {
+        public int compare(ErpMaterialPriceModel price1, ErpMaterialPriceModel price2) {
             if (price1.getScaleQuantity() == price2.getScaleQuantity()) return 0;
             else if (price1.getScaleQuantity() < price2.getScaleQuantity()) return -1;
             else return 1;
         }
     };
     
-    private Comparator salesUnitComparator = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            ErpSalesUnitModel unit1 = (ErpSalesUnitModel) obj1;
-            ErpSalesUnitModel unit2 = (ErpSalesUnitModel) obj2;
+    private Comparator<ErpSalesUnitModel> salesUnitComparator = new Comparator<ErpSalesUnitModel>() {
+        public int compare(ErpSalesUnitModel unit1, ErpSalesUnitModel unit2) {
             return unit1.getAlternativeUnit().compareTo(unit2.getAlternativeUnit());
         }
     };
     
     /** Creates new TreeBuilder */
     public TreeBuilder() {
-        classes = new HashMap();
-        materials = new HashMap();
-        exceptionList = new LinkedList();
+        classes = new HashMap<String, ErpClassModel>();
+        materials = new HashMap<String, ErpMaterialModel>();
+        exceptionList = new LinkedList<BadDataException>();
     }
     
     public MaterialParser getMaterialParser(){ return materialParser; }
@@ -131,7 +139,7 @@ public class TreeBuilder {
     }
     
     /** @return list of BadDataExceptions */
-    public List getBuildExceptions() {
+    public List<BadDataException> getBuildExceptions() {
     	return this.exceptionList;
     }
     
@@ -161,19 +169,19 @@ public class TreeBuilder {
         }
     }
     
-    public HashMap getClasses() {
+    public Map<String, ErpClassModel> getClasses() {
         return classes;
     }
     
-    public HashMap getMaterials() {
+    public Map<String, ErpMaterialModel> getMaterials() {
         return materials;
     }
     
-    public HashMap getActiveMaterials() {
+    public Map<ErpMaterialModel, Map<String, Object>> getActiveMaterials() {
         return materialParser.getActiveMaterials();
     }
     
-    public HashMap getCharacteristicValuePrices() {
+    public Map<ErpCharacteristicValuePriceModel, Map<String, String>> getCharacteristicValuePrices() {
         return variantPriceParser.getCharacteristicValuePrices();
     }
     
@@ -184,24 +192,24 @@ public class TreeBuilder {
         // and add them to their respective classes, creating
         // the classes along the way as necessary
         //
-        HashMap characs = variantParser.getCharacteristics();
-        Iterator keys = characs.keySet().iterator();
+        Map<ErpCharacteristicModel, Map<String, String>> characs = variantParser.getCharacteristics();
+        Iterator<ErpCharacteristicModel> keys = characs.keySet().iterator();
         while (keys.hasNext()) {
-            ErpCharacteristicModel charac = (ErpCharacteristicModel) keys.next();
-            HashMap extraInfo = (HashMap) characs.get(charac);
+            ErpCharacteristicModel charac = keys.next();
+            Map<String, String> extraInfo = characs.get(charac);
             //
             // find the class for each characteristic
             // create the class and add it the list of all
             // classes in this batch it if it wasn't found
             //
-            String className = (String) extraInfo.get(SAPConstants.CLASS);
+            String className = extraInfo.get(SAPConstants.CLASS);
             ErpClassModel erpClass = null;
             if (!classes.containsKey(className)) {
                 erpClass = new ErpClassModel();
                 erpClass.setSapId(className);
                 classes.put(className, erpClass);
             } else {
-                erpClass = (ErpClassModel) classes.get(className);
+                erpClass = classes.get(className);
             }
             //
             // add the characteristic to the class if it hasn't been added yet
@@ -213,17 +221,17 @@ public class TreeBuilder {
         // walk through all of the collected characteristic values
         // and add them to their characteristics
         //
-        HashMap characValues = variantPriceParser.getCharacteristicValues();
-        keys = characValues.keySet().iterator();
-        while (keys.hasNext()) {
-            ErpCharacteristicValueModel characValue = (ErpCharacteristicValueModel) keys.next();
-            HashMap extraInfo = (HashMap) characValues.get(characValue);
+        Map<ErpCharacteristicValueModel, Map<String, String>> characValues = variantPriceParser.getCharacteristicValues();
+        Iterator<ErpCharacteristicValueModel> keys2 = characValues.keySet().iterator();
+        while (keys2.hasNext()) {
+            ErpCharacteristicValueModel characValue = keys2.next();
+            Map<String, String> extraInfo = characValues.get(characValue);
             //
             // find the characteristic for each characteristic value
             //
-            String className = (String) extraInfo.get(SAPConstants.CLASS);
-            String charName = (String) extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
-            ErpClassModel erpClass = (ErpClassModel) classes.get(className);
+            String className = extraInfo.get(SAPConstants.CLASS);
+            String charName = extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
+            ErpClassModel erpClass = classes.get(className);
             if (erpClass == null) {
                 //
                 // throw an exception and bail if the class for a characteristic value
@@ -249,16 +257,16 @@ public class TreeBuilder {
         //
         // go back and sort everything in the class tree
         //
-        Iterator classIter = classes.values().iterator();
+        Iterator<ErpClassModel> classIter = classes.values().iterator();
         while (classIter.hasNext()) {
-            ErpClassModel erpClass = (ErpClassModel) classIter.next();
-            List chars = new ArrayList(erpClass.getCharacteristics());
+            ErpClassModel erpClass = classIter.next();
+            List<ErpCharacteristicModel> chars = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics());
             Collections.sort(chars, charComparator);
             erpClass.setCharacteristics(chars);
-            Iterator charIter = erpClass.getCharacteristics().iterator();
+            Iterator<ErpCharacteristicModel> charIter = erpClass.getCharacteristics().iterator();
             while (charIter.hasNext()) {
-                ErpCharacteristicModel erpChar = (ErpCharacteristicModel) charIter.next();
-                List charVals = new ArrayList(erpChar.getCharacteristicValues());
+                ErpCharacteristicModel erpChar = charIter.next();
+                List<ErpCharacteristicValueModel> charVals = new ArrayList<ErpCharacteristicValueModel>(erpChar.getCharacteristicValues());
                 Collections.sort(charVals, charValueComparator);
                 erpChar.setCharacteristicValues(charVals);
             }
@@ -270,24 +278,24 @@ public class TreeBuilder {
         //
         // classes
         //
-        Iterator keys = classes.keySet().iterator();
+        Iterator<String> keys = classes.keySet().iterator();
         while (keys.hasNext()) {
-            String className = (String) keys.next();
-            ErpClassModel erpClass = (ErpClassModel) classes.get(className);
+            String className = keys.next();
+            ErpClassModel erpClass = classes.get(className);
             LOGGER.debug(className);
             //
             // characteristics for class
             //
-            Iterator charIter = erpClass.getCharacteristics().iterator();
+            Iterator<ErpCharacteristicModel> charIter = erpClass.getCharacteristics().iterator();
             while (charIter.hasNext()) {
-                ErpCharacteristicModel erpChar = (ErpCharacteristicModel) charIter.next();
+                ErpCharacteristicModel erpChar = charIter.next();
                 LOGGER.debug(erpChar.getName());
                 //
                 // characteristic values for characteristic
                 //
-                Iterator charValIter = erpChar.getCharacteristicValues().iterator();
+                Iterator<ErpCharacteristicValueModel> charValIter = erpChar.getCharacteristicValues().iterator();
                 while (charValIter.hasNext()) {
-                    ErpCharacteristicValueModel erpCharVal = (ErpCharacteristicValueModel) charValIter.next();
+                    ErpCharacteristicValueModel erpCharVal = charValIter.next();
                     LOGGER.debug(erpCharVal.getName() + " : " + erpCharVal.getDescription());
                 }
             }
@@ -299,11 +307,11 @@ public class TreeBuilder {
         //
         // get the material to class mappings
         //
-        HashMap materialClasses = variantParser.getMaterialClasses();
+        Map<String, Set<String>> materialClasses = variantParser.getMaterialClasses();
         //
         // get all of the material prices
         //
-        HashMap materialPrices = materialPriceParser.getMaterialPrices();
+        Map<String, Set<ErpMaterialPriceModel>> materialPrices = materialPriceParser.getMaterialPrices();
         
         
         
@@ -312,24 +320,24 @@ public class TreeBuilder {
         //
         // get all of the sales units
         //
-        HashMap salesUnits = salesUnitParser.getSalesUnits();
+        HashMap<String, HashSet<ErpSalesUnitModel>> salesUnits = salesUnitParser.getSalesUnits();
         //
         // walk through all the active materials and add their
         // material prices and sales units
         //
-        HashMap activeMaterials = materialParser.getActiveMaterials();
-        Iterator keys = activeMaterials.keySet().iterator();
+        Map<ErpMaterialModel, Map<String, Object>> activeMaterials = materialParser.getActiveMaterials();
+        Iterator<ErpMaterialModel> keys = activeMaterials.keySet().iterator();
         while (keys.hasNext()) {
-            ErpMaterialModel material = (ErpMaterialModel) keys.next();
+            ErpMaterialModel material = keys.next();
             //
             // add the names of this material's classes to its extra info
             //
-            HashMap extraInfo = (HashMap) activeMaterials.get(material);
+            Map<String, Object> extraInfo = activeMaterials.get(material);
             extraInfo.put(SAPConstants.CLASS, materialClasses.get(material.getSapId()));
             //
             // find the prices for this material
             //
-            HashSet prices = (HashSet) materialPrices.get(material.getSapId());
+            HashSet<ErpMaterialPriceModel> prices = (HashSet<ErpMaterialPriceModel>) materialPrices.get(material.getSapId());
             if (prices == null) {
                 //
                 // throw an exception and bail if no prices are found for a material
@@ -337,16 +345,16 @@ public class TreeBuilder {
                 //
                 //exceptionList.add(new BadDataException("No prices were found for Material " + material.getSapId()));
                 //
-                material.setPrices(new LinkedList());
+                material.setPrices(new LinkedList<ErpMaterialPriceModel>());
             } else {
                 //
                 // set the prices for the material, sorted by scale quantity
                 //
-                ArrayList priceList = new ArrayList(prices);
+                ArrayList<ErpMaterialPriceModel> priceList = new ArrayList<ErpMaterialPriceModel>(prices);
                 boolean isDefaultZoneExists=false;
                 for(int i=0;i<priceList.size();i++){
                 	
-                	ErpMaterialPriceModel pModel=(ErpMaterialPriceModel)priceList.get(i);
+                	ErpMaterialPriceModel pModel=priceList.get(i);
                 	if(ErpServicesProperties.getMasterDefaultZoneId().equalsIgnoreCase(pModel.getSapZoneId())){
                 		isDefaultZoneExists=true;
                 	}
@@ -366,12 +374,12 @@ public class TreeBuilder {
 	                	    BasePriceInfo bpInfo=(BasePriceInfo)iterator.next();
 	                	    String zoneId=bpInfo.getZoneId();
 	                	    if(prices!=null && zoneId!=null){
-	                    		Iterator matIterator=prices.iterator();
+	                    		Iterator<ErpMaterialPriceModel> matIterator=prices.iterator();
 	                    		ErpMaterialPriceModel unitPriceModel=null;
 	                    		double minquantity=0;
 	                        	while(matIterator.hasNext())
 	                        	{                        		
-	                        		ErpMaterialPriceModel priceModel=(ErpMaterialPriceModel)matIterator.next();
+	                        		ErpMaterialPriceModel priceModel=matIterator.next();
 	                        		if(zoneId.equalsIgnoreCase(priceModel.getSapZoneId())){
 	                        			 if(priceModel.getScaleQuantity()<=minquantity){
 	                        			    unitPriceModel=priceModel;	 
@@ -396,7 +404,7 @@ public class TreeBuilder {
             //
             // find the sales units for this material
             //
-            HashSet units = (HashSet) salesUnits.get(material.getSapId());
+            HashSet<ErpSalesUnitModel> units = salesUnits.get(material.getSapId());
             if (units == null) {
                 //
                 // throw an exception and bail if no sales units are found for a material
@@ -406,7 +414,7 @@ public class TreeBuilder {
                 //
                 // set the sales units for the material, sorted by alternative unit (roughly in numerical order)
                 //
-                ArrayList unitList = new ArrayList(units);
+                ArrayList<ErpSalesUnitModel> unitList = new ArrayList<ErpSalesUnitModel>(units);
                 Collections.sort(unitList, salesUnitComparator);
                 material.setSalesUnits(unitList);
             }
@@ -444,10 +452,10 @@ public class TreeBuilder {
         //
         // materials
         //
-        HashMap actMatls = materialParser.getActiveMaterials();
-        Iterator matlIter = actMatls.keySet().iterator();
+        Map<ErpMaterialModel, Map<String, Object>> actMatls = materialParser.getActiveMaterials();
+        Iterator<ErpMaterialModel> matlIter = actMatls.keySet().iterator();
         while (matlIter.hasNext()) {
-            ErpMaterialModel material = (ErpMaterialModel) matlIter.next();
+            ErpMaterialModel material = matlIter.next();
             HashMap extraInfo = (HashMap) actMatls.get(material);
             LOGGER.debug(material.getDescription());
             LOGGER.debug("SAP id : " + material.getSapId());
@@ -485,20 +493,20 @@ public class TreeBuilder {
                 Iterator classNameIter = classNameSet.iterator();
                 while (classNameIter.hasNext()) {
                     String className = (String) classNameIter.next();
-                    ErpClassModel erpClass = (ErpClassModel) classes.get(className);
+                    ErpClassModel erpClass = classes.get(className);
                     //
                     // characteristics
                     //
-                    Iterator charIter = erpClass.getCharacteristics().iterator();
+                    Iterator<ErpCharacteristicModel> charIter = erpClass.getCharacteristics().iterator();
                     while (charIter.hasNext()) {
-                        ErpCharacteristicModel erpChar = (ErpCharacteristicModel) charIter.next();
+                        ErpCharacteristicModel erpChar = charIter.next();
                         LOGGER.debug(erpChar.getName());
                         //
                         // characteristic values
                         //
-                        Iterator charValIter = erpChar.getCharacteristicValues().iterator();
+                        Iterator<ErpCharacteristicValueModel> charValIter = erpChar.getCharacteristicValues().iterator();
                         while (charValIter.hasNext()) {
-                            ErpCharacteristicValueModel erpCharVal = (ErpCharacteristicValueModel) charValIter.next();
+                            ErpCharacteristicValueModel erpCharVal = charValIter.next();
                             LOGGER.debug(erpCharVal.getName() + " : " + erpCharVal.getDescription());
                         }
                     }
@@ -517,13 +525,13 @@ public class TreeBuilder {
         // get all the characteristic values along with their extra info
         // from the variant price parser
         //
-        HashMap characteristicValues = variantPriceParser.getCharacteristicValues();
+        Map<ErpCharacteristicValueModel, Map<String, String>> characteristicValues = variantPriceParser.getCharacteristicValues();
         //
         // walk through all the classes
         //
-        Iterator classIter = classes.values().iterator();
+        Iterator<ErpClassModel> classIter = classes.values().iterator();
         while (classIter.hasNext()) {
-            ErpClassModel erpClass = (ErpClassModel) classIter.next();
+            ErpClassModel erpClass = classIter.next();
             //
             // first remove the quantity characteristics from each class and
             // add the the name of the removed characteristic to the material
@@ -535,11 +543,11 @@ public class TreeBuilder {
             //
             // find the characteristics with a name that ends with "_QTY"
             //
-            List charList = new ArrayList(erpClass.getCharacteristics());
-            ListIterator charListIter = charList.listIterator();
+            List<ErpCharacteristicModel> charList = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics());
+            ListIterator<ErpCharacteristicModel> charListIter = charList.listIterator();
             int found = 0;
             while (charListIter.hasNext()) {
-                ErpCharacteristicModel erpCharac = (ErpCharacteristicModel) charListIter.next();
+                ErpCharacteristicModel erpCharac = charListIter.next();
                 if (erpCharac.getName().endsWith("_QTY")) {
                     if (++found > 1) {
                         //
@@ -557,14 +565,14 @@ public class TreeBuilder {
                     // figure out which materials it belongs to
                     // and set all of their quantityCharacteristic properties
                     //
-                    Iterator charValueIter = characteristicValues.keySet().iterator();
+                    Iterator<ErpCharacteristicValueModel> charValueIter = characteristicValues.keySet().iterator();
                     while (charValueIter.hasNext()) {
-                        ErpCharacteristicValueModel erpCharValue = (ErpCharacteristicValueModel) charValueIter.next();
+                        ErpCharacteristicValueModel erpCharValue = charValueIter.next();
                         HashMap extraInfo = (HashMap) characteristicValues.get(erpCharValue);
                         String characName = (String) extraInfo.get(SAPConstants.CHARACTERISTIC_NAME);
                         if (characName.equals(erpCharac.getName())) {
                             String materialNumber = (String) extraInfo.get(SAPConstants.MATERIAL_NUMBER);
-                            ErpMaterialModel material = (ErpMaterialModel) materials.get(materialNumber);
+                            ErpMaterialModel material = materials.get(materialNumber);
                             //
                             // add the quantity characteristic
                             //
@@ -579,17 +587,17 @@ public class TreeBuilder {
             // as its characteristic values and set the name of that characteristic
             // as the material's salesUnitCharacteristic property
             //
-            charListIter = new ArrayList(erpClass.getCharacteristics()).listIterator();
+            charListIter = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics()).listIterator();
             while (charListIter.hasNext()) {
-                ErpCharacteristicModel erpCharac = (ErpCharacteristicModel) charListIter.next();
+                ErpCharacteristicModel erpCharac = charListIter.next();
                 //
                 // walk through all the materials and note if there were any matches
                 //
-                Iterator matlIter = materials.values().iterator();
+                Iterator<ErpMaterialModel> matlIter = materials.values().iterator();
                 boolean isSalesUnit = false;
                 boolean matchError = false;
                 while (matlIter.hasNext()) {
-                    ErpMaterialModel erpMaterial = (ErpMaterialModel) matlIter.next();
+                    ErpMaterialModel erpMaterial = matlIter.next();
                     //
                     // skip materials that aren't in this class
                     //
@@ -611,9 +619,9 @@ public class TreeBuilder {
                     // and sales unit names
                     //
                     int matchCount = 0;
-                    Iterator charValIter = erpCharac.getCharacteristicValues().iterator();
+                    Iterator<ErpCharacteristicValueModel> charValIter = erpCharac.getCharacteristicValues().iterator();
                     while (charValIter.hasNext()) {
-                        ErpCharacteristicValueModel erpCharValue = (ErpCharacteristicValueModel) charValIter.next();
+                        ErpCharacteristicValueModel erpCharValue = charValIter.next();
                         Iterator salesUnitIter = erpMaterial.getSalesUnits().iterator();
                         while (salesUnitIter.hasNext()) {
                             ErpSalesUnitModel erpSalesUnit = (ErpSalesUnitModel) salesUnitIter.next();
@@ -653,10 +661,10 @@ public class TreeBuilder {
                     //
                     // get the list of characteristic from the class
                     //
-                    List characs = new ArrayList(erpClass.getCharacteristics());
-                    ListIterator clIter = characs.listIterator();
+                    List<ErpCharacteristicModel> characs = new ArrayList<ErpCharacteristicModel>(erpClass.getCharacteristics());
+                    ListIterator<ErpCharacteristicModel> clIter = characs.listIterator();
                     while (clIter.hasNext()) {
-                        if (((ErpCharacteristicModel)clIter.next()).getName().equals(erpCharac.getName())) {
+                        if (clIter.next().getName().equals(erpCharac.getName())) {
                             //
                             // remove the characteristic that matched the sales units from the list
                             //

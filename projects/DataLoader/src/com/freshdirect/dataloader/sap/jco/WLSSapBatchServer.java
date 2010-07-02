@@ -8,17 +8,16 @@
  */
 package com.freshdirect.dataloader.sap.jco;
 
-import weblogic.application.ApplicationLifecycleListener;
-import weblogic.application.ApplicationLifecycleEvent;
-
 import org.apache.log4j.Category;
-import com.freshdirect.framework.util.log.LoggerFactory;
+
+import weblogic.application.ApplicationLifecycleEvent;
+import weblogic.application.ApplicationLifecycleListener;
 
 import com.freshdirect.ErpServicesProperties;
-
-import com.freshdirect.dataloader.bapi.*;
-
+import com.freshdirect.dataloader.bapi.BapiRepository;
+import com.freshdirect.dataloader.bapi.BapiServer;
 import com.freshdirect.dataloader.sap.SAPLoadListener;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * @version $Revision$
@@ -28,7 +27,8 @@ public class WLSSapBatchServer extends ApplicationLifecycleListener {
 
 	private static Category LOGGER = LoggerFactory.getInstance(WLSSapBatchServer.class);
 
-	public void postStart(ApplicationLifecycleEvent evt) {
+	@Override
+    public void postStart(ApplicationLifecycleEvent evt) {
 
 		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
@@ -44,7 +44,8 @@ public class WLSSapBatchServer extends ApplicationLifecycleListener {
 
 			new BapiServer(gwHost, gwServ, progId) {
 
-				protected BapiRepository getRepository() {
+				@Override
+                protected BapiRepository getRepository() {
 					BapiRepository repo = new BapiRepository("FDLoaderRepository");
 					repo.addFunction(new BapiErpsBatch(new SAPLoadListener()));
 					return repo;

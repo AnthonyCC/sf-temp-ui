@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.PipeDelimitedFileParser;
@@ -37,12 +37,12 @@ public abstract class PaymentechSettlementParser extends PipeDelimitedFileParser
 	// Value of the number of items included.
 	public static String AMOUNT = "AMOUNT";
 	
-	public TimeOfDay getTime(HashMap tokens, String fieldName, String format) throws BadDataException{
+	public TimeOfDay getTime(Map<String, String> tokens, String fieldName, String format) throws BadDataException{
 		String s = this.getString(tokens, fieldName);
 		return new TimeOfDay(s, format);
 	}
 	
-	public EnumPaymentechRecordType getRecordType(HashMap tokens, String fieldName) throws BadDataException {
+	public EnumPaymentechRecordType getRecordType(Map<String, String> tokens, String fieldName) throws BadDataException {
 		String s = this.getString(tokens, fieldName);
 		EnumPaymentechRecordType type = EnumPaymentechRecordType.getEnum(s);
 		if(type == null) {
@@ -51,7 +51,7 @@ public abstract class PaymentechSettlementParser extends PipeDelimitedFileParser
 		return type;
 	}
 	
-	public EnumPaymentechCategory getCategory(HashMap tokens, String fieldName) throws BadDataException {
+	public EnumPaymentechCategory getCategory(Map<String, String> tokens, String fieldName) throws BadDataException {
 		String s = this.getString(tokens, fieldName);
 		EnumPaymentechCategory type = EnumPaymentechCategory.getEnum(s);
 		if(type == null) {
@@ -60,7 +60,7 @@ public abstract class PaymentechSettlementParser extends PipeDelimitedFileParser
 		return type;
 	}
 	
-	public EnumPaymentechSubCategory getSubCategory(HashMap tokens, String fieldName) throws BadDataException {
+	public EnumPaymentechSubCategory getSubCategory(Map<String, String> tokens, String fieldName) throws BadDataException {
 		String s = this.getString(tokens, fieldName);
 		EnumPaymentechSubCategory type = EnumPaymentechSubCategory.getEnum(s);
 		if(type == null) {
@@ -69,7 +69,7 @@ public abstract class PaymentechSettlementParser extends PipeDelimitedFileParser
 		return type;
 	}
 	
-	public String getMerchantReferenceNumber(HashMap tokens, String fieldName) throws BadDataException {
+	public String getMerchantReferenceNumber(Map<String, String> tokens, String fieldName) throws BadDataException {
 		String saleId = unQuoteString(getString(tokens, fieldName));
 		if(saleId.indexOf('X') > 0) {
 			saleId = saleId.substring(0, saleId.indexOf('X'));

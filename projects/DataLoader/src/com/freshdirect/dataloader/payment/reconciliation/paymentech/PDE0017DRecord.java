@@ -4,7 +4,11 @@ import java.util.Date;
 
 public class PDE0017DRecord extends DFRDataRecord {
 	
-	private double issuerCBKAmount;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private double issuerCBKAmount;
 	private String partialRepresentement;
 	private String statusFlag;
 	private String sequenceNumber;

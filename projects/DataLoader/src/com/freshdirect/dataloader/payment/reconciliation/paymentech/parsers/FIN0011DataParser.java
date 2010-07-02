@@ -1,6 +1,6 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -40,7 +40,8 @@ public class FIN0011DataParser extends PaymentechSettlementParser {
 		this.fields.add(new Field(TOTAL_CHARGE, 17, true));
 		
 	}
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		FIN0011DataRecord record = new FIN0011DataRecord();
 		
 		record.setCategory(getCategory(tokens, CATEGORY));

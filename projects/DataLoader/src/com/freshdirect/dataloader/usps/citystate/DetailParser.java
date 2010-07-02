@@ -6,9 +6,14 @@
 
 package com.freshdirect.dataloader.usps.citystate;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
+import com.freshdirect.dataloader.SynchronousParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
 
 /**
  *
@@ -16,7 +21,7 @@ import com.freshdirect.dataloader.*;
  * @version
  */
 public class DetailParser extends FieldDelimitedFileParser implements SynchronousParser {
-	private Set validStates;
+	private Set<String> validStates;
     
     public final static String ZIP_CODE                 = "ZIP_CODE";
     public final static String CITY_STATE_KEY           = "CITY_STATE_KEY";
@@ -39,7 +44,7 @@ public class DetailParser extends FieldDelimitedFileParser implements Synchronou
     public DetailParser() {
         super();
         
-        validStates = new HashSet();
+        validStates = new HashSet<String>();
         validStates.add("NY");
         validStates.add("NJ");
         validStates.add("CT");
@@ -76,7 +81,8 @@ public class DetailParser extends FieldDelimitedFileParser implements Synchronou
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         record = new CityStateRecord();
 
         try {

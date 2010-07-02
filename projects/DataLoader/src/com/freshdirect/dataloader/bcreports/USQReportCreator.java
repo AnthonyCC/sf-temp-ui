@@ -95,8 +95,8 @@ public class USQReportCreator extends DBReportCreator {
 			sb.append("\n");
 		}
 
-		protected List getHeaders() {
-			List lst = new ArrayList();
+		protected List<String> getHeaders() {
+			List<String> lst = new ArrayList<String>();
 			lst.add("First Name");
 			lst.add("Last Name");
 			lst.add("Web Order Number");
@@ -172,8 +172,8 @@ public class USQReportCreator extends DBReportCreator {
 			super.processRow(rs);
 		}
 
-		protected List getHeaders() {
-			List lst = new ArrayList();
+		protected List<String> getHeaders() {
+			List<String> lst = new ArrayList<String>();
 			lst.add("Settlement Date");
 			lst.addAll(super.getHeaders());
 			return lst;
@@ -214,8 +214,8 @@ public class USQReportCreator extends DBReportCreator {
 			sb.append(rs.getString("INVOICE_NUMBER")).append("\n");
 		}
 
-		protected List getHeaders() {
-			List lst = new ArrayList();
+		protected List<String> getHeaders() {
+			List<String> lst = new ArrayList<String>();
 			lst.add("First Name");
 			lst.add("Last Name");
 			lst.add("Web Order Number");
@@ -247,8 +247,8 @@ public class USQReportCreator extends DBReportCreator {
 
 		}
 
-		protected List getHeaders() {
-			List lst = new ArrayList();
+		protected List<String> getHeaders() {
+			List<String> lst = new ArrayList<String>();
 			lst.add("Type");
 			lst.add("Date of " + this.getType());
 			lst.add("Web Order Number");

@@ -1,15 +1,16 @@
 package com.freshdirect.dataloader;
 
-import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
-
-import javax.naming.NamingException;
-import javax.naming.InitialContext;
-import javax.naming.Context;
-import java.util.Properties;
 import java.util.Hashtable;
+import java.util.Properties;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.framework.util.ConfigHelper;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class DataLoaderProperties {
 	
@@ -119,7 +120,7 @@ public class DataLoaderProperties {
 	}
 	
 	public static Context getInitialContext() throws NamingException {
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.PROVIDER_URL, getProviderURL() );
 		env.put(Context.INITIAL_CONTEXT_FACTORY, getInitialContextFactory() );
 		return new InitialContext(env);

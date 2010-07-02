@@ -34,8 +34,8 @@ public class ListBuilder {
 	}
 	
 	
-	public List parseEmailList(File file) {
-		List emailAddresses = new ArrayList();
+	public List<MailInfo> parseEmailList(File file) {
+		List<MailInfo> emailAddresses = new ArrayList<MailInfo>();
 
 		System.out.println("Reading " + file + "...");
 		try {

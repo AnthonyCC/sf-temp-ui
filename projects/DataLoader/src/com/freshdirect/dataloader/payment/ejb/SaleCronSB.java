@@ -1,7 +1,8 @@
 package com.freshdirect.dataloader.payment.ejb;
 
-import javax.ejb.*;
 import java.rmi.RemoteException;
+
+import javax.ejb.EJBObject;
 
 public interface SaleCronSB extends EJBObject{ 
 

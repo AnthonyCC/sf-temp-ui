@@ -1,8 +1,9 @@
 package com.freshdirect.dataloader.geocodeloader.ejb;
 
-import javax.ejb.*;
 import java.rmi.RemoteException;
 import java.util.List;
+
+import javax.ejb.EJBObject;
 
 public interface GeoCodeLoaderSB extends EJBObject{
 	

@@ -2,16 +2,15 @@ package com.freshdirect.dataloader.inventory;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.dataloader.bapi.BapiFunctionI;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.util.CartFactory;
+import com.freshdirect.fdstore.util.CartLineFactory;
 import com.freshdirect.framework.util.log.LoggerFactory;
-
-import com.freshdirect.dataloader.bapi.BapiFunctionI;
 import com.sap.mw.jco.JCO;
-
-import com.freshdirect.fdstore.util.*;
 
 public class BapiErpsInventory implements BapiFunctionI {
 
@@ -63,8 +62,8 @@ public class BapiErpsInventory implements BapiFunctionI {
 	protected void processMaterials(String[] materials) throws FDResourceException {
 
 		if (LOGGER.isDebugEnabled()) {
-			for (int i = 0; i<materials.length; i++) {
-				LOGGER.debug("Got material '"+materials[i]+"'");
+			for (String material : materials) {
+				LOGGER.debug("Got material '"+material+"'");
 			}
 		}
 

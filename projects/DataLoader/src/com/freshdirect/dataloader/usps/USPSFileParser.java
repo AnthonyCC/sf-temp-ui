@@ -8,9 +8,11 @@
  */
 package com.freshdirect.dataloader.usps;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
 
 /** base class for loader components that read data from text files
  * it assumes that data in the file contains one record per line
@@ -36,6 +38,7 @@ public abstract class USPSFileParser extends FieldDelimitedFileParser {
      * @throws BadDataException any unrecoverable problems found within the file.  any other exceptions are returned from this method.
      * @return a list of exceptions encountered while parsing the file
      */
+    @Override
     public void parseFile(String filename) {
         FileReader reader = null;
         //

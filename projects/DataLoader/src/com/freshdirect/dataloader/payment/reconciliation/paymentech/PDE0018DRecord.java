@@ -14,7 +14,11 @@ import java.util.Date;
  */
 public class PDE0018DRecord extends DFRDataRecord {
 
-	private String statusFlag;
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    private String statusFlag;
 	private String sequenceNumber;
 	private String merchantReferenceNumber;
 	private String accountNumber;

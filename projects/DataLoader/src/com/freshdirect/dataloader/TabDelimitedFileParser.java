@@ -21,13 +21,14 @@ public abstract class TabDelimitedFileParser extends FlatFileParser {
         super();
     }
     
-    protected HashMap tokenize(String line) throws BadDataException {
+    @Override
+    protected HashMap<String, String> tokenize(String line) throws BadDataException {
         //
         // iterate through the list of fields are read each token
         // from the line
         //
-        Iterator iter = fields.iterator();
-        HashMap retval = new HashMap();
+        Iterator<Field> iter = fields.iterator();
+        HashMap<String, String> retval = new HashMap<String, String>();
         int start = 0;
         int end = line.indexOf("\t", start);
         //
@@ -35,14 +36,14 @@ public abstract class TabDelimitedFileParser extends FlatFileParser {
         // token hash map so the subsequent values are kept in right order
         //
         if ((end == start) && (iter.hasNext())) {
-            Field f = (Field)iter.next();
+            Field f = iter.next();
             retval.put(f.getName(), "");
             start++;
             end = line.indexOf("\t", start);
         }
         
         while (iter.hasNext()) {
-            Field f = (Field)iter.next();
+            Field f = iter.next();
             String value = "";
             if (end == -1) {
                 value = line.substring(start, line.length());

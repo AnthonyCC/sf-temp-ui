@@ -9,7 +9,6 @@ package com.freshdirect.dataloader.nutrition;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -89,7 +88,7 @@ public class EshaLoader {
         
         System.out.println("\n----- starting doLoad() -----");
         
-        ArrayList nutrition = parser.getNutrition();
+        ArrayList<ErpNutritionModel> nutrition = parser.getNutrition();
         
         Context ctx = null;
         try {
@@ -97,8 +96,7 @@ public class EshaLoader {
             ErpNutritionHome home = (ErpNutritionHome) ctx.lookup("freshdirect.content.Nutrition");
             
             ErpNutritionSB sb = home.create();
-            for (Iterator nIter = nutrition.iterator(); nIter.hasNext(); ) {
-                ErpNutritionModel enm = (ErpNutritionModel) nIter.next();
+            for (ErpNutritionModel enm : nutrition) {
                 ErpNutritionModel oldEnm = sb.getNutrition(enm.getSkuCode());
 
                 if(enm.getHeatingInstructions().equals(""))
@@ -134,7 +132,7 @@ public class EshaLoader {
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

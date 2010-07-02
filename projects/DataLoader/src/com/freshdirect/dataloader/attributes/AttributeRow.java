@@ -26,6 +26,7 @@ public class AttributeRow {
         super();
     }
     
+    @Override
     public String toString() {
         String out = rootId + " : ";
         out += child1Id + " : ";

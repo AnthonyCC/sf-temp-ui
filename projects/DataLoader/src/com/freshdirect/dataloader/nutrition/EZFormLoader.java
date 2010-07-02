@@ -7,10 +7,10 @@
 package com.freshdirect.dataloader.nutrition;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.Context;
@@ -105,17 +105,16 @@ public class EZFormLoader {
         //
         // combine ingredients with nutrition info in a single ErpNutritionModel
         //
-        HashMap nutrition = nutriParser.getNutrition();
-        HashMap ingredients = ingrediParser.getIngredients();
-        for (Iterator keyIter = ingredients.keySet().iterator(); keyIter.hasNext(); ) {
-            String skuCode = (String) keyIter.next();
+        Map<String, ErpNutritionModel> nutrition = nutriParser.getNutrition();
+        Map<String, String> ingredients = ingrediParser.getIngredients();
+        for (String skuCode : ingredients.keySet()) {
             if (nutrition.containsKey(skuCode)) {
-                ErpNutritionModel enm = (ErpNutritionModel) nutrition.get(skuCode);
-                enm.setIngredients((String) ingredients.get(skuCode));
+                ErpNutritionModel enm = nutrition.get(skuCode);
+                enm.setIngredients(ingredients.get(skuCode));
             } else {
                 ErpNutritionModel enm = new ErpNutritionModel();
                 enm.setSkuCode(skuCode);
-                enm.setIngredients((String) ingredients.get(skuCode));
+                enm.setIngredients(ingredients.get(skuCode));
                 nutrition.put(skuCode, enm);
             }
         }
@@ -126,10 +125,9 @@ public class EZFormLoader {
             ErpNutritionHome home = (ErpNutritionHome) ctx.lookup("freshdirect.content.Nutrition");
             
             ErpNutritionSB sb = home.create();
-            for (Iterator skuIter = nutrition.keySet().iterator(); skuIter.hasNext(); ) {
-                String skuCode = (String) skuIter.next();
+            for (String skuCode : nutrition.keySet()) {
                 System.out.println("Loading nutrition for " + skuCode);
-                ErpNutritionModel enm = (ErpNutritionModel) nutrition.get(skuCode);
+                ErpNutritionModel enm = nutrition.get(skuCode);
 				ErpNutritionModel oldEnm = sb.getNutrition(enm.getSkuCode());
 				
 				if(enm.getHeatingInstructions().equals(""))
@@ -164,7 +162,7 @@ public class EZFormLoader {
      */
     protected Context getInitialContext() throws NamingException {
         
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
         env.put(Context.PROVIDER_URL, serverUrl);
         env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
         return new InitialContext(env);

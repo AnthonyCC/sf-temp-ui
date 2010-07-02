@@ -8,26 +8,47 @@
  */
 package com.freshdirect.dataloader.sap.ejb;
 
-import javax.ejb.*;
 import java.rmi.RemoteException;
-import javax.naming.*;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Category;
+
+import com.freshdirect.common.pricing.MaterialPrice;
+import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.common.pricing.PricingEngine;
+import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.dataloader.sap.VirtualProductParser;
+import com.freshdirect.erp.PricingFactory;
+import com.freshdirect.erp.ejb.ErpProductEB;
+import com.freshdirect.erp.ejb.ErpProductHome;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpProductModel;
+import com.freshdirect.erp.model.ErpSalesUnitModel;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.framework.core.*;
-import com.freshdirect.dataloader.*;
-import com.freshdirect.dataloader.sap.*;
-
-import com.freshdirect.erp.*;
-import com.freshdirect.erp.model.*;
-import com.freshdirect.erp.ejb.*;
-
-import com.freshdirect.common.pricing.*;
-
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.core.SessionBeanSupport;
+import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
 
 /**
  * A session bean that takes a set of anonymous models representing erp objects to be created
@@ -38,6 +59,11 @@ import org.apache.log4j.*;
  */
 public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     /** logger for messages
      */
     private static Category LOGGER = LoggerFactory.getInstance( VirtualProductLoaderSessionBean.class );
@@ -61,7 +87,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
      * @param products the collection of virtual products
      * @throws LoaderException any problems encountered while creating or updating objects in the system
      */
-    public void loadData(HashMap products) throws LoaderException {
+    public void loadData(Map<String, Map<String, Object>> products) throws LoaderException {
         
         LOGGER.debug("\nBeginning VirtualProductLoaderSessionBean::loadData\n");
         
@@ -135,7 +161,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
     /**
      * @param activeMaterials
      * @throws LoaderException  */
-    private void processProducts(HashMap products) throws LoaderException {
+    private void processProducts(Map<String, Map<String, Object>> products) throws LoaderException {
         try {
             LOGGER.info("\nStarting to process Virtual Products\n");
             ErpProductHome productHome = (ErpProductHome) initCtx.lookup("java:comp/env/ejb/ErpProduct");
@@ -176,7 +202,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                 //
                 // list of hidden sales unit PKs
                 //
-                ArrayList hiddenSuPKs = new ArrayList();
+                ArrayList<PrimaryKey> hiddenSuPKs = new ArrayList<PrimaryKey>();
                 Iterator origSuIter = origPrdModel.getSalesUnits().iterator();
                 while (origSuIter.hasNext()) {
                     ErpSalesUnitModel origSu = (ErpSalesUnitModel) origSuIter.next();
@@ -189,20 +215,20 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                         }
                     }
                 }
-				virtPrdModel.setHiddenSalesUnitPKs((VersionedPrimaryKey[]) hiddenSuPKs.toArray(new VersionedPrimaryKey[0]));
+				virtPrdModel.setHiddenSalesUnitPKs(hiddenSuPKs.toArray(new VersionedPrimaryKey[0]));
                 //
                 // list of hidden characteristic values
                 //
-                ArrayList hiddenCvPKs = new ArrayList();
+                ArrayList<PrimaryKey> hiddenCvPKs = new ArrayList<PrimaryKey>();
                 Iterator clsIter = origPrdModel.getProxiedMaterial().getClasses().iterator();
                 while (clsIter.hasNext()) {
                     ErpClassModel cls = (ErpClassModel) clsIter.next();
-                    Iterator charIter = cls.getCharacteristics().iterator();
+                    Iterator<ErpCharacteristicModel> charIter = cls.getCharacteristics().iterator();
                     while(charIter.hasNext()) {
-                        ErpCharacteristicModel charac = (ErpCharacteristicModel) charIter.next();
-                        Iterator cvIter = charac.getCharacteristicValues().iterator();
+                        ErpCharacteristicModel charac = charIter.next();
+                        Iterator<ErpCharacteristicValueModel> cvIter = charac.getCharacteristicValues().iterator();
                         while (cvIter.hasNext()) {
-                            ErpCharacteristicValueModel charVal = (ErpCharacteristicValueModel) cvIter.next();
+                            ErpCharacteristicValueModel charVal = cvIter.next();
                             Iterator hiddenPairs = hiddenCharVals.iterator();
                             while (hiddenPairs.hasNext()) {
                                 HashMap cvPair = (HashMap) hiddenPairs.next();
@@ -216,7 +242,7 @@ public class VirtualProductLoaderSessionBean extends SessionBeanSupport {
                         }
                     }
                 }
-				virtPrdModel.setHiddenCharacteristicValuePKs((VersionedPrimaryKey[]) hiddenCvPKs.toArray(new VersionedPrimaryKey[0]));
+				virtPrdModel.setHiddenCharacteristicValuePKs(hiddenCvPKs.toArray(new VersionedPrimaryKey[0]));
                 
                 //
                 // ask the pricing factory to figure out what the default price should be

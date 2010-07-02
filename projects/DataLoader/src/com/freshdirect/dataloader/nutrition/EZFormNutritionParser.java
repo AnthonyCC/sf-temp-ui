@@ -6,10 +6,14 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import com.freshdirect.dataloader.*;
-import com.freshdirect.content.nutrition.*;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
 
 /**
  *
@@ -18,7 +22,7 @@ import com.freshdirect.content.nutrition.*;
  */
 public class EZFormNutritionParser extends FieldDelimitedFileParser {
     
-    HashMap nutrition = null;
+    HashMap<String, ErpNutritionModel> nutrition = null;
     
     private final static String PRODUCT_DESCR   =   "PRODUCT_DESCR";
     private final static String FILLER          =   "FILLER";
@@ -27,7 +31,7 @@ public class EZFormNutritionParser extends FieldDelimitedFileParser {
     public EZFormNutritionParser() {
         super();
         
-        nutrition = new HashMap();
+        nutrition = new HashMap<String, ErpNutritionModel>();
         
         fields.add(new Field(PRODUCT_DESCR,                                    30,  true));
         fields.add(new Field(FILLER,                                            2,  true));
@@ -64,7 +68,8 @@ public class EZFormNutritionParser extends FieldDelimitedFileParser {
     }
     
     
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         //
         // find skucode
         String prdDescr = getString(tokens, PRODUCT_DESCR).trim();
@@ -160,12 +165,12 @@ public class EZFormNutritionParser extends FieldDelimitedFileParser {
         nutri.setValueFor(ErpNutritionType.DAILY_SODIUM_VALUE,              getDouble(tokens, ErpNutritionType.DAILY_SODIUM_VALUE));
         nutri.setUomFor(ErpNutritionType.DAILY_SODIUM_VALUE,                "%");
         
-        if (!"".equals((String)tokens.get(ErpNutritionType.TOTAL_POTASSIUM_QUANTITY))) {
+        if (!"".equals(tokens.get(ErpNutritionType.TOTAL_POTASSIUM_QUANTITY))) {
             nutri.setValueFor(ErpNutritionType.TOTAL_POTASSIUM_QUANTITY,        getDouble(tokens, ErpNutritionType.TOTAL_POTASSIUM_QUANTITY));
             nutri.setUomFor(ErpNutritionType.TOTAL_POTASSIUM_QUANTITY,          "mg");
         }
         
-        if (!"".equals((String)tokens.get(ErpNutritionType.DAILY_POTASSIUM_VALUE))) {
+        if (!"".equals(tokens.get(ErpNutritionType.DAILY_POTASSIUM_VALUE))) {
             nutri.setValueFor(ErpNutritionType.DAILY_POTASSIUM_VALUE,           getDouble(tokens, ErpNutritionType.DAILY_POTASSIUM_VALUE));
             nutri.setUomFor(ErpNutritionType.DAILY_POTASSIUM_VALUE,             "%");
         }
@@ -204,7 +209,7 @@ public class EZFormNutritionParser extends FieldDelimitedFileParser {
         
     }
     
-    public HashMap getNutrition() {
+    public HashMap<String, ErpNutritionModel> getNutrition() {
         return this.nutrition;
     }
 

@@ -6,8 +6,14 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * loads atributes from a textfile into erps db
@@ -49,10 +55,10 @@ public class IngredientLoader {
                 return;
             }
             
-            List ingredientList = parser.getIngredients();
-            Iterator iIter = ingredientList.iterator();
+            List<HashMap<String, String>> ingredientList = parser.getIngredients();
+            Iterator<HashMap<String, String>> iIter = ingredientList.iterator();
             while (iIter.hasNext()) {
-                HashMap ingr = (HashMap) iIter.next();
+                HashMap ingr = iIter.next();
                 String skuCode = (String) ingr.get("sku_code");
                 String ingredients = (String) ingr.get("notes");
                 if ((skuCode == null) || (skuCode.equals(""))) continue; // skip it

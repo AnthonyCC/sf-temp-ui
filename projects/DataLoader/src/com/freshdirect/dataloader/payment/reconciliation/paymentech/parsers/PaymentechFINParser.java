@@ -1,13 +1,14 @@
 package com.freshdirect.dataloader.payment.reconciliation.paymentech.parsers;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.payment.reconciliation.paymentech.EnumPaymentechRecordType;
 
 public class PaymentechFINParser extends PaymentechParser {
 	
-	protected void makeObjects(HashMap tokens) throws BadDataException {
+	@Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
 		
 		EnumPaymentechRecordType type = this.getRecordType(tokens, RECORD_TYPE);
 		String record = this.getString(tokens, RECORD_BODY);

@@ -66,8 +66,7 @@ public class SettlementLoaderUtil {
 		boolean ftp = false;
 		boolean bapi = false;
 		boolean mask = false;
-		for (int i = 0; i < options.length; i++) {
-			char c = options[i];
+		for (char c : options) {
 			if ('f' == c) {
 				ftp = true;
 			}
@@ -112,13 +111,13 @@ public class SettlementLoaderUtil {
 		}
 		else{
 			File[] list = dir.listFiles();
-			for(int i=0; i<list.length;i++){
-				if(list[i].getName().indexOf("PDE")>=0 ||list[i].getName().indexOf("FIN")>=0){
-					maskCCPaymentech(list[i]);
-					System.out.println("This file's CC is masked:  "+list[i].getAbsolutePath());
-				}else if(list[i].getName().indexOf("detail_file_")>=0){
-					maskCCDetail(list[i]);
-					System.out.println("This file's CC is masked:  "+list[i].getAbsolutePath());
+			for (File element : list) {
+				if(element.getName().indexOf("PDE")>=0 ||element.getName().indexOf("FIN")>=0){
+					maskCCPaymentech(element);
+					System.out.println("This file's CC is masked:  "+element.getAbsolutePath());
+				}else if(element.getName().indexOf("detail_file_")>=0){
+					maskCCDetail(element);
+					System.out.println("This file's CC is masked:  "+element.getAbsolutePath());
 				}
 			}
 		}
@@ -323,7 +322,7 @@ public class SettlementLoaderUtil {
 	 */
 	private static Context getInitialContext() throws NamingException {
 
-		Hashtable env = new Hashtable();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL()); //t3://localhost:7006
 		env.put(Context.INITIAL_CONTEXT_FACTORY, weblogic.jndi.WLInitialContextFactory.class.getName());
 		return new InitialContext(env);
@@ -379,8 +378,8 @@ public class SettlementLoaderUtil {
 	}
 	private static boolean isValidPDEToken (String token) {
 		
-		for(int i = 0; i < VALID_PDE_TOKENS.length; i++) {
-			if(VALID_PDE_TOKENS[i].equalsIgnoreCase(token)) {
+		for (String element : VALID_PDE_TOKENS) {
+			if(element.equalsIgnoreCase(token)) {
 				return true;
 			}
 		}
@@ -388,8 +387,8 @@ public class SettlementLoaderUtil {
 	}
 	private static boolean isValidFINToken (String token) {
 		
-		for(int i = 0; i < VALID_FIN_TOKENS.length; i++) {
-			if(VALID_FIN_TOKENS[i].equalsIgnoreCase(token)) {
+		for (String element : VALID_FIN_TOKENS) {
+			if(element.equalsIgnoreCase(token)) {
 				return true;
 			}
 		}

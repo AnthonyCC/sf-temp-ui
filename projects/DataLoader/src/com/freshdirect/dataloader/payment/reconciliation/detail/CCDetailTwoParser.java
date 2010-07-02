@@ -6,12 +6,12 @@
 
 package com.freshdirect.dataloader.payment.reconciliation.detail;
 
-import java.util.*;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.payment.reconciliation.detail.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParser;
+import com.freshdirect.payment.reconciliation.detail.CCDetailTwo;
 
 /**
  *
@@ -49,7 +49,8 @@ public class CCDetailTwoParser extends SettlementParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         record = new CCDetailTwo();
         record.setTransactionDate(getDate(tokens, TRAN_DATE, "MMddyy"));
         record.setAdjustmentReason(getString(tokens, ADJ_REASON));
@@ -67,6 +68,7 @@ public class CCDetailTwoParser extends SettlementParser {
     	this.client = client;
     }
     
+    @Override
     public String debug() {
         return this.record.toString();
     }

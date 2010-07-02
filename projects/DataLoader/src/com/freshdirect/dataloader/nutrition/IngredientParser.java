@@ -6,9 +6,12 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -17,7 +20,7 @@ import com.freshdirect.dataloader.*;
  */
 public class IngredientParser extends TabDelimitedFileParser {
     
-    ArrayList ingredients = null;
+    ArrayList<HashMap<String, String>> ingredients = null;
     
     protected static String SKU_CODE    = "sku_code";
     protected static String SAP_ID      = "sapid";
@@ -31,7 +34,7 @@ public class IngredientParser extends TabDelimitedFileParser {
     public IngredientParser() {
         super();
         
-        ingredients = new ArrayList();
+        ingredients = new ArrayList<HashMap<String, String>>();
         
         fields.add(new Field(SKU_CODE,    0, true));
         fields.add(new Field(DESCRIPTION, 0, true));
@@ -41,11 +44,12 @@ public class IngredientParser extends TabDelimitedFileParser {
     }
     
     
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         //
         // create the attribute row
         //
-        HashMap ingr = new HashMap();
+        HashMap<String, String> ingr = new HashMap<String, String>();
         ingr.put(SKU_CODE, getString(tokens, SKU_CODE).trim());
         ingr.put(NOTES, getString(tokens, NOTES).trim());
         
@@ -53,7 +57,7 @@ public class IngredientParser extends TabDelimitedFileParser {
         
     }
     
-    public ArrayList getIngredients() {
+    public ArrayList<HashMap<String, String>> getIngredients() {
         return this.ingredients;
     }
 

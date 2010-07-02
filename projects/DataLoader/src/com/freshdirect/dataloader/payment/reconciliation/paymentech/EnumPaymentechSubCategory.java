@@ -8,7 +8,11 @@ import org.apache.commons.lang.enums.Enum;
 
 public class EnumPaymentechSubCategory extends Enum {
 	
-	public static final EnumPaymentechSubCategory INTERCHANGE = new EnumPaymentechSubCategory("IC");
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    public static final EnumPaymentechSubCategory INTERCHANGE = new EnumPaymentechSubCategory("IC");
 	public static final EnumPaymentechSubCategory ASSESMENT = new EnumPaymentechSubCategory("AS");
 	public static final EnumPaymentechSubCategory AUTHORIZATION_FEES = new EnumPaymentechSubCategory("AUTH");
 	public static final EnumPaymentechSubCategory CC_ECP_CHARGEBACK_FEES = new EnumPaymentechSubCategory("PDE");

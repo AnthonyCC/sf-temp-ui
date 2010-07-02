@@ -20,7 +20,6 @@ import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCSettlementInfo;
-import com.freshdirect.giftcard.ejb.GiftCardManagerSB;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.model.EnumSummaryDetailType;
 import com.freshdirect.payment.model.ErpSettlementInvoiceModel;
@@ -45,7 +44,7 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 	//GC net sales.
 	private double gcNetSales;
 	//Failed GC settlements
-	private List failedGCSettlements = new ArrayList<ErpGCSettlementInfo>();
+	private List<ErpGCSettlementInfo> failedGCSettlements = new ArrayList<ErpGCSettlementInfo>();
 	private Set<String> processedSaleIds = new HashSet<String>();
 	
 	private ErpSettlementSummaryModel settlementSummary;
@@ -168,10 +167,9 @@ public class PaymentechFINParserClient extends SettlementParserClient {
 		}
 	}
 
-	private void appendFailedGCSettlements(List gcSettlementInfos) {
+	private void appendFailedGCSettlements(List<ErpGCSettlementInfo> gcSettlementInfos) {
 		if(gcSettlementInfos.size() > 0){
-			for(Iterator iter = gcSettlementInfos.iterator() ; iter.hasNext();){
-				ErpGCSettlementInfo gcInfo = (ErpGCSettlementInfo) iter.next();
+			for (ErpGCSettlementInfo gcInfo : gcSettlementInfos) {
 				this.builder.addFailedGCSettlement(gcInfo, EnumCardType.GCP);
 			}
 		}

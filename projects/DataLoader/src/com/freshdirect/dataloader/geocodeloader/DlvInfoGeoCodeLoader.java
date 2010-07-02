@@ -2,19 +2,9 @@ package com.freshdirect.dataloader.geocodeloader;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Hashtable;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.dataloader.payment.SaleCronRunner;
-import com.freshdirect.dataloader.payment.ejb.SaleCronHome;
-import com.freshdirect.dataloader.payment.ejb.SaleCronSB;
-import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -45,14 +35,14 @@ public class DlvInfoGeoCodeLoader {
 		int oneTimeCrdSize=DEFAULT_ONE_TIME_RCD_SIZE;
 		
 		if (args.length >= 1) {
-			for (int i = 0; i < args.length; i++) {
+			for (String arg : args) {
 				try { 
-					if (args[i].startsWith("thread_count=")) {
-						numberOfThreads = Integer.parseInt(args[i].substring("thread_count=".length()).trim());
-					} else if (args[i].startsWith("execution_time=")) {				
-						jobExecutionTime = new Integer(args[i].substring("execution_time=".length())).intValue(); 
-					} else if (args[i].startsWith("oneTimeRcdSize=")) {
-						oneTimeCrdSize = new Integer(args[i].substring("oneTimeRcdSize=".length())).intValue();
+					if (arg.startsWith("thread_count=")) {
+						numberOfThreads = Integer.parseInt(arg.substring("thread_count=".length()).trim());
+					} else if (arg.startsWith("execution_time=")) {				
+						jobExecutionTime = new Integer(arg.substring("execution_time=".length())).intValue(); 
+					} else if (arg.startsWith("oneTimeRcdSize=")) {
+						oneTimeCrdSize = new Integer(arg.substring("oneTimeRcdSize=".length())).intValue();
 					}
 				} catch (Exception e) {
 					System.err.println("Usage: java com.freshdirect.dataloader.geocodeloader.DlvInfoGeoCodeLoader [thread_count={int value}] [output_filename={String value}] [execution_time={int value in hrs}] [oneTimeRcdSize={int value}]");

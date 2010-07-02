@@ -8,8 +8,16 @@
  */
 package com.freshdirect.dataloader;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 /** base class for loader components that read data from text files
@@ -24,16 +32,16 @@ public abstract class FlatFileParser {
     
     /** the list of fields contained in each line of a file
      */
-    protected List fields = null;
+    protected List<Field> fields = null;
     
-    protected List exceptions = null;
+    protected List<BadDataException> exceptions = null;
     
     /** creates a FlatFileParser
      */
     protected FlatFileParser() {
         super();
-        fields = new ArrayList();
-        exceptions = new ArrayList();
+        fields = new ArrayList<Field>();
+        exceptions = new ArrayList<BadDataException>();
     }
     
     /**
@@ -41,11 +49,11 @@ public abstract class FlatFileParser {
      *
      * @return a List of Field objects in the order they appear on each line of a text file to be parsed
      */
-    protected List getFields() {
+    protected List<Field> getFields() {
         return fields;
     }
     
-    public List getExceptions() {
+    public List<BadDataException> getExceptions() {
         return exceptions;
     }
     
@@ -144,7 +152,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected abstract void makeObjects(HashMap tokens) throws BadDataException;
+    protected abstract void makeObjects(Map<String, String> tokens) throws BadDataException;
     
     /**
      * using a list of fields provided by a concrete subclass
@@ -155,7 +163,7 @@ public abstract class FlatFileParser {
      * @return a HashMap of String tokens from a line of a text file,
      * keyed by their field names
      */
-    protected abstract HashMap tokenize(String line) throws BadDataException;
+    protected abstract Map<String, String> tokenize(String line) throws BadDataException;
     
     /** a convenience method to return a token value from a HashMap of
      * tokens by a field name
@@ -164,14 +172,14 @@ public abstract class FlatFileParser {
      * @throws BadDataException any problems encountered retreiving the token's value
      * @return the token's value as a String
      */
-    protected String getString(HashMap tokens, String fieldName) throws BadDataException {
+    protected String getString(Map<String, String> tokens, String fieldName) throws BadDataException {
         //
         // make sure the field name is valid
         //
         Field field = null;
-        Iterator fieldIter = fields.iterator();
+        Iterator<Field> fieldIter = fields.iterator();
         while (fieldIter.hasNext()) {
-            Field f = (Field) fieldIter.next();
+            Field f = fieldIter.next();
             if (f.getName().equals(fieldName)) {
                 field = f;
                 break;
@@ -184,7 +192,7 @@ public abstract class FlatFileParser {
         //
         String s = "";
         if(null !=tokens.get(fieldName)){
-        	s=((String)tokens.get(fieldName)).trim();
+        	s=tokens.get(fieldName).trim();
         }
         //
         // check if this is a required field
@@ -201,7 +209,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems retieving the token's value
      * @return the token's int value
      */
-    protected int getInt(HashMap tokens, String fieldName) throws BadDataException {
+    protected int getInt(Map<String, String> tokens, String fieldName) throws BadDataException {
         //
         // first get as a string
         //
@@ -225,7 +233,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems getting the token's value as a double
      * @return the token's value as a double
      */
-    protected double getDouble(HashMap tokens, String fieldName) throws BadDataException {
+    protected double getDouble(Map<String, String> tokens, String fieldName) throws BadDataException {
         //
         // first get as a string
         //
@@ -251,7 +259,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems getting the token's value as a double
      * @return the token's value as a double
      */
-    protected double getDouble(HashMap tokens, String fieldName, int decimals) throws BadDataException {
+    protected double getDouble(Map<String, String> tokens, String fieldName, int decimals) throws BadDataException {
         //
         // first get as a string
         //
@@ -275,7 +283,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems getting the token's value as a double
      * @return the token's value as a double
      */
-    protected double getSignedDouble(HashMap tokens, String fieldName, int decimals) throws BadDataException {
+    protected double getSignedDouble(Map<String, String> tokens, String fieldName, int decimals) throws BadDataException {
         //
         // first get as a string
         //
@@ -342,7 +350,7 @@ public abstract class FlatFileParser {
      * @throws BadDataException an problems getting the token's value as a Date
      * @return the token's value as a Date
      */
-    protected java.util.Date getDate(HashMap tokens, String fieldName, String dateFormat) throws BadDataException {
+    protected java.util.Date getDate(Map<String, String> tokens, String fieldName, String dateFormat) throws BadDataException {
         //
         // first get as a string
         //
@@ -386,7 +394,7 @@ public abstract class FlatFileParser {
     
     /** an inner class taht represents an individual field value on a line of text
      */
-    protected class Field {
+    public class Field {
         
         /** the name of the field
          */

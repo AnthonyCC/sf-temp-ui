@@ -3,12 +3,12 @@
  */
 package com.freshdirect.dataloader.payment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -17,19 +17,19 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.StringUtil;
-import com.freshdirect.payment.EFTTransaction;
-import com.freshdirect.payment.fraud.EnumRestrictionReason;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
+import com.freshdirect.payment.fraud.EnumRestrictionReason;
 
 /**
  * @author jng
@@ -48,16 +48,16 @@ public class EFTTransactionCronRunner {
 		Date endDate = null;
 		
 		if (args.length >= 1) {
-			for (int i = 0; i < args.length; i++) {
+			for (String arg : args) {
 				try { 
-					if (args[i].startsWith("startDate=")) {
-							startDate = sdf.parse(args[i].substring("startDate=".length())); 
-					} else if (args[i].startsWith("startDateTime=")) {
-							startDate = sdtf.parse(args[i].substring("startDateTime=".length())); 
-					} else if (args[i].startsWith("endDate=")) {
-							endDate = sdf.parse(args[i].substring("endDate=".length())); 
-					} else if (args[i].startsWith("endDateTime=")) {
-							endDate = sdtf.parse(args[i].substring("endDateTime=".length())); 
+					if (arg.startsWith("startDate=")) {
+							startDate = sdf.parse(arg.substring("startDate=".length())); 
+					} else if (arg.startsWith("startDateTime=")) {
+							startDate = sdtf.parse(arg.substring("startDateTime=".length())); 
+					} else if (arg.startsWith("endDate=")) {
+							endDate = sdf.parse(arg.substring("endDate=".length())); 
+					} else if (arg.startsWith("endDateTime=")) {
+							endDate = sdtf.parse(arg.substring("endDateTime=".length())); 
 					}
 				} catch (ParseException pe) {
 					System.err.println("Usage: java com.freshdirect.dataloader.payment.EFTTransactionConRunner [startDate=MM-DD-YYYY -OR- startTimeDate=MM-DD-YYYY HH:MM] [endDate=MM-DD-YYYY -OR- endTimeDate=MM-DD-YYYY HH:MM] ");
@@ -142,7 +142,7 @@ public class EFTTransactionCronRunner {
 	}
 
 	static public Context getInitialContext() throws NamingException {
-		Hashtable h = new Hashtable();
+		Hashtable<String, String> h = new Hashtable<String, String>();
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);

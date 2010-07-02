@@ -8,14 +8,14 @@
  */
 package com.freshdirect.dataloader.wave;
 
-import com.freshdirect.ErpServicesProperties;
-
-import com.freshdirect.dataloader.bapi.*;
-
-import weblogic.application.ApplicationLifecycleListener;
-import weblogic.application.ApplicationLifecycleEvent;
-
 import org.apache.log4j.Category;
+
+import weblogic.application.ApplicationLifecycleEvent;
+import weblogic.application.ApplicationLifecycleListener;
+
+import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.dataloader.bapi.BapiRepository;
+import com.freshdirect.dataloader.bapi.BapiServer;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -26,7 +26,8 @@ public class WLSSapWaveServer extends ApplicationLifecycleListener {
 
 	private static Category LOGGER = LoggerFactory.getInstance(WLSSapWaveServer.class);
 
-	public void postStart(ApplicationLifecycleEvent evt) {
+	@Override
+    public void postStart(ApplicationLifecycleEvent evt) {
 
 		if (ErpServicesProperties.getJcoClientListenersEnabled()) {
 
@@ -42,7 +43,8 @@ public class WLSSapWaveServer extends ApplicationLifecycleListener {
 
 			new BapiServer(gwHost, gwServ, progId) {
 
-				protected BapiRepository getRepository() {
+				@Override
+                protected BapiRepository getRepository() {
 					BapiRepository repo = new BapiRepository("FDWaveRepository");
 					repo.addFunction(new BapiErpsWave());
 					return repo;

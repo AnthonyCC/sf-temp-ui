@@ -11,4 +11,9 @@ package com.freshdirect.dataloader.payment.reconciliation.paymentech;
  */
 public class PDE0022DRecord extends PDE0018DRecord {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
 }

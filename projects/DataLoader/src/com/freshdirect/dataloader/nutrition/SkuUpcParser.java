@@ -11,9 +11,13 @@ package com.freshdirect.dataloader.nutrition;
  * @author  knadeem
  * @version
  */
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParser;
+import com.freshdirect.dataloader.SynchronousParserClient;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -48,7 +52,8 @@ public class SkuUpcParser extends TabDelimitedFileParser implements SynchronousP
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         try {
             SkuUpcMap map = new SkuUpcMap();
             map.setSkuCode(getString(tokens, "SKUCODE"));

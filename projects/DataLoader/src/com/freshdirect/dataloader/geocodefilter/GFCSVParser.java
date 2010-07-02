@@ -1,11 +1,7 @@
 package com.freshdirect.dataloader.geocodefilter;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 
-import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.CSVFileParser;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -13,7 +9,7 @@ import com.freshdirect.dataloader.SynchronousParserClient;
 public class GFCSVParser extends CSVFileParser implements  IParser {
 	SynchronousParserClient client;
 	GFRecord record;
-	HashMap fieldMap = new HashMap();
+	HashMap<String, Integer> fieldMap = new HashMap<String, Integer>();
 	
 	public GFCSVParser() {
         super();
@@ -37,13 +33,14 @@ public class GFCSVParser extends CSVFileParser implements  IParser {
 		return this.client;
 	}
 	
-	protected void makeObjects(String[] recordLine) throws BadDataException {
+	@Override
+    protected void makeObjects(String[] recordLine) throws BadDataException {
 		
 		record = new GFRecord();
-		record.setZip(recordLine[((Integer)fieldMap.get(GFUtil.PROP_ADDRESS_ZIPCODE)).intValue()]);
-		record.setStreetAddress(recordLine[((Integer)fieldMap.get(GFUtil.PROP_ADDRESS_STREET1)).intValue()]);
-		record.setStreetAddress2(recordLine[((Integer)fieldMap.get(GFUtil.PROP_ADDRESS_STREET2)).intValue()]);
-		record.setCity(recordLine[((Integer)fieldMap.get(GFUtil.PROP_ADDRESS_CITY)).intValue()]);
+		record.setZip(recordLine[fieldMap.get(GFUtil.PROP_ADDRESS_ZIPCODE).intValue()]);
+		record.setStreetAddress(recordLine[fieldMap.get(GFUtil.PROP_ADDRESS_STREET1).intValue()]);
+		record.setStreetAddress2(recordLine[fieldMap.get(GFUtil.PROP_ADDRESS_STREET2).intValue()]);
+		record.setCity(recordLine[fieldMap.get(GFUtil.PROP_ADDRESS_CITY).intValue()]);
 		record.setSource(recordLine);
 		
 		getClient().accept(record);

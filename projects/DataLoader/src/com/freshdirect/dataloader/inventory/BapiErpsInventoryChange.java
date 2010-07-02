@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -54,7 +53,7 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 		materialTable.firstRow();
 
 		// Map of String material -> List of entries
-		Map matEntries = new HashMap(materialTable.getNumRows());
+		Map<String, List> matEntries = new HashMap<String, List>(materialTable.getNumRows());
 		for (int i = 0; i < materialTable.getNumRows(); i++) {
 			String matNo = materialTable.getString("MATNR");
 			Date startDate = materialTable.getDate("EDATU");
@@ -63,9 +62,9 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 
 			LOGGER.debug(matNo + "\t" + startDate + "\t" + commitedQty + "\t" + salesUnit);
 
-			List entries = (List) matEntries.get(matNo);
+			List<ErpInventoryEntryModel> entries = matEntries.get(matNo);
 			if (entries == null) {
-				entries = new ArrayList();
+				entries = new ArrayList<ErpInventoryEntryModel>();
 				matEntries.put(matNo, entries);
 			}
 			entries.add(new ErpInventoryEntryModel(startDate, commitedQty));
@@ -74,10 +73,10 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 		}
 
 		// build inventories
-		List inventories = new ArrayList();
+		List<ErpInventoryModel> inventories = new ArrayList<ErpInventoryModel>();
 		Date now = new Date();
-		for (Iterator i = matEntries.entrySet().iterator(); i.hasNext();) {
-			Map.Entry e = (Map.Entry) i.next();
+		for (Object element : matEntries.entrySet()) {
+			Map.Entry e = (Map.Entry) element;
 			String matNo = (String) e.getKey();
 			List entries = (List) e.getValue();
 			inventories.add(new ErpInventoryModel(matNo, now, entries));
@@ -103,7 +102,7 @@ public class BapiErpsInventoryChange implements BapiFunctionI {
 
 	}
 
-	private void updateInventories(List inventories)
+	private void updateInventories(List<ErpInventoryModel> inventories)
 		throws NamingException, EJBException, CreateException, FDResourceException, RemoteException {
 		Context ctx = null;
 		try {

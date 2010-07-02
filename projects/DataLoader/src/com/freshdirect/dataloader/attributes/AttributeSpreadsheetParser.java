@@ -6,9 +6,11 @@
 
 package com.freshdirect.dataloader.attributes;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.TabDelimitedFileParser;
 
 /**
  *
@@ -17,7 +19,7 @@ import com.freshdirect.dataloader.*;
  */
 public class AttributeSpreadsheetParser extends TabDelimitedFileParser {
     
-    ArrayList attributes = null;
+    ArrayList<AttributeRow> attributes = null;
     
     protected static String SAP_ID = "sapid";
     protected static String SKU_CODE = "sku_code";
@@ -28,14 +30,15 @@ public class AttributeSpreadsheetParser extends TabDelimitedFileParser {
     public AttributeSpreadsheetParser() {
         super();
         
-        attributes = new ArrayList();
+        attributes = new ArrayList<AttributeRow>();
         
         fields.add(new Field(SKU_CODE,      0, true));
         fields.add(new Field(ATR_VALUE,     0, false));
     }
     
     
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         //
         // create the attribute row
         //
@@ -47,7 +50,7 @@ public class AttributeSpreadsheetParser extends TabDelimitedFileParser {
         
     }
     
-    public ArrayList getAttributes() {
+    public ArrayList<AttributeRow> getAttributes() {
         return this.attributes;
     }
 

@@ -28,7 +28,12 @@ import javax.swing.border.TitledBorder;
 import com.freshdirect.framework.util.DurationFormat;
 
 public class GFGui extends JFrame implements ActionListener {
-	private final DurationFormat TIME_FORMATTER = new DurationFormat();
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
+    private final DurationFormat TIME_FORMATTER = new DurationFormat();
 	
 	private final String VALID_LABEL = "In Zone Adresses: ";
 	private final String INVALID_LABEL = "Out Of Zone Adresses: ";

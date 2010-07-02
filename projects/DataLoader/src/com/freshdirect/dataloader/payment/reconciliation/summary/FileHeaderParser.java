@@ -6,12 +6,12 @@
 
 package com.freshdirect.dataloader.payment.reconciliation.summary;
 
-import java.util.*;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
-
-import com.freshdirect.payment.reconciliation.summary.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.SynchronousParserClient;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParser;
+import com.freshdirect.payment.reconciliation.summary.FileHeader;
 
 /**
  *
@@ -50,7 +50,8 @@ public class FileHeaderParser extends SettlementParser {
      * @throws BadDataException an problems while trying to assemble objects from the
      * supplied tokens
      */
-    protected void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    protected void makeObjects(Map<String, String> tokens) throws BadDataException {
         header = new FileHeader();
         header.setProcessingPeriodStartDate(getDate(tokens, PROC_PERIOD_START, "MMddyy"));
         header.setProcessingPeriodEndDate(getDate(tokens, PROC_PERIOD_END, "MMddyy"));
@@ -59,6 +60,7 @@ public class FileHeaderParser extends SettlementParser {
         client.accept(header);
     }
     
+    @Override
     public String debug() {
         return this.header.toString();
     }

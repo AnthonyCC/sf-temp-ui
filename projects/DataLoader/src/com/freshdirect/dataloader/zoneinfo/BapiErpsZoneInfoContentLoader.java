@@ -1,13 +1,12 @@
 package com.freshdirect.dataloader.zoneinfo;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.CreateException;
-import javax.ejb.FinderException;
 import javax.ejb.EJBException;
+import javax.ejb.FinderException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
@@ -16,27 +15,17 @@ import org.apache.log4j.Category;
 import weblogic.auddi.util.Logger;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
-import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.EnumZoneServiceType;
-import com.freshdirect.customer.ErpCartonDetails;
-import com.freshdirect.customer.ErpCartonInfo;
-import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.customer.ErpZoneRegionInfo;
 import com.freshdirect.customer.ErpZoneRegionZipInfo;
-import com.freshdirect.framework.util.log.LoggerFactory;
-
 import com.freshdirect.dataloader.LoaderException;
 import com.freshdirect.dataloader.bapi.BapiFunctionI;
 import com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderHome;
 import com.freshdirect.dataloader.sap.ejb.SAPZoneInfoLoaderSB;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.sap.mw.jco.JCO;
-
-import com.freshdirect.framework.util.StringUtil;
-import java.util.ArrayList;
-import java.util.List;
 
 public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 
@@ -67,9 +56,9 @@ public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 			new DataStructure("Z_ZONE_ZIPCODE", JCO.TYPE_CHAR, 5, 0, "Material number")
 		}; */
 		smeta = new JCO.MetaData("ZONE_INFO");
-		for(int i = 0; i < sapData.length; i++) {
-			smeta.addInfo(sapData[i].fieldName, sapData[i].type, sapData[i].length, totalSize, sapData[i].decimal);
-			totalSize += sapData[i].length;
+		for (DataStructure element : sapData) {
+			smeta.addInfo(element.fieldName, element.type, element.length, totalSize, element.decimal);
+			totalSize += element.length;
 		}
 	}
 
@@ -93,7 +82,7 @@ public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 
 		// build carton details
 
-		List zoneInfos = new ArrayList();
+		List<ErpZoneMasterInfo> zoneInfos = new ArrayList<ErpZoneMasterInfo>();
 	
 		for (int i = 0; i < cartonTable.getNumRows(); i++) {
 			
@@ -149,7 +138,7 @@ public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 	
 	
 	
-	public void constructZoneInfoModel(String zoneId,String regionId,String serviceType,String desc,String zipCode, List zoneInfos ) throws LoaderException {
+	public void constructZoneInfoModel(String zoneId,String regionId,String serviceType,String desc,String zipCode, List<ErpZoneMasterInfo> zoneInfos ) throws LoaderException {
 		ErpZoneMasterInfo zone=null;
 		ErpZoneRegionInfo region=null;
 		ErpZoneRegionZipInfo zipInfo=null;
@@ -157,7 +146,7 @@ public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 		try{
 			
 			for(int i=0;i<zoneInfos.size();i++){
-				ErpZoneMasterInfo masterInfo=(ErpZoneMasterInfo)zoneInfos.get(i);
+				ErpZoneMasterInfo masterInfo=zoneInfos.get(i);
 				if(masterInfo.getSapId().equalsIgnoreCase(zoneId))
 				{
 					zone=masterInfo;
@@ -192,7 +181,7 @@ public class BapiErpsZoneInfoContentLoader implements BapiFunctionI {
 	}
 	
 
-	private void storeZoneInfo(List zoneInfos) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
+	private void storeZoneInfo(List<ErpZoneMasterInfo> zoneInfos) throws NamingException, EJBException, CreateException, FinderException, FDResourceException, RemoteException {
 		Context ctx = null;
 		String saleId = null;
 		try {

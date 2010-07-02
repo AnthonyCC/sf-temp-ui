@@ -6,9 +6,12 @@
 
 package com.freshdirect.dataloader.nutrition;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.StringTokenizer;
 
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.dataloader.FieldDelimitedFileParser;
 
 /**
  *
@@ -17,7 +20,7 @@ import com.freshdirect.dataloader.*;
  */
 public class EZFormIngredientParser extends FieldDelimitedFileParser {
     
-    HashMap ingredients = null;
+    Map<String, String> ingredients = null;
     
     private final static String PRODUCT_DESCR   =   "PRODUCT_DESCR";
     private final static String FILLER          =   "FILLER";
@@ -27,7 +30,7 @@ public class EZFormIngredientParser extends FieldDelimitedFileParser {
     public EZFormIngredientParser() {
         super();
         
-        ingredients = new HashMap();
+        ingredients = new HashMap<String, String>();
         
         fields.add(new Field(PRODUCT_DESCR,     30,  true));
         fields.add(new Field(FILLER,             2,  true));
@@ -36,7 +39,8 @@ public class EZFormIngredientParser extends FieldDelimitedFileParser {
     }
     
     
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         //
         // find skucode
         String prdDescr = getString(tokens, PRODUCT_DESCR).trim();
@@ -79,7 +83,7 @@ public class EZFormIngredientParser extends FieldDelimitedFileParser {
         
     }
     
-    public HashMap getIngredients() {
+    public Map<String, String> getIngredients() {
         return this.ingredients;
     }
 

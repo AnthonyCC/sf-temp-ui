@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
+import java.util.Map;
 
 import com.freshdirect.dataloader.BadDataException;
 import com.freshdirect.dataloader.SynchronousParserClient;
@@ -54,18 +55,20 @@ public abstract class PaymentechParser extends PaymentechSettlementParser implem
 		}
 	}
 	
-	protected HashMap tokenize(String line) throws BadDataException {
-		HashMap tokenMap = new HashMap();
+	@Override
+    protected HashMap<String, String> tokenize(String line) throws BadDataException {
+		HashMap<String, String> tokenMap = new HashMap<String, String>();
 		String[] tokens = line.split("\\|", 2);
 		for(int i = 0, size = this.fields.size(); i < size; i++){
-			Field f = (Field)this.fields.get(i);
+			Field f = this.fields.get(i);
 			String v = tokens[i].trim();
 			tokenMap.put(f.getName(), v);
 		}
 		return tokenMap;
 	}
 	
-	protected abstract void makeObjects(HashMap tokens) throws BadDataException;
+	@Override
+    protected abstract void makeObjects(Map<String, String> tokens) throws BadDataException;
 
 	public void setClient(SynchronousParserClient client) {
 		this.client = client;

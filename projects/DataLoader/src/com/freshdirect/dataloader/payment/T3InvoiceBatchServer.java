@@ -30,7 +30,8 @@ public class T3InvoiceBatchServer implements T3StartupDef {
 
 		new BapiServer(gwHost, gwServ, progId) {
 		
-			protected BapiRepository getRepository() {
+			@Override
+            protected BapiRepository getRepository() {
 				BapiRepository repo = new BapiRepository("FDInvoiceRepository");
 				repo.addFunction( new BapiErpsInvoice(listenerInstance) );
 				return repo;

@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
@@ -36,11 +35,9 @@ public class MailAttachmentSender {
         try {
 
 			ListBuilder builder = new ListBuilder();
-			List emailAddresses = builder.parseEmailList(new File("c:/spam/survey/survey_recipients_best.txt"));
-			for (Iterator i = emailAddresses.iterator(); i.hasNext();) {
-				MailInfo mi = (MailInfo) i.next();
-				
-	            MailAttachmentSender ms = new MailAttachmentSender();
+			List<MailInfo> emailAddresses = builder.parseEmailList(new File("c:/spam/survey/survey_recipients_best.txt"));
+			for (MailInfo mi : emailAddresses) {
+				MailAttachmentSender ms = new MailAttachmentSender();
 	            Message msg = ms.makeMessage(mi.getEmail());
 	
 	            Multipart mp = new MimeMultipart();

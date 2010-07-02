@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -46,20 +45,21 @@ import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 
 
 public class OrderConsumer implements IConsumer {
 	
-	private List skus = null;
+	private List<String> skus = null;
 	
 	private java.util.Date baseDate = null;
 	
@@ -102,7 +102,7 @@ public class OrderConsumer implements IConsumer {
 
 		try {
 			FDActionInfo actionInfo = new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "AutoOrder", "",IConstants.AGENT);			
-			FDCustomerManager.placeOrder(actionInfo, cart,(Set)new HashSet(), false, rating, EnumDlvPassStatus.NONE);
+			FDCustomerManager.placeOrder(actionInfo, cart,new HashSet<String>(), false, rating, EnumDlvPassStatus.NONE);
 			// Huhh... this is a bit strange ...
 		} catch (FDResourceException fdre) {
 			fdre.printStackTrace();
@@ -125,7 +125,7 @@ public class OrderConsumer implements IConsumer {
 	}
 
 	private String getRandomSkuCode() {
-		return (String) skus.get((int) (Math.random() * skus.size()));
+		return skus.get((int) (Math.random() * skus.size()));
 	}
 	
 
@@ -192,7 +192,7 @@ public class OrderConsumer implements IConsumer {
 			System.out.println("zone id is : " + zInfo.getZoneId());
 
 			FDReservation reservation = FDDeliveryManager.getInstance()
-											.reserveTimeslot(slot, identity.getErpCustomerPK(), (long)1000
+											.reserveTimeslot(slot, identity.getErpCustomerPK(), 1000
 														, EnumReservationType.STANDARD_RESERVATION, address, false,null, false);
 			cart.setDeliveryReservation(reservation);
 
@@ -215,9 +215,9 @@ public class OrderConsumer implements IConsumer {
 
 	}
 
-	private List makeOrderLines(String skuCode) throws FDResourceException {
+	private List<FDCartLineI> makeOrderLines(String skuCode) throws FDResourceException {
 		boolean multiple = false; // one order line per sku
-		ArrayList lines = new ArrayList();
+		ArrayList<FDCartLineI> lines = new ArrayList<FDCartLineI>();
 		try {
 			ContentFactory contentFactory = ContentFactory.getInstance();
 			FDProductInfo productInfo = FDCachedFactory.getProductInfo(skuCode);
@@ -226,8 +226,7 @@ public class OrderConsumer implements IConsumer {
 			
 			int max = product.getSalesUnits().length;
 			FDVariation[] variations = product.getVariations();
-			for (int i = 0; i < variations.length; i++) {
-				FDVariation variation = variations[i];
+			for (FDVariation variation : variations) {
 				max = Math.max(max, variation.getVariationOptions().length);
 			}
 
@@ -237,9 +236,8 @@ public class OrderConsumer implements IConsumer {
 				FDSalesUnit[] units = product.getSalesUnits();
 				FDSalesUnit salesUnit = units[n % units.length];
 				// make a variation map
-				HashMap optionMap = new HashMap();
-				for (int i = 0; i < variations.length; i++) {
-					FDVariation variation = variations[i];
+				HashMap<String, String> optionMap = new HashMap<String, String>();
+				for (FDVariation variation : variations) {
 					FDVariationOption[] options = variation.getVariationOptions();
 					FDVariationOption option = options[n % options.length];
 					optionMap.put(variation.getName(), option.getName());
@@ -319,8 +317,8 @@ public class OrderConsumer implements IConsumer {
 		
 	}
 	
-	private List readSkus(String path) {
-		List dataList = new ArrayList(); 
+	private List<String> readSkus(String path) {
+		List<String> dataList = new ArrayList<String>(); 
 		try {			
 		
 			FileReader fr = new FileReader(path);

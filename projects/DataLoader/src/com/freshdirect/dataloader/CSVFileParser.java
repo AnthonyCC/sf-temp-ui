@@ -1,8 +1,6 @@
 package com.freshdirect.dataloader;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -12,17 +10,17 @@ import au.com.bytecode.opencsv.CSVReader;
 
 public abstract class CSVFileParser {
 		    
-    protected List exceptions = null;
+    protected List<BadDataException> exceptions = null;
     
     
     /** creates a FlatFileParser
      */
     protected CSVFileParser() {
         super();       
-        exceptions = new ArrayList();
+        exceptions = new ArrayList<BadDataException>();
     }
     
-    public List getExceptions() {
+    public List<BadDataException> getExceptions() {
         return exceptions;
     }
     

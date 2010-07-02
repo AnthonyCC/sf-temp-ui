@@ -8,12 +8,13 @@
  */
 package com.freshdirect.dataloader.sap.ejb;
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
+import java.util.List;
 
-import com.freshdirect.dataloader.*;
+import javax.ejb.EJBObject;
+
+import com.freshdirect.customer.ErpZoneMasterInfo;
+import com.freshdirect.dataloader.LoaderException;
 
 /**
  * the remote interface for the SAPLoader session bean
@@ -33,7 +34,7 @@ public interface SAPZoneInfoLoaderSB extends EJBObject {
      * @throws RemoteException any system level problems
      * @throws LoaderException any problems encountered creating or updating objects in the system
      */    
-    public void loadData(List zoneInfoList) throws RemoteException, LoaderException;
+    public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws RemoteException, LoaderException;
 
 }
 

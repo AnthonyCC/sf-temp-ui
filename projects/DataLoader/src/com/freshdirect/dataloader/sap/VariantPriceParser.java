@@ -9,9 +9,11 @@
 package com.freshdirect.dataloader.sap;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import com.freshdirect.erp.model.*;
-import com.freshdirect.dataloader.*;
+import com.freshdirect.dataloader.BadDataException;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
 
 /**
  * a parser that deals with SAP variant price export files
@@ -23,17 +25,17 @@ public class VariantPriceParser extends SAPParser {
     
     /** the collection of characteristic value model objects parsed from the file
      */    
-    HashMap charValues = null;
+    Map<ErpCharacteristicValueModel, Map<String, String>> charValues = null;
     /** the collection of characteristic value price objects parsed from the file
      */    
-    HashMap charValuePrices = null;
+    Map<ErpCharacteristicValuePriceModel, Map<String, String>> charValuePrices = null;
 
     /** Creates new VariantPriceParser
      */
     public VariantPriceParser() {
         super();
-        charValues = new HashMap();
-        charValuePrices = new HashMap();
+        charValues = new HashMap<ErpCharacteristicValueModel, Map<String, String>>();
+        charValuePrices = new HashMap<ErpCharacteristicValuePriceModel, Map<String, String>>();
         /*
          * from ERP Services/Technical Specs/Batch Loads/Variant_Knowledge_CSD.doc in VSS repository
          */
@@ -57,14 +59,14 @@ public class VariantPriceParser extends SAPParser {
     /** gets the collection of characteristics parsed from the file
      * @return the collection of characteristics
      */    
-    public HashMap getCharacteristicValues() {
+    public Map<ErpCharacteristicValueModel, Map<String, String>> getCharacteristicValues() {
         return charValues;
     }
     
     /** gets the collection of characteristic value prices parsed from the file
      * @return the collection of characteristic value prices
      */    
-    public HashMap getCharacteristicValuePrices() {
+    public Map<ErpCharacteristicValuePriceModel, Map<String, String>> getCharacteristicValuePrices() {
         return charValuePrices;
     }
     
@@ -72,7 +74,8 @@ public class VariantPriceParser extends SAPParser {
      * @param tokens a HashMap of tokens parsed from a line of an export file
      * @throws BadDataException an problems encountered while assembling the tokens into model objects
      */
-    public void makeObjects(HashMap tokens) throws BadDataException {
+    @Override
+    public void makeObjects(Map<String, String> tokens) throws BadDataException {
         
         /*
          * from ERP Services/Technical Specs/Mapping Docs/ERPS_SAP_BATCH_MAP.xls in VSS repository
@@ -98,7 +101,7 @@ public class VariantPriceParser extends SAPParser {
             //
             // grab the extra info the builders will need later on
             //
-            HashMap charValExtraInfo = new HashMap();
+            HashMap<String, String> charValExtraInfo = new HashMap<String, String>();
             charValExtraInfo.put(CLASS, getString(tokens, CLASS));
             charValExtraInfo.put(CHARACTERISTIC_NAME, getString(tokens, CHARACTERISTIC_NAME));
             charValExtraInfo.put(MATERIAL_NUMBER, getString(tokens, MATERIAL_NUMBER));
@@ -118,7 +121,7 @@ public class VariantPriceParser extends SAPParser {
             //
             // grab the extra info the builders will need later on
             //
-            HashMap charValPriceExtraInfo = new HashMap();
+            HashMap<String, String> charValPriceExtraInfo = new HashMap<String, String>();
             String matlNum = getString(tokens, MATERIAL_NUMBER);
             if ("".equals(matlNum))
                 throw new BadDataException("No material number was supplied for characteristic value price.");

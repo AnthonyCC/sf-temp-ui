@@ -8,12 +8,15 @@
  */
 package com.freshdirect.dataloader.sap.ejb;
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import javax.ejb.EJBObject;
+
+import com.freshdirect.dataloader.LoaderException;
+import com.freshdirect.erp.model.ErpCharacteristicValuePriceModel;
+import com.freshdirect.erp.model.ErpClassModel;
+import com.freshdirect.erp.model.ErpMaterialModel;
 
 /**
  * the remote interface for the SAPLoader session bean
@@ -33,7 +36,7 @@ public interface SAPLoaderSB extends EJBObject {
      * @throws RemoteException any system level problems
      * @throws LoaderException any problems encountered creating or updating objects in the system
      */    
-    public void loadData(HashMap classes, HashMap activeMaterials, HashMap characteristicValuePrices) throws RemoteException, LoaderException;
+    public void loadData(Map<String, ErpClassModel> classes, Map<ErpMaterialModel, Map<String, Object>> activeMaterials, Map<ErpCharacteristicValuePriceModel, Map<String, String>> characteristicValuePrices) throws RemoteException, LoaderException;
 
 }
 

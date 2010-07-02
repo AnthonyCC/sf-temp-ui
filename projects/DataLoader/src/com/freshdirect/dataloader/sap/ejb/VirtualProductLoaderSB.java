@@ -8,12 +8,12 @@
  */
 package com.freshdirect.dataloader.sap.ejb;
 
-import java.util.*;
-
-import javax.ejb.*;
 import java.rmi.RemoteException;
+import java.util.Map;
 
-import com.freshdirect.dataloader.*;
+import javax.ejb.EJBObject;
+
+import com.freshdirect.dataloader.LoaderException;
 
 /**
  * the remote interface for the VirtualProductLoader session bean
@@ -29,7 +29,7 @@ public interface VirtualProductLoaderSB extends EJBObject {
      * @throws RemoteException any system level problems
      * @throws LoaderException any problems encountered creating or updating objects in the system
      */    
-    public void loadData(HashMap products) throws RemoteException, LoaderException;
+    public void loadData(Map<String, Map<String, Object>> products) throws RemoteException, LoaderException;
 
 }
 

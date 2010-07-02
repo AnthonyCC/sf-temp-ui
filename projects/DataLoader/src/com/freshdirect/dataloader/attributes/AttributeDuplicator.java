@@ -6,8 +6,15 @@
 
 package com.freshdirect.dataloader.attributes;
 
-import java.util.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * duplicates attributes copied over from old system by AttributeConverter
@@ -40,12 +47,12 @@ public class AttributeDuplicator {
             //
             // duplicate characteristic attributes
             //
-            List uniqCh = getUniqueCharacteristicAttributes(conn);
+            List<AttributeRow> uniqCh = getUniqueCharacteristicAttributes(conn);
             duplicateCharacteristicAttributes(conn, uniqCh);
             //
             // duplicate characteristic value attributes
             //
-            List uniqCv = getUniqueCharacteristicValueAttributes(conn);
+            List<AttributeRow> uniqCv = getUniqueCharacteristicValueAttributes(conn);
             duplicateCharacteristicValueAttributes(conn, uniqCv);
             
             conn.commit();
@@ -67,7 +74,7 @@ public class AttributeDuplicator {
         }
     }
     
-    public List getUniqueCharacteristicAttributes(Connection conn) throws SQLException {
+    public List<AttributeRow> getUniqueCharacteristicAttributes(Connection conn) throws SQLException {
         //
         // find the unique characteristic attributes
         //
@@ -75,7 +82,7 @@ public class AttributeDuplicator {
         ResultSet rs = stmt.executeQuery("select root_id, child1_id, atr_type, atr_name, atr_value from attributes " +
         "where root_id not like '000000%' and child2_id is null " +
         "group by root_id, child1_id, atr_type, atr_name, atr_value order by root_id, child1_id, atr_name, atr_value");
-        ArrayList charAttrs = new ArrayList();
+        ArrayList<AttributeRow> charAttrs = new ArrayList<AttributeRow>();
         while (rs.next()) {
             AttributeRow ar = new AttributeRow();
             ar.rootId = rs.getString(1);
@@ -91,7 +98,7 @@ public class AttributeDuplicator {
         return charAttrs;
     }
     
-    public void duplicateCharacteristicAttributes(Connection conn, List uniq) throws SQLException {
+    public void duplicateCharacteristicAttributes(Connection conn, List<AttributeRow> uniq) throws SQLException {
         //
         // finds the classes that are missing the attributes for their characteristics that have the same name
         //
@@ -105,13 +112,13 @@ public class AttributeDuplicator {
         //
         // loop through the unique stuff
         //
-        Iterator atrIter = uniq.iterator();
+        Iterator<AttributeRow> atrIter = uniq.iterator();
         while (atrIter.hasNext()) {
-            AttributeRow uniqAtr = (AttributeRow) atrIter.next();
+            AttributeRow uniqAtr = atrIter.next();
             //
             // collect what needs to be duplicated for everything that's currently unique
             //
-            ArrayList dups = new ArrayList();
+            ArrayList<AttributeRow> dups = new ArrayList<AttributeRow>();
             missingPs.clearParameters();
             missingPs.setString(1, uniqAtr.rootId);
             missingPs.setString(2, uniqAtr.child1Id);
@@ -127,17 +134,17 @@ public class AttributeDuplicator {
             //
             // assign ids to the new duplicate attributes
             //
-            Iterator idIter = dups.iterator();
+            Iterator<AttributeRow> idIter = dups.iterator();
             while (idIter.hasNext()) {
-                AttributeRow ar = (AttributeRow) idIter.next();
+                AttributeRow ar = idIter.next();
                 ar.id = getNextId(conn);
             }
             //
             // now loop through the collected dupes and write them to the db with the attributes from the original
             //
-            Iterator dupIter = dups.iterator();
+            Iterator<AttributeRow> dupIter = dups.iterator();
             while (dupIter.hasNext()) {
-                AttributeRow dupAtr = (AttributeRow) dupIter.next();
+                AttributeRow dupAtr = dupIter.next();
                 
                 System.out.println("Dupe: " + dupAtr.rootId + " " + dupAtr.child1Id + " " + uniqAtr.atrType + " " + uniqAtr.atrName + " " + uniqAtr.atrValue);
                 
@@ -159,7 +166,7 @@ public class AttributeDuplicator {
         dupPs.close();
     }
     
-    public List getUniqueCharacteristicValueAttributes(Connection conn) throws SQLException {
+    public List<AttributeRow> getUniqueCharacteristicValueAttributes(Connection conn) throws SQLException {
         //
         // find the unique characteristic value attributes
         //
@@ -168,7 +175,7 @@ public class AttributeDuplicator {
                 "where root_id not like '000000%' and child2_id is not null " +
                 "group by root_id, child1_id, child2_id, atr_type, atr_name, atr_value " +
                 "order by root_id, child1_id, child2_id, atr_name, atr_value");
-        ArrayList charValAttrs = new ArrayList();
+        ArrayList<AttributeRow> charValAttrs = new ArrayList<AttributeRow>();
         while (rs.next()) {
             AttributeRow ar = new AttributeRow();
             ar.rootId = rs.getString(1);
@@ -185,7 +192,7 @@ public class AttributeDuplicator {
         return charValAttrs;
     }
     
-    public void duplicateCharacteristicValueAttributes(Connection conn, List uniq) throws SQLException {
+    public void duplicateCharacteristicValueAttributes(Connection conn, List<AttributeRow> uniq) throws SQLException {
         //
         // finds the classes that are missing the attributes for their characteristic values that have the same name
         //
@@ -200,13 +207,13 @@ public class AttributeDuplicator {
         //
         // loop through the unique stuff
         //
-        Iterator atrIter = uniq.iterator();
+        Iterator<AttributeRow> atrIter = uniq.iterator();
         while (atrIter.hasNext()) {
-            AttributeRow uniqAtr = (AttributeRow) atrIter.next();
+            AttributeRow uniqAtr = atrIter.next();
             //
             // collect what needs to be duplicated for everything that's currently unique
             //
-            ArrayList dups = new ArrayList();
+            ArrayList<AttributeRow> dups = new ArrayList<AttributeRow>();
             missingPs.clearParameters();
             missingPs.setString(1, uniqAtr.rootId);
             missingPs.setString(2, uniqAtr.child1Id);
@@ -224,17 +231,17 @@ public class AttributeDuplicator {
             //
             // assign ids to the new duplicate attributes
             //
-            Iterator idIter = dups.iterator();
+            Iterator<AttributeRow> idIter = dups.iterator();
             while (idIter.hasNext()) {
-                AttributeRow ar = (AttributeRow) idIter.next();
+                AttributeRow ar = idIter.next();
                 ar.id = getNextId(conn);
             }
             //
             // now loop through the collected dupes and write them to the db with the attributes from the original
             //
-            Iterator dupIter = dups.iterator();
+            Iterator<AttributeRow> dupIter = dups.iterator();
             while (dupIter.hasNext()) {
-                AttributeRow dupAtr = (AttributeRow) dupIter.next();
+                AttributeRow dupAtr = dupIter.next();
                 
                 System.out.println("Dupe: " + dupAtr.rootId + " " + dupAtr.child1Id + " " + dupAtr.child2Id + " " + uniqAtr.atrType + " " + uniqAtr.atrName + " " + uniqAtr.atrValue);
                 dupPs.clearParameters();

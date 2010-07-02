@@ -21,6 +21,7 @@ public class TesterTask {
      */
     public void go() {
         final SwingWorker worker = new SwingWorker() {
+            @Override
             public Object construct() {
                 return new ActualTask();
             }
