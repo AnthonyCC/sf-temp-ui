@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web;
 
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import com.freshdirect.transadmin.model.BuildingOperationHoursId;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvBuildingDtl;
+import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.EnumDayOfWeek;
 import com.freshdirect.transadmin.util.TransStringUtil;
@@ -313,7 +315,10 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		model.setDifficultToDeliver(request.getParameter("difficultToDeliver"));
 		if(!"1".equals(model.getDifficultToDeliver())){
 			model.setDifficultReason("");
-			model.setServiceTimeOverride("");
+			model.setServiceTimeType(new DlvServiceTimeType());
+			model.setServiceTimeAdjustable(new BigDecimal(0));
+			model.setServiceTimeOperator("");
+			model.setServiceTimeOverride(new BigDecimal(0));
 			model.setAdditional("");
 		}
 	
@@ -377,7 +382,10 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		result.setOther(buildingDetail.getOther());
 		result.setDifficultReason(buildingDetail.getDifficultReason());
 		result.setDifficultToDeliver(buildingDetail.getDifficultToDeliver());
+		result.setServiceTimeType(buildingDetail.getServiceTimeType());
 		result.setServiceTimeOverride(buildingDetail.getServiceTimeOverride());
+		result.setServiceTimeOperator(buildingDetail.getServiceTimeOperator());
+		result.setServiceTimeAdjustable(buildingDetail.getServiceTimeAdjustable());	
 		result.setAdditional(buildingDetail.getAdditional());
 		result.setIsNew(buildingDetail.getIsNew());
 		result.setCrossStreet(buildingDetail.getCrossStreet());
@@ -503,7 +511,10 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		buildingDetail.setOther(buildingDtl.getOther());
 		buildingDetail.setDifficultReason(buildingDtl.getDifficultReason());
 		buildingDetail.setDifficultToDeliver(buildingDtl.getDifficultToDeliver());
+		buildingDetail.setServiceTimeType(buildingDtl.getServiceTimeType());
 		buildingDetail.setServiceTimeOverride(buildingDtl.getServiceTimeOverride());
+		buildingDetail.setServiceTimeOperator(buildingDtl.getServiceTimeOperator());
+		buildingDetail.setServiceTimeAdjustable(buildingDtl.getServiceTimeAdjustable());		
 		buildingDetail.setAdditional(buildingDtl.getAdditional());
 		buildingDetail.setIsNew(buildingDtl.getIsNew());
 		buildingDetail.setCrossStreet(buildingDtl.getCrossStreet());

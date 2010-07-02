@@ -145,9 +145,9 @@
               <ec:column property="longitude" title="Longitude"/>
               <ec:column property="geocodeConfidence" title="Confidence" width="10px"/>
               <ec:column property="geocodeQuality" title="Quality" width="10px"/>             
-              <ec:column alias="serviceTimeType" property="serviceTimeType.name" title="Service Time Type"/>
-              <ec:column alias="serviceTimeOverride" property="serviceTimeOverride" title="Override ServiceTimeType"/>
-              <ec:column alias="serviceTimeAdjustable" property="serviceTimeAdjustable" title="Service Time Adjustment"/>
+              <ec:column alias="serviceTimeType" property="buildingDetail.dlvServiceTimeType" title="Service Time Type"/>
+              <ec:column alias="serviceTimeOverride" property="buildingDetail.serviceTimeOverride" title="Override ServiceTimeType"/>
+              <ec:column alias="serviceTimeAdjustable" property="buildingDetail.serviceTimeAdjustable" title="Service Time Adjustment"/>
               <ec:column sortable="false" alias="geocode" property="buildingId" title=" " filterable="false" cell="geocodecol" width="5px" />
               <ec:column sortable="false" alias="showloc" property="buildingId" title=" " filterable="false" cell="locationcol" width="5px" />
               <ec:column sortable="false" alias="showdtl" property="buildingId" title=" " filterable="false" cell="buildingdtlcol" width="5px" />

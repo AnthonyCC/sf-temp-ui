@@ -1,6 +1,9 @@
 package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	
@@ -12,33 +15,35 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	private String state;
 	private BigDecimal longitude;
 	private BigDecimal latitude;
-	private DlvServiceTimeType serviceTimeType;
-	
 	private String geocodeConfidence;
 	private String geocodeQuality;
-	private BigDecimal serviceTimeOverride;
-	private BigDecimal serviceTimeAdjustable;
-	private String serviceTimeOperator;
 	
-	public String getServiceTimeOperator() {
-		return serviceTimeOperator;
+	private DlvBuildingDetail buildingDetail;
+	Set buildingDetails= new HashSet(0);
+	
+	public Set getBuildingDetails() {
+		return buildingDetails;
 	}
-	public void setServiceTimeOperator(String serviceTimeOperator) {
-		this.serviceTimeOperator = serviceTimeOperator;
+	public void setBuildingDetails(Set buildingDetails) {
+		this.buildingDetails = buildingDetails;
 	}
-	public BigDecimal getServiceTimeOverride() {
-		return serviceTimeOverride;
+	public DlvBuildingDetail getBuildingDetail() {
+		Iterator itr= buildingDetails.iterator();
+		while(itr.hasNext()){
+			buildingDetail=(DlvBuildingDetail)itr.next();
+		}
+		if(buildingDetail==null){
+			buildingDetail=new DlvBuildingDetail();
+		}
+		return buildingDetail;
 	}
-	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
-		this.serviceTimeOverride = serviceTimeOverride;
+	public void setBuildingDetail(DlvBuildingDetail buildingDetail) {
+		if(buildingDetail==null){
+			buildingDetail=new DlvBuildingDetail();
+		}
+		this.buildingDetail = buildingDetail;
 	}
-	public BigDecimal getServiceTimeAdjustable() {
-		return serviceTimeAdjustable;
-	}
-	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
-		this.serviceTimeAdjustable = serviceTimeAdjustable;
-	}
-		
+	
 	public String getCountry() {
 		return country;
 	}
@@ -64,12 +69,7 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	public void setLongitude(BigDecimal longitude) {
 		this.longitude = longitude;
 	}
-	public DlvServiceTimeType getServiceTimeType() {
-		return serviceTimeType;
-	}
-	public void setServiceTimeType(DlvServiceTimeType serviceTimeType) {
-		this.serviceTimeType = serviceTimeType;
-	}
+	
 	public String getSrubbedStreet() {
 		return srubbedStreet;
 	}
@@ -84,24 +84,6 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 		this.zip = zip;
 	}
 	
-	public String getDlvServiceTimeType() {
-		if(getServiceTimeType() == null) {
-			return null;
-		}
-		return getServiceTimeType().getCode();
-	}
-
-	public void setDlvServiceTimeType(String serviceTimeType) {
-		if("null".equals(serviceTimeType)) {
-			setServiceTimeType(null);
-		} else {
-			DlvServiceTimeType trnServiceTimeType = new DlvServiceTimeType();
-			trnServiceTimeType.setCode(serviceTimeType);
-			setServiceTimeType(trnServiceTimeType);
-		}
-	}
-	
-		
 	public boolean isObsoleteEntity() {
 		return false;
 	}

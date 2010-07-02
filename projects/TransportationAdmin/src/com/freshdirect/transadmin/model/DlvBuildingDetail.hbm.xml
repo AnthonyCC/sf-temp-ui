@@ -14,14 +14,13 @@
         <property name="addrType" type="string">
             <column name="ADDR_TYPE" length="16" />
         </property> 
-      <property name="difficultReason" type="string">
+      	<property name="difficultReason" type="string">
             <column name="DIFFICULT_REASON" length="55" />
         </property> 
-       <property name="companyName" type="string">
+        <property name="companyName" type="string">
             <column name="COMPANY_NAME" length="55" />
         </property> 
-        
-             <property name="svcScrubbedStreet" type="string">
+        <property name="svcScrubbedStreet" type="string">
             <column name="SVC_SCRUBBED_STREET" length="255" />
         </property>
         <property name="svcCrossStreet" type="string">
@@ -62,20 +61,29 @@
        <property name="difficultToDeliver" type="string">
             <column name="DIFFICULT_TO_DELIVER" length="1" />
         </property> 
-        
-      <property name="serviceTimeOverride" type="string">
-            <column name="SVC_TIME_OVERRIDE" length="255" />
+           
+        <property name="dlvServiceTimeType" type="string">
+            <column name="SVC_TIME_TYPE" length="8" />
+        </property>  
+        <property name="serviceTimeOverride" type="big_decimal">
+            <column name="SVC_TIME_OVERRIDE" precision="10" />
+        </property>
+        <property name="serviceTimeOperator" type="string">
+            <column name="SVC_TIME_OPERATOR" length="1"/>
+        </property>
+        <property name="serviceTimeAdjustable" type="big_decimal">
+            <column name="SVC_TIME_ADJUSTMENT" precision="10" />
         </property>
         <property name="additional" type="string">
             <column name="ADDITIONAL" length="255" />
         </property>
         
-      <property name="handTruckAllowed" type="string">
+      	<property name="handTruckAllowed" type="string">
             <column name="HAND_TRUCK_ALLOWED" length="1" />
-      </property> 
+     	</property> 
         
         
-      <property name="walkUpFloors" type="integer">
+      	<property name="walkUpFloors" type="integer">
             <column name="WALK_UP_FLOORS" />
         </property> 
          
@@ -85,11 +93,11 @@
          <property name="other" type="string">
             <column name="OTHER" length="255" />
         </property>
-            <set name="operationHours" inverse="true" lazy="false" cascade="all,delete-orphan">
+        <set name="operationHours" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="DELIVERY_BUILDING_ID" length="16" not-null="true" />
             </key>
-            <one-to-many class="com.freshdirect.transadmin.model.BuildingOperationHours" />
+        	<one-to-many class="com.freshdirect.transadmin.model.BuildingOperationHours" />
         </set>   
     </class>
 </hibernate-mapping>

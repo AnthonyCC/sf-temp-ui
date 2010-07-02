@@ -1,4 +1,6 @@
 package com.freshdirect.transadmin.model;
+import java.math.BigDecimal;
+
 import com.freshdirect.framework.util.TimeOfDay;
 
 public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
@@ -102,7 +104,11 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 	private String freightElevator;
 	
 	private String other;
-	private String serviceTimeOverride;
+	private DlvServiceTimeType serviceTimeType;
+	private BigDecimal serviceTimeOverride;
+	private BigDecimal serviceTimeAdjustable;
+	private String serviceTimeOperator;
+	
 	private String additional;
 	public String getIsNew() {
 		return isNew;
@@ -755,12 +761,53 @@ public class DlvBuildingDtl implements java.io.Serializable, TrnBaseEntityI  {
 		return other;
 	}
 
-	public void setServiceTimeOverride(String serviceTimeOverride) {
-		this.serviceTimeOverride = serviceTimeOverride;
+	public DlvServiceTimeType getServiceTimeType() {
+		return serviceTimeType;
 	}
 
-	public String getServiceTimeOverride() {
+	public void setServiceTimeType(DlvServiceTimeType serviceTimeType) {
+		this.serviceTimeType = serviceTimeType;
+	}
+
+	public BigDecimal getServiceTimeAdjustable() {
+		return serviceTimeAdjustable;
+	}
+
+	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
+		this.serviceTimeAdjustable = serviceTimeAdjustable;
+	}
+
+	public String getServiceTimeOperator() {
+		return serviceTimeOperator;
+	}
+
+	public void setServiceTimeOperator(String serviceTimeOperator) {
+		this.serviceTimeOperator = serviceTimeOperator;
+	}
+
+	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
+		this.serviceTimeOverride = serviceTimeOverride;
+	}
+	
+	public BigDecimal getServiceTimeOverride() {
 		return serviceTimeOverride;
+	}
+	
+	public String getDlvServiceTimeType() {
+		if(getServiceTimeType() == null) {
+			return null;
+		}
+		return getServiceTimeType().getCode();
+	}
+
+	public void setDlvServiceTimeType(String serviceTimeType) {
+		if("null".equals(serviceTimeType)) {
+			setServiceTimeType(null);
+		} else {
+			DlvServiceTimeType trnServiceTimeType = new DlvServiceTimeType();
+			trnServiceTimeType.setCode(serviceTimeType);
+			setServiceTimeType(trnServiceTimeType);
+		}
 	}
 	public void setAdditional(String additional) {
 		this.additional = additional;

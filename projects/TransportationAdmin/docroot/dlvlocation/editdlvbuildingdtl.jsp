@@ -51,16 +51,20 @@ function do_refresh()
 	        //alert("if->");
 	        $('difficultToDeliver').checked = true;
 	        $('difficultReason').disabled=false;
+		 $('dlvServiceTimeType').disabled=false;
 		 $('serviceTimeOverride').disabled=false;
-		  $('additional').disabled=false;
+		 $('serviceTimeOperator').disabled=false;
+		  $('serviceTimeAdjustable').disabled=false;
  			//$('extraTimeNeeded').disabled=false; 
 	   }
 	   else {
    	        //alert("else->");
    	        $('difficultToDeliver').checked = false;
 		$('difficultReason').disabled=true;
-	         $('serviceTimeOverride').disabled=true;
-		  $('additional').disabled=true;
+		 $('dlvServiceTimeType').disabled=true;
+		 $('serviceTimeOverride').disabled=true;
+		 $('serviceTimeOperator').disabled=true;
+		  $('serviceTimeAdjustable').disabled=true;
  			//$('extraTimeNeeded').disabled=true; 
 			//serviceTimeOverride
 	   }
@@ -241,7 +245,10 @@ for (i=0; i<document.getElementById("deliveryBuildingDtlForm").other.length; i++
  //$('extraTimeNeeded').value="";
  $('difficultReason').disabled=true;
  //$('extraTimeNeeded').disabled=true; 
+ $('dlvServiceTimeType').disabled=true;
  $('serviceTimeOverride').disabled=true;
+ $('serviceTimeOperator').disabled=true;
+ $('serviceTimeAdjustable').disabled=true;
  $('additional').disabled=true;
 }
 
