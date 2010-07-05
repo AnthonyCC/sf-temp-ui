@@ -28,6 +28,7 @@ import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CategoryModel extends ProductContainer {
+	
 	private static final long serialVersionUID = 5787890004203680537L;
 
 	private static final Logger LOGGER = LoggerFactory.getInstance(CategoryModel.class);
@@ -38,7 +39,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private static final long FIVE_MINUTES = 5l * 60l * 1000l;
 	
-	private final class RecommendedProductsRef extends BalkingExpiringReference {
+	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
 
             private RecommendedProductsRef(Executor executor, String zoneId) {
@@ -54,7 +55,7 @@ public class CategoryModel extends ProductContainer {
             }
 
 		@Override
-		protected Object load() {
+		protected List<ProductModel> load() {
 			CmsRecommenderService recommenderService = getRecommenderService();
 			ContentKey categoryId = CategoryModel.this.getContentKey();
 			final Recommender recommender = CategoryModel.this.getRecommender();
@@ -90,6 +91,7 @@ public class CategoryModel extends ProductContainer {
 			return null;
 		}
 		
+		@SuppressWarnings( "unused" )
 		public String getZoneId() {
 			return zoneId;
 		}
@@ -104,9 +106,9 @@ public class CategoryModel extends ProductContainer {
 	
 	private Object recommendedProductsSync = new Object();
 
-	private List subcategoriesModels = new ArrayList();
+	private List<CategoryModel> subcategoriesModels = new ArrayList<CategoryModel>();
 
-	private List productModels = new ArrayList();
+	private List<ProductModel> productModels = new ArrayList<ProductModel>();
 
 	private List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 	
@@ -187,21 +189,20 @@ public class CategoryModel extends ProductContainer {
 	    return FDAttributeFactory.constructImage(this, "CAT_LABEL");
 	}
 	
-        /**
-         * Return the CAT_LABEL image, if the attribute is null, then it returns an
-         * empty image object.
-         * 
-         * @return
-         */
-        public final Image getCategoryLabelNotNull() {
-            Image img = getCategoryLabel();
-            if (img != null) {
-                return img;
-            } else {
-                return new Image();
-            }
-        }	
-	
+    /**
+     * Return the CAT_LABEL image, if the attribute is null, then it returns an
+     * empty image object.
+     * 
+     * @return
+     */
+    public final Image getCategoryLabelNotNull() {
+        Image img = getCategoryLabel();
+        if (img != null) {
+            return img;
+        } else {
+            return new Image();
+        }
+    }	
 	
 	
 	public Image getCategoryNavBar() {
@@ -241,24 +242,22 @@ public class CategoryModel extends ProductContainer {
 
 	public List<CategoryModel> getSubcategories() {
 		ContentNodeModelUtil.refreshModels(this, "subcategories", subcategoriesModels, true);
-
-		return new ArrayList(subcategoriesModels);
+		return new ArrayList<CategoryModel>(subcategoriesModels);
 	}
 	
-        public List getCandidateList() {
-            ContentNodeModelUtil.refreshModels(this, "CANDIDATE_LIST", candidateList, false);
-            return new ArrayList(candidateList);
-        }
-        
-        public int getManualSelectionSlots() {
-            return getAttribute("MANUAL_SELECTION_SLOTS", 0);
-        }
+    public List getCandidateList() {
+        ContentNodeModelUtil.refreshModels(this, "CANDIDATE_LIST", candidateList, false);
+        return new ArrayList(candidateList);
+    }
+    
+    public int getManualSelectionSlots() {
+        return getAttribute("MANUAL_SELECTION_SLOTS", 0);
+    }
 
 	/* This does not traverse the alias list */
-	public List getPrivateProducts() {
+	public List<ProductModel> getPrivateProducts() {
 		ContentNodeModelUtil.refreshModels(this, "products", productModels, true);
-
-		return new ArrayList(productModels);
+		return new ArrayList<ProductModel>(productModels);
 	}
 	
 	public List<ProductModel> getHowToCookItProducts() {
@@ -309,35 +308,49 @@ public class CategoryModel extends ProductContainer {
 	}
 	
 	public Recommender getRecommender() {
-            return FDAttributeFactory.lookup(this, "recommender", (Recommender) null);
+        return FDAttributeFactory.lookup(this, "recommender", (Recommender) null);
 	}
 	
 	/** @return List of {@link CategoryModel} */
 	public List<CategoryModel> getVirtualGroupRefs() {
-            ContentNodeModelUtil.refreshModels(this, "VIRTUAL_GROUP", virtualGroups, false);
-            return new ArrayList<CategoryModel>(virtualGroups);
+        ContentNodeModelUtil.refreshModels(this, "VIRTUAL_GROUP", virtualGroups, false);
+        return new ArrayList<CategoryModel>(virtualGroups);
 	}
 
-    public List getProducts() {
-        List<ContentNodeModel> prodList = getStaticProducts();
+	private ContentKey recommenderKey;
+
+    public List<ProductModel> getProducts() {
+        List<ProductModel> prodList = getStaticProducts();
 
         Recommender recommender = getRecommender();
+        if ( recommender == null ) {
+        	recommenderKey = null;
+        } 
+        
         if (recommender != null) {
+        	
+            boolean recommenderChanged = !recommender.getContentKey().equals( recommenderKey ); 
+        	recommenderKey = recommender.getContentKey();  	
+        	
+        	if ( recommenderChanged ) {
+        		LOGGER.warn( this.getContentKey().getEncoded() + ": recommender changed!" );
+        	}
+        	
             String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
             LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
             synchronized (recommendedProductsSync) {
-                if (recommendedProductsRefMap.get(zoneId) == null)
+                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
                     recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
             }
 
             try {
-                List recProds = (List) recommendedProductsRefMap.get(zoneId).get();
+                List<ProductModel> recProds = recommendedProductsRefMap.get(zoneId).get();
                 if (recProds != null) {
-                    for (Iterator pItr = recProds.iterator(); pItr.hasNext();) {
-                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
-                        newProd.setParentNode(this);
+                    for ( ProductModel prod : recProds ) {
+                    	ProductModel newProd = (ProductModel)prod.clone();
+                        ( (ContentNodeModelImpl)newProd ).setParentNode(this);
                         if (!prodList.contains(newProd)) {
-                            newProd.setPriority(prodList.size());
+                            ( (ContentNodeModelImpl)newProd ).setPriority(prodList.size());
                             prodList.add(newProd);
                         }
                     }
@@ -353,28 +366,23 @@ public class CategoryModel extends ProductContainer {
     /**
      * @return all, non smart products.
      */
-    public List<ContentNodeModel> getStaticProducts() {
-        List<ContentNodeModel> prodList = getPrivateProducts();
+    public List<ProductModel> getStaticProducts() {
+        List<ProductModel> prodList = getPrivateProducts();
 
-        if (categoryAlias == null) {
-            List<CategoryModel> l = getVirtualGroupRefs();
-            if (l != null) {
-                this.categoryAlias = new CategoryAlias(l, getFilterList());
-            }
+        List<CategoryModel> l = getVirtualGroupRefs();
+        if ( l != null ) {
+            this.categoryAlias = new CategoryAlias(l, getFilterList());
         }
 
         if (categoryAlias != null) {
             try {
                 Collection<ProductModel> aliasProds = this.categoryAlias.processCategoryAlias();
-                if (aliasProds != null) { // if we had an error..then we get
-                                          // null, cause empty list is valid
-                    for (Iterator<ProductModel> pItr = aliasProds.iterator(); pItr.hasNext();) {
-                        ContentNodeModelImpl newProd = (ContentNodeModelImpl) ((ContentNodeModelImpl) pItr.next()).clone();
-                        newProd.setParentNode(this);
-                        newProd.setPriority(prodList.size());
-                        if (!prodList.contains(newProd)) { // don't put a
-                                                           // duplicate product
-                                                           // in there
+                if (aliasProds != null) { // if we had an error..then we get null, cause empty list is valid
+                    for ( ProductModel prod : aliasProds ) {
+                    	ProductModel newProd = (ProductModel)prod.clone();
+                        ( (ContentNodeModelImpl)newProd ).setParentNode(this);
+                        ( (ContentNodeModelImpl)newProd ).setPriority(prodList.size());
+                        if (!prodList.contains(newProd)) { // don't put a duplicate product in there
                             prodList.add(newProd);
                             // LOGGER.debug(" ##### added aliased product: " +
                             // newProd.getContentName());
@@ -407,16 +415,14 @@ public class CategoryModel extends ProductContainer {
                 }
             }
         } else {
-            filterList = Collections.EMPTY_LIST;
+            filterList = Collections.emptyList();
         }
         return filterList;
     }
 
 	//** ContentFactory.getProductByName() is the main user..
 	public ProductModel getProductByName(String productId) {
-		Collection prods = getProducts();
-		for (Iterator pItr = prods.iterator(); pItr.hasNext();) {
-			ProductModel pm = (ProductModel) pItr.next();
+		for ( ProductModel pm : getProducts() ) {
 			if (pm.getContentName().equals(productId)) {
 				return pm;
 			}
@@ -426,9 +432,7 @@ public class CategoryModel extends ProductContainer {
 
 	//** setNearestParentForProduct() is the main user..
 	public ProductModel getPrivateProductByName(String productId) {
-		Collection prods = getPrivateProducts();
-		for (Iterator pItr = prods.iterator(); pItr.hasNext();) {
-			ProductModel pm = (ProductModel) pItr.next();
+		for ( ProductModel pm : getPrivateProducts() ) {
 			if (pm.getContentName().equals(productId)) {
 				return pm;
 			}
@@ -506,22 +510,22 @@ public class CategoryModel extends ProductContainer {
 	 * @return content key of the category/department this alias category
 	 * points to. If it this category is not a alias category , return null.
 	 */
-        public ContentKey getAliasAttributeValue() {
-            return (ContentKey) this.getCmsAttributeValue("ALIAS");
-        }
+	public ContentKey getAliasAttributeValue() {
+	    return (ContentKey) this.getCmsAttributeValue("ALIAS");
+	}
 
 	/**
 	 * Returns alias category if has
 	 *
 	 * @return category<CategoryModel>
 	 */
-        public CategoryModel getAliasCategory() {
-            ContentKey key = getAliasAttributeValue();
-            if (key != null) {
-                return (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
-            }
-            return null;
+    public CategoryModel getAliasCategory() {
+        ContentKey key = getAliasAttributeValue();
+        if (key != null) {
+            return (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
         }
+        return null;
+    }
 	
 	public boolean getTreatAsProduct() {
 	    return getAttribute("TREAT_AS_PRODUCT", false);
@@ -530,21 +534,20 @@ public class CategoryModel extends ProductContainer {
 	/**
 	 * Recursive method to get all brands.
 	 */
-	private void getAllBrands(Set brands, CategoryModel category) throws FDResourceException {
+	private void getAllBrands(Set<BrandModel> brands, CategoryModel category) throws FDResourceException {
 		if (category == null) {
 			return;
 		}
 
-		List subFolders = category.getSubcategories();
+		List<CategoryModel> subFolders = category.getSubcategories();
 		if (subFolders != null && subFolders.size() != 0) {
-			for (Iterator sf = subFolders.iterator(); sf.hasNext();) {
-				getAllBrands(brands, (CategoryModel) sf.next());
+			for ( CategoryModel c : subFolders ) {
+				getAllBrands( brands, c );
 			}
 		}
 
-		Collection products = category.getProducts();
-		for (Iterator p = products.iterator(); p.hasNext();) {
-			ProductModel product = (ProductModel) p.next();
+		Collection<ProductModel> products = category.getProducts();
+		for ( ProductModel product : products ) {
 			if (product.isDiscontinued()) {
 				continue;
 			}
@@ -552,11 +555,14 @@ public class CategoryModel extends ProductContainer {
 		}
 	}
 
-	private boolean hasCategoryAlias() {
+	public boolean hasCategoryAlias() {
 		return categoryAlias != null;
 	}
 
 	private class CategoryAlias implements Serializable {
+		
+		private static final long	serialVersionUID	= -2035449126009749044L;
+		
 		private final List<CategoryModel> categoryRefs;
 		private final List<String> productFilterNames;
 
@@ -567,13 +573,12 @@ public class CategoryModel extends ProductContainer {
 		}
 
 		public Collection<ProductModel> processCategoryAlias() throws FDResourceException {
-			Collection<ProductModel> products = new ArrayList<ProductModel>();
+			List<ProductModel> products = new ArrayList<ProductModel>();
 			try {
-				for (Iterator<CategoryModel> ci = categoryRefs.iterator(); ci.hasNext();) {
-					CategoryModel cm = ci.next();
-					products.addAll(cm.getPrivateProducts());
+				for ( CategoryModel cm : categoryRefs ) {
+					products.addAll(cm.getStaticProducts());	
 				}
-				return filterProducts((List) products);
+				return filterProducts(products);
 			} catch (FDResourceException fdre) {
 				LOGGER.error("caught resource exception in CategoryAlias.processCategory()", fdre);
 				throw fdre;
@@ -586,8 +591,9 @@ public class CategoryModel extends ProductContainer {
 			if (this.productFilterNames != null && !this.productFilterNames.isEmpty()) {
 				productFilters = ProductFilterFactory.getInstance().getFilters(this.productFilterNames);
 				// LOGGER.debug(" List of Filters = " + productFilters.size());
-			} else
-				productFilters = Collections.EMPTY_LIST;
+			} else {
+				productFilters = Collections.emptyList();
+			}
 			List<ProductModel> nodeList = nodes;
 			try {
 				for (Iterator<ProductFilterI> fi = productFilters.iterator(); fi.hasNext() && !nodeList.isEmpty();) {
@@ -621,49 +627,49 @@ public class CategoryModel extends ProductContainer {
 	}
 	
 	/**
-         * 
-         * @return CategoryModel looked up by RATING_HOME
-         */
-        public CategoryModel getRatingHome() {
-            ContentKey key = (ContentKey) getCmsAttributeValue("RATING_HOME");
-            
-            return key != null ? (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key) : null;
-        }
+     * 
+     * @return CategoryModel looked up by RATING_HOME
+     */
+    public CategoryModel getRatingHome() {
+        ContentKey key = (ContentKey) getCmsAttributeValue("RATING_HOME");
         
-        @SuppressWarnings("unchecked")
-        public List<Html> getArticles() {
-            return FDAttributeFactory.constructWrapperList(this, "ARTICLES");
-        }
-        
-        @SuppressWarnings("unchecked")
-        public List<Html> getTopMedia() {
-            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_TOP_MEDIA");
-        }
+        return key != null ? (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key) : null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Html> getArticles() {
+        return FDAttributeFactory.constructWrapperList(this, "ARTICLES");
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<Html> getTopMedia() {
+        return FDAttributeFactory.constructWrapperList(this, "CATEGORY_TOP_MEDIA");
+    }
 
-        @SuppressWarnings("unchecked")
-        public List<Html> getMiddleMedia() {
-            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_MIDDLE_MEDIA");
-        }
+    @SuppressWarnings("unchecked")
+    public List<Html> getMiddleMedia() {
+        return FDAttributeFactory.constructWrapperList(this, "CATEGORY_MIDDLE_MEDIA");
+    }
 
-        @SuppressWarnings("unchecked")
-        public List<Html> getBottomMedia() {
-            return FDAttributeFactory.constructWrapperList(this, "CATEGORY_BOTTOM_MEDIA");
-        }
-        
-        public Html getPreviewMedia() {
-            return FDAttributeFactory.constructHtml(this, "CATEGORY_PREVIEW_MEDIA");
-        }
-        
-        public String getMaterialCharacteristic() {
-            return (String) getCmsAttributeValue("MATERIAL_CHARACTERISTIC");
-        }
-        
-        public Html getAlternateContent() {
-            return FDAttributeFactory.constructHtml(this, "ALTERNATE_CONTENT");
-        }
-        
-        public Html getCategoryStorageGuideMedia() {
-            return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
-        }
-        
+    @SuppressWarnings("unchecked")
+    public List<Html> getBottomMedia() {
+        return FDAttributeFactory.constructWrapperList(this, "CATEGORY_BOTTOM_MEDIA");
+    }
+    
+    public Html getPreviewMedia() {
+        return FDAttributeFactory.constructHtml(this, "CATEGORY_PREVIEW_MEDIA");
+    }
+    
+    public String getMaterialCharacteristic() {
+        return (String) getCmsAttributeValue("MATERIAL_CHARACTERISTIC");
+    }
+    
+    public Html getAlternateContent() {
+        return FDAttributeFactory.constructHtml(this, "ALTERNATE_CONTENT");
+    }
+    
+    public Html getCategoryStorageGuideMedia() {
+        return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
+    }
+    
 }
