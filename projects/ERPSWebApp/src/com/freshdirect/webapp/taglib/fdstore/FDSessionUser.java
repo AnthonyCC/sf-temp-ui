@@ -1062,7 +1062,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public boolean isEligibleForStandingOrders() {
 		return user.isEligibleForStandingOrders();
 	}
-
+	
+	@Override
+	public boolean isEligibleForClientCodes() {
+		return user.isEligibleForClientCodes();
+	}
 	
 	@Override
 	public FDStandingOrder getCurrentStandingOrder() {

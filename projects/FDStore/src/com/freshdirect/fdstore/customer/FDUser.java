@@ -178,7 +178,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	
 	protected Boolean isSOEligible = null;
 
-	
+	protected Boolean cliCodeEligible = null;
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -1700,20 +1700,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 			isSOEligible = Boolean.FALSE;
 
 			if (isSOEnabled()) {
-				try {
-					FDOrderHistory h = (FDOrderHistory) getOrderHistory();
-					
-					// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
-					for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
-						LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
-						if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() ) || i.getStandingOrderId() != null ) {
-							isSOEligible = Boolean.TRUE;
-							break;
-						}
-					}
-				} catch (FDResourceException e) {
-					LOGGER.error("Order info crashed; exc="+e);
-				}
+				isSOEligible = hasCorporateOrder();
 			}
 		}
 
@@ -1722,6 +1709,33 @@ public class FDUser extends ModelSupport implements FDUserI {
 		return isSOEligible.booleanValue();
 	}
 
+	private Boolean hasCorporateOrder() {
+		try {
+			FDOrderHistory h = (FDOrderHistory) getOrderHistory();
+			
+			// System.err.println("order info: " + h.getFDOrderInfos().size() + " == total " + h.getTotalOrderCount());
+			for (FDOrderInfoAdapter i : h.getFDOrderInfos()) {
+				LOGGER.debug("Sale ID=" + i.getErpSalesId() + "; DLV TYPE=" + i.getDeliveryType() + "; SO ID=" + i.getStandingOrderId());
+				if (EnumDeliveryType.CORPORATE.equals( i.getDeliveryType() ) || i.getStandingOrderId() != null ) {
+					return Boolean.TRUE;
+				}
+			}
+			return Boolean.FALSE;
+		} catch (FDResourceException e) {
+			LOGGER.error("Order info crashed; exc="+e);
+			return null;
+		}
+	}
+
+	@Override
+	public boolean isEligibleForClientCodes() {
+		if (cliCodeEligible == null)
+			cliCodeEligible = hasCorporateOrder();
+
+		LOGGER.debug("Customer eligible for Client Codes: " + cliCodeEligible);
+		
+		return cliCodeEligible != null ? cliCodeEligible : false;
+	}
 	
 	@Override
 	public FDStandingOrder getCurrentStandingOrder() {

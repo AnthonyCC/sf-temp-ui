@@ -27,7 +27,7 @@
 			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	<% } %>
 </head>
-<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10">
+<BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10 yui-skin-sam">
 <CENTER>
 <%@ include file="/common/template/includes/globalnav.jspf" %> 
 <TABLE WIDTH="745" BORDER="0" CELLPADDING="0" CELLSPACING="0">

@@ -404,6 +404,9 @@ public interface FDUserI extends java.io.Serializable {
 	
 	/** Is customer eligible for Standing Orders service? */
 	public boolean isEligibleForStandingOrders();
+
+	/** Is customer eligible for Client Codes service? */
+	public boolean isEligibleForClientCodes();
 	
 	public FDStandingOrder getCurrentStandingOrder();
 	

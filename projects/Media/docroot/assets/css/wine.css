@@ -705,3 +705,33 @@ div.nav_sub {
 .wine_iconDesc b {
 	white-space: nowrap;
 }
+
+/* YUI calendar changes */
+.yui-calendar td.calcell a {
+	color: #336600 !important;
+}
+
+.yui-calendar td.calcell.calcellhover {
+	background-color: #336600 !important;
+	border: 1px solid #336600 !important;
+	color: #FFF !important;
+}
+
+.yui-calendar td.calcell.calcellhover a {
+	background-color: #336600 !important;
+	color: #FFF !important;
+}
+
+.yui-calcontainer .title {
+	background: #669933 !important;
+	color: #FFF !important;
+}
+
+.yui-calendar td.calcell.selected a {
+	background-color: #66CC66 !important;
+	color: #FFF !important;
+}
+
+.yui-calcontainer .yui-cal-nav .yui-cal-nav-btn.yui-default {
+	background: #669933 !important;
+}

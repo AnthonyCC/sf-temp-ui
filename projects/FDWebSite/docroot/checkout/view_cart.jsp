@@ -14,6 +14,9 @@
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
 request.setAttribute("listPos", "SystemMessage");
 
+if (user.isEligibleForClientCodes()) {
+	request.setAttribute("__fd_load_clicode_edit__", Boolean.TRUE);
+}
 
 boolean showMinError = true;
 %>

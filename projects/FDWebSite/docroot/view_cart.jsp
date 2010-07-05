@@ -18,6 +18,10 @@
 //--------OAS Page Variables-----------------------
 request.setAttribute("sitePage", "www.freshdirect.com/view_cart.jsp");
 request.setAttribute("listPos", "SystemMessage");
+
+if (user.isEligibleForClientCodes()) {
+	request.setAttribute("__fd_load_clicode_edit__", Boolean.TRUE);
+}
 %>
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <%

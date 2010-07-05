@@ -2,6 +2,8 @@ package com.freshdirect.fdstore.customer;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingEngine;
 import com.freshdirect.common.pricing.PricingException;
+import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDCachedFactory;
@@ -52,7 +55,6 @@ public class FDProductSelection implements FDProductSelectionI {
 	private String customerListLineId;
 	private boolean invalidConfig = false;
 	private double fixedPrice;
-
 	
 	public FDProductSelection(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String pZoneId) {
 		this(sku, productRef, configuration, null, pZoneId);
@@ -546,5 +548,9 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public void setPricingContext(PricingContext pCtx) {
 		this.orderLine.setPricingContext(pCtx);
+	}
+	
+	public List<ErpClientCode> getClientCodes() {
+		return this.orderLine.getClientCodes();
 	}
 }

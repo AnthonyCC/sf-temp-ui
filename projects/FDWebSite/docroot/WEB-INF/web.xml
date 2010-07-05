@@ -57,10 +57,21 @@
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
      <servlet-class>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-class>
    </servlet>
+   
+	<servlet>
+		<servlet-name>ClientCodeReportServlet</servlet-name>
+		<servlet-class>com.freshdirect.webapp.util.ClientCodeReportServlet</servlet-class>
+	</servlet>
+   
    <servlet-mapping>
      <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
      <url-pattern>/api/json-rpc.jsp</url-pattern>
-   </servlet-mapping>	
+   </servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>ClientCodeReportServlet</servlet-name>
+		<url-pattern>/api/clientCodeReport</url-pattern>
+	</servlet-mapping>	
 
     <session-config>
         <session-timeout>30</session-timeout>

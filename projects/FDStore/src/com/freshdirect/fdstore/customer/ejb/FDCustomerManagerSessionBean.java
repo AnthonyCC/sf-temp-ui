@@ -56,6 +56,8 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
+import com.freshdirect.customer.ErpClientCode;
+import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
 import com.freshdirect.customer.ErpComplaintLineModel;
@@ -5644,6 +5646,101 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		
 		return click2callModel;
+	}
+
+	private static final String CC_BY_SALE_QUERY = "SELECT CLIENT_CODE, QUANTITY, SALE_ID, UNIT_PRICE, TAX_RATE, " +
+			"PRODUCT_DESCRIPTION, DELIVERY_DATE FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ? ORDER BY CLIENT_CODE, PRODUCT_DESCRIPTION";
+
+	public List<ErpClientCodeReport> findClientCodesBySale(String saleId)
+			throws FDResourceException {
+		Connection conn = null;
+		List<ErpClientCodeReport> ccs = new ArrayList<ErpClientCodeReport>();
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement(CC_BY_SALE_QUERY);
+			ps.setString(1, saleId);
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ErpClientCodeReport item = new ErpClientCodeReport();
+				item.setClientCode(rs.getString(1));
+				item.setQuantity(rs.getInt(2));
+				item.setOrderId(rs.getString(3));
+				item.setUnitPrice(rs.getDouble(4));
+				item.setTaxRate(rs.getDouble(5));
+				item.setProductDescription(rs.getString(6));
+				item.setDeliveryDate(rs.getDate(7));
+				ccs.add(item);
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+		return ccs;
+	}
+
+	private static final String CC_BY_DATE_RANGE_QUERY_1 = "SELECT CLIENT_CODE, QUANTITY, SALE_ID, UNIT_PRICE, TAX_RATE, " +
+			"PRODUCT_DESCRIPTION, DELIVERY_DATE FROM CUST.ORDERLINE_CLIENTCODE WHERE CUSTOMER_ID = ? AND DELIVERY_DATE >= ? " +
+			"ORDER BY SALE_ID, CLIENT_CODE, PRODUCT_DESCRIPTION";
+	private static final String CC_BY_DATE_RANGE_QUERY_2 = "SELECT CLIENT_CODE, QUANTITY, SALE_ID, UNIT_PRICE, TAX_RATE, " +
+			"PRODUCT_DESCRIPTION, DELIVERY_DATE FROM CUST.ORDERLINE_CLIENTCODE WHERE CUSTOMER_ID = ? AND DELIVERY_DATE BETWEEN ? AND ?" +
+			"ORDER BY SALE_ID, CLIENT_CODE, PRODUCT_DESCRIPTION";
+	
+	public List<ErpClientCodeReport> findClientCodesByDateRange(FDIdentity customerId, Date start, Date end) throws FDResourceException {
+		Connection conn = null;
+		List<ErpClientCodeReport> ccs = new ArrayList<ErpClientCodeReport>();
+		try {
+			conn = getConnection();
+			String query;
+			if (start == null)
+				throw new FDResourceException("start date is mandatory");
+			else if (end == null)
+				query = CC_BY_DATE_RANGE_QUERY_1;
+			else
+				query = CC_BY_DATE_RANGE_QUERY_2;
+			
+			PreparedStatement ps = conn.prepareStatement(query);
+			ps.setString(1, customerId.getErpCustomerPK());
+			ps.setDate(2, new java.sql.Date(start.getTime()));
+			if (end != null)
+				ps.setDate(3, new java.sql.Date(end.getTime()));
+
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ErpClientCodeReport item = new ErpClientCodeReport();
+				item.setClientCode(rs.getString(1));
+				item.setQuantity(rs.getInt(2));
+				item.setOrderId(rs.getString(3));
+				item.setUnitPrice(rs.getDouble(4));
+				item.setTaxRate(rs.getDouble(5));
+				item.setProductDescription(rs.getString(6));
+				item.setDeliveryDate(rs.getDate(7));
+				ccs.add(item);
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+		return ccs;
 	}
 }
 

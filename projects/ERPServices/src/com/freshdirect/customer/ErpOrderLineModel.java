@@ -1,10 +1,11 @@
 package com.freshdirect.customer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -97,6 +98,8 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
     //Added for Zone Pricing
     private PricingContext pricingCtx;
     private String pricingZoneId;
+    
+    private List<ErpClientCode> clientCodes = new ArrayList<ErpClientCode>();
     
     public String getSavingsId() {
 		return savingsId;
@@ -293,6 +296,9 @@ public class ErpOrderLineModel extends ModelSupport implements FDConfigurableI {
 		this.pricingZoneId = pricingZoneId;
 	}
 
+	public List<ErpClientCode> getClientCodes() {
+		return clientCodes;
+	}
 }
 
 

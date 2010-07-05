@@ -2,6 +2,7 @@ package com.freshdirect.webapp.util;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -24,6 +25,7 @@ import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.content.attributes.AttributeCollection;
+import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -289,12 +291,13 @@ public class FDEventUtilTest extends FDCustomerManagerTestSupport {
 			 * cartlineId instead of generating a new one.
 			 * 
 			 */
+			List<ErpClientCode> clientCodes = Collections.emptyList();
 			cartLine =
 				new FDCartLineModel(
 					new FDSku(product),
 					prodNode,
 					new FDConfiguration(quantity, salesUnit.getName(), varMap),
-					origCartLineId, null, false, null, ZonePriceListing.MASTER_DEFAULT_ZONE);
+					origCartLineId, null, false, null, ZonePriceListing.MASTER_DEFAULT_ZONE, clientCodes);
 		}
 
 		try {

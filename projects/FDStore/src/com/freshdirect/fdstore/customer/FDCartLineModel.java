@@ -1,5 +1,8 @@
 package com.freshdirect.fdstore.customer;
 
+import java.util.List;
+
+import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpReturnLineModel;
@@ -44,12 +47,14 @@ public class FDCartLineModel extends AbstractCartLine {
 		this.orderLine.setCartlineId(ID_GENERATOR.getNextId());
 	}
 	
-	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId, boolean requestNotification, String variantId, String pZoneId) {
+	public FDCartLineModel(FDSku sku, ProductModel productRef, FDConfigurableI configuration, String cartlineId, String recipeSourceId,
+			boolean requestNotification, String variantId, String pZoneId, List<ErpClientCode> clientCodes) {
 		super(sku, productRef, configuration, variantId, pZoneId);
 		this.orderLine.setCartlineId(cartlineId);
 		this.orderLine.setRecipeSourceId(recipeSourceId);
 		this.orderLine.setRequestNotification(requestNotification);
 		this.orderLine.setVariantId(variantId);
+		this.orderLine.getClientCodes().addAll(clientCodes);
 	}
 	
 	public FDCartLineModel( FDProductSelectionI ps ) {

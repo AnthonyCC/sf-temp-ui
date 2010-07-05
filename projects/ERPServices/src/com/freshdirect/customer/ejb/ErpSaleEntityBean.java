@@ -9,7 +9,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
@@ -19,6 +21,9 @@ import javax.ejb.ObjectNotFoundException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.common.pricing.Price;
+import com.freshdirect.common.pricing.PricingEngine;
+import com.freshdirect.common.pricing.PricingException;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
@@ -34,6 +39,8 @@ import com.freshdirect.customer.ErpChargeInvoiceModel;
 import com.freshdirect.customer.ErpChargeSettlementModel;
 import com.freshdirect.customer.ErpChargebackModel;
 import com.freshdirect.customer.ErpChargebackReversalModel;
+import com.freshdirect.customer.ErpClientCode;
+import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
 import com.freshdirect.customer.ErpDeliveryConfirmModel;
@@ -42,6 +49,7 @@ import com.freshdirect.customer.ErpFailedSettlementModel;
 import com.freshdirect.customer.ErpFundsRedepositModel;
 import com.freshdirect.customer.ErpInvoiceModel;
 import com.freshdirect.customer.ErpModifyOrderModel;
+import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpRedeliveryModel;
 import com.freshdirect.customer.ErpResubmitPaymentModel;
@@ -59,6 +67,7 @@ import com.freshdirect.framework.core.DependentPersistentBeanSupport;
 import com.freshdirect.framework.core.EntityBeanSupport;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGiftCardAuthModel;
 import com.freshdirect.giftcard.ErpGiftCardTransModel;
@@ -317,6 +326,8 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		ErpTransactionList txList = getTransactionPBList();
 		txList.create(conn);
 
+		// create client codes
+		createClientCodes(conn);
 	
 		complaints.create(conn);
 		if(model.hasUsedPromotionCodes()==true) {
@@ -325,6 +336,70 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		createCroModMaxDate(conn);
 
 		return getPK();
+	}
+	
+	private void deleteClientCodes(Connection conn) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("DELETE FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ?");
+		ps.setString(1, getPK().getId());
+		ps.executeUpdate();
+		ps.close();		
+	}
+
+	private void createClientCodes(Connection conn) throws SQLException {
+		PreparedStatement ps;
+		Map<String,List<ErpClientCodeReport>> clientCodes = new HashMap<String, List<ErpClientCodeReport>>();
+		ErpAbstractOrderModel currentOrder = getCurrentOrder();
+		List<ErpOrderLineModel> orderLines = currentOrder.getOrderLines();
+		for (ErpOrderLineModel item : orderLines) {
+			// basic error resolution
+			if (item.getCartlineId() == null)
+				continue;
+			
+			ArrayList<ErpClientCodeReport> ccList = new ArrayList<ErpClientCodeReport>();
+			for (ErpClientCode cc : item.getClientCodes()) {
+				ErpClientCodeReport ccr = new ErpClientCodeReport(cc);
+				double disAmount;
+				Price p = new Price(item.getBasePrice());
+				if (item.getDiscount() != null) {
+					try {
+						Price discountP = PricingEngine.applyDiscount(p, 1, item.getDiscount());
+						disAmount = discountP.getBasePrice();
+					} catch (PricingException e) {
+						disAmount = 0.0;
+					}
+				} else {
+					disAmount = item.getBasePrice();
+				}
+				ccr.setUnitPrice(MathUtil.roundDecimal(disAmount));
+				ccr.setTaxRate(item.getTaxRate());
+				ccr.setDeliveryDate(currentOrder.getRequestedDate());
+				ccr.setProductDescription(item.getDescription());
+				ccList.add(ccr);
+			}
+
+			// we'll overwrite possible duplicates
+			clientCodes.put(item.getCartlineId(), ccList);
+		}
+		ps = conn.prepareStatement("INSERT INTO CUST.ORDERLINE_CLIENTCODE (CLIENT_CODE, QUANTITY, ORDINAL, CUSTOMER_ID, CARTLINE_ID, SALE_ID, UNIT_PRICE, TAX_RATE, PRODUCT_DESCRIPTION, DELIVERY_DATE) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+		for (Map.Entry<String, List<ErpClientCodeReport>> cartItem : clientCodes.entrySet()) {
+			for (int i = 0; i < cartItem.getValue().size(); i++) {
+				ErpClientCodeReport ccItem = cartItem.getValue().get(i);
+				ps.setString(1, ccItem.getClientCode());
+				ps.setInt(2, ccItem.getQuantity());
+				ps.setInt(3, i);
+				ps.setString(4, model.getCustomerPk().getId());
+				ps.setString(5, cartItem.getKey());
+				ps.setString(6, getPK().getId());
+				ps.setDouble(7, ccItem.getUnitPrice());
+				ps.setDouble(8, ccItem.getTaxRate());
+				ps.setString(9, ccItem.getProductDescription());
+				ps.setDate(10, new java.sql.Date(ccItem.getDeliveryDate().getTime()));
+				ps.addBatch();
+			}
+		}
+		ps.executeBatch();
+		ps.close();
 	}
 
 	private void createCroModMaxDate(Connection conn)throws SQLException {
@@ -403,7 +478,6 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		txList.setParentPK(getPK());
 		txList.load(conn);
 		
-
 		ErpComplaintList compList = new ErpComplaintList();
 		compList.setParentPK(getPK());
 		compList.load(conn);
@@ -415,8 +489,35 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 		List<ErpCartonInfo> cartonInfo = ErpCartonsDAO.getCartonInfo(conn, getPK());		
 		model = new ErpSaleModel(customerPk, status, txList.getModelList(), compList.getModelList(), sapOrderNumber, shippingInfo, usedPromotionCodes, cartonInfo, dlvPassId, saleType, standingOrderId);
 		model.setPK(oldPk);
-
+		
 		super.decorateModel(model);
+
+		// load client codes
+		loadClientCodes(conn);
+	}
+
+	private void loadClientCodes(Connection conn) throws SQLException {
+		PreparedStatement ps;
+		ResultSet rs;
+		ps = conn.prepareStatement("SELECT CLIENT_CODE, QUANTITY, CARTLINE_ID FROM CUST.ORDERLINE_CLIENTCODE WHERE SALE_ID = ? ORDER BY CARTLINE_ID, ORDINAL");
+		ps.setString(1, getPK().getId());
+		rs = ps.executeQuery();
+		Map<String,List<ErpClientCode>> clientCodes = new HashMap<String, List<ErpClientCode>>();
+		while (rs.next()) {
+			ErpClientCode cc = new ErpClientCode();
+			cc.setClientCode(rs.getString("CLIENT_CODE"));
+			cc.setQuantity(rs.getInt("QUANTITY"));
+			String cartLine = rs.getString("CARTLINE_ID");
+			if (!clientCodes.containsKey(cartLine))
+				clientCodes.put(cartLine, new ArrayList<ErpClientCode>());
+			clientCodes.get(cartLine).add(cc);
+		}
+		rs.close();
+		ps.close();
+		List<ErpOrderLineModel> orderLines = getCurrentOrder().getOrderLines();
+		for (ErpOrderLineModel ol : orderLines)
+			if (clientCodes.containsKey(ol.getCartlineId()))
+				ol.getClientCodes().addAll(clientCodes.get(ol.getCartlineId()));
 	}
 
 	String saleUpdateWithWaveSQL =
@@ -474,6 +575,9 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 			txList.store(conn);
 			updateCroModMaxDate(conn);
 		}
+		
+		deleteClientCodes(conn);
+		createClientCodes(conn);
 	
 		if (complaints.isModified()) {
 			complaints.store(conn);

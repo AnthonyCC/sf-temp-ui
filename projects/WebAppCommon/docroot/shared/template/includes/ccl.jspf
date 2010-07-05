@@ -6,8 +6,11 @@
 <%@ page import='com.freshdirect.framework.util.NVL'%>
 <%@ page import='com.freshdirect.webapp.util.RequestUtil'%>
 <%@ page import='com.freshdirect.webapp.util.json.FDCustomerCreatedListJSONSerializer'%>
-<jsp:useBean id="JSONRPCBridge" scope="session"
-   class="com.freshdirect.webapp.util.json.FDJSONRPCBridge">
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Calendar"%>
+<jsp:useBean id="JSONRPCBridge" scope="session" class="com.freshdirect.webapp.util.json.FDJSONRPCBridge">
 </jsp:useBean>
 <% 
 	FDUserI fdUser = (FDUserI) session.getAttribute(SessionName.USER);
@@ -32,8 +35,159 @@
 		RequestUtil.appendToAttribute(request,"bodyOnLoad","CCL_hookEvents()",";");
 
 		// Load YUI dependencies
-%><%@ include file="/shared/template/includes/yui.jspf" %><%
+%><%@ include file="/shared/template/includes/yui.jspf" %>
+<%
+if (fdUser.isEligibleForClientCodes() && request.getAttribute("__fd_load_cc_report__") != null) {
+	DateFormat usDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	DateFormat pageDateFormat = new SimpleDateFormat("MM/yyyy");
+	DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	Calendar ccrCal = Calendar.getInstance();
+	Date ccrNow = (Date) request.getAttribute("__fd_cc_report_now__");
+	ccrCal.setTime(ccrNow);
+	ccrCal.add(Calendar.MONTH, -13);
+	String ccrFirstDate = usDateFormat.format(ccrCal.getTime());
+	String ccrFirstPage = pageDateFormat.format(ccrCal.getTime());
+	String ccrFirstIso = isoDateFormat.format(ccrCal.getTime());
+	ccrCal.add(Calendar.DAY_OF_MONTH, 1);
+	String ccrSecondDate = usDateFormat.format(ccrCal.getTime());
+	ccrCal.setTime(ccrNow);
+	ccrCal.add(Calendar.DAY_OF_MONTH, 7);
+	String ccrLastDate = usDateFormat.format(ccrCal.getTime());
+	String ccrLastPage = pageDateFormat.format(ccrCal.getTime());
+	ccrCal.add(Calendar.DAY_OF_MONTH, -1);
+	String ccrLastBeforeDate = usDateFormat.format(ccrCal.getTime());
+%>
+<script type="text/javascript">
+if (typeof FreshDirect == "undefined" || !FreshDirect) {
+    var FreshDirect = {};
+}
+
+YAHOO.util.Event.onDOMReady(function() {
+	var CCReport = {};
+	FreshDirect.CCReport = CCReport;
+
+	var DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+	CCReport.startCal = new YAHOO.widget.Calendar("ccrep_startCal", "ccrep_startCont",
+			{
+				title: "Choose a start date:",
+				close: true,
+				navigator: true,
+				mindate: "<%= ccrFirstDate %>",
+				maxdate: "<%= ccrLastBeforeDate %>",
+				pagedate: "<%= ccrFirstPage %>"
+			});
+	CCReport.startDate = CCReport.startCal.select("<%= ccrFirstDate %>")[0];
+	CCReport.startCal.render();
+	CCReport.endCal = new YAHOO.widget.Calendar("ccrep_endCal", "ccrep_endCont",
+			{
+				title: "Choose an end date:",
+				close: true,
+				navigator: true,
+				mindate: "<%= ccrSecondDate %>",
+				maxdate: "<%= ccrLastDate %>",
+				pagedate: "<%= ccrLastPage %>"
+			});
+	CCReport.endCal.render();
+	CCReport.endDate = null;
+
+	var showStartCal = function() {
+		CCReport.startCal.show();
+		CCReport.endCal.hide();
+	};
+
+	var showEndCal = function() {
+		CCReport.endCal.show();
+		CCReport.startCal.hide();
+	};
+	
+	YAHOO.util.Event.addListener("ccrep_start", "focus", showStartCal, CCReport.startCal, true);
+	YAHOO.util.Event.addListener("ccrep_end", "focus", showEndCal, CCReport.endCal, true);
+
+	var formatDate = function(date) {
+		return YAHOO.util.Date.format(date, { format: "%D" });
+	}
+
+	var updateLink = function() {
+		var link = "/api/clientCodeReport?customer=<%= fdUser.getIdentity().getErpCustomerPK() %>";
+		link += "&start=" + YAHOO.util.Date.format(CCReport.startDate, { format: "%Y-%m-%d" });
+		if (CCReport.endDate != null)
+			link += "&end=" + YAHOO.util.Date.format(CCReport.endDate, { format: "%Y-%m-%d" });
+		YAHOO.util.Dom.get("ccrep_action").href = link;
+	}; 	
+
+	var startSelectHandler = function(type,args,obj) { 
+		var selected = args[0]; 
+		var selDate = this.toDate(selected[0]);
+		CCReport.startDate = selDate;
+		YAHOO.util.Dom.get("ccrep_start").value = formatDate(CCReport.startDate);
+		if (CCReport.endDate != null && CCReport.endDate.getTime() < CCReport.startDate.getTime()) {
+			CCReport.endDate = new Date(CCReport.startDate.getTime() + DAY_IN_MILLIS);
+			YAHOO.util.Dom.get("ccrep_end").value = formatDate(CCReport.endDate);
+			CCReport.endCal.select(CCReport.endDate);
+			CCReport.endCal.setYear(CCReport.endDate.getFullYear());
+			CCReport.endCal.setMonth(CCReport.endDate.getMonth());
+			CCReport.endCal.render();
+		}
+		CCReport.startCal.hide();
+		updateLink();
+	}; 	
+
+	var endSelectHandler = function(type,args,obj) { 
+		var selected = args[0]; 
+		var selDate = this.toDate(selected[0]);
+		CCReport.endDate = selDate;
+		YAHOO.util.Dom.get("ccrep_end").value = formatDate(CCReport.endDate);
+		if (CCReport.endDate.getTime() < CCReport.startDate.getTime()) {
+			CCReport.startDate = new Date(CCReport.endDate.getTime() - DAY_IN_MILLIS);
+			YAHOO.util.Dom.get("ccrep_start").value = formatDate(CCReport.startDate);
+			CCReport.startCal.select(CCReport.startDate);
+			CCReport.startCal.setYear(CCReport.startDate.getFullYear());
+			CCReport.startCal.setMonth(CCReport.startDate.getMonth());
+			CCReport.startCal.render();
+		}
+		CCReport.endCal.hide();
+		updateLink();
+	};
+
+	CCReport.startCal.selectEvent.subscribe(startSelectHandler, CCReport.startCal, true); 	
+	CCReport.endCal.selectEvent.subscribe(endSelectHandler, CCReport.endCal, true);
+});
+</script>
+<%
+}
+if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibleForClientCodes()) {
+	%>
+	<script type="text/javascript" src="/assets/javascript/clicode_edit.js"></script>
+	<%
+} else {
+	%>
+	<script type="text/javascript">
+	if (typeof FreshDirect == "undefined" || !FreshDirect) {
+	    var FreshDirect = {};
+	}
+
+	(function() {
+		var ClientCodes = {};
 		
+		FreshDirect.ClientCodes = ClientCodes;
+		var undoQty = {};
+		
+		ClientCodes.saveQty = function(idx, value) {
+			undoQty[idx] = value;
+		};
+	
+		ClientCodes.undoQty = function(idx) {
+			var node = document.getElementById("quantity_" + idx);
+			if (node != null)
+				node.value = undoQty[idx];
+		};
+	
+		ClientCodes.updateQty = function(idx) {
+		};
+	})();
+	</script>
+	<%
+}		
 		if (FDStoreProperties.isCclAjaxDebugClient()) { 
 %>
 <script type="text/javascript" src="/assets/javascript/rounded_corners.inc.js"></script>

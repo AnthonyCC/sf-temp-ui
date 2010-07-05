@@ -1,4 +1,5 @@
 <%@ page import="java.util.Calendar"%>
+<%@ page import="java.util.Date"%>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import="com.freshdirect.customer.EnumSaleType" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
@@ -38,7 +39,14 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 	}
 %>
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" />
-
+<%
+Date ccrNow = new Date();
+if (user.isEligibleForClientCodes()) {
+	request.setAttribute("__yui_load_calendar__", Boolean.TRUE);
+	request.setAttribute("__fd_load_cc_report__", Boolean.TRUE);
+	request.setAttribute("__fd_cc_report_now__", ccrNow);
+}
+%>
 <tmpl:insert template='/common/template/dnav.jsp'>
 
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Your Orders</tmpl:put>
@@ -81,6 +89,36 @@ private String getTimeslotString(Calendar startTimeCal, Calendar endTimeCal){
 	Please review your orders. To check the status of an order, click on the order number.<BR>
 </div>
 <div style="height: 1px; width: 675px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<!-- client codes begin -->
+<% if (user.isEligibleForClientCodes()) { 
+	DateFormat usDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	DateFormat pageDateFormat = new SimpleDateFormat("MM/yyyy");
+	DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	Calendar ccrCal = Calendar.getInstance();
+	ccrCal.setTime(ccrNow);
+	ccrCal.add(Calendar.MONTH, -13);
+	String ccrFirstDate = usDateFormat.format(ccrCal.getTime());
+	String ccrFirstIso = isoDateFormat.format(ccrCal.getTime());
+%>
+<div style="width: 675px; text-align: right; overflow: hidden;">
+<table border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
+	<tr>
+		<td class="text11" style="text-align: right; vertical-align: middle; font-weight: bold;">
+		Export client codes for all orders delivered from&emsp;
+		</td>
+		<td class="text11"><input id="ccrep_start" class="text11" style="background-color: #FFF;" size="10" readonly="readonly" autocomplete="off" value="<%= ccrFirstDate %>"><div id="ccrep_startCont" style="display: none; position: absolute; z-index: 2;">&nbsp;</div></td>
+		<td class="text11">&emsp;</td>
+		<td class="text11"><input id="ccrep_end" class="text11" style="background-color: #FFF;" size="10" readonly="readonly" autocomplete="off" value=""><div id="ccrep_endCont" style="display: none; position: absolute; z-index: 1;">&nbsp;</div></td>
+		<td class="text11">&emsp;</td>
+		<td class="text11" style="text-align: center; vertical-align: middle; font-weight: bold; width: 66px;">
+		<a id="ccrep_action" href="/api/clientCodeReport?customer=<%= user.getIdentity().getErpCustomerPK() %>&start=<%= ccrFirstIso %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export.gif" width="64" height="15" style="border: none;"></a>
+		</td>
+	</tr>
+</table>
+</div>
+<div style="height: 1px; width: 675px; background-color: #ff9933; margin-top: 8px; margin-bottom: 8px;"></div>
+<!-- client codes end -->
+<% } %>
 <br>
 <TABLE WIDTH="690" ALIGN="CENTER" BORDER="0" CELLPADDING="2" CELLSPACING="0">
 	<tr>

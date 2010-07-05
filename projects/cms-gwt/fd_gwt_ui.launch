@@ -69,7 +69,7 @@
 <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="com.google.gwt.eclipse.core.moduleClasspathProvider"/>
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="com.google.gwt.dev.HostedMode"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-port 8888 -startupUrl com.freshdirect.cms.ui.cmsgwt/cmsgwt.html -logLevel INFO -war /home/greg/projects/freshdirect/projects/cms-gwt/war com.freshdirect.cms.ui.cmsgwt com.freshdirect.cms.ui.cmsgwt_Firefox3"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-style OBFUSCATED -port 8888 -startupUrl com.freshdirect.cms.ui.cmsgwt/cmsgwt.html -logLevel INFO -war /home/csongor/FreshDirect/src/labor/projects/cms-gwt/war com.freshdirect.cms.ui.cmsgwt com.freshdirect.cms.ui.cmsgwt_Firefox3"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cms-gwt"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dhivemind.classloader.fix=true -Xmx512m -XX:CompileCommand=exclude,org/eclipse/core/internal/dtree/DataTreeNode,forwardDeltaWith -XX:CompileCommand=exclude,org/eclipse/jdt/internal/compiler/lookup/ParameterizedMethodBinding,&lt;init&gt;"/>
 </launchConfiguration>

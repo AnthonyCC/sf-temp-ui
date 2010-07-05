@@ -1,0 +1,621 @@
+if (typeof FreshDirect == "undefined" || !FreshDirect) {
+    var FreshDirect = {};
+}
+
+(function() {
+	var ClientCodes = {};
+	
+	FreshDirect.ClientCodes = ClientCodes;
+
+	var numbers = "0123456789";
+
+	var ID_PREFIX = "clicode_";
+
+	var trs = [];
+
+	ClientCodes.trs = trs;
+
+	var ccs = {};
+
+	var sums = {};
+
+	var noCodes = {};
+
+	var lastIndexes = {};
+
+	var sortedKeys = function(hash) {
+		var a = [];
+		for (var key in hash)
+			if (hash.hasOwnProperty(key))
+				a.push(parseInt(key, 10));
+		a.sort(function(a,b) { return a - b; });
+		return a;
+	};
+
+	var parseQuantity = function(value) {
+		var val = YAHOO.lang.trim(value);
+		var quantity = parseInt(YAHOO.lang.trim(val), 10);
+		if (!isNaN(quantity)) {
+			for (var i = 0; i < val.length; i++) {
+				if (numbers.indexOf(val.charAt(i)) == -1) {
+					quantity = Number.NaN;
+					break;
+				}
+			}
+		}
+		return quantity;
+	};
+		
+    var get = function(id) {
+        return document.getElementById(ID_PREFIX + id);
+    };
+
+	ClientCodes.dump = function() {
+		alert(YAHOO.lang.JSON.stringify(ccs));
+		return true;
+	};
+
+	var showBlock = function(id) {
+		var item = get(id);
+		item.style.display = "block";
+		return false;
+	};
+
+	var showInline = function(id) {
+		var item = get(id);
+		item.style.display = "inline";
+		return false;
+	};
+
+	var showTr = function(id) {
+		var item = get(id);
+		item.style.display = "";
+		return false;
+	};
+
+	var hideItem = function(id) {
+		var item = get(id);
+		item.style.display = "none";
+		return false;
+	};
+
+	var active = false;
+
+	ClientCodes.show = function() {
+		if (!active) {
+			hideItem("show");
+			showInline("hide");
+			showInline("save");
+			for (var item in trs) {
+				showTr(trs[item]);
+			}
+			active = true;
+		}
+		return false;
+	};
+
+	ClientCodes.hide = function() {
+		if (ClientCodes.isDirty())
+			return true;
+
+		if (active) {
+			for (var item in trs) {
+				hideItem(trs[item]);
+			}
+			hideItem("save");
+			hideItem("hide");
+			showInline("show");
+			active = false;
+		}
+		return false;
+	};
+	
+	ClientCodes.collapseMulti = function(id) {
+		hideItem("multi_expanded_" + id);
+		showBlock("multi_collapsed_" + id);
+		return false;
+	};
+
+	ClientCodes.expandMulti = function(id) {
+		hideItem("multi_collapsed_" + id);
+		showBlock("multi_expanded_" + id);
+		return false;
+	};
+
+	ClientCodes.isDirty = function() {
+		return get("dirty").value == "1";
+	};
+
+	ClientCodes.setDirty = function() {
+		get("dirty").value = "1";
+		return true;
+	};
+
+	var getIdx = function(node) {
+		var node1 = node.parentNode; // span
+		node1 = node1.parentNode; // td
+		node1 = node1.parentNode; // tr
+		var splt = node1.id.split('_'); // clicode_multi_row_<idx>_<i>
+		return {
+			idx: parseInt(splt[3], 10),
+			i: parseInt(splt[4], 10),
+			node: node1
+		};
+	};
+
+	var getFirstI = function(idx) {
+		var keys = sortedKeys(ccs[idx]);
+		if (keys.length > 0)
+			return keys[0];
+		else
+			return -1;
+	};
+
+	var undoQty = {};
+	
+	var getQty = function(idx) {
+		var node = document.getElementById("quantity_" + idx);
+		if (node == null)
+			return 1;
+
+        var quantity = parseQuantity(node.value);
+        if (isNaN(quantity))
+            quantity = 0;
+        return quantity;
+	};
+
+	ClientCodes.saveQty = function(idx, value) {
+		undoQty[idx] = value;
+	};
+
+	ClientCodes.undoQty = function(idx) {
+		var node = document.getElementById("quantity_" + idx);
+		if (node != null)
+			node.value = undoQty[idx];
+	};
+
+	var updateQtyWrapup = function(idx, expand) {
+		var newval = getQty(idx);
+
+		var qField = get("quantity_" + idx);
+		if (newval == 1) {
+			var first = getFirstI(idx);
+			var quantity = first < 0 ? "1" : ccs[idx][first].quantity;
+			var clientCode = first < 0 ? "" : ccs[idx][first].clientCode;
+			qField.disabled = true;
+			qField.value = quantity;
+			get("clientcode_" + idx).value = clientCode;
+		} else {
+			qField.disbled = false;
+			qField.value = "";
+			get("clientcode_" + idx).value = "";
+		}
+
+		if (newval == 0) {
+			get("quantity_" + idx).disabled = true;
+			get("clientcode_" + idx).disabled = true;
+		} else {
+			get("quantity_" + idx).disabled = false;
+			get("clientcode_" + idx).disabled = false;
+		}
+		
+		if (newval > 1) {
+			showTr("multi_body_" + idx);
+			showInline("multi_control_" + idx);
+			if (expand === true)
+				ClientCodes.expandMulti(idx);
+			else if (get("multi_expanded_" + idx).style.display == "none")
+				ClientCodes.collapseMulti(idx);
+			else
+				ClientCodes.expandMulti(idx);
+		} else /* 0 or 1 */ {
+			hideItem("multi_body_" + idx);
+			hideItem("multi_control_" + idx);
+			hideItem("multi_collapsed_" + idx);
+			ClientCodes.expandMulti(idx);
+		}
+		ClientCodes.saveQty(idx, newval);
+		ClientCodes.show();
+	};
+
+	ClientCodes.updateQty = function(idx) {
+		var newval = getQty(idx);
+
+		if (newval == undoQty[idx])
+			return;
+
+		if (newval >= sums[idx]) {
+			updateNoCode(idx, 0);
+			updateMultiView(idx);
+			updateCollapse(idx);
+			updateQtyWrapup(idx);
+		} else if (newval < sums[idx]) {
+			var confirm = function() {
+				FreshDirect.ClientCodes.updateQtyDecrease(idx);
+				ClientCodes.hideDialog();
+				return false;
+			};
+			var cancel = function() {
+				FreshDirect.ClientCodes.undoQty(idx);
+				ClientCodes.hideDialog();
+				return false;
+			};
+			ClientCodes.showDialog(
+					"Item quantity is now less than the quantity allocated to your clients. " +
+					"Items will be removed from the last client in your list.", confirm, cancel);
+		}
+	};
+
+	ClientCodes.updateQtyDecrease = function(idx) {
+		var newval = getQty(idx);
+
+		ClientCodes.setDirty();
+		var remaining = sums[idx] - newval;
+		var keys = sortedKeys(ccs[idx]);
+		for (var j = keys.length - 1; j >= 0; j--) {
+			var i = keys[j];
+			var item = ccs[idx][i];
+			if (item.quantity <= remaining) {
+				remaining -= item.quantity;
+				ClientCodes.removeMultiCc(idx, i);
+				deleteRow(idx, i);
+			} else {
+				ClientCodes.updateMultiCc(idx, i, item.quantity - remaining, item.clientCode);
+				updateRow(idx, i);
+				break;
+			}
+		}
+		updateMultiTable(idx);
+		updateQtyWrapup(idx, true);
+	};
+
+	ClientCodes.fieldsBlur = function(idx, type) {
+		if (document.getElementById("salesUnit_" + idx) != null) {
+			ClientCodes.setDirty();
+			return true;
+		}
+
+		if (getQty(idx) == 1) {
+			var quantity = parseQuantity(get("quantity_" + idx).value);
+			if (isNaN(quantity) || quantity > 1)
+				quantity = 0;
+			var clientCode = YAHOO.lang.trim(get("clientcode_" + idx).value);
+
+			var i = getFirstI(idx);
+			if (quantity == 0) {
+				if (i >= 0) {
+					ClientCodes.removeMultiCc(idx, i);
+					deleteRow(idx, i);
+					updateMultiTable(idx);
+				}
+			} else {
+				if (i >= 0) {
+					ClientCodes.updateMultiCc(idx, i, quantity, clientCode);
+					updateRow(idx, i);
+					updateMultiTable(idx);
+				} else {
+					ClientCodes.addRow(idx, true);
+				}
+			}
+			ClientCodes.setDirty();
+		}
+		return true;
+	};
+
+	var updateNoCode = function(idx, change) {
+		var quantity = getQty(idx);
+		var neval;
+		if (quantity < sums[idx])
+			newval = 0;
+		else
+			newval = getQty(idx) - sums[idx] - change;
+		if (newval < 0) {
+			ClientCodes.showDialog("Total entered exceeds item quantity being purchased");
+			return false;
+		}
+		noCodes[idx] = newval;
+		var node = get("multi_nocode_" + idx);
+		if (node != null)
+			node.innerHTML = noCodes[idx];
+		return true;
+	};
+	
+	ClientCodes.addMultiCc = function(idx, i, quantity, clientCode, noDirty) {
+		if (ccs[idx] === undefined) {
+			ccs[idx] = {};
+		}
+		if (sums[idx] === undefined) {
+			sums[idx] = 0;
+		}
+
+		if (lastIndexes[idx] === undefined) {
+			lastIndexes[idx] = -1;
+		}
+
+		if (!updateNoCode(idx, quantity))
+			return -1;
+
+		if (!validateMultiUniqueness(idx, clientCode, -1))
+			return -1;
+		
+		if (i < 0)
+			i = ++lastIndexes[idx];
+		else {
+			lastIndexes[idx] = i;
+		}
+		ccs[idx][i] = {
+			quantity: quantity,
+			clientCode: clientCode
+		};
+		sums[idx] += quantity;
+		if (noDirty !== true)
+			ClientCodes.setDirty();
+		return i; // index of the last item added
+	};
+
+	ClientCodes.removeMultiCc = function(idx, i) {
+        var removed = ccs[idx][i].quantity;
+        if (!updateNoCode(idx, -removed))
+            return false;
+        else {
+            delete ccs[idx][i];
+            sums[idx] -= removed;
+    		ClientCodes.setDirty();
+            return true;
+        }
+	};
+	
+	ClientCodes.updateMultiCc = function(idx, i, quantity, clientCode) {
+		var diff = quantity - ccs[idx][i].quantity;
+		if (diff == 0 && clientCode == ccs[idx][i].clientCode)
+			return true; // no change
+		
+		if (diff != 0 && !updateNoCode(idx, diff))
+			return false;
+
+		if (!validateMultiUniqueness(idx, clientCode, i))
+			return false;
+
+		sums[idx] += diff;
+		ccs[idx][i].quantity = quantity;
+		ccs[idx][i].clientCode = clientCode;
+
+		ClientCodes.setDirty();
+		return true;
+	};
+
+	var validateMultiUniqueness = function(idx, clientCode, exclude) {
+		var keys = sortedKeys(ccs[idx]);
+		for (var j = 0; j < keys.length; j++) {
+			var key = keys[j];
+			var item = ccs[idx][key];
+			if (key != exclude && item.clientCode == clientCode) {
+				ClientCodes.showDialog("Please use unique client codes for the same item in cart");
+				return false;
+			}
+		}
+		return true;
+	};
+
+    ClientCodes.addRow = function(idx, noClear) {
+		// process new values
+		var quantity = parseQuantity(get("quantity_" + idx).value);
+		if (isNaN(quantity)) {
+			quantity = 0;
+			ClientCodes.showDialog("Please use whole number only");
+		}
+		var clientCode = YAHOO.lang.trim(get("clientcode_" + idx).value);
+		
+		if (quantity <= 0 || clientCode.length == 0)
+			return false; // nothing to do
+		
+		var i = ClientCodes.addMultiCc(idx, -1, quantity, clientCode);
+		if (i < 0)
+			return false;
+		
+		// make clone of template
+		var newnode = get("multi_row_template_" + idx);
+		newnode = newnode.cloneNode(true); // clone a new one
+		newnode.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
+		
+		// initialize clone
+		newnode.cells[0].innerHTML = quantity;
+		newnode.cells[1].innerHTML = "&nbsp;" + clientCode;
+		
+		// add new ui component
+		var nocode = get("multi_nocode_row_" + idx);
+		nocode.parentNode.insertBefore(newnode, nocode);
+		newnode.style.display = "";
+
+		if (noClear !== true) {
+			get("quantity_" + idx).value = "";
+			get("clientcode_" + idx).value = "";
+		}
+
+		updateMultiTable(idx);
+		
+		return false;
+	};
+
+	ClientCodes.deleteRow = function(node) {
+		var coord = getIdx(node);
+		if (!ClientCodes.removeMultiCc(coord.idx, coord.i))
+			return false;
+		// find the second parent
+		coord.node.parentNode.removeChild(coord.node);
+        updateMultiTable(coord.idx);
+		return false;
+	};
+
+	var deleteRow = function(idx, i) {
+		var node = get("multi_row_" + idx + "_" + i);
+		node.parentNode.removeChild(node);
+	};
+
+	var updateRow = function(idx, i) {
+		var node = get("multi_row_" + idx + "_" + i);
+		node.cells[0].innerHTML = ccs[idx][i].quantity;
+		node.cells[1].innerHTML = "&nbsp;" + ccs[idx][i].clientCode;
+	};
+
+	ClientCodes.setNoCode = function(idx, noCode) {
+		noCodes[idx] = noCode;
+	};
+
+	var updateCollapse = function(idx) {
+		var newval = "";
+		var notfirst = false;
+		var keys = sortedKeys(ccs[idx]);
+		for (var j = 0; j < keys.length; j++) {
+			var key = keys[j];
+			var item = ccs[idx][key];
+			if (notfirst)
+				newval += "&emsp; |&emsp; ";
+			newval += "<span style=\"white-space: nowrap;\">";
+			newval += item.clientCode;
+			newval += "&nbsp;&ndash;&nbsp;";
+			newval += item.quantity;
+			newval += "&nbsp;item";
+			if (item.quantity > 1)
+				newval += "s";
+			newval += "</span>";
+			notfirst = true;
+		}
+		var noCode = noCodes[idx];
+		if (noCode > 0) {
+			if (notfirst)
+				newval += "&emsp; |&emsp; ";
+			newval += "<span style=\"white-space: nowrap;\">";
+			newval += "NO&nbsp;CLIENT&nbsp;CODE&nbsp;&ndash;&nbsp;";
+			newval += noCode;
+			newval += "&nbsp;item";
+			if (noCode > 1)
+				newval += "s";
+			newval += "</span>";
+		}
+		var node = get("multi_coll_fillup_" + idx);
+		if (node != null)
+			node.innerHTML = newval;
+	};
+
+	var updateMultiView = function(idx) {
+		if (sums[idx] == 0) {
+			hideItem("multi_empty_row_" + idx);
+			hideItem("multi_head_row_" + idx);
+			hideItem("multi_nocode_row_" + idx);
+			hideItem("multi_collapser_" + idx);
+		} else {
+			showTr("multi_empty_row_" + idx);
+			showTr("multi_head_row_" + idx);
+			showInline("multi_collapser_" + idx);
+			if (noCodes[idx] == 0)
+				hideItem("multi_nocode_row_" + idx);
+			else
+				showTr("multi_nocode_row_" + idx);
+		}
+	};
+
+	var updateMultiVal = function(idx) {
+		get("multi_val_" + idx).value = YAHOO.lang.JSON.stringify(ccs[idx]);
+	};
+
+	var updateMultiTable = function(idx) {
+		updateMultiView(idx);
+		updateCollapse(idx);
+		updateMultiVal(idx);
+	};
+
+	ClientCodes.editRow = function(node) {
+		var coord = getIdx(node);
+		coord.node.cells[0].innerHTML = '<input type="text" autocomplete="off" size="5" maxlength="5" class="text10" style="text-align: center; border: 1px solid black;">';
+		coord.node.cells[0].firstChild.value = ccs[coord.idx][coord.i].quantity;
+		coord.node.cells[1].innerHTML = '&nbsp;<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black;">';
+		coord.node.cells[1].firstChild.nextSibling.value = ccs[coord.idx][coord.i].clientCode;
+		var spans = coord.node.cells[2].getElementsByTagName("span");
+		spans[0].style.display = "none";
+		spans[1].style.display = "inline";
+		return false;
+	};
+
+	ClientCodes.okEditRow = function(node) {
+		var coord = getIdx(node);
+
+		var quantity = parseQuantity(coord.node.cells[0].firstChild.value);
+		var clientCode = YAHOO.lang.trim(coord.node.cells[1].firstChild.nextSibling.value);
+		
+		if (isNaN(quantity)) {
+			quantity = 0;
+			ClientCodes.showDialog("Please use whole number only");
+		}
+		if (quantity <= 0 || clientCode.length == 0)
+			return false; // nothing to do
+		
+		if (!ClientCodes.updateMultiCc(coord.idx, coord.i, quantity, clientCode))
+			return false;
+
+		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
+		coord.node.cells[1].innerHTML = "&nbsp;" + ccs[coord.idx][coord.i].clientCode;
+		
+		var spans = coord.node.cells[2].getElementsByTagName("span");
+		spans[1].style.display = "none";
+		spans[0].style.display = "inline";
+
+		updateMultiTable(coord.idx);
+		return false;
+	};
+
+	ClientCodes.cancelEditRow = function(node) {
+		var coord = getIdx(node);
+
+		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
+		coord.node.cells[1].innerHTML = "&nbsp;" + ccs[coord.idx][coord.i].clientCode;
+
+		var spans = coord.node.cells[2].getElementsByTagName("span");
+		spans[1].style.display = "none";
+		spans[0].style.display = "inline";
+		return false;
+	};
+
+	var dialog = null;
+
+	ClientCodes.showDialog = function(message, confirmAction, cancelAction) {
+		if (dialog == null) {
+			dialog = new YAHOO.widget.Panel("clicode_dialog", {
+					width: "530px",  
+					fixedcenter: true,  
+					close: false,  
+					draggable: false,  
+					zindex: 4, 
+					modal: true, 
+					visible: false 
+				});
+		}
+		var isAlert = confirmAction == undefined;
+		var alert = isAlert ? "ALERT" : "WARNING";
+		dialog.setBody(get("dlgTmpl").innerHTML);
+		dialog.render(document.getElementById("i_viewcart"));
+		dialog.body.getElementsByTagName("a")[0].onclick = ClientCodes.hideDialog;
+		var spans = dialog.body.getElementsByTagName("span");
+		spans[0].innerHTML = alert;
+		spans[1].innerHTML = message;
+		if (isAlert) {
+			spans[2].getElementsByTagName("input")[0].onclick = function() {
+				return FreshDirect.ClientCodes.hideDialog();
+			};
+			spans[3].innerHTML = "";
+		} else {
+			spans[2].innerHTML = "";
+			spans[3].getElementsByTagName("input")[0].onclick = cancelAction;
+			spans[3].getElementsByTagName("input")[1].onclick = confirmAction;
+		}
+		dialog.show();
+		dialog.focusLast();
+		return false;
+	};
+
+	ClientCodes.hideDialog = function() {
+		if (dialog != null)
+			dialog.hide();
+		return false;
+	};
+})();

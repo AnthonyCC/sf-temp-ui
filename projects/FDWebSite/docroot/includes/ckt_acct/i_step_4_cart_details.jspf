@@ -7,12 +7,14 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% boolean isSmaller = request.getRequestURI().indexOf("step_4_receipt") > -1; 
 String detailWidth="693";
 if (isSmaller) detailWidth="630";
 %>
+
 <div style="width: <%=detailWidth%>px;">
 <%
 int idx = 0;
@@ -94,8 +96,28 @@ int idx = 0;
 			<td align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
             <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : " " %></td>
-			<td colspan="3" width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
+			<td width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 		</tr>
+		
+		<%
+		if (user.isEligibleForClientCodes() && cartLine.getClientCodes().size() > 0) {
+			int noCode = (int) cartLine.getQuantity();
+			for (ErpClientCode item : cartLine.getClientCodes()) {
+				noCode -= item.getQuantity();
+			}
+		%>
+		<tr>
+			<td colspan="3">&nbsp;</td>
+			<td colspan="5" style="padding: 4px 0px 4px 16px; line-height: 1.5em;">
+				<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;">
+				Client Code<% if (cartLine.getClientCodes().size() > 1) { %>s<% } %>: <% ErpClientCode.toHtmlWriter(cartLine.getClientCodes(), noCode, out); %>
+				</span>
+			</td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+		<%
+		}
+		%>
 	
 		<%
 		idx++;

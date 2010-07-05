@@ -8,6 +8,11 @@
 %><!-- YUI includes START -->
 <link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
 <%
+			if (request.getAttribute("__yui_load_calendar__") != null) {
+%>
+<link rel="stylesheet" type="text/css" href="/assets/yui/calendar/assets/skins/sam/calendar.css">
+<%
+			}
 		if (FDStoreProperties.isCclAjaxDebugClient()) {
 			/*
 			 * Debug libs
@@ -21,6 +26,7 @@
 <script type="text/javascript" src="/assets/yui/dragdrop/dragdrop.js"></script>
 <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
 <script type="text/javascript" src="/assets/yui/container/container.js"></script>
+<script type="text/javascript" src="/assets/yui/json/json.js"></script>
 <%
 			if (request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
@@ -38,6 +44,12 @@
 %><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher.js"></script>
 <%
 			}
+			if (request.getAttribute("__yui_load_calendar__") != null) {
+				/* Include YUI Selector API */
+%><script type="text/javascript" src="/assets/yui/calendar/calendar.js"></script>
+<script src="/assets/yui/datasource/datasource.js"></script>
+<%
+			}
 		} else {
 			/*
 			 * Production libs
@@ -51,6 +63,7 @@
 <script type="text/javascript" src="/assets/yui/dragdrop/dragdrop-min.js"></script>
 <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
 <script type="text/javascript" src="/assets/yui/container/container-min.js"></script>
+<script type="text/javascript" src="/assets/yui/json/json-min.js"></script>
 <%
 			if (request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
@@ -66,6 +79,12 @@
 			if (request.getAttribute("__yui_load_dispatcher__") != null) {
 				/* Include Bubbling's dispatcher plugin */
 %><script type="text/javascript" src="/assets/yui/dispatcher/dispatcher-min.js"></script> 
+<%
+			}
+			if (request.getAttribute("__yui_load_calendar__") != null) {
+				/* Include YUI Selector API */
+%><script type="text/javascript" src="/assets/yui/calendar/calendar-min.js"></script>
+<script src="/assets/yui/datasource/datasource-min.js"></script>
 <%
 			}
 		}

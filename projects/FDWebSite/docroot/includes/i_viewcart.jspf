@@ -14,8 +14,47 @@
 <%@ page import="com.freshdirect.fdstore.util.DYFUtil" %>
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
+<%@ page import="com.freshdirect.customer.ErpClientCode"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<% if (user.isEligibleForClientCodes()) { %>
+<div id="clicode_dlgTmpl" style="display: none">
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
+		<tr>
+			<td colspan="2" class="text11">
+				<a href="#"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="FreshDirect (close window)"></a>
+			</td>
+		</tr>
+		<tr>
+			<td class="text13rbold" style="vertical-align: top; padding-top: 20px; padding-left: 20px; text-align: right; white-space: nowrap;">
+				<img src="/media_stat/images/buttons/client_codes_exclamation.gif" style="vertical-align: middle;" width="14" height="18">
+				<span>
+				</span>
+				&emsp;&ndash;&emsp;
+			</td>
+			<td class="text13rbold" style="vertical-align: top; padding-top: 20px; padding-right: 20px; text-align: left;">
+				<span>
+				</span>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" align="right" class="text11" style="vertical-align: middle; padding-right: 30px; height: 50px;">
+				<span>
+					<input type="image" src="/media_stat/images/buttons/close_window.gif"
+							width="142" height="17" border="0" alt="CLOSE WINDOW" style="vertical-align: middle;">
+				</span>
+				<span>
+					<input type="image" src="/media_stat/images/buttons/client_codes_cancel.gif"
+							width="100" height="19" border="0" alt="CANCEL" style="vertical-align: middle;">&emsp;
+					<input type="image" src="/media_stat/images/buttons/apply_change.gif"
+							width="141" height="19" border="0" alt="CONTINUE" style="vertical-align: middle;">
+				</span>
+			</td>
+		</tr>
+	</table>
+</div>
+<% } %>
 <%
 //	Dependencies that come from /viewcart.jsp are:
 //	FDUserI user;
@@ -31,16 +70,37 @@ FDIdentity identity = user.getIdentity();
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
-		<td width="120"><input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES"></td>
-		<td class="text11">After changing a quantity, click to update prices.</td>
-		<td align="right" class="text11"><%
-			if (FDStoreProperties.isAnnotationMode()) {
-				%><a href="/test/cartexport.jsp">Export Cart</a> | <%
-			}
-		%><a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to remove all items from your cart?");'>Remove All Items</a></td>
-		<td>&nbsp;</td>
+		<td style="vertical-align: middle; white-space: nowrap;">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
+			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
+				width="100" height="17" border="0" alt="UPDATE CART" style="vertical-align: middle;">
+			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
+				<input type="image" name="save_client_codes" src="/media_stat/images/buttons/save_client_codes.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
+					width="142" height="17" border="0" alt="SAVE CLIENT CODES" style="vertical-align: middle;">
+			</span>
+			<% } %>
+			<% if (FDStoreProperties.isAnnotationMode()) {
+				%><a href="/test/cartexport.jsp">Export Cart</a><%
+			} %>
+		</td>
+		<td class="title11" style="text-align: right; vertical-align: middle; white-space: nowrap; padding-right: 8px;">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<span id="clicode_hide" style="display: none;">
+				<input type="image" src="/media_stat/images/buttons/hide_client_codes.gif" onclick="return FreshDirect.ClientCodes.hide();"
+					width="142" height="17" border="0" alt="HIDE CLIENT CODES" style="vertical-align: middle;">
+				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
+			</span>
+			<span id="clicode_show">
+				<input type="image" src="/media_stat/images/buttons/add_client_codes.gif" onclick="return FreshDirect.ClientCodes.show();"
+					width="132" height="17" border="0" alt="ADD CLIENT CODES" style="vertical-align: middle;">
+				&nbsp;<span style="color: #666666">&bull;</span>&nbsp;
+			</span>
+			<% } %>
+			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to remove all items from your cart?");'>Remove All Items</a></td>
 	</tr>
 </table>
+<div id="i_viewcart">
 <logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
 	<table width="100%" cellspacing="0" cellpadding="0" border="0">
 	<tr><td colspan="10">
@@ -130,7 +190,7 @@ FDIdentity identity = user.getIdentity();
 		if (cartLine.isSoldBySalesUnits()) {
 			%>
 			<td colspan="3" width="78">
-				<select name="salesUnit_<%=idx%>" CLASS="text10">
+				<select id="salesUnit_<%=idx%>" name="salesUnit_<%=idx%>" CLASS="text10">
 				<option value="">0
 				<logic:iterate id="salesUnit" collection="<%= fdProduct.getSalesUnits() %>" type="com.freshdirect.fdstore.FDSalesUnit">
 					<%
@@ -160,10 +220,12 @@ FDIdentity identity = user.getIdentity();
 						}
 						qty = delta;
 					} else if (isNaN(qty) || (qty < 0)) {
-						document.viewcart.quantity_<%=idx%>.value = "0";
+						// document.viewcart.quantity_<%=idx%>.value = "0";
+						FreshDirect.ClientCodes.undoQty(<%= idx %>);
 						return;
 					} else if ((qty > 0) && (qty < <%= productNode.getQuantityMinimum() %>) && (delta < 0)) {
 						document.viewcart.quantity_<%=idx%>.value = "0";
+						FreshDirect.ClientCodes.updateQty(<%= idx %>);
 						return;
 					} else if ((qty > 0) && (qty < <%= productNode.getQuantityMinimum() %>) && (delta >= 0)) {
 						qty = <%= productNode.getQuantityMinimum() %>;
@@ -171,10 +233,14 @@ FDIdentity identity = user.getIdentity();
 						qty = <%= user.getQuantityMaximum(productNode) %>;
 					}
 					qty = Math.floor( (qty-<%= productNode.getQuantityMinimum() %>)/<%=productNode.getQuantityIncrement()%> )*<%=productNode.getQuantityIncrement()%>  + <%= productNode.getQuantityMinimum() %>;
+
 					document.viewcart.quantity_<%=idx%>.value = qty;
+
+					FreshDirect.ClientCodes.updateQty(<%= idx %>);
 				}
+				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
-				<input name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" VALUE="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);">
+				<input id="quantity_<%=idx%>" name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" autocomplete="off" VALUE="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);">
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 			</td>
 			<td width="16"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
@@ -208,8 +274,152 @@ FDIdentity identity = user.getIdentity();
 			<td width="10"><b><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
 			<td width="60" align="right">&nbsp;<a href="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %>" class="note">Remove</A></td>
 		</tr>
-	
+
 		<%
+		if (user.isEligibleForClientCodes()) {
+		%>
+		<tr id="clicode_tr_<%= idx %>" style="display: none">
+			<td colspan="3">
+				<script type="text/javascript">
+					FreshDirect.ClientCodes.trs.push("tr_<%= idx %>");
+				</script>
+				&nbsp;
+			</td>
+			<td colspan="7">
+				<%
+				String clicode_type;
+				if (cartLine.isSoldBySalesUnits()) {
+					clicode_type = "single";
+				} else if (cartLine.getQuantity() == 1) {
+					clicode_type = "single";
+				} else {
+					clicode_type = "multi";
+				}
+				ErpClientCode firstCC = cartLine.getClientCodes().size() > 0 ? cartLine.getClientCodes().get(0) : new ErpClientCode("", 1);
+				int noCode = (int) cartLine.getQuantity();
+				String ccQuantity = "multi".equals(clicode_type) ? "" : Integer.toString(firstCC.getQuantity());
+				String ccClientCode = "multi".equals(clicode_type) ? "" : firstCC.getClientCode();
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+					noCode -= item.getQuantity();
+				}
+				%>
+				<div id="clicode_multi_expanded_<%= idx %>" >
+					<input type="hidden" id="clicode_multi_val_<%= idx %>" name="clicode_multi_val_<%= idx %>">
+					<table style="width: auto; vertical-align: middle; border-collapse: collapse; border-spacing: 0px;">
+						<thead>
+						<tr>
+							<th class="text10" style="padding: 2px 2px 0px; color: #999999; font-weight: normal; text-align: center;">Quantity</th>
+							<th class="text10" style="padding: 2px 2px 0px; color: #999999; font-weight: normal;">&nbsp;Client Code</th>
+							<th class="text10" style="padding: 2px 2px 0px; color: #999999;font-weight: normal;">&nbsp;</th>
+						</tr>
+						<tr>
+							<td class="text10" style="padding: 2px; text-align: center; vertical-align: middle;">
+								<input type="text" size="5" maxlength="5" class="text10" style="text-align: center; vertical-align: middle;"
+										name="clicode_quantity_<%= idx %>" id="clicode_quantity_<%= idx %>"
+										value="<%= "single".equals(clicode_type) ? 1 : ccQuantity %>"<% if ("single".equals(clicode_type)) { %> disabled="disabled"<% } %>
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+							</td>
+							<td class="text10" style="padding: 2px; white-space: nowrap; vertical-align: middle;" colspan="2">
+								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle;"
+										name="clicode_clientcode_<%= idx %>" id="clicode_clientcode_<%= idx %>"
+										value="<%= ccClientCode %>"
+										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
+								<span id="clicode_multi_control_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+									<input type="image" src="/media_stat/images/buttons/add_to_list.gif" onclick="return FreshDirect.ClientCodes.addRow('<%= idx %>');"
+										width="85" height="14" border="0" alt="ADD TO LIST" style="vertical-align: middle;">
+									<span id="clicode_multi_collapser_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+										<input type="image" src="/media_stat/images/buttons/collapse_list.gif" onclick="return FreshDirect.ClientCodes.collapseMulti('<%= idx %>');"
+											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
+									</span>
+								</span>
+							</td>
+						</tr>
+						</thead>
+						<tbody id="clicode_multi_body_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
+						<tr id="clicode_multi_empty_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal; text-align: center;">&nbsp;</td>
+							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal;">&nbsp;</td>
+							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal;">&nbsp;</td>
+						</tr>
+						<tr id="clicode_multi_head_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
+							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999;">Quantity</td>
+							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; border-top: 1px solid #999999; border-bottom: 1px solid #999999;">&nbsp;Client Code</td>
+							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999;">&nbsp;Action</td>
+						</tr>
+						<%
+						for (int i = 0; i< cartLine.getClientCodes().size(); i++) {
+						    ErpClientCode item = cartLine.getClientCodes().get(i);
+						%>
+						<tr id="clicode_multi_row_<%= idx %>_<%= i %>">
+							<td class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;">
+							    <%= item.getQuantity() %>
+							</td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;">
+							    &nbsp;<%= item.getClientCode() %>
+							</td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; width: 80px; white-space: nowrap; height: 24px;">
+								&nbsp;
+								<span>
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.editRow(this);">Edit</a>
+									&nbsp;&nbsp;
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.deleteRow(this);">Delete</a>
+								</span>
+								<span style="display: none;">
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.okEditRow(this);">OK</a>
+									&nbsp;&nbsp;
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.cancelEditRow(this);">Cancel</a>
+								</span>
+							    <script type="text/javascript">
+							        FreshDirect.ClientCodes.addMultiCc('<%= idx %>', <%= i %>, <%= item.getQuantity() %>, '<%= StringEscapeUtils.escapeJavaScript(item.getClientCode()) %>', true);
+							    </script>
+							</td>
+						</tr>
+						<%
+						}
+						%>
+						<tr id="clicode_multi_nocode_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0 || noCode == 0) { %> style="display: none;"<% } %>>
+							<td id="clicode_multi_nocode_<%= idx %>" class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;"><%= noCode %></td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;"><span style="font-style: italic;">&nbsp;&ndash; No Code &ndash;</span></td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; height: 24px;">&nbsp;
+                                <script type="text/javascript">
+                                FreshDirect.ClientCodes.setNoCode(<%= idx %>, <%= noCode %>);
+                                </script>
+							</td>
+						</tr>
+						<tr id="clicode_multi_row_template_<%= idx %>" style="display: none;">
+							<td class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;">
+								&lt;quantity&gt;
+							</td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;">
+								&nbsp;&lt;client_code&gt;
+							</td>
+							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; width: 80px; white-space: nowrap; height: 24px;">
+								&nbsp;
+								<span>
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.editRow(this);">Edit</a>
+									&nbsp;&nbsp;
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.deleteRow(this);">Delete</a>
+							 	</span>
+								<span style="display: none;">
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.okEditRow(this);">OK</a>
+									&nbsp;&nbsp;
+									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.cancelEditRow(this);">Cancel</a>
+						 		</span>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="clicode_multi_collapsed_<%= idx %>" style="display: none; line-height: 1.5em;">
+					<input type="image" src="/media_stat/images/buttons/edit_list.gif" onclick="return FreshDirect.ClientCodes.expandMulti('<%= idx %>');"
+						width="76" height="14" border="0" alt="EDIT LIST" style="vertical-align: middle;">
+					&nbsp;<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;"><%= ErpClientCode.toHtml(cartLine.getClientCodes(), noCode) %></span>
+				</div>
+				</div><!-- end of clicode_multi_ block -->
+			</td>
+		</tr>
+		<%
+		}
 		if (lastItemInDept && hadPlatterRestriction) {
 			TimeOfDay platterTime = RestrictionUtil.getPlatterRestrictionStartTime();
 			if (platterTime != null) {
@@ -292,6 +502,7 @@ FDIdentity identity = user.getIdentity();
 	</table>
 		
 </logic:iterate>
+</div>
 
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr><td colspan="10">
@@ -300,9 +511,7 @@ FDIdentity identity = user.getIdentity();
 	
 	<tr>
 		<td valign="top" colspan="3" rowspan="12" width="260">
-			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_quantities.gif" width="113" height="16" border="0" alt="UPDATE QUANTITIES" VSPACE="2" HSPACE="0">
-			<br>After changing a quantity,
-			<br>click to update prices.
+			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" width="100" height="17" border="0" alt="UPDATE CART" VSPACE="2" HSPACE="0">
 		</td>
 		<td colspan="7"></td>
 	</tr>

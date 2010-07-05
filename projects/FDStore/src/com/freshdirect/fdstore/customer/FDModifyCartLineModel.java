@@ -17,6 +17,7 @@ import com.freshdirect.fdstore.FDConfiguration;
  * @stereotype fd-model
  */
 class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI {
+	private static final long serialVersionUID = 7177055603220148537L;
 
 	private final FDCartLineI originalOrderLine;
 
@@ -24,7 +25,7 @@ class FDModifyCartLineModel extends FDCartLineModel implements FDModifyCartLineI
 		super(origLine.getSku(), origLine.getProductRef().lookupProductModel(), origLine
 				.getConfiguration(), origLine.getCartlineId(), origLine
 				.getRecipeSourceId(), origLine.isRequestNotification(),
-				origLine.getVariantId(), origLine.getPricingContext().getZoneId());
+				origLine.getVariantId(), origLine.getPricingContext().getZoneId(), origLine.getClientCodes());
 		this.originalOrderLine = origLine;
 	}
 

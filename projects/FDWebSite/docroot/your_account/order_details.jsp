@@ -99,6 +99,11 @@
     if (hasCredit) { %>
     <td align="right" class="text11"><i>Credit was issued for this order.</i></td>
     <% } %>
+    <% if (user.isEligibleForClientCodes()) { %>
+    <td class="text11" style="text-align: right; vertical-align: middle;">
+    	<a href="/api/clientCodeReport?sale=<%= orderId %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export_client_codes.gif" width="167" height="17" style="border: none;"></a>
+    </td>
+    <% } %>
 </tr>
 </table>
 <IMG src="/media_stat/images/layout/clear.gif" width="1" HEIGHT="8" border="0"><br>

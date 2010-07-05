@@ -13,5 +13,6 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/poi-3.5-FINAL-20090928.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-dev-oophm.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-user.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/thirdparty/gwt/gwt-maps.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

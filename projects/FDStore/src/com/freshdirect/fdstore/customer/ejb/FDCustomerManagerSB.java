@@ -24,6 +24,7 @@ import com.freshdirect.customer.ErpAbstractOrderModel;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCreateOrderModel;
@@ -721,5 +722,8 @@ public interface FDCustomerManagerSB extends EJBObject {
     public List productRequestFetchAllMappings() throws FDResourceException, RemoteException;
     
     public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
+
+	public List<ErpClientCodeReport> findClientCodesBySale(String saleId) throws FDResourceException, RemoteException;
+	public List<ErpClientCodeReport> findClientCodesByDateRange(FDIdentity customerId, Date start, Date end) throws FDResourceException, RemoteException;
 }
 
