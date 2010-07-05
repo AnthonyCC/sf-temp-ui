@@ -365,7 +365,8 @@ public class NodeTree extends ContentPanel {
 	    		String token = tokens.nextToken();
 	    		
 	    		for ( TreeContentNodeModel node : nodes ) {
-	    			if ( node.getKey().equals( token ) ) {
+	    			// node should not be null, but sometimes it is. This is the cause of the 'Yeti issue'. 
+	    			if ( node != null && token.equals( node.getKey() ) ) {
 	    				currentNode = node;
 	    				return;
 	    			}
