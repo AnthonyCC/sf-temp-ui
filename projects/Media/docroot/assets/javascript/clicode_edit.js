@@ -304,7 +304,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 	var updateNoCode = function(idx, change) {
 		var quantity = getQty(idx);
-		var neval;
+		var newval;
 		if (quantity < sums[idx])
 			newval = 0;
 		else
@@ -348,8 +348,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			clientCode: clientCode
 		};
 		sums[idx] += quantity;
-		if (noDirty !== true)
+		if (noDirty !== true) {
 			ClientCodes.setDirty();
+			ClientCodes.addHistory(clientCode);
+		}
 		return i; // index of the last item added
 	};
 
@@ -379,6 +381,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		sums[idx] += diff;
 		ccs[idx][i].quantity = quantity;
 		ccs[idx][i].clientCode = clientCode;
+		ClientCodes.addHistory(clientCode);
 
 		ClientCodes.setDirty();
 		return true;
@@ -395,6 +398,43 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			}
 		}
 		return true;
+	};
+	
+	var createRow = function(idx) {
+		var nocode = get("multi_nocode_row_" + idx);
+		var newRow = nocode.parentNode.parentNode.insertRow(nocode.rowIndex);
+		newRow.insertCell();
+		newRow.insertCell();
+		newRow.insertCell();
+		newRow.insertCell();
+		newRow.insertCell();
+		newRow.cells[0].className = "text10 clicode_quantity";
+		newRow.cells[1].className = "text10 clicode_gap";
+		newRow.cells[2].className = "text10 clicode_clientcode";
+		newRow.cells[3].className = "text10 clicode_gap";
+		newRow.cells[4].className = "text10 clicode_actions";
+		newRow.cells[4].innerHTML = "<span><a href=\"#\">Edit</a> &nbsp;&nbsp; <a href=\"#\">Delete</a></span>" +
+				"<span><a href=\"#\">Ok</a> &nbsp;&nbsp; <a href=\"#\">Cancel</a></span>";
+		var spans = newRow.cells[4].getElementsByTagName("span");
+		spans[1].style.display = "none";
+		var as = newRow.cells[4].getElementsByTagName("a");
+		as[0].onclick = function() {
+			return ClientCodes.editRow(as[0]);
+		};
+		as[0].style.color = "#999999";
+		as[1].onclick = function() {
+			return ClientCodes.deleteRow(as[1]);
+		};
+		as[1].style.color = "#999999";
+		as[2].onclick = function() {
+			return ClientCodes.okEditRow(as[2]);
+		};
+		as[2].style.color = "#999999";
+		as[3].onclick = function() {
+			return ClientCodes.cancelEditRow(as[3]);
+		};
+		as[3].style.color = "#999999";
+		return newRow;
 	};
 
     ClientCodes.addRow = function(idx, noClear) {
@@ -414,18 +454,13 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			return false;
 		
 		// make clone of template
-		var newnode = get("multi_row_template_" + idx);
-		newnode = newnode.cloneNode(true); // clone a new one
-		newnode.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
+		var newRow = createRow(idx);
+		
+		newRow.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
 		
 		// initialize clone
-		newnode.cells[0].innerHTML = quantity;
-		newnode.cells[1].innerHTML = "&nbsp;" + clientCode;
-		
-		// add new ui component
-		var nocode = get("multi_nocode_row_" + idx);
-		nocode.parentNode.insertBefore(newnode, nocode);
-		newnode.style.display = "";
+		newRow.cells[0].innerHTML = quantity;
+		newRow.cells[2].innerHTML = clientCode;
 
 		if (noClear !== true) {
 			get("quantity_" + idx).value = "";
@@ -442,7 +477,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		if (!ClientCodes.removeMultiCc(coord.idx, coord.i))
 			return false;
 		// find the second parent
-		coord.node.parentNode.removeChild(coord.node);
+		coord.node.parentNode.parentNode.deleteRow(coord.node.rowIndex);
         updateMultiTable(coord.idx);
 		return false;
 	};
@@ -455,7 +490,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	var updateRow = function(idx, i) {
 		var node = get("multi_row_" + idx + "_" + i);
 		node.cells[0].innerHTML = ccs[idx][i].quantity;
-		node.cells[1].innerHTML = "&nbsp;" + ccs[idx][i].clientCode;
+		node.cells[2].innerHTML = ccs[idx][i].clientCode;
 	};
 
 	ClientCodes.setNoCode = function(idx, noCode) {
@@ -504,7 +539,9 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			hideItem("multi_head_row_" + idx);
 			hideItem("multi_nocode_row_" + idx);
 			hideItem("multi_collapser_" + idx);
+			get("multi_table_" + idx).style.borderBottom = "0px none";
 		} else {
+			get("multi_table_" + idx).style.borderBottom = "1px solid #999999";
 			showTr("multi_empty_row_" + idx);
 			showTr("multi_head_row_" + idx);
 			showInline("multi_collapser_" + idx);
@@ -529,9 +566,15 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var coord = getIdx(node);
 		coord.node.cells[0].innerHTML = '<input type="text" autocomplete="off" size="5" maxlength="5" class="text10" style="text-align: center; border: 1px solid black;">';
 		coord.node.cells[0].firstChild.value = ccs[coord.idx][coord.i].quantity;
-		coord.node.cells[1].innerHTML = '&nbsp;<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black;">';
-		coord.node.cells[1].firstChild.nextSibling.value = ccs[coord.idx][coord.i].clientCode;
-		var spans = coord.node.cells[2].getElementsByTagName("span");
+		coord.node.cells[2].style.overflow = 'visible';
+		coord.node.cells[2].innerHTML = '<div style="position: relative; vertical-align: middle; overflow: visible;">' + 
+			'<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black; width: 125px; position: static;">' +
+			'<div style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div></div>';
+		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
+		coord.node.cells[2].firstChild.firstChild.id = "clicode_clientcode_" + coord.idx + "_" + coord.i;
+		coord.node.cells[2].firstChild.lastChild.id = "clicode_autocomplete_" + coord.idx + "_" + coord.i;
+		ClientCodes.addAcField("clicode_clientcode_" + coord.idx + "_" + coord.i, "clicode_autocomplete_" + coord.idx + "_" + coord.i);
+		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[0].style.display = "none";
 		spans[1].style.display = "inline";
 		return false;
@@ -541,7 +584,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var coord = getIdx(node);
 
 		var quantity = parseQuantity(coord.node.cells[0].firstChild.value);
-		var clientCode = YAHOO.lang.trim(coord.node.cells[1].firstChild.nextSibling.value);
+		var clientCode = YAHOO.lang.trim(coord.node.cells[2].firstChild.firstChild.value);
 		
 		if (isNaN(quantity)) {
 			quantity = 0;
@@ -554,9 +597,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			return false;
 
 		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
-		coord.node.cells[1].innerHTML = "&nbsp;" + ccs[coord.idx][coord.i].clientCode;
+		coord.node.cells[2].style.overflow = 'hidden';
+		coord.node.cells[2].innerHTML = ccs[coord.idx][coord.i].clientCode;
 		
-		var spans = coord.node.cells[2].getElementsByTagName("span");
+		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[1].style.display = "none";
 		spans[0].style.display = "inline";
 
@@ -568,9 +612,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var coord = getIdx(node);
 
 		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
-		coord.node.cells[1].innerHTML = "&nbsp;" + ccs[coord.idx][coord.i].clientCode;
+		coord.node.cells[2].style.overflow = 'hidden';
+		coord.node.cells[2].innerHTML = ccs[coord.idx][coord.i].clientCode;
 
-		var spans = coord.node.cells[2].getElementsByTagName("span");
+		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[1].style.display = "none";
 		spans[0].style.display = "inline";
 		return false;
@@ -617,5 +662,41 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		if (dialog != null)
 			dialog.hide();
 		return false;
+	};
+	
+	ClientCodes.clientCodesHistory = [];
+	
+	var histIndex = function(item) {
+		for (var i = 0; i < ClientCodes.clientCodesHistory.length; i++)
+			if (ClientCodes.clientCodesHistory[i].toLowerCase() >= item.toLowerCase())
+				return i;
+		
+		return ClientCodes.clientCodesHistory.length;
+	};
+	
+	ClientCodes.addHistory = function(item, nosort) {
+		if (nosort === true) {
+			ClientCodes.clientCodesHistory.push(item);
+		} else {
+			var i = histIndex(item);
+			if (i == ClientCodes.clientCodesHistory.length)
+				ClientCodes.clientCodesHistory.push(item);
+			else if (item.toLowerCase() != ClientCodes.clientCodesHistory[i].toLowerCase())
+				ClientCodes.clientCodesHistory.splice(i, 0, item);
+		}
+	};
+	
+	ClientCodes.addAcField = function(input, container) {
+		var ds = new YAHOO.util.LocalDataSource(ClientCodes.clientCodesHistory);
+		ds.responseSchema = {
+			fields : [ "clientCode" ]
+		};
+
+		// Instantiate the AutoComplete 
+		var ac = new YAHOO.widget.AutoComplete(input, container, ds);
+		ac.prehighlightClassName = "yui-ac-prehighlight";
+		ac.useShadow = false;
+		ac.animVert = false;
+		ac.animHoriz = false;
 	};
 })();

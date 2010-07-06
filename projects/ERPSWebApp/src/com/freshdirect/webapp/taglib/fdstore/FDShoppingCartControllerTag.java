@@ -72,6 +72,7 @@ import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -1457,6 +1458,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 									if (clientCodes.size() == 0) {
 										// add
 										clientCodes.add(new ErpClientCode(reqCCode, 1));
+										user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 										cartChanged = true;
 									} else {
 										ErpClientCode firstCC = clientCodes.get(0);
@@ -1465,6 +1467,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 											// update
 											clientCodes.clear();
 											clientCodes.add(new ErpClientCode(reqCCode, 1));
+											user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 											cartChanged = true;
 										}
 									}
@@ -1492,6 +1495,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 											int ccQuantity = item.getInt("quantity");
 											String clientCode = item.getString("clientCode");
 											ccs.add(new ErpClientCode(clientCode, ccQuantity));
+											user.getClientCodesHistory().add(new IgnoreCaseString(clientCode));
 										}
 
 										if (!ErpClientCode.equalsList(orderLine.getClientCodes(), ccs)) {
@@ -1637,6 +1641,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 							if (clientCodes.size() == 0) {
 								// add
 								clientCodes.add(new ErpClientCode(reqCCode, 1));
+								user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 								cartChanged = true;
 							} else {
 								ErpClientCode firstCC = clientCodes.get(0);
@@ -1645,6 +1650,7 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 									// update
 									clientCodes.clear();
 									clientCodes.add(new ErpClientCode(reqCCode, 1));
+									user.getClientCodesHistory().add(new IgnoreCaseString(reqCCode));
 									cartChanged = true;
 								}
 							}

@@ -13,6 +13,11 @@
 <link rel="stylesheet" type="text/css" href="/assets/yui/calendar/assets/skins/sam/calendar.css">
 <%
 			}
+			if (request.getAttribute("__yui_load_autocomplete__") != null) {
+	%>
+	<link rel="stylesheet" type="text/css" href="/assets/yui/autocomplete/assets/skins/sam/autocomplete.css">
+	<%
+				}
 		if (FDStoreProperties.isCclAjaxDebugClient()) {
 			/*
 			 * Debug libs
@@ -27,6 +32,7 @@
 <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
 <script type="text/javascript" src="/assets/yui/container/container.js"></script>
 <script type="text/javascript" src="/assets/yui/json/json.js"></script>
+<script type="text/javascript" src="/assets/yui/datasource/datasource.js"></script>
 <%
 			if (request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
@@ -47,7 +53,11 @@
 			if (request.getAttribute("__yui_load_calendar__") != null) {
 				/* Include YUI Selector API */
 %><script type="text/javascript" src="/assets/yui/calendar/calendar.js"></script>
-<script src="/assets/yui/datasource/datasource.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_load_autocomplete__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete.js"></script>
 <%
 			}
 		} else {
@@ -64,6 +74,7 @@
 <script type="text/javascript" src="/assets/yui/utilities/utilities.js"></script>
 <script type="text/javascript" src="/assets/yui/container/container-min.js"></script>
 <script type="text/javascript" src="/assets/yui/json/json-min.js"></script>
+<script type="text/javascript" src="/assets/yui/datasource/datasource-min.js"></script>
 <%
 			if (request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
@@ -82,9 +93,13 @@
 <%
 			}
 			if (request.getAttribute("__yui_load_calendar__") != null) {
-				/* Include YUI Selector API */
+				/* Include YUI Calendar API */
 %><script type="text/javascript" src="/assets/yui/calendar/calendar-min.js"></script>
-<script src="/assets/yui/datasource/datasource-min.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_load_autocomplete__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script>
 <%
 			}
 		}

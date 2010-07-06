@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -48,6 +49,7 @@ import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionImpressionLogEntry;
 import com.freshdirect.smartstore.fdstore.SessionImpressionLog;
@@ -1103,5 +1105,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 		this.user.resetPricingContext();
 	}
 
+	@Override
+	public SortedSet<IgnoreCaseString> getClientCodesHistory() {
+		return user.getClientCodesHistory();
+	}
 }
 

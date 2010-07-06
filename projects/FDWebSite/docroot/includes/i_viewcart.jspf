@@ -16,9 +16,11 @@
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
+<%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% if (user.isEligibleForClientCodes()) { %>
+
 <div id="clicode_dlgTmpl" style="display: none">
 	<table border="0" cellpadding="0" cellspacing="0" width="520">
 		<tr>
@@ -54,6 +56,11 @@
 		</tr>
 	</table>
 </div>
+<script type="text/javascript">
+<% for (IgnoreCaseString clientCode : user.getClientCodesHistory()) {%>
+FreshDirect.ClientCodes.addHistory("<%= StringEscapeUtils.escapeJavaScript(clientCode.toString()) %>", true);
+<% } %>
+</script>
 <% } %>
 <%
 //	Dependencies that come from /viewcart.jsp are:
@@ -63,7 +70,6 @@ FDIdentity identity = user.getIdentity();
 
 %>
 <div style="width: 695px;">
-
 <style type="text/css">
  .promotionError { font-size: 10px; font-weight: bold; color: #CC0000; font-family: Verdana, Arial, sans-serif; }
 </style>
@@ -240,7 +246,7 @@ FDIdentity identity = user.getIdentity();
 				}
 				FreshDirect.ClientCodes.saveQty(<%= idx %>, <%= cartLine.getQuantity() %>);
 				</script>
-				<input id="quantity_<%=idx%>" name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10" autocomplete="off" VALUE="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);">
+				<input id="quantity_<%=idx%>" name="quantity_<%=idx%>" type="text" size="5" MAXLENGTH="5" CLASS="text10 clicode_quantity" autocomplete="off" VALUE="<%= quantityFormatter.format(cartLine.getQuantity()) %>" onBlur="chgQty<%=idx%>(0);">
 				<input name="rnd_<%=idx%>" type="hidden" value="<%= cartLine.getRandomId() %>">
 			</td>
 			<td width="16"><a href="javascript:chgQty<%=idx%>(<%= productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_up.gif" width="10" height="9" border="0" vspace="1" alt="Increase quantity"></a><br><a href="javascript:chgQty<%=idx%>(<%= -productNode.getQuantityIncrement() %>);"><img src="/media_stat/images/layout/grn_arrow_down.gif" width="10" height="9" border="0" vspace="1" alt="Decrease quantity"></a></td>
@@ -305,22 +311,26 @@ FDIdentity identity = user.getIdentity();
 				%>
 				<div id="clicode_multi_expanded_<%= idx %>" >
 					<input type="hidden" id="clicode_multi_val_<%= idx %>" name="clicode_multi_val_<%= idx %>">
-					<table style="width: auto; vertical-align: middle; border-collapse: collapse; border-spacing: 0px;">
+					<table class="clicode" id="clicode_multi_table_<%= idx %>"<% if ("multi".equals(clicode_type) && cartLine.getClientCodes().size() > 0) { %> style="border-bottom: 1px solid #999999;"<% } %>>
 						<thead>
 						<tr>
-							<th class="text10" style="padding: 2px 2px 0px; color: #999999; font-weight: normal; text-align: center;">Quantity</th>
-							<th class="text10" style="padding: 2px 2px 0px; color: #999999; font-weight: normal;">&nbsp;Client Code</th>
-							<th class="text10" style="padding: 2px 2px 0px; color: #999999;font-weight: normal;">&nbsp;</th>
+							<td class="text10 clicode_quantity" style="border: 0px none; vertical-align: bottom;">Quantity</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_clientcode" style="border: 0px none; vertical-align: bottom;">Client Code</td>
+							<td class="text10 clicode_gap" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
+							<td class="text10 clicode_actions" style="border: 0px none; vertical-align: bottom;">&nbsp;</td>
 						</tr>
 						<tr>
-							<td class="text10" style="padding: 2px; text-align: center; vertical-align: middle;">
-								<input type="text" size="5" maxlength="5" class="text10" style="text-align: center; vertical-align: middle;"
+							<td class="text10 clicode_quantity" style="border: 0px none;">
+								<input type="text" size="5" maxlength="5" class="text10 clicode_quantity" style="text-align: center; vertical-align: middle;"
 										name="clicode_quantity_<%= idx %>" id="clicode_quantity_<%= idx %>"
 										value="<%= "single".equals(clicode_type) ? 1 : ccQuantity %>"<% if ("single".equals(clicode_type)) { %> disabled="disabled"<% } %>
 										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
 							</td>
-							<td class="text10" style="padding: 2px; white-space: nowrap; vertical-align: middle;" colspan="2">
-								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle;"
+							<td class="text10 clicode_gap" style="border: 0px none;">&nbsp;</td>
+							<td class="text10 clicode_head" colspan="3">
+								<div style="position: relative; vertical-align: middle; overflow: visible;">
+								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle; width: 125px; position: static;"
 										name="clicode_clientcode_<%= idx %>" id="clicode_clientcode_<%= idx %>"
 										value="<%= ccClientCode %>"
 										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
@@ -332,33 +342,40 @@ FDIdentity identity = user.getIdentity();
 											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
 									</span>
 								</span>
+								<div id="clicode_autocomplete_<%= idx %>" style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div>
+								</div>
+								<script type="text/javascript">
+								FreshDirect.ClientCodes.addAcField("clicode_clientcode_<%= idx %>", "clicode_autocomplete_<%= idx %>");
+								</script>
 							</td>
 						</tr>
 						</thead>
 						<tbody id="clicode_multi_body_<%= idx %>"<% if (!"multi".equals(clicode_type)) { %> style="display: none;"<% } %>>
 						<tr id="clicode_multi_empty_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
-							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal; text-align: center;">&nbsp;</td>
-							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal;">&nbsp;</td>
-							<td class="text10" style="padding: 2px; color: #999999; font-weight: normal;">&nbsp;</td>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal; text-align: center;">&nbsp;</td>
+							<td class="text10" style="padding: 0px; color: #999999; font-weight: normal;" colspan="4">&nbsp;</td>
 						</tr>
 						<tr id="clicode_multi_head_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0) { %> style="display: none;"<% } %>>
-							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999;">Quantity</td>
-							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; border-top: 1px solid #999999; border-bottom: 1px solid #999999;">&nbsp;Client Code</td>
-							<td class="text10" style="padding: 4px 2px; color: #999999; font-weight: normal; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999;">&nbsp;Action</td>
+							<td class="text10 clicode_quantity">Quantity</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode">Client Code</td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">Action</td>
 						</tr>
 						<%
 						for (int i = 0; i< cartLine.getClientCodes().size(); i++) {
 						    ErpClientCode item = cartLine.getClientCodes().get(i);
 						%>
 						<tr id="clicode_multi_row_<%= idx %>_<%= i %>">
-							<td class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;">
+							<td class="text10 clicode_quantity">
 							    <%= item.getQuantity() %>
 							</td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;">
-							    &nbsp;<%= item.getClientCode() %>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode">
+								<%= item.getClientCode() %>
 							</td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; width: 80px; white-space: nowrap; height: 24px;">
-								&nbsp;
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">
 								<span>
 									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.editRow(this);">Edit</a>
 									&nbsp;&nbsp;
@@ -378,33 +395,14 @@ FDIdentity identity = user.getIdentity();
 						}
 						%>
 						<tr id="clicode_multi_nocode_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0 || noCode == 0) { %> style="display: none;"<% } %>>
-							<td id="clicode_multi_nocode_<%= idx %>" class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;"><%= noCode %></td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;"><span style="font-style: italic;">&nbsp;&ndash; No Code &ndash;</span></td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; height: 24px;">&nbsp;
+							<td id="clicode_multi_nocode_<%= idx %>" class="text10 clicode_quantity"><%= noCode %></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_clientcode"><span style="font-style: italic;">&ndash; No Code &ndash;</span></td>
+							<td class="text10 clicode_gap">&nbsp;</td>
+							<td class="text10 clicode_actions">&nbsp;
                                 <script type="text/javascript">
                                 FreshDirect.ClientCodes.setNoCode(<%= idx %>, <%= noCode %>);
                                 </script>
-							</td>
-						</tr>
-						<tr id="clicode_multi_row_template_<%= idx %>" style="display: none;">
-							<td class="text10" style="padding: 0px 2px; color: #999999; text-align: center; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-left: 1px solid #999999; height: 24px;">
-								&lt;quantity&gt;
-							</td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; height: 24px;">
-								&nbsp;&lt;client_code&gt;
-							</td>
-							<td class="text10" style="padding: 0px 2px; color: #999999; border-top: 1px solid #999999; border-bottom: 1px solid #999999; border-right: 1px solid #999999; width: 80px; white-space: nowrap; height: 24px;">
-								&nbsp;
-								<span>
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.editRow(this);">Edit</a>
-									&nbsp;&nbsp;
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.deleteRow(this);">Delete</a>
-							 	</span>
-								<span style="display: none;">
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.okEditRow(this);">OK</a>
-									&nbsp;&nbsp;
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.cancelEditRow(this);">Cancel</a>
-						 		</span>
 							</td>
 						</tr>
 						</tbody>

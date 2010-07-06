@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.customer;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -27,6 +28,7 @@ import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.util.IgnoreCaseString;
 
 
 public interface FDUserI extends java.io.Serializable {
@@ -425,5 +427,5 @@ public interface FDUserI extends java.io.Serializable {
 
 	public void setZPServiceType(EnumServiceType serviceType);
 
-
+	public SortedSet<IgnoreCaseString> getClientCodesHistory();
 }

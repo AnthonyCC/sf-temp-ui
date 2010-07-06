@@ -13,11 +13,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -151,6 +154,7 @@ import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
+import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
 import com.freshdirect.framework.mail.FTLEmailI;
@@ -5725,6 +5729,34 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				item.setProductDescription(rs.getString(6));
 				item.setDeliveryDate(rs.getDate(7));
 				ccs.add(item);
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+		return ccs;
+	}
+
+	public SortedSet<IgnoreCaseString> getOrderClientCodesForUser(FDIdentity identity) throws FDResourceException {
+		Connection conn = null;
+		SortedSet<IgnoreCaseString> ccs = new TreeSet<IgnoreCaseString>();
+		try {
+			conn = getConnection();
+			PreparedStatement ps = conn.prepareStatement("SELECT DISTINCT CLIENT_CODE FROM CUST.ORDERLINE_CLIENTCODE WHERE CUSTOMER_ID = ?");
+			ps.setString(1, identity.getErpCustomerPK());
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				ccs.add(new IgnoreCaseString(rs.getString(1)));
 			}
 			rs.close();
 			ps.close();

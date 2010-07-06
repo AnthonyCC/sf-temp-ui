@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import org.apache.log4j.Category;
 
@@ -30,6 +32,7 @@ import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpChargeLineModel;
+import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ErpCustomerModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
@@ -71,6 +74,7 @@ import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.fdstore.util.SiteFeatureHelper;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.core.ModelSupport;
@@ -179,6 +183,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	protected Boolean isSOEligible = null;
 
 	protected Boolean cliCodeEligible = null;
+	
+	protected SortedSet<IgnoreCaseString> clientCodesHistory = null; 
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -1799,6 +1805,28 @@ public class FDUser extends ModelSupport implements FDUserI {
 			throw new FDRuntimeException(e.getMessage());
 		}
 		return zoneIdParam;
+	}
+	
+	@Override
+	public SortedSet<IgnoreCaseString> getClientCodesHistory() {
+		if (clientCodesHistory == null) {
+			clientCodesHistory = new TreeSet<IgnoreCaseString>();
+			try {
+				clientCodesHistory.addAll(FDCustomerManager.getOrderClientCodesForUser(getIdentity()));
+			} catch (FDResourceException e) {
+				LOGGER.warn("unable to retrieve order client codes for: " + getIdentity(), e);
+			}
+			clientCodesHistory.addAll(getCartClientCodes());
+		}
+		return clientCodesHistory;
+	}
+
+	private Collection<? extends IgnoreCaseString> getCartClientCodes() {
+		Set<IgnoreCaseString> ccs = new HashSet<IgnoreCaseString>();
+		for (FDCartLineI ol : getShoppingCart().getOrderLines())
+			for (ErpClientCode cc : ol.getClientCodes())
+				ccs.add(new IgnoreCaseString(cc.getClientCode()));
+		return ccs;
 	}
 }
 
