@@ -67,7 +67,7 @@
       
       
           function validateUserFields(){
-
+			  var zoneCode  =  document.getElementById('ZoneList').selectedIndex;
         	  var sType     =  document.getElementById('ServiceTimeTypeList').selectedIndex;
         	  var sTimeOver =  document.getElementById('serviceTimeOverride').value;
         	  var sTimeOptr =  document.getElementById('ServiceTimeOperatorList').selectedIndex;
@@ -85,6 +85,13 @@
                   alert("Please choose only one from ServiceTime group!!");   
                   return false;
               }
+              for(var i=0;i<=rollingIndex;i++){
+            	  var x= document.getElementById('attributeList['+rollingIndex+'].zoneCode');
+					if(x && document.getElementById('ZoneList')[zoneCode].value==x.value){
+							alert('Selected zone already exists in the list!!');
+							return false;
+					}
+              }
               return true;
           }
       
@@ -100,17 +107,17 @@
                          
                       allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('ZoneList')[document.getElementById('ZoneList').selectedIndex].text;   
         			  if(document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text=='-Please Select')	{
-        				  allTrElements.getElementsByTagName("td")[1].innerHTML='';
+        				  allTrElements.getElementsByTagName("td")[1].innerHTML='&nbsp;'+'';        				  
         			  }else{
-            			  allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text;   													                       
+            			  allTrElements.getElementsByTagName("td")[1].innerHTML='&nbsp;'+document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text;   													                       
         			  }
-                      allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('serviceTimeOverride').value;   
-                      if(document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text=='-Please Select')	{
-        				  allTrElements.getElementsByTagName("td")[3].innerHTML='';
+                      allTrElements.getElementsByTagName("td")[2].innerHTML='&nbsp;'+document.getElementById('serviceTimeOverride').value;   
+                      if(document.getElementById('serviceTimeAdjustment').value==''){
+        				  allTrElements.getElementsByTagName("td")[3].innerHTML='&nbsp;'+'';
         			  }else{
-            			  allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text;
-            		  } 
-                      allTrElements.getElementsByTagName("td")[4].innerHTML=document.getElementById('serviceTimeAdjustment').value;   
+            		  	  allTrElements.getElementsByTagName("td")[3].innerHTML='&nbsp;'+document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text;
+        			  }
+                      allTrElements.getElementsByTagName("td")[4].innerHTML='&nbsp;'+document.getElementById('serviceTimeAdjustment').value;   
                                            
                       document.getElementById(currentRow+'.zoneCode').value=document.getElementById('ZoneList')[document.getElementById('ZoneList').selectedIndex].value;
                       document.getElementById(currentRow+'.sTimeType').value=document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].value;
@@ -169,8 +176,8 @@
    									    var td3 = document.createElement('td');
    									    td3.appendChild (document.createTextNode(sTimeOverride));
   									    var td4 = document.createElement('td');
-  									    if(sTimeOptr.text!=null && sTimeOptr.text=='-Please Select'){
-  									    	sTimeOptr.text='';	
+  									    if(sTimeOptr.text!=null && (sTimeOptr.text=='-'||sTimeOptr.text=='+') && sTimeAdjustment==''){
+  									    	sTimeOptr.text='';
 										}
   	                                    td4.appendChild(document.createTextNode(sTimeOptr.text)); 
   									    var td5 = document.createElement('td');
@@ -491,10 +498,10 @@
 				               </td>                                      
 			                   <td><input type="text" id="serviceTimeOverride" name="serviceTimeOverride" value="" style="width: 95px;" ></td>
 			                   <td>                 
-				                   <select name="ServiceTimeOperatorList" id="ServiceTimeOperatorList" style="width: 100%;">                     
+				                   <select name="ServiceTimeOperatorList" id="ServiceTimeOperatorList" style="width: 100%;"><!--                     
 				                  	 <option value="">-Please Select</option>
-				                  	 <c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
-						             		<OPTION value="<c:out value="${serviceTimeOperator.name}"/>"><c:out value="${serviceTimeOperator.description}"/></OPTION>
+				                  	 --><c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
+						             		<OPTION value="<c:out value="${serviceTimeOperator.name}"/>"><c:out value="${serviceTimeOperator.name}"/></OPTION>
 							         </c:forEach>                                      
 							       </select>
 				               </td>    
@@ -532,10 +539,10 @@
 		                            
 		                            <tr id='attributeList[<%=intRowIndex%>]'> 
 						        		<td><c:out value="${sZone.scenarioZonesId.zoneCode}"/></td> 
-		                                <td><c:out value="${sZone.serviceTimeType}"/></td> 
-		                                <td><c:out value="${sZone.serviceTimeOverride}"/></td>
-		                                <td><c:out value="${sZone.serviceTimeOperator.description}"/></td> 
-		                                <td><c:out value="${sZone.serviceTimeAdjustment}"/></td> 
+		                                <td>&nbsp;<c:out value="${sZone.serviceTimeType}"/></td> 
+		                                <td>&nbsp;<c:out value="${sZone.serviceTimeOverride}"/></td>
+		                                <td>&nbsp;<c:out value="${sZone.serviceTimeOperator.name}"/></td> 
+		                                <td>&nbsp;<c:out value="${sZone.serviceTimeAdjustment}"/></td> 
 		                                <td><a href="javascript:deleteProfile('attributeList[<%=intRowIndex %>]')">Delete</a>&nbsp;&nbsp;/&nbsp;&nbsp;<a href="javascript:copyProfile('attributeList[<%=intRowIndex %>]')">Edit</a></td>
 		                            </tr> 
 		                            <script>

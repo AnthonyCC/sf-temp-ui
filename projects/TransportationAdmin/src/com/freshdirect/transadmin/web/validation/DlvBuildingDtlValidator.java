@@ -36,12 +36,8 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 		}
 		
 		if("1".equals(model.getDifficultToDeliver())) {
-			if(model!=null && (model.getServiceTimeOperator()!=null && model.getServiceTimeAdjustable()!=null 
-					&& (!"+".equalsIgnoreCase(model.getServiceTimeOperator())&&!"-".equalsIgnoreCase(model.getServiceTimeOperator())))){
-				errors.rejectValue("serviceTimeOperator","app.error.130",new Object[]{"'+' or '-'"},null);
-			}
-				validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),model.getServiceTimeOverride(),
-				model.getServiceTimeAdjustable(),"ST Type or ST Override or ST Adjustment",errors);
+			validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),model.getServiceTimeOverride(),
+			model.getServiceTimeAdjustable(),"ST Type or ST Override or ST Adjustment",errors);
 		}
 		
 		/*--What ? if ("1".equals(model.getSvcEnt())) {

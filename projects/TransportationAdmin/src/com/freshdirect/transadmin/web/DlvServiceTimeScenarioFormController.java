@@ -126,6 +126,9 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 				if(!"".equals(sTimeAdjustment)){
 					objsTimeAdjustment = new BigDecimal(sTimeAdjustment);
 				}
+				if(objsTimeAdjustment==null){
+					sTimeOperator="";
+				}
 				ScenarioZonesId Id = new ScenarioZonesId(scenarioId, zonecode);
 				
 				DlvScenarioZones zone = null;

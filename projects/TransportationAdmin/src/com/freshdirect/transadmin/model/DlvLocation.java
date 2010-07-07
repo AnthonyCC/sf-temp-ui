@@ -31,6 +31,8 @@ public class DlvLocation implements java.io.Serializable, TrnBaseEntityI  {
 		return serviceTimeAdjustable;
 	}
 	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
+		if(serviceTimeAdjustable==null)
+			this.serviceTimeOperator=null;
 		this.serviceTimeAdjustable = serviceTimeAdjustable;
 	}
 	public String getApartment() {

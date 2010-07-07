@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.BuildingOperationHours;
@@ -334,6 +335,7 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());
 		refData.put("confidencetypes", getLocationManagerService().getConfidenceTypes());
 		refData.put("qualitytypes", getLocationManagerService().getQualityTypes());
+		refData.put("serviceTimeOperators", (List)EnumArithmeticOperator.getEnumList());
 		try {
 			refData.put("states", new GeographyServiceProxy().getStateList());
 		} catch (Exception exp) {

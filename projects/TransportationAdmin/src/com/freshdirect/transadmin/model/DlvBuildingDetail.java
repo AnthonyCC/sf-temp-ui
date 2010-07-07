@@ -286,7 +286,10 @@ public class DlvBuildingDetail implements java.io.Serializable, TrnBaseEntityI  
 	}
 
 	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
+		if(serviceTimeAdjustable==null)
+			this.serviceTimeOperator=null;
 		this.serviceTimeAdjustable = serviceTimeAdjustable;
+		
 	}
 
 	public String getServiceTimeOperator() {

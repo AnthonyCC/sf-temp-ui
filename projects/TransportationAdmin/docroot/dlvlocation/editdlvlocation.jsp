@@ -148,9 +148,11 @@
                
                <tr>
                   <td>Service Time Adjustment</td>
-                  <td>                  
-                    <form:input maxlength="1" size="1" path="serviceTimeOperator" />
-                    <form:input maxlength="50" size="24" path="serviceTimeAdjustable" />
+                  <td style="">
+	                    <form:select path="serviceTimeOperator">
+							 <form:options items="${serviceTimeOperators}" itemLabel="name" itemValue="name" />
+						</form:select>             
+	                    <form:input maxlength="50" size="23" path="serviceTimeAdjustable" />
                   </td>
                 <td>
                   &nbsp;<form:errors path="serviceTimeAdjustable" />&nbsp;<form:errors path="serviceTimeOperator" />

@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvLocation;
@@ -23,6 +24,7 @@ public class DlvLocationFormController extends AbstractFormController {
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());	
 		refData.put("confidencetypes", getLocationManagerService().getConfidenceTypes());	
 		refData.put("qualitytypes", getLocationManagerService().getQualityTypes());
+		refData.put("serviceTimeOperators", (List)EnumArithmeticOperator.getEnumList());
 		try {
 			refData.put("states", new GeographyServiceProxy().getStateList());
 		} catch (Exception exp) {

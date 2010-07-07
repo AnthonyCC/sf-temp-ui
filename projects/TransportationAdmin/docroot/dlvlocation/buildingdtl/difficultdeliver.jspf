@@ -22,12 +22,16 @@ function togglediff(checked, field1) {
         document.getElementById('dlvServiceTimeType').disabled=true;
         document.getElementById('serviceTimeOverride').disabled=true;
         document.getElementById('serviceTimeOperator').disabled=true;
-      	document.getElementById('serviceTimeAdjustable').disabled=true;      	
+      	document.getElementById('serviceTimeAdjustable').disabled=true;
 	}
 }
 
  </script>
-
+<style>
+#serviceTimeOperator {
+width:40px;
+}
+</style>
 <b>Difficult to Deliver building</b>
 				<table class="t_Hours">
  				  <tr>
@@ -83,9 +87,11 @@ function togglediff(checked, field1) {
 				  
 				  <tr>
 				    <td><align="left">Service Time Adjustment</td>
-				    <td colspan="5"> 								  
-				  	 		 <form:input disabled="false" maxlength="1" size="1" path="serviceTimeOperator" disabled="1"/>
-                   			 <form:input disabled="false" maxlength="50" size="79" path="serviceTimeAdjustable" disabled="1"/>
+				    <td colspan="5">
+				    		  <form:select path="serviceTimeOperator" disabled="1">
+						  	  		<form:options items="${serviceTimeOperators}" itemLabel="name" itemValue="name" />
+						     </form:select> 								  
+				  	 		 <form:input disabled="false" maxlength="50" size="79" path="serviceTimeAdjustable" disabled="1"/>
 				 	</td>
 					<td><div class="wspacer"><!--  --></div></td>
 					<td><div class="bld_err_messages"><form:errors path="serviceTimeOperator" /><form:errors path="serviceTimeAdjustable" /></div>
