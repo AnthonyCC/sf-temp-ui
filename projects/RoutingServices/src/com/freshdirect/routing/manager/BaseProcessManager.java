@@ -18,8 +18,6 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
-import com.freshdirect.routing.service.IGeographyService;
-import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.Issue;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
@@ -93,7 +91,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 
     public Object endProcess(ProcessContext request) throws RoutingProcessException {
 
-    	IGeographyService service = RoutingServiceLocator.getInstance().getGeographyService();
+    	/*IGeographyService service = RoutingServiceLocator.getInstance().getGeographyService();
 		List locLst = new ArrayList(((Map)request.getLocationList()).values());
 		List buildingLst = new ArrayList(((Map)request.getBuildingList()).values());
 		//Save Building
@@ -117,7 +115,7 @@ public abstract class BaseProcessManager implements  IProcessManager {
 				e.printStackTrace();
 				throw new RoutingProcessException(null,e,IIssue.PROCESS_LOCATION_SAVEERROR);
 			}
-		}
+		} */
 
 		return doBatchRouting(request);
     }
