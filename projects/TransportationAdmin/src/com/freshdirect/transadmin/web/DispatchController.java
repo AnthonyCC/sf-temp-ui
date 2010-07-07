@@ -937,8 +937,8 @@ public class DispatchController extends AbstractMultiActionController {
 									
 									_stop = (IRoutingStopModel) stopIterator.next();
 									_geoPoint = new GeoPoint();
-									_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLatitude()));
-									_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLongitude()));
+									_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLatitude()));
+									_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLongitude()));
 									points.add(_geoPoint);
 								}
 								route.setDrivingDirection(proxy.buildDriverDirections(points));
@@ -961,18 +961,18 @@ public class DispatchController extends AbstractMultiActionController {
 								if(_stops != null) {
 									for(int intCount=0; intCount<_stops.length; intCount++) {
 										_nextStop = (IRoutingStopModel)_stops[intCount];
-										strBuf.append("<rtept lat=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getGeographicLocation().getLatitude())/1000000.0)
-												.append("\" lon=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getGeographicLocation().getLongitude())/1000000.0).append("\">");
+										strBuf.append("<rtept lat=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0)
+												.append("\" lon=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0).append("\">");
 										
-										if(_nextStop.getLocation().getGeographicLocation().getLatitude() != null 
-													&& _nextStop.getLocation().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
+										if(_nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude() != null 
+													&& _nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
 											strStopNo = "";
 											zipCode = "";
 											addLocation = "FreshDirect";
 										} else{
 											strStopNo = "["+_nextStop.getStopNo()+"]";
-											zipCode = ","+_nextStop.getLocation().getZipCode();
-											addLocation = "-"+_nextStop.getLocation().getStreetAddress1();
+											zipCode = ","+_nextStop.getLocation().getBuilding().getZipCode();
+											addLocation = "-"+_nextStop.getLocation().getBuilding().getStreetAddress1();
 										}
 										strBuf.append("<name>").append(strStopNo).append(addLocation)						        						
 						        						.append(zipCode)
@@ -1028,8 +1028,8 @@ public class DispatchController extends AbstractMultiActionController {
 						
 						_stop = (IRoutingStopModel) stopIterator.next();
 						_geoPoint = new GeoPoint();
-						_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLatitude()));
-						_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getGeographicLocation().getLongitude()));
+						_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLatitude()));
+						_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLongitude()));
 						points.add(_geoPoint);
 					}
 					route.setDrivingDirection(proxy.buildDriverDirections(points));

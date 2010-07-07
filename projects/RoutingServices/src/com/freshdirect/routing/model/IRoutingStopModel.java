@@ -2,7 +2,7 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
-public interface IRoutingStopModel {
+public interface IRoutingStopModel extends IOrderModel {
 	
 	 boolean isDepot();
 

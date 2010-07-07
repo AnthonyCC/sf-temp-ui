@@ -88,10 +88,10 @@ public class DrivingDirectionsReport {
 					        			.append(": ").append(TransStringUtil.formatTime(_nextStop.getStopArrivalTime()))
 					        			.append("   Stop ").append(intCount+1)			        			
 					        			.append(" - [ ")
-						        		.append(_nextStop.getLocation().getStreetAddress1())
-						        						.append(", ").append(_nextStop.getLocation().getCity())
-						        						.append(", ").append(_nextStop.getLocation().getState())
-						        						.append(", ").append(_nextStop.getLocation().getZipCode())
+						        		.append(_nextStop.getLocation().getBuilding().getStreetAddress1())
+						        						.append(", ").append(_nextStop.getLocation().getBuilding().getCity())
+						        						.append(", ").append(_nextStop.getLocation().getBuilding().getState())
+						        						.append(", ").append(_nextStop.getLocation().getBuilding().getZipCode())
 						        						.append(" ]");
 					        			xlsfo.append("</fo:block>");
 					        			

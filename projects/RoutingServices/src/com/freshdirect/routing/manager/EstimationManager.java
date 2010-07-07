@@ -18,42 +18,20 @@ public class EstimationManager extends BaseProcessManager {
 
 		IServiceTimeScenarioModel scenario = request.getRoutingScenario();
 		DeliveryServiceProxy proxy = new DeliveryServiceProxy();
-		IDeliveryModel model = request.getDeliveryInfo();
-		ILocationModel locModel = request.getLocationInfo();
-		IOrderModel orderModel = request.getOrderInfo();
-				
-		String serviceTimeType = model.getDeliveryLocation().getServiceTimeType();
-		if(serviceTimeType == null || serviceTimeType.trim().length() == 0) {
-			serviceTimeType = scenario.getDefaultServiceTimeType();
-			model.getDeliveryLocation().setServiceTimeType(serviceTimeType);
-			ProcessInfo  processInfo = new ProcessInfo();
-			processInfo.setProcessType(EnumProcessType.LOAD_SERVICETIMETYPE);
-			processInfo.setProcessInfoType(EnumProcessInfoType.WARNING);
-			processInfo.setOrderId(orderModel.getOrderNumber());
-			processInfo.setLocationId(locModel.getLocationId());
-			request.addProcessInfo(processInfo);
-
-		}
+								
 		double serviceTime = 0.0;
 		try {
-			serviceTime = proxy.getServiceTime(model, scenario.getServiceTimeFactorFormula(), scenario.getServiceTimeFormula());
+			serviceTime = proxy.getServiceTime(request.getOrderInfo(), scenario);
 		} catch(RoutingServiceException e) {
 			ProcessInfo  processInfo = new ProcessInfo();
 			processInfo.setProcessType(EnumProcessType.LOAD_SERVICETIME);
 			processInfo.setProcessInfoType(EnumProcessInfoType.WARNING);
-			processInfo.setOrderId(orderModel.getOrderNumber());
-			processInfo.setLocationId(locModel.getLocationId());
-			request.addProcessInfo(processInfo);
-			try {
-				serviceTime = proxy.getServiceTime(model,scenario.getServiceTimeFactorFormula()
-													, scenario.getServiceTimeFormula(), RoutingServicesProperties.getDefaultFixedServiceTime()
-													, RoutingServicesProperties.getDefaultVariableServiceTime());
-			} catch(RoutingServiceException ex) {
-				ex.printStackTrace();
-			}
+			processInfo.setOrderId(request.getOrderInfo().getOrderNumber());
+			processInfo.setLocationId(request.getLocationInfo().getLocationId());
+			request.addProcessInfo(processInfo);			
 		}
 		
-		model.setServiceTime(serviceTime);
+		request.getDeliveryInfo().setServiceTime(serviceTime);
 
 	}
 }

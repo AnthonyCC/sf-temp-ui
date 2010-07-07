@@ -11,6 +11,8 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private Date routeStartTime;
 	
+	private Date completionTime;
+	
 	private IDrivingDirection drivingDirection;
 
 	public IDrivingDirection getDrivingDirection() {
@@ -45,6 +47,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		this.stops = stops;
 	}
 	
+	public Date getCompletionTime() {
+		return completionTime;
+	}
+
+	public void setCompletionTime(Date completionTime) {
+		this.completionTime = completionTime;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

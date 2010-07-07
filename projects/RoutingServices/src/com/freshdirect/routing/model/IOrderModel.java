@@ -7,8 +7,12 @@ public interface IOrderModel {
 	String getOrderNumber();
 	void setOrderNumber(String orderNumber);
 	
+	String getErpOrderNumber();
+	void setErpOrderNumber(String erpOrderNumber);
+	
 	String getCustomerName();
 	void setCustomerName(String customerName);
+	
 	String getCustomerNumber();
 	void setCustomerNumber(String customerNumber);
 	

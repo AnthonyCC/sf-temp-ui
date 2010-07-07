@@ -2,7 +2,7 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
-public class RoutingStopModel extends BaseModel implements IRoutingStopModel, Comparable  {
+public class RoutingStopModel extends OrderModel implements IRoutingStopModel, Comparable  {
 	
 	private int stopNo;
 	
@@ -13,7 +13,11 @@ public class RoutingStopModel extends BaseModel implements IRoutingStopModel, Co
 	private Date timeWindowStart;
 	private Date timeWindowStop;
 	private Date stopArrivalTime;
-
+	
+	public RoutingStopModel() {
+		super();	
+	}
+	
 	public RoutingStopModel(int stopNo) {
 		super();
 		this.stopNo = stopNo;

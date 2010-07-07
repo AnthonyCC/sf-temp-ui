@@ -2,23 +2,22 @@ package com.freshdirect.routing.model;
 
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 
-public class LocationModel extends BaseModel implements ILocationModel {
+public class ZoneScenarioModel extends BaseModel implements IZoneScenarioModel  {
 	
-	private String locationId;
 	
-	private String apartmentNumber;	
+	private String zone;
 		
-	private IServiceTimeTypeModel serviceTimeType;
-	private IBuildingModel building;
-	
 	private double serviceTimeOverride;
 	private double serviceTimeAdjustment;
 	private EnumArithmeticOperator adjustmentOperator;
-			
 	
-	public LocationModel(IBuildingModel building) {
-		super();
-		this.building = building;
+	private IServiceTimeTypeModel serviceTimeType;
+	
+	public String getZone() {
+		return zone;
+	}
+	public void setZone(String zone) {
+		this.zone = zone;
 	}
 	public double getServiceTimeOverride() {
 		return serviceTimeOverride;
@@ -38,28 +37,12 @@ public class LocationModel extends BaseModel implements ILocationModel {
 	public void setAdjustmentOperator(EnumArithmeticOperator adjustmentOperator) {
 		this.adjustmentOperator = adjustmentOperator;
 	}
-	public IBuildingModel getBuilding() {
-		return building;
-	}
-	
 	public IServiceTimeTypeModel getServiceTimeType() {
 		return serviceTimeType;
 	}
 	public void setServiceTimeType(IServiceTimeTypeModel serviceTimeType) {
 		this.serviceTimeType = serviceTimeType;
 	}
-	public String getApartmentNumber() {
-		return apartmentNumber;
-	}
-	public void setApartmentNumber(String apartmentNumber) {
-		this.apartmentNumber = apartmentNumber;
-	}
-	
-	public String getLocationId() {
-		return locationId;
-	}
-	public void setLocationId(String locationId) {
-		this.locationId = locationId;
-	}
 		
+	
 }

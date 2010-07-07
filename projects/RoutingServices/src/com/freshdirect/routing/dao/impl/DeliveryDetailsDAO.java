@@ -17,10 +17,12 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
 import com.freshdirect.routing.model.DeliveryWindowMetrics;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
@@ -28,14 +30,14 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
-import com.freshdirect.routing.model.IServiceTimeModel;
+import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
-import com.freshdirect.routing.model.ServiceTimeModel;
+import com.freshdirect.routing.model.ServiceTimeTypeModel;
 import com.freshdirect.routing.model.UnassignedModel;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.util.RoutingUtil;
@@ -50,9 +52,9 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"where s.id = ? and s.id = sa.sale_id and s.customer_id = sa.customer_id and sa.id = di.salesaction_id "+ 
 			"and sa.action_type in ('CRO','MOD') and sa.action_date=s.CROMOD_DATE and s.type='REG'";
 	
-	private static final String GET_SERVICETIME_QRY = "select st.FIXED_SERVICE_TIME  FIXED_SERVICE_TIME , st.VARIABLE_SERVICE_TIME VARIABLE_SERVICE_TIME "+			
+	/*private static final String GET_SERVICETIME_QRY = "select st.FIXED_SERVICE_TIME  FIXED_SERVICE_TIME , st.VARIABLE_SERVICE_TIME VARIABLE_SERVICE_TIME "+			
 			"from dlv.SERVICETIME st "+
-			"where st.SERVICETIME_TYPE = ? and st.ZONE_TYPE = ? ";
+			"where st.SERVICETIME_TYPE = ? and st.ZONE_TYPE = ? ";*/
 	
 	private static final String GET_DELIVERYTYPE_QRY = "select r.SERVICE_TYPE SERVICE_TYPE from dlv.region r, dlv.region_data rd, dlv.zone z "+
 			"where rd.id = z.region_data_id and rd.region_id = r.id and z.zone_code = ? "  +
@@ -60,7 +62,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_DELIVERYZONETYPE_QRY = "select z.ZONE_TYPE SERVICE_TYPE from transp.trn_zone z where z.zone_number = ? ";
 	
-	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE, a.ACTIVE ACTIVE, " +
+	private static final String GET_DELIVERYZONEDETAILS_QRY = "select z.SERVICETIME_TYPE SERVICETIME_TYPE, z.ZONE_CODE ZONE_NUMBER, z.ZONE_TYPE ZONE_TYPE, a.CODE AREACODE, a.ACTIVE ACTIVE, " +
 			"a.BALANCE_BY BALANCE_BY, a.LOADBALANCE_FACTOR LOADBALANCE_FACTOR, a.NEEDS_LOADBALANCE NEEDS_LOADBALANCE,a.IS_DEPOT IS_DEPOT  from transp.zone z, transp.trn_area a  " +
 			" where z.area = a.code and (z.OBSOLETE <> 'X' or z.OBSOLETE IS NULL)";
 	
@@ -174,18 +176,22 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
         		    		IZoneModel tmpModel = new ZoneModel();
 				    		tmpModel.setZoneNumber(rs.getString("ZONE"));
         		    		model.setDeliveryZone(tmpModel);
-        		    		//model.setDeliveryType(rs.getString("DELIVERY_TYPE"));
-        		    		ILocationModel locModel = new LocationModel();
-        		    		locModel.setStreetAddress1(rs.getString("SCRUBBED_ADDRESS"));
-        		    		locModel.setApartmentNumber(rs.getString("APARTMENT"));
-        		    		locModel.setZipCode(rs.getString("ZIP"));
-        		    		locModel.setState(rs.getString("STATE"));
-        		    		locModel.setCity(rs.getString("CITY"));
-        		    		locModel.setCountry(rs.getString("COUNTRY"));
         		    		
-        		    		model.setDeliveryLocation(locModel);        		    		
-        		    	   }
-        		    	   while(rs.next());		        		    	
+        		    		IBuildingModel building = new BuildingModel();
+        		    		
+        		    		building.setSrubbedStreet(rs.getString("SCRUBBED_ADDRESS"));
+        		    		building.setStreetAddress1(building.getSrubbedStreet());        		    		
+        		    		building.setZipCode(rs.getString("ZIP"));
+        		    		building.setState(rs.getString("STATE"));
+        		    		building.setCity(rs.getString("CITY"));
+        		    		building.setCountry(rs.getString("COUNTRY"));
+        		    		
+        		    		ILocationModel locModel = new LocationModel(building);
+        		    		locModel.setApartmentNumber(rs.getString("APARTMENT"));
+        		    		model.setDeliveryLocation(locModel);
+        		    		        		    		
+        		    		
+        		    	}  while(rs.next());		        		    	
         		      }
         		  }
         	); 
@@ -193,7 +199,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return model;
 	}
 	
-	public IServiceTimeModel getServiceTime(final String serviceTimeType, final String zoneType) throws SQLException {
+	/*public IServiceTimeModel getServiceTime(final String serviceTimeType, final String zoneType) throws SQLException {
 		final IServiceTimeModel model = new ServiceTimeModel();  
 		model.setNew(true);
 		
@@ -221,7 +227,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
        	); 
         
 		return model;
-	}
+	}*/
+	
 	public String getDeliveryType(final String zoneCode) throws SQLException {
 		
 		return (String)jdbcTemplate.queryForObject(GET_DELIVERYTYPE_QRY, new Object[]{zoneCode}, String.class);	
@@ -242,8 +249,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		String zoneCode = rs.getString("ZONE_NUMBER");
 				    		IZoneModel tmpModel = new ZoneModel();
 				    		tmpModel.setZoneNumber(zoneCode);
-				    		
-				    		
+				    						    		
 				    		tmpModel.setZoneType(rs.getString("ZONE_TYPE"));
 				    		
 				    		IAreaModel tmpAreaModel = new AreaModel();
@@ -255,6 +261,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		tmpAreaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
 				    		tmpAreaModel.setActive("X".equalsIgnoreCase(rs.getString("ACTIVE")));
 				    		
+				    		IServiceTimeTypeModel serviceTimeType = new ServiceTimeTypeModel();
+        		    		serviceTimeType.setCode( rs.getString("SERVICETIME_TYPE"));
+        		    		tmpModel.setServiceTimeType(serviceTimeType);
+        		    		
 				    		tmpModel.setArea(tmpAreaModel);
 				    		zoneDetailsMap.put(zoneCode, tmpModel);
 				    	 } while(rs.next());		        		    	

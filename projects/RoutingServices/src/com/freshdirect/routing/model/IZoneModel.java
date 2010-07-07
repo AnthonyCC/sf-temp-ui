@@ -26,5 +26,8 @@ package com.freshdirect.routing.model;
 	 String getZoneType();
 
 	 void setZoneType(String zoneType);
-
+	 
+     IServiceTimeTypeModel getServiceTimeType();
+     
+     void setServiceTimeType(IServiceTimeTypeModel serviceTimeType);
 }

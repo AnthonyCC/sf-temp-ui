@@ -19,7 +19,7 @@
         <property name="serviceTimeOverride" type="big_decimal">
             <column name="SERVICETIME_OVERRIDE" precision="10" />
         </property>
-        <property name="serviceTimeOperator" column="SERVICETIME_OPERATOR" type="com.freshdirect.transadmin.datamanager.util.EnumLogicalOperatorDataType" />
+        <property name="serviceTimeOperator" column="SERVICETIME_OPERATOR" type="com.freshdirect.transadmin.constants.EnumArithmeticOperatorDataType" />
         <property name="serviceTimeAdjustment" type="big_decimal">
             <column name="SERVICETIME_ADJUSTMENT" precision="10" />
         </property>         

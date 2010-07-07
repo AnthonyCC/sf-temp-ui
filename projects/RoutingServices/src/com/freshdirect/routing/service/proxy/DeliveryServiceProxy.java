@@ -17,17 +17,7 @@ import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class DeliveryServiceProxy extends BaseServiceProxy {
-	
-	public double estimateOrderServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario)  throws RoutingServiceException {
-		return getService().estimateOrderServiceTime(orderModel, scenario);
-	}
-
-	public double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-			, String serviceTimeExpression) throws RoutingServiceException {
-	
-		return getService().getServiceTime(model, serviceTimeFactorExpression, serviceTimeExpression);		
-	}		
-	
+		
 	public IDeliveryModel getDeliveryInfo(String saleId) throws RoutingServiceException {
 		
 		return getService().getDeliveryInfo(saleId);	
@@ -45,9 +35,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return RoutingServiceLocator.getInstance().getDeliveryService();
 	}
 	
-	public double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-			, String serviceTimeExpression, int intFixedServiceTime, int intVariableServiceTime) throws RoutingServiceException {
-		return getService().getServiceTime(model,serviceTimeFactorExpression, serviceTimeExpression, intFixedServiceTime, intVariableServiceTime);	
+	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+		return getService().getServiceTime(orderModel, scenario);	
 	}
 	
 	public Map getDeliveryZoneDetails()  throws RoutingServiceException {

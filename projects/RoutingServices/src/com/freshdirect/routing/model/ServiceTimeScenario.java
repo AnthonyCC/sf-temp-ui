@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import java.util.Map;
+
 
 
 public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenarioModel {
@@ -13,10 +15,7 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	private double defaultCaseCount;
 	private double defaultFreezerCount;
 	private String orderSizeFormula;
-	
-	private String defaultServiceTimeType;
-	private String defaultZoneType;
-	
+		
 	private double loadBalanceFactor;
 	
 	private double lateDeliveryFactor;
@@ -25,6 +24,8 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	
 	private boolean needsLoadBalance;
 	
+	private Map<String, IZoneScenarioModel> zoneConfiguration;
+		
 	public String getCode() {
 		return code;
 	}
@@ -49,18 +50,7 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	public void setDefaultFreezerCount(double defaultFreezerCount) {
 		this.defaultFreezerCount = defaultFreezerCount;
 	}
-	public String getDefaultServiceTimeType() {
-		return defaultServiceTimeType;
-	}
-	public void setDefaultServiceTimeType(String defaultServiceTimeType) {
-		this.defaultServiceTimeType = defaultServiceTimeType;
-	}
-	public String getDefaultZoneType() {
-		return defaultZoneType;
-	}
-	public void setDefaultZoneType(String defaultZoneType) {
-		this.defaultZoneType = defaultZoneType;
-	}
+	
 	public String getDescription() {
 		return description;
 	}
@@ -115,5 +105,13 @@ public class ServiceTimeScenario extends BaseModel implements IServiceTimeScenar
 	public void setLateDeliveryFactor(double lateDeliveryFactor) {
 		this.lateDeliveryFactor = lateDeliveryFactor;
 	}
+	public Map<String, IZoneScenarioModel> getZoneConfiguration() {
+		return zoneConfiguration;
+	}
+	public void setZoneConfiguration(
+			Map<String, IZoneScenarioModel> zoneConfiguration) {
+		this.zoneConfiguration = zoneConfiguration;
+	}
+	
 	
 }

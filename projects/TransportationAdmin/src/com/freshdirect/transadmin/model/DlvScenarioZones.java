@@ -2,8 +2,7 @@ package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
 
-import com.freshdirect.transadmin.util.EnumDayOfWeek;
-import com.freshdirect.transadmin.util.EnumLogicalOperator;
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 
 
 public class DlvScenarioZones implements java.io.Serializable{
@@ -13,7 +12,7 @@ public class DlvScenarioZones implements java.io.Serializable{
 	private String serviceTimeType;
 	private BigDecimal serviceTimeOverride;
 	private BigDecimal serviceTimeAdjustment;
-	private EnumLogicalOperator serviceTimeOperator;
+	private EnumArithmeticOperator serviceTimeOperator;
 		
 	public DlvScenarioZones() {
 	
@@ -24,7 +23,7 @@ public class DlvScenarioZones implements java.io.Serializable{
 
 	public DlvScenarioZones(ScenarioZonesId scenarioZonesId,
 			String serviceTimeType, BigDecimal serviceTimeOverride,
-			EnumLogicalOperator serviceTimeOperator,BigDecimal serviceTimeAdjustment) {
+			EnumArithmeticOperator serviceTimeOperator,BigDecimal serviceTimeAdjustment) {
 		
 		this.scenarioZonesId = scenarioZonesId;
 		this.serviceTimeType = serviceTimeType;
@@ -40,10 +39,10 @@ public class DlvScenarioZones implements java.io.Serializable{
 		this.scenarioZonesId = scenarioZonesId;
 	}
 	
-	public EnumLogicalOperator getServiceTimeOperator() {
+	public EnumArithmeticOperator getServiceTimeOperator() {
 		return serviceTimeOperator;
 	}
-	public void setServiceTimeOperator(EnumLogicalOperator serviceTimeOperator) {
+	public void setServiceTimeOperator(EnumArithmeticOperator serviceTimeOperator) {
 		this.serviceTimeOperator = serviceTimeOperator;	
 	}	
 	

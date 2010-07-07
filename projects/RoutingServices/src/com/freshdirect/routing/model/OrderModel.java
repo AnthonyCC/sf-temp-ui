@@ -5,6 +5,7 @@ import java.util.Date;
 public class OrderModel extends BaseModel implements IOrderModel {
 	
 	private String orderNumber;	
+	private String erpOrderNumber;	
 	private String customerNumber;
 	private String customerName;
 	
@@ -22,6 +23,14 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private double unassignedOrderSize;
 	
 	
+	public String getErpOrderNumber() {
+		return erpOrderNumber;
+	}
+
+	public void setErpOrderNumber(String erpOrderNumber) {
+		this.erpOrderNumber = erpOrderNumber;
+	}
+
 	public double getUnassignedServiceTime() {
 		return unassignedServiceTime;
 	}

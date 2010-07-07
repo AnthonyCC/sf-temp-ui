@@ -44,6 +44,11 @@ public class RoutingDateUtil {
 		return MIN_HOUR_SEC_PLAINFORMATTER.format(BASE_CALENDAR.getTime());
 	}
 	
+	public static Date getCurrentDateTime() throws ParseException {		
+		BASE_CALENDAR.setTimeInMillis(System.currentTimeMillis());
+		return BASE_CALENDAR.getTime();
+	}
+	
 	public static String formatPlain(Date dateValue) throws ParseException{
 		return DATE_PLAIN.format(dateValue);
 	}

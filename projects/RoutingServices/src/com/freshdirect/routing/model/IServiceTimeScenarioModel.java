@@ -1,5 +1,8 @@
 package com.freshdirect.routing.model;
 
+import java.util.List;
+import java.util.Map;
+
 public interface IServiceTimeScenarioModel {
 	
 	String getCode();
@@ -10,10 +13,7 @@ public interface IServiceTimeScenarioModel {
 	void setDefaultCaseCount(double defaultCaseCount);
 	double getDefaultFreezerCount();
 	void setDefaultFreezerCount(double defaultFreezerCount);
-	String getDefaultServiceTimeType();
-	void setDefaultServiceTimeType(String defaultServiceTimeType);
-	String getDefaultZoneType();
-	void setDefaultZoneType(String defaultZoneType);
+	
 	String getDescription();
 	void setDescription(String description);
 	String getIsDefault();
@@ -32,6 +32,9 @@ public interface IServiceTimeScenarioModel {
 	boolean getNeedsLoadBalance();
 	void setNeedsLoadBalance(boolean needsLoadBalance);
 	
-	 double getLateDeliveryFactor();
-	 void setLateDeliveryFactor(double lateDeliveryTimeWindowFactor);
+	double getLateDeliveryFactor();
+	void setLateDeliveryFactor(double lateDeliveryTimeWindowFactor);
+	 
+	Map<String, IZoneScenarioModel> getZoneConfiguration();
+	void setZoneConfiguration(Map<String, IZoneScenarioModel> zoneConfiguration);
 }

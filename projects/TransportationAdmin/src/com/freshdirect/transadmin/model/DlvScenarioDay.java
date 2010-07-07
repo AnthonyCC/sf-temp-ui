@@ -12,9 +12,9 @@ public class DlvScenarioDay implements java.io.Serializable{
 	
 	private String scenariodayId;
 	private BigDecimal dayOfWeek;
-	private String dayOfWeekStr;
+	
 	private Date normalDate;
-	private String normalDateStr;
+	
 	private DlvServiceTimeScenario scenario;	
 	
 	public DlvScenarioDay() {
@@ -36,17 +36,12 @@ public class DlvScenarioDay implements java.io.Serializable{
 		this.scenariodayId = scenariodayId;
 	}
 	
-	public String getDayOfWeekStr() {
-		return dayOfWeekStr;
-	}
-
 	public BigDecimal getDayOfWeek() {
 		return dayOfWeek;
 	}	
 	
 	public void setDayOfWeek(BigDecimal dayOfWeek) {
-		this.dayOfWeek = dayOfWeek;
-		this.dayOfWeekStr=dayOfWeek.toString();
+		this.dayOfWeek = dayOfWeek;	
 	}	
 	
 	public DlvServiceTimeScenario getScenario() {
@@ -55,17 +50,12 @@ public class DlvScenarioDay implements java.io.Serializable{
 	public void setScenario(DlvServiceTimeScenario scenario) {
 		this.scenario = scenario;
 	}
-	public String getNormalDateStr() {
-		return normalDateStr;
-	}
+	
 	public Date getNormalDate() {
 		return normalDate;
 	}
 	public void setNormalDate(Date normalDate) {
-		this.normalDate = normalDate;
-		DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-		String date = formatter.format(normalDate);
-		this.normalDateStr= date;
+		this.normalDate = normalDate;		
 	}
 	
 	

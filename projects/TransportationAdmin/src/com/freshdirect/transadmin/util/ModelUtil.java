@@ -17,7 +17,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -43,25 +45,32 @@ import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ModelUtil {
 
-	private static final DateFormat DATE_FORMAT=new SimpleDateFormat("MM/dd/yyyy H:m:s a");
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy H:m:s a");
 
 	public static List getDeliveryLocations(List lstDlvLocation) {
 
 		List result = new ArrayList();
 		ILocationModel locationModel = null;
+		IBuildingModel building = null;
+		
 		DlvLocation dlvLocationModel = null;
 		if(lstDlvLocation != null) {
 			Iterator iterator = lstDlvLocation.iterator();
 			while(iterator.hasNext()) {
-				locationModel = new LocationModel();
+				
 				dlvLocationModel = (DlvLocation)iterator.next();
+				
+				building = new BuildingModel();
+								
+				building.setCity(dlvLocationModel.getBuilding().getCity());
+				building.setState(dlvLocationModel.getBuilding().getState());
+				building.setSrubbedStreet(dlvLocationModel.getBuilding().getSrubbedStreet());
+				building.setStreetAddress1(dlvLocationModel.getBuilding().getSrubbedStreet());
+				building.setStreetAddress2(dlvLocationModel.getBuilding().getSrubbedStreet());
+				building.setZipCode(dlvLocationModel.getBuilding().getZip());
+				building.setCountry(dlvLocationModel.getBuilding().getCountry());
+				locationModel = new LocationModel(building);
 				locationModel.setApartmentNumber(dlvLocationModel.getApartment());
-				locationModel.setCity(dlvLocationModel.getBuilding().getCity());
-				locationModel.setState(dlvLocationModel.getBuilding().getState());
-				locationModel.setStreetAddress1(dlvLocationModel.getBuilding().getSrubbedStreet());
-				locationModel.setStreetAddress2(dlvLocationModel.getBuilding().getSrubbedStreet());
-				locationModel.setZipCode(dlvLocationModel.getBuilding().getZip());
-				locationModel.setCountry(dlvLocationModel.getBuilding().getCountry());
 				result.add(locationModel);
 			}
 		}
@@ -90,17 +99,23 @@ public class ModelUtil {
 
 		List result = new ArrayList();
 		ILocationModel locationModel = null;
+		IBuildingModel building = null;
 		DlvBuilding dlvLocationModel = null;
+		
 		if(lstDlvLocation != null) {
 			Iterator iterator = lstDlvLocation.iterator();
 			while(iterator.hasNext()) {
-				locationModel = new LocationModel();
+				
 				dlvLocationModel = (DlvBuilding)iterator.next();
-
-				locationModel.setStreetAddress1(dlvLocationModel.getSrubbedStreet());
-				locationModel.setStreetAddress2(dlvLocationModel.getSrubbedStreet());
-				locationModel.setZipCode(dlvLocationModel.getZip());
-				locationModel.setCountry(dlvLocationModel.getCountry());
+				
+				building = new BuildingModel();
+				building.setSrubbedStreet(dlvLocationModel.getSrubbedStreet());
+				building.setStreetAddress1(dlvLocationModel.getSrubbedStreet());
+				building.setStreetAddress2(dlvLocationModel.getSrubbedStreet());
+				building.setZipCode(dlvLocationModel.getZip());
+				building.setCountry(dlvLocationModel.getCountry());
+								
+				locationModel = new LocationModel(building);
 				result.add(locationModel);
 			}
 		}
@@ -481,22 +496,22 @@ public class ModelUtil {
 
 		IRoutingStopModel _stop = new RoutingStopModel(id);
 		_stop.setDepot(isDepot);
-
-		ILocationModel _locModel = new LocationModel();
-
-		_locModel.setStreetAddress1(line1);
-		_locModel.setCity(city); 
-		_locModel.setState(state);
-		_locModel.setZipCode(zipCode);
-
-		_stop.setLocation(_locModel);
-
+		
 		IGeographicLocation _geoLocModel = new GeographicLocation();
 		_geoLocModel.setLatitude(latitude);
 		_geoLocModel.setLongitude(longitude);
-
-		_locModel.setGeographicLocation(_geoLocModel);
-
+		
+		
+		IBuildingModel bmodel = new BuildingModel();
+		bmodel.setGeographicLocation(_geoLocModel);
+		bmodel.setStreetAddress1(line1);
+		bmodel.setCity(city); 
+		bmodel.setState(state);
+		bmodel.setZipCode(zipCode);
+		
+		ILocationModel _locModel = new LocationModel(bmodel);
+		_stop.setLocation(_locModel);
+				
 		return _stop;
 	}
 	

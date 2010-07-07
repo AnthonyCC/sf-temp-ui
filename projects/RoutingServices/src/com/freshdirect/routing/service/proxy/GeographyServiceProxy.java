@@ -6,11 +6,11 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
-import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.util.IGeocodeEngine;
+import com.freshdirect.routing.service.util.LocationLocatorResult;
 
 public class GeographyServiceProxy  extends BaseServiceProxy {
 	
@@ -94,7 +94,13 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 		return RoutingServiceLocator.getInstance().getGeographyService();
 	}
 	
-	public ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException {
-		return getService().locateOrder(orderModel);
+	public LocationLocatorResult locateAddress(String streetAddress1, String streetAddress2
+			, String apartmentNumber, String city
+			, String state, String zipCode
+						, String country)  throws RoutingServiceException {
+		return getService().locateAddress(streetAddress1, streetAddress2
+													, apartmentNumber, city
+													, state, zipCode
+																, country);
 	}
 }

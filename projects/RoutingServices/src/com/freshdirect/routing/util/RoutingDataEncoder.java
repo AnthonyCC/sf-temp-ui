@@ -185,9 +185,9 @@ public class RoutingDataEncoder {
 		order.setLocationType(locationType);
 		order.setDescription(locationType);
 
-		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 				.getGeographicLocation().getLatitude())*1000000));
-		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 				.getGeographicLocation().getLongitude())*1000000));
 		return order;
 	}
@@ -216,9 +216,9 @@ public class RoutingDataEncoder {
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
 		
-		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 								.getGeographicLocation().getLatitude())*1000000));
-		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 								.getGeographicLocation().getLongitude())*1000000));
 		
 		return order;
@@ -241,9 +241,9 @@ public class RoutingDataEncoder {
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
 
-		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLatitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 				.getGeographicLocation().getLatitude())*1000000));
-		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation()
+		order.setLongitude((int)(getVal(orderModel.getDeliveryInfo().getDeliveryLocation().getBuilding()
 				.getGeographicLocation().getLongitude())*1000000));
 		
 		return order;
@@ -254,20 +254,20 @@ public class RoutingDataEncoder {
 		
 		Location location = new Location();
 		location.setLocationIdentity(encodeLocationIdentity(region, locationType, locModel.getLocationId()));
-		location.setLatitude((int)(getVal(locModel.getGeographicLocation().getLatitude())*1000000));
-		location.setLongitude((int)(getVal(locModel.getGeographicLocation().getLongitude())*1000000));
+		location.setLatitude((int)(getVal(locModel.getBuilding().getGeographicLocation().getLatitude())*1000000));
+		location.setLongitude((int)(getVal(locModel.getBuilding().getGeographicLocation().getLongitude())*1000000));
 		
 		location.setTimeWindowFactor(RoutingServicesProperties.getDefaultTimeWindowFactor());
 		location.setZoneID(areaCode);		
 		location.setTimeZone(TimeZoneValue.tmzNone);
 						
 		Address address = new Address();
-		address.setLine1(locModel.getStreetAddress1());
+		address.setLine1(locModel.getBuilding().getStreetAddress1());
 		address.setLine2(locModel.getApartmentNumber());
-		address.setRegion1(locModel.getCity());
-		address.setRegion3(locModel.getState());
-		address.setPostalCode(locModel.getZipCode());
-		address.setCountry(locModel.getCountry());
+		address.setRegion1(locModel.getBuilding().getCity());
+		address.setRegion3(locModel.getBuilding().getState());
+		address.setPostalCode(locModel.getBuilding().getZipCode());
+		address.setCountry(locModel.getBuilding().getCountry());
 		
 		location.setAddress(address);
 		
@@ -614,13 +614,22 @@ public class RoutingDataEncoder {
 		RecipientIdentity recipientId = new RecipientIdentity();
 		recipientId.setRecipientID(RoutingServicesProperties.getDefaultNotificationReceiver());
 		criteria.setRecipientIdentity(recipientId);
+		
 		return criteria;
 	}
 	
+	public static RecipientIdentity encodeRecipientIdentity() {
+				
+		RecipientIdentity recipientId = new RecipientIdentity();
+		recipientId.setRecipientID(RoutingServicesProperties.getDefaultNotificationReceiver());
+				
+		return recipientId;
+	}
+		
 	public static NotificationRetrieveOptions encodeNotificationRetrieveOptions() {
 		
 		NotificationRetrieveOptions options = new NotificationRetrieveOptions();
-		options.setAutoDelete(false);
+		options.setAutoDelete(false);		
 		return options;
 	}
 	

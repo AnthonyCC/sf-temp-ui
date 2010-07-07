@@ -17,7 +17,7 @@ public interface IDeliveryDetailsDAO {
 	
 	IDeliveryModel getDeliveryInfo(String saleId) throws SQLException;
 	
-	IServiceTimeModel getServiceTime(String serviceTimeType, String zoneType) throws SQLException;
+	//IServiceTimeModel getServiceTime(String serviceTimeType, String zoneType) throws SQLException;
 	
 	String getDeliveryType(String zoneCode) throws SQLException;
 	

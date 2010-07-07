@@ -14,19 +14,13 @@ import java.util.StringTokenizer;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
-import com.freshdirect.transadmin.model.DlvServiceTimeType;
-import com.freshdirect.transadmin.model.GeoRestriction;
-import com.freshdirect.transadmin.model.GeoRestrictionDays;
-import com.freshdirect.transadmin.model.GeoRestrictionDaysId;
-import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.EnumDayOfWeek;
-import com.freshdirect.transadmin.util.EnumLogicalOperator;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DlvServiceTimeScenarioFormController extends AbstractFormController {
@@ -41,7 +35,7 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		refData.put("zonetypes", getDomainManagerService().getZoneTypes());
 		refData.put("balancebys", getDomainManagerService().getBalanceBys());
 		refData.put("zones", getDomainManagerService().getActiveZones());
-		refData.put("serviceTimeOperators", (List)EnumLogicalOperator.getEnumList());
+		refData.put("serviceTimeOperators", (List)EnumArithmeticOperator.getEnumList());
 		refData.put("DayOfWeeks", (List) EnumDayOfWeek.getEnumList());
 		return refData;
 	}
@@ -136,7 +130,7 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 				
 				DlvScenarioZones zone = null;
 				try {
-					zone = new DlvScenarioZones(Id, sTimeType,objsTimeOverride,EnumLogicalOperator
+					zone = new DlvScenarioZones(Id, sTimeType,objsTimeOverride,EnumArithmeticOperator
 							.getEnum(sTimeOperator), objsTimeAdjustment);
 					scenarioZonesList.add(zone);
 				} finally {

@@ -17,11 +17,13 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.core.MessageDrivenBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.ejb.ReservationUpdateCommand;
+import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
+import com.freshdirect.routing.service.util.LocationLocatorResult;
 
 /**
  *
@@ -127,35 +129,45 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 	
 	private void processAddress(AddressI address) throws RoutingServiceException {
 		
-		List saveLocationLst = new ArrayList();
+		GeographyServiceProxy proxy = new GeographyServiceProxy();
+		
+		LocationLocatorResult result = proxy.locateAddress(address.getAddress1()
+																, address.getAddress2()
+																, address.getApartment()
+																, address.getCity()
+																, address.getState()
+																, address.getZipCode()
+																, address.getCountry());
+		
+
+		/*List saveLocationLst = new ArrayList();
 		List saveBuildingLst = new ArrayList();
 		
-		GeographyServiceProxy proxy = new GeographyServiceProxy();
-		ILocationModel baseModel = new LocationModel();
-		baseModel.setStreetAddress1(proxy.standardizeStreetAddress(address.getAddress1(),address.getAddress2()));
-		baseModel.setStreetAddress2(address.getAddress2());
+		IBuildingModel building = new BuildingModel();
+		
+		building.setStreetAddress1(proxy.standardizeStreetAddress(address.getAddress1(),address.getAddress2()));
+		building.setStreetAddress2(address.getAddress2());
+		
+		building.setCity(address.getCity());
+		building.setState(address.getState());
+		building.setZipCode(address.getZipCode());
+		building.setCountry(address.getCountry());
+		
+		ILocationModel baseModel = new LocationModel(building);
 		baseModel.setApartmentNumber(address.getApartment());
-		baseModel.setCity(address.getCity());
-		baseModel.setState(address.getState());
-		baseModel.setZipCode(address.getZipCode());
-		baseModel.setCountry(address.getCountry());
 		
 		ILocationModel locationModel = proxy.getLocation(baseModel);			
 					
 		if(locationModel == null) {
 			IBuildingModel buildingModel = proxy.getBuildingLocation(baseModel);			
 			baseModel.setLocationId(proxy.getLocationId());
-			if(buildingModel != null && buildingModel.getBuildingId() != null) {				
-				baseModel.setBuildingId(buildingModel.getBuildingId());									
-				baseModel.setGeographicLocation(buildingModel.getGeographicLocation());		    							
+			if(buildingModel != null && buildingModel.getBuildingId() != null) {																		    							
 				saveLocationLst.add(baseModel);
 			} else {				
 				buildingModel = proxy.getNewBuilding(null, baseModel);
 				//buildingModel = proxy.getNewBuilding(null, baseModel);
 				if(buildingModel != null) {
-					baseModel.setBuildingId(buildingModel.getBuildingId());
-					baseModel.setZipCode(buildingModel.getZipCode());
-					baseModel.setGeographicLocation(buildingModel.getGeographicLocation());	
+						
 					saveLocationLst.add(baseModel);
 					saveBuildingLst.add(buildingModel);
 				}
@@ -167,7 +179,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		}		
 		if(saveLocationLst != null && saveLocationLst.size() > 0) {
 			proxy.insertLocations(saveLocationLst);
-		}
+		}*/
 	}
 	
 	private void process(TimeslotCommand command) throws FDResourceException {
@@ -187,7 +199,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
     	} else {
     		FDDeliveryManager.getInstance().commitReservationEx(command.getReservation(), command.getAddress());
 		
-	}
+    	}
     
 	}
     

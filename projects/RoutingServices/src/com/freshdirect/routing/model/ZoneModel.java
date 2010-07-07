@@ -13,6 +13,8 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	private String zoneType;
 	
 	private IAreaModel area;
+	
+	private IServiceTimeTypeModel serviceTimeType;
 
 	public IAreaModel getArea() {
 		return area;
@@ -62,6 +64,15 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 		this.zoneType = zoneType;
 	}
 	
+	
+	public IServiceTimeTypeModel getServiceTimeType() {
+		return serviceTimeType;
+	}
+
+	public void setServiceTimeType(IServiceTimeTypeModel serviceTimeType) {
+		this.serviceTimeType = serviceTimeType;
+	}
+
 	public String toString() {
 		return zoneId+"|"+zoneNumber+"|"+area;
 	}

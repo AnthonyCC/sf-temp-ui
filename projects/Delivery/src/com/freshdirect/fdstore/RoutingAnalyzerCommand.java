@@ -7,9 +7,11 @@ import java.util.List;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class RoutingAnalyzerCommand implements Serializable, Runnable {
@@ -23,32 +25,26 @@ public class RoutingAnalyzerCommand implements Serializable, Runnable {
 	private RoutingAnalyzerContext context;
 	
 	private Exception exception;
-	
 		
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}
 
-
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
-
 
 	public Exception getException() {
 		return exception;
 	}
 
-
 	public void setException(Exception exception) {
 		this.exception = exception;
 	}
 
-
 	public IOrderModel getOrder() {
 		return order;
 	}
-
 
 	public void setOrder(IOrderModel order) {
 		this.order = order;
@@ -58,35 +54,56 @@ public class RoutingAnalyzerCommand implements Serializable, Runnable {
 		return routingTimeSlots;
 	}
 
-
 	public void setRoutingTimeSlots(List<IDeliverySlot> routingTimeSlots) {
 		this.routingTimeSlots = routingTimeSlots;
 	}
-
 
 	public RoutingAnalyzerContext getContext() {
 		return context;
 	}
 
-
 	public void setContext(RoutingAnalyzerContext context) {
 		this.context = context;
 	}
 
-
 	public void execute()  {
 		
 		DeliveryServiceProxy dlvService = new DeliveryServiceProxy();
+		RoutingInfoServiceProxy routingInfoproxy = new RoutingInfoServiceProxy();
+		
 		String zoneCode = null;
 				
 		if(routingTimeSlots != null && routingTimeSlots.size() > 0 && RoutingUtil.isDynamicEnabled(routingTimeSlots)) {
 			try {
-				zoneCode = routingTimeSlots.get(0).getZoneCode();		
-				order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(zoneCode));
+				zoneCode = routingTimeSlots.get(0).getZoneCode();
+				IZoneModel zoneModel = dlvService.getDeliveryZone(zoneCode);
+				order.getDeliveryInfo().setDeliveryZone(zoneModel);
 				order.getDeliveryInfo().setDeliveryDate(deliveryDate);
 				IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
 				order.getDeliveryInfo().setPackagingInfo(RoutingUtil.estimateOrderSize(order, srvScenario, context.getHistoryPackageInfo()));
-				order.getDeliveryInfo().setServiceTime(dlvService.estimateOrderServiceTime(order, srvScenario));
+				
+				srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
+				if(zoneModel.getServiceTimeType().getCode() != null) {
+					zoneModel.setServiceTimeType(getContext().getServiceTimeTypes().get(zoneModel.getServiceTimeType().getCode()));
+				} else {
+					zoneModel.setServiceTimeType(null);
+				}
+				if(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType() != null) {
+					order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(getContext().getServiceTimeTypes()
+																.get(order.getDeliveryInfo().getDeliveryLocation().getServiceTimeType().getCode()));
+				} else {
+					order.getDeliveryInfo().getDeliveryLocation().setServiceTimeType(null);
+				}
+				if(order.getDeliveryInfo().getDeliveryLocation().getBuilding() != null 
+						&& order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType() != null) {
+					order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(getContext().getServiceTimeTypes()
+							.get(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getServiceTimeType().getCode()));
+				} else {
+					order.getDeliveryInfo().getDeliveryLocation().getBuilding().setServiceTimeType(null);
+				}
+				
+				
+				order.getDeliveryInfo().setServiceTime(dlvService.getServiceTime(order, srvScenario));
 				
 				List<IDeliverySlot> slots = schedulerAnalyzeOrder(order, deliveryDate,1, this.getRoutingTimeSlots());
 				

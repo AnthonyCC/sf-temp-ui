@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import com.freshdirect.routing.constants.EnumRoutingNotification;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliveryReservation;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -17,6 +18,7 @@ import com.freshdirect.routing.model.DrivingDirection;
 import com.freshdirect.routing.model.DrivingDirectionArc;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -133,6 +135,7 @@ public class RoutingDataDecoder {
 			
 			IRoutingStopModel _stop = null;
 			ILocationModel _locModel = null;
+			IBuildingModel building = null;
 			IGeographicLocation _geoLocModel = null;
 			
 			RoutingStop _refStop = null;
@@ -144,20 +147,22 @@ public class RoutingDataDecoder {
 					
 					if(_refStop.getSequenceNumber() >= 0) {
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber());
-						_locModel = new LocationModel();
+						building = new BuildingModel();
+											
+						building.setStreetAddress1(_refStop.getAddress().getLine1());
+						building.setCity(_refStop.getAddress().getRegion1()); 
+						building.setState(_refStop.getAddress().getRegion3());
+						building.setZipCode(_refStop.getAddress().getPostalCode());
 						
-						_locModel.setStreetAddress1(_refStop.getAddress().getLine1());
-						_locModel.setCity(_refStop.getAddress().getRegion1()); 
-						_locModel.setState(_refStop.getAddress().getRegion3());
-						_locModel.setZipCode(_refStop.getAddress().getPostalCode());
-						
+						_locModel = new LocationModel(building);
 						_stop.setLocation(_locModel);
 						
 						_geoLocModel = new GeographicLocation();
 						_geoLocModel.setLatitude(""+_refStop.getLatitude());
 						_geoLocModel.setLongitude(""+_refStop.getLongitude());
+										
 						
-						_locModel.setGeographicLocation(_geoLocModel);
+						building.setGeographicLocation(_geoLocModel);
 						
 						_stop.setStopArrivalTime(Calendar.getInstance().getTime());
 						result.getStops().add(_stop);
@@ -359,7 +364,7 @@ public class RoutingDataDecoder {
     		
     		dModel.setDeliveryZone(zModel);
     		
-    		ILocationModel locModel = new LocationModel();    		    		
+    		ILocationModel locModel = new LocationModel(new BuildingModel());    		    		
     		locModel.setLocationId(model.getLocationId());
     		dModel.setDeliveryLocation(locModel);
     		    		

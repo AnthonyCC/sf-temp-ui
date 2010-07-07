@@ -9,6 +9,7 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.util.IGeocodeEngine;
+import com.freshdirect.routing.service.util.LocationLocatorResult;
 
 public interface IGeographyService {
 	
@@ -48,6 +49,9 @@ public interface IGeographyService {
 	
 	IBuildingModel getNewBuilding(IGeocodeEngine geocodeEngine, ILocationModel baseModel) throws RoutingServiceException;
 	
-	ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException;
+	LocationLocatorResult locateAddress(String streetAddress1, String streetAddress2
+			, String apartmentNumber, String city
+					, String state, String zipCode
+								, String country)  throws RoutingServiceException;
 
 }

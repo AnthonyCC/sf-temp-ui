@@ -35,14 +35,43 @@ public class ProcessContext implements Serializable {
 	
 	private Object lateDeliveryOrderList;
 
+	private Object handOffBatchId;
 	
-	public Object getLocationList() {
+	private Object userId;
+	
+	private Object serviceTimeTypeCache;
+	
+	public Object getUserId() {
+		return userId;
+	}
+	public void setUserId(Object userId) {
+		this.userId = userId;
+	}
+
+	public Object getHandOffBatchId() {
+		return handOffBatchId;
+	}
+
+	public void setHandOffBatchId(Object handOffBatchId) {
+		this.handOffBatchId = handOffBatchId;
+	}
+
+	/* public Object getLocationList() {
 		return locationList;
 	}
 
 	public void setLocationList(Object locationList) {
 		this.locationList = locationList;
 	}
+	
+	public Object getBuildingList() {
+		return buildingList;
+	}
+
+	public void setBuildingList(Object buildingList) {
+		this.buildingList = buildingList;
+	} */
+
 
 	public Object getDataModel() {
 		return dataModel;
@@ -75,15 +104,7 @@ public class ProcessContext implements Serializable {
 	public void setOrderPackageCache(Object orderPackageCache) {
 		this.orderPackageCache = orderPackageCache;
 	}
-
-	public Object getBuildingList() {
-		return buildingList;
-	}
-
-	public void setBuildingList(Object buildingList) {
-		this.buildingList = buildingList;
-	}
-
+	
 	public Object getProcessInfo() {
 		return processInfo;
 	}
@@ -167,6 +188,14 @@ public class ProcessContext implements Serializable {
 
 	public void setLateDeliveryOrderList(Object lateDeliveryOrderList) {
 		this.lateDeliveryOrderList = lateDeliveryOrderList;
+	}
+	
+	public Object getServiceTimeTypeCache() {
+		return serviceTimeTypeCache;
+	}
+	
+	public void setServiceTimeTypeCache(Object serviceTimeTypeCache) {
+		this.serviceTimeTypeCache = serviceTimeTypeCache;
 	}
 
 }

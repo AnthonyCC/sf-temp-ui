@@ -5,25 +5,40 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.axis2.client.Stub;
+
+import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
+import com.freshdirect.routing.model.AreaModel;
+import com.freshdirect.routing.model.IAreaModel;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
+import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
-import com.freshdirect.routing.model.IServiceTimeModel;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
+import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
 import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDataDecoder;
 import com.freshdirect.routing.util.RoutingDataEncoder;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.routing.util.ServiceTimeUtil;
 
 public class DeliveryService extends BaseService implements IDeliveryService {
@@ -38,38 +53,73 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		this.deliveryDAOImpl = deliveryDAOImpl;
 	}
 
-	public double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-											, String serviceTimeExpression) throws RoutingServiceException {
-		String serviceTimeType = model.getDeliveryLocation().getServiceTimeType();
-		String zoneType = model.getDeliveryZone().getZoneType();
-				
-		try {
-			IServiceTimeModel serviceTime = deliveryDAOImpl.getServiceTime(serviceTimeType,zoneType);	
-			if(serviceTime == null) {				
-				throw new RoutingServiceException(null, IIssue.PROCESS_SERVICETIME_NOTFOUND);
+	
+	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+		
+		IZoneModel zone = orderModel.getDeliveryInfo().getDeliveryZone();
+		ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
+		IBuildingModel building = location.getBuilding();
+		
+		IZoneScenarioModel zoneScenario = null;
+		if(scenario != null && scenario.getZoneConfiguration() != null) {
+			if(scenario.getZoneConfiguration().containsKey(zone.getZoneId())) {
+				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneId());
+			} else {
+				zoneScenario = scenario.getZoneConfiguration().get(null);
 			}
-			double valX = ServiceTimeUtil.evaluateExpression(serviceTimeFactorExpression
-					, ServiceTimeUtil.getServiceTimeFactorParams(model.getPackagingInfo()));			
-			return ServiceTimeUtil.evaluateExpression(serviceTimeExpression
-					, ServiceTimeUtil.getServiceTimeParams(serviceTime.getFixedServiceTime(), serviceTime.getVariableServiceTime(), valX ));
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			throw new RoutingServiceException(e, IIssue.PROCESS_SERVICETIME_NOTFOUND);
-		}	
+		}
+		//if zoneScenario is null then there is no scenario level override, let find serviceTime first
+		if(location.getServiceTimeOverride() > 0) {
+			return location.getServiceTimeOverride();
+		} else if(building.getServiceTimeOverride() > 0) {
+			return building.getServiceTimeOverride();
+		} else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
+			return zoneScenario.getServiceTimeOverride();
+		}
+		// Couldn't find serviceTime going to find the serviceTimeType
+		IServiceTimeTypeModel serviceTimeType = null;
+		if(location.getServiceTimeType() != null) {
+			serviceTimeType = location.getServiceTimeType();
+		} else if(building.getServiceTimeType() != null) {
+			serviceTimeType = building.getServiceTimeType();
+		} else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null) {
+			serviceTimeType = zoneScenario.getServiceTimeType();
+		} else {
+			serviceTimeType = zone.getServiceTimeType();
+		}
+		// Got the serviceTimeType lets calculate
+		double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
+											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));			
+		double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
+											, ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
 		
+		//Lets see if we need a adjustment
+		double serviceTimeAdjustment = 0;
+		EnumArithmeticOperator adjustmentOperator = null;
+		if(location.getAdjustmentOperator() != null) {
+			adjustmentOperator = location.getAdjustmentOperator();
+			serviceTimeAdjustment = location.getServiceTimeAdjustment();
+		} else if(building.getAdjustmentOperator() != null) {
+			adjustmentOperator = building.getAdjustmentOperator();
+			serviceTimeAdjustment = building.getServiceTimeAdjustment();
+		} else if(zoneScenario != null && zoneScenario.getAdjustmentOperator() != null) {
+			adjustmentOperator = zoneScenario.getAdjustmentOperator();
+			serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
+		} 
+		if(adjustmentOperator != null) {
+			if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
+				serviceTimeAdjustment = -serviceTimeAdjustment;
+			}
+			if((valY + serviceTimeAdjustment) > 0) {
+				valY = valY + serviceTimeAdjustment;
+			} else {
+				valY = 0;
+			}
+		}
+		return valY;
 	}
 	
-	public double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-									, String serviceTimeExpression, int intFixedServiceTime, int intVariableServiceTime) throws RoutingServiceException {
-		double valX = ServiceTimeUtil.evaluateExpression(serviceTimeFactorExpression
-				, ServiceTimeUtil.getServiceTimeFactorParams(model.getPackagingInfo()));			
-		return ServiceTimeUtil.evaluateExpression(serviceTimeExpression
-				, ServiceTimeUtil.getServiceTimeParams(intFixedServiceTime, intVariableServiceTime, valX ));
 		
-	}
-	
-	
-	
 	public IDeliveryModel getDeliveryInfo(String saleId) throws RoutingServiceException {
 		
 		try {
@@ -121,6 +171,51 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 	}
 	
+	public static void main(String a[]) throws Exception {
+		
+		IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+		
+		String region = "MDP";
+		String _area = "070";
+		String date = "2010-04-30";
+		
+		String sessDesc = "asarro_Depot_20100430_230816";
+		String url = "";//"http://upsprod.freshdirect.com:81";
+		
+		schedulerId.setRegionId(region);
+		
+		IAreaModel area = new AreaModel();
+		area.setAreaCode(_area);
+		schedulerId.setArea(area);
+		schedulerId.setDeliveryDate(DateUtil.parse(date));
+		
+		TransportationWebService port =  new TransportationWebServiceStub(url);
+		((Stub)port)._getServiceClient().getOptions().setTimeOutInMilliSeconds(10*1000);
+		RoutingSession[] routingSession = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder
+										.encodeRoutingSessionCriteria(schedulerId, sessDesc)
+				, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());
+		
+		if(routingSession != null && routingSession.length > 0) {				
+			
+			RoutingRouteCriteria criteria = new RoutingRouteCriteria();
+			criteria.setRegionIdentity(region);
+			criteria.setRouteID(_area+"-"+"5");
+			criteria.setDateStart(schedulerId.getDeliveryDate());
+			criteria.setInternalSessionID(routingSession[0].getSessionIdentity().getInternalSessionID());
+						
+			RoutingRoute[] route = port.retrieveRoutingRoutesByCriteria(criteria, RoutingDataEncoder.encodeRouteInfoRetrieveOptionsEx());
+			for(RoutingRoute _route : route) {
+				RoutingStop[] _stops = _route.getStops();
+				for(RoutingStop _stop : _stops) {					
+					System.out.println(DateUtil.formatTime(_stop.getArrival().getTime())
+							+"-"+_stop.getServiceTime()+"-"+_stop.getSequenceNumber()+"_"+_stop.getLocationIdentity().getLocationID());
+				}
+			}
+		}
+		
+		
+	}
+	
 	public List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException {
 		try {
 			TransportationWebService port = getTransportationSuiteBatchService(null);
@@ -144,38 +239,6 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return null;
 	}
 	
-	public double estimateOrderServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario)  throws RoutingServiceException  {
-				
-		IDeliveryModel model = orderModel.getDeliveryInfo();
-		
-		String zoneType = model.getDeliveryZone().getZoneType();
-		
-		if(zoneType == null || zoneType.trim().length() == 0) {
-			zoneType = scenario.getDefaultZoneType();
-			model.getDeliveryZone().setZoneType(zoneType);
-		}
-		
-		String serviceTimeType = model.getDeliveryLocation().getServiceTimeType();
-		if(serviceTimeType == null || serviceTimeType.trim().length() == 0) {
-			serviceTimeType = scenario.getDefaultServiceTimeType();
-			model.getDeliveryLocation().setServiceTimeType(serviceTimeType);			
-
-		}
-		double serviceTime = 0.0;
-		try {
-			serviceTime = getServiceTime(model, scenario.getServiceTimeFactorFormula(), scenario.getServiceTimeFormula());
-		} catch(RoutingServiceException e) {			
-			try {
-				serviceTime = getServiceTime(model,scenario.getServiceTimeFactorFormula()
-													, scenario.getServiceTimeFormula(), RoutingServicesProperties.getDefaultFixedServiceTime()
-													, RoutingServicesProperties.getDefaultVariableServiceTime());
-			} catch(RoutingServiceException ex) {
-				ex.printStackTrace();
-			}
-		}
-		
-		return serviceTime;		
-	}
 	
 	public Map<String, List<IDeliverySlot>> getTimeslotsByDate(Date deliveryDate, Date cutOffTime, String zoneCode) throws RoutingServiceException {
 		

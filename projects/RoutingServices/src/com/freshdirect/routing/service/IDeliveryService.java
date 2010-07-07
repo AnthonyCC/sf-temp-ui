@@ -15,18 +15,14 @@ import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IDeliveryService {
-	
-	double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-			, String serviceTimeExpression) throws RoutingServiceException;
-	
+			
 	IDeliveryModel getDeliveryInfo(String saleId) throws RoutingServiceException;
 	
 	String getDeliveryType(String zoneCode) throws RoutingServiceException;
 	
 	String getDeliveryZoneType(String zoneCode) throws RoutingServiceException;	
 	
-	double getServiceTime(IDeliveryModel model, String serviceTimeFactorExpression
-			, String serviceTimeExpression, int intFixedServiceTime, int intVariableServiceTime) throws RoutingServiceException;
+	double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException;
 	
 	Map getDeliveryZoneDetails()  throws RoutingServiceException;
 	
@@ -35,9 +31,7 @@ public interface IDeliveryService {
 	List getRoutes(Date routeDate, String internalSessionID, String routeID) throws RoutingServiceException;
 	
 	IDrivingDirection buildDriverDirections(List destinations)  throws RoutingServiceException;
-	
-	double estimateOrderServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario)  throws RoutingServiceException;
-	
+		
 	IZoneModel getDeliveryZone(String zoneCode)  throws RoutingServiceException ;
 	
 	Map<String, List<IDeliverySlot>> getTimeslotsByDate(final Date deliveryDate, final Date cutOffTime, final String zoneCode) throws RoutingServiceException;

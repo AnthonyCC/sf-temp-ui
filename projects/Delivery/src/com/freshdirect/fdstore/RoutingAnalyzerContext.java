@@ -2,15 +2,28 @@ package com.freshdirect.fdstore;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.routing.model.IPackagingModel;
+import com.freshdirect.routing.model.IServiceTimeTypeModel;
 
 public class RoutingAnalyzerContext implements Serializable {
 	
-	List<FDTimeslot> dlvTimeSlots;
+	private List<FDTimeslot> dlvTimeSlots;
 	
-	IPackagingModel historyPackageInfo;
+	private IPackagingModel historyPackageInfo;
 	
+	private Map<String, IServiceTimeTypeModel>	serviceTimeTypes;
+		
+	public Map<String, IServiceTimeTypeModel> getServiceTimeTypes() {
+		return serviceTimeTypes;
+	}
+
+	public void setServiceTimeTypes(
+			Map<String, IServiceTimeTypeModel> serviceTimeTypes) {
+		this.serviceTimeTypes = serviceTimeTypes;
+	}
+
 	public IPackagingModel getHistoryPackageInfo() {
 		return historyPackageInfo;
 	}
@@ -26,4 +39,6 @@ public class RoutingAnalyzerContext implements Serializable {
 	public void setDlvTimeSlots(List<FDTimeslot> dlvTimeSlots) {
 		this.dlvTimeSlots = dlvTimeSlots;
 	}
+	
+	
 }
