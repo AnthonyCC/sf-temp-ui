@@ -40,10 +40,9 @@
       	  var p_code = YAHOO.util.Dom.get("sCode").value;
        	  var p_day = YAHOO.util.Dom.get("sDay").value;
 		  var p_date = YAHOO.util.Dom.get("rDate").value;		  
-  		    		  
-      	  if(p_code.trim().length == 0 ||
-      			p_day.trim().length == 0
-      	  			|| p_date.trim().length == 0) {
+
+	  	  if(p_code.trim().length == 0 ||
+      			p_day.trim().length == 0) {
       	  	addSysMessage("Please enter the required values", true);		
       	  } else {
 	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScenarioDayMapping(sendFormCallback
@@ -70,7 +69,9 @@
           }
           if(result == 0) {
           	addSysMessage("Scenario to Day Mapping failed", true);
-          } else {
+          }else if(result == 2){
+        	addSysMessage("Scenario to Day already exists", true);
+          }else {
           	addSysMessage("Scenario to Day Mapping added successfully", false);
           }                           
       }
@@ -99,6 +100,7 @@
 		                  <td>Day</td>
 		                  <td>
 		                  	<select id="sDay" name="sDay" >
+                          		<option value="null">-Please Select</option>
                           		<option value="0">All</option>
                       			<option value="1">Sun</option><option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option>
                     	 	</select>	

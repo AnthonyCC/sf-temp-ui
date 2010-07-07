@@ -99,15 +99,23 @@
   					  var allTrElements = document.getElementById(currentRow);
                          
                       allTrElements.getElementsByTagName("td")[0].innerHTML=document.getElementById('ZoneList')[document.getElementById('ZoneList').selectedIndex].text;   
-                      allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text;   													                       
+        			  if(document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text=='-Please Select')	{
+        				  allTrElements.getElementsByTagName("td")[1].innerHTML='';
+        			  }else{
+            			  allTrElements.getElementsByTagName("td")[1].innerHTML=document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].text;   													                       
+        			  }
                       allTrElements.getElementsByTagName("td")[2].innerHTML=document.getElementById('serviceTimeOverride').value;   
-                      allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text; 
+                      if(document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text=='-Please Select')	{
+        				  allTrElements.getElementsByTagName("td")[3].innerHTML='';
+        			  }else{
+            			  allTrElements.getElementsByTagName("td")[3].innerHTML=document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].text;
+            		  } 
                       allTrElements.getElementsByTagName("td")[4].innerHTML=document.getElementById('serviceTimeAdjustment').value;   
                                            
                       document.getElementById(currentRow+'.zoneCode').value=document.getElementById('ZoneList')[document.getElementById('ZoneList').selectedIndex].value;
                       document.getElementById(currentRow+'.sTimeType').value=document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex].value;
-                      document.getElementById(currentRow+'.sTimeOverride').value=document.getElementById('serviceTimeOverride').value;
-                      document.getElementById(currentRow+'.sTimeOperator').value=document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].value;
+					  document.getElementById(currentRow+'.sTimeOverride').value=document.getElementById('serviceTimeOverride').value;
+					  document.getElementById(currentRow+'.sTimeOperator').value=document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex].value;
                       document.getElementById(currentRow+'.sTimeAdjustment').value=document.getElementById('serviceTimeAdjustment').value;
                                                                     
                       document.getElementById('ZoneList').selectedIndex=0;
@@ -127,7 +135,7 @@
   	                  	var sTimeType = document.getElementById('ServiceTimeTypeList')[document.getElementById('ServiceTimeTypeList').selectedIndex];
   	        			var sTimeOverride = document.getElementById('serviceTimeOverride').value;
   	        			var sTimeOptr = document.getElementById('ServiceTimeOperatorList')[document.getElementById('ServiceTimeOperatorList').selectedIndex];
-  						var sTimeAdjustment = document.getElementById('serviceTimeAdjustment').value;
+  	        			var sTimeAdjustment = document.getElementById('serviceTimeAdjustment').value;
                               
   						addProfleRow(zonecode,sTimeType,sTimeOverride,sTimeOptr,sTimeAdjustment);	
                                   

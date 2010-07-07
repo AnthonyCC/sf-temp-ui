@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -445,14 +447,24 @@ public class DispatchProviderController extends JsonRpcController implements
 	
 	public int addScenarioDayMapping(String sCode, String sDay, String sDate) {
 		int result = 0;
-		BigDecimal sdayOfWeek=new BigDecimal(sDay);
+		Date svcdate=null;
+		BigDecimal svcDay=null;
+		if(!"null".equalsIgnoreCase(sDay)){
+			svcDay=new BigDecimal(sDay);
+		}
+		
 		DlvServiceTimeScenario scenario=new DlvServiceTimeScenario();
-		scenario.setCode(sCode);
+		scenario.setCode(sCode);		
 		try {
-			DlvScenarioDay scenarioDay=new DlvScenarioDay(sdayOfWeek,TransStringUtil.getDate(sDate),scenario);
+			if(!"".equalsIgnoreCase(sDate))
+				svcdate=TransStringUtil.getDate(sDate);
+			DlvScenarioDay scenarioDay=new DlvScenarioDay(svcDay,svcdate,scenario);
 			result = getDispatchManagerService().addScenarioDayMapping(
 					scenarioDay);
-		} catch (ParseException parseExp) {
+		}catch(DataIntegrityViolationException ex){
+			ex.printStackTrace();
+			return result=2;
+		}catch (ParseException parseExp) {
 			parseExp.printStackTrace();
 			// Do Nothing Return 0;
 		}

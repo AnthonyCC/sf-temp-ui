@@ -79,7 +79,7 @@
               <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
                     property="scenario.code" />  
-          <ec:column width="5px" alias="scenariodate" property="normalDateStr" title="Date"/>    
+          <ec:column width="5px" alias="scenariodate" property="normalDate" title="Date"/>    
           <ec:column property="dayOfWeekInText" title="Day"/>
           <ec:column width="5px" alias="scenariocode" property="scenario.code" title="Code"/>    
           <ec:column property="scenario.description" title="Description"/>

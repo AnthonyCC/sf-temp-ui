@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -303,9 +304,13 @@ public class DispatchManagerDaoHibernateImpl extends
 			return getDataList("DispatchReason ds where ds.active='N' order by ds.code");
 	}
 	
-	public int addScenarioDayMapping(DlvScenarioDay scenarioDay) {
+	public int addScenarioDayMapping(DlvScenarioDay scenarioDay) throws DataIntegrityViolationException{
 		if (scenarioDay!=null){
-			saveEntity(scenarioDay);
+			try{
+				saveEntity(scenarioDay);
+			}catch(DataIntegrityViolationException ex){
+				return 2;
+			}
 			return 1;
 		}
 		else
