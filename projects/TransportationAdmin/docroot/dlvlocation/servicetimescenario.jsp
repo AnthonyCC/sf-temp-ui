@@ -95,8 +95,7 @@
           <ec:column property="scenario.loadBalanceFactor" width="5px" title="Balance Factor"/>
           <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="scenario.balanceBy" title="Balance By"/>                         
           <ec:column property="scenario.lateDeliveryFactor" width="10px" title="Late Delivery Factor"/> 
-          <ec:column property="scenario.lateDeliveryFactor" width="10px" title="Late Delivery Factor"/>
-            </ec:row>
+          </ec:row>
           </ec:table>
        </form>
 				</div>
