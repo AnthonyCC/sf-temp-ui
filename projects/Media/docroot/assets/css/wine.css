@@ -869,9 +869,7 @@ td.clicode_clientcode {
 	border-top: 1px solid #999999;
 	height: 24px;
 	overflow: hidden;
-	text-overflow: ellipsis;
 	width: 242px;
-	max-width: 242px;
 }
 
 td.clicode_gap {
@@ -886,7 +884,7 @@ td.clicode_head {
 	padding: 0px;
 	color: #999999;
 	height: 24px;
-	overflow: hidden;
+	overflow: visible;
 	text-overflow: ellipsis;
 	width: 326px;
 }
@@ -897,7 +895,6 @@ td.clicode_actions {
 	border-top: 1px solid #999999;
 	border-right: 1px solid #999999;
 	width: 80px;
-	min-width: 80px;
 	white-space: nowrap;
 	height: 24px;
 }

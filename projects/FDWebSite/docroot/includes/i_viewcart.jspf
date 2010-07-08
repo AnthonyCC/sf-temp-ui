@@ -60,6 +60,7 @@
 <% for (IgnoreCaseString clientCode : user.getClientCodesHistory()) {%>
 FreshDirect.ClientCodes.addHistory("<%= StringEscapeUtils.escapeJavaScript(clientCode.toString()) %>", true);
 <% } %>
+YAHOO.util.Event.onDOMReady(FreshDirect.ClientCodes.onLoad);
 </script>
 <% } %>
 <%
@@ -106,6 +107,8 @@ FDIdentity identity = user.getIdentity();
 			<a href="<%= request.getRequestURI() %>?remove=1" name="remove_all" onClick='return confirm("Are you sure that you want to remove all items from your cart?");'>Remove All Items</a></td>
 	</tr>
 </table>
+<div id="clicode_testbox" class="text10" style="position: absolute; top: -2000px; left: -2000px; height: 24px; padding: 0px; color: #999999; border-top: 1px solid #999999; visibility: hidden;">
+</div>
 <div id="i_viewcart">
 <logic:iterate id="view" collection="<%= cart.getOrderViews() %>" type="com.freshdirect.fdstore.customer.WebOrderViewI">
 	<table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -285,12 +288,7 @@ FDIdentity identity = user.getIdentity();
 		if (user.isEligibleForClientCodes()) {
 		%>
 		<tr id="clicode_tr_<%= idx %>" style="display: none">
-			<td colspan="3">
-				<script type="text/javascript">
-					FreshDirect.ClientCodes.trs.push("tr_<%= idx %>");
-				</script>
-				&nbsp;
-			</td>
+			<td colspan="3">&nbsp;</td>
 			<td colspan="7">
 				<%
 				String clicode_type;
@@ -330,7 +328,7 @@ FDIdentity identity = user.getIdentity();
 							<td class="text10 clicode_gap" style="border: 0px none;">&nbsp;</td>
 							<td class="text10 clicode_head" colspan="3">
 								<div style="position: relative; vertical-align: middle; overflow: visible;">
-								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle; width: 125px; position: static;"
+								<input type="text" size="25" maxlength="30" class="text10" style="vertical-align: middle; width: 125px; position: static; overflow: visible;"
 										name="clicode_clientcode_<%= idx %>" id="clicode_clientcode_<%= idx %>"
 										value="<%= ccClientCode %>"
 										autocomplete="off" onblur="return FreshDirect.ClientCodes.fieldsBlur(<%= idx %>, '<%= clicode_type %>')">
@@ -344,9 +342,6 @@ FDIdentity identity = user.getIdentity();
 								</span>
 								<div id="clicode_autocomplete_<%= idx %>" style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div>
 								</div>
-								<script type="text/javascript">
-								FreshDirect.ClientCodes.addAcField("clicode_clientcode_<%= idx %>", "clicode_autocomplete_<%= idx %>");
-								</script>
 							</td>
 						</tr>
 						</thead>
@@ -362,48 +357,12 @@ FDIdentity identity = user.getIdentity();
 							<td class="text10 clicode_gap">&nbsp;</td>
 							<td class="text10 clicode_actions">Action</td>
 						</tr>
-						<%
-						for (int i = 0; i< cartLine.getClientCodes().size(); i++) {
-						    ErpClientCode item = cartLine.getClientCodes().get(i);
-						%>
-						<tr id="clicode_multi_row_<%= idx %>_<%= i %>">
-							<td class="text10 clicode_quantity">
-							    <%= item.getQuantity() %>
-							</td>
-							<td class="text10 clicode_gap">&nbsp;</td>
-							<td class="text10 clicode_clientcode">
-								<%= item.getClientCode() %>
-							</td>
-							<td class="text10 clicode_gap">&nbsp;</td>
-							<td class="text10 clicode_actions">
-								<span>
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.editRow(this);">Edit</a>
-									&nbsp;&nbsp;
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.deleteRow(this);">Delete</a>
-								</span>
-								<span style="display: none;">
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.okEditRow(this);">OK</a>
-									&nbsp;&nbsp;
-									<a href="#" style="color: #999999;" onclick="return FreshDirect.ClientCodes.cancelEditRow(this);">Cancel</a>
-								</span>
-							    <script type="text/javascript">
-							        FreshDirect.ClientCodes.addMultiCc('<%= idx %>', <%= i %>, <%= item.getQuantity() %>, '<%= StringEscapeUtils.escapeJavaScript(item.getClientCode()) %>', true);
-							    </script>
-							</td>
-						</tr>
-						<%
-						}
-						%>
 						<tr id="clicode_multi_nocode_row_<%= idx %>"<% if (cartLine.getClientCodes().size() == 0 || noCode == 0) { %> style="display: none;"<% } %>>
 							<td id="clicode_multi_nocode_<%= idx %>" class="text10 clicode_quantity"><%= noCode %></td>
 							<td class="text10 clicode_gap">&nbsp;</td>
 							<td class="text10 clicode_clientcode"><span style="font-style: italic;">&ndash; No Code &ndash;</span></td>
 							<td class="text10 clicode_gap">&nbsp;</td>
-							<td class="text10 clicode_actions">&nbsp;
-                                <script type="text/javascript">
-                                FreshDirect.ClientCodes.setNoCode(<%= idx %>, <%= noCode %>);
-                                </script>
-							</td>
+							<td class="text10 clicode_actions">&nbsp;</td>
 						</tr>
 						</tbody>
 					</table>
@@ -413,7 +372,15 @@ FDIdentity identity = user.getIdentity();
 						width="76" height="14" border="0" alt="EDIT LIST" style="vertical-align: middle;">
 					&nbsp;<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;"><%= ErpClientCode.toHtml(cartLine.getClientCodes(), noCode) %></span>
 				</div>
-				</div><!-- end of clicode_multi_ block -->
+			    <script type="text/javascript">
+				<%
+				for (ErpClientCode item : cartLine.getClientCodes()) {
+				%>
+			        FreshDirect.ClientCodes.initRow('<%= idx %>', <%= item.getQuantity() %>, '<%= StringEscapeUtils.escapeJavaScript(item.getClientCode()) %>');
+				<%
+				}
+				%>
+			    </script>
 			</td>
 		</tr>
 		<%

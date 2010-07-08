@@ -13,8 +13,6 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 	var trs = [];
 
-	ClientCodes.trs = trs;
-
 	var ccs = {};
 
 	var sums = {};
@@ -226,10 +224,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 		if (newval >= sums[idx]) {
 			updateNoCode(idx, 0);
-			updateMultiView(idx);
+			updateMultiView(idx, newval == 1);
 			updateCollapse(idx);
 			updateQtyWrapup(idx);
-		} else if (newval < sums[idx]) {
+		} else {
 			var confirm = function() {
 				FreshDirect.ClientCodes.updateQtyDecrease(idx);
 				ClientCodes.hideDialog();
@@ -265,7 +263,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				break;
 			}
 		}
-		updateMultiTable(idx);
+		updateMultiTable(idx, newval == 1);
 		updateQtyWrapup(idx, true);
 	};
 
@@ -286,13 +284,13 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				if (i >= 0) {
 					ClientCodes.removeMultiCc(idx, i);
 					deleteRow(idx, i);
-					updateMultiTable(idx);
+					updateMultiTable(idx, true);
 				}
 			} else {
 				if (i >= 0) {
 					ClientCodes.updateMultiCc(idx, i, quantity, clientCode);
 					updateRow(idx, i);
-					updateMultiTable(idx);
+					updateMultiTable(idx, true);
 				} else {
 					ClientCodes.addRow(idx, true);
 				}
@@ -403,11 +401,11 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	var createRow = function(idx) {
 		var nocode = get("multi_nocode_row_" + idx);
 		var newRow = nocode.parentNode.parentNode.insertRow(nocode.rowIndex);
-		newRow.insertCell();
-		newRow.insertCell();
-		newRow.insertCell();
-		newRow.insertCell();
-		newRow.insertCell();
+		newRow.insertCell(0);
+		newRow.insertCell(0);
+		newRow.insertCell(0);
+		newRow.insertCell(0);
+		newRow.insertCell(0);
 		newRow.cells[0].className = "text10 clicode_quantity";
 		newRow.cells[1].className = "text10 clicode_gap";
 		newRow.cells[2].className = "text10 clicode_clientcode";
@@ -436,6 +434,47 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		as[3].style.color = "#999999";
 		return newRow;
 	};
+	
+	var init = {};
+	
+	ClientCodes.initRow = function(idx, quantity, clientCode) {
+		if (init[idx] == undefined)
+			init[idx] = [];
+		init[idx].push({
+			quantity: quantity,
+			clientCode: clientCode
+		});
+	};
+	
+	ClientCodes.onLoad = function() {
+		for (var idx in init) {
+			if (init.hasOwnProperty(idx)) {
+				var item = init[idx];
+				trs.push("tr_" + idx);
+				addAcField("clicode_clientcode_" + idx, "clicode_autocomplete_" + idx);
+				for (var i = 0; i < item.length; i++)
+					addRow2(idx, item[i].quantity, item[i].clientCode);
+				updateMultiTable(idx, getQty(idx) == 1);				
+			}
+		}
+	};
+
+    var addRow2 = function(idx, quantity, clientCode) {
+		var i = ClientCodes.addMultiCc(idx, -1, quantity, clientCode, true);
+		if (i < 0)
+			return false;
+		
+		// make clone of template
+		var newRow = createRow(idx);
+		
+		newRow.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
+		
+		// initialize clone
+		newRow.cells[0].innerHTML = quantity;
+		newRow.cells[2].innerHTML = adjustWidth(clientCode);
+
+		return false;
+    };
 
     ClientCodes.addRow = function(idx, noClear) {
 		// process new values
@@ -460,7 +499,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		
 		// initialize clone
 		newRow.cells[0].innerHTML = quantity;
-		newRow.cells[2].innerHTML = clientCode;
+		newRow.cells[2].innerHTML = adjustWidth(clientCode);
 
 		if (noClear !== true) {
 			get("quantity_" + idx).value = "";
@@ -490,11 +529,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	var updateRow = function(idx, i) {
 		var node = get("multi_row_" + idx + "_" + i);
 		node.cells[0].innerHTML = ccs[idx][i].quantity;
-		node.cells[2].innerHTML = ccs[idx][i].clientCode;
-	};
-
-	ClientCodes.setNoCode = function(idx, noCode) {
-		noCodes[idx] = noCode;
+		node.cells[2].innerHTML = adjustWidth(ccs[idx][i].clientCode);
 	};
 
 	var updateCollapse = function(idx) {
@@ -533,7 +568,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			node.innerHTML = newval;
 	};
 
-	var updateMultiView = function(idx) {
+	var updateMultiView = function(idx, hideBorder) {
 		if (sums[idx] == 0) {
 			hideItem("multi_empty_row_" + idx);
 			hideItem("multi_head_row_" + idx);
@@ -541,7 +576,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			hideItem("multi_collapser_" + idx);
 			get("multi_table_" + idx).style.borderBottom = "0px none";
 		} else {
-			get("multi_table_" + idx).style.borderBottom = "1px solid #999999";
+			if (hideBorder === true)
+				get("multi_table_" + idx).style.borderBottom = "0px none";
+			else
+				get("multi_table_" + idx).style.borderBottom = "1px solid #999999";
 			showTr("multi_empty_row_" + idx);
 			showTr("multi_head_row_" + idx);
 			showInline("multi_collapser_" + idx);
@@ -556,15 +594,15 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		get("multi_val_" + idx).value = YAHOO.lang.JSON.stringify(ccs[idx]);
 	};
 
-	var updateMultiTable = function(idx) {
-		updateMultiView(idx);
+	var updateMultiTable = function(idx, hideBorder) {
+		updateMultiView(idx, hideBorder);
 		updateCollapse(idx);
 		updateMultiVal(idx);
 	};
 
 	ClientCodes.editRow = function(node) {
 		var coord = getIdx(node);
-		coord.node.cells[0].innerHTML = '<input type="text" autocomplete="off" size="5" maxlength="5" class="text10" style="text-align: center; border: 1px solid black;">';
+		coord.node.cells[0].innerHTML = '<input type="text" autocomplete="off" size="5" maxlength="5" class="text10 clicode_quantity" style="text-align: center; border: 1px solid black;">';
 		coord.node.cells[0].firstChild.value = ccs[coord.idx][coord.i].quantity;
 		coord.node.cells[2].style.overflow = 'visible';
 		coord.node.cells[2].innerHTML = '<div style="position: relative; vertical-align: middle; overflow: visible;">' + 
@@ -573,7 +611,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
 		coord.node.cells[2].firstChild.firstChild.id = "clicode_clientcode_" + coord.idx + "_" + coord.i;
 		coord.node.cells[2].firstChild.lastChild.id = "clicode_autocomplete_" + coord.idx + "_" + coord.i;
-		ClientCodes.addAcField("clicode_clientcode_" + coord.idx + "_" + coord.i, "clicode_autocomplete_" + coord.idx + "_" + coord.i);
+		addAcField("clicode_clientcode_" + coord.idx + "_" + coord.i, "clicode_autocomplete_" + coord.idx + "_" + coord.i);
 		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[0].style.display = "none";
 		spans[1].style.display = "inline";
@@ -598,7 +636,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
 		coord.node.cells[2].style.overflow = 'hidden';
-		coord.node.cells[2].innerHTML = ccs[coord.idx][coord.i].clientCode;
+		coord.node.cells[2].innerHTML = adjustWidth(ccs[coord.idx][coord.i].clientCode);
 		
 		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[1].style.display = "none";
@@ -613,7 +651,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 		coord.node.cells[0].innerHTML = ccs[coord.idx][coord.i].quantity;
 		coord.node.cells[2].style.overflow = 'hidden';
-		coord.node.cells[2].innerHTML = ccs[coord.idx][coord.i].clientCode;
+		coord.node.cells[2].innerHTML = adjustWidth(ccs[coord.idx][coord.i].clientCode);
 
 		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[1].style.display = "none";
@@ -686,7 +724,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		}
 	};
 	
-	ClientCodes.addAcField = function(input, container) {
+	var addAcField = function(input, container) {
 		var ds = new YAHOO.util.LocalDataSource(ClientCodes.clientCodesHistory);
 		ds.responseSchema = {
 			fields : [ "clientCode" ]
@@ -698,5 +736,16 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		ac.useShadow = false;
 		ac.animVert = false;
 		ac.animHoriz = false;
+	};
+	
+	var adjustWidth = function(content) {
+		var node = get("testbox");
+		var newval = content;
+		node.innerHTML = newval;
+		while (node.clientWidth > 242) {
+			content = content.substr(0, content.length - 1);
+			node.innerHTML = newval = content + "&hellip;";
+		}
+		return newval;
 	};
 })();
