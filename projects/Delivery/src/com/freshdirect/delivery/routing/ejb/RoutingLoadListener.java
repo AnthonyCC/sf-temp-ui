@@ -131,21 +131,21 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		
 		GeographyServiceProxy proxy = new GeographyServiceProxy();
 		
-		LocationLocatorResult result = proxy.locateAddress(address.getAddress1()
+		/*LocationLocatorResult result = proxy.locateAddress(address.getAddress1()
 																, address.getAddress2()
 																, address.getApartment()
 																, address.getCity()
 																, address.getState()
 																, address.getZipCode()
-																, address.getCountry());
+																, address.getCountry());*/
 		
 
-		/*List saveLocationLst = new ArrayList();
+		List saveLocationLst = new ArrayList();
 		List saveBuildingLst = new ArrayList();
 		
 		IBuildingModel building = new BuildingModel();
 		
-		building.setStreetAddress1(proxy.standardizeStreetAddress(address.getAddress1(),address.getAddress2()));
+		building.setStreetAddress1(proxy.standardizeStreetAddress(address.getAddress1(), address.getAddress2()));
 		building.setStreetAddress2(address.getAddress2());
 		
 		building.setCity(address.getCity());
@@ -179,7 +179,7 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		}		
 		if(saveLocationLst != null && saveLocationLst.size() > 0) {
 			proxy.insertLocations(saveLocationLst);
-		}*/
+		}
 	}
 	
 	private void process(TimeslotCommand command) throws FDResourceException {

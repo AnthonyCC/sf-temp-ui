@@ -580,14 +580,14 @@ public class RoutingUtil {
 
 	private static ILocationModel getLocation(IOrderModel order) throws RoutingServiceException  {
 		GeographyServiceProxy geoSrv = new GeographyServiceProxy();
-		LocationLocatorResult result = geoSrv.locateAddress(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress1()
+		/*LocationLocatorResult result = geoSrv.locateAddress(order.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress1()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress2()
 										, order.getDeliveryInfo().getDeliveryLocation().getApartmentNumber()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getCity()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getState()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode()
-										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getCountry());
-		return result.getLocation();
+										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getCountry());*/
+		return geoSrv.locateOrder(order);
 	}
 
 

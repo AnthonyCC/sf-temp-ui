@@ -127,6 +127,9 @@ import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
+import com.freshdirect.routing.service.util.LocationLocatorResult;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
@@ -1034,7 +1037,21 @@ public class FDCustomerManager {
 			} catch (RemoteException re) {
 				invalidateRoutingGatewayHome();
 				throw new FDResourceException(re, "Error creating session bean");
-			}
+			} 
+			/* GeographyServiceProxy proxy = new GeographyServiceProxy();
+			
+			try {
+				proxy.locateAddress(address.getAddress1(), address.getAddress2()
+																		, address.getApartment()
+																		, address.getCity()
+																		, address.getState()
+																		, address.getZipCode()
+																		, address.getCountry());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				// Sending address shouldn't be a problem even if failed will get picked up in batch routing
+				e.printStackTrace();
+			} */
 		}	
 
 	}

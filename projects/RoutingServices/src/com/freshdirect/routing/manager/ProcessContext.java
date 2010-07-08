@@ -56,7 +56,7 @@ public class ProcessContext implements Serializable {
 		this.handOffBatchId = handOffBatchId;
 	}
 
-	/* public Object getLocationList() {
+	 public Object getLocationList() {
 		return locationList;
 	}
 
@@ -70,7 +70,7 @@ public class ProcessContext implements Serializable {
 
 	public void setBuildingList(Object buildingList) {
 		this.buildingList = buildingList;
-	} */
+	} 
 
 
 	public Object getDataModel() {

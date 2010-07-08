@@ -1,13 +1,16 @@
 package com.freshdirect.routing.manager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
+import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
-import com.freshdirect.routing.service.util.LocationLocatorResult;
 import com.freshdirect.routing.util.RoutingUtil;
 
 public class GeographyManager extends BaseProcessManager {
@@ -17,7 +20,7 @@ public class GeographyManager extends BaseProcessManager {
 		GeographyServiceProxy proxy = new GeographyServiceProxy();		
 		ILocationModel locModel = request.getLocationInfo();
 		IOrderModel orderModel = request.getOrderInfo();
-		/*boolean isNew = false;
+		boolean isNew = false;
 		
 		if(request.getBuildingList() == null) {
 			request.setBuildingList(new HashMap());
@@ -25,18 +28,12 @@ public class GeographyManager extends BaseProcessManager {
 		
 		if(request.getLocationList() == null) {
 			request.setLocationList(new HashMap());
-		} */
+		} 
 		
 		try {
-			LocationLocatorResult result = proxy.locateAddress(locModel.getBuilding().getStreetAddress1()
-																, locModel.getBuilding().getStreetAddress2()
-																, locModel.getApartmentNumber()
-																, locModel.getBuilding().getCity()
-																, locModel.getBuilding().getState()
-																, locModel.getBuilding().getZipCode()
-																, locModel.getBuilding().getCountry());
-			orderModel.getDeliveryInfo().setDeliveryLocation(result.getLocation());
-			/*locModel.getBuilding().setStreetAddress1(proxy.standardizeStreetAddress(locModel));
+			String scrubbedStreet = proxy.standardizeStreetAddress(locModel);
+			locModel.getBuilding().setStreetAddress1(scrubbedStreet);
+			locModel.getBuilding().setSrubbedStreet(scrubbedStreet);
 			ILocationModel locationModel = fetchLocation(request, proxy, locModel);//proxy.getLocation(locModel);			
 			
 			IBuildingModel buildingModel = null;			
@@ -46,44 +43,29 @@ public class GeographyManager extends BaseProcessManager {
 				locModel.setLocationId(proxy.getLocationId());
 				if(buildingModel == null || buildingModel.getBuildingId() == null) {
 					
-					buildingModel = proxy.getNewBuilding(locModel);					
-										
-					buildingModel.setServiceTimeType(locModel.getServiceTimeType());
-														
+					buildingModel = proxy.getNewBuilding(locModel);										
+					//buildingModel.setServiceTimeType(locModel.getServiceTimeType());														
 					((Map)request.getBuildingList()).put(buildingModel.getSrubbedStreet()
-														+"$"+buildingModel.getZipCode(),buildingModel);
+																+"$"+buildingModel.getZipCode(), buildingModel);
 					
 				}
-				locModel.getBuilding().setSrubbedStreet(buildingModel.getSrubbedStreet());	
-				locModel.getBuilding().setStreetAddress1(buildingModel.getStreetAddress1());
-				locModel.getBuilding().setZipCode(buildingModel.getZipCode());
-				locModel.getBuilding().setCountry(buildingModel.getCountry());
-				locModel.getBuilding().setCity(buildingModel.getCity());	
-				locModel.getBuilding().setState(buildingModel.getState());
-				locModel.getBuilding().setBuildingId(buildingModel.getBuildingId());
-				locModel.getBuilding().setGeographicLocation(buildingModel.getGeographicLocation());
+				locModel.setBuilding(buildingModel);
 
 				((Map)request.getLocationList()).put(locModel.getBuilding().getStreetAddress1()
-														+"$"+locModel.getApartmentNumber()
-														+"$"+locModel.getBuilding().getZipCode(),locModel);
+															+"$"+locModel.getApartmentNumber()
+																+"$"+locModel.getBuilding().getZipCode(), locModel);
 			} else {
-				locModel.setLocationId(locationModel.getLocationId());
-				locModel.getBuilding().setBuildingId(locationModel.getBuilding().getBuildingId());
-				locModel.getBuilding().setGeographicLocation(locationModel.getBuilding().getGeographicLocation());
-				
-				locModel.setServiceTimeType(locationModel.getServiceTimeType());
-				locModel.setAdjustmentOperator(locationModel.getAdjustmentOperator());
-				locModel.setServiceTimeAdjustment(locationModel.getServiceTimeAdjustment());
-				locModel.setServiceTimeOverride(locationModel.getServiceTimeOverride());
-			}*/
-			addProcessInfo(request, orderModel, result.getLocation(), result.isNewLocation());
+				locModel = locationModel;
+			}
+			orderModel.getDeliveryInfo().setDeliveryLocation(locModel);
+			addProcessInfo(request, orderModel, locModel, isNew);
 		} catch (RoutingServiceException e) {			
 			e.printStackTrace();
 		}		
 
 	}
 	
-	/*private IBuildingModel fetchBuilding(ProcessContext request
+	private IBuildingModel fetchBuilding(ProcessContext request
 											, GeographyServiceProxy proxy
 												, ILocationModel locModel) throws RoutingServiceException {
 		
@@ -112,7 +94,7 @@ public class GeographyManager extends BaseProcessManager {
 		}
 		
 		return proxy.getLocation(locModel);
-	} */
+	} 
 	
 	private void addProcessInfo(ProcessContext request,IOrderModel orderModel, ILocationModel locModel, boolean isNew) {
 		if(locModel != null && orderModel != null) {

@@ -42,6 +42,9 @@ public class LocationModel extends BaseModel implements ILocationModel {
 		return building;
 	}
 	
+	public void setBuilding(IBuildingModel building) {
+		this.building = building;
+	}
 	public IServiceTimeTypeModel getServiceTimeType() {
 		return serviceTimeType;
 	}

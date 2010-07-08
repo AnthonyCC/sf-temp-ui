@@ -53,5 +53,7 @@ public interface IGeographyService {
 			, String apartmentNumber, String city
 					, String state, String zipCode
 								, String country)  throws RoutingServiceException;
+	
+	ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException;
 
 }

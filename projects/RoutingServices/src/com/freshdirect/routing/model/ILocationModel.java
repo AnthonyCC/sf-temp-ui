@@ -12,7 +12,7 @@ public interface ILocationModel {
 	IServiceTimeTypeModel getServiceTimeType();
 	void setServiceTimeType(IServiceTimeTypeModel serviceTimeType);
 	IBuildingModel getBuilding();
-	//void setBuilding(IBuildingModel building);
+	void setBuilding(IBuildingModel building);
 	
 	double getServiceTimeOverride();
 	void setServiceTimeOverride(double serviceTimeOverride);

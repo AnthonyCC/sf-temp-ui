@@ -17,6 +17,7 @@ import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.proxy.stub.roadnet.GeocodeData;
@@ -112,9 +113,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 			if(buildingModel == null || buildingModel.getBuildingId() == null) {
 														    					
 				buildingModel = getNewBuildingEx(locModel);					
-				
-				buildingModel.setServiceTimeType(locModel.getServiceTimeType());
-								
+												
 				insertBuilding(buildingModel);
 				buildingModel = getBuildingLocation(locModel);					
 				result.setNewBuilding(true);
@@ -148,6 +147,34 @@ public class GeographyService extends BaseService implements IGeographyService {
 		
 		result.setLocation(locationModel);
 		return result;
+	}
+	
+	public ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException {
+		
+		ILocationModel locModel = orderModel.getDeliveryInfo().getDeliveryLocation();
+		
+		String scrubbedStreet = standardizeStreetAddress(locModel);
+		locModel.getBuilding().setStreetAddress1(scrubbedStreet);
+		locModel.getBuilding().setSrubbedStreet(scrubbedStreet);
+		ILocationModel locationModel = getLocation(locModel);			
+		
+		IBuildingModel buildingModel = null;			
+		if(locationModel == null) {				
+			buildingModel = getBuildingLocation(locModel);
+			
+			if(buildingModel == null || buildingModel.getBuildingId() == null) {
+				
+				buildingModel = getNewBuildingEx(locModel);														
+				insertBuilding(buildingModel);
+				buildingModel = getBuildingLocation(locModel);				
+			}
+						
+			insertLocation(locModel);			
+			locationModel = getLocation(locModel);	
+		}
+		locationModel.getBuilding().setStreetAddress1(locModel.getBuilding().getStreetAddress1());
+		locationModel.getBuilding().setStreetAddress2(locModel.getBuilding().getStreetAddress2());
+		return locationModel;
 	}
 
 	public IGeographicLocation getRoutingLocation(String locationId) throws RoutingServiceException  {
@@ -266,7 +293,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 		return lstResult;
 	}
 	
-public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
+	public IBuildingModel getNewBuilding(ILocationModel baseModel) throws RoutingServiceException {
 		
 		return getNewBuilding(null, baseModel);
 	}
