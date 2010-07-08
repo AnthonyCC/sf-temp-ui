@@ -1,6 +1,10 @@
 package com.freshdirect.fdstore.util;
 
-public class IgnoreCaseString implements Comparable<IgnoreCaseString> {
+import java.io.Serializable;
+
+public class IgnoreCaseString implements Comparable<IgnoreCaseString>, Serializable {
+	private static final long serialVersionUID = -3341925694223083166L;
+
 	final String string;
 	
 	public IgnoreCaseString(String string) {
