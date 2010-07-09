@@ -2180,6 +2180,9 @@
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2211,6 +2214,9 @@
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2279,6 +2285,9 @@
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="antlr-2.7.5H3.jar"/>
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>
 			</lib>
 		</makeEar>
 	</target>
@@ -2847,6 +2856,9 @@
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>
 						
 				<include name="opencsv-1.8.jar"/>
 				
