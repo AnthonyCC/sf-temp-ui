@@ -5,11 +5,13 @@ package com.freshdirect.dataloader.payment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -26,10 +28,12 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EFTTransaction;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 /**
  * @author jng
@@ -83,6 +87,9 @@ public class EFTTransactionCronRunner {
 
 		} catch (Exception e) {
 			LOGGER.error(e);
+			LOGGER.info(new StringBuilder("EFTTransactionCronRunner failed with Exception...").append(e.toString()).toString());
+			LOGGER.error(e);
+			email(Calendar.getInstance().getTime(), e.toString());
 		} finally {
 			try {
 				if (ctx != null) {
@@ -146,6 +153,32 @@ public class EFTTransactionCronRunner {
 		h.put(Context.INITIAL_CONTEXT_FACTORY, "weblogic.jndi.WLInitialContextFactory");
 		h.put(Context.PROVIDER_URL, ErpServicesProperties.getProviderURL());
 		return new InitialContext(h);
+	}
+	
+	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="EFTTransactionCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(exceptionMsg != null) {
+				buff.append("b").append(exceptionMsg).append("/b");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending EFTTransactionCronRunner report email: ", e);
+		}
+		
 	}
 
 }

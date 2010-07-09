@@ -83,8 +83,7 @@
           <ec:column property="dayOfWeekInText" title="Day"/>
           <ec:column width="5px" alias="scenariocode" property="scenario.code" title="Code"/>    
           <ec:column property="scenario.description" title="Description"/>
-          <ec:column width="5px" property="scenario.isDefault" title="Is Default"/>
-          <ec:column property="scenario.serviceTimeFactorFormula" title="Service Time Factor Formula"/>
+      	  <ec:column property="scenario.serviceTimeFactorFormula" title="Service Time Factor Formula"/>
           <ec:column property="scenario.serviceTimeFormula" title="Service Time Formula"/>
           <ec:column property="scenario.defaultCartonCount" width="5px" title="Carton Count"/>
           <ec:column property="scenario.defaultCaseCount" width="5px" title="Case Count"/>

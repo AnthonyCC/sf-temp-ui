@@ -36,9 +36,6 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	
 	private Set scenarioZones = new HashSet(0);
 	
-	//private DlvScenarioDays scenarioDay;
-	
-
 	public DlvServiceTimeScenario(String code, String description,
 			String isDefault, String serviceTimeFactorFormula,
 			String serviceTimeFormula, String isNew, Set scenarioDays,

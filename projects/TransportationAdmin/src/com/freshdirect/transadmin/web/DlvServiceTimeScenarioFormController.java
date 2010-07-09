@@ -157,7 +157,7 @@ public class DlvServiceTimeScenarioFormController extends AbstractFormController
 		
 		Set tmpScenarioZones = modelIn.getScenarioZones();
 		modelIn.setScenarioZones(null);
-		getLocationManagerService().saveEntity(modelIn);
+		//getLocationManagerService().saveEntity(modelIn);
 		
 		modelIn.setScenarioZones(tmpScenarioZones);	
 		if (tmpScenarioZones != null) {

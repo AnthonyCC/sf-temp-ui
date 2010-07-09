@@ -39,12 +39,14 @@
       	  
       	  var p_code = YAHOO.util.Dom.get("sCode").value;
        	  var p_day = YAHOO.util.Dom.get("sDay").value;
-		  var p_date = YAHOO.util.Dom.get("rDate").value;		  
+		  var p_date = YAHOO.util.Dom.get("rDate").value;
 
-	  	  if(p_code.trim().length == 0 ||
+		  if(p_code.trim().length == 0 ||
       			p_day.trim().length == 0) {
-      	  	addSysMessage("Please enter the required values", true);		
-      	  } else {
+      	  		addSysMessage("Please enter the required values", true);		
+      	  } else if((p_day.trim().length != 4 && p_date != null && p_date.trim().length != 0)){
+				addSysMessage("Please choose either day or date", true);
+		  } else {
 	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScenarioDayMapping(sendFormCallback
 						    	  											, p_code ,p_day, p_date);  
 		  }
@@ -101,8 +103,7 @@
 		                  <td>
 		                  	<select id="sDay" name="sDay" >
                           		<option value="null">-Please Select</option>
-                          		<option value="0">All</option>
-                      			<option value="1">Sun</option><option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option>
+                          		<option value="1">Sun</option><option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option>
                     	 	</select>	
                     	 </td> 
 		         </tr>	        

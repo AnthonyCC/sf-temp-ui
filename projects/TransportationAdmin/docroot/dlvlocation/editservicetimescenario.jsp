@@ -347,7 +347,7 @@
                 </td>
                </tr>
                
-               <tr>
+               <!--<tr>
                   <td>Use As Default</td>
                   <td> 
                   <form:checkbox path="isDefault" value="X"/>
@@ -357,7 +357,7 @@
                 </td>
                </tr>    
                
-               <tr>
+               --><tr>
                   <td>Service Time Factor Formula <b>(Use x, y, z)</b></td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="serviceTimeFactorFormula" />

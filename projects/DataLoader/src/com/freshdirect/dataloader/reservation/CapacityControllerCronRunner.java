@@ -237,7 +237,7 @@ public class CapacityControllerCronRunner extends BaseCapacityCronRunner {
 
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
-			String subject="Routing Capacity Synchronizer Cron :	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+			String subject="Routing Capacity Synchronizer Cron : "+ (processDate != null ? dateFormatter.format(processDate) : " date error");
 
 			StringBuffer buff = new StringBuffer();
 

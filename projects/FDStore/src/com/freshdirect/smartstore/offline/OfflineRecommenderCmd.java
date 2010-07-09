@@ -1,19 +1,27 @@
 package com.freshdirect.smartstore.offline;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
 
@@ -21,7 +29,7 @@ public class OfflineRecommenderCmd {
 	private static final Logger LOG = Logger
 			.getLogger(OfflineRecommenderCmd.class);
 
-	private static Iterator<String> customerIterator;
+	private static Iterator<String> customerIterator;	
 
 	public static void main(String[] args) {
 		int days = 365;
@@ -165,6 +173,9 @@ public class OfflineRecommenderCmd {
 			invalidateOfflineRecommenderHome();
 			LOG.error("error while retrieving recent customers", e);
 			LOG.fatal("exiting: failed to retrieve recent customers");
+			LOG.info(new StringBuilder("OfflineRecommenderCron failed with Exception...").append(e.toString()).toString());
+			LOG.error(e);
+			email(Calendar.getInstance().getTime(), e.toString());
 			System.exit(-1);
 			return null;
 		}
@@ -183,6 +194,9 @@ public class OfflineRecommenderCmd {
 			LOG.error("exception while generating "
 					+ arrayToString(siteFeatures)
 					+ " recommendations for customer #" + customerId, e);
+			LOG.info(new StringBuilder("OfflineRecommenderCron failed with Exception...").append(arrayToString(siteFeatures)+" recommendations for customer #"+ customerId).append(e.toString()).toString());
+			LOG.error(e);
+			email(Calendar.getInstance().getTime(), e.toString());
 		}
 	}
 
@@ -207,7 +221,7 @@ public class OfflineRecommenderCmd {
 			offlineRecommenderHome.set((OfflineRecommenderHome) ctx
 					.lookup(OfflineRecommenderHome.JNDI_HOME));
 		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
+			throw new FDResourceException(ne);			
 		} finally {
 			try {
 				if (ctx != null) {
@@ -234,5 +248,31 @@ public class OfflineRecommenderCmd {
 		}
 		buf.append("]");
 		return buf.toString();
+	}
+	
+	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="OfflineRecommenderCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(exceptionMsg != null) {
+				buff.append("b").append(exceptionMsg).append("/b");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOG.warn("Error Sending OfflineRecommenderCron report email: ", e);
+		}
+		
 	}
 }

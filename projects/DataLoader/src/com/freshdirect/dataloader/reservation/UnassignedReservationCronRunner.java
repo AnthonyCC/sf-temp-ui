@@ -1,14 +1,18 @@
 package com.freshdirect.dataloader.reservation;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.depot.DlvDepotModel;
@@ -25,8 +29,10 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerHome;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerManagerSB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumRoutingNotification;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
@@ -71,6 +77,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
 				LOGGER.error("Invalid date argument. Accepted Format is [yyyy-MM-dd]");
 				LOGGER.error(e);
+				email(Calendar.getInstance().getTime(),e.toString());
 				return ;
 			}
 			
@@ -104,6 +111,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 			} catch (Exception e) {
 				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
+				email(Calendar.getInstance().getTime(),e.toString());
 			}
 			if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 			
@@ -131,11 +139,13 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				}
 			} catch (Exception e) {
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with notification exception : ").append(e.toString()).toString());
+				email(Calendar.getInstance().getTime(),e.toString());
 			}	
 			LOGGER.info("UnassignedReservationCronRunner finished");
 		}catch (NamingException e) {
 				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
+				email(Calendar.getInstance().getTime(),e.toString());
 				LOGGER.error(e);
 		} finally {
 			try {
@@ -193,8 +203,35 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 		} catch (Exception e) {
 			e.printStackTrace();
 			LOGGER.info(new StringBuilder("UnassignedReservationCronRunner: ").append(" failed to reassign reservation for id ").append(reservation.getId()).toString(),e);
+			email(Calendar.getInstance().getTime(),e.toString());
 		}
     }
+    
+    private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="UnassignedReservationCron:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(exceptionMsg != null) {
+				buff.append("b").append(exceptionMsg).append("/b");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending UnassignedReservationCron report email: ", e);
+		}
+		
+	}
 	
 
 }

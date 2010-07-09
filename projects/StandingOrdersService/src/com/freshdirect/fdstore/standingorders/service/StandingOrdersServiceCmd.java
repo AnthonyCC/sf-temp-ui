@@ -34,6 +34,7 @@ public class StandingOrdersServiceCmd {
 			sosHome.set( (StandingOrdersServiceHome)ctx.lookup( StandingOrdersServiceHome.JNDI_HOME ) );
 		} catch (NamingException ne) {
 			throw new FDResourceException(ne);
+			email(Calendar.getInstance().getTime(), ne.toString());
 		} finally {
 			try {
 				if ( ctx != null ) {
@@ -41,6 +42,7 @@ public class StandingOrdersServiceCmd {
 				}
 			} catch (NamingException ne) {
 				LOGGER.warn("cannot close Context while trying to cleanup", ne);
+				email(Calendar.getInstance().getTime(), ne.toString());
 			}
 		}
 	}
@@ -74,5 +76,31 @@ public class StandingOrdersServiceCmd {
 			invalidateSOSHome();
 			e.printStackTrace();
 		}
+	}
+
+	private static void email(Date processDate, String exceptionMsg) {
+		// TODO Auto-generated method stub
+		try {
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, MMM d, yyyy");
+			String subject="SaleCronRunner:	"+ (processDate != null ? dateFormatter.format(processDate) : " date error");
+
+			StringBuffer buff = new StringBuffer();
+
+			buff.append("<html>").append("<body>");			
+			
+			if(exceptionMsg != null) {
+				buff.append("b").append(exceptionMsg).append("/b");
+			}
+			buff.append("</body>").append("</html>");
+
+			ErpMailSender mailer = new ErpMailSender();
+			mailer.sendMail(ErpServicesProperties.getCronFailureMailFrom(),
+					ErpServicesProperties.getCronFailureMailTo(),ErpServicesProperties.getCronFailureMailCC(),
+					subject, buff.toString(), true, "");
+			
+		}catch (MessagingException e) {
+			LOGGER.warn("Error Sending Sale Cron report email: ", e);
+		}
+		
 	}
 }

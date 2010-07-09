@@ -175,6 +175,11 @@ public class ErpServicesProperties {
 	private final static String SO_TECH_RECIPIENT = "standingorders.technical.error.recipient.address";
 	private final static String SO_TECH_FROM = "standingorders.technical.error.from.address";
 	
+	private final static String PROP_CRON_FAILURE_MAIL_TO = "cron.mail.to";
+	private final static String PROP_CRON_FAILURE_MAIL_CC = "cron.mail.cc";
+	private final static String PROP_CRON_FAILURE_MAIL_FROM = "cron.mail.from";
+	    
+	
 	static {
 		Properties defaults = new Properties();
 
@@ -246,6 +251,10 @@ public class ErpServicesProperties {
 		defaults.put(PROP_OCF_MAIL_TO, "appsupport@freshdirect.com");
 		defaults.put(PROP_OCF_MAIL_CC, "");
 		defaults.put(PROP_OCF_MAIL_FROM, "applicationdevelopment@freshdirect.com");
+		
+		defaults.put(PROP_CRON_FAILURE_MAIL_TO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_CRON_FAILURE_MAIL_CC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_CRON_FAILURE_MAIL_FROM, "applicationdevelopment@freshdirect.com");		
 		
 		defaults.put(PROP_GC_MAIL_TO, "appsupport@freshdirect.com");
 		defaults.put(PROP_GC_MAIL_CC, "");
@@ -529,6 +538,18 @@ public class ErpServicesProperties {
 	}
 	
 	public static String getSapMailFrom() {
+		return config.getProperty(PROP_CRON_FAILURE_MAIL_FROM);
+	}
+	
+	public static String getCronFailureMailTo() {
+		return config.getProperty(PROP_CRON_FAILURE_MAIL_TO);
+	}
+	
+	public static String getCronFailureMailCC() {
+		return config.getProperty(PROP_CRON_FAILURE_MAIL_CC);
+	}
+	
+	public static String getCronFailureMailFrom() {
 		return config.getProperty(PROP_SAP_MAIL_FROM);
 	}
 	
