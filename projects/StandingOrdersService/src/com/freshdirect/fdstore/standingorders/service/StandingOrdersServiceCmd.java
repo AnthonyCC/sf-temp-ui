@@ -23,7 +23,13 @@ public class StandingOrdersServiceCmd {
 	private static final Logger LOGGER = LoggerFactory.getInstance(StandingOrdersServiceCmd.class); 
 	
 	public static void main( String[] args ) {
-		placeStandingOrders();
+		try{
+			placeStandingOrders();
+		}catch(Exception e){
+			LOGGER.info(new StringBuilder("StandingOrdersServiceCmd failed with Exception...").append(e.toString()).toString());
+			LOGGER.error(e);
+			email(Calendar.getInstance().getTime(), e.toString());
+		}
 	}
 		
 
@@ -38,16 +44,14 @@ public class StandingOrdersServiceCmd {
 			ctx = ErpServicesProperties.getInitialContext();
 			sosHome.set( (StandingOrdersServiceHome)ctx.lookup( StandingOrdersServiceHome.JNDI_HOME ) );
 		} catch (NamingException ne) {
-			throw new FDResourceException(ne);
-			email(Calendar.getInstance().getTime(), ne.toString());
+			throw new FDResourceException(ne);			
 		} finally {
 			try {
 				if ( ctx != null ) {
 					ctx.close();
 				}
 			} catch (NamingException ne) {
-				LOGGER.warn("cannot close Context while trying to cleanup", ne);
-				email(Calendar.getInstance().getTime(), ne.toString());
+				LOGGER.warn("cannot close Context while trying to cleanup", ne);				
 			}
 		}
 	}
