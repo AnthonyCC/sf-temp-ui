@@ -440,10 +440,11 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	ClientCodes.initRow = function(idx, quantity, clientCode) {
 		if (init[idx] == undefined)
 			init[idx] = [];
-		init[idx].push({
-			quantity: quantity,
-			clientCode: clientCode
-		});
+		if (quantity != undefined)
+			init[idx].push({
+				quantity: quantity,
+				clientCode: clientCode
+			});
 	};
 	
 	ClientCodes.onLoad = function() {

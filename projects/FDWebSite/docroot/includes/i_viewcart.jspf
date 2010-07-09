@@ -373,6 +373,7 @@ FDIdentity identity = user.getIdentity();
 					&nbsp;<span id="clicode_multi_coll_fillup_<%= idx %>" class="text10" style="color: #999999;"><%= ErpClientCode.toHtml(cartLine.getClientCodes(), noCode) %></span>
 				</div>
 			    <script type="text/javascript">
+				FreshDirect.ClientCodes.initRow('<%= idx %>');
 				<%
 				for (ErpClientCode item : cartLine.getClientCodes()) {
 				%>
