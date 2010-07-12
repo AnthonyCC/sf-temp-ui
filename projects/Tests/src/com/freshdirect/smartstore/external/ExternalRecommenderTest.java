@@ -127,15 +127,7 @@ public class ExternalRecommenderTest extends TestCase {
 
 		// initialize CMS from XML with a sample set of products (a1, a2, a3,
 		// b1, etc.)
-		List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
-
-		list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
-
-		CompositeTypeService typeService = new CompositeTypeService(list);
-
-		XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/simple2.xml");
-
-		CmsManager.setInstance(new CmsManager(service, null));
+		TestUtils.initCmsManagerFromXmls("classpath:/com/freshdirect/cms/fdstore/content/simple2.xml");
 
 		AspectSystem aspectSystem = TestUtils.createAspectSystem();
         aspectSystem.add(new ScoreFactorGlobalNameAspect(Collections.EMPTY_SET));

@@ -20,11 +20,6 @@ import com.freshdirect.TestUtils;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.cms.application.CmsManager;
-import com.freshdirect.cms.application.service.CompositeTypeService;
-import com.freshdirect.cms.application.service.xml.FlexContentHandler;
-import com.freshdirect.cms.application.service.xml.XmlContentService;
-import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
@@ -47,15 +42,7 @@ public class DataGeneratorCompilerTest extends TestCase {
 
     protected void setUp() throws Exception {
         {
-            List list = new ArrayList();
-        
-            list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
-    
-            CompositeTypeService typeService = new CompositeTypeService(list);
-    
-            XmlContentService service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/fdstore/content/simple2.xml");
-            
-            CmsManager.setInstance(new CmsManager(service, null));
+            TestUtils.initCmsManagerFromXmls("classpath:/com/freshdirect/cms/fdstore/content/simple2.xml");
         }
         
         {
