@@ -134,7 +134,7 @@ public abstract class DbTestCaseSupport extends TestCase {
 
 		// set up the affected tables
 		this.conn = this.getDataSource().getConnection();
-		this.dbConnection = new DatabaseConnection(this.conn, this.getSchema());
+		this.dbConnection = this.getSchema() != null ? new DatabaseConnection(this.conn, this.getSchema()) : new DatabaseConnection(this.conn);
 		dbConnection.getConfig().setFeature(DatabaseConfig.FEATURE_QUALIFIED_TABLE_NAMES, true);
 		this.deleteTables(this.getAffectedTables());
 		this.metaData = this.getActualDataSet();

@@ -14,10 +14,11 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
+import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
@@ -208,5 +209,24 @@ public class FDServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
+    
+    public FDZoneInfoHome getFDZoneInfoHome() {
+        try {
+            return (FDZoneInfoHome) getRemoteHome("freshdirect.fdstore.ZoneInfoManager");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }        
+    }
+    
+    public FDZoneInfoSB getFDZoneInfoSessionBean() {
+        try {
+            return getFDZoneInfoHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }        
+    }
+    
 
 }

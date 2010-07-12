@@ -12,7 +12,10 @@ public class PricingContext implements Serializable {
 	public static final PricingContext DEFAULT = new PricingContext(ZonePriceListing.MASTER_DEFAULT_ZONE);
 
 	public PricingContext(String pZoneId) {
-		this.pZoneId = pZoneId;
+	    if (pZoneId == null) {
+	        throw new NullPointerException("pZoneId");
+	    }
+	    this.pZoneId = pZoneId;
 	}
 
 	public String getZoneId() {
