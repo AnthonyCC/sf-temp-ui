@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Content>
+	<Store id="FreshDirect">
+		<departments>
+			<Department ref="dep_1"/>
+		</departments>
+	</Store>
+
+	<Department id="dep_1">
+		<FULL_NAME>First department</FULL_NAME>
+		<categories>
+			<Category ref="c1"/>
+		</categories>
+	</Department>
+
+	<Category id="c1">
+		<FULL_NAME>First Category</FULL_NAME>
+	</Category>
+
+	<Product id="a1">
+		<skus>
+			<Sku ref="a1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="c1"/>
+		</PRIMARY_HOME>
+		<PROD_IMAGE>
+			<Image ref="a1_image"/>
+		</PROD_IMAGE>
+	</Product>
+	<Product id="a2">
+		<skus>
+			<Sku ref="a2sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="c1"/>
+		</PRIMARY_HOME>
+		<PROD_IMAGE>
+			<Image ref="a2_image"/>
+		</PROD_IMAGE>
+	</Product>
+	<Product id="a3">
+		<skus>
+			<Sku ref="a3sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="c1"/>
+		</PRIMARY_HOME>
+		
+	</Product>
+	<Product id="b1">
+		<skus>
+			<Sku ref="b1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="bbb">
+		<skus>
+			<Sku ref="bbbsku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e1">
+		<skus>
+			<Sku ref="e1sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e2">
+		<skus>
+			<Sku ref="e2sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+	<Product id="e3">
+		<skus>
+			<Sku ref="e3sku"/>
+		</skus>
+		<FULL_NAME>A1</FULL_NAME>
+	</Product>
+
+	<Sku id="a1sku"/>
+	<Sku id="a2sku"/>
+	<Sku id="a3sku"/>
+	<Sku id="b1sku"/>
+	<Sku id="bbbsku"/>
+	<Sku id="e1sku"/>
+	<Sku id="e2sku"/>
+	<Sku id="e3sku"/>
+	
+	<Brand id="brand"/>
+	<Brand id="brand2"/>
+
+	<Image id="a1_image">
+	<!-- <path>/image/a1.jpg</path>
+		<width>100</width>
+		<height>100</height> -->	
+	</Image>
+	
+	<Image id="a2_image">
+		<!-- <path>/image/a2.jpg</path>
+		<width>100</width>
+		<height>100</height> -->
+	</Image>
+
+
+</Content>
