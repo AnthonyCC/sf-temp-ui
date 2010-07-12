@@ -53,8 +53,9 @@
 		                    	  );
 	    				</script>
                     </span>
+                    	 <span>OR</span>
                     	 <select id="scenarioDay" name="scenarioDay" >
-                          	<option value="0">All Days</option>
+                          	<option value="0"></option>
                       		<option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thu</option><option value="6">Fri</option><option value="7">Sat</option><option value="1">Sun</option>
                     	 </select>				
 					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scenarioDay','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>

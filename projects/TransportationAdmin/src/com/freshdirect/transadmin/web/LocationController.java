@@ -395,6 +395,7 @@ public class LocationController extends AbstractMultiActionController  {
 			if(day==null)
 				day="0";
 			
+			int dayOfWeek=Integer.parseInt(day);
 			Date date=TransStringUtil.getDate(daterange);
 			Calendar calendar=Calendar.getInstance();
 			calendar.setTime(date);
@@ -402,7 +403,7 @@ public class LocationController extends AbstractMultiActionController  {
 			
 			List allScenarios=new ArrayList();
 			
-			if(daterange!=null){
+			if(daterange!=null && "0".equals(day)){
 				Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(daterange);
 				for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
 					Object[] object = (Object[])itr.next();
@@ -430,6 +431,15 @@ public class LocationController extends AbstractMultiActionController  {
 						sd.setScenario(scenario);
 						allScenarios.add(sd);
 					}				
+				}
+			}else{
+				Collection scenariosForDayOfWeek = locationManagerService.getServiceTimeScenariosForDayofWeek(dayOfWeek);
+				for(Iterator itr=scenariosForDayOfWeek.iterator();itr.hasNext();){
+					Object[] object = (Object[])itr.next();
+					if(null != object && object.length > 0){
+						DlvScenarioDay scenario=(DlvScenarioDay)object[1];
+						allScenarios.add(scenario);
+					}
 				}
 			}
 						
@@ -484,7 +494,8 @@ public class LocationController extends AbstractMultiActionController  {
 					scenarioSet.add(tmpBean);
 				}
 			}
-		}		
+		}	
+		
 		//locationManagerService.removeEntity(employeeSet);
 		removeEntityList(scenarioSet);
 		saveMessage(request, getMessage("app.actionmessage.103", null));
