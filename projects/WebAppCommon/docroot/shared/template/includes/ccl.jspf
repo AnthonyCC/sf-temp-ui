@@ -184,6 +184,10 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 	
 		ClientCodes.updateQty = function(idx) {
 		};
+
+		ClientCodes.setDirty = function() {
+			return true;
+		};
 	})();
 	</script>
 	<%

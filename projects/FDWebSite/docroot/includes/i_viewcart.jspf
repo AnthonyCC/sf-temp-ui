@@ -24,35 +24,41 @@
 <div id="clicode_dlgTmpl" style="display: none">
 	<table border="0" cellpadding="0" cellspacing="0" width="520">
 		<tr>
-			<td colspan="2" class="text11">
+			<td colspan="4" class="text11">
 				<a href="#"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="FreshDirect (close window)"></a>
 			</td>
 		</tr>
 		<tr>
-			<td class="text13rbold" style="vertical-align: top; padding-top: 20px; padding-left: 20px; text-align: right; white-space: nowrap;">
+			<td colspan="4" style="height: 20px;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width: 20px;">&nbsp;</td>
+			<td class="text13rbold" style="vertical-align: top; text-align: right; white-space: nowrap;">
 				<img src="/media_stat/images/buttons/client_codes_exclamation.gif" style="vertical-align: middle;" width="14" height="18">
 				<span>
 				</span>
-				&emsp;&ndash;&emsp;
+				&nbsp;&nbsp;&ndash;&nbsp;&nbsp;
 			</td>
-			<td class="text13rbold" style="vertical-align: top; padding-top: 20px; padding-right: 20px; text-align: left;">
+			<td class="text13rbold" style="vertical-align: top; text-align: left;">
 				<span>
 				</span>
 			</td>
+			<td style="width: 20px;">&nbsp;</td>
 		</tr>
 		<tr>
-			<td colspan="2" align="right" class="text11" style="vertical-align: middle; padding-right: 30px; height: 50px;">
+			<td colspan="3" align="right" class="text11" style="vertical-align: middle; height: 50px;">
 				<span>
 					<input type="image" src="/media_stat/images/buttons/close_window.gif"
 							width="142" height="17" border="0" alt="CLOSE WINDOW" style="vertical-align: middle;">
 				</span>
 				<span>
 					<input type="image" src="/media_stat/images/buttons/client_codes_cancel.gif"
-							width="100" height="19" border="0" alt="CANCEL" style="vertical-align: middle;">&emsp;
+							width="100" height="19" border="0" alt="CANCEL" style="vertical-align: middle;">&nbsp;&nbsp;
 					<input type="image" src="/media_stat/images/buttons/apply_change.gif"
 							width="141" height="19" border="0" alt="CONTINUE" style="vertical-align: middle;">
 				</span>
 			</td>
+			<td style="width: 30px; height: 50px;">&nbsp;</td>
 		</tr>
 	</table>
 </div>
@@ -78,10 +84,10 @@ FDIdentity identity = user.getIdentity();
 <table width="100%" cellspacing="0" cellpadding="0">
 	<tr>
 		<td style="vertical-align: middle; white-space: nowrap;">
-			<% if (user.isEligibleForClientCodes()) { %>
-			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
 			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
 				width="100" height="17" border="0" alt="UPDATE CART" style="vertical-align: middle;">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<input type="hidden" id="clicode_dirty" name="clicode_dirty">
 			<span class="title11" id="clicode_save" style="display: none;">&nbsp;
 				<input type="image" name="save_client_codes" src="/media_stat/images/buttons/save_client_codes.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
 					width="142" height="17" border="0" alt="SAVE CLIENT CODES" style="vertical-align: middle;">
@@ -478,6 +484,12 @@ FDIdentity identity = user.getIdentity();
 	<tr>
 		<td valign="top" colspan="3" rowspan="12" width="260">
 			<input type="image" name="update_quantities" src="/media_stat/images/buttons/update_cart.gif" width="100" height="17" border="0" alt="UPDATE CART" VSPACE="2" HSPACE="0">
+			<% if (user.isEligibleForClientCodes()) { %>
+			<span class="title11" id="clicode_save_2" style="display: none;">&nbsp;
+				<input type="image" name="save_client_codes" src="/media_stat/images/buttons/save_client_codes.gif" onclick="return FreshDirect.ClientCodes.setDirty();"
+					width="142" height="17" border="0" alt="SAVE CLIENT CODES" VSPACE="2" HSPACE="0">
+			</span>
+			<% } %>
 		</td>
 		<td colspan="7"></td>
 	</tr>

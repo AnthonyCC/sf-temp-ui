@@ -9,7 +9,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 	var numbers = "0123456789";
 
-	var ID_PREFIX = "clicode_";
+	var _PREFIX = "clicode_";
 
 	var trs = [];
 
@@ -45,7 +45,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	};
 		
     var get = function(id) {
-        return document.getElementById(ID_PREFIX + id);
+        return document.getElementById(_PREFIX + id);
     };
 
 	ClientCodes.dump = function() {
@@ -84,6 +84,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			hideItem("show");
 			showInline("hide");
 			showInline("save");
+			showInline("save_2");
 			for (var item in trs) {
 				showTr(trs[item]);
 			}
@@ -100,6 +101,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			for (var item in trs) {
 				hideItem(trs[item]);
 			}
+			hideItem("save_2");
 			hideItem("save");
 			hideItem("hide");
 			showInline("show");
@@ -300,7 +302,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		return true;
 	};
 
-	var updateNoCode = function(idx, change) {
+	var updateNoCode = function(idx, change, noDirty) {
 		var quantity = getQty(idx);
 		var newval;
 		if (quantity < sums[idx])
@@ -308,7 +310,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		else
 			newval = getQty(idx) - sums[idx] - change;
 		if (newval < 0) {
-			ClientCodes.showDialog("Total entered exceeds item quantity being purchased");
+			if (noDirty !== true)
+				ClientCodes.showDialog("Total entered exceeds item quantity being purchased");
 			return false;
 		}
 		noCodes[idx] = newval;
@@ -319,18 +322,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	};
 	
 	ClientCodes.addMultiCc = function(idx, i, quantity, clientCode, noDirty) {
-		if (ccs[idx] === undefined) {
-			ccs[idx] = {};
-		}
-		if (sums[idx] === undefined) {
-			sums[idx] = 0;
-		}
-
-		if (lastIndexes[idx] === undefined) {
-			lastIndexes[idx] = -1;
-		}
-
-		if (!updateNoCode(idx, quantity))
+		if (!updateNoCode(idx, quantity, noDirty))
 			return -1;
 
 		if (!validateMultiUniqueness(idx, clientCode, -1))
@@ -452,10 +444,15 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			if (init.hasOwnProperty(idx)) {
 				var item = init[idx];
 				trs.push("tr_" + idx);
-				addAcField("clicode_clientcode_" + idx, "clicode_autocomplete_" + idx);
+				addAcField(_PREFIX + "clientcode_" + idx, _PREFIX + "autocomplete_" + idx);
+				var qty = getQty(idx);
+				noCodes[idx] = qty;
+				sums[idx] = 0;
+				ccs[idx] = {};
+				lastIndexes[idx] = -1;
 				for (var i = 0; i < item.length; i++)
 					addRow2(idx, item[i].quantity, item[i].clientCode);
-				updateMultiTable(idx, getQty(idx) == 1);				
+				updateMultiTable(idx, qty == 1);				
 			}
 		}
 	};
@@ -468,7 +465,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		// make clone of template
 		var newRow = createRow(idx);
 		
-		newRow.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
+		newRow.id = _PREFIX + "multi_row_" + idx + "_" + i;
 		
 		// initialize clone
 		newRow.cells[0].innerHTML = quantity;
@@ -496,7 +493,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		// make clone of template
 		var newRow = createRow(idx);
 		
-		newRow.id = ID_PREFIX + "multi_row_" + idx + "_" + i;
+		newRow.id = _PREFIX + "multi_row_" + idx + "_" + i;
 		
 		// initialize clone
 		newRow.cells[0].innerHTML = quantity;
@@ -507,7 +504,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			get("clientcode_" + idx).value = "";
 		}
 
-		updateMultiTable(idx);
+		updateMultiTable(idx, noClear);
 		
 		return false;
 	};
@@ -610,9 +607,9 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			'<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black; width: 125px; position: static;">' +
 			'<div style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div></div>';
 		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
-		coord.node.cells[2].firstChild.firstChild.id = "clicode_clientcode_" + coord.idx + "_" + coord.i;
-		coord.node.cells[2].firstChild.lastChild.id = "clicode_autocomplete_" + coord.idx + "_" + coord.i;
-		addAcField("clicode_clientcode_" + coord.idx + "_" + coord.i, "clicode_autocomplete_" + coord.idx + "_" + coord.i);
+		coord.node.cells[2].firstChild.firstChild.id = _PREFIX + "clientcode_" + coord.idx + "_" + coord.i;
+		coord.node.cells[2].firstChild.lastChild.id = _PREFIX + "autocomplete_" + coord.idx + "_" + coord.i;
+		addAcField(_PREFIX + "clientcode_" + coord.idx + "_" + coord.i, _PREFIX + "autocomplete_" + coord.idx + "_" + coord.i);
 		var spans = coord.node.cells[4].getElementsByTagName("span");
 		spans[0].style.display = "none";
 		spans[1].style.display = "inline";
@@ -664,7 +661,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 	ClientCodes.showDialog = function(message, confirmAction, cancelAction) {
 		if (dialog == null) {
-			dialog = new YAHOO.widget.Panel("clicode_dialog", {
+			dialog = new YAHOO.widget.Panel(_PREFIX + "dialog", {
 					width: "530px",  
 					fixedcenter: true,  
 					close: false,  
