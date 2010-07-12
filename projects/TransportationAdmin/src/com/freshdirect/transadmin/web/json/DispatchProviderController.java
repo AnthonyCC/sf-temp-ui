@@ -458,6 +458,10 @@ public class DispatchProviderController extends JsonRpcController implements
 		try {
 			if(!"".equalsIgnoreCase(sDate))
 				svcdate=TransStringUtil.getDate(sDate);
+			if(svcdate==null && svcDay==null){
+				getDispatchManagerService().deleteDefaultScenarioDay(sDate, sDay);
+			}
+			
 			DlvScenarioDay scenarioDay=new DlvScenarioDay(svcDay,svcdate,scenario);
 			result = getDispatchManagerService().addScenarioDayMapping(
 					scenarioDay);

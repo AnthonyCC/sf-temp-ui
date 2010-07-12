@@ -24,7 +24,7 @@
 	        var param3="";         
 	        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
 		}
-	    document.getElementById("scenarioDay").value='<%=request.getParameter("scenarioDay")==null?"All":request.getParameter("scenarioDay")%>';
+	    document.getElementById("scenarioDay").value='<%=request.getParameter("scenarioDay")==null?"0":request.getParameter("scenarioDay")%>';
     
     </script>
 	<div class="contentroot">

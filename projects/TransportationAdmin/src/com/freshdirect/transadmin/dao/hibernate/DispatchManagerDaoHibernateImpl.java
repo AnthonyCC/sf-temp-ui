@@ -1,12 +1,17 @@
 package com.freshdirect.transadmin.dao.hibernate;
 
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.orm.hibernate3.HibernateCallback;
 
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -315,5 +320,17 @@ public class DispatchManagerDaoHibernateImpl extends
 		}
 		else
 			return 0;
+	}
+	
+	public void deleteDefaultScenarioDay(String sDate, String sDay){
+		
+		this.getHibernateTemplate().execute(new HibernateCallback() {
+			 public Object doInHibernate(Session session) throws HibernateException, SQLException {
+			 		 
+				 Query query = session.createQuery("delete from DlvScenarioDay where dayOfWeek is null and normalDate is null");
+				 query.executeUpdate();
+			     return null;
+			 }
+		});
 	}
 }

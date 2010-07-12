@@ -85,4 +85,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	public Collection getDispatchReasons(boolean active);
 	
 	int addScenarioDayMapping(DlvScenarioDay scenarioDay);
+	
+	void deleteDefaultScenarioDay(String sDate, String sDay);
 }

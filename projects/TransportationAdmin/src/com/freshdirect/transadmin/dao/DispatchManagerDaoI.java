@@ -57,5 +57,7 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	public Collection getDispatchReasons(boolean active);
 	
-	int addScenarioDayMapping(DlvScenarioDay scenarioDay)throws DataAccessException ;;
+	int addScenarioDayMapping(DlvScenarioDay scenarioDay)throws DataAccessException ;
+	
+	void deleteDefaultScenarioDay(String sDate, String sDay);
 }

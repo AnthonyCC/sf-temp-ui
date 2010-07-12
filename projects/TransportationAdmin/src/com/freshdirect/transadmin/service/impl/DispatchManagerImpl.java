@@ -620,4 +620,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public int addScenarioDayMapping(DlvScenarioDay scenarioDay) {
 		return getDispatchManagerDao().addScenarioDayMapping(scenarioDay);
 	}
+	public void deleteDefaultScenarioDay(String sDate, String sDay){
+		getDispatchManagerDao().deleteDefaultScenarioDay(sDate,sDay);
+	}
+	
 }
