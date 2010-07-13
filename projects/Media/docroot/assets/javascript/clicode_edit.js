@@ -186,16 +186,17 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			qField.value = quantity;
 			get("clientcode_" + idx).value = clientCode;
 		} else {
-			qField.disbled = false;
+			if (newval == 0)
+				qField.disabled = true;
+			else
+				qField.disbled = false;
 			qField.value = "";
 			get("clientcode_" + idx).value = "";
 		}
 
 		if (newval == 0) {
-			get("quantity_" + idx).disabled = true;
 			get("clientcode_" + idx).disabled = true;
 		} else {
-			get("quantity_" + idx).disabled = false;
 			get("clientcode_" + idx).disabled = false;
 		}
 		
@@ -215,7 +216,6 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			ClientCodes.expandMulti(idx);
 		}
 		ClientCodes.saveQty(idx, newval);
-		ClientCodes.show();
 	};
 
 	ClientCodes.updateQty = function(idx) {
@@ -240,6 +240,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				ClientCodes.hideDialog();
 				return false;
 			};
+			ClientCodes.show();
 			ClientCodes.showDialog(
 					"Item quantity is now less than the quantity allocated to your clients. " +
 					"Items will be removed from the last client in your list.", confirm, cancel);
@@ -605,7 +606,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		coord.node.cells[2].style.overflow = 'visible';
 		coord.node.cells[2].innerHTML = '<div style="position: relative; vertical-align: middle; overflow: visible;">' + 
 			'<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black; width: 125px; position: static;">' +
-			'<div style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div></div>';
+			'<div style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div></div>';
 		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
 		coord.node.cells[2].firstChild.firstChild.id = _PREFIX + "clientcode_" + coord.idx + "_" + coord.i;
 		coord.node.cells[2].firstChild.lastChild.id = _PREFIX + "autocomplete_" + coord.idx + "_" + coord.i;
@@ -675,7 +676,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var alert = isAlert ? "ALERT" : "WARNING";
 		dialog.setBody(get("dlgTmpl").innerHTML);
 		dialog.render(document.getElementById("i_viewcart"));
-		dialog.body.getElementsByTagName("a")[0].onclick = ClientCodes.hideDialog;
+		dialog.body.getElementsByTagName("a")[0].onclick = isAlert ? ClientCodes.hideDialog : cancelAction;
 		var spans = dialog.body.getElementsByTagName("span");
 		spans[0].innerHTML = alert;
 		spans[1].innerHTML = message;

@@ -23,6 +23,8 @@
 
 <div id="clicode_dlgTmpl" style="display: none">
 	<table border="0" cellpadding="0" cellspacing="0" width="520">
+	</table>
+	<table border="0" cellpadding="0" cellspacing="0" width="520">
 		<tr>
 			<td colspan="4" class="text11">
 				<a href="#"><img src="/media_stat/images/layout/pop_up_header_lg.gif" width="520" height="33" border="0" alt="FreshDirect (close window)"></a>
@@ -32,21 +34,22 @@
 			<td colspan="4" style="height: 20px;">&nbsp;</td>
 		</tr>
 		<tr>
-			<td style="width: 20px;">&nbsp;</td>
-			<td class="text13rbold" style="vertical-align: top; text-align: right; white-space: nowrap;">
+			<td style="width: 20px; line-height: 18px;">&nbsp;</td>
+			<td class="text13rbold" style="line-height: 18px; white-space: nowrap; vertical-align: top; width: 130px; text-align: right;">
 				<img src="/media_stat/images/buttons/client_codes_exclamation.gif" style="vertical-align: middle;" width="14" height="18">
 				<span>
 				</span>
 				&nbsp;&nbsp;&ndash;&nbsp;&nbsp;
 			</td>
-			<td class="text13rbold" style="vertical-align: top; text-align: left;">
+			<td class="text13rbold" style="line-height: 18px; vertical-align: top; width: 350px;">
 				<span>
 				</span>
 			</td>
 			<td style="width: 20px;">&nbsp;</td>
 		</tr>
 		<tr>
-			<td colspan="3" align="right" class="text11" style="vertical-align: middle; height: 50px;">
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
+			<td colspan="2" align="right" class="text11" style="vertical-align: middle; height: 50px; padding-right: 20px;">
 				<span>
 					<input type="image" src="/media_stat/images/buttons/close_window.gif"
 							width="142" height="17" border="0" alt="CLOSE WINDOW" style="vertical-align: middle;">
@@ -58,7 +61,7 @@
 							width="141" height="19" border="0" alt="CONTINUE" style="vertical-align: middle;">
 				</span>
 			</td>
-			<td style="width: 30px; height: 50px;">&nbsp;</td>
+			<td style="width: 20px; height: 50px;">&nbsp;</td>
 		</tr>
 	</table>
 </div>
@@ -346,7 +349,7 @@ FDIdentity identity = user.getIdentity();
 											width="96" height="14" border="0" alt="COLLAPSE LIST" style="vertical-align: middle;">
 									</span>
 								</span>
-								<div id="clicode_autocomplete_<%= idx %>" style="width: 25ex; position: absolute; top: 100%; left: 0px;"></div>
+								<div id="clicode_autocomplete_<%= idx %>" style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div>
 								</div>
 							</td>
 						</tr>
