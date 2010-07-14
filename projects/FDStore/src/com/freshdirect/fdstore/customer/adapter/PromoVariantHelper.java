@@ -19,6 +19,7 @@ import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.CartTabRecommender;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
+import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
 import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
@@ -34,26 +35,27 @@ public class PromoVariantHelper {
         List ssFeatures = EnumSiteFeature.getSmartSavingsFeatureList();
         Map promoVariantMap = new HashMap();
         
-        for(Iterator it = ssFeatures.iterator(); it.hasNext();){
+        for (Iterator it = ssFeatures.iterator(); it.hasNext();) {
             // fetch variant assignment (cohort -> variant map)
-        	EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
+            EnumSiteFeature siteFeature = (EnumSiteFeature) it.next();
 
-        	String variantId = VariantSelectorFactory.getSelector(siteFeature).select(user).getId();
-			
-			if(variantId != null) {
-				List promoVariants = PromoVariantCache.getInstance().getAllPromoVariants(variantId);
-	            if(promoVariants != null){
-	                for(Iterator iter = promoVariants.iterator(); iter.hasNext();){
-	                	PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
-	                	String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
-	                	if(recommendedPromos != null && recommendedPromos.contains(promoCode)) {
-	                		promoVariantMap.put(variantId, promoVariant);
-	                		eligibilities.setEligibility(promoCode, true);
-	                		break;
-	                	}
-	                }
-	            }
-        	}
+            final Variant variant = VariantSelectorFactory.getSelector(siteFeature).select(user);
+            String variantId = variant != null ? variant.getId() : null;
+
+            if (variantId != null) {
+                List promoVariants = PromoVariantCache.getInstance().getAllPromoVariants(variantId);
+                if (promoVariants != null) {
+                    for (Iterator iter = promoVariants.iterator(); iter.hasNext();) {
+                        PromoVariantModel promoVariant = (PromoVariantModel) iter.next();
+                        String promoCode = promoVariant.getAssignedPromotion().getPromotionCode();
+                        if (recommendedPromos != null && recommendedPromos.contains(promoCode)) {
+                            promoVariantMap.put(variantId, promoVariant);
+                            eligibilities.setEligibility(promoCode, true);
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return promoVariantMap;
 	}
