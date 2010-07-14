@@ -14,6 +14,7 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
@@ -31,10 +32,37 @@ import com.freshdirect.smartstore.ejb.VariantSelectionSB;
 
 public class FDServiceLocator extends ServiceLocator {
 
+    static FDServiceLocator INSTANCE = null;
+    
+    public static FDServiceLocator getInstance() {
+        try {
+            if (INSTANCE == null) {
+                INSTANCE = new FDServiceLocator(FDStoreProperties.getInitialContext());
+            }
+            return INSTANCE;
+        } catch (NamingException e) {
+            throw new FDRuntimeException(e);
+        }
+    }
+    
+    /**
+     * For testing purposes only.
+     * @param instance
+     */
+    public static void setInstance(FDServiceLocator instance) {
+        INSTANCE = instance;
+    }
+    
+    /**
+     * @deprecated FDServiceLocator.getInstance() probably a better choice instead of creating a new instance.
+     */
     public FDServiceLocator() {
-    	
     }
 
+    
+    /**
+     * FDServiceLocator.getInstance() probably a better choice instead of creating a new instance.
+     */
     public FDServiceLocator(Context ctx) {
         super(ctx);
     }

@@ -28,16 +28,6 @@ public class FDSurveyFactory {
 
     private final BuiltinSurveys builtinSurveys = new BuiltinSurveys();
     
-    private static FDServiceLocator LOCATOR ;
-    
-	static {
-		try {
-			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
-		} catch (NamingException e) {
-			LOGGER.error(e);
-			LOCATOR=new FDServiceLocator();
-		}
-	}
     private final static LazyTimedCache<SurveyKey, FDSurvey> surveyDefCache = new LazyTimedCache<SurveyKey, FDSurvey>(
             FDStoreProperties.getSurveyDefCacheSize(), FDStoreProperties.getRefreshSecsSurveyDef() * 1000);
 
@@ -149,7 +139,7 @@ public class FDSurveyFactory {
      */
     FDSurvey getSurveyFromDatabase(SurveyKey key) throws FDResourceException {
         try {
-            return LOCATOR.getSurveySessionBean().getSurvey(key);
+            return FDServiceLocator.getInstance().getSurveySessionBean().getSurvey(key);
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -180,7 +170,7 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getCustomerProfileSurveyInfo(FDIdentity identity, EnumServiceType serviceType) throws FDResourceException {
         try {
-            return LOCATOR.getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
+            return FDServiceLocator.getInstance().getSurveySessionBean().getCustomerProfile(identity, correctServiceType(serviceType));
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -188,7 +178,7 @@ public class FDSurveyFactory {
 
     public static FDSurveyResponse getSurveyResponse(FDIdentity identity, SurveyKey survey) throws FDResourceException {
         try {
-            return LOCATOR.getSurveySessionBean().getSurveyResponse(identity, survey);
+            return FDServiceLocator.getInstance().getSurveySessionBean().getSurveyResponse(identity, survey);
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }

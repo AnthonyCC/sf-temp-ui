@@ -147,17 +147,8 @@ public class FDCustomerManager {
 	private static FDCustomerManagerHome managerHome = null;
 	private static MailerGatewayHome mailerHome = null;
 	private static RoutingGatewayHome routingGatewayHome = null;
-	private static FDServiceLocator LOCATOR ;
-     
-	static {
-		try {
-			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
-//			startGiftCardNSMThread();
-		} catch (NamingException e) {
-			LOGGER.error(e);
-			LOCATOR=new FDServiceLocator();
-		}
-	}
+	private static FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
+
 	/**
 	 * Register and log in a new customer.
 	 *

@@ -15,11 +15,9 @@ public class FDZoneInfoManager {
 
     private static Logger LOGGER = LoggerFactory.getInstance(FDZoneInfoSessionBean.class);
 
-    private final static FDServiceLocator LOCATOR = new FDServiceLocator();
-
     public static ErpZoneMasterInfo findZoneInfoMaster(String zoneId) throws FDResourceException {
         try {
-            return LOCATOR.getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);
+            return FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneInfoMaster(zoneId);
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -29,7 +27,7 @@ public class FDZoneInfoManager {
 
         Collection zoneInfo = null;
         try {
-            zoneInfo = LOCATOR.getFDZoneInfoSessionBean().loadAllZoneInfoMaster();
+            zoneInfo = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().loadAllZoneInfoMaster();
         } catch (RemoteException re) {
             throw new FDResourceException(re, "Error talking to session bean");
         }
@@ -40,7 +38,7 @@ public class FDZoneInfoManager {
         String zoneId = null;
         try {
             LOGGER.debug("Service Type:" + serviceType + " ZipCode is:" + zipCode);
-            zoneId = LOCATOR.getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
+            zoneId = FDServiceLocator.getInstance().getFDZoneInfoSessionBean().findZoneId(serviceType, zipCode);
             LOGGER.debug("zoneId found is :" + zoneId);
             if (zoneId == null) {
                 throw new FDResourceException("Zone ID not found for serviceType:" + serviceType + ", zipCode:" + zipCode);

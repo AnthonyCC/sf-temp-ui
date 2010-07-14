@@ -30,18 +30,9 @@ import com.freshdirect.payment.ejb.PaymentManagerHome;
  */
 public class FDSessionBeanSupport extends SessionBeanSupport {
 
-    //	protected final static FDServiceLocator LOCATOR = new FDServiceLocator();
 	
-	protected static FDServiceLocator LOCATOR ;
-    
-	static {
-		try {
-			LOCATOR=new FDServiceLocator(FDStoreProperties.getInitialContext());
-		} catch (NamingException e) {
-			LOCATOR=new FDServiceLocator();
-		}
-	}
-
+	protected FDServiceLocator LOCATOR = FDServiceLocator.getInstance();
+ 
     /**
      * @return
      * @see com.freshdirect.fdstore.customer.ejb.FDServiceLocator#getActivityLogHome()
