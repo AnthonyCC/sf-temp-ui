@@ -37,7 +37,7 @@ public class CartTabRecommender {
                   for (Integer p1 : prios.keySet()) { 
                     SortedMap<Integer,CartTabStrategyPriority> map = prios.get(p1);
 
-                    for (Integer p2 : prios.keySet()) { 
+                    for (Integer p2 : map.keySet()) { 
                         CartTabStrategyPriority strat = map.get(p2);
 
                         if (strat == null) {
