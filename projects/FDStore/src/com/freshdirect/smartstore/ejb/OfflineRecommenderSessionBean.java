@@ -192,9 +192,33 @@ public class OfflineRecommenderSessionBean extends FDSessionBeanSupport {
 		return customerIds;
 	}
 
+       private static final String REMOVE_NOT_UPDATED_RECOMMENDATIONS = "DELETE FROM CUST.SS_OFFLINE_RECOMMENDATION"
+                   + " WHERE last_modified < sysdate - ?";
+
+	public int removeOldRecommendation(int age) {
+            Connection conn = null;
+            PreparedStatement ps = null;
+            try {
+                    conn = getConnection();
+                    ps = conn.prepareStatement(REMOVE_NOT_UPDATED_RECOMMENDATIONS);
+                    ps.setInt(1, age);
+                    int count = ps.executeUpdate();
+                    return count;
+            } catch (SQLException e) {
+                    LOGGER.error("removing old customers failed: "+e.getMessage(), e);
+                    throw new EJBException(e);
+            } finally {
+                close(ps);
+                close(conn);
+            }
+	}
+	
+	
 	private static final String QUERY_UPDATED_CUSTOMERS = "SELECT DISTINCT customer_id FROM CUST.SS_OFFLINE_RECOMMENDATION"
 			+ " WHERE last_modified > sysdate - ?";
 
+	
+	
 	public Set<String> getUpdatedCustomers(int age) throws RemoteException,
 			FDResourceException {
 		Set<String> customerIds = new HashSet<String>(200000);

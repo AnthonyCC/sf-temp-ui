@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.offline;
 
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -160,15 +161,7 @@ public class OfflineRecommenderCmd {
 		try {
 			lookupOfflineRecommenderHome();
 			OfflineRecommenderSB sb = offlineRecommenderHome.get().create();
-			Set<String> customerIds = sb.getRecentCustomers(days);
-			LOG.info("customers counted for the last " + days + " days: "
-					+ customerIds.size());
-			Set<String> updatedCustomerIds = sb.getUpdatedCustomers(age);
-			LOG.info("customers updated in the last " + age + " days: "
-					+ updatedCustomerIds.size());
-			customerIds.removeAll(updatedCustomerIds);
-			LOG.info("need to update customers: " + customerIds.size());
-			return customerIds;
+			return lookupCustomers(sb, days, age);
 		} catch (Exception e) {
 			invalidateOfflineRecommenderHome();
 			LOG.error("error while retrieving recent customers", e);
@@ -180,6 +173,30 @@ public class OfflineRecommenderCmd {
 			return null;
 		}
 	}
+
+    /**
+     * @param sb
+     * @param days
+     * @param age
+     * @return
+     * @throws RemoteException
+     * @throws FDResourceException
+     */
+    public static Set<String> lookupCustomers(OfflineRecommenderSB sb, int days, int age) throws RemoteException, FDResourceException {
+        Set<String> customerIds = sb.getRecentCustomers(days);
+        LOG.info("customers counted for the last " + days + " days: "
+        		+ customerIds.size());
+        int count = sb.removeOldRecommendation(days);
+        
+        LOG.info("removed " + count + " offline recommendation which are older than " + days+ " days.");
+        
+        Set<String> updatedCustomerIds = sb.getUpdatedCustomers(age);
+        LOG.info("customers updated in the last " + age + " days: "
+        		+ updatedCustomerIds.size());
+        customerIds.removeAll(updatedCustomerIds);
+        LOG.info("need to update customers: " + customerIds.size());
+        return customerIds;
+    }
 
 	private static void generateRecommendations(String customerId,
 			String[] siteFeatures) {
