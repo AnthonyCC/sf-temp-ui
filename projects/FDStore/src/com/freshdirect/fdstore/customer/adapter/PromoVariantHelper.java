@@ -9,7 +9,9 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 
+import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -113,6 +115,8 @@ public class PromoVariantHelper {
 		FDStoreRecommender.initYmalSource(input, user, request);
 		input.setCurrentNode( input.getYmalSource() );
 		input.setMaxRecommendations(maxRecommendations);
+		input.setPreviousRecommendations((Map<String, List<ContentKey>>)
+				((HttpServletRequest) request).getSession().getAttribute("fd.ss.prevRec"));
 		tabs = CartTabRecommender.recommendTabs(user, input);	
 		if(tabs == null || tabs.size() == 0) 
 		    user.setSavingsVariantFound(false);

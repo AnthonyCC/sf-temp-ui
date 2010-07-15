@@ -76,6 +76,7 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	}
 
 	final public List<ContentNodeModel> recommendNodes(SessionInput input) {
+		boolean saveIncludeCartItems = input.isIncludeCartItems();
 		if (!input.isIncludeCartItems()) {
 			input.setIncludeCartItems(includeCartItems);
 		}
@@ -83,7 +84,9 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 			input.setUseAlternatives(sampler.isUseAlternatives());
 		}
 		input.setShowTemporaryUnavailable(variant.getServiceConfig().isShowTempUnavailable());
-		return doRecommendNodes(input);
+		List<ContentNodeModel> recNodes = doRecommendNodes(input);
+		input.setIncludeCartItems(saveIncludeCartItems);
+		return recNodes;
 	}
 
 	protected abstract List<ContentNodeModel> doRecommendNodes(SessionInput input);

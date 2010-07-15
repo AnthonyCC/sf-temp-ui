@@ -126,7 +126,7 @@ public class FDCustomerProductListLineItem extends FDCustomerListItem {
 		
 		FDProductSelection r = new  FDProductSelection(new FDSku(prodInfo.getSkuCode(), prodInfo.getVersion()),
 									  prod,
-									  this.configuration, ZonePriceListing.MASTER_DEFAULT_ZONE);
+									  this.configuration, prod.getPricingContext().getZoneId());
 		
 		r.setCustomerListLineId(this.getPK() == null ? null : this.getPK().getId());
 		

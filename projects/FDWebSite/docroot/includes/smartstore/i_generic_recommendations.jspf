@@ -75,7 +75,7 @@
 	Map prevRecs = (Map) session.getAttribute(SessionName.SMART_STORE_PREV_RECOMMENDATIONS);
 	boolean hideSavings = genericRecommendationsVariant.isSmartSavings() && SmartStoreUtil.countSavingProductsInCart(genericRecommendationsVariant, pip_u, prevRecs) < 0;
 
-	if ( genericRecommendationsVariant != null && !hideSavings) {
+	if ( genericRecommendationsVariant != null) {
 	
 		if(null == session.getAttribute("quickShop") && request.getRequestURI().indexOf("quickshop") > -1 ) {
 			session.setAttribute("quickShop", "true");
@@ -323,7 +323,7 @@ if (typeof(OST_<%= tx_pricing_FormName %>) == "undefined") {
 													<img src="/media_stat/images/buttons/tab_prev_disabled.gif" style="width: 57px; height: 16px;"/>
 												</td>
 											<% } %>
-											<% if ( hasAnyItemAddable ) { %>
+											<% if ( hasAnyItemAddable && !hideSavings ) { %>
 											<td>
 												<input type="hidden" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"/>
 												<input type="hidden" name="itemCount" value="<%= txProdCount %>"/>

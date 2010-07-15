@@ -1173,4 +1173,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
         return prodModel.isTemporaryUnavailableOrAvailable();
     }
 
+    public ProductModel getRealProduct() {
+    	return prodModel;
+    }
 }

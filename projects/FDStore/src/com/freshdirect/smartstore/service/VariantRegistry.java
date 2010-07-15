@@ -83,6 +83,7 @@ final public class VariantRegistry {
 	private void load() {
 		try {
 			ScarabInfrastructure.reload();
+			EnumSiteFeature.refresh();
 			SmartStoreServiceConfigurationSB sb;
 
 			sb = getServiceConfigurationHome().create();

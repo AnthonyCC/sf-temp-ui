@@ -25,7 +25,7 @@ public class ConfigurationUtil {
 			new FDProductSelection(
 				impression.getFDProduct(),
 				((ProductModel)impression.getSku().getParentNode()),
-				impression.getConfiguration(), null);
+				impression.getConfiguration(), impression.getPricingZoneId());
 		try {
 			OrderLineUtil.describe(selection);
 		} catch (FDInvalidConfigurationException e) {
