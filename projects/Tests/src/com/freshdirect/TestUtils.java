@@ -40,6 +40,9 @@ import com.freshdirect.delivery.ejb.DlvManagerSessionBean;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSessionBean;
+import com.freshdirect.erp.ejb.ErpInfoHome;
+import com.freshdirect.erp.ejb.ErpInfoSB;
+import com.freshdirect.erp.ejb.ErpInfoSessionBean;
 import com.freshdirect.erp.ejb.ErpZoneInfoHome;
 import com.freshdirect.erp.ejb.ErpZoneInfoSB;
 import com.freshdirect.erp.ejb.ErpZoneInfoSessionBean;
@@ -201,6 +204,8 @@ public class TestUtils {
         container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class, DlvPassManagerSB.class,
                 DlvPassManagerSessionBean.class));
 
+        container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/ErpInfo", ErpInfoHome.class, ErpInfoSB.class, ErpInfoSessionBean.class));
+        
         // added for smart store
         container.deploy(new SessionBeanDescriptor("freshdirect.smartstore.VariantSelection", VariantSelectionHome.class, VariantSelectionSB.class,
                 VariantSelectionSessionBean.class));

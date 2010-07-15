@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,7 @@ import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.ReplacementDataSet;
+import org.dbunit.dataset.filter.DefaultColumnFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 import org.dbunit.operation.DatabaseOperation;
 import org.mockejb.jndi.MockContextFactory;
@@ -75,9 +77,13 @@ public abstract class DbTestCaseSupport extends TestCase {
 			throw new DataSetException(e);
 		}
 	}
+	
+	protected IDataSet processDataset(IDataSet input) {
+	    return input;
+	}
 
 	protected void setUpDataSet(String dataSetName) throws DatabaseUnitException {
-		IDataSet dataSet = this.loadDataSet(dataSetName);
+		IDataSet dataSet = this.processDataset(this.loadDataSet(dataSetName));
 		try {
 			DatabaseOperation.INSERT.execute(this.dbConnection, dataSet);
 		} catch (SQLException e) {
@@ -96,7 +102,15 @@ public abstract class DbTestCaseSupport extends TestCase {
 		}
 	}
 	
-	protected void assertDataSet(String dataSet) throws Exception {
+	protected IDataSet getActualDataSet(String... tableNames) throws DatabaseUnitException {
+            try {
+                return this.dbConnection.createDataSet(tableNames);
+            } catch (SQLException e) {
+                    throw new DatabaseUnitException(e);
+            }
+	}
+	
+	protected void assertDataSet(String dataSet) throws DataSetException, DatabaseUnitException {
 		Assertion.assertEquals(this.loadDataSet(dataSet), this.getActualDataSet());		
 	}	
 
@@ -121,6 +135,20 @@ public abstract class DbTestCaseSupport extends TestCase {
 		}
 		Assertion.assertEquals(reference, actual);		
 	}	
+	
+	/**
+	 * assert that the two table in the datasets are matching each againts, with some columns excluded. 
+	 * @param expected
+	 * @param actual
+	 * @param tableName
+	 * @param excludedColumns
+	 * @throws DatabaseUnitException
+	 */
+        protected void assertTableEquals(IDataSet expected, IDataSet actual, String tableName, String... excludedColumns) throws DatabaseUnitException {
+            ITable expectedTable = DefaultColumnFilter.excludedColumnsTable(expected.getTable(tableName), excludedColumns);
+            ITable actualTable = DefaultColumnFilter.excludedColumnsTable(actual.getTable(tableName), excludedColumns);
+            Assertion.assertEquals(expectedTable, actualTable);
+        }	
 	
 	protected void assertPartialDataSet(String dataSet, String tableName) throws Exception {
 		ITable expected = this.loadDataSet(dataSet, null).getTable(tableName);

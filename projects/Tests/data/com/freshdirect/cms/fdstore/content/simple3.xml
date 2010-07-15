@@ -34,7 +34,7 @@
 		<skus>
 			<Sku ref="a2sku"/>
 		</skus>
-		<FULL_NAME>A1</FULL_NAME>
+		<FULL_NAME>A2</FULL_NAME>
 		<PRIMARY_HOME>
 			<Category ref="c1"/>
 		</PRIMARY_HOME>

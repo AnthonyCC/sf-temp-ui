@@ -6,8 +6,6 @@ package com.freshdirect.fdstore.customer.ejb;
 import java.rmi.RemoteException;
 
 import javax.ejb.CreateException;
-import javax.ejb.EJBHome;
-import javax.naming.NamingException;
 
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
@@ -16,7 +14,6 @@ import com.freshdirect.customer.ejb.ErpFraudPreventionHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
