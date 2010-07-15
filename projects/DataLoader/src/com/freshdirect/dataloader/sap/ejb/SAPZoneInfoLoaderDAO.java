@@ -148,7 +148,7 @@ public class SAPZoneInfoLoaderDAO {
 	}
 	
 	
-	public static void createZoneMasterInfo(Connection con,int batchNumber,List zoneInfoList ) throws SQLException{
+	public static void createZoneMasterInfo(Connection con,int batchNumber,List<ErpZoneMasterInfo> zoneInfoList ) throws SQLException{
 		
 		   Connection conn = con;
 			

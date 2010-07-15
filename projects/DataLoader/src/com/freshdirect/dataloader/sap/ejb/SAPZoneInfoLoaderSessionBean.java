@@ -96,7 +96,7 @@ public class SAPZoneInfoLoaderSessionBean extends SessionBeanSupport {
      * @param characteristicValuePrices the collection of characteristic value prices to create or update in this batch
      * @throws LoaderException any problems encountered while creating or updating objects in the system
      */
-    public void loadData(List zoneInfoList) throws LoaderException {
+    public void loadData(List<ErpZoneMasterInfo> zoneInfoList) throws LoaderException {
         
         LOGGER.debug("\nBeginning SAPLoaderSessionBean loadData\n");
         
