@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.dao.hibernate;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Expression;
@@ -11,6 +12,7 @@ import com.freshdirect.transadmin.dao.LocationManagerDaoI;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
@@ -60,24 +62,31 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return getDataList("DlvServiceTimeScenario Order By code");
 	}
 	
-	public Collection getDlvServiceTimeScenarioDays() throws DataAccessException {
-		
+	public void deleteServiceTimeScenario(DlvServiceTimeScenario scenario) throws DataAccessException {
+		removeEntityEx(scenario);
+	}
+	
+	public Collection getDlvServiceTimeScenarioDays() throws DataAccessException {		
 		return getDataList("DlvScenarioDay");
+	}
+	
+	public DlvScenarioDay getServiceTimeScenarioDay(String code) throws DataAccessException {
+		
+		return (DlvScenarioDay)getEntityById("DlvScenarioDay","scenariodayId",code);
 	}
 	
 	public Collection getScenariosWithNoDay() throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DlvServiceTimeScenario s");
 		strBuf.append(" where 0=(select count(*) from DlvScenarioDay sd where sd.scenario.code=s.code)");
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
+		return  getHibernateTemplate().find(strBuf.toString());
 	}
 	
 	
 	public Collection getDefaultServiceTimeScenarioDay() throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from DlvServiceTimeScenario s");
-		strBuf.append(" where 0=(select count(*) from DlvScenarioDay sd where sd.scenario.code=s.code)");
-		strBuf.append(" and s.isDefault='X'");
+		strBuf.append(" where s.code=(select sd.scenario.code from DlvScenarioDay sd where sd.dayOfWeek is null and sd.normalDate is null)");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	

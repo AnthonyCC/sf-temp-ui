@@ -6,6 +6,7 @@ import java.util.List;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
@@ -60,5 +61,9 @@ public interface LocationManagerI  extends BaseManagerI {
    	Collection getDlvScenarioZones(String scenarioId);
    	
    	Collection getDlvServiceTimeScenarioDays();
+   	
+   	DlvScenarioDay getServiceTimeScenarioDay(String code);
+   	
+   	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario);
 
 }

@@ -46,7 +46,7 @@ public class GeographyService extends BaseService implements IGeographyService {
 		try {
 			ILocationModel locModel = geographyDAOImpl.getLocation(model.getBuilding().getStreetAddress1()
 											, model.getApartmentNumber(), RoutingUtil.getZipCodes(model.getBuilding().getZipCode()));
-			if(locModel.getLocationId() != null) {
+			if(locModel != null && locModel.getLocationId() != null) {
 				return locModel;
 			}
 		} catch (SQLException e) {

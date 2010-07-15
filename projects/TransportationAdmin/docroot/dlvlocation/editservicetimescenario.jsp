@@ -296,7 +296,29 @@
                            document.getElementById('serviceTimeAdjustment').value=document.getElementById(theCell+'.sTimeAdjustment').value;
                                                       
                            isEdit=true;                        
-  					}  
+  					}
+
+                    function deleteServiceTimeScenario(){
+                    	 var scenarioCode=document.getElementById('code').value;
+                    	 var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+                    	 var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,scenarioCode); 
+                    }
+                    function deleteScenarioFormCallback(result, exception) {
+                    	  
+                        if(exception) {               
+                            alert('Unable to connect to host system. Please contact system administrator!');               
+                            return;
+                        }
+                        if(result == 1) {
+                        	var confirmed=confirm('Scenario deleted sucessfully.');
+                        	if(confirmed){
+                        		location.href = "/TrnAdmin/dlvservicetimescenario.do";
+                        	}  
+                        }
+                        if(result == 0) {
+                        	alert('Please delete Zones or ScenarioDays associated with Scenario before deleting the scenario.');
+                        }                           
+                    }  
   					    
   </script>
   <tmpl:put name='content' direct='true'>
@@ -563,8 +585,8 @@
    					</tr>
               <tr>
                   <td colspan="3" align="center">
-                   	<input type = "submit" value="&nbsp;Save&nbsp;"  />
-                  </td>     
+                   	<input type = "submit" value="&nbsp;Save&nbsp;"  /><input type = "button" value="Delete Scenario"  onclick="javascript:deleteServiceTimeScenario();"/>
+                  </td>                        
               </tr>
               <tr>
                   <td colspan="3" align="center">

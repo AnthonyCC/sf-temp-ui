@@ -12,6 +12,7 @@ import com.freshdirect.transadmin.dao.LocationManagerDaoI;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
@@ -44,6 +45,14 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 	
 	public DlvServiceTimeScenario getServiceTimeScenario(String code) {
 		return getLocationManagerDao().getServiceTimeScenario(code);
+	}
+	
+	public DlvScenarioDay getServiceTimeScenarioDay(String code) {
+		return getLocationManagerDao().getServiceTimeScenarioDay(code);
+	}
+	
+	public void deleteServiceTimeScenario(DlvServiceTimeScenario scenario) {
+		getLocationManagerDao().deleteServiceTimeScenario(scenario);
 	}
 	
 	public Collection getScenariosWithNoDay() {

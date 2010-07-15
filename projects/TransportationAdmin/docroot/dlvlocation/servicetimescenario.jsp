@@ -3,11 +3,18 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
+<%@ page import= 'com.freshdirect.framework.util.DateUtil' %>
+<%@ page import= 'java.util.Calendar' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 <%    
-  String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
-  if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+  String fromdateRangeVal = request.getParameter("fromdaterange") != null ? request.getParameter("fromdaterange") : "";
+  String todateRangeVal = request.getParameter("todaterange") != null ? request.getParameter("todaterange") : "";
+  Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
+  baseDate.add(Calendar.DATE, 7);
+  String endDate = TransStringUtil.dateFormat.format(baseDate.getTime());
+  if(fromdateRangeVal == null || fromdateRangeVal.length() == 0) fromdateRangeVal = TransStringUtil.getNextDate();
+  if(todateRangeVal == null || todateRangeVal.length() == 0) todateRangeVal = endDate;  
 %>
 <% 
 	String pageTitle = "Service Time Scenario";
@@ -23,9 +30,7 @@
 	        var param2 = document.getElementById(compId2).value;
 	        var param3="";         
 	        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
-		}
-	    document.getElementById("scenarioDay").value='<%=request.getParameter("scenarioDay")==null?"0":request.getParameter("scenarioDay")%>';
-    
+		}    
     </script>
 	<div class="contentroot">
 
@@ -35,7 +40,27 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
-					<span><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" />						
+					<span>
+					
+                  <span style="font-size: 12px;font-weight: plain;">From:</span><input maxlength="40" name="fromdaterange" id="fromdaterange" value="<%= fromdateRangeVal %>" />
+                  <span>
+						<a href="#" id="trigger_Date" style="font-size: 9px;">
+                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
+                        <script language="javascript">     	 
+		      				Calendar.setup(
+				                       {
+				                        showsTime : false,
+				                        electric : false,
+				                        inputField : "fromdaterange",
+				                        ifFormat : "%m/%d/%Y",
+				                        singleClick: true,
+				                        button : "trigger_Date" 
+				                       }
+		                    	  );
+	    				</script>
+                    </span>
+                  <span style="font-size: 12px;font-weight: plain;">To:</span><input maxlength="40" name="todaterange" id="todaterange" value="<%= todateRangeVal %>" />
+                  						
 	    			</span>
 					<span>
 						<a href="#" id="trigger_scheduleDate" style="font-size: 9px;">
@@ -45,7 +70,7 @@
 				                       {
 				                        showsTime : false,
 				                        electric : false,
-				                        inputField : "daterange",
+				                        inputField : "todaterange",
 				                        ifFormat : "%m/%d/%Y",
 				                        singleClick: true,
 				                        button : "trigger_scheduleDate" 
@@ -53,13 +78,12 @@
 		                    	  );
 	    				</script>
                     </span>
-                    	 <span>OR</span>
-                    	 <select id="scenarioDay" name="scenarioDay" >
-                          	<option value="0"></option>
-                      		<option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thu</option><option value="6">Fri</option><option value="7">Sat</option><option value="1">Sun</option>
-                    	 </select>				
-					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scenarioDay','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+                    				
+					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 				</div>
+			</div>
+			<div>
+				<span class="screenmessages"><jsp:include page='/common/messages.jsp'/></span>
 			</div>
 		</div>
 
@@ -77,24 +101,21 @@
               <ec:exportCsv fileName="transportationservicetimescenarios.csv" tooltip="Export CSV" delimiter="|"/>
                 
             <ec:row interceptor="obsoletemarker">
-              <ec:column title=" " width="5px" 
-                    filterable="false" sortable="false" cell="selectcol"
-                    property="scenario.code" />  
-          <ec:column width="5px" alias="scenariodate" property="normalDate" title="Date"/>    
-          <ec:column property="dayOfWeekInText" title="Day"/>
-          <ec:column width="5px" alias="scenariocode" property="scenario.code" title="Code"/>    
-          <ec:column property="scenario.description" title="Description"/>
-      	  <ec:column property="scenario.serviceTimeFactorFormula" title="Service Time Factor Formula"/>
-          <ec:column property="scenario.serviceTimeFormula" title="Service Time Formula"/>
-          <ec:column property="scenario.defaultCartonCount" width="5px" title="Carton Count"/>
-          <ec:column property="scenario.defaultCaseCount" width="5px" title="Case Count"/>
-          <ec:column property="scenario.defaultFreezerCount" width="5px" title="Freezer Count"/>
-          <ec:column property="scenario.orderSizeFormula" title="Order Size Formula"/>
-                  
-          <ec:column property="scenario.needsLoadBalance" width="5px" title="Load Balance"/> 
-          <ec:column property="scenario.loadBalanceFactor" width="5px" title="Balance Factor"/>
-          <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="scenario.balanceBy" title="Balance By"/>                         
-          <ec:column property="scenario.lateDeliveryFactor" width="10px" title="Late Delivery Factor"/> 
+              	<ec:column title=" " width="5px" filterable="false" sortable="false" cell="selectcol" property="scenariodayId" />  
+		          <ec:column width="7px" alias="scenariodate" property="normalDate" title="Date"/>    
+		          <ec:column property="dayOfWeekInText" title="Day"/>
+		          <ec:column width="5px" alias="scenariocode" property="scenario.code" title="Code"/>    
+		          <ec:column property="scenario.description" title="Description"/>
+		      	  <ec:column property="scenario.serviceTimeFactorFormula" title="Service Time Factor Formula"/>
+		          <ec:column property="scenario.serviceTimeFormula" title="Service Time Formula"/>
+		          <ec:column property="scenario.defaultCartonCount" width="5px" title="Carton Count"/>
+		          <ec:column property="scenario.defaultCaseCount" width="5px" title="Case Count"/>
+		          <ec:column property="scenario.defaultFreezerCount" width="5px" title="Freezer Count"/>
+		          <ec:column property="scenario.orderSizeFormula" title="Order Size Formula"/>                
+		          <ec:column property="scenario.needsLoadBalance" width="5px" title="Load Balance"/> 
+		          <ec:column property="scenario.loadBalanceFactor" width="5px" title="Balance Factor"/>
+		          <ec:column format="com.freshdirect.routing.constants.EnumBalanceBy" cell="enumcol" property="scenario.balanceBy" title="Balance By"/>                         
+		          <ec:column property="scenario.lateDeliveryFactor" width="10px" title="Late Delivery Factor"/> 
           </ec:row>
           </ec:table>
        </form>
@@ -104,6 +125,44 @@
 	</div> 
 	 <script>
       addRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0);
+      function addRowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol) {
+    	   addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, false);
+      }
+      
+      function addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
+    		
+    		var previousClass = null;
+    	    var table = document.getElementById(tableId);
+    	    
+    	    if(table != null) {
+    		    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
+    		    for (i = 0; i < rows.length; i++) {	    	
+    		        var cells = rows[i].getElementsByTagName("td");
+    		        
+    		        for (j = 1; j < cells.length; j++) {
+    		        	
+    		            cells[j].onmouseover = function () {
+    		            	previousClass = this.parentNode.className;
+    		            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
+    		            };
+    		        
+    		            cells[j].onmouseout = function () {
+    		              	this.parentNode.className = previousClass;
+    		            };
+    		        
+    		            if(checkCol == -1 || checkCol != j ) {
+    						if(!(needKeyPress && (j == (cells.length-1)))) {	            
+    					    	cells[j].onclick = function () {			    		
+    					      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
+    					      		var x= this.parentNode.getElementsByTagName("td")[3];    					      		
+    					      		location.href = url+"?"+ paramName + "=" + x.innerHTML;			      		
+    					    	};
+    					    }
+    			    	}   			    		    	
+    		        }
+    		    }
+    		}
+    	}
     </script>   
   </tmpl:put>
 </tmpl:insert>

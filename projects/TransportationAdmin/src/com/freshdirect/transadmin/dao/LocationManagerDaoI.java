@@ -8,6 +8,7 @@ import org.springframework.dao.DataAccessException;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
+import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
@@ -60,4 +61,7 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
    	
    	Collection getDlvServiceTimeScenarioDays() throws DataAccessException;
 
+   	DlvScenarioDay getServiceTimeScenarioDay(String code) throws DataAccessException;
+   	
+  	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario) throws DataAccessException;
 }

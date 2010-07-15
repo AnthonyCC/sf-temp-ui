@@ -521,6 +521,7 @@
 	<bean name="asyncDispatchController" class="com.freshdirect.transadmin.web.json.DispatchProviderController">
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="domainManagerService" ref="domainManager"/>
+		<property name="locationManagerService" ref="locationManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
 		<property name="logManager" ref="logManagerBase"/>
 		<property name="employeeManagerService" ref="employeeManager"/>

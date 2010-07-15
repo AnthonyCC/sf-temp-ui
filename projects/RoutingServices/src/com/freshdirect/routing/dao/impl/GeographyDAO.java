@@ -439,7 +439,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					bmodel.setCountry(rs.getString("COUNTRY"));
 					bmodel.setCity(rs.getString("CITY"));
 					bmodel.setState(rs.getString("STATE"));
-					bmodel.setBuildingId(rs.getString("BUILDING_ID"));
+					bmodel.setBuildingId(rs.getString("ID"));
 
 					IServiceTimeTypeModel serviceTimeType = new ServiceTimeTypeModel();
 					serviceTimeType.setCode( rs.getString("BLD_SERVICETIME_TYPE"));

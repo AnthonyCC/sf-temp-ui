@@ -44,6 +44,7 @@ import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
@@ -61,6 +62,8 @@ public class DispatchProviderController extends JsonRpcController implements
 	private DispatchManagerI dispatchManagerService;
 
 	private DomainManagerI domainManagerService;
+	
+	private LocationManagerI locationManagerService;
 
 	private LogManagerI logManager;
 
@@ -92,6 +95,14 @@ public class DispatchProviderController extends JsonRpcController implements
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
+	}
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
 	}
 
 	public int updateRouteMapping(String routeDate, String cutOffId,
@@ -473,6 +484,19 @@ public class DispatchProviderController extends JsonRpcController implements
 			// Do Nothing Return 0;
 		}
 		return result;
+	}
+	
+	public int deleteServiceTimeScenario(String sCode) {
+		int result=0;
+		DlvServiceTimeScenario scenario=null;
+		scenario = getLocationManagerService().getServiceTimeScenario(sCode);
+		if(scenario.getScenarioDays()!=null && scenario.getScenarioDays().size()==0
+				&& scenario.getScenarioZones().size()==0){
+			getLocationManagerService().deleteServiceTimeScenario(scenario);
+			return 1;
+		}else{
+			return result;
+		}
 	}
 	
 }
