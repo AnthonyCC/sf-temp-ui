@@ -407,22 +407,22 @@ public class LocationController extends AbstractMultiActionController  {
 										if(scenario!=null) dataList.add(scenario);
 									}
 								}							
-						}									
+						}
+						if(dataList.isEmpty()){
+							Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
+								DlvScenarioDay sd=null;
+								for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
+									DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
+									if(scenario!=null){
+										sd=new DlvScenarioDay();
+										sd.setScenario(scenario);
+										dataList.add(sd);
+									}
+								}				
+						}	
 					}					
-					scenarios.addAll(dataList);
+					scenarios.addAll(dataList);					
 					
-					if(scenarios.isEmpty()){
-						Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-							DlvScenarioDay sd=null;
-							for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-								DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
-								if(scenario!=null){
-									sd=new DlvScenarioDay();
-									sd.setScenario(scenario);
-									scenarios.add(sd);
-								}
-							}				
-					}	
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}		
@@ -459,13 +459,14 @@ public class LocationController extends AbstractMultiActionController  {
 				Date d2=TransStringUtil.getDate(endDate);
 				Calendar cal1 = Calendar.getInstance();
 				Calendar cal2 = Calendar.getInstance();
-				cal1.setTime(d1);
+				cal1.setTime(d1);				
 				cal2.setTime(d2);
+				cal2.add(Calendar.DATE, 1);
 	            String date="";
 	            Date tempDate=null;
+	            
 				while(cal1.before(cal2)){
-					try {
-					
+					try {					
 						date = TransStringUtil.dateFormat.format(cal1.getTime());
 						
 						tempDate=TransStringUtil.getDate(date);
@@ -493,7 +494,19 @@ public class LocationController extends AbstractMultiActionController  {
 											if(scenario!=null) dataList.add(scenario);
 										}
 									}							
-							}									
+							}
+							if(dataList.isEmpty()){
+								Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
+									DlvScenarioDay sd=null;
+									for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
+										DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
+										if(scenario!=null){
+											sd=new DlvScenarioDay();
+											sd.setScenario(scenario);
+											dataList.add(sd);
+										}
+									}				
+							}						
 						}							
 						scenarios.addAll(dataList);						
 					} catch (ParseException e) {
@@ -504,18 +517,7 @@ public class LocationController extends AbstractMultiActionController  {
 					//TODO: Look for next day if any.
 					cal1.add(Calendar.DATE, 1);				
 				}
-				if(scenarios.isEmpty()){
-					Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-						DlvScenarioDay sd=null;
-						for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-							DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
-							if(scenario!=null){
-								sd=new DlvScenarioDay();
-								sd.setScenario(scenario);
-								scenarios.add(sd);
-							}
-						}				
-				}			
+					
 			}						
 			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",scenarios);
 		}catch (Exception e) {
