@@ -374,7 +374,7 @@ public class LocationController extends AbstractMultiActionController  {
 	public ModelAndView dlvServiceTimeScenarioHandler(HttpServletRequest request, HttpServletResponse response) 
 									throws ServletException {		
 		
-		Set scenarios=new HashSet(0);
+		Set<DlvScenarioDay> scenarios=new HashSet<DlvScenarioDay>();
 		try{	
 			for(int i=1;i<=7;i++){
 				Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
@@ -387,7 +387,7 @@ public class LocationController extends AbstractMultiActionController  {
 					Calendar calendar=Calendar.getInstance();
 					calendar.setTime(tmpDate);
 					int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
-					Set dataList=new HashSet(0);
+					Set<DlvScenarioDay> dataList=new HashSet<DlvScenarioDay>();
 					if(date!=null){
 						Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
 						for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
@@ -410,14 +410,9 @@ public class LocationController extends AbstractMultiActionController  {
 						}
 						if(dataList.isEmpty()){
 							Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-								DlvScenarioDay sd=null;
 								for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-									DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
-									if(scenario!=null){
-										sd=new DlvScenarioDay();
-										sd.setScenario(scenario);
-										dataList.add(sd);
-									}
+									DlvScenarioDay scenario=(DlvScenarioDay)itr.next();
+									if(scenario!=null)dataList.add(scenario);									
 								}				
 						}	
 					}					
@@ -442,6 +437,7 @@ public class LocationController extends AbstractMultiActionController  {
 			String endDate = request.getParameter("todaterange");
 			Collection scenarios=new ArrayList();
 			Collection scenariosWithNoDays= new ArrayList();
+			Set<DlvScenarioDay> finalScenarioList=new HashSet<DlvScenarioDay>();
 			if(("".equals(startDate)||startDate==null)&&(endDate==null||"".equals(endDate))){
 				scenarios  = locationManagerService.getDlvServiceTimeScenarioDays();
 			    scenariosWithNoDays = locationManagerService.getScenariosWithNoDay();		
@@ -474,15 +470,14 @@ public class LocationController extends AbstractMultiActionController  {
 						calendar.setTime(tempDate);
 						int dayOfweek = calendar.get(Calendar.DAY_OF_WEEK);
 						
-						Set dataList=new HashSet(0);
+						Set<DlvScenarioDay> dataList=new HashSet<DlvScenarioDay>();
 						if(date!=null){
 							Collection scenariosForDate = locationManagerService.getServiceTimeScenarios(date);
 							for(Iterator itr=scenariosForDate.iterator();itr.hasNext();){
 								Object[] object = (Object[])itr.next();
 								if(null != object && object.length > 0){
 									DlvScenarioDay scenario=(DlvScenarioDay)object[1];
-									if(scenario!=null)
-										dataList.add(scenario);
+									if(scenario!=null)dataList.add(scenario);
 								}
 							}
 							if(dataList.isEmpty()){
@@ -497,15 +492,10 @@ public class LocationController extends AbstractMultiActionController  {
 							}
 							if(dataList.isEmpty()){
 								Collection defaultScenario = locationManagerService.getDefaultServiceTimeScenarioDay();
-									DlvScenarioDay sd=null;
-									for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
-										DlvServiceTimeScenario scenario=(DlvServiceTimeScenario)itr.next();
-										if(scenario!=null){
-											sd=new DlvScenarioDay();
-											sd.setScenario(scenario);
-											dataList.add(sd);
-										}
-									}				
+								for(Iterator itr=defaultScenario.iterator();itr.hasNext();){
+									DlvScenarioDay scenario=(DlvScenarioDay)itr.next();
+									if(scenario!=null) dataList.add(scenario);									
+								}				
 							}						
 						}							
 						scenarios.addAll(dataList);						
@@ -517,9 +507,10 @@ public class LocationController extends AbstractMultiActionController  {
 					//TODO: Look for next day if any.
 					cal1.add(Calendar.DATE, 1);				
 				}
-					
-			}						
-			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",scenarios);
+				
+			}
+			finalScenarioList.addAll(scenarios);	
+			return new ModelAndView("dlvServiceTimeScenarioView","dlvservicetimescenariolist",finalScenarioList);
 		}catch (Exception e) {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.154", null));

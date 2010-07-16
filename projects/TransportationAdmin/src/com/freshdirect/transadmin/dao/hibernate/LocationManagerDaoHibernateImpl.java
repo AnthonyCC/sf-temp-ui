@@ -85,8 +85,7 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	
 	public Collection getDefaultServiceTimeScenarioDay() throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from DlvServiceTimeScenario s");
-		strBuf.append(" where s.code=(select sd.scenario.code from DlvScenarioDay sd where sd.dayOfWeek is null and sd.normalDate is null)");
+		strBuf.append("from DlvScenarioDay sd where sd.dayOfWeek is null and sd.normalDate is null)");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 	

@@ -301,7 +301,12 @@
                     function deleteServiceTimeScenario(){
                     	 var scenarioCode=document.getElementById('code').value;
                     	 var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
-                    	 var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,scenarioCode); 
+                    	 var confirmed=confirm('Are you sure you want to  delete Scenario.');
+                    	 if(confirmed){
+                    	 	var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,scenarioCode);
+                    	 }else{
+							location.href=location.href;
+                         } 
                     }
                     function deleteScenarioFormCallback(result, exception) {
                     	  
@@ -310,10 +315,8 @@
                             return;
                         }
                         if(result == 1) {
-                        	var confirmed=confirm('Scenario deleted sucessfully.');
-                        	if(confirmed){
-                        		location.href = "/TrnAdmin/dlvservicetimescenario.do";
-                        	}  
+                        	alert('Scenario deleted successfully!');                        	
+                        	location.href = "/TrnAdmin/dlvservicetimescenario.do";                      	  
                         }
                         if(result == 0) {
                         	alert('Please delete Zones or ScenarioDays associated with Scenario before deleting the scenario.');

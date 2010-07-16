@@ -68,5 +68,44 @@ public class DlvScenarioDay implements java.io.Serializable{
 		else
 			return "";
 	}
-	
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((dayOfWeek == null) ? 0 : dayOfWeek.hashCode());
+		result = prime * result
+				+ ((normalDate == null) ? 0 : normalDate.hashCode());
+		result = prime * result
+				+ ((scenariodayId == null) ? 0 : scenariodayId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		DlvScenarioDay other = (DlvScenarioDay) obj;
+		if (dayOfWeek == null) {
+			if (other.dayOfWeek != null)
+				return false;
+		} else if (!dayOfWeek.equals(other.dayOfWeek))
+			return false;
+		if (normalDate == null) {
+			if (other.normalDate != null)
+				return false;
+		} else if (!normalDate.equals(other.normalDate))
+			return false;
+		if (scenariodayId == null) {
+			if (other.scenariodayId != null)
+				return false;
+		} else if (!scenariodayId.equals(other.scenariodayId))
+			return false;
+		return true;
+	}	
 }
