@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,15 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.IRoutingParamConstants;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.datamanager.RouteInputDataManager;
 import com.freshdirect.transadmin.datamanager.RoutingResult;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.service.LocationManagerI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.FileUploadCommand;
 
 public class RoutingInputFormController extends BaseRoutingFormController {
@@ -46,10 +51,27 @@ public class RoutingInputFormController extends BaseRoutingFormController {
 		
 		FileUploadCommand bean = new FileUploadCommand();
 		bean.setProcessType(processType);
-		DlvServiceTimeScenario defaultScenario = locationManagerService.getDefaultServiceTimeScenario();
+		String currentTime = TransStringUtil.getCurrentTime();
+		Date routingDate = null;
+		if(currentTime != null && currentTime.endsWith("AM")) {
+			routingDate = RoutingDateUtil.getCurrentDate();
+		} else {
+			routingDate = RoutingDateUtil.getNextDate();
+		}
+		
+		RoutingInfoServiceProxy proxy = new RoutingInfoServiceProxy();
+		IServiceTimeScenarioModel scenario = proxy.getRoutingScenarioByDate(routingDate);
+		
+		if(scenario != null) {
+			DlvServiceTimeScenario defaultScenario = locationManagerService.getServiceTimeScenario(scenario.getCode());
+			if (defaultScenario != null) {
+				bean.setServiceTimeScenario(defaultScenario.getCode());
+			}
+		}
+		/*DlvServiceTimeScenario defaultScenario = locationManagerService.getDefaultServiceTimeScenario();
 		if(defaultScenario != null) {
 			bean.setServiceTimeScenario(defaultScenario.getCode());
-		}
+		}*/
 		return bean;
 	}
 	

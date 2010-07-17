@@ -31,6 +31,15 @@ public class RoutingDateUtil {
 	
 	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
+	/** @return the calendar passed in, for convenience */
+	public static Calendar truncate(Calendar cal) {
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal;
+	}
+	
 	public static String formatTime(Date dateValue) throws ParseException{
 		return MIN_HOUR_SEC_FORMATTER.format(dateValue);
 	}
@@ -56,6 +65,12 @@ public class RoutingDateUtil {
 	public static Date addSeconds(Date date, int seconds) {		
 		BASE_CALENDAR.setTime(date);
 		BASE_CALENDAR.add(Calendar.SECOND, seconds);
+		return BASE_CALENDAR.getTime();
+	}
+	
+	public static Date addMinutes(Date date, int minutes) {		
+		BASE_CALENDAR.setTime(date);
+		BASE_CALENDAR.add(Calendar.MINUTE, minutes);
 		return BASE_CALENDAR.getTime();
 	}
 	
@@ -100,6 +115,10 @@ public class RoutingDateUtil {
 		return Calendar.getInstance().get(Calendar.MINUTE);
 	}
 	
+	public static int getDiffInHours(Date d1, Date d2) {
+		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) HOUR)));
+	}
+	
 	public static int getDiffInMinutes(Date d1, Date d2) {
 		return Math.abs((int) Math.round(((d1.getTime() - d2.getTime()) / (double) MINUTE)));
 	}
@@ -110,6 +129,17 @@ public class RoutingDateUtil {
 	
 	public static String formatDateTime(Date dateValue1, Date dateValue2) throws ParseException{
 		return MIN_HOUR_FORMATTER.format(dateValue1)+"-"+MIN_HOUR_FORMATTER.format(dateValue2);
+	}	
+	
+	public static Date getNextDate() {
+		Calendar cal = Calendar.getInstance();
+		cal = truncate(cal);
+		cal.add(Calendar.DATE, 1);
+		return cal.getTime();
+	}
+	
+	public static Date getCurrentDate() {
+		return Calendar.getInstance().getTime();
 	}
 	
 }
