@@ -35,7 +35,8 @@ public class TransStringUtil {
 	public static DateFormat hourInDayFormat1 = new SimpleDateFormat("H.mm");
 	
 	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
-
+	
+		
 	public static Calendar clientCalendar = Calendar.getInstance();
 	
 	private static String[] daysList = new String[] {"Monday","Tuesday",
@@ -97,6 +98,10 @@ public class TransStringUtil {
 		
 	public static String getCurrentDate() {		
 		return dateFormat.format(new Date());
+	}
+	
+	public static String getCurrentTime() {		
+		return serverTimeFormat.format(new Date());
 	}
 	
 	public static String getDispatchCurrentDate()
