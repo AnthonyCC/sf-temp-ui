@@ -104,14 +104,14 @@ if (user.isEligibleForClientCodes()) {
 <table border="0" cellspacing="0" cellpadding="0" style="text-align: left; float: right;">
 	<tr>
 		<td class="text11" style="text-align: right; vertical-align: middle; font-weight: bold;">
-		Export client codes for all orders delivered from&emsp;
+		Export client codes for all orders delivered from&nbsp;&nbsp;
 		</td>
 		<td class="text11"><input id="ccrep_start" class="text11" style="background-color: #FFF;" size="10" readonly="readonly" autocomplete="off" value="<%= ccrFirstDate %>"><div id="ccrep_startCont" style="display: none; position: absolute; z-index: 2;">&nbsp;</div></td>
-		<td class="text11">&emsp;</td>
+		<td class="text11">&nbsp;&nbsp;</td>
 		<td class="text11"><input id="ccrep_end" class="text11" style="background-color: #FFF;" size="10" readonly="readonly" autocomplete="off" value=""><div id="ccrep_endCont" style="display: none; position: absolute; z-index: 1;">&nbsp;</div></td>
-		<td class="text11">&emsp;</td>
+		<td class="text11">&nbsp;&nbsp;</td>
 		<td class="text11" style="text-align: center; vertical-align: middle; font-weight: bold; width: 66px;">
-		<a id="ccrep_action" href="/api/clientCodeReport?customer=<%= user.getIdentity().getErpCustomerPK() %>&start=<%= ccrFirstIso %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export.gif" width="64" height="15" style="border: none;"></a>
+		<a id="ccrep_action" href="/api/clientCodeReport.jsp?customer=<%= user.getIdentity().getErpCustomerPK() %>&start=<%= ccrFirstIso %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export.gif" width="64" height="15" style="border: none;"></a>
 		</td>
 	</tr>
 </table>

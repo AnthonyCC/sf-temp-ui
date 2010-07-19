@@ -110,13 +110,13 @@ public class ErpClientCode implements Serializable {
 		StringBuilder out = new StringBuilder();
 		for (int i = 0; i < clientCodes.size() - 1; i++) {
 			out.append(clientCodes.get(i).toHtml());
-			out.append("&emsp; |&emsp; ");
+			out.append("&nbsp;&nbsp; |&nbsp;&nbsp; ");
 		}
 		if (clientCodes.size() > 0)
 			out.append(clientCodes.get(clientCodes.size() - 1).toHtml());
 		if (noCode > 0) {
 			if (clientCodes.size() > 0)
-				out.append("&emsp; |&emsp; ");
+				out.append("&nbsp;&nbsp; |&nbsp;&nbsp; ");
 			out.append(new ErpClientCode("NO CLIENT CODE", noCode).toHtml());
 		}
 		return out.toString();
@@ -125,13 +125,13 @@ public class ErpClientCode implements Serializable {
 	public static void toHtmlWriter(List<ErpClientCode> clientCodes, int noCode, Writer out) throws IOException {
 		for (int i = 0; i < clientCodes.size() - 1; i++) {
 			clientCodes.get(i).toHtmlWriter(out);
-			out.append("&emsp; |&emsp; ");
+			out.append("&nbsp;&nbsp; |&nbsp;&nbsp; ");
 		}
 		if (clientCodes.size() > 0)
 			clientCodes.get(clientCodes.size() - 1).toHtmlWriter(out);
 		if (noCode > 0) {
 			if (clientCodes.size() > 0)
-				out.append("&emsp; |&emsp; ");
+				out.append("&nbsp;&nbsp; |&nbsp;&nbsp; ");
 			new ErpClientCode("NO CLIENT CODE", noCode).toHtmlWriter(out);
 		}
 	}

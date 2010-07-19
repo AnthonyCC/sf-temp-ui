@@ -189,7 +189,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			if (newval == 0)
 				qField.disabled = true;
 			else
-				qField.disbled = false;
+				qField.disabled = false;
 			qField.value = "";
 			get("clientcode_" + idx).value = "";
 		}
@@ -446,6 +446,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 				var item = init[idx];
 				trs.push("tr_" + idx);
 				addAcField(_PREFIX + "clientcode_" + idx, _PREFIX + "autocomplete_" + idx);
+				YAHOO.util.Event.addListener(_PREFIX + "clientcode_" + idx, "keypress", ClientCodes.disableEnter);
+				YAHOO.util.Event.addListener(_PREFIX + "quantity_" + idx, "keypress", ClientCodes.disableEnter);
 				var qty = getQty(idx);
 				noCodes[idx] = qty;
 				sums[idx] = 0;
@@ -539,7 +541,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			var key = keys[j];
 			var item = ccs[idx][key];
 			if (notfirst)
-				newval += "&emsp; |&emsp; ";
+				newval += "&nbsp;&nbsp; |&nbsp;&nbsp; ";
 			newval += "<span style=\"white-space: nowrap;\">";
 			newval += item.clientCode;
 			newval += "&nbsp;&ndash;&nbsp;";
@@ -553,7 +555,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var noCode = noCodes[idx];
 		if (noCode > 0) {
 			if (notfirst)
-				newval += "&emsp; |&emsp; ";
+				newval += "&nbsp;&nbsp; |&nbsp;&nbsp; ";
 			newval += "<span style=\"white-space: nowrap;\">";
 			newval += "NO&nbsp;CLIENT&nbsp;CODE&nbsp;&ndash;&nbsp;";
 			newval += noCode;
@@ -603,11 +605,13 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 		var coord = getIdx(node);
 		coord.node.cells[0].innerHTML = '<input type="text" autocomplete="off" size="5" maxlength="5" class="text10 clicode_quantity" style="text-align: center; border: 1px solid black;">';
 		coord.node.cells[0].firstChild.value = ccs[coord.idx][coord.i].quantity;
+		YAHOO.util.Event.addListener(coord.node.cells[0].firstChild, "keypress", ClientCodes.disableEnter);
 		coord.node.cells[2].style.overflow = 'visible';
 		coord.node.cells[2].innerHTML = '<div style="position: relative; vertical-align: middle; overflow: visible;">' + 
 			'<input type="text" autocomplete="off" size="25" maxlength="30" class="text10" style="border: 1px solid black; width: 125px; position: static;">' +
 			'<div style="width: 125px; position: absolute; top: 100%; _top: 20px; left: 0px;"></div></div>';
 		coord.node.cells[2].firstChild.firstChild.value = ccs[coord.idx][coord.i].clientCode;
+		YAHOO.util.Event.addListener(coord.node.cells[2].firstChild.firstChild, "keypress", ClientCodes.disableEnter);
 		coord.node.cells[2].firstChild.firstChild.id = _PREFIX + "clientcode_" + coord.idx + "_" + coord.i;
 		coord.node.cells[2].firstChild.lastChild.id = _PREFIX + "autocomplete_" + coord.idx + "_" + coord.i;
 		addAcField(_PREFIX + "clientcode_" + coord.idx + "_" + coord.i, _PREFIX + "autocomplete_" + coord.idx + "_" + coord.i);
@@ -746,5 +750,10 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			node.innerHTML = newval = content + "&hellip;";
 		}
 		return newval;
+	};
+	
+	ClientCodes.disableEnter = function(e) {
+		if (13 == YAHOO.util.Event.getCharCode(e))
+			YAHOO.util.Event.preventDefault(e);
 	};
 })();

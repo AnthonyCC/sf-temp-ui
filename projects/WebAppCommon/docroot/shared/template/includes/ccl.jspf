@@ -108,7 +108,7 @@ YAHOO.util.Event.onDOMReady(function() {
 	}
 
 	var updateLink = function() {
-		var link = "/api/clientCodeReport?customer=<%= fdUser.getIdentity().getErpCustomerPK() %>";
+		var link = "/api/clientCodeReport.jsp?customer=<%= fdUser.getIdentity().getErpCustomerPK() %>";
 		link += "&start=" + YAHOO.util.Date.format(CCReport.startDate, { format: "%Y-%m-%d" });
 		if (CCReport.endDate != null)
 			link += "&end=" + YAHOO.util.Date.format(CCReport.endDate, { format: "%Y-%m-%d" });

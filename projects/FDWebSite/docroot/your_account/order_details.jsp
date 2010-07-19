@@ -101,7 +101,7 @@
     <% } %>
     <% if (user.isEligibleForClientCodes()) { %>
     <td class="text11" style="text-align: right; vertical-align: middle;">
-    	<a href="/api/clientCodeReport?sale=<%= orderId %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export_client_codes.gif" width="167" height="17" style="border: none;"></a>
+    	<a href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export_client_codes.gif" width="167" height="17" style="border: none;"></a>
     </td>
     <% } %>
 </tr>

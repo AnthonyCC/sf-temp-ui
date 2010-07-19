@@ -70,7 +70,7 @@
 
 	<servlet-mapping>
 		<servlet-name>ClientCodeReportServlet</servlet-name>
-		<url-pattern>/api/clientCodeReport</url-pattern>
+		<url-pattern>/api/clientCodeReport.jsp</url-pattern>
 	</servlet-mapping>	
 
     <session-config>
