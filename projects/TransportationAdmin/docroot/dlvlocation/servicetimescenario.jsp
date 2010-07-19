@@ -9,12 +9,7 @@
 <tmpl:insert template='/common/sitelayout.jsp'>
 <%    
   String fromdateRangeVal = request.getParameter("fromdaterange") != null ? request.getParameter("fromdaterange") : "";
-  String todateRangeVal = request.getParameter("todaterange") != null ? request.getParameter("todaterange") : "";
-  Calendar baseDate = DateUtil.truncate(Calendar.getInstance());					
-  baseDate.add(Calendar.DATE, 7);
-  String endDate = TransStringUtil.dateFormat.format(baseDate.getTime());
-  if(fromdateRangeVal == null || fromdateRangeVal.length() == 0) fromdateRangeVal = TransStringUtil.getNextDate();
-  if(todateRangeVal == null || todateRangeVal.length() == 0) todateRangeVal = endDate;  
+  String todateRangeVal = request.getParameter("todaterange") != null ? request.getParameter("todaterange") : ""; 
 %>
 <% 
 	String pageTitle = "Service Time Scenario";
@@ -30,7 +25,7 @@
 	        var param2 = document.getElementById(compId2).value;
 	        var param3="";         
 	        location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
-		}    
+		} 
     </script>
 	<div class="contentroot">
 
@@ -80,6 +75,7 @@
                     </span>
                     				
 					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+					<span><input id="view_button" type="image" alt="View" src="./images/icons/clear.gif"  onclick="document.getElementById('fromdaterange').value='';document.getElementById('todaterange').value='';" /></span>
 				</div>
 			</div>
 			<div>
