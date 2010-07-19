@@ -335,6 +335,7 @@ public class RoutingUtil {
 		Map<String, IServiceTimeTypeModel>	serviceTimeTypes = routingInfoproxy.getRoutingServiceTimeTypes();
 		Map<java.util.Date, RoutingAnalyzerCommand> analyzerCommands = getAnalyzerCommand(_timeSlots, address, context, locModel);
 		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(_timeSlots.get(0).getZoneCode()));
+		
 		schedulerSaveLocation(order);				
 		
 		RoutingAnalyzerCommand tmpCommand = null;
@@ -587,7 +588,11 @@ public class RoutingUtil {
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getState()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode()
 										, order.getDeliveryInfo().getDeliveryLocation().getBuilding().getCountry());*/
-		return geoSrv.locateOrder(order);
+		ILocationModel location = geoSrv.locateOrder(order);
+		if(location != null && order != null && order.getDeliveryInfo() != null) {
+			order.getDeliveryInfo().setDeliveryLocation(location);
+		}
+		return location;
 	}
 
 
