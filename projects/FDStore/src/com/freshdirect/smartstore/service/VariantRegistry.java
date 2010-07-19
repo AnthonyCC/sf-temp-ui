@@ -1,5 +1,6 @@
 package com.freshdirect.smartstore.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,8 +88,9 @@ final public class VariantRegistry {
 			SmartStoreServiceConfigurationSB sb;
 
 			sb = getServiceConfigurationHome().create();
-			@SuppressWarnings("unchecked")
-			Collection<Variant> variants = sb.getVariants(null);
+			Collection<Variant> variants = new ArrayList<Variant>();
+			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
+				variants.addAll(sb.getVariants(feature));
 
 			LOGGER.info("loading variants:" + variants);
 

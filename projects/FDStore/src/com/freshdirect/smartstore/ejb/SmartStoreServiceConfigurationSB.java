@@ -11,26 +11,29 @@ import com.freshdirect.smartstore.Variant;
 
 /**
  * Service configuration session bean interface.
+ * 
  * @author istvan
- *
+ * 
  */
 public interface SmartStoreServiceConfigurationSB extends EJBObject {
-	
 	/**
 	 * Get the available variants for the requested feature.
+	 * 
 	 * @param feature
 	 * @return available variants, {@link Collection}<{@link Variant}>
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Collection getVariants(EnumSiteFeature feature) throws RemoteException, SQLException;
+	public Collection<Variant> getVariants(EnumSiteFeature feature) throws RemoteException,
+			SQLException;
 
 	/**
 	 * Get the available site features stored in database
 	 * 
-	 * @return available site features , {@link DynamicSiteFeature}<{@link DynamicSiteFeature}>
+	 * @return available site features , {@link DynamicSiteFeature}<
+	 *         {@link DynamicSiteFeature}>
 	 * @throws RemoteException
 	 * @throws SQLException
 	 */
-	public Collection getSiteFeatures() throws RemoteException, SQLException;
+	public Collection<DynamicSiteFeature> getSiteFeatures() throws RemoteException, SQLException;
 }
