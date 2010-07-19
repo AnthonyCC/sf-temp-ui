@@ -83,9 +83,9 @@ public abstract class AbstractValidator implements Validator  {
 		if(null==value1 && !TransStringUtil.isEmpty(v2) && !TransStringUtil.isEmpty(v3)){
 			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
 		}
-		if(null==value1 && TransStringUtil.isEmpty(v2) && TransStringUtil.isEmpty(v3)){
+		/*if(null==value1 && TransStringUtil.isEmpty(v2) && TransStringUtil.isEmpty(v3)){
 			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
-		}
+		}*/
 		if(value1!=null && !TransStringUtil.isEmpty(v2) && !TransStringUtil.isEmpty(v3)){
 			errors.rejectValue(field, "app.error.129", new Object[]{displayField}, null);
 		}

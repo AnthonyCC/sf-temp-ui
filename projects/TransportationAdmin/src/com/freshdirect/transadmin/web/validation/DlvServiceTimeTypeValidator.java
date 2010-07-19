@@ -17,10 +17,15 @@ public class DlvServiceTimeTypeValidator extends AbstractValidator {
 		//  need to decide about the validation part
 		ValidationUtils.rejectIfEmpty(errors, "code", "app.error.112", new Object[]{"Code"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "name", "app.error.112", new Object[]{"Name"},"required field");	
+		ValidationUtils.rejectIfEmpty(errors, "fixedServiceTime", "app.error.112", new Object[]{"Fixed Service Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "variableServiceTime", "app.error.112", new Object[]{"Variable Service Time"},"required field");
+
 		
 		validateLength("code", model.getCode(), 8, errors);
 		validateLength("name", model.getName(), 32, errors);
 		validateLength("description", model.getDescription(), 256, errors);	
+		validateNumericLength("fixedServiceTime", model.getFixedServiceTime(), errors);
+		validateNumericLength("variableServiceTime", model.getVariableServiceTime(), errors);
 	}
 	
 
