@@ -6,16 +6,45 @@
 	<tr>
 		<td>
 			<img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /><br />
-<%
-	if (user.isGiftCardsEnabled()) {
-%>			<img src="/media_stat/images/navigation/global_nav/bottom_nav_gc.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
-<%
-	} else {
-%>			<img src="/media_stat/images/navigation/global_nav/bottom_nav<%= (FDStoreProperties.isWhatsGoodEnabled() ? "_09" : "" )%>.gif" width="745" height="21" alt="" border="0" usemap="#bottomlinks" />
-<%		
-	}
-%>
-		</td>
+            <% 
+                String bottomUri = request.getRequestURI();
+                String deptId = request.getParameter("deptId") != null ? request.getParameter("deptId") : "";
+                String catId = request.getParameter("catId") != null ? request.getParameter("catId") : "";
+                if (bottomUri.indexOf("/about/index.jsp") > -1) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_aboutus.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if (bottomUri.indexOf("/jobs/intro") > -1) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_careers.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if (bottomUri.indexOf("/gift_card/purchase/landing.jsp") > -1) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_giftcards.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if (bottomUri.indexOf("/newproducts.jsp") > -1) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_newprod.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("cmty")) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_community.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if(!catId.equals("") && catId.equalsIgnoreCase("about_billrights")) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_billorrights.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                } else if(!deptId.equals("") && deptId.equalsIgnoreCase("COS")) { 
+            %>
+            <img src="/media_stat/images/navigation/global_nav/bottom_nav_office.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%            
+                } else {
+            %>
+			<img src="/media_stat/images/navigation/global_nav/bottom_nav_off.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
+            <%
+                }
+            %>
+	</td>
 	</tr>
 	<tr>
 		<td align="center" class="text11bold">
@@ -55,57 +84,17 @@
 %>
 
 <br /><img src="/media_stat/images/layout/clear.gif" width="1" height="6" alt="" />
-
-
-
-
-	<% 
-		/*
-			Changing to site feature
-			if(FDStoreProperties.isGiftCardEnabled()) { 
-		*/
-		if(user.isGiftCardsEnabled()) {
-	%>
 	<map name="bottomlinks" id="bottomlinks">
-		<area shape="rect" coords="11,0,70,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
-		<area shape="rect" coords="71,0,157,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
-		<area shape="rect" coords="158,0,249,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
-		<area shape="rect" coords="250,0,303,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
-		<area shape="rect" coords="304,0,382,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
-		<area shape="rect" coords="383,0,437,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
-		<area shape="rect" coords="438,0,498,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
-		<area shape="rect" coords="499,0,576,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office">
+      <area shape="rect" coords="71,1,123,22" href="<%=FDStoreProperties.getCareerLink()%>"  alt="Careers" title="Careers">
+      <area shape="rect" coords="123,1,218,22" href="/department.jsp?deptId=cmty&trk=bnav"  alt="Our Community" title="Our Community">
+      <area shape="rect" coords="218,1,328,22" href="/category.jsp?catId=about_billrights&trk=bnav"  alt="Your Bill of Rights" title="Your Bill of Rights">
+      <area shape="rect" coords="500,1,573,22" href="/department.jsp?deptId=COS&trk=bnav"  alt="At the Office" title="At the Office">
+      <area shape="rect" coords="637,1,745,22" href="/newproducts.jsp?trk=bnav"  alt="New Products" title="New Products">
+      <area shape="rect" coords="10,1,71,22" href="/department.jsp?deptId=about&trk=bnav"  alt="About Us" title="About Us">
 		<%
 			//since the gift card url is dynamic, check for other query values before adding the trk attribute
 			boolean gcUrlHasOtherQueryVals = FDStoreProperties.getGiftCardLandingUrl().indexOf("?") > -1;
 		%>
-		<area shape="rect" coords="577,0,647,21" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav" alt="Gift Cards">
-		<area shape="rect" coords="648,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
+      <area shape="rect" coords="573,1,637,22" href="<%=FDStoreProperties.getGiftCardLandingUrl()%><%=(gcUrlHasOtherQueryVals)?"&":"?"%>trk=bnav"  alt="Gift Cards" title="Gift Cards">
 	</map>
-	
-<% } else if(FDStoreProperties.isWhatsGoodEnabled()) { %>
-	<map name="bottomlinks">
-		<area shape="rect" coords="10,0,73,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us" />
-		<area shape="rect" coords="74,0,168,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community" />
-		<area shape="rect" coords="169,0,233,21" href="/department.jsp?deptId=our_picks&amp;trk=bnav" alt="Our Picks" />
-		<area shape="rect" coords="234,0,314,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office" />
-		<area shape="rect" coords="315,0,373,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads" />
-		<area shape="rect" coords="374,0,457,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials" />
-		<area shape="rect" coords="458,0,549,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee" />
-		<area shape="rect" coords="550,0,608,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers" />
-		<area shape="rect" coords="636,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products" />
-	</map>
-<% } else { %>
-	<map name="bottomlinks">
-		<area shape="rect" coords="11,0,78,21" href="/department.jsp?deptId=about&amp;trk=bnav" alt="About Us">
-		<area shape="rect" coords="79,0,172,21" href="/department.jsp?deptId=cmty&amp;trk=bnav" alt="Our Community">
-		<area shape="rect" coords="173,0,254,21" href="/department.jsp?deptId=COS&amp;trk=bnav" alt="At the Office">
-		<area shape="rect" coords="255,0,312,21" href="/category.jsp?catId=picks_celeb&amp;trk=bnav" alt="Our Ads">
-		<area shape="rect" coords="313,0,398,21" href="/category.jsp?catId=about_test&amp;trk=bnav" alt="Testimonials">
-		<area shape="rect" coords="399,0,491,21" href="javascript:popup('/help/freshness.jsp','small')" alt="Our Guarantee">
-		<area shape="rect" coords="492,0,550,21" href="<%=FDStoreProperties.getCareerLink()%>" alt="Careers">
-		<area shape="rect" coords="636,0,745,21" href="/newproducts.jsp?trk=bnav" alt="New Products">
-	</map>
-<% } %>
-
 <%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
