@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.io.Writer;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class ErpClientCode implements Serializable {
 	private static final long serialVersionUID = 1240988236132112162L;
 
@@ -74,7 +76,7 @@ public class ErpClientCode implements Serializable {
 	public String toHtml() {
 		StringBuilder out = new StringBuilder();
 		out.append("<span style=\"white-space: nowrap;\">");
-		out.append(clientCode);
+		out.append(StringEscapeUtils.escapeHtml(clientCode));
 		out.append("&nbsp;&ndash;&nbsp;");
 		out.append(Integer.toString(quantity));
 		out.append("&nbsp;item");
@@ -86,7 +88,7 @@ public class ErpClientCode implements Serializable {
 	
 	public void toHtmlWriter(Writer out) throws IOException {
 		out.append("<span style=\"white-space: nowrap;\">");
-		out.append(clientCode);
+		out.append(StringEscapeUtils.escapeHtml(clientCode));
 		out.append("&nbsp;&ndash;&nbsp;");
 		out.append(Integer.toString(quantity));
 		out.append("&nbsp;item");

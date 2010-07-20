@@ -311,7 +311,7 @@ FDIdentity identity = user.getIdentity();
 				ErpClientCode firstCC = cartLine.getClientCodes().size() > 0 ? cartLine.getClientCodes().get(0) : new ErpClientCode("", 1);
 				int noCode = (int) cartLine.getQuantity();
 				String ccQuantity = "multi".equals(clicode_type) ? "" : Integer.toString(firstCC.getQuantity());
-				String ccClientCode = "multi".equals(clicode_type) ? "" : firstCC.getClientCode();
+				String ccClientCode = "multi".equals(clicode_type) ? "" : StringEscapeUtils.escapeHtml(firstCC.getClientCode());
 				for (ErpClientCode item : cartLine.getClientCodes()) {
 					noCode -= item.getQuantity();
 				}

@@ -20,6 +20,14 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	var noCodes = {};
 
 	var lastIndexes = {};
+	
+	var escapeHTML = function(str) {
+		return str
+				.replace(/&/g, '&amp;')
+				.replace(/>/g, '&gt;')
+				.replace(/</g, '&lt;')
+				.replace(/"/g, '&quot;');
+	};
 
 	var sortedKeys = function(hash) {
 		var a = [];
@@ -543,7 +551,7 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			if (notfirst)
 				newval += "&nbsp;&nbsp; |&nbsp;&nbsp; ";
 			newval += "<span style=\"white-space: nowrap;\">";
-			newval += item.clientCode;
+			newval += escapeHTML(item.clientCode);
 			newval += "&nbsp;&ndash;&nbsp;";
 			newval += item.quantity;
 			newval += "&nbsp;item";
@@ -743,11 +751,11 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 	
 	var adjustWidth = function(content) {
 		var node = get("testbox");
-		var newval = content;
-		node.innerHTML = newval;
+		var newval;
+		node.innerHTML = newval = escapeHTML(content);
 		while (node.clientWidth > 242) {
 			content = content.substr(0, content.length - 1);
-			node.innerHTML = newval = content + "&hellip;";
+			node.innerHTML = newval = escapeHTML(content) + "&hellip;";
 		}
 		return newval;
 	};
