@@ -39,7 +39,9 @@ import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
+import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnZoneType;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
@@ -342,20 +344,32 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView dlvServiceTimeTypeDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		
-		Set dispatchSet=new HashSet();
-		String arrEntityList[] = getParamList(request);
-		Object tmpBean = null;
-		if (arrEntityList != null) {			
-			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				tmpBean = locationManagerService.getServiceTimeType(arrEntityList[intCount]);
-				if(tmpBean != null) {
-					dispatchSet.add(tmpBean);
-				}
-			}
-		}		
 		try {
+			Set<DlvServiceTimeType> dispatchSet=new HashSet();
+			String arrEntityList[] = getParamList(request);
+			
+			Object tmpBean = null;
+			if (arrEntityList != null) {			
+				Collection zones=domainManagerService.getZones();
+				for(Iterator it=zones.iterator();it.hasNext();){
+					Zone z=(Zone)it.next();
+					if(z!=null){
+						int arrLength = arrEntityList.length;
+						for (int intCount = 0; intCount < arrLength; intCount++) {
+							tmpBean = locationManagerService.getServiceTimeType(arrEntityList[intCount]);
+							if(tmpBean != null) {
+								DlvServiceTimeType sType=(DlvServiceTimeType)tmpBean;
+									if(z.getServiceTimeType()!=null && z.getServiceTimeType().equals(sType.getCode())){
+										saveMessage(request, getMessage("app.actionmessage.127", null));
+										return dlvServiceTimeTypeHandler(request, response);
+									}else{
+										dispatchSet.add(sType);
+									}								
+							}
+						}	
+					}					
+				}			
+			}
 			removeEntityList(dispatchSet);
 			saveMessage(request, getMessage("app.actionmessage.103", null));
 		} catch (DataIntegrityViolationException e) {
