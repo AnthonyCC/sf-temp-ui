@@ -6,11 +6,15 @@ public class SeleniumTestProperties {
 
 	private final static String SELENIUM_TEST_BASE = "selenium.test_base"; 
 	private final static String SELENIUM_SERVER_HOST = "selenium.server_host"; 
-	private static final String SELENIUM_SERVER_PORT = "selenium.server_port";
+	/*	changed line commented out, new below it  */
+	//private static final String SELENIUM_SERVER_PORT = "selenium.server_port";
+	private static final String SELENIUM_SERVER_PORT = "7001";
 	private static final String SELENIUM_BROWSER_STRING = "selenium.browser_string";
 	private static final String SELENIUM_SPEED = "selenium.speed";
 	private static final String SELENIUM_USERNAME = "selenium.username";
 	private static final String SELENIUM_PASSWORD = "selenium.password";
+	
+	private static final String SELENIUM_TEST_HOST = "http://localhost:7001";
 	
 	private static final String SELENIUM_TEST_DEFAULT_USERNAME = "selenium@test.com";
 	private static final String SELENIUM_TEST_DEFAULT_PASSWORD = "selenium";
@@ -21,6 +25,8 @@ public class SeleniumTestProperties {
 		return System.getProperty(SELENIUM_TEST_BASE);
 	}
 
+
+	
 	public static String getSeleniumServerHost() {
 		return System.getProperty(SELENIUM_SERVER_HOST, "localhost");
 	}
@@ -30,7 +36,7 @@ public class SeleniumTestProperties {
 	}
 
 	private static String getDefaultBrowserString() {
-		return THIS_IS_WINDOWS ? "*iexplore" : "*firefox";
+		return THIS_IS_WINDOWS ? "*iexplore" : "*firefox ";
 	}
 
 	public static int getSeleniumServerPort() {
@@ -52,6 +58,10 @@ public class SeleniumTestProperties {
 
 	public static String getSeleniumSpeed() {
 		return System.getProperty(SELENIUM_SPEED, "0");
+	}
+	
+	public static String getSeleniumTestHost() {
+		return SELENIUM_TEST_HOST;
 	}
 
 

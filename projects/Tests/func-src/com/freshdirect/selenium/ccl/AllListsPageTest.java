@@ -27,6 +27,7 @@ public class AllListsPageTest extends FDSeleniumTestSupport {
 		createListOnAllListsPage(findUnusedListName("alfa", lists));
 		createListOnAllListsPage(findUnusedListName("beta", lists));
 		createListOnAllListsPage(findUnusedListName("gamma", lists));
+		createListOnAllListsPage(findUnusedListName("delta", lists));
 		
 		lists = getCCLOnAllListsPage();
 		

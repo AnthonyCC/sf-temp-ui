@@ -38,7 +38,7 @@ public class InexperiencedUsersTest extends FDSeleniumTestSupport {
 		
 		// Recipe test
 		openFirstBeefRecipe();
-		// no longer neded - checkNoCCLOnRecipePage();
+		// no longer needed - checkNoCCLOnRecipePage();
 		checkNotNewAndMoreAboutLists();
 
 		/*
@@ -119,7 +119,7 @@ public class InexperiencedUsersTest extends FDSeleniumTestSupport {
 		
 		// Check new icon + More about lists on Perishable product page
 		openFiletMignon();
-		checkNewAndMoreAboutLists();
+	//	checkNewAndMoreAboutLists();
 
 		// Check new icon + More about lists on Grocery product page
 		openFirstCannedGoods();

@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.thoughtworks.selenium.*;
+
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 
@@ -19,7 +22,9 @@ import com.freshdirect.framework.util.QueryStringBuilder;
 public class FDSeleniumTestSupport extends SeleniumTestSupport {
 
 	public static final String XP_CCL_ERROR_ELEMENT_TEMPLATE = "//div[@id='$PANELNAME$']//div[contains(@class,'bd')]//div[contains(@class,'text11rbold')]";
-	public static final String XP_CCL_CLOSE_TEMPLATE = "//div[@id='$PANELNAME$']//span[@class='container-close']";
+/*	changed line commented out, new below it  */
+//	public static final String XP_CCL_CLOSE_TEMPLATE = "//div[@id='$PANELNAME$']//span[@class='container-close']";
+	public static final String XP_CCL_CLOSE_TEMPLATE = "link=Close";
 	public static final String XP_CCL_HELP_TEMPLATE = "//div[@id='$PANELNAME$']//span[@class='ccl-panel-help']";
 	public static final String XP_DELETE_LIST = "link=DELETE LIST";
 	public static final String XP_RENAME_LIST = "link=RENAME LIST";
@@ -32,7 +37,14 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 	public static final String XP_SALES_UNIT = "//select[@name='salesUnit']";
 	public static final String XP_MT_BF_PAK = "//select[@name='C_MT_BF_PAK']";
 	public static final String XP_MT_BF_MAR = "//select[@name='C_MT_BF_MAR']";
+	public static final String XP_MT_BF_TW1 = "//select[@name='C_MT_BF_TW1']";
 	public static final String XP_QUANTITY = "//input[@type='text' and @name='quantity']";
+	
+	public static final String XP_ADD_QUANTITY = "//img[@alt='Increase quantity']";
+	public static final String XP_REMOVE_QUANTITY = "//img[@alt='Decrease quantity']";
+	
+	public static final String XP_SORT = "//select[@name='sort']";
+	public static final String XP_BRAND = "//select[@name='brand']";
 	
 	public static final String XP_SAVE_TO_SHOPPING_LIST = "//a[@id='ccl-add-action']";
 	public static final String XP_ITEMS_ADDED = "//div[@id='CCL_savePanel']/div/div[@class='toleft']";
@@ -59,9 +71,86 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 	public static final String XP_REMOVE_ALL_FROM_CART_CLICK = "//a[@name='remove_all']";
 	public static final String XP_ADD_SELECTED_TO_CART_CLICK = "//input[@name='addMultipleToCart']";
 	public static final String XP_CLEAR_CART_CLICK = "//a[@name='remove_all']";
+	
+	public static final String SC_REMOVE_ALL = "link=Remove All Items";
 		
 	public static final String BAD_CHARACTERS = "<>&;:\"'$\\~^+-.";
+	
+	public static final String SELENIUM_INDEX = "/index.jsp";
 
+	/* Menu Bar Navigation */
+	public static final String VIEW_CART = "NAV_CART_IMG";
+	public static final String CHECK_OUT = "NAV_CHECKOUT_IMG";
+	public static final String DELIVERY_INFO = "DELIVERY_IMG";
+	public static final String QUICK_SHOP = "DELIVERY_IMG";
+	public static final String YOUR_ACCOUNT = "NAV_QUICKSHOP_IMG";
+	public static final String GET_HELP = "NAV_YOURACCOUNT_IMG";
+	
+	public static final String FD_HOME = "//map[@id='globalNav']/area[1]";
+	public static final String FD_FRUIT = "//map[@id='globalNav']/area[2]";
+	public static final String FD_VEGETABLES = "//map[@id='globalNav']/area[3]";
+	public static final String FD_MEAT = "//map[@id='globalNav']/area[4]";
+	public static final String FD_SEAFOOD = "//map[@id='globalNav']/area[5]";
+	public static final String FD_DELI = "//map[@id='globalNav']/area[6]";
+	public static final String FD_CHEESE = "//map[@id='globalNav']/area[7]";
+	public static final String FD_DAIRY = "//map[@id='globalNav']/area[8]";
+	
+	public static final String FD_4_MINUTE_MEALS = "//map[@id='globalNav']/area[9]";
+	public static final String FD_READY_TO_COOK = "//map[@id='globalNav']/area[10]";
+	public static final String FD_HEAT_AND_EAT = "//map[@id='globalNav']/area[11]";
+	public static final String FD_BAKERY = "//map[@id='globalNav']/area[12]";
+	public static final String FD_CATERING = "//map[@id='globalNav']/area[13]";
+
+	public static final String FD_WHATS_GOOD = "//map[@id='globalNav']/area[14]";
+	public static final String FD_ORGANIC = "//map[@id='globalNav']/area[15]";
+	public static final String FD_LOCAL = "//map[@id='globalNav']/area[16]";
+	public static final String FD_KOSHER = "//map[@id='globalNav']/area[17]";
+	public static final String FD_RECIPES = "//map[@id='globalNav']/area[18]";
+	
+	public static final String FD_PASTA = "//map[@id='globalNav']/area[19]";
+	public static final String FD_COFFEE = "//map[@id='globalNav']/area[20]";
+	public static final String FD_GROCERY = "//map[@id='globalNav']/area[21]";
+	public static final String FD_HEALTH_BEAUTY = "//map[@id='globalNav']/area[22]";
+	public static final String FD_BUY_BIG = "//map[@id='globalNav']/area[23]";
+	public static final String FD_FROZEN = "//map[@id='globalNav']/area[24]";
+	public static final String FD_WINE = "//map[@id='globalNav']/area[25]";
+	
+	/* Front page navigation
+	/* Use these if you want 
+	 * to access the links 
+	 * from the front page.
+	 * Row 1                 */
+	public static final String FP_FRUIT = "//td[3]/map[1]/area[1]";
+	public static final String FP_VEGETABLES = "//td[3]/map[1]/area[2]";
+	public static final String FP_MEAT = "//td[3]/map[1]/area[3]";
+	public static final String FP_SEAFOOD = "//td[3]/map[1]/area[4]";
+	public static final String FP_DELI = "//td[3]/map[1]/area[5]";
+	public static final String FP_CHEESE = "//td[3]/map[1]/area[6]";
+	public static final String FP_DAIRY = "//td[3]/map[1]/area[7]";
+	
+	/* Row 2 */
+	public static final String FP_ORGANIC_ALL_NATURAL = "//map[2]/area[1]";
+	public static final String FP_LOCAL_FOODS = "//map[2]/area[2]";
+	public static final String FP_KOSHER = "//map[2]/area[3]";
+	public static final String FP_PASTA = "//map[2]/area[4]";
+	
+	/* Row 3 */
+	public static final String FP_BAKERY = "//map[3]/area[1]";
+	public static final String FP_READY_TO_COOK = "//map[3]/area[2]";
+	public static final String FP_HEAT_EAT = "//map[3]/area[3]";
+	public static final String FP_CATERING = "//map[3]/area[4]";
+	public static final String FP_4_MINUTE_MEALS = "//map[3]/area[5]";
+	
+	/* Row 4 */
+	public static final String FP_COFFEE = "//map[4]/area[1]";
+	public static final String FP_GROCERY = "//map[4]/area[2]";
+	public static final String FP_FROZEN = "//map[4]/area[3]";
+	public static final String FP_HEALTH_BEAUTY = "//map[4]/area[4]";
+	public static final String FP_BUY_BIG = "//map[4]/area[5]";
+	public static final String FP_WINE = "//map[4]/area[6]";
+	
+	
+	
 	public Pattern linkPatternWithItems = Pattern.compile("\\A(.*)\\(([0-9]+)\\sItems?\\)\\z");
 	public Pattern nameLinkPatternWithoutItems = Pattern.compile("\\A(.*)\\z");
 
@@ -85,6 +174,16 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
 	}
 
+	public void addToCart() {
+		selenium.click("add_to_cart");
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+	}
+	
+	public void addMultipleToCart() {
+		selenium.click("addMultipleToCart");
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+	}
+	
 	public String findUnusedListName(String string, List lists) {
 		String ns = string + BAD_CHARACTERS;
 		int i = 2;
@@ -99,7 +198,7 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 	}
 
 	public void createListOnQuickshopPage(String listName) {
-		selenium.open("/quickshop/all_lists.jsp");
+		selenium.open("/quickshop/index.jsp"); //was all_lists.jsp
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);		
 		createListOnCurrentPage(listName, false, false);
 	}
@@ -198,8 +297,10 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 	 * @return
 	 * @throws IOException
 	 */
+	
 	public List retrieveTestData(String queryParams) throws IOException {
-		StringBuffer URL = new StringBuffer(System.getProperty("selenium.test_base"));
+		//StringBuffer URL = new StringBuffer(System.getProperty("selenium.test_base"));
+		StringBuffer URL = new StringBuffer("http://localhost:7001");
 		URL.append("/test/data/data.jsp?").append(queryParams);
 
 		HttpClient client = new HttpClient();
@@ -232,15 +333,34 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 		return (CCList) lists.get(0);
 	}
 	
+	public void openCotswold() {
+		selenium.open("/");
+		selenium.click(FD_CHEESE);
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+		verifyTrue(selenium.isElementPresent("//img[@alt='Cheddars & Jacks']"));
+		verifyTrue(selenium.isElementPresent("//tr[2]/td[2]/a/img"));
+		selenium.click("//tr[2]/td[2]/a/img");
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+		verifyTrue(selenium.isTextPresent("Cotswold"));
+		selenium.click("//a[contains(@href, '/product.jsp?catId=jackoth&trk=cpage&productId=eng_cotswold')]");
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+	
+	}
+
+	
 	public void openFiletMignon() {
 		selenium.open("/");
-		selenium.click("//area[@alt='Meat']");
+		selenium.click(FD_MEAT);
+		//selenium.click("//area[@alt='Meat']");
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
-		selenium.click("//a/font[text()='Beef']");
+		selenium.click("link=Beef");
+		//selenium.click("//a/font[text()='Beef']");
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
-		selenium.click("//a/font[text()='Steaks']");
+		selenium.click("//table[2]/tbody/tr[2]/td[1]/a");
+		//selenium.click("//a/font[text()='Steaks']");
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
-		selenium.click("link=Filet Mignon");
+		selenium.click("//a[contains(@href, '/product.jsp?catId=bgril&trk=cpage&productId=bstk_flet_dfat')]");
+		//selenium.click("link=Filet Mignon");
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);		
 	}
 	
@@ -284,7 +404,7 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 	}
 	
 	public void openFirstPartyPackage() {
-		selenium.click("//area[@alt='Easy Meals']");
+		selenium.click("//area[@alt='Easy Meals']"); //where?
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
 		selenium.click("link=Party Packages");
 		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
@@ -305,6 +425,8 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 		}
 		fail();
 	}
+	
+
 	
 	public CCList deleteListsExceptLast() {
 		// Delete all lists, except the last one
@@ -559,4 +681,21 @@ public class FDSeleniumTestSupport extends SeleniumTestSupport {
 
 		selenium.click(XP_KEEP_SHOPPING);
 	}
+	
+	
+	
+	
+	
+	
+	
+	/*-------------------------------------------------------------------------*/
+	
+	public void open4MM(){
+		
+		selenium.click(FD_4_MINUTE_MEALS);
+		selenium.waitForPageToLoad(NORMAL_LOAD_TIMEOUT);
+		assertEquals("FreshDirect - 4-Minute Meals", selenium.getTitle());
+	}
+	
+	
 }

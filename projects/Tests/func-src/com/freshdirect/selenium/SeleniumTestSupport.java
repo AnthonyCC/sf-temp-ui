@@ -25,7 +25,7 @@ public class SeleniumTestSupport extends TestCase {
 		 */
 	    public void setUp() throws Exception {
 	        super.setUp();
-	        this.setUp(SeleniumTestProperties.getSeleniumTestBaseURL(), SeleniumTestProperties.getSeleniumBrowserString(), SeleniumTestProperties.getSeleniumServerPort());
+	        this.setUp(SeleniumTestProperties.getSeleniumTestBaseURL(), SeleniumTestProperties.getSeleniumBrowserString(), SeleniumTestProperties.getSeleniumServerPort(), SeleniumTestProperties.getSeleniumTestHost());
 	        selenium.setSpeed(SeleniumTestProperties.getSeleniumSpeed());
 	    }
 	    
@@ -35,14 +35,19 @@ public class SeleniumTestSupport extends TestCase {
 	     * @param browserString the browser to use, e.g. *firefox
 	     * @throws Exception
 	     */
-	    public void setUp(String url, String browserString, int port) throws Exception {
+	    public void setUp(String url, String browserString, int port, String hosturl) throws Exception {
 	        super.setUp();
 	        if (port == 0) {
-	        	port = getDefaultPort();
+	        	port = SeleniumTestProperties.getSeleniumServerPort();
 	        }
 	        if (url==null) {
-	            url = "http://localhost:" + port;
+	        	/*	changed line commented out, new below it  */
+	        	//url = "http://localhost:" + port;
+	            url = "http://localhost:7001";
 	;
+	        }
+	        if (hosturl == null) {
+	        	hosturl = SeleniumTestProperties.getSeleniumTestHost();
 	        }
 	        selenium = new DefaultSelenium(SeleniumTestProperties.getSeleniumServerHost(), port, browserString, url);
 	        selenium.start();
