@@ -62,8 +62,10 @@ public class CsvExportServlet extends HttpServlet {
 					out.append( '[' );
 					out.append( ((ContentNodeModel)item).getKey() );				
 					out.append( ']' );
+				} else if ( item != null ) {
+					out.append( item.toString() );				
 				} else {
-					out.append( item.toString() );					
+					out.append( "-N/A-" );					
 				}
 				out.append( '"' );
 				if ( i != row.length - 1 )
