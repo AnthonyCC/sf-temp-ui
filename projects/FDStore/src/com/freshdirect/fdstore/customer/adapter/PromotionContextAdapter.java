@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
@@ -176,6 +177,19 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return user.getDepotCode();
 	}
 
+	public String getDepotCode(AddressModel addr) {		
+		if (addr != null && addr instanceof ErpDepotAddressModel) {
+			String locationId = ((ErpDepotAddressModel) addr).getLocationId();
+			DlvDepotModel depot;
+			try {
+				depot = FDDepotManager.getInstance().getDepotByLocationId(locationId);
+			} catch (FDResourceException e) {
+				throw new FDRuntimeException(e);
+			}
+			return depot.getDepotCode();
+		}
+		return user.getDepotCode();
+	}
 	public PromotionI getRedeemedPromotion() {
 		return this.user.getRedeemedPromotion();
 	}
@@ -206,6 +220,38 @@ public class PromotionContextAdapter implements PromotionContextI {
 
 	public EnumOrderType getOrderType() {
 		ErpAddressModel address = this.user.getShoppingCart().getDeliveryAddress();
+		if (address != null) {
+			if (address instanceof ErpDepotAddressModel) {
+				if (((ErpDepotAddressModel) address).isPickup()) {
+					return EnumOrderType.PICKUP;
+				}
+				return EnumOrderType.DEPOT;
+			}
+			if (EnumServiceType.CORPORATE.equals(address.getServiceType())) {
+				return EnumOrderType.CORPORATE;
+			}
+
+			return EnumOrderType.HOME;
+		}
+
+		// no address, work out from user
+		if (user.isPickupOnly()) {
+			return EnumOrderType.PICKUP;
+		}
+
+		if (user.isCorporateUser()) {
+			return EnumOrderType.CORPORATE;
+		}
+
+		if (user.isDepotUser()) {
+			return EnumOrderType.DEPOT;
+		}
+
+		return EnumOrderType.HOME;
+	}
+	
+	public EnumOrderType getOrderType(AddressModel address) {
+		
 		if (address != null) {
 			if (address instanceof ErpDepotAddressModel) {
 				if (((ErpDepotAddressModel) address).isPickup()) {
@@ -334,8 +380,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 			Discount applied = this.getHeaderDiscount();
 			if(this.isMaxDiscountAmount(promotionAmt, promo.getPriority(), applied)){
 				//Clear the previous discount.
-				if(applied != null)
-					this.getShoppingCart().removeDiscount(applied.getPromotionCode());
+				this.getShoppingCart().removeDiscount(applied.getPromotionCode());
 				//Add this discount.
 				Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, promotionAmt);
 				this.addDiscount(discount);
@@ -420,7 +465,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 			if(model==null) return null;
 			Discount applied = model.getDiscount();
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
-			if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+			if(promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
 				return applied;
 			}
 		}
