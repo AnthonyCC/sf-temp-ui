@@ -21,7 +21,6 @@
 			<td align="center" width="25%"><%= qi.getUnassigned() %></td>
 			<td width="25%"><%= qi.getOldest()==null ? "" : CCFormatter.formatCaseDate( qi.getOldest() ) %></td>
 		</tr>
-		<tr><td colspan="5" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 	</logic:iterate>
 	</table>
 </div>

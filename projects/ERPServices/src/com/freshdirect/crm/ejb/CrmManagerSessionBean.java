@@ -208,7 +208,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         try{
             CrmAgentEB agentEB = this.getCrmAgentHome().findByUserIdAndPassword(userId, password);
             if(!agentEB.isActive()){
-                throw new CrmAuthenticationException("Account diabled");
+                throw new CrmAuthenticationException("Account disabled");
             }
             return (CrmAgentModel)agentEB.getModel();
         }catch(ObjectNotFoundException e){

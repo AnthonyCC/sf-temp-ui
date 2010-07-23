@@ -623,3 +623,36 @@ function changeColors(currentId, currentCss){
 			?$(cbId+'Cont').style.display = 'block'
 			:$(cbId+'Cont').style.display = 'none';
 	}
+
+/* clear all form elements under parent element (elemId) */
+function clearElements(elemId){
+	var object = new Array();
+	object[0] = document.getElementById(elemId).getElementsByTagName('input');
+	object[1] = document.getElementById(elemId).getElementsByTagName('textarea');
+	object[2] = document.getElementById(elemId).getElementsByTagName('select');
+	var type = null;
+	for (var x=0; x<object.length; x++){
+		for (var y=0; y<object[x].length; y++){
+			type = object[x][y].type
+			switch(type){
+				case "text":
+				case "textarea":
+				case "password":
+					object[x][y].value = "";
+					break;
+				case "radio":
+				case "checkbox":
+					object[x][y].checked = "";
+					break;
+				case "select-one":
+					object[x][y].options[0].selected = true;
+					break;
+				case "select-multiple":
+					for (z=0; z<object[x][y].options.length; z++){
+						object[x][y].options[z].selected = false;
+					}
+					break;
+			}
+		}
+	}
+}

@@ -52,7 +52,7 @@
          </fd:ErrorHandler>
 		<% //quick fix because of broken build : availableDeliveryZones is alreday declared in previous include file %>
 		<% //List availableDeliveryZones  = (List)pageContext.getAttribute("availableDeliveryZones"); %>
-		<form method='POST' name="frmPromoDlvReq">
+		<form method='POST' name="frmPromoDlvReq" id="frmPromoDlvReq">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
 			<br />
@@ -65,7 +65,7 @@
 					<td>
 						<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 						<input type="submit" value="SAVE CHANGES" onclick="selectZones()" class="promo_btn_brn fleft noMargLR" />
-						<input type="button" class="promo_btn_wht fright noMargLR" onclick="this.form.reset()" value="CLEAR ALL" />
+						<input type="button" class="promo_btn_wht fright noMargLR" onclick="clearElements(this.form.id)" value="CLEAR ALL" />
 					</td>
 					<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>

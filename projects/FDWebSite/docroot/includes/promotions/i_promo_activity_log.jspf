@@ -1,5 +1,5 @@
 <table width="100%" cellspacing="0" cellpadding="0" border="0" class="promo_table1">
-	<tr>
+	<tr class="flatRow">
 		<%-- sets the column widths --%>
 		<td width="16px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -22,9 +22,11 @@
 									
 							</tr>
 							<% if(null ==promoChange.getChangeDetails() || promoChange.getChangeDetails().isEmpty()){ %>
-							<tr>
-								<td colspan="7" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-							</tr>
+								<%-- 
+									<tr>
+										<td colspan="7" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+									</tr>
+								--%>
 							<% } else{ %>
 							<logic:iterate id="promoChangeDetail" collection="<%= promoChange.getChangeDetails() %>" type="com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel" indexId="idy">
 							<tr>
@@ -36,9 +38,6 @@
 									<td>&nbsp;</td>
 									<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 									
-							</tr>
-							<tr>
-								<td colspan="7" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 							</tr>
 							</logic:iterate>
 							<% } %>

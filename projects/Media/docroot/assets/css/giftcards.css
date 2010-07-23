@@ -820,4 +820,11 @@ table.gcTable td {
 	padding: 3px 0px;
 }
 
+table.promo_table1 td {
+	border-bottom: 1px solid #ccc;
+}
 
+.flatRow {
+	line-height: 0px;
+	font-size: 0px;
+}

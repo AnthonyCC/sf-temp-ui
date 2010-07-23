@@ -49,7 +49,7 @@
          <fd:ErrorHandler result="<%=result%>" name="invalidBrands" id="errorMsg">
        		 <%@ include file="/includes/i_error_messages.jspf" %>   
         </fd:ErrorHandler>
-		<form method='POST' name="frmPromoEditOffer">
+		<form method='POST' name="frmPromoEditOffer" id="frmPromoEditOffer">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
 			<br />
@@ -62,7 +62,7 @@
 					<td>
 						<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 						<input type="submit" value="SAVE CHANGES" onclick="" class="promo_btn_brn fleft noMargLR" />
-						<input type="button" class="promo_btn_wht fright noMargLR" onclick="this.form.reset()" value="CLEAR ALL" />
+						<input type="button" class="promo_btn_wht fright noMargLR" onclick="clearElements(this.form.id)" value="CLEAR ALL" />
 					</td>
 					<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>

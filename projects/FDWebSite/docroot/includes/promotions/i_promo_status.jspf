@@ -67,7 +67,7 @@
 							}
 							--%>
 							<% } %>
-							<input type="button" value="VIEW ACTIVITY LOG" class="promo_btn_wht fleft noMargLR" onclick="javascript:activityLogSubmit('<%= promoId %>')" />
+							<input type="button" value="VIEW ACTIVITY LOG" class="promo_btn_wht fleft noMargLR w135px" onclick="javascript:activityLogSubmit('<%= promoId %>')" />
 						</div>
 					</td>
 					<% } %>

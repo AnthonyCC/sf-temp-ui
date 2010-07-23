@@ -452,18 +452,21 @@ a.home_monitor_header_text:active   { color: #FFFFFF; text-decoration: underline
 a.home_monitor_header_text:hover    { background: #CC6666; color: #FFFFCC; text-decoration: none; }
 
 .home_monitor_content {
-background-color: #D6EBD6;
-position: relative;
-/*width: 100%;*/
-padding: 0px;
-padding-top: 3px;
-padding-bottom: 3px;
-color: #000000;
-font-size: 9pt;
+	background-color: #D6EBD6;
+	position: relative;
+	/*width: 100%;*/
+	padding: 0px;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	color: #000000;
+	font-size: 9pt;
 }
 
 .home_monitor_odd_row {
-background-color: #FFFFDF;
+	background-color: #FFFFDF;
+}
+.home_monitor_content td, .case_list_content_text td {
+	border-bottom: 1px solid #999999;
 }
 
 /* HOME */
@@ -536,7 +539,11 @@ background-color: #FFFFCC;
 }
 
 .list_separator {
-background-color: #999999;
+	background-color: #999999;
+	line-height: 1px;
+	height: 1px;
+	padding: 0px;
+	font-size: 1px;
 }
 
 .column_separator {

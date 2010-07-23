@@ -430,6 +430,9 @@ td.promo_edit_offer_label {
 	.w130px {
 		width: 130px;
 	}
+	.w135px {
+		width: 135px;
+	}
 	.w150px {
 		width: 150px;
 	}
@@ -546,7 +549,7 @@ a.promo_ico_cont, a.promo_ico_cont img {
 .promo_nav_back_action {
 }
 
-.promo_nav_back_action-back a {
+.promo_nav_back_action-back a, .promo_nav_back_action-back a:link, .promo_nav_back_action-back a:visited, .promo_nav_back_action-back a:active, .promo_nav_back_action-back a:hover {
 	color: #0c9;
 	padding-left: 8px;
 }

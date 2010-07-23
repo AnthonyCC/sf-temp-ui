@@ -66,7 +66,6 @@ if (page_URI.indexOf("/main/index") > -1 ) {
 					<td width="12%"><%= ai.getClosed() %></td>
 					<td width="18%"><%= ai.getOldest()==null ? "" : CCFormatter.formatCaseDate( ai.getOldest() ) %></td>
 				</tr>
-				<tr><td colspan="8" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 			<% 
 			i++;
 			} 

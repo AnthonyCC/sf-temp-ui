@@ -282,20 +282,20 @@ session.setAttribute(SessionName.USER,null);
 						<% if (searchErrorMsg != null && !searchErrorMsg.equals("") && "customer".equalsIgnoreCase(searchType)) { %>
 							<span class="error">&raquo; <%= searchErrorMsg %></span><br />
 						<% } %>
-						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
 						<form name="giftcard_search" id="giftcard_search" action="/gift_card/giftcard_landing.jsp">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
 							<tr>
 								<td><span class="module_header_text">Gift Card Search <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmGiftCardHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Gift Card Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a></span></td>
 							</tr>
 						</table>
-						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 2.2em; 0px;">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 40px; text-align: center;">
 							<tr>
 								<td>Gift Card # : <input type="text" style="width: 140px;" class="input_text" name="gcNumber"/> <span class="gcCertFullNumbNote">certificate or full number</span></td>
-								<td>Recipient Email : <input type="text" style="width: 140px;" class="input_text" name="recEmail"/></td>
-								<td><input class="submit" type="submit" name="SEARCH" value="SEARCH GIFT CARD" />
+								<td>Recipient Email : <input type="text" style="width: 140px;" class="input_text" name="recEmail" /></td>
+								<td><input class="submit" type="submit" name="SEARCH" value="SEARCH GIFT CARD" /></td>
 							</tr>
-						</form>
 						</table>
+						</form>
 					</div>
 				</td>
 				<td>
@@ -305,7 +305,7 @@ session.setAttribute(SessionName.USER,null);
 								<td><span class="module_header_text">Gift Card Balance Check</span></td>
 							</tr>
 						</table>
-						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 2.2em; 0px; text-align: center;">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="gcSearchModuleContent" style="height: 40px; text-align: center;">
 							<tr>
 								<td>Gift Card # : <input type="text" id='gcCheckBalanceBox_gcNumb' style="width: 150px;" class="input_text" name="gcNumber"/></td>
 								<td><div id="gcCheckBalanceBoxMsg">&nbsp;</div></td>

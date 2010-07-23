@@ -221,7 +221,6 @@ JspTableSorter sort = new JspTableSorter(request);
 				</td>
 				
 			</tr>
-			<tr class="list_separator" style="padding: 0px;"><td colspan="<%= case_history ? "9" : "10"  %>"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 		</logic:iterate>
 	</table>
 </div>

@@ -25,9 +25,9 @@
 					<td>
 						<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 						<%if(FDStoreProperties.isPromoPublishNodeMaster() && !promotion.isOnHold()){ %>
-						<input type="button" value="EDIT PROMOTION" onclick="javascript:editPromotionSubmit('<%= promoId %>')" class="promo_btn_brn fleft noMargLR" />
+						<input type="button" value="EDIT PROMOTION" onclick="javascript:editPromotionSubmit('<%= promoId %>')" class="promo_btn_brn fleft noMargLR w125px" />
 						<% } %>
-						<input type="button" value="BACK TO DETAIL VIEW" onclick="javascript:promotionDetailSubmit('<%= promoId %>')" class="promo_btn_wht fright noMargLR" />
+						<input type="button" value="BACK TO DETAIL VIEW" onclick="javascript:promotionDetailSubmit('<%= promoId %>')" class="promo_btn_wht fright noMargLR w150px" />
 					</td>
 					<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>
