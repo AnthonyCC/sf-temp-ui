@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +24,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.crm.CrmAgentInfo;
 import com.freshdirect.crm.CrmAgentList;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAuthenticationException;
@@ -39,6 +39,7 @@ import com.freshdirect.crm.CrmCaseState;
 import com.freshdirect.crm.CrmCaseTemplate;
 import com.freshdirect.crm.CrmCustomerHeaderInfo;
 import com.freshdirect.crm.CrmLateIssueModel;
+import com.freshdirect.crm.CrmQueueInfo;
 import com.freshdirect.crm.CrmStatus;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.ActivityLog;
@@ -54,6 +55,7 @@ import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerSB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
@@ -127,21 +129,20 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
     
     public CrmAgentList getAllAgents() throws FDResourceException {
         try{
-            Collection agentEB = this.getCrmAgentHome().findAll();
+            Collection<CrmAgentEB> agentEB = this.getCrmAgentHome().findAll();
             List<CrmAgentModel> agents = new ArrayList<CrmAgentModel>();
-            for (Iterator i = agentEB.iterator(); i.hasNext();) {
-                CrmAgentEB eb = (CrmAgentEB) i.next();
+            for ( CrmAgentEB eb : agentEB ) {
                 agents.add((CrmAgentModel) eb.getModel());
             }
             return new CrmAgentList(agents);
         }catch(FinderException e){
-            throw new FDResourceException(e, "FinderExzception");
+            throw new FDResourceException(e, "FinderException");
         }catch(RemoteException e){
             throw new FDResourceException(e, "Cannot talk to CrmAgentEB");
         }
     }
     
-    public List findCases(CrmCaseTemplate template) throws FDResourceException {
+    public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
         Connection conn = null;
         try{
             conn = this.getConnection();
@@ -158,7 +159,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    public List getQueueOverview() throws FDResourceException {
+    public List<CrmQueueInfo> getQueueOverview() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -175,7 +176,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
         }
     }
     
-    public List getCSROverview() throws FDResourceException {
+    public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -452,7 +453,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
     }
 
-    public List getOperations() throws FDResourceException {
+    public List<CrmCaseOperation> getOperations() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -656,7 +657,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 
 	}
 
-	public Collection getLateIssuesByRouteAndDate(String route,Date dateOfDlv) throws FDResourceException {
+	public Collection<CrmLateIssueModel> getLateIssuesByRouteAndDate(String route,Date dateOfDlv) throws FDResourceException {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -675,7 +676,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	
 	}
 
-	public Collection getLateIssuesByDate(Date dateOfDlv) throws  FDResourceException  {
+	public Collection<CrmLateIssueModel> getLateIssuesByDate(Date dateOfDlv) throws  FDResourceException  {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -712,7 +713,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	}
 
 	
-	public List getTruckNumbersForDate(Date date) throws FDResourceException {
+	public List<ErpTruckInfo> getTruckNumbersForDate(Date date) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
 			return erpCustomerManagerSB.getTruckNumbersForDate(date);
@@ -743,7 +744,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			template.setChangeOrderId(saleId);
 			//BSGS Pass.
 			template.setActivityType(EnumAccountActivityType.CREDIT_DLV_PASS);
-			Collection credits = ActivityLog.getInstance().findActivityByTemplate(template);
+			Collection<ErpActivityRecord> credits = ActivityLog.getInstance().findActivityByTemplate(template);
 			if((credits.size()+delta) >3){
 				//He has already got 3 or more weeks extensions on this order. Further extensions
 				//need to handled by the supervsior.
@@ -795,7 +796,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 			template.setChangeOrderId(saleId);
 			//Unlimited Pass.
 			template.setActivityType(EnumAccountActivityType.EXTEND_DLV_PASS);
-			Collection extns = ActivityLog.getInstance().findActivityByTemplate(template);
+			Collection<ErpActivityRecord> extns = ActivityLog.getInstance().findActivityByTemplate(template);
 			if((extns.size()+(int)(noOfDays/7)) >3){//must come from template.
 				
 	            CrmAgentHome home = this.getCrmAgentHome();
@@ -852,7 +853,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 				ErpCustomerEB erpCustomer = this.getErpCustomerHome().findByPrimaryKey(new PrimaryKey(model.getCustomerId()));
 				ErpCustomerInfoModel custInfo=erpCustomer.getCustomerInfo();
 				if(isAutoRenewDPCustomer(custInfo.getHasAutoRenewDP()) ) {
-						List autoRenewPasses=dlvPassManagerSB.getUsableAutoRenewPasses(model.getCustomerId());
+						List<DeliveryPassModel> autoRenewPasses=dlvPassManagerSB.getUsableAutoRenewPasses(model.getCustomerId());
 						if(autoRenewPasses.size()==0) {
 						
 							custInfo.setHasAutoRenewDP("N");
@@ -952,7 +953,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 	 * @param accountNum -- CC/Checking Account Number.
 	 * @return Orders that were placed using this Account Number.
 	 */
-	public List lookupOrders(String accountNum) throws FDResourceException{
+	public List<String> lookupOrders(String accountNum) throws FDResourceException{
         Connection conn = null;
         try{
             conn = this.getConnection();
@@ -1056,7 +1057,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public Collection getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
+	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
         Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -1075,7 +1076,7 @@ public class CrmManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 	
-	public Collection getAllCannedText() throws FDResourceException {
+	public Collection<ErpCannedText> getAllCannedText() throws FDResourceException {
         Connection conn = null;
 		try {
 			conn = this.getConnection();

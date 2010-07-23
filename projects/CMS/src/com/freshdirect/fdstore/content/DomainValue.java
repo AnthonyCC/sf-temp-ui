@@ -1,21 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.content;
 
 import com.freshdirect.cms.ContentKey;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class DomainValue extends ContentNodeModelImpl {
 
 	public DomainValue(ContentKey cKey) {

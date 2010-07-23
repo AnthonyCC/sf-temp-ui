@@ -15,7 +15,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.delivery.EnumReservationType"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
-<%@ page import="com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine" %>
+<%@ page import="com.freshdirect.fdstore.promotion.PromotionHelper" %>
 <%@ page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%>
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason"%>
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
@@ -193,25 +193,23 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		hasCapacity = hasCapacity || lst.hasCapacity();
 	}
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
-	//get amount for zone promotion
-	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zoneId);
-	String zonePromoString=null;
-	if(zonePromoAmount>0)
+	//get zone promotion codes
+    double zonePromoAmount=0.0;
+    String zonePromoString=null;
+	Set promoCodes=PromotionHelper.getEligiblePromoCodes(user,zoneId);
+	if(promoCodes != null && promoCodes.size() > 0)
 	{
-		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
 		request.setAttribute("SHOW_WINDOWS_STEERING","true");
 	}
 %>
-
-<script type="text/javascript">
+<script>
+var zonePromoString=""; 
 var zonePromoEnabled=false;
-<% if (zonePromoAmount>0)  { %>
-zonePromoString=<%=zonePromoString %>'; 
+<%if(zonePromoAmount>0){ %>
+zonePromoString="<%=zonePromoString %>"; 
 zonePromoEnabled=true;
-<% } %>
+<%} %>
 </script>
-
-
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
 <tmpl:put name='content' direct='true'>
@@ -344,7 +342,7 @@ if (errorMsg!=null) {%>
 	</td>
 	<td align="right">
 	<%if(zonePromoAmount>0){ %>
-	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
 	<%}%>
 	</td></tr>
 	</table>

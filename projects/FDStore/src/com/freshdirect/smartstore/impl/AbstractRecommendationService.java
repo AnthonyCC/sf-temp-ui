@@ -32,6 +32,7 @@ import com.freshdirect.smartstore.sampling.RankedContent;
  * 
  */
 public abstract class AbstractRecommendationService implements RecommendationService {
+	
 	@SuppressWarnings("unused")
 	private static Category LOGGER = LoggerFactory.getInstance(AbstractRecommendationService.class);
 
@@ -95,7 +96,6 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 		return "";
 	}
 
-	@SuppressWarnings("unchecked")
 	protected List<ContentNodeModel> sample(SessionInput input, List<RankedContent.Single> nodes, boolean aggregatable) {
 		Set<ContentNodeModel> emptySet = Collections.emptySet();
 		return sample(input, nodes, aggregatable, emptySet);
@@ -147,7 +147,6 @@ public abstract class AbstractRecommendationService implements RecommendationSer
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[sampler=" + sampler
-				+ ", includeCartItems=" + isIncludeCartItems() + "]";
+		return getClass().getSimpleName() + "[sampler=" + sampler + ", includeCartItems=" + isIncludeCartItems() + "]";
 	}
 }

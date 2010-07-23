@@ -11,11 +11,11 @@ import com.freshdirect.crm.CrmCaseOperation;
 
 public class CrmCaseOperationDAO {
 
-	public List loadAll(Connection conn) throws SQLException {
+	public List<CrmCaseOperation> loadAll(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.CASE_OPERATION");
 		ResultSet rs = ps.executeQuery();
 
-		List l = new ArrayList();
+		List<CrmCaseOperation> l = new ArrayList<CrmCaseOperation>();
 		while (rs.next()) {
 			String roleCode = rs.getString("ROLE");
 			String subjectCode = rs.getString("CASE_SUBJECT");
@@ -44,7 +44,6 @@ public class CrmCaseOperationDAO {
         
         CrmCaseOperation op = null;
         
-		List l = new ArrayList();
 		if (rs.next()) {
 			String roleCode = rs.getString("ROLE");
 			String subjectCode = rs.getString("CASE_SUBJECT");
@@ -52,9 +51,7 @@ public class CrmCaseOperationDAO {
 			String endStateCode = rs.getString("END_CASE_STATE");
 			String actionTypeCode = rs.getString("CASEACTION_TYPE");
             
-			op = new CrmCaseOperation(roleCode, subjectCode, startStateCode, endStateCode, actionTypeCode);
-            
-			l.add(op);
+			op = new CrmCaseOperation(roleCode, subjectCode, startStateCode, endStateCode, actionTypeCode);            
 		}
         
 		rs.close();

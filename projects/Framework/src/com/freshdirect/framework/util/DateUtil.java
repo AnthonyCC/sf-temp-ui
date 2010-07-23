@@ -134,6 +134,10 @@ public class DateUtil {
 		return DATE_YEAR_FORMATTER.parse(dateValue);
 	}
 	
+	public static Date parseMDY(String dateValue) throws ParseException{
+		return MONTH_DATE_YEAR_FORMATTER.parse(dateValue);
+	}
+	
 	public static String format(Date dateValue) {
 		return DATE_YEAR_FORMATTER.format(dateValue);
 	}

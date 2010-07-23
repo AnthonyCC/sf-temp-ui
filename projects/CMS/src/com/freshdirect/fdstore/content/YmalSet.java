@@ -16,8 +16,8 @@ import org.apache.commons.collections.functors.AndPredicate;
 import org.apache.commons.collections.functors.OrPredicate;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
@@ -45,16 +45,16 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  The list of node types to return for getYmalProducts.
 	 *  @see #getYmalProducts()
 	 */
-	private static final Collection ymalProductTypes;
+	private static final Collection<ContentType> ymalProductTypes;
 	
 	/**
 	 *  The YMAL items in this ymal set.
 	 */
-	private final List ymals = new ArrayList();
-	private final List recommenders = new ArrayList();
+	private final List<ContentNodeModel> ymals = new ArrayList<ContentNodeModel>();
+	private final List<Recommender> recommenders = new ArrayList<Recommender>();
 	
 	static {
-		ymalProductTypes = new ArrayList(3);
+		ymalProductTypes = new ArrayList<ContentType>(3);
 		ymalProductTypes.add(FDContentTypes.PRODUCT);
 		ymalProductTypes.add(FDContentTypes.CONFIGURED_PRODUCT);
 		ymalProductTypes.add(FDContentTypes.CONFIGURED_PRODUCT_GROUP);
@@ -160,7 +160,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return all YMAL products contained in this Ymal Set,
 	 *          which are of ContentNodeModel type
 	 */
-	public List getYmals() {
+	public List<ContentNodeModel> getYmals() {
 		ContentNodeModelUtil.refreshModels(this, "ymals", ymals, false);
 		return Collections.unmodifiableList(ymals);
 	}
@@ -172,18 +172,17 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return a list of objects of the specified content type, which are
 	 *          YMALs of this ymal set.
 	 */
-	private List getYmals(ContentType type) {
-		List values = getYmals();
-		List l      = new ArrayList(values.size());
+	@SuppressWarnings( "unchecked" )
+	private <T extends ContentNodeModel> List<T> getYmals(ContentType type) {
+		List<ContentNodeModel> values = getYmals();
+		List<T> l = new ArrayList<T>( values.size() );
 		
-		for (Iterator i = values.iterator(); i.hasNext(); ) {
-			ContentNodeModel  node = (ContentNodeModel) i.next();
-			ContentKey        k    = node.getContentKey();
-			if (type.equals(k.getType())) {
-				l.add(node);
+		for ( ContentNodeModel  node : values ) {
+			ContentKey k = node.getContentKey();
+			if ( type.equals( k.getType() ) ) {
+				l.add((T)node);
 			}
-		}
-		
+		}		
 		return l;
 	}
 
@@ -195,18 +194,17 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return a list of objects of the specified content types, which are
 	 *          YMALs of this ymal set.
 	 */
-	private List getYmals(Collection types) {
-		List values = getYmals();
-		List l      = new ArrayList(values.size());
+	@SuppressWarnings( "unchecked" )
+	private <T extends ContentNodeModel> List<T> getYmals(Collection<ContentType> types) {
+		List<ContentNodeModel> values = getYmals();
+		List<T> l = new ArrayList<T>( values.size() );
 		
-		for (Iterator i = values.iterator(); i.hasNext(); ) {
-			ContentNodeModel  node = (ContentNodeModel) i.next();
-			ContentKey        k    = node.getContentKey();
+		for ( ContentNodeModel node : values ) {
+			ContentKey k = node.getContentKey();
 			if (types.contains(k.getType())) {
-				l.add(node);
+				l.add((T)node);
 			}
-		}
-		
+		}		
 		return l;
 	}
 
@@ -218,7 +216,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *          ProductModelImpl and ConfiguredProduct type.
 	 *  @see #getYmals()
 	 */
-	public List getYmalProducts() {
+	public List<ProductModel> getYmalProducts() {
 		return getYmals(ymalProductTypes);
 	}
 	
@@ -229,7 +227,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalCategories() {
+	public List<CategoryModel> getYmalCategories() {
 		return getYmals(FDContentTypes.CATEGORY);
 	}
 	
@@ -240,7 +238,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalRecipes() {
+	public List<Recipe> getYmalRecipes() {
 		return getYmals(FDContentTypes.RECIPE);
 	}
 	
@@ -252,11 +250,11 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  @return a list of Recipe objects, that have the product
 	 *          (with any of its SKUs) as a required ingredient.
 	 */
-	public static Collection getAutoCrossSellRecipes(ProductModel product) {		
+	public static Collection<Recipe> getAutoCrossSellRecipes(ProductModel product) {		
 		ContentTypeServiceI typeService;
 		ContentServiceI 	contentService;
 		ContentFactory      contentFactory;
-		Set 				skus;
+		Set<ContentKey> 	skus;
 		ContentTypeDefI		recipeDef;
 		ContentTypeDefI     recipeVariantDef;
 		ContentTypeDefI     recipeSectionDef;
@@ -277,31 +275,24 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		Predicate           requiredLowerCasePredicate;
 		Predicate           itemsPredicate;
 		Predicate           skuPredicate;
-		Map					results;
-		List				recipes;
+		Map<ContentKey,ContentNodeI>	results;
+		List<Recipe>		recipes;
 
 		contentService = CmsManager.getInstance();
 		typeService    = contentService.getTypeService();
 		contentFactory = ContentFactory.getInstance();
 		
-		recipeDef        = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE);
-		recipeVariantDef = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE_VARIANT);
-		recipeSectionDef = typeService.getContentTypeDefinition(
-												FDContentTypes.RECIPE_SECTION);
-		configuredProductDef = typeService.getContentTypeDefinition(
-												FDContentTypes.CONFIGURED_PRODUCT);
-		configuredProductGroupDef = typeService.getContentTypeDefinition(
-										FDContentTypes.CONFIGURED_PRODUCT_GROUP);
+		recipeDef = typeService.getContentTypeDefinition( FDContentTypes.RECIPE );
+		recipeVariantDef = typeService.getContentTypeDefinition( FDContentTypes.RECIPE_VARIANT );
+		recipeSectionDef = typeService.getContentTypeDefinition( FDContentTypes.RECIPE_SECTION );
+		configuredProductDef = typeService.getContentTypeDefinition( FDContentTypes.CONFIGURED_PRODUCT );
+		configuredProductGroupDef = typeService.getContentTypeDefinition( FDContentTypes.CONFIGURED_PRODUCT_GROUP );
 		
 		// get the skus as ContentKey objects
-		skus = new HashSet();
-		for (Iterator it = product.getSkuCodes().iterator(); it.hasNext(); ) {
-			String     		skuCode = (String) it.next();
-			ContentKey 		key     = new ContentKey(FDContentTypes.SKU, skuCode);
-			
-			skus.add(key);
+		skus = new HashSet<ContentKey>();
+		for ( String skuCode : product.getSkuCodes() ) {
+			ContentKey key = new ContentKey( FDContentTypes.SKU, skuCode );
+			skus.add( key );
 		}
 		
 		// the predicate built up here looks like this:
@@ -405,13 +396,11 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		variantPredicate = new RelationshipAnyPredicate(variantsRelDef,
 				                                        variantPredicate);
 
-		results         = contentService.queryContentNodes(FDContentTypes.RECIPE,
-												           variantPredicate);
+		results = contentService.queryContentNodes( FDContentTypes.RECIPE, variantPredicate );
 		
 		// present the results as a list of Recipe objects
-		recipes = new ArrayList();
-		for (Iterator it = results.keySet().iterator(); it.hasNext();) {
-			ContentKey key = (ContentKey) it.next();
+		recipes = new ArrayList<Recipe>();
+		for ( ContentKey key : results.keySet() ) {
 			Recipe recipe = (Recipe) contentFactory.getContentNode(key.getId());
 			recipes.add(recipe);
 		}
@@ -426,20 +415,20 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	public void resetActiveYmalSetSession() {
 	}
 
-	public List getYmalProducts(Set removeSkus) {
+	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
 		if (removeSkus == null || removeSkus.isEmpty())
 			return getYmalProducts();
 		
-		List prods = getYmalProducts();
-		ListIterator it = prods.listIterator();
+		List<ProductModel> prods = getYmalProducts();
+		ListIterator<ProductModel> it = prods.listIterator();
 		while (it.hasNext()) {
-			ProductModel p = (ProductModel) it.next();
-			Iterator it2 = p.getSkus().iterator();
+			ProductModel p = it.next();
+			Iterator<SkuModel> it2 = p.getSkus().iterator();
 			outer: while (it2.hasNext()) {
-				String skuCode = ((SkuModel) it2.next()).getSkuCode();
-				Iterator it3 = removeSkus.iterator();
+				String skuCode = it2.next().getSkuCode();
+				Iterator<FDSku> it3 = removeSkus.iterator();
 				while (it3.hasNext()) {
-					String removeSkuCode = ((FDSku) it3.next()).getSkuCode();
+					String removeSkuCode = it3.next().getSkuCode();
 					if (skuCode.equals(removeSkuCode)) {
 						it.remove();
 						break outer;
@@ -450,8 +439,8 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 		return prods;
 	}
 	
-	public List getRelatedProducts() {
-		return Collections.EMPTY_LIST;
+	public List<ProductModel> getRelatedProducts() {
+		return Collections.<ProductModel>emptyList();
 	}
 	
 	public String getYmalHeader() {
@@ -462,7 +451,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	    return getAttribute("title", ""); 
 	}
 	
-	public List getRecommenders() {
+	public List<Recommender> getRecommenders() {
 		ContentNodeModelUtil.refreshModels(this, "recommenders", recommenders, false);
 		return Collections.unmodifiableList(recommenders);
 	}

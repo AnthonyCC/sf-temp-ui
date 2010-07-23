@@ -1435,7 +1435,7 @@ public class FDCustomerManager {
 	}
 
 	
-	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail)
+	public static FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays)
 		throws FDResourceException, ErpTransactionException, DeliveryPassException {
 		if (managerHome == null) {
 			lookupManagerHome();
@@ -1444,7 +1444,7 @@ public class FDCustomerManager {
 		try {
 			if (orderBelongsToUser(info.getIdentity(), saleId)) {
 				FDCustomerManagerSB sb = managerHome.create();
-				return sb.cancelOrder(info, saleId, sendEmail);
+				return sb.cancelOrder(info, saleId, sendEmail, currentDPExtendDays);
 			}
 			
 			throw new FDResourceException("Order not found in current user's order history.");

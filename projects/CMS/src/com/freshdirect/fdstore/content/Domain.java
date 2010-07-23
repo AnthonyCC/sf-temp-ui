@@ -33,7 +33,8 @@ public final class Domain extends ContentNodeModelImpl {
         return new ArrayList<DomainValue>(valueModels);
     }
     
-    public List<ContentKey> getDomainValueKeys() {
+    @SuppressWarnings( "unchecked" )
+	public List<ContentKey> getDomainValueKeys() {
         return (List<ContentKey>) getCmsAttributeValue("domainValues");
     }
     

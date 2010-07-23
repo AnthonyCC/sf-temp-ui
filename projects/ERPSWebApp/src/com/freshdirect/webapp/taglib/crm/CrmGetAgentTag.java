@@ -8,7 +8,7 @@ import com.freshdirect.crm.CrmManager;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class CrmGetAgentTag extends AbstractGetterTag {
+public class CrmGetAgentTag extends AbstractGetterTag<CrmAgentModel> {
 
 	private static final String AGENT_SESSION_NAME = "EDITING_AGENT";
 	private String agentId;
@@ -17,7 +17,7 @@ public class CrmGetAgentTag extends AbstractGetterTag {
 		this.agentId = agentID;
 	}
 
-	protected Object getResult() throws Exception {
+	protected CrmAgentModel getResult() throws Exception {
 		HttpSession session = pageContext.getSession();
 		CrmAgentModel agent = (CrmAgentModel) session.getAttribute(AGENT_SESSION_NAME);
 		if (agent == null || !agent.getPK().getId().equalsIgnoreCase(this.agentId)) {

@@ -27,12 +27,12 @@ JspTableSorter sort = new JspTableSorter(request);
 
 Comparator<ErpActivityRecord> comp = ACTIVITY_COMPARATORS.get(sort.getSortBy());
 if (comp == null) {
-	Collections.sort(activities, new ReverseComparator(ErpActivityRecord.COMP_DATE));
+	Collections.sort(activities, new ReverseComparator<ErpActivityRecord>(ErpActivityRecord.COMP_DATE));
 } else {
 	if (comp.equals(ErpActivityRecord.COMP_DATE)) {
-		Collections.sort(activities, sort.isAscending() ? new ReverseComparator(comp) : comp);
+		Collections.sort(activities, sort.isAscending() ? new ReverseComparator<ErpActivityRecord>(comp) : comp);
 	} else {
-		Collections.sort(activities, sort.isAscending() ? comp : new ReverseComparator(comp));
+		Collections.sort(activities, sort.isAscending() ? comp : new ReverseComparator<ErpActivityRecord>(comp));
 	}
 }
 %>
@@ -63,7 +63,7 @@ if (comp == null) {
 				<td width="1%"></td>
 				<td width="18%"><%= CCFormatter.formatDateTime(activity.getDate()) %></td>
 				<td width="52%"><b><%= activity.getActivityType().getName() %></b><%= (activity.getNote() != null && !"".equals(activity.getNote())) ? " - " : "" %><%= activity.getNote() %></td>
-				<td width="14%"><%= activity.getInitiator() %></td>
+				<td width="14%"><%= activity.getMasqueradeAgent() == null ? activity.getInitiator() : activity.getMasqueradeAgent() + " as " + activity.getInitiator() %></td>
 				<td width="14%"><%= activity.getSource().getName() %></td>
 			</tr>
 			<tr class="list_separator" style="padding: 0px;"><td colspan="5"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>

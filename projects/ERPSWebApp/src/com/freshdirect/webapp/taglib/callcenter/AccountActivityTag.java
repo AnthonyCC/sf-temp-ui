@@ -1,16 +1,5 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib.callcenter;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import javax.servlet.http.HttpSession;
@@ -26,12 +15,10 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class AccountActivityTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName {
+
+	private static final long	serialVersionUID	= -8382817181253847058L;
 
 	private static Category LOGGER = LoggerFactory.getInstance(AccountActivityTag.class);
 
@@ -57,7 +44,7 @@ public class AccountActivityTag extends com.freshdirect.framework.webapp.BodyTag
 			pageContext.setAttribute(this.activities, ActivityLog.getInstance().findActivityByTemplate(template));
 		} catch (FDResourceException ex) {
 			LOGGER.debug("Error getting customer activity...", ex);
-			pageContext.setAttribute(this.activities, Collections.EMPTY_LIST);
+			pageContext.setAttribute(this.activities, Collections.<ErpActivityRecord>emptyList());
 		}
 		return EVAL_BODY_BUFFERED;
 	}

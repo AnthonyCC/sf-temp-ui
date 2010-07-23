@@ -313,8 +313,8 @@ public class ErpSaleInfoDAO {
 			+ "group by s.truck_number "
 			+ "order by s.truck_number ";
 
-	public static List getTruckNumbersForDate(Connection conn, java.util.Date deliveryDate) throws SQLException {
-		List ret = new ArrayList();
+	public static List<ErpTruckInfo> getTruckNumbersForDate(Connection conn, java.util.Date deliveryDate) throws SQLException {
+		List<ErpTruckInfo> ret = new ArrayList<ErpTruckInfo>();
 		Calendar dlvCal = DateUtil.truncate(DateUtil.toCalendar(deliveryDate));
 
 		PreparedStatement ps = conn.prepareStatement(TRUCK_NUMBER_QUERY);

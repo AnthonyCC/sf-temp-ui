@@ -1,41 +1,34 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
-import java.io.IOException;
 
-import com.freshdirect.fdstore.*;
-import com.freshdirect.fdstore.content.ContentFactory;
-import com.freshdirect.fdstore.customer.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+
+import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
-
 import com.freshdirect.webapp.util.RobotRecognizer;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
+
 public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport implements SessionName {
     
-    private static Category LOGGER = LoggerFactory.getInstance( CheckLoginStatusTag.class );
+	private static final long	serialVersionUID	= -5813651711727931409L;
+
+	private static Category LOGGER = LoggerFactory.getInstance( CheckLoginStatusTag.class );
     
     private String id;
     private String redirectPage;
@@ -98,7 +91,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 session.setAttribute(SessionName.USER, user);
             }
 
-            // // new COS changes redirct corporate user to corporate page
+            // // new COS changes redirect corporate user to corporate page
             if (user != null)
                 LOGGER.debug("entering the corporate check" + user.getUserServiceType());
 
@@ -125,7 +118,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             //
             if (user == null) {
                 FDUser robotUser = new FDUser(new PrimaryKey("robot"));
-                Set availableServices = new HashSet();
+                Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
                 availableServices.add(EnumServiceType.HOME);
                 robotUser.setSelectedServiceType(EnumServiceType.HOME);
                 robotUser.setAvailableServices(availableServices);
@@ -165,7 +158,7 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
                 //
                 if (user == null) {
                     FDUser robotUser = new FDUser(new PrimaryKey("robot"));
-                    Set availableServices = new HashSet();
+                    Set<EnumServiceType> availableServices = new HashSet<EnumServiceType>();
                     availableServices.add(EnumServiceType.HOME);
                     robotUser.setSelectedServiceType(EnumServiceType.HOME);
                     robotUser.setAvailableServices(availableServices);
@@ -188,6 +181,9 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         	ContentFactory.getInstance().setCurrentPricingContext(user.getPricingContext());
         else
         	LOGGER.warn("cannot set pricing context");
+        
+        // Set/clear masquerade agent for activity logging
+        FDActionInfo.setMasqueradeAgentTL( (String)session.getAttribute( "masqueradeAgent" ) );
 
         /*
          * 

@@ -1,5 +1,6 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.util.*' %>
+<%@ page import="java.util.Enumeration"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
@@ -13,7 +14,7 @@ if (user!=null) {
 }
 
 // clear session
-java.util.Enumeration e = session.getAttributeNames();
+Enumeration<String> e = session.getAttributeNames();
 while (e.hasMoreElements()) {
     String name = (String)e.nextElement();
     session.removeAttribute(name);
@@ -37,6 +38,7 @@ if (toSiteAccess) {
 }
 
 %>
+
 
 <tmpl:insert template='/common/template/no_site_nav.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Logged Out</tmpl:put>

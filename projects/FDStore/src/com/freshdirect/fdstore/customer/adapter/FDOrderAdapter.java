@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -1028,7 +1029,7 @@ public class FDOrderAdapter implements FDOrderI {
 				totalDiscountAmount += discountLine.getDiscount().getAmount();
 			}
 		}
-		return totalDiscountAmount;
+		return MathUtil.roundDecimal(totalDiscountAmount);
 	}
 
 	public List<ErpDiscountLineModel> getActualDiscounts() { 
@@ -1230,5 +1231,38 @@ public class FDOrderAdapter implements FDOrderI {
 	
 	public String getStandingOrderId() {
 		return sale.getStandingOrderId();
+	}
+	
+	public boolean isDiscountInCart(String promoCode) {
+		for ( FDCartLineI cartLine : orderLines ) {
+			if(cartLine.getDiscount() !=  null){
+				String discountCode = cartLine.getDiscount().getPromotionCode();
+				if(discountCode.equals(promoCode)) return true;
+			}
+		}
+        return false;
+	}
+	
+	public double getLineItemDiscountAmount(String promoCode){
+		double discountAmt=0;
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
+			if(cartLine.getDiscount() !=  null && cartLine.getDiscount().getPromotionCode().equals(promoCode)){
+				discountAmt+=cartLine.getDiscountAmount();
+			}
+		}
+        return discountAmt;
+	}
+	
+	public double getDiscountValue(String promoCode) {
+		double totalDiscountAmount = 0.0;
+		if ( erpOrder.getDiscounts() != null && erpOrder.getDiscounts().size() > 0 ) {
+			for ( ErpDiscountLineModel discountLine : erpOrder.getDiscounts() ) {
+				if(promoCode.equals(discountLine.getDiscount().getPromotionCode())) {
+					totalDiscountAmount += discountLine.getDiscount().getAmount();
+				}
+			}
+		}
+		return MathUtil.roundDecimal(totalDiscountAmount);
 	}
 }

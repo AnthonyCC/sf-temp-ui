@@ -1,0 +1,183 @@
+<table width="100%" height="76%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+	<tr>
+		<%-- first td sets the row heights --%>
+		<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<%-- sets the column widths --%>
+		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="34%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="33%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+	<tr>
+		<td><img width="0" height="50" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td class="bordLgrayDash noBorderTL alignC"><input type="radio" id="discount_type_header" name="discount_type" value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> HEADER</td>
+		<td class="bordLgrayDash noBorderT alignC"><input type="radio" id="discount_type_line_item" name="discount_type" value="<%= EnumPromotionType.LINE_ITEM.getName() %>" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> LINE ITEM</td>
+		<td class="bordLgrayDash noBorderTR alignC"><input type="radio" id="discount_type_sample" name="discount_type" value="<%= EnumPromotionType.SAMPLE.getName() %>" <%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> SAMPLE</td>
+	</tr>
+	<tr>
+		<td><img width="0" height="500" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	<%-- HEADER COL --%>
+		<td class="bordLgrayDash noBorderL vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Discount:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse">
+							<tr>
+								<td><input type="radio" id="header_discount_type_perc" name="header_discount_type" value="perc" <%= (EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && !"".equals(promotion.getPercentOff()))?"checked":"" %>/></td>
+								<% if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
+								<td><input type="text" id="hd_perc" name="hd_perc" class="w30px" value="<%= promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
+								<% } else { %>
+								<td><input type="text" id="hd_perc" name="hd_perc" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
+								<% } %>
+							</tr>
+							
+							<tr>
+								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>								
+							</tr>
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td><input type="radio" id="" name="header_discount_type" value="amount" <%= !"".equals(promotion.getMaxAmount())?"checked":""%>/></td>
+								<td>$ <input type="text" id="hd_amt" name="hd_amt" class="w50px" value="<%= promotion.getMaxAmount()%>"/></td>
+							</tr>
+							<tr>
+								<td colspan="2">&nbsp;</td>								
+							</tr>
+							<tr>
+								<td colspan="2" align="left">
+								<select id="header_discount_type_all" name="header_discount_type_all" class="promo_filter w150px">
+									<option value="<%= EnumPromotionType.GENERIC.getName() %>" ><%= EnumPromotionType.GENERIC.getDescription() %></option>
+									<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.GIFT_CARD.getDescription() %></option>
+									<option value="<%= EnumPromotionType.WINDOW_STEERING.getName() %>" <%= EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.WINDOW_STEERING.getDescription() %></option>
+								</select></td>
+							</tr>
+							<tr>
+								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>								
+							</tr>
+							
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td><input type="radio" id="header_discount_type_hd_free" name="header_discount_type" value="hd_free" <%= EnumPromotionType.WAIVE_CHARGE.getName().equalsIgnoreCase(promotion.getOfferType()) && "DLV".equalsIgnoreCase(promotion.getWaiveChargeType())?"checked":""%>/></td>
+								<td>Free Delivery <span class="gray"> (incl. fuel surcharge)</span></td>
+							</tr>
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td class="vTop"><input type="radio" id="header_discount_type_hd_extend_dp" name="header_discount_type" value="hd_extend_dp" <%= ( EnumPromotionType.DP_EXTENSION.getName().equalsIgnoreCase(promotion.getOfferType()) && 0 < promotion.getExtendDpDays())?"checked":""%>/></td>
+								<td>
+									Extend Delivery Pass <input type="text" id="extendDpDays" name="extendDpDays" class="w50px" value="<%= promotion.getExtendDpDays()%>"/> days<br />
+									<span class="grayIta8pt"> (Customer must have active pass)</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">&nbsp;</td>
+							</tr>
+							<tr>
+								<td class="vTop"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %>/></td>
+								<td ><span class="gray">Combine offer</span></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+	<%-- LINE ITEM COL --%>
+		<td class="bordLgrayDash vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Discount:</td>
+					<% if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
+					<td class="alignL vTop padL8R16"><input type="text" id="li_discount" name="li_discount" class="w30px" value="<%= promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
+					<% } else {%>
+					<td class="alignL vTop padL8R16"><input type="text" id="li_discount" name="li_discount" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
+					<% } %>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Max # items:</td>
+					<td class="alignL vTop padL8R16"><div class="fleft vTop"><input type="text" id="li_maxItems" name="li_maxItems" class="w50px" value="<%= "" %>" />&nbsp;</div><div class="grayIta8pt fleft vTop"># items eligible for<br />promotion by order added</div></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Department:</td>
+					<td class="alignL vTop padL8R16"><textarea id="departments" name="departments" rows="" cols="" class="w100p h75px"><%= depts.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated department ids</div></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Category:</td>
+					<td class="alignL vTop padL8R16"><textarea id="categories" name="categories" rows="" cols="" class="w100p h75px"><%= cats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated category ids</div></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Recipe:</td>
+					<td class="alignL vTop padL8R16"><textarea id="recipes" name="recipes" rows="" cols="" class="w100p h75px"><%= recps.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated recipe ids<br />Individual recipes only, not categories</div></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">SKU:<br /><input type="checkbox" id="isInelgSkus" name="isInelgSkus" <%=("".equals(elgSkus.toString()))? "checked " : ""%>/>Ineligible</td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleSku"  name ="eligibleSku" rows="" cols="" class="w100p h75px"><%= ("".equals(elgSkus.toString()))? inElgSkus.toString() : elgSkus.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated SKUs</div></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Brand:<br /><input type="checkbox" id="isInelgBrands" name="isInelgBrands" <%=("".equals(elgBrnds.toString()))? "checked " : ""%>/>Ineligible</td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleBrand" name="eligibleBrand" rows="" cols="" class="w100p h75px"><%= ("".equals(elgBrnds.toString()))? inElgBrnds.toString() : elgBrnds.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated brand ids</div></td>
+				</tr>
+				<!-- <tr>
+					<td class="promo_edit_offer_label">Ineligible SKU:</td>
+					<td class="alignL vTop padL8R16"><textarea id="ineligibleSku" name="ineligibleSku" rows="" cols="" class="w100p h75px"><%= inElgSkus.toString() %></textarea></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Exclude Brand:</td>
+					<td class="alignL vTop padL8R16"><textarea id="excludeBrand" name="excludeBrand" rows="" cols="" class="w100p h75px"><%= inElgBrnds.toString() %></textarea></td>
+				</tr> -->
+				
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="li_favorites" name="li_favorites" <%= promotion.isFavoritesOnly()?"checked":"" %>/></td>
+					<td class="alignL"><span class="gray">Favorites only</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="li_perishables" name="li_perishables" <%= promotion.isPerishable()?"checked":"" %>/></td>
+					<td class="alignL"><span class="gray">Perishables only</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="li_allowOffer" name="li_allowOffer" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %>/></td>
+					<td class="alignL"><span class="gray">Combine offer</span></td>
+				</tr>
+			</table>
+		</td>
+	<%-- SAMPLE COL --%>
+		<td class="bordLgrayDash noBorderR vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Category Id:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="categoryName" name="categoryName" class="w100p" value="<%= promotion.getCategoryName() %>"/><br /><span class="grayIta8pt">e.g. corn_local_bl</span></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Product Id:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="productName" name="productName" class="w100p" value="<%= promotion.getProductName() %>"/><br /><span class="grayIta8pt">e.g. corn</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"></td>
+					<td class="alignL"></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"></td>
+					<td class="alignL"><span class="gray">Combine offer</span></td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

@@ -266,8 +266,8 @@ public class FDPromotionManagerDAO {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Map getPromotionCodes(Connection conn) throws SQLException {
-		Map promoCodes = new HashMap();
+	public static Map<String,Timestamp> getPromotionCodes(Connection conn) throws SQLException {
+		Map<String,Timestamp> promoCodes = new HashMap<String,Timestamp>();
 		//TODO later the where clause need to be changed to point to ID column instead of Code. 
 		PreparedStatement ps = conn.prepareStatement(getAllPromotionCodes);
 		ResultSet rs = ps.executeQuery();
@@ -289,13 +289,13 @@ public class FDPromotionManagerDAO {
 													"CUST.SS_VARIANTS V, CUST.PROMOTION P WHERE P.CODE = VP.PROMO_CODE AND V.ID = VP.VARIANT_ID AND P.ACTIVE='X' AND (P.EXPIRATION_DATE > (SYSDATE-7) "+
 													" OR P.EXPIRATION_DATE IS NULL) AND P.RECOMMENDED_ITEMS_ONLY='X' AND P.CODE=?";
 	
-	public static List getPromotionVariants(Connection conn,String promoId) throws SQLException {
+	public static List<PromoVariantModel> getPromotionVariants(Connection conn,String promoId) throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(PROMO_VARIANT_QUERY);
 		ps.setString(1,promoId);
 		ResultSet rs = ps.executeQuery();
 
-		List promoList = new ArrayList();
+		List<PromoVariantModel> promoList = new ArrayList<PromoVariantModel>();
 		
 		while (rs.next()) {			
 			//FDPromotionModel promotion = loadPromotionResult(rs);
@@ -319,12 +319,12 @@ public class FDPromotionManagerDAO {
 	}
 	
 
-	public static List getPromotions(Connection conn) throws SQLException {
+	public static List<FDPromotionModel> getPromotions(Connection conn) throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION");
 		ResultSet rs = ps.executeQuery();
 
-		List promoList = new ArrayList();
+		List<FDPromotionModel> promoList = new ArrayList<FDPromotionModel>();
 		
 		while (rs.next()) {			
 			FDPromotionModel promotion = loadPromotionResult(rs);
@@ -366,7 +366,7 @@ public class FDPromotionManagerDAO {
 		
 		if (rs.next()) {			
 			promotion = loadPromotionResult(rs);
-			List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+			List<String> assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
 			if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
 				promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIds));
 			} else {
@@ -378,14 +378,14 @@ public class FDPromotionManagerDAO {
 		ps.close();
 		if (promotion != null) {
 			String id = promotion.getId();
-			Map assignedCustomerParams = loadAssignedCustomerParams(conn, id);
+			Map<String,AssignedCustomerParam> assignedCustomerParams = loadAssignedCustomerParams(conn, id);
 			promotion.setAssignedCustomerParams(assignedCustomerParams);
 			promotion.setZipRestrictions(loadZipRestrictions(conn, id));
 			
-			Map assignedGroups = loadAssignedGroups(conn, id);
-			promotion.setAssignedCategories(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.CATEGORY)));
-			promotion.setAssignedDepartments(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.DEPARTMENT)));
-			promotion.setAssignedRecipes(StringUtil.encodeString((List)assignedGroups.get(EnumDCPDContentType.RECIPE)));
+			Map<EnumDCPDContentType,List<String>> assignedGroups = loadAssignedGroups(conn, id);
+			promotion.setAssignedCategories(StringUtil.encodeString(assignedGroups.get(EnumDCPDContentType.CATEGORY)));
+			promotion.setAssignedDepartments(StringUtil.encodeString(assignedGroups.get(EnumDCPDContentType.DEPARTMENT)));
+			promotion.setAssignedRecipes(StringUtil.encodeString(assignedGroups.get(EnumDCPDContentType.RECIPE)));
 			
 			promotion.setAttributeList(loadAttributeList(conn, id));
 		}
@@ -651,23 +651,23 @@ public class FDPromotionManagerDAO {
 		
 	}
 
-	protected static void storeAssignedCustomers(Connection conn, String promotionId, String assignedCustomerUserIds) throws SQLException {
+	public static void storeAssignedCustomers(Connection conn, String promotionId, String assignedCustomerUserIds) throws SQLException {
 		
-		Map assignedCustomerStrategyParams = loadAssignedCustomerParams(conn, promotionId);
+		Map<String,AssignedCustomerParam> assignedCustomerStrategyParams = loadAssignedCustomerParams(conn, promotionId);
 		
 		// for saftey
 		
 				
 		if (assignedCustomerUserIds != null) {
 			String aci[] = StringUtil.decodeStrings(assignedCustomerUserIds); 
-			List custIdList = getAssignedCustomerIds(conn, aci);
+			List<String> custIdList = getAssignedCustomerIds(conn, aci);
 			if (custIdList == null) return;
 			removeDuplicateCustomerIds(conn, promotionId, custIdList);
 			PreparedStatement ps =
 				conn.prepareStatement("INSERT INTO CUST.PROMO_CUSTOMER (PROMOTION_ID, CUSTOMER_ID, USAGE_CNT, EXPIRATION_DATE) VALUES(?,?,?,?)");
-			Iterator iter = custIdList.iterator();
+			Iterator<String> iter = custIdList.iterator();
 			while (iter.hasNext()) {
-				String customerId = (String)iter.next();
+				String customerId = iter.next();
 				AssignedCustomerParam param = (AssignedCustomerParam)assignedCustomerStrategyParams.get(customerId);
 				ps.setString(1, promotionId);				
 				ps.setString(2, customerId);
@@ -693,10 +693,10 @@ public class FDPromotionManagerDAO {
 	
 	public static final String GET_RESTRICTED_CUSTOMERS="select customer_id from CUST.PROMO_CUSTOMER where promotion_id=? and customer_id in ('";
 	
-	public static void removeDuplicateCustomerIds(Connection conn, String promotionId, List custIdList) throws SQLException {
+	public static void removeDuplicateCustomerIds(Connection conn, String promotionId, List<String> custIdList) throws SQLException {
 		final StringBuffer customerIdStr=new StringBuffer();
 		final StringBuffer sql=new StringBuffer(GET_RESTRICTED_CUSTOMERS);
-		Iterator iterator=custIdList.iterator();
+		Iterator<String> iterator=custIdList.iterator();
 		int i=0;
         while(iterator.hasNext()){
         	String customerId=(String)iterator.next();        	
@@ -770,13 +770,13 @@ public class FDPromotionManagerDAO {
 							" (id, promotion_id, promo_attr_name, attr_value, attr_index)" +
 									" VALUES(?,?,?,?,?)";
 
-	private static void storeAttributeList(Connection conn, String promotionId, List attrList) throws SQLException {		
+	private static void storeAttributeList(Connection conn, String promotionId, List<FDPromotionAttributeParam> attrList) throws SQLException {		
 		PreparedStatement ps = null;
 		removeAttributeList(conn, promotionId);
 		try {			
 			ps = conn.prepareStatement(INSERT_PROMO_ATTR);
 			if(attrList != null) {
-				Iterator tmpiterator = attrList.iterator();
+				Iterator<FDPromotionAttributeParam> tmpiterator = attrList.iterator();
 				FDPromotionAttributeParam tmpParam = null;
 				int indexAttr = 1;
 				while(tmpiterator.hasNext()) {
@@ -796,13 +796,13 @@ public class FDPromotionManagerDAO {
 		}	
 	}
 
-	protected static List getAssignedCustomerIds(Connection conn, String assignedCustomerUserIds[]) throws SQLException {
+	protected static List<String> getAssignedCustomerIds(Connection conn, String assignedCustomerUserIds[]) throws SQLException {
 		
-		List custUserIdList = null;
+		List<String> custUserIdList = null;
 		String invalidCustomerIds = "";
 		
 		if (assignedCustomerUserIds != null && assignedCustomerUserIds.length > 0) {
-			custUserIdList = new ArrayList();			
+			custUserIdList = new ArrayList<String>();			
 			PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.CUSTOMER WHERE USER_ID = LOWER(?)");
 			for (int i = 0; i < assignedCustomerUserIds.length; i++) {
 				ps.setString(1, assignedCustomerUserIds[i]);
@@ -848,11 +848,11 @@ public class FDPromotionManagerDAO {
 	
 	
 
-	private static TreeMap loadZipRestrictions(Connection conn, String promotionId) throws SQLException{
-		TreeMap map = new TreeMap();
-		List dateList = loadDatesByZipRestriction(conn, promotionId);
+	private static TreeMap<java.util.Date,FDPromoZipRestriction> loadZipRestrictions(Connection conn, String promotionId) throws SQLException{
+		TreeMap<java.util.Date,FDPromoZipRestriction> map = new TreeMap<java.util.Date,FDPromoZipRestriction>();
+		List<java.sql.Date> dateList = loadDatesByZipRestriction(conn, promotionId);
 		if(!dateList.isEmpty()){
-			for(Iterator i=dateList.iterator(); i.hasNext();){
+			for(Iterator<java.sql.Date> i=dateList.iterator(); i.hasNext();){
 				FDPromoZipRestriction zipRestriction = new FDPromoZipRestriction();
 				java.util.Date curDate = (java.util.Date)i.next();
 				zipRestriction.setStartDate(curDate);
@@ -879,12 +879,12 @@ public class FDPromotionManagerDAO {
 	private final static String zipRestrictionDates = 
 		"SELECT START_DATE FROM CUST.PROMO_GEOGRAPHY WHERE PROMOTION_ID = ? ORDER BY START_DATE DESC";
 	
-	protected static List loadDatesByZipRestriction (Connection conn, String promotionId) throws SQLException {
+	protected static List<java.sql.Date> loadDatesByZipRestriction (Connection conn, String promotionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(zipRestrictionDates);
 		ps.setString(1, promotionId);
 		ResultSet rs = ps.executeQuery();
 		
-		List list = new ArrayList();
+		List<java.sql.Date> list = new ArrayList<java.sql.Date>();
 		
 		while(rs.next()){
 			list.add(rs.getDate("START_DATE"));
@@ -1047,20 +1047,20 @@ public class FDPromotionManagerDAO {
 		return a;
 	}
 	
-	protected static void storeGeography(Connection conn, String promotionId, TreeMap zipMap) throws SQLException{
+	protected static void storeGeography(Connection conn, String promotionId, TreeMap<java.util.Date,FDPromoZipRestriction> zipMap) throws SQLException{
 		removeGeographyData(conn, promotionId);
 		PreparedStatement ps = null;
 		try{
 			ps =conn.prepareStatement(GEOGRAPHY_INSERT);
-			for (Iterator i = zipMap.entrySet().iterator(); i.hasNext(); ){
-				Map.Entry e = (Entry) i.next();				
-				java.util.Date d = (java.util.Date) e.getKey();
+			for (Iterator<Map.Entry<java.util.Date,FDPromoZipRestriction>> i = zipMap.entrySet().iterator(); i.hasNext(); ){
+				Map.Entry<java.util.Date,FDPromoZipRestriction> e = (Entry<java.util.Date,FDPromoZipRestriction>) i.next();				
+				java.util.Date d = e.getKey();
 				String id = SequenceGenerator.getNextId(conn, "CUST");
 				ps.setString(1, id);
 				ps.setString(2, promotionId);
 				ps.setDate(3, new Date(d.getTime()));
 				if(ps.executeUpdate()==1){
-					storeGeographyData(conn, ((FDPromoZipRestriction)e.getValue()), id, promotionId);
+					storeGeographyData(conn, e.getValue(), id, promotionId);
 				} else {
 					throw new SQLException("row not created to store Geography Information");
 				}
@@ -1073,8 +1073,8 @@ public class FDPromotionManagerDAO {
 	}
 	
 	
-	protected static List loadZipCodesByDate(Connection conn, String promotionId, Date date, String restriction) throws SQLException {
-		List list = new ArrayList();
+	protected static List<String> loadZipCodesByDate(Connection conn, String promotionId, Date date, String restriction) throws SQLException {
+		List<String> list = new ArrayList<String>();
 		if(restriction.equals("ALL")){
 			list.add("ALL");
 			return list;
@@ -1104,18 +1104,18 @@ public class FDPromotionManagerDAO {
 	
 	private final static String assignedCustomerStrategyForPromoQuery =
 		"select c.user_id, pc.customer_id "
-			+ "from cust.promotion p, cust.promo_customer pc, cust.customer c "
+			+ "from cust.promotion_new p, cust.promo_customer pc, cust.customer c "
 			+ "where p.id=pc.promotion_id and pc.customer_id=c.id "
 			+ "and pc.promotion_id = ?";
 
 	/** @return List of assigned customer ids */
-	protected static List loadAssignedCustomerUserIds(Connection conn, String promotionId) throws SQLException {
+	protected static List<String> loadAssignedCustomerUserIds(Connection conn, String promotionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(assignedCustomerStrategyForPromoQuery);
 		ps.setString(1, promotionId);
 		ResultSet rs = ps.executeQuery();
 
 		// promotionPK -> AssignedCustomerStrategy 
-		List list = new ArrayList();
+		List<String> list = new ArrayList<String>();
 
 		while (rs.next()) {
 			list.add(rs.getString("USER_ID"));
@@ -1133,21 +1133,20 @@ public class FDPromotionManagerDAO {
 			+ "where pcpd.promotion_id = ?";
 
 	/** @return List of assigned dcpd content data */
-	protected static Map loadAssignedGroups(Connection conn, String promotionId) throws SQLException {
+	protected static Map<EnumDCPDContentType,List<String>> loadAssignedGroups(Connection conn, String promotionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_PROMO_GROUP);
 		ps.setString(1, promotionId);
 		ResultSet rs = ps.executeQuery();
 		
-		Map groupMap = new HashMap();
-		groupMap.put(EnumDCPDContentType.DEPARTMENT, new ArrayList());
-		groupMap.put(EnumDCPDContentType.CATEGORY, new ArrayList());
-		groupMap.put(EnumDCPDContentType.RECIPE, new ArrayList());
+		Map<EnumDCPDContentType,List<String>> groupMap = new HashMap<EnumDCPDContentType,List<String>>();
+		groupMap.put(EnumDCPDContentType.DEPARTMENT, new ArrayList<String>());
+		groupMap.put(EnumDCPDContentType.CATEGORY, new ArrayList<String>());
+		groupMap.put(EnumDCPDContentType.RECIPE, new ArrayList<String>());
 			
-		List tmpSet = null;
 		String grpType = null;
 		while (rs.next()) {
 			grpType = rs.getString("content_type");
-			tmpSet = (List)groupMap.get(EnumDCPDContentType.getEnum(grpType));			
+			List<String> tmpSet = (List<String>)groupMap.get(EnumDCPDContentType.getEnum(grpType));			
 			if(tmpSet != null) {
 				tmpSet.add(rs.getString("content_id"));
 			}
@@ -1165,12 +1164,12 @@ public class FDPromotionManagerDAO {
 			+ "where pa.promotion_id = ? order by attr_index";
 
 	/** @return List of assigned profile attribute list */
-	protected static List loadAttributeList(Connection conn, String promotionId) throws SQLException {
+	protected static List<FDPromotionAttributeParam> loadAttributeList(Connection conn, String promotionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(LOAD_PROMO_ATTR);
 		ps.setString(1, promotionId);
 		ResultSet rs = ps.executeQuery();
 		
-		List attrList = new ArrayList();
+		List<FDPromotionAttributeParam> attrList = new ArrayList<FDPromotionAttributeParam>();
 					
 		FDPromotionAttributeParam tmpAttr = null;
 		
@@ -1192,12 +1191,12 @@ public class FDPromotionManagerDAO {
 	}
 	
 	/** @return Map of assigned customer ids and the usage counts */
-	protected static Map loadAssignedCustomerParams(Connection conn, String promotionId) throws SQLException {
+	protected static Map<String,AssignedCustomerParam> loadAssignedCustomerParams(Connection conn, String promotionId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT CUSTOMER_ID, USAGE_CNT, EXPIRATION_DATE FROM CUST.PROMO_CUSTOMER WHERE PROMOTION_ID=?");
 		ps.setString(1, promotionId);
 		ResultSet rs = ps.executeQuery();
 
-		Map map = new HashMap();
+		Map<String,AssignedCustomerParam> map = new HashMap<String,AssignedCustomerParam>();
 
 		while (rs.next()) {
 			String customerId = rs.getString("CUSTOMER_ID");
@@ -1235,19 +1234,19 @@ public class FDPromotionManagerDAO {
 														"		 AND s.customer_id=c.id" +
 														"		 AND pp.promotion_id=p.id" + 
 														"	) AS num_used" +
-														" FROM cust.promotion p, cust.promo_customer pc, cust.customer c" + 
+														" FROM cust.promotion_new p, cust.promo_customer pc, cust.customer c" + 
 														" WHERE p.id=pc.promotion_id" +
 														" AND pc.customer_id=c.id";
 		
 		
-	public static List getPromoCustomerInfoListFromPromotionId(Connection conn, PrimaryKey pk) throws SQLException {		
+	public static List<FDPromoCustomerInfo> getPromoCustomerInfoListFromPromotionId(Connection conn, PrimaryKey pk) throws SQLException {		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(PROMO_CUSTOMER_INFO_QUERY + " AND p.id = ?");
 			ps.setString(1, pk.getId());
 			rs = ps.executeQuery();	
-			List list = new ArrayList();			
+			List<FDPromoCustomerInfo> list = new ArrayList<FDPromoCustomerInfo>();			
 			while (rs.next()) {			
 				FDPromoCustomerInfo pci = loadPromoCustomerInfoListResult(rs);
 				pci.setIsLoadedFromPromotionId(true);
@@ -1260,14 +1259,14 @@ public class FDPromotionManagerDAO {
 		}
 	}	
 	
-	public static List getPromoCustomerInfoListFromCustomerId(Connection conn, PrimaryKey pk) throws SQLException {		
+	public static List<FDPromoCustomerInfo> getPromoCustomerInfoListFromCustomerId(Connection conn, PrimaryKey pk) throws SQLException {		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(PROMO_CUSTOMER_INFO_QUERY + " AND c.id = ?");
 			ps.setString(1, pk.getId());
 			rs = ps.executeQuery();	
-			List list = new ArrayList();			
+			List<FDPromoCustomerInfo> list = new ArrayList<FDPromoCustomerInfo>();			
 			while (rs.next()) {			
 				FDPromoCustomerInfo pci = loadPromoCustomerInfoListResult(rs);
 				pci.setIsLoadedFromCustomerId(true);
@@ -1311,7 +1310,7 @@ public class FDPromotionManagerDAO {
 	}
 
 	private static String AVAILABLE_PROMOS_FOR_CUST_QUERY =  
-		 "SELECT p.* FROM cust.promotion p" +
+		 "SELECT p.* FROM cust.promotion_new p" +
 		 " WHERE p.id NOT IN"+ 
 		 " ("+
 		 " SELECT DISTINCT pc.promotion_id FROM cust.promo_customer pc" +
@@ -1319,18 +1318,18 @@ public class FDPromotionManagerDAO {
 		 " )" +
 		" AND p.expiration_date >= TO_DATE(TO_CHAR(SYSDATE, 'MM-DD-YYYY'), 'MM-DD-YYYY')";
 
-	public static List getAvailablePromosForCustomer(Connection conn, PrimaryKey pk) throws SQLException {		
+	public static List<FDPromotionModel> getAvailablePromosForCustomer(Connection conn, PrimaryKey pk) throws SQLException {		
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			ps = conn.prepareStatement(AVAILABLE_PROMOS_FOR_CUST_QUERY);
 			ps.setString(1, pk.getId());
 			rs = ps.executeQuery();	
-			List promoList = new ArrayList();
+			List<FDPromotionModel> promoList = new ArrayList<FDPromotionModel>();
 			
 			while (rs.next()) {			
 				FDPromotionModel promotion = loadPromotionResult(rs);
-				List assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
+				List<String> assignedCustomerUserIds = FDPromotionManagerDAO.loadAssignedCustomerUserIds(conn, promotion.getId());
 				if (assignedCustomerUserIds != null && assignedCustomerUserIds.size() > 0) {
 					promotion.setAssignedCustomerUserIds(StringUtil.encodeString(assignedCustomerUserIds));
 				} else {
@@ -1350,12 +1349,12 @@ public class FDPromotionManagerDAO {
 															" (promotion_id, customer_id, usage_cnt, expiration_date)" +
 															" VALUES(?,?,?,?)";
 
-	public static void insertPromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+	public static void insertPromoCustomers(Connection conn, List<FDPromoCustomerInfo> promoCustomers) throws SQLException {		
 	PreparedStatement ps = null;
 		try {			
 			ps = conn.prepareStatement(INSERT_PROMO_CUSTOMER_QUERY);
-			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
-				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+			for (Iterator<FDPromoCustomerInfo> i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc = i.next();
 				int index = 1;
 				ps.setString(index++, oc.getPromotionId());
 				ps.setString(index++, oc.getCustomerId());				
@@ -1382,11 +1381,11 @@ public class FDPromotionManagerDAO {
 	" WHERE promotion_id = ?" +
 	" AND customer_id = ?";
 
-	public static void updatePromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+	public static void updatePromoCustomers(Connection conn, List<FDPromoCustomerInfo> promoCustomers) throws SQLException {		
 		PreparedStatement ps = null;
 		try {			
 			ps = conn.prepareStatement(UPDATE_PROMO_CUSTOMER_QUERY);
-			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
+			for (Iterator<FDPromoCustomerInfo> i = promoCustomers.iterator(); i.hasNext();) {
 				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
 				int index = 1;
 				if (oc.getUsageCountStr() != null && !"".equals(oc.getUsageCountStr())) {
@@ -1412,12 +1411,12 @@ public class FDPromotionManagerDAO {
 	private static String REMOVE_PROMO_CUSTOMER_QUERY =  	"DELETE cust.promo_customer" +
 															" WHERE promotion_id = ? AND customer_id=?";
 
-	public static void removePromoCustomers(Connection conn, List promoCustomers) throws SQLException {		
+	public static void removePromoCustomers(Connection conn, List<FDPromoCustomerInfo> promoCustomers) throws SQLException {		
 		PreparedStatement ps = null;
 		try {			
 			ps = conn.prepareStatement(REMOVE_PROMO_CUSTOMER_QUERY);
-			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
-				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+			for (Iterator<FDPromoCustomerInfo> i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc = i.next();
 				int index = 1;
 				ps.setString(index++, oc.getPromotionId());
 				ps.setString(index++, oc.getCustomerId());				
@@ -1428,5 +1427,6 @@ public class FDPromotionManagerDAO {
 		if (ps != null) ps.close();			
 		}	
 	}
+	
 	
 }

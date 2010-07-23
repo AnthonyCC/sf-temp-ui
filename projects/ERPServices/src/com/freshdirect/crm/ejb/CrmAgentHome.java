@@ -18,7 +18,7 @@ public interface CrmAgentHome extends EJBHome {
 
 	public CrmAgentEB create(ModelI model) throws CreateException, DuplicateKeyException, RemoteException;
 	
-	public Collection findAll() throws FinderException, RemoteException;
+	public Collection<CrmAgentEB> findAll() throws FinderException, RemoteException;
 
 	public CrmAgentEB findByPrimaryKey(PrimaryKey pk) throws FinderException, RemoteException;
 

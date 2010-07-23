@@ -25,15 +25,12 @@ public class HtmlBuilder extends AbstractAttributeBuilder {
         ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
         String path = (String) cNode.getAttributeValue("path");
 
-		if (cNode.getAttributeValue("title")==null  
-		        && cNode.getAttributeValue("popupSize")==null) {
-			Html h = new Html(path);
-			return new TitledMedia(h, "", "");
-		} else {
-			String title = (String) cNode.getAttributeValue("title");
-			String sizeName = (String)cNode.getAttributeValue("popupSize");
-			return new TitledMedia(new Html(path), title, sizeName);
+		if ( cNode.getAttributeValue( "title" ) == null && cNode.getAttributeValue( "popupSize" ) == null ) {
+			Html h = new Html( path );
+			return new TitledMedia( h, "", "" );
 		}
+		String title = (String) cNode.getAttributeValue("title");
+		String sizeName = (String)cNode.getAttributeValue("popupSize");
+		return new TitledMedia(new Html(path), title, sizeName);
     }
-
 }

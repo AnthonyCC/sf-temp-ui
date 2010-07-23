@@ -100,6 +100,10 @@ public class ErpOrderHistory implements OrderHistoryI {
 		return ErpOrderHistoryUtil.getTotalRegularOrderCount(erpRegSaleInfos);
 	}
 	
+	public int getSettledECheckOrderCount() {
+		return ErpOrderHistoryUtil.getSettledECheckOrderCount(erpRegSaleInfos);
+	}
+	
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("ErpOrderHistory version $$$$$$$$$$$$$$$$$$$"+"\n");

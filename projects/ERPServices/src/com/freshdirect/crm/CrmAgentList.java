@@ -2,21 +2,21 @@ package com.freshdirect.crm;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class CrmAgentList implements Serializable {
 	
-	private final List agents;
+	private static final long serialVersionUID = -2444582023399331852L;
 	
-	public CrmAgentList(List agents){
+	private final List<CrmAgentModel> agents;
+	
+	public CrmAgentList(List<CrmAgentModel> agents){
 		this.agents = agents;
 	}
 	
-	public List getAgents(CrmAgentRole role) {
-		List lst = new ArrayList();
-		for(Iterator i = this.agents.iterator(); i.hasNext(); ){
-			CrmAgentModel agent = (CrmAgentModel)i.next();
+	public List<CrmAgentModel> getAgents(CrmAgentRole role) {
+		List<CrmAgentModel> lst = new ArrayList<CrmAgentModel>();
+		for( CrmAgentModel agent : this.agents ) {
 			if(agent.getRole().equals(role)){
 				lst.add(agent);
 			}

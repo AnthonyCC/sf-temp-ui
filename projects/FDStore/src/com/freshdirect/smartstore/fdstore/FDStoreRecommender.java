@@ -26,46 +26,46 @@ import com.freshdirect.smartstore.ymal.YmalUtil;
 
 public class FDStoreRecommender {
 
-        /**
-         * 
-         * @param user
-         * @return Set<ProductModel>
-         */
-        public static Set<ContentNodeModel> getShoppingCartContents(FDUserI user) {
-            return getShoppingCartContents(user.getShoppingCart());
-        }
+	/**
+	 * 
+	 * @param user
+	 * @return Set<ProductModel>
+	 */
+	public static Set<ProductModel> getShoppingCartContents( FDUserI user ) {
+		return getShoppingCartContents( user.getShoppingCart() );
+	}
 
-        /**
-         * 
-         * @param user
-         * @return
-         */
-        public static Set<ContentKey> getShoppingCartContentKeys(FDUserI user) {
-            return getShoppingCartContentKeys(user.getShoppingCart());
-        }
-        
-        /**
-         * helper to turn a shopping cart into a set of products
-         * 
-         * @return Set<ProductModel>
-         */
-        protected static Set<ContentNodeModel> getShoppingCartContents(FDCartModel cart) {
-            List<FDCartLineI> orderlines = cart.getOrderLines();
-            Set<ContentNodeModel> products = new HashSet<ContentNodeModel>();
-            for (FDCartLineI cartLine : orderlines) {
-                products.add(cartLine.getProductRef().lookupProductModel());
-            }
-            return products;
-        }
-	
-	protected static Set<ContentKey> getShoppingCartContentKeys(FDCartModel cart) {
-            List<FDCartLineI> orderlines = cart.getOrderLines();
-            Set<ContentKey> products = new HashSet<ContentKey>();
-            for (FDCartLineI cartLine : orderlines) {
-                ProductReference productRef = cartLine.getProductRef();
-                products.add(productRef.getContentKey());
-            }
-            return products;
+	/**
+	 * 
+	 * @param user
+	 * @return
+	 */
+	public static Set<ContentKey> getShoppingCartContentKeys( FDUserI user ) {
+		return getShoppingCartContentKeys( user.getShoppingCart() );
+	}
+
+	/**
+	 * helper to turn a shopping cart into a set of products
+	 * 
+	 * @return Set<ProductModel>
+	 */
+	protected static Set<ProductModel> getShoppingCartContents( FDCartModel cart ) {
+		List<FDCartLineI> orderlines = cart.getOrderLines();
+		Set<ProductModel> products = new HashSet<ProductModel>();
+		for ( FDCartLineI cartLine : orderlines ) {
+			products.add( cartLine.getProductRef().lookupProductModel() );
+		}
+		return products;
+	}
+
+	protected static Set<ContentKey> getShoppingCartContentKeys( FDCartModel cart ) {
+		List<FDCartLineI> orderlines = cart.getOrderLines();
+		Set<ContentKey> products = new HashSet<ContentKey>();
+		for ( FDCartLineI cartLine : orderlines ) {
+			ProductReference productRef = cartLine.getProductRef();
+			products.add( productRef.getContentKey() );
+		}
+		return products;
 	}
 
 	/**
@@ -77,14 +77,13 @@ public class FDStoreRecommender {
 	 * 
 	 * @return The most expensive product as YmalSource
 	 */
-	public static YmalSource resolveYmalSource(Collection<ContentNodeModel> products, ServletRequest request) {
+	public static YmalSource resolveYmalSource(Collection<ProductModel> products, ServletRequest request) {
 		if (products == null || products.isEmpty()) {
 			return null;
-		} else {
-			YmalSource source = (YmalSource) Collections.min(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
-			YmalUtil.resetActiveYmalSetSession(source, request);
-			return source;
 		}
+		YmalSource source = Collections.min(products, ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE);
+		YmalUtil.resetActiveYmalSetSession(source, request);
+		return source;
 	}
 
 	/**
@@ -97,7 +96,7 @@ public class FDStoreRecommender {
 	 *            List<ProductModel>
 	 */
 	public static void initYmalSource(SessionInput input, FDUserI user, ServletRequest request) {
-		Set<ContentNodeModel> cartContents = FDStoreRecommender.getShoppingCartContents(user);
+		Set<ProductModel> cartContents = FDStoreRecommender.getShoppingCartContents(user);
 		YmalSource ymal = resolveYmalSource(cartContents, request);
 		if (ymal != null) {
 			input.setYmalSource(ymal);

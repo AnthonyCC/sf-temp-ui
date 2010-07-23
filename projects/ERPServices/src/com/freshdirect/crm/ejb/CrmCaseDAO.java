@@ -73,7 +73,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		+ " WHERE c.customer_id=ci.customer_id(+)";
 
 	/** @return List of CrmCaseModel */
-	public List loadCaseInfoByTemplate(Connection conn, CrmCaseTemplate ct) throws SQLException {
+	public List<CrmCaseModel> loadCaseInfoByTemplate(Connection conn, CrmCaseTemplate ct) throws SQLException {
 		
 		CriteriaBuilder builder = new CriteriaBuilder();
 		builder.addPK("c.ID", ct.getPK());
@@ -137,7 +137,7 @@ public class CrmCaseDAO implements EntityDAOI {
 			}
 		}
 		ResultSet rs = ps.executeQuery();
-		List models = new ArrayList();
+		List<CrmCaseModel> models = new ArrayList<CrmCaseModel>();
 		while (rs.next()) {
 			CrmCaseModel c = new CrmCaseModel(this.loadFromResultSet(rs));
 			models.add(c);
@@ -147,8 +147,7 @@ public class CrmCaseDAO implements EntityDAOI {
 		rs.close();
 		ps.close();
 
-		for (Iterator it=models.iterator(); it.hasNext();) {
-			CrmCaseModel caseModel = (CrmCaseModel) it.next();
+		for ( CrmCaseModel caseModel : models ) {
 			if (caseModel.getSalePK() != null)
 				caseModel.setCartonNumbers(loadCartons(conn, caseModel.getPK(), caseModel.getSalePK()));
 		}
@@ -166,11 +165,11 @@ public class CrmCaseDAO implements EntityDAOI {
 			  		 + "and ca.case_id=c.id and cs.case_queue=cq.code) as oldest " 
 			+ "from cust.case_queue cq ";
 
-	public List loadQueueOverview(Connection conn) throws SQLException {
+	public List<CrmQueueInfo> loadQueueOverview(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_QUEUE_OVERVIEW);
 		ResultSet rs = ps.executeQuery();
 
-		List results = new ArrayList();
+		List<CrmQueueInfo> results = new ArrayList<CrmQueueInfo>();
 		while (rs.next()) {
 
 			CrmCaseQueue queue = CrmCaseQueue.getEnum(rs.getString("queue"));
@@ -197,11 +196,11 @@ public class CrmCaseDAO implements EntityDAOI {
 	 + " (select min(timestamp) from cust.case c, cust.caseaction ca where ca.case_id = c.id and c.case_state='OPEN' and c.assigned_agent_id = a.id ) as oldest " 
 	+ " from cust.agent a ";
 	
-	public List loadCSROverview(Connection conn) throws SQLException {
+	public List<CrmAgentInfo> loadCSROverview(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(QUERY_CSR_OVERVIEW);
 		ResultSet rs = ps.executeQuery();
 
-		List results = new ArrayList();
+		List<CrmAgentInfo> results = new ArrayList<CrmAgentInfo>();
 		while (rs.next()) {
 
 			PrimaryKey agentPK = new PrimaryKey(rs.getString("agent_id"));

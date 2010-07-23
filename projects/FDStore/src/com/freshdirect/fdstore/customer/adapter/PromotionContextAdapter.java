@@ -14,12 +14,13 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.common.pricing.ZonePromoDiscount;
 import com.freshdirect.customer.ErpAddressModel;
+import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -31,12 +32,14 @@ import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.PromotionContextI;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.SignupDiscountRule;
+import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class PromotionContextAdapter implements PromotionContextI {
@@ -63,8 +66,35 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return this.user.getShoppingCart().getPreDeductionTotal();
 	}
 
-	public double getSubTotal() {
-		return this.user.getShoppingCart().getSubTotal();
+	/**
+	 * 
+	 * @return total price of orderlines - exclude skus in USD, with taxes, charges without discounts applied
+	 */
+	public double getPreDeductionTotal(Set<String> excludeSkus){
+	      double preTotal = 0.0;
+	        preTotal += MathUtil.roundDecimal(this.getSubTotal(excludeSkus));			
+	        preTotal += MathUtil.roundDecimal(this.user.getShoppingCart().getTaxValue());
+	        preTotal += MathUtil.roundDecimal(this.user.getShoppingCart().getDepositValue());
+
+			// apply charges
+			for ( ErpChargeLineModel charge : this.user.getShoppingCart().getCharges()) {
+				preTotal += MathUtil.roundDecimal( charge.getTotalAmount() );
+			}
+         return MathUtil.roundDecimal(preTotal);
+		
+	}
+	/*
+	 * New getSubtotal Logic excludes skus that are specified at promotion level(non-Javadoc)
+	 * @see com.freshdirect.fdstore.promotion.PromotionContextI#getSubTotal()
+	 */
+	public double getSubTotal(Set<String> excludeSkus) {
+		double subTotal = 0.0;
+		for ( FDCartLineI cartLineModel : this.user.getShoppingCart().getOrderLines() ) {
+			boolean e = excludeSkus != null &&  excludeSkus.size() > 0 ? !excludeSkus.contains(cartLineModel.getSkuCode()) : true;
+			if(e)
+				subTotal += MathUtil.roundDecimal( cartLineModel.getPrice() );
+		}
+		return MathUtil.roundDecimal(subTotal);
 	}
 
 	public void addSampleLine(FDCartLineI cartLine) {
@@ -291,33 +321,72 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return eligibleLines;
 	}
 	
-	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type){
+	public boolean applyHeaderDiscount(PromotionI promo, double promotionAmt) {
+		//Poll the promotion context to know if this is the max discount amount.
+		if(promo.isRedemption() || promo.isCombineOffer()){
+			//Add this discount since it is combinable.
+			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, promotionAmt);
+			this.addDiscount(discount);
+			return true;
+		}	
+		//Poll the promotion context to know if this is the max discount amount.
+		else {
+			Discount applied = this.getHeaderDiscount();
+			if(this.isMaxDiscountAmount(promotionAmt, promo.getPriority(), applied)){
+				//Clear the previous discount.
+				this.getShoppingCart().removeDiscount(applied.getPromotionCode());
+				//Add this discount.
+				Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, promotionAmt);
+				this.addDiscount(discount);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff) {
 		
 		//Poll the promotion context to know if this is the max discount amount.
-		if(this.isMaxDiscountAmount(promotionAmt, type)){
-			
+		Discount applied = lineItem.getDiscount();
+		if(promo.isRedemption() || this.isMaxDiscountAmount(percentOff, promo.getPriority(), applied)){
+			//Clear the previous discount.
+			lineItem.removeLineItemDiscount();
 			//Add this discount.
-			this.clearHeaderDiscounts();
-			Discount discount = new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, promotionAmt);
-			this.addDiscount(discount);
+			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.PERCENT_OFF, percentOff);
+			lineItem.setDiscount(discount);
 			return true;
 		}
 		return false;
 	}
 
+	public boolean applyZoneDiscount(PromotionI promo, double promotionAmt) {
+		
+		//Poll the promotion context to know if this is the max discount amount.
+		Discount applied = this.getZoneDiscount();
+		if(promo.isRedemption() || this.isMaxDiscountAmount(promotionAmt, promo.getPriority(), applied)) {
+			//Clear the previous discount.
+			if(applied != null)
+				this.getShoppingCart().removeDiscount(applied.getPromotionCode());
+			//Add this discount.
+			Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, promotionAmt);
+			this.addDiscount(discount);
+			return true;
+		}
+		return false;
+	}
+	
 	public void clearHeaderDiscounts(){
 		//Clear all header discounts.
 		this.user.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
 	}
-	private boolean isMaxDiscountAmount(double promotionAmt, EnumPromotionType type){
-		Discount applied = this.getHeaderDiscount();
+	
+	private boolean isMaxDiscountAmount(double promotionAmt, int priority, Discount applied) {
 		if(applied == null) return true;
 		boolean flag = false;
 		String appliedCode = applied.getPromotionCode();
 		PromotionI appliedPromo = PromotionFactory.getInstance().getPromotion(appliedCode);
-		EnumPromotionType appliedType = appliedPromo.getPromotionType();
-		if((type.getPriority() < appliedType.getPriority()) ||
-				(type.getPriority() == appliedType.getPriority() &&
+		if((priority < appliedPromo.getPriority()) ||
+				(priority == appliedPromo.getPriority() &&
 						promotionAmt > applied.getAmount())){
 			//The applied promo priority is less than the one that is being applied.
 			//or the applied promo amount is less than the one that is being applied.
@@ -339,6 +408,43 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return applied; 
 	}
 	
+	public Discount getZoneDiscount() {
+		List<ErpDiscountLineModel> l = this.getShoppingCart().getDiscounts();
+		if(l.isEmpty())
+			return null;
+
+		for(Iterator<ErpDiscountLineModel> i = l.iterator();i.hasNext();){
+			//Get the applied discount from the cart.
+			ErpDiscountLineModel model = i.next();
+			if(model==null) return null;
+			Discount applied = model.getDiscount();
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
+			if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+				return applied;
+			}
+		}
+		return null;
+	}
+	
+	public PromotionI getNonCombinableHeaderPromotion() {
+		List<ErpDiscountLineModel> l = this.getShoppingCart().getDiscounts();
+		if(l.isEmpty())
+			return null;
+
+		Iterator<ErpDiscountLineModel> i = l.iterator();
+		while(i.hasNext()) {
+			//Get the non combinable applied discount from the cart.
+			ErpDiscountLineModel model = i.next();
+			if(model==null) continue;
+			Discount applied = model.getDiscount();
+			if(applied == null) continue;
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
+			if(promo != null && !promo.isRedemption() && !promo.isCombineOffer())
+				return promo;
+		}
+		return null;
+	}
+	
 	public boolean isPostPromoConflictEnabled(){
 		return this.getUser().isPostPromoConflictEnabled();
 	}
@@ -356,4 +462,21 @@ public class PromotionContextAdapter implements PromotionContextI {
 	public PricingContext getPricingContext() {
 		return this.getUser().getPricingContext();
 	}
+	
+	public int getSettledECheckOrderCount() {
+		try {
+			return this.user.getOrderHistory().getSettledECheckOrderCount();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException();
+		}
+	}
+	
+	public String getDeliveryZone(){
+		return this.getUser().getShoppingCart().getDeliveryZone();
+	}
+	
+	public FDReservation getDeliveryReservation() {
+		return this.getUser().getShoppingCart().getDeliveryReservation();
+	}
+	
 }

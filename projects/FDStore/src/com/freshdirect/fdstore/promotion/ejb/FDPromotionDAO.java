@@ -159,7 +159,7 @@ public class FDPromotionDAO {
 					promo.addStrategy(new RecommendationStrategy());
 				}
 				if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
-				   promo.setAllowHeaderDiscount(true);		
+				   promo.setCombineOffer(true);		
 				}
 				//promo.addLineItemStrategy(new RecommendedItemStrategy());
 			}
@@ -348,7 +348,7 @@ public class FDPromotionDAO {
 				promo.addStrategy(new RecommendationStrategy());
 			}
 			if("X".equalsIgnoreCase(rs.getString("ALLOW_HEADER_DISCOUNT"))){				
-			   promo.setAllowHeaderDiscount(true);		
+			   promo.setCombineOffer(true);		
 			}
 			//promo.addLineItemStrategy(new RecommendedItemStrategy());
 		}
@@ -930,8 +930,8 @@ public class FDPromotionDAO {
 																"where p.ID = pc.PROMOTION_ID group by p.id";
 	
 	/** @return Map of promotionPK -> AssignedCustomerStrategy */
-	protected static List getAudienceBasedPromotionCodes(Connection conn, Date lastModified) throws SQLException {
-		List audiencePromoCodes = new ArrayList();
+	protected static List<String> getAudienceBasedPromotionCodes(Connection conn, Date lastModified) throws SQLException {
+		List<String> audiencePromoCodes = new ArrayList<String>();
 		PreparedStatement ps;
 		if(lastModified != null){
 			ps = conn.prepareStatement(getAudienceCountForModifiedOnlyPromos);	
@@ -1028,13 +1028,13 @@ public class FDPromotionDAO {
 			"cust.SS_VARIANTS v, cust.PROMOTION p where p.CODE = vp.PROMO_CODE and v.ID = vp.VARIANT_ID and p.active='X' and (p.expiration_date > (sysdate-7) " +
 			"or p.expiration_date is null) and p.RECOMMENDED_ITEMS_ONLY='X'";
 	
-	public static List loadAllActivePromoVariants(Connection conn, List smartSavingFeatures) throws SQLException {
+	public static List<PromoVariantModel> loadAllActivePromoVariants(Connection conn, List<EnumSiteFeature> smartSavingFeatures) throws SQLException {
 		StringBuffer preparedStmtQry = new StringBuffer(GET_ALL_ACTIVE_PROMO_VARIANTS); 
 		StringBuffer buffer = new StringBuffer();
 		if(smartSavingFeatures != null && smartSavingFeatures.size() > 0) {
 			buffer.append(" AND ").append("V.FEATURE IN ").append("(");
-			for(Iterator it = smartSavingFeatures.iterator(); it.hasNext();){
-				EnumSiteFeature siteFeature = (EnumSiteFeature)it.next();
+			for(Iterator<EnumSiteFeature> it = smartSavingFeatures.iterator(); it.hasNext();){
+				EnumSiteFeature siteFeature = it.next();
 				buffer.append("\'").append(siteFeature.getName()).append("\'");
 				if (it.hasNext()){
 					buffer.append(",");
@@ -1050,16 +1050,14 @@ public class FDPromotionDAO {
 		preparedStmtQry.append(" order by vp.VARIANT_ID desc");
 		PreparedStatement ps = conn.prepareStatement(preparedStmtQry.toString());
 		ResultSet rs = ps.executeQuery();
-		List promoVariants =  constructPromoVariants(rs);
+		List<PromoVariantModel> promoVariants =  constructPromoVariants(rs);
 		rs.close();
 		ps.close();
 		return promoVariants;
 	}
 	
-	private static List constructPromoVariants(ResultSet rs) throws SQLException {
-		List promoVariants = new ArrayList();
-		String currVariantId = "";
-
+	private static List<PromoVariantModel> constructPromoVariants(ResultSet rs) throws SQLException {
+		List<PromoVariantModel> promoVariants = new ArrayList<PromoVariantModel>();
 		while(rs.next()){
 			String variantId = rs.getString("VARIANT_ID");
 			String promoCode = rs.getString("PROMO_CODE");

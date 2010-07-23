@@ -57,14 +57,8 @@ function clearCheckbox(obj){
   		<table width="100%" cellpadding="0" cellspacing="0" class="sub_nav">
 			<tr><td>Select Top 5 FAQ to display. Only 5 items can be selected at any time. Display on site will follow the order below. Click on header for details.</td></tr>
 		</table>
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">
-    
- 
-  
 
-	</table>
-	
-	<div id="result" class="list_content" style="height:70%;">
+	<div id="result" class="list_content" style="height:86%;">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">     
        
    <%	if (!saveFaqResult.isSuccess() ) {	%>

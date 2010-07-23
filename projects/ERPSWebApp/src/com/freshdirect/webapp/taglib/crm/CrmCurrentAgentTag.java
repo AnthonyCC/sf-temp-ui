@@ -10,6 +10,8 @@ import com.freshdirect.crm.CrmAgentModel;
 
 public class CrmCurrentAgentTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 	
+	private static final long	serialVersionUID	= -9213711300447665540L;
+	
 	private String id;
 	
 	public void setId(String id){

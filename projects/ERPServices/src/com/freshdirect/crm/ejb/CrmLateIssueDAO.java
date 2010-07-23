@@ -61,27 +61,27 @@ public class CrmLateIssueDAO {
 	}
 
 	
-	public static Collection findByDate(Connection conn, Date dlvDate) throws SQLException {
+	public static Collection<CrmLateIssueModel> findByDate(Connection conn, Date dlvDate) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.LATEISSUE WHERE trunc(DELIVERY_DATE) = ? order by reported_at desc");
 		ps.setDate(1, new java.sql.Date(dlvDate.getTime()));
-		Collection issues= runQueryAndGather(conn,ps);
+		Collection<CrmLateIssueModel> issues= runQueryAndGather(conn,ps);
 		ps.close();
-		return issues.size()>0 ? issues : Collections.EMPTY_LIST;
+		return issues.size()>0 ? issues : Collections.<CrmLateIssueModel>emptyList();
 	}
 
 	
-	public static Collection findByRouteAndDate(Connection conn,String route,Date dlvDate) throws SQLException {
+	public static Collection<CrmLateIssueModel> findByRouteAndDate(Connection conn,String route,Date dlvDate) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.LATEISSUE WHERE DELIVERY_DATE = ? and route =? order by reported_at desc");
 		ps.setDate(1, new java.sql.Date(dlvDate.getTime()));
 		ps.setString(2,route);
-		Collection issues= runQueryAndGather(conn,ps);
+		Collection<CrmLateIssueModel> issues= runQueryAndGather(conn,ps);
 		ps.close();
-		return issues.size()>0 ? issues : Collections.EMPTY_LIST;
+		return issues.size()>0 ? issues : Collections.<CrmLateIssueModel>emptyList();
 	}
 
 	
-	private static Collection runQueryAndGather(Connection conn,PreparedStatement ps) throws SQLException {
-		List issues = new ArrayList();
+	private static Collection<CrmLateIssueModel> runQueryAndGather(Connection conn,PreparedStatement ps) throws SQLException {
+		List<CrmLateIssueModel> issues = new ArrayList<CrmLateIssueModel>();
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			 PrimaryKey pk = new PrimaryKey(rs.getString("id"));

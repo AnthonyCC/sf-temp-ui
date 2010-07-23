@@ -1,0 +1,97 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Name:</td>
+					<td class="alignL">
+					<% if(EnumPromotionStatus.LIVE.equals(promotion.getStatus()	)){ %> 
+		<span class="BG_live"><%= promotion.getName() %></span></td>
+		<%} else { %>
+		<%= promotion.getName() %></td>
+		<% } %>
+					<!-- <span class="promo_name BG_live"><%= promotion.getName() %></span></td> -->
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Description:</td>
+					<td class="alignL"><%= promotion.getDescription() %></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Redemption code:</td>
+					<td class="alignL"><%= (null == promotion.getRedemptionCode() ||"".equals(promotion.getRedemptionCode()))?"None - Automatic": promotion.getRedemptionCode() %></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Additional terms:</td>
+					<td class="alignL"><%= promotion.getTerms() %> <a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');" class="greenLink">Preview</a></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Start:</td>
+					<td class="alignL"><%= promotion.getStartDate() %> </td>
+				</tr>
+				<%-- use either v1 or v2 --%>
+					<%
+						if ("rolling".equalsIgnoreCase(endType) || "single".equalsIgnoreCase(endType)) {
+					%>
+						<%-- START v1 --%>
+							<tr>
+								<td class="promo_detail_label">End:</td>
+								<td class="alignL">
+									<% if(null !=promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays()>0){ %>
+									<%= endType %> - <%= promotion.getRollingExpirationDays() %> <span class="gray">days after eligibility induction</span><br />
+									<span class="gray">Valid until:<% } %></span> <%= promotion.getExpirationDate() %>
+								</td>
+							</tr>
+						<%-- END v1 --%>
+					<%
+						}else if ("redemption".equalsIgnoreCase(endType)) {
+					%>
+						<%-- START v2 --%>
+							<tr>
+								<td class="promo_detail_label">End:</td>
+								<td class="alignL">
+									<%= endType %> - <span class="gray">limit</span> <%= promotion.getRedeemCount() %> <span class="gray">settled orders</span><br />
+									<span class="gray">Valid until:</span> <%= promotion.getExpirationDate() %>
+								</td>
+							</tr>
+						<%-- END v2 --%>
+					<%
+						}
+					%>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Usage:</td>
+					<td class="alignL"><%= promotion.getMaxUsage() %><span class="gray"> per customer</span></td> 
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(!promotion.isApplyFraud())?"checked ":"" %>/></td>
+					<td class="alignL"><span class="gray">Apply fraud rule (check for duplicate address)</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">
+					<input type="checkbox" id="" disabled <%=(promotion.isNeedCustomerList())?"checked ":"" %>/>
+					</td>
+					<td class="alignL"><span class="gray">Eligibility list required</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(promotion.isRuleBased())?"checked ":"" %>/></td>
+					<td class="alignL"><span class="gray">Timeslot dependent/window steering</span></td>
+				</tr>
+			</table>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<div class="bordLgrayDash pad4">
+				<div class="grayIta10pt">Offer description:</div>
+				<div class="blaIta10pt padT4"><%= promotion.getOfferDesc() %></div>
+				<div class="grayIta10pt padT4">Audience description:</div>
+				<div class="blaIta10pt padT4"><%= promotion.getAudienceDesc() %></div>
+			</div>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

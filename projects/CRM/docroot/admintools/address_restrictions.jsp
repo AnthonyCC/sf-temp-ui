@@ -32,7 +32,7 @@
 
 
 <jsp:include page="/includes/admintools_nav.jsp" />
-<div class="home_search_module_content" style="height:100%;">
+<div class="home_search_module_content" style="height:91%;">
 <crm:AdminToolsController result="result">
 <%
     

@@ -20,6 +20,9 @@ public class EnumDlvPassExtendReason  extends Enum {
 	public static final EnumDlvPassExtendReason DLV_PROBLEM_OTHER = new EnumDlvPassExtendReason("DLVPRB", "Delivery problem - other");
 	public static final EnumDlvPassExtendReason DLV_PROMOTION_APPLIED= new EnumDlvPassExtendReason("DLVPRA","Delivery promotion applied.");
 	public static final EnumDlvPassExtendReason DLV_PROMOTION_REMOVED= new EnumDlvPassExtendReason("DLVPRR","Delivery promotion removed.");
+	public static final EnumDlvPassExtendReason EXTEND_DP_PROMOTION_APPLIED= new EnumDlvPassExtendReason("EXDPPA","Extend Delivery Pass promotion applied.");
+	public static final EnumDlvPassExtendReason EXTEND_DP_PROMOTION_REMOVED= new EnumDlvPassExtendReason("EXDPPR","Extend Delivery Pass promotion removed.");
+
 	public static final EnumDlvPassExtendReason OTHER = new EnumDlvPassExtendReason("OTHER", "Other");
 
 	private final String displayName;

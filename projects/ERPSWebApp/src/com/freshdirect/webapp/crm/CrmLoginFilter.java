@@ -31,10 +31,22 @@ public class CrmLoginFilter implements Filter {
 		String noAuthPage = this.filterConfig.getInitParameter("noAuthPage");
 
 		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-		if (agent == null && !request.getRequestURI().equals(allowedPage)) {
-			response.sendRedirect("/");
-			return;
+		if (agent == null) {
+			boolean shouldRedirect = true;
+			if (allowedPage != null) {
+				String[] aPages = allowedPage.split(";");
+				for (String p : aPages) {
+					if (request.getRequestURI().equals(p)) {
+						// found exception, no redirection required
+						shouldRedirect = false;
+						break;
+					}
+				}
+			}
+			if (shouldRedirect)
+				response.sendRedirect("/");
 		}
+		
 		if (request.getRequestURI().indexOf(admDir) >= 0) {
 			if (!agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) {
 				response.sendRedirect(noAuthPage);

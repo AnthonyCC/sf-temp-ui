@@ -5,6 +5,8 @@ package com.freshdirect.deliverypass.ejb;
  * @author skrishnasamy
  * @version 1.0
  */
+
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.sql.Connection;
@@ -823,10 +825,10 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 			}
 			//LOGGER.debug("Status Map Info "+allStatusMap);
 		} catch (SQLException e) {
-			LOGGER.warn( "SQLException while retreiving the delivery pass status counts.", e );
+			LOGGER.warn( "SQLException while retrieving the delivery pass status counts.", e );
 			throw new EJBException(e);
 		} catch (Exception exp) {
-			LOGGER.warn( "Unknown errorwhile retreiving the delivery pass status counts.", exp );
+			LOGGER.warn( "Unknown error while retrieving the delivery pass status counts.", exp );
 			throw new EJBException(exp);
 		} finally {
 			try {
@@ -834,7 +836,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 					conn.close();
 				}
 			} catch (SQLException e) {
-				LOGGER.warn("SQLException while closing conn in cleanup", e);
+				LOGGER.warn("SQLException while closing connection in cleanup", e);
 			}
 		}
 		return allStatusMap;

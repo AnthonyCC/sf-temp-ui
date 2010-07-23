@@ -1,0 +1,469 @@
+<%@ page import="java.util.Arrays"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.TreeMap"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.freshdirect.common.customer.EnumCardType" %>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.fdstore.promotion.*" %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
+<%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
+<%@ page import="com.freshdirect.framework.util.DateUtil"%>
+<%@ taglib uri='logic' prefix='logic' %>
+
+<%-- include calendar setup/callbacks --%>
+
+<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
+<%
+	String snav_pageURI = request.getRequestURI();
+	boolean promo_home = snav_pageURI.indexOf("/main/promo_home.jsp") > -1;
+
+	boolean promo_activity = snav_pageURI.indexOf("/promo_activity.jsp") > -1;
+	boolean promo_create = snav_pageURI.indexOf("/promo_create.jsp") > -1;
+	boolean promo_details = snav_pageURI.indexOf("/promo_details.jsp") > -1;
+	boolean promo_options = snav_pageURI.indexOf("/promo_options.jsp") > -1;
+	boolean promo_search = snav_pageURI.indexOf("/promo_search.jsp") > -1;
+	boolean promo_view = snav_pageURI.indexOf("/promo_view.jsp") > -1;
+
+	boolean promo_create_edit = snav_pageURI.indexOf("/promo_create_edit.jsp") > -1;
+
+	boolean promo_edit = snav_pageURI.indexOf("/promo_edit.jsp") > -1;
+	boolean promo_edit_basic = snav_pageURI.indexOf("/promo_edit_basic.jsp") > -1;
+	boolean promo_edit_offer = snav_pageURI.indexOf("/promo_edit_offer.jsp") > -1;
+	boolean promo_edit_customer = snav_pageURI.indexOf("/promo_edit_customer.jsp") > -1;
+	boolean promo_edit_cart = snav_pageURI.indexOf("/promo_edit_cart.jsp") > -1;
+	boolean promo_edit_delivery = snav_pageURI.indexOf("/promo_edit_delivery.jsp") > -1;
+	boolean promo_edit_payment = snav_pageURI.indexOf("/promo_edit_payment.jsp") > -1;
+%>
+<div class="promo_nav">
+	<% if (promo_home || promo_view) { %>
+		<div class="promo_sub_nav_on">
+			View
+		</div>
+	<% }else{ %>
+		<div class="promo_sub_nav">
+			<a href="/promotion/promo_view.jsp">View</a>
+		</div>
+	<% } %>
+	<% if (promo_create) { %>
+		<div class="promo_sub_nav_on">
+			Create
+		</div>
+	<% }else{ %>
+		<div class="promo_sub_nav">
+			<a href="/promotion/promo_create.jsp">Create</a>
+		</div>
+	<% } %>
+	<% if (promo_search) { %>
+		<div class="promo_sub_nav_on">
+			Publish
+		</div>
+	<% }else{ %>
+		<div class="promo_sub_nav">
+			<a href="/promotion/promo_publish.jsp">Publish</a>
+		</div>
+	<% } %>
+<script type="text/javascript">
+	function showImportPanel() {
+		var ctPanel = new YAHOO.widget.Panel("importPanel", {
+			fixedcenter: true, 
+			constraintoviewport: true, 
+			underlay: "shadow", 
+			close: true, 
+			visible: false,
+			modal: true,
+			draggable: true}
+		);
+		ctPanel.cfg.setProperty("underlay","matte");
+		ctPanel.setHeader("Import Promotion");
+		ctPanel.setBody( document.getElementById("mypanel").innerHTML );
+	
+
+		ctPanel.render(document.body);
+
+		ctPanel.show();
+	}
+</script>
+	<% if (promo_home || promo_view) { %>
+		<div class="promo_sub_nav_export">
+			<a href="/promotion/promo_view.jsp">Export .xls</a>
+		</div>
+	<% } %>
+		<div class="promo_sub_nav">
+			<span onclick="showImportPanel(); return false;" style="cursor: pointer;">Import</span>
+		</div>
+	
+	<%-- test links --
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_activity.jsp">promo_activity</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_details.jsp">promo_details</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit.jsp">promo_edit</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_create_edit.jsp">create_edit</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_basic.jsp">edit_basic</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_offer.jsp">edit_offer</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_customer.jsp">edit_customer</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_cart.jsp">edit_cart</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_delivery.jsp">edit_delivery</a>
+		</div>
+		<div class="promo_sub_nav_debug">
+			<a href="/promotion/promo_edit_payment.jsp">edit_payment</a>
+		</div>
+	-- test links --%>
+
+</div>
+
+<%-- include back/action row --%>
+<%@ include file="/includes/promotions/i_promo_back_action.jspf" %>
+<div id="import-panel-container" style="display: none">
+	<div id="mypanel" style="width: 400px;">
+		<form action="/promotion/promo_import_clone.jsp" enctype="multipart/form-data" method="post" id="testForm" style="padding: 1em 1em">
+			 <input type="file" name="promoFile"/>
+			 <input type="submit" id="uploadButton" value="Upload"/>
+		</form>
+	</div>
+</div>
+
+
+<%
+	//shortcut refs to objects
+	FDPromoCustStrategyModel csm = ( promotion != null && promotion.getCustStrategies() != null && promotion.getCustStrategies().size()>0 ) ? (FDPromoCustStrategyModel)promotion.getCustStrategies().get(0) : null;
+	String eCheckBool = "NO";
+	String eCheckMin = "";
+	if (csm != null && csm.getPriorEcheckUse() != null) {
+		if (!"".equals(csm.getPriorEcheckUse())) { eCheckBool = "YES"; }
+		if (!"".equals(csm.getPriorEcheckUse())) { eCheckMin = csm.getPriorEcheckUse(); }
+	}
+	String cohortsString = "";
+	if (csm != null) {
+		String[] cohorts = csm.getCohorts();
+		if (cohorts != null) {
+			for (int i = 0; i < cohorts.length; i++) {
+				cohortsString += cohorts[i];
+				if (i != cohorts.length-1) {
+					cohortsString += ", ";
+				}
+			}
+		}
+	}
+	String dpStatus = ""; //ACT
+	String dpStatusString = ""; //Active
+	if (csm != null) {
+		dpStatus = csm.getDpStatus();
+		EnumDlvPassStatus dp_status = EnumDlvPassStatus.getEnum(dpStatus);
+		dpStatusString = dp_status != null ? dp_status.getDisplayName() : "Active";
+	}
+
+	String paymentType = "";
+	if (csm != null) {
+		EnumCardType[] payTypes = csm.getPaymentType();
+		if (payTypes != null) {
+			for (int i = 0; i < payTypes.length; i++) {
+				EnumCardType tempPayType = payTypes[i];
+				if(null != tempPayType){
+					paymentType += tempPayType.getDisplayName();
+					if (i != payTypes.length-1) {
+						paymentType += ", ";
+					}
+				}
+			}
+		}
+	}
+
+	List<FDPromotionAttributeParam> attrList = (promotion.getAttributeList() != null && promotion.getAttributeList().size()>0) ? promotion.getAttributeList() : new ArrayList();
+
+	/* offer */
+		List<FDPromoContentModel> dpcdDataList = (promotion.getDcpdData() != null && promotion.getDcpdData().size()>0) ? promotion.getDcpdData() : null;
+
+		List<FDPromoContentModel> dpcdDepts = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdCats = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdBrands = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdBrandsExcluded = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdSkus =  new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdSkusExcluded = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdRecipes = new ArrayList<FDPromoContentModel>();
+
+		StringBuffer depts = new StringBuffer();
+		StringBuffer cats = new StringBuffer();
+		StringBuffer elgBrnds = new StringBuffer();
+		StringBuffer inElgBrnds = new StringBuffer();
+		StringBuffer elgSkus = new StringBuffer();
+		StringBuffer inElgSkus = new StringBuffer();
+		StringBuffer recps = new StringBuffer();
+		StringBuffer excFromSubtotal = new StringBuffer();
+
+		if (dpcdDataList != null) {
+			for (int n = 0; n < dpcdDataList.size(); n++) {
+				FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDataList.get(n);
+				if (tempDpcd!=null) {
+					if ( tempDpcd.isExcluded() ) {
+						if ( EnumDCPDContentType.BRAND.equals(tempDpcd.getContentType()) ) {
+							dpcdBrandsExcluded.add(tempDpcd);
+							inElgBrnds.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
+							dpcdSkusExcluded.add(tempDpcd);
+							inElgSkus.append(tempDpcd.getContentId()).append(",");
+						}
+					}else{
+						if ( EnumDCPDContentType.DEPARTMENT.equals(tempDpcd.getContentType()) ) {
+							dpcdDepts.add(tempDpcd);
+							depts.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.CATEGORY.equals(tempDpcd.getContentType()) ) {
+							dpcdCats.add(tempDpcd);
+							cats.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.BRAND.equals(tempDpcd.getContentType()) ) {
+							dpcdBrands.add(tempDpcd);
+							elgBrnds.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.RECIPE.equals(tempDpcd.getContentType()) ) {
+							dpcdRecipes.add(tempDpcd);
+							recps.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
+							dpcdSkus.add(tempDpcd);
+							elgSkus.append(tempDpcd.getContentId()).append(",");
+						}
+					}
+				}
+			}
+		}
+
+	/* cart */
+		List<FDPromoContentModel> dpcdDataListCart = (promotion.getCartStrategies() != null && promotion.getCartStrategies().size()>0) ? promotion.getCartStrategies() : null;
+
+		List<FDPromoContentModel> dpcdDeptsCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdCatsCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdBrandsCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdBrandsExcludedCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdSkusCart =  new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdSkusExcludedCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdRecipesCart = new ArrayList<FDPromoContentModel>();
+		List<FDPromoContentModel> dpcdExcludedFromSubtotal = new ArrayList<FDPromoContentModel>(); //used in cart requirement
+
+		StringBuffer deptsCart = new StringBuffer();
+		StringBuffer catsCart = new StringBuffer();
+		StringBuffer elgBrndsCart = new StringBuffer();
+		StringBuffer inElgBrndsCart = new StringBuffer();
+		StringBuffer elgSkusCart = new StringBuffer();
+		StringBuffer inElgSkusCart = new StringBuffer();
+		StringBuffer recpsCart = new StringBuffer();
+		StringBuffer excFromSubtotalCart = new StringBuffer();
+
+		if (dpcdDataListCart != null) {
+			for (int n = 0; n < dpcdDataListCart.size(); n++) {
+				FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDataListCart.get(n);
+				if (tempDpcd!=null) {
+					if ( tempDpcd.isExcluded() ) {
+						if ( EnumDCPDContentType.BRAND.equals(tempDpcd.getContentType()) ) {
+							dpcdBrandsExcludedCart.add(tempDpcd);
+							inElgBrndsCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
+							dpcdSkusExcludedCart.add(tempDpcd);
+							inElgSkusCart.append(tempDpcd.getContentId()).append(",");
+						}
+					}else{
+						if ( EnumDCPDContentType.DEPARTMENT.equals(tempDpcd.getContentType()) ) {
+							dpcdDeptsCart.add(tempDpcd);
+							deptsCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.CATEGORY.equals(tempDpcd.getContentType()) ) {
+							dpcdCatsCart.add(tempDpcd);
+							catsCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.BRAND.equals(tempDpcd.getContentType()) ) {
+							dpcdBrandsCart.add(tempDpcd);
+							elgBrndsCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.RECIPE.equals(tempDpcd.getContentType()) ) {
+							dpcdRecipesCart.add(tempDpcd);
+							recpsCart.append(tempDpcd.getContentId()).append(",");
+						}else if( EnumDCPDContentType.SKU.equals(tempDpcd.getContentType()) ) {
+							dpcdSkusCart.add(tempDpcd);
+							elgSkusCart.append(tempDpcd.getContentId()).append(",");
+						}
+					}
+				}
+			}
+		}
+
+
+	FDPromoDlvZoneStrategyModel zsm = (promotion.getDlvZoneStrategies() != null && promotion.getDlvZoneStrategies().size()>0 ) ? (FDPromoDlvZoneStrategyModel)promotion.getDlvZoneStrategies().get(0) : null;
+
+	List<DlvZoneModel> availableDeliveryZones = (List)FDDeliveryManager.getInstance().getActiveZones();
+	
+	String[] dlvZones = (zsm != null && zsm.getDlvZones() != null && zsm.getDlvZones().length>0) ? zsm.getDlvZones() : null;
+	String dlvZonesString = "";
+	boolean rowOpen = false;
+	int colCount = 0;
+		if (dlvZones != null) {
+			List dlvZonesArrTemp = Arrays.asList(dlvZones);
+			List dlvZonesArr = new ArrayList();
+			
+			for (int i = 0; i < dlvZonesArrTemp.size(); i++) {
+				dlvZonesArr.add(dlvZonesArrTemp.get(i));
+			}
+
+			int dlvZonesFoundIndex = -1;
+			%>
+			<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+				<% if(dlvZonesArr.contains(zoneModel.getZoneDescriptor().getZoneCode())){ %>
+					<%
+						//remove from arr
+						dlvZonesArr.remove(dlvZonesArr.indexOf(zoneModel.getZoneDescriptor().getZoneCode()));
+						if (!rowOpen) {
+							dlvZonesString += "<tr>";
+							rowOpen = !rowOpen;
+						}
+						//add zone data
+						dlvZonesString += "<td class=\"w20px bold\">"+zoneModel.getZoneDescriptor().getZoneCode()+"</td><td class=\"padL8R16 gray\">"+zoneModel.getName()+"</td>";
+						colCount++;
+
+						if (colCount == 2) {
+							dlvZonesString += "</tr>";
+							colCount=0;
+							rowOpen = !rowOpen;
+						}
+					%>
+				<% } %>
+			</logic:iterate>
+			<%
+			//close row if left open
+			if (rowOpen) {
+				dlvZonesString += "<td colspan=\""+colCount*2+"\"><!-- blank --></td></tr>";
+			}
+
+			if (dlvZonesArr.size() > 0) {
+				if(dlvZonesArr.contains("ALL")){
+					dlvZonesString ="ALL";
+				}else{
+					dlvZonesString += "<tr><td colspan=\"4\">Unknown Zones: "+dlvZonesArr.toString()+"</td></tr>";
+				}
+			}
+
+			if (!"".equals(dlvZonesString)) {
+				if(dlvZonesString.indexOf("ALL")>-1){
+					dlvZonesString = "<div class=\"bold\">ALL</div><table class=\"tableCollapse\">"+dlvZonesString+"</table>";
+				}else{
+					dlvZonesString = "<div class=\"bold\">ONLY</div><table class=\"tableCollapse\">"+dlvZonesString+"</table>";
+				}
+			}
+		}
+
+	String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday" };
+	String dlvDaysString = "";
+	String dlvDays = (zsm != null && zsm.getDlvDays() != null && !"".equals(zsm.getDlvDays())) ? zsm.getDlvDays() : null;
+		if (dlvDays != null) {
+			//split dlvDays
+			/*String[] dlvDaysArr = dlvDays.split(",");
+			for (int i = 0; i < dlvDaysArr.length; i++) {
+				dlvDaysString += strDays[Integer.parseInt(dlvDaysArr[i])-1];
+				if (i != dlvDaysArr.length-1) {
+					dlvDaysString += ", ";
+				}
+			}*/
+			dlvDaysString = dlvDays;
+		}
+
+
+	List<FDPromoDlvTimeSlotModel> tsList = (zsm != null && zsm.getDlvTimeSlots() != null && zsm.getDlvTimeSlots().size()>0) ? zsm.getDlvTimeSlots() : null;
+	/*
+		check if we have times to display on page load, and put them into a string to be used in the javascript call
+	*/
+	String dlvTimesStrings[] = new String[7];
+	if (tsList != null) {
+		for (int i = 0; i < tsList.size(); i++) {
+			FDPromoDlvTimeSlotModel tempTs = (FDPromoDlvTimeSlotModel)tsList.get(i);
+			if (tempTs != null) {
+				if (dlvTimesStrings[tempTs.getDayId()-1] == null) { dlvTimesStrings[tempTs.getDayId()-1] = ""; }
+				if (!"".equals(dlvTimesStrings[tempTs.getDayId()-1])) { dlvTimesStrings[tempTs.getDayId()-1] += ", "; }
+				dlvTimesStrings[tempTs.getDayId()-1] += "'"+(tempTs.getDayId()-1) +"_"+tempTs.getDlvTimeStart()+"', '"+(tempTs.getDayId()-1)+"_"+tempTs.getDlvTimeEnd()+"'";
+			}
+		}
+	}
+
+	String dlvTimeslotsString = "";
+	rowOpen = false;
+	colCount=0;
+	List dlvTimeslotsList = null;
+		for (int i = 0; i < dlvTimesStrings.length; i++) {
+			if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) {
+				dlvTimeslotsList = Arrays.asList(dlvTimesStrings[i].split(","));
+
+					for (int j = 0; j < dlvTimeslotsList.size(); j++) {
+						if (!rowOpen) {
+							dlvTimeslotsString += "<tr>";
+							dlvTimeslotsString += "<td class=\"w100px bordLgrayDash padL8R16\">"+strDays[Integer.parseInt(dlvTimeslotsList.get(j).toString().split("_")[0].split("'")[1].trim())]+"</td>";
+							rowOpen = !rowOpen;
+						}
+						if (colCount < 2) {
+							//add timeslot data
+							dlvTimeslotsString += "<td class=\"bold bordLgrayDash padL8R16\">"+dlvTimeslotsList.get(j).toString().split("_")[1].replace("\'","")+"</td>";
+							if (colCount==0) {
+								dlvTimeslotsString += "<td class=\"bordLgrayDash padL8R16 gray\"> to </td>";
+							}
+							colCount++;
+						}
+
+						if (colCount >= 2) {
+							dlvTimeslotsString += "</tr>";
+							colCount=0;
+							rowOpen = !rowOpen;
+						}
+					}
+			}
+		}
+		//close row if left open
+		if (rowOpen) {
+			dlvTimeslotsString += "<td colspan=\""+colCount*2+"\"><!-- blank --></td></tr>";
+		}
+		if (!"".equals(dlvTimeslotsString)) {
+			dlvTimeslotsString = "<table class=\"tableCollapse\">"+dlvTimeslotsString+"</table>";
+		}
+
+	TreeMap<Date,FDPromoZipRestriction> zipRests = (promotion != null && promotion.getZipRestrictions() != null) ? promotion.getZipRestrictions() : null;
+
+	List<FDPromoDlvDateModel> dlvDates = (promotion != null && promotion.getDlvDates() != null && promotion.getDlvDates().size()>0) ? promotion.getDlvDates() : null;
+	
+	/*
+		check if we have dates to display on page load, and put them into a string to be used in the javascript call
+
+		these come back with a time, so split it out
+	*/
+	String dlvDatesString = "";
+	if (dlvDates != null) {
+		for (int i = 0; i < dlvDates.size(); i++) {
+			FDPromoDlvDateModel tempDd = (FDPromoDlvDateModel)dlvDates.get(i);
+			if (tempDd != null) {
+				dlvDatesString += "'"+DateUtil.formatDate(tempDd.getDlvDateStart()).split(" ")[0]+"', '"+DateUtil.formatDate(tempDd.getDlvDateEnd()).split(" ")[0]+"'";
+				if (i != dlvDates.size()-1) {
+					dlvDatesString += ", ";
+				}
+			}
+		}
+	}
+
+	String endType ="Single";
+	if (promotion != null && null != promotion.getRedeemCount() && promotion.getRedeemCount()>0 ){
+		endType ="Redemption";
+	} else if (promotion != null && null !=promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() >0){
+		endType="Rolling";
+	}
+
+%>

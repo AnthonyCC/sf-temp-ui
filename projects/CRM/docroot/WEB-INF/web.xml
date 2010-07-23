@@ -12,7 +12,7 @@
     <filter>
         <filter-name>CrmCaseAndCustomerFilter</filter-name>
         <display-name>CrmCaseAndCustomerFilter</display-name>
-        <description>This Filter make sures that we the customer and case are in session and they match</description>
+        <description>This Filter makes sure that the customer and case are in session and they match</description>
         <filter-class>com.freshdirect.webapp.crm.CrmCaseAndCustomerFilter</filter-class>
         <init-param>
             <param-name>redirectPage</param-name>
@@ -26,11 +26,11 @@
     <filter>
         <filter-name>CrmLoginFilter</filter-name>
         <display-name>CrmLoginFilter</display-name>
-        <description>This filter make sures that we have agent in session</description>
+        <description>This filter makes sure that we have agent in session</description>
         <filter-class>com.freshdirect.webapp.crm.CrmLoginFilter</filter-class>
         <init-param>
             <param-name>allowedPage</param-name>
-            <param-value>/index.jsp</param-value>
+            <param-value>/index.jsp;/promo_publish</param-value>
         </init-param>
         <init-param>
             <param-name>adminDir</param-name>
@@ -105,14 +105,18 @@
 	<servlet-name>OrdersReturnedReportServlet</servlet-name>
 	    <servlet-class>com.freshdirect.webapp.util.OrdersReturnedReportServlet</servlet-class>
     </servlet>
-     <servlet>
-     	<servlet-name>ReturnsVSExportServlet</servlet-name>
+    <servlet>
+    	<servlet-name>ReturnsVSExportServlet</servlet-name>
      	    <servlet-class>com.freshdirect.webapp.util.ReturnsVSExportServlet</servlet-class>
          </servlet>
-     <servlet>
+    <servlet>
      	<servlet-name>ReturnsSPExportServlet</servlet-name>
-     	    <servlet-class>com.freshdirect.webapp.util.ReturnsSPExportServlet</servlet-class>
-         </servlet>
+        <servlet-class>com.freshdirect.webapp.util.ReturnsSPExportServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PromoPublishServlet</servlet-name>
+        <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
+    </servlet>
     
    <servlet-mapping>
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -141,15 +145,19 @@
      <servlet-mapping>
 	    <servlet-name>OrdersReturnedReportServlet</servlet-name>
 	    <url-pattern>/reports/final_return_report.xls</url-pattern>
-     </servlet-mapping>     
-          <servlet-mapping>
-     	    <servlet-name>ReturnsVSExportServlet</servlet-name>
-     	    <url-pattern>/reports/returnsVSExport</url-pattern>
-     </servlet-mapping> 
-          <servlet-mapping>
-     	    <servlet-name>ReturnsSPExportServlet</servlet-name>
-     	    <url-pattern>/reports/returnsSPExport</url-pattern>
-     </servlet-mapping> 
+    </servlet-mapping>     
+    <servlet-mapping>
+        <servlet-name>ReturnsVSExportServlet</servlet-name>
+     	<url-pattern>/reports/returnsVSExport</url-pattern>
+    </servlet-mapping> 
+    <servlet-mapping>
+        <servlet-name>ReturnsSPExportServlet</servlet-name>
+     	<url-pattern>/reports/returnsSPExport</url-pattern>
+    </servlet-mapping> 
+    <servlet-mapping>
+        <servlet-name>PromoPublishServlet</servlet-name>
+        <url-pattern>/promo_publish</url-pattern>
+    </servlet-mapping> 
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>

@@ -1,0 +1,242 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%	
+					List cohortList = new ArrayList();
+					if(csm!=null && null !=csm.getCohorts()){
+						cohortList = Arrays.asList(csm.getCohorts());
+					} %>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Order instance:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm!=null) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (current order count based on placed/settled order) </span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Smart Store cohort:</td>
+					<td class="alignL vTop padL8R16">
+					<%
+					
+					VariantSelection vs = VariantSelection.getInstance();
+					List<String> cohorts = vs.getCohortNames();
+					if(null != cohorts && !cohorts.isEmpty()){
+					%>
+						<table class="tableCollapse" id="edit_custreq_ssParent">
+						 <% for(int i=0;i<cohorts.size();i++){
+						  %>
+						  <%if(i%5 ==0){ %>
+						     <% if(i!=0){ %></tr>	<%} %>
+						  	<tr>
+								<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= cohortList.contains(cohorts.get(i))?"checked":"" %>/> <%= cohorts.get(i)%></td>
+													
+							<%} else { %>
+							<td><input type="checkbox" id="cohorts" name="cohorts" value="<%= cohorts.get(i)%>" <%= cohortList.contains(cohorts.get(i))?"checked":"" %>/> <%= cohorts.get(i)%></td>
+							<%} %>
+							<%} %>
+							<tr>
+								<td colspan="4" class="alignR">
+									<a href="#" onclick="selectAllCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_custreq_ssParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+						<%} %>
+					</td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Dlv Pass status:</td>
+					<td class="alignL vTop padL8R16">
+						<select id="dpStatus" name="dpStatus">
+						    <option value="">None</option>
+							<option value="<%= EnumDlvPassStatus.ACTIVE.getName()%>" <%= (csm!=null && EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.ACTIVE.getDisplayName() %></option>
+							<option value="<%= EnumDlvPassStatus.READY_TO_USE.getName() %>" <%= (csm!=null && EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.READY_TO_USE.getDisplayName() %></option>
+							<option value="<%= EnumDlvPassStatus.EXPIRED.getName() %>" <%= (csm!=null && EnumDlvPassStatus.EXPIRED.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %>><%= EnumDlvPassStatus.EXPIRED.getDisplayName() %></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<% SimpleDateFormat simpleDateformat = new SimpleDateFormat("MM/dd/yyyy");
+				String dpExpStart = null;
+				String dpExpEnd = null;
+				if(csm!=null){
+					if(null !=csm.getDpExpStart()){
+					dpExpStart = simpleDateformat.format(csm.getDpExpStart());
+					}
+					if(null !=csm.getDpExpEnd()){
+						dpExpEnd = simpleDateformat.format(csm.getDpExpEnd());
+					}
+				}
+				%>
+				<tr>
+					<td class="promo_detail_label">Dlv Pass expiration:</td>
+					<td class="alignL vTop padL8R16">
+						<input type="text" id="edit_custreq_cal_dlvPassStart_in" name="edit_custreq_cal_dlvPassStart_in" class="w100px" value="<%= null !=dpExpStart ? dpExpStart:""%>"/> <a href="#" class="promo_ico_cont" id="edit_custreq_cal_dlvPassStart_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a> <span class="gray8pt">11:59:59 PM</span>
+						<span class="gray">&nbsp;&nbsp;to&nbsp;&nbsp;</span>
+						<input type="text" id="edit_custreq_cal_dlvPassEnd_in" name="edit_custreq_cal_dlvPassEnd_in" class="w100px" value="<%= null !=dpExpEnd ? dpExpEnd:""%>"/> <a href="#" class="promo_ico_cont" id="edit_custreq_cal_dlvPassEnd_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a> <span class="gray8pt">11:59:59 PM</span>
+					</td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Profile:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse">
+							<tr>
+								<td>
+									<input type="radio" id="profile_condition0" name="custreq_profileAndOr" value="AND" <%="AND".equals(promotion.getProfileOperator())?"checked":"" %>/> <strong>Match All (AND)</strong>
+									<input type="radio" id="profile_condition1" name="custreq_profileAndOr" value="OR" <%="OR".equals(promotion.getProfileOperator())?"checked":"" %>/> <strong>Match Any (OR)</strong>
+									<input type="hidden" value="AND" class="input" name="profileOperator" id="profileOperator" />
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td>
+									<select id="profile_value" id="profile_value" class="w200px">
+										<option value="Chefs Table" selected="selected">Chefs Table</option>
+										<option value="VIP/Reserved Dlv">VIP/Reserved Dlv</option>
+										<option value="Inactive">Inactive</option>
+										<option value="Gold">Gold</option>
+										<option value="Silver">Silver</option>
+										<option value="Bronze">Bronze</option>
+										<option value="Copper">Copper</option>
+										<option value="Tin">Tin</option>
+										<option value="New">New</option>
+									</select>
+									with Value: <input type="text" id="profile_name" name="profile_name" class="w200px" />
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td>
+									<table id="edit_custreq_profsParent">
+										<tr>
+											<%-- sets the column widths --%>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											<td class="w150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_chefstable" />Chefs Table</td>
+											<td><input type="checkbox" id="sc_vip" />VIP/Reserved Dlv</td>
+											<td><input type="checkbox" id="sc_inactive" />Inactive</td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_gold" />Gold</td>
+											<td><input type="checkbox" id="sc_silver" />Silver</td>
+											<td><input type="checkbox" id="sc_bronze" />Bronze</td>
+										</tr>
+										<tr>
+											<td><input type="checkbox" id="sc_copper" />Copper</td>
+											<td><input type="checkbox" id="sc_tin" />Tin</td>
+											<td><input type="checkbox" id="sc_new" />New</td>
+										</tr>
+										<tr>
+											<td colspan="3" class="alignR">
+												<a href="#" onclick="selectAllCB('edit_custreq_profsParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+												<a href="#" onclick="selectNoneCB('edit_custreq_profsParent'); return false;" class="greenLink">(Select None)</a>
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr>
+								<td><input type="button" value="ADD PROFILE/UPDATE OPERATOR" onclick="javascript:addProfile('frmPromoCustReq');" class="promo_btn_gry" /></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16">
+						<%--
+							Make sure to look at:
+								/includes/promotion_fields.jspf
+							
+							All the old java logic is there, but the JS has changed
+						--%>
+						<table style="border-collapse: collapse;" id="profileListTB">
+							<thead>
+							<tr>
+								<th class="gray8pt padL8R16">&nbsp;</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Name</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Attribute</th>
+								<th class="bordLgrayDash gray8pt padL8R16">Value</th>
+								<th class="gray8pt padL8R16"><a href="#" onclick="deleteAllProfiles('profileListTB'); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+							</tr>
+							</thead>
+							<tbody>
+							<%
+										for (int n = 0; n < attrList.size(); n++) {
+											FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
+											if (tempAttr != null) {
+												%><tr><%
+												if (n == 0) {
+													%><td class="padL8R16">&nbsp;</td><%
+												}else{
+													%><td class="bordLgrayDash padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
+												}
+												%>
+													<td class="bordLgrayDash padL8R16"><%= EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())%></td>
+													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
+													<td class="bordLgrayDash padL8R16"><%= tempAttr.getDesiredValue() %></td>
+													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('<%=tempAttr.getAttributeIndex() %>'); return false;" class="greenLink clickAllExclude">Delete</a></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+<script type="text/javascript">
+<!--
+	setupCals("edit_custreq");
+//-->
+</script>

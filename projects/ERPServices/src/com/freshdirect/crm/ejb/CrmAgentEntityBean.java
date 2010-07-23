@@ -23,6 +23,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class CrmAgentEntityBean extends CrmEntityBeanSupport {
 
+	private static final long serialVersionUID = 6967630951655333989L;
+	
 	private static Category LOGGER = LoggerFactory.getInstance(CrmAgentEntityBean.class);
 
 	protected String getResourceCacheKey() {
@@ -73,7 +75,7 @@ public class CrmAgentEntityBean extends CrmEntityBeanSupport {
 		}
 	}
 	
-	public Collection ejbFindAll() throws FinderException {
+	public Collection<PrimaryKey> ejbFindAll() throws FinderException {
 		Connection conn = null;
 		try{
 			conn = this.getConnection();
@@ -101,6 +103,9 @@ public class CrmAgentEntityBean extends CrmEntityBeanSupport {
 	
 	public boolean isActive() {
 		return ((CrmAgentModel)this.model).isActive();
+	}
+	public boolean isMasqueradeAllowed() {
+		return ((CrmAgentModel)this.model).isMasqueradeAllowed();
 	}
 
 }

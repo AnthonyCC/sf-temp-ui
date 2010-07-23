@@ -20,13 +20,13 @@
     RecipeDepartment recipeDepartment = (RecipeDepartment) ContentFactory.getInstance().getContentNode("rec");
 
     ContentFactory contentFactory = ContentFactory.getInstance();
-    ContentNodeModel recipeCategory = contentFactory.getContentNode(request.getParameter("catId"));
-    RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getInstance().getContentNode(request.getParameter("subCatId"));
+    RecipeCategory recipeCategory = (RecipeCategory)contentFactory.getContentNode(request.getParameter("catId"));
+    RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getContentNode(request.getParameter("subCatId"));
 
     // go get first subcat if subcat was null
     if (recipeSubCat==null) {
-       Collection c= ((RecipeCategory)recipeCategory).getSubcategories();
-       recipeSubCat = (RecipeSubcategory) c.iterator().next();
+       Collection<RecipeSubcategory> c= recipeCategory.getSubcategories();
+       recipeSubCat = c.iterator().next();
     }
 
     DomainValue subcatClassification = recipeSubCat.getClassification();

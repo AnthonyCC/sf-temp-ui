@@ -20,17 +20,17 @@
 						<td width="10%">User Level:</td>
 						<td width="20%">
 						<select class="pulldown" name="role">
-							<%for(Iterator i = CrmAgentRole.getEnumList().iterator(); i.hasNext(); ){
-                            CrmAgentRole role = (CrmAgentRole)i.next();
-							if (role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) continue;
-						    %>
-							    <option <%=role.equals(agent.getRole()) ? "selected" : "" %> value="<%=role.getCode()%>"><%=role.getName()%></option>
-							<%}%>
+							<% for( CrmAgentRole role : CrmAgentRole.getEnumList() ) {
+								if ( role.equals( CrmAgentRole.getEnum( CrmAgentRole.SYS_CODE ) ) ) 
+									continue;
+						    	%><option <%=role.equals(agent.getRole()) ? "selected" : "" %> value="<%=role.getCode()%>"><%=role.getName()%></option>
+							<% } %>
 						</select>
 						</td>
 						<td width="10%"></td>
 						<td width="10%" align="center" <%=agent.isActive() ? "class='user_mgmt_selected'" : ""%>>Active: <input type="checkbox" name="active" <%=agent.isActive() ? "checked" : ""%>></td>
-						<td width="50%"></td>
+						<td width="20%" align="center" <%= agent.isMasqueradeAllowed() ? "class='user_mgmt_selected'" : ""%>>Masquerade allowed: <input type="checkbox" name="masquerade" <%=agent.isMasqueradeAllowed() ? "checked" : ""%>></td>
+						<td width="30%"></td>
 					</tr>
 					<tr><td colspan="5"></td></tr>
 					
@@ -41,19 +41,19 @@
 						<td colspan="3">Downloadable Queues:</td>
 					</tr>
 					<tr>
-					<%int cellCount = 1;
-                    for(Iterator i = CrmCaseQueue.getEnumList().iterator(); i.hasNext(); ){
-                        CrmCaseQueue queue = (CrmCaseQueue)i.next();
-                        %>
+					<% 
+					int cellCount = 1;
+                   	for ( CrmCaseQueue queue : CrmCaseQueue.getEnumList() ) {
+                       %>
                         <td width="33%" <%=agent.hasCaseQueue(queue) ? "class='user_mgmt_selected'" : ""%>>
                             <input type="checkbox" name="queues" value="<%=queue.getCode()%>" <%=agent.hasCaseQueue(queue) ? "checked" : ""%>> 
                             <b><%=queue.getCode()%></b> - <%=queue.getName()%>
                         </td>
-                        <%if(cellCount%3 == 0){%>
+                        <% if ( cellCount % 3 == 0 ) { %>
                             </tr>
                             <tr>
-                        <%} cellCount++;%>
-                    <%}%>
+                        <% } cellCount++; %>
+                    <% } %>
 					</tr>
 				</table>
 				<br>

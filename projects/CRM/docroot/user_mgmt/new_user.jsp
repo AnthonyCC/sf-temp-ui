@@ -62,9 +62,9 @@
 				</tr>
 			</table>
 
-			<table width="80%" class="user_mgmt_content" cellpadding="0" cellspacing="6" border="0">
+			<table width="80%" class="user_mgmt_content" cellpadding="0" cellspacing="6" border="0" id="new_user_downloadable_queues">
 				<tr>
-					<td colspan="3"></td>
+					<td colspan="3"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>
 				<tr>
 					<td colspan="3">Downloadable Queues:</td>
@@ -79,6 +79,12 @@
 						<tr>
 					<%} cellCount++;%>
 				<%}%>
+				</tr>
+				<tr>
+					<td colspan="3" style="text-align: right;">
+						<a href="#" onclick="selectAllCB('new_user_downloadable_queues'); return false;">(Select All)</a>&nbsp;
+						<a href="#" onclick="selectNoneCB('new_user_downloadable_queues'); return false;">(Select None)</a>
+					</td>
 				</tr>
 			</table>
 		</div>

@@ -15,144 +15,66 @@
 <tmpl:put name='title' direct='true'>Supervisor Resources > Re-Submit Customers</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<% 
-  boolean isPost = "POST".equalsIgnoreCase(request.getMethod());
-  int customersToDisplay = 0;
-%>
-<jsp:include page="/includes/admintools_nav.jsp" />
-<div class="sub_nav">
-<span class="sub_nav_title">
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
-<crm:ResubmitCustomerController id="nsmCustomers" actionName='<%="resubmitCustomer"%>' result="resubmitResult" successPage="<%= request.getRequestURI() %>">
-   <form method='POST' name="frmResubmitCustomers">
-  		<table width="100%" cellpadding="0" cellspacing="0" class="sub_nav">
-			<tr><td>Resubmit Customers that are in Non-Submitted Mode</span></td></tr>
-		</table>
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">
-    
- <%  System.out.println("resubmitResult ::"+resubmitResult); %>
-  
-<%	if (!resubmitResult.isSuccess() ) {	%>
-		<logic:iterate id="errs" collection="<%= resubmitResult.getErrors() %>" type="com.freshdirect.framework.webapp.ActionError" indexId="idx">
-		<tr>
-			<td class="border_bottom">&nbsp;</td>
-			<td class="text11rbold"><%=errs.getDescription()%></td>
-		</tr>         
-		</logic:iterate>
-        
-<%   }   %>    
-</table>
+	<% 
+		boolean isPost = "POST".equalsIgnoreCase(request.getMethod());
+		int customersToDisplay = 0;
+	%>
+	<jsp:include page="/includes/admintools_nav.jsp" />
 
-<% //if (!isPost) { %>
-		
-<%		if (nsmCustomers.size() > 0) {  %>		
-			<table width="100%" cellpadding="0" cellspacing="0" class="content_fixed">
-				<tr><td align="center">
-				<input type="submit" value="resubmit checked items">	</td></tr>
-				<tr><td align="left"><%=nsmCustomers.size()%>&nbsp;customers found&nbsp;
-				  &nbsp;&nbsp;Amount marked for resubmittal: <input onFocus="blur();" type=text size="6" name="customersSelected" readonly value="0">
-				  <br> <a href="javascript:checkAll(true);">Select first 100 customers</a>&nbsp;&nbsp;&nbsp;
-				  <a href="javascript:checkAll(false);">Clear all</a>
-				</td></tr>
-			</table>
-			<div class="list_header">
-			 <table class="list_header_text" width="100%" cellspacing="0" border="1" border="0" style="empty-cells: show">
+	<crm:ResubmitCustomerController id="nsmCustomers" actionName='<%="resubmitCustomer"%>' result="resubmitResult" successPage="<%= request.getRequestURI() %>">
+	<form method='POST' name="frmResubmitCustomers">
+
+		<%	if (!resubmitResult.isSuccess() ) {	%>
+			<div id="result" class="list_content" style="height:70%;">
+				<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">
+				<logic:iterate id="errs" collection="<%= resubmitResult.getErrors() %>" type="com.freshdirect.framework.webapp.ActionError" indexId="idx">
 				<tr>
-					<td align="left"></td>
-					<td align="left"><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
-					<td align="left"><img src="/media_stat/images/layout/clear.gif" width="180" height="1"></td>
-					<td align="left"><img src="/media_stat/images/layout/clear.gif" width="450" height="1"></td>
+					<td class="border_bottom">&nbsp;</td>
+					<td class="text11rbold"><%=errs.getDescription()%></td>
 				</tr>
-				<tr>
-					<td align="left"></td>
+				</logic:iterate>
+				</table>
+			</div>
+		<% } %>
+		
+		<div class="sub_nav sub_nav_title">
+			Resubmit Customers that are in Non-Submitted Mode
+		</div>
+		<div>
+			<% if (!isPost && nsmCustomers!=null && nsmCustomers.size() == 0) { %><strong>There were no Non-Submitted Orders found.</strong><% } %>
+			<% if (nsmCustomers.size() > 0) { %>
+				&nbsp;<span style="font-weight: normal;">(<%=nsmCustomers.size()%> customers found) &nbsp;&nbsp;&nbsp;
+				Amount marked for resubmittal: <input onFocus="blur();" type=text size="6" id="customersSelected" name="customersSelected" readonly value="0" />&nbsp;&nbsp;&nbsp;
+				Select: <a href="#" onClick="javascript:$('customersSelected').value=selectNCB('resubmit_customers', 100, true, 'first'); return false;">first 100</a>/<a  href="#" onClick="javascript:$('customersSelected').value=selectNCB('resubmit_customers', 100, true, 'last'); return false;">last 100</a>/<a  href="#" onClick="javascript:$('customersSelected').value=selectNCB('resubmit_customers', 0, true); return false;">all</a> customers&nbsp;&nbsp;
+				<a href="#" onClick="javascript:$('customersSelected').value=selectNCB('resubmit_customers', 0, false); return false;">Clear all</a>&nbsp;&nbsp;&nbsp;
+				<input type="submit" value="resubmit checked items" />
+				</span>
+			<% } %>
+		</div>
+
+		<% if (nsmCustomers.size() > 0) { %>
+			<table width="100%" cellspacing="0" border="0" style="empty-cells: show">
+				<tr bgcolor="#333366" class="list_header_text">
+					<td align="left">&nbsp;</td>
 					<td align="left">User ID</td>
 					<td align="left">First Name</td>
 					<td align="left">Last Name</td>
 				</tr>
-			</table> 
+			</table>
+			<div id="result" class="list_content" style="height:76%;">
+				<table width="100%" cellspacing="0" border="0" style="empty-cells: show" id="resubmit_customers">
+				<logic:iterate id="customerInfo" collection="<%= nsmCustomers %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
+				<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
+					<td class="border_bottom">&nbsp;</td>
+					<td class="border_bottom"><input name="customerId" type="checkbox" onClick="countChecked(this);" value="<%=customerInfo.getIdentity().getErpCustomerPK()%>"><a href="/main/account_details.jsp?erpCustId=<%=customerInfo.getIdentity().getErpCustomerPK()%>"><%=customerInfo.getEmail()%></a>&nbsp;</td>
+					<td class="border_bottom"><%=customerInfo.getFirstName()%>&nbsp;</td>
+					<td class="border_bottom"><%=customerInfo.getLastName()%>&nbsp;</td>
+				</tr>
+				</logic:iterate>
+				</table>
 			</div>
-<%		}  
-    //} %>
-<div id="result" class="list_content" style="height:70%;">
-	<table width="100%" cellpadding="0" cellspacing="0" border="0" style="empty-cells: show">     
-       
-   
-<%   if (!isPost && nsmCustomers!=null && nsmCustomers.size() == 0) { %>
-		<tr><td colspan="4" align="center"><br><b>There were no NSM Customers found</b></td></tr>
-<%   } else if (nsmCustomers!=null && nsmCustomers.size() > 0) { %>
-		<tr>
-			<td align="left"></td>
-			<td align="left"><img src="/media_stat/images/layout/clear.gif" width="150" height="1"></td>
-			<td align="left"><img src="/media_stat/images/layout/clear.gif" width="180" height="1"></td>
-			<td align="left"><img src="/media_stat/images/layout/clear.gif" width="450" height="1"></td>
-		</tr>
-		<logic:iterate id="customerInfo" collection="<%= nsmCustomers %>" type="com.freshdirect.fdstore.customer.FDCustomerOrderInfo" indexId="idx">
-			<tr <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %>>
-				<td class="border_bottom">&nbsp;</td>
-				<td class="border_bottom"><input name="customerId" type="checkbox" onClick="countChecked(this);" value="<%=customerInfo.getIdentity().getErpCustomerPK()%>"><a href="/main/account_details.jsp?erpCustId=<%=customerInfo.getIdentity().getErpCustomerPK()%>"><%=customerInfo.getEmail()%></a>&nbsp;</td>
-				<td class="border_bottom"><%=customerInfo.getFirstName()%>&nbsp;</td>
-				<td class="border_bottom"><%=customerInfo.getLastName()%>&nbsp;</td>
-			</tr>
-		</logic:iterate>
-<%	 	
-	 } %>
-	 
-	</table>
-</div>
-</form>
-<script language"javascript">
-	<!--
-	var customersSelected =0;
-	function countChecked(cbObj) {
-		
-		//alert(cbObj.checked)
-		if (cbObj.checked) {
-			customersSelected++;
-		} else {
-			customersSelected--;
-		}
-		showSelected();
-	}
-	
-	function showSelected() {
-		var outputObj = document.forms["frmResubmitCustomers"].customersSelected;
-		if (customersSelected<=0) customersSelected=0;
-		outputObj.value=customersSelected;
-	}
-	
-	function checkAll(flag) {
-		var elements = document.forms["frmResubmitCustomers"].elements;
-		for (var i=0;i<elements.length;i++) {
-			//alert(elements[i].name+" / "+ elements[i].type);
-            //100 + 3 pre-existing elements in this form
-           if(i < 103) {
-			if (elements[i].name=="customerId" && elements[i].type=="checkbox") {
-				if (flag && !elements[i].checked) {
-					elements[i].checked=true;
-					customersSelected++;
-				}
-				if (!flag && elements[i].checked) {
-				   elements[i].checked=false;
-				   customersSelected--;
-				}
-			}
-           }
-           showSelected();
-		}
-	}
-	
-	
-	function toggleScroll(divId,currentClass,newClass) {
-	var divStyle = document.getElementById(divId);
-		if (document.customer_status.forPrint.checked) {
-			divStyle.className = newClass;
-		} else {
-			divStyle.className = currentClass;
-		}
-	}
-	//-->
-	</script>
-
-</crm:ResubmitCustomerController>
+		<% } %>
+	</form>
+	</crm:ResubmitCustomerController>
 </tmpl:put>
 </tmpl:insert>

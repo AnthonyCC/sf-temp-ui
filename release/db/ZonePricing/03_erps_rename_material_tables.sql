@@ -32,10 +32,10 @@ alter index IDX_PRD_SKU_VER rename to IDX_PRD_SKU_VER_old;
 alter index PK_SLU rename to PK_SLU_old;
 alter index IDX_SLU_MID rename to IDX_SLU_MID_old;
 --there're 4 indexes name too long 
-alter index MATERIALPROXY_CHARVA_IDX_016 rename to MCI_016_old;
-alter index MATERIALPROXY_SALESU_IDX_015 rename to MSI_015_old;
-alter index PRODUCT_VERSION_SKU_AVAIL_IDX rename to PVSAI_old;
-alter index PRODUCT_SKU_AVAIL_VERSION_IDX rename to PSAVI_old;
+alter index MCI_016_016 rename to MCI_016_old;
+alter index MSI_015 rename to MSI_015_old;
+alter index PVSAI rename to PVSAI_old;
+alter index PSAVI rename to PSAVI_old;
 
 -- rename constraints 
 alter table MATERIALPRICE rename constraint PK_MPR to PK_MPR_old;

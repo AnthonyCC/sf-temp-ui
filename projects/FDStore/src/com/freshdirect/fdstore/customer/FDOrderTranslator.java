@@ -169,6 +169,8 @@ public class FDOrderTranslator {
 			order.setDlvPromotionApplied(cart.isDlvPromotionApplied());
 			
 			order.setBufferAmt(cart.getBufferAmt());
+			order.setDlvPassExtendDays(cart.getDlvPassExtendDays());
+			order.setCurrentDlvPassExtendDays(cart.getCurrentDlvPassExtendDays());
 			
 		} catch (FDInvalidConfigurationException ex) {
 			throw new FDResourceException(ex, "Invalid configuration encountered");

@@ -108,7 +108,10 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(docu
 	<fd:ErrorHandler result='<%=result%>' name='invalid_deliverypass' id='errorMsg'>
     	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
 	</fd:ErrorHandler>
-    
+    	<fd:ErrorHandler result='<%=result%>' name='redemption_exceeded' id='errorMsg'>
+        <input type = "hidden" name="ignorePromoErrors" value="true"/>
+    	<br><span class="text11rbold"><%= errorMsg %></span><br><br>
+	</fd:ErrorHandler>
     
     
 <%

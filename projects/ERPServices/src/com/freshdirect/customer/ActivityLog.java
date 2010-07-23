@@ -40,6 +40,14 @@ public class ActivityLog {
 			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
 		}
 	}
+	
+	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
+		try {
+			this.getActivityLogSB().logActivity( rec );
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
+		}		
+	}
 
 	private ActivityLogSB getActivityLogSB() throws FDResourceException {
 		try {

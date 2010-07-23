@@ -26,8 +26,8 @@ import com.freshdirect.payment.EnumPaymentMethodType;
  */
 public class EnumCardType extends ValuedEnum {
 	
-	private static final Map CARDS_BY_SETTLEMENT_CODE = new HashMap();
-	private static final Map CARDS_BY_PAYMENTECH_CODE = new HashMap();
+	private static final Map<String,EnumCardType> CARDS_BY_SETTLEMENT_CODE = new HashMap<String,EnumCardType>();
+	private static final Map<String,EnumCardType> CARDS_BY_PAYMENTECH_CODE = new HashMap<String,EnumCardType>();
 
 	public final static EnumCardType AMEX = new EnumCardType(0, "AMEX", "AMEX", "003", "A","Amex", "AX", EnumPaymentMethodType.CREDITCARD);
 	public final static EnumCardType MC = new EnumCardType(1, "MC", "MC", "002", "M", "MasterCard", "MC", EnumPaymentMethodType.CREDITCARD);

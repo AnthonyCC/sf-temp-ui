@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
 import com.freshdirect.fdstore.promotion.management.FDPromotionManager;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -116,7 +117,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				//PromotionI promotion = FDPromotionFactory.getInstance().getRedemptionPromotion(redemptionCode, customerId);
 				
 				//Get the Promotion Id for the given redemption code before getting it from the cache.
-				String promoId = FDPromotionManager.getRedemptionPromotionId(redemptionCode);	
+				String promoId = FDPromotionNewManager.getRedemptionPromotionId(redemptionCode);	
 				if (promoId == null) {
 					Object[] params = new Object[] { redemptionCode };
 					actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
@@ -169,7 +170,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 							"redemption_error",
 							MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET, params));
 	
-					} else if (promotion.isCategoryDiscount()) {
+					} else if (promotion.isLineItemDiscount()) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES);
 					} else if (promotion.isSampleItem()) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE);

@@ -1,31 +1,27 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public abstract class AbstractProductModelImpl extends ContentNodeModelImpl implements ProductModel {
 
 	protected final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
-	private List alsoSoldAs = new ArrayList();
-	private List alsoSoldAsList = new ArrayList();
-	private List<ProductModel> alsoSoldAsRefs = new ArrayList();
+	private List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
+	private List<ProductModel> alsoSoldAsList = new ArrayList<ProductModel>();
+	private List<ProductModel> alsoSoldAsRefs = new ArrayList<ProductModel>();
 
 	public AbstractProductModelImpl(ContentKey key) {
 		super(key);
@@ -86,7 +82,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 
 	public ProductModel getAlsoSoldAs(int idx) {
-		return (ProductModel) getAlsoSoldAs().get(idx);
+		return getAlsoSoldAs().get(idx);
 	}
 	
 	/**
@@ -108,10 +104,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		}
 
 		ArrayList<ProductModel> refs = new ArrayList<ProductModel>();
-		for (Iterator iter = alsoSoldAs.iterator(); iter.hasNext();) {
-			ProductModel pm = (ProductModel) iter.next();
-			refs.add(pm);
-		}
+		refs.addAll( alsoSoldAs );
 		return refs;
 	}
 
@@ -121,10 +114,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		if (bRefreshed) {
 			ContentNodeModelUtil.setNearestParentForProducts(getParentNode(), alsoSoldAsList);
 			alsoSoldAsRefs.clear();
-			for (Iterator tmp = alsoSoldAsList.iterator(); tmp.hasNext();) {
-			    ProductModel m = (ProductModel) tmp.next();
-			    alsoSoldAsRefs.add(m);
-			}
+			alsoSoldAsRefs.addAll( alsoSoldAsList );
 		}
 		return alsoSoldAsRefs;
 	}
@@ -140,7 +130,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	}
 	
 	public Html getProductTerms() {
-            return FDAttributeFactory.constructHtml(this, "PRODUCT_TERMS_MEDIA");
+		return FDAttributeFactory.constructHtml(this, "PRODUCT_TERMS_MEDIA");
 	}
 	
 	public boolean isShowTopTenImage() {
@@ -151,32 +141,31 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    return new PriceCalculator(getPricingContext(), this, this.getDefaultSku(getPricingContext()));
 	}
 
-        public PriceCalculator getPriceCalculator(String skuCode) {
-            return new PriceCalculator(getPricingContext(), this, this.getValidSkuCode(getPricingContext(), skuCode));
+    public PriceCalculator getPriceCalculator(String skuCode) {
+        return new PriceCalculator(getPricingContext(), this, this.getValidSkuCode(getPricingContext(), skuCode));
+    }
+
+    /**
+     * @param skuCode
+     * @return the default sku code, if sku code is not specified or the sku is
+     *         not in the products sku.
+     */
+    public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
+        if (skuCode == null) {
+            return getDefaultSku(ctx);
         }
-	
-        /**
-         * @param skuCode
-         * @return the default sku code, if sku code is not specified or the sku is
-         *         not in the products sku.
-         */
-        public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
-            if (skuCode == null) {
-                return getDefaultSku(ctx);
-            } else {
-                for (SkuModel s : getSkus()) {
-                    if (skuCode.equals(s.getSkuCode())) {
-                        return s;
-                    }
-                }
-                return getDefaultSku(ctx);
-            }
-        }	
-	
-        
-        public boolean isFullyAvailable() {
-            return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
-        }
+		for (SkuModel s : getSkus()) {
+		    if (skuCode.equals(s.getSkuCode())) {
+		        return s;
+		    }
+		}
+		return getDefaultSku(ctx);
+    }	
+
+    
+    public boolean isFullyAvailable() {
+        return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
+    }
         
 	/**
 	 * Better name would be : 'IsAvailable'.
@@ -190,7 +179,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 * @return
 	 */
 	public boolean isTemporaryUnavailable() {
-            return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
+		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
 	}
 	
 	/**
@@ -245,31 +234,32 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			return -1;
 		}
 	}
-        public int getDealPercentage() {
-            return getDealPercentage(null);
-        }
+	
+    public int getDealPercentage() {
+        return getDealPercentage(null);
+    }
 
-        public int getTieredDealPercentage() {
-            return getTieredDealPercentage(null);
-        }
-        
-        public int getHighestDealPercentage() {
-            return getHighestDealPercentage(null);
-        }
-        
-        /* price calculator calls */
+    public int getTieredDealPercentage() {
+        return getTieredDealPercentage(null);
+    }
+    
+    public int getHighestDealPercentage() {
+        return getHighestDealPercentage(null);
+    }
+    
+    /* price calculator calls */
 
-        public String getDefaultPrice() {
-            return getPriceCalculator().getDefaultPrice();
-        }
-        
-        public String getDefaultPriceOnly() {
-            return getPriceCalculator().getDefaultPriceOnly();
-        }
+    public String getDefaultPrice() {
+        return getPriceCalculator().getDefaultPrice();
+    }
+    
+    public String getDefaultPriceOnly() {
+        return getPriceCalculator().getDefaultPriceOnly();
+    }
 
-        public String getDefaultUnitOnly() {
-            return getPriceCalculator().getDefaultUnitOnly();
-        }
+    public String getDefaultUnitOnly() {
+        return getPriceCalculator().getDefaultUnitOnly();
+    }
 
 	public int getDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getDealPercentage();
@@ -284,32 +274,32 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    return getPriceCalculator(skuCode).getHighestDealPercentage();
 	}
 
-        public String getTieredPrice(double savingsPercentage) {
-            return getPriceCalculator().getTieredPrice(savingsPercentage);
-        }
+    public String getTieredPrice(double savingsPercentage) {
+        return getPriceCalculator().getTieredPrice(savingsPercentage);
+    }
 
 	public double getPrice(double savingsPercentage) {
 	    return getPriceCalculator().getPrice(savingsPercentage);
 	}
 
-        public String getPriceFormatted(double savingsPercentage) {
-            return getPriceCalculator().getPriceFormatted(savingsPercentage);
-        }
-	
-        public String getPriceFormatted(double savingsPercentage, String skuCode) {
-            return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
-        }
-        
+    public String getPriceFormatted(double savingsPercentage) {
+        return getPriceCalculator().getPriceFormatted(savingsPercentage);
+    }
 
-        public String getWasPriceFormatted(double savingsPercentage) {
-            return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
-        }
-        
-        public String getAboutPriceFormatted(double savingsPercentage) {
-            return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
-        }
-        
-        /* end of the price calculator calls */
+    public String getPriceFormatted(double savingsPercentage, String skuCode) {
+        return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
+    }
+    
+
+    public String getWasPriceFormatted(double savingsPercentage) {
+        return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
+    }
+    
+    public String getAboutPriceFormatted(double savingsPercentage) {
+        return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
+    }
+    
+    /* end of the price calculator calls */
         
 	
 	public String getYmalHeader() {
@@ -320,90 +310,73 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return getAttribute("RELATED_PRODUCTS_HEADER", null);
 	}
 	
-	public List<String> getCountryOfOrigin() throws FDResourceException{
-		List<String> coolInfo=new ArrayList();
-		
-		List skus = getPrimarySkus(); 
-	       SkuModel sku = null;
-	       //remove the unavailable sku's
-	       for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
-	           sku = (SkuModel)li.next();
-	           if ( sku.isUnavailable() ) {
-	              li.remove();
-	           }
-	       }
-	       if (skus.size()==0) return coolInfo;  // skip this item..it has no skus.  Hmmm?
-	       if (skus.size()==1) {
-	           sku = (SkuModel)skus.get(0);  // we only need one sku
-	           FDProductInfo productInfo;
-				try {
-					productInfo = sku.getProductInfo();
-					List countries=productInfo.getCountryOfOrigin();
-					String text=getCOOLText(countries);
-					if(!"".equals(text))
-						coolInfo.add(text);
-				} catch (FDSkuNotFoundException ignore) {
+	public List<String> getCountryOfOrigin() throws FDResourceException {
+		List<String> coolInfo = new ArrayList<String>();
+
+		List<SkuModel> skus = getPrimarySkus();
+		// remove the unavailable sku's
+		for ( ListIterator<SkuModel> li = skus.listIterator(); li.hasNext(); ) {
+			SkuModel sku = li.next();
+			if ( sku.isUnavailable() ) {
+				li.remove();
+			}
+		}
+		if ( skus.size() == 0 )
+			return coolInfo; // skip this item..it has no skus. Hmmm?
+		if ( skus.size() == 1 ) {
+			SkuModel sku = skus.get( 0 ); // we only need one sku
+			FDProductInfo productInfo;
+			try {
+				productInfo = sku.getProductInfo();
+				List<String> countries = productInfo.getCountryOfOrigin();
+				String text = getCOOLText( countries );
+				if ( !"".equals( text ) )
+					coolInfo.add( text );
+			} catch ( FDSkuNotFoundException ignore ) {
+			}
+		} else {
+			/*
+			 * int MAX_COOL_COUNT=5; List countries=new ArrayList(MAX_COOL_COUNT); FDProductInfo productInfo; int
+			 * index=0; while(index<MAX_COOL_COUNT && countries.size()<MAX_COOL_COUNT ) { for(Iterator
+			 * it=skus.iterator();it.hasNext();) { sku = (SkuModel)it.next(); try { if(countries.size()<MAX_COOL_COUNT)
+			 * { productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode()); List
+			 * _countries=productInfo.getCOOLInfo(); if(_countries.size()>index) countries.add(_countries.get(index)); }
+			 * else { break; }
+			 * 
+			 * } catch (FDSkuNotFoundException ignore) { } } index++; } text=getCOOLText(countries);
+			 */
+			Map<String, String> coolInfoMap = new HashMap<String, String>();
+			FDProductInfo productInfo = null;
+			List<String> countries = null;
+			String text = "";
+			for ( SkuModel sku : skus ) {
+				if ( sku.getVariationMatrix() != null && sku.getVariationMatrix().size() > 0 ) {
+					String domainValue = sku.getVariationMatrix().get( 0 ).getValue();
+					try {
+						productInfo = sku.getProductInfo();
+						countries = productInfo.getCountryOfOrigin();
+						text = getCOOLText( countries );
+					} catch ( FDSkuNotFoundException ignore ) {
+						text = "";
+					}
+
+					if ( !coolInfoMap.containsKey( domainValue ) && !"".equals( text ) )
+						coolInfoMap.put( domainValue, text );
 				}
-	       } else {
-	    	  /* int MAX_COOL_COUNT=5;
-	    	   List countries=new ArrayList(MAX_COOL_COUNT);
-	    	   FDProductInfo productInfo;
-	    	   int index=0;
-	    	   while(index<MAX_COOL_COUNT && countries.size()<MAX_COOL_COUNT ) {
-	    		   for(Iterator it=skus.iterator();it.hasNext();) {
-	    			   sku = (SkuModel)it.next();
-		    		   try {
-		    			   if(countries.size()<MAX_COOL_COUNT) {
-		    				   productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode());
-		    				   List _countries=productInfo.getCOOLInfo();
-		    				   if(_countries.size()>index)
-		    					   countries.add(_countries.get(index));
-		    			   } else {
-		    				   break;
-		    			   }
-							
-						} catch (FDSkuNotFoundException ignore) {
-						} 
-		    	   } 
-	    		   index++;
-	    	   }
-	    	   text=getCOOLText(countries);*/
-	    	   Map coolInfoMap=new HashMap();
-	    	   FDProductInfo productInfo=null;
-	    	   List countries=null;
-	    	   String domainValue="";
-	    	   String text="";
-	    	   for(Iterator it=skus.iterator();it.hasNext();) {
-    			   sku = (SkuModel)it.next();
-    			   if(sku.getVariationMatrix()!=null && sku.getVariationMatrix().size()>0) {
-    				   domainValue= ((DomainValue)sku.getVariationMatrix().get(0)).getValue();
-    				   try {
-    					   productInfo = sku.getProductInfo();
-    					   countries=productInfo.getCountryOfOrigin();
-    					   text=getCOOLText(countries);
-    				   } catch (FDSkuNotFoundException ignore) {
-    					   text="";
-    				   }
-    				   
-    				   if(!coolInfoMap.containsKey(domainValue) && !"".equals(text))
-    					   coolInfoMap.put(domainValue, text);
-    			   }
-	    	   } 
-	    	   
-	    	   StringBuffer temp=new StringBuffer(100);
-	    	   for(Iterator it=coolInfoMap.keySet().iterator();it.hasNext();) {
-	    		   domainValue=it.next().toString();
-	    		   coolInfo.add(temp.append(domainValue).append(": ").append(coolInfoMap.get(domainValue).toString()).toString());
-	    		   temp=new StringBuffer(100);
-	    	   }
-	    	  Collections.sort(coolInfo);
-	    	   
-	       }
-	       
-	       return coolInfo;
+			}
+
+			StringBuffer temp = new StringBuffer( 100 );
+			for ( String domainValue : coolInfoMap.keySet() ) {
+				coolInfo.add( temp.append( domainValue ).append( ": " ).append( coolInfoMap.get( domainValue ).toString() ).toString() );
+				temp = new StringBuffer( 100 );
+			}
+			Collections.sort( coolInfo );
+
+		}
+		return coolInfo;
 	}
 
-	private String getCOOLText(List countries) {
+	private String getCOOLText(List<String> countries) {
 		if(countries==null)
 			return "";
 		

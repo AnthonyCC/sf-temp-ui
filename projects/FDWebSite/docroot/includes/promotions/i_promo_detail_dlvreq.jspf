@@ -1,0 +1,173 @@
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel"%>
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoDlvTimeSlotModel"%>
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Map"%>
+<%--
+	This is a jspf-specifc var that denotes if the section is "empty".
+	If it's empty, show "-None-" instead of the normal contents
+--%>
+<% boolean isEmptyPromoDlvreq = false; %>
+<%--
+	For testing, set this to true on the promo_create_edit page
+--%>
+<% if (promo_create_edit) { isEmptyPromoDlvreq = true; } %>
+
+
+
+
+<table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Delivery Requirement</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<% if (promo_edit || inPromoEditSub) { %>
+				<input type="button" value="EDIT SECTION" onclick="javascript:promotionDlvReqSubmit('<%= promoId %>')" class="promo_btn_brn2 fleft noMargLR" />
+			<% } %>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%-- check if we're empty --%>
+				<% if (isEmptyPromoDlvreq) { %>
+						<tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr>
+				<% }else{ %>
+					<%
+						//construct the ordType string
+						String ordType = "";
+							if (csm != null) {
+								ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
+								ordType += (csm.isOrderTypeCorporate())
+												? (csm.isOrderTypeHome()) ? ", Corporate" : "Corporate"
+												: "";
+								ordType += (csm.isOrderTypePickup())
+												? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
+												: "";
+								}
+					%>
+					<tr>
+						<td class="promo_detail_label">Address type:</td>
+						<td class="alignL"><%= ordType %></td>
+					</tr>
+					
+					<tr>
+						<td class="promo_detail_label">Delivery day(s):</td>
+						<td class="alignL"><%= (zsm != null) ? dlvDaysString : "" %></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Delivery Date(s):</td>
+						<td class="alignL">
+							
+							<%
+								if (dlvDates != null) { %>
+									<table style="border-collapse: collapse;">
+									<%
+										for (int n = 0; n < dlvDates.size(); n++) {
+											FDPromoDlvDateModel tempDd = (FDPromoDlvDateModel)dlvDates.get(n);
+											if (tempDd != null) {
+												%><tr>
+													<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateStart()).split(" ")[0] %></td>
+													<td class="bordLgrayDash padL8R16 gray"> to </td>
+													<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateEnd()).split(" ")[0] %></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+									</table>
+									<%
+								}
+							%>
+						</td>
+					</tr>
+					
+					
+					<tr>
+						<td class="promo_detail_label">Timeslot(s):</td>
+						<td class="alignL">
+							<%
+								if (tsList != null) { %>
+									<table style="border-collapse: collapse;">
+									<%
+										for (int n = 0; n < tsList.size(); n++) {
+											FDPromoDlvTimeSlotModel tempTs = (FDPromoDlvTimeSlotModel)tsList.get(n);
+											if (tempTs != null) {
+												%><tr>
+													<td class="bordLgrayDash padL8R16"><%= tempTs.getDlvTimeStart() %></td>
+													<td class="bordLgrayDash padL8R16 gray"> to </td>
+													<td class="bordLgrayDash padL8R16"><%= tempTs.getDlvTimeEnd() %></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+									</table>
+									<%
+								}
+							%>
+						</td>
+					</tr>
+					<%
+						//ZIP or ZONE
+						if (zipRests != null && zipRests.size() > 0) {
+					%>
+							<tr>
+								<td class="promo_detail_label">ZIP code:</td>
+								<td class="alignL">
+									<%
+										if (zipRests != null) {
+											Set zipSet = zipRests.entrySet();
+											Iterator i = zipSet.iterator();
+											while(i.hasNext()) {
+												Map.Entry me = (Map.Entry)i.next();
+												%><%= ((FDPromoZipRestriction)me.getValue()).getType() %><br/><%= ((FDPromoZipRestriction)me.getValue()).getZipCodes() %><%
+											}
+										}
+									%>
+								</td>
+							</tr>
+						<% } %>
+									
+						<%
+							if (zsm != null ) {
+						%>
+							<tr>
+								<td class="promo_detail_label">Zone(s):</td>
+								<td class="alignL">
+									<table class="vTop tableCollapse">
+										<tr>
+											<td class="vTop w300px"><%= (zsm != null) ? dlvZonesString : "" %></td>
+											<td class="vTop promo_detail_label" style="width: 100px;">Timeslot:</td>
+											<td class="vTop"><%= (tsList != null) ? dlvTimeslotsString : "" %></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+				<% } %>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

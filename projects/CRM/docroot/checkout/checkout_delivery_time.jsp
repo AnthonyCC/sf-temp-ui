@@ -95,15 +95,15 @@
     }
 %>
 <%
-//get amount for zone promotion
+	//get zone promotion codes
 	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
-	double zonePromoAmount=FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
-	String zonePromoString=null;
-	if(zonePromoAmount>0)
+    double zonePromoAmount=0.0;
+    String zonePromoString=null;
+    String zoneId = cart.getDeliveryZone();
+	Set promoCodes=PromotionHelper.getEligiblePromoCodes(user,zoneId);
+	if(promoCodes != null && promoCodes.size() > 0)
 	{
-		zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
 		request.setAttribute("SHOW_WINDOWS_STEERING","true");
-	
 	}
 %>
 <script>

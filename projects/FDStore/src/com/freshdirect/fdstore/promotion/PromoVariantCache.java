@@ -91,8 +91,8 @@ public class PromoVariantCache {
 	}
 	
 	public Collection<String> getPromoVariantIds() {
-			//Returns Collection containing variant Ids that are attached to one or more Promo codes.
-			return getPromoVariantMap().keySet();
+		//Returns Collection containing variant Ids that are attached to one or more Promo codes.
+		return getPromoVariantMap().keySet();
 	}
 
 	/**

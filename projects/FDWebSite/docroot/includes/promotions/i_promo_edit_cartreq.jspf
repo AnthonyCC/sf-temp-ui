@@ -1,0 +1,79 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Subtotal >=</td>
+					<td class="alignL vTop padL8R16"><span class="gray">$ </span><input type="text" id="subTotal" name="subTotal" class="w50px" value="<%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ?  promotion.getMinSubtotal(): "" %>"/></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Exclude from Subtotal:</td>
+					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="excFromSubtotal" name="excFromSubtotal" rows="3" cols="30" class="w600px"><%= excFromSubtotal.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated SKUs</div></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Need Dry Goods:</td>
+					<td class="alignL vTop padL8R16"><input type="radio" id="dryGoods" name="edit_cartreq_needDryGoods" value="YES" <%= (promotion.isNeedDryGoods()) ? "checked " : "" %>/><span class="padL4R16">Yes</span><input type="radio" id="" name="edit_cartreq_needDryGoods" value="NO"<%= (!promotion.isNeedDryGoods()) ? "checked " : "" %>/><span class="padL4R16">No</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td colspan="2" class="bordBotLgrayDashed"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Has Department:</td>
+					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="departments" name="departments" rows="3" cols="30" class="w600px"><%= deptsCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated department ids</div></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">OR</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Has Category:</td>
+					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="categories" name="categories" rows="3" cols="30" class="w600px"><%= catsCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated category ids</div></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">OR</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Has brand:</td>
+					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="eligibleBrand" name="eligibleBrand" rows="3" cols="30" class="w600px"><%= elgBrndsCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated brand ids</div></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">OR</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Has SKU:</td>
+					<td class="alignL vTop padL8R16">
+						<div class="padB8"><span class="gray">Min. quantity </span><input type="text" id="skuQuantity" name="skuQuantity" class="w30px alignC" value="<%= promotion.getSkuQuantity()%>"/><span class="gray"> of any combination of the following</span></div>
+						<div class="fleft"><textarea id="eligibleSku" name="eligibleSku" rows="3" cols="30" class="w600px"><%= elgSkusCart.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated SKUs</div>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="250" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

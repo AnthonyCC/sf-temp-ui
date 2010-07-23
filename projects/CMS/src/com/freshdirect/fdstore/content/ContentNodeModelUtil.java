@@ -96,7 +96,7 @@ public class ContentNodeModelUtil {
 		TYPE_MODEL_MAP.put("RecommenderStrategy", RecommenderStrategy.class);
 		TYPE_MODEL_MAP.put("FAQ", Faq.class);
 		TYPE_MODEL_MAP.put("Producer", ProducerModel.class);
-                TYPE_MODEL_MAP.put("ProducerType", ProducerTypeModel.class);
+        TYPE_MODEL_MAP.put("ProducerType", ProducerTypeModel.class);
 	}
 
 	/**
@@ -104,10 +104,10 @@ public class ContentNodeModelUtil {
 	 */
 	public static ContentNodeModel constructModel(ContentKey key, boolean cache) {
 		try {
-			Class c = (Class) TYPE_MODEL_MAP.get(key.getType().getName());
+			Class<?> c = TYPE_MODEL_MAP.get(key.getType().getName());
 			if (c == null)
 				return null;
-			Constructor constructor = c.getConstructor(new Class[] {ContentKey.class});
+			Constructor<?> constructor = c.getConstructor(new Class[] {ContentKey.class});
 			ContentNodeModel returnModel = (ContentNodeModel) constructor.newInstance(new Object[] {key});
 
 			// cache it
@@ -135,13 +135,13 @@ public class ContentNodeModelUtil {
 		}
 
 		if (parentKey == null) {
-			Set keys = CmsManager.getInstance().getParentKeys(key);
+			Set<ContentKey> keys = CmsManager.getInstance().getParentKeys(key);
 			if (keys.size() == 0) {
 				return null;
 			}
 
-			Iterator i = keys.iterator();
-			parentKey = (ContentKey) i.next();
+			Iterator<ContentKey> i = keys.iterator();
+			parentKey = i.next();
 		}
 
 		return ContentFactory.getInstance().getContentNodeByKey(parentKey);
@@ -151,40 +151,40 @@ public class ContentNodeModelUtil {
 		return refreshModels(refModel, refNodeAttr, childModels, setParent, false);
 	}
 	
-	public static boolean refreshModels(ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent, boolean inheritedAttrs) {
+	public static boolean refreshModels( ContentNodeModelImpl refModel, String refNodeAttr, List childModels, boolean setParent, boolean inheritedAttrs ) {
 
-		synchronized(childModels) {
+		synchronized ( childModels ) {
 			Object value;
 
-			if (!inheritedAttrs) {
-				value = refModel.getCMSNode().getAttributeValue(refNodeAttr);
+			if ( !inheritedAttrs ) {
+				value = refModel.getCMSNode().getAttributeValue( refNodeAttr );
 			} else {
-				value = refModel.getCmsAttributeValue(refNodeAttr);
+				value = refModel.getCmsAttributeValue( refNodeAttr );
 			}
-			
-		        List newKeys = (List) value;
 
-			if (newKeys == null) {
-				newKeys = new ArrayList();
+			List<ContentKey> newKeys = (List<ContentKey>)value;
+
+			if ( newKeys == null ) {
+				newKeys = new ArrayList<ContentKey>();
 			}
-		
-			boolean equal = compareKeys(newKeys, childModels);
-		
-			if (equal)
+
+			boolean equal = compareKeys( newKeys, childModels );
+
+			if ( equal )
 				return false; // didn't need to refresh
-		
+
 			childModels.clear();
-			for (int i = 0; i < newKeys.size(); i++) {
-				ContentKey key = (ContentKey) newKeys.get(i);
-		
-				ContentNodeModelImpl m = buildChildContentNode(refModel, key, setParent, i);
-                                
-				if (m!=null) {
-                                    childModels.add(m);
+			for ( int i = 0; i < newKeys.size(); i++ ) {
+				ContentKey key = newKeys.get( i );
+
+				ContentNodeModelImpl m = buildChildContentNode( refModel, key, setParent, i );
+
+				if ( m != null ) {
+					childModels.add( m );
 				}
-				
+
 			}
-		
+
 			return true;
 		}
 	}
@@ -228,9 +228,8 @@ public class ContentNodeModelUtil {
                         // in strict mode we cannot accept tolerate this type of errors, temporaly we have to relax this statement.
                         if (STRICT_MODE) {
                             throw new RuntimeException(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
-                        } else {
-                            LOGGER.warn(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
                         }
+						LOGGER.warn(buildErrorMessage(refModel, key, cachedContentNodeByKey, parentNode));
                     }
                 } else {
                     if (setParent) {
@@ -267,16 +266,14 @@ public class ContentNodeModelUtil {
                 + System.identityHashCode(parentNode) + ") instead of the expected " + refModel.getContentKey() + "(" + System.identityHashCode(refModel) + ')';
     }
 
-	static boolean compareKeys(List keys, List models) {
+	static boolean compareKeys(List<ContentKey> keys, List<? extends ContentNodeModel> models) {
 		if (keys.size() != models.size())
 			return false;
 
 		for (int i = 0; i < keys.size(); i++) {
-			ContentKey key = (ContentKey) keys.get(i);
-			ContentNodeModel model = (ContentNodeModel) models.get(i);
-			if ( key!=null && model!=null && key.getId().equals(model.getContentName()) )
-				continue;
-			else
+			ContentKey key = keys.get(i);
+			ContentNodeModel model = models.get(i);
+			if ( key == null || model == null || !key.getId().equals(model.getContentName()) ) 
 				return false;
 		}
 		return true;
@@ -299,45 +296,38 @@ public class ContentNodeModelUtil {
 	}
 	*/
 
-        public static CategoryModel findParentCategory(List categories, ProductModel m) {
-            CategoryModel foundCategory = null;
-            for (int i = 0; i < categories.size(); i++) {
-                CategoryModel cur = (CategoryModel) categories.get(i);
-    
-                ProductModel foundProduct = cur.getPrivateProductByName(m.getContentName());
-                if (foundProduct != null) {
-                    foundCategory = cur;
-                }
-    
-                if (foundCategory == null) {
-                    foundCategory = findParentCategory(cur.getSubcategories(), m);
-                }
-    
-                if (foundCategory != null) {
-                    String hidden = foundCategory.getHideUrl();
-    
-                    if (hidden == null) {
-                        break;
-                    }
-    
-                    if (hidden != null) {
-                        if ("".equals(hidden)) {
-                            break;
-                        } else {
-                            foundCategory = null;
-                        }
-                    }
-                }
+    public static CategoryModel findParentCategory(List<CategoryModel> categories, ProductModel m) {
+        CategoryModel foundCategory = null;
+        for (int i = 0; i < categories.size(); i++) {
+            CategoryModel cur = categories.get(i);
+
+            ProductModel foundProduct = cur.getPrivateProductByName(m.getContentName());
+            if (foundProduct != null) {
+                foundCategory = cur;
             }
-    
-            return foundCategory;
+
+            if (foundCategory == null) {
+                foundCategory = findParentCategory(cur.getSubcategories(), m);
+            }
+
+            if (foundCategory != null) {
+                String hidden = foundCategory.getHideUrl();
+
+                if ( hidden == null || "".equals(hidden) ) {
+                    break;
+                }
+                foundCategory = null;
+            }
         }
+
+        return foundCategory;
+    }
 
 	private static ProductModel setNearestParentForProduct(ContentNodeModel context, ProductModel product) {
 		CategoryModel foundCategory = null;
 		DepartmentModel dept = null;
 
-		List cats = Collections.EMPTY_LIST;
+		List<CategoryModel> cats = Collections.emptyList();
 		if (context instanceof CategoryModel) {
 			CategoryModel cat = (CategoryModel) context;
 			cats = cat.getSubcategories();
@@ -379,9 +369,9 @@ public class ContentNodeModelUtil {
 		return (ProductModel) a;
 	}
 
-	public static void setNearestParentForProducts(ContentNodeModel context, List products) {
-		for (ListIterator li = products.listIterator(); li.hasNext(); ) {
-			ProductModel p = (ProductModel) li.next();
+	public static void setNearestParentForProducts(ContentNodeModel context, List<ProductModel> products) {
+		for (ListIterator<ProductModel> li = products.listIterator(); li.hasNext(); ) {
+			ProductModel p = li.next();
 			ProductModel clone = setNearestParentForProduct(context, p);
 			if (clone!=null) {
 				li.set(clone);
@@ -389,19 +379,16 @@ public class ContentNodeModelUtil {
 		}
 	}
 	
-	public static Set getAllParentKeys(ContentKey key) {
-		Set allParents = new HashSet();
+	public static Set<ContentKey> getAllParentKeys(ContentKey key) {
+		Set<ContentKey> allParents = new HashSet<ContentKey>();
 		loadAllParentKeys(key, allParents);
 		return Collections.unmodifiableSet(allParents);
 	}
 	
-	private static void loadAllParentKeys(ContentKey key, Set allParents) {
-		Set s = ContentFactory.getInstance().getParentKeys(key);
-		if(s != null && !s.isEmpty()){
-			
-			Iterator i = s.iterator();
-			while(i.hasNext()){
-				ContentKey nextKey = (ContentKey) i.next();
+	private static void loadAllParentKeys(ContentKey key, Set<ContentKey> allParents) {
+		Set<ContentKey> s = ContentFactory.getInstance().getParentKeys(key);
+		if ( s != null && !s.isEmpty() ) {
+			for ( ContentKey nextKey : s ) {
 				loadAllParentKeys(nextKey, allParents);
 				ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(nextKey);
 				//Remove the parent nodes that are hidden.
@@ -412,8 +399,8 @@ public class ContentNodeModelUtil {
 		}
 	}
 
-	public static ContentKey getContentKey(String type, String contentId) {
-			return new ContentKey(ContentType.get(type), contentId);
+	public static ContentKey getContentKey( String type, String contentId ) {
+		return new ContentKey( ContentType.get( type ), contentId );
 	}
 	
 	/**
@@ -434,10 +421,17 @@ public class ContentNodeModelUtil {
 		return refKey;
 	}
 	
-	public static Set findVirtualCategories(Set contentKeys){
-		Set s = new HashSet();
-		for (Iterator i = contentKeys.iterator(); i.hasNext(); ) {
-			ContentKey key = (ContentKey) i.next();
+	/**
+	 * Filters a set of contentkeys by checking if they have virtual categories assigned.
+	 * Returns the actual categorymodels.
+	 * NOTE: Does not return the virtual categories, only the categories which have one assigned.
+	 * 
+	 * @param contentKeys Set of ContentKeys to check for virtual categories 
+	 * @return filtered Set of CategoryModels which have virtual categories
+	 */
+	public static Set<CategoryModel> findVirtualCategories(Set<ContentKey> contentKeys){
+		Set<CategoryModel> s = new HashSet<CategoryModel>();
+		for ( ContentKey key : contentKeys ) {
 			ContentNodeModel cn = ContentFactory.getInstance().getContentNodeByKey(key);
 			//Make sure the category is not hidden.
 			if(cn != null && cn instanceof CategoryModel && !cn.isHidden()){
@@ -450,13 +444,12 @@ public class ContentNodeModelUtil {
 		return s;
 	}
 
-	public static boolean isProductInVirtualCategories(Set virtualCats, ProductModel prod) {
+	public static boolean isProductInVirtualCategories(Set<CategoryModel> virtualCats, ProductModel prod) {
 		boolean found = false;
-		for (Iterator i = virtualCats.iterator(); i.hasNext(); ) {
-			CategoryModel virtualCategory = (CategoryModel)i.next();
-			List allProducts = virtualCategory.getProducts();
+		for ( CategoryModel virtualCategory : virtualCats ) {
+			List<ProductModel> allProducts = virtualCategory.getProducts();
 			found = allProducts.contains(prod);
-			if(found){
+			if ( found ) {
 				break;
 			}
 		}
@@ -482,14 +475,14 @@ public class ContentNodeModelUtil {
 	    return empty(value) ? defaultValue : value;
 	}
 	
-        public static EnumLayoutType getLayout(ContentNodeModel node, EnumLayoutType defValue) {
-            if (node instanceof ProductModel) {
-                return ((ProductModel) node).getLayout();
-            }
-            if (node instanceof ProductContainer) {
-                return ((ProductContainer) node).getLayout(defValue);
-            }
-            return defValue;
+    public static EnumLayoutType getLayout(ContentNodeModel node, EnumLayoutType defValue) {
+        if (node instanceof ProductModel) {
+            return ((ProductModel) node).getLayout();
         }
+        if (node instanceof ProductContainer) {
+            return ((ProductContainer) node).getLayout(defValue);
+        }
+        return defValue;
+    }
 	
 }

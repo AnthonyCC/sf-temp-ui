@@ -1,12 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.webapp.taglib;
 
 import javax.servlet.jsp.*;
@@ -15,13 +6,11 @@ import javax.servlet.jsp.tagext.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.webapp.BodyTagSupport {
 
+	private static final long	serialVersionUID	= 1242883824723700468L;
+	
 	private static Logger LOGGER = LoggerFactory.getInstance( AbstractGetterTag.class );
 
 	// 'id' is already defined in TagSupport class therefore no need to overlap it

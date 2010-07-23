@@ -1,0 +1,73 @@
+<table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Profile options:</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<input type="button" value="SAVE PROFILE CHOICE" onclick="" class="promo_btn_brn2 fleft noMargLR" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="170px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="grayIta10pt alignR vTop">Profile list:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse">
+							<tr>
+								<%-- first td sets the row heights --%>
+								<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="alignC gray8pt">Available</td>
+								<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="alignC gray8pt">Selected</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="h175px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="pad8">
+									<select id="config_profile_available" class="h175px w150px" size="2" multiple>
+										<option value="Chefs Table" selected="selected">Chefs Table</option>
+										<option value="MetalCategory">MetalCategory</option>
+										<option value="VIPCustomer">VIPCustomer</option>
+									</select>
+								</td>
+								<td class="alignC">
+									<div><input type="button" value="Add &gt;&gt;" onclick="remOpt('config_profile_available', 'config_profile_selected'); return false;" class="promo_btn_grn w75px" /></div>
+									<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_dlvreq-spacer" /></div>
+									<div><input type="button" value="&lt;&lt; Remove" onclick="remOpt('config_profile_selected', 'config_profile_available'); return false;" class="promo_btn_pnk w75px" /></div>
+								</td>
+								<td class="pad8 BG_cfc">
+									<select id="config_profile_selected" class="h175px w150px" size="2" multiple>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

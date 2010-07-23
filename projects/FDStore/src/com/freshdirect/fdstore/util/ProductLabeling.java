@@ -131,9 +131,9 @@ public class ProductLabeling {
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
-				ZonePriceInfoModel model=info.getZonePriceInfo(pricingZoneId);
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
 				showBurstImage=model.isShowBurstImage();			
-			}		
+			}
 		} catch (FDResourceException e) {
 		    LOG.error("FDResourceException with "+product+", e:"+e.getMessage(), e);
 		} catch (FDSkuNotFoundException e) {

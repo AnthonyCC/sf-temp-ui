@@ -7,17 +7,18 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.enums.EnumDAOI;
 
 public class DlvPassTypeDAO implements EnumDAOI{
 	
-	public List loadAll(Connection conn) throws SQLException {
+	private static final long	serialVersionUID	= 5894229300804868385L;
+
+	public List<DeliveryPassType> loadAll(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT SKU_CODE, NAME, NO_OF_DLVS, DURATION, IS_UNLIMITED,PROFILE_VAL, IS_AUTORENEW_DP, IS_FREETRIAL, RESTRICT_FREETRIAL,AUTORENEWAL_SKU_CODE FROM CUST.DLV_PASS_TYPE");
 		ResultSet rs = ps.executeQuery();
 
-		List l = new ArrayList();
+		List<DeliveryPassType> l = new ArrayList<DeliveryPassType>();
 		while (rs.next()) {
 			String skuCode= rs.getString("SKU_CODE");
 			String name = rs.getString("NAME");

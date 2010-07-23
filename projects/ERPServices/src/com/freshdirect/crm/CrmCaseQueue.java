@@ -3,7 +3,6 @@ package com.freshdirect.crm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,9 @@ import com.freshdirect.enums.EnumModel;
 
 public class CrmCaseQueue extends EnumModel implements TerminableI {
 
-	private static Map enums = null;
+	private static final long	serialVersionUID	= 4599127865108443201L;
+
+	private static Map<String, CrmCaseQueue> enums = null;
 	
 	public static final String CODE_ASQ = "ASQ";
 	public static final String CODE_TRQ = "TRQ";
@@ -30,7 +31,7 @@ public class CrmCaseQueue extends EnumModel implements TerminableI {
 		return obsolete;
 	}
 
-	public List getSubjects() {
+	public List<CrmCaseSubject> getSubjects() {
 		return CrmCaseSubject.getSubjectsForQueue(this.getCode());
 	}
 	
@@ -41,25 +42,24 @@ public class CrmCaseQueue extends EnumModel implements TerminableI {
 
 	public static CrmCaseQueue getEnum(String code) {
 		loadEnums();
-		return (CrmCaseQueue) enums.get(code);
+		return enums.get(code);
 	}
 
-	public static Map getEnumMap() {
+	public static Map<String, CrmCaseQueue> getEnumMap() {
 		loadEnums();
 		return Collections.unmodifiableMap(enums);
 	}
 
-	public static List getEnumList() {
+	public static List<CrmCaseQueue> getEnumList() {
 		loadEnums();
-		return Collections.unmodifiableList(new ArrayList(enums.values()));
+		return Collections.unmodifiableList(new ArrayList<CrmCaseQueue>(enums.values()));
 	}
 
 	private static void loadEnums() {
 		if (enums == null) {
-			enums = new HashMap();
-			List lst = loadEnums(CrmCaseQueueDAO.class);
-			for (Iterator i = lst.iterator(); i.hasNext();) {
-				CrmCaseQueue e = (CrmCaseQueue) i.next();
+			enums = new HashMap<String, CrmCaseQueue>();
+			List<CrmCaseQueue> lst = loadEnums(CrmCaseQueueDAO.class);
+			for ( CrmCaseQueue e : lst ) {
 				enums.put(e.getCode(), e);
 			}
 		}

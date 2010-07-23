@@ -1,0 +1,167 @@
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam"%>
+<%@ page import="com.freshdirect.framework.webapp.ActionError"%>
+<%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
+<%--
+	This is a jspf-specifc var that denotes if the section is "empty".
+	If it's empty, show "-None-" instead of the normal contents
+--%>
+<% boolean isEmptyPromoCustreq = false; %>
+<%--
+	For testing, set this to true on the promo_create_edit page
+--%>
+<% if (promo_create_edit) { isEmptyPromoCustreq = true; } %>
+
+<%
+
+String userId = request.getParameter("userId");
+if(promo_details){	
+}
+%>
+
+
+
+<%@page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%><table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Customer Requirement</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<% if (promo_edit || inPromoEditSub) { %>
+				<input type="button" value="EDIT SECTION" onclick="javascript:editPromotionCustReqSubmit('<%= promoId %>')" class="promo_btn_brn2 fleft noMargLR" />
+			<% } %>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%-- check if we're empty --%>
+				<% if (isEmptyPromoCustreq) { %>
+						<tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr>
+				<% }else{ %>
+				  <% if(promo_details){ %>
+				  <% String searchButton = request.getParameter("search");
+			   String updateCustButton = request.getParameter("updateCustIds");
+			   String actionName1 ="";
+			   if(null != searchButton){
+				   actionName1 ="searchCustomerRestriction";
+			   }else if(null !=updateCustButton){
+				   actionName1 ="updateCustomerRestriction";
+			   }
+			%>
+				  <fd:PromotionCustReqController result="result" promotion="<%= promotion %>" actionName="<%= actionName1%>">
+					<tr>
+						<td class="promo_detail_label">Eligible list: <%= promotion.getAssignedCustomerSize() > 0?promotion.getAssignedCustomerSize():"" %></td>
+						
+						
+						<%if(promotion.getAssignedCustomerSize() > 0){ %>
+						<td class="gray"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+						Marketing Admin Functions:
+						<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/searchRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','searchRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')"> Search </a> | 
+						<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Edit</a> |
+						<a href="javascript:deleteRestriction('<%=FDStoreProperties.getMarketingAdminUrl()%>/deleteRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>')"> Delete</a>
+						<%}%>
+						</td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label"></td>
+						<td class="alignL"><span class="gray8pt">Find customer: </span>
+										   <input type="text" id="userId" name="userId" value="<%= userId %>"class="w200px" />
+										   <input type="submit" value="SEARCH" id="search" name="search" class="promo_btn_gry" /></td>
+					</tr>
+					<tr>
+					<td >&nbsp;</td>
+					<%
+	            		Object obj = request.getAttribute("IS_USER_ASSIGNED");
+	            		if(obj != null) { 
+	            			Boolean value = (Boolean)obj;
+	            			String displayValue = value.booleanValue() ? "IN" : "NOT IN";
+	            			
+	            	%>	            		
+					<td&nbsp;&nbsp;<b>The customer is <span class="error"><%= displayValue %></span> the restriction list.</b>
+	            	</td>
+	            	<% } %>
+	            	<fd:ErrorHandler result="<%= result %>" name="<%=ActionError.GENERIC%>" id='errorMsg'><tr><td colspan="3"><span class="error"><%=errorMsg%></span></td></tr></fd:ErrorHandler>
+	            	</tr>	
+					<tr>
+						<td class="promo_detail_label">Add to list:</td>
+						<td class="alignL"><textarea id="assignedCustIds" name="assignedCustIds" rows="3" cols="32"><%= promotion.getTmpAssignedCustomerUserIds() %></textarea><input type="submit" id="updateCustIds" name="updateCustIds" value="UPDATE" class="promo_btn_green"/></td>
+					</tr>
+					</fd:PromotionCustReqController>
+					<% } %>
+					<tr>
+						<td class="promo_detail_label">Order instance:</td>
+						<td class="alignL">Range <span class="gray">order #</span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeStart() : "" %> <span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeEnd() : "" %> <span class="grayIta8pt">(placed or settled orders count)</span></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Smart Store cohort(s):</td>
+						<td class="alignL"><%= cohortsString %></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Dlv Pass status:</td>
+						<td class="alignL"><%= dpStatusString %></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Dlv Pass expiration:</td>
+						<td class="alignL">Range<span class="gray"> from </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getDpExpStart() : "" %><span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getDpExpEnd() : "" %></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Profile:</td>
+						<td class="alignL">
+							<%
+								if (attrList != null) { %>
+									<table style="border-collapse: collapse;">
+										<tr>
+											<td class="gray8pt padL8R16">&nbsp;</td>
+											<td class="bordLgrayDash gray8pt padL8R16">Name</td>
+											<td class="bordLgrayDash gray8pt padL8R16">Attribute</td>
+											<td class="bordLgrayDash gray8pt padL8R16">Value</td>
+										</tr>
+									<%
+										for (int n = 0; n < attrList.size(); n++) {
+											FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
+											if (tempAttr != null) {
+												%><tr><%
+												if (n == 0) {
+													%><td class="padL8R16">&nbsp;</td><%
+												}else{
+													%><td class="padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
+												}
+												%>
+													<td class="bordLgrayDash padL8R16"><%= EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())%></td>
+													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
+													<td class="bordLgrayDash padL8R16"><%= tempAttr.getDesiredValue() %></td>
+												</tr>
+												<%
+											}
+										}
+									%>
+									</table>
+									<%
+								}
+							%>
+						</td>
+					</tr>
+				<% } %>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

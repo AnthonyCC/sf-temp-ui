@@ -27,10 +27,12 @@ public class FDPromotionManagerDAOTestCase extends DbTestCaseSupport {
 		super(name);
 	}
 
+	@Override
 	protected String getSchema() {
 		return "CUST";
 	}
 	
+	@Override
 	protected String[] getAffectedTables() {
 		return new String[] {
 			"CUST.CAMPAIGN",				

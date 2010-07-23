@@ -10,8 +10,10 @@ import java.util.Map;
  */
 public class ContentType implements Serializable {
 
+	private static final long	serialVersionUID	= 5821270918113658776L;
+
 	/** Flyweight instance pool */
-	private final static Map INSTANCES = new HashMap();
+	private final static Map<String, ContentType> INSTANCES = new HashMap<String, ContentType>();
 
 	private final String name;
 
@@ -29,7 +31,7 @@ public class ContentType implements Serializable {
 	 * @return ContentType instance
 	 */
 	public static ContentType get(String name) {
-		ContentType t = (ContentType) INSTANCES.get(name);
+		ContentType t = INSTANCES.get(name);
 		if (t == null) {
 			t = new ContentType(name);
 			INSTANCES.put(name, t);

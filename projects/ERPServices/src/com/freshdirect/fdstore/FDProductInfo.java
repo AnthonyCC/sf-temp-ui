@@ -1,17 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
-
 
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
@@ -21,12 +12,11 @@ import com.freshdirect.framework.util.StringUtil;;
 /**
  * Lightweight information about a product, that is necessary for display on a category page.
  *
- * @version $Revision$
- * @author $Author$
  */
 
 public class FDProductInfo extends FDSku  {
 	
+	private static final long	serialVersionUID	= 308857606199221581L;
 
 	private final String[] materialNumbers;
     
@@ -187,7 +177,7 @@ public class FDProductInfo extends FDSku  {
 		return buf.toString();
 	}
 
-	public List getCountryOfOrigin() {
+	public List<String> getCountryOfOrigin() {
 		if(materialNumbers==null) 
 			return null;
 		return FDCOOLInfoCache.getInstance().getCOOLInfo(materialNumbers[0]);

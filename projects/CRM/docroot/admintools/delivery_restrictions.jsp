@@ -30,12 +30,12 @@
 
 
 <jsp:include page="/includes/admintools_nav.jsp" />
-<div class="home_search_module_content" style="height:100%;">
+<div class="home_search_module_content" style="height:91%;">
 <crm:AdminToolsController result="result">
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp123 :"+result);
+    //System.out.println("restrictions in jsp123 :"+result);
     request.setAttribute("admResult",result);
 	
 %>
@@ -84,7 +84,7 @@
 	</td></tr>
     <tr colspan="2">
 	<td>
-		<span class="header_text"><b>Add Blocked Day</b> Restrict Order 1Placement/deliveries for a specific day. Use for Christmas, New Years, picnic and other required plant closures</span>
+		<span class="header_text"><b>Add Blocked Day</b> Restrict Order Placement/deliveries for a specific day. Use for Christmas, New Years, picnic and other required plant closures</span>
 	</td>
 	</tr>
 	<tr><td colspan="2">

@@ -1,0 +1,63 @@
+<campaigns>
+	<campaign>
+	<name>Promo for first time buyers zero</name>
+	<code>PR001</code>
+	<defaultZoneCapacityCondition><![CDATA[<=]]></defaultZoneCapacityCondition>
+	<defaultZoneCapacityValue>100</defaultZoneCapacityValue>
+	<zones>
+		<zone><code>510</code></zone>
+		<zone><code>506</code></zone>
+		<zone><code>505</code></zone>
+		<zone><code>501</code></zone>
+		<zone><code>500</code></zone>
+		<zone><code>030</code></zone>
+		<zone><code>040</code></zone>
+		<zone><code>050</code></zone>
+		<zone><code>066</code></zone>
+		<zone><code>060</code></zone>
+		<zone><code>070</code></zone>
+		<zone><code>013</code></zone>
+		<zone><code>005</code></zone>
+	</zones>
+	<min>0</min>
+	<max>0</max>
+	<startDate>09/01/2009</startDate>
+	<endDate>01/01/2020</endDate>
+	<priority>1</priority>
+	</campaign>
+
+	<campaign>
+	<name>Promo for first time buyers non zero</name>
+	<code>PR001</code>
+	<matchAllprofiles>true</matchAllprofiles>
+	<profiles>
+		<profile>
+		<name><![CDATA[MarketingPromo]]></name>
+		<value><![CDATA[35_actnew_<70taccess,34_actnew_70+1or2taccess]]></value>
+		</profile>
+	</profiles>
+	<defaultZoneCapacityCondition><![CDATA[<=]]></defaultZoneCapacityCondition>
+	<defaultZoneCapacityValue>100</defaultZoneCapacityValue>
+	<zones>
+		<zone><code>510</code></zone>
+		<zone><code>506</code></zone>
+		<zone><code>505</code></zone>
+		<zone><code>501</code></zone>
+		<zone><code>500</code></zone>
+		<zone><code>030</code></zone>
+		<zone><code>040</code></zone>
+		<zone><code>050</code></zone>
+		<zone><code>066</code></zone>
+		<zone><code>060</code></zone>
+		<zone><code>070</code></zone>
+		<zone><code>013</code></zone>
+		<zone><code>005</code></zone>
+	</zones>
+	<min>1</min>
+	<max>2</max>
+	<startDate>09/01/2009</startDate>
+	<endDate>01/01/2020</endDate>
+	<priority>2</priority>
+	</campaign>
+
+</campaigns>

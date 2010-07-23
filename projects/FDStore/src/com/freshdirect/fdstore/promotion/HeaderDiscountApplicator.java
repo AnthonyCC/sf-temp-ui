@@ -2,15 +2,13 @@ package com.freshdirect.fdstore.promotion;
 
 
 
-import java.util.List;
-
-import com.freshdirect.customer.ErpDiscountLineModel;
 
 
 public class HeaderDiscountApplicator implements PromotionApplicatorI {
 
 	private final HeaderDiscountRule discountRule;
-
+	private DlvZoneStrategy zoneStrategy;
+	
 	/**
 	 * minSubTotal > amount
 	 */
@@ -19,31 +17,37 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 	}
 
 	public boolean apply(String promoCode, PromotionContextI context) {
-		if (context.getPreDeductionTotal() < this.discountRule.getMinSubtotal()) {
+		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		int e = zoneStrategy != null ? zoneStrategy.evaluate(promoCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+		
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		if (preDeduction < this.discountRule.getMinSubtotal()) {
 			return false;
 		}
        
-		double amount = Math.min(context.getPreDeductionTotal(), this.discountRule.getMaxAmount());
-		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-		if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
-			return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.REDEMPTION);
-		} else {
-			//return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.WINDOW_STEERING);
-			List<ErpDiscountLineModel>  discountModels=context.getUser().getShoppingCart().getDiscounts();
-			for (ErpDiscountLineModel discountModel : discountModels) {
-				if(promoCode.equals(discountModel.getDiscount().getPromotionCode()))
-					return false;
-			}
-			return true; 
+		double amount = Math.min(preDeduction, this.discountRule.getMaxAmount());
+		if(promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+			return context.applyZoneDiscount(promo, amount);
 		}
+		return context.applyHeaderDiscount(promo, amount);
 	}
 
 	public HeaderDiscountRule getDiscountRule() {
 		return this.discountRule;
 	}
 
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
+	}
+
+
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return this.zoneStrategy;
+	}
+	
 	public String toString() {
 		return "HeaderDiscountApplicator[" + this.discountRule + "]";
 	}
-
 }

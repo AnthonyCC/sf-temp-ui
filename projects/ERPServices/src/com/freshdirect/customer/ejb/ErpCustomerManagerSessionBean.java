@@ -85,6 +85,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.ErpWebOrderHistory;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.customer.adapter.CustomerAdapter;
@@ -1114,7 +1115,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public List getTruckNumbersForDate(Date deliveryDate) {
+	public List<ErpTruckInfo> getTruckNumbersForDate(Date deliveryDate) {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();

@@ -18,7 +18,9 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 
 public class EnumAttributeType implements Serializable {
 
-    public final static EnumAttributeType GENERIC_NODE = new EnumAttributeType("Generic Node","G");
+	private static final long	serialVersionUID	= 5796254664522251629L;
+
+	public final static EnumAttributeType GENERIC_NODE = new EnumAttributeType("Generic Node","G");
 
     public final static EnumAttributeType STRING = new EnumAttributeType("String", "S");
     public final static EnumAttributeType INTEGER = new EnumAttributeType("Integer", "I");
@@ -36,10 +38,10 @@ public class EnumAttributeType implements Serializable {
     public final static EnumAttributeType DOMAINVALUEREF = new EnumAttributeType("DomainValue Ref","VR");
     //public final static EnumAttributeType DOMAINVALUE = new EnumAttributeType("Domain Value", "V");
 
-    private static List types = null;
+    private static List<EnumAttributeType> types = null;
 
     static {
-        ArrayList t = new ArrayList();
+        ArrayList<EnumAttributeType> t = new ArrayList<EnumAttributeType>();
         t.add(STRING);
         t.add(INTEGER);
         t.add(DOUBLE);
@@ -57,19 +59,15 @@ public class EnumAttributeType implements Serializable {
         types = Collections.unmodifiableList(t);
     }
 
-    public static List getAttributeTypes() {
+    public static List<EnumAttributeType> getAttributeTypes() {
         return types;
     }
 
     public boolean equals(Object o) {
-        if (o instanceof EnumAttributeType) {
-			if (((EnumAttributeType)o).getId().equals(this.id))
-                return true;
-            else
-                return false;
-        } else {
-            return false;
-        }
+		if ( o instanceof EnumAttributeType && ( (EnumAttributeType)o ).getId().equals( this.id ) ) {
+			return true;
+		}
+		return false;
     }
 
 	private EnumAttributeType(String n, String i) {
@@ -77,13 +75,13 @@ public class EnumAttributeType implements Serializable {
         this.id = i;
     }
 
-    public String getName(){
-            return name;
-        }
+	public String getName() {
+		return name;
+	}
 
-    public String getId(){
-            return id;
-        }
+	public String getId() {
+		return id;
+	}
 
     private String name;
     private String id;

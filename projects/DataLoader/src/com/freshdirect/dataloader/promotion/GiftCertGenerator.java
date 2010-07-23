@@ -30,10 +30,10 @@ public class GiftCertGenerator {
 		/** Run one of the following queries, on production, to get the Next starting  seq number for that 
 		 * gift cert promo amount  and plug it into the promoCodeSeq var below.
 			*** get next $100 gift cert promo *
-			  select max(to_number(substr(code,11)))+1  from cust.promotion where code like 'CS_GC_100_%'
+			  select max(to_number(substr(code,11)))+1  from cust.promotion_new where code like 'CS_GC_100_%'
 			 
 			***** get Next $50 gift cert promo * 
-			  select max(to_number(substr(code,10)))+1  from cust.promotion where code like 'CS_GC_50_%'
+			  select max(to_number(substr(code,10)))+1  from cust.promotion_new where code like 'CS_GC_50_%'
         !!Put value here----+
 		                    V   */
 		int promoCodeSeq = 1;         //starting sequence number for the promocode and name..need manually to query promo table to
@@ -62,14 +62,14 @@ public class GiftCertGenerator {
 	
 	private static void generateSql(String redemptionCode, int codeSeq,String prfx,int dollars,FileOutputStream fo){
 		StringBuffer insertStatement = new StringBuffer();
-		insertStatement.append("INSERT INTO CUST.PROMOTION (ID, CODE, NAME, DESCRIPTION, MAX_USAGE,"); 
+		insertStatement.append("INSERT INTO CUST.PROMOTION_NEW (ID, CODE, NAME, DESCRIPTION, MAX_USAGE,"); 
 		insertStatement.append("START_DATE, EXPIRATION_DATE, REDEMPTION_CODE, CAMPAIGN_CODE, \nMIN_SUBTOTAL,");
-		insertStatement.append("MAX_AMOUNT, UNIQUE_USE, ACTIVE, MODIFY_DATE, MODIFIED_BY) \nVALUES(CUST.SYSTEM_SEQ.NEXTVAL,");
+		insertStatement.append("MAX_AMOUNT, STATUS, MODIFY_DATE, MODIFIED_BY) \nVALUES(CUST.SYSTEM_SEQ.NEXTVAL,");
 		insertStatement.append("'YH_GC_").append(dollars).append("_").append(codeSeq).append("',");
 		insertStatement.append("'FD/YH Gift Cert: $").append(dollars).append(" ").append(codeSeq).append("',");	
 		insertStatement.append("'FreshDirect/Yeshiva Hirsch gift certificate', \n1, TO_DATE('12/14/2005', 'MM/DD/YYYY'),TO_DATE('03/01/2006', 'MM/DD/YYYY'),");
 		insertStatement.append("'").append(prfx).append(redemptionCode.toUpperCase()).append("',");
-		insertStatement.append("'GIFT_CARD',0,").append(dollars).append(",'X'").append(",'X',");
+		insertStatement.append("'GIFT_CARD',0,").append(dollars).append(",'LIVE',");
 		insertStatement.append("SYSDATE,").append("'System')").append(";\n\n");
 
 		try {

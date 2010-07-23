@@ -9,7 +9,8 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 
 	private final EnumChargeType chargeType;
 	private final double minSubtotal;
-
+	private DlvZoneStrategy zoneStrategy;
+	
 	public double getMinSubtotal() {
 		return minSubtotal;
 	}
@@ -26,7 +27,12 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 	}
 
 	public boolean apply(String promotionCode, PromotionContextI context) {
-		if (context.getPreDeductionTotal() < this.getMinSubtotal()) {
+		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+		
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
+		if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < this.getMinSubtotal()) {
 			return false;
 		}
 		context.getShoppingCart().setChargeWaived(chargeType, true, promotionCode);
@@ -36,6 +42,14 @@ public class WaiveChargeApplicator implements PromotionApplicatorI {
 			context.getShoppingCart().setDlvPassApplied(false);
 		}
 		return true;
+	}
+
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
+	}
+
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return this.zoneStrategy;
 	}
 
 }

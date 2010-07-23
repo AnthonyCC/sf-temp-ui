@@ -3,7 +3,6 @@ package com.freshdirect.crm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.framework.core.ModelSupport;
@@ -15,6 +14,8 @@ import com.freshdirect.framework.core.PrimaryKey;
 
 public class CrmAgentModel extends ModelSupport {
 
+	private static final long serialVersionUID = 5436939163075682988L;
+	
 	private String userId;
 	private String password;
 	private String firstName;
@@ -22,11 +23,12 @@ public class CrmAgentModel extends ModelSupport {
 	private boolean active;
 	private String roleCode;
 	private Date createDate;
-	private List agentCaseQueues;
+	private List<String> agentCaseQueues;
+	private boolean masqueradeAllowed = false;
 
 	public CrmAgentModel() {
 		super();
-		this.agentCaseQueues = Collections.EMPTY_LIST;
+		this.agentCaseQueues = Collections.<String>emptyList();
 	}
 
 	public CrmAgentModel(PrimaryKey pk) {
@@ -34,13 +36,14 @@ public class CrmAgentModel extends ModelSupport {
 		this.setPK(pk);
 	}
 
-	public CrmAgentModel(String userId, String password, String firstName, String lastName, boolean active, CrmAgentRole role) {
+	public CrmAgentModel(String userId, String password, String firstName, String lastName, boolean active, CrmAgentRole role, boolean masqueradeAlowed) {
 		this();
 		this.userId = userId;
 		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.active = active;
+		this.masqueradeAllowed = masqueradeAlowed;
 		this.setRole(role);
 	}
 
@@ -92,18 +95,16 @@ public class CrmAgentModel extends ModelSupport {
 		this.roleCode = role == null ? null : role.getCode();
 	}
 
-	public List getAgentQueues() {
-		List queues = new ArrayList();
-		for (Iterator i = this.agentCaseQueues.iterator(); i.hasNext();) {
-			String code = (String) i.next();
+	public List<CrmCaseQueue> getAgentQueues() {
+		List<CrmCaseQueue> queues = new ArrayList<CrmCaseQueue>();
+		for ( String code : this.agentCaseQueues ) {
 			queues.add(CrmCaseQueue.getEnum(code));
 		}
 		return queues;
 	}
 
 	public boolean hasCaseQueue(CrmCaseQueue caseQueue) {
-		for (Iterator i = this.agentCaseQueues.iterator(); i.hasNext();) {
-			String code = (String) i.next();
+		for ( String code : this.agentCaseQueues ) {
 			CrmCaseQueue queue = CrmCaseQueue.getEnum(code);
 			if (queue.equals(caseQueue)) {
 				return true;
@@ -112,10 +113,9 @@ public class CrmAgentModel extends ModelSupport {
 		return false;
 	}
 
-	public void setAgentQueues(List agentQueues) {
-		List qs = new ArrayList();
-		for (Iterator i = agentQueues.iterator(); i.hasNext();) {
-			CrmCaseQueue q = (CrmCaseQueue) i.next();
+	public void setAgentQueues(List<CrmCaseQueue> agentQueues) {
+		List<String> qs = new ArrayList<String>();
+		for ( CrmCaseQueue q : agentQueues ) {
 			qs.add(q.getCode());
 		}
 		this.agentCaseQueues = qs;
@@ -193,5 +193,13 @@ public class CrmAgentModel extends ModelSupport {
 			return true;
 		}
 		return false;
+	}
+	
+	public void setMasqueradeAllowed( boolean flag ) {
+		masqueradeAllowed = flag;
+	}
+	
+	public boolean isMasqueradeAllowed() {
+		return masqueradeAllowed;
 	}
 }

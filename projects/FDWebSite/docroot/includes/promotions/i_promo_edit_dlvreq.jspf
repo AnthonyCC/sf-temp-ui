@@ -1,0 +1,354 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+				<%
+				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+				FDPromoCustStrategyModel promoCustModel = null;
+				if(null != custStrategies && !custStrategies.isEmpty()){
+					promoCustModel = (FDPromoCustStrategyModel)custStrategies.get(0);	
+				}
+				%>
+					<td class="promo_detail_label">Address Type:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse" id="edit_dlvreq_addTypeParent" name="edit_dlvreq_addTypeParent" width="408px">
+							<tr>
+								<td><input type="checkbox" id="residential" name="residential" <%= (null!=promoCustModel && promoCustModel.isOrderTypeHome())?"checked":"" %>/> Residential</td>
+								<td><input type="checkbox" id="commerical" name="commerical" <%= (null!=promoCustModel && promoCustModel.isOrderTypeCorporate())?"checked":"" %>/> Commercial</td>
+								<td><input type="checkbox" id="pickup" name="pickup" <%= (null!=promoCustModel && promoCustModel.isOrderTypePickup())?"checked":"" %>/> Pickup</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="alignR">
+									<a href="#" onclick="selectAllCB('edit_dlvreq_addTypeParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_dlvreq_addTypeParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Delivery date:</td>
+					<td class="alignL vTop padL8R16">
+						<%-- create index hidden element (make sure the var name and elem id/name are NOT the same) --%>
+						<input type="hidden" id="dlvDatesIndexValue" name="dlvDatesIndexValue" />
+						<script type="text/javascript">
+						<!--
+							<%-- init the index --%>
+							var dlvDatesIndex = new index(0, 'dlvDatesIndexValue');
+							<%
+								/*
+									setup saved data to be added back to page (when page has loaded).
+									The final Array is the value pairs (start/end). Eveything else is the same as the 'Add' button.
+									
+									document.observe("dom:loaded", function() {
+										addRows('dlvDateTable', 'dlvDateIn', 'dlvDates', true, dlvDatesIndex, Array('1a','1b'));
+									});
+								*/
+								if (!"".equals(dlvDatesString)) { 
+							%>
+									document.observe("dom:loaded", function() {
+										addRows('dlvDateTable', 'dlvDateIn', 'dlvDates', true, dlvDatesIndex, Array(<%=dlvDatesString%>));
+									});
+							<%
+								}
+							%>
+						//-->
+						</script>
+						<input type="text" id="dlvDateInStartDate" name="dlvDateInStartDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="dlvDateInStartDate_trigger" name="dlvDateInStartDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a><span class="gray">&nbsp;&nbsp;to&nbsp;&nbsp;</span><input type="text" id="dlvDateInEndDate" name="dlvDateInEndDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="dlvDateInEndDate_trigger" name="dlvDateInEndDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
+						<input type="button" value="ADD" onclick="if ($('dlvDateInStartDate').value!=='' && $('dlvDateInEndDate').value!=='') { addRow('dlvDateTable', 'dlvDateIn', 'dlvDates', true, dlvDatesIndex); }" class="promo_btn_grn padLR4" /><span class="gray8pt">Single or range of days allowed</span>
+						<br /><img width="1" height="10" src="/media_stat/crm/images/clear.gif" alt="" /><br />
+						<table id="dlvDateTable" name="dlvDateTable" class="tableCollapse" style="display: none;">
+							<thead>
+							<tr>
+								<th class="bordLgrayDash gray8pt padL8R16">Delivery Date(s)</th>
+								<th class="gray8pt padL8R16"><a href="#" onclick="clickAllHREF('dlvDateTable', 'SaveAllInclude'); return false;" class="greenLink clickAllExclude">(Save All)</a> / <a href="#" onclick="clickAllHREF('dlvDateTable', 'DelAllInclude', 'clickAllExclude', true); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+							</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="exSameDayDlv" name="exSameDayDlv" <%= (null!=promoCustModel && promoCustModel.isExcludeSameDayDlv())?"checked":"" %>/></td>
+					<td class="alignL vTop padL8R16">Exclude Same Day Delivery
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Geography restriction:</td>
+					<td class="alignL vTop padL8R16">
+						<table width="100%">
+							<tr><%
+
+							 String edit_dlvreq_geoRest = request.getParameter("edit_dlvreq_geoRest");
+							 String zipCodes = "";
+							 String zipType ="";
+							 if(null !=zipRests && zipRests.size()>0){
+									Set zipSet = zipRests.entrySet();
+										Iterator i = zipSet.iterator();
+										if(i.hasNext()) {
+											Map.Entry me = (Map.Entry)i.next();
+											zipCodes = ((FDPromoZipRestriction)me.getValue()).getZipCodes();
+											zipType = ((FDPromoZipRestriction)me.getValue()).getType();
+										}
+							 }
+							 
+							%>
+								<td class="alignL vTop padL8R16"><input type="radio" id="edit_dlvreq_geoRest_zip" name="edit_dlvreq_geoRest" value="ZIP" <%= "ZIP".equals(promotion.getGeoRestrictionType())?"checked":"" %>/>ZIP:
+									<div class="padL16">
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<input type="radio" id="edit_dlvreq_zipType_all" name="edit_dlvreq_zipType" value="EXCEPT" <%= "EXCEPT".equalsIgnoreCase(zipType)?"checked":"" %>/> ALL EXCEPT
+										<input type="radio" id="edit_dlvreq_zipType_only" name="edit_dlvreq_zipType" value="ONLY" <%= "ONLY".equalsIgnoreCase(zipType)?"checked":"" %>/> ONLY
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<table class="tableCollapse">
+											<tr>
+												<%-- sets the column widths --%>
+												<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td class="w100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											</tr>
+										</table>
+										
+										<textarea id="zip_codes" name="zip_codes" rows="3" cols="30"  class="w600px"><%=zipCodes  %></textarea>
+										
+										<div class="gray8pt">Enter comma-seperated ZIP codes</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							<tr><% List list = promotion.getDlvZoneStrategies(); 
+										 String[] selectedZones = null;
+										 StringBuffer selectedZonesBuffer = new StringBuffer();
+										 String selectedDays = "";
+										 List selected = new ArrayList();
+										 boolean isAll = false;
+										 String edit_dlvreq_zoneType = request.getParameter("edit_dlvreq_zoneType");
+										 if(null != list && !list.isEmpty()){
+											 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);
+											 selectedZones = zoneStrgyModel.getDlvZones();
+											   
+											    if(null != selectedZones && selectedZones.length >0){
+											    	selected = Arrays.asList(selectedZones);
+											    }
+											    selectedZonesBuffer.append(selected);
+											    if(selectedZonesBuffer.indexOf("ALL")>-1){
+											    	isAll = true;
+											    }
+											    selectedDays = null!=zoneStrgyModel.getDlvDays()?zoneStrgyModel.getDlvDays():"";
+										 } 	%>
+								<td class="alignL vTop padL8R16"><input type="radio" id="edit_dlvreq_geoRest_zone" name="edit_dlvreq_geoRest" value="ZONE" <%= "ZONE".equals(promotion.getGeoRestrictionType())|| (!"".equals(selectedDays.trim()) ||(selected!=null && !selected.isEmpty()))?"checked":""  %> />Zone:<br />
+									<div class="padL16">
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<input type="radio" id="edit_dlvreq_zoneType_all" name="edit_dlvreq_zoneType" value="ALL" <%= "ALL".equals(edit_dlvreq_zoneType)||(isAll)?"checked":"" %>/> ALL
+										<input type="radio" id="edit_dlvreq_zoneType_only" name="edit_dlvreq_zoneType" value="ONLY" <%= "ONLY".equals(edit_dlvreq_zoneType)||(!isAll)?"checked":"" %>/> ONLY
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										 
+										<table class="tableCollapse">
+											<tr>
+												<%-- first td sets the row heights --%>
+												<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td class="alignC gray8pt">Available</td>
+												<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td class="alignC gray8pt">Selected</td>
+											</tr>
+											<tr>
+												<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td class="pad8">
+													<select id="edit_dlvreq_available" name="edit_dlvreq_available" class="h120px w200px" size="2" multiple>
+														<logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+															<% if(!selected.contains(zoneModel.getZoneDescriptor().getZoneCode())){ %>
+															 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+															 <% } %>
+														</logic:iterate>
+													</select>
+												</td>
+												<td class="alignC">
+													<div><input type="button" value="Add &gt;&gt;" onclick="remOpt('edit_dlvreq_available', 'edit_dlvreq_selected'); sortByText('edit_dlvreq_available'); sortByText('edit_dlvreq_selected'); return false;" class="promo_btn_grn w75px" /></div>
+													<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_dlvreq-spacer" /></div>
+													<div><input type="button" value="&lt;&lt; Remove" onclick="remOpt('edit_dlvreq_selected', 'edit_dlvreq_available'); sortByText('edit_dlvreq_available'); sortByText('edit_dlvreq_selected'); return false;" class="promo_btn_pnk w75px" /></div>
+												</td>
+												<td class="pad8 BG_cfc">
+													<select id="edit_dlvreq_selected" name="edit_dlvreq_selected" class="h120px w200px" size="2" multiple>
+														 <logic:iterate id="zoneModel" collection="<%= availableDeliveryZones %>" type="com.freshdirect.delivery.model.DlvZoneModel" indexId="idx">
+ 															<% if(selected.contains(zoneModel.getZoneDescriptor().getZoneCode())){ %>
+															 <option value="<%= zoneModel.getZoneDescriptor().getZoneCode() %>"><%= zoneModel.getZoneDescriptor().getZoneCode() %> <%= zoneModel.getName() %>  </option>
+															 <% } %>
+															</logic:iterate>
+													</select>
+												</td>
+											</tr>
+										</table>
+										<div><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></div>
+										<div class="gray">Eligible timeslot(s):</div>
+										<table class="tableCollapse" width="100%" id="edit_dlvreq_dayOfWeekParent" name="edit_dlvreq_dayOfWeekParent">
+											<tr>
+												<%-- sets the column widths --%>
+												<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+												<td width="50%"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+											</tr>
+											<%
+												//create week
+												List dayOfWeek = new ArrayList();
+													dayOfWeek.add("SUNDAY");
+													dayOfWeek.add("MONDAY");
+													dayOfWeek.add("TUESDAY");
+													dayOfWeek.add("WEDNESDAY");
+													dayOfWeek.add("THURSDAY");
+													dayOfWeek.add("FRIDAY");
+													dayOfWeek.add("SATURDAY");
+
+													boolean bgGray = false;
+
+												for (int i = 0; i < dayOfWeek.size(); i++) {
+													String dowLong = dayOfWeek.get(i).toString();
+													String dowShort = dowLong.substring(0,3);//.toLowerCase();
+													boolean even = (i%2==0)?true:false;
+
+													if (i == 0) {
+														%><tr><%
+													}
+
+													if (i!=0 && even) { %><tr><% }
+													%>
+													
+														<td class="alignL vTop padL8R16 bord1px999<%=(bgGray)?" BG_exp":""%>" id="edit_dlvreq_chk<%=dowShort%>_parent" name="edit_dlvreq_chk<%=dowShort%>_parent" >
+															<input type="checkbox" id="edit_dlvreq_chk<%=dowShort%>" name="edit_dlvreq_chk<%=dowShort%>" onclick="cbToggle(this.id);" <%= selectedDays.indexOf(""+(i+1))>-1?"checked":"" %> /> <%=dowLong%>
+															<div id="edit_dlvreq_chk<%=dowShort%>Cont" name="edit_dlvreq_chk<%=dowShort%>Cont" style="display: none;">
+																<%-- create index hidden element (make sure the var name and elem id/name are NOT the same) --%>
+																<input type="hidden" id="dlvDay<%=dowShort%>IndexValue" name="dlvDay<%=dowShort%>IndexValue" value="" />
+																<script type="text/javascript">
+																<!--
+																	<%-- init the index --%>
+																	var dlvDay<%=dowShort%>Index = new index(0, 'dlvDay<%=dowShort%>IndexValue');
+																	<%-- setup further down, outside loop --%>
+																//-->
+																</script>
+																<img src="/media_stat/crm/images/clear.gif" width="8" height="15" alt="" /><input type="text" id="dlvTimeIn<%=dowShort%>StartTime" name="dlvTimeIn<%=dowShort%>StartTime" class="w75px" /> <a href="#" onclick="return false;" class="promo_ico_cont<%=(bgGray)?" BG_fff":""%>" id="dlvTimeIn<%=dowShort%>StartTime_trigger" name="dlvTimeIn<%=dowShort%>StartTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
+																<span class="gray">&nbsp;&nbsp;to&nbsp;&nbsp;</span>
+																<input type="text" id="dlvTimeIn<%=dowShort%>EndTime" name="dlvTimeIn<%=dowShort%>EndTime" class="w75px" /> <a href="#" onclick="return false;" class="promo_ico_cont<%=(bgGray)?" BG_fff":""%>" id="dlvTimeIn<%=dowShort%>EndTime_trigger" name="dlvTimeIn<%=dowShort%>EndTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
+																
+																<input type="button" value="ADD" onclick="if ($('dlvTimeIn<%=dowShort%>StartTime').value!=='' && $('dlvTimeIn<%=dowShort%>EndTime').value!=='') { addRow('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index); }" class="promo_btn_grn padLR4" />
+																<br /><img width="1" height="10" src="/media_stat/crm/images/clear.gif" alt="" />
+																
+																<table id="dlvTimeTable<%=dowShort%>" name="dlvTimeTable<%=dowShort%>" class="tableCollapse" style="display: none; background-color: #fff;">
+																	<thead>
+																	<tr>
+																		<th class="bordLgrayDash gray8pt padL8R16">Delivery Time(s)</th>
+																		<th class="gray8pt padL8R16"><a href="#" onclick="clickAllHREF('dlvTimeTable<%=dowShort%>', 'SaveAllInclude'); return false;" class="greenLink clickAllExclude">(Save All)</a> / <a href="#" onclick="clickAllHREF('dlvTimeTable<%=dowShort%>', 'DelAllInclude', 'clickAllExclude', true); return false;" class="greenLink clickAllExclude">(Delete All)</a></th>
+																	</tr>
+																	</thead>
+																	<tbody>
+																	</tbody>
+																</table>
+															</div>
+														</td>
+													
+													<%
+													if (!even) { %></tr><% }
+													
+													if (even) { bgGray = !bgGray; }
+												}
+											%>
+												<td class="alignL vTop padL8R16 gray8pt">If no timeslot specified, any slot selected within day is eligible</td>
+											</tr>
+											<tr>
+												<td colspan="2" class="alignR">
+													<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', true, '', true); return false;" class="greenLink">(Select All)</a>&nbsp;
+													<a href="#" onclick="selectNCB('edit_dlvreq_dayOfWeekParent', '', false, '', true); return false;" class="greenLink">(Select None)</a>
+													<script type="text/javascript">
+													<!--
+														<%--
+															setup saved data to be added back to page (when page has loaded).
+															The final Array is the value pairs (start/end). Eveything else is the same as the 'Add' button.
+															Also make the values table visible by making the day of week checkbox checked.
+															
+															document.observe("dom:loaded", function() {
+																addRows('dlvTimeTableMON', 'dlvTimeInMON', 'dlvDayMON', true, dlvDayMONIndex, Array('1a','1b'));
+																selectNCB('edit_dlvreq_chkMON_parent', '', true, '', true);
+															});
+														--%>
+														<%
+															for (int i = 0; i < 7; i++) {
+																if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) {
+																	String dowLong = dayOfWeek.get(i).toString();
+																	String dowShort = dowLong.substring(0,3);
+																	%>
+																		document.observe("dom:loaded", function() {
+																			addRows('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index, Array(<%=dlvTimesStrings[i]%>));
+																			selectNCB('edit_dlvreq_chk<%=dowShort%>_parent', '', true, '', true);
+																		});
+																	<%
+																}
+															}
+														%>
+													//-->
+													</script>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<%-- this page uses a different width here --%>
+			<img width="50" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<script type="text/javascript">
+<!--
+	setupCals("edit_dlvreq");
+	
+	//Event.observe(window, 'load', function() { $('edit_dlvreq_chkMon').observe('click', this.toggle.bind(this)); });
+
+//-->
+
+function selectZones(){
+	var selectedList = document.getElementById("edit_dlvreq_selected");
+	var len = selectedList.length -1;
+	for(i=len; i>=0; i--){
+		   selectedList.item(i).selected="selected";
+	}
+}
+</script>

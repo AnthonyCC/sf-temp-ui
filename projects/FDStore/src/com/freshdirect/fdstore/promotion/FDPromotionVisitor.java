@@ -52,13 +52,23 @@ public class FDPromotionVisitor {
 			context.getUser().setPostPromoConflictEnabled(false);
 			
 		}		
+		//Now Apply redemption promo if any.
 		
-		
-		applyZonePromotion(context, eligibilities);
+        //Get the redemption promotion if user redeemed one.
+        PromotionI redeemedPromotion = context.getRedeemedPromotion();
+        if(redeemedPromotion != null){
+        	if(eligibilities.isEligible(redeemedPromotion.getPromotionCode())) {
+        		boolean e = redeemedPromotion.apply(context);
+        		if(e)
+        			eligibilities.setApplied(redeemedPromotion.getPromotionCode());
+        	}
+        }
+		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
+		//applyZonePromotion(context, eligibilities);
 		LOGGER.info("Apply Promotions - END TIME ");
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Apply Promotions - TOTAL EXECUTION TIME "+(endTime - startTime)+" milliseconds");
-		LOGGER.info("Promotion eligibility: after applyZonePromotion() " + eligibilities);
+		//LOGGER.info("Promotion eligibility: after applyZonePromotion() " + eligibilities);
 		
 		return eligibilities;
 	}
@@ -103,7 +113,7 @@ public class FDPromotionVisitor {
                String promoCode = autopromotion.getPromotionCode();
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
-               if(e && autopromotion.isRecommendedItemsOnly()) eligibilities.addRecommendedPromo(promoCode); 
+               if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
         }
          
          //Get the redemption promotion if user redeemed one and evaluate it.
@@ -112,7 +122,7 @@ public class FDPromotionVisitor {
                boolean e = redeemedPromotion.evaluate(context);
                String promoCode = redeemedPromotion.getPromotionCode();
                eligibilities.setEligibility(promoCode, e);
-               if(e && redeemedPromotion.isRecommendedItemsOnly()) eligibilities.addRecommendedPromo(promoCode);
+               if(e && redeemedPromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode);
          }
          long endTime = System.currentTimeMillis();
          return eligibilities;
@@ -146,7 +156,7 @@ public class FDPromotionVisitor {
 						  ){
 				found = true;
 			}else{ 
-				if (found && !EnumPromotionType.WINDOW_STEERING.equals(p.getPromotionType())) {
+				if (found && !p.isCombineOffer()) {
 					//Any promotion after this point can be removed.
 					i.remove();
 				}
@@ -191,74 +201,42 @@ public class FDPromotionVisitor {
 	 */
 	private static boolean postResolveConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		
-		// check if line item discount exists
-		// check if header discount allowed
-		double headerDiscAmount=0;		 
-		double lineItemDiscAmount=0;
-				
-		if(context.getHeaderDiscount()==null || context.getTotalLineItemDiscount()<=0) return false;
+		// check if line item discount exists along with non combinable header promo.
+		PromotionI nonCombinableHeaderPromo = context.getNonCombinableHeaderPromotion();
+		double lineItemDiscAmount = context.getTotalLineItemDiscount();
+		if(nonCombinableHeaderPromo == null || lineItemDiscAmount <= 0) return false;
 		
 		// also check if the allow header promotion flag is off 		
-		
-		String linePromoCode=eligibilities.getAppliedLineItemPromoCode();
-		if(linePromoCode!=null){
-			PromotionI lineItemPromo = PromotionFactory.getInstance().getPromotion(linePromoCode);
-			if(lineItemPromo.isAllowHeaderDiscount())
-			   return false; 
+		boolean isLineItemCombinable = eligibilities.isLineItemCombinable();
+		String headerPromoCode=nonCombinableHeaderPromo.getPromotionCode();
+		if(isLineItemCombinable){
+			//CLear the automatic non combinable header discount. Keep the line item.
+			context.getShoppingCart().removeDiscount(headerPromoCode);
+			eligibilities.removeAppliedPromo(headerPromoCode);
+		}else{
+			//Check which one has a higher value. Give the higher value promotion.
+			Discount headerDiscount = context.getShoppingCart().getDiscount(headerPromoCode);
+			if(lineItemDiscAmount >=  headerDiscount.getAmount()){
+				//CLear the automatic header discount. Keep the line item discount(s).
+				context.getShoppingCart().removeDiscount(headerPromoCode);
+				eligibilities.removeAppliedPromo(headerPromoCode);
+			} else {
+				//CLear the line item discount(s). Keep the automatic header discount.
+				context.clearLineItemDiscounts();
+				eligibilities.removeAppliedLineItemPromotions();
+			}
 		}
-		String headerPromoCode=context.getHeaderDiscount().getPromotionCode();
-		String lineItemPromoCode=eligibilities.getAppliedLineItemPromoCode();
-		// clear the both discounts
-		context.clearHeaderDiscounts();
-		context.clearLineItemDiscounts();
-		eligibilities.removeAppliedPromo(lineItemPromoCode);
-		eligibilities.removeAppliedPromo(headerPromoCode);
-		/** Clear redeemed promotion only when it's a header discount */
-		PromotionI redeemedPromo=context.getUser().getRedeemedPromotion();
-		if(redeemedPromo != null && redeemedPromo.isHeaderDiscount()) {
-			context.getUser().setRedeemedPromotion(null);
-		}
-		
-		PromotionI headerPromo = PromotionFactory.getInstance().getPromotion(headerPromoCode);
-		if(headerPromo.apply(context)){		
-			Discount headerDiscount=context.getHeaderDiscount();		
-			if(headerDiscount!=null) headerDiscAmount=headerDiscount.getAmount();
-		}
-		
-		if(headerPromo.isSignupDiscount() || headerPromo.isRedemption()){
-			//Applied header discount
-			eligibilities.setApplied(headerPromoCode);			
-			if(headerPromo.isRedemption())
-				context.getUser().setRedeemedPromotion(headerPromo);
-			return true;
-		}
-						
-		PromotionI lineItemPromo = PromotionFactory.getInstance().getPromotion(lineItemPromoCode);
-		if(lineItemPromo.apply(context)){
-			lineItemDiscAmount=context.getTotalLineItemDiscount();
-		}
-		if((headerDiscAmount!=0 && headerDiscAmount>=lineItemDiscAmount)) {
-			//Applied header discount
-			eligibilities.setApplied(headerPromoCode);			
-			if(headerPromo.isRedemption())
-				context.getUser().setRedeemedPromotion(headerPromo);
-			context.clearLineItemDiscounts();
-			
-		}else if(lineItemDiscAmount!=0 && lineItemDiscAmount>headerDiscAmount) {
-			// Applied line item discount
-			eligibilities.setApplied(lineItemPromoCode);
-			context.clearHeaderDiscounts();
-			
-		}	
 		return true;
 	}			
 
 	private static void applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
         String headerPromoCode = "";
+      //Step 1: Process all sample, delivery promo, extend DP promo, automatic non-combinable header and line item offers.
         for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
               String promoCode = (String) i.next();
               PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-              if(!EnumPromotionType.WINDOW_STEERING.equals(promo.getPromotionType())) {
+              if(!promo.isDollarValueDiscount() || (!promo.isRedemption() && !promo.isCombineOffer())) {
+            	  	
                     boolean applied = promo.apply(context);
                     if (applied) {
                           if(promo.isHeaderDiscount()){
@@ -273,10 +251,24 @@ public class FDPromotionVisitor {
                     }
               }
         }
-        //Add the final header promo code to the applied list. 
+        //Add the final header promo code to the applied list from Step 1. 
         if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
               eligibilities.setApplied(headerPromoCode);
         }
+        //Step 2: Process all automatic combinable header and line item offers.
+        for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
+            String promoCode = (String) i.next();
+            PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+            if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
+          	  	//Process all automatic combinable header and line item offers.
+                  boolean applied = promo.apply(context);
+                  if (applied) {
+                      //Add applied  promos to the applied list. 
+                      eligibilities.setApplied(promoCode);      
+                  }
+            }
+      }
+
   }
 
 }

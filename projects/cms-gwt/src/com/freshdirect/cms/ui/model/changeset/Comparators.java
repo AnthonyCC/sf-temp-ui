@@ -17,21 +17,21 @@ public class Comparators {
     public final static Comparator<GwtChangeSet> NOTE_COMPARATOR_INV = new InverseComparator<GwtChangeSet>(new NoteComparator());
     
      
-    private static final class NoteComparator implements Comparator<GwtChangeSet> {
+    static final class NoteComparator implements Comparator<GwtChangeSet> {
         @Override
         public int compare(GwtChangeSet o1, GwtChangeSet o2) {
             return o1.getNote().compareTo(o2.getNote());
         }
     }
 
-    private static final class UserComparator implements Comparator<GwtChangeSet> {
+    static final class UserComparator implements Comparator<GwtChangeSet> {
         @Override
         public int compare(GwtChangeSet o1, GwtChangeSet o2) {
             return o1.getUserId().compareTo(o2.getUserId());
         }
     }
 
-    private static final class DateComparator implements Comparator<GwtChangeSet> {
+    static final class DateComparator implements Comparator<GwtChangeSet> {
         @Override
         public int compare(GwtChangeSet o1, GwtChangeSet o2) {
             return o1.getModifiedDate().compareTo(o2.getModifiedDate());

@@ -10,8 +10,8 @@ import com.freshdirect.DbTestCaseSupport;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseQueue;
-import com.freshdirect.enums.TestableEnumManager;
 import com.freshdirect.enums.EnumManager;
+import com.freshdirect.enums.TestableEnumManager;
 import com.freshdirect.framework.core.PrimaryKey;
 
 /**
@@ -66,13 +66,13 @@ public class CrmAgentDAOTestCase extends DbTestCaseSupport {
 	}
 
 	public void testFindAll() throws Exception {
-		Collection col = dao.findAll(conn);
+		Collection<PrimaryKey> col = dao.findAll(conn);
 		assertEquals(2, col.size());
 	}
 
 	public void testCreate() throws Exception {
-		CrmAgentModel agent = new CrmAgentModel("mrose", "martini1", "Mike", "Rose", true, CrmAgentRole.getEnum("SUP"));
-		List agentQueues = new ArrayList();
+		CrmAgentModel agent = new CrmAgentModel("mrose", "martini1", "Mike", "Rose", true, CrmAgentRole.getEnum("SUP"), false);
+		List<CrmCaseQueue> agentQueues = new ArrayList<CrmCaseQueue>();
 		agentQueues.add(CrmCaseQueue.getEnum("QA"));
 		agentQueues.add(CrmCaseQueue.getEnum("QB"));
 		PrimaryKey pk = new PrimaryKey("a3");
@@ -104,7 +104,7 @@ public class CrmAgentDAOTestCase extends DbTestCaseSupport {
 		agent.setLastName("Nadeem");
 		agent.setActive(true);
 		agent.setRole(CrmAgentRole.getEnum("CSR"));
-		List agentQueues = new ArrayList();
+		List<CrmCaseQueue> agentQueues = new ArrayList<CrmCaseQueue>();
 		agentQueues.add(CrmCaseQueue.getEnum("QA"));
 		agentQueues.add(CrmCaseQueue.getEnum("QB"));
 		agent.setAgentQueues(agentQueues);

@@ -18,49 +18,55 @@ String pageURI = request.getRequestURI();
 
 </head>
 <body>
-<div class="tophelp1">
-<%@ include file="/includes/context_help.jspf" %>
+	<div class="crm_container">
+		<% try { %>
+			<%-- header on top and groups/usernames in the leftnav --%>
+			<div class="content">
+			<%@ include file="/includes/context_help.jspf" %>
 
-<%try{%>
-    <%-- header on top and groups/usernames in the leftnav --%>
+				<%-- header on top and content below --%>
 
-    <div class="main_nav">
-        <jsp:include page='/includes/main_nav.jsp'/>
-    </div>
-	
-	<jsp:include page='/includes/case_header.jsp'/>
-	
-    <div class="side_nav">
-        <jsp:include page='/includes/case_mgmt_side_nav.jsp'/>
-		<div class="note" style="padding-left: 6px;">
-		<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
-		<b>P</b> <span class="legend">PRIORITY:<br>
-		<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
-		<img src="/media_stat/crm/images/priority_hi.gif" width="11" height="11">&nbsp;&nbsp;HIGH<br>
-		<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
-		<img src="/media_stat/crm/images/priority_md.gif" width="11" height="11">&nbsp;&nbsp;MEDIUM<br>
-		<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
-		<img src="/media_stat/crm/images/priority_lo.gif" width="11" height="11">&nbsp;&nbsp;LOW
-		</span>
-		<br><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
-		Idle time in minutes,<br>
-		-- closed<br>
-		&nbsp;
-		<br>
-		&nbsp;
-		</div>
-    </div>
-	
-    <div class="content_bgcolor">
-    <tmpl:get name='content'/>
-    </div>
-</div>
+				<jsp:include page="/includes/main_nav.jsp"/>
+				
+				<jsp:include page='/includes/customer_header.jsp'/>
+				
+				<jsp:include page='/includes/case_header.jsp'/>
 
-	<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
-<%}catch (Exception ex) {
-	ex.printStackTrace();
-	throw ex;
-}
-%>
+				<div style="height: 95%; overflow: auto; border: 0px solid #000;">
+					<div class="side_nav">
+						<jsp:include page='/includes/case_mgmt_side_nav.jsp'/>
+						
+
+						<div class="note" style="padding-left: 6px;">
+							<img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
+							<b>P</b> <span class="legend">PRIORITY:<br>
+							<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
+							<img src="/media_stat/crm/images/priority_hi.gif" width="11" height="11">&nbsp;&nbsp;HIGH<br>
+							<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
+							<img src="/media_stat/crm/images/priority_md.gif" width="11" height="11">&nbsp;&nbsp;MEDIUM<br>
+							<img src="/media_stat/crm/images/clear.gif" width="1" height="4"><br>
+							<img src="/media_stat/crm/images/priority_lo.gif" width="11" height="11">&nbsp;&nbsp;LOW
+							</span>
+							<br><img src="/media_stat/crm/images/clear.gif" width="1" height="8"><br>
+							Idle time in minutes,<br>
+							-- closed<br>
+							&nbsp;
+							<br>
+							&nbsp;
+						</div>
+					</div>
+					
+					<div style="width: 84%; overflow-y: auto; float: left;">
+						<tmpl:get name="content"/>
+					</div>
+				</div>
+			</div>
+			<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
+		<% } catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		} %>
+	</div>
+	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000"></div>
 </body>
 </html>

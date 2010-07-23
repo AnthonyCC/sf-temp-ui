@@ -5,7 +5,6 @@
 package com.freshdirect.fdstore.attributes.cms;
 
 import com.freshdirect.cms.AttributeDefI;
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.fdstore.attributes.EnumAttributeType;
@@ -44,10 +43,9 @@ public class ImageBuilder extends AbstractAttributeBuilder {
 		if (cNode.getAttributeValue("title") == null) {
 			Image i = new Image(path, width, height);
 			return i;
-		} else {
-			String title = (String) cNode.getAttributeValue("title");
-			return new TitledMedia(new Image(path, width, height), title, null);
 		}
+		String title = (String) cNode.getAttributeValue("title");
+		return new TitledMedia(new Image(path, width, height), title, null);
 	}
 
 }

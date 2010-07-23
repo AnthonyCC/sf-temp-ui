@@ -43,6 +43,7 @@ import com.freshdirect.customer.ErpSaleNotFoundException;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ErpShippingInfo;
 import com.freshdirect.customer.ErpTransactionException;
+import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.customer.OrderHistoryI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.payment.EnumPaymentMethodType;
@@ -187,7 +188,7 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public EnumPaymentResponse resubmitPayment(String saleId, ErpPaymentMethodI paymentMethod, Collection charges) throws ErpTransactionException, RemoteException;
     
-    public List getTruckNumbersForDate(Date deliveryDate) throws RemoteException;
+    public List<ErpTruckInfo> getTruckNumbersForDate(Date deliveryDate) throws RemoteException;
     
     public List getOrdersByTruckNumber(String truckNumber, Date deliveryDate) throws RemoteException;
     

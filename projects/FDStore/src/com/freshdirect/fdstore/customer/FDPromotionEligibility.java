@@ -88,12 +88,21 @@ public class FDPromotionEligibility implements Serializable {
 	}
 	
 	
-	public String getAppliedLineItemPromoCode(){			
+	public void removeAppliedLineItemPromotions(){			
 		for ( String promoCode : appliedPromos ) {
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-			if(promo.isLineItemDiscount()) return promoCode;
+			if(promo.isLineItemDiscount()) {
+				removeAppliedPromo(promo.getPromotionCode());
+			}
 		}
-		return null;
+	}
+	
+	public boolean isLineItemCombinable(){			
+		for ( String promoCode : appliedPromos ) {
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+			if(promo.isLineItemDiscount() && promo.isCombineOffer()) return true;
+		}
+		return false;
 	}
 	
 

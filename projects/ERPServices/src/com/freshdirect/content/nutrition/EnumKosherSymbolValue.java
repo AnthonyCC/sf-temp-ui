@@ -18,6 +18,8 @@ import java.util.*;
  */
 public class EnumKosherSymbolValue implements NutritionValueEnum {
     
+	private static final long	serialVersionUID	= 5993438447662242875L;
+	
 	public final static EnumKosherSymbolValue NONE          = new EnumKosherSymbolValue("NONE","NONE", 0);
     public final static EnumKosherSymbolValue K             = new EnumKosherSymbolValue("K","K", 5);
 	public final static EnumKosherSymbolValue OU            = new EnumKosherSymbolValue("OU","OU", 1);
@@ -83,7 +85,7 @@ public class EnumKosherSymbolValue implements NutritionValueEnum {
 		return false;
 	}
     
-    private final static List symbols = new ArrayList();
+    private final static List<EnumKosherSymbolValue> symbols = new ArrayList<EnumKosherSymbolValue>();
     static {
     	symbols.add(NONE);
         symbols.add(K);
@@ -118,13 +120,12 @@ public class EnumKosherSymbolValue implements NutritionValueEnum {
         symbols.add(K_ORC);
     }
 
-    public static List getValues() {
+    public static List<EnumKosherSymbolValue> getValues() {
         return Collections.unmodifiableList(symbols);
     }
     
     public static EnumKosherSymbolValue getValueForCode(String code) {
-        for (Iterator i=symbols.iterator(); i.hasNext(); ) {
-            EnumKosherSymbolValue value = (EnumKosherSymbolValue) i.next();
+        for ( EnumKosherSymbolValue value : symbols ) {
             if (value.getCode().equals(code)) {
                 return value;
             }

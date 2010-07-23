@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,180 +37,180 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
             throw new IllegalArgumentException("ContentKey must not be null");
         }
         this.key = key;
-        this.contentType = (String) ContentNodeModelUtil.CONTENT_TO_TYPE_MAP.get(key.getType().getName());
+        this.contentType = ContentNodeModelUtil.CONTENT_TO_TYPE_MAP.get(key.getType().getName());
     }	
 	
 
-        //
-        // core
-        //
+    //
+    // core
+    //
 
-        protected ContentNodeI getCMSNode() {
-                return CmsManager.getInstance().getContentNode(key);
+    protected ContentNodeI getCMSNode() {
+        return CmsManager.getInstance().getContentNode(key);
+    }
+
+    public ContentKey getContentKey() {
+        return key;
+    }
+
+    /**
+     * 
+     * @return the id of the content node
+     */
+    public String getContentName() {
+        return this.getContentKey().getId();
+    }
+
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    //
+    // attributes
+    //
+
+    
+    /**
+     * Return the primitive values, lists, content key values for the given attributum. 
+     * @param name
+     * @return
+     */
+    public Object getCmsAttributeValue(String name) {
+        ContentNodeI node = this.getCMSNode();
+        if (node == null) return null;
+
+        Object value = node.getAttributeValue(name);
+        if (value != null && !(value instanceof List<?> && ((List<?>) value).isEmpty())) {
+                return value;
         }
 
-        public ContentKey getContentKey() {
-                return key;
+        AttributeDefI def = node.getDefinition().getAttributeDef(name);
+        if (def == null || !def.isInheritable()) {
+                return null;
         }
 
-        /**
-         * 
-         * @return the id of the content node
-         */
-        public String getContentName() {
-                return this.getContentKey().getId();
+        ContentNodeModel parent = getParentNode();
+        return parent == null ? null : parent.getCmsAttributeValue(name);
+    }
+    
+    /**
+     * @deprecated
+     */
+    protected boolean hasAttribute(String key) {
+            return getCmsAttributeValue(key) != null;
+    }
+
+    protected String getAttribute(String key, String defaultValue) {
+            Object value = this.getCmsAttributeValue(key);
+            return (value != null) ? (String) value : defaultValue;
+    }
+
+    protected int getAttribute(String key, int defaultValue) {
+            Object value = this.getCmsAttributeValue(key);
+            return (value != null) ? ((Integer) value).intValue() : defaultValue;
+    }
+
+    protected boolean getAttribute(String key, boolean defaultValue) {
+            Object value = this.getCmsAttributeValue(key);
+            return (value != null) ? ((Boolean) value).booleanValue() : defaultValue;
+    }
+
+    protected double getAttribute(String key, double defaultValue) {
+            Object value = this.getCmsAttributeValue(key);
+            return (value != null) ? ((Double) value).doubleValue() : defaultValue;
+    }
+
+    //
+    // contextual information
+    //
+
+    /**
+     * @return Returns the priority.
+     */
+    public int getPriority() {
+        return priority;
+    }
+
+    /**
+     * @param priority The priority to set.
+     */
+    protected void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    protected void setParentNode(ContentNodeModel parentNode) {
+	    if (!fresh && this.parentNode != parentNode) {
+            throw new IllegalStateException("Cannot reparent node " + key
+                            + " from " + this.parentNode + " to " + parentNode
+                            + ". Object has to be reconstructed or cloned.");
+	    }
+	    this.parentNode = parentNode;
+	    fresh = false;
+    }
+
+    public ContentNodeModel getParentNode() {
+        if (parentNode == null) {
+            parentNode = ContentNodeModelUtil.findDefaultParent(getContentKey());
+            fresh = false;
         }
+        return parentNode;
+    }
 
-        public String getContentType() {
-                return this.contentType;
-        }
-
-        //
-        // attributes
-        //
-
-        
-        /**
-         * Return the primitive values, lists, content key values for the given attributum. 
-         * @param name
-         * @return
-         */
-        public Object getCmsAttributeValue(String name) {
-            ContentNodeI node = this.getCMSNode();
-            if (node == null) return null;
-
-            Object value = node.getAttributeValue(name);
-            if (value != null && !(value instanceof List && ((List) value).isEmpty())) {
-                    return value;
-            }
-
-            AttributeDefI def = node.getDefinition().getAttributeDef(name);
-            if (def == null || !def.isInheritable()) {
-                    return null;
-            }
-
-            ContentNodeModel parent = getParentNode();
-            return parent == null ? null : parent.getCmsAttributeValue(name);
-        }
-        
-        /**
-         * @deprecated
-         */
-        protected boolean hasAttribute(String key) {
-                return getCmsAttributeValue(key) != null;
-        }
-
-        protected String getAttribute(String key, String defaultValue) {
-                Object value = this.getCmsAttributeValue(key);
-                return (value != null) ? (String) value : defaultValue;
-        }
-
-        protected int getAttribute(String key, int defaultValue) {
-                Object value = this.getCmsAttributeValue(key);
-                return (value != null) ? ((Integer) value).intValue() : defaultValue;
-        }
-
-        protected boolean getAttribute(String key, boolean defaultValue) {
-                Object value = this.getCmsAttributeValue(key);
-                return (value != null) ? ((Boolean) value).booleanValue() : defaultValue;
-        }
-
-        protected double getAttribute(String key, double defaultValue) {
-                Object value = this.getCmsAttributeValue(key);
-                return (value != null) ? ((Double) value).doubleValue() : defaultValue;
-        }
-
-        //
-        // contextual information
-        //
-
-        /**
-         * @return Returns the priority.
-         */
-        public int getPriority() {
-                return priority;
-        }
-
-        /**
-         * @param priority The priority to set.
-         */
-        protected void setPriority(int priority) {
-                this.priority = priority;
-        }
-
-        protected void setParentNode(ContentNodeModel parentNode) {
-                if (!fresh && this.parentNode != parentNode) {
-                        throw new IllegalStateException("Cannot reparent node " + key
-                                        + " from " + this.parentNode + " to " + parentNode
-                                        + ". Object has to be reconstructed or cloned.");
-                }
-                this.parentNode = parentNode;
-                fresh = false;
-        }
-
-        public ContentNodeModel getParentNode() {
-                if (parentNode == null) {
-                        parentNode = ContentNodeModelUtil.findDefaultParent(getContentKey());
-                        fresh = false;
-                }
-                return parentNode;
-        }
-
-        public Collection<ContentKey> getParentKeys() {
-            return CmsManager.getInstance().getParentKeys(key);
-        }
-        
-        /**
-         * Recursively find the first parent node of specified type.
-         *
-         * @return null if not found
-         */
+    public Collection<ContentKey> getParentKeys() {
+        return CmsManager.getInstance().getParentKeys(key);
+    }
+    
+    /**
+     * Recursively find the first parent node of specified type.
+     *
+     * @return null if not found
+     */
 //      protected ContentNodeModel getParentNode(String contentType) {
 //              ContentNodeModel p = this.getParentNode();
 //              return p == null ? null : (p.getContentType().equals(contentType) ? p : p.getParentNode(contentType));
 //      }
 
-        public boolean hasParentWithName(String[] contentNames) {
-                ContentNodeModel p = this.getParentNode();
-                if (p == null) {
-                        return false;
-                }
-                final String parentName = p.getContentName();
-                for (int i = contentNames.length; --i >= 0;) {
-                        if (parentName.equals(contentNames[i])) {
-                                return true;
-                        }
-                }
-                return p.hasParentWithName(contentNames);
-        }
+    public boolean hasParentWithName(String[] contentNames) {
+            ContentNodeModel p = this.getParentNode();
+            if (p == null) {
+                    return false;
+            }
+            final String parentName = p.getContentName();
+            for (int i = contentNames.length; --i >= 0;) {
+                    if (parentName.equals(contentNames[i])) {
+                            return true;
+                    }
+            }
+            return p.hasParentWithName(contentNames);
+    }
 
-        //
-        // infrastructure
-        //
+    //
+    // infrastructure
+    //
 
-        public Object clone() {
-                try {                   
-                        ContentNodeModelImpl clone = (ContentNodeModelImpl) super.clone();
-                        clone.fresh = true;
-                        return clone;
-                } catch (CloneNotSupportedException e) {
-                        throw new RuntimeException();
-                }
-        }
+    public Object clone() {
+            try {                   
+                    ContentNodeModelImpl clone = (ContentNodeModelImpl) super.clone();
+                    clone.fresh = true;
+                    return clone;
+            } catch (CloneNotSupportedException e) {
+                    throw new RuntimeException();
+            }
+    }
 
-        public boolean equals(Object o) {
-                if (o == this) {
-                        return true;
-                }
-                if (o instanceof ContentNodeModel) {
-                        return key.equals(((ContentNodeModel) o).getContentKey());
-                }
-                return false;
-        }
+    public boolean equals(Object o) {
+            if (o == this) {
+                    return true;
+            }
+            if (o instanceof ContentNodeModel) {
+                    return key.equals(((ContentNodeModel) o).getContentKey());
+            }
+            return false;
+    }
 
-        public int hashCode() {
-                return key.hashCode();
-        }
+    public int hashCode() {
+            return key.hashCode();
+    }
 
     protected AttributeI getNotInheritedAttribute(String name) {
         ContentNodeI node = this.getCMSNode();
@@ -230,12 +229,12 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     }
 
         
-        /**
-         * Very conveniently returns contentName.
-         */
-        public String toString() {
-                return this.getContentName();
-        }
+    /**
+     * Very conveniently returns contentName.
+     */
+    public String toString() {
+            return this.getContentName();
+    }
 	
 	
 	
@@ -305,11 +304,10 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 		if (p != null) {
 			if (p.getContentType().equals(ContentNodeModel.TYPE_STORE)) {
 				return "www.freshdirect.com/" + this.getContentName();
-			} else {
-				String parentPath = p.getPath();
-				if (parentPath != null) {
-					return parentPath + "/" + this.getContentName();
-				}
+			}
+			String parentPath = p.getPath();
+			if (parentPath != null) {
+				return parentPath + "/" + this.getContentName();
 			}
 		}
 		return null;

@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.ObjectNotFoundException;
@@ -54,10 +53,10 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		throw new ObjectNotFoundException("No Agent Found for USER_ID: " + userId);
 	}
 	
-	public Collection findAll(Connection conn) throws SQLException {
+	public Collection<PrimaryKey> findAll(Connection conn) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT ID FROM CUST.AGENT");
 		ResultSet rs = ps.executeQuery();
-		List pks = new ArrayList();
+		List<PrimaryKey> pks = new ArrayList<PrimaryKey>();
 		while(rs.next()){
 			pks.add(new PrimaryKey(rs.getString("ID")));
 		}
@@ -68,7 +67,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		CrmAgentModel agent = (CrmAgentModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.AGENT(ID, USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED) VALUES(?,?,?,?,?,?,?,?)");
+				"INSERT INTO CUST.AGENT(ID, USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED) VALUES(?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, pk.getId());
 		ps.setString(2, agent.getUserId());
 		ps.setString(3, agent.getPassword());
@@ -77,6 +76,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		ps.setString(6, agent.isActive() ? "X" : "");
 		ps.setString(7, agent.getRole().getCode());
 		ps.setTimestamp(8, new java.sql.Timestamp(new Date().getTime()));
+		ps.setString(9, agent.isMasqueradeAllowed() ? "Y" : "N");
 
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -88,7 +88,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 
 	public ModelI load(Connection conn, PrimaryKey pk) throws SQLException {
 		PreparedStatement ps =
-			conn.prepareStatement("SELECT USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED FROM CUST.AGENT WHERE ID = ?");
+			conn.prepareStatement("SELECT USER_ID, PASSWORD, FIRST_NAME, LAST_NAME, ACTIVE, ROLE, CREATED, MASQUERADE_ALLOWED FROM CUST.AGENT WHERE ID = ?");
 		ps.setString(1, pk.getId());
 		ResultSet rs = ps.executeQuery();
 		if (!rs.next()) {
@@ -102,6 +102,7 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		agent.setActive("X".equalsIgnoreCase(rs.getString("ACTIVE")) ? true : false);
 		agent.setRole(CrmAgentRole.getEnum(rs.getString("ROLE")));
 		agent.setCreateDate(rs.getTimestamp("CREATED"));
+		agent.setMasqueradeAllowed( "Y".equalsIgnoreCase( rs.getString("MASQUERADE_ALLOWED") ) );
 
 		rs.close();
 		ps.close();
@@ -115,14 +116,15 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		CrmAgentModel agent = (CrmAgentModel) model;
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"UPDATE CUST.AGENT SET USER_ID=?, PASSWORD=?, FIRST_NAME=?, LAST_NAME=?, ACTIVE=?, ROLE=? WHERE ID=?");
+				"UPDATE CUST.AGENT SET USER_ID=?, PASSWORD=?, FIRST_NAME=?, LAST_NAME=?, ACTIVE=?, ROLE=?, MASQUERADE_ALLOWED=? WHERE ID=?");
 		ps.setString(1, agent.getUserId());
 		ps.setString(2, agent.getPassword());
 		ps.setString(3, agent.getFirstName());
 		ps.setString(4, agent.getLastName());
 		ps.setString(5, agent.isActive() ? "X" : "");
 		ps.setString(6, agent.getRole().getCode());
-		ps.setString(7, agent.getPK().getId());
+		ps.setString(7, agent.isMasqueradeAllowed() ? "Y" : "N");
+		ps.setString(8, agent.getPK().getId());
 
 		if (ps.executeUpdate() != 1) {
 			throw new SQLException("Row not updated for PK:" + agent.getPK());
@@ -150,14 +152,13 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		ps.close();
 	}
 	
-	private  void insertAgentQueues(Connection conn, PrimaryKey agentPk, List queues) throws SQLException {
+	private  void insertAgentQueues(Connection conn, PrimaryKey agentPk, List<CrmCaseQueue> queues) throws SQLException {
 		if (queues.isEmpty()) {
 			return;
 		}
 
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.AGENT_QUEUE(AGENT_ID, CASE_QUEUE) VALUES (?,?)");
-		for (Iterator i = queues.iterator(); i.hasNext();) {
-			CrmCaseQueue queue = (CrmCaseQueue)i.next();
+		for ( CrmCaseQueue queue : queues ) {
 			ps.setString(1, agentPk.getId());
 			ps.setString(2, queue.getCode());
 			ps.addBatch();
@@ -167,11 +168,11 @@ public class CrmAgentEntityDAO implements EntityDAOI {
 		ps.close();
 	}
 	
-	private List selectAgentQueues(Connection conn, PrimaryKey agentPk) throws SQLException {
+	private List<CrmCaseQueue> selectAgentQueues(Connection conn, PrimaryKey agentPk) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement("SELECT CASE_QUEUE FROM CUST.AGENT_QUEUE WHERE AGENT_ID=? ORDER BY CASE_QUEUE");
 		ps.setString(1, agentPk.getId());
 
-		List queues = new ArrayList();
+		List<CrmCaseQueue> queues = new ArrayList<CrmCaseQueue>();
 		ResultSet rs = ps.executeQuery();
 		while (rs.next()) {
 			queues.add(CrmCaseQueue.getEnum(rs.getString("CASE_QUEUE")));

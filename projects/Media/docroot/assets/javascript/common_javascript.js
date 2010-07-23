@@ -258,3 +258,368 @@ function changeColors(currentId, currentCss){
     };
   }
 })();
+
+/* === Add/Remove functionality between two listboxes ======================= */
+/*
+ *	remove selected
+ *
+ *	if a second id is passed, then add the removed item back into it,
+ *	otherwise discard.
+ */
+	function remOpt(remFromId, addBackToId) {
+		var remFromId = remFromId || null;
+		var addBackToId = addBackToId || null;
+		var remFrom = document.getElementById(remFromId);
+		var addBackTo = document.getElementById(addBackToId);
+
+		if ((remFromId == null || '') || (remFrom == null)) { return false; }
+
+
+		for (var i = remFrom.length - 1; i>=0; i--) {
+			if (remFrom.options[i].selected) {
+				//check to see if we need to add back
+				if (addBackTo != null) {
+					addOpt(addBackTo.id, remFrom.options[i].text, remFrom.options[i].value);
+					remFrom.remove(i);
+				}else{
+					remFrom.remove(i);
+				}
+			}
+		}
+
+		return true;
+	}
+
+/*
+ *	add option
+ *
+ *	if text/value is not passed, uses ''
+ */
+	function addOpt(addToId, addText, addVal) {
+		var addToId = addToId || null;
+		var addTo = document.getElementById(addToId);
+		var addText = addText || '';
+		var addVal = addVal || '';
+
+		if ((addToId == null || '') || (addTo == null)) { return false; }
+
+		try {
+			addTo.add(new Option(addText, addVal), null); //doesn't work in IE
+		}catch(ex) {
+			addTo.add(new Option(addText, addVal)); //IE only
+		}
+
+		return true;
+	}
+/*
+ *	sort option
+ */
+	function sortByText(sortId) {
+		var specId = sortId || '';
+			
+		//alphabetize
+		var selectArr = new Array();
+
+		if (specId!='') {
+			selectArr[0] = $(specId); 
+		}else{
+			selectArr = document.getElementsByTagName('select'); 
+		}
+
+		for (var i = 0; i < selectArr.length; i++) { 
+			var oArr = new Array();
+			// Get the options for the select element 
+			for (var j = 0; j < selectArr[i].options.length; j++) { 
+				// Store this as an object that has an option object member, and a toString function (which will be used for sorting) 
+				if (selectArr[i].options[j].text != "") { //ignore blanks
+					oArr[oArr.length] = { 
+						option : selectArr[i].options[j], 
+						toString : function() { 
+							// Return the text of the option, not the value 
+							return this.option.text; 
+						}
+					}
+				}
+			} 
+			// Sort the array of options for this select 
+			oArr.sort();
+				
+
+			// Remove all options from the select
+			selectArr[i].options.length = 0;
+			
+			// Rebuild the select using our sorted array
+			for (var j = 0; j < oArr.length; j++) {
+				selectArr[i].options[j] = oArr[j].option;
+			}
+			selectArr[i].selectedIndex = 0;
+		}
+
+		return true;
+
+	}
+	/*
+	 *	takes the select values from sortId, assumes they are days of the week,
+	 *	and sorts them by day instead of alphabetically
+	 */
+	function sortByDayOfWeek(sortId) {
+		var specId = sortId || '';
+
+		var selectArr = new Array();
+
+		//name to idx
+		var weekdayIdx=new Array(14);
+			weekdayIdx["SUNDAY"]   =0;
+			weekdayIdx["SUN"]      =0;
+			weekdayIdx["MONDAY"]   =1;
+			weekdayIdx["MON"]      =1;
+			weekdayIdx["TUESDAY"]  =2;
+			weekdayIdx["TUE"]      =2;
+			weekdayIdx["WEDNESDAY"]=3;
+			weekdayIdx["WED"]      =3;
+			weekdayIdx["THURSDAY"] =4;
+			weekdayIdx["THU"]      =4;
+			weekdayIdx["FRIDAY"]   =5;
+			weekdayIdx["FRI"]      =5;
+			weekdayIdx["SATURDAY"] =6;
+			weekdayIdx["SAT"]      =6;
+
+		if (specId!='') {
+			selectArr[0] = $(specId); 
+		}else{
+			selectArr = document.getElementsByTagName('select'); 
+		}
+
+		for (var i = 0; i < selectArr.length; i++) { 
+			var oArr = new Array();
+			// Get the options for the select element 
+			for (var j = 0; j < selectArr[i].options.length; j++) { 
+				// Store this as an object that has an option object member, and a toString function (which will be used for sorting) 
+				if (selectArr[i].options[j].text != "") { //ignore blanks
+					oArr[oArr.length] = { 
+						option : selectArr[i].options[j], 
+						toString : function() { 
+							// look up the text of the option in name-to-index and return it
+							return weekdayIdx[(this.option.text).toUpperCase()];
+						}
+					}
+				}
+			} 
+
+			// Sort the array of options for this select 
+			oArr.sort();
+
+			// Remove all options from the select
+			selectArr[i].options.length = 0;
+			
+			// Rebuild the select using our sorted array
+			for (var j = 0; j < oArr.length; j++) {
+				selectArr[i].options[j] = oArr[j].option;
+			}
+			selectArr[i].selectedIndex = 0;
+		}
+
+		return true;
+	}
+/* === Add/Remove functionality between two listboxes ======================= */
+
+/* SHORTCUT select all/none for check boxes. */
+	function selectAllCB(parentId) { selectNCB(parentId, 0, true) }
+	function selectNoneCB(parentId) { selectNCB(parentId, 0, false) }
+
+/*	select n for checkboxes. pass in parent container id.
+ *	pass in parent container id
+ *	n as INT for number to select (0 == ALL)
+ *	truefalse as BOOL for value of CBs
+ *	pos as ["first"|"last"] to select from start or end.
+ *		"" passed will (de)select ALL. (n is ignored here)
+ *		skips elems with "clickAllExclude" in their className
+ *	doOnChangeEvent as BOOL to execute onChange Event for elem
+ *		checkboxes will not execute the onChange event when their value is
+ *		changed via js. Passing true here will execute them.
+ *
+ *	returns the count of ALL checkboxes checked under parentId 
+ *	(excluding excludes), or -1 on an error
+ */
+	function selectNCB(parentId, n, truefalse, pos, doOnChangeEvent) {
+		var curCount = 0;
+		var totalCount = 0;
+		var parent = document.getElementById(parentId);
+		if (parent == null) { return -1; }
+		var children = parent.getElementsByTagName('input');
+		if (n == 0) { pos = ""; }
+		var doOnChangeEvent = doOnChangeEvent || false; //careful...
+
+		if (pos == "last") {
+			//LAST n
+			for (var i=children.length-1;i>=0;i--) {
+				if (children[i].type == "checkbox" && (children[i].className).indexOf("clickAllExclude") < 0) {
+					if(curCount < n) {
+						children[i].checked = truefalse;
+						if (doOnChangeEvent) { onChangeEventNCB(children[i]); }
+						curCount++;
+					}
+					if (children[i].checked) { totalCount++; }
+				}
+			}
+		}else if (pos == "first"){
+			//FIRST n
+			for (var i=0;i<children.length;i++) {
+				if (children[i].type == "checkbox" && (children[i].className).indexOf("clickAllExclude") < 0) {
+					if(curCount < n) {
+						children[i].checked = truefalse;
+						if (doOnChangeEvent) { onChangeEventNCB(children[i]); }
+						curCount++;
+					}
+					if (children[i].checked) { totalCount++; }
+				}
+			}
+		}else{
+			//ALL
+			for (var i=0;i<children.length;i++) {
+				if (children[i].type == "checkbox" && (children[i].className).indexOf("clickAllExclude") < 0) {
+					children[i].checked = truefalse;
+					if (doOnChangeEvent) { onChangeEventNCB(children[i]); }
+					
+					if (children[i].checked) { totalCount++; }
+				}
+			}
+		}
+		
+		return totalCount;
+	}
+
+	function onChangeEventNCB(obj) {
+		
+		if (obj.getAttribute('onchange') == null) {
+			return true;
+		}else{
+			obj.onchange();
+		}
+
+		return true;
+	}
+
+
+//add some of the functionality to arrays
+	Array.prototype.inArray = function (value) {
+		var i;
+		for (i=0; i < this.length; i++) {
+			if (this[i] === value) {
+				return true;
+			}
+		}
+		return false;
+	};
+
+
+	Array.prototype.clone = function () {
+		var a = new Array();
+		for (var property in this) {
+			a[property] = typeof (this[property]) == 'object'
+				? this[property].clone() 
+				: this[property]
+		}
+		return a;
+	}
+
+	// http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:Array:push
+	// ----------------------------------------------------------------
+	if(!Array.prototype.push) Array.prototype.push = function( o ) {
+	// ----------------------------------------------------------------
+		this[this.length ] = o
+	}
+
+	// Like String.substr()
+	// http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:String:substr
+	// ----------------------------------------------------------------
+	Array.prototype.subarr = function( iStart, iLength ) {
+	// ----------------------------------------------------------------
+		if(iStart >= this.length || (iLength != null && iLength <= 0)) return [];
+		else if(iStart < 0) {
+			if(Math.abs(iStart) > this.length) iStart = 0;
+			else iStart = this.length + iStart;
+		}
+		if(iLength == null || iLength + iStart > this.length) iLength = this.length - iStart;
+
+		var aReturn = new Array();
+		for(var i=iStart; i<iStart + iLength; i++) {
+			aReturn.push(this[i]);
+		}
+		return aReturn;
+	}
+
+	// Like String.substring()
+	// http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:String:substring
+	// ----------------------------------------------------------------
+	Array.prototype.subarray = function( iIndexA, iIndexB ) {
+	// ----------------------------------------------------------------
+		if(iIndexA < 0) iIndexA = 0;
+		if(iIndexB == null || iIndexB > this.length) iIndexB = this.length;
+		if(iIndexA == iIndexB) return [];
+		var aReturn = new Array();
+		for(var i=iIndexA; i<iIndexB; i++) {
+			aReturn.push(this[i]);
+		}
+		return aReturn;
+	}
+
+	// http://developer.mozilla.org/en/docs/Core_JavaScript_1.5_Reference:Global_Objects:Array:splice
+	// ----------------------------------------------------------------
+	if(!Array.prototype.splice) Array.prototype.splice = function(iStart, iLength) {
+	// ----------------------------------------------------------------
+		if(iLength < 0) iLength = 0;
+
+		var aInsert = new Array();
+		if(arguments.length > 2) {
+			for(var i=2; i<arguments.length; i++) {
+				aInsert.push(arguments[i]);
+			}
+		}
+
+		var aHead = this.subarray(0, iStart);
+		var aDelete = this.subarr(iStart, iLength);
+		var aTail = this.subarray(iStart + iLength);
+
+		var aNew = aHead.concat(aInsert, aTail);
+
+		// Rebuild yourself
+		this.length = 0;
+		for(var i=0; i<aNew.length; i++) {
+			this.push(aNew[i]);
+		}
+
+		return aDelete;
+	}
+
+	// https://developer.mozilla.org/en/Core_JavaScript_1.5_Reference/Global_Objects/Array/indexOf
+	// ----------------------------------------------------------------
+	if (!Array.prototype.indexOf) {
+	// ----------------------------------------------------------------
+		Array.prototype.indexOf = function(elt /*, from*/) {
+			var len = this.length >>> 0;
+
+			var from = Number(arguments[1]) || 0;
+			from = (from < 0)
+				? Math.ceil(from)
+				: Math.floor(from);
+			if (from < 0)
+				from += len;
+
+			for (; from < len; from++) {
+				if (from in this && this[from] === elt)
+					return from;
+			}
+			return -1;
+		};
+	}
+
+/* CB toggle (checkboxes == checked == Cont. elem visibile) */
+	function cbToggle(cbId) {
+		var cbId = cbId || '';
+		if (!$(cbId) || !$(cbId+'Cont')) { return false; }
+
+		($(cbId).checked)
+			?$(cbId+'Cont').style.display = 'block'
+			:$(cbId+'Cont').style.display = 'none';
+	}

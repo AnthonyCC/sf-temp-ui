@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
+import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
@@ -493,9 +495,24 @@ public class SubmitOrderAction extends WebActionSupport {
 		user.invalidateCache();
         // make sure we're not using stale order history data
 		user.invalidateOrderHistoryCache();
+		//Get applied promos
+		Set<String> appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();
+		//Clear all applied promotions
+		user.clearAllAppliedPromos();
 		// recalculate promotion
-		user.updateUserState( );		
-						
+		user.updateUserState();		
+		//Check if current applied promotions are still available to the user. The max redemption count 
+		// has not been reached.
+		boolean ignorePromoErrors = request.getParameter("ignorePromoErrors") != null ? true : false;
+		if(!ignorePromoErrors) {
+			for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
+				int errorCode = user.getPromoErrorCode(it.next());
+				if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
+					this.addError("redemption_exceeded", SystemMessageList.MSG_REDEMPTION_EXCEEDED);
+					return ERROR;	
+				}
+			}
+		}
 		// recalculate credit since promotion is reapplied order amonuts might have changed
 		
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());
@@ -529,7 +546,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
-			Set<String> appliedPromos = null;
+			
 			if(user.isEligibleForSignupPromotion()){
 				//If applied promo is signup then store the eligibilty list.
 				appliedPromos = user.getPromotionEligibility().getEligiblePromotionCodes();

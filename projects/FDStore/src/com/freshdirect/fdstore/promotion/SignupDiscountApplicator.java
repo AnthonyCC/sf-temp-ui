@@ -40,8 +40,8 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 		}
 
 		LOGGER.debug(promotionCode + " applying " + discountRule);
-
-		if (context.getPreDeductionTotal() < discountRule.getMinSubtotal()) {
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
+		if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < discountRule.getMinSubtotal()) {
 			return false;
 		}
 
@@ -62,4 +62,11 @@ public class SignupDiscountApplicator implements PromotionApplicatorI {
 		return "SignupDiscountApplicator[" + this.discountRules + "]";
 	}
 
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		//default implementatio since this applicator is obsolete.
+	}
+	
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return null;
+	}
 }

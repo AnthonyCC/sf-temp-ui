@@ -15,11 +15,11 @@ String zonePromoString=null;
 <% if(timeSlotCtx!=null){
 
 	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
-		if(zonePromoAmount>0)
-		{
-			zonePromoString=FDPromotionZoneRulesEngine.getDiscountFormatted(zonePromoAmount);
-			request.setAttribute("SHOW_WINDOWS_STEERING","true");
-		}
+      	Set promoCodes=PromotionHelper.getEligiblePromoCodes(user,zoneId);
+	    if(promoCodes != null && promoCodes.size() > 0)
+	    {
+		    request.setAttribute("SHOW_WINDOWS_STEERING","true");
+	    }
 %>
 		<script type="text/javascript" language="javascript">
 			var zonePromoString=""; 

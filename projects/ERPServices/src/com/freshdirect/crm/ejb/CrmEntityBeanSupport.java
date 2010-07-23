@@ -1,6 +1,5 @@
 package com.freshdirect.crm.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 

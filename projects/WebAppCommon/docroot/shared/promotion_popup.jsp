@@ -14,9 +14,9 @@ response.setHeader("Cache-Control", "no-cache");
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 
 String promoCode = request.getParameter("promoCode");
-Promotion promotion = (Promotion) PromotionFactory.getInstance().getPromotion(promoCode);
-if (promotion == null) promotion = (Promotion) user.getEligibleSignupPromotion();
-if (promotion == null) promotion = (Promotion) PromotionFactory.getInstance().getPromotion("SIGNUP");
+PromotionI promotion =  PromotionFactory.getInstance().getPromotion(promoCode);
+if (promotion == null && user !=null) promotion = user.getEligibleSignupPromotion();
+if (promotion == null) promotion = PromotionFactory.getInstance().getPromotion("SIGNUP");
 %>
 <tmpl:insert template='/shared/template/small_pop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Free Food Promotion</tmpl:put>

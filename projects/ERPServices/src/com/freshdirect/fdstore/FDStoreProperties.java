@@ -45,6 +45,7 @@ public class FDStoreProperties {
 	private final static String PROP_CALLCENTERMGR_HOME	= "fdstore.callCenterManager.home";
 	private final static String PROP_FDCUSTMGR_HOME		= "fdstore.fdCustomerManager.home";
 	private final static String PROP_FDPROMOTIONMGR_HOME= "fdstore.fdPromotionManager.home";
+	private final static String PROP_FDPROMOTIONMGR_NEW_HOME= "fdstore.fdPromotionManagerNew.home";
 	private final static String PROP_DLVMANAGER_HOME	= "fdstore.deliveryManager.home";
 	private final static String PROP_DLVRESTRICTION_MGR_HOME="freshdirect.delivery.DeliveryRestrictionManager";
 	private final static String PROP_CONTENTMANAGER_HOME= "fdstore.ContentManager.home";
@@ -317,6 +318,7 @@ public class FDStoreProperties {
 	private static final String PROP_GEOCODE_USELOCATIONDB = "fdstore.geocode.useLocationDB";
 	private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
 
+	
 	// Smart Search
 	/**
 	 * @deprecated
@@ -435,6 +437,16 @@ public class FDStoreProperties {
 	// It can be obtained from http://code.google.com/apis/maps/signup.html
 	private static final String GMAPS_API_KEY = "gmaps.api.key";
 
+	// APPDEV-1091
+	private static final String PROMO_PUBLISH_URL_KEY = "promo.publish.url";
+	//   valid values can be 'master' or 'replica'
+	private static final String PROMO_PUBLISH_NODE_TYPE = "promo.publish.node";
+	
+	private static final String PROMO_VALID_RT_STATUSES = "promo.valid.rt.statuses";
+	
+	private final static String PROP_REDEMPTION_CNT_REFRESH_PERIOD = "promotion.redeem.cnt.refresh.period";
+	
+	private final static String PROP_REDEMPTION_SERVER_COUNT = "promotion.redemption.server.count";
 	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
@@ -452,6 +464,8 @@ public class FDStoreProperties {
 		defaults.put(PROP_CALLCENTERMGR_HOME,"freshdirect.fdstore.CallCenterManager");
 		defaults.put(PROP_FDCUSTMGR_HOME,	"freshdirect.fdstore.CustomerManager");
 		defaults.put(PROP_FDPROMOTIONMGR_HOME,	"freshdirect.fdstore.PromotionManager");
+		defaults.put(PROP_FDPROMOTIONMGR_NEW_HOME,	"freshdirect.fdstore.PromotionManagerNew");
+		
 		defaults.put(PROP_DLVMANAGER_HOME,	"freshdirect.delivery.DeliveryManager");
 		defaults.put(PROP_DLVRESTRICTION_MGR_HOME,	"freshdirect.delivery.DeliveryRestrictionManager");
 		defaults.put(PROP_FDCUSTOMER_HOME,  "freshdirect.fdstore.Customer");
@@ -765,6 +779,15 @@ public class FDStoreProperties {
 		//Email Opt-Down (APPDEV-662)
 		defaults.put(PROP_EMAIL_OPTDOWN_ENABLED, "false");
 		
+		// APPDEV-1091 Promo Publish URL
+		defaults.put(PROMO_PUBLISH_URL_KEY, "/promo_publish");
+		defaults.put(PROMO_PUBLISH_NODE_TYPE, "master");
+		//APPDEV-659
+		defaults.put(PROMO_VALID_RT_STATUSES, "LIVE");
+		
+		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "120");
+		defaults.put(PROP_REDEMPTION_SERVER_COUNT, "5");
+		
 		refresh();
 	}
 
@@ -801,7 +824,6 @@ public class FDStoreProperties {
 		refresh();
 		config.setProperty(key, value);
 	}
-
 	public static String getDlvInstructionsSpecialChar() {
 		return get(PROP_DLV_INSTRUCTION_SPECIAL_CHAR);
 	}
@@ -868,6 +890,11 @@ public class FDStoreProperties {
 	public static String getFDPromotionManagerHome() {
 		return get(PROP_FDPROMOTIONMGR_HOME);
 	}
+	
+	public static String getFDPromotionManagerNewHome() {
+		return get(PROP_FDPROMOTIONMGR_NEW_HOME);
+	}
+	
 	public static String getContentManagerHome() {
 		return get(PROP_CONTENTMANAGER_HOME);
 	}
@@ -1771,4 +1798,44 @@ public class FDStoreProperties {
 	public static String getGoogleMapsAPIKey() {
 		return get(GMAPS_API_KEY);
 	}
+	
+	
+	
+	/**
+	 * APPDEV-1091
+	 * 
+	 * @return URL to promotion publish servlet
+	 */
+	public static String getPromoPublishURL() {
+		return get(PROMO_PUBLISH_URL_KEY);
+	}
+	
+	public static String getPromoPublishNodeType() {
+		return get(PROMO_PUBLISH_NODE_TYPE);
+	}
+	
+	public static boolean isPromoPublishNodeMaster() {
+		return "master".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE) );
+	}
+
+	public static boolean isPromoPublishNodeReplica() {
+		return "replica".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE) );
+	}
+	
+	public static String getPromoValidRTStatuses() {
+		return get(PROMO_VALID_RT_STATUSES);
+ 	}
+	
+	public static int getRedeemCntRefreshPeriod() {
+		return Integer.parseInt(config.getProperty(PROP_REDEMPTION_CNT_REFRESH_PERIOD));
+	}
+
+	public static int getRedemptionServerCount() {
+		return Integer.parseInt(config.getProperty(PROP_REDEMPTION_SERVER_COUNT));
+	}
+
+	public static void forceRefresh() {
+		refresh(true);
+	}
+	
 }

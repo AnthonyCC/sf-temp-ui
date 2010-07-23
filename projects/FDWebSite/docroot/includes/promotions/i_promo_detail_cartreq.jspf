@@ -1,0 +1,187 @@
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoContentModel"%>
+<%--
+	This is a jspf-specifc var that denotes if the section is "empty".
+	If it's empty, show "-None-" instead of the normal contents
+--%>
+<% boolean isEmptyPromoCartreq = false; %>
+<%--
+	For testing, set this to true on the promo_create_edit page
+--%>
+<% if (promo_create_edit) { isEmptyPromoCartreq = true; } %>
+
+
+<table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Cart Requirement</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<% if (promo_edit || inPromoEditSub) { %>
+				<input type="button" value="EDIT SECTION" onclick="javascript:editPromotionCartReqSubmit('<%= promoId %>')" class="promo_btn_brn2 fleft noMargLR" />
+			<% } %>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%-- check if we're empty --%>
+				<% if (isEmptyPromoCartreq) { %>
+						<tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr>
+				<% }else{ %>
+					<tr>
+						<td class="promo_detail_label">Subtotal >=</td>
+						<td class="alignL"><%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ? "$ "+FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal())) : "" %></td>
+					</tr>
+					<%--
+						//This should refer to the actual object once it's defined
+
+						
+						<% if (dpcdExcludedFromSubtotal.size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Exclude from subtotal:</td>
+								<td class="alignL">
+									<table style="border-collapse: collapse;">
+									<% 
+										for (int n = 0; n < dpcdExcludedFromSubtotal.size(); n++) {
+											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdExcludedFromSubtotal.get(n);
+											ContentNodeModel ref = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+									%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"><%= (ref!=null)?ref.getFullName():"" %></td>
+											</tr>
+									<% } %>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+
+					--%>
+					<tr>
+						<td class="promo_detail_label">Need Dry Goods:</td>
+						<td class="alignL"><%= (promotion.isNeedDryGoods()) ? "Yes" : "No" %></td>
+					</tr>
+						<% if (dpcdDeptsCart.size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Has Department<%=(dpcdDeptsCart.size() > 1)?"s":""%>:</td>
+								<td class="alignL">
+									<table style="border-collapse: collapse;">
+									<% 
+										for (int n = 0; n < dpcdDeptsCart.size(); n++) {
+											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDeptsCart.get(n);
+											ContentNodeModel deptRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+									%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"><%= (deptRef!=null)?deptRef.getFullName():"" %></td>
+											</tr>
+									<% } %>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+						<% if (dpcdCatsCart.size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Has Categor<%=(dpcdCatsCart.size() > 1)?"ies":"y"%>:</td>
+								<td class="alignL">
+									<table style="border-collapse: collapse;">
+									<% 
+										for (int n = 0; n < dpcdCatsCart.size(); n++) {
+											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdCatsCart.get(n);
+											ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+									%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+											</tr>
+									<% } %>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+						<% if (dpcdRecipesCart.size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Has Recipe<%=(dpcdRecipesCart.size() > 1)?"s":""%>:</td>
+								<td class="alignL">
+									<table style="border-collapse: collapse;">
+									<% 
+										for (int n = 0; n < dpcdRecipesCart.size(); n++) {
+											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRecipesCart.get(n);
+											ContentNodeModel recipeRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+									%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"><%= (recipeRef!=null)?recipeRef.getFullName():"" %></td>
+											</tr>
+									<% } %>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+						<% if (dpcdSkusCart.size() > 0) { %>
+							<tr>
+								<td class="promo_detail_label">Has SKU<%=(dpcdSkusCart.size() > 1)?"s":""%>:</td>
+								<td class="alignL">
+									<span class="gray">Min. quanity </span><%= promotion.getSkuQuantity()%><span class="gray"> of any:</span><br />
+									<table style="border-collapse: collapse;">
+									<%
+										for (int n = 0; n < dpcdSkusCart.size(); n++) {
+											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkusCart.get(n);
+											ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+										%>
+											<tr>
+												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+												<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+											</tr>
+									<%
+										}
+									%>
+									</table>
+								</td>
+							</tr>
+						<% } %>
+						<% if (dpcdBrandsCart.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label">Has Brand<%=(dpcdBrandsCart.size() > 1)?"s":""%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<%
+											for (int n = 0; n < dpcdBrandsCart.size(); n++) {
+												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrandsCart.get(n);
+												ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+											%>
+												<tr>
+													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+													<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+												</tr>
+										<%
+											}
+										%>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+				<% } %>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

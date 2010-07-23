@@ -15,17 +15,43 @@ public class FDActionInfo implements Serializable {
 	private FDIdentity identity;
 	private String initiator;
 	private String note;
+	private EnumAccountActivityType type;
 	private CrmAgentModel agent;
     private boolean isPR1;
+    private String masqueradeAgent;
     
-	public FDActionInfo(EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent) {
+    
+	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent) {
+		this( source, identity, initiator, note, agent, null );
+	}
+	
+	public FDActionInfo( EnumTransactionSource source, FDIdentity identity, String initiator, String note, CrmAgentModel agent, EnumAccountActivityType type) {
 		this.identity = identity;
 		this.source = source;
 		this.initiator = initiator;
 		this.note = note;
-		this.agent = agent;
+		this.type = type;
+		this.agent = agent;		
+		this.masqueradeAgent = masqueradeAgentTL.get();
 	}
-
+	
+	
+	private static ThreadLocal<String> masqueradeAgentTL = new ThreadLocal<String>();
+	
+	static {
+		masqueradeAgentTL.set( null );
+	}
+	
+	public static String getMasqueradeAgentTL() {
+		return masqueradeAgentTL.get();
+	}
+	public static void setMasqueradeAgentTL( String agentId ) {
+		masqueradeAgentTL.set( agentId );
+	}
+	public static void clearMasqueradeAgentTL() {
+		masqueradeAgentTL.set( null );
+	}
+	
 	public FDIdentity getIdentity() {
 		return identity;
 	}
@@ -61,18 +87,37 @@ public class FDActionInfo implements Serializable {
 	public void setNote(String note){
 		this.note = note;
 	}
-
-	public ErpActivityRecord createActivity(EnumAccountActivityType type) {
-		return this.createActivity(type, null);
+	
+	public EnumAccountActivityType getType() {
+		return type;
+	}
+	
+	public void setType( EnumAccountActivityType type ) {
+		this.type = type;
 	}
 
-	public ErpActivityRecord createActivity(EnumAccountActivityType type, String note) {
+
+	public ErpActivityRecord createActivity() {
+		return this.createActivity(null, null);
+	}
+	
+	public ErpActivityRecord createActivity(EnumAccountActivityType atype) {
+		return this.createActivity(atype, null);
+	}
+
+	public ErpActivityRecord createActivity(EnumAccountActivityType atype, String note) {
 		ErpActivityRecord rec = new ErpActivityRecord();
-		rec.setActivityType(type);
+		
+		if ( atype != null ) {
+			rec.setActivityType(atype);
+		} else {
+			rec.setActivityType( this.type );
+		}
 
 		rec.setSource(source);
 		rec.setInitiator(initiator);
 		rec.setCustomerId(identity.getErpCustomerPK());
+		rec.setMasqueradeAgent( masqueradeAgent );
 
 		StringBuffer sb = new StringBuffer();
 		if (note != null) {

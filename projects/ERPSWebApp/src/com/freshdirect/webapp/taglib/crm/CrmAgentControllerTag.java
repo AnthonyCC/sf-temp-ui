@@ -19,6 +19,8 @@ import com.freshdirect.webapp.taglib.AbstractControllerTag;
 
 public class CrmAgentControllerTag extends AbstractControllerTag {
 
+	private static final long	serialVersionUID	= -6796065180299835104L;
+	
 	private CrmAgentModel agent;
 	private String verifyPassword;
 	private String password;
@@ -77,7 +79,8 @@ public class CrmAgentControllerTag extends AbstractControllerTag {
 		this.verifyPassword = NVL.apply(request.getParameter("verify_password"), "").trim();
 		this.agent.setRole(CrmAgentRole.getEnum(request.getParameter("role")));
 		this.agent.setActive(request.getParameter("active") != null);
-		List agentQueues = new ArrayList();
+		this.agent.setMasqueradeAllowed( request.getParameter( "masquerade" ) != null );
+		List<CrmCaseQueue> agentQueues = new ArrayList<CrmCaseQueue>();
 		String[] queuesValues = request.getParameterValues("queues");
 		if (queuesValues != null) {
 			for (int i = 0; i < queuesValues.length; i++) {

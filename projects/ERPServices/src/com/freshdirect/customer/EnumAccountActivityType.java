@@ -65,6 +65,7 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	// Delivery Pass Activity Type.
 	public final static EnumAccountActivityType		CREDIT_DLV_PASS						= new EnumAccountActivityType( "Cr Dlv Pass", "Credited One Delivery" );
 	public final static EnumAccountActivityType		EXTEND_DLV_PASS						= new EnumAccountActivityType( "Extd Dlv Pass", "Extended One Week" );
+	public final static EnumAccountActivityType		EXTEND_DLV_PASS_PROMOTION			= new EnumAccountActivityType( "Extd Dlv Pass Promotion", "Extended x days" );
 	public final static EnumAccountActivityType		REDUCE_DLV_PASS						= new EnumAccountActivityType( "Reduce Dlv Pass", "Reduced One Week" );
 	public final static EnumAccountActivityType		CANCEL_DLV_PASS						= new EnumAccountActivityType( "C Dlv Pass", "Cancel Delivery Pass" );
 
@@ -83,7 +84,11 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		STANDINGORDER_FAILED				= new EnumAccountActivityType( "SO-Failed", "Failed to make Standing Order" );
 	public final static EnumAccountActivityType		STANDINGORDER_PLACED				= new EnumAccountActivityType( "SO-Placed", "Standing Order placed successfully." );
 	public final static EnumAccountActivityType		STANDINGORDER_SKIPPED				= new EnumAccountActivityType( "SO-Skipped", "Standing Order skipped." );
-	
+
+	// Masquerade
+	public final static EnumAccountActivityType		MASQUERADE_LOGIN					= new EnumAccountActivityType( "MasqueradeLogin", "Masquerade agent logged in." );
+	public final static EnumAccountActivityType		MASQUERADE_LOGOUT					= new EnumAccountActivityType( "MasqueradeLogout", "Masquerade agent logged out." );
+
     
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;

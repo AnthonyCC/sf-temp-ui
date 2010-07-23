@@ -39,7 +39,10 @@
 <%@ page import="com.freshdirect.fdstore.lists.FDCustomerList"%>
 <%@ page import="com.freshdirect.fdstore.lists.FDCustomerListInfo"%>
 <%@ page import="com.freshdirect.fdstore.lists.FDListManager"%>
-<%@ page import="com.freshdirect.fdstore.lists.FDCustomerCreatedList"%><%
+<%@ page import="com.freshdirect.fdstore.lists.FDCustomerCreatedList"%>
+<%@ page import="com.freshdirect.security.ticket.TicketService"%>
+<%@ page import="com.freshdirect.security.ticket.Ticket"%>
+<%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
 
@@ -58,7 +61,8 @@ if (orderId != null) {
     String custId = order.getCustomerId();
 	user = (FDSessionUser) session.getAttribute(SessionName.USER);
     if (user == null || user.getIdentity() == null || !custId.equals(user.getIdentity().getErpCustomerPK())) {
-%><fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
+		%>
+		<fd:LoadUser newIdentity="<%= new FDIdentity(custId) %>" /><%
     	user = (FDSessionUser) session.getAttribute(SessionName.USER);
 	}
 } else {
@@ -72,7 +76,7 @@ CustomerSummaryUtil util = new CustomerSummaryUtil(request, user);
 final Map orderDlvIssueTypes = CrmManager.getInstance().getDeliveryIssueTypes(user.getIdentity().getErpCustomerPK());
 
 // determine page layout template
-final String PAGE_TEMPLATE = "print".equalsIgnoreCase(request.getParameter("for")) ? "/template/print.jsp" : "/template/top_nav_changed_dtd.jsp";
+final String PAGE_TEMPLATE = "print".equalsIgnoreCase(request.getParameter("for")) ? "/template/print.jsp" : "/template/top_nav.jsp";
 
 final List<FDOrderInfoI> recentOrders = util.getRecentOrders(5);
 %>
@@ -99,9 +103,7 @@ final List<FDOrderInfoI> recentOrders = util.getRecentOrders(5);
 	<tr>
 		<td style="width: 200px">
 			<%-- NAME AND CONTACT INFO --%>
-<%
-ErpCustomerInfoModel custInfo = util.getCustomerInfo();
-%>
+			<% ErpCustomerInfoModel custInfo = util.getCustomerInfo(); %>
 			<h2>Name &amp; Contact Info</h2>
 			<table class="cust_module_content_text">
 				<tr>
@@ -169,6 +171,15 @@ if (ldlv != null) {
 		</td>
 	</tr>
 </table>
+
+<%-- === Masquerade! === --%>
+<crm:GetCurrentAgent id="agent">
+<% if ( agent.isMasqueradeAllowed() ) { %>
+	<hr/>
+		<a href="masquerade.jsp" target="_blank">Masquerade <%= user.getUserId() %></a><br/>
+	<hr/>
+<% } %>
+</crm:GetCurrentAgent>
 
 <%--
   ===== SECOND ROW =====

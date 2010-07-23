@@ -10,11 +10,11 @@ public class EnumModel implements Serializable {
 	private final String name;
 	private final String description;
 
-	public final static Comparator COMP_NAME = new Comparator() {
+	public final static Comparator<EnumModel> COMP_NAME = new Comparator<EnumModel>() {
 
-		public int compare(Object o1, Object o2) {
-			String name1 = ((EnumModel) o1).getName();
-			String name2 = ((EnumModel) o2).getName();
+		public int compare(EnumModel o1, EnumModel o2) {
+			String name1 = o1.getName();
+			String name2 = o2.getName();
 			return name1.compareTo(name2);
 		}
 

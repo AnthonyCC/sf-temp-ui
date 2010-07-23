@@ -17,15 +17,17 @@ import com.freshdirect.mail.ejb.MailerGatewayHome;
  */
 public class ERPSessionBeanSupport extends SessionBeanSupport {
     
-    protected static ERPServiceLocator LOCATOR ;
+	private static final long serialVersionUID = 757585523554698974L;
+	
+	protected static ERPServiceLocator LOCATOR ;
     
-    static {
-            try {
-                    LOCATOR=new ERPServiceLocator(FDStoreProperties.getInitialContext());
-            } catch (NamingException e) {
-                    LOCATOR=new ERPServiceLocator();
-            }
-    }
+	static {
+		try {
+			LOCATOR = new ERPServiceLocator( FDStoreProperties.getInitialContext() );
+		} catch ( NamingException e ) {
+			LOCATOR = new ERPServiceLocator();
+		}
+	}
 
     /**
      * @return
@@ -50,7 +52,5 @@ public class ERPSessionBeanSupport extends SessionBeanSupport {
     protected MailerGatewayHome getMailerHome() {
         return LOCATOR.getMailerHome();
     }
-    
-    
 
 }

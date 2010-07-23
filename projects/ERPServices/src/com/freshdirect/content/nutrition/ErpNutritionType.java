@@ -146,7 +146,7 @@ public class ErpNutritionType {
     public static Type getType(String name){
         Type type = null;
         for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
-            type = (Type)i.next();
+            type = i.next();
             if(name.equalsIgnoreCase(type.getName())){
                 break;
             }
@@ -157,7 +157,7 @@ public class ErpNutritionType {
     public static Iterator<String> getTypesIterator(){
         List<String> ret = new ArrayList<String>();
         for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
-            ret.add(((Type)i.next()).getName());
+            ret.add(i.next().getName());
         }
         return ret.iterator();
     }
@@ -165,7 +165,7 @@ public class ErpNutritionType {
     public static Iterator<String> getStarterSet(){
         List<String> ret = new ArrayList<String>();
         for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
-            Type type = (Type)i.next();
+            Type type = i.next();
             if(type.getStartingSet()){
                 ret.add(type.getName());
             }
@@ -176,7 +176,7 @@ public class ErpNutritionType {
     public static List<String> getStarterSetList(){
         List<String> ret = new ArrayList<String>();
         for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
-            Type type = (Type)i.next();
+            Type type = i.next();
             if(type.getStartingSet()){
                 ret.add(type.getName());
             }
@@ -187,7 +187,7 @@ public class ErpNutritionType {
 	public static List<Type> getCommonList(){
 		List<Type> ret = new ArrayList<Type>();
 		for(Iterator<Type> i = nutritionTypes.iterator(); i.hasNext();){
-			Type type = (Type)i.next();
+			Type type = i.next();
 			if(type.isCommon()){
 				ret.add(type);
 			}

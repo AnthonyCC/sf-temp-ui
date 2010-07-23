@@ -4,13 +4,15 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
 <%@ page import='java.net.URLEncoder'%>
+<%@ page import="com.freshdirect.fdstore.util.RatingUtil"%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 
-<%@page import="com.freshdirect.fdstore.util.RatingUtil"%><fd:CheckLoginStatus />
+<fd:CheckLoginStatus />
 
 <%
 	Set brands = null ; // set in the grocery_category_layout page. will be referenced by  i_bottom_template

@@ -161,6 +161,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private double bufferAmt = 0.0;
 	
+	private int currentDlvPassExtendDays;
+	
+	private int dlvPassExtendDays;
+	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;
 	}
@@ -516,7 +520,10 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 	
 	public String getDeliveryZone() {
-		return this.zoneInfo.getZoneCode();
+		if(this.zoneInfo != null)
+			return this.zoneInfo.getZoneCode();
+		else
+			return null;
 	}
 
 	//
@@ -984,6 +991,37 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		this.discounts.add(discount);
 	}
 
+	public void removeDiscount(String promoCode) {
+		if(promoCode == null) return;
+		if (this.discounts != null && this.discounts.size() > 0) {
+			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = iter.next();
+				if(discountLine == null) continue;
+				Discount d1 =  discountLine.getDiscount();
+				if(d1 == null) continue;
+				if(d1.getPromotionCode().equals(promoCode))
+					//remove the discount.
+					iter.remove();
+			}
+		}
+	}
+	
+
+	public Discount getDiscount(String promoCode) {
+		if(promoCode == null) return null;
+		if (this.discounts != null && this.discounts.size() > 0) {
+			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = iter.next();
+				if(discountLine == null) continue;
+				Discount d1 =  discountLine.getDiscount();
+				if(d1 == null) continue;
+				if(d1.getPromotionCode().equals(promoCode))
+					return d1;
+			}
+		}
+		return null;
+	}
+	
 	public void addDiscount(Discount discount) {
 		this.discounts.add(new ErpDiscountLineModel(discount));
 	}
@@ -998,6 +1036,20 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 		return MathUtil.roundDecimal(discountValue);
 	}
+	
+	public double getDiscountValue(String promoCode) {
+		double discountValue = 0.0;
+		if (this.discounts != null && this.discounts.size() > 0) {
+			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
+				ErpDiscountLineModel discountLine = iter.next();
+				if(promoCode.equals(discountLine.getDiscount().getPromotionCode())) {
+					discountValue += MathUtil.roundDecimal(discountLine.getDiscount().getAmount());
+				}
+			}
+		}
+		return MathUtil.roundDecimal(discountValue);
+	}
+	
 	public void handleDeliveryPass() {
 		int count = 0;
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
@@ -1166,6 +1218,28 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return discountAmt;
 	}
 	
+	public double getLineItemDiscountAmount(String promoCode) {
+		double discountAmt=0;
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
+			if(cartLine.getDiscount() !=  null && cartLine.getDiscount().getPromotionCode().equals(promoCode)){
+				discountAmt+=cartLine.getDiscountAmount();
+			}
+		}
+        return discountAmt;
+	}
+	
+	public boolean isDiscountInCart(String promoCode) {
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
+			if(cartLine.getDiscount() !=  null){
+				String discountCode = cartLine.getDiscount().getPromotionCode();
+				if(discountCode.equals(promoCode)) return true;
+			}
+		}
+        return false;
+	}
+	
 	public Set<String> getUniqueSavingsIds() {
 		Set<String> saveIdsInCart = new HashSet<String>();
 		for ( FDCartLineI cartLine : getOrderLines() ) {
@@ -1234,5 +1308,21 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			}
 			
 		}
+	}
+
+	public int getDlvPassExtendDays() {
+		return dlvPassExtendDays;
+	}
+
+	public void setDlvPassExtendDays(int dlvPassExtendDays) {
+		this.dlvPassExtendDays = dlvPassExtendDays;
+	}
+
+	public int getCurrentDlvPassExtendDays() {
+		return currentDlvPassExtendDays;
+	}
+
+	public void setCurrentDlvPassExtendDays(int currentDlvPassExtendDays) {
+		this.currentDlvPassExtendDays = currentDlvPassExtendDays;
 	}
 }

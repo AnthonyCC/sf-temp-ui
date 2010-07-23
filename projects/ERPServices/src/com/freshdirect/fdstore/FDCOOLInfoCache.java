@@ -1,9 +1,7 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,11 +34,11 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		return instance;
 	}
 	
-	protected Map loadData(Date since) {
+	protected Map<String, ErpCOOLInfo> loadData(Date since) {
 		try {
 			LOGGER.info("REFRESHING");
 			ErpCOOLManagerSB sb = this.lookupCOOLInfoHome().create();
-			Map data = sb.load(since);
+			Map<String, ErpCOOLInfo> data = sb.load(since);
 			LOGGER.info("REFRESHED: " + data.size());
 			return data;
 		} catch (RemoteException e) {
@@ -65,8 +63,7 @@ public class FDCOOLInfoCache extends FDAbstractCache {
 		return d;
 	}
 	
-	public List getCOOLInfo(String sapMatID) {
-		 
+	public List<String> getCOOLInfo(String sapMatID) {		 
 		if(sapMatID==null||"".equals(sapMatID)) return null;
 		ErpCOOLInfo info=(ErpCOOLInfo)this.getCachedItem(sapMatID);
 		return info!=null? info.getCountryInfo():null;

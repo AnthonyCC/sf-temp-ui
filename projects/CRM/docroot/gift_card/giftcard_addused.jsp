@@ -176,7 +176,7 @@
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table1_i">
 							<tr class="gc_colHeader">
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
-								<td width="85">Certificate #</td>
+								<td width="85">Certificate&nbsp;#</td>
 								<td width="80">Balance</td>
                                 <td  width="85">Status</td>                                
 								<td>Options</td>
@@ -204,8 +204,8 @@
 							</tr>
 							</logic:iterate>
 							<% if(!hasCustomerCase){ %>
-								<tr><td colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td></tr>
-								<tr><td colspan="5"><b>Note: Case Required to remove a Gift Card.</b></td></tr>
+								<tr><td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td></tr>
+								<tr><td colspan="6"><b>Note: Case Required to remove a Gift Card.</b></td></tr>
 							<% } %>
 						</table>
 						</fd:GetGiftCardReceived>  
@@ -224,7 +224,7 @@
 						<table border="0" cellspacing="0" cellpadding="0" width="100%" class="gc_table2_i">
 							<tr class="gc_colHeader">
 								<td><img src="/media_stat/images/layout/clear.gif" width="10" height="8" border="0" /></td>
-								<td width="85">Certificate #</td>
+								<td width="85">Certificate&nbsp;#</td>
 								<td width="80">Balance</td>						
 								<td>Purchased</td>
 							</tr>

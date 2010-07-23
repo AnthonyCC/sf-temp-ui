@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.customer;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,7 +7,7 @@ import com.freshdirect.framework.core.ModelSupport;
 
 public class ProfileModel extends ModelSupport {
 
-	private final Map attributes = new HashMap();
+	private final Map<String,String> attributes = new HashMap<String,String>();
 
 	public String getAttribute(String key) {
 		return (String) attributes.get(key);
@@ -18,11 +17,11 @@ public class ProfileModel extends ModelSupport {
 		this.attributes.put(key, value);
 	}
 
-	public Map getAttributes() {
+	public Map<String,String> getAttributes() {
 		return this.attributes;
 	}
 
-	public void setAttributes(Map attributes) {
+	public void setAttributes(Map<String,String> attributes) {
 		this.attributes.putAll(attributes);
 	}
 

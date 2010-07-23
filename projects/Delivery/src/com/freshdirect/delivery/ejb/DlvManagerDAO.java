@@ -39,6 +39,8 @@ import com.freshdirect.delivery.announcement.EnumUserLevel;
 import com.freshdirect.delivery.announcement.SiteAnnouncement;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
+import com.freshdirect.delivery.model.DlvZoneDescriptor;
+import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
@@ -1165,6 +1167,22 @@ public class DlvManagerDAO {
 		List zoneCodes = new ArrayList();
 		while(rs.next()){
 			zoneCodes.add(rs.getString(1));
+		}
+		return zoneCodes;
+	}
+	
+	private static final String SELECT_ACTIVE_ZONES_NAMES = "select * from TRANSP.Zone where OBSOLETE IS NULL Order By ZONE_CODE";
+	public static List<DlvZoneModel> getActiveZones(Connection conn)throws SQLException{
+		PreparedStatement ps = conn.prepareStatement(SELECT_ACTIVE_ZONES_NAMES);
+		ResultSet rs =ps.executeQuery();
+		List<DlvZoneModel> zoneCodes = new ArrayList<DlvZoneModel>();
+		while(rs.next()){
+			DlvZoneModel model = new DlvZoneModel();
+			DlvZoneDescriptor descriptor = new DlvZoneDescriptor();
+			descriptor.setZoneCode(rs.getString("ZONE_CODE"));
+			model.setZoneDescriptor(descriptor);
+			model.setName(rs.getString("NAME"));
+			zoneCodes.add(model);
 		}
 		return zoneCodes;
 	}

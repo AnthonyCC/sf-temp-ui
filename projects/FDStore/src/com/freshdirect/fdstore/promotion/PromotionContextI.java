@@ -7,6 +7,7 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -18,9 +19,9 @@ public interface PromotionContextI {
 
 	public boolean isAddressMismatch();
 
-	public double getSubTotal();
+	public double getSubTotal(Set<String> excludeSkus);
 	
-	public double getPreDeductionTotal();
+	public double getPreDeductionTotal(Set<String> excludeSkus);
 
 	public double getApplicableSignupAmount(double amount, double maxAmountPerSku);
 
@@ -82,7 +83,7 @@ public interface PromotionContextI {
 	
 	public List<FDCartLineI> getEligibleLinesForDCPDiscount(String promoId, Set<ContentKey> contentKeys);
 	
-	public boolean applyHeaderDiscount(String promoCode, double promotionAmt, EnumPromotionType type);
+	public boolean applyHeaderDiscount(PromotionI promo, double promotionAmt);
 	
 	public Discount getHeaderDiscount();
 	
@@ -95,4 +96,16 @@ public interface PromotionContextI {
 	public void clearHeaderDiscounts();
 	
 	public PricingContext getPricingContext();
+	
+	public int getSettledECheckOrderCount();
+	
+	public String getDeliveryZone();
+	
+	public FDReservation getDeliveryReservation() ;
+	
+	public boolean applyLineItemDiscount(PromotionI promo, FDCartLineI lineItem, double percentOff);
+	
+	public PromotionI getNonCombinableHeaderPromotion();
+	
+	public boolean applyZoneDiscount(PromotionI promo, double promotionAmt);
 }

@@ -175,6 +175,9 @@ public class ErpServicesProperties {
 	private final static String SO_TECH_RECIPIENT = "standingorders.technical.error.recipient.address";
 	private final static String SO_TECH_FROM = "standingorders.technical.error.from.address";
 	
+	private final static String MASQUERADE_STOREFRONT_BASEURL = "masquerade.storefront.baseurl";
+	private final static String MASQUERADE_SECURITYTICKET_EXPIRATION = "masquerade.securityticket.expiration";
+	
 	private final static String PROP_CRON_FAILURE_MAIL_TO = "cron.mail.to";
 	private final static String PROP_CRON_FAILURE_MAIL_CC = "cron.mail.cc";
 	private final static String PROP_CRON_FAILURE_MAIL_FROM = "cron.mail.from";
@@ -317,6 +320,9 @@ public class ErpServicesProperties {
 		
 		defaults.put( SO_TECH_RECIPIENT, "sa@freshdirect.com" );
 		defaults.put( SO_TECH_FROM, "no-reply@freshdirect.com" );
+		
+		defaults.put( MASQUERADE_STOREFRONT_BASEURL, "http://www.freshdirect.com/" );
+		defaults.put( MASQUERADE_SECURITYTICKET_EXPIRATION, "5" );
 		
 		config = ConfigHelper.getPropertiesFromClassLoader("erpservices.properties", defaults);
 		LOGGER.info("Loaded configuration: "+config);
@@ -765,4 +771,11 @@ public class ErpServicesProperties {
 		return config.getProperty(SO_TECH_FROM);
 	}
 	
+	public static String getMasqueradeStoreFrontBaseUrl() {
+		return config.getProperty(MASQUERADE_STOREFRONT_BASEURL);
+	}
+	
+	public static int getMasqueradeSecurityTicketExpiration() {
+		return Integer.parseInt( config.getProperty(MASQUERADE_SECURITYTICKET_EXPIRATION) );
+	}
 }

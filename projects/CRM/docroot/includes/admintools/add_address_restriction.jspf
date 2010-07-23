@@ -10,8 +10,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri="crm" prefix="crm" %>
 <link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
-<style type="text/css">
-</style>
 <% 
 			String address1 = 
 			NVL.apply(request.getParameter("address1"), "");
@@ -49,14 +47,13 @@ function addAddressRestriction() {
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp :"+result);
+	//System.out.println("restrictions in jsp :"+result);
 	 ActionResult actResult=(ActionResult) request.getAttribute("admResult");
 %>
 
 <fd:ErrorHandler result='<%=actResult%>' name='GLOBAL_ERROR' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
-<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b3> <font color="red"> <%=successMsg%> </font> <b3>
-<br>			        	
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
 	<tr>
 		<td class="case_content_field">reason</td>        
 		<td>		
@@ -80,12 +77,12 @@ function addAddressRestriction() {
 		</td>
 		<td class="case_content_field">Apartment</td>
 		<td>			            
-            <input type="text" length="50" size="50" name="apartment" id="apartment" value="<%=apartment%>">        
+            <input type="text" length="10" size="10" name="apartment" id="apartment" value="<%=apartment%>">        
 			<fd:ErrorHandler result='<%=actResult%>' name='apartment' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 		<td class="case_content_field">Zip Code</td>
 		<td>			            
-            <input type="text" length="50" size="50" name="zipCode" id="zipCode" value="<%=zipCode%>">        
+            <input type="text" length="10" size="10" name="zipCode" id="zipCode" value="<%=zipCode%>">        
 			<fd:ErrorHandler result='<%=actResult%>' name='zipCode' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>		
 		</tr>

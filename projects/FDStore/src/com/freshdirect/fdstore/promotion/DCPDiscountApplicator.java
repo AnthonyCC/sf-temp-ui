@@ -1,14 +1,10 @@
 package com.freshdirect.fdstore.promotion;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.customer.adapter.OrderPromotionHelper;
@@ -44,7 +40,8 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 	}
 	
 	public boolean apply(String promoCode, PromotionContextI context) {
-		if (context.getPreDeductionTotal() < discountRule.getMinSubtotal()) {
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+		if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < discountRule.getMinSubtotal()) {
 			return false;
 		}
 		if(this.contentKeys.isEmpty()){
@@ -59,10 +56,19 @@ public class DCPDiscountApplicator  implements PromotionApplicatorI {
 		}
 		double amount = OrderPromotionHelper.getApplicableCategoryDiscount(eligibleCartLines, 
 																			discountRule.getPercentOff());
-		return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.DCP_DISCOUNT);
+		return context.applyHeaderDiscount(promo, amount);
 
 	}
+	
 	public DCPDiscountRule getDiscountRule() {
 		return this.discountRule;
+	}
+	
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		//default implementatio since this applicator is obsolete.
+	}
+	
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return null;
 	}
 }

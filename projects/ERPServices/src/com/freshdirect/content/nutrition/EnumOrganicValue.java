@@ -1,22 +1,13 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.content.nutrition;
 
 import java.util.*;
 
 /**
  * Type-safe enumeration for attributes' data types.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class EnumOrganicValue implements NutritionValueEnum {
+	
+	private static final long	serialVersionUID	= -5777759811772680536L;
 	
 	private final String code;
     private final String name;
@@ -52,7 +43,7 @@ public class EnumOrganicValue implements NutritionValueEnum {
 	}
     
 	//Changed for APPDEV-705
-    private final static List types = new ArrayList();
+    private final static List<EnumOrganicValue> types = new ArrayList<EnumOrganicValue>();
     static {
     	types.add(new EnumOrganicValue("NONE", "None", 0));
 		//types.add(new EnumOrganicValue("70_ORGN", "Made with Organic Ingredients ", 2));
@@ -69,14 +60,13 @@ public class EnumOrganicValue implements NutritionValueEnum {
 		//types.add(new EnumOrganicValue("VER_ORGN", "Certified Organic by Vermont Organic Farmers", 2));
     }
 
-    public static List getValues() {
+    public static List<EnumOrganicValue> getValues() {
     	Collections.sort(types, OrganicValueComparator);
         return Collections.unmodifiableList(types);
     }
     
     public static EnumOrganicValue getValueForCode(String code) {
-        for (Iterator i=types.iterator(); i.hasNext(); ) {
-            EnumOrganicValue value = (EnumOrganicValue) i.next();
+        for ( EnumOrganicValue value : types ) {
             if (value.getCode().equals(code)) {
                 return value;
             }
@@ -84,11 +74,8 @@ public class EnumOrganicValue implements NutritionValueEnum {
         return null;
     }
     
-	public static Comparator OrganicValueComparator = new Comparator(){
-		public int compare(Object o1, Object o2) {
-			EnumOrganicValue organic1 = (EnumOrganicValue) o1;
-			EnumOrganicValue organic2 = (EnumOrganicValue) o2;
-		   	
+	public static Comparator<EnumOrganicValue> OrganicValueComparator = new Comparator<EnumOrganicValue>(){
+		public int compare(EnumOrganicValue organic1, EnumOrganicValue organic2) {
 			int diff = organic1.getPriority()- organic2.getPriority();
 			if (diff==0) {
 				diff = organic1.getName().compareTo(organic2.getName());

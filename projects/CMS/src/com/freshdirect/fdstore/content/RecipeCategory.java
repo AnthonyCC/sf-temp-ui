@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class RecipeCategory extends ContentNodeModelImpl implements HasRedirectUrl {
 
-	private final List subcategories = new ArrayList();
-	private final List featuredRecipes = new ArrayList();
+	private final List<RecipeSubcategory> subcategories = new ArrayList<RecipeSubcategory>();
+	private final List<Recipe> featuredRecipes = new ArrayList<Recipe>();
 
 	public RecipeCategory(ContentKey cKey) {
 		super(cKey);
@@ -22,7 +21,7 @@ public class RecipeCategory extends ContentNodeModelImpl implements HasRedirectU
 	}
 
 	public String getRedirectUrl() {
-            return (String) getCmsAttributeValue("REDIRECT_URL");
+		return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	/**
@@ -30,7 +29,7 @@ public class RecipeCategory extends ContentNodeModelImpl implements HasRedirectU
 	 * 
 	 *  @return a list of RecipeSubcategory objects.
 	 */
-	public List getSubcategories() {
+	public List<RecipeSubcategory> getSubcategories() {
 		ContentNodeModelUtil.refreshModels(this, "subcategories", subcategories, true);
 		return Collections.unmodifiableList(subcategories);
 	}
@@ -41,18 +40,18 @@ public class RecipeCategory extends ContentNodeModelImpl implements HasRedirectU
 	}
 
 	public Image getPhoto() {
-            return FDAttributeFactory.constructImage(this, "photo");
+		return FDAttributeFactory.constructImage( this, "photo" );
 	}
 
 	public Image getLabel() {
-            return FDAttributeFactory.constructImage(this, "label");
+		return FDAttributeFactory.constructImage( this, "label" );
 	}
 
 	public Image getZoomLabel() {
-            return FDAttributeFactory.constructImage(this, "zoomLabel");
+		return FDAttributeFactory.constructImage( this, "zoomLabel" );
 	}
 	
-	public List getFeaturedRecipes() {
+	public List<Recipe> getFeaturedRecipes() {
 		ContentNodeModelUtil.refreshModels(this, "featuredRecipes", featuredRecipes, false);
 		return Collections.unmodifiableList(featuredRecipes);
 	}

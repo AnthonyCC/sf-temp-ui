@@ -1,24 +1,15 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.content.nutrition;
 
 import java.util.*;
 
 /**
  * Type-safe enumeration for attributes' data types.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class EnumKosherTypeValue implements NutritionValueEnum {
     
-    public final static EnumKosherTypeValue NOT_KOSHER  = new EnumKosherTypeValue("NOT_KOSHER", "Not Kosher");
+	private static final long	serialVersionUID	= -5550049563740958900L;
+	
+	public final static EnumKosherTypeValue NOT_KOSHER  = new EnumKosherTypeValue("NOT_KOSHER", "Not Kosher");
     public final static EnumKosherTypeValue NONE		= new EnumKosherTypeValue("NONE", "None");
     public final static EnumKosherTypeValue DAIRY       = new EnumKosherTypeValue("DAIRY","Dairy");
 	public final static EnumKosherTypeValue PARVE       = new EnumKosherTypeValue("PARVE","Parve");
@@ -54,7 +45,7 @@ public class EnumKosherTypeValue implements NutritionValueEnum {
 		return false;
 	}
     
-    private final static List types = new ArrayList();
+    private final static List<EnumKosherTypeValue> types = new ArrayList<EnumKosherTypeValue>();
     static {
         types.add(NONE);
         types.add(NOT_KOSHER);
@@ -66,13 +57,12 @@ public class EnumKosherTypeValue implements NutritionValueEnum {
         types.add(GLATT);
     }
 
-    public static List getValues() {
+    public static List<EnumKosherTypeValue> getValues() {
         return Collections.unmodifiableList(types);
     }
     
     public static EnumKosherTypeValue getValueForCode(String code) {
-        for (Iterator i=types.iterator(); i.hasNext(); ) {
-            EnumKosherTypeValue value = (EnumKosherTypeValue) i.next();
+        for ( EnumKosherTypeValue value : types ) {
             if (value.getCode().equals(code)) {
                 return value;
             }

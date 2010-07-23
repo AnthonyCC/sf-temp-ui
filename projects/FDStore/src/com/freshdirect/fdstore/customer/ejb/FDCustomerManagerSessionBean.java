@@ -1557,11 +1557,25 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 			// End Handle Delivery Pass.
-
-			// commit reservation in DLV
-			// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
-			// dlvSB.commitReservation(reservationId,
-			// identity.getErpCustomerPK(), pk.getId());
+			
+			//Begin apply delivery pass extension promotion.
+			int dpExtendDays =  createOrder.getDlvPassExtendDays();
+			if (dpExtendDays > 0  && EnumDlvPassStatus.ACTIVE.equals(status)){
+				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(customerPk,EnumDlvPassStatus.ACTIVE);
+				if (dlvPasses == null|| (dlvPasses != null && dlvPasses.size() == 0)) {
+					throw new FDResourceException(
+					"Unable to locate the Active DeliveryPass for this customer.");
+				}
+				// Get the Active delivery pass from the list.
+				DeliveryPassModel dlvPass = dlvPasses.get(0);
+				// pass has to be applied to this order.
+				extendDeliveryPass(dlvpsb, dlvPass, dpExtendDays/7 , pk.getId(),
+						"Extended DP by "+dpExtendDays,
+						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_APPLIED
+								.getName());
+			}
+			//End apply delivery pass extension promotion.
 
 			FDDeliveryManager.getInstance().commitReservation(reservationId,
 					identity.getErpCustomerPK(), pk.getId(),
@@ -1746,7 +1760,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public FDReservation cancelOrder(FDActionInfo info, String saleId,
-			boolean sendEmail) throws FDResourceException,
+			boolean sendEmail, int currentDPExtendDays) throws FDResourceException,
 			ErpTransactionException, DeliveryPassException {
 		try {
 			// !!! verify that the sale belongs to the customer
@@ -1790,6 +1804,20 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				cancelPassExtension(dlvpsb, null, order);
 			}
 			// End Handle Delivery Pass.
+			
+			if (currentDPExtendDays > 0){
+				//If extend delivery promo already there reverse extension.
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(order.getCustomerId(),EnumDlvPassStatus.ACTIVE);
+				if (dlvPasses == null|| (dlvPasses != null && dlvPasses.size() == 0)) {
+					throw new FDResourceException(
+					"Unable to locate the Active DeliveryPass for this customer.");
+				}
+				// Get the Active delivery pass from the list.
+				DeliveryPassModel dlvPass = dlvPasses.get(0);
+				// pass has to be applied to this order.
+				cancelPassExtensionDays(dlvpsb, dlvPass, order, currentDPExtendDays);
+			}
+			
 			boolean isRestored = false;
 			if (EnumSaleType.REGULAR.equals(order.getOrderType())) {
 				// DlvManagerSB dlvSB = this.getDlvManagerHome().create();
@@ -1848,6 +1876,31 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			extendDeliveryPass(dlvPassSB, dlvPass, -1, order.getErpSalesId(),
 					"Curtail DP by a week. Order cancelled.",
 					EnumDlvPassExtendReason.DLV_PROMOTION_REMOVED.getName());
+		}
+	}
+	
+	private void cancelPassExtensionDays(DlvPassManagerSB dlvPassSB,
+			DeliveryPassModel dlvPass, FDOrderI order, int reverseDays) throws RemoteException {
+
+		if (dlvPass == null) {
+
+			List<DeliveryPassModel> dlvPasses = dlvPassSB.getDlvPassesByStatus(
+					order.getCustomerId(), EnumDlvPassStatus.ACTIVE);
+			if (dlvPasses != null && dlvPasses.size() > 0) {
+				dlvPass = dlvPasses.get(0);
+				if (dlvPass.getType().isUnlimited()) {
+					extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays, order
+							.getErpSalesId(),
+							"DP Extension Promotion Reversed",
+							EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
+									.getName());
+				}
+			}
+		} else if (dlvPass.getType().isUnlimited()) {
+			extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays, order.getErpSalesId(),
+					"DP Extension Promotion Reversed",
+					EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
+							.getName());
 		}
 	}
 
@@ -2042,6 +2095,40 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// }
 			// End Handle Delivery Pass.
 
+			//Begin apply delivery pass extension promotion.
+			int dpCurrentExtendDays =  order.getCurrentDlvPassExtendDays();
+			if (dpCurrentExtendDays > 0){
+				//If extend delivery promo already there reverse extension.
+				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),EnumDlvPassStatus.ACTIVE);
+				if (dlvPasses == null|| (dlvPasses != null && dlvPasses.size() == 0)) {
+					throw new FDResourceException(
+					"Unable to locate the Active DeliveryPass for this customer.");
+				}
+				// Get the Active delivery pass from the list.
+				DeliveryPassModel dlvPass = dlvPasses.get(0);
+				// pass has to be applied to this order.
+				cancelPassExtensionDays(dlvpsb, dlvPass, fdOrder, dpCurrentExtendDays);
+			}
+			
+			int dpExtendDays =  order.getDlvPassExtendDays();
+			if (dpExtendDays > 0  && EnumDlvPassStatus.ACTIVE.equals(status)){
+				DlvPassManagerSB dlvpsb = this.getDlvPassManagerHome().create();
+				List<DeliveryPassModel> dlvPasses = dlvpsb.getDlvPassesByStatus(identity.getErpCustomerPK(),EnumDlvPassStatus.ACTIVE);
+				if (dlvPasses == null|| (dlvPasses != null && dlvPasses.size() == 0)) {
+					throw new FDResourceException(
+					"Unable to locate the Active DeliveryPass for this customer.");
+				}
+				// Get the Active delivery pass from the list.
+				DeliveryPassModel dlvPass = dlvPasses.get(0);
+				// pass has to be applied to this order.
+				extendDeliveryPass(dlvpsb, dlvPass, dpExtendDays/7 , saleId,
+						"Extended DP by "+dpExtendDays,
+						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_APPLIED
+								.getName());
+			}
+			//End apply delivery pass extension promotion.
+			
 			// Deal with Reservation in DLV
 			String newReservationId = order.getDeliveryInfo()
 					.getDeliveryReservationId();
@@ -4116,7 +4203,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Set it to actionInfo object to write to the activity log.
 				actionInfo.setIdentity(identity);
 				saleId = orderInfo.getSaleId();
-				this.cancelOrder(actionInfo, saleId, sendEmail);
+				this.cancelOrder(actionInfo, saleId, sendEmail, 0);
 				successOrders.add(orderInfo);
 			} catch (FDResourceException fe) {
 				LOGGER

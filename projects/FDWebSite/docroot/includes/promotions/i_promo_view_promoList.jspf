@@ -1,0 +1,118 @@
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType"%>
+<table width="100%" cellspacing="0" cellpadding="0" border="0" class="promo_table1">
+
+<!-- 			<tr>
+				<th width="16px" align="center">&nbsp;</th>
+				<th width="200px">Name</th>
+				<th width="150px">Redemption Code</th>
+				<th width="100px">Type</th>
+				<th width="300px">Description</th>
+				<th width="125px">Start</th>
+				<th width="150px">Expire</th>
+				<th width="175px">Created-Modified</th>
+				<th width="75px">Status</th>
+				<th><img width="75" height="1" src="/media_stat/crm/images/clear.gif"></th>
+				<th><img width="12" height="1" src="/media_stat/crm/images/clear.gif"></th>
+			</tr> -->
+	<tr>
+		<%-- sets the column widths --%>
+		<td width="16px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="200px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="300px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="125px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="12px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+	
+	<tr>
+		<td colspan="11" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif"></td>
+	</tr>
+	
+	
+	<fd:GetAllPromotionsNew id = "promoRows" filter="<%= promoFilter %>">
+<% EnumPromotionType lastPromoType = null; %>
+<% if(promoRows.isEmpty()){ %>
+<tr valign="top" style="color:#CC0000; font-weight: bold;"><td colspan="11" align="center">No matching promotions found.</td></tr>
+<%} %>
+<logic:iterate id="p" collection="<%= promoRows %>" type="com.freshdirect.webapp.taglib.promotion.PromoNewRow">
+<% 
+	EnumPromotionType ptype = p.getType();
+	if (lastPromoType==null || !lastPromoType.equals(ptype)) {
+       		lastPromoType = ptype;
+%>
+     		<!-- <tr bgcolor="#DDDDDD" class="list_content"><td colspan="10">&nbsp;<a name="<%=ptype.getName().toLowerCase()%>"></a><i>Promotion Type:</i> <b><%=ptype.getName()%></b></td></tr> --> 
+<%
+    	}
+	EnumPromotionStatus pStatus = p.getStatus();
+%>
+<% 
+	String linkURL = "#";
+	/*if(currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) { 
+		linkURL = "/promotion/edit_promotion.jsp?promoId="+p.getCode();
+	} else {
+		linkURL = "/main/view_promotion.jsp?promoId="+p.getCode();
+	}*/	
+	linkURL = "/main/view_promotion.jsp?promoId="+p.getCode();
+	
+%><%
+		  	String rCode = p.getRedemptionCode();
+			Date expire = p.getExpire();
+		%>
+		<% if("LIVE".equalsIgnoreCase(pStatus.getName())){ %>
+		<tr valign="top" class="BG_live">
+		<% }else if("EXPIRED".equalsIgnoreCase(pStatus.getName()) || "CANCELLED".equalsIgnoreCase(pStatus.getName()) ||"CANCELLING".equalsIgnoreCase(pStatus.getName())){ %>
+		<tr valign="top" class="BG_exp">
+		<% } else{ %>
+		<tr valign="top" class="BG_test">
+		<% } %>
+            <!-- <tr valign="top" class="list_content" <%--= counter % 2 == 0 ? "class='list_odd_row'" : "" --%> style="padding-top: 3px; padding-bottom: 3px;"> -->
+                <td  class="border_bottom">&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal" wrap="wrap"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>"><%=p.getName()%></a>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal"><%=(rCode != null && !rCode.equals(""))? rCode.toUpperCase() : "N/A" %>&nbsp;&nbsp;&nbsp;</td>
+				<td  class="border_bottom" style="font-weight: normal"><%=ptype.getName()%>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal"><%=p.getDescription() %>&nbsp;&nbsp;</td>
+				<td  class="border_bottom" style="font-weight: normal"><%=CCFormatter.formatDate(p.getStart())%>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal"><%= expire != null ? CCFormatter.formatDate(expire) : ""%>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal"><%= null!=pStatus ? pStatus.getDescription():" " %>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal"><%= (null!=p.getCreatedBy()?p.getCreatedBy():"")+"-"+(null !=p.getModifiedBy()?p.getModifiedBy():"") %>&nbsp;</td>                		
+                <td  class="border_bottom" style="font-weight: normal"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>">Details</a>&nbsp;</td>
+                <td  class="border_bottom" style="font-weight: normal">&nbsp;</td>
+            </tr>
+
+</logic:iterate>
+
+</fd:GetAllPromotionsNew>
+	<%-- Filler --%>
+	<%-- for (int i=0; i<= 50; i++) { %>
+		<tr>
+			<td>&nbsp;</td>
+			<td>Name</td>
+			<td>Redemption Code</td>
+			<td>Type</td>
+			<td>Description</td>
+			<td>Start</td>
+			<td>Expire</td>
+			<td>Status</td>
+			<td>Created Modified</td>
+		<td><a href="/promotion/promo_details.jsp">Details</a></td>
+			<td>&nbsp;</td>
+		</tr>
+		<%-- exclude line after last item --%>
+		<%-- if (i<50) { %>
+			<tr>
+				<td colspan="11" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif"></td>
+			</tr>
+		<% } %>
+	<% } --%>
+	<!-- <div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/purple_star.gif" /></div>
+			<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/orange_o.gif" /></div>
+			<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/blue_building.gif" /></div>
+			<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/green_truck.gif" /></div>
+			<div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/pink_heart.gif" /></div>  -->
+</table>

@@ -1,0 +1,274 @@
+<%--
+	This is a jspf-specifc var that denotes if the section is "empty".
+	If it's empty, show "-None-" instead of the normal contents
+--%>
+<% boolean isEmptyPromoOffer = false; %>
+<%--
+	For testing, set this to true on the promo_create_edit page
+--%>
+<% if (promo_create_edit) { isEmptyPromoOffer = true; } %>
+
+
+<table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Offer</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<% if (promo_edit || inPromoEditSub) { %>
+				<input type="button" value="EDIT SECTION" class="promo_btn_brn2 fleft noMargLR" onclick="javascript:editPromotionOfferSubmit('<%= promoId %>')"/>
+			<% } %>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%-- check if we're empty --%>
+				<% if (isEmptyPromoOffer) { %>
+						<tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr>
+				<% }else{ %>
+					<%-- Common --%>
+						<tr>
+							<td class="promo_detail_label">Type:</td>
+							<td class="alignL"><%= promotion.getPromotionType() %></td>
+						</tr>
+					<%
+						//HEADER TYPE display
+						if ( EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
+					%>
+						<% if (
+								( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
+								( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) ) ||
+								( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) ||
+								( promotion.getExtendDpDays() != null && !"".equals(promotion.getExtendDpDays()) && promotion.getExtendDpDays() > 0 )
+							) { %>
+							<tr>
+								<td class="promo_detail_label">Discount:</td>
+							<% if (
+									( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
+									( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) )
+								) { %>
+								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?promotion.getPercentOff()+" %":"$ "+promotion.getMaxAmount()%></td>
+							<% } %>
+							<% if ( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) { %>
+								<td class="alignL">Free Delivery <span class="grayIta8pt"> (incl. fuel surcharge)</span></td>
+							<% } %>
+							<% if ( promotion.getExtendDpDays() != null && !"".equals(promotion.getExtendDpDays()) && promotion.getExtendDpDays() > 0 ) { %>
+								<td class="alignL">Extend Delivery Pass <%= promotion.getExtendDpDays()%> days <span class="grayIta8pt"> (Customer must have active pass)</span></td>
+							<% } %>
+								</tr>
+						<% } %>
+						<tr>
+							<td class="promo_detail_label"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
+							<td class="alignL"><span class="gray">Allow offer combination</span></td>
+						</tr>
+					<%
+						//LINE_ITEM TYPE display
+						}else if ( EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
+					%>
+						<% if (promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) { %>
+								<tr>
+									<td class="promo_detail_label">Discount:</td>
+									<td class="alignL"><%= promotion.getPercentOff()%> %</td>
+								</tr>
+						<% } %>
+						<%-- max items call --%>
+						<% if ( true ) { %>
+								<tr>
+									<td class="promo_detail_label">Max # items:</td>
+									<td class="alignL"><%-- max items call --%></td>
+								</tr>
+						<% } %>
+						<% if (dpcdDepts.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label">Department<%=(dpcdDepts.size() > 1)?"s":""%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<% 
+											for (int n = 0; n < dpcdDepts.size(); n++) {
+												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdDepts.get(n);
+												ContentNodeModel deptRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+										%>
+												<tr>
+													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+													<td class="bordLgrayDash padL8R16"><%= (deptRef!=null)?deptRef.getFullName():"" %></td>
+												</tr>
+										<% } %>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+						<% if (dpcdCats.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label">Categor<%=(dpcdCats.size() > 1)?"ies":"y"%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<% 
+											for (int n = 0; n < dpcdCats.size(); n++) {
+												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdCats.get(n);
+												ContentNodeModel catRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+										%>
+												<tr>
+													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+													<td class="bordLgrayDash padL8R16"><%= (catRef!=null)?catRef.getFullName():"" %></td>
+												</tr>
+										<% } %>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+						<% if (dpcdRecipes.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label">Recipe<%=(dpcdRecipes.size() > 1)?"s":""%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<% 
+											for (int n = 0; n < dpcdRecipes.size(); n++) {
+												FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdRecipes.get(n);
+												ContentNodeModel recipeRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+										%>
+												<tr>
+													<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+													<td class="bordLgrayDash padL8R16"><%= (recipeRef!=null)?recipeRef.getFullName():"" %></td>
+												</tr>
+										<% } %>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+						<% if (dpcdSkus.size() > 0 || dpcdSkusExcluded.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label"><%=(dpcdSkus.size() == 0)?"Ineligible ":""%>SKU<%=(dpcdSkus.size() > 1 || dpcdSkusExcluded.size() > 1)?"s":""%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<%
+											if (dpcdSkus.size() == 0) {
+												//show ineligible
+												for (int n = 0; n < dpcdSkusExcluded.size(); n++) {
+													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkusExcluded.get(n);
+													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+											%>
+													<tr>
+														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+													</tr>
+											<%
+												}
+											} else {
+												//show eligible
+												for (int n = 0; n < dpcdSkus.size(); n++) {
+													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdSkus.get(n);
+													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+												%>
+													<tr>
+														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+													</tr>
+											<%
+												}
+											}
+										%>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+						<% if (dpcdBrands.size() > 0 || dpcdBrandsExcluded.size() > 0) { %>
+								<tr>
+									<td class="promo_detail_label"><%=(dpcdBrands.size() == 0)?"Ineligible ":""%>Brand<%=(dpcdBrands.size() > 1 || dpcdBrandsExcluded.size() > 1)?"s":""%>:</td>
+									<td class="alignL">
+										<table style="border-collapse: collapse;">
+										<%
+											if (dpcdBrands.size() == 0) {
+												//show ineligible
+												for (int n = 0; n < dpcdBrandsExcluded.size(); n++) {
+													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrandsExcluded.get(n);
+													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+											%>
+													<tr>
+														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+													</tr>
+											<%
+												}
+											} else {
+												//show eligible
+												for (int n = 0; n < dpcdBrands.size(); n++) {
+													FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdBrands.get(n);
+													ContentNodeModel skuRef = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
+												%>
+													<tr>
+														<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
+														<td class="bordLgrayDash padL8R16"><%= (skuRef!=null)?skuRef.getFullName():"" %></td>
+													</tr>
+											<%
+												}
+											}
+										%>
+										</table>
+									</td>
+								</tr>
+						<% } %>
+						<%-- checkboxes --%>
+							<tr>
+								<td class="promo_detail_label"><input type="checkbox" id="li_allowOffer" name="li_allowOffer" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
+								<td class="alignL"><span class="gray">Allow offer combination</span></td>
+							</tr>
+							<tr>
+								<td class="promo_detail_label"><input type="checkbox" id="li_favorites" name="li_favorites" <%= promotion.isFavoritesOnly()?"checked":"" %> disabled /></td>
+								<td class="alignL"><span class="gray">Favorites only</span></td>
+							</tr>
+							<tr>
+								<td class="promo_detail_label"><input type="checkbox" id="li_perishables" name="li_perishables" <%= promotion.isPerishable()?"checked":"" %> disabled /></td>
+								<td class="alignL"><span class="gray">Perishables only</span></td>
+							</tr>
+					<%
+						//SAMPLE TYPE display
+						}else if ( EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())) {
+					%>
+						<tr>
+							<td class="promo_detail_label">Product:</td>
+							<td class="alignL">
+								<% ProductModel prodRef = ContentFactory.getInstance().getProductByName(promotion.getCategoryName(), promotion.getProductName());
+								if (prodRef != null) { %>
+									<%= prodRef.getFullName() %><br /><br />
+									<table style="border-collapse: collapse;">
+										<tr>
+											<td class="bordLgrayDash gray8pt padL8R16">cat id</td>
+											<td class="bordLgrayDash padL8R16"><%= promotion.getCategoryName() %></td>
+										</tr>
+										<tr>
+											<td class="bordLgrayDash gray8pt padL8R16">prod id</td>
+											<td class="bordLgrayDash padL8R16"><%= promotion.getProductName() %></td>
+										</tr>
+									</table>
+								<% }else{ %>
+									<span class="error">Error with Sample Product, verify catId and prodId.</span>
+								<% } %>
+							</td>
+						</tr>
+					<% } %>
+				<% } %>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

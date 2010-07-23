@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -28,16 +27,14 @@ import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.SmartStoreUtil;
 import com.freshdirect.smartstore.filter.ContentFilter;
 import com.freshdirect.smartstore.filter.FilterFactory;
-import com.freshdirect.smartstore.scoring.HelperFunctions;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
 
 /**
  * @author csongor
  */
-public class SmartYMALRecommendationService extends
-		AbstractRecommendationService implements FactorRequirer {
-	private static final Category LOGGER = LoggerFactory
-			.getInstance(SmartYMALRecommendationService.class);
+public class SmartYMALRecommendationService extends	AbstractRecommendationService implements FactorRequirer {
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(SmartYMALRecommendationService.class);
 
 	public SmartYMALRecommendationService(Variant variant, boolean includeCartItems) {
 		super(variant, null, includeCartItems);
@@ -46,30 +43,28 @@ public class SmartYMALRecommendationService extends
 	/**
 	 * Recommends products for the current node
 	 */
-	public List doRecommendNodes(SessionInput input) {
+	public List<ContentNodeModel> doRecommendNodes(SessionInput input) {
 
-		List prodList = new ArrayList();
+		List<ContentNodeModel> prodList = new ArrayList<ContentNodeModel>();
 		final YmalSource ymalSource = input.getYmalSource();
-		final ProductModel selectedProduct = (ProductModel) input
-				.getCurrentNode();
+		final ProductModel selectedProduct = (ProductModel) input.getCurrentNode();
 		int availSlots = input.getMaxRecommendations();
 		ContentFilter filter = FilterFactory.getInstance().createFilter(input.getExclusions(), input.isUseAlternatives(), input.isShowTemporaryUnavailable());
 
 		SmartStoreUtil.clearConfiguredProductCache();
 
 		// related products
-		List relatedProducts = ymalSource != null ? ymalSource
-				.getRelatedProducts()
-				: selectedProduct != null ? selectedProduct
-						.getRelatedProducts() : new ArrayList();
-		for (int i = 0; i < relatedProducts.size(); i++) {
-			ProductModel pm = (ProductModel) relatedProducts.get(i);
-			final ProductModel filteredModel = filter.filter(pm);
-                        if (filteredModel != null) {
-                            ProductModel p = SmartStoreUtil.addConfiguredProductToCache(filteredModel);
-                            if (p != null) {
-				prodList.add(p);
-                            }
+		List<ProductModel> relatedProducts = ymalSource != null ? 
+				ymalSource.getRelatedProducts() : 
+				selectedProduct != null ? selectedProduct.getRelatedProducts() : new ArrayList<ProductModel>();
+		for ( int i = 0; i < relatedProducts.size(); i++ ) {
+			ProductModel pm = relatedProducts.get( i );
+			final ProductModel filteredModel = filter.filter( pm );
+			if ( filteredModel != null ) {
+				ProductModel p = SmartStoreUtil.addConfiguredProductToCache( filteredModel );
+				if ( p != null ) {
+					prodList.add( p );
+				}
 			}
 		}
 		availSlots -= prodList.size();
@@ -84,16 +79,15 @@ public class SmartYMALRecommendationService extends
 		// true YMAL products
 		if (ymalSet != null && availSlots > 0) {
 			// smart YMAL
-			List recommenders = ymalSet.getRecommenders();
+			List<Recommender> recommenders = ymalSet.getRecommenders();
 
 			SessionInput smartInput = new SessionInput(input.getCustomerId(),
 					input.getCustomerServiceType(), input.getPricingContext());
 			smartInput.setYmalSource(ymalSource);
 			smartInput.setCurrentNode(selectedProduct);
-			smartInput.setCartContents(addContentKeys(new HashSet(), prodList));
+			smartInput.setCartContents(addContentKeys(new HashSet<ContentKey>(), prodList));
 			if (selectedProduct != null)
-				smartInput.getCartContents().add(
-						selectedProduct.getContentKey());
+				smartInput.getCartContents().add(selectedProduct.getContentKey());
 			smartInput.setNoShuffle(input.isNoShuffle());
 
 			Map<String,String> recServiceAudit = new HashMap<String,String>();
@@ -101,34 +95,32 @@ public class SmartYMALRecommendationService extends
 			Map<String,String> recStratServiceAudit = new HashMap<String,String>();
 			RECOMMENDER_STRATEGY_SERVICE_AUDIT.set(recStratServiceAudit);
 
-			List[] recommendations = new List[recommenders.size()];
+			@SuppressWarnings( {"unchecked"} )
+			List<ContentNodeModel>[] recommendations = new List[recommenders.size()];
 
 			for (int i = 0; i < recommenders.size(); i++) {
 
-				Recommender rec = (Recommender) recommenders.get(i);
+				Recommender rec = recommenders.get(i);
 				RecommenderStrategy strategy = rec.getStrategy();
 				if (strategy == null) {
-					recommendations[i] = Collections.EMPTY_LIST;
+					recommendations[i] = Collections.<ContentNodeModel>emptyList();
 					continue;
 				}
 
-				List scope = rec.getScope();
+				List<ContentNodeModel> scope = rec.getScope();
 
-				RecommendationService rs = (RecommendationService) CmsRecommenderRegistry
-						.getInstance().getService(strategy.getContentName());
+				RecommendationService rs = CmsRecommenderRegistry.getInstance().getService(strategy.getContentName());
 				if (rs == null) {
-					recommendations[i] = Collections.EMPTY_LIST;
+					recommendations[i] = Collections.<ContentNodeModel>emptyList();
 					continue;
 				}
 				smartInput.setExplicitList(scope);
-				List recNodes = rs.recommendNodes(smartInput);
+				List<ContentNodeModel> recNodes = rs.recommendNodes(smartInput);
 
 				for (int j = 0; j < recNodes.size(); j++) {
-					ContentNodeModel model = (ContentNodeModel) recNodes.get(j);
-					recServiceAudit.put(model.getContentKey().getId(), rec
-							.getContentKey().getId());
-					recStratServiceAudit.put(model.getContentKey().getId(),
-							strategy.getContentKey().getId());
+					ContentNodeModel model = recNodes.get(j);
+					recServiceAudit.put(model.getContentKey().getId(), rec.getContentKey().getId());
+					recStratServiceAudit.put(model.getContentKey().getId(), strategy.getContentKey().getId());
 				}
 				addContentKeys(smartInput.getCartContents(), recNodes);
 				recommendations[i] = recNodes;
@@ -146,9 +138,7 @@ public class SmartYMALRecommendationService extends
 					ProductModel next;
 					ProductModel p;
 					do {
-						next = recommendations[i].size() > 0 ? (ProductModel) recommendations[i]
-								.remove(0)
-								: null;
+						next = recommendations[i].size() > 0 ? (ProductModel) recommendations[i].remove(0) : null;
 						p = SmartStoreUtil.addConfiguredProductToCache(next);
 					} while (next != null && prodList.contains(p));
 					if (next != null) {
@@ -165,11 +155,11 @@ public class SmartYMALRecommendationService extends
 
 		if (ymalSource != null && availSlots > 0) {
 			// classic YMAL set products
-			List ymalProducts = ymalSource.getYmalProducts();
-			for (ListIterator it = ymalProducts.listIterator(); it.hasNext();) {
-				ProductModel pm = (ProductModel) it.next();
+			List<ProductModel> ymalProducts = ymalSource.getYmalProducts();
+			for (ListIterator<ProductModel> it = ymalProducts.listIterator(); it.hasNext();) {
+				ProductModel pm = it.next();
 				if (filter.filter(pm) != null) {
-					ProductModel q = SmartStoreUtil.addConfiguredProductToCache((ProductModel) pm);
+					ProductModel q = SmartStoreUtil.addConfiguredProductToCache(pm);
 					if (prodList.contains(q) || q == null)
 						it.remove();
 					else {
@@ -187,20 +177,18 @@ public class SmartYMALRecommendationService extends
 		return prodList;
 	}
 
-	private boolean hasAnyItem(List[] recommendations) {
-		for (int i = 0; i < recommendations.length; i++)
+	private static boolean hasAnyItem(List<? extends ContentNodeModel>[] recommendations) {
+		for (int i = 0; i < recommendations.length; i++) {
 			if (recommendations[i].size() > 0)
 				return true;
+		}
 		return false;
 	}
 
-	private static Set addContentKeys(Set keys, Collection nodes) {
-		Iterator it = nodes.iterator();
-		while (it.hasNext()) {
-			ContentNodeModel node = (ContentNodeModel) it.next();
+	private static Set<ContentKey> addContentKeys(Set<ContentKey> keys, Collection<? extends ContentNodeModel> nodes) {
+		for ( ContentNodeModel node : nodes ) {
 			keys.add(node.getContentKey());
 		}
-
 		return keys;
 	}
 

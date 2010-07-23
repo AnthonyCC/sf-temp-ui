@@ -102,6 +102,7 @@ public class ContentFactory {
 		this.skuProduct = new LruCache<String,ContentKey>(40000);
 		
 		currentPricingContext = new ThreadLocal<PricingContext>() {
+			@SuppressWarnings( "synthetic-access" )
 			@Override
 			protected PricingContext initialValue() {
 				try {
@@ -123,18 +124,17 @@ public class ContentFactory {
 		ContentKey storeKey = ContentKey.decode("Store:FreshDirect");
 		StoreModel theStore = (StoreModel) ContentNodeModelUtil.constructModel(storeKey, true);
 
-		List brandList = new ArrayList();
-		Set brandSet = loadKey("Brand", false);
-		for (Iterator i = brandSet.iterator(); i.hasNext();) {
-			ContentKey brandKey = (ContentKey) i.next();
-			brandList.add(ContentNodeModelUtil.constructModel(brandKey, true));
+		List<BrandModel> brandList = new ArrayList<BrandModel>();
+		Set<ContentKey> brandSet = loadKey("Brand", false);
+		for ( ContentKey brandKey : brandSet ) {
+			brandList.add((BrandModel)ContentNodeModelUtil.constructModel(brandKey, true));
 		}
 		theStore.setBrands(brandList);
 
-		List domainList = new ArrayList();
-		Set domainSet = loadKey("Domain", false);
-		for (Iterator i = domainSet.iterator(); i.hasNext();) {
-			ContentKey domainKey = (ContentKey) i.next();
+		List<Domain> domainList = new ArrayList<Domain>();
+		Set<ContentKey> domainSet = loadKey("Domain", false);
+		for (Iterator<ContentKey> i = domainSet.iterator(); i.hasNext();) {
+			ContentKey domainKey = i.next();
 			Domain domain = (Domain) ContentNodeModelUtil.constructModel(domainKey, false);
 			domainList.add(domain);
 		}
@@ -155,7 +155,7 @@ public class ContentFactory {
 		return FDStoreProperties.getPreviewMode();
 	}
 
-	public Collection getProducts(CategoryModel category) {
+	public Collection<ProductModel> getProducts(CategoryModel category) {
 		this.getStore(); //ensure Store is loaded
 
 		return Collections.unmodifiableList(category.getPrivateProducts());
@@ -170,10 +170,9 @@ public class ContentFactory {
 		if ( id == null || id.trim().equals( "" ) )
 			return null;
 
-		ContentNodeModel m = (ContentNodeModel) this.contentNodes.get(id);
+		ContentNodeModel m = this.contentNodes.get(id);
 		if (m == null) {
-			for (Iterator i = ContentNodeModelUtil.TYPE_MODEL_MAP.keySet().iterator(); i.hasNext();) {
-				String typeName = (String) i.next();
+			for ( String typeName : ContentNodeModelUtil.TYPE_MODEL_MAP.keySet() ) {
 				ContentKey key = new ContentKey(ContentType.get(typeName), id);
 				ContentNodeI node = CmsManager.getInstance().getContentNode(key);
 				if (node != null) {
@@ -290,40 +289,40 @@ public class ContentFactory {
 	 * @param coll collection of skucodes
 	 * @return List of ProductModels
 	 */
-	private List filterWholeProducts(Collection coll) {
+	@SuppressWarnings( "unused" )
+	private List<ProductModel> filterWholeProducts(Collection<String> skuCodes) {
 
-		List prods = new ArrayList(coll.size());
+		List<ProductModel> prods = new ArrayList<ProductModel>(skuCodes.size());
 
 		/** map of ProductModel -> Integer */
-		Map limbo = new HashMap();
+		Map<ProductModel, Integer> limbo = new HashMap<ProductModel, Integer>();
 
-                for (Iterator pIter = coll.iterator(); pIter.hasNext();) {
-                    String skuCode = (String) pIter.next();
-                    ProductModel prod = this.filterProduct(skuCode);
-        
-                    if (prod != null) {
-                        int skuSize = prod.getPrimarySkus().size();
-                        if (skuSize == 1) {
-                            // single sku, just add it to list
+        for ( String skuCode : skuCodes ) {
+            ProductModel prod = this.filterProduct(skuCode);
+
+            if (prod != null) {
+                int skuSize = prod.getPrimarySkus().size();
+                if (skuSize == 1) {
+                    // single sku, just add it to list
+                    prods.add(prod);
+
+                } else {
+                    // more than one sku, need to maintain sku counts
+                    Integer remaining = limbo.get(prod);
+                    if (remaining == null) {
+                        limbo.put(prod, new Integer(skuSize));
+                    } else {
+                        int r = remaining.intValue() - 1;
+                        limbo.put(prod, new Integer(r));
+                        if (r == 0) {
+                            // no more skus left, it's okay to include this in
+                            // the list
                             prods.add(prod);
-        
-                        } else {
-                            // more than one sku, need to maintain sku counts
-                            Integer remaining = (Integer) limbo.get(prod);
-                            if (remaining == null) {
-                                limbo.put(prod, new Integer(skuSize));
-                            } else {
-                                int r = remaining.intValue() - 1;
-                                limbo.put(prod, new Integer(r));
-                                if (r == 0) {
-                                    // no more skus left, it's okay to include this in
-                                    // the list
-                                    prods.add(prod);
-                                }
-                            }
                         }
                     }
                 }
+            }
+        }
 		LOGGER.debug("Dubious products " + limbo);
 		return prods;
 	}
@@ -380,11 +379,11 @@ public class ContentFactory {
 
 	}
 
-	private Set loadKey(String type, boolean getNodes) {
+	private Set<ContentKey> loadKey(String type, boolean getNodes) {
 		LOGGER.debug("Begin Loading: " + type + " " + new java.util.Date());
 		ContentServiceI cms = CmsManager.getInstance();
 		ContentType t = ContentType.get(type);
-		Set s = cms.getContentKeysByType(t);
+		Set<ContentKey> s = cms.getContentKeysByType(t);
 		LOGGER.debug("Got keys for: " + type + " " + new java.util.Date());
 		if (getNodes)
 			cms.getContentNodes(s);
@@ -397,7 +396,6 @@ public class ContentFactory {
 		Domain cNode = (Domain) contentNodes.get("Domain:" + domainId);
 		if (cNode == null) {
 			ContentKey ckey = ContentKey.decode("Domain:" + domainId);
-
 			//Don't cache regular way; do our own caching
 			cNode = (Domain) ContentNodeModelUtil.constructModel(ckey, false);
 			contentNodes.put("Domain:" + domainId, cNode);
@@ -410,17 +408,15 @@ public class ContentFactory {
 		this.getStore(); // ensure Store is loaded
 		DomainValue cNode = (DomainValue) contentNodes.get("DomainValue:" + domainValueId);
 		if (cNode == null) {
-			if (cNode == null) {
-				//Don't cache regular way; do our own caching
-				ContentKey ckey = ContentKey.decode("DomainValue:" + domainValueId);
-				cNode = (DomainValue) ContentNodeModelUtil.constructModel(ckey, false);
-			}
+			//Don't cache regular way; do our own caching
+			ContentKey ckey = ContentKey.decode("DomainValue:" + domainValueId);
+			cNode = (DomainValue) ContentNodeModelUtil.constructModel(ckey, false);
 			Domain d = (Domain) cNode.getParentNode();
 			List<ContentKey> dValues = d.getDomainValueKeys();
-			for (int i = 0; i < dValues.size(); i++) {
-			        ContentKey dvr = dValues.get(i);
-				if (dvr.equals(cNode.getContentKey())) {
-					cNode.setPriority(i + 1);
+			for ( int i = 0; i < dValues.size(); i++ ) {
+				ContentKey dvr = dValues.get( i );
+				if ( dvr.equals( cNode.getContentKey() ) ) {
+					cNode.setPriority( i + 1 );
 					break;
 				}
 			}
@@ -434,21 +430,20 @@ public class ContentFactory {
 	private void cacheStore() {
 		contentNodes.put(store.getContentName(), store);
 		nodesByKey.put(store.getContentKey(), store);
-		List depts = this.store.getDepartments();
-		for (Iterator i = depts.iterator(); i.hasNext();) {
-			DepartmentModel dm = (DepartmentModel) i.next();
+		List<DepartmentModel> depts = this.store.getDepartments();
+		for ( DepartmentModel dm : depts ) {
 			cacheDepartment(dm);
 		}
-		List brands = this.store.getBrands();
+		List<BrandModel> brands = this.store.getBrands();
 		if (brands != null) {
-			for (Iterator i = brands.iterator(); i.hasNext();) {
-				cacheBrand((BrandModel) i.next());
+			for ( BrandModel bm : brands ) {
+				cacheBrand( bm );
 			}
 		}
-		List storeDomains = this.store.getDomains();
+		List<Domain> storeDomains = this.store.getDomains();
 		if (storeDomains != null) {
-			for (Iterator di = storeDomains.iterator(); di.hasNext();) {
-				cacheDomain((Domain) di.next());
+			for ( Domain d : storeDomains ) {
+				cacheDomain( d );
 			}
 		}
 	}
@@ -471,10 +466,10 @@ public class ContentFactory {
 		/* place the domain values in this map also, so we don't have to traverse the list
 		 *. We'll make the key's for this domId/Name + > + domValID/domValName
 		 */
-		List dmvList = domain.getDomainValues();
+		List<DomainValue> dmvList = domain.getDomainValues();
 		if (dmvList != null) {
-			for (Iterator dmvi = dmvList.iterator(); dmvi.hasNext();) {
-				cacheDomainValue(domain, (DomainValue) dmvi.next());
+			for ( DomainValue dv : dmvList ) {
+				cacheDomainValue(domain, dv);
 			}
 		}
 	}
@@ -486,29 +481,25 @@ public class ContentFactory {
 
 	private List<ProductModel> getProdRefsForSku(String skuCode) {
 		ContentServiceI manager = CmsManager.getInstance();
-		List<ProductModel> prodRefs = new ArrayList();
+		List<ProductModel> prodRefs = new ArrayList<ProductModel>();
 
 		ContentNodeI skuNode = manager.getContentNode(new ContentKey(FDContentTypes.SKU, skuCode));
 		if (skuNode == null)
 			return prodRefs;
 
-		Set productKeys = manager.getParentKeys(skuNode.getKey());
-		for (Iterator i = productKeys.iterator(); i.hasNext();) {
-			ContentKey prodKey = (ContentKey) i.next();
-			Collection categoryKeys = manager.getParentKeys(prodKey);
-			for (Iterator j = categoryKeys.iterator(); j.hasNext();) {
-				ContentKey catKey = (ContentKey) j.next();
+		Set<ContentKey> productKeys = manager.getParentKeys(skuNode.getKey());
+		for ( ContentKey prodKey : productKeys ) {
+			Collection<ContentKey> categoryKeys = manager.getParentKeys(prodKey);
+			for ( ContentKey catKey : categoryKeys ) {
 				prodRefs.add(getProductByName(catKey.getId(), prodKey.getId()));
 			}
 		}
-
 		return prodRefs;
-
 	}
 
 	public ContentNodeModel getContentNodeByKey(ContentKey key) {
 		this.getStore();
-		ContentNodeModel model = (ContentNodeModel) nodesByKey.get(key);
+		ContentNodeModel model = nodesByKey.get(key);
 		if(model == null){
 			ContentNodeI cmsCNode = CmsManager.getInstance().getContentNode(key);
 			if(cmsCNode != null) {
@@ -521,12 +512,12 @@ public class ContentFactory {
 	
 	public ContentNodeModel getCachedContentNodeByKey(ContentKey key) {
 	    this.getStore();
-	    return (ContentNodeModel) nodesByKey.get(key);
+	    return nodesByKey.get(key);
 	}
 	
 	
-	public Set getParentKeys(ContentKey key) {
-		Set s = CmsManager.getInstance().getParentKeys(key);
+	public Set<ContentKey> getParentKeys(ContentKey key) {
+		Set<ContentKey> s = CmsManager.getInstance().getParentKeys(key);
 		return Collections.unmodifiableSet(s);
 	}
 	
@@ -609,10 +600,10 @@ public class ContentFactory {
 	 */
 	public double getProductAge(ProductModel product) {
 		Date when = getNewProducts().get(product);
-		if (when != null)
-			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
-		else
-			return (double) Integer.MAX_VALUE; // very long time ago
+		if (when == null) {
+			return Integer.MAX_VALUE; // very long time ago
+		}		
+		return ((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
 	}
 	
 	/**
@@ -695,10 +686,10 @@ public class ContentFactory {
 	 */
 	public double getBackInStockProductAge(ProductModel product) {
 		Date when = getBackInStockProducts().get(product);
-		if (when != null)
-			return ((double) System.currentTimeMillis() - when.getTime()) / (double) DAY_IN_MILLISECONDS;
-		else
-			return (double) Integer.MAX_VALUE; // very long time ago
+		if (when == null) {
+			return Integer.MAX_VALUE; // very long time ago
+		}
+		return ((double) System.currentTimeMillis() - when.getTime()) / DAY_IN_MILLISECONDS;
 	}
 	
 	/**

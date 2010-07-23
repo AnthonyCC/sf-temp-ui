@@ -13,38 +13,41 @@ String pageURI = request.getRequestURI();
 	<script language="JavaScript" src="/ccassets/javascript/callcenter_javascript.js"></script>
 </head>
 <body>
+	<div class="crm_container">
+		<% try { %>
+			<%-- header on top and groups/usernames in the leftnav --%>
+			<div class="content">
+			<%@ include file="/includes/context_help.jspf" %>
 
-<%@ include file="/includes/context_help.jspf" %>
+				<%-- header on top and content below --%>
 
-<%try{%>
-
-    <div class="main_nav">
-        <jsp:include page='/includes/main_nav.jsp'/>
-    </div>
-
-    <div class="side_nav" style="width:27%;">
-        <jsp:include page='/includes/user_mgmt_side_nav.jsp'/>
-    </div>
-
-    <div class="content" style="width:72%; float: left;">
-		<% if (pageURI.indexOf("index") < 0 && pageURI.indexOf("new_user") < 0) { %>
-			<div class="content_fixed" style="padding-top: 8px;">
-	        	<jsp:include page='/includes/user_mgmt_profile.jsp'/>
-	    	</div>
-			
-			<div class="user_mgmt_profile_nav">
-				<jsp:include page='/includes/user_mgmt_profile_nav.jsp'/>
+				<jsp:include page="/includes/main_nav.jsp"/>
+				
+				<div style="height: 95%; overflow: auto; border: 0px solid #000;">
+					<div class="side_nav" style="width:27%;">
+						<jsp:include page='/includes/user_mgmt_side_nav.jsp'/>
+					</div>
+					
+					<div style="width: 72%; overflow-y: auto; float: left;">
+						<% if (pageURI.indexOf("index") < 0 && pageURI.indexOf("new_user") < 0) { %>
+							<div class="content_fixed" style="padding-top: 8px;">
+								<jsp:include page='/includes/user_mgmt_profile.jsp'/>
+							</div>
+							
+							<div class="user_mgmt_profile_nav">
+								<jsp:include page='/includes/user_mgmt_profile_nav.jsp'/>
+							</div>
+						<% } %>
+						<tmpl:get name="content"/>
+					</div>
+				</div>
 			</div>
-		<% } %>
-
-        <tmpl:get name='content'/>
-    </div>
-	<br clear="all">
-	<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
-<%}catch (Exception ex){
-	ex.printStackTrace();
-	throw ex;
-}	
-%>
+			<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
+		<% } catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		} %>
+	</div>
+	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000"></div>
 </body>
 </html>

@@ -7,7 +7,6 @@ package com.freshdirect.fdstore.attributes;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -67,46 +66,45 @@ public class FDAttributeFactory {
 	    return (Image) constructWrapperValue(node, attribName);
 	}
 
-        public static Image constructImage(ContentNodeModel node, String attribName, Image defValue) {
-            Image i = (Image) constructWrapperValue(node, attribName);
-            return i != null ? i : defValue;
-        }
-	
-        /**
-         * Construct an Html object.
-         * @param node
-         * @param attribName
-         * @return
-         */
-        public static Html constructHtml(ContentNodeModel node, String attribName) {
-            return (Html) constructWrapperValue(node, attribName);
-        }
-	
-        /**
-         * Construct the backward compatible wrapper objects for a node, without constructing the deprecated
-         * (Multi)Attribute objects.
-         * 
-         * @param node
-         * @param attribName
-         * @return
-         */
-	public static List constructWrapperList(ContentNodeModel node, String attribName) {
-            Object value = node.getCmsAttributeValue(attribName);
-            if (value != null) {
-                AttributeDefI attributeDef = node.getAttributeDef(attribName);
-                FDAttributeBuilderI builder = getBuilder(attributeDef, value);
-                return (List) builder.constructValue(attributeDef, value);
-            }
-            return Collections.EMPTY_LIST;
+	public static Image constructImage( ContentNodeModel node, String attribName, Image defValue ) {
+		Image i = (Image)constructWrapperValue( node, attribName );
+		return i != null ? i : defValue;
+	}
+
+    /**
+     * Construct an Html object.
+     * @param node
+     * @param attribName
+     * @return
+     */
+	public static Html constructHtml( ContentNodeModel node, String attribName ) {
+		return (Html)constructWrapperValue( node, attribName );
 	}
 	
-	public static <X> X lookup(ContentNodeModel node, String attribName, X defValue) {
-            Object value = node.getCmsAttributeValue(attribName);
-            if (value instanceof ContentKey) {
-                return (X) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value);
-            } else {
-                return defValue;
-            }
+	/**
+	 * Construct the backward compatible wrapper objects for a node, without constructing the deprecated
+	 * (Multi)Attribute objects.
+	 * 
+	 * @param node
+	 * @param attribName
+	 * @return
+	 */
+	public static List constructWrapperList( ContentNodeModel node, String attribName ) {
+		Object value = node.getCmsAttributeValue( attribName );
+		if ( value != null ) {
+			AttributeDefI attributeDef = node.getAttributeDef( attribName );
+			FDAttributeBuilderI builder = getBuilder( attributeDef, value );
+			return (List)builder.constructValue( attributeDef, value );
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	public static <X> X lookup( ContentNodeModel node, String attribName, X defValue ) {
+		Object value = node.getCmsAttributeValue( attribName );
+		if ( value instanceof ContentKey ) {
+			return (X)ContentFactory.getInstance().getContentNodeByKey( (ContentKey)value );
+		}
+		return defValue;
 	}
 
 	private static FDAttributeBuilderI getBuilder(AttributeDefI attrDef, Object value) {
@@ -120,10 +118,9 @@ public class FDAttributeFactory {
 				ContentKey cKey = (ContentKey) value;
 				builderKey = cKey.getType().getName();
 			} else {
-				List valueList = (List) value;
-				Set types = new HashSet();
-				for (Iterator i = valueList.iterator(); i.hasNext();) {
-					ContentKey cKey = (ContentKey) i.next();
+				List<ContentKey> valueList = (List<ContentKey>) value;
+				Set<String> types = new HashSet<String>();
+				for ( ContentKey cKey : valueList ) {
 					types.add(cKey.getType().getName());
 				}
 				if (types.isEmpty())
@@ -135,13 +132,13 @@ public class FDAttributeFactory {
 							"Unable to select an FDAttributeBuilder for a heterogeneous relationship "
 									+ attrDef + ", types: " + types,
 							new Exception().fillInStackTrace());
-					builderKey = (String) types.iterator().next();
+					builderKey = types.iterator().next();
 					//throw new CmsRuntimeException("Unable to select an FDAttributeBuilder for a heterogeneous relationship");
 				} else {
-					builderKey = (String) types.iterator().next();
+					builderKey = types.iterator().next();
 				}				
 			}
-			FDAttributeBuilderI builder = (FDAttributeBuilderI) typeMap.get(builderKey);
+			FDAttributeBuilderI builder = typeMap.get(builderKey);
 			if (builder == null) {
 				builder = GENERIC_NODE_BUILDER;
 			}
@@ -153,7 +150,7 @@ public class FDAttributeFactory {
 			builderKey = attrDef.getAttributeType().getLabel();
 		}
 
-		return (FDAttributeBuilderI) typeMap.get(builderKey);
+		return typeMap.get(builderKey);
 
 	}
 
@@ -165,7 +162,7 @@ public class FDAttributeFactory {
 		typeMap.put("Category", new GenericContentNodeBuilder(EnumAttributeType.CATEGORYREF));
 		typeMap.put("Product", new GenericContentNodeBuilder(EnumAttributeType.PRODUCTREF));
 		typeMap.put("Sku", new GenericContentNodeBuilder(EnumAttributeType.SKUREF));
-                typeMap.put("Domain", new GenericContentNodeBuilder(EnumAttributeType.DOMAIN));
+		typeMap.put("Domain", new GenericContentNodeBuilder(EnumAttributeType.DOMAIN));
 		typeMap.put("Image", new ImageBuilder());
 		typeMap.put("Html", new HtmlBuilder());
 		typeMap.put("DomainValue", new DomainValueBuilder());

@@ -86,10 +86,10 @@ A = Automatic Order   M = Manual Order
 			<TD width="10%"><%= "FDC".equals(info.getComplaintType())?"Store Credit":"CSH".equals(info.getComplaintType())?"Refund":"MIX".equals(info.getComplaintType())?"Mixed":"" %></TD>
 			<TD width="20%"><%= info.getComplaintNote() %></TD>
 		</TR>
-		<tr><td colspan="9" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+		<tr><td colspan="10" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 		</logic:iterate>
 	<% 	} else { %>
-	    <tr><td colspan="9" align="center"><br>no pending credits need to be processed<br><br></td></tr>
+	    <tr><td colspan="10" align="center"><br>no pending credits need to be processed<br><br></td></tr>
 	<%  }   %>
 	</TABLE>
 	</div>

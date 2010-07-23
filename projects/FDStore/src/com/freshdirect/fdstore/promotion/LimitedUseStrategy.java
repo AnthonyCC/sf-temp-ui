@@ -2,22 +2,24 @@ package com.freshdirect.fdstore.promotion;
 
 public class LimitedUseStrategy implements PromotionStrategyI {
 
-	private final int maxUsage;
-
+	private final int maxUsage; //is per customer
+	
 	public LimitedUseStrategy(int maxUsage) {
 		this.maxUsage = maxUsage;
 	}
+
 
 	public int getMaxUsage() {
 		return this.maxUsage;
 	}
 
+	
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		int usage = context.getPromotionUsageCount(promotionCode);
 		if (usage >= this.maxUsage) {
 			return DENY;
 		}
-
+		
 		return ALLOW;
 	}
 

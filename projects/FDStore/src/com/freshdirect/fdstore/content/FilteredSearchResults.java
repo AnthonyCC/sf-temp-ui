@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.fdstore.content;
 
 import java.io.Serializable;
@@ -9,7 +6,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,19 +31,18 @@ import com.freshdirect.smartstore.sorting.UserRelevancyComparator;
  */
 public class FilteredSearchResults extends SearchResults implements Serializable {
 
-    final static Logger LOG = Logger.getLogger(FilteredSearchResults.class);
+	private static final long	serialVersionUID	= -817839545866878596L;
+	
+	final static Logger LOG = Logger.getLogger(FilteredSearchResults.class);
 
+    static class InverseComparator<T> implements Comparator<T> {
+        Comparator<? super T> inner;
 
-
-
-    static class InverseComparator implements Comparator<ContentNodeModel> {
-        Comparator<ContentNodeModel> inner;
-
-        public InverseComparator(Comparator<ContentNodeModel> inner) {
+        public InverseComparator(Comparator<? super T> inner) {
             this.inner = inner;
         }
-
-        public int compare(ContentNodeModel o1, ContentNodeModel o2) {
+        
+        public int compare(T o1, T o2) {
             return inner.compare(o2, o1);
         }
     }
@@ -63,8 +58,6 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             return reverse ? r2.getName().compareTo(r1.getName()) : r1.getName().compareTo(r2.getName());
         }
     }
-
-
 
 
     public interface CategoryScoreOracle {
@@ -172,12 +165,8 @@ public class FilteredSearchResults extends SearchResults implements Serializable
     }
 
 
-    
-    
 
 
-
-	private static final long      serialVersionUID  = 1L;
 
     String                         customerId;
     PricingContext                 pricingContext;
@@ -186,13 +175,13 @@ public class FilteredSearchResults extends SearchResults implements Serializable
 
 
     // number of items per page; 0 value means show all products (do not page)
-    int                            pageSize          = 30;
-    List                           postFilteredProducts;                          // List<FDProductSelectionI>
+    int                         pageSize          = 30;
+    List<ProductModel>			postFilteredProducts;
 
     
     Map<ContentKey,Float>			userProductScores = null;
 
-    Comparator<ContentNodeModel>	currentComparator;
+    Comparator<? super ProductModel>	currentComparator;
 
     CategoryScoreOracle            scoreOracle;
     CategoryNodeTree               nodeTree;
@@ -223,11 +212,11 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         this(searchTerm, original, customerId, searchTerm, pCtx);
     }
 
-	private static List convertToPricingAdapter(List products, PricingContext pCtx){
-		List adapters = new ArrayList<ProductModel>(products.size());
+	private static List<ProductModel> convertToPricingAdapter(List<ProductModel> products, PricingContext pCtx){
+		List<ProductModel> adapters = new ArrayList<ProductModel>(products.size());
 		ProductPricingFactory factory = ProductPricingFactory.getInstance();
-		for(Iterator<ProductModel> it = products.iterator(); it.hasNext();){
-			adapters.add(factory.getPricingAdapter(((ProductModel) it.next()), pCtx));
+		for ( ProductModel p : products ) {
+			adapters.add(factory.getPricingAdapter(p, pCtx));
 		}
 		return adapters;
 	}
@@ -252,26 +241,26 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         this._filteredRecipes = null; // clear filtered recipes cache
     }
 
-    public Comparator<ContentNodeModel> getCurrentComparator() {
+    public Comparator<? super ProductModel> getCurrentComparator() {
         return currentComparator;
     }
 
-    @SuppressWarnings("unchecked")
-	private Comparator<ContentNodeModel> getComparator(SearchSortType sort, boolean inverse, List<ProductModel> products) {
-        Comparator<ContentNodeModel> c = null;
+	private Comparator<? super ProductModel> getComparator(SearchSortType sort, boolean inverse, List<ProductModel> products) {
+		
+        Comparator<? super ProductModel> c = null;
         
         if (sort == null)
         	sort = SearchSortType.BY_RELEVANCY;
 
         switch (sort) {
             case BY_NAME:
-                c = (Comparator<ContentNodeModel>) ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
+                c = ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
                 if (inverse) {
-                    c = new InverseComparator(c);
+                    c = new InverseComparator<ProductModel>(c);
                 }
                 break;
             case BY_PRICE:
-                c = inverse ? (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : (Comparator<ContentNodeModel>) ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
+                c = inverse ? ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE : ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR;
                 break;
             case BY_POPULARITY:
                 c = new PopularityComparator(inverse, products, pricingContext);
@@ -280,16 +269,17 @@ public class FilteredSearchResults extends SearchResults implements Serializable
             	c = new SaleComparator(inverse, products, pricingContext);
             	break;
             case BY_RECENCY:
-                c = (Comparator<ContentNodeModel>) ProductModel.AGE_COMPARATOR;
+                c = ProductModel.AGE_COMPARATOR;
                 if (inverse) {
-                    c = new InverseComparator(c);
+                    c = new InverseComparator<ProductModel>(c);
                 }
                 break;         	
             case BY_RELEVANCY:
             default:
                 CategoryScoreOracle sc = scoreOracle != null ? scoreOracle : new DefaultCategoryScoreOracle();
-                c = (customerId != null) ? new UserRelevancyComparator(inverse, searchTerm, customerId, pricingContext, sc, nodeTree, products, originalSearchTerm) : new RelevancyComparator(inverse, searchTerm,
-                        pricingContext, sc, nodeTree, products, originalSearchTerm);
+                c = (customerId != null) ?
+                	new UserRelevancyComparator(inverse, searchTerm, customerId, pricingContext, sc, nodeTree, products, originalSearchTerm) : 
+                	new RelevancyComparator(inverse, searchTerm, pricingContext, sc, nodeTree, products, originalSearchTerm);
         }
         return c;
     }
@@ -347,15 +337,15 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         }
     }
 
-    public void setFilteredProducts(List postFilteredProducts) {
+    public void setFilteredProducts(List<ProductModel> postFilteredProducts) {
         this.postFilteredProducts = postFilteredProducts;
     }
 
-    public List getFilteredProducts() {
+    public List<ProductModel> getFilteredProducts() {
         return postFilteredProducts;
     }
 
-    public List getFilteredProductsListPage() {
+    public List<ProductModel> getFilteredProductsListPage() {
         return postFilteredProducts.subList(getStart(), Math.min(getStart() + getPageSize(), postFilteredProducts.size()));
     }
 
@@ -367,9 +357,7 @@ public class FilteredSearchResults extends SearchResults implements Serializable
                 _filteredRecipes = new ArrayList<Recipe>();
                 
                 for (Recipe r : getRecipes()) {
-                    for (Iterator j = r.getClassifications().iterator(); j.hasNext();) {
-                        DomainValue dv = (DomainValue) j.next();
-
+                    for ( DomainValue dv : r.getClassifications() ) {
                         if (recipeFilter.equalsIgnoreCase(dv.getContentKey().getId())) {
                             _filteredRecipes.add(r);
                             break;
@@ -392,28 +380,25 @@ public class FilteredSearchResults extends SearchResults implements Serializable
         Map<DomainValue,Integer> stat = new HashMap<DomainValue,Integer>();
         List<Recipe> recipes = getRecipes();
 
-        for (Iterator it = getRecipeClassifications().iterator(); it.hasNext();) {
-            DomainValue dv = (DomainValue) it.next();
+        for ( DomainValue dv : getRecipeClassifications() ) {
             int k = 0;
-
             for (Recipe r : recipes) {
                 if (r.getClassifications().contains(dv)) {
                     ++k;
                 }
-            }
-            
+            }            
             stat.put(dv, new Integer(k));
         }
         return stat;
     }
 
-    public List getRecipeClassifications() {
+    public List<DomainValue> getRecipeClassifications() {
         RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
         if (searchPage == null) {
             LOG.warn("RecipeSearchPage.getDefault() is null!");
-            return Collections.EMPTY_LIST;
+            return Collections.<DomainValue>emptyList();
         }
-        return RecipesUtil.collectClassifications(java.util.Collections.EMPTY_SET, new HashSet(searchPage.getFilterByDomains()), getRecipes());
+        return RecipesUtil.collectClassifications(Collections.<Domain>emptySet(), new HashSet<Domain>(searchPage.getFilterByDomains()), getRecipes());
     }
     
 

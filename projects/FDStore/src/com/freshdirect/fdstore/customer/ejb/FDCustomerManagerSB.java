@@ -361,7 +361,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @param identity the customer's identity reference
      * @throws FDResourceException if an error occured while accessing remote resources
      */
-    public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
+    public FDReservation cancelOrder(FDActionInfo info, String saleId, boolean sendEmail, int currentDPExtendDays) throws FDResourceException, ErpTransactionException, DeliveryPassException, RemoteException;
     
     /**
      * Modify an order (modify & send msg to SAP).

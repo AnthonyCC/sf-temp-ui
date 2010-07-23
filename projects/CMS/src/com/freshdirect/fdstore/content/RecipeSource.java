@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.content;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -15,18 +14,14 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class RecipeSource extends ContentNodeModelImpl {
 
-	public final static Comparator NAME_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			RecipeSource r1 = (RecipeSource) o1;
-			RecipeSource r2 = (RecipeSource) o2;
+	public final static Comparator<RecipeSource> NAME_COMPARATOR = new Comparator<RecipeSource>() {
+		public int compare(RecipeSource r1, RecipeSource r2) {
 			return r1.getName().compareTo(r2.getName());
 		}
 	};
 
-	public final static Comparator NAME_COMPARATOR_NO_THE = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			RecipeSource r1 = (RecipeSource) o1;
-			RecipeSource r2 = (RecipeSource) o2;
+	public final static Comparator<RecipeSource> NAME_COMPARATOR_NO_THE = new Comparator<RecipeSource>() {
+		public int compare(RecipeSource r1, RecipeSource r2) {
 			String n1 = r1.getName().toUpperCase().startsWith("THE ") ? r1.getName().substring(4) : r1.getName();
 			String n2 = r2.getName().toUpperCase().startsWith("THE ") ? r2.getName().substring(4) : r2.getName();
 			return n1.compareTo(n2);
@@ -34,13 +29,13 @@ public class RecipeSource extends ContentNodeModelImpl {
 	};
 
 	
-	private final List authors = new ArrayList();
+	private final List<RecipeAuthor> authors = new ArrayList<RecipeAuthor>();
 
-	private final List featuredRecipes = new ArrayList();
+	private final List<Recipe> featuredRecipes = new ArrayList<Recipe>();
 
-	private final List featuredProducts = new ArrayList();
+	private final List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
 
-	private final List bookRetailers = new ArrayList();
+	private final List<BookRetailer> bookRetailers = new ArrayList<BookRetailer>();
 
 	public RecipeSource(ContentKey cKey) {
 		super(cKey);
@@ -53,19 +48,16 @@ public class RecipeSource extends ContentNodeModelImpl {
 	 * 
 	 * @return List of RecipeSource, sorted by name
 	 */
-	public static List findAllAvailable() {
+	public static List<RecipeSource> findAllAvailable() {
 		return findAllAvailable(false);
 	}
 	
 	
-	public static List findAllAvailable(boolean ignoreLeadingThe) {
-		Set keys = CmsManager.getInstance().getContentKeysByType(
-				FDContentTypes.RECIPE_SOURCE);
-		List l = new ArrayList(keys.size());
-		for (Iterator i = keys.iterator(); i.hasNext();) {
-			ContentKey k = (ContentKey) i.next();
-			RecipeSource rs = (RecipeSource) ContentFactory.getInstance()
-					.getContentNode(k.getId());
+	public static List<RecipeSource> findAllAvailable(boolean ignoreLeadingThe) {
+		Set<ContentKey> keys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECIPE_SOURCE);
+		List<RecipeSource> l = new ArrayList<RecipeSource>(keys.size());
+		for ( ContentKey k : keys ) {
+			RecipeSource rs = (RecipeSource) ContentFactory.getInstance().getContentNode(k.getId());
 			if (!rs.isOrphan() && rs.isAvailable()) {
 				l.add(rs);
 			}
@@ -105,7 +97,7 @@ public class RecipeSource extends ContentNodeModelImpl {
 		return getAttribute("notes", "");
 	}
 
-	public List getAuthors() {
+	public List<RecipeAuthor> getAuthors() {
 		ContentNodeModelUtil.refreshModels(this, "authors", authors, false);
 		return Collections.unmodifiableList(authors);
 	}
@@ -117,33 +109,33 @@ public class RecipeSource extends ContentNodeModelImpl {
 		return RecipeAuthor.authorsToString(getAuthors());
 	}
 
-	public List getFeaturedRecipes() {
+	public List<Recipe> getFeaturedRecipes() {
 		ContentNodeModelUtil.refreshModels(this, "featuredRecipes", featuredRecipes, false);
 		return Collections.unmodifiableList(featuredRecipes);
 	}
 
 	public Html getLeftContent() {
-            return FDAttributeFactory.constructHtml(this, "leftContent");
+		return FDAttributeFactory.constructHtml( this, "leftContent" );
 	}
-	
+
 	public Html getTopContent() {
-            return FDAttributeFactory.constructHtml(this, "topContent");
+		return FDAttributeFactory.constructHtml( this, "topContent" );
 	}
-	
+
 	public Html getBottomContent() {
-            return FDAttributeFactory.constructHtml(this, "bottomContent");
+		return FDAttributeFactory.constructHtml( this, "bottomContent" );
 	}
-	
+
 	public Html getEmailContent() {
-            return FDAttributeFactory.constructHtml(this, "emailContent");
+		return FDAttributeFactory.constructHtml( this, "emailContent" );
 	}
 	
-	public List getFeaturedProducts() {
+	public List<ProductModel> getFeaturedProducts() {
 		ContentNodeModelUtil.refreshModels(this, "featuredProducts", featuredProducts, false);
 		return Collections.unmodifiableList(featuredProducts);
 	}
 	
-	public List getBookRetailers() {
+	public List<BookRetailer> getBookRetailers() {
 		ContentNodeModelUtil.refreshModels(this, "bookRetailers", bookRetailers, false);
 		return Collections.unmodifiableList(bookRetailers );
 	}
@@ -153,7 +145,7 @@ public class RecipeSource extends ContentNodeModelImpl {
 	}
 	
 	public Image getZoomImage() {
-            return FDAttributeFactory.constructImage(this, "zoomImage");
+        return FDAttributeFactory.constructImage(this, "zoomImage");
 	}
 	
 }

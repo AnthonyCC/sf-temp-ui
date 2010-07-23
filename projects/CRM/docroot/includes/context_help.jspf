@@ -1,12 +1,3 @@
-<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000"></div>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws_iframe.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws_overtwo.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/iframecontentmws.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws_scroll.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
-<script type="text/javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
-
 <%--
 String c_define = "Click to define."; 
 String c_help = "Click for help."; 

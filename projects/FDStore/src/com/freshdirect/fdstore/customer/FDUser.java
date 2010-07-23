@@ -183,8 +183,10 @@ public class FDUser extends ModelSupport implements FDUserI {
 	protected Boolean isSOEligible = null;
 
 	protected Boolean cliCodeEligible = null;
+	private Set<String> allAppliedPromos = new HashSet<String>();
 	
 	protected SortedSet<IgnoreCaseString> clientCodesHistory = null; 
+	private Map<String, Integer> promoErrorCodes = new HashMap<String, Integer>();
 	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
@@ -365,12 +367,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.getShoppingCart().clearSampleLines();
 		this.getShoppingCart().setDiscounts(new ArrayList<ErpDiscountLineModel>());
 		this.getShoppingCart().clearLineItemDiscounts();
+		this.clearPromoErrorCodes();
+		this.getShoppingCart().setDlvPassExtendDays(0);
 		//this.setPromoVariantMap(null);
 		// evaluate special dlv charge override
 		WaiveDeliveryCharge.apply(this);
 
 		// apply promotions
 		this.promotionEligibility = FDPromotionVisitor.applyPromotions(new PromotionContextAdapter(this));
+		//Add all applied promotion codes so far to this list. Used by MaxRedemptionStrategy
+		this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
     }
 
 
@@ -637,7 +643,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public PromotionI getEligibleSignupPromotion(){
 		Set promoSet = this.getPromotionEligibility().getEligiblePromotionCodes(EnumPromotionType.SIGNUP);
-		if (promoSet.isEmpty()) {
+		if (null == promoSet || promoSet.isEmpty()) {
 			return null;
 		}
 		String code = (String) promoSet.iterator().next();
@@ -1827,6 +1833,28 @@ public class FDUser extends ModelSupport implements FDUserI {
 			for (ErpClientCode cc : ol.getClientCodes())
 				ccs.add(new IgnoreCaseString(cc.getClientCode()));
 		return ccs;
+	}
+
+	public Set<String> getAllAppliedPromos() {
+		return allAppliedPromos;
+	}
+
+	public void addPromoErrorCode(String promoCode, int errorCode) {
+		promoErrorCodes.put(promoCode, errorCode);
+	}
+
+	public int getPromoErrorCode(String promoCode) {
+		Integer code = this.promoErrorCodes.get(promoCode);
+		if(code == null) return 0;
+		return code;
+	}
+	
+	public void clearPromoErrorCodes(){
+		this.promoErrorCodes.clear();
+	}
+
+	public void clearAllAppliedPromos(){
+		this.allAppliedPromos.clear();
 	}
 }
 

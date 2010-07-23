@@ -122,7 +122,9 @@ public class PromotionPopulator extends Action implements ActionI {
 	
 	private final static String ADJUST_PROMO_CUST_QUERY = 
 		"UPDATE CUST.PROMO_CUSTOMER pc" +
-		" SET" + 
+		" SET" +
+		/*
+		 * p2.IS_MAX_USAGE_PER_CUST is obsolete as per APPDEV-659.
 		" pc.USAGE_CNT =" + 
 		" (" +
 		"	SELECT" +   
@@ -134,13 +136,14 @@ public class PromotionPopulator extends Action implements ActionI {
 		"	AND pc2.customer_id = pc.customer_id" + 
 		"	AND pc2.promotion_id = pc.promotion_id" + 
 		" )," +
+		*/
 		" pc.EXPIRATION_DATE =" + 
 		" ( " +
 		"	SELECT" +   
 		"		DECODE(NVL(p3.ROLLING_EXPIRATION_DAYS, 0)," +   
 		"		0, p3.EXPIRATION_DATE," +
 		"		TO_DATE(TO_CHAR(SYSDATE, 'DD-MON-YYYY'), 'DD-MON-YYYY') + p3.ROLLING_EXPIRATION_DAYS)" +
-		"	FROM CUST.PROMO_CUSTOMER pc3, CUST.PROMOTION p3" +
+		"	FROM CUST.PROMO_CUSTOMER pc3, CUST.PROMOTION_NEW p3" +
 		"	WHERE pc3.promotion_id=p3.id" +
 		"	AND pc3.customer_id = pc.customer_id" +
 		"	AND pc3.promotion_id = pc.promotion_id" + 

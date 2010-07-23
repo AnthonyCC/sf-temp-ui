@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.content;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
@@ -102,9 +101,9 @@ public interface ContentNodeModel {
 
     // the end of the ContentNodeI methods
 	
-        public Object getNotInheritedAttributeValue(String name);
-        
-        public AttributeDefI getAttributeDef(String name);
+    public Object getNotInheritedAttributeValue(String name);
+    
+    public AttributeDefI getAttributeDef(String name);
     
 	public String getAltText();
 

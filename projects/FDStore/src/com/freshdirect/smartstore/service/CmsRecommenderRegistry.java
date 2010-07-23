@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
@@ -17,6 +18,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.RecommenderStrategy;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.smartstore.CartTabStrategyPriority;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
 import com.freshdirect.smartstore.Variant;
@@ -25,8 +27,8 @@ import com.freshdirect.smartstore.fdstore.FactorRequirer;
 import com.freshdirect.smartstore.fdstore.ScoreProvider;
 
 public class CmsRecommenderRegistry {
-	private static final Logger LOGGER = LoggerFactory
-			.getInstance(CmsRecommenderRegistry.class);
+	
+	private static final Logger LOGGER = LoggerFactory.getInstance(CmsRecommenderRegistry.class);
 
 	private static CmsRecommenderRegistry instance = null;
 
@@ -68,18 +70,18 @@ public class CmsRecommenderRegistry {
 
 		LOGGER.info("loading CMS recommenders:" + rss);
 
-		Set factors = new HashSet();
+		Set<String> factors = new HashSet<String>();
 
-		Iterator it = rss.iterator();
+		Iterator<ContentKey> it = rss.iterator();
 		while (it.hasNext()) {
-			ContentKey key = (ContentKey) it.next();
+			ContentKey key = it.next();
 			RecommenderStrategy strat = (RecommenderStrategy) ContentFactory
 					.getInstance().getContentNodeByKey(key);
 			RecommendationServiceConfig config = RecommendationServiceFactory
 					.createServiceConfig(strat);
 
 			Variant v = new Variant("cms_" + strat.getContentName(),
-					EnumSiteFeature.SMART_CATEGORY, config, new TreeMap());
+					EnumSiteFeature.SMART_CATEGORY, config, new TreeMap<Integer, SortedMap<Integer, CartTabStrategyPriority>>());
 			RecommendationService rs = RecommendationServiceFactory
 					.configure(v);
 			if (rs instanceof FactorRequirer) {
@@ -97,8 +99,7 @@ public class CmsRecommenderRegistry {
 		lastReload = System.currentTimeMillis();
 	}
 
-	public synchronized RecommendationService getService(
-			String recommenderStrategyId) {
+	public synchronized RecommendationService getService(String recommenderStrategyId) {
 		load(false);
 		return smartCatVariants.get(recommenderStrategyId);
 	}

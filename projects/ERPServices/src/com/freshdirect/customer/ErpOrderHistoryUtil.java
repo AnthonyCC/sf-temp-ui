@@ -295,4 +295,15 @@ public class ErpOrderHistoryUtil {
 		}
 		return intCount;
 	}
+	
+	public static int getSettledECheckOrderCount(Collection erpSaleInfos){
+		int ret = 0;
+		for(Iterator i = erpSaleInfos.iterator(); i.hasNext(); ){
+			ErpSaleInfo saleInfo = (ErpSaleInfo)i.next();
+			if (saleInfo.isSettled() && EnumPaymentMethodType.ECHECK.equals(saleInfo.getPaymentMethodType())){
+				ret++;
+			}
+		}
+		return ret;
+	}
 }

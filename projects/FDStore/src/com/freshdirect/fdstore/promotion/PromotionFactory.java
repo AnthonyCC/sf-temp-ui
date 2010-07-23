@@ -14,7 +14,7 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.promotion.management.FDPromotionManager;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.framework.cache.CacheI;
 import com.freshdirect.framework.cache.ManagedCache;
 import com.freshdirect.framework.cache.SimpleLruCache;
@@ -32,10 +32,13 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  *
  */
 public class PromotionFactory {
+	private final static Object lock = new Object();
+	private static PromotionFactory sharedInstance = null;
+	
+	private static final Category LOGGER = LoggerFactory.getInstance(PromotionFactory.class);
 
-	private final static PromotionFactory INSTANCE = new PromotionFactory();
-	private static Category LOGGER = LoggerFactory.getInstance(PromotionFactory.class);
-	private CacheI<String, PromotionI> cache;
+	private CacheI<String, PromotionI> redeemPromotions;
+	private CacheI<String, Integer> redemptions;
 	private Map<String, PromotionI> promotionMap = new LinkedHashMap<String, PromotionI>();
 	private Date maxLastModified;
 	
@@ -43,8 +46,7 @@ public class PromotionFactory {
 		protected List<PromotionI> load() {
 			try {
 				LOGGER.info("REFRESHING AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+maxLastModified);
-				@SuppressWarnings( "unchecked" )
-				List<PromotionI> promoList = FDPromotionManager.getModifiedOnlyPromos(maxLastModified);
+				List<PromotionI> promoList = FDPromotionNewManager.getModifiedOnlyPromos(maxLastModified);
 				LOGGER.info("REFRESHED AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS. FOUND "+promoList.size());
 				return promoList;
 			} catch (FDResourceException ex) {
@@ -54,14 +56,14 @@ public class PromotionFactory {
 	};
 
 	private PromotionFactory() {
-		this.cache = new ManagedCache<String, PromotionI>("PROMOTION", constructCache());
+		this.redeemPromotions = new ManagedCache<String, PromotionI>("PROMOTION", constructCache());
+		this.redemptions = new ManagedCache<String, Integer>("REDEMPTION", constructRedemptionCache());
 		loadAutomaticPromotions();
 	}
 
 	private void loadAutomaticPromotions(){
 		try {
-			@SuppressWarnings( "unchecked" )
-			List<PromotionI> promoList = FDPromotionManager.getAllAutomtaticPromotions();
+			List<PromotionI> promoList = FDPromotionNewManager.getAllAutomaticPromotions();
 			for ( PromotionI promo : promoList ) {
 				Date promoModifyDate = promo.getModifyDate();
 				Date now = new Date();
@@ -71,13 +73,18 @@ public class PromotionFactory {
 				this.promotionMap.put(promo.getPromotionCode(), promo);
 			}
 		} catch (FDResourceException ex) {
-			ex.printStackTrace();
-			throw new FDRuntimeException(ex);
+			LOGGER.error("Failed to load automatic promotions", ex);
 		}
 	}
-	
+
 	public static PromotionFactory getInstance() {
-		return INSTANCE;
+		synchronized(lock) {
+			if (sharedInstance == null) {
+				sharedInstance = new PromotionFactory();
+			}
+		}
+		
+		return sharedInstance;
 	}
 
 	protected synchronized Map<String, PromotionI> getAutomaticPromotionMap() {
@@ -155,15 +162,15 @@ public class PromotionFactory {
 				//This happens when promotion_popup page passes a null promotion code.
 				return null;
 			}
-			promotion = (Promotion) getCache().get(promoId);
+			promotion = (Promotion) getRedeemPromotions().get(promoId);
 			
 			if(promotion == null){
 				LOGGER.info("REFRESHING REDEMPTION PROMOTION "+promoId);
 				//The object has become stale or it's yet to be loaded into the cache.
-				promotion = FDPromotionManager.getPromotionForRT(promoId);
+				promotion = FDPromotionNewManager.getPromotionForRT(promoId);
 				if(promotion != null){
 					//Promotion can be null if the promotion has a incomplete configuration.
-					getCache().put(promoId, promotion);	
+					getRedeemPromotions().put(promoId, promotion);	
 				}
 				LOGGER.info("REFRESHING REDEMPTION PROMOTION DONE.");
 			}
@@ -175,6 +182,37 @@ public class PromotionFactory {
 	}
 	
 
+	/**
+	 * 
+	 * @param promoId
+	 * @return
+	 */
+	public Integer getRedemptions(String promoId) {
+		Integer redeemCount = null;
+		try{
+			if(promoId == null){
+				//This happens when promotion_popup page passes a null promotion code.
+				return null;
+			}
+			redeemCount = (Integer) getRedemptions().get(promoId);
+			
+			if(redeemCount == null){
+				LOGGER.info("REFRESHING REDEMPTION COUNT FOR PROMOTION "+promoId);
+				//The object has become stale or it's yet to be loaded into the cache.
+				redeemCount = FDPromotionNewManager.getRedemptionCount(promoId);
+				if(redeemCount != null){
+					//Promotion can be null if the promotion has a incomplete configuration.
+					getRedemptions().put(promoId, redeemCount);	
+				}
+				LOGGER.info("REFRESHING REDEMPTION COUNT FOR PROMOTION DONE.");
+			}
+		}catch (FDResourceException ex) {
+			LOGGER.error("Exception Occurred while getting Redemption count for Promotion "+promoId, ex);
+			throw new FDRuntimeException(ex);
+		}
+		return redeemCount;
+	}
+	
 	/**
 	 * Thie method returns a set of Automatic Promotion codes that matches
 	 * with the EnumPromotionType passed as an arguement. 
@@ -197,17 +235,21 @@ public class PromotionFactory {
 
 	public void forceRefresh(String promoId) {
 		automaticpromotions.forceRefresh();
-		if(getCache().get(promoId) != null){
+		if(getRedeemPromotions().get(promoId) != null){
 			/*
 			 * The updated promotion is a redemption promotion.So Remove the promotion 
 			 * object to reload during next request.
 			 */
-			getCache().remove(promoId);
+			getRedeemPromotions().remove(promoId);
 		}
 	}
 
-	private CacheI<String, PromotionI> getCache() {
-		return this.cache;
+	private CacheI<String, PromotionI> getRedeemPromotions() {
+		return this.redeemPromotions;
+	}
+	
+	private CacheI<String, Integer> getRedemptions() {
+		return this.redemptions;
 	}
 	
 	private CacheI<String, PromotionI> constructCache(){
@@ -215,6 +257,14 @@ public class PromotionFactory {
 		lruCache.setName("PROMOTION");
 		lruCache.setCapacity(ErpServicesProperties.getPromotionRTSizeLimit());
 		lruCache.setTimeout(FDStoreProperties.getPromotionRTRefreshPeriod());
+		return lruCache;
+	}
+	
+	private CacheI<String, Integer> constructRedemptionCache(){
+		SimpleLruCache<String, Integer> lruCache = new SimpleLruCache<String, Integer>();
+		lruCache.setName("REDEMPTION");
+		lruCache.setCapacity(2000);
+		lruCache.setTimeout(FDStoreProperties.getRedeemCntRefreshPeriod());
 		return lruCache;
 	}
 }

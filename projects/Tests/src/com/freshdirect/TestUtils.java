@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,11 +26,11 @@ import org.mockejb.interceptor.ClassPatternPointcut;
 import org.mockejb.jndi.MockContextFactory;
 
 import com.freshdirect.cms.application.CmsManager;
+import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.application.service.CompositeTypeService;
 import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
-import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpCustomerEntityBean;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
@@ -74,6 +73,9 @@ import com.freshdirect.fdstore.lists.ejb.FDListManagerHome;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerSB;
 import com.freshdirect.fdstore.lists.ejb.FDListManagerSessionBean;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerHome;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewHome;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
+import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSessionBean;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSessionBean;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
@@ -83,6 +85,9 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
 import com.freshdirect.mail.ejb.MailerGatewaySessionBean;
+import com.freshdirect.security.ticket.TicketServiceHome;
+import com.freshdirect.security.ticket.TicketServiceSB;
+import com.freshdirect.security.ticket.TicketServiceSessionBean;
 import com.freshdirect.smartstore.ejb.DyfModelHome;
 import com.freshdirect.smartstore.ejb.DyfModelSB;
 import com.freshdirect.smartstore.ejb.DyfModelSessionBean;
@@ -205,12 +210,14 @@ public class TestUtils {
                 DlvPassManagerSessionBean.class));
 
         container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/ErpInfo", ErpInfoHome.class, ErpInfoSB.class, ErpInfoSessionBean.class));
+        container.deploy(new SessionBeanDescriptor("freshdirect.fdstore.PromotionManagerNew", FDPromotionManagerNewHome.class, FDPromotionManagerNewSB.class, FDPromotionManagerNewSessionBean.class));
         
         // added for smart store
         container.deploy(new SessionBeanDescriptor("freshdirect.smartstore.VariantSelection", VariantSelectionHome.class, VariantSelectionSB.class,
                 VariantSelectionSessionBean.class));
         // FDStoreProperties.getFDCustomerHome()
         container.deploy(new EntityBeanDescriptor(FDStoreProperties.getFDCustomerHome(), FDCustomerHome.class, FDCustomerEB.class, FDCustomerEntityBean.class));
+        container.deploy(new SessionBeanDescriptor(TicketServiceHome.JNDI_HOME, TicketServiceHome.class, TicketServiceSB.class, TicketServiceSessionBean.class));
 
         // added for offline recommendation
         container.deploy(new SessionBeanDescriptor(OfflineRecommenderHome.JNDI_HOME, OfflineRecommenderHome.class, OfflineRecommenderSB.class,
@@ -220,7 +227,7 @@ public class TestUtils {
     }
 
     public static Context createContext() throws NamingException {
-        Hashtable env = new Hashtable();
+        Hashtable<String, String> env = new Hashtable<String, String>();
 
         // set the context factory to the mockejb context factory
         FDStoreProperties.set("fdstore.initialContextFactory", "org.mockejb.jndi.MockContextFactory");
@@ -270,10 +277,9 @@ public class TestUtils {
      * @param coll
      * @return
      */
-    public static Set<String> convertToStringList(Collection coll) {
+    public static Set<String> convertToStringList(Collection<ContentNodeModel> coll) {
         Set<String> set = new HashSet<String>();
-        for (Iterator iter = coll.iterator(); iter.hasNext();) {
-            ContentNodeModel obj = (ContentNodeModel) iter.next();
+        for (ContentNodeModel obj : coll) {
             set.add(obj.getContentKey().getId());
         }
         return set;
@@ -288,7 +294,7 @@ public class TestUtils {
     }
 
     public static XmlContentService initCmsManagerFromXmls(String xmlPath) {
-        List list = new ArrayList();
+        List<ContentTypeServiceI> list = new ArrayList<ContentTypeServiceI>();
         list.add(new XmlTypeService("classpath:/com/freshdirect/cms/resource/CMSStoreDef.xml"));
 
         CompositeTypeService typeService = new CompositeTypeService(list);

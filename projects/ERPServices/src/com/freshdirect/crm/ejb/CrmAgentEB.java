@@ -11,4 +11,5 @@ import com.freshdirect.framework.core.EntityBeanRemoteI;
 public interface CrmAgentEB extends EntityBeanRemoteI {
 	
 	public boolean isActive() throws RemoteException;
+	public boolean isMasqueradeAllowed() throws RemoteException;
 }

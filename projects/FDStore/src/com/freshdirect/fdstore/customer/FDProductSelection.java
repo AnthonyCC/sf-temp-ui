@@ -2,10 +2,12 @@ package com.freshdirect.fdstore.customer;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Discount;
@@ -31,6 +33,7 @@ import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -552,5 +555,15 @@ public class FDProductSelection implements FDProductSelectionI {
 	
 	public List<ErpClientCode> getClientCodes() {
 		return this.orderLine.getClientCodes();
+	}
+	
+	public boolean hasBrandName(Set<String> brandNames) {
+			ProductModel pm = ContentFactory.getInstance().getProductByName(this.getCategoryName(), this.getProductName());
+			for ( BrandModel brand : pm.getBrands() ) {
+				if (brandNames.contains(brand.getContentName())) {
+					return true;
+				}
+			}
+		return false;
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Set;
 import com.freshdirect.framework.core.ModelSupport;
 
 public class ErpNutritionModel extends ModelSupport {
+	
 	private static final long serialVersionUID = 165757752576184510L;
 
 	/** String skuCode to which this nutrition model belongs to */
@@ -102,7 +103,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String uom
 	 */
 	public String getUomFor(String key) {
-		String units = (String) uom.get(key);
+		String units = uom.get(key);
 		if (units == null) {
 			ErpNutritionType.Type type = ErpNutritionType.getType(key);
 			units = type.getUom();
@@ -143,7 +144,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String upc
 	 */
 	public String getIngredients() {
-		NutritionInfoAttribute attr = (NutritionInfoAttribute) info.get(ErpNutritionInfoType.INGREDIENTS);
+		NutritionInfoAttribute attr = info.get(ErpNutritionInfoType.INGREDIENTS);
 		if (attr != null) {
 			String ingredients = (String) attr.getValue();
 			if(ingredients != null){
@@ -170,7 +171,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String upc
 	 */
 	public String getHiddenIngredients() {
-		NutritionInfoAttribute attr = (NutritionInfoAttribute) info.get(ErpNutritionInfoType.HIDDEN_INGREDIENTS);
+		NutritionInfoAttribute attr = info.get(ErpNutritionInfoType.HIDDEN_INGREDIENTS);
 		if (attr != null) {
 			return (String) attr.getValue();
 		}
@@ -192,7 +193,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String upc
 	 */
 	public String getHeatingInstructions() {
-		NutritionInfoAttribute attr = (NutritionInfoAttribute) info.get(ErpNutritionInfoType.HEATING);
+		NutritionInfoAttribute attr = info.get(ErpNutritionInfoType.HEATING);
 		if (attr != null) {
 			return (String) attr.getValue();
 		}
@@ -214,7 +215,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String kosher symbol
 	 */
 	public EnumKosherSymbolValue getKosherSymbol() {
-		NutritionInfoAttribute attr = (NutritionInfoAttribute) info.get(ErpNutritionInfoType.KOSHER_SYMBOL);
+		NutritionInfoAttribute attr = info.get(ErpNutritionInfoType.KOSHER_SYMBOL);
 		if (attr != null) {
 			return (EnumKosherSymbolValue) attr.getValue();
 		}
@@ -240,7 +241,7 @@ public class ErpNutritionModel extends ModelSupport {
 	 * @return String kosher type
 	 */
 	public EnumKosherTypeValue getKosherType() {
-		NutritionInfoAttribute attr = (NutritionInfoAttribute) info.get(ErpNutritionInfoType.KOSHER_TYPE);
+		NutritionInfoAttribute attr = info.get(ErpNutritionInfoType.KOSHER_TYPE);
 		if (attr != null) {
 			return (EnumKosherTypeValue) attr.getValue();
 		}
@@ -264,10 +265,9 @@ public class ErpNutritionModel extends ModelSupport {
 		Object value = info.get(ErpNutritionInfoType.CLAIM);
 		if (value == null) {
 			return Collections.EMPTY_LIST;
-		} else {
-			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
-			return multi.getValues();
 		}
+		NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
+		return multi.getValues();
 	}
 
 	public void setClaims(List claims) {
@@ -282,16 +282,15 @@ public class ErpNutritionModel extends ModelSupport {
 		Object value = info.get(ErpNutritionInfoType.CLAIM);
 		if (value == null) {
 			return false;
-		} else {
-			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
-			for (Iterator cIter = multi.getValues().iterator(); cIter.hasNext();) {
-				EnumClaimValue c = (EnumClaimValue) cIter.next();
-				if (c.equals(claim)) {
-					return true;
-				}
-			}
-			return false;
 		}
+		NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
+		for (Iterator cIter = multi.getValues().iterator(); cIter.hasNext();) {
+			EnumClaimValue c = (EnumClaimValue) cIter.next();
+			if (c.equals(claim)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public double getNetCarbs() {
@@ -315,10 +314,9 @@ public class ErpNutritionModel extends ModelSupport {
 		NutritionInfoAttribute value = info.get(ErpNutritionInfoType.ALLERGEN);
 		if (value == null) {
 			return Collections.EMPTY_LIST;
-		} else {
-			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
-			return multi.getValues();
 		}
+		NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
+		return multi.getValues();
 	}
 
 	public void setAllergens(List allergens) {
@@ -347,10 +345,9 @@ public class ErpNutritionModel extends ModelSupport {
 		Object value = info.get(ErpNutritionInfoType.ORGANIC);
 		if (value == null) {
 			return Collections.EMPTY_LIST;
-		} else {
-			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
-			return multi.getValues();
 		}
+		NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
+		return multi.getValues();
 	}
 
 	public void setOrganicStatements(List organics) {
@@ -365,16 +362,15 @@ public class ErpNutritionModel extends ModelSupport {
 		Object value = info.get(ErpNutritionInfoType.ORGANIC);
 		if (value == null) {
 			return false;
-		} else {
-			NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
-			for (Iterator oIter = multi.getValues().iterator(); oIter.hasNext();) {
-				EnumOrganicValue o = (EnumOrganicValue) oIter.next();
-				if (o.equals(organic)) {
-					return true;
-				}
-			}
-			return false;
 		}
+		NutritionInfoMultiAttribute multi = (NutritionInfoMultiAttribute) value;
+		for (Iterator oIter = multi.getValues().iterator(); oIter.hasNext();) {
+			EnumOrganicValue o = (EnumOrganicValue) oIter.next();
+			if (o.equals(organic)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public Map<ErpNutritionInfoType,NutritionInfoAttribute> getNutritionInfo() {
@@ -389,7 +385,7 @@ public class ErpNutritionModel extends ModelSupport {
 	public Iterator<String> getKeyIterator() {
 		List<String> ret = new ArrayList<String>();
 		for (Iterator<String> i = ErpNutritionType.getTypesIterator(); i.hasNext();) {
-			String key = (String) i.next();
+			String key = i.next();
 			double value = getValueFor(key);
 			if (value > -999) {
 				ret.add(key);
@@ -449,7 +445,7 @@ public class ErpNutritionModel extends ModelSupport {
 		List attrs = new ArrayList();
 
 		for (Iterator keyIter = info.keySet().iterator(); keyIter.hasNext();) {
-			NutritionInfoAttribute a = (NutritionInfoAttribute) info.get(keyIter.next());
+			NutritionInfoAttribute a = info.get(keyIter.next());
 			if (a instanceof NutritionInfoMultiAttribute) {
 				List multi = (List) a.getValue();
 				for (Iterator mIter = multi.iterator(); mIter.hasNext();) {
@@ -492,17 +488,14 @@ public class ErpNutritionModel extends ModelSupport {
 	}
 	
 	public boolean hasIngredients(){
-		NutritionInfoAttribute infoAtt = (NutritionInfoAttribute) this.info.get(ErpNutritionInfoType.INGREDIENTS);
+		NutritionInfoAttribute infoAtt = this.info.get(ErpNutritionInfoType.INGREDIENTS);
 		if (infoAtt != null) {
 			String ingredients = (String) infoAtt.getValue();
 			if ((ingredients != null) && (ingredients.trim().length() > 0)) {
 				return true;
-			} else {
-				return false;
 			}
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	public Set<ErpNutritionInfoType> getNutritionInfoNames() {
@@ -513,7 +506,7 @@ public class ErpNutritionModel extends ModelSupport {
 		if (type.isMultiValued()) {
 			throw new IllegalArgumentException(type + " is multivalued, use getNutritionInfoList instead");
 		}
-		NutritionInfoAttribute ni = (NutritionInfoAttribute) this.info.get(type);
+		NutritionInfoAttribute ni = this.info.get(type);
 		return ni == null ? null : (String) ni.getValue();
 	}
 	

@@ -101,11 +101,11 @@
     </script>
 </head>
 <body scroll="no">
-    <br><br>
+    <br /><br />
 	<div align="center">
 		<div class="main_nav" style="background: #FFFFFF; border-bottom: 2px #000000 solid;">
 	    	<div class="login_header" style="padding: 12px; border-bottom: 1px #000000 solid;"><table align="center" cellpadding="0" cellspacing="0"><tr valign="bottom"><td><img src="/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" border="0" alt="FreshDirect"></td><td class="login_header" style="padding-left:14px;">Customer Relationship Management</td></tr></table></div>
-		<br>
+		<br />
     	<crm:CrmLoginController actionName="login" result="result" successPage="main/index.jsp">
 			<table align="center" cellpadding="6" cellspacing="0" class="login_field">
 		    	<form name="login" method="POST">
@@ -131,7 +131,7 @@
 				<tr>
 					<td colspan="2" align="center">
 						<input type="submit" value="LOGIN" class="submit" name="login" style="width: 220px;" tabindex="3">
-						<br><%--br><hr class="black1px"--%>
+						<br /><%--br><hr class="black1px"--%>
 					</td>
 				</tr>
 				<script>
@@ -144,14 +144,14 @@
 				<tr>
 				<input type="hidden" name="userId" value="guest">
 				<input type="hidden" name="password" value="guest">
-					<td colspan="2" valign="top" align="center"><input type="submit" value="ENTER AS GUEST" class="submit" name="guest_login" style="width: 200px;" tabindex="4"><br><br><hr class="black1px">Please log into the system or choose to enter as Guest
+					<td colspan="2" valign="top" align="center"><input type="submit" value="ENTER AS GUEST" class="submit" name="guest_login" style="width: 200px;" tabindex="4"><br /><br /><hr class="black1px">Please log into the system or choose to enter as Guest
 					</td>
 				</tr>
 				</form--%>
-			</table><br>
+			</table><br />
 		</crm:CrmLoginController>
 		</div>
-		<br><span class="copyright">&copy; 2002 - 2010 FreshDirect. All Rights Reserved.</span><br><br>
+		<br /><span class="copyright">&copy; 2002 - 2010 FreshDirect. All Rights Reserved.</span><br /><br />
 	</div>
 </body>
 </html>

@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,11 +12,11 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirectUrl {
 
-	private final List categories = new ArrayList();
-	private final List featuredRecipes = new ArrayList();
-    private final List featuredProdcuts = new ArrayList();
-    private final List departmentNav = new ArrayList();
-    private final List featuredSources = new ArrayList();
+	private final List<RecipeCategory> categories = new ArrayList<RecipeCategory>();
+	private final List<Recipe> featuredRecipes = new ArrayList<Recipe>();
+    private final List<ProductModel> featuredProdcuts = new ArrayList<ProductModel>();
+    private final List<RecipeCategory> departmentNav = new ArrayList<RecipeCategory>();
+    private final List<RecipeSource> featuredSources = new ArrayList<RecipeSource>();
     
 	public RecipeDepartment(ContentKey cKey) {
 		super(cKey);
@@ -29,15 +28,13 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
 	 * @return default RecipeDepartment
 	 */
 	public static RecipeDepartment getDefault() {
-		Set deptKeys = CmsManager.getInstance().getContentKeysByType(
-				FDContentTypes.RECIPE_DEPARTMENT);
+		Set<ContentKey> deptKeys = CmsManager.getInstance().getContentKeysByType(FDContentTypes.RECIPE_DEPARTMENT);
 
 		if (deptKeys.isEmpty()) {
 			return null;
 		}
-		ContentKey deptKey = (ContentKey) deptKeys.iterator().next();
-		ContentNodeModel deptNode = ContentFactory.getInstance()
-				.getContentNode(deptKey.getId());
+		ContentKey deptKey = deptKeys.iterator().next();
+		ContentNodeModel deptNode = ContentFactory.getInstance().getContentNode(deptKey.getId());
 		return (RecipeDepartment) deptNode;
 	}
 	
@@ -46,14 +43,13 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
 	}
 	
 	public String getRedirectUrl() {
-            return (String) getCmsAttributeValue("REDIRECT_URL");
+		return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
-	public List getDepartmentNav() {
+	public List<RecipeCategory> getDepartmentNav() {
 		ContentNodeModelUtil.refreshModels(this, "departmentNav", departmentNav, false);
 		// default to getCategories(), if no dept. nav specified
-		return departmentNav.isEmpty() ? getCategories() : Collections
-				.unmodifiableList(departmentNav);
+		return departmentNav.isEmpty() ? getCategories() : Collections.unmodifiableList(departmentNav);
 	}
 
 	/**
@@ -61,12 +57,12 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
 	 *  
 	 *  @return a list of RecipeCategory objects.
 	 */
-	public List getCategories() {
+	public List<RecipeCategory> getCategories() {
 		ContentNodeModelUtil.refreshModels(this, "categories", categories, true);
 		return Collections.unmodifiableList(categories);
 	}
 
-	public List getFeaturedRecipes() {
+	public List<Recipe> getFeaturedRecipes() {
 		ContentNodeModelUtil.refreshModels(this, "featuredRecipes", featuredRecipes, false);
 		return Collections.unmodifiableList(featuredRecipes);
 	}
@@ -76,38 +72,34 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
 		return FDAttributeFactory.lookup(this, "featuredRecipeCategory", (RecipeSubcategory) null);
 	}
 	
-	public List getFeaturedProducts() {
+	public List<ProductModel> getFeaturedProducts() {
 		ContentNodeModelUtil.refreshModels(this, "featuredProducts", featuredProdcuts, false);
 		return Collections.unmodifiableList(featuredProdcuts);
 	}
 
-	public List getAvailableFeaturedProducts() {
-		List availProducts = new ArrayList();
-		for (Iterator itrFp = getFeaturedProducts().iterator(); itrFp.hasNext(); ){
-			ProductModel p = (ProductModel)itrFp.next();
+	public List<ProductModel> getAvailableFeaturedProducts() {
+		List<ProductModel> availProducts = new ArrayList<ProductModel>();
+		for ( ProductModel p : getFeaturedProducts() ) {
 			if (!p.isUnavailable()) {
 				availProducts.add(p);
 			}
 		}
-		return Collections.unmodifiableList(availProducts);
-		
+		return Collections.unmodifiableList(availProducts);		
 	}
 	
-	public List getFeaturedSources() {
+	public List<RecipeSource> getFeaturedSources() {
 		ContentNodeModelUtil.refreshModels(this, "featuredSource", featuredSources, false);
 		return Collections.unmodifiableList(featuredSources);
 	}
 	
-	public List getAvailableFeaturedSources() {
-		List availSources = new ArrayList();
-		for (Iterator itrFs = getFeaturedSources().iterator(); itrFs.hasNext(); ){
-			RecipeSource s = (RecipeSource)itrFs.next();
+	public List<RecipeSource> getAvailableFeaturedSources() {
+		List<RecipeSource> availSources = new ArrayList<RecipeSource>();
+		for ( RecipeSource s : getFeaturedSources() ) {
 			if (s.isAvailable()) {
 				availSources.add(s);
 			}
 		}
-		return Collections.unmodifiableList(availSources);
-	
+		return Collections.unmodifiableList(availSources);	
 	}
 
 	public CategoryModel getFeaturedProductCategory() {
@@ -118,8 +110,8 @@ public class RecipeDepartment extends ContentNodeModelImpl implements HasRedirec
 		return "www.freshdirect.com/" + getContentName();
 	}
 	
-        public Html getRecipeEditorial() {
-            return FDAttributeFactory.constructHtml(this, "editorial");
-        }
+    public Html getRecipeEditorial() {
+        return FDAttributeFactory.constructHtml(this, "editorial");
+    }
 	
 }

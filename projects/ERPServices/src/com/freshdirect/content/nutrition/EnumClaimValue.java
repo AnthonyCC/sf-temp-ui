@@ -18,6 +18,8 @@ import java.util.*;
  */
 public class EnumClaimValue implements NutritionValueEnum {
 	
+	private static final long	serialVersionUID	= -4887294112082084899L;
+	
 	public final static EnumClaimValue OAN_ORGANIC = new EnumClaimValue("OAN",       "Approved O&AN Store", 1);
 	public final static EnumClaimValue KOSHER_FOR_PASSOVER = new EnumClaimValue("KOS_PAS", "Kosher for Passover", 1);
 	
@@ -54,7 +56,7 @@ public class EnumClaimValue implements NutritionValueEnum {
 		return false;
 	}
     
-    private final static List types = new ArrayList();
+    private final static List<EnumClaimValue> types = new ArrayList<EnumClaimValue>();
     static {
     	types.add(new EnumClaimValue("NONE", "None", 0));
         types.add(new EnumClaimValue("FR_GLUT", "Gluten Free", 1));
@@ -109,17 +111,16 @@ public class EnumClaimValue implements NutritionValueEnum {
 		
 		types.add(new EnumClaimValue("KOS_NOPAS", "Not certified for Passover.", 1));
 
-		types.add(new EnumClaimValue("PEANUTS",       "Produced in our bakery, where tree nuts and peanuts are used.", 1));
+		types.add(new EnumClaimValue("PEANUTS", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
     }
 
-    public static List getValues() {
+    public static List<EnumClaimValue> getValues() {
     	Collections.sort(types, ClaimValueComapartor);
         return Collections.unmodifiableList(types);
     }
     
     public static EnumClaimValue getValueForCode(String code) {
-        for (Iterator i=types.iterator(); i.hasNext(); ) {
-            EnumClaimValue value = (EnumClaimValue) i.next();
+        for ( EnumClaimValue value : types ) {
             if (value.getCode().equals(code)) {
                 return value;
             }
@@ -127,16 +128,13 @@ public class EnumClaimValue implements NutritionValueEnum {
         return null;
     }
     
-    public static Comparator ClaimValueComapartor = new Comparator(){
-		public int compare(Object o1, Object o2) {
-			EnumClaimValue claim1 = (EnumClaimValue) o1;
-		   	EnumClaimValue claim2 = (EnumClaimValue) o2;
-		   	
+    public static Comparator<EnumClaimValue> ClaimValueComapartor = new Comparator<EnumClaimValue>(){
+		public int compare(EnumClaimValue claim1, EnumClaimValue claim2) {
 		   	int diff = claim1.getPriority()- claim2.getPriority();
 		   	if (diff==0) {
 		   		diff = claim1.getName().compareTo(claim2.getName());
 		   	}
 		   	return diff;
-			}
-		};
+		}
+	};
 }

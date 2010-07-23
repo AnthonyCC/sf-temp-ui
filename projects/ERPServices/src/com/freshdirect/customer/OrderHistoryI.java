@@ -44,4 +44,6 @@ public interface OrderHistoryI extends Serializable {
 	
 	//public double getOrderCountForChefsTableEligibility();
 	public int getTotalRegularOrderCount();
+	
+	public int getSettledECheckOrderCount();
 }

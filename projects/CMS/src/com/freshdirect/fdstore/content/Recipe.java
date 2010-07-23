@@ -8,11 +8,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.fdstore.FDContentTypes;
@@ -22,6 +20,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateRange;
 
 public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource {
+	
 	private static final long serialVersionUID = 1726859705342564086L;
 
 	private static final Random rnd = new Random();
@@ -30,41 +29,41 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 		return rnd.nextInt(n);
 	}
 
-	private static ThreadLocal activeYmalSets = new ThreadLocal() {
-		protected Object initialValue() {
-			return new HashMap();
+	private static ThreadLocal<HashMap<String,YmalSet>> activeYmalSets = new ThreadLocal<HashMap<String,YmalSet>>() {
+		protected HashMap<String,YmalSet> initialValue() {
+			return new HashMap<String,YmalSet>();
 		}
 	};
 	
 	private static YmalSet getCurrentActiveYmalSet(String productId) {
-		return (YmalSet) ((Map) activeYmalSets.get()).get(productId);
+		return activeYmalSets.get().get(productId);
 	}
 	
 	private static void setCurrentActiveYmalSet(String productId, YmalSet set) {
-		((Map) activeYmalSets.get()).put(productId, set);
+		activeYmalSets.get().put(productId, set);
 	}
 
 	private static void resetActiveYmalSets() {
-		((Map) activeYmalSets.get()).clear();
+		activeYmalSets.get().clear();
 	}
 
-	private final List authors = new ArrayList();
+	private final List<RecipeAuthor> authors = new ArrayList<RecipeAuthor>();
 
-	private final List variants = new ArrayList();
+	private final List<RecipeVariant> variants = new ArrayList<RecipeVariant>();
 
-	private final List classifications = new ArrayList();
+	private final List<DomainValue> classifications = new ArrayList<DomainValue>();
 	
 	private final ContentStatusHelper helper;
 
 	/**
 	 *  The list of YMAL products related to this recipe.
 	 */
-	private final List ymals = new ArrayList();
+	private final List<ContentNodeModel> ymals = new ArrayList<ContentNodeModel>();
 	
 	/**
 	 *  The list of YmalSet objects related to this recipe.
 	 */
-	private final List ymalSets = new ArrayList();
+	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
 	
 	public Recipe(ContentKey cKey) {
 		super(cKey);
@@ -117,7 +116,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 		return key == null ? null : (RecipeSource) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
-	public List getAuthors() {
+	public List<RecipeAuthor> getAuthors() {
 		ContentNodeModelUtil.refreshModels(this, "authors", authors, false);
 		return Collections.unmodifiableList(authors);
 	}
@@ -126,9 +125,8 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 * @see RecipeAuthor#authorsToString(List)
 	 */
 	public String getAuthorNames() {
-		List authors = !this.authors.isEmpty() ? this.authors
-				: (getSource() != null ? getSource().getAuthors()
-						: Collections.EMPTY_LIST);			
+		List<RecipeAuthor> authors = !this.authors.isEmpty() ? this.authors
+				: (getSource() != null ? getSource().getAuthors() : Collections.<RecipeAuthor>emptyList());			
 		return RecipeAuthor.authorsToString(authors);
 	}
 	
@@ -137,7 +135,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  
 	 *  @return a list of RecipeVariant objects.
 	 */
-	public List getVariants() {
+	public List<RecipeVariant> getVariants() {
 		ContentNodeModelUtil.refreshModels(this, "variants", variants, true);
 		return Collections.unmodifiableList(variants);
 	}
@@ -147,10 +145,10 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  
 	 *  @return a list of RecipeVariant objects.
 	 */
-	public List getAvailableVariants() {
-		List l = new ArrayList(getVariants());
-		for (Iterator i = l.iterator(); i.hasNext();) {
-			RecipeVariant v = (RecipeVariant) i.next();
+	public List<RecipeVariant> getAvailableVariants() {
+		List<RecipeVariant> l = new ArrayList<RecipeVariant>(getVariants());
+		for (Iterator<RecipeVariant> i = l.iterator(); i.hasNext();) {
+			RecipeVariant v = i.next();
 			if (!v.isAvailable()) {
 				i.remove();
 			}
@@ -159,20 +157,19 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	}
 
 	public RecipeVariant getDefaultVariant() {
-		List variants = this.getAvailableVariants();
-		for (Iterator i = variants.iterator(); i.hasNext();) {
-			RecipeVariant v = (RecipeVariant) i.next();
+		List<RecipeVariant> variants = this.getAvailableVariants();
+		for ( RecipeVariant v : variants ) {
 			if ("default".equalsIgnoreCase(v.getName())) {
 				return v;
 			}
 		}
 		if (variants.size() >= 1) {
-			return (RecipeVariant) variants.get(0);
+			return variants.get(0);
 		}
 		return null;
 	}
 
-	public List getClassifications() {
+	public List<DomainValue> getClassifications() {
 		ContentNodeModelUtil.refreshModels(this, "classifications", classifications, false);
 		return Collections.unmodifiableList(classifications);
 	}
@@ -185,8 +182,9 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @return a list of content nodes that are YMALs to this product.
 	 *  @deprecated
 	 */
-	public List getYouMightAlsoLike() {
-		return getYmals();
+	@SuppressWarnings( "unchecked" )
+	public List<ProductModel> getYouMightAlsoLike() {
+		return (List)getYmals();
 	}
 	
 	/**
@@ -195,7 +193,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @return a list of all related products for this recipe, of type
 	 *          ContentNode Model
 	 */
-	private List getYmals() {
+	private List<ContentNodeModel> getYmals() {
 		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", ymals, false, true);
 		return Collections.unmodifiableList(ymals);
 	}
@@ -208,18 +206,17 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *          YMALs of this product.
 	 *  @see #getYouMightAlsoLike()
 	 */
-	private List getYmals(ContentType type) {
-		List values = getYmals();
-		List l      = new ArrayList(values.size());
+	@SuppressWarnings( "unchecked" )
+	private <T extends ContentNodeModel> List<T> getYmals(ContentType type) {
+		List<ContentNodeModel> values = getYmals();
+		List<T> l = new ArrayList<T>( values.size() );
 		
-		for (Iterator i = values.iterator(); i.hasNext(); ) {
-			ContentNodeModel  node = (ContentNodeModel) i.next();
-			ContentKey        k    = node.getContentKey();
+		for ( ContentNodeModel node : values ) {
+			ContentKey k = node.getContentKey();
 			if (type.equals(k.getType())) {
-				l.add(node);
+				l.add((T)node);
 			}
-		}
-		
+		}		
 		return l;
 	}
 
@@ -228,7 +225,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  
 	 *  @return the list of all YmalSet objects related to this recipe.
 	 */
-	private List getYmalSets() {
+	private List<YmalSet> getYmalSets() {
 		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
 		return Collections.unmodifiableList(ymalSets);
 	}
@@ -242,11 +239,9 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	public YmalSet getActiveYmalSet() {
 		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
 		if (current == null) {
-			List ymalSets = getYmalSets();
-			List activeSets = new ArrayList(ymalSets.size());
-			for (Iterator it = ymalSets.iterator(); it.hasNext(); ) {
-				YmalSet     ymalSet = (YmalSet) it.next();
-				
+			List<YmalSet> ymalSets = getYmalSets();
+			List<YmalSet> activeSets = new ArrayList<YmalSet>(ymalSets.size());
+			for ( YmalSet ymalSet : ymalSets ) {
 				if (ymalSet.isActive()) {
 					activeSets.add(ymalSet);
 				}
@@ -254,13 +249,12 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 		
 			if (activeSets.size() == 0)
 				return null;
-			else {
-				YmalSet newSet = (YmalSet) activeSets.get(nextInt(activeSets.size()));
-				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
-				return newSet;
-			}
-		} else
-			return current;
+			
+			YmalSet newSet = activeSets.get(nextInt(activeSets.size()));
+			setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
+			return newSet;
+		}
+		return current;
 	}
 
 	public void resetActiveYmalSetSession() {
@@ -273,9 +267,9 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @param products a set of ProductModel objects.
 	 *         this set may be changed by this function call.
 	 */
-	private void removeDiscUnavProducts(Set products) {
-		for (Iterator it = products.iterator(); it.hasNext(); ) {
-			ProductModel product = (ProductModel) it.next();
+	private void removeDiscUnavProducts(Set<ProductModel> products) {
+		for (Iterator<ProductModel> it = products.iterator(); it.hasNext(); ) {
+			ProductModel product = it.next();
 			
 			if (product.isUnavailable() || product.isDiscontinued()) {
 				it.remove();
@@ -289,7 +283,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @param products a set of ProductModel objects.
 	 *         this set may be changed by this function call.
 	 */
-	private void removeSelf(Set products) {
+	private void removeSelf(Set<ProductModel> products) {
 		if (products.contains(this)) {
 			products.remove(this);
 		}
@@ -301,9 +295,9 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @param recipes a set of Recipe objects.
 	 *         this set may be changed by this function call.
 	 */
-	private void removeUnavRecipes(Set recipes) {
-		for (Iterator it = recipes.iterator(); it.hasNext(); ) {
-			Recipe recipe = (Recipe) it.next();
+	private void removeUnavRecipes(Set<Recipe> recipes) {
+		for (Iterator<Recipe> it = recipes.iterator(); it.hasNext(); ) {
+			Recipe recipe = it.next();
 			
 			if (!recipe.isAvailable()) {
 				it.remove();
@@ -320,18 +314,15 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @param removeSkus a set of FDSku object, for which correspodning
 	 *         products will be removed.
 	 */
-	private void removeSkus(Collection products, Set removeSkus) {
-		if (removeSkus == null) return ;
-		for (Iterator it = products.iterator(); it.hasNext(); ) {
-			ProductModel product = (ProductModel) it.next();
+	private void removeSkus(Collection<ProductModel> products, Set<FDSku> removeSkus) {
+		if (removeSkus == null) 
+			return;
+		for (Iterator<ProductModel> it = products.iterator(); it.hasNext(); ) {
+			ProductModel product = it.next();
 			
-inner:
-			for (Iterator iit = product.getSkus().iterator(); iit.hasNext(); ) {
-				SkuModel sku = (SkuModel) iit.next();
-
-				for (Iterator iiit = removeSkus.iterator(); iiit.hasNext(); ) {
-					FDSku fdSku = (FDSku) iiit.next();
-					
+			inner:
+			for ( SkuModel sku : product.getSkus() ) {
+				for ( FDSku fdSku : removeSkus ) {
 					if (sku.getSkuCode().equals(fdSku.getSkuCode())) {
 						it.remove();
 						break inner;
@@ -350,7 +341,7 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYmalProducts(Set)
 	 */
-	public List getYmalProducts() {
+	public List<ProductModel> getYmalProducts() {
 		return getYmalProducts(null);
 	}
 
@@ -379,11 +370,12 @@ inner:
 	 *  @return a list of ProductModel objects, which are contained in
 	 *          the YMALs for this product.
 	 */
-	public List getYmalProducts(Set removeSkus) {
-		LinkedHashSet  ymals   = new LinkedHashSet(getYmals(FDContentTypes.PRODUCT));
-		YmalSet        ymalSet = getActiveYmalSet();
-		ArrayList      finalList;
-		int            size;
+	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
+		List<ProductModel> ymalList = getYmals( FDContentTypes.PRODUCT );
+		LinkedHashSet<ProductModel> ymals = new LinkedHashSet<ProductModel>( ymalList );
+		YmalSet ymalSet = getActiveYmalSet();
+		ArrayList<ProductModel> finalList;
+		int size;
 		
 		if (ymalSet != null) {
 			ymals.addAll(ymalSet.getYmalProducts());
@@ -394,9 +386,9 @@ inner:
 		removeSkus(ymals, removeSkus);
 
 		size      = Math.min(ymals.size(), 6);      
-		finalList = new ArrayList(size);
+		finalList = new ArrayList<ProductModel>(size);
 		// cut the list to be at most 6 items in size
-		for (Iterator it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
+		for (Iterator<ProductModel> it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
 			finalList.add(it.next());
 		}
 		
@@ -420,20 +412,21 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYouMightAlsoLike()
 	 */
-	public List getYmalCategories() {
-		LinkedHashSet  ymals   = new LinkedHashSet(getYmals(FDContentTypes.CATEGORY));
-		YmalSet        ymalSet = getActiveYmalSet();
-		ArrayList      finalList;
-		int            size;
+	public List<CategoryModel> getYmalCategories() {
+		List<CategoryModel> ymalList = getYmals( FDContentTypes.CATEGORY );
+		LinkedHashSet<CategoryModel> ymals = new LinkedHashSet<CategoryModel>( ymalList );
+		YmalSet ymalSet = getActiveYmalSet();
+		ArrayList<CategoryModel> finalList;
+		int size;
 		
 		if (ymalSet != null) {
 			ymals.addAll(ymalSet.getYmalCategories());
 		}
 		
 		size      = Math.min(ymals.size(), 6);      
-		finalList = new ArrayList(size);
+		finalList = new ArrayList<CategoryModel>(size);
 		// cut the list to be at most 6 items in size
-		for (Iterator it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
+		for ( Iterator<CategoryModel> it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
 			finalList.add(it.next());
 		}
 		
@@ -457,11 +450,12 @@ inner:
 	 *          the YMALs for this product.
 	 *  @see #getYouMightAlsoLike()
 	 */
-	public List getYmalRecipes() {
-		LinkedHashSet  ymals   = new LinkedHashSet(getYmals(FDContentTypes.RECIPE));
-		YmalSet        ymalSet = getActiveYmalSet();
-		ArrayList      finalList;
-		int            size;
+	public List<Recipe> getYmalRecipes() {
+		List<Recipe> ymalList = getYmals( FDContentTypes.RECIPE );
+		LinkedHashSet<Recipe> ymals = new LinkedHashSet<Recipe>( ymalList );
+		YmalSet ymalSet = getActiveYmalSet();
+		ArrayList<Recipe> finalList;
+		int size;
 		
 		if (ymalSet != null) {
 			ymals.addAll(ymalSet.getYmalRecipes());
@@ -470,41 +464,41 @@ inner:
 		removeUnavRecipes(ymals);
 		
 		size      = Math.min(ymals.size(), 6);      
-		finalList = new ArrayList(size);
+		finalList = new ArrayList<Recipe>(size);
 		// cut the list to be at most 6 items in size
-		for (Iterator it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
+		for (Iterator<Recipe> it = ymals.iterator(); it.hasNext() && size-- > 0; ) {
 			finalList.add(it.next());
 		}
 		
 		return finalList;
 	}
 
-	public List getRelatedProducts() {
+	public List<ProductModel> getRelatedProducts() {
 		return getYouMightAlsoLike();
 	}
 
 	public Html getDescription() {
-            return FDAttributeFactory.constructHtml(this, "description");
+		return FDAttributeFactory.constructHtml( this, "description" );
 	}
-	
+
 	public Html getIngredientsMedia() {
-            return FDAttributeFactory.constructHtml(this, "ingredientsMedia");
+		return FDAttributeFactory.constructHtml( this, "ingredientsMedia" );
 	}
 
 	public Html getPreparationMedia() {
-            return FDAttributeFactory.constructHtml(this, "preparationMedia");
+		return FDAttributeFactory.constructHtml( this, "preparationMedia" );
 	}
-	
+
 	public Html getCopyrightMedia() {
-            return FDAttributeFactory.constructHtml(this, "copyrightMedia");
+		return FDAttributeFactory.constructHtml( this, "copyrightMedia" );
 	}
-	
+
 	public Image getPhoto() {
-            return FDAttributeFactory.constructImage(this, "photo");
+		return FDAttributeFactory.constructImage( this, "photo" );
 	}
 
 	public Image getLogo() {
-            return FDAttributeFactory.constructImage(this, "logo");
+		return FDAttributeFactory.constructImage( this, "logo" );
 	}
 	
 	public boolean isAvailable() {
@@ -524,18 +518,18 @@ inner:
 		}
 		
 		// check if there's at least available variant
-		for (Iterator i = getVariants().iterator(); i.hasNext();) {
-			RecipeVariant v = (RecipeVariant) i.next();
+		for ( RecipeVariant v : getVariants() ) {
 			if (v.isAvailable()) {
 				return true;
 			}
-		}
-		
+		}		
 		return false;
 	}
+	
 	public String getDisplayableSource() {
 		return getDisplayableSource(false);
 	}
+	
 	public String getDisplayableSource(boolean linkSource) {
 		  RecipeSource source = this.getSource();
 		  String sourceName="";
@@ -550,12 +544,10 @@ inner:
 		  //boolean recipeHasAuthors = true;
 		  
          return createDisplayableSource(sourceName, !this.authors.isEmpty()  ? this.authors 
-				  : (source!=null  ? source.getAuthors() : Collections.EMPTY_LIST),	!this.authors.isEmpty() );	
-          
-		  
+				  : (source!=null  ? source.getAuthors() : Collections.<RecipeAuthor>emptyList()),	!this.authors.isEmpty() );		  
 	}
 	
-	private String createDisplayableSource(String sourceName,List authors,boolean isRecipeAuthor) {
+	private String createDisplayableSource( String sourceName, List<RecipeAuthor> authors, boolean isRecipeAuthor ) {
 		StringBuffer authorNames = new StringBuffer();
 		StringBuffer displayString = new StringBuffer();
 		
@@ -569,7 +561,7 @@ inner:
 	   		}  else if (i!=0){
 	   			authorNames.append(", ");
 	   		}
-	   		authorNames.append( ((RecipeAuthor)authors.get(i)).getName());
+	   		authorNames.append( authors.get(i).getName() );
 		  }
 
 
@@ -602,11 +594,9 @@ inner:
 		if (rcpDept == null) {
 			return null;
 		}
-		List classifications = this.getClassifications();
-		for (Iterator itrC = rcpDept.getCategories().iterator(); itrC.hasNext();) {
-			RecipeCategory rcpCat = (RecipeCategory) itrC.next();
-			for (Iterator itrS = rcpCat.getSubcategories().iterator(); itrS.hasNext();) {
-				RecipeSubcategory rcpSubCat = (RecipeSubcategory) itrS.next();
+		List<DomainValue> classifications = this.getClassifications();
+		for ( RecipeCategory rcpCat : rcpDept.getCategories() ) {
+			for ( RecipeSubcategory rcpSubCat : rcpCat.getSubcategories() ) {
 				if (classifications.contains(rcpSubCat.getClassification())) {
 					return rcpSubCat;
 				}
@@ -642,8 +632,7 @@ inner:
 		final YmalSet activeYmalSet = getActiveYmalSet();
 		if (activeYmalSet != null)
 			return activeYmalSet.getProductsHeader();
-		else
-			return null;
+		return null;
 	}
 	
 	public Image getTitleImage() {

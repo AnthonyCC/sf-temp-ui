@@ -15,6 +15,7 @@ import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.NVL;
@@ -25,7 +26,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
 
 		public int compare(ProductModel p1, ProductModel p2) {
-
 			// ProductModel p1 = (ProductModel) o1;
 			// ProductModel p2 = (ProductModel) o2;
 			String p1Dept = "";
@@ -51,8 +51,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 		public int compare(SkuModel sku1, SkuModel sku2) {
 			try {
-				// SkuModel sku1 = ((SkuModel) obj1);
-				// SkuModel sku2 = ((SkuModel) obj2);
 				String zoneId1 = sku1.getPricingContext().getZoneId();
 				String zoneId2 = sku2.getPricingContext().getZoneId();
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
@@ -90,36 +88,33 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public static class ZonePriceComparator implements Comparator<SkuModel> {
 	    String zoneId;
 	    
-            public ZonePriceComparator(String zoneId) {
-                this.zoneId = zoneId;
-            }
+        public ZonePriceComparator(String zoneId) {
+            this.zoneId = zoneId;
+        }
 
-            @Override
-            public int compare(SkuModel sku1, SkuModel sku2) {
-                try {
-                    FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
-                    FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
-                    if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() > pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
-                        return 1;
-                    } else if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() < pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
-                        return -1;
-                    } else {
-                        return 0;
-                    }
-                } catch (FDResourceException e) {
-                    throw new RuntimeException(e);
-                } catch (FDSkuNotFoundException e) {
-                    throw new RuntimeException(e);
+        @Override
+        public int compare(SkuModel sku1, SkuModel sku2) {
+            try {
+                FDProductInfo pi1 = FDCachedFactory.getProductInfo(sku1.getSkuCode());
+                FDProductInfo pi2 = FDCachedFactory.getProductInfo(sku2.getSkuCode());
+                if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() > pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                    return 1;
+                } else if (pi1.getZonePriceInfo(zoneId).getDefaultPrice() < pi2.getZonePriceInfo(zoneId).getDefaultPrice()) {
+                    return -1;
+                } else {
+                    return 0;
                 }
+            } catch (FDResourceException e) {
+                throw new RuntimeException(e);
+            } catch (FDSkuNotFoundException e) {
+                throw new RuntimeException(e);
             }
+        }
 	}
 	
-	public final static Comparator AGE_COMPARATOR = new Comparator() {
+	public final static Comparator<ProductModel> AGE_COMPARATOR = new Comparator<ProductModel>() {
 
-		public int compare(Object o1, Object o2) {
-
-			ProductModel p1 = (ProductModel) o1;
-			ProductModel p2 = (ProductModel) o2;
+		public int compare(ProductModel p1, ProductModel p2) {
 			double age1;
 			double age2;
 			if(p1 != null)
@@ -137,68 +132,67 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	};
 
 	
-	public static class ProductModelPriceComparator implements Comparator {
+	public static class ProductModelPriceComparator implements Comparator<ProductModel> {
 
 	    final boolean inverse;
-	    private ProductModelPriceComparator(boolean inverse) {
+	    public ProductModelPriceComparator(boolean inverse) {
 	        this.inverse = inverse;
 	    }
 	    
-            public int compare(Object o1, Object o2) {
-                double price1 = 0;
-                double price2 = 0;
-                ProductModel model1 = (ProductModel) o1;
-                SkuModel sku1 = model1.getDefaultSku();
-                if (sku1 != null) {
-    				String zoneId1 = sku1.getPricingContext().getZoneId();
-                    try {
-                        price1 = sku1.getProductInfo().getZonePriceInfo(zoneId1).getDefaultPrice();
-                    } catch (FDResourceException e) {
-                        e.printStackTrace();
-                    } catch (FDSkuNotFoundException e) {
-                        e.printStackTrace();
-                    }
+        public int compare(ProductModel model1, ProductModel model2) {
+            double price1 = 0;
+            double price2 = 0;
+            SkuModel sku1 = model1.getDefaultSku();
+            if (sku1 != null) {
+				String zoneId1 = sku1.getPricingContext().getZoneId();
+                try {
+                    price1 = sku1.getProductInfo().getZonePriceInfo(zoneId1).getDefaultPrice();
+                } catch (FDResourceException e) {
+                    e.printStackTrace();
+                } catch (FDSkuNotFoundException e) {
+                    e.printStackTrace();
                 }
-    
-                ProductModel model2 = (ProductModel) o2;
-                SkuModel sku2 = model2.getDefaultSku();
-                if (sku2 != null) {
-                    String zoneId2 = sku2.getPricingContext().getZoneId();
-                    try {
-                        price2 = sku2.getProductInfo().getZonePriceInfo(zoneId2).getDefaultPrice();
-                    } catch (FDResourceException e) {
-                        e.printStackTrace();
-                    } catch (FDSkuNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                
-                if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
-                	return 1;
-                }
-                
-                if (model1.isFullyAvailable() && !model2.isFullyAvailable()) {
-                	return -1;
-                }
-                
-                int result = Double.compare(price1, price2);
-                if (inverse) {
-                    result = -result;
-                }
-                return result;
             }
+
+            SkuModel sku2 = model2.getDefaultSku();
+            if (sku2 != null) {
+                String zoneId2 = sku2.getPricingContext().getZoneId();
+                try {
+                    price2 = sku2.getProductInfo().getZonePriceInfo(zoneId2).getDefaultPrice();
+                } catch (FDResourceException e) {
+                    e.printStackTrace();
+                } catch (FDSkuNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+            
+            if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
+            	return 1;
+            }
+            
+            if (model1.isFullyAvailable() && !model2.isFullyAvailable()) {
+            	return -1;
+            }
+            
+            int result = Double.compare(price1, price2);
+            if (inverse) {
+                result = -result;
+            }
+            return result;
         }
+    }
 
 	
 	
-	public static class RatingComparator implements Comparator {
+	public static class RatingComparator implements Comparator<SkuModel> {
 
 		private int flips;
 
-		public int compare(Object obj1, Object obj2) {
+		@SuppressWarnings( "null" )
+		public int compare(SkuModel obj1, SkuModel obj2) {
 			try {
-				FDProductInfo pi1 = FDCachedFactory.getProductInfo(((SkuModel) obj1).getSkuCode());
-				FDProductInfo pi2 = FDCachedFactory.getProductInfo(((SkuModel) obj2).getSkuCode());
+				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());
+				FDProductInfo pi2 = FDCachedFactory.getProductInfo(obj2.getSkuCode());
 				
 				EnumOrderLineRating oli1=EnumOrderLineRating.getEnumByStatusCode(pi1.getRating());
 				EnumOrderLineRating oli2=EnumOrderLineRating.getEnumByStatusCode(pi2.getRating());
@@ -213,12 +207,12 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 				if (oli1.getId()>oli2.getId()) {
 					flips++;
 					return 1;
-				} if (oli1.getId()<oli2.getId()) {
+				} 
+				if (oli1.getId()<oli2.getId()) {
 					flips++;
 					return -1;
-				} else {
-					return 0;
 				}
+				return 0;
 			} catch (FDResourceException fdre) {
 				// rethrow as a runtime exception
 				throw new RuntimeException(fdre.getMessage());
@@ -239,14 +233,14 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	}
 
 	/** Don't use allTheSame/reset, that's not thread-safe */
-	public final static Comparator PRICE_COMPARATOR = new ProductModel.PriceComparator();
+	public final static Comparator<SkuModel> PRICE_COMPARATOR = new ProductModel.PriceComparator();
 
-        public final static Comparator PRODUCT_MODEL_PRICE_COMPARATOR = new ProductModel.ProductModelPriceComparator(false);
-        public final static Comparator PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE = new ProductModel.ProductModelPriceComparator(true);
+    public final static Comparator<ProductModel> PRODUCT_MODEL_PRICE_COMPARATOR = new ProductModel.ProductModelPriceComparator(false);
+    public final static Comparator<ProductModel> PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE = new ProductModel.ProductModelPriceComparator(true);
 	
 	
 	/** Don't use allTheSame/reset, that's not thread-safe */
-	public final static Comparator RATING_COMPARATOR = new ProductModel.RatingComparator();
+	public final static Comparator<SkuModel> RATING_COMPARATOR = new ProductModel.RatingComparator();
 
 	public static NumberFormat CURRENCY_FORMAT = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
@@ -305,15 +299,15 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getSeafoodOrigin();
 	
-        public boolean isFullyAvailable();
-        
-        /**
-         * The product is temporary unavailable or available.
-         * @return
-         */
-        public boolean isTemporaryUnavailableOrAvailable();
+    public boolean isFullyAvailable();
+    
+    /**
+     * The product is temporary unavailable or available.
+     * @return
+     */
+    public boolean isTemporaryUnavailableOrAvailable();
 
-        public boolean isDisplayableBasedOnCms();
+    public boolean isDisplayableBasedOnCms();
 	
 	public boolean isShowSalesUnitImage();
 	
@@ -386,21 +380,21 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 * 
 	 * @return decides that this product model is in his primary home.
 	 */
-        public boolean isInPrimaryHome();
-        
-        /**
-         * 
-         * @return the product model, which is in his primary home
-         */
-        public ProductModel getPrimaryProductModel();
-        
-        /**
-         * 
-         * 
-         * @return the list of sku models of the primary product. Primary product is the product which is in his primary home.
-         */
-        public List<SkuModel> getPrimarySkus();
-	
+    public boolean isInPrimaryHome();
+    
+    /**
+     * 
+     * @return the product model, which is in his primary home
+     */
+    public ProductModel getPrimaryProductModel();
+    
+    /**
+     * 
+     * 
+     * @return the list of sku models of the primary product. Primary product is the product which is in his primary home.
+     */
+    public List<SkuModel> getPrimarySkus();
+
 	
 	/**
 	 * Get the source product.
@@ -449,7 +443,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 *  @return a list containing ProductModel, Recipe and CategoryModel
 	 *          objects.
 	 */
-	public List getYmals();
+	public List<ContentNodeModel> getYmals();
 
 	/**
 	 *  Return a list of YMAL products.
@@ -458,7 +452,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalProducts();
+	public List<ProductModel> getYmalProducts();
 	
 	/**
 	 *  Return a list of YMAL products.
@@ -470,7 +464,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalProducts(Set removeSkus);
+	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus);
 	
 	/**
 	 *  Return a list of YMAL categories.
@@ -479,7 +473,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalCategories();
+	public List<CategoryModel> getYmalCategories();
 	
 	/**
 	 *  Return a list of YMAL recipes.
@@ -488,7 +482,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 *          the YMALs for this product.
 	 *  @see #getYmals()
 	 */
-	public List getYmalRecipes();
+	public List<Recipe> getYmalRecipes();
 	
 	/** 
 	 * Return a list of recommended alternatives.
@@ -503,7 +497,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	/**
 	 * @return List of Recipe
 	 */
-	public List getRelatedRecipes();
+	public List<Recipe> getRelatedRecipes();
 	
 	public List<ProductModel> getProductBundle();
 
@@ -769,35 +763,34 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public PricingContext getPricingContext();
 
-        /**
-         * @param skuCode
-         * @return the default sku code, if sku code is not specified or the sku is
-         *         not in the products sku, otherwise the specified SkuModel.
-         */
-        public SkuModel getValidSkuCode(PricingContext ctx, String skuCode);
-
-        /**
-         * 
-         * @return a price calculator which encapsulates the default sku, and the pricing context. If there is no default sku, it returns a pricing calculator which returns sensible defaults.
-         */
-        public PriceCalculator getPriceCalculator();
-        
-
-        /**
-         * 
-         * @return a price calculator which encapsulates the default sku, if the given skuCode is invalid, otherwise the sku which is specified, and the pricing context.
-         */
-        public PriceCalculator getPriceCalculator(String skuCode);
-        
-        
 	/**
-         * This is used for getting a media attribute, if the usage of the normal getters are not feasible. 
-         * For example, when the name of the attribute comes from the client side. It's not a very fortunate
-         * situation.
-         * 
-         * @param name
-         * @return
-         */
-        public MediaI getMedia(String name);
+	 * @param skuCode
+	 * @return the default sku code, if sku code is not specified or the sku is not in the products sku, otherwise the
+	 *         specified SkuModel.
+	 */
+	public SkuModel getValidSkuCode( PricingContext ctx, String skuCode );
+
+	/**
+	 * 
+	 * @return a price calculator which encapsulates the default sku, and the pricing context. If there is no default
+	 *         sku, it returns a pricing calculator which returns sensible defaults.
+	 */
+	public PriceCalculator getPriceCalculator();
+
+	/**
+	 * 
+	 * @return a price calculator which encapsulates the default sku, if the given skuCode is invalid, otherwise the sku
+	 *         which is specified, and the pricing context.
+	 */
+	public PriceCalculator getPriceCalculator( String skuCode );
+
+	/**
+	 * This is used for getting a media attribute, if the usage of the normal getters are not feasible. For example,
+	 * when the name of the attribute comes from the client side. It's not a very fortunate situation.
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public MediaI getMedia( String name );
 
 }

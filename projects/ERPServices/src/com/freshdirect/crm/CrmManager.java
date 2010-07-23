@@ -2,11 +2,9 @@ package com.freshdirect.crm;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +20,7 @@ import com.freshdirect.customer.EnumCannedTextCategory;
 import com.freshdirect.customer.EnumComplaintDlvIssueType;
 import com.freshdirect.customer.ErpCannedText;
 import com.freshdirect.customer.ErpDuplicateUserIdException;
+import com.freshdirect.customer.ErpTruckInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
@@ -39,12 +38,12 @@ public class CrmManager {
 	private static CrmManager manager = null;
 	private final CrmOperationCollection operations;
 
-	private final Map agentCache = new HashMap();
+	private final Map<String, CrmAgentModel> agentCache = new HashMap<String, CrmAgentModel>();
 	private CrmAgentList agentListCache = null;
 
-	private final ExpiringReference queueOverviewCache = new ExpiringReference(5 * 60 * 1000) {
+	private final ExpiringReference<List<CrmQueueInfo>> queueOverviewCache = new ExpiringReference<List<CrmQueueInfo>>(5 * 60 * 1000) {
 
-		protected Object load() {
+		protected List<CrmQueueInfo> load() {
 			try {
 				return getCrmManagerSB().getQueueOverview();
 			} catch (RemoteException ex) {
@@ -112,7 +111,7 @@ public class CrmManager {
 	}
 
 	private synchronized CrmAgentModel getCachedAgent(String agentPk) throws FDResourceException {
-		CrmAgentModel agent = (CrmAgentModel) agentCache.get(agentPk);
+		CrmAgentModel agent = agentCache.get(agentPk);
 		if (agent == null) {
 			agent = this.getAgentByPk(agentPk);
 			agentCache.put(agentPk, agent);
@@ -134,7 +133,7 @@ public class CrmManager {
 		}
 	}
 
-	public List findCases(CrmCaseTemplate template) throws FDResourceException {
+	public List<CrmCaseModel> findCases(CrmCaseTemplate template) throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().findCases(template);
 		} catch (RemoteException e) {
@@ -142,11 +141,11 @@ public class CrmManager {
 		}
 	}
 
-	public List getQueueOverview() throws FDResourceException {
-		return (List) queueOverviewCache.get();
+	public List<CrmQueueInfo> getQueueOverview() throws FDResourceException {
+		return queueOverviewCache.get();
 	}
 
-	public List getCSROverview() throws FDResourceException {
+	public List<CrmAgentInfo> getCSROverview() throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().getCSROverview();
 		} catch (RemoteException e) {
@@ -156,9 +155,8 @@ public class CrmManager {
 
 	public CrmAgentInfo getCSROverview(PrimaryKey agentPK) throws FDResourceException {
 		// !!! could be optimized
-		List infos = this.getCSROverview();
-		for (Iterator i = infos.iterator(); i.hasNext();) {
-			CrmAgentInfo info = (CrmAgentInfo) i.next();
+		List<CrmAgentInfo> infos = this.getCSROverview();
+		for ( CrmAgentInfo info : infos ) {
 			if (info.getAgentPK().equals(agentPK)) {
 				return info;
 			}
@@ -240,19 +238,19 @@ public class CrmManager {
 		}
 	}
 
-	private void setOperations(List ops) {
+	private void setOperations(List<CrmCaseOperation> ops) {
 		this.operations.setOperations(ops);
 	}
 
-	public List getOperations(CrmAgentRole role, CrmCaseSubject subject) {
+	public List<CrmCaseOperation> getOperations(CrmAgentRole role, CrmCaseSubject subject) {
 		return this.operations.getOperations(role, subject);
 	}
 
-	public List getOperations(CrmAgentRole role, CrmCaseSubject subject, CrmCaseState startState) {
+	public List<CrmCaseOperation> getOperations(CrmAgentRole role, CrmCaseSubject subject, CrmCaseState startState) {
 		return this.operations.getOperations(role, subject, startState);
 	}
 
-	public List getOperations(CrmAgentRole role, CrmCaseSubject subject, CrmCaseState startState, CrmCaseActionType type) {
+	public List<CrmCaseOperation> getOperations(CrmAgentRole role, CrmCaseSubject subject, CrmCaseState startState, CrmCaseActionType type) {
 		return this.operations.getOperations(role, subject, startState, type);
 	}
 	
@@ -297,7 +295,7 @@ public class CrmManager {
 			}
 	}
 	
-	public Collection getLateIssuesByDate(Date date) throws FDResourceException   {
+	public Collection<CrmLateIssueModel> getLateIssuesByDate(Date date) throws FDResourceException   {
 		try {
 			   return this.getCrmManagerSB().getLateIssuesByDate(date);
 			} catch (RemoteException e) {
@@ -305,7 +303,7 @@ public class CrmManager {
 			}
 	}
 	
-	public Collection getLateIssuesByRouteAndDate(String route, Date date) throws FDResourceException   {
+	public Collection<CrmLateIssueModel> getLateIssuesByRouteAndDate(String route, Date date) throws FDResourceException   {
 		try {
 			   return this.getCrmManagerSB().getLateIssuesByRouteAndDate(route,date);
 			} catch (RemoteException e) {
@@ -313,7 +311,7 @@ public class CrmManager {
 			}
 	}
 	
-	public List getTruckNumbersForDate(Date dlvDate) throws FDResourceException {
+	public List<ErpTruckInfo> getTruckNumbersForDate(Date dlvDate) throws FDResourceException {
 		try {
 			   return this.getCrmManagerSB().getTruckNumbersForDate(dlvDate);
 			} catch (RemoteException e) {
@@ -395,7 +393,7 @@ public class CrmManager {
 		}
 	}
 	
-	public List lookupOrders(String accountNum) throws FDResourceException {
+	public List<String> lookupOrders(String accountNum) throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().lookupOrders(accountNum);
 		} catch (RemoteException e) {
@@ -455,7 +453,7 @@ public class CrmManager {
 		}		
 	}
 
-	public Collection getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
+	public Collection<ErpCannedText> getAllCannedTextInCategory(EnumCannedTextCategory category) throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().getAllCannedTextInCategory(category);
 		} catch (RemoteException e) {
@@ -463,7 +461,7 @@ public class CrmManager {
 		}		
 	}
 
-	public Collection getAllCannedText() throws FDResourceException {
+	public Collection<ErpCannedText> getAllCannedText() throws FDResourceException {
 		try {
 			return this.getCrmManagerSB().getAllCannedText();
 		} catch (RemoteException e) {
@@ -471,20 +469,17 @@ public class CrmManager {
 		}		
 	}
 
-	public Map getDeliveryIssueTypes(String customerId) throws FDResourceException {
+	public Map<String,Set<EnumComplaintDlvIssueType>> getDeliveryIssueTypes(String customerId) throws FDResourceException {
 		try {
-			Map m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
-			Map t_m = new HashMap();
+			Map<String,Set<String>> m = this.getCrmManagerSB().getComplaintDeliveryIssueTypes(customerId);
+			Map<String,Set<EnumComplaintDlvIssueType>> t_m = new HashMap<String,Set<EnumComplaintDlvIssueType>>();
 
 			// transform 
-			for (Iterator it=m.entrySet().iterator(); it.hasNext();) {
-				Map.Entry e = (Map.Entry) it.next();
-				
-				Set t_s = new HashSet();
-				for (Iterator it2 = ((Set)e.getValue()).iterator(); it2.hasNext(); ){
-					t_s.add( EnumComplaintDlvIssueType.getEnum( (String) it2.next() )  );
-				}
-				
+			for ( Map.Entry<String,Set<String>> e : m.entrySet() ) {
+				Set<EnumComplaintDlvIssueType> t_s = new HashSet<EnumComplaintDlvIssueType>();
+				for ( String s : e.getValue() ) {
+					t_s.add( EnumComplaintDlvIssueType.getEnum( s )  );
+				}				
 				t_m.put(e.getKey(), t_s);
 			}
 			return t_m;

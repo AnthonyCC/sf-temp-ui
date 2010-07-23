@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +19,8 @@ import org.apache.commons.collections.functors.TransformedPredicate;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentNodeI;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.CmsManager;
@@ -33,6 +34,7 @@ import com.freshdirect.cms.query.RelationshipLookupTransformer;
 import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearchUtil;
+import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSearchCriteria;
@@ -42,9 +44,11 @@ import com.freshdirect.fdstore.util.RecipesUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class FindRecipesTag extends AbstractGetterTag {
+public class FindRecipesTag extends AbstractGetterTag<List<Recipe>> {
 
-	protected Object getResult() throws Exception {
+	private static final long	serialVersionUID	= -5525892453864868480L;
+
+	protected List<Recipe> getResult() throws Exception {
 
 		ServletRequest    request = pageContext.getRequest();
 		
@@ -56,28 +60,26 @@ public class FindRecipesTag extends AbstractGetterTag {
 		CmsManager          manager     = CmsManager.getInstance();
 		ContentTypeServiceI typeService = manager.getTypeService();
 		ContentTypeDefI		recipeDef     = typeService.getContentTypeDefinition(FDContentTypes.RECIPE);
-		RelationshipDefI classificationDef = (RelationshipDefI) recipeDef
-				.getAttributeDef("classifications");
+		RelationshipDefI classificationDef = (RelationshipDefI) recipeDef.getAttributeDef("classifications");
 		
 		RecipeSearchPage searchPage = RecipeSearchPage.getDefault();
 		
 		/** Set of Domain */
-		Set allDomains = new HashSet();
+		Set<Domain> allDomains = new HashSet<Domain>();
 		
 		/** Set of ContentKeys (of DomainValues) */
-		Set andKeys = new HashSet();
+		Set<ContentKey> andKeys = new HashSet<ContentKey>();
 		
 		/** List of Predicate */
-		List predicates = new ArrayList();
+		List<Predicate> predicates = new ArrayList<Predicate>();
 		
 		//
 		// handle dropDown (single-selection) criteria
 		//
 		
-		List  dropDownCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_ONE);
+		List<RecipeSearchCriteria> dropDownCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_ONE);
 		
-		for (Iterator it = dropDownCriteria.iterator(); it.hasNext(); ) {
-			RecipeSearchCriteria criteria = (RecipeSearchCriteria) it.next();
+		for ( RecipeSearchCriteria criteria : dropDownCriteria ) {
 			String               id       = criteria.getContentName();
 			String               attr     = request.getParameter(id);
 
@@ -95,16 +97,15 @@ public class FindRecipesTag extends AbstractGetterTag {
 		// handle checkBox (multiple-selection) criteria
 		//
 		
-		List  checkBoxCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_MANY);
+		List<RecipeSearchCriteria>  checkBoxCriteria = searchPage.getCriteriaBySelectionType(RecipeSearchCriteria.TYPE_MANY);
 		
-		for (Iterator it = checkBoxCriteria.iterator(); it.hasNext(); ) {
-			RecipeSearchCriteria criteria = (RecipeSearchCriteria) it.next();
+		for ( RecipeSearchCriteria criteria : checkBoxCriteria ) {
 			String               id       = criteria.getContentName();
 			String               attr[]   = request.getParameterValues(id);
 
 			if (attr != null) {
 				boolean andOp = RecipeSearchCriteria.OPERATION_AND.equals(criteria.getLogicalOperation());
-				Set orKeys = andOp ? null : new HashSet();
+				Set<ContentKey> orKeys = andOp ? null : new HashSet<ContentKey>();
 				for (int i = 0; i < attr.length; ++i) {
 					if (attr[i].length() > 0) {
 						ContentKey domainValue = new ContentKey(FDContentTypes.DOMAINVALUE, attr[i]);
@@ -115,13 +116,12 @@ public class FindRecipesTag extends AbstractGetterTag {
 							} else {
 								orKeys.add(domainValue);
 							}
-							allDomains.add(dv);
+							allDomains.add(dv.getDomain());
 						}
 					}
 				}
 				if (orKeys != null) {
-					predicates.add(new RelationshipContainsAnyPredicate(
-							classificationDef, orKeys));
+					predicates.add(new RelationshipContainsAnyPredicate(classificationDef, orKeys));
 				}
 			}
 		}
@@ -148,17 +148,15 @@ public class FindRecipesTag extends AbstractGetterTag {
 		String recipeAuthor = NVL.apply(request.getParameter("recipeAuthor"), "");
 		if (!"".equals(recipeAuthor)) {
 			ContentKey key = new ContentKey(FDContentTypes.RECIPE_AUTHOR, recipeAuthor);
-			Set s = Collections.singleton(key);
+			Set<ContentKey> s = Collections.singleton(key);
 			// predicate for recipe.author
 			RelationshipDefI relDef = (RelationshipDefI) recipeDef.getAttributeDef("authors");
 			Predicate p1 = new RelationshipContainsAllPredicate(relDef, s);
 			
 			// predicate for recipe.source.author
 			ContentTypeDefI recipeSourceDef = typeService.getContentTypeDefinition(FDContentTypes.RECIPE_SOURCE);
-			relDef = (RelationshipDefI) recipeSourceDef
-					.getAttributeDef("authors");
-			Transformer sourceLookup = new RelationshipLookupTransformer(
-					(RelationshipDefI) recipeDef.getAttributeDef("source"));
+			relDef = (RelationshipDefI) recipeSourceDef.getAttributeDef("authors");
+			Transformer sourceLookup = new RelationshipLookupTransformer((RelationshipDefI) recipeDef.getAttributeDef("source"));
 			Predicate p2 = new TransformedPredicate(sourceLookup, new RelationshipContainsAllPredicate(relDef, s));
 			
 			Predicate p = new OrPredicate(p1, p2);
@@ -174,7 +172,7 @@ public class FindRecipesTag extends AbstractGetterTag {
 		keyword = ContentSearchUtil.normalizeTerm(keyword);
 		if (!"".equals(keyword)) {
 			// TODO refactor lucene-based predicate search
-			Set keys = searchRecipes(keyword);
+			Set<ContentKey> keys = searchRecipes(keyword);
 			Predicate p = new ContentKeysPredicate(keys);
 			predicates.add(p);
 		}
@@ -187,42 +185,35 @@ public class FindRecipesTag extends AbstractGetterTag {
 			return null;
 		}
 		
-		Predicate[] preds = (Predicate[]) predicates.toArray(new Predicate[predicates.size()]);
+		Predicate[] preds = predicates.toArray(new Predicate[predicates.size()]);
 		Predicate searchPredicate = new AllPredicate(preds);
-		Map result = manager.queryContentNodes(FDContentTypes.RECIPE, searchPredicate);
+		Map<ContentKey,ContentNodeI> result = manager.queryContentNodes(FDContentTypes.RECIPE, searchPredicate);
 				
-		List recipes = new ArrayList();
+		List<Recipe> recipes = new ArrayList<Recipe>();
 		
-		for (Iterator it = result.keySet().iterator(); it.hasNext();) {
-			ContentKey key = (ContentKey) it.next();
+		for ( ContentKey key : result.keySet() ) {
 			Recipe recipe = (Recipe) cf.getContentNode(key.getId());
 			if (recipe.isAvailable() && recipe.isActive()) {
 				recipes.add(recipe);
 			}
 		}
 		
-		Collections.sort(recipes, new Comparator() {
-			public int compare(Object o1, Object o2) {
-				Recipe r1 = (Recipe) o1;
-				Recipe r2 = (Recipe) o2;
+		Collections.sort(recipes, new Comparator<Recipe>() {
+			public int compare(Recipe r1, Recipe r2) {
 				return r1.getName().compareTo(r2.getName());
 			}
 		});
 		
-		List classifications = RecipesUtil.collectClassifications(allDomains, new HashSet(searchPage.getFilterByDomains()), recipes);
+		List<DomainValue> classifications = RecipesUtil.collectClassifications(allDomains, new HashSet<Domain>(searchPage.getFilterByDomains()), recipes);
 		pageContext.setAttribute("classifications", classifications);
 		
 		// filter the result set by the filter if supplied
 		String filter = request.getParameter("filter");
-		List	   recs   = new ArrayList();
+		List<Recipe> recs = new ArrayList<Recipe>();
 		if (filter != null && filter.length() > 0) {
-			for (Iterator it = recipes.iterator(); it.hasNext(); ) {
-				Recipe recipe = (Recipe) it.next();
-				List   cls    = recipe.getClassifications();
-				
-				for (Iterator itt = cls.iterator(); itt.hasNext(); ) {
-					DomainValue cl = (DomainValue) itt.next();
-					
+			for ( Recipe recipe : recipes ) {
+				List<DomainValue> cls = recipe.getClassifications();				
+				for ( DomainValue cl : cls ) {
 					if (filter.equals(cl.getContentKey().getId())) {
 						recs.add(recipe);
 						break;
@@ -241,21 +232,18 @@ public class FindRecipesTag extends AbstractGetterTag {
 	 * @param keyword
 	 * @return Set<ContentKey>
 	 */
-	private Set searchRecipes(String keyword) {
-		Collection hits = CmsManager.getInstance().search(keyword, 2000);
+	private Set<ContentKey> searchRecipes(String keyword) {
+		Collection<SearchHit> hits = CmsManager.getInstance().search(keyword, 2000);
 
-		Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
+		Map<ContentType,List<SearchHit>> hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
 		String[] tokens = ContentSearchUtil.tokenizeTerm(keyword);
 
 		// TODO : refactor, this way, we load ContentNodes twice, here, and in the upper method.
-		List recipes = ContentSearchUtil.filterRelevantNodes(
-				ContentSearchUtil.resolveHits((List) hitsByType
-						.get(FDContentTypes.RECIPE)), tokens, SearchQueryStemmer.LowerCase);
+		List<SearchHit> recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.RECIPE)), tokens, SearchQueryStemmer.LowerCase);
 		
-		Set keys = new HashSet(recipes.size());
-		for (Iterator i=recipes.iterator(); i.hasNext(); ) {
-			SearchHit r = (SearchHit) i.next();
+		Set<ContentKey> keys = new HashSet<ContentKey>(recipes.size());
+		for ( SearchHit r : recipes ) {
 			keys.add(r.getContentKey());
 		}
 		

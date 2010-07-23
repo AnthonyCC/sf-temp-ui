@@ -1,4 +1,5 @@
 package com.freshdirect.deliverypass;
+
 /**
 *
 * @author  skrishnasamy
@@ -6,17 +7,13 @@ package com.freshdirect.deliverypass;
 * @created 05-Jun-2006
 * 
 */
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.enums.Enum;
-
-import com.freshdirect.crm.CrmAgentRole;
-import com.freshdirect.crm.ejb.CrmAgentRoleDAO;
 import com.freshdirect.deliverypass.ejb.DlvPassTypeDAO;
 import com.freshdirect.enums.EnumModel;
 
@@ -26,7 +23,9 @@ import com.freshdirect.enums.EnumModel;
  */
 public class DeliveryPassType extends EnumModel {
 
-	private static Map enums = null;	    
+	private static final long	serialVersionUID	= -3499001811399219072L;
+	
+	private static Map<String, DeliveryPassType> enums = null;	    
 	private int noOfDeliveries;
 	private int duration; //no:of days for unlimited pass to expire.
 	private boolean unlimited;
@@ -67,61 +66,53 @@ public class DeliveryPassType extends EnumModel {
     
 	public static DeliveryPassType getEnum(String code) {
 		loadEnums();
-		return (DeliveryPassType) enums.get(code);
+		return enums.get(code);
 	}
 
-	public static Map getEnumMap() {
+	public static Map<String, DeliveryPassType> getEnumMap() {
 		loadEnums();
 		return Collections.unmodifiableMap(enums);
 	}
 
-	public static List getEnumList() {
+	public static List<DeliveryPassType> getEnumList() {
 		loadEnums();
-		return Collections.unmodifiableList(new ArrayList(enums.values()));
+		return Collections.unmodifiableList(new ArrayList<DeliveryPassType>(enums.values()));
 	}
 
-	public static DeliveryPassType getUnlimitedType(){
-		DeliveryPassType type  = null;
-		Iterator iter = getEnumList().iterator();
-		while(iter.hasNext()){
-			type = (DeliveryPassType)iter.next();
-			if(type.isUnlimited()){
-				break;
+	public static DeliveryPassType getUnlimitedType() {
+		for ( DeliveryPassType type : getEnumList() ) {
+			if ( type.isUnlimited() ) {
+				return type;
 			}
 		}
-		return type;
+		return null;
 	}
 
-	public static List getUnlimitedTypes(){
-		List types  = new ArrayList();
-		Iterator iter = getEnumList().iterator();
-		while(iter.hasNext()){
-			DeliveryPassType type = (DeliveryPassType)iter.next();
+	public static List<DeliveryPassType> getUnlimitedTypes(){
+		List<DeliveryPassType> types  = new ArrayList<DeliveryPassType>();
+		for ( DeliveryPassType type : getEnumList() ) {
 			if(type.isUnlimited()){
 				types.add(type);
 			}
 		}
 		return types;
     }
-	public static List getBSGSTypes(){
-		List types  = new ArrayList();
-		Iterator iter = getEnumList().iterator();
-		while(iter.hasNext()){
-			DeliveryPassType type = (DeliveryPassType)iter.next();
-			if(!type.isUnlimited()){
-				types.add(type);
+
+	public static List<DeliveryPassType> getBSGSTypes() {
+		List<DeliveryPassType> types = new ArrayList<DeliveryPassType>();
+		for ( DeliveryPassType type : getEnumList() ) {
+			if ( !type.isUnlimited() ) {
+				types.add( type );
 			}
 		}
 		return types;
-	}
-	
+	}	
 	
 	private static void loadEnums() {
 		if (enums == null) {
-			enums = new HashMap();
-			List lst = loadEnums(DlvPassTypeDAO.class);
-			for (Iterator i = lst.iterator(); i.hasNext();) {
-				DeliveryPassType e = (DeliveryPassType) i.next();
+			enums = new HashMap<String, DeliveryPassType>();
+			List<DeliveryPassType> lst = loadEnums(DlvPassTypeDAO.class);
+			for ( DeliveryPassType e : lst ) {
 				enums.put(e.getCode(), e);
 			}
 		}
@@ -142,7 +133,6 @@ public class DeliveryPassType extends EnumModel {
 	public void setIsFreeTrialDP(boolean isFreeTrialDP) {
 		this.isFreeTrialDP = isFreeTrialDP;
 	}
-	//restrictFreeTrial
 	
 	public boolean isFreeTrialRestricted() {
 		return isFreeTrialRestricted;
@@ -154,6 +144,6 @@ public class DeliveryPassType extends EnumModel {
 
 	public String getAutoRenewalSKU() {
 		return autoRenewalSKU;
-      }
+	}
 	
 }

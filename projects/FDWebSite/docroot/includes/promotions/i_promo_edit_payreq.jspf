@@ -1,0 +1,61 @@
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label">Payment Method:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse" id="edit_payreq_payMethodParent">
+							<tr>
+								<td><input type="checkbox" id="amex" name="amex" <%= (paymentType.indexOf("Amex")>-1)?"checked":"" %>/></td>
+								<td>Amex</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="masterCard" name="masterCard" <%= (paymentType.indexOf("MasterCard")>-1)?"checked":"" %> /></td>
+								<td>MasterCard</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="visa" name="visa" <%= (paymentType.indexOf("Visa")>-1)?"checked":"" %>/></td>
+								<td>Visa</td>
+							</tr>
+							<tr>
+								<td><input type="checkbox" id="discover" name="discover" <%= (paymentType.indexOf("Discover")>-1)?"checked":"" %>/></td>
+								<td>Discover</td>
+							</tr>
+							<tr>
+								<td class="vTop"><input type="checkbox" id="eCheck" name="eCheck" value="eCheck" <%= (paymentType.indexOf("ECheck")>-1)?"checked":"" %>/></td>
+								<td>
+									eCheck<br />
+									<span class="gray">Prior eCheck use: </span>
+									<input type="text" id="minOrders" name="minOrders" class="w30px alignC" value="<%= !"0".equals(eCheckMin)?eCheckMin:"" %>" />
+									<span class="gray"> settled orders</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="alignR">
+									<a href="#" onclick="selectAllCB('edit_payreq_payMethodParent'); return false;" class="greenLink">(Select All)</a>&nbsp;
+									<a href="#" onclick="selectNoneCB('edit_payreq_payMethodParent'); return false;" class="greenLink">(Select None)</a>
+								</td>
+							</tr>
+							<tr>
+								<%-- sets the column widths --%>
+								<td class="w30px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+								<td class="w300px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

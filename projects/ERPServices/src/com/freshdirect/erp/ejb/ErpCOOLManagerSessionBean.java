@@ -1,6 +1,5 @@
 package com.freshdirect.erp.ejb;
 
-import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Date;
@@ -11,15 +10,17 @@ import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.erp.ErpCOOLInfo;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class ErpCOOLManagerSessionBean extends SessionBeanSupport {
 
+	private static final long	serialVersionUID	= -3028263832663124140L;
 	private static Category LOGGER = LoggerFactory.getInstance(ErpInventoryManagerSessionBean.class);
 	private ErpCOOLInfoDAO dao = new ErpCOOLInfoDAO();
 	
-	public void updateCOOLInfo(List erpCOOLInfo) {
+	public void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfo) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -36,7 +37,7 @@ public class ErpCOOLManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	public Map load(Date lastModified) {
+	public Map<String, ErpCOOLInfo> load(Date lastModified) {
 		Connection conn = null;
 		try {
 			conn = getConnection();

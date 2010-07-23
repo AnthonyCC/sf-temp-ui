@@ -1,4 +1,16 @@
+<%@ taglib uri='logic' prefix='logic' %>
+
 <%@ page import='com.freshdirect.fdstore.util.RecipesUtil' %>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+
 <table border="0" cellspacing="0" cellpadding="0" align="center" width="125">
 <tr><td width="1"><%-- spacer 1x1 --%></td>
 <td width="120"><%-- spacer 120x1 --%></td>
@@ -25,7 +37,7 @@
    if (catImage!=null) {
 	%>
 	<tr><td><a href="<%=response.encodeURL("recipe_cat.jsp?catId="+rcpCategory+"&trk=snav")%>">
-	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br>&nbsp;
+	<img src="<%=catImage.getPath()%>" width="<%=catImage.getWidth()%>" height="<%=catImage.getHeight()%>" border="0"></a><br/>&nbsp;
 	</td></tr>
 <% 
    }   %>
@@ -35,9 +47,9 @@
       <a href="<%=response.encodeURL("/recipe_subcat.jsp?catId="+rcpCategory+"&subCatId="+recipeSubcategory+"&trk=snav")%>"><%=recipeSubcategory.getName()%></a>
       	<%
       		if(recipeSubcategory.getContentName().equals(request.getParameter("subCatId"))){
-      	    	List filterByKeys = recipeSubcategory.getFilterBy();
-      	    	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
-      	      	Map groupByMap = RecipesUtil.findRecipes(recipeSubcategory, RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
+      	    	List<DomainValue> filterByKeys = recipeSubcategory.getFilterBy();
+      	    	filterByKeys = filterByKeys == null ? Collections.<DomainValue>emptyList() : new ArrayList<DomainValue>(filterByKeys);
+      	      	//Map groupByMap = RecipesUtil.findRecipes(recipeSubcategory, RecipesUtil.getFilter(filterByKeys, request), filterByKeys, request);
       			%>
       			<logic:iterate id="filter" collection="<%= filterByKeys %>" type="com.freshdirect.fdstore.content.DomainValue">
       			<div style="margin-left:8px; text-indent: -8px; font-weight: normal">
@@ -54,4 +66,4 @@
 
 </logic:iterate>
 <% } %>
-</table><br>
+</table><br/>

@@ -1,21 +1,12 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.content.nutrition; 
 
 /**
  * Type-safe enumeration for product information types.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class ErpNutritionInfoType implements java.io.Serializable {
 
+	private static final long	serialVersionUID	= -4275770366060726299L;
+	
 	public final static ErpNutritionInfoType INGREDIENTS        = new ErpNutritionInfoType("INGR", "Ingredients");
     public final static ErpNutritionInfoType HIDDEN_INGREDIENTS = new ErpNutritionInfoType("HNGR", "Hidden Ingredients");
 	public final static ErpNutritionInfoType HEATING            = new ErpNutritionInfoType("HEAT", "Heating Instructions");

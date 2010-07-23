@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.cms.search.AutocompleteService;
@@ -102,7 +103,7 @@ public class ContentSearch {
                     luceneTerm = new StringBuffer(normalizedTerm);
                 }
                 rawTokens = tokens;
-                for (Iterator i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext();) {
+                for (Iterator<CharSequence> i = brandNameExtractor.extract(getOriginalTerm()).iterator(); i.hasNext();) {
                     String canonicalBrandName = StringUtil.removeAllWhiteSpace(i.next().toString()).toLowerCase();
                     if (luceneTerm.indexOf(canonicalBrandName) == -1) {
                         luceneTerm.append(' ').append(canonicalBrandName);
@@ -111,7 +112,7 @@ public class ContentSearch {
                         tokens = new String[] { canonicalBrandName };
                         List<String> rt = ContentSearchUtil.tokenizeTerm(normalizedTerm, " ");
                         rt.add(canonicalBrandName);
-                        rawTokens = (String[]) rt.toArray(new String[rt.size()]);
+                        rawTokens = rt.toArray(new String[rt.size()]);
                         //rawTokens = tokens;
                     }
                 }
@@ -138,35 +139,36 @@ public class ContentSearch {
      *            original query
      * @return search results
      */
-    public SearchResults simpleSearch(String criteria, SearchQueryStemmer stemmer) {
+    @SuppressWarnings( "unchecked" )
+	public SearchResults simpleSearch(String criteria, SearchQueryStemmer stemmer) {
 
         SearchQuery searchQuery = getSearchQuery(criteria);
 
         if ("".equals(searchQuery.getNormalizedTerm())) {
-            return new SearchResults(Collections.EMPTY_LIST, Collections.EMPTY_LIST, false, "");
+            return new SearchResults(Collections.<ProductModel>emptyList(), Collections.<Recipe>emptyList(), false, "");
         }
 
-        List hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
+        List<SearchHit> hits = CmsManager.getInstance().search(searchQuery.getSearchTerm(), 2000);
 
-        Map hitsByType = ContentSearchUtil.mapHitsByType(hits);
+        Map<ContentType,List<SearchHit>> hitsByType = ContentSearchUtil.mapHitsByType(hits);
 
-        List allProducts = ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.PRODUCT));
+        List<SearchHit> allProducts = ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.PRODUCT));
         
         filterOutNonRelevantProducts(searchQuery, allProducts);
         
-        List relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer);
+        List<SearchHit> relevantProducts = ContentSearchUtil.filterRelevantNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer);
 
-        List recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits((List) hitsByType.get(FDContentTypes.RECIPE)), searchQuery
-                .getTokens(), stemmer);
+        List<SearchHit> recipes = ContentSearchUtil.filterRelevantNodes(ContentSearchUtil.resolveHits(hitsByType.get(FDContentTypes.RECIPE)), 
+        		searchQuery.getTokens(), stemmer);
 
-        List<SearchHit> filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? ContentSearchUtil.restrictToMaximumOccuringNodes(
-                allProducts, searchQuery.getTokensWithBrand(), stemmer) : relevantProducts);
+        List<SearchHit> filteredProducts = ContentSearchUtil.filterProductsByDisplay(relevantProducts.isEmpty() ? 
+        		ContentSearchUtil.restrictToMaximumOccuringNodes(allProducts, searchQuery.getTokensWithBrand(), stemmer) : relevantProducts);
 
         List<SearchHit> filteredRecipes = ContentSearchUtil.filterRecipesByAvailability(recipes);
 
         return new SearchResults(
-                ContentSearchUtil.collectFromSearchHits(filteredProducts), 
-                ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
+                (List<ProductModel>)ContentSearchUtil.collectFromSearchHits(filteredProducts), 
+                (List<Recipe>)ContentSearchUtil.collectFromSearchHits(filteredRecipes), 
                 !relevantProducts.isEmpty(), searchQuery.getSearchTerm(), filteredProducts, filteredRecipes);
     }
 
@@ -176,14 +178,14 @@ public class ContentSearch {
      * @param searchQuery
      * @param products
      */
-    private void filterOutNonRelevantProducts(SearchQuery searchQuery, List products) {
-        Map relevancyScores = getSearchRelevancyScores(searchQuery.getSearchTerm());
+    private void filterOutNonRelevantProducts(SearchQuery searchQuery, List<SearchHit> products) {
+        Map<ContentKey,Integer> relevancyScores = getSearchRelevancyScores(searchQuery.getSearchTerm());
         if (relevancyScores!=null) { 
             // filter out negative categories
-            for (Iterator i = products.iterator(); i.hasNext();) {
-                SearchHit hit = (SearchHit) i.next();
+            for (Iterator<SearchHit> i = products.iterator(); i.hasNext();) {
+                SearchHit hit = i.next();
                 ContentNodeModel node = hit.getNode();
-                Integer score = (Integer) relevancyScores.get(node.getParentNode().getContentKey());
+                Integer score = relevancyScores.get(node.getParentNode().getContentKey());
                 if (score!=null) {
                     if (score.intValue()<=0) {
                         i.remove();
@@ -247,7 +249,8 @@ public class ContentSearch {
      *            original query
      * @return search results, possibly ammended with a spelling suggestion
      */
-    public SearchResults search(String criteria) {
+    @SuppressWarnings( "unchecked" )
+	public SearchResults search(String criteria) {
 
         SearchQueryStemmer stemmer = SearchQueryStemmer.Porter;
         SearchResults filteredResults = simpleSearch(criteria, stemmer);
@@ -258,13 +261,13 @@ public class ContentSearch {
 
         if (!filteredResults.isProductsRelevant()) {
 
-            List spellingSuggestions = CmsManager.getInstance().suggestSpelling(criteria, 20);
+            List<SpellingHit> spellingSuggestions = CmsManager.getInstance().suggestSpelling(criteria, 20);
 
             int count = 0;
             int bestDistance = criteria.length();
-            for (Iterator i = spellingSuggestions.iterator(); count < MAX_SUGGESTIONS && i.hasNext(); ++count) {
+            for (Iterator<SpellingHit> i = spellingSuggestions.iterator(); count < MAX_SUGGESTIONS && i.hasNext(); ++count) {
 
-                SpellingHit spellingHit = (SpellingHit) i.next();
+                SpellingHit spellingHit = i.next();
                 String suggestion = spellingHit.toString();
 
                 SearchResults suggestionResults = simpleSearch(suggestion, stemmer);
@@ -276,18 +279,15 @@ public class ContentSearch {
                         bestDistance = spellingHit.getDistance();
                     }
 
-                    if (!filteredResults.isProductsRelevant()) { // no original
-                                                                 // relevant
-                                                                 // products
+                    if (!filteredResults.isProductsRelevant()) { // no original relevant products
 
-                        Collection[] originalHits = new Collection[] { filteredResults.getProducts(), filteredResults.getRecipes() };
-                        Collection[] suggestedHits = new Collection[] { suggestionResults.getProducts(), suggestionResults.getRecipes() };
+                        Collection<? extends ContentNodeModel>[] originalHits = new Collection[] { filteredResults.getProducts(), filteredResults.getRecipes() };
+                        Collection<? extends ContentNodeModel>[] suggestedHits = new Collection[] { suggestionResults.getProducts(), suggestionResults.getRecipes() };
 
                         diffs = ContentSearchUtil.chopSets(originalHits, suggestedHits);
                         spellingSuggestion = suggestion;
-                        suggestionMoreRelevant = ((double) (diffs.getOriginal() + diffs.getSuggested() - diffs.getIntersection()) / (double) (diffs
-                                .getOriginal()
-                                + diffs.getSuggested() + diffs.getIntersection())) > 0.80
+                        suggestionMoreRelevant = ((double) (diffs.getOriginal() + diffs.getSuggested() - diffs.getIntersection()) / 
+                        		(double) (diffs.getOriginal() + diffs.getSuggested() + diffs.getIntersection())) > 0.80
                                 && spellingHit.getDistance() == bestDistance;
 
                         if (suggestionMoreRelevant) {
@@ -311,37 +311,31 @@ public class ContentSearch {
      * Set a custom autocomplete service
      * @param autocompletion
      */    
-    @SuppressWarnings("unchecked")
     public List<String> getAutocompletions(String prefix) {
         AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
 
         if (autocompleter!=null) {
             return autocompleter.getAutocompletions(prefix);
-        } else {
-            return Collections.EMPTY_LIST;
         }
+		return Collections.emptyList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getAutocompletions(String prefix, AutocompleteService.Predicate predicate) {
         AutocompleteService autocompleter = productAutocompletion.initAutocompleter("product");
 
         if (autocompleter!=null) {
             return autocompleter.getAutocompletions(prefix);
-        } else {
-            return Collections.EMPTY_LIST;
         }
+		return Collections.emptyList();
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getBrandAutocompletions(String prefix) {
         AutocompleteService autocompleter = brandAutocompletion.initAutocompleter("brand");
 
         if (autocompleter!=null) {
             return autocompleter.getAutocompletions(prefix);
-        } else {
-            return Collections.EMPTY_LIST;
         }
+		return Collections.emptyList();
     }
 
         

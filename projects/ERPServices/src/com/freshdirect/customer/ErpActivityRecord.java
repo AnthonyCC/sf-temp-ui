@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Comparator;
 
 public class ErpActivityRecord implements java.io.Serializable {
+	
 	private static final long serialVersionUID = 8592047251020131505L;
 
 	private String customerId;
@@ -21,6 +22,17 @@ public class ErpActivityRecord implements java.io.Serializable {
 
 	private String standingOrderId;
 	
+	private String masqueradeAgent;
+	
+	
+	public String getMasqueradeAgent() {
+		return masqueradeAgent;
+	}
+
+	public void setMasqueradeAgent( String agentId ) {
+		masqueradeAgent = agentId;
+	}
+	
 	public String getChangeOrderId() {
 		return changeOrderId;
 	}
@@ -29,6 +41,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 		this.changeOrderId = changeOrderId;
 	}
 
+	
 	public String getDeliveryPassId() {
 		return deliveryPassId;
 	}
@@ -37,6 +50,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 		this.deliveryPassId = deliveryPassId;
 	}
 
+	
 	public String getReason() {
 		return reason;
 	}
@@ -45,6 +59,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 		this.reason = reason;
 	}
 
+	
 	public void setActivityType(EnumAccountActivityType t) {
 		this.type = t;
 	}
@@ -53,6 +68,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 		return this.type;
 	}
 
+	
 	public void setNote(String s) {
 		this.note = s;
 	}
@@ -61,6 +77,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 		return this.note;
 	}
 
+	
 	public void setDate(Date d) {
 		this.date = d;
 	}
@@ -69,24 +86,27 @@ public class ErpActivityRecord implements java.io.Serializable {
 		return this.date;
 	}
 
+	
 	public String getCustomerId() {
 		return customerId;
 	}
-
-	public String getInitiator() {
-		return initiator;
-	}
-
-	public EnumTransactionSource getSource() {
-		return source;
-	}
-
+	
 	public void setCustomerId(String string) {
 		customerId = string;
 	}
 
+	
+	public String getInitiator() {
+		return initiator;
+	}
+	
 	public void setInitiator(String string) {
 		initiator = string;
+	}
+
+	
+	public EnumTransactionSource getSource() {
+		return source;
 	}
 
 	public void setSource(EnumTransactionSource source) {

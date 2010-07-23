@@ -8,6 +8,7 @@ import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
+import com.freshdirect.security.ticket.TicketServiceHome;
 
 public class ERPServiceLocator extends ServiceLocator {
 
@@ -41,5 +42,4 @@ public class ERPServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }
     }
-
 }

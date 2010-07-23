@@ -61,7 +61,11 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	private List<ErpChargeLineModel> charges = null;
 
 	private List<ErpDiscountLineModel> discounts = null;
+	
+	private int dlvPassExtendDays;
 
+	private int currentDlvPassExtendDays;
+	
     public List<ErpRecipentModel> getRecipientsList() {
 		return recipientsList;
 	}
@@ -439,5 +443,21 @@ public abstract class ErpAbstractOrderModel extends ErpTransactionModel {
 	 */
 	public void setBufferAmt(double bufferAmt) {
 		this.bufferAmt = bufferAmt;
+	}
+
+	public int getDlvPassExtendDays() {
+		return dlvPassExtendDays;
+	}
+
+	public void setDlvPassExtendDays(int dlvPassExtendDays) {
+		this.dlvPassExtendDays = dlvPassExtendDays;
+	}
+
+	public int getCurrentDlvPassExtendDays() {
+		return currentDlvPassExtendDays;
+	}
+
+	public void setCurrentDlvPassExtendDays(int currentDlvPassExtendDays) {
+		this.currentDlvPassExtendDays = currentDlvPassExtendDays;
 	}
 }

@@ -73,50 +73,44 @@ public class SmartStoreUtil {
 	 * 
 	 * @param names
 	 */
-	public static void sortCohortNames(List names) {
-		Collections.sort(names, new Comparator() {
+	public static void sortCohortNames(List<Object> names) {
+		Collections.sort(names, new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
 					if (o2 == null)
 						return 0;
-					else
-						return -1;
-				} else {
-					if (o2 == null)
-						return -1;
-					else {
-						String s1 = o1.toString();
-						String s2 = o2.toString();
-						String prefix, candidate;
-						prefix = candidate = "";
-						while (true) {
-							if (s1.length() <= candidate.length())
-								break;
-							else
-								candidate = s1.substring(0,
-										candidate.length() + 1);
+					return -1;
+				}
+				if (o2 == null)
+					return -1;
+				String s1 = o1.toString();
+				String s2 = o2.toString();
+				String prefix, candidate;
+				prefix = candidate = "";
+				while (true) {
+					if (s1.length() <= candidate.length())
+						break;
+					candidate = s1.substring(0,candidate.length() + 1);
 
-							if (s2.startsWith(candidate)) {
-								prefix = candidate;
-								continue;
-							} else
-								break;
-						}
-						int pLen = prefix.length();
-						if (pLen != 0) {
-							s1 = s1.substring(pLen);
-							s2 = s2.substring(pLen);
-							try {
-								int i1 = Integer.parseInt(s1);
-								int i2 = Integer.parseInt(s2);
-								return i1 - i2;
-							} catch (NumberFormatException e) {
-								return s1.compareTo(s2);
-							}
-						} else
-							return s1.compareTo(s2);
+					if (s2.startsWith(candidate)) {
+						prefix = candidate;
+						continue;
+					}
+					break;
+				}
+				int pLen = prefix.length();
+				if (pLen != 0) {
+					s1 = s1.substring(pLen);
+					s2 = s2.substring(pLen);
+					try {
+						int i1 = Integer.parseInt(s1);
+						int i2 = Integer.parseInt(s2);
+						return i1 - i2;
+					} catch (NumberFormatException e) {
+						return s1.compareTo(s2);
 					}
 				}
+				return s1.compareTo(s2);
 			}
 		});
 	}
@@ -177,28 +171,22 @@ public class SmartStoreUtil {
 			}
 		}
 
-		SortedMap<String, Integer> weights = new TreeMap<String, Integer>(new Comparator() {
+		SortedMap<String, Integer> weights = new TreeMap<String, Integer>(new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
 					if (o2 == null)
 						return 0;
-					else
-						return -1;
-				} else {
-					if (o2 == null)
-						return -1;
-					else {
-						String s1 = o1.toString();
-						String s2 = o2.toString();
-						int i1 = clone.get(s1).intValue();
-						int i2 = clone.get(s2).intValue();
-						if (i1 == i2)
-							return s1.compareToIgnoreCase(s2);
-						else {
-							return i2 - i1;
-						}
-					}
+					return -1;
 				}
+				if (o2 == null)
+					return -1;
+				String s1 = o1.toString();
+				String s2 = o2.toString();
+				int i1 = clone.get(s1).intValue();
+				int i2 = clone.get(s2).intValue();
+				if (i1 == i2)
+					return s1.compareToIgnoreCase(s2);
+				return i2 - i1;
 			}
 		});
 		weights.putAll(clone);
@@ -274,37 +262,30 @@ public class SmartStoreUtil {
 		return assignment;
 	}
 
-	@SuppressWarnings("unchecked")
     private static void getVariantNamesSortedInUse(List<String> variants, final Map<String,String> assignment) {
-		Collections.sort(variants, new Comparator() {
+		Collections.sort(variants, new Comparator<Object>() {
 			public int compare(Object o1, Object o2) {
 				if (o1 == null) {
 					if (o2 == null) {
 						return 0;
-					} else {
-						return -1;
 					}
-				} else {
-					if (o2 == null) {
-						return -1;
-					} else {
-						String s1 = o1.toString();
-						String s2 = o2.toString();
-						if (assignment.containsValue(s1)) {
-							if (assignment.containsValue(s2)) {
-								return s1.compareTo(s2);
-							} else {
-								return -1;
-							}
-						} else {
-							if (assignment.containsValue(s2)) {
-								return 1;
-							} else {
-								return s1.compareTo(s2);
-							}
-						}
-					}
+					return -1;
 				}
+				if (o2 == null) {
+					return -1;
+				}
+				String s1 = o1.toString();
+				String s2 = o2.toString();
+				if (assignment.containsValue(s1)) {
+					if (assignment.containsValue(s2)) {
+						return s1.compareTo(s2);
+					}
+					return -1;
+				}
+				if (assignment.containsValue(s2)) {
+					return 1;
+				}
+				return s1.compareTo(s2);
 			}
 		});
 	}
@@ -344,8 +325,8 @@ public class SmartStoreUtil {
 		Variant variant = VariantRegistry.getInstance().getService(variantId);
 		if (variant != null && variant.getSiteFeature().equals(feature))
 			return variant;
-		else
-			return null;
+		
+		return null;
 	}
 	
 	
@@ -424,16 +405,18 @@ public class SmartStoreUtil {
 		return CFG_PRODS.get();
 	}
 
-        public static List<ProductModel> addConfiguredProductToCache(List<ProductModel> list) {
-            List<ProductModel> ret = new ArrayList<ProductModel>(list.size());
-            for (ProductModel current : list) {
-                ProductModel replace = addConfiguredProductToCache((ProductModel) current);
-                if (replace != null) {
-                    ret.add(replace);
-                }
-            }
-            return ret;
-        }	
+    public static List<ProductModel> addConfiguredProductToCache(List<ContentNodeModel> list) {
+        List<ProductModel> ret = new ArrayList<ProductModel>(list.size());
+        for (ContentNodeModel current : list) {
+        	if ( current instanceof ProductModel ) {
+	            ProductModel replace = addConfiguredProductToCache((ProductModel)current);
+	            if (replace != null) {
+	                ret.add(replace);
+	            }
+        	}
+        }
+        return ret;
+    }	
 	
 
 	/**
@@ -450,13 +433,9 @@ public class SmartStoreUtil {
 		if (v == null || !v.isSmartSavings() || prod == null || user == null)
 			return false;
 
-
-
 		final String prodName = prod.getContentName();
 
-		for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
-			FDCartLineI cl = (FDCartLineI) it.next();
-
+		for ( FDCartLineI cl : user.getShoppingCart().getOrderLines() ) {
 			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
 
 			// is cart item 'saving' and equals to this product?
@@ -477,9 +456,7 @@ public class SmartStoreUtil {
 		if (cachedItems == null)
 			return 0;
 		Set<String> uniqueKeys = new HashSet<String>();
-		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
-			FDCartLineI cl = (FDCartLineI) it.next();
-
+		OUTER: for ( FDCartLineI cl : user.getShoppingCart().getOrderLines() ) {
 			final boolean isSavingsItem =  v.getId().equals(cl.getSavingsId());
 
 			if (isSavingsItem) {
@@ -510,9 +487,7 @@ public class SmartStoreUtil {
 		if (cachedItems == null)
 			return 0.;
 		
-		OUTER: for (Iterator it=user.getShoppingCart().getOrderLines().iterator(); it.hasNext(); ) {
-			FDCartLineI cl = (FDCartLineI) it.next();
-
+		OUTER: for ( FDCartLineI cl : user.getShoppingCart().getOrderLines() ) {
 			final boolean isSavingsItem = v.getId().equals(cl.getSavingsId());
 
 			if (isSavingsItem) {

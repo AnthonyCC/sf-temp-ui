@@ -7,7 +7,6 @@
 List queueOverview = CrmManager.getInstance().getQueueOverview();
 %>
 <crm:GetCurrentAgent id="currentAgent">
-<div></div>
 <div class="side_nav_module" style="border-top: none;">
 	<div class="side_nav_module_header">Queues <span style="font-weight: normal;">(# open)</span></div>
 	<logic:iterate id='qi' collection="<%= queueOverview %>" type="com.freshdirect.crm.CrmQueueInfo">

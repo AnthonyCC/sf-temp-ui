@@ -3,19 +3,18 @@ package com.freshdirect.fdstore.promotion.management.ejb;
 import java.rmi.RemoteException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.text.SimpleDateFormat;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
-import javax.naming.NamingException;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -23,36 +22,37 @@ import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ActivityLogSB;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.ServiceLocator;
-import com.freshdirect.framework.core.SessionBeanSupport;
-import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionDecorator;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
-import com.freshdirect.fdstore.promotion.management.FDPromoCustomerInfo;
-import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
+import com.freshdirect.fdstore.promotion.management.FDPromoCustomerInfo;
+import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.framework.util.NVL;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
+	private static final long serialVersionUID = -3247737890824031137L;
 
 	private final static Logger LOGGER = LoggerFactory
 			.getInstance(FDPromotionManagerSessionBean.class);
 
 	private static SimpleDateFormat SDF = new SimpleDateFormat("dd-MMM-yyyy");
 
-	public List getPromotions() throws FDResourceException {
+	public List<FDPromotionModel> getPromotions() throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			List promoList = FDPromotionManagerDAO.getPromotions(conn);
+			List<FDPromotionModel> promoList = FDPromotionManagerDAO.getPromotions(conn);
 
 			return promoList;
 
@@ -81,12 +81,12 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	
 	
 	
-	public List getPromotionVariants(String promoId) throws FDResourceException{
+	public List<PromoVariantModel> getPromotionVariants(String promoId) throws FDResourceException{
 		
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			List promotionList = FDPromotionManagerDAO.getPromotionVariants(
+			List<PromoVariantModel> promotionList = FDPromotionManagerDAO.getPromotionVariants(
 					conn, promoId);
 			return promotionList;
 
@@ -179,7 +179,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List getPromoCustomerInfoListFromPromotionId(PrimaryKey pk)
+	public List<FDPromoCustomerInfo> getPromoCustomerInfoListFromPromotionId(PrimaryKey pk)
 			throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -193,7 +193,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List getPromoCustomerInfoListFromCustomerId(PrimaryKey pk)
+	public List<FDPromoCustomerInfo> getPromoCustomerInfoListFromCustomerId(PrimaryKey pk)
 			throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -207,7 +207,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List getAvailablePromosForCustomer(PrimaryKey pk)
+	public List<FDPromotionModel> getAvailablePromosForCustomer(PrimaryKey pk)
 			throws FDResourceException {
 		Connection conn = null;
 		try {
@@ -222,7 +222,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public void insertPromoCustomers(FDActionInfo actionInfo,
-			List promoCustomers) throws FDResourceException {
+			List<FDPromoCustomerInfo> promoCustomers) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -238,7 +238,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public void updatePromoCustomers(FDActionInfo actionInfo,
-			List promoCustomers) throws FDResourceException {
+			List<FDPromoCustomerInfo> promoCustomers) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -254,7 +254,7 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public void removePromoCustomers(FDActionInfo actionInfo,
-			List promoCustomers) throws FDResourceException {
+			List<FDPromoCustomerInfo> promoCustomers) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -274,14 +274,15 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * 
 	 */
-	public List getAllAutomtaticPromotions() {
+	@SuppressWarnings("unchecked")
+	public List<Promotion> getAllAutomtaticPromotions() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			List promoList = FDPromotionDAO.loadAllAutomaticPromotions(conn);
-			for (ListIterator i = promoList.listIterator(); i.hasNext();) {
-				Promotion promo = (Promotion) i.next();
+			List<Promotion> promoList = (List<Promotion>)FDPromotionDAO.loadAllAutomaticPromotions(conn);
+			for (ListIterator<Promotion> i = promoList.listIterator(); i.hasNext();) {
+				Promotion promo = i.next();
 				//This decorate method is called for SIGNUP promos.
 				PromotionDecorator.getInstance().decorate(promo);
 				//Make sure Promo has a valid applicator.
@@ -303,14 +304,15 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	/**
 	 * 
 	 */
-	public List getModifiedOnlyPromos(Date lastModified) {
+	@SuppressWarnings("unchecked")
+	public List<Promotion> getModifiedOnlyPromos(Date lastModified) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			List promoList = FDPromotionDAO.loadModifiedOnlyPromotions(conn, lastModified);
-			for (ListIterator i = promoList.listIterator(); i.hasNext();) {
-				Promotion promo = (Promotion) i.next();
+			List<Promotion> promoList = (List<Promotion>) FDPromotionDAO.loadModifiedOnlyPromotions(conn, lastModified);
+			for (ListIterator<Promotion> i = promoList.listIterator(); i.hasNext();) {
+				Promotion promo = i.next();
 				//This decorate method is called for SIGNUP promos.
 				PromotionDecorator.getInstance().decorate(promo);
 				//Make sure Promo has a valid applicator.
@@ -380,12 +382,13 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	 * @return Map containing all active automatic promotion codes 
 	 * along with their last modified timestamp. 
 	 */
-	public Map refreshAutomaticPromotionCodes() {
+	@SuppressWarnings("unchecked")
+	public Map<String,Timestamp> refreshAutomaticPromotionCodes() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			Map promoCodes = FDPromotionDAO.getAllAutomaticPromotionCodes(conn);
+			Map<String,Timestamp> promoCodes = (Map<String,Timestamp>)FDPromotionDAO.getAllAutomaticPromotionCodes(conn);
 
 			return promoCodes;
 
@@ -399,12 +402,12 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	 * This method is called by CRM for listing all promotions.
 	 * @return Map containing all promotion codes along with their last modified timestamp. 
 	 */
-	public Map getPromotionCodes() {
+	public Map<String,Timestamp> getPromotionCodes() {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			Map promoCodes = FDPromotionManagerDAO.getPromotionCodes(conn);
+			Map<String,Timestamp> promoCodes = FDPromotionManagerDAO.getPromotionCodes(conn);
 
 			return promoCodes;
 
@@ -427,12 +430,12 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private String getPromoCustActivityNote(List promoCustomers) {
+	private String getPromoCustActivityNote(List<FDPromoCustomerInfo> promoCustomers) {
 
 		StringBuffer sb = new StringBuffer();
 		if (promoCustomers != null && promoCustomers.size() > 0) {
-			for (Iterator i = promoCustomers.iterator(); i.hasNext();) {
-				FDPromoCustomerInfo oc = (FDPromoCustomerInfo) i.next();
+			for (Iterator<FDPromoCustomerInfo> i = promoCustomers.iterator(); i.hasNext();) {
+				FDPromoCustomerInfo oc =  i.next();
 				sb.append("&nbsp;&nbsp;");
 				sb.append(" Promotion : ");
 				sb.append(oc.getPromotionId());
@@ -461,12 +464,12 @@ public class FDPromotionManagerSessionBean extends FDSessionBeanSupport {
 	 * Methods for loading All Active promo variants.
 	 * Map variantId --> FDPromoVariantModel
 	 */
-	public List getAllActivePromoVariants(List smartSavingsFeatures) {
+	public List<PromoVariantModel> getAllActivePromoVariants(List<EnumSiteFeature> smartSavingsFeatures) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			List promoVariants = FDPromotionDAO.loadAllActivePromoVariants(conn, smartSavingsFeatures);
+			List<PromoVariantModel> promoVariants = FDPromotionDAO.loadAllActivePromoVariants(conn, smartSavingsFeatures);
 
 			return promoVariants;
 

@@ -566,9 +566,7 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 					new FDActionInfo(EnumTransactionSource.SYSTEM, identity, "SYSTEM", "Could not get AUTHORIZATION", null);
 
 				LOGGER.debug("cancel sale-start: " + saleId);
-
-
-				sb.cancelOrder(info, saleId, false);
+				sb.cancelOrder(info, saleId, false, 0);
 				LOGGER.debug("cancel sale-complete: " + saleId);
 				utx.commit();
 			} catch (Exception e) {

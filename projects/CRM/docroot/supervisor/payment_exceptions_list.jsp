@@ -26,7 +26,7 @@
 	<tr>
 		<td width="1%"></td>
 		<td width="5%">Order #</td>
-        <td width="2%">Type</td>
+		<td width="2%">Type</td>
 		<td width="12%">Delivery</td>
 		<td width="12%">Status</td>
 		<td width="10%" align="center">Amount</td>
@@ -48,7 +48,7 @@
 	<tr valign="top" <%= idx.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> style="cursor: pointer;" onClick="document.location='/main/order_details.jsp?orderId=<%=summary.getOrderId()%>'">
 		<td width="1%"></td>
 		<td width="5%"><a class="key"><b><%=summary.getOrderId()%></b></a></td>
-        <td width="2%"><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>A<%}%></td>
+		<td width="2%"><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>A<%}%></td>
 		<td width="12%"><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%></td>
 		<td width="12%"><%=summary.getOrderStatus()%></td>
 		<td width="10%" align="center"><%=CCFormatter.formatCurrency(summary.getOrderTotal())%></td>
@@ -59,7 +59,7 @@
 		<td width="9%" class="log_info"><%=summary.getLastModifiedBy()%></td>
 		<td width="8%" class="log_info"><%=summary.getLastModifiedSource()%></td>
 	</tr>
-	<tr class="list_separator" style="padding: 0px;"><td colspan="11"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
+	<tr class="list_separator" style="padding: 0px;"><td colspan="12"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>
 	</fd:OrderSummary>
 </logic:iterate>
 	</table>

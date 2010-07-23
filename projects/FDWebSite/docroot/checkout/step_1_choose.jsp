@@ -112,8 +112,12 @@ while (e.hasMoreElements()) {
 	<% } %>
 
 	<%@ include file="/includes/i_modifyorder.jspf" %>
-
-	<form method="POST">
+ <script type="text/javascript">
+			function checkouttest(){				
+                return true;
+			}
+			</script>
+	<form method="POST" >
 		<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
 	    <td class="text12" width="375" valign="bottom"> 
@@ -127,6 +131,7 @@ while (e.hasMoreElements()) {
 	        Where would you like to receive this order?
 	            <%}%>
 	        </td>
+	       
 	    <td width="265" align="right" valign="middle" class="text10bold">
 	            <font class="space2pix"><br/></font><input type="image" name="form_action_name" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" vspace="2" border="0"><br/>
 	            <a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</a>: <%=currencyFormatter.format(cartTotal)%>

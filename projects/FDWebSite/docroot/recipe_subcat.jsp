@@ -1,3 +1,8 @@
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='oscache' prefix='oscache' %>
+
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.*'%>
@@ -7,20 +12,18 @@
 <%@ page import='com.freshdirect.cms.*'%>
 <%@ page import='com.freshdirect.cms.application.*'%>
 <%@ page import='java.net.URLEncoder'%>
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri='oscache' prefix='oscache' %>
+<%@ page import="java.util.Collection"%>
+
 <fd:CheckLoginStatus />
 <%
 ContentFactory contentFactory = ContentFactory.getInstance();
-ContentNodeModel recipeCategory = contentFactory.getContentNode(request.getParameter("catId"));
-RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getInstance().getContentNode(request.getParameter("subCatId"));
+RecipeCategory recipeCategory = (RecipeCategory)contentFactory.getContentNode(request.getParameter("catId"));
+RecipeSubcategory recipeSubCat = (RecipeSubcategory)contentFactory.getContentNode(request.getParameter("subCatId"));
 
 // go get first subcat if subcat was null
 if (recipeSubCat==null) {
-   Collection c= ((RecipeCategory)recipeCategory).getSubcategories();
-   recipeSubCat = (RecipeSubcategory) c.iterator().next();
+   Collection<RecipeSubcategory> c= recipeCategory.getSubcategories();
+   recipeSubCat = c.iterator().next();
 }
 
 //--------OAS Page Variables-----------------------
@@ -28,7 +31,7 @@ request.setAttribute("sitePage", recipeCategory.getPath());
 request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
 String hideUrl=recipeCategory.getHideUrl();
-if (!contentFactory.getInstance().getPreviewMode()) {
+if (!contentFactory.getPreviewMode()) {
     if (hideUrl!=null) {
         String redirectURL = response.encodeRedirectURL(hideUrl);
 	   if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {
@@ -37,7 +40,7 @@ if (!contentFactory.getInstance().getPreviewMode()) {
 	   }       
     }
 }
-String redirectURL = (recipeCategory instanceof HasRedirectUrl ? ((HasRedirectUrl)recipeCategory).getRedirectUrl() : null); 
+String redirectURL = recipeCategory.getRedirectUrl(); 
 if (redirectURL!=null && !"nm".equalsIgnoreCase(redirectURL) && !"".equals(redirectURL)) {
     redirectURL = response.encodeRedirectURL(redirectURL);
 	if (redirectURL.toUpperCase().indexOf("/RECIPE_SUBCAT.JSP?")==-1) {

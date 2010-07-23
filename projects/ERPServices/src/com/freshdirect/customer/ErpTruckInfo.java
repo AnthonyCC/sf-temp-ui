@@ -1,6 +1,3 @@
-/*
- * Created on May 29, 2003
- */
 package com.freshdirect.customer;
 
 import java.io.Serializable;
@@ -9,6 +6,8 @@ import java.io.Serializable;
  * @author knadeem
  */
 public class ErpTruckInfo implements Serializable {
+	
+	private static final long serialVersionUID = 7954859820039884041L;
 	
 	private final String truckNumber;
 	private final int enrouteOrders;

@@ -137,19 +137,19 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	+ "where date_modified > ? "
     	+ "order by skucode, type, priority ";
     
-    public Map loadNutrition(Date lastModified) {
+    public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) {
     	Connection conn = null;
     	try{
     		conn = this.getConnection();
     		PreparedStatement ps = conn.prepareStatement(LOAD_NUTRITION);
     		ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
     		ResultSet rs = ps.executeQuery();
-    		Map m = new HashMap();
+    		Map<String, ErpNutritionModel> m = new HashMap<String, ErpNutritionModel>();
     		
     		while(rs.next()){
     			Timestamp t = rs.getTimestamp("DATE_MODIFIED");
     			String skuCode = rs.getString("SKU_CODE").intern();
-    			ErpNutritionModel model = (ErpNutritionModel) m.get(skuCode);
+    			ErpNutritionModel model = m.get(skuCode);
     			if(model == null){
     				model = new ErpNutritionModel();
     				model.setSkuCode(skuCode);
@@ -172,7 +172,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     		 while (rs.next()) {
     			 String skuCode = rs.getString("SKUCODE").intern();
     			 Timestamp t = rs.getTimestamp("DATE_MODIFIED");
-    			 ErpNutritionModel model = (ErpNutritionModel) m.get(skuCode);
+    			 ErpNutritionModel model = m.get(skuCode);
     			 if(model == null) {
     				 model = new ErpNutritionModel();
     				 model.setSkuCode(skuCode);
@@ -244,13 +244,13 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
             ps.close();
             
             ps = con.prepareStatement("insert into erps.nutrition (SKU_CODE, NUTRITION_TYPE, VALUE, UOM, DATE_MODIFIED) values (?, ?, ?, ?, ? )");
-            Iterator it = nutrition.getKeyIterator();
+            Iterator<String> it = nutrition.getKeyIterator();
 
 			//get timestamp to replace sysdate
 			Timestamp ts = new Timestamp(new Date().getTime());
 			
             while (it.hasNext()) {
-                String nutritionType = (String) it.next();
+                String nutritionType = it.next();
                 double value = nutrition.getValueFor(nutritionType);
                 String uom = nutrition.getUomFor(nutritionType);
                 if (uom == null) {
@@ -407,7 +407,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
         }
     }
     
-    public List generateNutritionReport(){
+    public List<Map<String, String>> generateNutritionReport(){
     	Connection con = null;
     	
     	try{
@@ -437,9 +437,9 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 			PreparedStatement ps = con.prepareStatement(sql.toString());
 			ResultSet rs = ps.executeQuery();
 			
-			List report = new ArrayList();
+			List<Map<String, String>> report = new ArrayList<Map<String, String>>();
 			while(rs.next()){
-				Map m = new HashMap();
+				Map<String, String> m = new HashMap<String, String>();
 				m.put("SKUCODE", rs.getString("SKUCODE"));
 				m.put("MATERIAL_NUMBER", rs.getString("MATERIAL_NUMBER"));
 				m.put("DESCRIPTION", rs.getString("DESCRIPTION"));
@@ -456,8 +456,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 				m.put("HEATING", rs.getString("HEATING"));
 				m.put("INGREDIENTS", rs.getString("INGREDIENTS"));
 				
-				for(Iterator i = m.values().iterator();i.hasNext();){
-					String value = (String) i.next();
+				for(Iterator<String> i = m.values().iterator();i.hasNext();){
+					String value = i.next();
 					if(value != null){
 						value.trim();
 					}
@@ -476,7 +476,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 		}
     }
     
-    public List generateClaimsReport(){
+    public List<Map<String, String>> generateClaimsReport(){
     	Connection conn = null;
     	PreparedStatement ps = null;
     	ResultSet rs = null;
@@ -501,9 +501,9 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
 				
 			rs = ps.executeQuery();
 			
-			List report = new ArrayList();
+			List<Map<String, String>> report = new ArrayList<Map<String, String>>();
 			while(rs.next()){
-				Map m = new HashMap();
+				Map<String, String> m = new HashMap<String, String>();
 				m.put("SKUCODE", rs.getString("SKUCODE"));
 				m.put("FULL_NAME", rs.getString("FULL_NAME"));
 				m.put("UNAVAILABILITY_STATUS", rs.getString("UNAVAILABILITY_STATUS"));

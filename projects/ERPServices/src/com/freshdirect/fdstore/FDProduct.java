@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.util.Collections;
@@ -29,10 +21,9 @@ import com.freshdirect.erp.EnumAlcoholicContent;
  * Product class - provides all details about a SKU that is necessary for displaying it on a product page.
  * It is a rough equivalent of an ErpProduct.
  *
- * @version $Revision$
- * @author $Author$
  */
 public class FDProduct extends FDSku implements AttributesI {
+	
 	private static final long serialVersionUID = -6190779000162681376L;
 
 	private final Date pricingDate;
@@ -390,9 +381,8 @@ public class FDProduct extends FDSku implements AttributesI {
 		String value = this.getMaterial().getAttribute(EnumAttributeName.SPECIALPRODUCT);
 		if(value != null){
 			return EnumSpecialProductType.DELIVERY_PASS.getName().equals(value);
-		}else{
-			return false;
 		}
+		return false;
 	}
 	
 	public ErpAffiliate getAffiliate() {

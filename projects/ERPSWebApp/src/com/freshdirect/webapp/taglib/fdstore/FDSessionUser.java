@@ -19,6 +19,8 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.ActivityLog;
+import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpPromotionHistory;
@@ -31,6 +33,7 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -192,7 +195,28 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
         LOGGER.debug("FDUser unbound from session");
         this.saveCart(true);
         this.saveImpressions();
+        
+        // clear masquerade agent, and log this event
+        String masqueradeAgent = (String)event.getSession().getAttribute( "masqueradeAgent" );
+        
+        FDActionInfo.clearMasqueradeAgentTL();
+        event.getSession().setAttribute( "masqueradeAgent", null );
+        
+        if ( masqueradeAgent != null ) {
+        	logMasqueradeLogout( masqueradeAgent );
+        }
+        
         sessionId = null;
+    }
+    
+    private void logMasqueradeLogout( String masqueradeAgent ) {
+        LOGGER.debug( "logMasqueradeLogout()" );
+    	try {
+    		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, this.getIdentity(), "Masquerade logout", masqueradeAgent + " logged out as " + this.getUserId(), null, EnumAccountActivityType.MASQUERADE_LOGOUT );
+    		ActivityLog.getInstance().logActivity( ai.createActivity() );
+    	} catch ( FDResourceException ex ) {
+    		LOGGER.error( "Activity logging failed due to FDResourceException.", ex );
+    	}
     }
 
     /**
@@ -1108,6 +1132,25 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	@Override
 	public SortedSet<IgnoreCaseString> getClientCodesHistory() {
 		return user.getClientCodesHistory();
+	}
+	public Set<String> getAllAppliedPromos(){
+		return this.getUser().getAllAppliedPromos();
+	}
+	
+	public void clearAllAppliedPromos(){
+		this.user.clearAllAppliedPromos();
+	}
+
+	public void addPromoErrorCode(String promoCode, int errorCode) {
+		this.user.addPromoErrorCode(promoCode, errorCode);
+	}
+
+	public int getPromoErrorCode(String promoCode) {
+		return this.user.getPromoErrorCode(promoCode);
+	}
+	
+	public void clearPromoErrorCodes(){
+		this.user.clearPromoErrorCodes();
 	}
 }
 

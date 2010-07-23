@@ -27,7 +27,7 @@ public class ErpPromotionDAO {
 
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"INSERT INTO CUST.PROMOTION_PARTICIPATION(SALE_ID, PROMOTION_ID) VALUES (?,(SELECT ID FROM CUST.PROMOTION WHERE CODE=?))");
+				"INSERT INTO CUST.PROMOTION_PARTICIPATION(SALE_ID, PROMOTION_ID) VALUES (?,(SELECT ID FROM CUST.PROMOTION_NEW WHERE CODE=?))");
 		for ( String promoCode : promotionCodes ) {
 			ps.setString(1, salePk.getId());
 			ps.setString(2, promoCode);
@@ -42,7 +42,7 @@ public class ErpPromotionDAO {
 	public static Set<String> select(Connection conn, PrimaryKey salePk) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"SELECT P.CODE FROM CUST.PROMOTION P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
+				"SELECT P.CODE FROM CUST.PROMOTION_NEW P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
 		ps.setString(1, salePk.getId());
 
 		Set<String> promotionCodes = new HashSet<String>();
@@ -63,7 +63,7 @@ public class ErpPromotionDAO {
 
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"select s.id as sale_id, p.code from cust.sale s, cust.promotion p, cust.promotion_participation pp where s.customer_id=? and s.id=pp.sale_id and p.id=pp.promotion_id");
+				"select s.id as sale_id, p.code from cust.sale s, cust.promotion_new p, cust.promotion_participation pp where s.customer_id=? and s.id=pp.sale_id and p.id=pp.promotion_id");
 		ps.setString(1, customerPk.getId());
 
 		ResultSet rs = ps.executeQuery();

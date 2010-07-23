@@ -1,3 +1,21 @@
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@ page import="java.util.StringTokenizer"%>
+<%@ page import="com.freshdirect.fdstore.content.Html"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="java.util.Map"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="com.freshdirect.fdstore.content.Recipe"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeSubcategory"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.util.RecipesUtil"%>
+
 <%
 /*
 -- This includes paints the recipe category body and bottom (no side navs)
@@ -6,8 +24,10 @@
 	RecipeSubcategory recipeSubCat
 -- Host page will need various Imports...(see recipe_cat.jsp)
 */
-String subCatIdParam = recipeSubCat!=null ? "&subCatId="+recipeSubCat.getContentName() :"";
-String filterParam= com.freshdirect.fdstore.util.RecipesUtil.getFilterParam(request);
+RecipeCategory recipeCat = recipeCategory;
+RecipeSubcategory recipeSub = recipeSubCat;
+String subCatIdParam = recipeSub!=null ? "&subCatId="+recipeSub.getContentName() :"";
+String filterParam= RecipesUtil.getFilterParam(request);
 %>
 <%--
 	The findRecipes code from here moved to com.freshdirect.webapp.util.RecipesUtil (CMS)
@@ -70,13 +90,14 @@ for (;qryStringTokn.hasMoreTokens();) {
 
 %>
 
+
 <table width="400" cellpadding="0" cellspacing="0">
 <tr>
 	<td>
 	<% 
-	Html _editorial = recipeSubCat.getRecipeEditorial();
+	Html _editorial = recipeSub.getRecipeEditorial();
 	String editorialPath = _editorial==null?"":_editorial.getPath(); 
-	Image catLabelImg = recipeSubCat.getLabel();
+	Image catLabelImg = recipeSub.getLabel();
 	String catLabelPath = null;
 	if (catLabelImg!=null) {
 	  catLabelPath = catLabelImg.getPath();
@@ -84,7 +105,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 	if (catLabelImg != null) {
 		%>
 		<img src="<%=catLabelPath%>"  width="<%=catLabelImg.getWidth()%>" height="<%=catLabelImg.getHeight()%>" border="0">
-		<br><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br>
+		<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="<%=editorialPath!=null && !"".equals(editorialPath.trim())?"6":"8"%>"><br/>
 		<%
 	}
 	%>
@@ -94,26 +115,26 @@ for (;qryStringTokn.hasMoreTokens();) {
 		%>
 		<div style="width: 400px; text-align:left;" class="text11">
 			<fd:IncludeMedia name='<%= editorialPath %>' />
-			<br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br><img src="/media_stat/images/layout/cccccc.gif" width="400" height="1" vspace="4">
+			<br/><img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br/><img src="/media_stat/images/layout/cccccc.gif" width="400" height="1" vspace="4">
 		</div>
 		<%
 	}
 	%>
 	
 	<%
-	List filterByKeys = recipeSubCat.getFilterBy();
-	filterByKeys = filterByKeys == null ? Collections.EMPTY_LIST : new ArrayList(filterByKeys);
+	List<DomainValue> filterByKeys = recipeSub.getFilterBy();
+	filterByKeys = filterByKeys == null ? Collections.<DomainValue>emptyList() : new ArrayList<DomainValue>(filterByKeys);
 	
 	// find the specified filter DomainValue among subcat filterBy
-	DomainValue filter = com.freshdirect.fdstore.util.RecipesUtil.getFilter(filterByKeys, request);
+	DomainValue filter = RecipesUtil.getFilter(filterByKeys, request);
 
 	// filter and group
-	Map groupByMap = com.freshdirect.fdstore.util.RecipesUtil.findRecipes(recipeSubCat, filter, filterByKeys, request);
+	Map<Object,List<Recipe>> groupByMap = RecipesUtil.findRecipes(recipeSub, filter, filterByKeys, request);
 
 	// add fake group since there is none
-	List groupBy = new ArrayList(recipeSubCat.getGroupBy());
+	List<Object> groupBy = new ArrayList<Object>(recipeSub.getGroupBy());
 	if (groupBy.isEmpty()) {
-		groupBy = new ArrayList();
+		groupBy = new ArrayList<Object>();
 		groupBy.add("noGroupBy");
 	} else {
 		groupBy.add("Other");
@@ -122,9 +143,9 @@ for (;qryStringTokn.hasMoreTokens();) {
 	//-- More pagination stuff: 
 	//-- count items that will be painted
 
-	List allRecipes = new ArrayList();
-	for (Iterator keyItr = groupByMap.keySet().iterator(); keyItr.hasNext(); ) {
-		List recipesList = (List) groupByMap.get(keyItr.next() );
+	List<Recipe> allRecipes = new ArrayList<Recipe>();
+	for ( Object key : groupByMap.keySet() ) {
+		List<Recipe> recipesList = groupByMap.get( key );
 		allRecipes.addAll(recipesList);
 	}
 	int cntRecipes = allRecipes.size();
@@ -143,7 +164,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 			%><b>All</b><%
 		} else {
 			%>
-			<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubCat+"&trk=filt")%>&filter=All">All</a>
+			<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCat+"&subCatId="+recipeSub+"&trk=filt")%>&filter=All">All</a>
 			<%
 		}
 		%>
@@ -156,7 +177,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 				<%
 			}  else {
 				%>
-				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCategory+"&subCatId="+recipeSubCat)%>&filter=<%=filterDV.getContentName()%>&trk=filt"><%=filterDV.getLabel()%></a>
+				<a href="<%=response.encodeURL("recipe_subcat.jsp?catId="+recipeCat+"&subCatId="+recipeSub)%>&filter=<%=filterDV.getContentName()%>&trk=filt"><%=filterDV.getLabel()%></a>
 				<%
 			}
 		%>
@@ -183,7 +204,7 @@ for (;qryStringTokn.hasMoreTokens();) {
 	int itmCount=0;
 	int itmStart = (itemsToDisplay * (pageNumber-1)+1);
 
-	for (Iterator grpByItr = groupBy.iterator(); grpByItr.hasNext() && paintCount < itemsToDisplay;) {
+	for (Iterator<Object> grpByItr = groupBy.iterator(); grpByItr.hasNext() && paintCount < itemsToDisplay;) {
 		Object groupByDV = grpByItr.next();
 		if (!groupByMap.containsKey(groupByDV)) continue;
 		
@@ -195,20 +216,21 @@ for (;qryStringTokn.hasMoreTokens();) {
 		}
 		
 		boolean labelPrinted = false;
-		for (Iterator rcpItr =	 ((List)NVL.apply((List)groupByMap.get(groupByDV),Collections.EMPTY_LIST)).iterator(); rcpItr.hasNext() && paintCount < itemsToDisplay;) {
-		  Recipe oneRecipe = (Recipe) rcpItr.next(); 
-		  if (++itmCount  < itmStart)  continue;
+		for (Iterator<Recipe> rcpItr =	 ((List<Recipe>)NVL.apply(groupByMap.get(groupByDV),Collections.EMPTY_LIST)).iterator(); rcpItr.hasNext() && paintCount < itemsToDisplay;) {
+		  Recipe oneRecipe = rcpItr.next(); 
+		  if (++itmCount  < itmStart)  
+			  continue;
 		  
 		  if (!labelPrinted) { 
 		     labelPrinted=true;%>
 			<tr>
-			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br><%}%>
+			  <td align="center" valign="top"><%if (grpLabel!=null) {%><span class="recipe_header"><%=grpLabel %></span><br/><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br/><%}%>
 <%		}  	  	   %>
-			    <a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCategory+subCatIdParam+"&recipeId="+oneRecipe+"&trk=cpage")%>" class="recipe_name"><b><%=oneRecipe.getName()%></b></a><br><span class="recipe_author"><%=oneRecipe.getDisplayableSource()%></span><br><br>
+			    <a href="<%=response.encodeURL("recipe.jsp?catId="+recipeCat+subCatIdParam+"&recipeId="+oneRecipe+"&trk=cpage")%>" class="recipe_name"><b><%=oneRecipe.getName()%></b></a><br/><span class="recipe_author"><%=oneRecipe.getDisplayableSource()%></span><br/><br/>
  <% 		   paintCount++;
 		} 
 		if (labelPrinted) { // close cell and row %>
-				<br>
+				<br/>
 			  </td>
 			</tr>
 <%		}    

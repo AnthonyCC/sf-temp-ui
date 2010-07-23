@@ -1,0 +1,37 @@
+<%-- define booleans in: i_promo_nav.jspf --%>
+<%
+	//make it easier, since all these share the same content
+	boolean inPromoEditSub = (promo_edit_basic || promo_edit_offer || promo_edit_customer || promo_edit_cart || promo_edit_delivery || promo_edit_payment || promo_create_edit);
+
+	//skip out if we don't need content
+	if (promo_details || promo_create_edit || promo_activity || promo_edit || promo_edit_basic || promo_edit_offer || promo_edit_customer || promo_edit_cart || promo_edit_delivery || promo_edit_payment) {
+
+	String promoIdUri = "";
+	promoIdUri = (promotion!=null || !"".equals(promotion.getPromotionCode())) ? "?promoId="+promotion.getPromotionCode() : "";
+%>
+	<div class="promo_nav_back_action">
+		<% if (promo_details) { %>
+			<span class="promo_nav_back_action-back"><a href="./promo_view.jsp">&lt;&lt; Back to current filter</a></span>
+			<% if (promotion != null) { %>
+			<form class="promo_nav_back_action-action promo_btn_grn_2" name="cloneForm" method="POST" action="/promotion/promo_import_clone.jsp">
+				<input type="hidden" name="mode" value="clone"/>
+				<textarea style="display: none" name="promoFile"><crm:SerializePromotion promo="<%= promotion %>"/></textarea>
+				<a href="#" onclick="document.forms['cloneForm'].submit(); return false;">CLONE PROMOTION <img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a>
+			</form>
+			<% } else { %>
+			<div class="promo_nav_back_action-action promo_btn_grn_2">&nbsp;</div>
+			<% } %>
+			<div class="promo_nav_back_action-action promo_btn_dblue"><a href="#" onclick="window.open('promo_export.jsp?action=export&promoCode=<%= promotion.getPromotionCode() %>'); return false;">EXPORT PROMOTION <img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+		<% }else if (promo_create_edit) { %>
+			<span class="promo_nav_back_action-back"><a href="">&lt;&lt; Back to detail view</a></span>
+		<% }else if (promo_activity) { %>
+			<span class="promo_nav_back_action-back"><a href="./promo_details.jsp<%= promoIdUri%>">&lt;&lt; Back to detail view</a></span>
+		<% }else if (promo_edit) { %>
+			<span class="promo_nav_back_action-back"><a href="./promo_details.jsp<%= promoIdUri%>">&lt;&lt; Back to detail view</a></span>
+		<% }else if (inPromoEditSub) { %>
+			<span class="promo_nav_back_action-back"><a href="./promo_edit.jsp<%= promoIdUri%>">&lt;&lt; Cancel/Back to main edit view</a></span>
+		<% }else{ %>
+			other page-content goes here
+		<% } %>
+	</div>
+<% } %>

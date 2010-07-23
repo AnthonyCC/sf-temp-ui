@@ -5,9 +5,9 @@
 package com.freshdirect.fdstore.attributes.cms;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.ContentKey;
@@ -52,13 +52,11 @@ public abstract class AbstractAttributeBuilder implements FDAttributeBuilderI {
                 value = ((List) value).get(0);
             }
             return buildValue(cmsAttrDef, value);
-        } else {
-            return buildListValue(cmsAttrDef, (List) value);
         }
+		return buildListValue(cmsAttrDef, (List) value);
     }
     
     
-    @SuppressWarnings("unchecked")
     List buildListValue(AttributeDefI aDef, List valueList) {
         List vals = new ArrayList();
         for (Iterator i = valueList.iterator(); i.hasNext();) {
@@ -81,16 +79,12 @@ public abstract class AbstractAttributeBuilder implements FDAttributeBuilderI {
 			}
 		}
 
-		Collection parents = CmsManager.getInstance().getParentKeys(childNode.getKey());
+		Set<ContentKey> parents = CmsManager.getInstance().getParentKeys(childNode.getKey());
 		if (!parents.isEmpty()) {
-			List parentList = new ArrayList(parents);
-			return ((ContentKey)parentList.get(0)).lookupContentNode();
-		} else {
-			System.out.println("no parent found for " + childNode.getKey());
-			return null;
+			List<ContentKey> parentList = new ArrayList<ContentKey>(parents);
+			return parentList.get(0).lookupContentNode();
 		}
-
-	}
-    
-
+		System.out.println("no parent found for " + childNode.getKey());
+		return null;
+	}  
 }

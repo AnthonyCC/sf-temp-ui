@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.Set;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -426,6 +427,15 @@ public interface FDUserI extends java.io.Serializable {
 	public EnumServiceType getZPServiceType();
 
 	public void setZPServiceType(EnumServiceType serviceType);
+	
+	public Set<String> getAllAppliedPromos();
 
 	public SortedSet<IgnoreCaseString> getClientCodesHistory();
+	public void clearAllAppliedPromos();
+	
+	public void addPromoErrorCode(String promoCode, int errorCode);
+
+	public int getPromoErrorCode(String promoCode);
+	
+	public void clearPromoErrorCodes();
 }

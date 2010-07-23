@@ -26,6 +26,9 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
    
 	private double minSubTotal=0.0;
 	private double percentOff=0.0;
+	private boolean favoritesOnly;
+	private DlvZoneStrategy zoneStrategy;
+	
 	/*
 	 * List of line item strategies to determine the eligibility of a line item before
 	 * applying discount.
@@ -55,13 +58,19 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 	};
 	
 	public boolean apply(String promotionCode, PromotionContextI context) {
-		if (context.getPreDeductionTotal() < this.minSubTotal) {
+		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		int ev = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		if(ev == PromotionStrategyI.DENY) return false;
+		
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
+		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		if (preDeduction < this.minSubTotal) {
 			return false;
 		} 
-		//This applicator implementation works specific to smart savings site feature/
-		//Need to refactor to make it more generic.
-		if(context.getUser().getPromoVariantMap() == null ||
-				context.getUser().getPromoVariantMap().size() == 0) return false;
+		//If discount is applied only for favorite items only(smart savings) then check the promo variant
+		//map is not empty.
+		if(promo.isFavoritesOnly() &&( context.getUser().getPromoVariantMap() == null ||
+				context.getUser().getPromoVariantMap().size() == 0)) return false;
 		
 		FDCartModel cart= context.getShoppingCart();
 		List orderLines=cart.getOrderLines();
@@ -69,47 +78,48 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
         int appliedCnt = 0;
 		if(orderLines!=null){	
 			for(int i=0;i<orderLines.size();i++) {
-				  FDCartLineI model=(FDCartLineI)orderLines.get(i);
-				  if(model.isDiscountFlag()){
-						boolean e = evaluate(model, promotionCode, context);
+				  FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+				  if(cartLine.isDiscountFlag()){
+						boolean e = evaluate(cartLine, promotionCode, context);
 						if(e) {
-							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
-							model.setDiscount(dis);
-							String savingsId = model.getSavingsId();
-							String productId = model.getProductRef().getContentKey().getId();							
-							recommendedItemMap.put(productId, savingsId);
+							context.applyLineItemDiscount(promo, cartLine, percentOff);
+							if(favoritesOnly){
+								String savingsId = cartLine.getSavingsId();
+								String productId = cartLine.getProductRef().getContentKey().getId();							
+								recommendedItemMap.put(productId, savingsId);
+							}
 							appliedCnt++;
 						}		
 				  }
 			}
 			//Now run through all recently added items.
 			for(int i=0;i<orderLines.size();i++) {		
-				FDCartLineI model=(FDCartLineI)orderLines.get(i);
-				if(!model.isDiscountFlag()) {
-					  	boolean e = evaluate(model, promotionCode, context);
+				FDCartLineI cartLine=(FDCartLineI)orderLines.get(i);
+				if(!cartLine.isDiscountFlag()) {
+					  	boolean e = evaluate(cartLine, promotionCode, context);
 						if(e) {
-							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
-							model.setDiscount(dis);
-							String savingsId = model.getSavingsId();
-							String productId = model.getProductRef().getContentKey().getId();							
-							recommendedItemMap.put(productId, savingsId);
-							model.setDiscountFlag(true);
+							context.applyLineItemDiscount(promo, cartLine, percentOff);
+							if(favoritesOnly){
+								String savingsId = cartLine.getSavingsId();
+								String productId = cartLine.getProductRef().getContentKey().getId();							
+								recommendedItemMap.put(productId, savingsId);
+							}
+							cartLine.setDiscountFlag(true);
 							appliedCnt++;
 						}		
 						
 				  }
 			}
-		    // now apply discount to any duplicate sku from the recommended List
+		    // now apply discount to any duplicate sku from the recommended List for favorites only
 						   
-			if(orderLines.size()>0){
+			if(favoritesOnly && orderLines.size()>0){
 				for(int i=0;i<orderLines.size();i++){
-					FDCartLineI cartModel=(FDCartLineModel)orderLines.get(i);	 
-						String productId = cartModel.getProductRef().getContentKey().getId();
-						if(!cartModel.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
-							Discount dis=new Discount(promotionCode,EnumDiscountType.PERCENT_OFF,percentOff);
-							cartModel.setDiscount(dis);
-							cartModel.setSavingsId((String)recommendedItemMap.get(productId));
-							cartModel.setDiscountFlag(true);
+					FDCartLineI cartLine=(FDCartLineModel)orderLines.get(i);	 
+						String productId = cartLine.getProductRef().getContentKey().getId();
+						if(!cartLine.hasDiscount(promotionCode) && recommendedItemMap.containsKey(productId)){								
+							context.applyLineItemDiscount(promo, cartLine, percentOff);
+							cartLine.setSavingsId((String)recommendedItemMap.get(productId));
+							cartLine.setDiscountFlag(true);
 							appliedCnt++;
 						}
 					
@@ -172,5 +182,21 @@ public class LineItemDiscountApplicator implements PromotionApplicatorI {
 
 	public void setPercentOff(double percentOff) {
 		this.percentOff = percentOff;
+	}
+
+	public boolean isFavoritesOnly() {
+		return favoritesOnly;
+	}
+
+	public void setFavoritesOnly(boolean favoritesOnly) {
+		this.favoritesOnly = favoritesOnly;
+	}
+	
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
+	}
+
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return this.zoneStrategy;
 	}
 }

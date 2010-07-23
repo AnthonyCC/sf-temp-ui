@@ -3,7 +3,10 @@ package com.freshdirect.fdstore.content;
 import java.util.List;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDSku;
+
 public interface YmalSource extends ContentNodeModel {
+	
 	public YmalSet getActiveYmalSet();
 
 	/**
@@ -17,15 +20,15 @@ public interface YmalSource extends ContentNodeModel {
 	 */
 	public void resetActiveYmalSetSession();
 
-	public List getYmalProducts();
+	public List<ProductModel> getYmalProducts();
 
-	public List getYmalProducts(Set removeSkus);
+	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus);
 
-	public List getYmalCategories();
+	public List<CategoryModel> getYmalCategories();
 
-	public List getYmalRecipes();
+	public List<Recipe> getYmalRecipes();
 
-	public List getRelatedProducts();
+	public List<ProductModel> getRelatedProducts();
 
 	public String getYmalHeader();
 }

@@ -108,5 +108,11 @@ public interface FDCartI extends java.io.Serializable {
 	public double getTotalAppliedGCAmount();
 	
 	public double getCCPaymentAmount();
+
+	public boolean isDiscountInCart(String promoCode);
+	
+	public double getLineItemDiscountAmount(String promoCode);
+	
+	public double getDiscountValue(String promoCode);
 	
 }

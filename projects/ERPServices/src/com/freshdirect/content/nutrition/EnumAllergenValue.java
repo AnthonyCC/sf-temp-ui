@@ -18,6 +18,8 @@ import java.util.*;
  */
 public class EnumAllergenValue implements NutritionValueEnum {
 	
+	private static final long	serialVersionUID	= -225573183246293681L;
+	
 	private final String code;
     private final String name;
     private final int priority;
@@ -51,7 +53,7 @@ public class EnumAllergenValue implements NutritionValueEnum {
 		return false;
 	}
     
-    private final static List types = new ArrayList();
+    private final static List<EnumAllergenValue> types = new ArrayList<EnumAllergenValue>();
     static {
     	types.add(new EnumAllergenValue("NONE", "None", 0));
         types.add(new EnumAllergenValue("C_EGG", "Contains Eggs", 1));
@@ -97,14 +99,13 @@ public class EnumAllergenValue implements NutritionValueEnum {
         types.add(new EnumAllergenValue("MC_PEA", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
     }
 
-    public static List getValues() {
+    public static List<EnumAllergenValue> getValues() {
     	Collections.sort(types, AllergenValueComparator);
         return Collections.unmodifiableList(types);
     }
     
     public static EnumAllergenValue getValueForCode(String code) {
-        for (Iterator i=types.iterator(); i.hasNext(); ) {
-            EnumAllergenValue value = (EnumAllergenValue) i.next();
+        for ( EnumAllergenValue value : types ) {
             if (value.getCode().equals(code)) {
                 return value;
             }
@@ -112,11 +113,8 @@ public class EnumAllergenValue implements NutritionValueEnum {
         return null;
     }
     
-	public static Comparator AllergenValueComparator = new Comparator(){
-		public int compare(Object o1, Object o2) {
-			EnumAllergenValue allergen1 = (EnumAllergenValue) o1;
-			EnumAllergenValue allergen2 = (EnumAllergenValue) o2;
-		   	
+	public static Comparator<EnumAllergenValue> AllergenValueComparator = new Comparator<EnumAllergenValue>(){
+		public int compare(EnumAllergenValue allergen1, EnumAllergenValue allergen2) {
 			int diff = allergen1.getPriority()- allergen2.getPriority();
 			if (diff==0) {
 				diff = allergen1.getName().compareTo(allergen2.getName());

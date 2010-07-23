@@ -3,7 +3,6 @@ package com.freshdirect.crm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,9 @@ import com.freshdirect.enums.EnumModel;
 
 public class CrmAgentRole extends EnumModel {
 
-	private static Map enums = null;
+	private static final long	serialVersionUID	= 9198673972727902109L;
+	
+	private static Map<String, CrmAgentRole> enums = null;
 	public static final String SYS_CODE = "SYS";
 	public static final String GUE_CODE = "GUE";
 	public static final String CSR_CODE = "CSR";
@@ -29,25 +30,24 @@ public class CrmAgentRole extends EnumModel {
     
 	public static CrmAgentRole getEnum(String code) {
 		loadEnums();
-		return (CrmAgentRole) enums.get(code);
+		return enums.get(code);
 	}
 
-	public static Map getEnumMap() {
+	public static Map<String, CrmAgentRole> getEnumMap() {
 		loadEnums();
 		return Collections.unmodifiableMap(enums);
 	}
 
-	public static List getEnumList() {
+	public static List<CrmAgentRole> getEnumList() {
 		loadEnums();
-		return Collections.unmodifiableList(new ArrayList(enums.values()));
+		return Collections.unmodifiableList(new ArrayList<CrmAgentRole>(enums.values()));
 	}
 
 	private static void loadEnums() {
 		if (enums == null) {
-			enums = new HashMap();
-			List lst = loadEnums(CrmAgentRoleDAO.class);
-			for (Iterator i = lst.iterator(); i.hasNext();) {
-				CrmAgentRole e = (CrmAgentRole) i.next();
+			enums = new HashMap<String, CrmAgentRole>();
+			List<CrmAgentRole> lst = loadEnums(CrmAgentRoleDAO.class);
+			for ( CrmAgentRole e : lst ) {
 				enums.put(e.getCode(), e);
 			}
 		}

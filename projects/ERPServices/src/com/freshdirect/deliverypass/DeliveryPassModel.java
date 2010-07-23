@@ -1,5 +1,5 @@
-
 package com.freshdirect.deliverypass;
+
 /**
 *
 * @author  skrishnasamy
@@ -7,12 +7,16 @@ package com.freshdirect.deliverypass;
 * @created 05-Jun-2006
 * 
 */
+
 import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class DeliveryPassModel extends ModelSupport {
+	
+	private static final long	serialVersionUID	= -2590641155441007471L;
+	
 	private String customerId;
 	private DeliveryPassType type;
 	private String description;

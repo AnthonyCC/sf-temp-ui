@@ -2278,6 +2278,9 @@
                 <include name="givexclient.jar"/>
                 <include name="${scarab.jar}"/>
 		<!-- scarab runtime dependencies -->
+				<include name="httpclient-4.0.1.jar"/>
+				<include name="httpcore-4.0.1.jar"/>
+				<include name="httpmime-4.0.1.jar"/>        
 				<include name="oscache-2.4.1.jar"/>
 				<include name="struts.jar"/>
 				<include name="poi-3.5-FINAL-20090928.jar"/>

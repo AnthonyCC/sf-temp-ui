@@ -31,25 +31,25 @@ font-size: 10pt;
 }
 
 .case_mgmt_search_header {
-position: relative;
-width: 100%;
-background-color: #FFD9B3;
-/* border-top: 4px #FFD9B3 dashed; */
-border-bottom: 1px #000000 solid;
-padding: 2px;
-padding-left: 6px;
-padding-right: 6px;
+	position: relative;
+	/* width: 100%; */
+	background-color: #FFD9B3;
+	/* border-top: 4px #FFD9B3 dashed; */
+	border-bottom: 1px #000000 solid;
+	padding: 2px;
+	padding-left: 6px;
+	padding-right: 6px;
 }
 
 .case_mgmt_search {
-position: relative;
-width: 100%;
-/* overflow-y: scroll; */
-background-color: #FFD9B3;
-padding: 0px;
-padding-left: 6px;
-padding-right: 6px;
-margin: 0px;
+	position: relative;
+	/* width: 100%; */
+	/* overflow-y: scroll; */
+	background-color: #FFD9B3;
+	padding: 0px;
+	padding-left: 6px;
+	padding-right: 6px;
+	margin: 0px;
 }
 
 .case_mgmt_search_hilite {

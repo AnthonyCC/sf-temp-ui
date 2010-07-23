@@ -100,10 +100,10 @@ public interface SystemMessageList {
 	public final static String MSG_AUTH_FAILED			= "Payment Authorization Failed.";
 	
 	// redemption promo messages
-	public final static String MSG_INVALID_CODE = "Sorry, this promotion code ({0}) is not valid.";
+	public final static String MSG_INVALID_CODE = "We''re sorry, the code you entered ({0}) is not valid.";//"Sorry, this promotion code ({0}) is not valid.";
 	public final static String MSG_REDEMPTION_MIN_NOT_MET = "PLEASE NOTE: offer will be applied when cart subtotal is {0,number,$0.00} or more.";
 	public final static String MSG_REDEMPTION_ALREADY_USED = "The promotion code you entered has been applied to a previous order placed with this account.";
-	public final static String MSG_REDEMPTION_HAS_EXPIRED = "The promotion code that you entered has expired. This promotion is no longer being offered.";
+	public final static String MSG_REDEMPTION_HAS_EXPIRED = "We''re sorry, the code you entered ({0}) has expired.";//"The promotion code that you entered has expired. This promotion is no longer being offered.";
 	public final static String MSG_REDEMPTION_PRODUCT_UNAVAILABLE = "The product offered is temporarily unavailable.";
 	public final static String MSG_REDEMPTION_OVERRIDE_AUTOMATIC = "PLEASE NOTE: The discount applied to your order has changed because the promotion code you entered cannot be combined with other offers. To restore the previous discount, click the \"Remove\" link.";
 	public final static String MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES = "PLEASE NOTE: Discount will be applied when qualifying items are added to your cart.";
@@ -156,5 +156,12 @@ public interface SystemMessageList {
 	public final static String MSG_RH_OPTIN_BELOW_REQUIRED = "Please select a tax deduction option ";
 	public final static String MSG_GC_SERVICE_UNAVAILABLE	= "This service is unavailable at this time. Please try again later.";
 	public final static String MSG_PROMO_NOT_UNIQUE_INFO	= "Some of the information you provided matches an existing account, so you are not eligible for this promotion(one per household/company). If you believe that you should be eligible, please contact our Customer Service Team at {0}.";
-	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "Sorry, you are not eligible for this promotion.";
+//	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "Sorry, you are not eligible for this promotion.";
+	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "We''re sorry, your account is not eligible for the code you entered ({0}).";//"Sorry, you are not eligible for this promotion.";
+	public final static String MSG_REDEMPTION_EXCEEDED	= "Sorry, Redemption Limit for one or promotions has been reached.";
+	
+	public final static String MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT = "PLEASE NOTE: Discount will be applied when qualifying timeslot is selected.";
+	public final static String MSG_REDEMPTION_NOTE_DLV_ADDRESS	= "NOTICE: Your code will be accepted when you select a valid delivery address.";
+	public final static String MSG_REDEMPTION_NOTE_TIMESLOT	= "NOTICE: Your code will be accepted when you select a valid delivery date and time.";
+	public final static String MSG_REDEMPTION_NOTE_PAYMENT	= "NOTICE: Your code will be accepted when you select a valid payment method.";
 }

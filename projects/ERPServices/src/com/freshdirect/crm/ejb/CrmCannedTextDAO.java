@@ -61,12 +61,12 @@ public class CrmCannedTextDAO {
 		return new ErpCannedText(fid, name, category, text);
 	}
 
-	public Collection loadAll(Connection conn) throws SQLException {
+	public Collection<ErpCannedText> loadAll(Connection conn) throws SQLException {
 		PreparedStatement ps = conn
 				.prepareStatement("select * from cust.CRM_CANNED_TEXT ORDER BY ID");
 		ResultSet rs = ps.executeQuery();
 
-		Collection all = new ArrayList(10); 
+		Collection<ErpCannedText> all = new ArrayList<ErpCannedText>(10); 
 		while (rs.next()) {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");
@@ -85,14 +85,14 @@ public class CrmCannedTextDAO {
 		return all;
 	}
 
-	public Collection loadAllInCategory(Connection conn, EnumCannedTextCategory category) throws SQLException {
+	public Collection<ErpCannedText> loadAllInCategory(Connection conn, EnumCannedTextCategory category) throws SQLException {
 		PreparedStatement ps = conn
 				.prepareStatement("select * from cust.CRM_CANNED_TEXT WHERE CATEGORY = ?" +
 						" ORDER BY NAME");
 		ps.setString(1, category.getName());
 		ResultSet rs = ps.executeQuery();
 
-		Collection all = new ArrayList(10); 
+		Collection<ErpCannedText> all = new ArrayList<ErpCannedText>(10); 
 		while (rs.next()) {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");

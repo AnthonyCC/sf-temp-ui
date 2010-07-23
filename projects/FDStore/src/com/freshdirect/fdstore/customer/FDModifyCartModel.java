@@ -8,11 +8,19 @@
  */
 package com.freshdirect.fdstore.customer;
 
+import java.util.Iterator;
+import java.util.Set;
+
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 
 /**
  *

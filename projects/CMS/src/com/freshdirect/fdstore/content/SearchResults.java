@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore.content;
 
 import java.io.Serializable;
@@ -13,12 +5,7 @@ import java.util.List;
 
 import com.freshdirect.cms.search.SearchHit;
 
-/**
- *
- *
- * @version $Revision$
- * @author $Author$
- */
+
 public class SearchResults implements Serializable {
 
 	
@@ -94,22 +81,21 @@ public class SearchResults implements Serializable {
 
 	private SpellingResultsDifferences spellingResultsDifferences = null;
 
-        private final List<SearchHit> productSearchHit;
-        private final List<SearchHit> recipeSearchHit;
-	
-        public SearchResults(List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm) {
-            this(products, recipes, productsRelevant, searchTerm, null, null);
-        }
-    
-        public SearchResults(List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm, List<SearchHit> productSearchHit,
-                List<SearchHit> recipeSearchHit) {
-            this.products = products;
-            this.recipes = recipes;
-            this.productsRelevant = productsRelevant;
-            this.searchTerm = searchTerm;
-            this.productSearchHit = productSearchHit;
-            this.recipeSearchHit = recipeSearchHit;
-        }
+	private final List<SearchHit>		productSearchHit;
+	private final List<SearchHit>		recipeSearchHit;
+
+	public SearchResults( List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm ) {
+		this( products, recipes, productsRelevant, searchTerm, null, null );
+	}
+
+	public SearchResults( List<ProductModel> products, List<Recipe> recipes, boolean productsRelevant, String searchTerm, List<SearchHit> productSearchHit, List<SearchHit> recipeSearchHit ) {
+		this.products = products;
+		this.recipes = recipes;
+		this.productsRelevant = productsRelevant;
+		this.searchTerm = searchTerm;
+		this.productSearchHit = productSearchHit;
+		this.recipeSearchHit = recipeSearchHit;
+	}
 
 	/**
 	 * 
@@ -170,10 +156,10 @@ public class SearchResults implements Serializable {
 	}
 	
 	public List<SearchHit> getProductSearchHit() {
-            return productSearchHit;
-        }
-	
+		return productSearchHit;
+	}
+
 	public List<SearchHit> getRecipeSearchHit() {
-            return recipeSearchHit;
-        }
+		return recipeSearchHit;
+	}
 }

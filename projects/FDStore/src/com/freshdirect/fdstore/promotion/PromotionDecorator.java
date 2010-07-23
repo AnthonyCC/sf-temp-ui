@@ -2,7 +2,6 @@ package com.freshdirect.fdstore.promotion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,22 +108,22 @@ public class PromotionDecorator {
 	}
 
 	/** Map of promo code -> List of PromotionStrategyI */
-	private final Map strategyMap = new HashMap();
+	private final Map<String,List<PromotionStrategyI>> strategyMap = new HashMap<String,List<PromotionStrategyI>>();
 
 	/** Map of promo code -> PromotionApplicatorI */
-	private final Map applicators = new HashMap();
+	private final Map<String,PromotionApplicatorI> applicators = new HashMap<String,PromotionApplicatorI>();
 
 	private void addStrategy(String promotionCode, PromotionStrategyI strategy) {
-		List strategies = (List) this.strategyMap.get(promotionCode);
+		List<PromotionStrategyI> strategies = this.strategyMap.get(promotionCode);
 		if (strategies == null) {
-			strategies = new ArrayList();
+			strategies = new ArrayList<PromotionStrategyI>();
 			this.strategyMap.put(promotionCode, strategies);
 		}
 		strategies.add(strategy);
 	}
 
-	private List getStrategies(String promotionCode) {
-		return (List) this.strategyMap.get(promotionCode);
+	private List<PromotionStrategyI> getStrategies(String promotionCode) {
+		return this.strategyMap.get(promotionCode);
 	}
 
 	private void addApplicator(String promotionCode, PromotionApplicatorI applicator) {
@@ -132,20 +131,20 @@ public class PromotionDecorator {
 	}
 
 	private PromotionApplicatorI getApplicator(String promotionCode) {
-		return (PromotionApplicatorI) this.applicators.get(promotionCode);
+		return this.applicators.get(promotionCode);
 	}
 
-	public void decorate(Promotion promotion) {
-		List strategies = this.getStrategies(promotion.getPromotionCode());
+	public void decorate(PromotionI promotion) {
+		List<PromotionStrategyI> strategies = this.getStrategies(promotion.getPromotionCode());
 		if (strategies != null) {
-			for (Iterator i = strategies.iterator(); i.hasNext();) {
-				promotion.addStrategy((PromotionStrategyI) i.next());
+			for ( PromotionStrategyI ps : strategies ) {
+				((Promotion)promotion).addStrategy( ps );
 			}
 		}
 
 		PromotionApplicatorI applicator = this.getApplicator(promotion.getPromotionCode());
 		if (applicator != null) {
-			promotion.setApplicator(applicator);
+			((Promotion)promotion).setApplicator(applicator);
 		}
 
 	}

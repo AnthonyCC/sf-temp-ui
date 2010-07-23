@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,17 +11,11 @@ import com.freshdirect.cms.ContentKey;
 
 public class RecipeAuthor extends ContentNodeModelImpl {
 
-	public final static Comparator NAME_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			RecipeAuthor r1 = (RecipeAuthor) o1;
-			RecipeAuthor r2 = (RecipeAuthor) o2;
-			
+	public final static Comparator<RecipeAuthor> NAME_COMPARATOR = new Comparator<RecipeAuthor>() {
+		public int compare(RecipeAuthor r1, RecipeAuthor r2) {
 			int diffSurname   = r1.getSurname().compareTo(r2.getSurname());
 			int diffFirstName = r1.getFirstName().compareTo(r2.getFirstName());
-			
-			return diffSurname == 0
-			       ? diffFirstName
-			    	   : diffSurname;
+			return diffSurname == 0 ? diffFirstName : diffSurname;
 		}
 	};
 
@@ -35,14 +28,13 @@ public class RecipeAuthor extends ContentNodeModelImpl {
 	 * 
 	 * @return List of RecipeAuthor, sorted by name
 	 */
-	public static List findAllAvailable() {
-		List sources = RecipeSource.findAllAvailable();
-		Set authors = new HashSet();
-		for (Iterator i = sources.iterator(); i.hasNext();) {
-			RecipeSource rs = (RecipeSource) i.next();
+	public static List<RecipeAuthor> findAllAvailable() {
+		List<RecipeSource> sources = RecipeSource.findAllAvailable();
+		Set<RecipeAuthor> authors = new HashSet<RecipeAuthor>();
+		for ( RecipeSource rs : sources ) {
 			authors.addAll(rs.getAuthors());
 		}
-		List l = new ArrayList(authors);
+		List<RecipeAuthor> l = new ArrayList<RecipeAuthor>(authors);
 		Collections.sort(l, NAME_COMPARATOR);
 		return l;
 	}
@@ -55,11 +47,11 @@ public class RecipeAuthor extends ContentNodeModelImpl {
 	 *            List of {@link RecipeAuthor}
 	 * @return String (never null)
 	 */
-	public static String authorsToString(List authors) {
+	public static String authorsToString(List<RecipeAuthor> authors) {
 		StringBuffer sb = new StringBuffer();
 
 		for (int i = 0; i < authors.size(); i++) {
-			RecipeAuthor author = (RecipeAuthor) authors.get(i);
+			RecipeAuthor author = authors.get(i);
 			
 			if (i == 0) {
 				sb.append("by ");

@@ -18,7 +18,6 @@ public class AudienceStrategy implements PromotionStrategyI {
 	public int getRollingExpirationDays() { return this.rollingExpirationDays; } 
 	
 	public int evaluate(String promotionCode, PromotionContextI context) {
-		//PromotionI promotion = FDPromotionFactory.getInstance().getPromotion(promotionCode); 
 		AssignedCustomerParam param = context.getAssignedCustomerParam(promotionCode);
 		if (param != null && isValidUsageCount(promotionCode, context, param) && isBeforeExpirationDate(promotionCode, context, param)) {
 					return ALLOW;

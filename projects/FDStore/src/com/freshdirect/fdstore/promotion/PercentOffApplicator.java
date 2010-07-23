@@ -10,7 +10,8 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 
 	private final double minSubtotal;
 	private final double percentOff;
-
+	private DlvZoneStrategy zoneStrategy;
+	
 	/**
 	 * @param percentOff between 0 and 1
 	 */
@@ -30,13 +31,26 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		return percentOff;
 	}
 
-	public boolean apply(String promoCode, PromotionContextI context) {        
-		if (context.getPreDeductionTotal() < this.getMinSubtotal()) {
+	public boolean apply(String promoCode, PromotionContextI context) {   
+		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		int e = zoneStrategy != null ? zoneStrategy.evaluate(promoCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+			
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
+		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		if (preDeduction < this.getMinSubtotal()) {
 			return false;
 		}
+		double amount = preDeduction * this.percentOff;
+		return context.applyHeaderDiscount(promo, amount);
+	}
+	
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
+	}
 
-		double amount = context.getPreDeductionTotal() * this.percentOff;
-		return context.applyHeaderDiscount(promoCode, amount, EnumPromotionType.REDEMPTION);
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return this.zoneStrategy;
 	}
 
 }

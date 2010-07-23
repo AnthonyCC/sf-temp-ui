@@ -69,9 +69,12 @@ import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
@@ -267,7 +270,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		// Cancel the order
 		//
 		try {
-			FDOrderI origOrder = FDCustomerManager.getOrder(user.getIdentity(), orderId);
+			FDOrderAdapter origOrder = (FDOrderAdapter) FDCustomerManager.getOrder(user.getIdentity(), orderId);
 			if (!EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
 				// check original cutoff
 				
@@ -281,7 +284,18 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				}
 			}
 			
-			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, this.orderId, sendEmail);
+			// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
+			int currentDPExtendDays = 0;
+			Set<String> usedPromoCodes = origOrder.getSale().getUsedPromotionCodes();
+			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
+				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+				if(promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
+					ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
+					currentDPExtendDays = app.getExtendDays();
+				}
+			}
+
+			FDReservation restoredRsv = FDCustomerManager.cancelOrder(info, this.orderId, sendEmail, currentDPExtendDays);
 			if(restoredRsv != null){
 				user.setReservation(restoredRsv);
 			}
@@ -336,6 +350,16 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			FDCustomerManager.storeUser(currentUser.getUser());
 
 			FDCartModel cart = new FDModifyCartModel(order);
+			// Check if this order has a extend delivery pass promotion. If so get the no. of extended days.
+			Set<String> usedPromoCodes = order.getSale().getUsedPromotionCodes();
+			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
+				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+				if(promo != null && promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
+					ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
+					cart.setCurrentDlvPassExtendDays(app.getExtendDays());
+					break;
+				}
+			}
 			cart.refreshAll();
 			currentUser.setShoppingCart( cart );
 			//Reload gift card balance.

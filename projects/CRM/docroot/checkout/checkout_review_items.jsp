@@ -19,6 +19,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import="com.freshdirect.webapp.util.RestrictionUtil" %>
+<%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
 <%@ page import='java.text.*, java.util.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -569,7 +570,10 @@
 
 				double maxPromotion = user.getMaxSignupPromotion();
 				PromotionI redemptionPromo = user.getRedeemedPromotion();
-				boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()) );
+                String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
+                boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
+
+
 
 				List discounts = cart.getDiscounts();
 	
@@ -585,10 +589,10 @@
 							<td colspan="3"></td>	   
 						</tr>	   
 				<%
-					} else if (isRedemptionApplied && redemptionPromo.getPromotionCode().equalsIgnoreCase(discount.getPromotionCode())) { 
+					} else if (isRedemptionApplied && promoCode.equalsIgnoreCase(discount.getPromotionCode())) { 
 				%>
 						<tr valign="top" class="orderSummary">
-							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= redemptionPromo.getPromotionCode()%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
 							<td align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(discount.getAmount()) %></td>
 							<td><!--  --></td>
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
@@ -618,7 +622,7 @@
 				    if (redemptionPromo.isSampleItem()) {
 				%>
 						<tr valign="top" class="orderSummary">
-							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
 							<td colspan="1" align="right"><b>FREE!</b></td>
 							<td colspan="1"></td>
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
@@ -627,12 +631,30 @@
 					} else if (redemptionPromo.isWaiveCharge()) {
 				%>
 						<tr valign="top" class="orderSummary">
-							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
 							<td colspan="1" align="right"><b>$0.00</b></td>
 							<td colspan="1"></td>
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 						</tr>
-				<%
+                <%                        
+                } else if (redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+                %>
+                    <tr valign="top" class="orderSummary">
+                        <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+                        <td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getLineItemDiscountAmount(promoCode)) %></b></td>
+                        <td colspan="1"></td>
+                        <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+                    </tr>
+                    <%
+                } else if (redemptionPromo.isExtendDeliveryPass()) {
+                    %>
+                        <tr valign="top" class="orderSummary">
+                            <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
+                            <td colspan="1" align="right"><b>Pass extension</b></td>
+                            <td colspan="1"></td>
+                            <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+                        </tr>
+                <%
 					}
 				}
 
@@ -670,7 +692,7 @@
 					}
 				}
 
-				if ( ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !isRedemptionApplied)) && makegood != true ) {
+				if ( ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode))) && makegood != true ) {
 			%>
 					<tr bgcolor="FFFFCE">
 						<td colspan="3" align="right" style="padding: 4px;"><b>Enter promotion code: </b></td>
@@ -683,11 +705,12 @@
 			<%
 				}
 
-				if (redemptionPromo != null && user.getPromotionEligibility().isEligible(redemptionPromo.getPromotionCode()) && 
-						( !user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode())
-							|| (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getTotalDiscountValue() == 0) 
+				if (redemptionPromo != null && user.getPromotionEligibility().isEligible(promoCode) && 
+						( !user.getPromotionEligibility().isApplied(promoCode)
+							|| (redemptionPromo.getHeaderDiscountRules()!=null && !(redemptionPromo.getHeaderDiscountTotal()==0) && cart.getDiscountValue(promoCode) == 0) 
+                            || (redemptionPromo.isLineItemDiscount() && redemptionPromo.getLineItemDiscountPercentage() > 0 && !cart.isDiscountInCart(promoCode)))                            
 						)
-					) {
+					{
 		
 					// TODO: some of these error handlers are already written in RedemptionCodeControllerTag
 					//   so error display duplication may occur! 
@@ -703,14 +726,16 @@
 						}
 						
 						warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
-					} else if (redemptionPromo.isCategoryDiscount()) {
+					} else if (redemptionPromo.isLineItemDiscount()) {
 						warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
 					} else if (redemptionPromo.isSampleItem()) {
 						warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
-					}
+					}else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {
+                         warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT;
+                     }
 				%>
 					<tr valign="top">
-						<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=redemptionPromo.getPromotionCode()%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+						<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
 						<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionAmt) %></td>
 						<td colspan="1"></td>
 						<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>

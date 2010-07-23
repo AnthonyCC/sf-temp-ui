@@ -7,12 +7,12 @@ import java.util.Map;
 
 import javax.ejb.EJBObject;
 
-import com.freshdirect.content.attributes.AttributeException;
+import com.freshdirect.erp.ErpCOOLInfo;
 
 public interface ErpCOOLManagerSB extends EJBObject {
 
-	public void updateCOOLInfo(List erpCOOLInfo) throws RemoteException;
-	public Map load(Date lastModified) throws RemoteException;
+	public void updateCOOLInfo(List<ErpCOOLInfo> erpCOOLInfo) throws RemoteException;
+	public Map<String, ErpCOOLInfo> load(Date lastModified) throws RemoteException;
 
 }
 

@@ -1,0 +1,60 @@
+<%--
+	This is a jspf-specifc var that denotes if the section is "empty".
+	If it's empty, show "-None-" instead of the normal contents
+--%>
+<% boolean isEmptyPromoPayreq = false; %>
+<%--
+	For testing, set this to true on the promo_create_edit page
+--%>
+<% if (promo_create_edit) { isEmptyPromoPayreq = true; } %>
+
+<table width="100%" class="bordBotLgray">
+	<tr>
+		<td class="vTop">
+			<span class="brn11ptB">Payment Requirement</span>
+		</td>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+			<%-- --%>
+			<% if (promo_edit || inPromoEditSub) { %>
+				<input type="button" value="EDIT SECTION" onclick="javascript:promotionPaymentReqSubmit('<%= promoId %>')" class="promo_btn_brn2 fleft noMargLR" />
+			<% } %>
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>
+
+<table width="100%">
+	<tr>
+		<td class="vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<%-- check if we're empty --%>
+				<% if (isEmptyPromoPayreq) { %>
+						<tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr>
+				<% }else{ %>
+					<tr>
+						<td class="promo_detail_label">Payment Method:</td>
+						<td class="alignL"><%= (csm != null) ? paymentType : "" %></td>
+					</tr>
+					<tr>
+						<td class="promo_detail_label">Prior eCheck use:</td>
+						<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><span class="gray" > min. </span><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>
+					</tr>
+				<% } %>
+			</table>
+		</td>
+		<%-- no contents, filler --%>
+		<td width="1%" class="vTop">
+			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		</td>
+		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+	</tr>
+</table>

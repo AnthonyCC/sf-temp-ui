@@ -31,6 +31,7 @@ BrowserInfo bi = new BrowserInfo(request);
 		padding-right: 1em;
 	}
 	</style>
+	<script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
 <%
 if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 %>	<link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css"><%
@@ -42,7 +43,7 @@ if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 </head>
 <body>
 <%
-	ProductModel prd = ContentFactory.getInstance().getProduct("apl_apl", "apl_rome");
+	ProductModel prd = ContentFactory.getInstance().getProduct("apl_apl", "apl_breaburn");
 
 	
 %>

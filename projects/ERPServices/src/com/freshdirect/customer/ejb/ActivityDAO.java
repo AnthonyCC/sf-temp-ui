@@ -19,7 +19,7 @@ public class ActivityDAO implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 2593574875770125711L;
 
-	private static final String INSERT = "INSERT INTO CUST.ACTIVITY_LOG (ACTIVITY_ID, CUSTOMER_ID, NOTE, TIMESTAMP, SOURCE, INITIATOR, DLV_PASS_ID, SALE_ID, REASON, STANDINGORDER_ID) VALUES (?,?,?,?,?,?,?,?,?,?)";
+	private static final String INSERT = "INSERT INTO CUST.ACTIVITY_LOG (ACTIVITY_ID, CUSTOMER_ID, NOTE, TIMESTAMP, SOURCE, INITIATOR, DLV_PASS_ID, SALE_ID, REASON, STANDINGORDER_ID, MASQUERADE_AGENT) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
 	
 	public void logActivity( Connection conn, ErpActivityRecord rec ) throws SQLException {
 
@@ -49,6 +49,11 @@ public class ActivityDAO implements java.io.Serializable {
 			ps.setString( 10, rec.getStandingOrderId() );
 		} else {
 			ps.setNull( 10, Types.VARCHAR );
+		}
+		if ( rec.getMasqueradeAgent() != null ) {
+			ps.setString( 11, rec.getMasqueradeAgent() );
+		} else {
+			ps.setNull( 11, Types.VARCHAR );
 		}
 
 		try {
@@ -111,6 +116,7 @@ public class ActivityDAO implements java.io.Serializable {
 		rec.setChangeOrderId( rs.getString( "SALE_ID" ) );
 		rec.setReason( rs.getString( "REASON" ) );
 		rec.setStandingOrderId( rs.getString( "STANDINGORDER_ID" ) );
+		rec.setMasqueradeAgent( rs.getString( "MASQUERADE_AGENT" ) );
 		return rec;
 	}
 

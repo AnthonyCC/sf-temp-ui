@@ -27,7 +27,8 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 
 	private final ProductReference sampleProduct;
 	private final double minSubtotal;
-
+	private DlvZoneStrategy zoneStrategy;
+	
 	public SampleLineApplicator(ProductReference sampleProduct, double minSubtotal) {
 		this.sampleProduct = sampleProduct;
 		this.minSubtotal = minSubtotal;
@@ -42,7 +43,12 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 	}
 
 	public boolean apply(String promotionCode, PromotionContextI context) {
-		if (context.getPreDeductionTotal() < this.minSubtotal) {
+		//If delivery zone strategy is applicable please evaluate before applying the promotion.
+		int e = zoneStrategy != null ? zoneStrategy.evaluate(promotionCode, context) : PromotionStrategyI.ALLOW;
+		if(e == PromotionStrategyI.DENY) return false;
+		
+		PromotionI promo = PromotionFactory.getInstance().getPromotion(promotionCode);
+		if (context.getSubTotal(promo.getExcludeSkusFromSubTotal()) < this.minSubtotal) {
 			return false;
 		}
 		try {
@@ -52,8 +58,8 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 				return true;
 			}
 			return false;
-		} catch (FDResourceException e) {
-			throw new FDRuntimeException(e);
+		} catch (FDResourceException fe) {
+			throw new FDRuntimeException(fe);
 		}
 	}
 
@@ -110,6 +116,14 @@ public class SampleLineApplicator implements PromotionApplicatorI {
 		return this.minSubtotal;
 	}
 
+	public void setZoneStrategy(DlvZoneStrategy zoneStrategy) {
+		this.zoneStrategy = zoneStrategy;
+	}
+
+	public DlvZoneStrategy getDlvZoneStrategy() {
+		return this.zoneStrategy;
+	}
+	
 	public String toString() {
 		return "SampleLineApplicator[" + this.sampleProduct + " min $" + this.minSubtotal + "]";
 	}

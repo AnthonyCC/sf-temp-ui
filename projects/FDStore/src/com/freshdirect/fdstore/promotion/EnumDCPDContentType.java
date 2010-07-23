@@ -11,6 +11,8 @@ public class EnumDCPDContentType extends Enum {
 	public static final EnumDCPDContentType DEPARTMENT = new EnumDCPDContentType("Department", "Deparments");
 	public static final EnumDCPDContentType CATEGORY = new EnumDCPDContentType("Category", "Categories");
 	public static final EnumDCPDContentType RECIPE= new EnumDCPDContentType("Recipe", "Recipes");
+	public static final EnumDCPDContentType SKU = new EnumDCPDContentType("Sku","Skus");
+	public static final EnumDCPDContentType BRAND= new EnumDCPDContentType("Brand", "Brands");
 		    
 	private final String description;
 

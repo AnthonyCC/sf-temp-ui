@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.PricingContext;
@@ -215,9 +216,10 @@ public interface FDProductSelectionI extends FDConfigurableI {
 	public void setRequestNotification(boolean requestNotification);
 
 	public boolean isInvalidConfig();
-
-	public void refreshConfiguration() throws FDResourceException,
-			FDInvalidConfigurationException;
+	
+	public void refreshConfiguration() throws FDResourceException, FDInvalidConfigurationException;
+	
+	public boolean hasBrandName(Set<String> brandNames);
 
 	public List<ErpClientCode> getClientCodes();
 }

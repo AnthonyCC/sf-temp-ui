@@ -12,13 +12,17 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public class FDPromotionModel extends ModelSupport {
+	private static final long serialVersionUID = -8981915060102783750L;
 
-	private Set assignedCustomerUserIds = new HashSet();
-	private TreeMap zipRestrictions = new TreeMap();
+	private Set<String> assignedCustomerUserIds = new HashSet<String>();
+	private TreeMap<Date,FDPromoZipRestriction> zipRestrictions = new TreeMap<Date,FDPromoZipRestriction>();
 	private String zipValidationCheckWarningMessage;
 	private String categoryName;
 	private String description;
@@ -56,7 +60,7 @@ public class FDPromotionModel extends ModelSupport {
 	private String refProgCampaignCode;
 	private boolean isMaxUsagePerCustomer;
 	private Integer rollingExpirationDays;
-	private Map assignedCustomerParams;
+	private Map<String,AssignedCustomerParam> assignedCustomerParams;
 	private boolean uniqueUse;
 	
 	private int maxItemCount=0;
@@ -75,14 +79,14 @@ public class FDPromotionModel extends ModelSupport {
 	
 	private String assignedRecipes;
 	
-	private List attributeList = new ArrayList();
+	private List<FDPromotionAttributeParam> attributeList = new ArrayList<FDPromotionAttributeParam>();
 	
 	private String profileOperator;
 	
 	private String tmpAssignedCustomerUserIds;
 	
-	private List promoVariants;
-
+	private List<PromoVariantModel> promoVariants;
+	
 	public FDPromotionModel() {
 		super();
 	}
@@ -96,7 +100,7 @@ public class FDPromotionModel extends ModelSupport {
 	public String getAssignedCustomerUserIds() {
 		String str = "";
 		if (this.assignedCustomerUserIds != null && !this.assignedCustomerUserIds.isEmpty()) {
-			Iterator iter = this.assignedCustomerUserIds.iterator();
+			Iterator<String> iter = this.assignedCustomerUserIds.iterator();
 			while (iter.hasNext()) {
 				if (!"".equals(str)) {
 					str += ",";
@@ -130,7 +134,7 @@ public class FDPromotionModel extends ModelSupport {
 		return this.zipValidationCheckWarningMessage;
 	}
 
-	public TreeMap getZipRestrictions() {
+	public TreeMap<Date,FDPromoZipRestriction> getZipRestrictions() {
 		return zipRestrictions;
 	}
 
@@ -274,7 +278,7 @@ public class FDPromotionModel extends ModelSupport {
 		return this.rollingExpirationDays;
 	}
 
-	public Map getAssignedCustomerParams() {
+	public Map<String,AssignedCustomerParam> getAssignedCustomerParams() {
 		return this.assignedCustomerParams;
 	}
 
@@ -301,12 +305,12 @@ public class FDPromotionModel extends ModelSupport {
 		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(assignedCustomerUserIds, ",")));
 	}
 
-	public void setAssignedCustomerUserIds(Set assignedCustomerUserIds){
+	public void setAssignedCustomerUserIds(Set<String> assignedCustomerUserIds){
 		this.assignedCustomerUserIds = assignedCustomerUserIds;
 	}
 
 
-	public void setZipRestrictions(TreeMap zipRestrictions) {
+	public void setZipRestrictions(TreeMap<Date,FDPromoZipRestriction> zipRestrictions) {
 		this.zipRestrictions = zipRestrictions;
 	}
 
@@ -458,7 +462,7 @@ public class FDPromotionModel extends ModelSupport {
 		this.rollingExpirationDays = rollingExpirationDays;
 	}
 
-	public void setAssignedCustomerParams(Map assignedCustomerParams) {
+	public void setAssignedCustomerParams(Map<String,AssignedCustomerParam> assignedCustomerParams) {
 		this.assignedCustomerParams = assignedCustomerParams;
 	}
 
@@ -502,11 +506,11 @@ public class FDPromotionModel extends ModelSupport {
 	}
 
 	
-	public List getAttributeList() {
+	public List<FDPromotionAttributeParam> getAttributeList() {
 		return attributeList;
 	}
 
-	public void setAttributeList(List attributeList) {
+	public void setAttributeList(List<FDPromotionAttributeParam> attributeList) {
 		this.attributeList = attributeList;
 	}
 
@@ -574,12 +578,14 @@ public class FDPromotionModel extends ModelSupport {
 		this.recommendedItemsOnly = recommendedItemsOnly;
 	}
 
-	public List getPromoVariants() {
+	public List<PromoVariantModel> getPromoVariants() {
 		return promoVariants;
 	}
 
-	public void setPromoVariants(List promoVariants) {
+	public void setPromoVariants(List<PromoVariantModel> promoVariants) {
 		this.promoVariants = promoVariants;
 	}
+
+	
 
 }

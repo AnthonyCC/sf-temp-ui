@@ -3,7 +3,6 @@ package com.freshdirect.crm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,9 @@ import com.freshdirect.enums.EnumModel;
 
 public class CrmCaseSubject extends EnumModel implements TerminableI {
 
-	private static Map enums = null;
+	private static final long	serialVersionUID	= 3627198720754854407L;
+
+	private static Map<String, CrmCaseSubject> enums = null;
 
 	public static final String CODE_PAYMENT_ERROR = "ASQ-001";
 	public static final String CODE_AUTHORIZATION_FAILED = "ASQ-003";
@@ -88,10 +89,9 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 		return priorityCode;
 	}
 
-	public static List getSubjectsForQueue(String queueCode) {
-		List lst = new ArrayList();
-		for (Iterator i = getEnumList().iterator(); i.hasNext();) {
-			CrmCaseSubject sub = (CrmCaseSubject) i.next();
+	public static List<CrmCaseSubject> getSubjectsForQueue(String queueCode) {
+		List<CrmCaseSubject> lst = new ArrayList<CrmCaseSubject>();
+		for ( CrmCaseSubject sub : getEnumList() ) {
 			if (sub.queueCode.equals(queueCode)) {
 				lst.add(sub);
 			}
@@ -102,25 +102,24 @@ public class CrmCaseSubject extends EnumModel implements TerminableI {
 
 	public static CrmCaseSubject getEnum(String code) {
 		loadEnums();
-		return (CrmCaseSubject) enums.get(code);
+		return enums.get(code);
 	}
 
-	public static Map getEnumMap() {
+	public static Map<String, CrmCaseSubject> getEnumMap() {
 		loadEnums();
 		return Collections.unmodifiableMap(enums);
 	}
 
-	public static List getEnumList() {
+	public static List<CrmCaseSubject> getEnumList() {
 		loadEnums();
-		return Collections.unmodifiableList(new ArrayList(enums.values()));
+		return Collections.unmodifiableList(new ArrayList<CrmCaseSubject>(enums.values()));
 	}
 
 	private static void loadEnums() {
 		if (enums == null) {
-			enums = new HashMap();
-			List lst = loadEnums(CrmCaseSubjectDAO.class);
-			for(Iterator i = lst.iterator(); i.hasNext(); ){
-				CrmCaseSubject e = (CrmCaseSubject) i.next();
+			enums = new HashMap<String, CrmCaseSubject>();
+			List<CrmCaseSubject> lst = loadEnums(CrmCaseSubjectDAO.class);
+			for ( CrmCaseSubject e : lst ) {
 				enums.put(e.getCode(), e);
 			}
 		}

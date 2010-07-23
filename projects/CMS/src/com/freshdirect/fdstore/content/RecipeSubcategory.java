@@ -9,13 +9,13 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class RecipeSubcategory extends ContentNodeModelImpl implements HasRedirectUrl {
 
-	private final List groupBy = new ArrayList();
+	private final List<DomainValue> groupBy = new ArrayList<DomainValue>();
 
-	private final List filterBy = new ArrayList();
+	private final List<DomainValue> filterBy = new ArrayList<DomainValue>();
 
-	private final List featuredRecipes = new ArrayList();
+	private final List<Recipe> featuredRecipes = new ArrayList<Recipe>();
 
-	private final List featuredProducts = new ArrayList();
+	private final List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
 
 	public RecipeSubcategory(ContentKey cKey) {
 		super(cKey);
@@ -38,22 +38,22 @@ public class RecipeSubcategory extends ContentNodeModelImpl implements HasRedire
 	    return key != null ? ContentFactory.getInstance().getDomainValueById(key.getId()) : null;
 	}
 	
-	public List getGroupBy() {
+	public List<DomainValue> getGroupBy() {
 		ContentNodeModelUtil.refreshModels(this, "groupBy", groupBy, false);
 		return Collections.unmodifiableList(groupBy);
 	}
 
-	public List getFilterBy() {
+	public List<DomainValue> getFilterBy() {
 		ContentNodeModelUtil.refreshModels(this, "filterBy", filterBy, false);
 		return Collections.unmodifiableList(filterBy);
 	}
 
-	public List getFeaturedRecipes() {
+	public List<Recipe> getFeaturedRecipes() {
 		ContentNodeModelUtil.refreshModels(this, "featuredRecipes", featuredRecipes, false);
 		return Collections.unmodifiableList(featuredRecipes);
 	}
 
-	public List getFeaturedProducts() {
+	public List<ProductModel> getFeaturedProducts() {
 		ContentNodeModelUtil.refreshModels(this, "featuredProducts", featuredProducts, false);
 		return Collections.unmodifiableList(featuredProducts);
 	}
@@ -62,9 +62,9 @@ public class RecipeSubcategory extends ContentNodeModelImpl implements HasRedire
 	    return FDAttributeFactory.constructImage(this, "label");
 	}
 	
-        public Html getRecipeEditorial() {
-            return FDAttributeFactory.constructHtml(this, "editorial");
-        }
+    public Html getRecipeEditorial() {
+        return FDAttributeFactory.constructHtml(this, "editorial");
+    }
 
 	public String getPath() {
 		return getParentNode().getPath() + "/" + getContentName();
