@@ -334,7 +334,8 @@ public class PromotionContextAdapter implements PromotionContextI {
 			Discount applied = this.getHeaderDiscount();
 			if(this.isMaxDiscountAmount(promotionAmt, promo.getPriority(), applied)){
 				//Clear the previous discount.
-				this.getShoppingCart().removeDiscount(applied.getPromotionCode());
+				if(applied != null)
+					this.getShoppingCart().removeDiscount(applied.getPromotionCode());
 				//Add this discount.
 				Discount discount = new Discount(promo.getPromotionCode(), EnumDiscountType.DOLLAR_OFF, promotionAmt);
 				this.addDiscount(discount);
