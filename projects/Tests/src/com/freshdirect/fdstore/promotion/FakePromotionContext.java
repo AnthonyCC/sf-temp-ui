@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.PricingContext;
@@ -225,5 +226,17 @@ public class FakePromotionContext implements PromotionContextI {
 	
 	public boolean applyZoneDiscount(PromotionI promo, double promotionAmt){
 		return false;
+	}
+
+	@Override
+	public String getDepotCode(AddressModel addr) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public EnumOrderType getOrderType(AddressModel address) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
