@@ -65,4 +65,6 @@ public interface PromotionI extends Serializable {
 	public boolean isDollarValueDiscount();
 	
 	public double getLineItemDiscountPercentage();
+	
+	public String getRedemptionCode();
 }

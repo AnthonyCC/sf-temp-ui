@@ -17,6 +17,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>	
+	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
+	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <fd:CheckLoginStatus id="yuzer" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <%
 
@@ -112,12 +117,34 @@ while (e.hasMoreElements()) {
 	<% } %>
 
 	<%@ include file="/includes/i_modifyorder.jspf" %>
- <script type="text/javascript">
-			function checkouttest(){				
-                return true;
-			}
-			</script>
-	<form method="POST" >
+ 
+	<form method="POST" name="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==yuzer.getRedeemedPromotion()?"null":"not null" %>');">
+	<div class="gcResendBox" style="display:none">
+		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox">
+			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
+			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
+			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
+			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
+			<input type="hidden" id="gcSaleId" value="" />
+			<input type="hidden" id="gcCertNum" value="" />
+			<table border="0" cellspacing="0" cellpadding="4" width="100%">
+				<tr>
+					<td colspan ="2"width="130" align="right">The promotion code you entered <span id="gcResendRecipAmount"></span> is not valid for the address you selected. More Info</td>
+					
+				</tr>				
+				
+				<tr>
+					<td width="150" colspan="2" align="center"><a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a></td>					
+				</tr>
+				<tr>					
+					<td width="150" colspan="2" align="center"><a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a></td>
+				</tr>
+			</table>
+			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
+			
+			<div id="gcResendErr">&nbsp;</div>
+		</div>
+	</div>
 		<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
 	    <td class="text12" width="375" valign="bottom"> 

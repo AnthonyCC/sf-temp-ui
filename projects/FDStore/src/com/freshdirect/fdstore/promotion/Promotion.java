@@ -327,6 +327,19 @@ public class Promotion extends ModelSupport implements PromotionI {
 		return value;
 	}
 	
+	public String getRedemptionCode(){		
+			String value = "";
+			for (Iterator<PromotionStrategyI> i = getStrategies().iterator(); i.hasNext();) {
+				Object obj = i.next();
+				if (obj instanceof RedemptionCodeStrategy) {
+					//This is redemption promo.
+					value = ((RedemptionCodeStrategy)obj).getRedemptionCode();
+					break;
+				}
+			}
+			return value;
+	}
+	
 	public String toString() {
 		StringBuffer sb = new StringBuffer("Promotion[");
 		sb.append(this.promotionType).append(" / ").append(this.promotionCode);

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDReservation;
@@ -108,4 +109,8 @@ public interface PromotionContextI {
 	public PromotionI getNonCombinableHeaderPromotion();
 	
 	public boolean applyZoneDiscount(PromotionI promo, double promotionAmt);
+	
+	public EnumOrderType getOrderType(AddressModel address);
+	
+	public String getDepotCode(AddressModel addr);
 }

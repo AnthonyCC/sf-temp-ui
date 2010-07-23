@@ -219,4 +219,20 @@ public class CustomerStrategy implements PromotionStrategyI {
 	public void setAllowedOrderTypes(Set<EnumOrderType> allowedOrderTypes) {
 		this.allowedOrderTypes = allowedOrderTypes;
 	}
+	
+	public boolean evaluateByPaymentCardType(EnumCardType cardType, PromotionContextI context){
+		boolean isEligible = true;
+		if(paymentTypes != null && paymentTypes.size() > 0 ) {			
+			if(!paymentTypes.contains(cardType)) {
+				isEligible = false;
+			}
+			if(priorEcheckUse > 0 && cardType.equals(EnumCardType.ECP)){
+				int validEcheckOrderCount = context.getSettledECheckOrderCount();
+				if(validEcheckOrderCount  < priorEcheckUse){
+					isEligible = false;
+				}
+			}
+		}
+		return isEligible;
+	}
 }

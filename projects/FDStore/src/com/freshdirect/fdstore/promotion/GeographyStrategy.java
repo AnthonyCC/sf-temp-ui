@@ -50,6 +50,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 		return ALLOW;
 	}
 
+	
 	private boolean isAllowedGeography(PromotionContextI context, PromotionGeography geo) {
 
 		EnumOrderType orderType = context.getOrderType();
@@ -64,6 +65,29 @@ public class GeographyStrategy implements PromotionStrategyI {
 		return false;
 	}
 
+
+	public int evaluate(String promotionCode, EnumOrderType orderType, String zipCode, String depotCode) {
+
+		PromotionGeography g = this.getGeography(new Date());
+		if (g == null || !isAllowedGeography(orderType, g,zipCode, depotCode)) {
+			return DENY;
+		}
+
+		return ALLOW;
+	}
+	private boolean isAllowedGeography(EnumOrderType orderType, PromotionGeography geo, String zipCode, String depotCode) {
+
+		
+		if (EnumOrderType.HOME.equals(orderType)) {
+			return geo.isAllowedZipCode(zipCode);
+
+		} else if (EnumOrderType.DEPOT.equals(orderType) || EnumOrderType.PICKUP.equals(orderType)) {
+			return geo.isAllowedDepotCode(depotCode);
+		}
+
+		// not deliverable
+		return false;
+	}
 	public int getPrecedence() {
 		return 300;
 	}
