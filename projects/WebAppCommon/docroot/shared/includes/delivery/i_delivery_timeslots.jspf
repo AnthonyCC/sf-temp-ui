@@ -11,6 +11,7 @@ String zonePromoString=null;
 	boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
 	List messages = DeliveryTimeSlotResult.getMessages();
 	List comments = DeliveryTimeSlotResult.getComments();
+    String zoneId = "";
 	%>
 <% if(timeSlotCtx!=null){
 
