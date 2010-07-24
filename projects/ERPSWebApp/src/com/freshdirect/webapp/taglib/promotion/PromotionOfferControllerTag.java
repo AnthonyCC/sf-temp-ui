@@ -151,14 +151,15 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			this.promotion.setFavoritesOnly(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_favorites"), "").trim()));
 			this.promotion.setPerishable(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_perishables"), "").trim()));
 			this.promotion.setPromotionType(promotionType);
-			this.promotion.setOfferType("");
+//			this.promotion.setOfferType("");
 			setWSPromotionCode();
 		}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
 			this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
 			this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
 			this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
 			this.promotion.setPromotionType(promotionType);
-			this.promotion.setOfferType("");
+//			this.promotion.setOfferType("");
+			this.promotion.setCombineOffer(true);
 			setWSPromotionCode();
 		}
 		}else if("promoCart".equalsIgnoreCase(this.getActionName())){

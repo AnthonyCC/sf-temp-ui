@@ -189,6 +189,10 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				}else{
 					result.addError(true, "addressTypeEmpty", "Promotion delivery address type must be selected.");
 				}
+				if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
+					result.addError(true, "minSubTotalEmpty", "Minimum Sub Total is required for the promotion.");
+				}
+				
 			}
 			
 		}

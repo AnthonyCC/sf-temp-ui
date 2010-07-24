@@ -72,6 +72,9 @@
         <fd:ErrorHandler result="<%=result%>" name="wsZoneRequired" id="errorMsg">
        		 <%@ include file="/includes/i_error_messages.jspf" %>   
         </fd:ErrorHandler>
+        <fd:ErrorHandler result="<%=result%>" name="minSubTotalEmpty" id="errorMsg">
+       		 <%@ include file="/includes/i_error_messages.jspf" %>   
+        </fd:ErrorHandler>
 		
 		<%-- Top-Row, page specific nav --%>
 		<form method='POST' name="frmPromoDetails" id="frmPromoDetails">

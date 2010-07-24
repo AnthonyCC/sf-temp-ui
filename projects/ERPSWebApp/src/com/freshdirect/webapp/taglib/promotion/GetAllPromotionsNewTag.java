@@ -28,9 +28,13 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 	@Override
 	protected List<PromoNewRow> getResult() throws Exception {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-		request.setAttribute("filter",filter);
+//		request.setAttribute("filter",filter);
 		List<FDPromotionNewModel> promotions = null;
-		
+		if(null == filter || filter.isEmpty()){
+			if(null == request.getParameter("promo_filter_submit"))
+				filter = (PromoFilterCriteria)request.getSession().getAttribute("filter");
+		}
+		request.getSession().setAttribute("filter",filter);
 		if(null != filter && !filter.isEmpty()){
 			promotions = (List<FDPromotionNewModel>) filterPromotions(filter);
 		}else{

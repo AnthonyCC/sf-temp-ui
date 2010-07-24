@@ -352,7 +352,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		}
 		if(!isInteger(orderRangeEnd)){
 			model.setOrderRangeEnd(null);
-			actionResult.addError(true, "orderRangesEnd", " Order instance value '"+orderRangeEnd +"' should be Number.");
+			actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeEnd +"' should be Number.");
 		}else{
 			model.setOrderRangeEnd(Integer.parseInt(orderRangeEnd));
 		}

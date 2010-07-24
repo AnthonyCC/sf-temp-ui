@@ -25,7 +25,7 @@
 							
 							<div class="promo_action promo_btn_dblue fleft" style="width: 80px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
 							<% } else if(EnumPromotionStatus.TEST.equals(promotion.getStatus())){ %>
-							<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVED&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+							<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
 							<% } %>
 							<input type="button" value="ON HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>') ; return false;" class="promo_btn_whtGray fleft" />
 							<% if(!EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLED.equals(promotion.getStatus())){ %>

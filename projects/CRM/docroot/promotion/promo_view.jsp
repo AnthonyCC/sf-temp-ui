@@ -11,13 +11,29 @@
 <%@ page import="com.freshdirect.webapp.util.*" %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <%
-	String offerType =request.getParameter("offerType");
-	String customerType =request.getParameter("customerType");
-	String promoStatus =request.getParameter("promoStatus");
-	String createdBy =request.getParameter("createdBy");
-	String modifiedBy =request.getParameter("modifiedBy");
-	String keyword =request.getParameter("keyword");
-	PromoFilterCriteria  promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+	PromoFilterCriteria  promoFilter =  (PromoFilterCriteria)request.getSession().getAttribute("filter");
+	String offerType = "";
+	String customerType ="";
+	String promoStatus = "";
+	String createdBy = "";
+	String modifiedBy = "";
+	String keyword = "";
+	if(null !=request.getParameter("promo_filter_submit")){
+		offerType =request.getParameter("offerType");
+		customerType =request.getParameter("customerType");
+		promoStatus =request.getParameter("promoStatus");
+		createdBy =request.getParameter("createdBy");
+		modifiedBy =request.getParameter("modifiedBy");
+		keyword =request.getParameter("keyword");
+		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+	}else if(null != promoFilter && !promoFilter.isEmpty()){
+		offerType = promoFilter.getOfferType();
+		customerType = promoFilter.getCustomerType();
+		promoStatus = promoFilter.getPromoStatus();
+		createdBy = promoFilter.getCreatedBy();
+		modifiedBy = promoFilter.getModifiedBy();
+		keyword = promoFilter.getKeyword();		
+	}
 	List<String> createdUsers = FDPromotionNewModelFactory.getInstance().getPromotionsCreatedUsers();//(List)request.getAttribute("createdUsers");
 	List<String> modifiedUsers = FDPromotionNewModelFactory.getInstance().getPromotionsModifiedUsers();//(List)request.getAttribute("modifiedUsers");
 	String promoId = null;
@@ -108,7 +124,7 @@
 						</select>
 					</td>
 					<td><input type="text" id="keyword" name="keyword" class="promo_filter" value="<%= keyword %>"/></td>
-					<td><input type="submit" value="FILTER" onclick="" id="promo_filter_submit" class="promo_btn_grn" /></td>
+					<td><input type="submit" value="FILTER" onclick="" id="promo_filter_submit" name="promo_filter_submit" class="promo_btn_grn" /></td>
 				</tr>
 			</table>
 			</form>

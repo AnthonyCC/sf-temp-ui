@@ -175,7 +175,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label"></td>
-					<td class="alignL"><span class="gray">Combine offer</span></td>
+					<td class="alignL"><input type="checkbox" id="" disabled checked/><span class="gray">Combine offer</span></td>
 				</tr>
 			</table>
 		</td>

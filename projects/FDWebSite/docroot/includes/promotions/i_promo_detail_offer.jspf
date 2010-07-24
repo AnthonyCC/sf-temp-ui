@@ -243,7 +243,11 @@
 						<tr>
 							<td class="promo_detail_label">Product:</td>
 							<td class="alignL">
-								<% ProductModel prodRef = ContentFactory.getInstance().getProductByName(promotion.getCategoryName(), promotion.getProductName());
+								<% ContentNodeModel node = ContentFactory.getInstance().getContentNode(promotion.getCategoryName());
+								ProductModel prodRef = null;
+								if(null != node && node instanceof CategoryModel){
+									prodRef = ContentFactory.getInstance().getProductByName(promotion.getCategoryName(), promotion.getProductName());
+								}
 								if (prodRef != null) { %>
 									<%= prodRef.getFullName() %><br /><br />
 									<table style="border-collapse: collapse;">
