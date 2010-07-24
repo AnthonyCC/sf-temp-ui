@@ -128,7 +128,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 //		if(request.getParameter("percentOff1")!=null && request.getParameter("percentOff1").trim().length()>0)
 //		    this.promotion.setPercentOff(NVL.apply(request.getParameter("percentOff1"), "").trim());
 		this.promotion.setWaiveChargeType(NVL.apply(request.getParameter("waiveChargeType"), "").trim());		
-		this.promotion.setRuleBased("on".equals(NVL.apply(request.getParameter("ruleBased"), "off")));
+//		this.promotion.setRuleBased("on".equals(NVL.apply(request.getParameter("ruleBased"), "off")));
 		this.promotion.setApplyFraud("on".equals(NVL.apply(request.getParameter("dontApplyFraud"), "off"))); //opposite
 		this.promotion.setNeedCustomerList("on".equals(NVL.apply(request.getParameter("eligibilityList"), "off")));
 				
@@ -239,14 +239,14 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 					changeDetailModel.setChangeSectionId(EnumPromotionSection.BASIC_INFO);
 					promoChangeDetails.add(changeDetailModel);
 				}
-				if(this.promotion.isRuleBased()!=oldPromotion.isRuleBased()){
+				/*if(this.promotion.isRuleBased()!=oldPromotion.isRuleBased()){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 					changeDetailModel.setChangeFieldName("Rule Based");
 					changeDetailModel.setChangeFieldOldValue((oldPromotion.isRuleBased()?"Y":"N"));
 					changeDetailModel.setChangeFieldNewValue((this.promotion.isRuleBased()?"Y":"N"));
 					changeDetailModel.setChangeSectionId(EnumPromotionSection.BASIC_INFO);
 					promoChangeDetails.add(changeDetailModel);
-				}
+				}*/
 				if(this.promotion.isApplyFraud()==(oldPromotion.isApplyFraud())){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 					changeDetailModel.setChangeFieldName("Apply Fraud");

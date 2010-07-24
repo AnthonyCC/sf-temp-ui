@@ -77,10 +77,10 @@
 					</td>
 					<td class="alignL"><span class="gray">Eligibility list required</span></td>
 				</tr>
-				<tr>
-					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(promotion.isRuleBased())?"checked ":"" %>/></td>
-					<td class="alignL"><span class="gray">Timeslot dependent/window steering</span></td>
-				</tr>
+<!--				<tr>-->
+<!--					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(promotion.isRuleBased())?"checked ":"" %>/></td>-->
+<!--					<td class="alignL"><span class="gray">Timeslot dependent/window steering</span></td>-->
+<!--				</tr>-->
 			</table>
 		</td>
 		<td width="1%" class="vTop">

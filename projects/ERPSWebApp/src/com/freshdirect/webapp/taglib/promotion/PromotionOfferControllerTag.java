@@ -137,10 +137,12 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be integer.");
 			}
 			String maxItems = NVL.apply(request.getParameter("li_maxItems"), "").trim();
-			if(NumberUtil.isInteger(maxItems)){
-				this.promotion.setMaxItemCount(Integer.parseInt(maxItems));
-			}else{
-				actionResult.addError(true, "maxItemsNumber", " Max # items value should be integer.");
+			if(!"".equals(maxItems)){
+				if(NumberUtil.isInteger(maxItems)){
+					this.promotion.setMaxItemCount(Integer.parseInt(maxItems));
+				}else{
+					actionResult.addError(true, "maxItemsNumber", " Max # items value should be integer.");
+				}
 			}
 			populateDcpdData(request);
 
