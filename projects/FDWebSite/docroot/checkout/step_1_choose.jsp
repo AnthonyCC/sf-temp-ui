@@ -119,32 +119,43 @@ while (e.hasMoreElements()) {
 	<%@ include file="/includes/i_modifyorder.jspf" %>
  
 	<form method="POST" name="step1Form" onSubmit="return checkPromoEligibilityByAddress('<%= null==yuzer.getRedeemedPromotion()?"null":"not null" %>');">
-	<div class="gcResendBox" style="display:none">
-		<div style="text-align: left;" class="gcResendBoxContent" id="gcResendBox">
-			<img src="/media_stat/images/giftcards/your_account/resend_hdr.gif" width="169" height="16" alt="Resend Gift Card" />
-			<a href="#" onclick="Modalbox.hide(); return false;"><img src="/media_stat/images/giftcards/your_account/close.gif" width="50" height="11" alt="close" border="0" style="float: right;" /></a>
-			<br />If your Recipient never received their Gift Card, you may resend it by clicking Resend Now. If there was an error in the Recipient's email address, or to use a new one, edit the email field.
-			<br /><br /><img src="/media_stat/images/layout/cccccc.gif" width="390" height="1" border="0"><br /><br />
-			<input type="hidden" id="gcSaleId" value="" />
-			<input type="hidden" id="gcCertNum" value="" />
-			<table border="0" cellspacing="0" cellpadding="4" width="100%">
-				<tr>
-					<td colspan ="2"width="130" align="right">The promotion code you entered <span id="gcResendRecipAmount"></span> is not valid for the address you selected. More Info</td>
-					
-				</tr>				
-				
-				<tr>
-					<td width="150" colspan="2" align="center"><a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a></td>					
-				</tr>
-				<tr>					
-					<td width="150" colspan="2" align="center"><a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a></td>
-				</tr>
-			</table>
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /><br />
-			
-			<div id="gcResendErr">&nbsp;</div>
-		</div>
+	
+	<div class="gcResendBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<%-- all your content goes in this div, it controls the height/width --%>
+					The promotion code you entered <div id="gcResendRecipAmount"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
+					<a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a><br />
+					(promotion code will be removed)
+				</div></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
 	</div>
+
 		<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
 	    <td class="text12" width="375" valign="bottom"> 
