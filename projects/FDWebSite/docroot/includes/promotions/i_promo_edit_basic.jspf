@@ -153,7 +153,7 @@
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label"><input type="checkbox" id="dontApplyFraud" name="dontApplyFraud" <%=(!promotion.isApplyFraud())?"checked ":"" %>/></td>
+					<td class="promo_detail_label"><input type="checkbox" id="dontApplyFraud" name="dontApplyFraud" <%=(promotion.isApplyFraud())?"checked ":"" %>/></td>
 					<td class="alignL"><span class="gray">Apply fraud rule (check for duplicate address)</span></td>
 				</tr>
 				<tr>

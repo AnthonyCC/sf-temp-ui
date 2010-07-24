@@ -2,7 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
@@ -14,12 +14,12 @@ public class FDPromotionEligibility implements Serializable {
 	private static final long	serialVersionUID	= 3747005615570612091L;
 
 	/** Set of String (promotionCode) */
-	private final Set<String> eligibilePromos = new HashSet<String>();
+	private final Set<String> eligibilePromos = new LinkedHashSet<String>();
 
 	/** Set of String (promotionCode) */
-	private final Set<String> appliedPromos = new HashSet<String>();
+	private final Set<String> appliedPromos = new LinkedHashSet<String>();
 	
-	private final Set<String> recommendedPromos = new HashSet<String>();
+	private final Set<String> recommendedPromos = new LinkedHashSet<String>();
 	
 	public boolean isEligible(String promotionCode) {
 		return this.eligibilePromos.contains(promotionCode);

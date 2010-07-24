@@ -815,7 +815,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			FDPromotionManagerNewDAO.storePromotionStatus(conn, status, promotion.getPK());
+			FDPromotionManagerNewDAO.storePromotionStatus(conn, status, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
 			conn.commit();
 		} catch (SQLException sqle) {

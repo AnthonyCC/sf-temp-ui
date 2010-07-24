@@ -1994,14 +1994,20 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ? "
+				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?, MODIFIED_BY =?, MODIFY_DATE =?"
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
 		ps.setString(i++, promotion.getMinSubtotal());
 		ps.setInt(i++, promotion.getSkuQuantity());
 		ps.setString(i++, promotion.isNeedDryGoods()?"X":" ");
-			
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}				
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -2014,6 +2020,7 @@ public class FDPromotionManagerNewDAO {
 	
 	public static FDPromotionNewModel storePromotionPaymentInfo(Connection conn, ModelI model) throws SQLException{
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		storePromotionBasic(conn, model);
 		PreparedStatement ps =
 			conn.prepareStatement(
 				"UPDATE CUST.PROMO_CUST_STRATEGY SET PAYMENT_TYPE = ?, PRIOR_ECHECK_USE = ? WHERE ID = ?");
@@ -2094,13 +2101,20 @@ public class FDPromotionManagerNewDAO {
 	
 	public static FDPromotionNewModel storePromotionDlvZoneInfo(Connection conn, ModelI model) throws SQLException{
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
-		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET GEO_RESTRICTION_TYPE =?  where ID=?");
+		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET GEO_RESTRICTION_TYPE =?, MODIFIED_BY =?, MODIFY_DATE =?  where ID=?");
 		int i=1;
 		if(null != promotion.getGeoRestrictionType() && !"".equals(promotion.getGeoRestrictionType())){
 			ps.setString(i++, promotion.getGeoRestrictionType());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}	
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -2118,13 +2132,20 @@ public class FDPromotionManagerNewDAO {
 
 	public static FDPromotionNewModel storePromotionCustReqInfo(Connection conn, ModelI model) throws SQLException{
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
-		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET PROFILE_OPERATOR =?  where ID=?");
+		PreparedStatement ps =	conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET PROFILE_OPERATOR =?, MODIFIED_BY =?, MODIFY_DATE =?  where ID=?");
 		int i=1;
 		if(!"".equals(promotion.getProfileOperator())){
 			ps.setString(i++, promotion.getProfileOperator());
 		}else{
 			ps.setNull(i++, Types.VARCHAR);
 		}
+        ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}			
 		ps.setString(i++, promotion.getPK().getId());
 		if (ps.executeUpdate() != 1) {
 			ps.close();
@@ -2213,12 +2234,19 @@ public class FDPromotionManagerNewDAO {
 		return isDuplicate;
 	}
 	
-	public static void storePromotionStatus(Connection conn, EnumPromotionStatus status, PrimaryKey pk) throws SQLException{
+	public static void storePromotionStatus(Connection conn, EnumPromotionStatus status, FDPromotionNewModel promotion) throws SQLException{
 		PreparedStatement ps = null;
 		try {			
-			ps = conn.prepareStatement("Update cust.Promotion_new set Status =? where id=? ");
+			ps = conn.prepareStatement("Update cust.Promotion_new set Status =? , MODIFIED_BY =?, MODIFY_DATE =? where id=? ");
 			ps.setString(1,status.getName());
-			ps.setString(2,pk.getId());
+	        ps.setString(2, promotion.getModifiedBy());
+			if (promotion.getModifiedDate() != null) {
+				ps.setTimestamp(3, new java.sql.Timestamp(promotion
+						.getModifiedDate().getTime()));
+			} else {
+				ps.setNull(3, Types.DATE);
+			}			
+			ps.setString(4,promotion.getPK().getId());
 			ps.executeUpdate();
 		} finally {
 		if (ps != null) ps.close();			
@@ -2228,9 +2256,16 @@ public class FDPromotionManagerNewDAO {
 	public static void storePromotionHoldStatus(Connection conn, FDPromotionNewModel promotion) throws SQLException{
 		PreparedStatement ps = null;
 		try {			
-			ps = conn.prepareStatement("Update cust.Promotion_new set on_hold =? where id=? ");
+			ps = conn.prepareStatement("Update cust.Promotion_new set on_hold =?, MODIFIED_BY =?, MODIFY_DATE =? where id=? ");
 			ps.setString(1,(promotion.isOnHold())?"Y":"N");
-			ps.setString(2,promotion.getId());
+	        ps.setString(2, promotion.getModifiedBy());
+			if (promotion.getModifiedDate() != null) {
+				ps.setTimestamp(3, new java.sql.Timestamp(promotion
+						.getModifiedDate().getTime()));
+			} else {
+				ps.setNull(3, Types.DATE);
+			}			
+			ps.setString(4,promotion.getId());
 			ps.executeUpdate();
 		} finally {
 		if (ps != null) ps.close();			

@@ -112,9 +112,12 @@ public class Promotion extends ModelSupport implements PromotionI {
 		else if(this.isExtendDeliveryPass())
 			//Extend Delivery Pass Promo
 			setPriority(30);	
-		else if((this.isHeaderDiscount() || this.isLineItemDiscount()) && this.isCombineOffer())
+		else if(this.isLineItemDiscount() && this.isCombineOffer())
 			//Combine offer promotions are guaranteed to apply. 
 			setPriority(35);
+		else if(this.isHeaderDiscount() && this.isCombineOffer())
+			//Combine offer promotions are guaranteed to apply. 
+			setPriority(37);
 		else if(this.isSignupDiscount())
 			//Signup promo
 			setPriority(40);

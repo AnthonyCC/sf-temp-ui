@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -180,9 +180,9 @@ public class FDPromotionVisitor {
 
 		promos = resolveConflicts(FDStoreProperties.useMultiplePromotions(), promos);
 
-		if (promos.size() < promoCodes.size()) {
-			Set actualPromoCodes = new HashSet(promos.size());
-			for (Iterator i = promos.iterator(); i.hasNext();) {
+		if (promos.size() <= promoCodes.size()) {
+			Set<String> actualPromoCodes = new LinkedHashSet<String>(promos.size());
+			for (Iterator<Promotion> i = promos.iterator(); i.hasNext();) {
 				Promotion promo = (Promotion) i.next();
 				actualPromoCodes.add(promo.getPromotionCode());
 			}
@@ -191,7 +191,7 @@ public class FDPromotionVisitor {
 
 			eligibilities.setEligiblity(promoCodes, false);
 			eligibilities.setEligiblity(actualPromoCodes, true);
-		}
+		} 
 
 	}	
 	

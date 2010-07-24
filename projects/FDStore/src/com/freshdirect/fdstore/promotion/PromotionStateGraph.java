@@ -25,8 +25,9 @@ public class PromotionStateGraph {
 			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.CANCELLING,null,
 			EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, EnumPromotionStatus.EXPIRED, null,
 			EnumPromotionStatus.EXPIRED, EnumPromotionStatus.PROGRESS, null,
+			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS, null,
 			EnumPromotionStatus.CANCELLING, EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null,
-			EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null
+			EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null,
 	});
 
 
@@ -40,6 +41,7 @@ public class PromotionStateGraph {
 			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, null,
 			EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, null,
 			EnumPromotionStatus.EXPIRED, EnumPromotionStatus.PROGRESS, null,
+			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS, null,
 			EnumPromotionStatus.CANCELLING, EnumPromotionStatus.PROGRESS, null,
 			EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null
 	}); 
@@ -65,6 +67,7 @@ public class PromotionStateGraph {
 		pd_states.add(EnumPromotionStatus.APPROVE);
 		pd_states.add(EnumPromotionStatus.PUBLISHED);
 		pd_states.add(EnumPromotionStatus.EXPIRED);
+		pd_states.add(EnumPromotionStatus.LIVE);
 		pd_states.add(EnumPromotionStatus.CANCELLING);
 		pd_states.add(EnumPromotionStatus.CANCELLED);
 

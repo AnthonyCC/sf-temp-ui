@@ -151,6 +151,7 @@ import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
+import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
 import com.freshdirect.fdstore.survey.FDSurveyResponse;
@@ -664,7 +665,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		Map assignedParams = null;
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
-			assignedParams = FDPromotionDAO.loadAssignedCustomerParams(conn,
+			assignedParams = FDPromotionNewDAO.loadAssignedCustomerParams(conn,
 					identity.getErpCustomerPK());
 		} else {
 			assignedParams = new HashMap();

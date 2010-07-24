@@ -68,7 +68,7 @@
 					<td class="alignL"><%= promotion.getMaxUsage() %><span class="gray"> per customer</span></td> 
 				</tr>
 				<tr>
-					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(!promotion.isApplyFraud())?"checked ":"" %>/></td>
+					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(promotion.isApplyFraud())?"checked ":"" %>/></td>
 					<td class="alignL"><span class="gray">Apply fraud rule (check for duplicate address)</span></td>
 				</tr>
 				<tr>

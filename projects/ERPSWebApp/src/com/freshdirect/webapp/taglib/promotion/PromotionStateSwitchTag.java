@@ -59,12 +59,16 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 	protected boolean performAction(HttpServletRequest request,
 			ActionResult actionResult) throws JspException {
 		try {
+			HttpSession session = pageContext.getSession();
+			CrmAgentModel agent = CrmSession.getCurrentAgent(session);			
 		if ("changeStatus".equalsIgnoreCase(getActionName())){ 
 			if(graph.getStates().contains(status)) {
 				final FDPromotionNewModel promotion = graph.getPromotion();
 					validatePromotion(request,actionResult);
 					if(actionResult.isSuccess()){
 						promotion.setStatus(status);
+						this.promotion.setModifiedBy(agent.getUserId());
+						this.promotion.setModifiedDate(new Date());						
 						populatePromoChangeModel(promotion);
 						FDPromotionNewManager.storePromotionStatus(promotion,status);
 					}				 
@@ -74,6 +78,8 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 			}
 		}else if("holdStatus".equalsIgnoreCase(getActionName())){
 			promotion.setOnHold(!promotion.isOnHold());
+			this.promotion.setModifiedBy(agent.getUserId());
+			this.promotion.setModifiedDate(new Date());				
 			populatePromoChangeModel(promotion);
 			FDPromotionNewManager.storePromotionHoldStatus(promotion);			
 		}

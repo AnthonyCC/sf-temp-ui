@@ -43,7 +43,7 @@ public class FDDonationOptinDAO {
 	public static Set select(Connection conn, PrimaryKey salePk) throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(
-				"SELECT P.CODE FROM CUST.PROMOTION P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
+				"SELECT P.CODE FROM CUST.PROMOTION_NEW P, CUST.PROMOTION_PARTICIPATION PP WHERE P.ID=PP.PROMOTION_ID AND PP.SALE_ID=?");
 		ps.setString(1, salePk.getId());
 
 		Set promotionCodes = new HashSet();

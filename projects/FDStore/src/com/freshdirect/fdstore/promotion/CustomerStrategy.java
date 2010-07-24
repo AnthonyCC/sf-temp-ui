@@ -33,7 +33,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		if((orderRangeStart > 0 && orderRangeEnd <= 0) || (orderRangeStart <= 0 && orderRangeEnd > 0)) return DENY;
 		if(orderRangeStart > 0 && orderRangeEnd > 0){
 			int currentOrder = context.getAdjustedValidOrderCount() + 1;
-			if(currentOrder  <= orderRangeStart || currentOrder >= orderRangeEnd) return DENY;
+			if(currentOrder  < orderRangeStart || currentOrder > orderRangeEnd) return DENY;
 		}
 		
 		//Evaluate Delivery Pass Status
