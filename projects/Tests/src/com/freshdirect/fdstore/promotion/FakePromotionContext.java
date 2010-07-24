@@ -239,4 +239,8 @@ public class FakePromotionContext implements PromotionContextI {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Set<String> getLineItemDiscountCodes() {
+		return null;
+	}
 }

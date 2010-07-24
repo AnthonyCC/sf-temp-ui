@@ -63,6 +63,13 @@ public class FDPromotionVisitor {
         			eligibilities.setApplied(redeemedPromotion.getPromotionCode());
         	}
         }
+        //Finally add applied line item discounts to the applied list.
+        Set<String> appliedSet =  context.getLineItemDiscountCodes();
+        for (Iterator<String> i = appliedSet.iterator(); i.hasNext();) {
+        	String code = i.next();
+        	if(eligibilities.isEligible(code)) 
+        		eligibilities.setApplied(code);
+        }
 		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
 		//applyZonePromotion(context, eligibilities);
 		LOGGER.info("Apply Promotions - END TIME ");
@@ -244,7 +251,7 @@ public class FDPromotionVisitor {
                                 //when there are more than one. Currently this happens only in the
                                 //case of automatic header discounts.
                                 headerPromoCode = promoCode;
-                          } else {
+                          } else if(!promo.isLineItemDiscount()){
                                 //Add any non-header promos to the applied list. 
                                 eligibilities.setApplied(promoCode);      
                           }
@@ -262,7 +269,7 @@ public class FDPromotionVisitor {
             if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
           	  	//Process all automatic combinable header and line item offers.
                   boolean applied = promo.apply(context);
-                  if (applied) {
+                  if (applied && !promo.isLineItemDiscount()) {
                       //Add applied  promos to the applied list. 
                       eligibilities.setApplied(promoCode);      
                   }

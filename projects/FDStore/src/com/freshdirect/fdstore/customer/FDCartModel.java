@@ -1229,6 +1229,17 @@ public class FDCartModel extends ModelSupport implements FDCartI {
         return discountAmt;
 	}
 	
+	public Set<String> getLineItemDiscountCodes() {
+		Set<String> codes = new HashSet<String>();
+		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
+			if(cartLine.getDiscount() !=  null){
+				codes.add(cartLine.getDiscount().getPromotionCode());
+			}
+		}
+        return codes;
+	}
+	
 	public boolean isDiscountInCart(String promoCode) {
 		for (Iterator<FDCartLineI> i = this.orderLines.iterator(); i.hasNext();) {
 			FDCartLineI cartLine = i.next();

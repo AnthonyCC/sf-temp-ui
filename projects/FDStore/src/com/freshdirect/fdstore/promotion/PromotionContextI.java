@@ -113,4 +113,6 @@ public interface PromotionContextI {
 	public EnumOrderType getOrderType(AddressModel address);
 	
 	public String getDepotCode(AddressModel addr);
+	
+	public Set<String> getLineItemDiscountCodes();
 }
