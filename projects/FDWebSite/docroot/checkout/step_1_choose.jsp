@@ -136,7 +136,7 @@ while (e.hasMoreElements()) {
 				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
 				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
 					<%-- all your content goes in this div, it controls the height/width --%>
-					The promotion code you entered <div id="gcResendRecipAmount"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					The promotion code you entered <div id="promoCode"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
 					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
 					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
 					<a href="#" onclick="javascript:document.forms['step1Form'].submit();"><b>CONTINUE</b></a><br />

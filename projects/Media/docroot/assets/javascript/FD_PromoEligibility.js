@@ -35,7 +35,7 @@ function checkPromoPopup(JSONstring) {
 	
 	if (params.status != "ok") {
 		//stick values into overlay html		
-		$('gcResendRecipAmount').innerHTML = params.promoCode;
+		$('promoCode').innerHTML = params.promoCode;
 		
 		//$('MB_frame').style.border = 'none';
 		Modalbox.show($('gcResendBox'), {
@@ -93,7 +93,7 @@ function checkPromoTimeSlotPopup(JSONstring) {
 	
 	if (params.status != "ok") {
 		//stick values into overlay html		
-		$('gcResendRecipAmount').innerHTML = params.promoCode;
+		$('promoCode').innerHTML = params.promoCode;
 		
 
 		Modalbox.show($('gcResendBox'), {
@@ -101,11 +101,11 @@ function checkPromoTimeSlotPopup(JSONstring) {
 			title: '',
 			overlayOpacity: .85,
 			overlayClose: false,
-			width: 425,
+			width: 225,
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
-			afterLoad: function() { window.scrollTo(0,0); },
+			afterLoad: function() { $('MB_frame').style.border = 'none'; window.scrollTo(0,0); },
 			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 		})
 
@@ -149,7 +149,7 @@ function checkPromoPaymentPopup(JSONstring) {
 	
 	if (params.status != "ok") {
 		//stick values into overlay html		
-		$('gcResendRecipAmount').innerHTML = params.promoCode;
+		$('promoCode').innerHTML = params.promoCode;
 		
 
 		Modalbox.show($('gcResendBox'), {
@@ -157,11 +157,11 @@ function checkPromoPaymentPopup(JSONstring) {
 			title: '',
 			overlayOpacity: .85,
 			overlayClose: false,
-			width: 425,
+			width: 225,
 			transitions: false,
 			autoFocusing: false,
 			centered: true,
-			afterLoad: function() { window.scrollTo(0,0); },
+			afterLoad: function() { $('MB_frame').style.border = 'none'; window.scrollTo(0,0); },
 			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 		})
 

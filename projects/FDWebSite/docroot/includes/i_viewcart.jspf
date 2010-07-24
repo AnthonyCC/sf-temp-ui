@@ -696,22 +696,27 @@ FDIdentity identity = user.getIdentity();
 		<tr>
 			<td colspan="7"><br></td>
 		</tr>
-        <%--
+        
+		
+		<tr>
 		<% Boolean isEligible =(Boolean)request.getAttribute("isEligible");
 		if(isEligible != null && !isEligible){
 		%>
-		<tr>
 			<td colspan="3" align="right"><b><% if(!"".equals(errorMsg1)){%><span class="promotionError">Enter promotion code:</span> <% } else {%>Enter promotion code:<% } %></b></td>
+		<%} else { %>
+			<td colspan="3" align="right"><b>Enter promotion code: </b></td>
+		<% } %>
 			<td colspan="2" align="right"><input type="text" size="10" maxlength="16" class="text10" name="redemptionCode" value=""></td>
 			<td colspan="2" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
 		</tr>
-		<%} %>
-        --%>
+		
+        <%--
     	<tr>
 			<td colspan="3" align="right"><b>Enter promotion code: </b></td>
 			<td colspan="2" align="right"><input type="text" size="10" maxlength="16" class="text10" name="redemptionCode" value=""></td>
 			<td colspan="2" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
 		</tr>
+		--%>
 
 		<%
 	}

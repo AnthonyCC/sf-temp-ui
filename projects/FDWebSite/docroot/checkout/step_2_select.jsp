@@ -27,7 +27,11 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-
+<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
+<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
+<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>	
+<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%
 
 request.setAttribute("CHECK_UNATTENDED_DELIVERY","true");
@@ -217,8 +221,44 @@ zonePromoEnabled=true;
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
+<FORM method="post" name="step2Form" onSubmit="return checkPromoEligibilityByTimeSlot('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" action="/checkout/step_2_select.jsp">
+<div class="gcResendBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<%-- all your content goes in this div, it controls the height/width --%>
+					The promotion code you entered <div id="promoCode"></div> is not valid for the day and time you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
+					<a href="#" onclick="javascript:document.forms['step2Form'].submit();"><b>CONTINUE</b></a><br />
+					(promotion code will be removed)
+				</div></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
 <table border="0" cellspacing="0" cellpadding="0" width="695">
-<FORM method="post" action="/checkout/step_2_select.jsp">
+
 	<TR VALIGN="TOP">
 	<TD CLASS="text11" WIDTH="455" VALIGN="bottom">
 <%if (isDepotAddress) {%>
