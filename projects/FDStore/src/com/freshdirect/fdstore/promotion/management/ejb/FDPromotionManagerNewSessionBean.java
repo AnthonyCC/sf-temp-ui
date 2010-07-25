@@ -839,12 +839,12 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 	
-	public void storeAssignedCustomers(String promotionId, String assignedCustomerUserIds) throws FDResourceException,FDPromoCustNotFoundException {
+	public void storeAssignedCustomers(FDPromotionNewModel promotion, String assignedCustomerUserIds) throws FDResourceException,FDPromoCustNotFoundException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 			conn.setAutoCommit(false);
-			FDPromotionManagerDAO.storeAssignedCustomers(conn,promotionId, assignedCustomerUserIds);
+			FDPromotionManagerDAO.storeAssignedCustomers(conn,promotion, assignedCustomerUserIds);
 			conn.commit();
 		} catch (SQLException sqle) {
 			if (conn != null) {

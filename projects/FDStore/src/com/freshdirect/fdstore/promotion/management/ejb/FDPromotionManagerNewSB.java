@@ -90,7 +90,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public void storePromotionHoldStatus(FDPromotionNewModel promotion)throws FDResourceException,RemoteException;
 	
-	public void storeAssignedCustomers(String promotionId, String assignedCustomerUserIds) throws FDResourceException, FDPromoCustNotFoundException, RemoteException;
+	public void storeAssignedCustomers(FDPromotionNewModel promotion, String assignedCustomerUserIds) throws FDResourceException, FDPromoCustNotFoundException, RemoteException;
 	
 	public List<String> loadAssignedCustomerUserIds(String promotionId) throws RemoteException, FDResourceException;
 }

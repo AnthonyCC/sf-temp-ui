@@ -213,6 +213,9 @@
 		StringBuffer inElgSkus = new StringBuffer();
 		StringBuffer recps = new StringBuffer();
 		StringBuffer excFromSubtotal = new StringBuffer();
+		if(null != promotion){
+			excFromSubtotal.append(promotion.getSubTotalExcludeSkus());
+		}
 
 		if (dpcdDataList != null) {
 			for (int n = 0; n < dpcdDataList.size(); n++) {
@@ -369,16 +372,17 @@
 	String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday" };
 	String dlvDaysString = "";
 	String dlvDays = (zsm != null && zsm.getDlvDays() != null && !"".equals(zsm.getDlvDays())) ? zsm.getDlvDays() : null;
-		if (dlvDays != null) {
+		if (dlvDays != null && dlvDays.length()>0) {
 			//split dlvDays
-			/*String[] dlvDaysArr = dlvDays.split(",");
-			for (int i = 0; i < dlvDaysArr.length; i++) {
-				dlvDaysString += strDays[Integer.parseInt(dlvDaysArr[i])-1];
-				if (i != dlvDaysArr.length-1) {
+			String[] dlvDaysArr = dlvDays.split("");
+			for (int i = 0; i < dlvDays.length(); i++) {
+				String chara = ""+dlvDays.charAt(i);
+				dlvDaysString += strDays[Integer.parseInt(chara)-1];
+				if (i != dlvDays.length()-1) {
 					dlvDaysString += ", ";
 				}
-			}*/
-			dlvDaysString = dlvDays;
+			}
+			//dlvDaysString = dlvDays;
 		}
 
 

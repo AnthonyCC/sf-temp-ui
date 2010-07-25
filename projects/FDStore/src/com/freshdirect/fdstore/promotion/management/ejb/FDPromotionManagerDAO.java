@@ -24,6 +24,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoCustomerInfo;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -690,7 +691,65 @@ public class FDPromotionManagerDAO {
 		}
 	}
 	
-	
+	public static void storeAssignedCustomers(Connection conn, FDPromotionNewModel promotion, String assignedCustomerUserIds) throws SQLException {
+		
+//		Map<String,AssignedCustomerParam> assignedCustomerStrategyParams = loadAssignedCustomerParams(conn, promotion.getId());
+		
+		// for saftey
+		
+				
+		if (assignedCustomerUserIds != null) {
+			String aci[] = StringUtil.decodeStrings(assignedCustomerUserIds); 
+			List<String> custIdList = getAssignedCustomerIds(conn, aci);
+			if (custIdList == null) return;
+//			removeDuplicateCustomerIds(conn, promotion.getId(), custIdList);
+			List duplCustList = getDuplicateCustomerIds(conn, promotion.getId(), custIdList);
+			PreparedStatement ps =
+				conn.prepareStatement("INSERT INTO CUST.PROMO_CUSTOMER (PROMOTION_ID, CUSTOMER_ID, USAGE_CNT, EXPIRATION_DATE) VALUES(?,?,?,?)");
+			PreparedStatement ps1 =
+				conn.prepareStatement(UPDATE_PROMO_CUSTOMER_QUERY);
+			Iterator<String> iter = custIdList.iterator();
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(promotion.getExpirationDate());
+			if(null != promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() > 0){
+				calendar.add(Calendar.DATE, promotion.getRollingExpirationDays());
+			}
+			while (iter.hasNext()) {
+				String customerId = iter.next();
+				if(!duplCustList.contains(customerId)){
+	//				AssignedCustomerParam param = (AssignedCustomerParam)assignedCustomerStrategyParams.get(customerId);
+					ps.setString(1, promotion.getId());				
+					ps.setString(2, customerId);
+					ps.setNull(3, Types.INTEGER);										
+					
+					if(promotion.getExpirationDate()!= null){						
+						ps.setDate(4, new Date(calendar.getTimeInMillis()));
+					}else{
+						ps.setNull(4, Types.DATE);
+					}
+					ps.addBatch();
+					/*if (ps.executeUpdate() == -1) {
+						ps.close();
+						throw new SQLException("row not stored");					
+					}*/
+				}else{
+					ps1.setNull(1, Types.INTEGER);
+					if(promotion.getExpirationDate()!= null){						
+						ps1.setDate(2, new Date(calendar.getTimeInMillis()));
+					}else{
+						ps1.setNull(2, Types.DATE);
+					}
+					ps1.setString(3, promotion.getId());				
+					ps1.setString(4, customerId);
+					ps1.addBatch();
+				}
+			}
+			ps.executeBatch();
+			ps1.executeBatch();
+			ps.close();
+			ps1.close();
+		}
+	}
 	public static final String GET_RESTRICTED_CUSTOMERS="select customer_id from CUST.PROMO_CUSTOMER where promotion_id=? and customer_id in ('";
 	
 	public static void removeDuplicateCustomerIds(Connection conn, String promotionId, List<String> custIdList) throws SQLException {
@@ -725,6 +784,43 @@ public class FDPromotionManagerDAO {
         	String existingId=(String)rs.getString("customer_id");
         	custIdList.remove(existingId);
         }		
+	}
+	
+	public static List getDuplicateCustomerIds(Connection conn, String promotionId, List<String> custIdList) throws SQLException {
+		List<String> duplicateCustList = new ArrayList<String>();
+		final StringBuffer customerIdStr=new StringBuffer();
+		final StringBuffer sql=new StringBuffer(GET_RESTRICTED_CUSTOMERS);
+		Iterator<String> iterator=custIdList.iterator();
+		int i=0;
+        while(iterator.hasNext()){
+        	String customerId=(String)iterator.next();        	
+        	i=i+1;
+        	if(i==1){
+        		customerIdStr.append(customerId);
+				if(i!=custIdList.size()) customerIdStr.append("',"); 
+			}
+			else{
+				if(i==custIdList.size())	
+				{
+					customerIdStr.append("'").append(customerId);					
+				}
+				else{
+					customerIdStr.append("'").append(customerId).append("',");					
+				}				
+			}        	        	        	
+        }
+        sql.append(customerIdStr.toString()).append("')");
+        System.out.println(sql.toString());
+        PreparedStatement ps =
+			conn.prepareStatement(sql.toString());
+        ps.setString(1, promotionId);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+        	String existingId=(String)rs.getString("customer_id");
+//        	custIdList.remove(existingId);
+        	duplicateCustList.add(existingId);
+        }		
+        return duplicateCustList;
 	}
 	
 	private static String INSERT_PROMO_GROUP =  	"INSERT INTO cust.promo_dcpd_data" +

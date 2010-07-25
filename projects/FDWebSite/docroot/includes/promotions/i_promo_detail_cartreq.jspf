@@ -72,6 +72,10 @@
 
 					--%>
 					<tr>
+						<td class="promo_detail_label">Exclude from Subtotal:</td>
+						<td class="alignL"><%= (promotion.getSubTotalExcludeSkus()) %></td>
+					</tr>
+					<tr>
 						<td class="promo_detail_label">Need Dry Goods:</td>
 						<td class="alignL"><%= (promotion.isNeedDryGoods()) ? "Yes" : "No" %></td>
 					</tr>

@@ -578,7 +578,7 @@ public class FDPromotionNewManager {
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			sb.storeAssignedCustomers(promotion.getId(),assignedCustomerUserIds);
+			sb.storeAssignedCustomers(promotion,assignedCustomerUserIds);
 			List<String> assignedCustomerUserIdsList = sb.loadAssignedCustomerUserIds(promotion.getId());
 			if (assignedCustomerUserIdsList != null
 					&& assignedCustomerUserIdsList.size() > 0) {

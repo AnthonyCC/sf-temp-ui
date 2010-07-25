@@ -167,6 +167,8 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			String subTotal = NVL.apply(request.getParameter("subTotal"), "").trim();
 			String needDryGoods = NVL.apply(request.getParameter("edit_cartreq_needDryGoods"), "").trim();			
 			String skuQuantity = NVL.apply(request.getParameter("skuQuantity"), "").trim();
+			String excFromSubtotal = NVL.apply(request.getParameter("excFromSubtotal"), "").trim();
+			this.promotion.setSubTotalExcludeSkus(excFromSubtotal);
 			populateDcpdData(request);
 			this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
 			if(!NumberUtil.isDouble(subTotal)){

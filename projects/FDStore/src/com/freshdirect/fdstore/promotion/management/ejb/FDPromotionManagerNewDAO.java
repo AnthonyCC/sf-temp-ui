@@ -2001,13 +2001,14 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?, MODIFIED_BY =?, MODIFY_DATE =?"
+				+ " MIN_SUBTOTAL = ?, HASSKUQUANTITY = ?, NEEDDRYGOODS = ?,EXCLUDE_SKU_SUBTOTAL =?, MODIFIED_BY =?, MODIFY_DATE =?"
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
 		ps.setString(i++, promotion.getMinSubtotal());
 		ps.setInt(i++, promotion.getSkuQuantity());
 		ps.setString(i++, promotion.isNeedDryGoods()?"X":" ");
+		ps.setString(i++, promotion.getSubTotalExcludeSkus());
         ps.setString(i++, promotion.getModifiedBy());
 		if (promotion.getModifiedDate() != null) {
 			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
