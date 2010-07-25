@@ -227,7 +227,7 @@ public class FDPromotionNewDAO {
 			}
 			
 			PromotionApplicatorI applicator = loadApplicator(rs);	
-			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk);
+			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
 			//Set the zone strategy if applicable.
 			if(null != dlvZoneStrategyI){
 				DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;

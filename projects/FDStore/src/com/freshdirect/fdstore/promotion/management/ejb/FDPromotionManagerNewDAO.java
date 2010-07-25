@@ -1652,11 +1652,18 @@ public class FDPromotionManagerNewDAO {
 			
 			PreparedStatement ps = null;
 
-			// switch promo status CANCELLING to CANCELLED
-			ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate WHERE CODE=?");
+			// switch promo status CANCELLING to CANCELLED. Modified date has to be updated to make sure website picks up the change into the cache.
+			ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate, , MODIFIED_BY =?, MODIFY_DATE =? WHERE CODE=?");
 			ps.setString(1, EnumPromotionStatus.CANCELLED.getName());
 			ps.setString(2, promo.getPromotionCode());
-
+	        
+	        ps.setString(3, promo.getModifiedBy());
+			if (promo.getModifiedDate() != null) {
+				ps.setTimestamp(4, new java.sql.Timestamp(promo
+						.getModifiedDate().getTime()));
+			} else {
+				ps.setNull(4, Types.DATE);
+			}	
 			try {
 				final int k = ps.executeUpdate();
 				

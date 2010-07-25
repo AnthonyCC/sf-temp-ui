@@ -12,6 +12,7 @@ public  class PromotionErrorType extends Enum{
 	
 	public static final PromotionErrorType ERROR_GENERIC = new PromotionErrorType("100", 100, "Generic Error");
 	public static final PromotionErrorType ERROR_REDEMPTION_EXCEEDED = new PromotionErrorType("101", 101, "Redemption exceeded");
+	public static final PromotionErrorType NO_ELIGIBLE_CART_LINES = new PromotionErrorType("102", 102, "No Eligible Cart Lines");
 	
 	private int code; 	
 	private String description;

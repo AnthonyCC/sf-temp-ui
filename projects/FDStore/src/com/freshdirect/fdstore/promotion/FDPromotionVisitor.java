@@ -118,6 +118,9 @@ public class FDPromotionVisitor {
          for (Iterator i = promotions.iterator(); i.hasNext();) {
                PromotionI autopromotion  = (PromotionI) i.next(); 
                String promoCode = autopromotion.getPromotionCode();
+               if(promoCode.equals("CD_1279997384920")){
+            	   System.out.println();
+               }
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
@@ -157,7 +160,7 @@ public class FDPromotionVisitor {
 		for (Iterator i = l.iterator(); i.hasNext();) {
 			Promotion p = (Promotion) i.next();
 			if (!found && (
-							(!allowMultipleHeader && p.isHeaderDiscount()&& p.isRedemption()) 
+							(!allowMultipleHeader && (p.isHeaderDiscount() || p.isLineItemDiscount())&& p.isRedemption()) 
 							|| 
 							p.isSignupDiscount())
 						  ){
@@ -252,16 +255,13 @@ public class FDPromotionVisitor {
                                 //case of automatic header discounts.
                                 headerPromoCode = promoCode;
                           } else if(!promo.isLineItemDiscount()){
-                                //Add any non-header promos to the applied list. 
+                                //Add any non-line item/header promos to the applied list. 
                                 eligibilities.setApplied(promoCode);      
                           }
                     }
               }
         }
-        //Add the final header promo code to the applied list from Step 1. 
-        if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
-              eligibilities.setApplied(headerPromoCode);
-        }
+        boolean isCombinableOfferApplied = false;
         //Step 2: Process all automatic combinable header and line item offers.
         for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
             String promoCode = (String) i.next();
@@ -269,12 +269,26 @@ public class FDPromotionVisitor {
             if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
           	  	//Process all automatic combinable header and line item offers.
                   boolean applied = promo.apply(context);
-                  if (applied && !promo.isLineItemDiscount()) {
-                      //Add applied  promos to the applied list. 
-                      eligibilities.setApplied(promoCode);      
+                  if (applied ) {
+                	  if(promo.isHeaderDiscount()){
+                		  isCombinableOfferApplied = true;  
+                	  } else if(!promo.isLineItemDiscount()){
+	                      //Add applied  promos to the applied list. 
+	                      eligibilities.setApplied(promoCode);
+                  	  }
                   }
             }
       }
+        //Add the final header promo code to the applied list from Step 1 if isCombinableOfferApplied is false. 
+        if(headerPromoCode.length() > 0 && eligibilities.isEligible(headerPromoCode)){
+        	if(!isCombinableOfferApplied)
+              eligibilities.setApplied(headerPromoCode);
+        	else{
+        		//remove non combinable header promo.
+        		String code = context.getNonCombinableHeaderPromotion().getPromotionCode();
+        		context.getShoppingCart().removeDiscount(code);
+        	}
+        }
 
   }
 

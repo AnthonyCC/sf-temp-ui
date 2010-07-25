@@ -95,7 +95,7 @@ public class DCPDLineItemStrategy implements LineItemStrategyI {
 		}
 		
 		if(eligible) return ALLOW;
-		
+		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode());
 		return DENY;
 	}
 

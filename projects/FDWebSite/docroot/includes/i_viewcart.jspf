@@ -15,7 +15,7 @@
 <%@ page import='com.freshdirect.framework.webapp.ActionResult' %>
 <%@ page import='com.freshdirect.framework.webapp.ActionError' %>
 <%@ page import='com.freshdirect.fdstore.promotion.EnumOfferType' %>
-
+<%@ page import='com.freshdirect.fdstore.promotion.PromotionErrorType' %>
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
@@ -739,7 +739,9 @@ FDIdentity identity = user.getIdentity();
 			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
 			
 		} else if (redemptionPromo.isLineItemDiscount()) {
-			warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
+            int errorCode = user.getPromoErrorCode(promoCode);
+            if(errorCode == PromotionErrorType.NO_ELIGIBLE_CART_LINES.getErrorCode())
+			    warningMessage = SystemMessageList.MSG_REDEMPTION_NO_ELIGIBLE_CARTLINES;
 		} else if (redemptionPromo.isSampleItem()) {
 			warningMessage = SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE;
 		} else if (redemptionPromo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)) {

@@ -108,6 +108,10 @@ public class PromoPublishServlet extends HttpServlet {
 				try {
 					LOGGER.debug("Will publish promotion " + promoCode);
 					success = FDPromotionNewManager.publishPromotion(promo);
+					if (success) {
+						// remove from cache
+						PromotionFactory.getInstance().forceRefresh(promoCode);
+					}					
 				} catch (FDResourceException e) {
 					LOGGER.error("Failed to publish promotion " + promoCode, e);
 				}
