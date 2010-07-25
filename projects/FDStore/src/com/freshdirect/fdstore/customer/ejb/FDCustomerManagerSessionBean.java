@@ -1890,7 +1890,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (dlvPasses != null && dlvPasses.size() > 0) {
 				dlvPass = dlvPasses.get(0);
 				if (dlvPass.getType().isUnlimited()) {
-					extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays, order
+					extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays/7, order
 							.getErpSalesId(),
 							"DP Extension Promotion Reversed",
 							EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
@@ -1898,7 +1898,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				}
 			}
 		} else if (dlvPass.getType().isUnlimited()) {
-			extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays, order.getErpSalesId(),
+			extendDeliveryPass(dlvPassSB, dlvPass, -reverseDays/7, order.getErpSalesId(),
 					"DP Extension Promotion Reversed",
 					EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
 							.getName());

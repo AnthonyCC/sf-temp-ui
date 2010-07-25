@@ -193,7 +193,16 @@ if (discountAmt > 0) {
 	</tr>	
 <%
 	}
-
+	String exDpdesc = cart.getExtendDPDiscountDescription();
+	if(exDpdesc != null && !exDpdesc.equals("NONE")) {
+%>
+	<tr align="right" class="orderSummary">
+	    <td colspan="2"><%=exDpdesc%>:</td>
+	    <td>Pass extension</td>
+	    <td colspan="3">&nbsp;</td>
+	</tr>	
+<%
+	}
 if (cart.getCustomerCreditsValue() > 0) {
 	%>
 	<tr align="right" class="orderSummary">

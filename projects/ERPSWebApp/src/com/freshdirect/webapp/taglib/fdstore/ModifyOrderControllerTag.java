@@ -289,7 +289,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			Set<String> usedPromoCodes = origOrder.getSale().getUsedPromotionCodes();
 			for(Iterator<String> it = usedPromoCodes.iterator(); it.hasNext();){
 				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
-				if(promo.getOfferType().equals(EnumOfferType.DP_EXTN)){
+				if (promo != null && promo.isExtendDeliveryPass()){
 					ExtendDeliveryPassApplicator app = (ExtendDeliveryPassApplicator)((Promotion)promo).getApplicator();
 					currentDPExtendDays = app.getExtendDays();
 				}

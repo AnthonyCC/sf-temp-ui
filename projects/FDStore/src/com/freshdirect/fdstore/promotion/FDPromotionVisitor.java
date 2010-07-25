@@ -272,7 +272,8 @@ public class FDPromotionVisitor {
                   if (applied ) {
                 	  if(promo.isHeaderDiscount()){
                 		  isCombinableOfferApplied = true;  
-                	  } else if(!promo.isLineItemDiscount()){
+                	  } 
+                	  if(!promo.isLineItemDiscount()){
 	                      //Add applied  promos to the applied list. 
 	                      eligibilities.setApplied(promoCode);
                   	  }

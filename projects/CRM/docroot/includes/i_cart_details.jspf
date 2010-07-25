@@ -176,6 +176,20 @@
 	<%
 		}
 	%>
+    <%
+		String exDPdesc = order.getExtendDPDiscountDescription();
+		if(exDPdesc != null && !exDPdesc.equals("NONE")) {
+	%>
+		<tr>
+		    <td colspan="3"></td>
+		    <td colspan="2"><%=exDPdesc%>:</td>
+		    <td colspan="2" align="right">Pass extension</td>
+		    <td colspan="4"></td>
+		    <td colspan="3"></td>
+		</tr>	
+	<%
+		}
+	%>
         <%  if (order.getCustomerCreditsValue() > 0.0) {%>
 		<tr>
 		    <td colspan="3"></td>

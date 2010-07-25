@@ -229,13 +229,13 @@ public class FDPromotionNewDAO {
 			PromotionApplicatorI applicator = loadApplicator(rs);	
 			PromotionStrategyI dlvZoneStrategyI = dlvZoneStrategies.get(pk.getId());
 			//Set the zone strategy if applicable.
-			if(null != dlvZoneStrategyI){
+			if(null != applicator && null != dlvZoneStrategyI){
 				DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)dlvZoneStrategyI;
 				if((null !=dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty()) || null != dlvZoneStrategy.getDlvZoneId()){			
 					applicator.setZoneStrategy(dlvZoneStrategy);
 				}
 			}
-			if(applicator instanceof LineItemDiscountApplicator){
+			if(null != applicator && applicator instanceof LineItemDiscountApplicator){
 				/*
 				 * If the promotion is a Line item Discount Promotion, add the corresponding 
 				 * DCPD line item strategy if present.
@@ -647,7 +647,7 @@ public class FDPromotionNewDAO {
 		int extendDPDays = rs.getInt("extend_dp_days");
 		wasNull |= rs.wasNull();
 		if (!wasNull) {
-			return new ExtendDeliveryPassApplicator(extendDPDays);
+			return new ExtendDeliveryPassApplicator(extendDPDays, minSubtotal);
 		}
 		return null;
 	}

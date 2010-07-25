@@ -163,7 +163,7 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	
 	private int currentDlvPassExtendDays;
 	
-	private int dlvPassExtendDays;
+	private ExtendDPDiscountModel dlvPassExtn;
 	
 	public boolean isDlvPassApplied() {
 		return dlvPassApplied;
@@ -1322,11 +1322,11 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 	}
 
 	public int getDlvPassExtendDays() {
-		return dlvPassExtendDays;
+		return dlvPassExtn != null ? dlvPassExtn.getExtendedDays() : 0;
 	}
 
-	public void setDlvPassExtendDays(int dlvPassExtendDays) {
-		this.dlvPassExtendDays = dlvPassExtendDays;
+	public void setDlvPassExtn(ExtendDPDiscountModel dlvPassExtn) {
+		this.dlvPassExtn = dlvPassExtn;
 	}
 
 	public int getCurrentDlvPassExtendDays() {
@@ -1335,5 +1335,22 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 
 	public void setCurrentDlvPassExtendDays(int currentDlvPassExtendDays) {
 		this.currentDlvPassExtendDays = currentDlvPassExtendDays;
+	}
+	
+	/**
+	 * This returns a redeem extend DP promo desc if any otherwise returns Empty String.
+	 * @return java.lang.String.
+	 */
+	public String getExtendDPDiscountDescription() {
+		String desc = "NONE";
+		//Show any redeemed extend DP promo if any.
+		if ( this.dlvPassExtn != null) {
+			String code = dlvPassExtn.getPromotionCode();
+			PromotionI promotion = PromotionFactory.getInstance().getPromotion(code);
+			if (promotion != null && promotion.isExtendDeliveryPass()) {
+				desc = promotion.getDescription();
+			}
+		}
+		return desc;
 	}
 }

@@ -257,6 +257,20 @@ int idx = 0;
 	<%
 		}
 	%>	
+    
+   	<%
+		String extendDPDesc = cart.getExtendDPDiscountDescription();
+		if(extendDPDesc != null && !extendDPDesc.equals("NONE")) {
+	%>
+		<tr valign="top" class="orderSummary">
+			<td colspan="3" align="right"><%= extendDPDesc %>:</td>
+			<td align="right">Pass extension</td>
+			<td colspan="7"></td>	   
+		</tr>	
+	<%
+		}
+	%>	
+
 	<%  if (cart.getCustomerCreditsValue() > 0) { %>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Credit Applied:</td>

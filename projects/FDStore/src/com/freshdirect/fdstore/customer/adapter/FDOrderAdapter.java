@@ -68,7 +68,10 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDRecipientList;
 import com.freshdirect.fdstore.customer.WebOrderViewFactory;
 import com.freshdirect.fdstore.customer.WebOrderViewI;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.MathUtil;
@@ -619,6 +622,23 @@ public class FDOrderAdapter implements FDOrderI {
 
 	public String getRedeemedSampleDescription() {
 		String desc = "NONE";
+		//Show any redeemed sample line if any.
+		if ( sampleLines != null && sampleLines.size() > 0) {
+			for ( FDCartLineI cartLine : sampleLines ) {
+				Discount discount =  cartLine.getDiscount();
+				String code = discount.getPromotionCode();
+				PromotionI promotion = PromotionFactory.getInstance().getPromotion(code);
+				if (promotion != null && promotion.isRedemption()) {
+					desc = promotion.getDescription();
+				}
+			}
+		}
+		return desc;
+	}
+	
+	public String getRedeemedExtendDPDescription() {
+		String desc = "NONE";
+		
 		//Show any redeemed sample line if any.
 		if ( sampleLines != null && sampleLines.size() > 0) {
 			for ( FDCartLineI cartLine : sampleLines ) {
@@ -1264,5 +1284,24 @@ public class FDOrderAdapter implements FDOrderI {
 			}
 		}
 		return MathUtil.roundDecimal(totalDiscountAmount);
+	}
+	
+	/**
+	 * This returns a redeem extend DP promo desc if any otherwise returns Empty String.
+	 * @return java.lang.String.
+	 */
+	public String getExtendDPDiscountDescription() {
+		String desc = "NONE";
+		//Show any redeemed extend DP promo if any.
+		Set<String> usedCodes = this.sale.getUsedPromotionCodes();
+		if ( usedCodes != null) {
+			for(Iterator<String> it = usedCodes.iterator(); it.hasNext();) {
+				PromotionI promo  = PromotionFactory.getInstance().getPromotion(it.next());
+				if (promo != null && promo.isExtendDeliveryPass())
+					desc = promo.getDescription();
+			}
+		}
+		
+		return desc;
 	}
 }
