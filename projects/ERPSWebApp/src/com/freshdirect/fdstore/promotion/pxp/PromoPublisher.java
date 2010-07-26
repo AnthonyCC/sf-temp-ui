@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -65,7 +66,18 @@ public class PromoPublisher {
 	private Map<String,Boolean> lastResult = null;
 	
 	public void setPromoList(List<FDPromotionNewModel> promoList) {
-		this.promoList = promoList;
+		this.promoList = new ArrayList<FDPromotionNewModel>();
+		if (promoList == null)
+			return;
+
+		for (FDPromotionNewModel promo : promoList) {
+			// -- remove change logs
+			promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
+			// -- remove assigned customer IDs
+			promo.setAssignedCustomerUserIds("");
+			
+			this.promoList.add(promo);
+		}
 	}
 
 	public void setAgent(CrmAgentModel agent) {

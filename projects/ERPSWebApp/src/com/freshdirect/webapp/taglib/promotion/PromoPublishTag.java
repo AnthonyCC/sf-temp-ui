@@ -2,6 +2,7 @@ package com.freshdirect.webapp.taglib.promotion;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
+import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.pxp.PromoPublisher;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -45,14 +47,21 @@ public class PromoPublishTag extends AbstractControllerTag {
 		
 		if ("publish".equalsIgnoreCase(actionName)) {
 			List<FDPromotionNewModel> ppList = new ArrayList<FDPromotionNewModel>();
-			Collection<FDPromotionNewModel> promos = FDPromotionNewModelFactory.getInstance().getPromotions();
-
 			for (Enumeration<String> it = request.getParameterNames(); it.hasMoreElements();) {
 				String code = it.nextElement();
 				
 				FDPromotionNewModel promo = FDPromotionNewModelFactory.getInstance().getPromotion(code);
-				if (promo != null)
+				if (promo != null) {
+					// do some cleanup
+
+					// -- remove change logs
+					promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
+					// -- remove assigned customer IDs
+					promo.setAssignedCustomerUserIds("");
+
+					// add to list of valid promos
 					ppList.add(promo);
+				}
 			}
 
 			

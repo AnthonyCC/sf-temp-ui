@@ -17,6 +17,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -96,7 +97,10 @@ public class PromoPublishServlet extends HttpServlet {
 		Map<String,Boolean> result = new HashMap<String, Boolean>();
 		
 		for (FDPromotionNewModel promo : models) {
+			// cleanup
 			promo.setAssignedCustomerUserIds(Collections.<String>emptySet());
+			promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
+
 
 			final String promoCode = promo.getPromotionCode();
 			final EnumPromotionStatus status = promo.getStatus();
