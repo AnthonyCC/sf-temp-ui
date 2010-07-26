@@ -48,6 +48,7 @@ import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
 import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
 import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
+import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
 import com.freshdirect.fdstore.promotion.PromoVariantModel;
 import com.freshdirect.fdstore.promotion.PromoVariantModelImpl;
@@ -613,6 +614,10 @@ public class FDPromotionNewDAO {
 			int maxItemCount = rs.getInt("MAX_ITEM_COUNT");
 			if(!rs.wasNull() && maxItemCount > 0){
 				applicator.addLineItemStrategy(new MaxLineItemCountStrategy(maxItemCount));
+			}
+			boolean perishableOnly = "Y".equalsIgnoreCase(rs.getString("PERISHABLEONLY"));
+			if(perishableOnly){
+				applicator.addLineItemStrategy(new PerishableLineItemStrategy());
 			}
 			return applicator;
 		}
