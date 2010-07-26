@@ -72,6 +72,7 @@
 	height: 76%;
 	overflow-y: auto;
 	border: 1px solid #000;
+	max-height: 550px;
 }
 .promo_page_content-view_content2 {
 	height: 82%;
@@ -479,6 +480,7 @@ td.promo_edit_offer_label {
 }
 .promo_table1 td {
 	vertical-align: top;
+	word-wrap: break-word;
 }
 .promo_table1 th {
 	background-color: #fc9;
