@@ -497,12 +497,11 @@ public class DomainController extends AbstractMultiActionController {
 
 		Set zoneTypeSet=new HashSet();
 		String arrEntityList[] = getParamList(request);
-		Collection dataLst = locationManagerService.getServiceTimesForZoneTypes(Arrays.asList(arrEntityList));
-		Collection scenarioLst = locationManagerService.getScenariosForZoneTypes(Arrays.asList(arrEntityList));
+		//Collection dataLst = locationManagerService.getServiceTimesForZoneTypes(Arrays.asList(arrEntityList));
+		//Collection scenarioLst = locationManagerService.getScenariosForZoneTypes(Arrays.asList(arrEntityList));
 		TrnZoneType tmpEntity = null;
 		boolean hasError = false;
-		if (arrEntityList != null && (dataLst == null || dataLst.size() ==0)
-				&& (scenarioLst == null || scenarioLst.size() ==0)) {
+		if (arrEntityList != null) {
 			int arrLength = arrEntityList.length;
 			for (int intCount = 0; intCount < arrLength; intCount++) {
 				tmpEntity = domainManagerService.getZoneType(arrEntityList[intCount]);
