@@ -142,7 +142,7 @@
         if(outStandingBalance <= 0.0) {
             isPaymentRequired = false;
 %>
-    <FORM method="post" name="step_3_choose" id="step_3_choose">
+    <FORM method="post" name="step_3_choose" id="step_3_choose" onSubmit="return checkPromoEligibilityByPayment('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
     <div class="gcResendBox" style="display:none"><!--  -->
 		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
 			<tr>
@@ -159,7 +159,7 @@
 				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
 				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
 					<%-- all your content goes in this div, it controls the height/width --%>
-					The promotion code you entered <div id="promoCode"></div> is not valid for the address you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					The promotion code you entered <div id="promoCode"></div> is not valid for the payment method you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
 					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
 					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
 					<a href="#" onclick="javascript:document.forms['step_3_choose'].submit();"><b>CONTINUE</b></a><br />
