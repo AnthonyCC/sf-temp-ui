@@ -470,4 +470,6 @@
 		endType="Rolling";
 	}
 
-%>
+%> <%if(null != request.getParameter("SUCCESS")){%>
+		<td colspan="8" align="left"  ><span style="color:#0B6138"><b> <br/>&nbsp;&nbsp; Promotion created successfully.</b></span></td>
+		<% } %>

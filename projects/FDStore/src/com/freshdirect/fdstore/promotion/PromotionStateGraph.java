@@ -19,13 +19,13 @@ public class PromotionStateGraph {
 	 * Edges connecting states in all available ways
 	 */
 	private static final Map<EnumPromotionStatus,Set<EnumPromotionStatus>> PD_EDGES = StateGraph.toEdgesMap(new EnumPromotionStatus[]{
-			EnumPromotionStatus.DRAFT, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING,null,
-			EnumPromotionStatus.PROGRESS, EnumPromotionStatus.TEST, EnumPromotionStatus.CANCELLING,null,
-			EnumPromotionStatus.TEST, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.APPROVE, EnumPromotionStatus.CANCELLING,null,
-			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.CANCELLING,null,
-			EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, EnumPromotionStatus.EXPIRED, null,
+			EnumPromotionStatus.DRAFT, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.PROGRESS, EnumPromotionStatus.TEST, EnumPromotionStatus.CANCELLING,EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.TEST, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.APPROVE, EnumPromotionStatus.CANCELLING,EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.CANCELLING,EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, EnumPromotionStatus.CANCELLED,EnumPromotionStatus.EXPIRED, null,
 			EnumPromotionStatus.EXPIRED, EnumPromotionStatus.PROGRESS, null,
-			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS, null,
+			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.CANCELLING, null,
 			EnumPromotionStatus.CANCELLING, EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null,
 			EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null,
 	});
@@ -35,13 +35,13 @@ public class PromotionStateGraph {
 	 * Thinner set of edges describing state transfers that a customer can manually make
 	 */
 	private static final Map<EnumPromotionStatus,Set<EnumPromotionStatus>> PD_EDGES_M = StateGraph.toEdgesMap(new EnumPromotionStatus[]{
-			EnumPromotionStatus.DRAFT, EnumPromotionStatus.PROGRESS,  EnumPromotionStatus.CANCELLING, null,
-			EnumPromotionStatus.PROGRESS, EnumPromotionStatus.TEST, EnumPromotionStatus.CANCELLING, null,
-			EnumPromotionStatus.TEST, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.APPROVE, EnumPromotionStatus.CANCELLING, null,
-			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, null,
+			EnumPromotionStatus.DRAFT, EnumPromotionStatus.PROGRESS,EnumPromotionStatus.CANCELLED, null,
+			EnumPromotionStatus.PROGRESS, EnumPromotionStatus.TEST, EnumPromotionStatus.CANCELLING, EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.TEST, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.APPROVE, EnumPromotionStatus.CANCELLING, EnumPromotionStatus.CANCELLED,null,
+			EnumPromotionStatus.APPROVE, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING,EnumPromotionStatus.CANCELLED, null,
 			EnumPromotionStatus.PUBLISHED, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING, null,
 			EnumPromotionStatus.EXPIRED, EnumPromotionStatus.PROGRESS, null,
-			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS, null,
+			EnumPromotionStatus.LIVE, EnumPromotionStatus.PROGRESS, EnumPromotionStatus.CANCELLING,null,
 			EnumPromotionStatus.CANCELLING, EnumPromotionStatus.PROGRESS, null,
 			EnumPromotionStatus.CANCELLED, EnumPromotionStatus.PROGRESS, null
 	}); 

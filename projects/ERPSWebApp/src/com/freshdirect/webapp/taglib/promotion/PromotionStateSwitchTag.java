@@ -105,6 +105,8 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				changeModel.setActionType(EnumPromoChangeType.CANCEL);
 			else if(EnumPromotionStatus.PUBLISHED.equals(promotion.getStatus()))
 				changeModel.setActionType(EnumPromoChangeType.PUBLISH);
+			else if(EnumPromotionStatus.CANCELLED.equals(promotion.getStatus()))
+				changeModel.setActionType(EnumPromoChangeType.CANCELLED);
 		}else if("holdStatus".equalsIgnoreCase(getActionName())){
 			if(promotion.isOnHold()){
 				changeModel.setActionType(EnumPromoChangeType.HOLD);

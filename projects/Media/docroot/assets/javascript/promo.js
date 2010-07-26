@@ -128,7 +128,7 @@
 
 		if(profileNameFld != null && profileNameFld.value.length > 0 
 			&& profileValueFld != null && profileValueFld.value.length > 0) {
-			addProfileRow(tmpConditionValue, profileNameFld.value, profileValueFld.value, toFormId);
+			addProfileRow(tmpConditionValue,profileValueFld.value, profileValueFld.value,profileNameFld.value,  toFormId);
 			profileNameFld.selectedIndex=0;
 			profileValueFld.value='';
 		}
