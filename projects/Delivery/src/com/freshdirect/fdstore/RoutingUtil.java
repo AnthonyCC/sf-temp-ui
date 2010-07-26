@@ -222,7 +222,7 @@ public class RoutingUtil {
 	public static IOrderModel updateReservationStatus(DlvReservationModel reservation, IOrderModel order, String erpOrderId) throws RoutingServiceException {
 		
 		PlantServiceProxy proxy = new PlantServiceProxy();
-		RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
+		
 		RoutingInfoServiceProxy routingInfoproxy = new RoutingInfoServiceProxy();
 		Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
 				
@@ -269,7 +269,7 @@ public class RoutingUtil {
 
 	public static boolean updateReservation(DlvReservationModel reservation, IOrderModel order) throws RoutingServiceException {
 		
-		PlantServiceProxy proxy = new PlantServiceProxy();
+		
 		RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
 		
 		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
@@ -332,7 +332,7 @@ public class RoutingUtil {
 		IPackagingModel historyPackageInfo = getHistoricOrderSize(order);	
 		context.setHistoryPackageInfo(historyPackageInfo);
 		
-		Map<String, IServiceTimeTypeModel>	serviceTimeTypes = routingInfoproxy.getRoutingServiceTimeTypes();
+		
 		Map<java.util.Date, RoutingAnalyzerCommand> analyzerCommands = getAnalyzerCommand(_timeSlots, address, context, locModel);
 		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(_timeSlots.get(0).getZoneCode()));
 		

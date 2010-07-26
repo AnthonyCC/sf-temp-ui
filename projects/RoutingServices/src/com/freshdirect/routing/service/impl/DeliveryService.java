@@ -62,8 +62,8 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		
 		IZoneScenarioModel zoneScenario = null;
 		if(scenario != null && scenario.getZoneConfiguration() != null) {
-			if(scenario.getZoneConfiguration().containsKey(zone.getZoneId())) {
-				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneId());
+			if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
+				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
 			} else {
 				zoneScenario = scenario.getZoneConfiguration().get(null);
 			}
