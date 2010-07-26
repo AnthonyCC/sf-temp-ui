@@ -174,7 +174,7 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 			FDPromotionNewModel promotion) {
 		String custType = filter.getCustomerType();
 		boolean isMatched = false;
-		List<FDPromotionAttributeParam> attrList = promotion.getAttributeList();
+		/*List<FDPromotionAttributeParam> attrList = promotion.getAttributeList();
 		for (FDPromotionAttributeParam promotionAttributeParam : attrList) {
 //			if("NEW".equalsIgnoreCase(custType)){
 				if(custType.equalsIgnoreCase(promotionAttributeParam.getAttributeName())){
@@ -182,7 +182,22 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 					break;
 				}
 //		}
-		}
+		}*/
+		
+		if("ChefsTable".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForChef();
+		}else if("New".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForNew();
+		}else if("COSPilot".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForCOS();
+		}else if("COSNew".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForCOSNew();
+		}else if("DeliveryPass".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForDPActiveOrRTU();
+		}else if("MarketingPromo".equalsIgnoreCase(custType)){
+			isMatched = promotion.isForMarketing();
+		} 
+			
 		return isMatched;
 	}
 }

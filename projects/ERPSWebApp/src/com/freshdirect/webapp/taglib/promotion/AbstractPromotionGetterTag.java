@@ -52,6 +52,13 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 		    p.createdBy = null !=promo.getCreatedBy()?promo.getCreatedBy():"";
 		    p.modifiedBy = null !=promo.getModifiedBy()?promo.getModifiedBy():"";
 		    p.createdModifiedBy = p.createdBy+"-"+p.modifiedBy;
+		    
+		    p.setChef(promo.isForChef());
+		    p.setCos(promo.isForCOS());
+		    p.setCosNew(promo.isForCOSNew());
+		    p.setDp(promo.isForDPActiveOrRTU());
+		    p.setMktg(promo.isForMarketing());
+		    p.setNewCust(promo.isForNew());
 		              
 		 
 		  promoRows.add(p);

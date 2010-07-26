@@ -11,8 +11,8 @@ public class EnumPromoChangeType extends Enum {
 
 	public static final EnumPromoChangeType CREATE = new EnumPromoChangeType("CREATE", "Create Promotion");
 	public static final EnumPromoChangeType MODIFY = new EnumPromoChangeType("MODIFY", "Modify Promotion");
-	public static final EnumPromoChangeType APPROVE = new EnumPromoChangeType("APPROVE", "Change Status - Approve");
-	public static final EnumPromoChangeType CANCEL = new EnumPromoChangeType("CANCEL", "Change Status - Cancel");
+	public static final EnumPromoChangeType APPROVE = new EnumPromoChangeType("APPROVE", "Change Status - Approved");
+	public static final EnumPromoChangeType CANCEL = new EnumPromoChangeType("CANCEL", "Change Status - Cancelling");
 	public static final EnumPromoChangeType STATUS_PROGRESS = new EnumPromoChangeType("STATUS_PROGRESS", "Change Status - In Progress");
 	public static final EnumPromoChangeType STATUS_TEST = new EnumPromoChangeType("STATUS_TEST", "Change Status - Test");
 	public static final EnumPromoChangeType PUBLISH = new EnumPromoChangeType("PUBLISH", "Publish Promotion");

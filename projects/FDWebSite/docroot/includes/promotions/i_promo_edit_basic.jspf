@@ -121,7 +121,7 @@
 							<tr>
 								<td><input type="radio" id="edit_basic_endType_redemption" name="end_type"  value="redemption" <%= "redemption".equalsIgnoreCase(endType)?"checked":"" %>/></td>
 								<td>Redemption</td>
-								<td><span class="gray">limit</span> <input type="text" id="redeem_count" name="redeem_count" style="width: 69px;" value="<%= promotion.getRedeemCount() %>"/> <span class="gray">settled orders</span></td>
+								<td><span class="gray">limit</span> <input type="text" id="redeem_count" name="redeem_count" style="width: 69px;" value="<%= promotion.getRedeemCount() %>"/> <span class="gray">settled/non-cancelled orders</span></td>
 							</tr>
 							<tr>
 								<td>&nbsp;</td>

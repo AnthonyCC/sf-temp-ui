@@ -53,7 +53,9 @@
 		<% } %>
 		<!-- <tr valign="top" class="list_content" <%--= counter % 2 == 0 ? "class='list_odd_row'" : "" --%> style="padding-top: 3px; padding-bottom: 3px;"> -->
 			<td class="border_bottom">&nbsp;</td>
-			<td class="border_bottom" style="font-weight: normal"><div style="width:180px;"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>"><%=p.getName()%></a></div></td>
+			<td class="border_bottom" style="font-weight: normal"><div style="width:180px;"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>"><%=p.getName()%></a></div>
+			
+				</td>
 			<td class="border_bottom" style="font-weight: normal"><%=(rCode != null && !rCode.equals(""))? rCode.toUpperCase() : "N/A" %></td>
 			<td class="border_bottom" style="font-weight: normal"><%=ptype.getName()%></td>
 			<td class="border_bottom" style="font-weight: normal"><%=p.getDescription() %></td>

@@ -76,8 +76,9 @@
 						<select id="customerType" name="customerType" class="promo_filter w150px">
 							<option value="" selected="selected">ALL</option>
 							<option value="ChefsTable" <%= "ChefsTable".equalsIgnoreCase(customerType)?"selected":"" %>>Chef's Table</option>
-							<option value="MetalCategory" <%= "MetalCategory".equalsIgnoreCase(customerType)?"selected":"" %>>New</option>
+							<option value="New" <%= "New".equalsIgnoreCase(customerType)?"selected":"" %>>New</option>
 							<option value="COSPilot" <%= "COSPilot".equalsIgnoreCase(customerType)?"selected":"" %>>COS</option>							
+							<option value="COSNew" <%= "COSNew".equalsIgnoreCase(customerType)?"selected":"" %>>COS New</option>
 							<option value="DeliveryPass" <%= "DeliveryPass".equalsIgnoreCase(customerType)?"selected":"" %>>Active/RTU DP</option>
 							<option value="MarketingPromo" <%= "MarketingPromo".equalsIgnoreCase(customerType)?"selected":"" %>>MKTG</option>
 						</select>
@@ -85,9 +86,9 @@
 					<td>
 						<select id="promoStatus" name="promoStatus" class="promo_filter w150px">
 							<option value="" >ALL</option>
-							<option value="LIVE" <%= "LIVE".equalsIgnoreCase(promoStatus)?"selected":"" %>>LIVE</option>
-							<option value="EXPIRED_CANCELLED" <%= "EXPIRED_CANCELLED".equalsIgnoreCase(promoStatus)?"selected":"" %>>EXPIRED/CANCELLED</option>
-							<option value="DRAFT_TEST_PROGRESS" <%= "DRAFT_TEST_PROGRESS".equalsIgnoreCase(promoStatus)?"selected":"" %>>DRAFT/TEST/IN PROGRESS</option>
+							<option value="LIVE" <%= "LIVE".equalsIgnoreCase(promoStatus)?"selected":"" %>>Live</option>
+							<!--<option value="EXPIRED_CANCELLED" <%= "EXPIRED_CANCELLED".equalsIgnoreCase(promoStatus)?"selected":"" %>>EXPIRED/CANCELLED</option>
+							<option value="DRAFT_TEST_PROGRESS" <%= "DRAFT_TEST_PROGRESS".equalsIgnoreCase(promoStatus)?"selected":"" %>>DRAFT/TEST/IN PROGRESS</option>-->
 						<%
 							final EnumPromotionStatus[] statuses;
 							if (FDStoreProperties.isPromoPublishNodeMaster()) {

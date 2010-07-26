@@ -12,6 +12,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.framework.core.ModelSupport;
@@ -696,5 +697,80 @@ public class FDPromotionNewModel extends ModelSupport {
 	
 	public void setPublishes(int cnt) {
 		this.publishes = cnt;
+	}
+	
+	public boolean isForChef(){
+		boolean isMatched = false;
+		List<FDPromotionAttributeParam> attrList = this.getAttributeList();
+		for (FDPromotionAttributeParam promotionAttributeParam : attrList) {
+			if("ChefsTable".equalsIgnoreCase(promotionAttributeParam.getAttributeName())){
+				isMatched = true;
+				break;
+			}
+		}
+		return isMatched;
+	}
+	
+	public boolean isForCOS(){
+		boolean isMatched = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+				isMatched = promoCustStrategyModel.isOrderTypeCorporate();
+				break;
+			}
+		}
+		return isMatched;
+	}
+	
+	public boolean isForCOSNew(){
+		boolean isMatched = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+				isMatched = (promoCustStrategyModel.isOrderTypeCorporate() && (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1));
+				break;
+			}
+		}
+		return isMatched;
+	}
+	public boolean isForNew(){
+		boolean isMatched = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+				isMatched = (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1);
+				break;
+			}
+		}
+		return isMatched;
+	}
+	
+	public boolean isForDPActiveOrRTU(){
+		boolean isMatched = false;
+		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		if(null != custStrategies && !custStrategies.isEmpty()){
+			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+				isMatched = EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) || EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) ;
+				break;
+			}
+		}
+		return isMatched;
+	}
+	
+	public boolean isForMarketing(){
+		boolean isMatched = false;
+		List<FDPromotionAttributeParam> attrList = this.getAttributeList();
+		for (FDPromotionAttributeParam promotionAttributeParam : attrList) {
+			if("MarketingPromo".equalsIgnoreCase(promotionAttributeParam.getAttributeName())){
+				isMatched = true;
+				break;
+			}
+		}
+		return isMatched;
 	}
 }

@@ -20,6 +20,13 @@ public class PromoNewRow {
 	String createdBy;
 	String modifiedBy;
 	String createdModifiedBy;
+	
+	boolean chef;
+	boolean cos;
+	boolean newCust;
+	boolean cosNew;
+	boolean dp;
+	boolean mktg;
 
 	public double getAmount() {
 		return amount;
@@ -123,6 +130,54 @@ public class PromoNewRow {
 
 	public void setCreatedModifiedBy(String createdModifiedBy) {
 		this.createdModifiedBy = createdModifiedBy;
+	}
+
+	public boolean isChef() {
+		return chef;
+	}
+
+	public void setChef(boolean chef) {
+		this.chef = chef;
+	}
+
+	public boolean isCos() {
+		return cos;
+	}
+
+	public void setCos(boolean cos) {
+		this.cos = cos;
+	}
+
+	public boolean isNewCust() {
+		return newCust;
+	}
+
+	public void setNewCust(boolean newCust) {
+		this.newCust = newCust;
+	}
+
+	public boolean isCosNew() {
+		return cosNew;
+	}
+
+	public void setCosNew(boolean cosNew) {
+		this.cosNew = cosNew;
+	}
+
+	public boolean isDp() {
+		return dp;
+	}
+
+	public void setDp(boolean dp) {
+		this.dp = dp;
+	}
+
+	public boolean isMktg() {
+		return mktg;
+	}
+
+	public void setMktg(boolean mktg) {
+		this.mktg = mktg;
 	}
 
 	

@@ -57,7 +57,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 						this.promotion.setStatus(EnumPromotionStatus.DRAFT);			
 						this.promotion.setPromotionCode("CD_"+new Date().getTime());
 						FDPromotionNewManager.createPromotionBasic(promotion);
-						setSuccessPage(getSuccessPage()+promotion.getPromotionCode());
+						setSuccessPage(getSuccessPage()+promotion.getPromotionCode()+"&SUCCESS=SUCCESS");
 					}else{
 						FDPromotionNewManager.storePromotionBasic(promotion);
 					}

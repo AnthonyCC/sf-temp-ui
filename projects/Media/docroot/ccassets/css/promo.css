@@ -632,3 +632,9 @@ a.promo_ico_cont, a.promo_ico_cont img {
 .bold {
 	font-weight: bold;
 }
+
+.promo_success_message {
+color: #006666;
+font-weight: bold;
+font-size: 10pt;
+}
