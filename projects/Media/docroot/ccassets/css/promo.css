@@ -69,20 +69,25 @@
 }
 
 .promo_page_content-view_content {
-	height: 76%;
 	overflow-y: auto;
 	border: 1px solid #000;
-	max-height: 550px;
+	min-height: 520px;
+	max-height: 520px;
+	height: 76%;
 }
 .promo_page_content-view_content2 {
-	height: 82%;
 	overflow-y: auto;
-	border: 1px solid #000;
+	border: 1px solid #000;	
+	min-height: 640px;
+	max-height: 640px;
+	height: 82%;
 }
 .promo_page_content-view_content3 {
-	height: 70%;
 	overflow-y: auto;
 	border: 1px solid #000;
+	min-height: 520px;
+	max-height: 520px;
+	height: 70%;
 }
 a.greenLink, a.greenLink:hover, a.greenLink:active {
 	color: #093;
@@ -91,7 +96,7 @@ td.promo_detail_label {
 	color: #666;
 	text-align: right;
 	vertical-align: top;
-	width: 150px;
+	width: 160px;
 }
 td.promo_edit_offer_label {
 	color: #666;

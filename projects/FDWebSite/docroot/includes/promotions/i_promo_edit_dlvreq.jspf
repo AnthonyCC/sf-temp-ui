@@ -245,7 +245,7 @@
 													%>
 													
 														<td class="alignL vTop padL8R16 bord1px999<%=(bgGray)?" BG_exp":""%>" id="edit_dlvreq_chk<%=dowShort%>_parent" name="edit_dlvreq_chk<%=dowShort%>_parent" >
-															<input type="checkbox" id="edit_dlvreq_chk<%=dowShort%>" name="edit_dlvreq_chk<%=dowShort%>" onclick="cbToggle(this.id);" <%= selectedDays.indexOf(""+(i+1))>-1?"checked":"" %> /> <%=dowLong%>
+															<input type="checkbox" id="edit_dlvreq_chk<%=dowShort%>" name="edit_dlvreq_chk<%=dowShort%>" onclick="cbToggle(this.id);" onchange="cbToggle(this.id);" <%= selectedDays.indexOf(""+(i+1))>-1?"checked":"" %> /> <%=dowLong%>
 															<div id="edit_dlvreq_chk<%=dowShort%>Cont" name="edit_dlvreq_chk<%=dowShort%>Cont" style="display: none;">
 																<%-- create index hidden element (make sure the var name and elem id/name are NOT the same) --%>
 																<input type="hidden" id="dlvDay<%=dowShort%>IndexValue" name="dlvDay<%=dowShort%>IndexValue" value="" />
