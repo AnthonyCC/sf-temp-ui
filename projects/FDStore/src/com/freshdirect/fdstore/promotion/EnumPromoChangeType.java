@@ -18,6 +18,9 @@ public class EnumPromoChangeType extends Enum {
 	public static final EnumPromoChangeType PUBLISH = new EnumPromoChangeType("PUBLISH", "Publish Promotion");
 	public static final EnumPromoChangeType HOLD = new EnumPromoChangeType("HOLD", "Change Status - Hold");
 	public static final EnumPromoChangeType UNHOLD = new EnumPromoChangeType("UNHOLD", "Change Status - Release Hold");
+
+	public static final EnumPromoChangeType CLONE = new EnumPromoChangeType("CLONE", "Clone Promotion");
+	public static final EnumPromoChangeType IMPORT = new EnumPromoChangeType("IMPORT", "Import Promotion");
 	
 	private final String description;
 	

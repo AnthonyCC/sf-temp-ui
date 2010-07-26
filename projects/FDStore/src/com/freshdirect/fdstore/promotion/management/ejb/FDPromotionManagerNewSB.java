@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.promotion.management.ejb;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
+import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
@@ -27,7 +30,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	
 	public FDPromotionNewModel getPromotion(String promoId) throws FDResourceException, RemoteException;
 	
-	public void storePromotion(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
+	public void storePromotion(FDPromotionNewModel promotion, boolean saveLog) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
 	public void createPromotions(List<FDPromotionNewModel> promotions)throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
@@ -37,6 +40,10 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 
 	
 	public PrimaryKey createPromotionBasic(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
+	
+	public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException, RemoteException;
+
+	
 	
 	public void storePromotionBasic(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 

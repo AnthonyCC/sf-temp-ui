@@ -105,7 +105,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 	}
 	
 	
-	public void storePromotion(FDPromotionNewModel promotion)
+	public void storePromotion(FDPromotionNewModel promotion, boolean saveLog)
 	throws FDResourceException, FDDuplicatePromoFieldException,
 	FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		Connection conn = null;
@@ -113,6 +113,10 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			conn.setAutoCommit(false);
 			FDPromotionManagerNewDAO.storePromotion(conn, promotion);
+
+			if (saveLog) {
+				storePromoChangeLog(promotion, conn, promotion.getPK());
+			}
 			conn.commit();
 		} catch (SQLException sqle) {
 			if (conn != null) {
@@ -239,25 +243,38 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private void storePromoChangeLog(FDPromotionNewModel promotion,
-			Connection conn, PrimaryKey pk) throws SQLException {
-		List<FDPromoChangeModel> promoChanges = promotion.getAuditChanges();
-		if(null !=promoChanges && !promoChanges.isEmpty()){
-			FDPromoChangeModel changeModel = (FDPromoChangeModel)promoChanges.get(0);
-			changeModel.setPromotionId(pk.getId());
-			PrimaryKey changePK = FDPromotionManagerNewDAO.savePromoChangeLog(conn, changeModel);
-			if(null != changeModel.getChangeDetails() && !changeModel.getChangeDetails().isEmpty()) {
-				List<FDPromoChangeDetailModel> promoChangeDetails = changeModel.getChangeDetails();
-				for (FDPromoChangeDetailModel detailModel : promoChangeDetails) {
-					detailModel.setPromoChangeId(changePK.getId());					
-				}
-				FDPromotionManagerNewDAO.storePromoChangeDetailLog(conn, promoChangeDetails);
-			}
-			
+
+
+	private void storePromoChangeLog(FDPromotionNewModel promotion,	Connection conn, PrimaryKey pk) throws SQLException {
+		FDPromotionManagerNewDAO.storeChangeLogEntries(conn, pk.getId(), promotion.getAuditChanges());
+	}
+
+
+
+	/**
+	 * Store promo change logs for a particular promotion
+	 * 
+	 * @param conn
+	 * @param promoPk Promotion ID
+	 * @param changes
+	 * @throws SQLException
+	 * @throws FDResourceException 
+	 */
+	public void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			FDPromotionManagerNewDAO.storeChangeLogEntries(conn, promoPk, changes);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+		    close(conn);
 		}
 	}
-	
-	
+
+
+
 	public void storePromotionBasic(FDPromotionNewModel promotion)
 	throws FDResourceException, FDDuplicatePromoFieldException,
 	FDPromoTypeNotFoundException, FDPromoCustNotFoundException {

@@ -15,6 +15,7 @@
 			<% if (promotion != null) { %>
 			<form class="promo_nav_back_action-action promo_btn_grn_2" name="cloneForm" method="POST" action="/promotion/promo_import_clone.jsp">
 				<input type="hidden" name="mode" value="clone"/>
+				<input type="hidden" name="orig_id" value="<%= promotion.getId() %>"/>
 				<textarea style="display: none" name="promoFile"><crm:SerializePromotion promo="<%= promotion %>"/></textarea>
 				<a href="#" onclick="document.forms['cloneForm'].submit(); return false;">CLONE PROMOTION <img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a>
 			</form>

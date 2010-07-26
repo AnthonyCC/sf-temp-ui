@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion.management;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +57,11 @@ public class FDPromoChangeModel extends ModelSupport {
 	public void setChangeDetails(List<FDPromoChangeDetailModel> changeDetails) {
 		this.changeDetails = changeDetails;
 	}
-	
-	
+
+	public void addChangeDetail(FDPromoChangeDetailModel changeDetail) {
+		if (this.changeDetails == null)
+			this.changeDetails = new ArrayList<FDPromoChangeDetailModel>();
+		
+		this.changeDetails.add(changeDetail);
+	}
 }

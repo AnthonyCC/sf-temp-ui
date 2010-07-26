@@ -2211,6 +2211,68 @@ public class FDPromotionManagerNewDAO {
 		}
 	}
 	
+	
+	public static void storePromoChangeLog(FDPromotionNewModel promotion,
+			Connection conn, PrimaryKey pk) throws SQLException {
+		FDPromotionManagerNewDAO.storeChangeLogEntries(conn, pk.getId(), promotion.getAuditChanges());
+	}
+
+	public static void storeChangeLogEntries(Connection conn, String promoPk, List<FDPromoChangeModel> changes) throws SQLException {
+		if (changes == null)
+			return;
+		
+		for (FDPromoChangeModel changeModel : changes) {
+			// fix ID
+			changeModel.setPromotionId(promoPk);
+
+			final PrimaryKey changePK = FDPromotionManagerNewDAO.savePromoChangeLog(conn, changeModel);
+			
+			if (null != changeModel.getChangeDetails()) {
+				final List<FDPromoChangeDetailModel> details = changeModel.getChangeDetails();
+				
+				// fix IDs
+				for (FDPromoChangeDetailModel detailModel : details) {
+					detailModel.setPromoChangeId(changePK.getId());					
+				}
+				
+				// save details
+				FDPromotionManagerNewDAO.storePromoChangeDetailLog(conn, details);
+			}
+		}
+	}
+	
+	/**
+	 * Appends detail to a master log entry
+	 * @throws SQLException
+	 */
+	public static void appendLogDetail(Connection conn, String changeId, FDPromoChangeDetailModel promoChangeDetailModel) throws SQLException {
+		PreparedStatement ps = null;
+		
+		
+		try {
+			ps = conn.prepareStatement(
+				"INSERT INTO CUST.PROMO_CHANGE_DETAIL" +
+				"(ID, CHANGE_ID, SECTION_ID, CHANGE_FIELD, OLD_VALUE, NEW_VALUE) " +
+				"VALUES(?,?,?,?,?,?)"
+			);
+
+			int i=1;
+			final String rowId = SequenceGenerator.getNextId(conn,"CUST");
+			ps.setString(i++, rowId);
+			ps.setString(i++, promoChangeDetailModel.getPromoChangeId());
+			ps.setString(i++, promoChangeDetailModel.getChangeSectionId().getName());
+			ps.setString(i++, promoChangeDetailModel.getChangeFieldName());
+			ps.setString(i++, promoChangeDetailModel.getChangeFieldOldValue());
+			ps.setString(i++, promoChangeDetailModel.getChangeFieldNewValue());
+			
+			ps.execute();
+		} finally {
+			if (ps != null)
+				ps.close();
+		}
+	}
+
+
 	public static boolean isRedemptionCodeExists(Connection conn, String redemptionCode) throws SQLException{
 		boolean isDuplicate = false;
 		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where STATUS not in('EXPIRED','CANCELLED','CANCELLING') and upper(redemption_code) = upper(?)");

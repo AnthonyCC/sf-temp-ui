@@ -137,6 +137,9 @@
 %>
 		<form method="post">
 			<input type="hidden" name="action" value="store"/>
+<% if ( "clone".equalsIgnoreCase(request.getParameter("mode")) && request.getParameter("orig_id") != null && !"".equals(request.getParameter("orig_id"))) { %>
+			<input type="hidden" name="orig_id" value="<%= request.getParameter("orig_id") %>"/>
+<% } %>
 
 <%			if (storeResult == null) {
 %>			<div class="title18" style="padding: 0.3em 0 1em 0;">Promotion has been <%= "clone".equalsIgnoreCase(request.getParameter("mode")) ? "cloned" : "imported" %> successfully!</div>

@@ -1,5 +1,6 @@
 package com.freshdirect.webapp.taglib.promotion;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -14,6 +15,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
+import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -56,25 +58,42 @@ public class StoreImportedPromotionTag extends AbstractControllerTag {
 		}
 		
 		if ("store".equalsIgnoreCase(actionName)) {
-
+			String cloneId = request.getParameter("orig_id");
+			if ("".equals(cloneId))
+				cloneId = null;
+			
 			promotion.setCreatedBy(agent.getUserId());
 			promotion.setCreatedDate(Calendar.getInstance().getTime());
 			
 			FDPromoChangeModel changeModel = new FDPromoChangeModel();
-			changeModel.setChangeDetails(Collections.<FDPromoChangeDetailModel>emptyList());
+			changeModel.setChangeDetails( new ArrayList<FDPromoChangeDetailModel>() );
 			
 			changeModel.setActionDate(promotion.getCreatedDate());
-			changeModel.setActionType(EnumPromoChangeType.CREATE);
+			changeModel.setActionType(cloneId != null ? EnumPromoChangeType.CLONE : EnumPromoChangeType.IMPORT);
 			changeModel.setUserId(promotion.getCreatedBy());
 
 			promotion.addAuditChange(changeModel);
 			
 			
 			try {
-				PrimaryKey pk = FDPromotionNewManager.createPromotionBasic(promotion);
+				PrimaryKey pk = FDPromotionNewManager.createPromotion(promotion);
 				if (pk != null) {
 					promotion.setPK(pk);
-					FDPromotionNewManager.storePromotion(promotion);
+
+
+					if (cloneId != null) {
+						FDPromoChangeDetailModel detail = new FDPromoChangeDetailModel();
+						detail.setChangeSectionId(EnumPromotionSection.BASIC_INFO);
+
+						detail.setChangeFieldName("ID");
+						detail.setChangeFieldOldValue(cloneId);
+						detail.setChangeFieldNewValue(pk.getId());
+						
+						changeModel.addChangeDetail(detail);
+					}
+
+					// save change log entries
+					FDPromotionNewManager.storeChangeLogEntries(pk.getId(), promotion.getAuditChanges());
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to save promotion with code " + promotion.getPromotionCode(), e);

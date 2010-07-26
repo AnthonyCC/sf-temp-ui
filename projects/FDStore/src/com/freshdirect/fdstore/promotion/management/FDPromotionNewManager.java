@@ -1,6 +1,8 @@
 package com.freshdirect.fdstore.promotion.management;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +24,6 @@ import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewHome;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
-import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -84,12 +85,27 @@ public class FDPromotionNewManager {
 
 	}
 	
+	/**
+	 * @deprecated use {@link FDPromotionNewManager#storePromotion(FDPromotionNewModel, boolean)} instead.
+	 * 
+	 * @param promotion Promotion to store
+	 * 
+	 * @throws FDResourceException
+	 * @throws FDDuplicatePromoFieldException
+	 * @throws FDPromoTypeNotFoundException
+	 * @throws FDPromoCustNotFoundException
+	 */
 	public static void storePromotion(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
+		FDPromotionNewManager.storePromotion(promotion, false);
+	}
+
+
+	public static void storePromotion(FDPromotionNewModel promotion, boolean saveLog) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException {
 		lookupManagerHome();
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			sb.storePromotion(promotion);
+			sb.storePromotion(promotion, saveLog);
 			// this forces a refresh of the promotions cache
 			//FDPromotionFactory.getInstance().forceRefresh();
 			FDPromotionNewModelFactory.getInstance().forceRefresh();
@@ -595,6 +611,26 @@ public class FDPromotionNewManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+
+
+
+	public static void storeChangeLogEntries(String promoPk, List<FDPromoChangeModel> changes) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			
+			sb.storeChangeLogEntries(promoPk, changes);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+
+	
 	private static void invalidateManagerHome() {
 		managerHome = null;
 	}
