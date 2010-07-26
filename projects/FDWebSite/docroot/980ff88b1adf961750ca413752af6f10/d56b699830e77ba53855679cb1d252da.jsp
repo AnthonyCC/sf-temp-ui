@@ -1,4 +1,6 @@
 
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="org.apache.log4j.Logger"%>
 <%@page import="com.freshdirect.customer.EnumAccountActivityType"%>
 <%@page import="com.freshdirect.customer.ActivityLog"%>
 <%@page import="com.freshdirect.crm.CrmAgentModel"%>
@@ -21,6 +23,11 @@
 <%-- The filename is deliberately confuscated--%>
 
 <%
+	session.invalidate();
+	session = request.getSession(true);
+	final Logger LOGGER = LoggerFactory.getInstance("masquerade.jsp");
+	//session.invalidate();
+	//session = request.getSession(true);
 	String loginKey = request.getParameter("loginKey");
 	String agentId = request.getParameter("agentId");
 	String customerId = request.getParameter("customerId");
@@ -66,6 +73,8 @@
 		FDUser loginUser = FDCustomerManager.recognize( identity );
     	UserUtil.createSessionUser(request, response, loginUser);
     	
+    	// masquerade
+    	loginUser.setMasqueradeAgent(agentId);
 	} catch ( FDAuthenticationException ex ) {
 		out.print("Authentication failed.");
 		return;	
@@ -75,7 +84,9 @@
 	}
 	
 	// Masquerade
-	session.setAttribute( "masqueradeAgent", agentId );
+	LOGGER.info("session ID: " + session.getId());
+	LOGGER.info("masquerade agent: " + agentId);
+	LOGGER.info("customer ID: " + customerId);
 	
 	try {
 		FDActionInfo ai = new FDActionInfo( EnumTransactionSource.WEBSITE, identity, "Masquerade login", agentId + " logged in as " + customerId, null, EnumAccountActivityType.MASQUERADE_LOGIN );

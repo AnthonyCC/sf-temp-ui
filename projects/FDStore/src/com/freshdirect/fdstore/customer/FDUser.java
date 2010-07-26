@@ -188,6 +188,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	protected SortedSet<IgnoreCaseString> clientCodesHistory = null; 
 	private Map<String, Integer> promoErrorCodes = new HashMap<String, Integer>();
 	
+	private String masqueradeAgent;
+	
 	public FDUserDlvPassInfo getDlvPassInfo() {
 		return dlvPassInfo;
 	}
@@ -1855,6 +1857,16 @@ public class FDUser extends ModelSupport implements FDUserI {
 
 	public void clearAllAppliedPromos(){
 		this.allAppliedPromos.clear();
+	}
+	
+	@Override
+	public void setMasqueradeAgent(String agent) {
+		this.masqueradeAgent = agent;
+	}
+	
+	@Override
+	public String getMasqueradeAgent() {
+		return masqueradeAgent;
 	}
 }
 

@@ -438,4 +438,8 @@ public interface FDUserI extends java.io.Serializable {
 	public int getPromoErrorCode(String promoCode);
 	
 	public void clearPromoErrorCodes();
+	
+	public void setMasqueradeAgent(String agent);
+	
+	public String getMasqueradeAgent();
 }

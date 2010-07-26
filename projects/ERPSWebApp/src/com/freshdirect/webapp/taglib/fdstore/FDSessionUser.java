@@ -171,7 +171,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public void valueBound(HttpSessionBindingEvent event) {
-        LOGGER.debug("FDUser bound to session");
+        LOGGER.debug("FDUser bound to session " + event.getSession().getId());
         this.saveCart();
         this.impressions.clear();
         this.startDate = new Date();
@@ -192,15 +192,12 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
     }
 
     public void valueUnbound(HttpSessionBindingEvent event) {
-        LOGGER.debug("FDUser unbound from session");
+        LOGGER.debug("FDUser unbound from session " + event.getSession().getId());
         this.saveCart(true);
         this.saveImpressions();
         
         // clear masquerade agent, and log this event
-        String masqueradeAgent = (String)event.getSession().getAttribute( "masqueradeAgent" );
-        
-        FDActionInfo.clearMasqueradeAgentTL();
-        event.getSession().setAttribute( "masqueradeAgent", null );
+        String masqueradeAgent = getMasqueradeAgent();
         
         if ( masqueradeAgent != null ) {
         	logMasqueradeLogout( masqueradeAgent );
@@ -1151,6 +1148,14 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	public void clearPromoErrorCodes(){
 		this.user.clearPromoErrorCodes();
+	}
+
+	public String getMasqueradeAgent() {
+		return user.getMasqueradeAgent();
+	}
+
+	public void setMasqueradeAgent(String agent) {
+		user.setMasqueradeAgent(agent);
 	}
 }
 
