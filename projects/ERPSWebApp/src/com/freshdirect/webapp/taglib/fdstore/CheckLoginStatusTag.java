@@ -183,7 +183,8 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         	LOGGER.warn("cannot set pricing context");
         
         // Set/clear masquerade agent for activity logging
-        FDActionInfo.setMasqueradeAgentTL( user.getMasqueradeAgent() );
+        if (user != null)
+        	FDActionInfo.setMasqueradeAgentTL( user.getMasqueradeAgent() );
 
         /*
          * 
