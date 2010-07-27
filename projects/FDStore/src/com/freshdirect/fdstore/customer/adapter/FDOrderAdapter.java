@@ -1304,4 +1304,12 @@ public class FDOrderAdapter implements FDOrderI {
 		
 		return desc;
 	}
+
+	@Override
+	public boolean hasClientCodes() {
+		for (FDCartLineI cl : orderLines)
+			if (!cl.getClientCodes().isEmpty())
+				return true;
+		return false;
+	}
 }

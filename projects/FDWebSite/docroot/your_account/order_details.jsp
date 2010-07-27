@@ -99,7 +99,7 @@
     if (hasCredit) { %>
     <td align="right" class="text11"><i>Credit was issued for this order.</i></td>
     <% } %>
-    <% if (user.isEligibleForClientCodes()) { %>
+    <% if (user.isEligibleForClientCodes() && cart.hasClientCodes()) { %>
     <td class="text11" style="text-align: right; vertical-align: middle;">
     	<a href="/api/clientCodeReport.jsp?sale=<%= orderId %>" style="text-decoration: none; outline: none;"><img src="/media_stat/images/buttons/export_client_codes.gif" width="167" height="17" style="border: none;"></a>
     </td>

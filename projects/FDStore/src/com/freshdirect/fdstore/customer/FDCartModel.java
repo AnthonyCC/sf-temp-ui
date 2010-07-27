@@ -1353,4 +1353,12 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 		}
 		return desc;
 	}
+
+	@Override
+	public boolean hasClientCodes() {
+		for (FDCartLineI cl : orderLines)
+			if (!cl.getClientCodes().isEmpty())
+				return true;
+		return false;
+	}
 }
