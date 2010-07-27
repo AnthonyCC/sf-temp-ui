@@ -62,8 +62,7 @@
 					<td>
 						<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 						<input type="submit" value="SAVE CHANGES" onclick="" class="promo_btn_brn fleft noMargLR" />
-						<input type="button" class="promo_btn_wht fright noMargLR" onclick="clearElements(this.form.id)" value="CLEAR ALL" />
-						<input type="button" class="promo_btn_wht fright noMargL" onclick="this.form.reset()" value="RESET" />
+						<input type="button" class="promo_btn_wht fright noMargL" onclick="this.form.reset()" value="UNDO ALL CHANGES" />
 					</td>
 					<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>
