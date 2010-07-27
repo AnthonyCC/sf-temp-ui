@@ -94,7 +94,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 			showInline("save");
 			showInline("save_2");
 			for (var item in trs) {
-				showTr(trs[item]);
+				if (trs.hasOwnProperty(item))
+					showTr(trs[item]);
 			}
 			active = true;
 		}
@@ -107,7 +108,8 @@ if (typeof FreshDirect == "undefined" || !FreshDirect) {
 
 		if (active) {
 			for (var item in trs) {
-				hideItem(trs[item]);
+				if (trs.hasOwnProperty(item))
+					hideItem(trs[item]);
 			}
 			hideItem("save_2");
 			hideItem("save");
