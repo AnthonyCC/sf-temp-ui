@@ -71,8 +71,8 @@
 .promo_page_content-view_content {
 	overflow-y: auto;
 	border: 1px solid #000;
-	min-height: 520px;
-	max-height: 520px;
+	min-height: 575px;
+	max-height: 575px;
 	height: 76%;
 }
 .promo_page_content-view_content2 {
@@ -88,6 +88,20 @@
 	min-height: 520px;
 	max-height: 520px;
 	height: 70%;
+}
+.promo_page_content-view_content4 {
+	overflow-y: auto;
+	border: 1px solid #000;
+	min-height: 550px;
+	max-height: 550px;
+	height: 76%;
+}
+.promo_page_content-view_content5 {
+	overflow-y: auto;
+	border: 1px solid #000;
+	min-height: 520px;
+	max-height: 520px;
+	height: 76%;
 }
 a.greenLink, a.greenLink:hover, a.greenLink:active {
 	color: #093;
@@ -106,6 +120,8 @@ td.promo_edit_offer_label {
 }
 .promo_edit_offer-spacer {
 	padding: 4px 0px;
+	font-size: 0px;
+	line-height: 0px;
 }
 .promo_edit_dlvreq-spacer {
 	padding: 8px 0px;
@@ -448,6 +464,9 @@ td.promo_edit_offer_label {
 	.w300px {
 		width: 300px;
 	}
+	.w325px {
+		width: 325px;
+	}
 	.w450px {
 		width: 450px;
 	}
@@ -472,6 +491,9 @@ td.promo_edit_offer_label {
 	}
 	.h175px {
 		height: 175px;
+	}
+	.h300px {
+		height: 300px;
 	}
 
 
@@ -642,4 +664,18 @@ a.promo_ico_cont, a.promo_ico_cont img {
 color: #006666;
 font-weight: bold;
 font-size: 10pt;
+}
+
+table.promo_table1 tr.flatRow td {
+	border: none;
+}
+
+.errContainer table {
+	line-height: 0px;
+	font-size: 0px;
+}
+
+.scrollableContV {
+	overflow-x: hidden;
+	overflow-y: auto;
 }

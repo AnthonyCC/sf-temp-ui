@@ -1,75 +1,84 @@
-<%if(FDStoreProperties.isPromoPublishNodeMaster()){ %><td class="vTop">
-<input type="hidden" name="actionName" id="actionName" value=""/>
-<input type="hidden" name="status" id="status" value=""/>
-						<img width="317" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
-						<div>
-							<% if(promotion.isOnHold()){ %>
-							<input type="button" value="RELEASE HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>'); return false;" class="promo_btn_whtGray fleft" />
-							<% } else { %>
-							<%
-								if ((
-										EnumPromotionStatus.APPROVE.equals(promotion.getStatus()) ||
-										EnumPromotionStatus.CANCELLING.equals(promotion.getStatus())
-									)
-								) {
-							%>
-									<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-							<%
-								} else {
-							%>
-									<!-- <div class="promo_btn_dgray_disabled fleft noMargLR" style="width: 149px; text-align: center;">PUBLISH</div> -->
-							<%		
-								}
-							%>
-							<% if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())){ %>
-							
-							<div class="promo_action promo_btn_dblue fleft" style="width: 80px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-							<% } else if(EnumPromotionStatus.TEST.equals(promotion.getStatus())){ %>
-							<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-							<% } %>
-							<% if(!EnumPromotionStatus.CANCELLED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.LIVE.equals(promotion.getStatus()) && promotion.getPublishes()<=0){%>
-								<input type="button" value="ON HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>') ; return false;" class="promo_btn_whtGray fleft" />
-							<% } %>
-							<% if(!EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLED.equals(promotion.getStatus())){ %>
-							<input type="button" value="CANCEL" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= promotion.getPublishes()<=0?EnumPromotionStatus.CANCELLED.getName() : EnumPromotionStatus.CANCELLING.getName()%>'); return false;" class="promo_btn_whtRed fleft" />
-							<% } %>
-							<% } %>
-							<%--
-								Different buttons for this section:
-								
-									<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-								
-									<div class="promo_action promo_btn_dblue fleft"><a href=""><img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" />&nbsp;TEST&nbsp;</a></div>
-									
-									<div class="promo_action promo_btn_dblue fleft"><a href=""><img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" />&nbsp;APPROVED&nbsp;</a></div>
+<td class="vTop" rowspan="2">
+<%if(FDStoreProperties.isPromoPublishNodeMaster()){ %>
+	<input type="hidden" name="actionName" id="actionName" value=""/>
+	<input type="hidden" name="status" id="status" value=""/>
+		<img width="317" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+		<div>
+			<% if(promotion.isOnHold()){ %>
+			<input type="button" value="RELEASE HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>'); return false;" class="promo_btn_whtGray fleft" />
+			<% } else { %>
+			<%
+				if ((
+						EnumPromotionStatus.APPROVE.equals(promotion.getStatus()) ||
+						EnumPromotionStatus.CANCELLING.equals(promotion.getStatus())
+					)
+				) {
+			%>
+					<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+			<%
+				} else {
+			%>
+					<!-- <div class="promo_btn_dgray_disabled fleft noMargLR" style="width: 149px; text-align: center;">PUBLISH</div> -->
+			<%		
+				}
+			%>
+			<% if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())){ %>
+			
+			<div class="promo_action promo_btn_dblue fleft" style="width: 80px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+			<% } else if(EnumPromotionStatus.TEST.equals(promotion.getStatus())){ %>
+			<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+			<% } %>
+			<% if(!EnumPromotionStatus.CANCELLED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.LIVE.equals(promotion.getStatus()) && promotion.getPublishes()<=0){%>
+				<input type="button" value="ON HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>') ; return false;" class="promo_btn_whtGray fleft" />
+			<% } %>
+			<% if(!EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLED.equals(promotion.getStatus())){ %>
+			<input type="button" value="CANCEL" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= promotion.getPublishes()<=0?EnumPromotionStatus.CANCELLED.getName() : EnumPromotionStatus.CANCELLING.getName()%>'); return false;" class="promo_btn_whtRed fleft" />
+			<% } %>
+			<% } %>
+			<%--
+				Different buttons for this section:
+				
+					<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				
+					<div class="promo_action promo_btn_dblue fleft"><a href=""><img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" />&nbsp;TEST&nbsp;</a></div>
+					
+					<div class="promo_action promo_btn_dblue fleft"><a href=""><img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" />&nbsp;APPROVED&nbsp;</a></div>
 
-									<input type="button" value="RELEASE HOLD" onclick="" class="promo_btn_grayDGrayBord fleft noMargL" />
-							--%>
-							
-							
-							
-							
-						</div>
-						<img width="317" height="6" src="/media_stat/crm/images/clear.gif" alt="" />
-						<div>
-							<% if(!promotion.isOnHold()){ %>
-							<%-- if (FDStoreProperties.isPromoPublishNodeMaster() &&
-									(
-											EnumPromotionStatus.DRAFT.equals(promotion.getStatus()) ||
-											EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())
-										)
-									) {
-							--%>
-							<input type="button" value="EDIT PROMOTION" class="promo_btn_brn fleft noMargL" style="width: 151px;"  onclick="javascript:editPromotionSubmit('<%= promoId %>')" />
-							<%--
-							} else {
-							%>
-									<div class="promo_btn_dgray_disabled fleft noMargL" style="width: 151px; text-align: center;">EDIT PROMOTION</div>
-							<%
-							}
-							--%>
-							<% } %>
-							<input type="button" value="VIEW ACTIVITY LOG" class="promo_btn_wht fleft noMargLR w135px" onclick="javascript:activityLogSubmit('<%= promoId %>')" />
-						</div>
-					</td>
-					<% } %>
+					<input type="button" value="RELEASE HOLD" onclick="" class="promo_btn_grayDGrayBord fleft noMargL" />
+			--%>
+			
+			
+			
+			
+		</div>
+		<img width="317" height="6" src="/media_stat/crm/images/clear.gif" alt="" />
+		<div>
+			<% if(!promotion.isOnHold()){ %>
+			<%-- if (FDStoreProperties.isPromoPublishNodeMaster() &&
+					(
+							EnumPromotionStatus.DRAFT.equals(promotion.getStatus()) ||
+							EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())
+						)
+					) {
+			--%>
+			<input type="button" value="EDIT PROMOTION" class="promo_btn_brn fleft noMargL" style="width: 151px;"  onclick="javascript:editPromotionSubmit('<%= promoId %>')" />
+			<%--
+			} else {
+			%>
+					<div class="promo_btn_dgray_disabled fleft noMargL" style="width: 151px; text-align: center;">EDIT PROMOTION</div>
+			<%
+			}
+			--%>
+			<% } %>
+			<input type="button" value="VIEW ACTIVITY LOG" class="promo_btn_wht fleft noMargLR w135px" onclick="javascript:activityLogSubmit('<%= promoId %>')" />
+		</div>
+		<br /><br />
+<% } %>
+	<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+	<div class="bordLgrayDash pad4">
+		<div class="grayIta10pt">Offer description:</div>
+		<div class="blaIta10pt padT4"><%= promotion.getOfferDesc() %></div>
+		<div class="grayIta10pt padT4">Audience description:</div>
+		<div class="blaIta10pt padT4"><%= promotion.getAudienceDesc() %></div>
+	</div>
+</td>

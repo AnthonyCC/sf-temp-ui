@@ -2,7 +2,7 @@
 	<tr>
 		<td class="vTop">
 			<table width="100%">
-				<tr>
+				<tr class="flatRow">
 					<%-- sets the column widths --%>
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>

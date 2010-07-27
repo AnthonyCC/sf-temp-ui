@@ -14,11 +14,7 @@
 	String successPage ="/promotion/promo_edit.jsp?promoId="+promoId;
 	%>
 		<fd:PromotionCustReqController result="result" promotion="<%= promotion %>" actionName="promoPayment" successPage="<%= successPage %>">		
-		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
-		<fd:ErrorHandler result="<%=result%>" name="minOrdersNumber" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-		<form method='POST' name="frmPromoPaymentReq" id="frmPromoPaymentReq">
+		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>		<form method='POST' name="frmPromoPaymentReq" id="frmPromoPaymentReq">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
 			<br />
@@ -37,8 +33,18 @@
 				</tr>
 			</table>
 		</div>
-		<%-- Promotion edit, edit payment requirement --%>
-			<%@ include file="/includes/promotions/i_promo_edit_payreq.jspf" %>
+		
+		<div class="promo_page_content-view_content4 noBorder">
+			<div class="padLR4">
+				<div class="errContainer">
+					<fd:ErrorHandler result="<%=result%>" name="minOrdersNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+				</div>
+				<%-- Promotion edit, edit payment requirement --%>
+				<%@ include file="/includes/promotions/i_promo_edit_payreq.jspf" %>
+			</div>
+		</div>
 		</form>
 		</fd:PromotionCustReqController>
 	</crm:GetCurrentAgent>

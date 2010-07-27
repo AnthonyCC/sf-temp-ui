@@ -2,7 +2,7 @@
 	<tr>
 		<td class="vTop">
 			<table width="100%">
-				<tr>
+				<tr class="flatRow">
 					<%-- sets the column widths --%>
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -83,15 +83,6 @@
 <!--				</tr>-->
 			</table>
 		</td>
-		<td width="1%" class="vTop">
-			<img width="300" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
-			<div class="bordLgrayDash pad4">
-				<div class="grayIta10pt">Offer description:</div>
-				<div class="blaIta10pt padT4"><%= promotion.getOfferDesc() %></div>
-				<div class="grayIta10pt padT4">Audience description:</div>
-				<div class="blaIta10pt padT4"><%= promotion.getAudienceDesc() %></div>
-			</div>
-		</td>
-		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<%-- offer descrip moved into /includes/promotions/i_promo_status.jsp --%>
 	</tr>
 </table>

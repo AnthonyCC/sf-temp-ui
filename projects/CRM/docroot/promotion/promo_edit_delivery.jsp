@@ -18,38 +18,9 @@
 		String successPage ="/promotion/promo_edit.jsp?promoId="+promoId;
 		%>
 		<fd:PromotionDlvReqController result="result " promotion="<%= promotion %>" successPage="<%= successPage %>">
-		 
+		
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
-		<fd:ErrorHandler result="<%=result%>" name="addressTypeEmpty" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="startDateGreater" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="daysEmpty" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-          <fd:ErrorHandler result="<%=result%>" name="zonesEmpty" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-          <fd:ErrorHandler result="<%=result%>" name="zipCodesEmpty" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="zipCodeTypeEmpty" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="zip_length" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="zip_pattern" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="timeslotFormatError" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="timeslotError" id="errorMsg">
-                                <%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
+		
 		<% //quick fix because of broken build : availableDeliveryZones is alreday declared in previous include file %>
 		<% //List availableDeliveryZones  = (List)pageContext.getAttribute("availableDeliveryZones"); %>
 		<form method='POST' name="frmPromoDlvReq" id="frmPromoDlvReq">
@@ -72,7 +43,39 @@
 			</table>
 		</div>
 		<%-- Promotion edit, edit delivery requirement --%>
-		<div class="promo_page_content-view_content noBorder">
+		<div class="promo_page_content-view_content4 noBorder">
+			<div class="errContainer">
+				<fd:ErrorHandler result="<%=result%>" name="addressTypeEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="startDateGreater" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="daysEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="zonesEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="zipCodesEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="zipCodeTypeEmpty" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="zip_length" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="zip_pattern" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="timeslotFormatError" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="timeslotError" id="errorMsg">
+					<%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+			</div>
 			<%@ include file="/includes/promotions/i_promo_edit_dlvreq.jspf" %>
 		</div>
 		</form>

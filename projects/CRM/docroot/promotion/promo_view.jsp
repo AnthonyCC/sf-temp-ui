@@ -61,7 +61,7 @@
 				<tr>
 					<td class="promo_page_header_text">View Promotions&nbsp;</td>
 					<td>
-						<select id="offerType" name="offerType" class="promo_filter w150px">
+						<select id="offerType" name="offerType" class="promo_filter">
 							<option value="">ALL</option>
 							<option value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - Generic</option>
 							<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumPromotionType.GIFT_CARD.getDescription() %></option>
@@ -73,7 +73,7 @@
 						</select>
 					</td>
 					<td>
-						<select id="customerType" name="customerType" class="promo_filter w150px">
+						<select id="customerType" name="customerType" class="promo_filter">
 							<option value="" selected="selected">ALL</option>
 							<option value="ChefsTable" <%= "ChefsTable".equalsIgnoreCase(customerType)?"selected":"" %>>Chef's Table</option>
 							<option value="New" <%= "New".equalsIgnoreCase(customerType)?"selected":"" %>>New</option>
@@ -84,8 +84,8 @@
 						</select>
 					</td>
 					<td>
-						<select id="promoStatus" name="promoStatus" class="promo_filter w150px">
-							<option value="" >ALL</option>
+						<select id="promoStatus" name="promoStatus" class="promo_filter">
+							<option value="">ALL</option>
 							<option value="LIVE" <%= "LIVE".equalsIgnoreCase(promoStatus)?"selected":"" %>>Live</option>
 							<!--<option value="EXPIRED_CANCELLED" <%= "EXPIRED_CANCELLED".equalsIgnoreCase(promoStatus)?"selected":"" %>>EXPIRED/CANCELLED</option>
 							<option value="DRAFT_TEST_PROGRESS" <%= "DRAFT_TEST_PROGRESS".equalsIgnoreCase(promoStatus)?"selected":"" %>>DRAFT/TEST/IN PROGRESS</option>-->
@@ -108,7 +108,7 @@
 						</select>
 					</td>
 					<td>
-						<select id="createdBy" name="createdBy" class="promo_filter w150px">
+						<select id="createdBy" name="createdBy" class="promo_filter">
 						<option value="" selected="selected">ALL</option>
 						<logic:iterate id="createdUser" collection="<%= createdUsers %>" type="java.lang.String" indexId="idx">
 							<option value="<%= createdUser %>" <%= createdUser.equalsIgnoreCase(createdBy)?"selected":"" %>><%= createdUser %></option>
@@ -117,7 +117,7 @@
 						
 					</td>
 					<td>
-						<select id="modifiedBy" name="modifiedBy" class="promo_filter w150px">
+						<select id="modifiedBy" name="modifiedBy" class="promo_filter">
 						<option value="" selected="selected">ALL</option>
 						<logic:iterate id="modifiedUser" collection="<%= modifiedUsers %>" type="java.lang.String" indexId="idx">
 							<option value="<%= modifiedUser %>" <%= modifiedUser.equalsIgnoreCase(modifiedBy)?"selected":"" %>><%= modifiedUser %></option>
@@ -152,7 +152,7 @@
 		</tbody>
 		</table>
 
-		<div class="promo_page_content-view_content noBorderLR">
+		<div class="promo_page_content-view_content5 noBorderLR">
 			<%@ include file="/includes/promotions/i_promo_view_promoList.jspf" %>
 		</div>
 		<%-- key/quick filter row --%>

@@ -126,7 +126,7 @@
 								<td class="alignL">
 									<table class="vTop tableCollapse">
 										<tr>
-											<td class="vTop w300px"><%= (zsm != null) ? dlvZonesString : "" %></td>
+											<td class="vTop w325px"><%= (zsm != null) ? dlvZonesString : "" %></td>
 											<td class="vTop promo_detail_label" style="width: 100px;">Timeslot:</td>
 											<td class="vTop"><%= (tsList != null) ? dlvTimeslotsString : "" %></td>
 										</tr>

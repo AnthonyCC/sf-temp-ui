@@ -77,7 +77,7 @@
 			<td class="border_bottom" style="font-weight: normal"><%= expire != null ? CCFormatter.formatDate(expire) : ""%></td>
 			<td class="border_bottom" style="font-weight: normal"><%= null!=pStatus ? pStatus.getDescription():" " %></td>
 			<td class="border_bottom" style="font-weight: normal"><%= (null!=p.getCreatedBy()?p.getCreatedBy():"")+"-"+(null !=p.getModifiedBy()?p.getModifiedBy():"") %></td>
-			<td class="border_bottom" style="font-weight: normal"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>">Details</a></td>
+			<td class="border_bottom" style="font-weight: normal"><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');">Details</a></td>
 			<td class="border_bottom" style="font-weight: normal">&nbsp;</td>
 		</tr>
 

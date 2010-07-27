@@ -2,7 +2,7 @@
 	<tr>
 		<td class="vTop">
 			<table width="100%">
-				<tr>
+				<tr class="flatRow">
 					<%-- sets the column widths --%>
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -12,7 +12,7 @@
 					if(csm!=null && null !=csm.getCohorts()){
 						cohortList = Arrays.asList(csm.getCohorts());
 					} %>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -179,7 +179,7 @@
 						</table>
 					</td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -206,7 +206,7 @@
 										for (int n = 0; n < attrList.size(); n++) {
 											FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
 											if (tempAttr != null) {
-												%><tr><%
+												%><tr id="attributeList[<%=n%>]"><%
 												if (n == 0) {
 													%><td class="padL8R16">&nbsp;</td><%
 												}else{
@@ -216,7 +216,7 @@
 													<td class="bordLgrayDash padL8R16"><%= EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())%></td>
 													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
 													<td class="bordLgrayDash padL8R16"><%= tempAttr.getDesiredValue() %></td>
-													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('<%=tempAttr.getAttributeIndex() %>'); return false;" class="greenLink clickAllExclude">Delete</a></td>
+													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('attributeList[<%=n%>]'); return false;" class="greenLink clickAllExclude">Delete</a></td>
 												</tr>
 												<%
 											}
@@ -224,6 +224,21 @@
 									%>
 							</tbody>
 						</table>
+						<%-- Add existing attrs in hidden fields --%>
+						<%
+						
+							for (int n = 0; n < attrList.size(); n++) {
+								FDPromotionAttributeParam tempAttr = (FDPromotionAttributeParam)attrList.get(n);
+								%>
+									<input type="hidden" name="attributeList[<%=n%>].attributeName" id="attributeList[<%=n%>].attributeName" value="<%= tempAttr.getAttributeName() %>">
+									<input type="hidden" name="attributeList[<%=n%>].desiredValue" id="attributeList[<%=n%>].desiredValue" value="<%= tempAttr.getDesiredValue() %>">
+								<%
+							} %>
+							<script type="text/javascript">
+							<!--
+								rollingIndex = <%=attrList.size()%>;
+							//-->
+							</script>
 					</td>
 				</tr>
 			</table>

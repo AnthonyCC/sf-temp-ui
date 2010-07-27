@@ -24,11 +24,11 @@
 					<tr>
 						<td class="promo_detail_label">Status:</td>
 						<td class="alignL">
-							<%= promotion.getStatus().getName() %>
+							<%= promotion.getStatus().getDescription() %>
 						</td>
 					</tr>
 				<% } %>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -43,7 +43,7 @@
 					<td class="promo_detail_label">Redemption code:</td>
 					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" /> <span class="grayIta8pt">Blank/None = automatic application</span></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -58,7 +58,7 @@
 					<td class="promo_detail_label">Additional Terms:<br /><% if (promotion.getPromotionCode() != null && !"".equals(promotion.getPromotionCode())) { %><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');" class="greenLink">Preview</a><% } %></td>
 					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" ><%= promotion.getTerms() %></textarea></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -70,7 +70,7 @@
 						<input type="hidden" id="edit_basic_cal_start_hidden" name="edit_basic_cal_start_hidden" />
 					</td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
@@ -136,34 +136,34 @@
 						</table>
 					</td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Usage:</td>
 					<td class="alignL"><input type="text" id="usage_limit" name="usage_limit" class="w30px alignC" value="<%= promotion.getMaxUsage() %>"/> <span class="gray">per customer</span></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><input type="checkbox" id="dontApplyFraud" name="dontApplyFraud" <%=(promotion.isApplyFraud())?"checked ":"" %>/></td>
 					<td class="alignL"><span class="gray">Apply fraud rule (check for duplicate address)</span></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><input type="checkbox" id="eligibilityList" name="eligibilityList" <%=(promotion.isNeedCustomerList())?"checked ":"" %>/></td>
 					<td class="alignL"><span class="gray">Eligibility list required</span></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 <!--				<tr>-->

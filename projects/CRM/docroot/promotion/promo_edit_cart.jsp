@@ -16,9 +16,7 @@
 		%>
 		<fd:PromotionOfferController result="result" promotion="<%= promotion %>" actionName="promoCart" successPage="<%= successPage %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
-		<fd:ErrorHandler result="<%=result%>" name="subtotalNumber" id="errorMsg">
-         	<%@ include file="/includes/i_error_messages.jspf" %>   
-         </fd:ErrorHandler>
+		
 		<form method='POST' name="frmPromoCartReq" id="frmPromoCartReq">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
@@ -40,6 +38,11 @@
 		</div>
 		<div class="promo_page_content-view_content noBorder">
 			<div class="padLR4">
+				<div class="errContainer">
+					<fd:ErrorHandler result="<%=result%>" name="subtotalNumber" id="errorMsg">
+						<%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+				</div>
 				<%-- Promotion edit, edit cart requirement --%>
 					<%@ include file="/includes/promotions/i_promo_edit_cartreq.jspf" %>
 			</div>

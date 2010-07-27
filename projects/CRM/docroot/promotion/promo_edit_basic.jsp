@@ -13,36 +13,7 @@
 	%>
 		<fd:PromotionBasicInfoController result="result" promotion="<%= promotion %>" actionName="editBasicPromo" successPage="<%= successPage %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
-		<fd:ErrorHandler result="<%=result%>" name="nameEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="descriptionEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="redemptionCodeEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="redemptionCodeDuplicate" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="offerDescEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="usageError" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="startDateEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="endDateEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="endDateBefore" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
+		
 		<form method='POST' name="frmPromoEditBasic" id="frmPromoEditBasic">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
@@ -64,8 +35,40 @@
 		</div>
 		<%-- Promotion edit, edit basic (with slight difs for new) --%>
 		
-		<div class="promo_page_content-view_content noBorder">
+		<div class="promo_page_content-view_content4 noBorder">
 			<div class="padLR4">
+				<div class="errContainer">
+					<fd:ErrorHandler result="<%=result%>" name="nameEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="descriptionEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="redemptionCodeEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="redemptionCodeDuplicate" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="offerDescEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="usageError" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="startDateEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="endDateEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="endDateBefore" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+				</div>
 				<%@ include file="/includes/promotions/i_promo_edit_basic.jspf" %>
 			</div>
 		</div>

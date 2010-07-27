@@ -16,39 +16,6 @@
 		<fd:PromotionOfferController result="result" promotion="<%= promotion %>" actionName="promoOffer" successPage="<%= successPage %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 		
-		<fd:ErrorHandler result="<%=result%>" name="percentOffNumber" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="maxAmountNumber" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="extendDpDaysRequired" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="liPercentOffNumber" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="maxItemsNumber" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-        <fd:ErrorHandler result="<%=result%>" name="discountEmpty" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="invalidDepts" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="invalidCats" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="invalidRecipes" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="invalidSKUs" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
-         <fd:ErrorHandler result="<%=result%>" name="invalidBrands" id="errorMsg">
-       		 <%@ include file="/includes/i_error_messages.jspf" %>   
-        </fd:ErrorHandler>
 		<form method='POST' name="frmPromoEditOffer" id="frmPromoEditOffer">
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
@@ -68,9 +35,44 @@
 				</tr>
 			</table>
 		</div>
-		<div class="promo_page_content-view_content noBorder">
+		<div class="promo_page_content-view_content4 noBorder">
 			<div class="padLR4">
-				<%-- Promotion edit, edit basic (with slight difs for new) --%>
+				<div class="errContainer">
+					<fd:ErrorHandler result="<%=result%>" name="percentOffNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="maxAmountNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="extendDpDaysRequired" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="liPercentOffNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="maxItemsNumber" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="discountEmpty" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidDepts" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidCats" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidRecipes" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidSKUs" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidBrands" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<%-- Promotion edit, edit basic (with slight difs for new) --%>
+				</div>
 				<%@ include file="/includes/promotions/i_promo_edit_offer.jspf" %>
 			</div>
 		</div>

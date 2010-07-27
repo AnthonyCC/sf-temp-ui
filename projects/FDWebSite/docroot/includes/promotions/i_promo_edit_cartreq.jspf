@@ -34,7 +34,7 @@
 				<tr>
 					<td colspan="2" class="bordBotLgrayDashed"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>
-				<tr>
+				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
