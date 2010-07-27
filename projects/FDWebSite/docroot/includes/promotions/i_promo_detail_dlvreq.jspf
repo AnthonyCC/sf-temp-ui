@@ -97,33 +97,6 @@
 							%>
 						</td>
 					</tr>
-					
-					
-					<tr>
-						<td class="promo_detail_label">Timeslot(s):</td>
-						<td class="alignL">
-							<%
-								if (tsList != null) { %>
-									<table style="border-collapse: collapse;">
-									<%
-										for (int n = 0; n < tsList.size(); n++) {
-											FDPromoDlvTimeSlotModel tempTs = (FDPromoDlvTimeSlotModel)tsList.get(n);
-											if (tempTs != null) {
-												%><tr>
-													<td class="bordLgrayDash padL8R16"><%= tempTs.getDlvTimeStart() %></td>
-													<td class="bordLgrayDash padL8R16 gray"> to </td>
-													<td class="bordLgrayDash padL8R16"><%= tempTs.getDlvTimeEnd() %></td>
-												</tr>
-												<%
-											}
-										}
-									%>
-									</table>
-									<%
-								}
-							%>
-						</td>
-					</tr>
 					<%
 						//ZIP or ZONE
 						if (zipRests != null && zipRests.size() > 0) {

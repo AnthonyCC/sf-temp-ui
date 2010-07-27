@@ -362,11 +362,12 @@
 
 			if (!"".equals(dlvZonesString)) {
 				if(dlvZonesString.indexOf("ALL")>-1){
-					dlvZonesString = "<div class=\"bold\">ALL</div><table class=\"tableCollapse\">"+dlvZonesString+"</table>";
+					dlvZonesString = "<div class=\"bold\">ALL</div>";
 				}else{
 					dlvZonesString = "<div class=\"bold\">ONLY</div><table class=\"tableCollapse\">"+dlvZonesString+"</table>";
 				}
 			}
+
 		}
 
 	String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday" };
