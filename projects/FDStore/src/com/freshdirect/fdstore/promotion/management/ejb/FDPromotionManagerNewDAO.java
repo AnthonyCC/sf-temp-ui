@@ -365,12 +365,13 @@ public class FDPromotionManagerNewDAO {
 			throws SQLException {
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
 		PrimaryKey pk = createPromotionBasic(conn, promotion);
+		promotion.setPK(pk);
+		updateLeftOutAttributes(conn, promotion);
 		String id = pk.getId();
 
-		FDPromotionManagerNewDAO.storeAssignedGroups(conn, id, promotion);
-		FDPromotionManagerNewDAO.storeAttributeList(conn, id, promotion
-				.getAttributeList());
-		FDPromotionManagerNewDAO.storeCartStrategy(conn, id, promotion);
+		storeAssignedGroups(conn, id, promotion);
+		storeAttributeList(conn, id, promotion.getAttributeList());
+		storeCartStrategy(conn, id, promotion);
 		storeCustomerStrategy(conn, id, promotion);
 		storePromoDlvZoneStrategy(conn, id, promotion);
 		storePromoDlvDates(conn,id, promotion);
@@ -1598,30 +1599,35 @@ public class FDPromotionManagerNewDAO {
 			return false;
 		}
 
-		// Delete old instance if exists
-		String promoPK = findPromotion(conn, promoCode);
-		if (promoPK != null) {
-			LOGGER.debug("Delete old promotion " + promoCode + "/"+ promoPK + " first.");
-
-			deletePromotion(conn, promoPK);
-		}
-		
 		// change status to published
 		promo.setStatus(EnumPromotionStatus.LIVE);
 		promo.setLastPublishedDate(Calendar.getInstance().getTime());
 
 		// Increment number of publishes counter
-		promo.setPublishes(promo.getPublishes()+1);
+		promo.setPublishes(promo.getPublishes() + 1);
 		
-		// store promotion in its new form
-		LOGGER.debug("Save promotion " + promoCode);
-		try {
-			createPromotion(conn, promo);
-		} catch (Exception e) {
-			LOGGER.error("Store promotion crashed", e);
-			throw new SQLException(e);
+		// Delete old instance if exists
+		String promoPK = findPromotion(conn, promoCode);
+		if (promoPK != null) {
+			// store promotion in its new form
+			promo.setPK(new PrimaryKey(promoPK));
+			LOGGER.debug("Update promotion " + promoCode);
+			try {
+				updatePromotion(conn, promo);
+			} catch (Exception e) {
+				LOGGER.error("Update promotion crashed", e);
+				throw new SQLException(e);
+			}
+		} else {
+			LOGGER.debug("Save promotion " + promoCode);
+			try {
+				createPromotion(conn, promo);
+			} catch (Exception e) {
+				LOGGER.error("Store promotion crashed", e);
+				throw new SQLException(e);
+			}
 		}
-
+		
 		return true;
 	}
 
@@ -2340,5 +2346,127 @@ public class FDPromotionManagerNewDAO {
 		} finally {
 		if (ps != null) ps.close();			
 		}	
+	}
+
+	public static void updatePromotion(Connection conn, FDPromotionNewModel promotion) throws SQLException {
+		updatePromotionBasic(conn, promotion);
+		updateLeftOutAttributes(conn, promotion);
+		String id = promotion.getPK().getId();
+
+		storeAssignedGroups(conn, id, promotion);
+		storeAttributeList(conn, id, promotion.getAttributeList());
+		storeCartStrategy(conn, id, promotion);
+		storeCustomerStrategy(conn, id, promotion);
+		storePromoDlvZoneStrategy(conn, id, promotion);
+		storePromoDlvDates(conn, id, promotion);
+
+		if (!promotion.getZipRestrictions().isEmpty()) {
+			storeGeography(conn, id, promotion.getZipRestrictions());
+		}
+	}
+
+	public static void updatePromotionBasic(Connection conn, FDPromotionNewModel promotion) throws SQLException {
+		PreparedStatement ps = conn
+				.prepareStatement("UPDATE CUST.PROMOTION_NEW SET "
+						+ " CODE=?, NAME=?, DESCRIPTION=?, MAX_USAGE=?, START_DATE=?, EXPIRATION_DATE=?, REDEMPTION_CODE=?,"
+						+ " CAMPAIGN_CODE=?, MIN_SUBTOTAL=?, MAX_AMOUNT=?, PERCENT_OFF=?, WAIVE_CHARGE_TYPE=?,"
+						+ " ROLLING_EXPIRATION_DAYS=?, STATUS=?, OFFER_DESC=?, AUDIENCE_DESC=?, TERMS=?, REDEEM_CNT=?,"
+						+ " HASSKUQUANTITY=?, PERISHABLEONLY=?, NEEDDRYGOODS=?, NEEDCUSTOMERLIST=?, RULE_BASED=?,"
+						+ " FAVORITES_ONLY=?, COMBINE_OFFER=?, MODIFIED_BY=?, MODIFY_DATE=?,"
+						+ " DONOT_APPLY_FRAUD=?, PUBLISHES=?"
+						+ " WHERE ID = ?");
+
+		int i = 1;
+		i = setupPreparedStatement(ps, promotion, i);
+
+		ps.setString(i++, promotion.getModifiedBy());
+		if (promotion.getModifiedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion
+					.getModifiedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}
+		
+		if(!promotion.isApplyFraud()){
+			ps.setString(i++, "X");
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		
+		ps.setInt(i++, promotion.getPublishes());
+		
+		ps.setString(i++, promotion.getPK().getId());
+
+		// Execute update
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not updated");
+		}
+		ps.close();
+	}
+
+	/**
+	 * TODO please merge this code into a single update/insert which performs full and not partial persist operation
+	 */
+	public static void updateLeftOutAttributes(Connection conn, FDPromotionNewModel promotion) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET "
+				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, PUBLISH_DATE=?, EXTEND_DP_DAYS=?, EXCLUDE_SKU_SUBTOTAL=?, PROFILE_OPERATOR=?,"
+				+ " MAX_ITEM_COUNT=?, ON_HOLD=?, OFFER_TYPE=?, GEO_RESTRICTION_TYPE=?"
+				+ " WHERE ID = ?");
+
+		int i = 1;
+
+		if (promotion.getCategoryName() != null && promotion.getCategoryName().length() != 0)
+			ps.setString(i++, promotion.getCategoryName());
+		else
+			ps.setNull(i++, Types.VARCHAR);
+		if (promotion.getProductName() != null && promotion.getProductName().length() != 0)
+			ps.setString(i++, promotion.getProductName());
+		else
+			ps.setNull(i++, Types.VARCHAR);
+		if (promotion.getLastPublishedDate() != null) {
+			ps.setTimestamp(i++, new java.sql.Timestamp(promotion.getLastPublishedDate().getTime()));
+		} else {
+			ps.setNull(i++, Types.DATE);
+		}
+		if (promotion.getExtendDpDays() != null) {
+			ps.setInt(i++, promotion.getExtendDpDays().intValue());
+		} else {
+			ps.setNull(i++, Types.INTEGER);
+		}
+		if (promotion.getSubTotalExcludeSkus() != null && promotion.getSubTotalExcludeSkus().length() != 0)
+			ps.setString(i++, promotion.getSubTotalExcludeSkus());
+		else
+			ps.setNull(i++, Types.VARCHAR);
+		if (promotion.getProfileOperator() != null && promotion.getProfileOperator().length() != 0) {
+			ps.setString(i++, promotion.getProfileOperator());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (promotion.getMaxItemCount() != null) {
+			ps.setInt(i++, promotion.getMaxItemCount().intValue());
+		} else {
+			ps.setNull(i++, Types.INTEGER);
+		}
+		ps.setString(i++, (promotion.isOnHold()) ? "Y" : "N");
+		if (promotion.getOfferType() != null && promotion.getOfferType().length() != 0) {
+			ps.setString(i++, promotion.getOfferType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+		if (promotion.getGeoRestrictionType() != null && promotion.getGeoRestrictionType().length() != 0) {
+			ps.setString(i++, promotion.getGeoRestrictionType());
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
+
+		ps.setString(i++, promotion.getPK().getId());
+
+		// Execute update
+		if (ps.executeUpdate() != 1) {
+			ps.close();
+			throw new SQLException("row not updated");
+		}
+		ps.close();
 	}
 }
