@@ -66,14 +66,14 @@ public class GeographyStrategy implements PromotionStrategyI {
 	}
 
 
-	public int evaluate(String promotionCode, EnumOrderType orderType, String zipCode, String depotCode) {
+	public boolean evaluate(String promotionCode, EnumOrderType orderType, String zipCode, String depotCode) {
 
 		PromotionGeography g = this.getGeography(new Date());
 		if (g == null || !isAllowedGeography(orderType, g,zipCode, depotCode)) {
-			return DENY;
+			return false;
 		}
 
-		return ALLOW;
+		return true;
 	}
 	private boolean isAllowedGeography(EnumOrderType orderType, PromotionGeography geo, String zipCode, String depotCode) {
 

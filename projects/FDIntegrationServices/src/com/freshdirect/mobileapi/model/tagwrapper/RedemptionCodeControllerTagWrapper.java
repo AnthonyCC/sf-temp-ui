@@ -45,7 +45,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
         addExpectedRequestValues(new String[] { REQ_PARAM_RECENT_ORDER_NUMBER }, new String[] { REQ_PARAM_REDEEM_OVERRIDE_MSG });//gets,sets
 
         addRequestValue(REQ_PARAM_REDEMPTION_CODE, redemptionCode);
-
+        addRequestValue(REQ_PARAM_IS_PROMO_ELIGIBLE, false);
         getWrapTarget().setActionName(ACTION_APPLY_CODE);
         setMethodMode(true);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);

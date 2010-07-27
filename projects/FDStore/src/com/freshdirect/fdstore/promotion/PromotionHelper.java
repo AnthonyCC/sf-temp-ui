@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.ErpAddressModel;
@@ -84,59 +85,45 @@ public class PromotionHelper {
 		}
 		
 	
-		public static boolean checkPromoEligibilityForAddress(FDUserI user, String addressPK) throws FDResourceException{
+		public static boolean checkPromoEligibilityForAddress(FDUserI user, AddressModel shippingAddress) throws FDResourceException{
 			Promotion promotion = (Promotion)user.getRedeemedPromotion();
-			boolean isEligible = false;
-			if(null != promotion){
+			//This block is executed only if current eligibility is true. So default is set to true.
+			boolean isEligible = true;
+			if(null != promotion && null != shippingAddress){
 				FDIdentity identity = user.getIdentity();
 				PromotionContextI promotionContext = new PromotionContextAdapter(user);
-				ErpAddressModel shippingAddress = FDCustomerManager.getAddress( identity, addressPK );
-				if(null != shippingAddress){/*
-					DlvAddressVerificationResponse response = FDDeliveryManager.getInstance().scrubAddress(shippingAddress, true);
-					 if (!EnumAddressVerificationResult.ADDRESS_OK.equals(response.getResult())) {
-						 
-					 }*/
-					Calendar date = new GregorianCalendar();
-					date.add( Calendar.DATE, 7 );
-					try {
-						DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime());
-						if(null != zoneInfo){
-							for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
-								PromotionStrategyI strategy = i.next();
-								if (strategy instanceof DlvZoneStrategy) {
-									DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy) strategy;
-									int result = PromotionStrategyI.ALLOW;//dlvZoneStrategy.evaluateByZoneCode(promotion.getPromotionCode(), zoneInfo.getZoneCode());
-									isEligible = dlvZoneStrategy.isZonePresent(zoneInfo.getZoneCode());
-									if(!isEligible){
-										for (Iterator<PromotionStrategyI> j = promotion.getStrategies().iterator(); j.hasNext();) {
-											PromotionStrategyI strategy2 = i.next();
-											if (strategy2 instanceof GeographyStrategy) {
-												GeographyStrategy geoGraphyStrategy = (GeographyStrategy)strategy2;
-												EnumOrderType orderType = promotionContext.getOrderType(shippingAddress);
-												String depotCode = promotionContext.getDepotCode(shippingAddress);
-												result = geoGraphyStrategy.evaluate(promotion.getPromotionCode(), orderType, shippingAddress.getZipCode(), depotCode);												
-												break;
-											}
-										}
-									}
-									if(PromotionStrategyI.ALLOW == result){
-										isEligible = true;
-									}
-									break;
-									
-								}
+				EnumOrderType orderType = promotionContext.getOrderType(shippingAddress);
+				Calendar date = new GregorianCalendar();
+				date.add( Calendar.DATE, 7 );
+				try {
+					DlvZoneInfoModel zoneInfo =  FDDeliveryManager.getInstance().getZoneInfo(shippingAddress, date.getTime());
+					if(null != zoneInfo){
+						for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
+							PromotionStrategyI strategy = i.next();
+							if (strategy instanceof DlvZoneStrategy) {
+								DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy) strategy;
+								isEligible = dlvZoneStrategy.isZonePresent(zoneInfo.getZoneCode());
+							} else if (strategy instanceof GeographyStrategy) {
+								GeographyStrategy geoGraphyStrategy = (GeographyStrategy)strategy;
+								String depotCode = promotionContext.getDepotCode(shippingAddress);
+								isEligible = geoGraphyStrategy.evaluate(promotion.getPromotionCode(), orderType, shippingAddress.getZipCode(), depotCode);												
+							} else if (strategy instanceof CustomerStrategy) {
+								CustomerStrategy custStrategy = (CustomerStrategy)strategy;
+								isEligible = custStrategy.evaluateOrderType(orderType);
 							}
+							if(!isEligible) break;
 						}
-					} catch (FDInvalidAddressException e) {
-						throw new FDResourceException(e);
 					}
-				}			
+				} catch (FDInvalidAddressException e) {
+					throw new FDResourceException(e);
+				}
 			}
 			return isEligible;		
 		}
 		
 		public static boolean checkPromoEligibilityForTimeslot(FDUserI user, String timeSlotId) throws FDResourceException{
-			boolean isEligible = false;
+			//This block is executed only if current eligibility is true. So default is set to true.
+			boolean isEligible = true;
 			Promotion promotion = (Promotion)user.getRedeemedPromotion();
 			if(null != promotion){
 				if(null != timeSlotId && !"".equals(timeSlotId)){					
@@ -145,13 +132,10 @@ public class PromotionHelper {
 					}
 					FDTimeslot timeSlot = FDDeliveryManager.getInstance().getTimeslotsById(timeSlotId);
 					if(null != timeSlot){
-						for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
-							PromotionStrategyI strategy = i.next();
-							if (strategy instanceof DlvZoneStrategy) {
-								DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy) strategy;
-								isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot);								
-								break;
-							}
+						PromotionApplicatorI app = promotion.getApplicator();
+						if (app != null) {
+							DlvZoneStrategy dlvZoneStrategy = app.getDlvZoneStrategy();
+							isEligible = dlvZoneStrategy != null ? dlvZoneStrategy.isTimeSlotEligible(timeSlot) : isEligible;								
 						}
 					}
 					
@@ -162,7 +146,8 @@ public class PromotionHelper {
 		}
 		
 		public static boolean checkPromoEligibilityForPayment(FDUserI user, String paymentId)throws FDResourceException{
-			boolean isEligible = false;
+			//This block is executed only if current eligibility is true. So default is set to true.
+			boolean isEligible = true;
 			Promotion promotion = (Promotion)user.getRedeemedPromotion();
 			if(null != promotion){
 				FDIdentity identity = user.getIdentity();

@@ -40,6 +40,8 @@ public interface SessionParamName {
     public static final String SESSION_PARAM_SKUS_ADDED = "SkusAdded";
 
     public static final String SESSION_PARAM_FD_QUICKCART = "fd.quickcart";
+    
+    
 
     /*
      *             session.removeAttribute(SessionName.AUTHORIZED_PEOPLE);

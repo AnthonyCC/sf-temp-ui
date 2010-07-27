@@ -74,6 +74,7 @@ function checkPromoEligibilityByTimeSlot(promotion){
 		new Ajax.Request('/checkout/promo_eligibility.jsp', {
 			parameters: {
 				isByTimeSlot: true,
+				hasDiscountedTimeslots: hasDiscountedTimeslots.value,
 				deliveryTimeslotId: deliveryTimeslotId.value						
 			},
 			onComplete: function(transport) {

@@ -1,9 +1,17 @@
-<%@ taglib uri='freshdirect' prefix='fd' %>
+
+<%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@page import="com.freshdirect.customer.ErpAddressModel"%>
+<%@page import="com.freshdirect.customer.ErpDepotAddressModel"%>
+<%@page import="com.freshdirect.common.address.AddressModel"%>
+<%@page import="com.freshdirect.delivery.depot.DlvLocationModel"%>
+<%@page import="com.freshdirect.fdstore.FDDepotManager"%>
+<%@page import="com.freshdirect.delivery.depot.DlvDepotModel"%><%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='org.json.JSONObject' %>
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.fdstore.promotion.PromotionHelper' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
+<%@ page import='com.freshdirect.fdstore.promotion.Promotion' %>
 
 
 <% 
@@ -11,7 +19,7 @@ boolean isByAddress = false;
 boolean isByTimeSlot = false;
 boolean isByPayment = false;
 boolean result = true;
-
+boolean hasDiscountedTimeslots = "true".equals((String)request.getParameter("hasDiscountedTimeslots"));
 FDUserI user = (FDUserI)session.getAttribute( SessionName.USER );
 JSONObject json = new JSONObject();
 json.put("status", "ok");
@@ -25,17 +33,35 @@ if ( "true".equals((String)request.getParameter("isByTimeSlot")) ) {
 if ( "true".equals((String)request.getParameter("isByPayment")) ) {
 	isByPayment = true;
 }
-if(null != user.getRedeemedPromotion()){
+Promotion promotion = (Promotion)user.getRedeemedPromotion();
+if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getPromotionCode())){
 	if(isByAddress){
 		String addressOrLocation = request.getParameter( "selectAddressList" );
-		
 		if ( addressOrLocation != null && addressOrLocation.startsWith( "field_" ) ) {
 			addressOrLocation = request.getParameter( addressOrLocation.substring( "field_".length() ) );
-		}				
-		result = PromotionHelper.checkPromoEligibilityForAddress(user,addressOrLocation);		
+		}		
+		
+		if ( addressOrLocation.startsWith( "DEPOT_" ) ) {
+			String locationId = addressOrLocation.substring( "DEPOT_".length() );
+			DlvDepotModel depot = FDDepotManager.getInstance().getDepotByLocationId( locationId );
+			DlvLocationModel location = depot.getLocation( locationId );
+			if ( depot != null ) {
+				AddressModel addrModel = location.getAddress();
+				ErpDepotAddressModel depotAddress = new ErpDepotAddressModel(addrModel);
+				depotAddress.setRegionId( depot.getRegionId());
+				depotAddress.setZoneCode( location.getZoneCode() );
+				depotAddress.setLocationId( location.getPK().getId() );
+				depotAddress.setFacility( location.getFacility() );
+				depotAddress.setPickup( depot.isPickup());
+				result = PromotionHelper.checkPromoEligibilityForAddress(user,depotAddress);		
+			} 
+		} else {
+			ErpAddressModel shippingAddress = FDCustomerManager.getAddress(user.getIdentity(), addressOrLocation);
+			result = PromotionHelper.checkPromoEligibilityForAddress(user,shippingAddress);		
+		}
 	}
 	
-	else if(isByTimeSlot){
+	else if(isByTimeSlot && hasDiscountedTimeslots){
 		String deliveryTimeslotId = request.getParameter( "deliveryTimeslotId" );
 		if(null != deliveryTimeslotId){
 			result = PromotionHelper.checkPromoEligibilityForTimeslot(user,deliveryTimeslotId);			

@@ -142,42 +142,8 @@
         if(outStandingBalance <= 0.0) {
             isPaymentRequired = false;
 %>
-    <FORM method="post" name="step_3_choose" id="step_3_choose" onSubmit="return checkPromoEligibilityByPayment('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
-    <div class="gcResendBox" style="display:none"><!--  -->
-		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
-			<tr>
-				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
-				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
-				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
-			</tr>
-			<tr>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
-				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
-			</tr>
-			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
-					<%-- all your content goes in this div, it controls the height/width --%>
-					The promotion code you entered <div id="promoCode"></div> is not valid for the payment method you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
-					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
-					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
-					<a href="#" onclick="javascript:document.forms['step_3_choose'].submit();"><b>CONTINUE</b></a><br />
-					(promotion code will be removed)
-				</div></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-			</tr>
-			<tr>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
-				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
-				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
-			</tr>
-			<tr>
-				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
-			</tr>
-		</table>
-	</div>
+    <FORM method="post" name="step_3_choose" id="step_3_choose">
+
     <input type="hidden" name="actionName" id="actionName" value="setNoPaymentMethod">
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 	<TR VALIGN="TOP">
@@ -278,9 +244,44 @@ if(isPaymentRequired) {
 
 	<% } %>
 
-
+<FORM method="post" name="step_3_choose" id="step_3_choose" onSubmit="return checkPromoEligibilityByPayment('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');" action="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+    <div class="gcResendBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<%-- all your content goes in this div, it controls the height/width --%>
+					The promotion code you entered <div id="promoCode"></div> is not valid for the payment method you selected. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>
+					<a href="#" onclick="Modalbox.hide(); return false;">CHOOSE ANOTHER</a><br />
+					<a href="#" onclick="javascript:document.forms['step_3_choose'].submit();"><b>CONTINUE</b></a><br />
+					(promotion code will be removed)
+				</div></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
-	<FORM method="post" name="step_3_choose">
+	
 		<input type="hidden" name="actionName" value="">
 		<input type="hidden" name="deletePaymentId" value="">
 		<TR VALIGN="TOP">
