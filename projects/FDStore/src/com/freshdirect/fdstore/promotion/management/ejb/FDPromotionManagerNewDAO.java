@@ -785,8 +785,18 @@ public class FDPromotionManagerNewDAO {
 						.getOrderRangeStart().getTime()));
 				ps.setTimestamp(index++, new java.sql.Timestamp(model
 						.getOrderRangeEnd().getTime()));*/
-				ps.setInt(index++, model.getOrderRangeStart());
-				ps.setInt(index++, model.getOrderRangeEnd());
+				if (promotion != null && model.getOrderRangeStart() != null) {
+					ps.setInt(index++, model.getOrderRangeStart().intValue());					
+				} else {
+					ps.setNull(index++, Types.INTEGER);										
+				}
+				if (promotion != null && model.getOrderRangeEnd() != null) {
+					ps.setInt(index++, model.getOrderRangeEnd().intValue());					
+				} else {
+					ps.setNull(index++, Types.INTEGER);										
+				}
+				/*ps.setInt(index++, model.getOrderRangeStart());
+				ps.setInt(index++, model.getOrderRangeEnd());*/
 	
 				//Changed the 'cohort' column from VArray Type to Varchar2 type.
 				/*ArrayDescriptor desc = ArrayDescriptor.createDescriptor(

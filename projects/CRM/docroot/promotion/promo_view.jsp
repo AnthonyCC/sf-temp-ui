@@ -80,7 +80,7 @@
 							<option value="COSPilot" <%= "COSPilot".equalsIgnoreCase(customerType)?"selected":"" %>>COS</option>							
 							<option value="COSNew" <%= "COSNew".equalsIgnoreCase(customerType)?"selected":"" %>>COS New</option>
 							<option value="DeliveryPass" <%= "DeliveryPass".equalsIgnoreCase(customerType)?"selected":"" %>>Active/RTU DP</option>
-							<option value="MarketingPromo" <%= "MarketingPromo".equalsIgnoreCase(customerType)?"selected":"" %>>MKTG</option>
+							<option value="MarketingPromo" <%= "MarketingPromo".equalsIgnoreCase(customerType)?"selected":"" %>>Marketing</option>
 						</select>
 					</td>
 					<td>

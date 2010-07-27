@@ -91,7 +91,7 @@
 						<% if ( true ) { %>
 								<tr>
 									<td class="promo_detail_label">Max # items:</td>
-									<td class="alignL"><%-- max items call --%></td>
+									<td class="alignL"><%= promotion.getMaxItemCount() %></td>
 								</tr>
 						<% } %>
 						<% if (dpcdDepts.size() > 0) { %>

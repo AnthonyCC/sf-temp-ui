@@ -17,7 +17,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Exclude from Subtotal:</td>
-					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="excFromSubtotal" name="excFromSubtotal" rows="3" cols="30" class="w600px"><%= excFromSubtotal.toString() %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated SKUs</div></td>
+					<td class="alignL vTop padL8R16"><div class="fleft"><textarea id="excFromSubtotal" name="excFromSubtotal" rows="3" cols="30" class="w600px"><%= null !=excFromSubtotal && !"null".equalsIgnoreCase(excFromSubtotal.toString())?excFromSubtotal.toString():"" %></textarea></div><div class="grayIta8pt fleft padL4">Enter comma-seperated SKUs</div></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>

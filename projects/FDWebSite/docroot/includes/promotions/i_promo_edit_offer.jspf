@@ -108,7 +108,7 @@
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Max # items:</td>
-					<td class="alignL vTop padL8R16"><div class="fleft vTop"><input type="text" id="li_maxItems" name="li_maxItems" class="w50px" value="<%= "" %>" />&nbsp;</div><div class="grayIta8pt fleft vTop"># items eligible for<br />promotion by order added</div></td>
+					<td class="alignL vTop padL8R16"><div class="fleft vTop"><input type="text" id="li_maxItems" name="li_maxItems" class="w50px" value="<%= promotion.getMaxItemCount() %>" />&nbsp;</div><div class="grayIta8pt fleft vTop"># items eligible for<br />promotion by order added</div></td>
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Department:</td>

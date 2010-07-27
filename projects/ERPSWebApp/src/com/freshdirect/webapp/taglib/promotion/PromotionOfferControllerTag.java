@@ -130,6 +130,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			this.promotion.setPromotionType(promotionType);
 			setWSPromotionCode();
 		}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
+			this.promotion.setMaxAmount("");
 			this.promotion.setOfferType(EnumOfferType.LINE_ITEM.getName());
 			String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
 			this.promotion.setPercentOff(percentOff);
@@ -143,6 +144,8 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				}else{
 					actionResult.addError(true, "maxItemsNumber", " Max # items value should be integer.");
 				}
+			}else{
+				this.promotion.setMaxItemCount(null);
 			}
 			populateDcpdData(request);
 
@@ -316,7 +319,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				}
 			}
 			if(!invalidDepts.isEmpty()){
-				result.addError(true, "invalidDepts", invalidDepts.toString()+" are invalid Departmennts." );
+				result.addError(true, "invalidDepts", invalidDepts.toString()+" are invalid Departments." );
 			}
 		}
 		String categories = NVL.apply(request.getParameter("categories"), "").trim();

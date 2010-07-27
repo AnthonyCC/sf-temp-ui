@@ -344,17 +344,25 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			actionResult.addError(true, "dpDates", " Dlv Pass expiration end date should not be before start date.");
 		} 
 		
-		if( !isInteger(orderRangeStart)){
+		if("".equals(orderRangeStart)){
 			model.setOrderRangeStart(null);
-			actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeStart +"' should be Number.");
 		}else{
-			model.setOrderRangeStart(Integer.parseInt(orderRangeStart));
+			if( !isInteger(orderRangeStart)){
+				model.setOrderRangeStart(null);
+				actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeStart +"' should be Number.");
+			}else{
+				model.setOrderRangeStart(Integer.parseInt(orderRangeStart));
+			}
 		}
-		if(!isInteger(orderRangeEnd)){
+		if("".equals(orderRangeEnd)){
 			model.setOrderRangeEnd(null);
-			actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeEnd +"' should be Number.");
 		}else{
-			model.setOrderRangeEnd(Integer.parseInt(orderRangeEnd));
+			if(!isInteger(orderRangeEnd)){
+				model.setOrderRangeEnd(null);
+				actionResult.addError(true, "orderRangesStart", " Order instance value '"+orderRangeEnd +"' should be Number.");
+			}else{
+				model.setOrderRangeEnd(Integer.parseInt(orderRangeEnd));
+			}
 		}
 		if(model.getOrderRangeEnd()!= null && model.getOrderRangeStart()!=null && model.getOrderRangeEnd()<model.getOrderRangeStart()){
 			actionResult.addError(true, "orderRanges", " Order instance start value must be less than or equal to end value.");
