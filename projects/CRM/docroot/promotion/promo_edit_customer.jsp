@@ -55,12 +55,14 @@
 				</tr>
 			</table>
 		</div>
-		<%-- Promotion edit, customer requirements --%>
-		<div class="promo_page_content-view_content noBorder">
 			<form id="edit_customer" name="edit_customer">
-			<%@ include file="/includes/promotions/i_promo_edit_custreq.jspf" %>
+			<div class="promo_page_content-view_content noBorder">
+				<div class="padLR4">
+					<%-- Promotion edit, customer requirements --%>
+					<%@ include file="/includes/promotions/i_promo_edit_custreq.jspf" %>
+				</div>
+			</div>
 			</form>
-		</div>
 		</form>
 		</fd:PromotionCustReqController>
 	</crm:GetCurrentAgent>

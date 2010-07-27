@@ -68,8 +68,12 @@
 				</tr>
 			</table>
 		</div>
-		<%-- Promotion edit, edit basic (with slight difs for new) --%>
-			<%@ include file="/includes/promotions/i_promo_edit_offer.jspf" %>
+		<div class="promo_page_content-view_content noBorder">
+			<div class="padLR4">
+				<%-- Promotion edit, edit basic (with slight difs for new) --%>
+				<%@ include file="/includes/promotions/i_promo_edit_offer.jspf" %>
+			</div>
+		</div>
 		</form>
 		</fd:PromotionOfferController>
 	</crm:GetCurrentAgent>

@@ -38,8 +38,12 @@
 				</tr>
 			</table>
 		</div>
-		<%-- Promotion edit, edit cart requirement --%>
-			<%@ include file="/includes/promotions/i_promo_edit_cartreq.jspf" %>
+		<div class="promo_page_content-view_content noBorder">
+			<div class="padLR4">
+				<%-- Promotion edit, edit cart requirement --%>
+					<%@ include file="/includes/promotions/i_promo_edit_cartreq.jspf" %>
+			</div>
+		</div>
 		</form>
 		</fd:PromotionOfferController>
 	</crm:GetCurrentAgent>
