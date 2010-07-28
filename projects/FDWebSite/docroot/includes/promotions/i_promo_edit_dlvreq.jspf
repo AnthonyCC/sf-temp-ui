@@ -302,12 +302,17 @@
 														--%>
 														<%
 															for (int i = 0; i < 7; i++) {
-																if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) {
+																if ( (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) || (selectedDays.indexOf(""+(i+1))>-1) ) {
 																	String dowLong = dayOfWeek.get(i).toString();
 																	String dowShort = dowLong.substring(0,3);
 																	%>
 																		document.observe("dom:loaded", function() {
-																			addRows('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index, Array(<%=dlvTimesStrings[i]%>));
+																			<% //only do this if we have times to be displayed
+																			if (dlvTimesStrings[i] != null && !"".equals(dlvTimesStrings[i])) { %>
+																				addRows('dlvTimeTable<%=dowShort%>', 'dlvTimeIn<%=dowShort%>', 'dlvDay<%=dowShort%>', true, dlvDay<%=dowShort%>Index, Array(<%=dlvTimesStrings[i]%>));
+																			<% }
+																				//expand day if needed (simply making it checked won't show the times content)
+																			%>
 																			selectNCB('edit_dlvreq_chk<%=dowShort%>_parent', '', true, '', true);
 																		});
 																	<%

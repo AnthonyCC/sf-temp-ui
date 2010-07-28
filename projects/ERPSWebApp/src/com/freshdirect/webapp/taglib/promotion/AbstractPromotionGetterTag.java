@@ -153,6 +153,18 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 	    }
 	};
 	
+	protected static Comparator<PromoNewRow> COMP_CREATED = new Comparator<PromoNewRow>() {
+	    public int compare(PromoNewRow p1, PromoNewRow p2) {
+	        return p1.createdBy.toUpperCase().compareTo(p2.createdBy);
+	    }
+	};
+	
+	protected static Comparator<PromoNewRow> COMP_MODIFIED = new Comparator<PromoNewRow>() {
+	    public int compare(PromoNewRow p1, PromoNewRow p2) {
+	        return p1.modifiedBy.toUpperCase().compareTo(p2.modifiedBy);
+	    }
+	};
+	
 	
 	public final static Map<String,Comparator<PromoNewRow>> PROMO_COMPARATORS = new HashMap<String,Comparator<PromoNewRow>>();
 	static {
@@ -167,6 +179,8 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 		PROMO_COMPARATORS.put("status", COMP_STATUS);
 		PROMO_COMPARATORS.put("type", COMP_TYPE);
 		PROMO_COMPARATORS.put("createdModifiedBy", COMP_CREATED_MODIFIED);
+		PROMO_COMPARATORS.put("createdBy", COMP_CREATED);
+		PROMO_COMPARATORS.put("modifiedBy", COMP_MODIFIED);
 		
 	}	
 

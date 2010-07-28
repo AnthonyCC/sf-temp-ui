@@ -141,7 +141,7 @@ if(promo_details){
 													%><td class="padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
 												}
 												%>
-													<td class="bordLgrayDash padL8R16"><%= EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())%></td>
+													<td class="bordLgrayDash padL8R16"><%= ( "".equals(EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())) ? tempAttr.getAttributeName() : EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue()) )%></td>
 													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
 													<td class="bordLgrayDash padL8R16"><%= tempAttr.getDesiredValue() %></td>
 												</tr>

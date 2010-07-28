@@ -121,15 +121,12 @@
 							<tr>
 								<td>
 									<select id="profile_value" id="profile_value" class="w200px">
-										<option value="Chefs Table" selected="selected">Chefs Table</option>
-										<option value="VIP/Reserved Dlv">VIP/Reserved Dlv</option>
-										<option value="Inactive">Inactive</option>
-										<option value="Gold">Gold</option>
-										<option value="Silver">Silver</option>
-										<option value="Bronze">Bronze</option>
-										<option value="Copper">Copper</option>
-										<option value="Tin">Tin</option>
-										<option value="New">New</option>
+									<option value=""></option>
+									<%for(Iterator i = profileAttributeNamesSorted.iterator(); i.hasNext(); ){
+										String iName = (String) i.next();
+									 %>
+										<option value="<%=iName%>"><%=iName%></option>
+									<%	} %>
 									</select>
 									with Value: <input type="text" id="profile_name" name="profile_name" class="w200px" />
 								</td>
@@ -213,10 +210,10 @@
 													%><td class="bordLgrayDash padL8R16"><%= null!=promotion.getProfileOperator()?promotion.getProfileOperator():"" %></td><%
 												}
 												%>
-													<td class="bordLgrayDash padL8R16"><%= EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())%></td>
+													<td class="bordLgrayDash padL8R16"><%= ( "".equals(EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue())) ? tempAttr.getAttributeName() : EnumPromotionProfileAttribute.getName(tempAttr.getAttributeName(),tempAttr.getDesiredValue()) )%></td>
 													<td class="bordLgrayDash padL8R16"><%= tempAttr.getAttributeName() %></td>
-													<td class="bordLgrayDash padL8R16"><%= tempAttr.getDesiredValue() %></td>
-													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('attributeList[<%=n%>]'); return false;" class="greenLink clickAllExclude">Delete</a></td>
+													<td class="bordLgrayDash padL8R16 alignC"><%= tempAttr.getDesiredValue() %></td>
+													<td class="bordLgrayDash padL8R16"><a href="#" onclick="deleteProfile('attributeList[<%=n%>]'); return false;" class="greenLink">Delete</a></td>
 												</tr>
 												<%
 											}

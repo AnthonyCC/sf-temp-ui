@@ -4,7 +4,15 @@
 <%@ page import="com.freshdirect.smartstore.fdstore.VariantSelection" %>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus" %>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
-<%@ page import="java.text.SimpleDateFormat" %> 
+<%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%
+	//fetch profiles
+	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
+	//sort them
+	List<String> profileAttributeNamesSorted = new ArrayList<String>(profileAttributeNames.keySet());
+	Collections.sort(profileAttributeNamesSorted);
+%>
 <tmpl:insert template='/template/top_nav.jsp'>
 	<% String promoId = request.getParameter("promoId");%>
 	<fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">

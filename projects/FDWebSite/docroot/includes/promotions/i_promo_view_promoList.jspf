@@ -11,7 +11,8 @@
 		<td width="125px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-		<td width="150px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td width="12px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 	</tr>
@@ -76,8 +77,9 @@
 			<td class="border_bottom" style="font-weight: normal"><%=CCFormatter.formatDate(p.getStart())%></td>
 			<td class="border_bottom" style="font-weight: normal"><%= expire != null ? CCFormatter.formatDate(expire) : ""%></td>
 			<td class="border_bottom" style="font-weight: normal"><%= null!=pStatus ? pStatus.getDescription():" " %></td>
-			<td class="border_bottom" style="font-weight: normal"><%= (null!=p.getCreatedBy()?p.getCreatedBy():"")+"-"+(null !=p.getModifiedBy()?p.getModifiedBy():"") %></td>
-			<td class="border_bottom" style="font-weight: normal"><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');">Details</a></td>
+			<td class="border_bottom" style="font-weight: normal"><%= (null!=p.getCreatedBy()?p.getCreatedBy():"") %></td>
+			<td class="border_bottom" style="font-weight: normal"><%= (null !=p.getModifiedBy()?p.getModifiedBy():"") %></td>
+			<td class="border_bottom" style="font-weight: normal"><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=p.getCode()%>','small');">Details</a></td>
 			<td class="border_bottom" style="font-weight: normal">&nbsp;</td>
 		</tr>
 
@@ -95,7 +97,8 @@
 			<td>Start</td>
 			<td>Expire</td>
 			<td>Status</td>
-			<td>Created Modified</td>
+			<td>Created</td>
+			<td>Modified</td>
 		<td><a href="/promotion/promo_details.jsp">Details</a></td>
 			<td>&nbsp;</td>
 		</tr>

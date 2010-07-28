@@ -679,3 +679,8 @@ table.promo_table1 tr.flatRow td {
 	overflow-x: hidden;
 	overflow-y: auto;
 }
+
+/* fix for crm-modlalbox-calendar css overlap */
+.calendar tr.time, .calendar td.time {
+	float: none;
+}

@@ -8,7 +8,7 @@
 		var children = parent.getElementsByTagName('a');
 
 		//remove all links except "Delete All"
-		while(children.length > 1) {
+		if (children.length > 1) {
 			clickAllHREF(parentId);
 		}
 	}
@@ -171,6 +171,7 @@
 						tdDelete.href = "javascript:deleteProfile('"+tmpID+"');";
 						tdDelete.className = "greenLink padL8R16 alignC";
 					var td5 = document.createElement('td');
+						td5.className = "bordLgrayDash";
 						td5.appendChild (tdDelete);
 					row.appendChild(td1);
 					row.appendChild(td2);
@@ -959,4 +960,19 @@ function doCheckRedemptionCode(rcode) {
 			alert('An error has occured while code was checked.');
 		}
 	});
+}
+
+function checkOffer() {
+	$('hd_allow_offer').checked = true;
+	$('hd_allow_offer').disabled = false;
+	if ( $('header_discount_type_perc').checked || $('header_discount_type').checked ){
+		return true;
+	}else if ( $('header_discount_type_hd_free').checked || $('header_discount_type_hd_extend_dp').checked ) {
+		$('hd_allow_offer').disabled = true;
+		return true;
+	}else{
+		$('hd_allow_offer').checked = false;
+		$('hd_allow_offer').disabled = false;
+		return false;
+	}
 }

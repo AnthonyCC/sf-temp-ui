@@ -141,11 +141,12 @@
 				<th width="193px"><a href="?<%= sort.getFieldParams("name") %>" >Name</a></th>
 				<th width="143px"><a href="?<%= sort.getFieldParams("redemptionCode") %>" >Redemption Code</a></th>
 				<th width="90px"><a href="?<%= sort.getFieldParams("type") %>" >Type</a></th>
-				<th width="280px"><a href="?<%= sort.getFieldParams("description") %>" >Description</a></th>
+				<th width="275px"><a href="?<%= sort.getFieldParams("description") %>" >Description</a></th>
 				<th width="110px"><a href="?<%= sort.getFieldParams("start") %>" >Start</a></th>
 				<th width="125px"><a href="?<%= sort.getFieldParams("expire") %>" >Expire</a></th>
 				<th width="90px"><a href="?<%= sort.getFieldParams("status") %>" >Status</a></th>
-				<th width="150px"><a href="?<%= sort.getFieldParams("createdModifiedBy") %>" >Created-Modified</a></th>
+				<th width="75px"><a href="?<%= sort.getFieldParams("createdBy") %>" >Created</a></th>
+				<th width="75px"><a href="?<%= sort.getFieldParams("modifiedBy") %>" >Modified</a></th>
 				<th><img width="35" height="1" src="/media_stat/crm/images/clear.gif"></th>
 				<th><img width="12" height="1" src="/media_stat/crm/images/clear.gif"></th>
 			</tr>
