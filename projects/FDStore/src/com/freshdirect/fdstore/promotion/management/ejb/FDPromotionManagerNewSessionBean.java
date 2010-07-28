@@ -892,4 +892,16 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
                     close(conn);
 		}
 	}
+
+	public boolean lookupPromotion(String promotionCode) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.lookupPromotion(conn, promotionCode);
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}
 }

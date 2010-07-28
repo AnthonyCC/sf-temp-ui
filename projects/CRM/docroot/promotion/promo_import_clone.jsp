@@ -159,7 +159,7 @@
 
 			<div class="pic-row">
 				<div>Promotion code:</div>
-				<input id="promocode-input" type="text" name="newPromoCode" value="<%= promotion.getPromotionCode() %>" size="16" maxlength="16"/>
+				<input id="promocode-input" type="text" name="newPromoCode" value="<%= FDPromotionUtils.generateCloneCode(promotion.getPromotionCode()) %>" size="16" maxlength="16"/>
 				<button type="button" onclick="doCheckCode($('promocode-input').value); return false;">Check</button>
 			</div>
 			<div class="pic-row-err">

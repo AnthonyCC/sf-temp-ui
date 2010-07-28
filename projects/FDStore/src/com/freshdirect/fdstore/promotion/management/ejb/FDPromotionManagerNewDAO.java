@@ -2479,4 +2479,20 @@ public class FDPromotionManagerNewDAO {
 		}
 		ps.close();
 	}
+
+	public static boolean lookupPromotion(Connection conn, String promotionCode) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("SELECT CODE FROM CUST.PROMOTION_NEW WHERE CODE = ?");
+		ps.setString(1, promotionCode);
+		ResultSet rs = ps.executeQuery();
+
+		try {
+			if (rs.next())
+				return true;
+			else
+				return false;
+		} finally {
+			rs.close();
+			ps.close();
+		}
+	}
 }
