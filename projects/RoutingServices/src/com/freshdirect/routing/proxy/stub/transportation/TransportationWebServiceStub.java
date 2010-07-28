@@ -44,12 +44,12 @@
         //creating the operations
         org.apache.axis2.description.AxisOperation __operation;
 
-        _operations = new org.apache.axis2.description.AxisOperation[141];
+        _operations = new org.apache.axis2.description.AxisOperation[144];
         
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRoutesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveQuantityReasonCodesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -61,7 +61,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoutingImportOrders"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRoutesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -73,7 +73,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUnassignsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoutingImportOrders"));
 	    _service.addOperation(__operation);
 	    
 
@@ -85,7 +85,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateDeliveryDetails"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUnassignsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -97,7 +97,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveAssignedDrivers"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateDeliveryDetails"));
 	    _service.addOperation(__operation);
 	    
 
@@ -109,7 +109,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePositionHistoryByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveAssignedDrivers"));
 	    _service.addOperation(__operation);
 	    
 
@@ -121,7 +121,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStopSignature"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePositionHistoryByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -133,7 +133,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerUpdateOrder"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStopSignature"));
 	    _service.addOperation(__operation);
 	    
 
@@ -145,7 +145,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveReportByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerUpdateOrder"));
 	    _service.addOperation(__operation);
 	    
 
@@ -157,7 +157,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerDeleteDeliveryWindow"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveReportByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -169,7 +169,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "cancelStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerDeleteDeliveryWindow"));
 	    _service.addOperation(__operation);
 	    
 
@@ -181,7 +181,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingImportOrderByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "cancelStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -193,7 +193,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerPurge"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingImportOrderByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -205,7 +205,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerPurge"));
 	    _service.addOperation(__operation);
 	    
 
@@ -217,7 +217,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationByIdentityEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -229,7 +229,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerAnalyzeOrder"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationByIdentityEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -241,7 +241,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteNotesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerAnalyzeOrder"));
 	    _service.addOperation(__operation);
 	    
 
@@ -253,7 +253,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveLocations"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteNotesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -265,7 +265,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveFeederRoutes"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveLocations"));
 	    _service.addOperation(__operation);
 	    
 
@@ -277,7 +277,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "arriveDestination"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveFeederRoutes"));
 	    _service.addOperation(__operation);
 	    
 
@@ -289,7 +289,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteDailyStatsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "arriveDestination"));
 	    _service.addOperation(__operation);
 	    
 
@@ -301,7 +301,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveReport"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteDailyStatsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -313,7 +313,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopCancelCodesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -325,7 +325,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDefaultRoutingSessionProperties"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveReport"));
 	    _service.addOperation(__operation);
 	    
 
@@ -337,7 +337,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRouteSurveyResults"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -349,7 +349,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "buildRoutingRouteNetMatrix"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDefaultRoutingSessionProperties"));
 	    _service.addOperation(__operation);
 	    
 
@@ -361,7 +361,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "returnFault"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRouteSurveyResults"));
 	    _service.addOperation(__operation);
 	    
 
@@ -373,7 +373,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "suggestRoute"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "buildRoutingRouteNetMatrix"));
 	    _service.addOperation(__operation);
 	    
 
@@ -385,7 +385,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveNotificationsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "returnFault"));
 	    _service.addOperation(__operation);
 	    
 
@@ -397,7 +397,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSignature"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "suggestRoute"));
 	    _service.addOperation(__operation);
 	    
 
@@ -409,7 +409,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "calculateTimeDist"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveNotificationsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -421,7 +421,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerMovableOrders"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSignature"));
 	    _service.addOperation(__operation);
 	    
 
@@ -433,7 +433,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationsByCriteriaEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "calculateTimeDist"));
 	    _service.addOperation(__operation);
 	    
 
@@ -445,7 +445,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePermissionsForUser"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerMovableOrders"));
 	    _service.addOperation(__operation);
 	    
 
@@ -457,7 +457,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteSurveyQuestions"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationsByCriteriaEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -469,7 +469,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePermissionsForUser"));
 	    _service.addOperation(__operation);
 	    
 
@@ -481,7 +481,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerBalanceRoutes"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteSurveyQuestions"));
 	    _service.addOperation(__operation);
 	    
 
@@ -493,7 +493,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveUnassigned"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -505,7 +505,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "removeRoute"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerBalanceRoutes"));
 	    _service.addOperation(__operation);
 	    
 
@@ -517,7 +517,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveNotificationsByRecipientIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveUnassigned"));
 	    _service.addOperation(__operation);
 	    
 
@@ -529,7 +529,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "removeRoute"));
 	    _service.addOperation(__operation);
 	    
 
@@ -541,7 +541,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerOptimizeOrdersEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveNotificationsByRecipientIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -553,7 +553,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRegion"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -565,7 +565,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerOptimizeOrdersEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -577,7 +577,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveReportsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRegion"));
 	    _service.addOperation(__operation);
 	    
 
@@ -589,7 +589,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingLocationsWithOrders"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -601,7 +601,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUserByUserID"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveReportsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -613,7 +613,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEmployeeByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingLocationsWithOrders"));
 	    _service.addOperation(__operation);
 	    
 
@@ -625,7 +625,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteUnassigned"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUserByUserID"));
 	    _service.addOperation(__operation);
 	    
 
@@ -637,7 +637,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "createRoutingSession"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEmployeeByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -649,7 +649,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "authenticateUser"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteUnassigned"));
 	    _service.addOperation(__operation);
 	    
 
@@ -661,7 +661,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "unlockNotifications"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "createRoutingSession"));
 	    _service.addOperation(__operation);
 	    
 
@@ -673,7 +673,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteRoutingSession"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUndeliverableStopCodesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -685,7 +685,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveUserConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "authenticateUser"));
 	    _service.addOperation(__operation);
 	    
 
@@ -697,7 +697,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveOrdersByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "unlockNotifications"));
 	    _service.addOperation(__operation);
 	    
 
@@ -709,7 +709,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "versionInformation"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteRoutingSession"));
 	    _service.addOperation(__operation);
 	    
 
@@ -721,7 +721,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUserConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveUserConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -733,7 +733,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEmployeesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveOrdersByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -745,7 +745,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "departOrigin"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "versionInformation"));
 	    _service.addOperation(__operation);
 	    
 
@@ -757,7 +757,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveUserConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -769,7 +769,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRemoveFromServer"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEmployeesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -781,7 +781,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "unassignStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "departOrigin"));
 	    _service.addOperation(__operation);
 	    
 
@@ -793,7 +793,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentTypeByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -805,7 +805,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerCancelOrder"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRemoveFromServer"));
 	    _service.addOperation(__operation);
 	    
 
@@ -817,7 +817,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveDeliveryWaveInstancesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "unassignStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -829,7 +829,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteNotifications"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentTypeByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -841,7 +841,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRouteByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerCancelOrder"));
 	    _service.addOperation(__operation);
 	    
 
@@ -853,7 +853,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSurveyQuestions"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveDeliveryWaveInstancesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -865,7 +865,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveEmployee"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteNotifications"));
 	    _service.addOperation(__operation);
 	    
 
@@ -877,7 +877,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDutyPeriodsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRouteByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -889,7 +889,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSaveDeliveryWindow"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSurveyQuestions"));
 	    _service.addOperation(__operation);
 	    
 
@@ -901,7 +901,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveEmployee"));
 	    _service.addOperation(__operation);
 	    
 
@@ -913,7 +913,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "sendTextMessageToDriver"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDutyPeriodsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -925,7 +925,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveOrderByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSaveDeliveryWindow"));
 	    _service.addOperation(__operation);
 	    
 
@@ -937,7 +937,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveAssignedEquipment"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -949,7 +949,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSurveyResults"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "sendTextMessageToDriver"));
 	    _service.addOperation(__operation);
 	    
 
@@ -961,7 +961,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerRetrieveOrderByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -973,7 +973,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoutingImportOrdersEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveAssignedEquipment"));
 	    _service.addOperation(__operation);
 	    
 
@@ -985,7 +985,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerExtendOrderReservation"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopSurveyResults"));
 	    _service.addOperation(__operation);
 	    
 
@@ -997,7 +997,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1009,7 +1009,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSendRoutesToRoadnetEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoutingImportOrdersEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1021,7 +1021,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerOptimizeOrders"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerExtendOrderReservation"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1033,7 +1033,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSendRoutesToRoadnet"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1045,7 +1045,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "assignDrivers"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSendRoutesToRoadnetEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1057,7 +1057,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingLocationsWithOrdersEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerOptimizeOrders"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1069,7 +1069,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoute"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSendRoutesToRoadnet"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1081,7 +1081,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveEquipment"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "assignDrivers"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1093,7 +1093,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingLocationsWithOrdersEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1105,7 +1105,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "bulkArriveDepartStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRoute"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1117,7 +1117,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSessionsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveEquipment"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1129,7 +1129,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingUnassignsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1141,7 +1141,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingImportOrdersByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "bulkArriveDepartStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1153,7 +1153,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "nop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSessionsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1165,7 +1165,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "changeUserPassword"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingUnassignsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1177,7 +1177,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "completeRoute"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingImportOrdersByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1189,7 +1189,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerExcludeCutoffRoutes"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "nop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1201,7 +1201,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingOrderByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "changeUserPassword"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1213,7 +1213,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "textMessage"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "completeRoute"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1225,7 +1225,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingStopsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerExcludeCutoffRoutes"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1237,7 +1237,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerCalculateDeliveryWindowMetrics"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingOrderByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1249,7 +1249,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteLocations"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "textMessage"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1261,7 +1261,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveProductsPurchased"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingStopsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1273,7 +1273,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSourcedOrdersByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerCalculateDeliveryWindowMetrics"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1285,7 +1285,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStopSurveyResults"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteLocations"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1297,7 +1297,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRouteDailyStatsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveProductsPurchased"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1309,7 +1309,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateStopSignature"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSourcedOrdersByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1321,7 +1321,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveGlobalConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveStopSurveyResults"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1333,7 +1333,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerIsExcludingCutoffRoutes"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingRouteDailyStatsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1345,7 +1345,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveCannedTextMessagesByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateStopSignature"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1357,7 +1357,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerReserveOrder"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveGlobalConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1369,7 +1369,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerIsExcludingCutoffRoutes"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1381,7 +1381,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopsByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveCannedTextMessagesByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1393,7 +1393,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionOptions"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerReserveOrder"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1405,7 +1405,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "sequenceStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveLocationsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1417,7 +1417,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteSurveyResults"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveStopsByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1429,7 +1429,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateRoutePosition"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRegionOptions"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1441,7 +1441,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "massStopSequence"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "sequenceStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1453,7 +1453,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "addRICUser"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteSurveyResults"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1465,7 +1465,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSessionByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "updateRoutePosition"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1477,7 +1477,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "departStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "massStopSequence"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1489,7 +1489,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerConfirmOrder"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "addRICUser"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1501,7 +1501,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "allowAdditionOfRICUsers"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingSessionByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1513,7 +1513,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveGlobalConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "departStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1525,7 +1525,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentTypeByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerConfirmOrder"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1537,7 +1537,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePositionHistoryBlocksByCriteria"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "allowAdditionOfRICUsers"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1549,7 +1549,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerReloadWaveInstances"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveGlobalConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1561,7 +1561,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveLocationsEx"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveEquipmentTypeByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1573,7 +1573,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "arriveStop"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrievePositionHistoryBlocksByCriteria"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1585,7 +1585,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSaveDeliveryWaveInstance"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerReloadWaveInstances"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1597,7 +1597,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingStopByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveLocationsEx"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1609,7 +1609,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteReport"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "arriveStop"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1621,7 +1621,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRegionConfig"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerSaveDeliveryWaveInstance"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1633,7 +1633,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerBulkReserveOrders"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRoutingStopByIdentity"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1645,7 +1645,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "convertTimestamps"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "deleteReport"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1657,7 +1657,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteForDevice"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "saveRegionConfig"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1669,7 +1669,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "assignEquipment"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "schedulerBulkReserveOrders"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1681,7 +1681,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "convertTimestamp"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "convertTimestamps"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1693,7 +1693,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveSurveys"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveRouteForDevice"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1705,7 +1705,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDutyPeriodByIdentity"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "assignEquipment"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1717,7 +1717,7 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "placeUnassigned"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "convertTimestamp"));
 	    _service.addOperation(__operation);
 	    
 
@@ -1729,13 +1729,49 @@
                    __operation = new org.apache.axis2.description.OutInAxisOperation();
                 
 
-            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "startRoute"));
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveSurveys"));
 	    _service.addOperation(__operation);
 	    
 
 	    
 	    
             _operations[140]=__operation;
+            
+        
+                   __operation = new org.apache.axis2.description.OutInAxisOperation();
+                
+
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "retrieveDutyPeriodByIdentity"));
+	    _service.addOperation(__operation);
+	    
+
+	    
+	    
+            _operations[141]=__operation;
+            
+        
+                   __operation = new org.apache.axis2.description.OutInAxisOperation();
+                
+
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "placeUnassigned"));
+	    _service.addOperation(__operation);
+	    
+
+	    
+	    
+            _operations[142]=__operation;
+            
+        
+                   __operation = new org.apache.axis2.description.OutInAxisOperation();
+                
+
+            __operation.setName(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService", "startRoute"));
+	    _service.addOperation(__operation);
+	    
+
+	    
+	    
+            _operations[143]=__operation;
             
         
         }
@@ -1808,17 +1844,17 @@
         
                     /**
                      * Auto generated method signature
-                     * Service definition of function ns1__RetrieveRoutingRoutesByCriteria
-                     * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingRoutesByCriteria
-                     * @param retrieveRoutingRoutesByCriteria874
+                     * Service definition of function ns1__RetrieveQuantityReasonCodesByCriteria
+                     * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveQuantityReasonCodesByCriteria
+                     * @param retrieveQuantityReasonCodesByCriteria889
                     
                      */
 
                     
 
-                            public  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute[] retrieveRoutingRoutesByCriteria(
+                            public  com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode[] retrieveQuantityReasonCodesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria criteria875,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options876)
+                            com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCodeCriteria criteria890)
                         
 
                     throws java.rmi.RemoteException
@@ -1827,6 +1863,271 @@
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
                org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
+              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveQuantityReasonCodesByCriteriaRequest");
+              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+              // create a message context
+              _messageContext = new org.apache.axis2.context.MessageContext();
+
+              
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env = null;
+                    com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria890,
+                                                    dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveQuantityReasonCodesByCriteria")));
+                                                
+        //adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // set the message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message contxt to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+        //execute the operation client
+        _operationClient.execute(true);
+
+         
+               org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
+                                           org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+                org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
+                
+                
+                                java.lang.Object object = fromOM(
+                                             _returnEnv.getBody().getFirstElement() ,
+                                             com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse.class,
+                                              getEnvelopeNamespaces(_returnEnv));
+
+                               
+                                        return getRetrieveQuantityReasonCodesByCriteriaResponseQuantityReasonCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse)object);
+                                   
+         }catch(org.apache.axis2.AxisFault f){
+
+            org.apache.axiom.om.OMElement faultElt = f.getDetail();
+            if (faultElt!=null){
+                if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+                    //make the fault by reflection
+                    try{
+                        java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+                        java.lang.Exception ex=
+                                (java.lang.Exception) exceptionClass.newInstance();
+                        //message class
+                        java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+                        java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+                        java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+                                   new java.lang.Class[]{messageClass});
+                        m.invoke(ex,new java.lang.Object[]{messageObject});
+                        
+
+                        throw new java.rmi.RemoteException(ex.getMessage(), ex);
+                    }catch(java.lang.ClassCastException e){
+                       // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.ClassNotFoundException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }catch (java.lang.NoSuchMethodException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.reflect.InvocationTargetException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }  catch (java.lang.IllegalAccessException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }   catch (java.lang.InstantiationException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }
+                }else{
+                    throw f;
+                }
+            }else{
+                throw f;
+            }
+            } finally {
+                _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+            }
+        }
+            
+                /**
+                * Auto generated method signature for Asynchronous Invocations
+                * Service definition of function ns1__RetrieveQuantityReasonCodesByCriteria
+                * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveQuantityReasonCodesByCriteria
+                    * @param retrieveQuantityReasonCodesByCriteria889
+                
+                */
+                public  void startretrieveQuantityReasonCodesByCriteria(
+
+                 com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCodeCriteria criteria890,
+
+                  final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
+
+                throws java.rmi.RemoteException{
+
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
+             _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveQuantityReasonCodesByCriteriaRequest");
+             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env=null;
+              final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+
+                    
+                                    //Style is Doc.
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria890,
+                                                     dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveQuantityReasonCodesByCriteria")));
+                                                
+        // adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // create message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message context to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+
+                    
+                        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+                            public void onMessage(org.apache.axis2.context.MessageContext resultContext) {
+                            try {
+                                org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
+                                
+                                        java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
+                                                                         com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse.class,
+                                                                         getEnvelopeNamespaces(resultEnv));
+                                        callback.receiveResultretrieveQuantityReasonCodesByCriteria(
+                                            getRetrieveQuantityReasonCodesByCriteriaResponseQuantityReasonCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse)object));
+                                        
+                            } catch (org.apache.axis2.AxisFault e) {
+                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(e);
+                            }
+                            }
+
+                            public void onError(java.lang.Exception error) {
+								if (error instanceof org.apache.axis2.AxisFault) {
+									org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+									org.apache.axiom.om.OMElement faultElt = f.getDetail();
+									if (faultElt!=null){
+										if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+											//make the fault by reflection
+											try{
+													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+													java.lang.Exception ex=
+														(java.lang.Exception) exceptionClass.newInstance();
+													//message class
+													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+													java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+													java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+															new java.lang.Class[]{messageClass});
+													m.invoke(ex,new java.lang.Object[]{messageObject});
+													
+					
+										            callback.receiveErrorretrieveQuantityReasonCodesByCriteria(new java.rmi.RemoteException(ex.getMessage(), ex));
+                                            } catch(java.lang.ClassCastException e){
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (java.lang.ClassNotFoundException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (java.lang.NoSuchMethodException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (java.lang.IllegalAccessException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (java.lang.InstantiationException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            } catch (org.apache.axis2.AxisFault e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+                                            }
+									    } else {
+										    callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+									    }
+									} else {
+									    callback.receiveErrorretrieveQuantityReasonCodesByCriteria(f);
+									}
+								} else {
+								    callback.receiveErrorretrieveQuantityReasonCodesByCriteria(error);
+								}
+                            }
+
+                            public void onFault(org.apache.axis2.context.MessageContext faultContext) {
+                                org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                                onError(fault);
+                            }
+
+                            public void onComplete() {
+                                try {
+                                    _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+                                } catch (org.apache.axis2.AxisFault axisFault) {
+                                    callback.receiveErrorretrieveQuantityReasonCodesByCriteria(axisFault);
+                                }
+                            }
+                });
+                        
+
+          org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        if ( _operations[0].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+           _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+          _operations[0].setMessageReceiver(
+                    _callbackReceiver);
+        }
+
+           //execute the operation client
+           _operationClient.execute(false);
+
+                    }
+                
+                    /**
+                     * Auto generated method signature
+                     * Service definition of function ns1__RetrieveRoutingRoutesByCriteria
+                     * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingRoutesByCriteria
+                     * @param retrieveRoutingRoutesByCriteria893
+                    
+                     */
+
+                    
+
+                            public  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute[] retrieveRoutingRoutesByCriteria(
+
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria criteria894,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options895)
+                        
+
+                    throws java.rmi.RemoteException
+                    
+                    {
+              org.apache.axis2.context.MessageContext _messageContext = null;
+              try{
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRoutesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -1844,8 +2145,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria875,
-                                                    options876,
+                                                    criteria894,
+                                                    options895,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRoutesByCriteria")));
@@ -1930,18 +2231,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingRoutesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingRoutesByCriteria
-                    * @param retrieveRoutingRoutesByCriteria874
+                    * @param retrieveRoutingRoutesByCriteria893
                 
                 */
                 public  void startretrieveRoutingRoutesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria criteria875,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options876,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria criteria894,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options895,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[0].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRoutesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -1959,8 +2260,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria875,
-                                                    options876,
+                                                    criteria894,
+                                                    options895,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRoutesByCriteria")));
@@ -2062,9 +2363,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[0].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[1].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[0].setMessageReceiver(
+          _operations[1].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -2077,7 +2378,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRoutingImportOrders
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRoutingImportOrders
-                     * @param saveRoutingImportOrders879
+                     * @param saveRoutingImportOrders898
                     
                      */
 
@@ -2085,7 +2386,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] saveRoutingImportOrders(
 
-                            java.lang.String regionId880,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders881,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions882)
+                            java.lang.String regionId899,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders900,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions901)
                         
 
                     throws java.rmi.RemoteException
@@ -2093,7 +2394,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRoutingImportOrdersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2111,9 +2412,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId880,
-                                                    orders881,
-                                                    tzOptions882,
+                                                    regionId899,
+                                                    orders900,
+                                                    tzOptions901,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoutingImportOrders")));
@@ -2198,18 +2499,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRoutingImportOrders
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRoutingImportOrders
-                    * @param saveRoutingImportOrders879
+                    * @param saveRoutingImportOrders898
                 
                 */
                 public  void startsaveRoutingImportOrders(
 
-                 java.lang.String regionId880,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders881,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions882,
+                 java.lang.String regionId899,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders900,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions901,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[1].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRoutingImportOrdersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2227,9 +2528,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId880,
-                                                    orders881,
-                                                    tzOptions882,
+                                                    regionId899,
+                                                    orders900,
+                                                    tzOptions901,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoutingImportOrders")));
@@ -2331,9 +2632,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[1].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[2].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[1].setMessageReceiver(
+          _operations[2].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -2346,7 +2647,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveUnassignsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveUnassignsByCriteria
-                     * @param retrieveUnassignsByCriteria885
+                     * @param retrieveUnassignsByCriteria904
                     
                      */
 
@@ -2354,7 +2655,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Stop[] retrieveUnassignsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria886,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options887)
+                            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria905,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options906)
                         
 
                     throws java.rmi.RemoteException
@@ -2362,7 +2663,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUnassignsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2380,8 +2681,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUnassignsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria886,
-                                                    options887,
+                                                    criteria905,
+                                                    options906,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUnassignsByCriteria")));
@@ -2466,18 +2767,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveUnassignsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveUnassignsByCriteria
-                    * @param retrieveUnassignsByCriteria885
+                    * @param retrieveUnassignsByCriteria904
                 
                 */
                 public  void startretrieveUnassignsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria886,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options887,
+                 com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria905,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options906,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[2].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUnassignsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2495,8 +2796,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUnassignsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria886,
-                                                    options887,
+                                                    criteria905,
+                                                    options906,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUnassignsByCriteria")));
@@ -2598,9 +2899,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[2].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[3].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[2].setMessageReceiver(
+          _operations[3].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -2613,7 +2914,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__UpdateDeliveryDetails
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#updateDeliveryDetails
-                     * @param updateDeliveryDetails890
+                     * @param updateDeliveryDetails909
                     
                      */
 
@@ -2621,7 +2922,7 @@
 
                             public  void updateDeliveryDetails(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info891)
+                            com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info910)
                         
 
                     throws java.rmi.RemoteException
@@ -2629,7 +2930,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateDeliveryDetailsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2647,7 +2948,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.UpdateDeliveryDetails dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info891,
+                                                    info910,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateDeliveryDetails")));
@@ -2732,18 +3033,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__UpdateDeliveryDetails
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startupdateDeliveryDetails
-                    * @param updateDeliveryDetails890
+                    * @param updateDeliveryDetails909
                 
                 */
                 public  void startupdateDeliveryDetails(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info891,
+                 com.freshdirect.routing.proxy.stub.transportation.DeliveryDetailInfo info910,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[3].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateDeliveryDetailsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2761,7 +3062,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.UpdateDeliveryDetails dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info891,
+                                                    info910,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateDeliveryDetails")));
@@ -2861,9 +3162,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[3].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[4].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[3].setMessageReceiver(
+          _operations[4].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -2876,7 +3177,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveAssignedDrivers
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveAssignedDrivers
-                     * @param retrieveAssignedDrivers893
+                     * @param retrieveAssignedDrivers912
                     
                      */
 
@@ -2884,7 +3185,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] retrieveAssignedDrivers(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity894)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity913)
                         
 
                     throws java.rmi.RemoteException
@@ -2892,7 +3193,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveAssignedDriversRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -2910,7 +3211,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveAssignedDrivers dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity894,
+                                                    identity913,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveAssignedDrivers")));
@@ -2995,18 +3296,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveAssignedDrivers
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveAssignedDrivers
-                    * @param retrieveAssignedDrivers893
+                    * @param retrieveAssignedDrivers912
                 
                 */
                 public  void startretrieveAssignedDrivers(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity894,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity913,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[4].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveAssignedDriversRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3024,7 +3325,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveAssignedDrivers dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity894,
+                                                    identity913,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveAssignedDrivers")));
@@ -3126,9 +3427,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[4].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[5].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[4].setMessageReceiver(
+          _operations[5].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3141,7 +3442,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrievePositionHistoryByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrievePositionHistoryByCriteria
-                     * @param retrievePositionHistoryByCriteria897
+                     * @param retrievePositionHistoryByCriteria916
                     
                      */
 
@@ -3149,7 +3450,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.PositionHistory[] retrievePositionHistoryByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria898)
+                            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria917)
                         
 
                     throws java.rmi.RemoteException
@@ -3157,7 +3458,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePositionHistoryByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3175,7 +3476,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrievePositionHistoryByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria898,
+                                                    criteria917,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePositionHistoryByCriteria")));
@@ -3260,18 +3561,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrievePositionHistoryByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrievePositionHistoryByCriteria
-                    * @param retrievePositionHistoryByCriteria897
+                    * @param retrievePositionHistoryByCriteria916
                 
                 */
                 public  void startretrievePositionHistoryByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria898,
+                 com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria917,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[5].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePositionHistoryByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3289,7 +3590,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrievePositionHistoryByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria898,
+                                                    criteria917,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePositionHistoryByCriteria")));
@@ -3391,9 +3692,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[5].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[6].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[5].setMessageReceiver(
+          _operations[6].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3406,7 +3707,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveStopSignature
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveStopSignature
-                     * @param saveStopSignature901
+                     * @param saveStopSignature920
                     
                      */
 
@@ -3414,7 +3715,7 @@
 
                             public  void saveStopSignature(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity902,javax.activation.DataHandler signatureData903)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity921,javax.activation.DataHandler signatureData922)
                         
 
                     throws java.rmi.RemoteException
@@ -3422,7 +3723,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopSignatureRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3440,8 +3741,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity902,
-                                                    signatureData903,
+                                                    identity921,
+                                                    signatureData922,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStopSignature")));
@@ -3526,18 +3827,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveStopSignature
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveStopSignature
-                    * @param saveStopSignature901
+                    * @param saveStopSignature920
                 
                 */
                 public  void startsaveStopSignature(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity902,javax.activation.DataHandler signatureData903,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity921,javax.activation.DataHandler signatureData922,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[6].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopSignatureRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3555,8 +3856,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity902,
-                                                    signatureData903,
+                                                    identity921,
+                                                    signatureData922,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStopSignature")));
@@ -3656,9 +3957,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[6].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[7].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[6].setMessageReceiver(
+          _operations[7].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3671,7 +3972,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerUpdateOrder
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerUpdateOrder
-                     * @param schedulerUpdateOrder905
+                     * @param schedulerUpdateOrder924
                     
                      */
 
@@ -3679,7 +3980,7 @@
 
                             public  boolean schedulerUpdateOrder(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity906,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity907,com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions options908)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity925,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity926,com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions options927)
                         
 
                     throws java.rmi.RemoteException
@@ -3687,7 +3988,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerUpdateOrderRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3705,9 +4006,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity906,
-                                                    identity907,
-                                                    options908,
+                                                    schedulerIdentity925,
+                                                    identity926,
+                                                    options927,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerUpdateOrder")));
@@ -3792,18 +4093,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerUpdateOrder
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerUpdateOrder
-                    * @param schedulerUpdateOrder905
+                    * @param schedulerUpdateOrder924
                 
                 */
                 public  void startschedulerUpdateOrder(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity906,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity907,com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions options908,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity925,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity926,com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions options927,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[7].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerUpdateOrderRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3821,9 +4122,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity906,
-                                                    identity907,
-                                                    options908,
+                                                    schedulerIdentity925,
+                                                    identity926,
+                                                    options927,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerUpdateOrder")));
@@ -3925,9 +4226,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[7].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[8].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[7].setMessageReceiver(
+          _operations[8].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -3940,7 +4241,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveReportByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveReportByIdentity
-                     * @param retrieveReportByIdentity911
+                     * @param retrieveReportByIdentity930
                     
                      */
 
@@ -3948,7 +4249,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Report retrieveReportByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity912)
+                            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity931)
                         
 
                     throws java.rmi.RemoteException
@@ -3956,7 +4257,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveReportByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -3974,7 +4275,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveReportByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity912,
+                                                    identity931,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveReportByIdentity")));
@@ -4059,18 +4360,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveReportByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveReportByIdentity
-                    * @param retrieveReportByIdentity911
+                    * @param retrieveReportByIdentity930
                 
                 */
                 public  void startretrieveReportByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity912,
+                 com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity931,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[8].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveReportByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4088,7 +4389,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveReportByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity912,
+                                                    identity931,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveReportByIdentity")));
@@ -4190,9 +4491,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[8].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[9].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[8].setMessageReceiver(
+          _operations[9].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4205,7 +4506,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerDeleteDeliveryWindow
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerDeleteDeliveryWindow
-                     * @param schedulerDeleteDeliveryWindow915
+                     * @param schedulerDeleteDeliveryWindow934
                     
                      */
 
@@ -4213,7 +4514,7 @@
 
                             public  void schedulerDeleteDeliveryWindow(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity916,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow window917,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions options918)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity935,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow window936,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions options937)
                         
 
                     throws java.rmi.RemoteException
@@ -4221,7 +4522,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerDeleteDeliveryWindowRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4239,9 +4540,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindow dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity916,
-                                                    window917,
-                                                    options918,
+                                                    schedulerIdentity935,
+                                                    window936,
+                                                    options937,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerDeleteDeliveryWindow")));
@@ -4326,18 +4627,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerDeleteDeliveryWindow
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerDeleteDeliveryWindow
-                    * @param schedulerDeleteDeliveryWindow915
+                    * @param schedulerDeleteDeliveryWindow934
                 
                 */
                 public  void startschedulerDeleteDeliveryWindow(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity916,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow window917,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions options918,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity935,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow window936,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindowOptions options937,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[9].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerDeleteDeliveryWindowRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4355,9 +4656,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerDeleteDeliveryWindow dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity916,
-                                                    window917,
-                                                    options918,
+                                                    schedulerIdentity935,
+                                                    window936,
+                                                    options937,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerDeleteDeliveryWindow")));
@@ -4457,9 +4758,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[9].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[10].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[9].setMessageReceiver(
+          _operations[10].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4472,7 +4773,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__CancelStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#cancelStop
-                     * @param cancelStop920
+                     * @param cancelStop939
                     
                      */
 
@@ -4480,7 +4781,7 @@
 
                             public  void cancelStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info921)
+                            com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info940)
                         
 
                     throws java.rmi.RemoteException
@@ -4488,7 +4789,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CancelStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4506,7 +4807,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.CancelStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info921,
+                                                    info940,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "cancelStop")));
@@ -4591,18 +4892,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__CancelStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startcancelStop
-                    * @param cancelStop920
+                    * @param cancelStop939
                 
                 */
                 public  void startcancelStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info921,
+                 com.freshdirect.routing.proxy.stub.transportation.StopCancelInfo info940,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[10].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CancelStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4620,7 +4921,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.CancelStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info921,
+                                                    info940,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "cancelStop")));
@@ -4720,9 +5021,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[10].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[11].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[10].setMessageReceiver(
+          _operations[11].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -4735,7 +5036,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingImportOrderByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingImportOrderByIdentity
-                     * @param retrieveRoutingImportOrderByIdentity923
+                     * @param retrieveRoutingImportOrderByIdentity942
                     
                      */
 
@@ -4743,7 +5044,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder retrieveRoutingImportOrderByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderIdentity identity924,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions925)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderIdentity identity943,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions944)
                         
 
                     throws java.rmi.RemoteException
@@ -4751,7 +5052,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingImportOrderByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4769,8 +5070,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingImportOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity924,
-                                                    tzOptions925,
+                                                    identity943,
+                                                    tzOptions944,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingImportOrderByIdentity")));
@@ -4855,18 +5156,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingImportOrderByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingImportOrderByIdentity
-                    * @param retrieveRoutingImportOrderByIdentity923
+                    * @param retrieveRoutingImportOrderByIdentity942
                 
                 */
                 public  void startretrieveRoutingImportOrderByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderIdentity identity924,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions925,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderIdentity identity943,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions944,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[11].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingImportOrderByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -4884,8 +5185,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingImportOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity924,
-                                                    tzOptions925,
+                                                    identity943,
+                                                    tzOptions944,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingImportOrderByIdentity")));
@@ -4987,9 +5288,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[11].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[12].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[11].setMessageReceiver(
+          _operations[12].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5002,7 +5303,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerPurge
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerPurge
-                     * @param schedulerPurge928
+                     * @param schedulerPurge947
                     
                      */
 
@@ -5010,7 +5311,7 @@
 
                             public  void schedulerPurge(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity929,boolean reloadXML930)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity948,boolean reloadXML949)
                         
 
                     throws java.rmi.RemoteException
@@ -5018,7 +5319,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerPurgeRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5036,8 +5337,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerPurge dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity929,
-                                                    reloadXML930,
+                                                    schedulerIdentity948,
+                                                    reloadXML949,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerPurge")));
@@ -5122,18 +5423,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerPurge
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerPurge
-                    * @param schedulerPurge928
+                    * @param schedulerPurge947
                 
                 */
                 public  void startschedulerPurge(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity929,boolean reloadXML930,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity948,boolean reloadXML949,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[12].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerPurgeRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5151,8 +5452,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerPurge dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity929,
-                                                    reloadXML930,
+                                                    schedulerIdentity948,
+                                                    reloadXML949,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerPurge")));
@@ -5252,9 +5553,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[12].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[13].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[12].setMessageReceiver(
+          _operations[13].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5267,7 +5568,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteByIdentity
-                     * @param retrieveRouteByIdentity932
+                     * @param retrieveRouteByIdentity951
                     
                      */
 
@@ -5275,7 +5576,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Route retrieveRouteByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity933,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options934)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity952,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options953)
                         
 
                     throws java.rmi.RemoteException
@@ -5283,7 +5584,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5301,8 +5602,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity933,
-                                                    options934,
+                                                    identity952,
+                                                    options953,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteByIdentity")));
@@ -5387,18 +5688,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteByIdentity
-                    * @param retrieveRouteByIdentity932
+                    * @param retrieveRouteByIdentity951
                 
                 */
                 public  void startretrieveRouteByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity933,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options934,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity952,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options953,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[13].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5416,8 +5717,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity933,
-                                                    options934,
+                                                    identity952,
+                                                    options953,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteByIdentity")));
@@ -5519,9 +5820,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[13].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[14].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[13].setMessageReceiver(
+          _operations[14].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5534,7 +5835,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveLocationByIdentityEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveLocationByIdentityEx
-                     * @param retrieveLocationByIdentityEx937
+                     * @param retrieveLocationByIdentityEx956
                     
                      */
 
@@ -5542,7 +5843,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location retrieveLocationByIdentityEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity938,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options939)
+                            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity957,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options958)
                         
 
                     throws java.rmi.RemoteException
@@ -5550,7 +5851,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationByIdentityExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5568,8 +5869,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationByIdentityEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity938,
-                                                    options939,
+                                                    identity957,
+                                                    options958,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationByIdentityEx")));
@@ -5654,18 +5955,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveLocationByIdentityEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveLocationByIdentityEx
-                    * @param retrieveLocationByIdentityEx937
+                    * @param retrieveLocationByIdentityEx956
                 
                 */
                 public  void startretrieveLocationByIdentityEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity938,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options939,
+                 com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity957,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options958,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[14].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationByIdentityExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5683,8 +5984,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationByIdentityEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity938,
-                                                    options939,
+                                                    identity957,
+                                                    options958,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationByIdentityEx")));
@@ -5786,9 +6087,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[14].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[15].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[14].setMessageReceiver(
+          _operations[15].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -5801,7 +6102,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerAnalyzeOrder
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerAnalyzeOrder
-                     * @param schedulerAnalyzeOrder942
+                     * @param schedulerAnalyzeOrder961
                     
                      */
 
@@ -5809,7 +6110,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow[] schedulerAnalyzeOrder(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder order943,com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions options944)
+                            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder order962,com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions options963)
                         
 
                     throws java.rmi.RemoteException
@@ -5817,7 +6118,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerAnalyzeOrderRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5835,8 +6136,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    order943,
-                                                    options944,
+                                                    order962,
+                                                    options963,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerAnalyzeOrder")));
@@ -5921,18 +6222,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerAnalyzeOrder
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerAnalyzeOrder
-                    * @param schedulerAnalyzeOrder942
+                    * @param schedulerAnalyzeOrder961
                 
                 */
                 public  void startschedulerAnalyzeOrder(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder order943,com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions options944,
+                 com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder order962,com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOptions options963,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[15].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerAnalyzeOrderRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -5950,8 +6251,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerAnalyzeOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    order943,
-                                                    options944,
+                                                    order962,
+                                                    options963,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerAnalyzeOrder")));
@@ -6053,9 +6354,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[15].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[16].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[15].setMessageReceiver(
+          _operations[16].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6068,7 +6369,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteNotesByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteNotesByCriteria
-                     * @param retrieveRouteNotesByCriteria947
+                     * @param retrieveRouteNotesByCriteria966
                     
                      */
 
@@ -6076,7 +6377,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RouteNote[] retrieveRouteNotesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteNoteCriteria criteria948)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteNoteCriteria criteria967)
                         
 
                     throws java.rmi.RemoteException
@@ -6084,7 +6385,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteNotesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6102,7 +6403,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteNotesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria948,
+                                                    criteria967,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteNotesByCriteria")));
@@ -6187,18 +6488,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteNotesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteNotesByCriteria
-                    * @param retrieveRouteNotesByCriteria947
+                    * @param retrieveRouteNotesByCriteria966
                 
                 */
                 public  void startretrieveRouteNotesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteNoteCriteria criteria948,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteNoteCriteria criteria967,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[16].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteNotesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6216,7 +6517,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteNotesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria948,
+                                                    criteria967,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteNotesByCriteria")));
@@ -6318,9 +6619,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[16].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[17].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[16].setMessageReceiver(
+          _operations[17].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6333,7 +6634,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveLocations
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveLocations
-                     * @param saveLocations951
+                     * @param saveLocations970
                     
                      */
 
@@ -6341,7 +6642,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] saveLocations(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations952)
+                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations971)
                         
 
                     throws java.rmi.RemoteException
@@ -6349,7 +6650,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveLocationsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6367,7 +6668,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveLocations dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations952,
+                                                    locations971,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveLocations")));
@@ -6452,18 +6753,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveLocations
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveLocations
-                    * @param saveLocations951
+                    * @param saveLocations970
                 
                 */
                 public  void startsaveLocations(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations952,
+                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations971,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[17].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveLocationsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6481,7 +6782,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveLocations dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations952,
+                                                    locations971,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveLocations")));
@@ -6583,9 +6884,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[17].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[18].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[17].setMessageReceiver(
+          _operations[18].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6598,7 +6899,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerRetrieveFeederRoutes
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerRetrieveFeederRoutes
-                     * @param schedulerRetrieveFeederRoutes955
+                     * @param schedulerRetrieveFeederRoutes974
                     
                      */
 
@@ -6606,7 +6907,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.SchedulerFeederRoute[] schedulerRetrieveFeederRoutes(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity956,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions options957)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity975,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions options976)
                         
 
                     throws java.rmi.RemoteException
@@ -6614,7 +6915,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveFeederRoutesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6632,8 +6933,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity956,
-                                                    options957,
+                                                    schedulerIdentity975,
+                                                    options976,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveFeederRoutes")));
@@ -6718,18 +7019,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerRetrieveFeederRoutes
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerRetrieveFeederRoutes
-                    * @param schedulerRetrieveFeederRoutes955
+                    * @param schedulerRetrieveFeederRoutes974
                 
                 */
                 public  void startschedulerRetrieveFeederRoutes(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity956,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions options957,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity975,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutesOptions options976,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[18].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveFeederRoutesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6747,8 +7048,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveFeederRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity956,
-                                                    options957,
+                                                    schedulerIdentity975,
+                                                    options976,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveFeederRoutes")));
@@ -6850,9 +7151,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[18].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[19].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[18].setMessageReceiver(
+          _operations[19].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -6865,7 +7166,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ArriveDestination
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#arriveDestination
-                     * @param arriveDestination960
+                     * @param arriveDestination979
                     
                      */
 
@@ -6873,7 +7174,7 @@
 
                             public  void arriveDestination(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info961)
+                            com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info980)
                         
 
                     throws java.rmi.RemoteException
@@ -6881,7 +7182,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ArriveDestinationRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -6899,7 +7200,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ArriveDestination dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info961,
+                                                    info980,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "arriveDestination")));
@@ -6984,18 +7285,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ArriveDestination
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startarriveDestination
-                    * @param arriveDestination960
+                    * @param arriveDestination979
                 
                 */
                 public  void startarriveDestination(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info961,
+                 com.freshdirect.routing.proxy.stub.transportation.DestinationArriveInfo info980,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[19].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ArriveDestinationRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7013,7 +7314,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ArriveDestination dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info961,
+                                                    info980,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "arriveDestination")));
@@ -7113,9 +7414,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[19].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[20].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[19].setMessageReceiver(
+          _operations[20].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7128,7 +7429,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteDailyStatsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteDailyStatsByCriteria
-                     * @param retrieveRouteDailyStatsByCriteria963
+                     * @param retrieveRouteDailyStatsByCriteria982
                     
                      */
 
@@ -7136,7 +7437,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RouteDailyStats[] retrieveRouteDailyStatsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsCriteria criteria964,com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions options965)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsCriteria criteria983,com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions options984)
                         
 
                     throws java.rmi.RemoteException
@@ -7144,7 +7445,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteDailyStatsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7162,8 +7463,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria964,
-                                                    options965,
+                                                    criteria983,
+                                                    options984,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteDailyStatsByCriteria")));
@@ -7248,18 +7549,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteDailyStatsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteDailyStatsByCriteria
-                    * @param retrieveRouteDailyStatsByCriteria963
+                    * @param retrieveRouteDailyStatsByCriteria982
                 
                 */
                 public  void startretrieveRouteDailyStatsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsCriteria criteria964,com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions options965,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsCriteria criteria983,com.freshdirect.routing.proxy.stub.transportation.RouteDailyStatsRetrieveOptions options984,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[20].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteDailyStatsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7277,8 +7578,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria964,
-                                                    options965,
+                                                    criteria983,
+                                                    options984,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteDailyStatsByCriteria")));
@@ -7380,9 +7681,274 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[20].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[21].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[20].setMessageReceiver(
+          _operations[21].setMessageReceiver(
+                    _callbackReceiver);
+        }
+
+           //execute the operation client
+           _operationClient.execute(false);
+
+                    }
+                
+                    /**
+                     * Auto generated method signature
+                     * Service definition of function ns1__RetrieveStopCancelCodesByCriteria
+                     * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopCancelCodesByCriteria
+                     * @param retrieveStopCancelCodesByCriteria987
+                    
+                     */
+
+                    
+
+                            public  com.freshdirect.routing.proxy.stub.transportation.StopCancelCode[] retrieveStopCancelCodesByCriteria(
+
+                            com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeCriteria criteria988)
+                        
+
+                    throws java.rmi.RemoteException
+                    
+                    {
+              org.apache.axis2.context.MessageContext _messageContext = null;
+              try{
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopCancelCodesByCriteriaRequest");
+              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+              // create a message context
+              _messageContext = new org.apache.axis2.context.MessageContext();
+
+              
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env = null;
+                    com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria988,
+                                                    dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveStopCancelCodesByCriteria")));
+                                                
+        //adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // set the message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message contxt to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+        //execute the operation client
+        _operationClient.execute(true);
+
+         
+               org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
+                                           org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+                org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
+                
+                
+                                java.lang.Object object = fromOM(
+                                             _returnEnv.getBody().getFirstElement() ,
+                                             com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse.class,
+                                              getEnvelopeNamespaces(_returnEnv));
+
+                               
+                                        return getRetrieveStopCancelCodesByCriteriaResponseStopCancelCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse)object);
+                                   
+         }catch(org.apache.axis2.AxisFault f){
+
+            org.apache.axiom.om.OMElement faultElt = f.getDetail();
+            if (faultElt!=null){
+                if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+                    //make the fault by reflection
+                    try{
+                        java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+                        java.lang.Exception ex=
+                                (java.lang.Exception) exceptionClass.newInstance();
+                        //message class
+                        java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+                        java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+                        java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+                                   new java.lang.Class[]{messageClass});
+                        m.invoke(ex,new java.lang.Object[]{messageObject});
+                        
+
+                        throw new java.rmi.RemoteException(ex.getMessage(), ex);
+                    }catch(java.lang.ClassCastException e){
+                       // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.ClassNotFoundException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }catch (java.lang.NoSuchMethodException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.reflect.InvocationTargetException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }  catch (java.lang.IllegalAccessException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }   catch (java.lang.InstantiationException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }
+                }else{
+                    throw f;
+                }
+            }else{
+                throw f;
+            }
+            } finally {
+                _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+            }
+        }
+            
+                /**
+                * Auto generated method signature for Asynchronous Invocations
+                * Service definition of function ns1__RetrieveStopCancelCodesByCriteria
+                * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopCancelCodesByCriteria
+                    * @param retrieveStopCancelCodesByCriteria987
+                
+                */
+                public  void startretrieveStopCancelCodesByCriteria(
+
+                 com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeCriteria criteria988,
+
+                  final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
+
+                throws java.rmi.RemoteException{
+
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+             _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopCancelCodesByCriteriaRequest");
+             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env=null;
+              final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+
+                    
+                                    //Style is Doc.
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria988,
+                                                     dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveStopCancelCodesByCriteria")));
+                                                
+        // adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // create message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message context to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+
+                    
+                        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+                            public void onMessage(org.apache.axis2.context.MessageContext resultContext) {
+                            try {
+                                org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
+                                
+                                        java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
+                                                                         com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse.class,
+                                                                         getEnvelopeNamespaces(resultEnv));
+                                        callback.receiveResultretrieveStopCancelCodesByCriteria(
+                                            getRetrieveStopCancelCodesByCriteriaResponseStopCancelCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse)object));
+                                        
+                            } catch (org.apache.axis2.AxisFault e) {
+                                callback.receiveErrorretrieveStopCancelCodesByCriteria(e);
+                            }
+                            }
+
+                            public void onError(java.lang.Exception error) {
+								if (error instanceof org.apache.axis2.AxisFault) {
+									org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+									org.apache.axiom.om.OMElement faultElt = f.getDetail();
+									if (faultElt!=null){
+										if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+											//make the fault by reflection
+											try{
+													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+													java.lang.Exception ex=
+														(java.lang.Exception) exceptionClass.newInstance();
+													//message class
+													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+													java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+													java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+															new java.lang.Class[]{messageClass});
+													m.invoke(ex,new java.lang.Object[]{messageObject});
+													
+					
+										            callback.receiveErrorretrieveStopCancelCodesByCriteria(new java.rmi.RemoteException(ex.getMessage(), ex));
+                                            } catch(java.lang.ClassCastException e){
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (java.lang.ClassNotFoundException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (java.lang.NoSuchMethodException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (java.lang.IllegalAccessException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (java.lang.InstantiationException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            } catch (org.apache.axis2.AxisFault e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+                                            }
+									    } else {
+										    callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+									    }
+									} else {
+									    callback.receiveErrorretrieveStopCancelCodesByCriteria(f);
+									}
+								} else {
+								    callback.receiveErrorretrieveStopCancelCodesByCriteria(error);
+								}
+                            }
+
+                            public void onFault(org.apache.axis2.context.MessageContext faultContext) {
+                                org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                                onError(fault);
+                            }
+
+                            public void onComplete() {
+                                try {
+                                    _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+                                } catch (org.apache.axis2.AxisFault axisFault) {
+                                    callback.receiveErrorretrieveStopCancelCodesByCriteria(axisFault);
+                                }
+                            }
+                });
+                        
+
+          org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        if ( _operations[22].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+           _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+          _operations[22].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7395,7 +7961,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveReport
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveReport
-                     * @param saveReport968
+                     * @param saveReport991
                     
                      */
 
@@ -7403,7 +7969,7 @@
 
                             public  void saveReport(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Report report969)
+                            com.freshdirect.routing.proxy.stub.transportation.Report report992)
                         
 
                     throws java.rmi.RemoteException
@@ -7411,7 +7977,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveReportRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7429,7 +7995,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveReport dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    report969,
+                                                    report992,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveReport")));
@@ -7514,18 +8080,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveReport
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveReport
-                    * @param saveReport968
+                    * @param saveReport991
                 
                 */
                 public  void startsaveReport(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Report report969,
+                 com.freshdirect.routing.proxy.stub.transportation.Report report992,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[21].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveReportRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7543,7 +8109,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveReport dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    report969,
+                                                    report992,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveReport")));
@@ -7643,9 +8209,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[21].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[23].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[21].setMessageReceiver(
+          _operations[23].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7658,7 +8224,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRegionsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRegionsByCriteria
-                     * @param retrieveRegionsByCriteria971
+                     * @param retrieveRegionsByCriteria994
                     
                      */
 
@@ -7666,7 +8232,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Region[] retrieveRegionsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionCriteria criteria972)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionCriteria criteria995)
                         
 
                     throws java.rmi.RemoteException
@@ -7674,7 +8240,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7692,7 +8258,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria972,
+                                                    criteria995,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionsByCriteria")));
@@ -7777,18 +8343,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRegionsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRegionsByCriteria
-                    * @param retrieveRegionsByCriteria971
+                    * @param retrieveRegionsByCriteria994
                 
                 */
                 public  void startretrieveRegionsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionCriteria criteria972,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionCriteria criteria995,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[22].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7806,7 +8372,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria972,
+                                                    criteria995,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionsByCriteria")));
@@ -7908,9 +8474,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[22].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[24].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[22].setMessageReceiver(
+          _operations[24].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -7923,7 +8489,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveDefaultRoutingSessionProperties
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveDefaultRoutingSessionProperties
-                     * @param retrieveDefaultRoutingSessionProperties975
+                     * @param retrieveDefaultRoutingSessionProperties998
                     
                      */
 
@@ -7931,7 +8497,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties retrieveDefaultRoutingSessionProperties(
 
-                            java.lang.String regionId976,java.util.Date sessionDate977)
+                            java.lang.String regionId999,java.util.Date sessionDate0)
                         
 
                     throws java.rmi.RemoteException
@@ -7939,7 +8505,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDefaultRoutingSessionPropertiesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -7957,8 +8523,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDefaultRoutingSessionProperties dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId976,
-                                                    sessionDate977,
+                                                    regionId999,
+                                                    sessionDate0,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDefaultRoutingSessionProperties")));
@@ -8043,18 +8609,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveDefaultRoutingSessionProperties
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveDefaultRoutingSessionProperties
-                    * @param retrieveDefaultRoutingSessionProperties975
+                    * @param retrieveDefaultRoutingSessionProperties998
                 
                 */
                 public  void startretrieveDefaultRoutingSessionProperties(
 
-                 java.lang.String regionId976,java.util.Date sessionDate977,
+                 java.lang.String regionId999,java.util.Date sessionDate0,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[23].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDefaultRoutingSessionPropertiesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8072,8 +8638,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDefaultRoutingSessionProperties dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId976,
-                                                    sessionDate977,
+                                                    regionId999,
+                                                    sessionDate0,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDefaultRoutingSessionProperties")));
@@ -8175,9 +8741,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[23].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[25].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[23].setMessageReceiver(
+          _operations[25].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -8190,7 +8756,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRouteSurveyResults
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRouteSurveyResults
-                     * @param saveRouteSurveyResults980
+                     * @param saveRouteSurveyResults3
                     
                      */
 
@@ -8198,7 +8764,7 @@
 
                             public  void saveRouteSurveyResults(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity981,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt982,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults983)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity4,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt5,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults6)
                         
 
                     throws java.rmi.RemoteException
@@ -8206,7 +8772,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRouteSurveyResultsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8224,9 +8790,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRouteSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity981,
-                                                    performedAt982,
-                                                    surveyResults983,
+                                                    identity4,
+                                                    performedAt5,
+                                                    surveyResults6,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRouteSurveyResults")));
@@ -8311,18 +8877,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRouteSurveyResults
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRouteSurveyResults
-                    * @param saveRouteSurveyResults980
+                    * @param saveRouteSurveyResults3
                 
                 */
                 public  void startsaveRouteSurveyResults(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity981,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt982,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults983,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity4,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt5,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults6,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[24].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRouteSurveyResultsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8340,9 +8906,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRouteSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity981,
-                                                    performedAt982,
-                                                    surveyResults983,
+                                                    identity4,
+                                                    performedAt5,
+                                                    surveyResults6,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRouteSurveyResults")));
@@ -8442,9 +9008,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[24].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[26].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[24].setMessageReceiver(
+          _operations[26].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -8457,7 +9023,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BuildRoutingRouteNetMatrix
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#buildRoutingRouteNetMatrix
-                     * @param buildRoutingRouteNetMatrix985
+                     * @param buildRoutingRouteNetMatrix8
                     
                      */
 
@@ -8465,7 +9031,7 @@
 
                             public  void buildRoutingRouteNetMatrix(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity986)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity9)
                         
 
                     throws java.rmi.RemoteException
@@ -8473,7 +9039,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/BuildRoutingRouteNetMatrixRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8491,7 +9057,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.BuildRoutingRouteNetMatrix dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity986,
+                                                    sessionIdentity9,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "buildRoutingRouteNetMatrix")));
@@ -8576,18 +9142,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BuildRoutingRouteNetMatrix
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startbuildRoutingRouteNetMatrix
-                    * @param buildRoutingRouteNetMatrix985
+                    * @param buildRoutingRouteNetMatrix8
                 
                 */
                 public  void startbuildRoutingRouteNetMatrix(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity986,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity9,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[25].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/BuildRoutingRouteNetMatrixRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8605,7 +9171,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.BuildRoutingRouteNetMatrix dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity986,
+                                                    sessionIdentity9,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "buildRoutingRouteNetMatrix")));
@@ -8705,9 +9271,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[25].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[27].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[25].setMessageReceiver(
+          _operations[27].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -8720,7 +9286,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ReturnFault
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#returnFault
-                     * @param returnFault988
+                     * @param returnFault11
                     
                      */
 
@@ -8728,7 +9294,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Fault returnFault(
 
-                            int requestedFaultCode989)
+                            int requestedFaultCode12)
                         
 
                     throws java.rmi.RemoteException
@@ -8736,7 +9302,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ReturnFaultRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8754,7 +9320,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ReturnFault dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    requestedFaultCode989,
+                                                    requestedFaultCode12,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "returnFault")));
@@ -8839,18 +9405,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ReturnFault
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startreturnFault
-                    * @param returnFault988
+                    * @param returnFault11
                 
                 */
                 public  void startreturnFault(
 
-                 int requestedFaultCode989,
+                 int requestedFaultCode12,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[26].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ReturnFaultRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -8868,7 +9434,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ReturnFault dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    requestedFaultCode989,
+                                                    requestedFaultCode12,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "returnFault")));
@@ -8970,9 +9536,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[26].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[28].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[26].setMessageReceiver(
+          _operations[28].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -8985,7 +9551,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SuggestRoute
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#suggestRoute
-                     * @param suggestRoute992
+                     * @param suggestRoute15
                     
                      */
 
@@ -8993,7 +9559,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.PlacementCost[] suggestRoute(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop993,com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions options994)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop16,com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions options17)
                         
 
                     throws java.rmi.RemoteException
@@ -9001,7 +9567,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[29].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SuggestRouteRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9019,8 +9585,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SuggestRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop993,
-                                                    options994,
+                                                    stop16,
+                                                    options17,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "suggestRoute")));
@@ -9105,18 +9671,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SuggestRoute
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsuggestRoute
-                    * @param suggestRoute992
+                    * @param suggestRoute15
                 
                 */
                 public  void startsuggestRoute(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop993,com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions options994,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop16,com.freshdirect.routing.proxy.stub.transportation.SuggestRouteOptions options17,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[27].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[29].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SuggestRouteRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9134,8 +9700,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SuggestRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop993,
-                                                    options994,
+                                                    stop16,
+                                                    options17,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "suggestRoute")));
@@ -9237,9 +9803,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[27].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[29].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[27].setMessageReceiver(
+          _operations[29].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -9252,7 +9818,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveNotificationsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveNotificationsByCriteria
-                     * @param retrieveNotificationsByCriteria997
+                     * @param retrieveNotificationsByCriteria20
                     
                      */
 
@@ -9260,7 +9826,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Notification[] retrieveNotificationsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria criteria998,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions999,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options0)
+                            com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria criteria21,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions22,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options23)
                         
 
                     throws java.rmi.RemoteException
@@ -9268,7 +9834,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[30].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveNotificationsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9286,9 +9852,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveNotificationsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria998,
-                                                    tzOptions999,
-                                                    options0,
+                                                    criteria21,
+                                                    tzOptions22,
+                                                    options23,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveNotificationsByCriteria")));
@@ -9373,18 +9939,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveNotificationsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveNotificationsByCriteria
-                    * @param retrieveNotificationsByCriteria997
+                    * @param retrieveNotificationsByCriteria20
                 
                 */
                 public  void startretrieveNotificationsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria criteria998,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions999,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options0,
+                 com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria criteria21,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions22,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options23,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[28].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[30].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveNotificationsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9402,9 +9968,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveNotificationsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria998,
-                                                    tzOptions999,
-                                                    options0,
+                                                    criteria21,
+                                                    tzOptions22,
+                                                    options23,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveNotificationsByCriteria")));
@@ -9506,9 +10072,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[28].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[30].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[28].setMessageReceiver(
+          _operations[30].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -9521,7 +10087,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveStopSignature
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopSignature
-                     * @param retrieveStopSignature3
+                     * @param retrieveStopSignature26
                     
                      */
 
@@ -9529,7 +10095,7 @@
 
                             public  javax.activation.DataHandler retrieveStopSignature(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity4,com.freshdirect.routing.proxy.stub.transportation.ImageType imageType5)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity27,com.freshdirect.routing.proxy.stub.transportation.ImageType imageType28)
                         
 
                     throws java.rmi.RemoteException
@@ -9537,7 +10103,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[29].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[31].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSignatureRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9555,8 +10121,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity4,
-                                                    imageType5,
+                                                    identity27,
+                                                    imageType28,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSignature")));
@@ -9641,18 +10207,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveStopSignature
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopSignature
-                    * @param retrieveStopSignature3
+                    * @param retrieveStopSignature26
                 
                 */
                 public  void startretrieveStopSignature(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity4,com.freshdirect.routing.proxy.stub.transportation.ImageType imageType5,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity27,com.freshdirect.routing.proxy.stub.transportation.ImageType imageType28,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[29].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[31].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSignatureRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9670,8 +10236,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity4,
-                                                    imageType5,
+                                                    identity27,
+                                                    imageType28,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSignature")));
@@ -9773,9 +10339,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[29].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[31].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[29].setMessageReceiver(
+          _operations[31].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -9788,7 +10354,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__CalculateTimeDist
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#calculateTimeDist
-                     * @param calculateTimeDist8
+                     * @param calculateTimeDist31
                     
                      */
 
@@ -9796,7 +10362,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.TimeDistResult calculateTimeDist(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity9,int fromLatitude10,int fromLongitude11,int toLatitude12,int toLongitude13)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity32,int fromLatitude33,int fromLongitude34,int toLatitude35,int toLongitude36)
                         
 
                     throws java.rmi.RemoteException
@@ -9804,7 +10370,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[30].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[32].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CalculateTimeDistRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9822,11 +10388,11 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.CalculateTimeDist dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionIdentity9,
-                                                    fromLatitude10,
-                                                    fromLongitude11,
-                                                    toLatitude12,
-                                                    toLongitude13,
+                                                    regionIdentity32,
+                                                    fromLatitude33,
+                                                    fromLongitude34,
+                                                    toLatitude35,
+                                                    toLongitude36,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "calculateTimeDist")));
@@ -9911,18 +10477,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__CalculateTimeDist
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startcalculateTimeDist
-                    * @param calculateTimeDist8
+                    * @param calculateTimeDist31
                 
                 */
                 public  void startcalculateTimeDist(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity9,int fromLatitude10,int fromLongitude11,int toLatitude12,int toLongitude13,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity32,int fromLatitude33,int fromLongitude34,int toLatitude35,int toLongitude36,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[30].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[32].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CalculateTimeDistRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -9940,11 +10506,11 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.CalculateTimeDist dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionIdentity9,
-                                                    fromLatitude10,
-                                                    fromLongitude11,
-                                                    toLatitude12,
-                                                    toLongitude13,
+                                                    regionIdentity32,
+                                                    fromLatitude33,
+                                                    fromLongitude34,
+                                                    toLatitude35,
+                                                    toLongitude36,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "calculateTimeDist")));
@@ -10046,9 +10612,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[30].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[32].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[30].setMessageReceiver(
+          _operations[32].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -10061,7 +10627,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerMovableOrders
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerMovableOrders
-                     * @param schedulerMovableOrders16
+                     * @param schedulerMovableOrders39
                     
                      */
 
@@ -10069,7 +10635,7 @@
 
                             public  void schedulerMovableOrders(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity17,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria criteria18,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersOptions options19)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity40,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria criteria41,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersOptions options42)
                         
 
                     throws java.rmi.RemoteException
@@ -10077,7 +10643,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[31].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[33].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerMovableOrdersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10095,9 +10661,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity17,
-                                                    criteria18,
-                                                    options19,
+                                                    schedulerIdentity40,
+                                                    criteria41,
+                                                    options42,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerMovableOrders")));
@@ -10182,18 +10748,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerMovableOrders
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerMovableOrders
-                    * @param schedulerMovableOrders16
+                    * @param schedulerMovableOrders39
                 
                 */
                 public  void startschedulerMovableOrders(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity17,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria criteria18,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersOptions options19,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity40,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersCriteria criteria41,com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrdersOptions options42,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[31].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[33].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerMovableOrdersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10211,9 +10777,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerMovableOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity17,
-                                                    criteria18,
-                                                    options19,
+                                                    schedulerIdentity40,
+                                                    criteria41,
+                                                    options42,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerMovableOrders")));
@@ -10313,9 +10879,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[31].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[33].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[31].setMessageReceiver(
+          _operations[33].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -10328,7 +10894,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveLocationsByCriteriaEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveLocationsByCriteriaEx
-                     * @param retrieveLocationsByCriteriaEx21
+                     * @param retrieveLocationsByCriteriaEx44
                     
                      */
 
@@ -10336,7 +10902,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveLocationsByCriteriaEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria22,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options23)
+                            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria45,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options46)
                         
 
                     throws java.rmi.RemoteException
@@ -10344,7 +10910,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[32].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[34].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationsByCriteriaExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10362,8 +10928,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationsByCriteriaEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria22,
-                                                    options23,
+                                                    criteria45,
+                                                    options46,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationsByCriteriaEx")));
@@ -10448,18 +11014,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveLocationsByCriteriaEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveLocationsByCriteriaEx
-                    * @param retrieveLocationsByCriteriaEx21
+                    * @param retrieveLocationsByCriteriaEx44
                 
                 */
                 public  void startretrieveLocationsByCriteriaEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria22,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options23,
+                 com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria45,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options46,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[32].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[34].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationsByCriteriaExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10477,8 +11043,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationsByCriteriaEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria22,
-                                                    options23,
+                                                    criteria45,
+                                                    options46,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationsByCriteriaEx")));
@@ -10580,9 +11146,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[32].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[34].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[32].setMessageReceiver(
+          _operations[34].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -10595,7 +11161,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrievePermissionsForUser
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrievePermissionsForUser
-                     * @param retrievePermissionsForUser26
+                     * @param retrievePermissionsForUser49
                     
                      */
 
@@ -10603,7 +11169,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.UserPermissions retrievePermissionsForUser(
 
-                            java.lang.String userID27,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity28)
+                            java.lang.String userID50,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity51)
                         
 
                     throws java.rmi.RemoteException
@@ -10611,7 +11177,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[33].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[35].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePermissionsForUserRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10629,8 +11195,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrievePermissionsForUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID27,
-                                                    regionIdentity28,
+                                                    userID50,
+                                                    regionIdentity51,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePermissionsForUser")));
@@ -10715,18 +11281,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrievePermissionsForUser
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrievePermissionsForUser
-                    * @param retrievePermissionsForUser26
+                    * @param retrievePermissionsForUser49
                 
                 */
                 public  void startretrievePermissionsForUser(
 
-                 java.lang.String userID27,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity28,
+                 java.lang.String userID50,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity51,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[33].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[35].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePermissionsForUserRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10744,8 +11310,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrievePermissionsForUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID27,
-                                                    regionIdentity28,
+                                                    userID50,
+                                                    regionIdentity51,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePermissionsForUser")));
@@ -10847,9 +11413,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[33].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[35].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[33].setMessageReceiver(
+          _operations[35].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -10862,7 +11428,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteSurveyQuestions
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteSurveyQuestions
-                     * @param retrieveRouteSurveyQuestions31
+                     * @param retrieveRouteSurveyQuestions54
                     
                      */
 
@@ -10870,7 +11436,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyQuestionsResponse retrieveRouteSurveyQuestions(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity32,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt33)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity55,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt56)
                         
 
                     throws java.rmi.RemoteException
@@ -10878,7 +11444,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[34].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[36].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteSurveyQuestionsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -10896,8 +11462,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyQuestions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity32,
-                                                    performedAt33,
+                                                    identity55,
+                                                    performedAt56,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteSurveyQuestions")));
@@ -10982,18 +11548,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteSurveyQuestions
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteSurveyQuestions
-                    * @param retrieveRouteSurveyQuestions31
+                    * @param retrieveRouteSurveyQuestions54
                 
                 */
                 public  void startretrieveRouteSurveyQuestions(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity32,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt33,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity55,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt56,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[34].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[36].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteSurveyQuestionsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11011,8 +11577,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyQuestions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity32,
-                                                    performedAt33,
+                                                    identity55,
+                                                    performedAt56,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteSurveyQuestions")));
@@ -11114,9 +11680,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[34].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[36].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[34].setMessageReceiver(
+          _operations[36].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -11129,7 +11695,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEquipmentByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEquipmentByCriteria
-                     * @param retrieveEquipmentByCriteria37
+                     * @param retrieveEquipmentByCriteria60
                     
                      */
 
@@ -11137,7 +11703,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Equipment[] retrieveEquipmentByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria38,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options39)
+                            com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria61,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options62)
                         
 
                     throws java.rmi.RemoteException
@@ -11145,7 +11711,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[35].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[37].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11163,8 +11729,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria38,
-                                                    options39,
+                                                    criteria61,
+                                                    options62,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentByCriteria")));
@@ -11249,18 +11815,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEquipmentByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEquipmentByCriteria
-                    * @param retrieveEquipmentByCriteria37
+                    * @param retrieveEquipmentByCriteria60
                 
                 */
                 public  void startretrieveEquipmentByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria38,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options39,
+                 com.freshdirect.routing.proxy.stub.transportation.EquipmentCriteria criteria61,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options62,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[35].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[37].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11278,8 +11844,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria38,
-                                                    options39,
+                                                    criteria61,
+                                                    options62,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentByCriteria")));
@@ -11381,9 +11947,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[35].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[37].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[35].setMessageReceiver(
+          _operations[37].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -11396,7 +11962,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerBalanceRoutes
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerBalanceRoutes
-                     * @param schedulerBalanceRoutes42
+                     * @param schedulerBalanceRoutes65
                     
                      */
 
@@ -11404,7 +11970,7 @@
 
                             public  void schedulerBalanceRoutes(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity43,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options44)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity66,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options67)
                         
 
                     throws java.rmi.RemoteException
@@ -11412,7 +11978,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[36].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[38].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerBalanceRoutesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11430,8 +11996,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity43,
-                                                    options44,
+                                                    schedulerIdentity66,
+                                                    options67,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerBalanceRoutes")));
@@ -11516,18 +12082,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerBalanceRoutes
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerBalanceRoutes
-                    * @param schedulerBalanceRoutes42
+                    * @param schedulerBalanceRoutes65
                 
                 */
                 public  void startschedulerBalanceRoutes(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity43,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options44,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity66,com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesOptions options67,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[36].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[38].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerBalanceRoutesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11545,8 +12111,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity43,
-                                                    options44,
+                                                    schedulerIdentity66,
+                                                    options67,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerBalanceRoutes")));
@@ -11646,9 +12212,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[36].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[38].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[36].setMessageReceiver(
+          _operations[38].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -11661,7 +12227,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveUnassigned
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveUnassigned
-                     * @param saveUnassigned46
+                     * @param saveUnassigned69
                     
                      */
 
@@ -11669,7 +12235,7 @@
 
                             public  void saveUnassigned(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Stop stop47,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options48)
+                            com.freshdirect.routing.proxy.stub.transportation.Stop stop70,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options71)
                         
 
                     throws java.rmi.RemoteException
@@ -11677,7 +12243,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[37].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[39].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveUnassignedRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11695,8 +12261,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop47,
-                                                    options48,
+                                                    stop70,
+                                                    options71,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveUnassigned")));
@@ -11781,18 +12347,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveUnassigned
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveUnassigned
-                    * @param saveUnassigned46
+                    * @param saveUnassigned69
                 
                 */
                 public  void startsaveUnassigned(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Stop stop47,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options48,
+                 com.freshdirect.routing.proxy.stub.transportation.Stop stop70,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options71,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[37].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[39].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveUnassignedRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11810,8 +12376,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop47,
-                                                    options48,
+                                                    stop70,
+                                                    options71,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveUnassigned")));
@@ -11911,9 +12477,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[37].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[39].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[37].setMessageReceiver(
+          _operations[39].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -11926,7 +12492,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RemoveRoute
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#removeRoute
-                     * @param removeRoute50
+                     * @param removeRoute73
                     
                      */
 
@@ -11934,7 +12500,7 @@
 
                             public  void removeRoute(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity51)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity74)
                         
 
                     throws java.rmi.RemoteException
@@ -11942,7 +12508,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[38].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[40].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RemoveRouteRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -11960,7 +12526,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RemoveRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity51,
+                                                    identity74,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "removeRoute")));
@@ -12045,18 +12611,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RemoveRoute
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startremoveRoute
-                    * @param removeRoute50
+                    * @param removeRoute73
                 
                 */
                 public  void startremoveRoute(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity51,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity74,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[38].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[40].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RemoveRouteRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12074,7 +12640,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RemoveRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity51,
+                                                    identity74,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "removeRoute")));
@@ -12174,9 +12740,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[38].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[40].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[38].setMessageReceiver(
+          _operations[40].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -12189,7 +12755,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveNotificationsByRecipientIdentity
-                     * @param retrieveNotificationsByRecipientIdentity53
+                     * @param retrieveNotificationsByRecipientIdentity76
                     
                      */
 
@@ -12197,7 +12763,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Notification[] retrieveNotificationsByRecipientIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity54,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions55,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options56)
+                            com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity77,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions78,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options79)
                         
 
                     throws java.rmi.RemoteException
@@ -12205,7 +12771,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[39].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[41].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveNotificationsByRecipientIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12223,9 +12789,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveNotificationsByRecipientIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity54,
-                                                    tzOptions55,
-                                                    options56,
+                                                    identity77,
+                                                    tzOptions78,
+                                                    options79,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveNotificationsByRecipientIdentity")));
@@ -12310,18 +12876,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveNotificationsByRecipientIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveNotificationsByRecipientIdentity
-                    * @param retrieveNotificationsByRecipientIdentity53
+                    * @param retrieveNotificationsByRecipientIdentity76
                 
                 */
                 public  void startretrieveNotificationsByRecipientIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity54,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions55,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options56,
+                 com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity identity77,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions78,com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions options79,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[39].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[41].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveNotificationsByRecipientIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12339,9 +12905,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveNotificationsByRecipientIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity54,
-                                                    tzOptions55,
-                                                    options56,
+                                                    identity77,
+                                                    tzOptions78,
+                                                    options79,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveNotificationsByRecipientIdentity")));
@@ -12443,9 +13009,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[39].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[41].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[39].setMessageReceiver(
+          _operations[41].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -12458,7 +13024,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutesByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutesByCriteria
-                     * @param retrieveRoutesByCriteria59
+                     * @param retrieveRoutesByCriteria82
                     
                      */
 
@@ -12466,7 +13032,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Route[] retrieveRoutesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria60,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options61)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria83,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options84)
                         
 
                     throws java.rmi.RemoteException
@@ -12474,7 +13040,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[40].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[42].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12492,8 +13058,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria60,
-                                                    options61,
+                                                    criteria83,
+                                                    options84,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutesByCriteria")));
@@ -12578,18 +13144,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutesByCriteria
-                    * @param retrieveRoutesByCriteria59
+                    * @param retrieveRoutesByCriteria82
                 
                 */
                 public  void startretrieveRoutesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria60,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options61,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteCriteria criteria83,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options84,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[40].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[42].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12607,8 +13173,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria60,
-                                                    options61,
+                                                    criteria83,
+                                                    options84,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutesByCriteria")));
@@ -12710,9 +13276,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[40].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[42].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[40].setMessageReceiver(
+          _operations[42].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -12725,7 +13291,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerOptimizeOrdersEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerOptimizeOrdersEx
-                     * @param schedulerOptimizeOrdersEx64
+                     * @param schedulerOptimizeOrdersEx87
                     
                      */
 
@@ -12733,7 +13299,7 @@
 
                             public  void schedulerOptimizeOrdersEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity65,com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions options66)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity88,com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions options89)
                         
 
                     throws java.rmi.RemoteException
@@ -12741,7 +13307,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[41].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[43].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerOptimizeOrdersExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12759,8 +13325,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity65,
-                                                    options66,
+                                                    schedulerIdentity88,
+                                                    options89,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerOptimizeOrdersEx")));
@@ -12845,18 +13411,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerOptimizeOrdersEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerOptimizeOrdersEx
-                    * @param schedulerOptimizeOrdersEx64
+                    * @param schedulerOptimizeOrdersEx87
                 
                 */
                 public  void startschedulerOptimizeOrdersEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity65,com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions options66,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity88,com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions options89,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[41].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[43].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerOptimizeOrdersExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -12874,8 +13440,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity65,
-                                                    options66,
+                                                    schedulerIdentity88,
+                                                    options89,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerOptimizeOrdersEx")));
@@ -12975,9 +13541,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[41].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[43].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[41].setMessageReceiver(
+          _operations[43].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -12990,7 +13556,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRegion
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRegion
-                     * @param saveRegion68
+                     * @param saveRegion91
                     
                      */
 
@@ -12998,7 +13564,7 @@
 
                             public  void saveRegion(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Region region69)
+                            com.freshdirect.routing.proxy.stub.transportation.Region region92)
                         
 
                     throws java.rmi.RemoteException
@@ -13006,7 +13572,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[42].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[44].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRegionRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13024,7 +13590,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRegion dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    region69,
+                                                    region92,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRegion")));
@@ -13109,18 +13675,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRegion
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRegion
-                    * @param saveRegion68
+                    * @param saveRegion91
                 
                 */
                 public  void startsaveRegion(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Region region69,
+                 com.freshdirect.routing.proxy.stub.transportation.Region region92,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[42].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[44].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRegionRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13138,7 +13704,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRegion dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    region69,
+                                                    region92,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRegion")));
@@ -13238,9 +13804,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[42].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[44].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[42].setMessageReceiver(
+          _operations[44].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -13253,7 +13819,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRegionByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRegionByIdentity
-                     * @param retrieveRegionByIdentity71
+                     * @param retrieveRegionByIdentity94
                     
                      */
 
@@ -13261,7 +13827,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Region retrieveRegionByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity72)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity95)
                         
 
                     throws java.rmi.RemoteException
@@ -13269,7 +13835,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[43].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[45].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13287,7 +13853,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity72,
+                                                    identity95,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionByIdentity")));
@@ -13372,18 +13938,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRegionByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRegionByIdentity
-                    * @param retrieveRegionByIdentity71
+                    * @param retrieveRegionByIdentity94
                 
                 */
                 public  void startretrieveRegionByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity72,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity95,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[43].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[45].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13401,7 +13967,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity72,
+                                                    identity95,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionByIdentity")));
@@ -13503,9 +14069,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[43].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[45].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[43].setMessageReceiver(
+          _operations[45].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -13518,7 +14084,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveReportsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveReportsByCriteria
-                     * @param retrieveReportsByCriteria75
+                     * @param retrieveReportsByCriteria98
                     
                      */
 
@@ -13526,7 +14092,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Report[] retrieveReportsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria76)
+                            com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria99)
                         
 
                     throws java.rmi.RemoteException
@@ -13534,7 +14100,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[44].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[46].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveReportsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13552,7 +14118,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveReportsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria76,
+                                                    criteria99,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveReportsByCriteria")));
@@ -13637,18 +14203,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveReportsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveReportsByCriteria
-                    * @param retrieveReportsByCriteria75
+                    * @param retrieveReportsByCriteria98
                 
                 */
                 public  void startretrieveReportsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria76,
+                 com.freshdirect.routing.proxy.stub.transportation.ReportCriteria criteria99,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[44].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[46].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveReportsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13666,7 +14232,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveReportsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria76,
+                                                    criteria99,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveReportsByCriteria")));
@@ -13768,9 +14334,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[44].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[46].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[44].setMessageReceiver(
+          _operations[46].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -13783,7 +14349,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingLocationsWithOrders
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingLocationsWithOrders
-                     * @param retrieveRoutingLocationsWithOrders79
+                     * @param retrieveRoutingLocationsWithOrders102
                     
                      */
 
@@ -13791,7 +14357,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveRoutingLocationsWithOrders(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity80)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity103)
                         
 
                     throws java.rmi.RemoteException
@@ -13799,7 +14365,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[45].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[47].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingLocationsWithOrdersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13817,7 +14383,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingLocationsWithOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity80,
+                                                    sessionIdentity103,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingLocationsWithOrders")));
@@ -13902,18 +14468,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingLocationsWithOrders
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingLocationsWithOrders
-                    * @param retrieveRoutingLocationsWithOrders79
+                    * @param retrieveRoutingLocationsWithOrders102
                 
                 */
                 public  void startretrieveRoutingLocationsWithOrders(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity80,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity103,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[45].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[47].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingLocationsWithOrdersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -13931,7 +14497,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingLocationsWithOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity80,
+                                                    sessionIdentity103,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingLocationsWithOrders")));
@@ -14033,9 +14599,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[45].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[47].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[45].setMessageReceiver(
+          _operations[47].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -14048,7 +14614,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveUserByUserID
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveUserByUserID
-                     * @param retrieveUserByUserID83
+                     * @param retrieveUserByUserID106
                     
                      */
 
@@ -14056,7 +14622,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.User retrieveUserByUserID(
 
-                            java.lang.String userID84)
+                            java.lang.String userID107)
                         
 
                     throws java.rmi.RemoteException
@@ -14064,7 +14630,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[46].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[48].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUserByUserIDRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14082,7 +14648,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUserByUserID dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID84,
+                                                    userID107,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUserByUserID")));
@@ -14167,18 +14733,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveUserByUserID
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveUserByUserID
-                    * @param retrieveUserByUserID83
+                    * @param retrieveUserByUserID106
                 
                 */
                 public  void startretrieveUserByUserID(
 
-                 java.lang.String userID84,
+                 java.lang.String userID107,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[46].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[48].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUserByUserIDRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14196,7 +14762,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUserByUserID dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID84,
+                                                    userID107,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUserByUserID")));
@@ -14298,9 +14864,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[46].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[48].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[46].setMessageReceiver(
+          _operations[48].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -14313,7 +14879,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEmployeeByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEmployeeByIdentity
-                     * @param retrieveEmployeeByIdentity87
+                     * @param retrieveEmployeeByIdentity110
                     
                      */
 
@@ -14321,7 +14887,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Employee retrieveEmployeeByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity88)
+                            com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity111)
                         
 
                     throws java.rmi.RemoteException
@@ -14329,7 +14895,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[47].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[49].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEmployeeByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14347,7 +14913,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEmployeeByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity88,
+                                                    identity111,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEmployeeByIdentity")));
@@ -14432,18 +14998,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEmployeeByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEmployeeByIdentity
-                    * @param retrieveEmployeeByIdentity87
+                    * @param retrieveEmployeeByIdentity110
                 
                 */
                 public  void startretrieveEmployeeByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity88,
+                 com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity identity111,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[47].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[49].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEmployeeByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14461,7 +15027,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEmployeeByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity88,
+                                                    identity111,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEmployeeByIdentity")));
@@ -14563,9 +15129,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[47].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[49].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[47].setMessageReceiver(
+          _operations[49].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -14578,7 +15144,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DeleteUnassigned
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#deleteUnassigned
-                     * @param deleteUnassigned91
+                     * @param deleteUnassigned114
                     
                      */
 
@@ -14586,7 +15152,7 @@
 
                             public  void deleteUnassigned(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop92)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop115)
                         
 
                     throws java.rmi.RemoteException
@@ -14594,7 +15160,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[48].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[50].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteUnassignedRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14612,7 +15178,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DeleteUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop92,
+                                                    stop115,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteUnassigned")));
@@ -14697,18 +15263,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DeleteUnassigned
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdeleteUnassigned
-                    * @param deleteUnassigned91
+                    * @param deleteUnassigned114
                 
                 */
                 public  void startdeleteUnassigned(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop92,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop115,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[48].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[50].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteUnassignedRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14726,7 +15292,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DeleteUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop92,
+                                                    stop115,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteUnassigned")));
@@ -14826,9 +15392,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[48].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[50].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[48].setMessageReceiver(
+          _operations[50].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -14841,7 +15407,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__CreateRoutingSession
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#createRoutingSession
-                     * @param createRoutingSession94
+                     * @param createRoutingSession117
                     
                      */
 
@@ -14849,7 +15415,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity createRoutingSession(
 
-                            java.lang.String regionId95,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties96)
+                            java.lang.String regionId118,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties119)
                         
 
                     throws java.rmi.RemoteException
@@ -14857,7 +15423,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[49].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[51].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CreateRoutingSessionRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14875,8 +15441,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSession dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId95,
-                                                    sessionProperties96,
+                                                    regionId118,
+                                                    sessionProperties119,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "createRoutingSession")));
@@ -14961,18 +15527,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__CreateRoutingSession
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startcreateRoutingSession
-                    * @param createRoutingSession94
+                    * @param createRoutingSession117
                 
                 */
                 public  void startcreateRoutingSession(
 
-                 java.lang.String regionId95,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties96,
+                 java.lang.String regionId118,com.freshdirect.routing.proxy.stub.transportation.RoutingSessionProperties sessionProperties119,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[49].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[51].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CreateRoutingSessionRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -14990,8 +15556,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSession dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId95,
-                                                    sessionProperties96,
+                                                    regionId118,
+                                                    sessionProperties119,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "createRoutingSession")));
@@ -15093,9 +15659,274 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[49].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[51].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[49].setMessageReceiver(
+          _operations[51].setMessageReceiver(
+                    _callbackReceiver);
+        }
+
+           //execute the operation client
+           _operationClient.execute(false);
+
+                    }
+                
+                    /**
+                     * Auto generated method signature
+                     * Service definition of function ns1__RetrieveUndeliverableStopCodesByCriteria
+                     * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveUndeliverableStopCodesByCriteria
+                     * @param retrieveUndeliverableStopCodesByCriteria122
+                    
+                     */
+
+                    
+
+                            public  com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode[] retrieveUndeliverableStopCodesByCriteria(
+
+                            com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria123)
+                        
+
+                    throws java.rmi.RemoteException
+                    
+                    {
+              org.apache.axis2.context.MessageContext _messageContext = null;
+              try{
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[52].getName());
+              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUndeliverableStopCodesByCriteriaRequest");
+              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+              // create a message context
+              _messageContext = new org.apache.axis2.context.MessageContext();
+
+              
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env = null;
+                    com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria123,
+                                                    dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveUndeliverableStopCodesByCriteria")));
+                                                
+        //adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // set the message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message contxt to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+        //execute the operation client
+        _operationClient.execute(true);
+
+         
+               org.apache.axis2.context.MessageContext _returnMessageContext = _operationClient.getMessageContext(
+                                           org.apache.axis2.wsdl.WSDLConstants.MESSAGE_LABEL_IN_VALUE);
+                org.apache.axiom.soap.SOAPEnvelope _returnEnv = _returnMessageContext.getEnvelope();
+                
+                
+                                java.lang.Object object = fromOM(
+                                             _returnEnv.getBody().getFirstElement() ,
+                                             com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse.class,
+                                              getEnvelopeNamespaces(_returnEnv));
+
+                               
+                                        return getRetrieveUndeliverableStopCodesByCriteriaResponseUndeliverableStopCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse)object);
+                                   
+         }catch(org.apache.axis2.AxisFault f){
+
+            org.apache.axiom.om.OMElement faultElt = f.getDetail();
+            if (faultElt!=null){
+                if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+                    //make the fault by reflection
+                    try{
+                        java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+                        java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+                        java.lang.Exception ex=
+                                (java.lang.Exception) exceptionClass.newInstance();
+                        //message class
+                        java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+                        java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+                        java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+                        java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+                                   new java.lang.Class[]{messageClass});
+                        m.invoke(ex,new java.lang.Object[]{messageObject});
+                        
+
+                        throw new java.rmi.RemoteException(ex.getMessage(), ex);
+                    }catch(java.lang.ClassCastException e){
+                       // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.ClassNotFoundException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }catch (java.lang.NoSuchMethodException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    } catch (java.lang.reflect.InvocationTargetException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }  catch (java.lang.IllegalAccessException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }   catch (java.lang.InstantiationException e) {
+                        // we cannot intantiate the class - throw the original Axis fault
+                        throw f;
+                    }
+                }else{
+                    throw f;
+                }
+            }else{
+                throw f;
+            }
+            } finally {
+                _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+            }
+        }
+            
+                /**
+                * Auto generated method signature for Asynchronous Invocations
+                * Service definition of function ns1__RetrieveUndeliverableStopCodesByCriteria
+                * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveUndeliverableStopCodesByCriteria
+                    * @param retrieveUndeliverableStopCodesByCriteria122
+                
+                */
+                public  void startretrieveUndeliverableStopCodesByCriteria(
+
+                 com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria criteria123,
+
+                  final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
+
+                throws java.rmi.RemoteException{
+
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[52].getName());
+             _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUndeliverableStopCodesByCriteriaRequest");
+             _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
+
+              
+              
+                  addPropertyToOperationClient(_operationClient,org.apache.axis2.description.WSDL2Constants.ATTR_WHTTP_QUERY_PARAMETER_SEPARATOR,"&");
+              
+
+
+              // create SOAP envelope with that payload
+              org.apache.axiom.soap.SOAPEnvelope env=null;
+              final org.apache.axis2.context.MessageContext _messageContext = new org.apache.axis2.context.MessageContext();
+
+                    
+                                    //Style is Doc.
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria dummyWrappedType = null;
+                                                    env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
+                                                    criteria123,
+                                                     dummyWrappedType,
+                                                    optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                    "retrieveUndeliverableStopCodesByCriteria")));
+                                                
+        // adding SOAP soap_headers
+         _serviceClient.addHeadersToEnvelope(env);
+        // create message context with that soap envelope
+        _messageContext.setEnvelope(env);
+
+        // add the message context to the operation client
+        _operationClient.addMessageContext(_messageContext);
+
+
+                    
+                        _operationClient.setCallback(new org.apache.axis2.client.async.AxisCallback() {
+                            public void onMessage(org.apache.axis2.context.MessageContext resultContext) {
+                            try {
+                                org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
+                                
+                                        java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
+                                                                         com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse.class,
+                                                                         getEnvelopeNamespaces(resultEnv));
+                                        callback.receiveResultretrieveUndeliverableStopCodesByCriteria(
+                                            getRetrieveUndeliverableStopCodesByCriteriaResponseUndeliverableStopCodes((com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse)object));
+                                        
+                            } catch (org.apache.axis2.AxisFault e) {
+                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(e);
+                            }
+                            }
+
+                            public void onError(java.lang.Exception error) {
+								if (error instanceof org.apache.axis2.AxisFault) {
+									org.apache.axis2.AxisFault f = (org.apache.axis2.AxisFault) error;
+									org.apache.axiom.om.OMElement faultElt = f.getDetail();
+									if (faultElt!=null){
+										if (faultExceptionNameMap.containsKey(faultElt.getQName())){
+											//make the fault by reflection
+											try{
+													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(faultElt.getQName());
+													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
+													java.lang.Exception ex=
+														(java.lang.Exception) exceptionClass.newInstance();
+													//message class
+													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(faultElt.getQName());
+														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
+													java.lang.Object messageObject = fromOM(faultElt,messageClass,null);
+													java.lang.reflect.Method m = exceptionClass.getMethod("setFaultMessage",
+															new java.lang.Class[]{messageClass});
+													m.invoke(ex,new java.lang.Object[]{messageObject});
+													
+					
+										            callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(new java.rmi.RemoteException(ex.getMessage(), ex));
+                                            } catch(java.lang.ClassCastException e){
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (java.lang.ClassNotFoundException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (java.lang.NoSuchMethodException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (java.lang.reflect.InvocationTargetException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (java.lang.IllegalAccessException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (java.lang.InstantiationException e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            } catch (org.apache.axis2.AxisFault e) {
+                                                // we cannot intantiate the class - throw the original Axis fault
+                                                callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+                                            }
+									    } else {
+										    callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+									    }
+									} else {
+									    callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(f);
+									}
+								} else {
+								    callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(error);
+								}
+                            }
+
+                            public void onFault(org.apache.axis2.context.MessageContext faultContext) {
+                                org.apache.axis2.AxisFault fault = org.apache.axis2.util.Utils.getInboundFaultFromMessageContext(faultContext);
+                                onError(fault);
+                            }
+
+                            public void onComplete() {
+                                try {
+                                    _messageContext.getTransportOut().getSender().cleanup(_messageContext);
+                                } catch (org.apache.axis2.AxisFault axisFault) {
+                                    callback.receiveErrorretrieveUndeliverableStopCodesByCriteria(axisFault);
+                                }
+                            }
+                });
+                        
+
+          org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
+        if ( _operations[52].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+           _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
+          _operations[52].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -15108,7 +15939,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__AuthenticateUser
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#authenticateUser
-                     * @param authenticateUser99
+                     * @param authenticateUser126
                     
                      */
 
@@ -15116,7 +15947,7 @@
 
                             public  void authenticateUser(
 
-                            java.lang.String userID100,java.lang.String password101)
+                            java.lang.String userID127,java.lang.String password128)
                         
 
                     throws java.rmi.RemoteException
@@ -15124,7 +15955,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[50].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[53].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AuthenticateUserRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15142,8 +15973,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.AuthenticateUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID100,
-                                                    password101,
+                                                    userID127,
+                                                    password128,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "authenticateUser")));
@@ -15228,18 +16059,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__AuthenticateUser
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startauthenticateUser
-                    * @param authenticateUser99
+                    * @param authenticateUser126
                 
                 */
                 public  void startauthenticateUser(
 
-                 java.lang.String userID100,java.lang.String password101,
+                 java.lang.String userID127,java.lang.String password128,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[50].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[53].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AuthenticateUserRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15257,8 +16088,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.AuthenticateUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID100,
-                                                    password101,
+                                                    userID127,
+                                                    password128,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "authenticateUser")));
@@ -15358,9 +16189,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[50].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[53].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[50].setMessageReceiver(
+          _operations[53].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -15373,7 +16204,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__UnlockNotifications
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#unlockNotifications
-                     * @param unlockNotifications103
+                     * @param unlockNotifications130
                     
                      */
 
@@ -15381,7 +16212,7 @@
 
                             public  void unlockNotifications(
 
-                            com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria104)
+                            com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria131)
                         
 
                     throws java.rmi.RemoteException
@@ -15389,7 +16220,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[51].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[54].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UnlockNotificationsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15407,7 +16238,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.UnlockNotifications dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria104,
+                                                    criteria131,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "unlockNotifications")));
@@ -15492,18 +16323,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__UnlockNotifications
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startunlockNotifications
-                    * @param unlockNotifications103
+                    * @param unlockNotifications130
                 
                 */
                 public  void startunlockNotifications(
 
-                 com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria104,
+                 com.freshdirect.routing.proxy.stub.transportation.UnlockNotificationsCriteria criteria131,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[51].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[54].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UnlockNotificationsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15521,7 +16352,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.UnlockNotifications dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria104,
+                                                    criteria131,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "unlockNotifications")));
@@ -15621,9 +16452,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[51].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[54].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[51].setMessageReceiver(
+          _operations[54].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -15636,7 +16467,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DeleteRoutingSession
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#deleteRoutingSession
-                     * @param deleteRoutingSession106
+                     * @param deleteRoutingSession133
                     
                      */
 
@@ -15644,7 +16475,7 @@
 
                             public  void deleteRoutingSession(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity107)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity134)
                         
 
                     throws java.rmi.RemoteException
@@ -15652,7 +16483,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[52].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[55].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteRoutingSessionRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15670,7 +16501,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DeleteRoutingSession dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity107,
+                                                    sessionIdentity134,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteRoutingSession")));
@@ -15755,18 +16586,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DeleteRoutingSession
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdeleteRoutingSession
-                    * @param deleteRoutingSession106
+                    * @param deleteRoutingSession133
                 
                 */
                 public  void startdeleteRoutingSession(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity107,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity134,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[52].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[55].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteRoutingSessionRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15784,7 +16615,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DeleteRoutingSession dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity107,
+                                                    sessionIdentity134,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteRoutingSession")));
@@ -15884,9 +16715,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[52].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[55].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[52].setMessageReceiver(
+          _operations[55].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -15899,7 +16730,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveUserConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveUserConfig
-                     * @param saveUserConfig109
+                     * @param saveUserConfig136
                     
                      */
 
@@ -15907,7 +16738,7 @@
 
                             public  void saveUserConfig(
 
-                            java.lang.String applicationID110,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity111,java.lang.String configGroupID112,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items113)
+                            java.lang.String applicationID137,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity138,java.lang.String configGroupID139,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items140)
                         
 
                     throws java.rmi.RemoteException
@@ -15915,7 +16746,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[53].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[56].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveUserConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -15933,10 +16764,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveUserConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID110,
-                                                    userIdentity111,
-                                                    configGroupID112,
-                                                    items113,
+                                                    applicationID137,
+                                                    userIdentity138,
+                                                    configGroupID139,
+                                                    items140,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveUserConfig")));
@@ -16021,18 +16852,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveUserConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveUserConfig
-                    * @param saveUserConfig109
+                    * @param saveUserConfig136
                 
                 */
                 public  void startsaveUserConfig(
 
-                 java.lang.String applicationID110,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity111,java.lang.String configGroupID112,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items113,
+                 java.lang.String applicationID137,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity138,java.lang.String configGroupID139,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items140,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[53].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[56].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveUserConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16050,10 +16881,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveUserConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID110,
-                                                    userIdentity111,
-                                                    configGroupID112,
-                                                    items113,
+                                                    applicationID137,
+                                                    userIdentity138,
+                                                    configGroupID139,
+                                                    items140,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveUserConfig")));
@@ -16153,9 +16984,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[53].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[56].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[53].setMessageReceiver(
+          _operations[56].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -16168,7 +16999,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerRetrieveOrdersByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerRetrieveOrdersByCriteria
-                     * @param schedulerRetrieveOrdersByCriteria115
+                     * @param schedulerRetrieveOrdersByCriteria142
                     
                      */
 
@@ -16176,7 +17007,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] schedulerRetrieveOrdersByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity116,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria117,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options118)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity143,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria144,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options145)
                         
 
                     throws java.rmi.RemoteException
@@ -16184,7 +17015,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[54].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[57].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveOrdersByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16202,9 +17033,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity116,
-                                                    criteria117,
-                                                    options118,
+                                                    schedulerIdentity143,
+                                                    criteria144,
+                                                    options145,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveOrdersByCriteria")));
@@ -16289,18 +17120,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerRetrieveOrdersByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerRetrieveOrdersByCriteria
-                    * @param schedulerRetrieveOrdersByCriteria115
+                    * @param schedulerRetrieveOrdersByCriteria142
                 
                 */
                 public  void startschedulerRetrieveOrdersByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity116,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria117,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options118,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity143,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderCriteria criteria144,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options145,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[54].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[57].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveOrdersByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16318,9 +17149,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity116,
-                                                    criteria117,
-                                                    options118,
+                                                    schedulerIdentity143,
+                                                    criteria144,
+                                                    options145,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveOrdersByCriteria")));
@@ -16422,9 +17253,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[54].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[57].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[54].setMessageReceiver(
+          _operations[57].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -16437,7 +17268,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__VersionInformation
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#versionInformation
-                     * @param versionInformation121
+                     * @param versionInformation148
                     
                      */
 
@@ -16453,7 +17284,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[55].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[58].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/VersionInformationRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16555,7 +17386,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__VersionInformation
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startversionInformation
-                    * @param versionInformation121
+                    * @param versionInformation148
                 
                 */
                 public  void startversionInformation(
@@ -16566,7 +17397,7 @@
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[55].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[58].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/VersionInformationRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16685,9 +17516,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[55].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[58].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[55].setMessageReceiver(
+          _operations[58].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -16700,7 +17531,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveUserConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveUserConfig
-                     * @param retrieveUserConfig124
+                     * @param retrieveUserConfig151
                     
                      */
 
@@ -16708,7 +17539,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveUserConfig(
 
-                            java.lang.String applicationID125,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity126,java.lang.String configGroupID127)
+                            java.lang.String applicationID152,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity153,java.lang.String configGroupID154)
                         
 
                     throws java.rmi.RemoteException
@@ -16716,7 +17547,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[56].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[59].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUserConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16734,9 +17565,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUserConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID125,
-                                                    userIdentity126,
-                                                    configGroupID127,
+                                                    applicationID152,
+                                                    userIdentity153,
+                                                    configGroupID154,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUserConfig")));
@@ -16821,18 +17652,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveUserConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveUserConfig
-                    * @param retrieveUserConfig124
+                    * @param retrieveUserConfig151
                 
                 */
                 public  void startretrieveUserConfig(
 
-                 java.lang.String applicationID125,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity126,java.lang.String configGroupID127,
+                 java.lang.String applicationID152,com.freshdirect.routing.proxy.stub.transportation.UserIdentity userIdentity153,java.lang.String configGroupID154,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[56].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[59].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveUserConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -16850,9 +17681,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveUserConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID125,
-                                                    userIdentity126,
-                                                    configGroupID127,
+                                                    applicationID152,
+                                                    userIdentity153,
+                                                    configGroupID154,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveUserConfig")));
@@ -16954,9 +17785,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[56].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[59].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[56].setMessageReceiver(
+          _operations[59].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -16969,7 +17800,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEmployeesByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEmployeesByCriteria
-                     * @param retrieveEmployeesByCriteria130
+                     * @param retrieveEmployeesByCriteria157
                     
                      */
 
@@ -16977,7 +17808,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Employee[] retrieveEmployeesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria131)
+                            com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria158)
                         
 
                     throws java.rmi.RemoteException
@@ -16985,7 +17816,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[57].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[60].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEmployeesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17003,7 +17834,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEmployeesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria131,
+                                                    criteria158,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEmployeesByCriteria")));
@@ -17088,18 +17919,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEmployeesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEmployeesByCriteria
-                    * @param retrieveEmployeesByCriteria130
+                    * @param retrieveEmployeesByCriteria157
                 
                 */
                 public  void startretrieveEmployeesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria131,
+                 com.freshdirect.routing.proxy.stub.transportation.EmployeeCriteria criteria158,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[57].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[60].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEmployeesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17117,7 +17948,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEmployeesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria131,
+                                                    criteria158,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEmployeesByCriteria")));
@@ -17219,9 +18050,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[57].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[60].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[57].setMessageReceiver(
+          _operations[60].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -17234,7 +18065,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DepartOrigin
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#departOrigin
-                     * @param departOrigin134
+                     * @param departOrigin161
                     
                      */
 
@@ -17242,7 +18073,7 @@
 
                             public  void departOrigin(
 
-                            com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info135)
+                            com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info162)
                         
 
                     throws java.rmi.RemoteException
@@ -17250,7 +18081,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[58].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[61].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DepartOriginRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17268,7 +18099,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DepartOrigin dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info135,
+                                                    info162,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "departOrigin")));
@@ -17353,18 +18184,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DepartOrigin
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdepartOrigin
-                    * @param departOrigin134
+                    * @param departOrigin161
                 
                 */
                 public  void startdepartOrigin(
 
-                 com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info135,
+                 com.freshdirect.routing.proxy.stub.transportation.OriginDepartInfo info162,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[58].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[61].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DepartOriginRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17382,7 +18213,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DepartOrigin dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info135,
+                                                    info162,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "departOrigin")));
@@ -17482,9 +18313,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[58].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[61].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[58].setMessageReceiver(
+          _operations[61].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -17497,7 +18328,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveStop
-                     * @param saveStop137
+                     * @param saveStop164
                     
                      */
 
@@ -17505,7 +18336,7 @@
 
                             public  void saveStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Stop stop138,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions139,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options140)
+                            com.freshdirect.routing.proxy.stub.transportation.Stop stop165,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions166,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options167)
                         
 
                     throws java.rmi.RemoteException
@@ -17513,7 +18344,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[59].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[62].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17531,9 +18362,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop138,
-                                                    placementOptions139,
-                                                    options140,
+                                                    stop165,
+                                                    placementOptions166,
+                                                    options167,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStop")));
@@ -17618,18 +18449,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveStop
-                    * @param saveStop137
+                    * @param saveStop164
                 
                 */
                 public  void startsaveStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Stop stop138,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions139,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options140,
+                 com.freshdirect.routing.proxy.stub.transportation.Stop stop165,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions166,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options167,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[59].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[62].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17647,9 +18478,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop138,
-                                                    placementOptions139,
-                                                    options140,
+                                                    stop165,
+                                                    placementOptions166,
+                                                    options167,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStop")));
@@ -17749,9 +18580,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[59].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[62].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[59].setMessageReceiver(
+          _operations[62].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -17764,7 +18595,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerRemoveFromServer
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerRemoveFromServer
-                     * @param schedulerRemoveFromServer142
+                     * @param schedulerRemoveFromServer169
                     
                      */
 
@@ -17772,7 +18603,7 @@
 
                             public  void schedulerRemoveFromServer(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity143)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity170)
                         
 
                     throws java.rmi.RemoteException
@@ -17780,7 +18611,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[60].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[63].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRemoveFromServerRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17798,7 +18629,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRemoveFromServer dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity143,
+                                                    schedulerIdentity170,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRemoveFromServer")));
@@ -17883,18 +18714,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerRemoveFromServer
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerRemoveFromServer
-                    * @param schedulerRemoveFromServer142
+                    * @param schedulerRemoveFromServer169
                 
                 */
                 public  void startschedulerRemoveFromServer(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity143,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity170,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[60].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[63].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRemoveFromServerRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -17912,7 +18743,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRemoveFromServer dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity143,
+                                                    schedulerIdentity170,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRemoveFromServer")));
@@ -18012,9 +18843,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[60].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[63].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[60].setMessageReceiver(
+          _operations[63].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -18027,7 +18858,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__UnassignStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#unassignStop
-                     * @param unassignStop145
+                     * @param unassignStop172
                     
                      */
 
@@ -18035,7 +18866,7 @@
 
                             public  void unassignStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop146)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop173)
                         
 
                     throws java.rmi.RemoteException
@@ -18043,7 +18874,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[61].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[64].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UnassignStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18061,7 +18892,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.UnassignStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop146,
+                                                    stop173,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "unassignStop")));
@@ -18146,18 +18977,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__UnassignStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startunassignStop
-                    * @param unassignStop145
+                    * @param unassignStop172
                 
                 */
                 public  void startunassignStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop146,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop173,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[61].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[64].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UnassignStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18175,7 +19006,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.UnassignStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop146,
+                                                    stop173,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "unassignStop")));
@@ -18275,9 +19106,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[61].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[64].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[61].setMessageReceiver(
+          _operations[64].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -18290,7 +19121,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEquipmentTypeByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEquipmentTypeByIdentity
-                     * @param retrieveEquipmentTypeByIdentity148
+                     * @param retrieveEquipmentTypeByIdentity175
                     
                      */
 
@@ -18298,7 +19129,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.EquipmentType retrieveEquipmentTypeByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity149,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options150)
+                            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity176,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options177)
                         
 
                     throws java.rmi.RemoteException
@@ -18306,7 +19137,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[62].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[65].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentTypeByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18324,8 +19155,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentTypeByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity149,
-                                                    options150,
+                                                    identity176,
+                                                    options177,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentTypeByIdentity")));
@@ -18410,18 +19241,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEquipmentTypeByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEquipmentTypeByIdentity
-                    * @param retrieveEquipmentTypeByIdentity148
+                    * @param retrieveEquipmentTypeByIdentity175
                 
                 */
                 public  void startretrieveEquipmentTypeByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity149,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options150,
+                 com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeIdentity identity176,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options177,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[62].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[65].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentTypeByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18439,8 +19270,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentTypeByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity149,
-                                                    options150,
+                                                    identity176,
+                                                    options177,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentTypeByIdentity")));
@@ -18542,9 +19373,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[62].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[65].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[62].setMessageReceiver(
+          _operations[65].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -18557,7 +19388,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerCancelOrder
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerCancelOrder
-                     * @param schedulerCancelOrder153
+                     * @param schedulerCancelOrder180
                     
                      */
 
@@ -18565,7 +19396,7 @@
 
                             public  void schedulerCancelOrder(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity154,java.lang.String orderNumberXML155)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity181,java.lang.String orderNumberXML182)
                         
 
                     throws java.rmi.RemoteException
@@ -18573,7 +19404,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[63].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[66].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerCancelOrderRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18591,8 +19422,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerCancelOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity154,
-                                                    orderNumberXML155,
+                                                    schedulerIdentity181,
+                                                    orderNumberXML182,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerCancelOrder")));
@@ -18677,18 +19508,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerCancelOrder
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerCancelOrder
-                    * @param schedulerCancelOrder153
+                    * @param schedulerCancelOrder180
                 
                 */
                 public  void startschedulerCancelOrder(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity154,java.lang.String orderNumberXML155,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity181,java.lang.String orderNumberXML182,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[63].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[66].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerCancelOrderRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18706,8 +19537,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerCancelOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity154,
-                                                    orderNumberXML155,
+                                                    schedulerIdentity181,
+                                                    orderNumberXML182,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerCancelOrder")));
@@ -18807,9 +19638,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[63].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[66].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[63].setMessageReceiver(
+          _operations[66].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -18822,7 +19653,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerRetrieveDeliveryWaveInstancesByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerRetrieveDeliveryWaveInstancesByCriteria
-                     * @param schedulerRetrieveDeliveryWaveInstancesByCriteria157
+                     * @param schedulerRetrieveDeliveryWaveInstancesByCriteria184
                     
                      */
 
@@ -18830,7 +19661,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance[] schedulerRetrieveDeliveryWaveInstancesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity158,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria159,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options160)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity185,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria186,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options187)
                         
 
                     throws java.rmi.RemoteException
@@ -18838,7 +19669,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[64].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[67].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveDeliveryWaveInstancesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18856,9 +19687,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstancesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity158,
-                                                    criteria159,
-                                                    options160,
+                                                    schedulerIdentity185,
+                                                    criteria186,
+                                                    options187,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveDeliveryWaveInstancesByCriteria")));
@@ -18943,18 +19774,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerRetrieveDeliveryWaveInstancesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerRetrieveDeliveryWaveInstancesByCriteria
-                    * @param schedulerRetrieveDeliveryWaveInstancesByCriteria157
+                    * @param schedulerRetrieveDeliveryWaveInstancesByCriteria184
                 
                 */
                 public  void startschedulerRetrieveDeliveryWaveInstancesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity158,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria159,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options160,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity185,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria criteria186,com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions options187,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[64].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[67].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveDeliveryWaveInstancesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -18972,9 +19803,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstancesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity158,
-                                                    criteria159,
-                                                    options160,
+                                                    schedulerIdentity185,
+                                                    criteria186,
+                                                    options187,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveDeliveryWaveInstancesByCriteria")));
@@ -19076,9 +19907,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[64].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[67].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[64].setMessageReceiver(
+          _operations[67].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -19091,7 +19922,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DeleteNotifications
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#deleteNotifications
-                     * @param deleteNotifications163
+                     * @param deleteNotifications190
                     
                      */
 
@@ -19099,7 +19930,7 @@
 
                             public  void deleteNotifications(
 
-                            com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities164)
+                            com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities191)
                         
 
                     throws java.rmi.RemoteException
@@ -19107,7 +19938,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[65].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[68].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteNotificationsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19125,7 +19956,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DeleteNotifications dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identities164,
+                                                    identities191,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteNotifications")));
@@ -19210,18 +20041,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DeleteNotifications
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdeleteNotifications
-                    * @param deleteNotifications163
+                    * @param deleteNotifications190
                 
                 */
                 public  void startdeleteNotifications(
 
-                 com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities164,
+                 com.freshdirect.routing.proxy.stub.transportation.NotificationIdentity[] identities191,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[65].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[68].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteNotificationsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19239,7 +20070,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DeleteNotifications dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identities164,
+                                                    identities191,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteNotifications")));
@@ -19339,9 +20170,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[65].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[68].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[65].setMessageReceiver(
+          _operations[68].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -19354,7 +20185,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingRouteByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingRouteByIdentity
-                     * @param retrieveRoutingRouteByIdentity166
+                     * @param retrieveRoutingRouteByIdentity193
                     
                      */
 
@@ -19362,7 +20193,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingRoute retrieveRoutingRouteByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity167,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options168)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity194,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options195)
                         
 
                     throws java.rmi.RemoteException
@@ -19370,7 +20201,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[66].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[69].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRouteByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19388,8 +20219,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRouteByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity167,
-                                                    options168,
+                                                    identity194,
+                                                    options195,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRouteByIdentity")));
@@ -19474,18 +20305,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingRouteByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingRouteByIdentity
-                    * @param retrieveRoutingRouteByIdentity166
+                    * @param retrieveRoutingRouteByIdentity193
                 
                 */
                 public  void startretrieveRoutingRouteByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity167,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options168,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteIdentity identity194,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options195,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[66].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[69].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRouteByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19503,8 +20334,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRouteByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity167,
-                                                    options168,
+                                                    identity194,
+                                                    options195,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRouteByIdentity")));
@@ -19606,9 +20437,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[66].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[69].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[66].setMessageReceiver(
+          _operations[69].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -19621,7 +20452,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveStopSurveyQuestions
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopSurveyQuestions
-                     * @param retrieveStopSurveyQuestions171
+                     * @param retrieveStopSurveyQuestions198
                     
                      */
 
@@ -19629,7 +20460,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyQuestionsResponse retrieveStopSurveyQuestions(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity172)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity199)
                         
 
                     throws java.rmi.RemoteException
@@ -19637,7 +20468,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[67].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[70].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSurveyQuestionsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19655,7 +20486,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyQuestions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity172,
+                                                    identity199,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSurveyQuestions")));
@@ -19740,18 +20571,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveStopSurveyQuestions
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopSurveyQuestions
-                    * @param retrieveStopSurveyQuestions171
+                    * @param retrieveStopSurveyQuestions198
                 
                 */
                 public  void startretrieveStopSurveyQuestions(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity172,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity199,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[67].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[70].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSurveyQuestionsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19769,7 +20600,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyQuestions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity172,
+                                                    identity199,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSurveyQuestions")));
@@ -19871,9 +20702,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[67].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[70].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[67].setMessageReceiver(
+          _operations[70].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -19886,7 +20717,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveEmployee
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveEmployee
-                     * @param saveEmployee176
+                     * @param saveEmployee203
                     
                      */
 
@@ -19894,7 +20725,7 @@
 
                             public  void saveEmployee(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Employee employee177)
+                            com.freshdirect.routing.proxy.stub.transportation.Employee employee204)
                         
 
                     throws java.rmi.RemoteException
@@ -19902,7 +20733,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[68].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[71].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveEmployeeRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -19920,7 +20751,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveEmployee dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    employee177,
+                                                    employee204,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveEmployee")));
@@ -20005,18 +20836,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveEmployee
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveEmployee
-                    * @param saveEmployee176
+                    * @param saveEmployee203
                 
                 */
                 public  void startsaveEmployee(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Employee employee177,
+                 com.freshdirect.routing.proxy.stub.transportation.Employee employee204,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[68].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[71].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveEmployeeRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20034,7 +20865,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveEmployee dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    employee177,
+                                                    employee204,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveEmployee")));
@@ -20134,9 +20965,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[68].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[71].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[68].setMessageReceiver(
+          _operations[71].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -20149,7 +20980,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveDutyPeriodsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveDutyPeriodsByCriteria
-                     * @param retrieveDutyPeriodsByCriteria179
+                     * @param retrieveDutyPeriodsByCriteria206
                     
                      */
 
@@ -20157,7 +20988,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DutyPeriod[] retrieveDutyPeriodsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria180,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options181)
+                            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria207,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options208)
                         
 
                     throws java.rmi.RemoteException
@@ -20165,7 +20996,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[69].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[72].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDutyPeriodsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20183,8 +21014,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDutyPeriodsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria180,
-                                                    options181,
+                                                    criteria207,
+                                                    options208,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDutyPeriodsByCriteria")));
@@ -20269,18 +21100,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveDutyPeriodsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveDutyPeriodsByCriteria
-                    * @param retrieveDutyPeriodsByCriteria179
+                    * @param retrieveDutyPeriodsByCriteria206
                 
                 */
                 public  void startretrieveDutyPeriodsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria180,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options181,
+                 com.freshdirect.routing.proxy.stub.transportation.DutyPeriodCriteria criteria207,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options208,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[69].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[72].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDutyPeriodsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20298,8 +21129,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDutyPeriodsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria180,
-                                                    options181,
+                                                    criteria207,
+                                                    options208,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDutyPeriodsByCriteria")));
@@ -20401,9 +21232,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[69].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[72].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[69].setMessageReceiver(
+          _operations[72].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -20416,7 +21247,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerSaveDeliveryWindow
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerSaveDeliveryWindow
-                     * @param schedulerSaveDeliveryWindow184
+                     * @param schedulerSaveDeliveryWindow211
                     
                      */
 
@@ -20424,7 +21255,7 @@
 
                             public  boolean schedulerSaveDeliveryWindow(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity185,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options186)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity212,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options213)
                         
 
                     throws java.rmi.RemoteException
@@ -20432,7 +21263,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[70].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[73].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSaveDeliveryWindowRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20450,8 +21281,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindow dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity185,
-                                                    options186,
+                                                    schedulerIdentity212,
+                                                    options213,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSaveDeliveryWindow")));
@@ -20536,18 +21367,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerSaveDeliveryWindow
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerSaveDeliveryWindow
-                    * @param schedulerSaveDeliveryWindow184
+                    * @param schedulerSaveDeliveryWindow211
                 
                 */
                 public  void startschedulerSaveDeliveryWindow(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity185,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options186,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity212,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindowOptions options213,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[70].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[73].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSaveDeliveryWindowRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20565,8 +21396,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWindow dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity185,
-                                                    options186,
+                                                    schedulerIdentity212,
+                                                    options213,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSaveDeliveryWindow")));
@@ -20668,9 +21499,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[70].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[73].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[70].setMessageReceiver(
+          _operations[73].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -20683,7 +21514,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEquipmentByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEquipmentByIdentity
-                     * @param retrieveEquipmentByIdentity189
+                     * @param retrieveEquipmentByIdentity216
                     
                      */
 
@@ -20691,7 +21522,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Equipment retrieveEquipmentByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity190,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options191)
+                            com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity217,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options218)
                         
 
                     throws java.rmi.RemoteException
@@ -20699,7 +21530,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[71].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[74].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20717,8 +21548,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity190,
-                                                    options191,
+                                                    identity217,
+                                                    options218,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentByIdentity")));
@@ -20803,18 +21634,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEquipmentByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEquipmentByIdentity
-                    * @param retrieveEquipmentByIdentity189
+                    * @param retrieveEquipmentByIdentity216
                 
                 */
                 public  void startretrieveEquipmentByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity190,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options191,
+                 com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity identity217,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options218,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[71].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[74].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20832,8 +21663,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity190,
-                                                    options191,
+                                                    identity217,
+                                                    options218,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentByIdentity")));
@@ -20935,9 +21766,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[71].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[74].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[71].setMessageReceiver(
+          _operations[74].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -20950,7 +21781,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SendTextMessageToDriver
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#sendTextMessageToDriver
-                     * @param sendTextMessageToDriver194
+                     * @param sendTextMessageToDriver221
                     
                      */
 
@@ -20958,7 +21789,7 @@
 
                             public  void sendTextMessageToDriver(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity195,java.lang.String message196,java.lang.String fromUserID197)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity222,java.lang.String message223,java.lang.String fromUserID224)
                         
 
                     throws java.rmi.RemoteException
@@ -20966,7 +21797,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[72].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[75].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SendTextMessageToDriverRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -20984,9 +21815,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SendTextMessageToDriver dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity195,
-                                                    message196,
-                                                    fromUserID197,
+                                                    identity222,
+                                                    message223,
+                                                    fromUserID224,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "sendTextMessageToDriver")));
@@ -21071,18 +21902,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SendTextMessageToDriver
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsendTextMessageToDriver
-                    * @param sendTextMessageToDriver194
+                    * @param sendTextMessageToDriver221
                 
                 */
                 public  void startsendTextMessageToDriver(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity195,java.lang.String message196,java.lang.String fromUserID197,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity222,java.lang.String message223,java.lang.String fromUserID224,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[72].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[75].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SendTextMessageToDriverRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21100,9 +21931,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SendTextMessageToDriver dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity195,
-                                                    message196,
-                                                    fromUserID197,
+                                                    identity222,
+                                                    message223,
+                                                    fromUserID224,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "sendTextMessageToDriver")));
@@ -21202,9 +22033,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[72].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[75].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[72].setMessageReceiver(
+          _operations[75].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -21217,7 +22048,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerRetrieveOrderByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerRetrieveOrderByIdentity
-                     * @param schedulerRetrieveOrderByIdentity199
+                     * @param schedulerRetrieveOrderByIdentity226
                     
                      */
 
@@ -21225,7 +22056,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder schedulerRetrieveOrderByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity200,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options201)
+                            com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity227,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options228)
                         
 
                     throws java.rmi.RemoteException
@@ -21233,7 +22064,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[73].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[76].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveOrderByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21251,8 +22082,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity200,
-                                                    options201,
+                                                    identity227,
+                                                    options228,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveOrderByIdentity")));
@@ -21337,18 +22168,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerRetrieveOrderByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerRetrieveOrderByIdentity
-                    * @param schedulerRetrieveOrderByIdentity199
+                    * @param schedulerRetrieveOrderByIdentity226
                 
                 */
                 public  void startschedulerRetrieveOrderByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity200,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options201,
+                 com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity identity227,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions options228,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[73].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[76].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerRetrieveOrderByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21366,8 +22197,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity200,
-                                                    options201,
+                                                    identity227,
+                                                    options228,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerRetrieveOrderByIdentity")));
@@ -21469,9 +22300,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[73].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[76].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[73].setMessageReceiver(
+          _operations[76].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -21484,7 +22315,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveAssignedEquipment
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveAssignedEquipment
-                     * @param retrieveAssignedEquipment204
+                     * @param retrieveAssignedEquipment231
                     
                      */
 
@@ -21492,7 +22323,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] retrieveAssignedEquipment(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity205)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity232)
                         
 
                     throws java.rmi.RemoteException
@@ -21500,7 +22331,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[74].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[77].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveAssignedEquipmentRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21518,7 +22349,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveAssignedEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity205,
+                                                    identity232,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveAssignedEquipment")));
@@ -21603,18 +22434,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveAssignedEquipment
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveAssignedEquipment
-                    * @param retrieveAssignedEquipment204
+                    * @param retrieveAssignedEquipment231
                 
                 */
                 public  void startretrieveAssignedEquipment(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity205,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity232,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[74].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[77].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveAssignedEquipmentRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21632,7 +22463,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveAssignedEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity205,
+                                                    identity232,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveAssignedEquipment")));
@@ -21734,9 +22565,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[74].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[77].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[74].setMessageReceiver(
+          _operations[77].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -21749,7 +22580,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveStopSurveyResults
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopSurveyResults
-                     * @param retrieveStopSurveyResults208
+                     * @param retrieveStopSurveyResults235
                     
                      */
 
@@ -21757,7 +22588,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] retrieveStopSurveyResults(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity209)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity236)
                         
 
                     throws java.rmi.RemoteException
@@ -21765,7 +22596,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[75].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[78].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSurveyResultsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21783,7 +22614,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity209,
+                                                    identity236,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSurveyResults")));
@@ -21868,18 +22699,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveStopSurveyResults
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopSurveyResults
-                    * @param retrieveStopSurveyResults208
+                    * @param retrieveStopSurveyResults235
                 
                 */
                 public  void startretrieveStopSurveyResults(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity209,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity236,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[75].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[78].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopSurveyResultsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -21897,7 +22728,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity209,
+                                                    identity236,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopSurveyResults")));
@@ -21999,9 +22830,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[75].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[78].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[75].setMessageReceiver(
+          _operations[78].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -22014,7 +22845,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveLocationByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveLocationByIdentity
-                     * @param retrieveLocationByIdentity212
+                     * @param retrieveLocationByIdentity239
                     
                      */
 
@@ -22022,7 +22853,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location retrieveLocationByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity213)
+                            com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity240)
                         
 
                     throws java.rmi.RemoteException
@@ -22030,7 +22861,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[76].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[79].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22048,7 +22879,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity213,
+                                                    identity240,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationByIdentity")));
@@ -22133,18 +22964,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveLocationByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveLocationByIdentity
-                    * @param retrieveLocationByIdentity212
+                    * @param retrieveLocationByIdentity239
                 
                 */
                 public  void startretrieveLocationByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity213,
+                 com.freshdirect.routing.proxy.stub.transportation.LocationIdentity identity240,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[76].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[79].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22162,7 +22993,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity213,
+                                                    identity240,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationByIdentity")));
@@ -22264,9 +23095,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[76].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[79].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[76].setMessageReceiver(
+          _operations[79].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -22279,7 +23110,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRoutingImportOrdersEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRoutingImportOrdersEx
-                     * @param saveRoutingImportOrdersEx216
+                     * @param saveRoutingImportOrdersEx243
                     
                      */
 
@@ -22287,7 +23118,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] saveRoutingImportOrdersEx(
 
-                            java.lang.String regionId217,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders218,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions219,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions220)
+                            java.lang.String regionId244,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders245,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions246,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions247)
                         
 
                     throws java.rmi.RemoteException
@@ -22295,7 +23126,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[77].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[80].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRoutingImportOrdersExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22313,10 +23144,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId217,
-                                                    orders218,
-                                                    tzOptions219,
-                                                    importOptions220,
+                                                    regionId244,
+                                                    orders245,
+                                                    tzOptions246,
+                                                    importOptions247,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoutingImportOrdersEx")));
@@ -22401,18 +23232,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRoutingImportOrdersEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRoutingImportOrdersEx
-                    * @param saveRoutingImportOrdersEx216
+                    * @param saveRoutingImportOrdersEx243
                 
                 */
                 public  void startsaveRoutingImportOrdersEx(
 
-                 java.lang.String regionId217,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders218,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions219,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions220,
+                 java.lang.String regionId244,com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] orders245,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions246,com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersExOptions importOptions247,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[77].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[80].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRoutingImportOrdersExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22430,10 +23261,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRoutingImportOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionId217,
-                                                    orders218,
-                                                    tzOptions219,
-                                                    importOptions220,
+                                                    regionId244,
+                                                    orders245,
+                                                    tzOptions246,
+                                                    importOptions247,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoutingImportOrdersEx")));
@@ -22535,9 +23366,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[77].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[80].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[77].setMessageReceiver(
+          _operations[80].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -22550,7 +23381,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerExtendOrderReservation
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerExtendOrderReservation
-                     * @param schedulerExtendOrderReservation223
+                     * @param schedulerExtendOrderReservation250
                     
                      */
 
@@ -22558,7 +23389,7 @@
 
                             public  void schedulerExtendOrderReservation(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity224,java.lang.String orderNumberXML225,int extendMinutes226)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity251,java.lang.String orderNumberXML252,int extendMinutes253)
                         
 
                     throws java.rmi.RemoteException
@@ -22566,7 +23397,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[78].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[81].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerExtendOrderReservationRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22584,9 +23415,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerExtendOrderReservation dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity224,
-                                                    orderNumberXML225,
-                                                    extendMinutes226,
+                                                    schedulerIdentity251,
+                                                    orderNumberXML252,
+                                                    extendMinutes253,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerExtendOrderReservation")));
@@ -22671,18 +23502,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerExtendOrderReservation
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerExtendOrderReservation
-                    * @param schedulerExtendOrderReservation223
+                    * @param schedulerExtendOrderReservation250
                 
                 */
                 public  void startschedulerExtendOrderReservation(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity224,java.lang.String orderNumberXML225,int extendMinutes226,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity251,java.lang.String orderNumberXML252,int extendMinutes253,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[78].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[81].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerExtendOrderReservationRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22700,9 +23531,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerExtendOrderReservation dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity224,
-                                                    orderNumberXML225,
-                                                    extendMinutes226,
+                                                    schedulerIdentity251,
+                                                    orderNumberXML252,
+                                                    extendMinutes253,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerExtendOrderReservation")));
@@ -22802,9 +23633,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[78].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[81].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[78].setMessageReceiver(
+          _operations[81].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -22817,7 +23648,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRegionConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRegionConfig
-                     * @param retrieveRegionConfig228
+                     * @param retrieveRegionConfig255
                     
                      */
 
@@ -22825,7 +23656,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveRegionConfig(
 
-                            java.lang.String applicationID229,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity230,java.lang.String configGroupID231)
+                            java.lang.String applicationID256,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity257,java.lang.String configGroupID258)
                         
 
                     throws java.rmi.RemoteException
@@ -22833,7 +23664,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[79].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[82].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22851,9 +23682,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID229,
-                                                    regionIdentity230,
-                                                    configGroupID231,
+                                                    applicationID256,
+                                                    regionIdentity257,
+                                                    configGroupID258,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionConfig")));
@@ -22938,18 +23769,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRegionConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRegionConfig
-                    * @param retrieveRegionConfig228
+                    * @param retrieveRegionConfig255
                 
                 */
                 public  void startretrieveRegionConfig(
 
-                 java.lang.String applicationID229,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity230,java.lang.String configGroupID231,
+                 java.lang.String applicationID256,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity257,java.lang.String configGroupID258,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[79].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[82].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -22967,9 +23798,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID229,
-                                                    regionIdentity230,
-                                                    configGroupID231,
+                                                    applicationID256,
+                                                    regionIdentity257,
+                                                    configGroupID258,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionConfig")));
@@ -23071,9 +23902,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[79].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[82].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[79].setMessageReceiver(
+          _operations[82].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -23086,7 +23917,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerSendRoutesToRoadnetEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerSendRoutesToRoadnetEx
-                     * @param schedulerSendRoutesToRoadnetEx234
+                     * @param schedulerSendRoutesToRoadnetEx261
                     
                      */
 
@@ -23094,7 +23925,7 @@
 
                             public  void schedulerSendRoutesToRoadnetEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity235,java.lang.String sessionDescription236)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity262,java.lang.String sessionDescription263)
                         
 
                     throws java.rmi.RemoteException
@@ -23102,7 +23933,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[80].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[83].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSendRoutesToRoadnetExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23120,8 +23951,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSendRoutesToRoadnetEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity235,
-                                                    sessionDescription236,
+                                                    schedulerIdentity262,
+                                                    sessionDescription263,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSendRoutesToRoadnetEx")));
@@ -23206,18 +24037,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerSendRoutesToRoadnetEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerSendRoutesToRoadnetEx
-                    * @param schedulerSendRoutesToRoadnetEx234
+                    * @param schedulerSendRoutesToRoadnetEx261
                 
                 */
                 public  void startschedulerSendRoutesToRoadnetEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity235,java.lang.String sessionDescription236,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity262,java.lang.String sessionDescription263,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[80].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[83].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSendRoutesToRoadnetExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23235,8 +24066,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSendRoutesToRoadnetEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity235,
-                                                    sessionDescription236,
+                                                    schedulerIdentity262,
+                                                    sessionDescription263,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSendRoutesToRoadnetEx")));
@@ -23336,9 +24167,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[80].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[83].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[80].setMessageReceiver(
+          _operations[83].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -23351,7 +24182,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerOptimizeOrders
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerOptimizeOrders
-                     * @param schedulerOptimizeOrders238
+                     * @param schedulerOptimizeOrders265
                     
                      */
 
@@ -23359,7 +24190,7 @@
 
                             public  void schedulerOptimizeOrders(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity239)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity266)
                         
 
                     throws java.rmi.RemoteException
@@ -23367,7 +24198,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[81].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[84].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerOptimizeOrdersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23385,7 +24216,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity239,
+                                                    schedulerIdentity266,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerOptimizeOrders")));
@@ -23470,18 +24301,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerOptimizeOrders
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerOptimizeOrders
-                    * @param schedulerOptimizeOrders238
+                    * @param schedulerOptimizeOrders265
                 
                 */
                 public  void startschedulerOptimizeOrders(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity239,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity266,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[81].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[84].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerOptimizeOrdersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23499,7 +24330,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity239,
+                                                    schedulerIdentity266,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerOptimizeOrders")));
@@ -23599,9 +24430,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[81].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[84].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[81].setMessageReceiver(
+          _operations[84].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -23614,7 +24445,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerSendRoutesToRoadnet
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerSendRoutesToRoadnet
-                     * @param schedulerSendRoutesToRoadnet241
+                     * @param schedulerSendRoutesToRoadnet268
                     
                      */
 
@@ -23622,7 +24453,7 @@
 
                             public  void schedulerSendRoutesToRoadnet(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity242)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity269)
                         
 
                     throws java.rmi.RemoteException
@@ -23630,7 +24461,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[82].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[85].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSendRoutesToRoadnetRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23648,7 +24479,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSendRoutesToRoadnet dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity242,
+                                                    schedulerIdentity269,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSendRoutesToRoadnet")));
@@ -23733,18 +24564,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerSendRoutesToRoadnet
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerSendRoutesToRoadnet
-                    * @param schedulerSendRoutesToRoadnet241
+                    * @param schedulerSendRoutesToRoadnet268
                 
                 */
                 public  void startschedulerSendRoutesToRoadnet(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity242,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity269,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[82].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[85].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSendRoutesToRoadnetRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23762,7 +24593,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSendRoutesToRoadnet dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity242,
+                                                    schedulerIdentity269,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSendRoutesToRoadnet")));
@@ -23862,9 +24693,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[82].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[85].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[82].setMessageReceiver(
+          _operations[85].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -23877,7 +24708,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__AssignDrivers
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#assignDrivers
-                     * @param assignDrivers244
+                     * @param assignDrivers271
                     
                      */
 
@@ -23885,7 +24716,7 @@
 
                             public  void assignDrivers(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity245,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers246)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity272,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers273)
                         
 
                     throws java.rmi.RemoteException
@@ -23893,7 +24724,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[83].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[86].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AssignDriversRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -23911,8 +24742,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.AssignDrivers dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity245,
-                                                    drivers246,
+                                                    identity272,
+                                                    drivers273,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "assignDrivers")));
@@ -23997,18 +24828,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__AssignDrivers
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startassignDrivers
-                    * @param assignDrivers244
+                    * @param assignDrivers271
                 
                 */
                 public  void startassignDrivers(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity245,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers246,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity272,com.freshdirect.routing.proxy.stub.transportation.EmployeeIdentity[] drivers273,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[83].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[86].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AssignDriversRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24026,8 +24857,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.AssignDrivers dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity245,
-                                                    drivers246,
+                                                    identity272,
+                                                    drivers273,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "assignDrivers")));
@@ -24127,9 +24958,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[83].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[86].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[83].setMessageReceiver(
+          _operations[86].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -24142,7 +24973,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingLocationsWithOrdersEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingLocationsWithOrdersEx
-                     * @param retrieveRoutingLocationsWithOrdersEx248
+                     * @param retrieveRoutingLocationsWithOrdersEx275
                     
                      */
 
@@ -24150,7 +24981,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveRoutingLocationsWithOrdersEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity249,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options250)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity276,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options277)
                         
 
                     throws java.rmi.RemoteException
@@ -24158,7 +24989,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[84].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[87].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingLocationsWithOrdersExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24176,8 +25007,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingLocationsWithOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity249,
-                                                    options250,
+                                                    sessionIdentity276,
+                                                    options277,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingLocationsWithOrdersEx")));
@@ -24262,18 +25093,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingLocationsWithOrdersEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingLocationsWithOrdersEx
-                    * @param retrieveRoutingLocationsWithOrdersEx248
+                    * @param retrieveRoutingLocationsWithOrdersEx275
                 
                 */
                 public  void startretrieveRoutingLocationsWithOrdersEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity249,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options250,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity sessionIdentity276,com.freshdirect.routing.proxy.stub.transportation.LocationRetrieveOptions options277,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[84].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[87].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingLocationsWithOrdersExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24291,8 +25122,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingLocationsWithOrdersEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sessionIdentity249,
-                                                    options250,
+                                                    sessionIdentity276,
+                                                    options277,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingLocationsWithOrdersEx")));
@@ -24394,9 +25225,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[84].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[87].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[84].setMessageReceiver(
+          _operations[87].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -24409,7 +25240,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRoute
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRoute
-                     * @param saveRoute253
+                     * @param saveRoute280
                     
                      */
 
@@ -24417,7 +25248,7 @@
 
                             public  void saveRoute(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Route route254,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions255,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions256)
+                            com.freshdirect.routing.proxy.stub.transportation.Route route281,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions282,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions283)
                         
 
                     throws java.rmi.RemoteException
@@ -24425,7 +25256,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[85].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[88].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRouteRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24443,9 +25274,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    route254,
-                                                    placementOptions255,
-                                                    timeZoneOptions256,
+                                                    route281,
+                                                    placementOptions282,
+                                                    timeZoneOptions283,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoute")));
@@ -24530,18 +25361,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRoute
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRoute
-                    * @param saveRoute253
+                    * @param saveRoute280
                 
                 */
                 public  void startsaveRoute(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Route route254,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions255,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions256,
+                 com.freshdirect.routing.proxy.stub.transportation.Route route281,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementOptions282,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions283,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[85].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[88].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRouteRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24559,9 +25390,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    route254,
-                                                    placementOptions255,
-                                                    timeZoneOptions256,
+                                                    route281,
+                                                    placementOptions282,
+                                                    timeZoneOptions283,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRoute")));
@@ -24661,9 +25492,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[85].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[88].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[85].setMessageReceiver(
+          _operations[88].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -24676,7 +25507,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveEquipment
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveEquipment
-                     * @param saveEquipment258
+                     * @param saveEquipment285
                     
                      */
 
@@ -24684,7 +25515,7 @@
 
                             public  void saveEquipment(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Equipment equipment259,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options260)
+                            com.freshdirect.routing.proxy.stub.transportation.Equipment equipment286,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options287)
                         
 
                     throws java.rmi.RemoteException
@@ -24692,7 +25523,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[86].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[89].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveEquipmentRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24710,8 +25541,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    equipment259,
-                                                    options260,
+                                                    equipment286,
+                                                    options287,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveEquipment")));
@@ -24796,18 +25627,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveEquipment
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveEquipment
-                    * @param saveEquipment258
+                    * @param saveEquipment285
                 
                 */
                 public  void startsaveEquipment(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Equipment equipment259,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options260,
+                 com.freshdirect.routing.proxy.stub.transportation.Equipment equipment286,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options287,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[86].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[89].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveEquipmentRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24825,8 +25656,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    equipment259,
-                                                    options260,
+                                                    equipment286,
+                                                    options287,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveEquipment")));
@@ -24926,9 +25757,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[86].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[89].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[86].setMessageReceiver(
+          _operations[89].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -24941,7 +25772,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveStopByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopByIdentity
-                     * @param retrieveStopByIdentity262
+                     * @param retrieveStopByIdentity289
                     
                      */
 
@@ -24949,7 +25780,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Stop retrieveStopByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity263,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options264)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity290,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options291)
                         
 
                     throws java.rmi.RemoteException
@@ -24957,7 +25788,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[87].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[90].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -24975,8 +25806,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity263,
-                                                    options264,
+                                                    identity290,
+                                                    options291,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopByIdentity")));
@@ -25061,18 +25892,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveStopByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopByIdentity
-                    * @param retrieveStopByIdentity262
+                    * @param retrieveStopByIdentity289
                 
                 */
                 public  void startretrieveStopByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity263,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options264,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity290,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options291,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[87].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[90].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25090,8 +25921,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity263,
-                                                    options264,
+                                                    identity290,
+                                                    options291,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopByIdentity")));
@@ -25193,9 +26024,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[87].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[90].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[87].setMessageReceiver(
+          _operations[90].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -25208,7 +26039,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__BulkArriveDepartStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#bulkArriveDepartStop
-                     * @param bulkArriveDepartStop267
+                     * @param bulkArriveDepartStop294
                     
                      */
 
@@ -25216,7 +26047,7 @@
 
                             public  void bulkArriveDepartStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos268)
+                            com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos295)
                         
 
                     throws java.rmi.RemoteException
@@ -25224,7 +26055,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[88].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[91].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/BulkArriveDepartStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25242,7 +26073,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    arriveDepartInfos268,
+                                                    arriveDepartInfos295,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "bulkArriveDepartStop")));
@@ -25327,18 +26158,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__BulkArriveDepartStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startbulkArriveDepartStop
-                    * @param bulkArriveDepartStop267
+                    * @param bulkArriveDepartStop294
                 
                 */
                 public  void startbulkArriveDepartStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos268,
+                 com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartInfo[] arriveDepartInfos295,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[88].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[91].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/BulkArriveDepartStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25356,7 +26187,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.BulkArriveDepartStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    arriveDepartInfos268,
+                                                    arriveDepartInfos295,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "bulkArriveDepartStop")));
@@ -25456,9 +26287,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[88].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[91].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[88].setMessageReceiver(
+          _operations[91].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -25471,7 +26302,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingSessionsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingSessionsByCriteria
-                     * @param retrieveRoutingSessionsByCriteria270
+                     * @param retrieveRoutingSessionsByCriteria297
                     
                      */
 
@@ -25479,7 +26310,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingSession[] retrieveRoutingSessionsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria271,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options272)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria298,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options299)
                         
 
                     throws java.rmi.RemoteException
@@ -25487,7 +26318,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[89].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[92].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSessionsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25505,8 +26336,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSessionsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria271,
-                                                    options272,
+                                                    criteria298,
+                                                    options299,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSessionsByCriteria")));
@@ -25591,18 +26422,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingSessionsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingSessionsByCriteria
-                    * @param retrieveRoutingSessionsByCriteria270
+                    * @param retrieveRoutingSessionsByCriteria297
                 
                 */
                 public  void startretrieveRoutingSessionsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria271,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options272,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionCriteria criteria298,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options299,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[89].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[92].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSessionsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25620,8 +26451,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSessionsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria271,
-                                                    options272,
+                                                    criteria298,
+                                                    options299,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSessionsByCriteria")));
@@ -25723,9 +26554,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[89].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[92].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[89].setMessageReceiver(
+          _operations[92].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -25738,7 +26569,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingUnassignsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingUnassignsByCriteria
-                     * @param retrieveRoutingUnassignsByCriteria275
+                     * @param retrieveRoutingUnassignsByCriteria302
                     
                      */
 
@@ -25746,7 +26577,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingStop[] retrieveRoutingUnassignsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria276,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options277)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria303,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options304)
                         
 
                     throws java.rmi.RemoteException
@@ -25754,7 +26585,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[90].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[93].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingUnassignsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25772,8 +26603,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingUnassignsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria276,
-                                                    options277,
+                                                    criteria303,
+                                                    options304,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingUnassignsByCriteria")));
@@ -25858,18 +26689,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingUnassignsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingUnassignsByCriteria
-                    * @param retrieveRoutingUnassignsByCriteria275
+                    * @param retrieveRoutingUnassignsByCriteria302
                 
                 */
                 public  void startretrieveRoutingUnassignsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria276,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options277,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria303,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options304,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[90].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[93].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingUnassignsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -25887,8 +26718,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingUnassignsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria276,
-                                                    options277,
+                                                    criteria303,
+                                                    options304,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingUnassignsByCriteria")));
@@ -25990,9 +26821,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[90].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[93].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[90].setMessageReceiver(
+          _operations[93].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -26005,7 +26836,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingImportOrdersByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingImportOrdersByCriteria
-                     * @param retrieveRoutingImportOrdersByCriteria280
+                     * @param retrieveRoutingImportOrdersByCriteria307
                     
                      */
 
@@ -26013,7 +26844,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder[] retrieveRoutingImportOrdersByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria281,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions282)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria308,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions309)
                         
 
                     throws java.rmi.RemoteException
@@ -26021,7 +26852,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[91].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[94].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingImportOrdersByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26039,8 +26870,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingImportOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria281,
-                                                    tzOptions282,
+                                                    criteria308,
+                                                    tzOptions309,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingImportOrdersByCriteria")));
@@ -26125,18 +26956,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingImportOrdersByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingImportOrdersByCriteria
-                    * @param retrieveRoutingImportOrdersByCriteria280
+                    * @param retrieveRoutingImportOrdersByCriteria307
                 
                 */
                 public  void startretrieveRoutingImportOrdersByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria281,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions282,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrderCriteria criteria308,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions tzOptions309,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[91].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[94].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingImportOrdersByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26154,8 +26985,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingImportOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria281,
-                                                    tzOptions282,
+                                                    criteria308,
+                                                    tzOptions309,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingImportOrdersByCriteria")));
@@ -26257,9 +27088,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[91].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[94].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[91].setMessageReceiver(
+          _operations[94].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -26272,7 +27103,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__Nop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#nop
-                     * @param nop285
+                     * @param nop312
                     
                      */
 
@@ -26288,7 +27119,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[92].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[95].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/NopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26390,7 +27221,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__Nop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startnop
-                    * @param nop285
+                    * @param nop312
                 
                 */
                 public  void startnop(
@@ -26401,7 +27232,7 @@
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[92].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[95].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/NopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26520,9 +27351,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[92].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[95].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[92].setMessageReceiver(
+          _operations[95].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -26535,7 +27366,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ChangeUserPassword
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#changeUserPassword
-                     * @param changeUserPassword288
+                     * @param changeUserPassword315
                     
                      */
 
@@ -26543,7 +27374,7 @@
 
                             public  void changeUserPassword(
 
-                            java.lang.String userID289,java.lang.String oldPassword290,java.lang.String newPassword291)
+                            java.lang.String userID316,java.lang.String oldPassword317,java.lang.String newPassword318)
                         
 
                     throws java.rmi.RemoteException
@@ -26551,7 +27382,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[93].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[96].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ChangeUserPasswordRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26569,9 +27400,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ChangeUserPassword dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID289,
-                                                    oldPassword290,
-                                                    newPassword291,
+                                                    userID316,
+                                                    oldPassword317,
+                                                    newPassword318,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "changeUserPassword")));
@@ -26656,18 +27487,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ChangeUserPassword
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startchangeUserPassword
-                    * @param changeUserPassword288
+                    * @param changeUserPassword315
                 
                 */
                 public  void startchangeUserPassword(
 
-                 java.lang.String userID289,java.lang.String oldPassword290,java.lang.String newPassword291,
+                 java.lang.String userID316,java.lang.String oldPassword317,java.lang.String newPassword318,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[93].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[96].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ChangeUserPasswordRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26685,9 +27516,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ChangeUserPassword dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    userID289,
-                                                    oldPassword290,
-                                                    newPassword291,
+                                                    userID316,
+                                                    oldPassword317,
+                                                    newPassword318,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "changeUserPassword")));
@@ -26787,9 +27618,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[93].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[96].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[93].setMessageReceiver(
+          _operations[96].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -26802,7 +27633,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__CompleteRoute
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#completeRoute
-                     * @param completeRoute293
+                     * @param completeRoute320
                     
                      */
 
@@ -26810,7 +27641,7 @@
 
                             public  void completeRoute(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info294)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info321)
                         
 
                     throws java.rmi.RemoteException
@@ -26818,7 +27649,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[94].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[97].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CompleteRouteRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26836,7 +27667,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.CompleteRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info294,
+                                                    info321,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "completeRoute")));
@@ -26921,18 +27752,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__CompleteRoute
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startcompleteRoute
-                    * @param completeRoute293
+                    * @param completeRoute320
                 
                 */
                 public  void startcompleteRoute(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info294,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteCompleteInfo info321,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[94].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[97].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/CompleteRouteRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -26950,7 +27781,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.CompleteRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info294,
+                                                    info321,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "completeRoute")));
@@ -27050,9 +27881,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[94].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[97].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[94].setMessageReceiver(
+          _operations[97].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -27065,7 +27896,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerExcludeCutoffRoutes
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerExcludeCutoffRoutes
-                     * @param schedulerExcludeCutoffRoutes296
+                     * @param schedulerExcludeCutoffRoutes323
                     
                      */
 
@@ -27073,7 +27904,7 @@
 
                             public  void schedulerExcludeCutoffRoutes(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity297,boolean excludeXML298)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity324,boolean excludeXML325)
                         
 
                     throws java.rmi.RemoteException
@@ -27081,7 +27912,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[95].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[98].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerExcludeCutoffRoutesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27099,8 +27930,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerExcludeCutoffRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity297,
-                                                    excludeXML298,
+                                                    schedulerIdentity324,
+                                                    excludeXML325,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerExcludeCutoffRoutes")));
@@ -27185,18 +28016,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerExcludeCutoffRoutes
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerExcludeCutoffRoutes
-                    * @param schedulerExcludeCutoffRoutes296
+                    * @param schedulerExcludeCutoffRoutes323
                 
                 */
                 public  void startschedulerExcludeCutoffRoutes(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity297,boolean excludeXML298,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity324,boolean excludeXML325,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[95].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[98].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerExcludeCutoffRoutesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27214,8 +28045,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerExcludeCutoffRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity297,
-                                                    excludeXML298,
+                                                    schedulerIdentity324,
+                                                    excludeXML325,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerExcludeCutoffRoutes")));
@@ -27315,9 +28146,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[95].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[98].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[95].setMessageReceiver(
+          _operations[98].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -27330,7 +28161,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingOrderByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingOrderByIdentity
-                     * @param retrieveRoutingOrderByIdentity300
+                     * @param retrieveRoutingOrderByIdentity327
                     
                      */
 
@@ -27338,7 +28169,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingOrder retrieveRoutingOrderByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity301,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options302)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity328,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options329)
                         
 
                     throws java.rmi.RemoteException
@@ -27346,7 +28177,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[96].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[99].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingOrderByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27364,8 +28195,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity301,
-                                                    options302,
+                                                    identity328,
+                                                    options329,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingOrderByIdentity")));
@@ -27450,18 +28281,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingOrderByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingOrderByIdentity
-                    * @param retrieveRoutingOrderByIdentity300
+                    * @param retrieveRoutingOrderByIdentity327
                 
                 */
                 public  void startretrieveRoutingOrderByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity301,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options302,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingOrderIdentity identity328,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options329,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[96].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[99].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingOrderByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27479,8 +28310,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingOrderByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity301,
-                                                    options302,
+                                                    identity328,
+                                                    options329,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingOrderByIdentity")));
@@ -27582,9 +28413,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[96].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[99].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[96].setMessageReceiver(
+          _operations[99].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -27597,7 +28428,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__TextMessage
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#textMessage
-                     * @param textMessage305
+                     * @param textMessage332
                     
                      */
 
@@ -27605,7 +28436,7 @@
 
                             public  void textMessage(
 
-                            com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info306)
+                            com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info333)
                         
 
                     throws java.rmi.RemoteException
@@ -27613,7 +28444,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[97].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[100].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/TextMessageRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27631,7 +28462,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.TextMessage dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info306,
+                                                    info333,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "textMessage")));
@@ -27716,18 +28547,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__TextMessage
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#starttextMessage
-                    * @param textMessage305
+                    * @param textMessage332
                 
                 */
                 public  void starttextMessage(
 
-                 com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info306,
+                 com.freshdirect.routing.proxy.stub.transportation.TextMessageInfo info333,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[97].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[100].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/TextMessageRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27745,7 +28576,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.TextMessage dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info306,
+                                                    info333,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "textMessage")));
@@ -27845,9 +28676,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[97].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[100].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[97].setMessageReceiver(
+          _operations[100].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -27860,7 +28691,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingStopsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingStopsByCriteria
-                     * @param retrieveRoutingStopsByCriteria308
+                     * @param retrieveRoutingStopsByCriteria335
                     
                      */
 
@@ -27868,7 +28699,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingStop[] retrieveRoutingStopsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria309,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options310)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria336,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options337)
                         
 
                     throws java.rmi.RemoteException
@@ -27876,7 +28707,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[98].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[101].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingStopsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -27894,8 +28725,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingStopsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria309,
-                                                    options310,
+                                                    criteria336,
+                                                    options337,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingStopsByCriteria")));
@@ -27980,18 +28811,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingStopsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingStopsByCriteria
-                    * @param retrieveRoutingStopsByCriteria308
+                    * @param retrieveRoutingStopsByCriteria335
                 
                 */
                 public  void startretrieveRoutingStopsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria309,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options310,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopCriteria criteria336,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options337,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[98].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[101].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingStopsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28009,8 +28840,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingStopsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria309,
-                                                    options310,
+                                                    criteria336,
+                                                    options337,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingStopsByCriteria")));
@@ -28112,9 +28943,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[98].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[101].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[98].setMessageReceiver(
+          _operations[101].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -28127,7 +28958,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerCalculateDeliveryWindowMetrics
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerCalculateDeliveryWindowMetrics
-                     * @param schedulerCalculateDeliveryWindowMetrics313
+                     * @param schedulerCalculateDeliveryWindowMetrics340
                     
                      */
 
@@ -28135,7 +28966,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetrics[] schedulerCalculateDeliveryWindowMetrics(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity314,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options315)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity341,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options342)
                         
 
                     throws java.rmi.RemoteException
@@ -28143,7 +28974,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[99].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[102].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerCalculateDeliveryWindowMetricsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28161,8 +28992,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity314,
-                                                    options315,
+                                                    schedulerIdentity341,
+                                                    options342,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerCalculateDeliveryWindowMetrics")));
@@ -28247,18 +29078,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerCalculateDeliveryWindowMetrics
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerCalculateDeliveryWindowMetrics
-                    * @param schedulerCalculateDeliveryWindowMetrics313
+                    * @param schedulerCalculateDeliveryWindowMetrics340
                 
                 */
                 public  void startschedulerCalculateDeliveryWindowMetrics(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity314,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options315,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity341,com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions options342,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[99].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[102].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerCalculateDeliveryWindowMetricsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28276,8 +29107,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity314,
-                                                    options315,
+                                                    schedulerIdentity341,
+                                                    options342,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerCalculateDeliveryWindowMetrics")));
@@ -28379,9 +29210,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[99].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[102].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[99].setMessageReceiver(
+          _operations[102].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -28394,7 +29225,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DeleteLocations
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#deleteLocations
-                     * @param deleteLocations318
+                     * @param deleteLocations345
                     
                      */
 
@@ -28402,7 +29233,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] deleteLocations(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations319)
+                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations346)
                         
 
                     throws java.rmi.RemoteException
@@ -28410,7 +29241,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[100].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[103].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteLocationsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28428,7 +29259,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DeleteLocations dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations319,
+                                                    locations346,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteLocations")));
@@ -28513,18 +29344,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DeleteLocations
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdeleteLocations
-                    * @param deleteLocations318
+                    * @param deleteLocations345
                 
                 */
                 public  void startdeleteLocations(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations319,
+                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations346,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[100].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[103].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteLocationsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28542,7 +29373,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DeleteLocations dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations319,
+                                                    locations346,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteLocations")));
@@ -28644,9 +29475,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[100].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[103].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[100].setMessageReceiver(
+          _operations[103].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -28659,7 +29490,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveProductsPurchased
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveProductsPurchased
-                     * @param retrieveProductsPurchased322
+                     * @param retrieveProductsPurchased349
                     
                      */
 
@@ -28667,7 +29498,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.ProductsPurchased retrieveProductsPurchased(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity323)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity350)
                         
 
                     throws java.rmi.RemoteException
@@ -28675,7 +29506,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[101].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[104].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveProductsPurchasedRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28693,7 +29524,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveProductsPurchased dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity323,
+                                                    identity350,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveProductsPurchased")));
@@ -28778,18 +29609,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveProductsPurchased
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveProductsPurchased
-                    * @param retrieveProductsPurchased322
+                    * @param retrieveProductsPurchased349
                 
                 */
                 public  void startretrieveProductsPurchased(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity323,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity350,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[101].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[104].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveProductsPurchasedRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28807,7 +29638,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveProductsPurchased dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity323,
+                                                    identity350,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveProductsPurchased")));
@@ -28909,9 +29740,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[101].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[104].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[101].setMessageReceiver(
+          _operations[104].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -28924,7 +29755,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingSourcedOrdersByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingSourcedOrdersByCriteria
-                     * @param retrieveRoutingSourcedOrdersByCriteria326
+                     * @param retrieveRoutingSourcedOrdersByCriteria353
                     
                      */
 
@@ -28932,7 +29763,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingOrder[] retrieveRoutingSourcedOrdersByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria327,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options328)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria354,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options355)
                         
 
                     throws java.rmi.RemoteException
@@ -28940,7 +29771,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[102].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[105].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSourcedOrdersByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -28958,8 +29789,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSourcedOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria327,
-                                                    options328,
+                                                    criteria354,
+                                                    options355,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSourcedOrdersByCriteria")));
@@ -29044,18 +29875,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingSourcedOrdersByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingSourcedOrdersByCriteria
-                    * @param retrieveRoutingSourcedOrdersByCriteria326
+                    * @param retrieveRoutingSourcedOrdersByCriteria353
                 
                 */
                 public  void startretrieveRoutingSourcedOrdersByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria327,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options328,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria criteria354,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options355,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[102].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[105].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSourcedOrdersByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29073,8 +29904,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSourcedOrdersByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria327,
-                                                    options328,
+                                                    criteria354,
+                                                    options355,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSourcedOrdersByCriteria")));
@@ -29176,9 +30007,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[102].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[105].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[102].setMessageReceiver(
+          _operations[105].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -29191,7 +30022,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveStopSurveyResults
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveStopSurveyResults
-                     * @param saveStopSurveyResults331
+                     * @param saveStopSurveyResults358
                     
                      */
 
@@ -29199,7 +30030,7 @@
 
                             public  void saveStopSurveyResults(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity332,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults333)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity359,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults360)
                         
 
                     throws java.rmi.RemoteException
@@ -29207,7 +30038,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[103].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[106].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopSurveyResultsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29225,8 +30056,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveStopSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity332,
-                                                    surveyResults333,
+                                                    identity359,
+                                                    surveyResults360,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStopSurveyResults")));
@@ -29311,18 +30142,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveStopSurveyResults
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveStopSurveyResults
-                    * @param saveStopSurveyResults331
+                    * @param saveStopSurveyResults358
                 
                 */
                 public  void startsaveStopSurveyResults(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity332,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults333,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity identity359,com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] surveyResults360,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[103].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[106].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveStopSurveyResultsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29340,8 +30171,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveStopSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity332,
-                                                    surveyResults333,
+                                                    identity359,
+                                                    surveyResults360,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveStopSurveyResults")));
@@ -29441,9 +30272,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[103].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[106].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[103].setMessageReceiver(
+          _operations[106].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -29456,7 +30287,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingRouteDailyStatsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingRouteDailyStatsByCriteria
-                     * @param retrieveRoutingRouteDailyStatsByCriteria335
+                     * @param retrieveRoutingRouteDailyStatsByCriteria362
                     
                      */
 
@@ -29464,7 +30295,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RouteDailyStats[] retrieveRoutingRouteDailyStatsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria336,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options337)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria363,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options364)
                         
 
                     throws java.rmi.RemoteException
@@ -29472,7 +30303,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[104].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[107].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRouteDailyStatsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29490,8 +30321,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRouteDailyStatsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria336,
-                                                    options337,
+                                                    criteria363,
+                                                    options364,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRouteDailyStatsByCriteria")));
@@ -29576,18 +30407,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingRouteDailyStatsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingRouteDailyStatsByCriteria
-                    * @param retrieveRoutingRouteDailyStatsByCriteria335
+                    * @param retrieveRoutingRouteDailyStatsByCriteria362
                 
                 */
                 public  void startretrieveRoutingRouteDailyStatsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria336,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options337,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsCriteria criteria363,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteDailyStatsRetrieveOptions options364,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[104].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[107].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingRouteDailyStatsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29605,8 +30436,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRouteDailyStatsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria336,
-                                                    options337,
+                                                    criteria363,
+                                                    options364,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingRouteDailyStatsByCriteria")));
@@ -29708,9 +30539,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[104].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[107].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[104].setMessageReceiver(
+          _operations[107].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -29723,7 +30554,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__UpdateStopSignature
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#updateStopSignature
-                     * @param updateStopSignature340
+                     * @param updateStopSignature367
                     
                      */
 
@@ -29731,7 +30562,7 @@
 
                             public  void updateStopSignature(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info341)
+                            com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info368)
                         
 
                     throws java.rmi.RemoteException
@@ -29739,7 +30570,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[105].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[108].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateStopSignatureRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29757,7 +30588,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.UpdateStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info341,
+                                                    info368,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateStopSignature")));
@@ -29842,18 +30673,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__UpdateStopSignature
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startupdateStopSignature
-                    * @param updateStopSignature340
+                    * @param updateStopSignature367
                 
                 */
                 public  void startupdateStopSignature(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info341,
+                 com.freshdirect.routing.proxy.stub.transportation.StopSignatureInfo info368,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[105].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[108].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateStopSignatureRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -29871,7 +30702,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.UpdateStopSignature dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info341,
+                                                    info368,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateStopSignature")));
@@ -29971,9 +30802,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[105].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[108].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[105].setMessageReceiver(
+          _operations[108].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -29986,7 +30817,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveGlobalConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveGlobalConfig
-                     * @param saveGlobalConfig343
+                     * @param saveGlobalConfig370
                     
                      */
 
@@ -29994,7 +30825,7 @@
 
                             public  void saveGlobalConfig(
 
-                            java.lang.String applicationID344,java.lang.String configGroupID345,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items346)
+                            java.lang.String applicationID371,java.lang.String configGroupID372,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items373)
                         
 
                     throws java.rmi.RemoteException
@@ -30002,7 +30833,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[106].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[109].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveGlobalConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30020,9 +30851,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveGlobalConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID344,
-                                                    configGroupID345,
-                                                    items346,
+                                                    applicationID371,
+                                                    configGroupID372,
+                                                    items373,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveGlobalConfig")));
@@ -30107,18 +30938,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveGlobalConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveGlobalConfig
-                    * @param saveGlobalConfig343
+                    * @param saveGlobalConfig370
                 
                 */
                 public  void startsaveGlobalConfig(
 
-                 java.lang.String applicationID344,java.lang.String configGroupID345,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items346,
+                 java.lang.String applicationID371,java.lang.String configGroupID372,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items373,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[106].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[109].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveGlobalConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30136,9 +30967,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveGlobalConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID344,
-                                                    configGroupID345,
-                                                    items346,
+                                                    applicationID371,
+                                                    configGroupID372,
+                                                    items373,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveGlobalConfig")));
@@ -30238,9 +31069,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[106].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[109].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[106].setMessageReceiver(
+          _operations[109].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -30253,7 +31084,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerIsExcludingCutoffRoutes
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerIsExcludingCutoffRoutes
-                     * @param schedulerIsExcludingCutoffRoutes348
+                     * @param schedulerIsExcludingCutoffRoutes375
                     
                      */
 
@@ -30261,7 +31092,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.IsExcludingCutoffRoutesResult schedulerIsExcludingCutoffRoutes(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity349)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity376)
                         
 
                     throws java.rmi.RemoteException
@@ -30269,7 +31100,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[107].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[110].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerIsExcludingCutoffRoutesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30287,7 +31118,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerIsExcludingCutoffRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity349,
+                                                    schedulerIdentity376,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerIsExcludingCutoffRoutes")));
@@ -30372,18 +31203,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerIsExcludingCutoffRoutes
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerIsExcludingCutoffRoutes
-                    * @param schedulerIsExcludingCutoffRoutes348
+                    * @param schedulerIsExcludingCutoffRoutes375
                 
                 */
                 public  void startschedulerIsExcludingCutoffRoutes(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity349,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity376,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[107].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[110].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerIsExcludingCutoffRoutesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30401,7 +31232,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerIsExcludingCutoffRoutes dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity349,
+                                                    schedulerIdentity376,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerIsExcludingCutoffRoutes")));
@@ -30503,9 +31334,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[107].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[110].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[107].setMessageReceiver(
+          _operations[110].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -30518,7 +31349,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveCannedTextMessagesByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveCannedTextMessagesByCriteria
-                     * @param retrieveCannedTextMessagesByCriteria352
+                     * @param retrieveCannedTextMessagesByCriteria379
                     
                      */
 
@@ -30526,7 +31357,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.CannedTextMessage[] retrieveCannedTextMessagesByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria353)
+                            com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria380)
                         
 
                     throws java.rmi.RemoteException
@@ -30534,7 +31365,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[108].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[111].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveCannedTextMessagesByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30552,7 +31383,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveCannedTextMessagesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria353,
+                                                    criteria380,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveCannedTextMessagesByCriteria")));
@@ -30637,18 +31468,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveCannedTextMessagesByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveCannedTextMessagesByCriteria
-                    * @param retrieveCannedTextMessagesByCriteria352
+                    * @param retrieveCannedTextMessagesByCriteria379
                 
                 */
                 public  void startretrieveCannedTextMessagesByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria353,
+                 com.freshdirect.routing.proxy.stub.transportation.CannedTextMessageCriteria criteria380,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[108].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[111].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveCannedTextMessagesByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30666,7 +31497,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveCannedTextMessagesByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria353,
+                                                    criteria380,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveCannedTextMessagesByCriteria")));
@@ -30768,9 +31599,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[108].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[111].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[108].setMessageReceiver(
+          _operations[111].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -30783,7 +31614,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerReserveOrder
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerReserveOrder
-                     * @param schedulerReserveOrder356
+                     * @param schedulerReserveOrder383
                     
                      */
 
@@ -30791,7 +31622,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.ReserveResult schedulerReserveOrder(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity357,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder358,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow359,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options360)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity384,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder385,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow386,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options387)
                         
 
                     throws java.rmi.RemoteException
@@ -30799,7 +31630,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[109].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[112].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerReserveOrderRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30817,10 +31648,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity357,
-                                                    deliveryAreaOrder358,
-                                                    deliveryWindow359,
-                                                    options360,
+                                                    schedulerIdentity384,
+                                                    deliveryAreaOrder385,
+                                                    deliveryWindow386,
+                                                    options387,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerReserveOrder")));
@@ -30905,18 +31736,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerReserveOrder
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerReserveOrder
-                    * @param schedulerReserveOrder356
+                    * @param schedulerReserveOrder383
                 
                 */
                 public  void startschedulerReserveOrder(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity357,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder358,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow359,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options360,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity384,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder deliveryAreaOrder385,com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow deliveryWindow386,com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions options387,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[109].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[112].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerReserveOrderRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -30934,10 +31765,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity357,
-                                                    deliveryAreaOrder358,
-                                                    deliveryWindow359,
-                                                    options360,
+                                                    schedulerIdentity384,
+                                                    deliveryAreaOrder385,
+                                                    deliveryWindow386,
+                                                    options387,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerReserveOrder")));
@@ -31039,9 +31870,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[109].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[112].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[109].setMessageReceiver(
+          _operations[112].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -31054,7 +31885,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveLocationsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveLocationsByCriteria
-                     * @param retrieveLocationsByCriteria363
+                     * @param retrieveLocationsByCriteria390
                     
                      */
 
@@ -31062,7 +31893,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] retrieveLocationsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria364)
+                            com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria391)
                         
 
                     throws java.rmi.RemoteException
@@ -31070,7 +31901,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[110].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[113].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31088,7 +31919,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria364,
+                                                    criteria391,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationsByCriteria")));
@@ -31173,18 +32004,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveLocationsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveLocationsByCriteria
-                    * @param retrieveLocationsByCriteria363
+                    * @param retrieveLocationsByCriteria390
                 
                 */
                 public  void startretrieveLocationsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria364,
+                 com.freshdirect.routing.proxy.stub.transportation.LocationCriteria criteria391,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[110].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[113].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveLocationsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31202,7 +32033,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveLocationsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria364,
+                                                    criteria391,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveLocationsByCriteria")));
@@ -31304,9 +32135,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[110].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[113].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[110].setMessageReceiver(
+          _operations[113].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -31319,7 +32150,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveStopsByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveStopsByCriteria
-                     * @param retrieveStopsByCriteria367
+                     * @param retrieveStopsByCriteria394
                     
                      */
 
@@ -31327,7 +32158,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Stop[] retrieveStopsByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria368,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options369)
+                            com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria395,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options396)
                         
 
                     throws java.rmi.RemoteException
@@ -31335,7 +32166,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[111].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[114].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopsByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31353,8 +32184,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria368,
-                                                    options369,
+                                                    criteria395,
+                                                    options396,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopsByCriteria")));
@@ -31439,18 +32270,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveStopsByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveStopsByCriteria
-                    * @param retrieveStopsByCriteria367
+                    * @param retrieveStopsByCriteria394
                 
                 */
                 public  void startretrieveStopsByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria368,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options369,
+                 com.freshdirect.routing.proxy.stub.transportation.StopCriteria criteria395,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options396,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[111].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[114].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveStopsByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31468,8 +32299,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveStopsByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria368,
-                                                    options369,
+                                                    criteria395,
+                                                    options396,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveStopsByCriteria")));
@@ -31571,9 +32402,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[111].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[114].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[111].setMessageReceiver(
+          _operations[114].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -31586,7 +32417,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRegionOptions
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRegionOptions
-                     * @param retrieveRegionOptions372
+                     * @param retrieveRegionOptions399
                     
                      */
 
@@ -31594,7 +32425,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RegionOptions retrieveRegionOptions(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity373)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity400)
                         
 
                     throws java.rmi.RemoteException
@@ -31602,7 +32433,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[112].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[115].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionOptionsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31620,7 +32451,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionOptions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity373,
+                                                    identity400,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionOptions")));
@@ -31705,18 +32536,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRegionOptions
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRegionOptions
-                    * @param retrieveRegionOptions372
+                    * @param retrieveRegionOptions399
                 
                 */
                 public  void startretrieveRegionOptions(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity373,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity identity400,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[112].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[115].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRegionOptionsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31734,7 +32565,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRegionOptions dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity373,
+                                                    identity400,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRegionOptions")));
@@ -31836,9 +32667,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[112].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[115].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[112].setMessageReceiver(
+          _operations[115].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -31851,7 +32682,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SequenceStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#sequenceStop
-                     * @param sequenceStop376
+                     * @param sequenceStop403
                     
                      */
 
@@ -31859,7 +32690,7 @@
 
                             public  void sequenceStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info377)
+                            com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info404)
                         
 
                     throws java.rmi.RemoteException
@@ -31867,7 +32698,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[113].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[116].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SequenceStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31885,7 +32716,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SequenceStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info377,
+                                                    info404,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "sequenceStop")));
@@ -31970,18 +32801,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SequenceStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsequenceStop
-                    * @param sequenceStop376
+                    * @param sequenceStop403
                 
                 */
                 public  void startsequenceStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info377,
+                 com.freshdirect.routing.proxy.stub.transportation.StopSequenceInfo info404,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[113].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[116].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SequenceStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -31999,7 +32830,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SequenceStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info377,
+                                                    info404,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "sequenceStop")));
@@ -32099,9 +32930,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[113].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[116].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[113].setMessageReceiver(
+          _operations[116].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -32114,7 +32945,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteSurveyResults
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteSurveyResults
-                     * @param retrieveRouteSurveyResults379
+                     * @param retrieveRouteSurveyResults406
                     
                      */
 
@@ -32122,7 +32953,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.SurveyResult[] retrieveRouteSurveyResults(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity380,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt381)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity407,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt408)
                         
 
                     throws java.rmi.RemoteException
@@ -32130,7 +32961,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[114].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[117].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteSurveyResultsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32148,8 +32979,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity380,
-                                                    performedAt381,
+                                                    identity407,
+                                                    performedAt408,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteSurveyResults")));
@@ -32234,18 +33065,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteSurveyResults
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteSurveyResults
-                    * @param retrieveRouteSurveyResults379
+                    * @param retrieveRouteSurveyResults406
                 
                 */
                 public  void startretrieveRouteSurveyResults(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity380,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt381,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity407,com.freshdirect.routing.proxy.stub.transportation.SurveyPerformedAt performedAt408,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[114].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[117].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteSurveyResultsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32263,8 +33094,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteSurveyResults dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity380,
-                                                    performedAt381,
+                                                    identity407,
+                                                    performedAt408,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteSurveyResults")));
@@ -32366,9 +33197,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[114].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[117].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[114].setMessageReceiver(
+          _operations[117].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -32381,7 +33212,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__UpdateRoutePosition
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#updateRoutePosition
-                     * @param updateRoutePosition384
+                     * @param updateRoutePosition411
                     
                      */
 
@@ -32389,7 +33220,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.UpdatePositionReturnCode updateRoutePosition(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info385)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info412)
                         
 
                     throws java.rmi.RemoteException
@@ -32397,7 +33228,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[115].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[118].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateRoutePositionRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32415,7 +33246,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.UpdateRoutePosition dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info385,
+                                                    info412,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateRoutePosition")));
@@ -32500,18 +33331,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__UpdateRoutePosition
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startupdateRoutePosition
-                    * @param updateRoutePosition384
+                    * @param updateRoutePosition411
                 
                 */
                 public  void startupdateRoutePosition(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info385,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutePositionInfo info412,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[115].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[118].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/UpdateRoutePositionRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32529,7 +33360,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.UpdateRoutePosition dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info385,
+                                                    info412,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "updateRoutePosition")));
@@ -32631,9 +33462,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[115].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[118].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[115].setMessageReceiver(
+          _operations[118].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -32646,7 +33477,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__MassStopSequence
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#massStopSequence
-                     * @param massStopSequence388
+                     * @param massStopSequence415
                     
                      */
 
@@ -32654,7 +33485,7 @@
 
                             public  void massStopSequence(
 
-                            com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info389)
+                            com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info416)
                         
 
                     throws java.rmi.RemoteException
@@ -32662,7 +33493,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[116].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[119].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/MassStopSequenceRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32680,7 +33511,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.MassStopSequence dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info389,
+                                                    info416,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "massStopSequence")));
@@ -32765,18 +33596,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__MassStopSequence
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startmassStopSequence
-                    * @param massStopSequence388
+                    * @param massStopSequence415
                 
                 */
                 public  void startmassStopSequence(
 
-                 com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info389,
+                 com.freshdirect.routing.proxy.stub.transportation.MassStopSequenceInfo info416,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[116].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[119].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/MassStopSequenceRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32794,7 +33625,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.MassStopSequence dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info389,
+                                                    info416,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "massStopSequence")));
@@ -32894,9 +33725,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[116].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[119].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[116].setMessageReceiver(
+          _operations[119].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -32909,7 +33740,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__AddRICUser
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#addRICUser
-                     * @param addRICUser391
+                     * @param addRICUser418
                     
                      */
 
@@ -32917,7 +33748,7 @@
 
                             public  void addRICUser(
 
-                            com.freshdirect.routing.proxy.stub.transportation.User user392)
+                            com.freshdirect.routing.proxy.stub.transportation.User user419)
                         
 
                     throws java.rmi.RemoteException
@@ -32925,7 +33756,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[117].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[120].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AddRICUserRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -32943,7 +33774,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.AddRICUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    user392,
+                                                    user419,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "addRICUser")));
@@ -33028,18 +33859,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__AddRICUser
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startaddRICUser
-                    * @param addRICUser391
+                    * @param addRICUser418
                 
                 */
                 public  void startaddRICUser(
 
-                 com.freshdirect.routing.proxy.stub.transportation.User user392,
+                 com.freshdirect.routing.proxy.stub.transportation.User user419,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[117].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[120].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AddRICUserRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33057,7 +33888,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.AddRICUser dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    user392,
+                                                    user419,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "addRICUser")));
@@ -33157,9 +33988,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[117].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[120].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[117].setMessageReceiver(
+          _operations[120].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -33172,7 +34003,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingSessionByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingSessionByIdentity
-                     * @param retrieveRoutingSessionByIdentity394
+                     * @param retrieveRoutingSessionByIdentity421
                     
                      */
 
@@ -33180,7 +34011,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingSession retrieveRoutingSessionByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity395,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options396)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity422,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options423)
                         
 
                     throws java.rmi.RemoteException
@@ -33188,7 +34019,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[118].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[121].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSessionByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33206,8 +34037,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSessionByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity395,
-                                                    options396,
+                                                    identity422,
+                                                    options423,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSessionByIdentity")));
@@ -33292,18 +34123,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingSessionByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingSessionByIdentity
-                    * @param retrieveRoutingSessionByIdentity394
+                    * @param retrieveRoutingSessionByIdentity421
                 
                 */
                 public  void startretrieveRoutingSessionByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity395,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options396,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingSessionIdentity identity422,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options423,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[118].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[121].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingSessionByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33321,8 +34152,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingSessionByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity395,
-                                                    options396,
+                                                    identity422,
+                                                    options423,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingSessionByIdentity")));
@@ -33424,9 +34255,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[118].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[121].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[118].setMessageReceiver(
+          _operations[121].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -33439,7 +34270,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DepartStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#departStop
-                     * @param departStop399
+                     * @param departStop426
                     
                      */
 
@@ -33447,7 +34278,7 @@
 
                             public  void departStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info400)
+                            com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info427)
                         
 
                     throws java.rmi.RemoteException
@@ -33455,7 +34286,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[119].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[122].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DepartStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33473,7 +34304,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DepartStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info400,
+                                                    info427,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "departStop")));
@@ -33558,18 +34389,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DepartStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdepartStop
-                    * @param departStop399
+                    * @param departStop426
                 
                 */
                 public  void startdepartStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info400,
+                 com.freshdirect.routing.proxy.stub.transportation.StopDepartInfo info427,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[119].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[122].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DepartStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33587,7 +34418,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DepartStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info400,
+                                                    info427,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "departStop")));
@@ -33687,9 +34518,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[119].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[122].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[119].setMessageReceiver(
+          _operations[122].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -33702,7 +34533,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerConfirmOrder
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerConfirmOrder
-                     * @param schedulerConfirmOrder402
+                     * @param schedulerConfirmOrder429
                     
                      */
 
@@ -33710,7 +34541,7 @@
 
                             public  void schedulerConfirmOrder(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity403,java.lang.String orderNumberXML404)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity430,java.lang.String orderNumberXML431)
                         
 
                     throws java.rmi.RemoteException
@@ -33718,7 +34549,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[120].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[123].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerConfirmOrderRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33736,8 +34567,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerConfirmOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity403,
-                                                    orderNumberXML404,
+                                                    schedulerIdentity430,
+                                                    orderNumberXML431,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerConfirmOrder")));
@@ -33822,18 +34653,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerConfirmOrder
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerConfirmOrder
-                    * @param schedulerConfirmOrder402
+                    * @param schedulerConfirmOrder429
                 
                 */
                 public  void startschedulerConfirmOrder(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity403,java.lang.String orderNumberXML404,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity430,java.lang.String orderNumberXML431,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[120].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[123].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerConfirmOrderRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -33851,8 +34682,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerConfirmOrder dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity403,
-                                                    orderNumberXML404,
+                                                    schedulerIdentity430,
+                                                    orderNumberXML431,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerConfirmOrder")));
@@ -33952,9 +34783,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[120].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[123].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[120].setMessageReceiver(
+          _operations[123].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -33967,7 +34798,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__AllowAdditionOfRICUsers
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#allowAdditionOfRICUsers
-                     * @param allowAdditionOfRICUsers406
+                     * @param allowAdditionOfRICUsers433
                     
                      */
 
@@ -33983,7 +34814,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[121].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[124].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AllowAdditionOfRICUsersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34085,7 +34916,7 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__AllowAdditionOfRICUsers
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startallowAdditionOfRICUsers
-                    * @param allowAdditionOfRICUsers406
+                    * @param allowAdditionOfRICUsers433
                 
                 */
                 public  void startallowAdditionOfRICUsers(
@@ -34096,7 +34927,7 @@
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[121].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[124].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AllowAdditionOfRICUsersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34215,9 +35046,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[121].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[124].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[121].setMessageReceiver(
+          _operations[124].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -34230,7 +35061,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveGlobalConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveGlobalConfig
-                     * @param retrieveGlobalConfig409
+                     * @param retrieveGlobalConfig436
                     
                      */
 
@@ -34238,7 +35069,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] retrieveGlobalConfig(
 
-                            java.lang.String applicationID410,java.lang.String configGroupID411)
+                            java.lang.String applicationID437,java.lang.String configGroupID438)
                         
 
                     throws java.rmi.RemoteException
@@ -34246,7 +35077,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[122].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[125].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveGlobalConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34264,8 +35095,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveGlobalConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID410,
-                                                    configGroupID411,
+                                                    applicationID437,
+                                                    configGroupID438,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveGlobalConfig")));
@@ -34350,18 +35181,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveGlobalConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveGlobalConfig
-                    * @param retrieveGlobalConfig409
+                    * @param retrieveGlobalConfig436
                 
                 */
                 public  void startretrieveGlobalConfig(
 
-                 java.lang.String applicationID410,java.lang.String configGroupID411,
+                 java.lang.String applicationID437,java.lang.String configGroupID438,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[122].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[125].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveGlobalConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34379,8 +35210,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveGlobalConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID410,
-                                                    configGroupID411,
+                                                    applicationID437,
+                                                    configGroupID438,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveGlobalConfig")));
@@ -34482,9 +35313,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[122].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[125].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[122].setMessageReceiver(
+          _operations[125].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -34497,7 +35328,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveEquipmentTypeByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveEquipmentTypeByCriteria
-                     * @param retrieveEquipmentTypeByCriteria414
+                     * @param retrieveEquipmentTypeByCriteria441
                     
                      */
 
@@ -34505,7 +35336,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.EquipmentType[] retrieveEquipmentTypeByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria415,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options416)
+                            com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria442,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options443)
                         
 
                     throws java.rmi.RemoteException
@@ -34513,7 +35344,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[123].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[126].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentTypeByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34531,8 +35362,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentTypeByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria415,
-                                                    options416,
+                                                    criteria442,
+                                                    options443,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentTypeByCriteria")));
@@ -34617,18 +35448,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveEquipmentTypeByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveEquipmentTypeByCriteria
-                    * @param retrieveEquipmentTypeByCriteria414
+                    * @param retrieveEquipmentTypeByCriteria441
                 
                 */
                 public  void startretrieveEquipmentTypeByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria415,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options416,
+                 com.freshdirect.routing.proxy.stub.transportation.EquipmentTypeCriteria criteria442,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions options443,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[123].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[126].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveEquipmentTypeByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34646,8 +35477,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveEquipmentTypeByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria415,
-                                                    options416,
+                                                    criteria442,
+                                                    options443,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveEquipmentTypeByCriteria")));
@@ -34749,9 +35580,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[123].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[126].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[123].setMessageReceiver(
+          _operations[126].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -34764,7 +35595,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrievePositionHistoryBlocksByCriteria
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrievePositionHistoryBlocksByCriteria
-                     * @param retrievePositionHistoryBlocksByCriteria419
+                     * @param retrievePositionHistoryBlocksByCriteria446
                     
                      */
 
@@ -34772,7 +35603,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.PositionHistory[] retrievePositionHistoryBlocksByCriteria(
 
-                            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria420)
+                            com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria447)
                         
 
                     throws java.rmi.RemoteException
@@ -34780,7 +35611,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[124].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[127].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePositionHistoryBlocksByCriteriaRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34798,7 +35629,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrievePositionHistoryBlocksByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria420,
+                                                    criteria447,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePositionHistoryBlocksByCriteria")));
@@ -34883,18 +35714,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrievePositionHistoryBlocksByCriteria
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrievePositionHistoryBlocksByCriteria
-                    * @param retrievePositionHistoryBlocksByCriteria419
+                    * @param retrievePositionHistoryBlocksByCriteria446
                 
                 */
                 public  void startretrievePositionHistoryBlocksByCriteria(
 
-                 com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria420,
+                 com.freshdirect.routing.proxy.stub.transportation.PositionHistoryCriteria criteria447,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[124].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[127].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrievePositionHistoryBlocksByCriteriaRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -34912,7 +35743,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrievePositionHistoryBlocksByCriteria dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    criteria420,
+                                                    criteria447,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrievePositionHistoryBlocksByCriteria")));
@@ -35014,9 +35845,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[124].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[127].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[124].setMessageReceiver(
+          _operations[127].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -35029,7 +35860,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerReloadWaveInstances
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerReloadWaveInstances
-                     * @param schedulerReloadWaveInstances423
+                     * @param schedulerReloadWaveInstances450
                     
                      */
 
@@ -35037,7 +35868,7 @@
 
                             public  boolean schedulerReloadWaveInstances(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity424,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options425)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity451,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options452)
                         
 
                     throws java.rmi.RemoteException
@@ -35045,7 +35876,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[125].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[128].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerReloadWaveInstancesRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35063,8 +35894,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstances dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity424,
-                                                    options425,
+                                                    schedulerIdentity451,
+                                                    options452,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerReloadWaveInstances")));
@@ -35149,18 +35980,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerReloadWaveInstances
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerReloadWaveInstances
-                    * @param schedulerReloadWaveInstances423
+                    * @param schedulerReloadWaveInstances450
                 
                 */
                 public  void startschedulerReloadWaveInstances(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity424,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options425,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity451,com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstancesOptions options452,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[125].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[128].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerReloadWaveInstancesRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35178,8 +36009,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerReloadWaveInstances dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity424,
-                                                    options425,
+                                                    schedulerIdentity451,
+                                                    options452,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerReloadWaveInstances")));
@@ -35281,9 +36112,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[125].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[128].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[125].setMessageReceiver(
+          _operations[128].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -35296,7 +36127,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveLocationsEx
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveLocationsEx
-                     * @param saveLocationsEx428
+                     * @param saveLocationsEx455
                     
                      */
 
@@ -35304,7 +36135,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Location[] saveLocationsEx(
 
-                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations429,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options430)
+                            com.freshdirect.routing.proxy.stub.transportation.Location[] locations456,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options457)
                         
 
                     throws java.rmi.RemoteException
@@ -35312,7 +36143,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[126].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[129].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveLocationsExRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35330,8 +36161,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveLocationsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations429,
-                                                    options430,
+                                                    locations456,
+                                                    options457,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveLocationsEx")));
@@ -35416,18 +36247,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveLocationsEx
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveLocationsEx
-                    * @param saveLocationsEx428
+                    * @param saveLocationsEx455
                 
                 */
                 public  void startsaveLocationsEx(
 
-                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations429,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options430,
+                 com.freshdirect.routing.proxy.stub.transportation.Location[] locations456,com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions options457,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[126].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[129].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveLocationsExRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35445,8 +36276,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveLocationsEx dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    locations429,
-                                                    options430,
+                                                    locations456,
+                                                    options457,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveLocationsEx")));
@@ -35548,9 +36379,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[126].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[129].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[126].setMessageReceiver(
+          _operations[129].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -35563,7 +36394,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ArriveStop
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#arriveStop
-                     * @param arriveStop433
+                     * @param arriveStop460
                     
                      */
 
@@ -35571,7 +36402,7 @@
 
                             public  void arriveStop(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info434)
+                            com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info461)
                         
 
                     throws java.rmi.RemoteException
@@ -35579,7 +36410,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[127].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[130].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ArriveStopRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35597,7 +36428,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ArriveStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info434,
+                                                    info461,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "arriveStop")));
@@ -35682,18 +36513,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ArriveStop
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startarriveStop
-                    * @param arriveStop433
+                    * @param arriveStop460
                 
                 */
                 public  void startarriveStop(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info434,
+                 com.freshdirect.routing.proxy.stub.transportation.StopArriveInfo info461,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[127].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[130].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ArriveStopRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35711,7 +36542,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ArriveStop dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info434,
+                                                    info461,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "arriveStop")));
@@ -35811,9 +36642,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[127].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[130].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[127].setMessageReceiver(
+          _operations[130].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -35826,7 +36657,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerSaveDeliveryWaveInstance
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerSaveDeliveryWaveInstance
-                     * @param schedulerSaveDeliveryWaveInstance436
+                     * @param schedulerSaveDeliveryWaveInstance463
                     
                      */
 
@@ -35834,7 +36665,7 @@
 
                             public  java.lang.String[] schedulerSaveDeliveryWaveInstance(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity437,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity438,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes439,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options440)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity464,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity465,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes466,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options467)
                         
 
                     throws java.rmi.RemoteException
@@ -35842,7 +36673,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[128].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[131].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSaveDeliveryWaveInstanceRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35860,10 +36691,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstance dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity437,
-                                                    waveIdentity438,
-                                                    attributes439,
-                                                    options440,
+                                                    schedulerIdentity464,
+                                                    waveIdentity465,
+                                                    attributes466,
+                                                    options467,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSaveDeliveryWaveInstance")));
@@ -35948,18 +36779,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerSaveDeliveryWaveInstance
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerSaveDeliveryWaveInstance
-                    * @param schedulerSaveDeliveryWaveInstance436
+                    * @param schedulerSaveDeliveryWaveInstance463
                 
                 */
                 public  void startschedulerSaveDeliveryWaveInstance(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity437,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity438,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes439,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options440,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity464,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity waveIdentity465,com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes attributes466,com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions options467,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[128].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[131].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerSaveDeliveryWaveInstanceRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -35977,10 +36808,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstance dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity437,
-                                                    waveIdentity438,
-                                                    attributes439,
-                                                    options440,
+                                                    schedulerIdentity464,
+                                                    waveIdentity465,
+                                                    attributes466,
+                                                    options467,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerSaveDeliveryWaveInstance")));
@@ -36082,9 +36913,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[128].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[131].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[128].setMessageReceiver(
+          _operations[131].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -36097,7 +36928,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRoutingStopByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRoutingStopByIdentity
-                     * @param retrieveRoutingStopByIdentity443
+                     * @param retrieveRoutingStopByIdentity470
                     
                      */
 
@@ -36105,7 +36936,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.RoutingStop retrieveRoutingStopByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity444,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options445)
+                            com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity471,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options472)
                         
 
                     throws java.rmi.RemoteException
@@ -36113,7 +36944,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[129].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[132].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingStopByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36131,8 +36962,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingStopByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity444,
-                                                    options445,
+                                                    identity471,
+                                                    options472,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingStopByIdentity")));
@@ -36217,18 +37048,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRoutingStopByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRoutingStopByIdentity
-                    * @param retrieveRoutingStopByIdentity443
+                    * @param retrieveRoutingStopByIdentity470
                 
                 */
                 public  void startretrieveRoutingStopByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity444,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options445,
+                 com.freshdirect.routing.proxy.stub.transportation.RoutingStopIdentity identity471,com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions options472,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[129].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[132].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRoutingStopByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36246,8 +37077,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingStopByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity444,
-                                                    options445,
+                                                    identity471,
+                                                    options472,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRoutingStopByIdentity")));
@@ -36349,9 +37180,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[129].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[132].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[129].setMessageReceiver(
+          _operations[132].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -36364,7 +37195,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__DeleteReport
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#deleteReport
-                     * @param deleteReport448
+                     * @param deleteReport475
                     
                      */
 
@@ -36372,7 +37203,7 @@
 
                             public  void deleteReport(
 
-                            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity449)
+                            com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity476)
                         
 
                     throws java.rmi.RemoteException
@@ -36380,7 +37211,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[130].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[133].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteReportRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36398,7 +37229,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.DeleteReport dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity449,
+                                                    identity476,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteReport")));
@@ -36483,18 +37314,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__DeleteReport
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startdeleteReport
-                    * @param deleteReport448
+                    * @param deleteReport475
                 
                 */
                 public  void startdeleteReport(
 
-                 com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity449,
+                 com.freshdirect.routing.proxy.stub.transportation.ReportIdentity identity476,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[130].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[133].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/DeleteReportRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36512,7 +37343,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.DeleteReport dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity449,
+                                                    identity476,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "deleteReport")));
@@ -36612,9 +37443,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[130].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[133].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[130].setMessageReceiver(
+          _operations[133].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -36627,7 +37458,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SaveRegionConfig
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#saveRegionConfig
-                     * @param saveRegionConfig451
+                     * @param saveRegionConfig478
                     
                      */
 
@@ -36635,7 +37466,7 @@
 
                             public  void saveRegionConfig(
 
-                            java.lang.String applicationID452,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity453,java.lang.String configGroupID454,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items455)
+                            java.lang.String applicationID479,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity480,java.lang.String configGroupID481,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items482)
                         
 
                     throws java.rmi.RemoteException
@@ -36643,7 +37474,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[131].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[134].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRegionConfigRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36661,10 +37492,10 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SaveRegionConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID452,
-                                                    regionIdentity453,
-                                                    configGroupID454,
-                                                    items455,
+                                                    applicationID479,
+                                                    regionIdentity480,
+                                                    configGroupID481,
+                                                    items482,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRegionConfig")));
@@ -36749,18 +37580,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SaveRegionConfig
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startsaveRegionConfig
-                    * @param saveRegionConfig451
+                    * @param saveRegionConfig478
                 
                 */
                 public  void startsaveRegionConfig(
 
-                 java.lang.String applicationID452,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity453,java.lang.String configGroupID454,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items455,
+                 java.lang.String applicationID479,com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity480,java.lang.String configGroupID481,com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem[] items482,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[131].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[134].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SaveRegionConfigRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36778,10 +37609,10 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SaveRegionConfig dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    applicationID452,
-                                                    regionIdentity453,
-                                                    configGroupID454,
-                                                    items455,
+                                                    applicationID479,
+                                                    regionIdentity480,
+                                                    configGroupID481,
+                                                    items482,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "saveRegionConfig")));
@@ -36881,9 +37712,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[131].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[134].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[131].setMessageReceiver(
+          _operations[134].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -36896,7 +37727,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__SchedulerBulkReserveOrders
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#schedulerBulkReserveOrders
-                     * @param schedulerBulkReserveOrders457
+                     * @param schedulerBulkReserveOrders484
                     
                      */
 
@@ -36904,7 +37735,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] schedulerBulkReserveOrders(
 
-                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity458,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders459,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options460)
+                            com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity485,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders486,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options487)
                         
 
                     throws java.rmi.RemoteException
@@ -36912,7 +37743,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[132].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[135].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerBulkReserveOrdersRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -36930,9 +37761,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity458,
-                                                    orders459,
-                                                    options460,
+                                                    schedulerIdentity485,
+                                                    orders486,
+                                                    options487,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerBulkReserveOrders")));
@@ -37017,18 +37848,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__SchedulerBulkReserveOrders
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startschedulerBulkReserveOrders
-                    * @param schedulerBulkReserveOrders457
+                    * @param schedulerBulkReserveOrders484
                 
                 */
                 public  void startschedulerBulkReserveOrders(
 
-                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity458,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders459,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options460,
+                 com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity schedulerIdentity485,com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder[] orders486,com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions options487,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[132].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[135].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/SchedulerBulkReserveOrdersRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37046,9 +37877,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrders dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    schedulerIdentity458,
-                                                    orders459,
-                                                    options460,
+                                                    schedulerIdentity485,
+                                                    orders486,
+                                                    options487,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "schedulerBulkReserveOrders")));
@@ -37150,9 +37981,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[132].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[135].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[132].setMessageReceiver(
+          _operations[135].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -37165,7 +37996,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ConvertTimestamps
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#convertTimestamps
-                     * @param convertTimestamps463
+                     * @param convertTimestamps490
                     
                      */
 
@@ -37173,7 +38004,7 @@
 
                             public  java.util.Calendar[] convertTimestamps(
 
-                            java.util.Calendar[] sourceTimestamps464,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions465,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions466)
+                            java.util.Calendar[] sourceTimestamps491,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions492,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions493)
                         
 
                     throws java.rmi.RemoteException
@@ -37181,7 +38012,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[133].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[136].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ConvertTimestampsRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37199,9 +38030,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ConvertTimestamps dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sourceTimestamps464,
-                                                    sourceOptions465,
-                                                    destinationOptions466,
+                                                    sourceTimestamps491,
+                                                    sourceOptions492,
+                                                    destinationOptions493,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "convertTimestamps")));
@@ -37286,18 +38117,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ConvertTimestamps
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startconvertTimestamps
-                    * @param convertTimestamps463
+                    * @param convertTimestamps490
                 
                 */
                 public  void startconvertTimestamps(
 
-                 java.util.Calendar[] sourceTimestamps464,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions465,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions466,
+                 java.util.Calendar[] sourceTimestamps491,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions492,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions493,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[133].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[136].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ConvertTimestampsRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37315,9 +38146,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ConvertTimestamps dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sourceTimestamps464,
-                                                    sourceOptions465,
-                                                    destinationOptions466,
+                                                    sourceTimestamps491,
+                                                    sourceOptions492,
+                                                    destinationOptions493,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "convertTimestamps")));
@@ -37419,9 +38250,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[133].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[136].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[133].setMessageReceiver(
+          _operations[136].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -37434,7 +38265,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveRouteForDevice
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveRouteForDevice
-                     * @param retrieveRouteForDevice469
+                     * @param retrieveRouteForDevice496
                     
                      */
 
@@ -37442,7 +38273,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Route retrieveRouteForDevice(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity470,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options471,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity472)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity497,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options498,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity499)
                         
 
                     throws java.rmi.RemoteException
@@ -37450,7 +38281,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[134].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[137].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteForDeviceRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37468,9 +38299,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteForDevice dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity470,
-                                                    options471,
-                                                    wirelessDeviceIdentity472,
+                                                    identity497,
+                                                    options498,
+                                                    wirelessDeviceIdentity499,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteForDevice")));
@@ -37555,18 +38386,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveRouteForDevice
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveRouteForDevice
-                    * @param retrieveRouteForDevice469
+                    * @param retrieveRouteForDevice496
                 
                 */
                 public  void startretrieveRouteForDevice(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity470,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options471,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity472,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity497,com.freshdirect.routing.proxy.stub.transportation.RouteInfoRetrieveOptions options498,com.freshdirect.routing.proxy.stub.transportation.WirelessDeviceIdentity wirelessDeviceIdentity499,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[134].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[137].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveRouteForDeviceRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37584,9 +38415,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteForDevice dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity470,
-                                                    options471,
-                                                    wirelessDeviceIdentity472,
+                                                    identity497,
+                                                    options498,
+                                                    wirelessDeviceIdentity499,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveRouteForDevice")));
@@ -37688,9 +38519,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[134].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[137].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[134].setMessageReceiver(
+          _operations[137].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -37703,7 +38534,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__AssignEquipment
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#assignEquipment
-                     * @param assignEquipment475
+                     * @param assignEquipment502
                     
                      */
 
@@ -37711,7 +38542,7 @@
 
                             public  void assignEquipment(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity476,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment477)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity503,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment504)
                         
 
                     throws java.rmi.RemoteException
@@ -37719,7 +38550,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[135].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[138].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AssignEquipmentRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37737,8 +38568,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.AssignEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity476,
-                                                    equipment477,
+                                                    identity503,
+                                                    equipment504,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "assignEquipment")));
@@ -37823,18 +38654,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__AssignEquipment
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startassignEquipment
-                    * @param assignEquipment475
+                    * @param assignEquipment502
                 
                 */
                 public  void startassignEquipment(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity476,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment477,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteIdentity identity503,com.freshdirect.routing.proxy.stub.transportation.EquipmentIdentity[] equipment504,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[135].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[138].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/AssignEquipmentRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -37852,8 +38683,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.AssignEquipment dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity476,
-                                                    equipment477,
+                                                    identity503,
+                                                    equipment504,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "assignEquipment")));
@@ -37953,9 +38784,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[135].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[138].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[135].setMessageReceiver(
+          _operations[138].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -37968,7 +38799,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__ConvertTimestamp
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#convertTimestamp
-                     * @param convertTimestamp479
+                     * @param convertTimestamp506
                     
                      */
 
@@ -37976,7 +38807,7 @@
 
                             public  java.util.Calendar convertTimestamp(
 
-                            java.util.Calendar sourceTimestamp480,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions481,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions482)
+                            java.util.Calendar sourceTimestamp507,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions508,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions509)
                         
 
                     throws java.rmi.RemoteException
@@ -37984,7 +38815,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[136].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[139].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ConvertTimestampRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38002,9 +38833,9 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.ConvertTimestamp dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sourceTimestamp480,
-                                                    sourceOptions481,
-                                                    destinationOptions482,
+                                                    sourceTimestamp507,
+                                                    sourceOptions508,
+                                                    destinationOptions509,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "convertTimestamp")));
@@ -38089,18 +38920,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__ConvertTimestamp
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startconvertTimestamp
-                    * @param convertTimestamp479
+                    * @param convertTimestamp506
                 
                 */
                 public  void startconvertTimestamp(
 
-                 java.util.Calendar sourceTimestamp480,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions481,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions482,
+                 java.util.Calendar sourceTimestamp507,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions sourceOptions508,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions destinationOptions509,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[136].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[139].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/ConvertTimestampRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38118,9 +38949,9 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.ConvertTimestamp dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    sourceTimestamp480,
-                                                    sourceOptions481,
-                                                    destinationOptions482,
+                                                    sourceTimestamp507,
+                                                    sourceOptions508,
+                                                    destinationOptions509,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "convertTimestamp")));
@@ -38222,9 +39053,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[136].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[139].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[136].setMessageReceiver(
+          _operations[139].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -38237,7 +39068,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveSurveys
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveSurveys
-                     * @param retrieveSurveys485
+                     * @param retrieveSurveys512
                     
                      */
 
@@ -38245,7 +39076,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.Survey[] retrieveSurveys(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity486)
+                            com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity513)
                         
 
                     throws java.rmi.RemoteException
@@ -38253,7 +39084,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[137].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[140].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveSurveysRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38271,7 +39102,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveSurveys dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionIdentity486,
+                                                    regionIdentity513,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveSurveys")));
@@ -38356,18 +39187,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveSurveys
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveSurveys
-                    * @param retrieveSurveys485
+                    * @param retrieveSurveys512
                 
                 */
                 public  void startretrieveSurveys(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity486,
+                 com.freshdirect.routing.proxy.stub.transportation.RegionIdentity regionIdentity513,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[137].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[140].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveSurveysRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38385,7 +39216,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveSurveys dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    regionIdentity486,
+                                                    regionIdentity513,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveSurveys")));
@@ -38487,9 +39318,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[137].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[140].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[137].setMessageReceiver(
+          _operations[140].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -38502,7 +39333,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__RetrieveDutyPeriodByIdentity
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#retrieveDutyPeriodByIdentity
-                     * @param retrieveDutyPeriodByIdentity489
+                     * @param retrieveDutyPeriodByIdentity516
                     
                      */
 
@@ -38510,7 +39341,7 @@
 
                             public  com.freshdirect.routing.proxy.stub.transportation.DutyPeriod retrieveDutyPeriodByIdentity(
 
-                            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity490,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options491)
+                            com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity517,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options518)
                         
 
                     throws java.rmi.RemoteException
@@ -38518,7 +39349,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[138].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[141].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDutyPeriodByIdentityRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38536,8 +39367,8 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDutyPeriodByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity490,
-                                                    options491,
+                                                    identity517,
+                                                    options518,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDutyPeriodByIdentity")));
@@ -38622,18 +39453,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__RetrieveDutyPeriodByIdentity
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startretrieveDutyPeriodByIdentity
-                    * @param retrieveDutyPeriodByIdentity489
+                    * @param retrieveDutyPeriodByIdentity516
                 
                 */
                 public  void startretrieveDutyPeriodByIdentity(
 
-                 com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity490,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options491,
+                 com.freshdirect.routing.proxy.stub.transportation.DutyPeriodIdentity identity517,com.freshdirect.routing.proxy.stub.transportation.DutyPeriodRetrieveOptions options518,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[138].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[141].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/RetrieveDutyPeriodByIdentityRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38651,8 +39482,8 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveDutyPeriodByIdentity dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    identity490,
-                                                    options491,
+                                                    identity517,
+                                                    options518,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "retrieveDutyPeriodByIdentity")));
@@ -38754,9 +39585,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[138].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[141].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[138].setMessageReceiver(
+          _operations[141].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -38769,7 +39600,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__PlaceUnassigned
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#placeUnassigned
-                     * @param placeUnassigned494
+                     * @param placeUnassigned521
                     
                      */
 
@@ -38777,7 +39608,7 @@
 
                             public  void placeUnassigned(
 
-                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop495,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity496,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition497,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime498,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions499)
+                            com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop522,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity523,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition524,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime525,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions526)
                         
 
                     throws java.rmi.RemoteException
@@ -38785,7 +39616,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[139].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[142].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/PlaceUnassignedRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38803,11 +39634,11 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.PlaceUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop495,
-                                                    routeIdentity496,
-                                                    placementPosition497,
-                                                    adjustedRouteStartTime498,
-                                                    timeZoneOptions499,
+                                                    stop522,
+                                                    routeIdentity523,
+                                                    placementPosition524,
+                                                    adjustedRouteStartTime525,
+                                                    timeZoneOptions526,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "placeUnassigned")));
@@ -38892,18 +39723,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__PlaceUnassigned
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startplaceUnassigned
-                    * @param placeUnassigned494
+                    * @param placeUnassigned521
                 
                 */
                 public  void startplaceUnassigned(
 
-                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop495,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity496,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition497,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime498,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions499,
+                 com.freshdirect.routing.proxy.stub.transportation.StopIdentity stop522,com.freshdirect.routing.proxy.stub.transportation.RouteIdentity routeIdentity523,com.freshdirect.routing.proxy.stub.transportation.StopPlacementOptions placementPosition524,com.freshdirect.routing.proxy.stub.transportation.OptionalDateTime adjustedRouteStartTime525,com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions timeZoneOptions526,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[139].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[142].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/PlaceUnassignedRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -38921,11 +39752,11 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.PlaceUnassigned dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    stop495,
-                                                    routeIdentity496,
-                                                    placementPosition497,
-                                                    adjustedRouteStartTime498,
-                                                    timeZoneOptions499,
+                                                    stop522,
+                                                    routeIdentity523,
+                                                    placementPosition524,
+                                                    adjustedRouteStartTime525,
+                                                    timeZoneOptions526,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "placeUnassigned")));
@@ -39025,9 +39856,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[139].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[142].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[139].setMessageReceiver(
+          _operations[142].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -39040,7 +39871,7 @@
                      * Auto generated method signature
                      * Service definition of function ns1__StartRoute
                      * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startRoute
-                     * @param startRoute501
+                     * @param startRoute528
                     
                      */
 
@@ -39048,7 +39879,7 @@
 
                             public  void startRoute(
 
-                            com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info502)
+                            com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info529)
                         
 
                     throws java.rmi.RemoteException
@@ -39056,7 +39887,7 @@
                     {
               org.apache.axis2.context.MessageContext _messageContext = null;
               try{
-               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[140].getName());
+               org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[143].getName());
               _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/StartRouteRequest");
               _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -39074,7 +39905,7 @@
               org.apache.axiom.soap.SOAPEnvelope env = null;
                     com.freshdirect.routing.proxy.stub.transportation.StartRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info502,
+                                                    info529,
                                                     dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "startRoute")));
@@ -39159,18 +39990,18 @@
                 * Auto generated method signature for Asynchronous Invocations
                 * Service definition of function ns1__StartRoute
                 * @see com.freshdirect.routing.proxy.stub.transportation.TransportationWebService#startstartRoute
-                    * @param startRoute501
+                    * @param startRoute528
                 
                 */
                 public  void startstartRoute(
 
-                 com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info502,
+                 com.freshdirect.routing.proxy.stub.transportation.RouteStartInfo info529,
 
                   final com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceCallbackHandler callback)
 
                 throws java.rmi.RemoteException{
 
-              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[140].getName());
+              org.apache.axis2.client.OperationClient _operationClient = _serviceClient.createClient(_operations[143].getName());
              _operationClient.getOptions().setAction("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService/TransportationWebService/StartRouteRequest");
              _operationClient.getOptions().setExceptionToBeThrownOnSOAPFault(true);
 
@@ -39188,7 +40019,7 @@
                                     //Style is Doc.
                                     com.freshdirect.routing.proxy.stub.transportation.StartRoute dummyWrappedType = null;
                                                     env = toEnvelope(getFactory(_operationClient.getOptions().getSoapVersionURI()),
-                                                    info502,
+                                                    info529,
                                                      dummyWrappedType,
                                                     optimizeContent(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                     "startRoute")));
@@ -39288,9 +40119,9 @@
                         
 
           org.apache.axis2.util.CallbackReceiver _callbackReceiver = null;
-        if ( _operations[140].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
+        if ( _operations[143].getMessageReceiver()==null &&  _operationClient.getOptions().isUseSeparateListener()) {
            _callbackReceiver = new org.apache.axis2.util.CallbackReceiver();
-          _operations[140].setMessageReceiver(
+          _operations[143].setMessageReceiver(
                     _callbackReceiver);
         }
 
@@ -39331,6 +40162,34 @@
         return false;
     }
      //http://localhost:81
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
             private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria param, boolean optimizeContent)
             throws org.apache.axis2.AxisFault {
 
@@ -39911,6 +40770,34 @@
             
                         try{
                              return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteriaResponse.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse.MY_QNAME,
                                           org.apache.axiom.om.OMAbstractFactory.getOMFactory());
                         } catch(org.apache.axis2.databinding.ADBException e){
                             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -40723,6 +41610,34 @@
             
                         try{
                              return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSessionResponse.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria.MY_QNAME,
+                                          org.apache.axiom.om.OMAbstractFactory.getOMFactory());
+                        } catch(org.apache.axis2.databinding.ADBException e){
+                            throw org.apache.axis2.AxisFault.makeFault(e);
+                        }
+                    
+
+            }
+        
+            private  org.apache.axiom.om.OMElement  toOM(com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse param, boolean optimizeContent)
+            throws org.apache.axis2.AxisFault {
+
+            
+                        try{
+                             return param.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse.MY_QNAME,
                                           org.apache.axiom.om.OMAbstractFactory.getOMFactory());
                         } catch(org.apache.axis2.databinding.ADBException e){
                             throw org.apache.axis2.AxisFault.makeFault(e);
@@ -43281,6 +44196,46 @@
         
                                     
                                 private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
+                                    com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCodeCriteria param1,
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria dummyWrappedType,
+                                 boolean optimizeContent) throws org.apache.axis2.AxisFault{
+
+                                try{
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria wrappedType = new com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria();
+
+                                 
+                                              wrappedType.setCriteria(param1);
+                                         
+
+                               org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                                  
+                                        emptyEnvelope.getBody().addChild(wrappedType.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria.MY_QNAME,factory));
+                                    
+
+                                return emptyEnvelope;
+                               } catch(org.apache.axis2.databinding.ADBException e){
+                                    throw org.apache.axis2.AxisFault.makeFault(e);
+                               }
+                               }
+
+
+
+                                
+                             
+                             /* methods to provide back word compatibility */
+
+                             
+
+                                
+                                private com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode[] getRetrieveQuantityReasonCodesByCriteriaResponseQuantityReasonCodes(
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse wrappedType){
+                                
+                                        return wrappedType.getQuantityReasonCodes();
+                                    
+                                }
+                             
+                                    
+                                private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
                                     com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria param1,
                                     com.freshdirect.routing.proxy.stub.transportation.RoutingRouteInfoRetrieveOptions param2,
                                     com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria dummyWrappedType,
@@ -44110,6 +45065,46 @@
                                 com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteriaResponse wrappedType){
                                 
                                         return wrappedType.getDailyStats();
+                                    
+                                }
+                             
+                                    
+                                private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
+                                    com.freshdirect.routing.proxy.stub.transportation.StopCancelCodeCriteria param1,
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria dummyWrappedType,
+                                 boolean optimizeContent) throws org.apache.axis2.AxisFault{
+
+                                try{
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria wrappedType = new com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria();
+
+                                 
+                                              wrappedType.setCriteria(param1);
+                                         
+
+                               org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                                  
+                                        emptyEnvelope.getBody().addChild(wrappedType.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria.MY_QNAME,factory));
+                                    
+
+                                return emptyEnvelope;
+                               } catch(org.apache.axis2.databinding.ADBException e){
+                                    throw org.apache.axis2.AxisFault.makeFault(e);
+                               }
+                               }
+
+
+
+                                
+                             
+                             /* methods to provide back word compatibility */
+
+                             
+
+                                
+                                private com.freshdirect.routing.proxy.stub.transportation.StopCancelCode[] getRetrieveStopCancelCodesByCriteriaResponseStopCancelCodes(
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse wrappedType){
+                                
+                                        return wrappedType.getStopCancelCodes();
                                     
                                 }
                              
@@ -45261,6 +46256,46 @@
                                 com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSessionResponse wrappedType){
                                 
                                         return wrappedType.getSessionIdentity();
+                                    
+                                }
+                             
+                                    
+                                private  org.apache.axiom.soap.SOAPEnvelope toEnvelope(org.apache.axiom.soap.SOAPFactory factory,
+                                    com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCodeCriteria param1,
+                                    com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria dummyWrappedType,
+                                 boolean optimizeContent) throws org.apache.axis2.AxisFault{
+
+                                try{
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria wrappedType = new com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria();
+
+                                 
+                                              wrappedType.setCriteria(param1);
+                                         
+
+                               org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory.getDefaultEnvelope();
+                                  
+                                        emptyEnvelope.getBody().addChild(wrappedType.getOMElement(com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria.MY_QNAME,factory));
+                                    
+
+                                return emptyEnvelope;
+                               } catch(org.apache.axis2.databinding.ADBException e){
+                                    throw org.apache.axis2.AxisFault.makeFault(e);
+                               }
+                               }
+
+
+
+                                
+                             
+                             /* methods to provide back word compatibility */
+
+                             
+
+                                
+                                private com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode[] getRetrieveUndeliverableStopCodesByCriteriaResponseUndeliverableStopCodes(
+                                com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse wrappedType){
+                                
+                                        return wrappedType.getUndeliverableStopCodes();
                                     
                                 }
                              
@@ -48822,6 +49857,20 @@
 
         try {
         
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteria.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveQuantityReasonCodesByCriteriaResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
                 if (com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria.class.equals(type)){
                 
                            return com.freshdirect.routing.proxy.stub.transportation.RetrieveRoutingRoutesByCriteria.Factory.parse(param.getXMLStreamReaderWithoutCaching());
@@ -49112,6 +50161,20 @@
                 if (com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteriaResponse.class.equals(type)){
                 
                            return com.freshdirect.routing.proxy.stub.transportation.RetrieveRouteDailyStatsByCriteriaResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteria.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveStopCancelCodesByCriteriaResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
                     
 
                 }
@@ -49518,6 +50581,20 @@
                 if (com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSessionResponse.class.equals(type)){
                 
                            return com.freshdirect.routing.proxy.stub.transportation.CreateRoutingSessionResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteria.Factory.parse(param.getXMLStreamReaderWithoutCaching());
+                    
+
+                }
+           
+                if (com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse.class.equals(type)){
+                
+                           return com.freshdirect.routing.proxy.stub.transportation.RetrieveUndeliverableStopCodesByCriteriaResponse.Factory.parse(param.getXMLStreamReaderWithoutCaching());
                     
 
                 }

@@ -1316,6 +1316,138 @@
                             
 
                         /**
+                        * field for LocationUserDefinedField1
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField1 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField1Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField1(){
+                               return localLocationUserDefinedField1;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField1
+                               */
+                               public void setLocationUserDefinedField1(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField1Tracker = true;
+                                       } else {
+                                          localLocationUserDefinedField1Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField1=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LocationUserDefinedField2
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField2 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField2Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField2(){
+                               return localLocationUserDefinedField2;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField2
+                               */
+                               public void setLocationUserDefinedField2(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField2Tracker = true;
+                                       } else {
+                                          localLocationUserDefinedField2Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField2=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LocationUserDefinedField3
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField3 ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField3Tracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField3(){
+                               return localLocationUserDefinedField3;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField3
+                               */
+                               public void setLocationUserDefinedField3(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField3Tracker = true;
+                                       } else {
+                                          localLocationUserDefinedField3Tracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField3=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for TimeZone
                         */
 
@@ -3365,6 +3497,108 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField1Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField1", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField1");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField1");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField1==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField1 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField1);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField2Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField2", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField2");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField2");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField2==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField2 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField2);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField3Tracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField3", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField3");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField3");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField3==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField3 cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField3);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                                             if (localTimeZone==null){
                                                  throw new org.apache.axis2.databinding.ADBException("timeZone cannot be null!!");
@@ -4423,6 +4657,33 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("userDefinedField3 cannot be null!!");
                                         }
+                                    } if (localLocationUserDefinedField1Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField1"));
+                                 
+                                        if (localLocationUserDefinedField1 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField1));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField1 cannot be null!!");
+                                        }
+                                    } if (localLocationUserDefinedField2Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField2"));
+                                 
+                                        if (localLocationUserDefinedField2 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField2));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField2 cannot be null!!");
+                                        }
+                                    } if (localLocationUserDefinedField3Tracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField3"));
+                                 
+                                        if (localLocationUserDefinedField3 != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField3));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField3 cannot be null!!");
+                                        }
                                     }
                             elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "timeZone"));
@@ -4689,9 +4950,9 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list53 = new java.util.ArrayList();
+                        java.util.ArrayList list56 = new java.util.ArrayList();
                     
-                        java.util.ArrayList list54 = new java.util.ArrayList();
+                        java.util.ArrayList list57 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -5311,6 +5572,60 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField1").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField1(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField2").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField2(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField3").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField3(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","timeZone").equals(reader.getName())){
                                 
                                                 object.setTimeZone(com.freshdirect.routing.proxy.stub.transportation.TimeZoneValue.Factory.parse(reader));
@@ -5687,11 +6002,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list53.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
+                                    list56.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone53 = false;
-                                                        while(!loopDone53){
+                                                        boolean loopDone56 = false;
+                                                        while(!loopDone56){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -5702,13 +6017,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone53 = true;
+                                                                loopDone56 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","driverAlerts").equals(reader.getName())){
-                                                                    list53.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
+                                                                    list56.add(com.freshdirect.routing.proxy.stub.transportation.DriverAlert.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone53 = true;
+                                                                    loopDone56 = true;
                                                                 }
                                                             }
                                                         }
@@ -5717,7 +6032,7 @@
                                                         object.setDriverAlerts((com.freshdirect.routing.proxy.stub.transportation.DriverAlert[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.DriverAlert.class,
-                                                                list53));
+                                                                list56));
                                                             
                               }  // End of if for expected property start element
                                 
@@ -5733,11 +6048,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list54.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
+                                    list57.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone54 = false;
-                                                        while(!loopDone54){
+                                                        boolean loopDone57 = false;
+                                                        while(!loopDone57){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -5748,13 +6063,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone54 = true;
+                                                                loopDone57 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orders").equals(reader.getName())){
-                                                                    list54.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
+                                                                    list57.add(com.freshdirect.routing.proxy.stub.transportation.Order.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone54 = true;
+                                                                    loopDone57 = true;
                                                                 }
                                                             }
                                                         }
@@ -5763,7 +6078,7 @@
                                                         object.setOrders((com.freshdirect.routing.proxy.stub.transportation.Order[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.Order.class,
-                                                                list54));
+                                                                list57));
                                                             
                               }  // End of if for expected property start element
                                 

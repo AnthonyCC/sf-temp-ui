@@ -164,6 +164,666 @@
                             
 
                         /**
+                        * field for LocationUserDefinedField1Alias
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField1Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField1AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField1Alias(){
+                               return localLocationUserDefinedField1Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField1Alias
+                               */
+                               public void setLocationUserDefinedField1Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField1AliasTracker = true;
+                                       } else {
+                                          localLocationUserDefinedField1AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField1Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LocationUserDefinedField2Alias
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField2Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField2AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField2Alias(){
+                               return localLocationUserDefinedField2Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField2Alias
+                               */
+                               public void setLocationUserDefinedField2Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField2AliasTracker = true;
+                                       } else {
+                                          localLocationUserDefinedField2AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField2Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LocationUserDefinedField3Alias
+                        */
+
+                        
+                                    protected java.lang.String localLocationUserDefinedField3Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLocationUserDefinedField3AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLocationUserDefinedField3Alias(){
+                               return localLocationUserDefinedField3Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LocationUserDefinedField3Alias
+                               */
+                               public void setLocationUserDefinedField3Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLocationUserDefinedField3AliasTracker = true;
+                                       } else {
+                                          localLocationUserDefinedField3AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLocationUserDefinedField3Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RouteUserDefinedField1Alias
+                        */
+
+                        
+                                    protected java.lang.String localRouteUserDefinedField1Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRouteUserDefinedField1AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getRouteUserDefinedField1Alias(){
+                               return localRouteUserDefinedField1Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RouteUserDefinedField1Alias
+                               */
+                               public void setRouteUserDefinedField1Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRouteUserDefinedField1AliasTracker = true;
+                                       } else {
+                                          localRouteUserDefinedField1AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localRouteUserDefinedField1Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RouteUserDefinedField2Alias
+                        */
+
+                        
+                                    protected java.lang.String localRouteUserDefinedField2Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRouteUserDefinedField2AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getRouteUserDefinedField2Alias(){
+                               return localRouteUserDefinedField2Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RouteUserDefinedField2Alias
+                               */
+                               public void setRouteUserDefinedField2Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRouteUserDefinedField2AliasTracker = true;
+                                       } else {
+                                          localRouteUserDefinedField2AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localRouteUserDefinedField2Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RouteUserDefinedField3Alias
+                        */
+
+                        
+                                    protected java.lang.String localRouteUserDefinedField3Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRouteUserDefinedField3AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getRouteUserDefinedField3Alias(){
+                               return localRouteUserDefinedField3Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RouteUserDefinedField3Alias
+                               */
+                               public void setRouteUserDefinedField3Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localRouteUserDefinedField3AliasTracker = true;
+                                       } else {
+                                          localRouteUserDefinedField3AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localRouteUserDefinedField3Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for StopUserDefinedField1Alias
+                        */
+
+                        
+                                    protected java.lang.String localStopUserDefinedField1Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStopUserDefinedField1AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getStopUserDefinedField1Alias(){
+                               return localStopUserDefinedField1Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StopUserDefinedField1Alias
+                               */
+                               public void setStopUserDefinedField1Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStopUserDefinedField1AliasTracker = true;
+                                       } else {
+                                          localStopUserDefinedField1AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localStopUserDefinedField1Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for StopUserDefinedField2Alias
+                        */
+
+                        
+                                    protected java.lang.String localStopUserDefinedField2Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStopUserDefinedField2AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getStopUserDefinedField2Alias(){
+                               return localStopUserDefinedField2Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StopUserDefinedField2Alias
+                               */
+                               public void setStopUserDefinedField2Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStopUserDefinedField2AliasTracker = true;
+                                       } else {
+                                          localStopUserDefinedField2AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localStopUserDefinedField2Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for StopUserDefinedField3Alias
+                        */
+
+                        
+                                    protected java.lang.String localStopUserDefinedField3Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localStopUserDefinedField3AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getStopUserDefinedField3Alias(){
+                               return localStopUserDefinedField3Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param StopUserDefinedField3Alias
+                               */
+                               public void setStopUserDefinedField3Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localStopUserDefinedField3AliasTracker = true;
+                                       } else {
+                                          localStopUserDefinedField3AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localStopUserDefinedField3Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OrderUserDefinedField1Alias
+                        */
+
+                        
+                                    protected java.lang.String localOrderUserDefinedField1Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOrderUserDefinedField1AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getOrderUserDefinedField1Alias(){
+                               return localOrderUserDefinedField1Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OrderUserDefinedField1Alias
+                               */
+                               public void setOrderUserDefinedField1Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOrderUserDefinedField1AliasTracker = true;
+                                       } else {
+                                          localOrderUserDefinedField1AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localOrderUserDefinedField1Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OrderUserDefinedField2Alias
+                        */
+
+                        
+                                    protected java.lang.String localOrderUserDefinedField2Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOrderUserDefinedField2AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getOrderUserDefinedField2Alias(){
+                               return localOrderUserDefinedField2Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OrderUserDefinedField2Alias
+                               */
+                               public void setOrderUserDefinedField2Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOrderUserDefinedField2AliasTracker = true;
+                                       } else {
+                                          localOrderUserDefinedField2AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localOrderUserDefinedField2Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OrderUserDefinedField3Alias
+                        */
+
+                        
+                                    protected java.lang.String localOrderUserDefinedField3Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOrderUserDefinedField3AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getOrderUserDefinedField3Alias(){
+                               return localOrderUserDefinedField3Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OrderUserDefinedField3Alias
+                               */
+                               public void setOrderUserDefinedField3Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOrderUserDefinedField3AliasTracker = true;
+                                       } else {
+                                          localOrderUserDefinedField3AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localOrderUserDefinedField3Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LineItemUserDefinedField1Alias
+                        */
+
+                        
+                                    protected java.lang.String localLineItemUserDefinedField1Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLineItemUserDefinedField1AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLineItemUserDefinedField1Alias(){
+                               return localLineItemUserDefinedField1Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LineItemUserDefinedField1Alias
+                               */
+                               public void setLineItemUserDefinedField1Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLineItemUserDefinedField1AliasTracker = true;
+                                       } else {
+                                          localLineItemUserDefinedField1AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLineItemUserDefinedField1Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LineItemUserDefinedField2Alias
+                        */
+
+                        
+                                    protected java.lang.String localLineItemUserDefinedField2Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLineItemUserDefinedField2AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLineItemUserDefinedField2Alias(){
+                               return localLineItemUserDefinedField2Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LineItemUserDefinedField2Alias
+                               */
+                               public void setLineItemUserDefinedField2Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLineItemUserDefinedField2AliasTracker = true;
+                                       } else {
+                                          localLineItemUserDefinedField2AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLineItemUserDefinedField2Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for LineItemUserDefinedField3Alias
+                        */
+
+                        
+                                    protected java.lang.String localLineItemUserDefinedField3Alias ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localLineItemUserDefinedField3AliasTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getLineItemUserDefinedField3Alias(){
+                               return localLineItemUserDefinedField3Alias;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param LineItemUserDefinedField3Alias
+                               */
+                               public void setLineItemUserDefinedField3Alias(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localLineItemUserDefinedField3AliasTracker = true;
+                                       } else {
+                                          localLineItemUserDefinedField3AliasTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localLineItemUserDefinedField3Alias=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Size1Precision
                         */
 
@@ -308,6 +968,276 @@
                                public void setDetailLevel(com.freshdirect.routing.proxy.stub.transportation.DetailLevel param){
                             
                                             this.localDetailLevel=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for RatioMode
+                        */
+
+                        
+                                    protected boolean localRatioMode ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getRatioMode(){
+                               return localRatioMode;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param RatioMode
+                               */
+                               public void setRatioMode(boolean param){
+                            
+                                            this.localRatioMode=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for AllowAdditionalStopTypes
+                        */
+
+                        
+                                    protected boolean localAllowAdditionalStopTypes ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getAllowAdditionalStopTypes(){
+                               return localAllowAdditionalStopTypes;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AllowAdditionalStopTypes
+                               */
+                               public void setAllowAdditionalStopTypes(boolean param){
+                            
+                                            this.localAllowAdditionalStopTypes=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ValidateQuantities
+                        */
+
+                        
+                                    protected boolean localValidateQuantities ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getValidateQuantities(){
+                               return localValidateQuantities;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ValidateQuantities
+                               */
+                               public void setValidateQuantities(boolean param){
+                            
+                                            this.localValidateQuantities=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for VerifyByException
+                        */
+
+                        
+                                    protected boolean localVerifyByException ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getVerifyByException(){
+                               return localVerifyByException;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param VerifyByException
+                               */
+                               public void setVerifyByException(boolean param){
+                            
+                                            this.localVerifyByException=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DeliveryReasonCodeRequired
+                        */
+
+                        
+                                    protected boolean localDeliveryReasonCodeRequired ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getDeliveryReasonCodeRequired(){
+                               return localDeliveryReasonCodeRequired;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DeliveryReasonCodeRequired
+                               */
+                               public void setDeliveryReasonCodeRequired(boolean param){
+                            
+                                            this.localDeliveryReasonCodeRequired=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for PickupReasonCodeRequired
+                        */
+
+                        
+                                    protected boolean localPickupReasonCodeRequired ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getPickupReasonCodeRequired(){
+                               return localPickupReasonCodeRequired;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param PickupReasonCodeRequired
+                               */
+                               public void setPickupReasonCodeRequired(boolean param){
+                            
+                                            this.localPickupReasonCodeRequired=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for OverReasonCodeRequired
+                        */
+
+                        
+                                    protected boolean localOverReasonCodeRequired ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getOverReasonCodeRequired(){
+                               return localOverReasonCodeRequired;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param OverReasonCodeRequired
+                               */
+                               public void setOverReasonCodeRequired(boolean param){
+                            
+                                            this.localOverReasonCodeRequired=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ShortReasonCodeRequired
+                        */
+
+                        
+                                    protected boolean localShortReasonCodeRequired ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getShortReasonCodeRequired(){
+                               return localShortReasonCodeRequired;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ShortReasonCodeRequired
+                               */
+                               public void setShortReasonCodeRequired(boolean param){
+                            
+                                            this.localShortReasonCodeRequired=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for DamagedReasonCodeRequired
+                        */
+
+                        
+                                    protected boolean localDamagedReasonCodeRequired ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getDamagedReasonCodeRequired(){
+                               return localDamagedReasonCodeRequired;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param DamagedReasonCodeRequired
+                               */
+                               public void setDamagedReasonCodeRequired(boolean param){
+                            
+                                            this.localDamagedReasonCodeRequired=param;
                                     
 
                                }
@@ -631,6 +1561,516 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField1AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField1Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField1Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField1Alias");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField1Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField1Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField1Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField2AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField2Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField2Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField2Alias");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField2Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField2Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField2Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLocationUserDefinedField3AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"locationUserDefinedField3Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"locationUserDefinedField3Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("locationUserDefinedField3Alias");
+                                    }
+                                
+
+                                          if (localLocationUserDefinedField3Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField3Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLocationUserDefinedField3Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localRouteUserDefinedField1AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"routeUserDefinedField1Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"routeUserDefinedField1Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("routeUserDefinedField1Alias");
+                                    }
+                                
+
+                                          if (localRouteUserDefinedField1Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField1Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localRouteUserDefinedField1Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localRouteUserDefinedField2AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"routeUserDefinedField2Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"routeUserDefinedField2Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("routeUserDefinedField2Alias");
+                                    }
+                                
+
+                                          if (localRouteUserDefinedField2Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField2Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localRouteUserDefinedField2Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localRouteUserDefinedField3AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"routeUserDefinedField3Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"routeUserDefinedField3Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("routeUserDefinedField3Alias");
+                                    }
+                                
+
+                                          if (localRouteUserDefinedField3Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField3Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localRouteUserDefinedField3Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localStopUserDefinedField1AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"stopUserDefinedField1Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"stopUserDefinedField1Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("stopUserDefinedField1Alias");
+                                    }
+                                
+
+                                          if (localStopUserDefinedField1Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField1Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localStopUserDefinedField1Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localStopUserDefinedField2AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"stopUserDefinedField2Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"stopUserDefinedField2Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("stopUserDefinedField2Alias");
+                                    }
+                                
+
+                                          if (localStopUserDefinedField2Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField2Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localStopUserDefinedField2Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localStopUserDefinedField3AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"stopUserDefinedField3Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"stopUserDefinedField3Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("stopUserDefinedField3Alias");
+                                    }
+                                
+
+                                          if (localStopUserDefinedField3Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField3Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localStopUserDefinedField3Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localOrderUserDefinedField1AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"orderUserDefinedField1Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"orderUserDefinedField1Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("orderUserDefinedField1Alias");
+                                    }
+                                
+
+                                          if (localOrderUserDefinedField1Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField1Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localOrderUserDefinedField1Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localOrderUserDefinedField2AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"orderUserDefinedField2Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"orderUserDefinedField2Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("orderUserDefinedField2Alias");
+                                    }
+                                
+
+                                          if (localOrderUserDefinedField2Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField2Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localOrderUserDefinedField2Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localOrderUserDefinedField3AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"orderUserDefinedField3Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"orderUserDefinedField3Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("orderUserDefinedField3Alias");
+                                    }
+                                
+
+                                          if (localOrderUserDefinedField3Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField3Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localOrderUserDefinedField3Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLineItemUserDefinedField1AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lineItemUserDefinedField1Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lineItemUserDefinedField1Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lineItemUserDefinedField1Alias");
+                                    }
+                                
+
+                                          if (localLineItemUserDefinedField1Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField1Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLineItemUserDefinedField1Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLineItemUserDefinedField2AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lineItemUserDefinedField2Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lineItemUserDefinedField2Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lineItemUserDefinedField2Alias");
+                                    }
+                                
+
+                                          if (localLineItemUserDefinedField2Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField2Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLineItemUserDefinedField2Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localLineItemUserDefinedField3AliasTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"lineItemUserDefinedField3Alias", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"lineItemUserDefinedField3Alias");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("lineItemUserDefinedField3Alias");
+                                    }
+                                
+
+                                          if (localLineItemUserDefinedField3Alias==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField3Alias cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localLineItemUserDefinedField3Alias);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                                     namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
@@ -731,6 +2171,267 @@
                                            localDetailLevel.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","detailLevel"),
                                                factory,xmlWriter);
                                         
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"ratioMode", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"ratioMode");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("ratioMode");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("ratioMode cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRatioMode));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"allowAdditionalStopTypes", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"allowAdditionalStopTypes");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("allowAdditionalStopTypes");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("allowAdditionalStopTypes cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowAdditionalStopTypes));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"validateQuantities", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"validateQuantities");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("validateQuantities");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("validateQuantities cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localValidateQuantities));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"verifyByException", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"verifyByException");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("verifyByException");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("verifyByException cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localVerifyByException));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"deliveryReasonCodeRequired", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"deliveryReasonCodeRequired");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("deliveryReasonCodeRequired");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("deliveryReasonCodeRequired cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDeliveryReasonCodeRequired));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"pickupReasonCodeRequired", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"pickupReasonCodeRequired");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("pickupReasonCodeRequired");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("pickupReasonCodeRequired cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPickupReasonCodeRequired));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"overReasonCodeRequired", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"overReasonCodeRequired");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("overReasonCodeRequired");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("overReasonCodeRequired cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOverReasonCodeRequired));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"shortReasonCodeRequired", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"shortReasonCodeRequired");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("shortReasonCodeRequired");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("shortReasonCodeRequired cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localShortReasonCodeRequired));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"damagedReasonCodeRequired", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"damagedReasonCodeRequired");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("damagedReasonCodeRequired");
+                                    }
+                                
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("damagedReasonCodeRequired cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDamagedReasonCodeRequired));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
                                             if (localCostQuantityReference==null){
                                                  throw new org.apache.axis2.databinding.ADBException("costQuantityReference cannot be null!!");
                                             }
@@ -966,6 +2667,141 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("size3Alias cannot be null!!");
                                         }
+                                    } if (localLocationUserDefinedField1AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField1Alias"));
+                                 
+                                        if (localLocationUserDefinedField1Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField1Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField1Alias cannot be null!!");
+                                        }
+                                    } if (localLocationUserDefinedField2AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField2Alias"));
+                                 
+                                        if (localLocationUserDefinedField2Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField2Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField2Alias cannot be null!!");
+                                        }
+                                    } if (localLocationUserDefinedField3AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "locationUserDefinedField3Alias"));
+                                 
+                                        if (localLocationUserDefinedField3Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLocationUserDefinedField3Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("locationUserDefinedField3Alias cannot be null!!");
+                                        }
+                                    } if (localRouteUserDefinedField1AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "routeUserDefinedField1Alias"));
+                                 
+                                        if (localRouteUserDefinedField1Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteUserDefinedField1Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField1Alias cannot be null!!");
+                                        }
+                                    } if (localRouteUserDefinedField2AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "routeUserDefinedField2Alias"));
+                                 
+                                        if (localRouteUserDefinedField2Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteUserDefinedField2Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField2Alias cannot be null!!");
+                                        }
+                                    } if (localRouteUserDefinedField3AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "routeUserDefinedField3Alias"));
+                                 
+                                        if (localRouteUserDefinedField3Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRouteUserDefinedField3Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("routeUserDefinedField3Alias cannot be null!!");
+                                        }
+                                    } if (localStopUserDefinedField1AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "stopUserDefinedField1Alias"));
+                                 
+                                        if (localStopUserDefinedField1Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopUserDefinedField1Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField1Alias cannot be null!!");
+                                        }
+                                    } if (localStopUserDefinedField2AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "stopUserDefinedField2Alias"));
+                                 
+                                        if (localStopUserDefinedField2Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopUserDefinedField2Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField2Alias cannot be null!!");
+                                        }
+                                    } if (localStopUserDefinedField3AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "stopUserDefinedField3Alias"));
+                                 
+                                        if (localStopUserDefinedField3Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localStopUserDefinedField3Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("stopUserDefinedField3Alias cannot be null!!");
+                                        }
+                                    } if (localOrderUserDefinedField1AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "orderUserDefinedField1Alias"));
+                                 
+                                        if (localOrderUserDefinedField1Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOrderUserDefinedField1Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField1Alias cannot be null!!");
+                                        }
+                                    } if (localOrderUserDefinedField2AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "orderUserDefinedField2Alias"));
+                                 
+                                        if (localOrderUserDefinedField2Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOrderUserDefinedField2Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField2Alias cannot be null!!");
+                                        }
+                                    } if (localOrderUserDefinedField3AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "orderUserDefinedField3Alias"));
+                                 
+                                        if (localOrderUserDefinedField3Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOrderUserDefinedField3Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("orderUserDefinedField3Alias cannot be null!!");
+                                        }
+                                    } if (localLineItemUserDefinedField1AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "lineItemUserDefinedField1Alias"));
+                                 
+                                        if (localLineItemUserDefinedField1Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLineItemUserDefinedField1Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField1Alias cannot be null!!");
+                                        }
+                                    } if (localLineItemUserDefinedField2AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "lineItemUserDefinedField2Alias"));
+                                 
+                                        if (localLineItemUserDefinedField2Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLineItemUserDefinedField2Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField2Alias cannot be null!!");
+                                        }
+                                    } if (localLineItemUserDefinedField3AliasTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "lineItemUserDefinedField3Alias"));
+                                 
+                                        if (localLineItemUserDefinedField3Alias != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localLineItemUserDefinedField3Alias));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("lineItemUserDefinedField3Alias cannot be null!!");
+                                        }
                                     }
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "size1Precision"));
@@ -1003,6 +2839,60 @@
                                     }
                                     elementList.add(localDetailLevel);
                                 
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "ratioMode"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRatioMode));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "allowAdditionalStopTypes"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllowAdditionalStopTypes));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "validateQuantities"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localValidateQuantities));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "verifyByException"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localVerifyByException));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "deliveryReasonCodeRequired"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDeliveryReasonCodeRequired));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "pickupReasonCodeRequired"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPickupReasonCodeRequired));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "overReasonCodeRequired"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localOverReasonCodeRequired));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "shortReasonCodeRequired"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localShortReasonCodeRequired));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "damagedReasonCodeRequired"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localDamagedReasonCodeRequired));
+                            
                             elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "costQuantityReference"));
                             
@@ -1168,6 +3058,276 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField1Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField1Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField2Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField2Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","locationUserDefinedField3Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLocationUserDefinedField3Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeUserDefinedField1Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRouteUserDefinedField1Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeUserDefinedField2Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRouteUserDefinedField2Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","routeUserDefinedField3Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRouteUserDefinedField3Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopUserDefinedField1Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStopUserDefinedField1Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopUserDefinedField2Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStopUserDefinedField2Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","stopUserDefinedField3Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setStopUserDefinedField3Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderUserDefinedField1Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOrderUserDefinedField1Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderUserDefinedField2Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOrderUserDefinedField2Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderUserDefinedField3Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOrderUserDefinedField3Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItemUserDefinedField1Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLineItemUserDefinedField1Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItemUserDefinedField2Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLineItemUserDefinedField2Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","lineItemUserDefinedField3Alias").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setLineItemUserDefinedField3Alias(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","size1Precision").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -1244,6 +3404,177 @@
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","detailLevel").equals(reader.getName())){
                                 
                                                 object.setDetailLevel(com.freshdirect.routing.proxy.stub.transportation.DetailLevel.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","ratioMode").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setRatioMode(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","allowAdditionalStopTypes").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAllowAdditionalStopTypes(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","validateQuantities").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setValidateQuantities(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","verifyByException").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setVerifyByException(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","deliveryReasonCodeRequired").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDeliveryReasonCodeRequired(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","pickupReasonCodeRequired").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPickupReasonCodeRequired(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","overReasonCodeRequired").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setOverReasonCodeRequired(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","shortReasonCodeRequired").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setShortReasonCodeRequired(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","damagedReasonCodeRequired").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setDamagedReasonCodeRequired(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
                                     

@@ -45,6 +45,22 @@
 
         
            /**
+            * auto generated Axis2 call back method for retrieveQuantityReasonCodesByCriteria method
+            * override this method for handling normal response from retrieveQuantityReasonCodesByCriteria operation
+            */
+           public void receiveResultretrieveQuantityReasonCodesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.QuantityReasonCode[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveQuantityReasonCodesByCriteria operation
+           */
+            public void receiveErrorretrieveQuantityReasonCodesByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveRoutingRoutesByCriteria method
             * override this method for handling normal response from retrieveRoutingRoutesByCriteria operation
             */
@@ -372,6 +388,22 @@
            * override this method for handling error response from retrieveRouteDailyStatsByCriteria operation
            */
             public void receiveErrorretrieveRouteDailyStatsByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveStopCancelCodesByCriteria method
+            * override this method for handling normal response from retrieveStopCancelCodesByCriteria operation
+            */
+           public void receiveResultretrieveStopCancelCodesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.StopCancelCode[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveStopCancelCodesByCriteria operation
+           */
+            public void receiveErrorretrieveStopCancelCodesByCriteria(java.lang.Exception e) {
             }
                 
            /**
@@ -826,6 +858,22 @@
            * override this method for handling error response from createRoutingSession operation
            */
             public void receiveErrorcreateRoutingSession(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveUndeliverableStopCodesByCriteria method
+            * override this method for handling normal response from retrieveUndeliverableStopCodesByCriteria operation
+            */
+           public void receiveResultretrieveUndeliverableStopCodesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.UndeliverableStopCode[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveUndeliverableStopCodesByCriteria operation
+           */
+            public void receiveErrorretrieveUndeliverableStopCodesByCriteria(java.lang.Exception e) {
             }
                 
            /**

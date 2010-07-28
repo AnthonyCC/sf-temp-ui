@@ -976,6 +976,50 @@
                             
 
                         /**
+                        * field for InternalDeliveryDays
+                        */
+
+                        
+                                    protected java.lang.String localInternalDeliveryDays ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localInternalDeliveryDaysTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getInternalDeliveryDays(){
+                               return localInternalDeliveryDays;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param InternalDeliveryDays
+                               */
+                               public void setInternalDeliveryDays(java.lang.String param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localInternalDeliveryDaysTracker = true;
+                                       } else {
+                                          localInternalDeliveryDaysTracker = false;
+                                              
+                                       }
+                                   
+                                            this.localInternalDeliveryDays=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Latitude
                         */
 
@@ -2725,6 +2769,40 @@
                                           }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localInternalDeliveryDaysTracker){
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"internalDeliveryDays", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"internalDeliveryDays");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("internalDeliveryDays");
+                                    }
+                                
+
+                                          if (localInternalDeliveryDays==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("internalDeliveryDays cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localInternalDeliveryDays);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              }
                                     namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                     if (! namespace.equals("")) {
@@ -3711,6 +3789,15 @@
                                         } else {
                                            throw new org.apache.axis2.databinding.ADBException("deliveryDays cannot be null!!");
                                         }
+                                    } if (localInternalDeliveryDaysTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "internalDeliveryDays"));
+                                 
+                                        if (localInternalDeliveryDays != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localInternalDeliveryDays));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("internalDeliveryDays cannot be null!!");
+                                        }
                                     }
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "latitude"));
@@ -3972,7 +4059,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list40 = new java.util.ArrayList();
+                        java.util.ArrayList list41 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -4492,6 +4579,24 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","internalDeliveryDays").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setInternalDeliveryDays(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","latitude").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
@@ -4790,11 +4895,11 @@
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list40.add(com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader));
+                                    list41.add(com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader));
                                                                 
                                                         //loop until we find a start element that is not part of this array
-                                                        boolean loopDone40 = false;
-                                                        while(!loopDone40){
+                                                        boolean loopDone41 = false;
+                                                        while(!loopDone41){
                                                             // We should be at the end element, but make sure
                                                             while (!reader.isEndElement())
                                                                 reader.next();
@@ -4805,13 +4910,13 @@
                                                                 reader.next();
                                                             if (reader.isEndElement()){
                                                                 //two continuous end elements means we are exiting the xml structure
-                                                                loopDone40 = true;
+                                                                loopDone41 = true;
                                                             } else {
                                                                 if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orders").equals(reader.getName())){
-                                                                    list40.add(com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader));
+                                                                    list41.add(com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.Factory.parse(reader));
                                                                         
                                                                 }else{
-                                                                    loopDone40 = true;
+                                                                    loopDone41 = true;
                                                                 }
                                                             }
                                                         }
@@ -4820,7 +4925,7 @@
                                                         object.setOrders((com.freshdirect.routing.proxy.stub.transportation.RoutingOrder[])
                                                             org.apache.axis2.databinding.utils.ConverterUtil.convertToArray(
                                                                 com.freshdirect.routing.proxy.stub.transportation.RoutingOrder.class,
-                                                                list40));
+                                                                list41));
                                                             
                               }  // End of if for expected property start element
                                 
