@@ -54,11 +54,8 @@ public class PromoPublishTag extends AbstractControllerTag {
 				if (promo != null) {
 					// do some cleanup
 
-					// -- remove change logs
-					promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
-					// -- remove assigned customer IDs
-					promo.setAssignedCustomerUserIds("");
-
+					promo.doCleanup();
+					
 					// add to list of valid promos
 					ppList.add(promo);
 				}

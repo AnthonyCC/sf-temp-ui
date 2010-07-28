@@ -98,9 +98,7 @@ public class PromoPublishServlet extends HttpServlet {
 		
 		for (FDPromotionNewModel promo : models) {
 			// cleanup
-			promo.setAssignedCustomerUserIds(Collections.<String>emptySet());
-			promo.setAuditChanges(Collections.<FDPromoChangeModel>emptyList());
-
+			promo.doCleanup();
 
 			final String promoCode = promo.getPromotionCode();
 			final EnumPromotionStatus status = promo.getStatus();

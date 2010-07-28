@@ -61,6 +61,8 @@ public class StoreImportedPromotionTag extends AbstractControllerTag {
 			String cloneId = request.getParameter("orig_id");
 			if ("".equals(cloneId))
 				cloneId = null;
+
+			promotion.doCleanup();
 			
 			promotion.setCreatedBy(agent.getUserId());
 			promotion.setCreatedDate(Calendar.getInstance().getTime());

@@ -338,6 +338,10 @@ public class FDPromotionNewModel extends ModelSupport {
 		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(assignedCustomerUserIds, ",")));
 	}
 
+	public void clearAssignedCustomerUserIds() {
+		this.assignedCustomerUserIds.clear();
+	}
+	
 	public void setAssignedCustomerUserIds(Set<String> assignedCustomerUserIds) {
 		this.assignedCustomerUserIds = assignedCustomerUserIds;
 	}
@@ -414,11 +418,17 @@ public class FDPromotionNewModel extends ModelSupport {
 		this.auditChanges = auditChanges;
 	}
 
+	public void clearAuditChanges() {
+		if (this.auditChanges == null)
+			this.auditChanges = new ArrayList<FDPromoChangeModel>();
+
+		this.auditChanges.clear();
+	}
 
 	public void addAuditChange(FDPromoChangeModel aChange) {
 		if (this.auditChanges == null)
 			this.auditChanges = new ArrayList<FDPromoChangeModel>();
-		
+
 		this.auditChanges.add(aChange);
 	}
 	
@@ -714,9 +724,10 @@ public class FDPromotionNewModel extends ModelSupport {
 	public boolean isForCOS(){
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
-		if(null != custStrategies && !custStrategies.isEmpty()){
-			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+		if (null != custStrategies) {
+			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
 				isMatched = promoCustStrategyModel.isOrderTypeCorporate();
 				break;
 			}
@@ -727,9 +738,10 @@ public class FDPromotionNewModel extends ModelSupport {
 	public boolean isForCOSNew(){
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
-		if(null != custStrategies && !custStrategies.isEmpty()){
-			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+		if (null != custStrategies) {
+			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
 				isMatched = (promoCustStrategyModel.isOrderTypeCorporate() && (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1));
 				break;
 			}
@@ -739,9 +751,10 @@ public class FDPromotionNewModel extends ModelSupport {
 	public boolean isForNew(){
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
-		if(null != custStrategies && !custStrategies.isEmpty()){
-			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+		if (null != custStrategies) {
+			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
 				isMatched = (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1);
 				break;
 			}
@@ -752,9 +765,10 @@ public class FDPromotionNewModel extends ModelSupport {
 	public boolean isForDPActiveOrRTU(){
 		boolean isMatched = false;
 		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
-		if(null != custStrategies && !custStrategies.isEmpty()){
-			for (Iterator iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = (FDPromoCustStrategyModel) iterator.next();
+		if (null != custStrategies) {
+			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
 				isMatched = EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) || EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) ;
 				break;
 			}
@@ -772,5 +786,15 @@ public class FDPromotionNewModel extends ModelSupport {
 			}
 		}
 		return isMatched;
+	}
+	
+
+
+	/**
+	 * Remove certain attributes of a cloned / imported promotion
+	 */
+	public void doCleanup() {
+		clearAssignedCustomerUserIds();
+		clearAuditChanges();
 	}
 }
