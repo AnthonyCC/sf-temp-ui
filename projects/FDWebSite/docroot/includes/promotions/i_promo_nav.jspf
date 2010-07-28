@@ -93,7 +93,7 @@
 </script>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_export">
-			<a href="/promotion/promo_view.jsp">Export .xls</a>
+			<a href="/promotion/export_promo_list.jsp?actionName=export">Export .xls</a>
 		</div>
 	<% } %>
 		<div class="promo_sub_nav">

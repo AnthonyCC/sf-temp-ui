@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 
 public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
@@ -40,12 +40,18 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 		}else{
 			promotions = new ArrayList<FDPromotionNewModel>(FDPromotionNewModelFactory.getInstance().getPromotions());
 		}
-
+		
 		// Convert promos to promo rows
 		List<PromoNewRow> promoRows = toRows(promotions);
 
 		// And sort them
 		sortRows(promoRows, request);
+		if(null !=request.getParameter("actionName")){
+			HttpServletResponse response =(HttpServletResponse)pageContext.getResponse();
+			response.setContentType("application/vnd.ms-excel");
+		    response.setHeader("Content-Disposition", "attachment; filename=PromotionsList_Export.xls");
+		    response.setCharacterEncoding("utf-8");
+		}
 		
 //		request.setAttribute("createdUsers", FDPromotionNewModelFactory.getInstance().getPromotionsCreatedUsers());
 //		request.setAttribute("modifiedUsers", FDPromotionNewModelFactory.getInstance().getPromotionsModifiedUsers());

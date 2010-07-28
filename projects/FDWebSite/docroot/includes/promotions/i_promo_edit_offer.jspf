@@ -1,4 +1,5 @@
-<table width="100%" height="76%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
+
+<%@page import="com.freshdirect.fdstore.promotion.EnumOfferType"%><table width="100%" height="76%" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
 	<tr>
 		<%-- first td sets the row heights --%>
 		<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -65,14 +66,14 @@
 								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 							</tr>
 							<tr>
-								<td><input type="radio" id="header_discount_type_hd_free" name="header_discount_type" value="hd_free" <%= EnumPromotionType.WAIVE_CHARGE.getName().equalsIgnoreCase(promotion.getOfferType()) && "DLV".equalsIgnoreCase(promotion.getWaiveChargeType())?"checked":""%>/></td>
+								<td><input type="radio" id="header_discount_type_hd_free" name="header_discount_type" value="hd_free" <%= EnumOfferType.WAIVE_DLV_CHARGE.getName().equalsIgnoreCase(promotion.getOfferType()) && "DLV".equalsIgnoreCase(promotion.getWaiveChargeType())?"checked":""%>/></td>
 								<td>Free Delivery <span class="gray"> (incl. fuel surcharge)</span></td>
 							</tr>
 							<tr>
 								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 							</tr>
 							<tr>
-								<td class="vTop"><input type="radio" id="header_discount_type_hd_extend_dp" name="header_discount_type" value="hd_extend_dp" <%= ( EnumPromotionType.DP_EXTENSION.getName().equalsIgnoreCase(promotion.getOfferType()) && 0 < promotion.getExtendDpDays())?"checked":""%>/></td>
+								<td class="vTop"><input type="radio" id="header_discount_type_hd_extend_dp" name="header_discount_type" value="hd_extend_dp" <%= ( EnumOfferType.DP_EXTN.getName().equalsIgnoreCase(promotion.getOfferType()) && 0 < promotion.getExtendDpDays())?"checked":""%>/></td>
 								<td>
 									Extend Delivery Pass <input type="text" id="extendDpDays" name="extendDpDays" class="w50px" value="<%= promotion.getExtendDpDays()%>"/> days<br />
 									<span class="grayIta8pt"> (Customer must have active pass)</span>

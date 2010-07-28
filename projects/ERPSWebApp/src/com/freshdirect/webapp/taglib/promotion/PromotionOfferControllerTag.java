@@ -81,6 +81,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			//TODO: Validations
 		String promotionType = NVL.apply(request.getParameter("discount_type"), "").trim();
 		if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotionType)){
+			this.promotion.setMaxAmount("");
 			this.promotion.setPercentOff(NVL.apply(request.getParameter("hd_perc"), "").trim());
 			String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
 			String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
@@ -157,6 +158,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 //			this.promotion.setOfferType("");
 			setWSPromotionCode();
 		}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
+			this.promotion.setMaxAmount("");
 			this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
 			this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
 			this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());

@@ -68,19 +68,21 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 					String startDate = request.getParameter("dlvDatesStartDate_in["+i+"]");
 					String endDate = request.getParameter("dlvDatesEndDate_in["+i+"]");
 //					SimpleDateFormat dateFormat = new SimpleDateFormat("mm/dd/yyyy");
-					FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
-					try {
-						dateModel.setDlvDateStart(DateUtil.parseMDY(startDate));
-						dateModel.setDlvDateEnd(DateUtil.parseMDY(endDate));
-					} catch (ParseException e) {
+					if(null != startDate && null != endDate){
+						FDPromoDlvDateModel dateModel = new FDPromoDlvDateModel();
+						try {
+							dateModel.setDlvDateStart(DateUtil.parseMDY(startDate));
+							dateModel.setDlvDateEnd(DateUtil.parseMDY(endDate));
+						} catch (ParseException e) {
+							continue;
+						}
 						
+						if(dateModel.getDlvDateStart()!= null & dateModel.getDlvDateEnd() !=null && dateModel.getDlvDateStart().after(dateModel.getDlvDateEnd())){
+							actionResult.addError(true, "startDateGreater", " Delivery Start Date can't be later than End Date.");
+						}
+						dateModel.setPromoId(promotion.getId());
+						dlvDates.add(dateModel);
 					}
-					
-					if(dateModel.getDlvDateStart()!= null & dateModel.getDlvDateEnd() !=null && dateModel.getDlvDateStart().after(dateModel.getDlvDateEnd())){
-						actionResult.addError(true, "startDateGreater", " Delivery Start Date can't be later than End Date.");
-					}
-					dateModel.setPromoId(promotion.getId());
-					dlvDates.add(dateModel);
 				}
 				promotion.setDlvDates(dlvDates);
 			}
