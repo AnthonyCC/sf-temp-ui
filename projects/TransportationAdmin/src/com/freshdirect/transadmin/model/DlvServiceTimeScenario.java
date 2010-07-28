@@ -11,7 +11,6 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 
 	private String code;
 	private String description;
-	private String isDefault;
 	private String serviceTimeFactorFormula;
 	private String serviceTimeFormula;
 	private BigDecimal defaultCartonCount;
@@ -36,13 +35,12 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private Set scenarioZones = new HashSet(0);
 	
 	public DlvServiceTimeScenario(String code, String description,
-			String isDefault, String serviceTimeFactorFormula,
+			String serviceTimeFactorFormula,
 			String serviceTimeFormula, String isNew, Set scenarioDays,
 			Set scenarioZones) {
 		super();
 		this.code = code;
 		this.description = description;
-		this.isDefault = isDefault;
 		this.serviceTimeFactorFormula = serviceTimeFactorFormula;
 		this.serviceTimeFormula = serviceTimeFormula;
 		this.isNew = isNew;
