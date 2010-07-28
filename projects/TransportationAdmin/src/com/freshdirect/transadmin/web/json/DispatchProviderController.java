@@ -27,6 +27,7 @@ import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
+import com.freshdirect.routing.service.IDeliveryService;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
@@ -526,7 +527,7 @@ public class DispatchProviderController extends JsonRpcController implements
 			
 			ScenarioZonesId zid = new ScenarioZonesId();
 			zid.setScenarioId(id);
-			zid.setZoneCode(TransStringUtil.isEmpty(zone[i][0]) ?  null : zone[i][0]);
+			zid.setZoneCode(TransStringUtil.isEmpty(zone[i][0]) ?  IDeliveryService.CONSTANT_ALLZONES : zone[i][0]);
 			try {
 				DlvScenarioZones sZone = new DlvScenarioZones(zid);
 				sZone.setServiceTimeType(TransStringUtil.isEmpty(zone[i][1]) ?  null : zone[i][1]);

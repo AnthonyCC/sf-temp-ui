@@ -17,6 +17,7 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private BigDecimal defaultCaseCount;
 	private BigDecimal defaultFreezerCount;
 	private String orderSizeFormula;
+	private String isDefault;
 	
 	private DlvServiceTimeType defaultServiceTimeType;
 		
@@ -35,11 +36,12 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private Set scenarioZones = new HashSet(0);
 	
 	public DlvServiceTimeScenario(String code, String description,
-			String serviceTimeFactorFormula,
+			String isDefault, String serviceTimeFactorFormula,
 			String serviceTimeFormula, String isNew, Set scenarioDays,
 			Set scenarioZones) {
 		super();
 		this.code = code;
+		this.isDefault=isDefault;
 		this.description = description;
 		this.serviceTimeFactorFormula = serviceTimeFactorFormula;
 		this.serviceTimeFormula = serviceTimeFormula;
@@ -56,6 +58,14 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 		this.scenarioZones = scenarioZones;
 	}
 
+	public String getIsDefault() {
+		return isDefault;
+	}
+
+	public void setIsDefault(String isDefault) {
+		this.isDefault = isDefault;
+	}
+	
 	public String getIsNew() {
 		return isNew;
 	}

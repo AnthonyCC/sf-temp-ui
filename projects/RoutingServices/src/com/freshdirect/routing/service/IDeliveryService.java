@@ -15,7 +15,9 @@ import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public interface IDeliveryService {
-			
+	
+	String CONSTANT_ALLZONES = "ALL";
+	
 	IDeliveryModel getDeliveryInfo(String saleId) throws RoutingServiceException;
 	
 	String getDeliveryType(String zoneCode) throws RoutingServiceException;

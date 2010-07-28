@@ -65,7 +65,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
 				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
 			} else {
-				zoneScenario = scenario.getZoneConfiguration().get(null);
+				zoneScenario = scenario.getZoneConfiguration().get(CONSTANT_ALLZONES);
 			}
 		}
 		//if zoneScenario is null then there is no scenario level override, let find serviceTime first
