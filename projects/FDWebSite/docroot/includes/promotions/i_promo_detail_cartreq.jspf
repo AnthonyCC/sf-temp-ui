@@ -140,7 +140,7 @@
 							<tr>
 								<td class="promo_detail_label">Has SKU<%=(dpcdSkusCart.size() > 1)?"s":""%>:</td>
 								<td class="alignL">
-									<span class="gray">Min. quanity </span><%= promotion.getSkuQuantity()%><span class="gray"> of any:</span><br />
+									<span class="gray">Min. quantity </span><%= promotion.getSkuQuantity()%><span class="gray"> of any:</span><br />
 									<table style="border-collapse: collapse;">
 									<%
 										for (int n = 0; n < dpcdSkusCart.size(); n++) {
