@@ -11,9 +11,6 @@
         <property name="description" type="string">
             <column name="DESCRIPTION" length="256" />
         </property> 
-        <property name="isDefault" type="string">
-            <column name="IS_DEFAULT" length="1" />
-        </property>  
         <property name="serviceTimeFactorFormula" type="string">
             <column name="SERVICETIME_FACTOR_FORMULA" length="256" />
         </property> 

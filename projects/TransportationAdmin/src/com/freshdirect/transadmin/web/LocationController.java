@@ -34,14 +34,12 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.util.RoutingUtil;
 import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
-import com.freshdirect.transadmin.model.DlvBuildingDtl;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnZoneType;
-import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
@@ -344,39 +342,33 @@ public class LocationController extends AbstractMultiActionController  {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView dlvServiceTimeTypeDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-		try {
+
 			Set<DlvServiceTimeType> dispatchSet=new HashSet();
 			String arrEntityList[] = getParamList(request);
+			Collection zoneLst = locationManagerService.getZonesForServiceTimeTypes(Arrays.asList(arrEntityList));
 			
-			Object tmpBean = null;
-			if (arrEntityList != null) {			
-				Collection zones=domainManagerService.getZones();
-				for(Iterator it=zones.iterator();it.hasNext();){
-					Zone z=(Zone)it.next();
-					if(z!=null){
-						int arrLength = arrEntityList.length;
-						for (int intCount = 0; intCount < arrLength; intCount++) {
-							tmpBean = locationManagerService.getServiceTimeType(arrEntityList[intCount]);
-							if(tmpBean != null) {
-								DlvServiceTimeType sType=(DlvServiceTimeType)tmpBean;
-									if(z.getServiceTimeType()!=null && z.getServiceTimeType().equals(sType.getCode())){
-										saveMessage(request, getMessage("app.actionmessage.127", null));
-										return dlvServiceTimeTypeHandler(request, response);
-									}else{
-										dispatchSet.add(sType);
-									}								
-							}
-						}	
-					}					
-				}			
+			DlvServiceTimeType tmpEntity = null;
+			boolean hasError = false;
+			if (arrEntityList != null && (zoneLst==null || zoneLst.size()==0)) {
+				int arrLength = arrEntityList.length;
+				for (int intCount = 0; intCount < arrLength; intCount++) {
+					tmpEntity = locationManagerService.getServiceTimeType(arrEntityList[intCount]);
+					dispatchSet.add(tmpEntity);
+				}
+				try {
+					domainManagerService.removeEntity(dispatchSet);
+					saveMessage(request, getMessage("app.actionmessage.103", null));
+				} catch (DataIntegrityViolationException e) {
+					e.printStackTrace();
+					hasError = true;
+				}
+			} else {
+				hasError = true;
 			}
-			removeEntityList(dispatchSet);
-			saveMessage(request, getMessage("app.actionmessage.103", null));
-		} catch (DataIntegrityViolationException e) {
-			saveMessage(request, getMessage("app.actionmessage.127", null));
-		}
-		
-		return dlvServiceTimeTypeHandler(request, response);
+			if(hasError) {
+				saveMessage(request, getMessage("app.actionmessage.127", null));
+			}
+		return dlvServiceTimeTypeHandler(request, response);			
 	}
 	
 	/**

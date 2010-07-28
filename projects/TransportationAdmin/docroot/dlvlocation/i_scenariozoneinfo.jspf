@@ -1,0 +1,181 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+</style>
+<script>
+      var depotDataTable;
+      var editDepotPanel; 
+      var _currentBatchId;
+          
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+           
+      function showScenarioZonesTable(inputVal) {
+      	 _currentBatchId = inputVal;	
+         editDepotPanel = new YAHOO.widget.Panel("panelScenario", {       
+                          width: "600", 
+                          height: "375px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        var depotDataIncrementer = function() {         
+         	var result = jsonrpcClient.AsyncDispatchProvider.getScenarioZones(_currentBatchId);
+            return result.list;
+         };
+          
+        depotDataSource = new YAHOO.util.DataSource(depotDataIncrementer);                           
+                            		  
+		var depotColumns =  [ 
+			    {key:"scenarioZonesId", label:"Zone",sortable:false, width: 60, className:"forms1"}, 
+			    {key:"serviceTimeType", label:"STime Type",sortable:false, width: 95, className:"forms1"},
+			    {key:"serviceTimeOverride", label:"STime Override",sortable:false, width: 90, className:"forms1"},
+			    {key:"serviceTimeOperator", label:"STime Operator",sortable:false, width: 90, className:"forms1"},
+			    {key:"serviceTimeAdjustment", label:"STime Adjustment",sortable:false, width: 100, className:"forms1"},
+			    {key:'delete',label:' ',formatter:function(elCell) {
+        										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+        										elCell.style.cursor = 'pointer';
+    			}}			    
+		 ];
+				 	 
+  		depotDataTable = new YAHOO.widget.DataTable("contdepottable", depotColumns, depotDataSource, { selectionMode:"single" });
+  		
+  		depotDataTable.subscribe('cellClickEvent',function(ev) {
+    	var target = YAHOO.util.Event.getTarget(ev);
+    	var column = depotDataTable.getColumn(target);
+    		if (column.key == 'delete') {
+        		depotDataTable.deleteRow(target);
+    		} 
+		});
+
+  		editDepotPanel.render(document.body);
+        editDepotPanel.show();
+     }
+
+     function showForm() {          
+    	 editDepotPanel.render(document.body);
+    	 editDepotPanel.show();
+     }
+      
+     function doAdd() {
+     		var _zone = document.getElementById('szone').value;
+     		var _stype = document.getElementById('stype').value;
+     		var _stimeOverride = document.getElementById('serviceTimeOverride').value;
+     		var _stimeOpt = document.getElementById('sTimeOperator').value;
+     		var _stimeAdj = document.getElementById('serviceTimeAdjustment').value;
+			var hasError=false;
+
+     		if(_stype==0 && _stimeOverride.trim().length==0 && _stimeAdj.trim().length==0){ 
+                  alert("Service Time group cannot be empty. Please choose one from the group!!");   
+            	  hasError=true;
+            }
+            
+            if((_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt==0 && _stimeAdj.trim().length==0)
+                    ||(_stype!=0 && _stimeOverride.trim().length==0 && _stimeOpt==0 && _stimeAdj.trim().length!=0)
+                    ||(_stype==0 && _stimeOverride.trim().length!=0 && _stimeOpt==0 && _stimeAdj.trim().length!=0)
+                    ||(_stype!=0 && _stimeOverride.trim().length==0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
+                    ||(_stype==0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
+                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length==0)
+                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)
+                    ||(_stype!=0 && _stimeOverride.trim().length!=0 && _stimeOpt!=0 && _stimeAdj.trim().length!=0)){
+                hasError=true;
+                alert("Please choose only one from ServiceTime group!!");   
+
+            }
+                 
+        	if(_stimeAdj.trim().length==0)
+        	{  	_stimeOpt=''; 	}
+        	   		
+     		if(!hasError) {
+     			depotDataTable.addRow({scenarioZonesId:_zone, serviceTimeType:_stype, serviceTimeOverride:_stimeOverride,
+     				serviceTimeOperator:_stimeOpt,serviceTimeAdjustment:_stimeAdj, delete:''});
+     		}
+     }
+         
+     function submitScenarioZoneTable() { 
+     	  var _data = new Array();
+     	  if(depotDataTable.getRecordSet() != null 
+     	  			&& depotDataTable.getRecordSet().getRecords()) {
+      	  	var records = depotDataTable.getRecordSet().getRecords();
+      	  	for(i=0; i<records.length; i++) {
+      	  		_data[i] = new Array();
+      	  		_data[i][0] = records[i].getData('scenarioZonesId');
+      	  		_data[i][1] = records[i].getData('serviceTimeType');
+      	  		_data[i][2] = records[i].getData('serviceTimeOverride');
+      	  		_data[i][3] = records[i].getData('serviceTimeOperator');
+      	  		_data[i][4] = records[i].getData('serviceTimeAdjustment');
+      	  	}
+      	  }
+       	  var result=jsonrpcClient.AsyncDispatchProvider.doScenarioZone(sendFormCallback,_currentBatchId,_data);
+      	  showForm();
+     }
+    
+     function sendFormCallback(result, exception) {
+     	 if(exception) {               
+             alert('Unable to connect to host system. Please contact system administrator!');               
+             return;
+         }
+         if(result){
+        	 alert('Scenario to Zone Mapping added successfully');	
+         }                                 
+     }
+ </script>
+       
+   <div style='display:none;height:0px;width:0px;'> 
+      <div id="panelScenario">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+      					&nbsp;&nbsp;&nbsp;Scenario To ZoneInfo</div>
+      <div id="errContainer"></div>
+      <div class="bd">
+      	 	<table cellpadding="1" cellspacing="0" style="font-size:12px; text-align:center">
+		    	<tr>
+                   <td>Zone                   
+                      <select id="szone" style="width: 50;margin-top:4px" name="dzone">  
+                    	<option value="">All</option>
+                    	<c:forEach var="zone" items="${zones}">       
+		              		<option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.zoneCode}"/></option>
+			        	</c:forEach>                                      
+			          </select>
+                   </td>                               
+                   <td>ST Type                   
+                      <select id="stype" style="width: 75;margin-top:4px" name="stype">  
+                    	<option value="">-Please Select</option>
+                    	<c:forEach var="serviceTimeType" items="${servicetimetypes}">       
+		              		<option value="<c:out value="${serviceTimeType.code}"/>"><c:out value="${serviceTimeType.code}"/></option>
+			        	</c:forEach>                                      
+			          </select>
+                   </td> 
+                   <td>                 
+	                   ST Override<input style="margin-top:4px" size="10" id="serviceTimeOverride" /> 
+	               </td>                    
+                   <td>ST Operator                   
+                      <select id="sTimeOperator" style="width: 60;margin-top:4px" name="sTimeOperator">  
+                    	<c:forEach var="serviceTimeOperator" items="${serviceTimeOperators}">       
+		              		<option value="<c:out value="${serviceTimeOperator.name}"/>"><c:out value="${serviceTimeOperator.name}"/></option>
+			        	</c:forEach>                                      
+			          </select>
+                   </td>                                       
+                   <td>                 
+	                   ST Adjustment<input style="margin-top:4px" size="10" id="serviceTimeAdjustment" /> 
+	               </td>
+	               <td>                 
+	                   <input type="button" id="add" style="margin-top:6px" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+	               </td>
+	               
+               </tr>
+            </table>
+            <hr/>
+            <div id="parentcontdepottable" style="height:250px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+	      	 	<div id="contdepottable"></div> 
+	      	 </div>	
+	      	 <hr/>
+	      	 <div align="center">
+	      	 	<input type="button" id="route_out" value="&nbsp;Submit&nbsp;" onclick="javascript:submitScenarioZoneTable();" />
+	      	 </div>	      
+        </div>
+   	 </div>
+   	</div>

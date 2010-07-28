@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web.json;
 
 import java.util.Collection;
+import java.util.List;
 
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -21,4 +22,6 @@ public interface IDispatchProvider {
 	DispatchCommand getDispatchForResource(String date, String resourceId, String dispatchId);
 	int addScenarioDayMapping(String sCode, String sDay, String sDate);
 	int deleteServiceTimeScenario(String sCode);
+	Collection getScenarioZones(String scenarioId);
+	boolean doScenarioZone(String id, String[][] zone);
 }

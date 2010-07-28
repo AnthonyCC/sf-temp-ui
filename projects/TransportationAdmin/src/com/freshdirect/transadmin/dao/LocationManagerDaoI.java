@@ -49,7 +49,7 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getServiceTimesForZoneTypes(List zoneTypeLst) throws DataAccessException;
 	
-	Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException; 
+	Collection getZonesForServiceTimeTypes(List serviceTypeLst) throws DataAccessException; 
 	
 	Collection getDeliveryLocations(String buildingId) throws DataAccessException;
     

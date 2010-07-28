@@ -20,9 +20,13 @@
 					<span class="scrTitle">
 						<%=pageTitle%>
 					</span>
-				</div>
+				</div>				
+			</div>
+			<div class="cont_row">
+				<span class="screenmessages"><jsp:include page='/common/messages.jsp'/></span>
 			</div>
 		</div>
+		
 
 		<div class="cont_topright">
 			<div class="cont_row">

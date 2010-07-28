@@ -16,6 +16,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 
@@ -51,9 +52,9 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		return this.getHibernateTemplate().findByCriteria(crit);
 	}
 
-	public Collection getScenariosForZoneTypes(List zoneTypeLst) throws DataAccessException {
-		DetachedCriteria crit = DetachedCriteria.forClass(DlvServiceTimeScenario.class);
-		crit.add(Expression.in("defaultZoneType.zoneTypeId", zoneTypeLst));
+	public Collection getZonesForServiceTimeTypes(List serviceTypeLst) throws DataAccessException {
+		DetachedCriteria crit = DetachedCriteria.forClass(Zone.class);
+		crit.add(Expression.in("defaultServiceTimeType.code", serviceTypeLst));
 		return this.getHibernateTemplate().findByCriteria(crit);
 	}
 

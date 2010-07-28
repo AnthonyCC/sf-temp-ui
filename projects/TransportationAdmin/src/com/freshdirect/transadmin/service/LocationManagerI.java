@@ -51,7 +51,7 @@ public interface LocationManagerI  extends BaseManagerI {
 	
 	Collection getServiceTimesForZoneTypes(List zoneTypeLst);
 	
-	Collection getScenariosForZoneTypes(List zoneTypeLst);
+	Collection getZonesForServiceTimeTypes(List serviceTypeLst);
 	
 	Collection getDeliveryLocations(String buildingId);
     

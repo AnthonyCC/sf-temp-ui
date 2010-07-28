@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.TreeMap;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
@@ -33,9 +35,11 @@ import com.freshdirect.transadmin.datamanager.report.XlsCommunityReport;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
+import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
+import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -51,6 +55,7 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
@@ -498,5 +503,51 @@ public class DispatchProviderController extends JsonRpcController implements
 			return result;
 		}
 	}
+	
+	public Collection getScenarioZones(String scenarioId){
+		Collection tempLst = Collections.EMPTY_LIST;
+		Collection zoneLst = new ArrayList();
+		if(scenarioId!=null){
+			tempLst = locationManagerService.getDlvScenarioZones(scenarioId);
+			for (Iterator iterator = tempLst.iterator(); iterator.hasNext();) {
+				
+				DlvScenarioZones dlvScenarioZone = (DlvScenarioZones) iterator.next();
+				zoneLst.add(new ScenarioZoneCommand(dlvScenarioZone));							
+			}
+		}		
+		return zoneLst;	
+	}
+	
+	public boolean doScenarioZone(String id, String[][] zone){
+			
+		List selZoneLst= new ArrayList();
+		
+		for(int i=0;i<zone.length;i++) {
+			
+			ScenarioZonesId zid = new ScenarioZonesId();
+			zid.setScenarioId(id);
+			zid.setZoneCode(TransStringUtil.isEmpty(zone[i][0]) ?  null : zone[i][0]);
+			try {
+				DlvScenarioZones sZone = new DlvScenarioZones(zid);
+				sZone.setServiceTimeType(TransStringUtil.isEmpty(zone[i][1]) ?  null : zone[i][1]);
+				sZone.setServiceTimeOverride(TransStringUtil.isEmpty(zone[i][2]) ?  null : new BigDecimal(zone[i][2]));
+				sZone.setServiceTimeOperator(TransStringUtil.isEmpty(zone[i][3]) ?  null : EnumArithmeticOperator.getEnum(zone[i][3]));
+				sZone.setServiceTimeAdjustment(TransStringUtil.isEmpty(zone[i][4]) ?  null : new BigDecimal(zone[i][4]));
+				selZoneLst.add(sZone);				
+			} catch(NumberFormatException exp) {
+				return false;
+			}
+		}
+		if(id != null) {
+			getLocationManagerService().removeEntity(
+				getLocationManagerService().getDlvScenarioZones(id));
+		}
+		if(selZoneLst.size() > 0) {
+			getLocationManagerService().saveEntityList(selZoneLst);
+		}
+		return true;
+	}
+	
+	
 	
 }

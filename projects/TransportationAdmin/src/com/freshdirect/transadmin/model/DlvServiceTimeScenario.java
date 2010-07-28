@@ -20,8 +20,7 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 	private String orderSizeFormula;
 	
 	private DlvServiceTimeType defaultServiceTimeType;
-	private TrnZoneType defaultZoneType;
-	
+		
 	private BigDecimal loadBalanceFactor;
 	
 	private BigDecimal lateDeliveryFactor;
@@ -131,30 +130,6 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 		}
 	}
 
-	public TrnZoneType getDefaultZoneType() {
-		return defaultZoneType;
-	}
-
-	public void setDefaultZoneType(TrnZoneType defaultZoneType) {
-		this.defaultZoneType = defaultZoneType;
-	}
-	
-	public String getZoneType() {
-		if(getDefaultZoneType() == null) {
-			return null;
-		}
-		return getDefaultZoneType().getZoneTypeId();
-	}
-
-	public void setZoneType(String trnZoneTypeId) {
-		if("null".equals(trnZoneTypeId)) {
-			setDefaultZoneType(null);
-		} else {
-			TrnZoneType trnZoneType = new TrnZoneType();
-			trnZoneType.setZoneTypeId(trnZoneTypeId);
-			setDefaultZoneType(trnZoneType);
-		}
-	}
 
 	public String getDescription() {
 		return description;
@@ -162,14 +137,6 @@ public class DlvServiceTimeScenario implements java.io.Serializable, TrnBaseEnti
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public String getIsDefault() {
-		return isDefault;
-	}
-
-	public void setIsDefault(String isDefault) {
-		this.isDefault = isDefault;
 	}
 
 	public String getOrderSizeFormula() {

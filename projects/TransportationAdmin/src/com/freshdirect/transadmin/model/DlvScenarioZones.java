@@ -4,16 +4,15 @@ import java.math.BigDecimal;
 
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 
-
-public class DlvScenarioZones implements java.io.Serializable{
+public class DlvScenarioZones{
 	
 
 	private ScenarioZonesId scenarioZonesId;
 	private String serviceTimeType;
 	private BigDecimal serviceTimeOverride;
-	private BigDecimal serviceTimeAdjustment;
 	private EnumArithmeticOperator serviceTimeOperator;
-		
+	private BigDecimal serviceTimeAdjustment;
+	
 	public DlvScenarioZones() {
 	
 	}
@@ -29,7 +28,7 @@ public class DlvScenarioZones implements java.io.Serializable{
 		this.serviceTimeType = serviceTimeType;
 		this.serviceTimeOverride = serviceTimeOverride;
 		this.serviceTimeOperator = serviceTimeOperator;
-		this.serviceTimeAdjustment = serviceTimeAdjustment;
+		this.serviceTimeAdjustment = serviceTimeAdjustment;		
 	}
 
 	public ScenarioZonesId getScenarioZonesId() {
@@ -65,5 +64,4 @@ public class DlvScenarioZones implements java.io.Serializable{
 		this.serviceTimeAdjustment = serviceTimeAdjustment;
 	}
 		
-	
 }

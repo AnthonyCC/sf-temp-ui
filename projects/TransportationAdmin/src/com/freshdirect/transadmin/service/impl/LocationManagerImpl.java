@@ -122,8 +122,8 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getServiceTimesForZoneTypes(zoneTypeLst);
 	}
 	
-	public Collection getScenariosForZoneTypes(List zoneTypeLst) {
-		return getLocationManagerDao().getScenariosForZoneTypes(zoneTypeLst);
+	public Collection getZonesForServiceTimeTypes(List serviceTypeLst) {
+		return getLocationManagerDao().getZonesForServiceTimeTypes(serviceTypeLst);
 	}
 	
 	public Collection getDeliveryLocations(String buildingId) {
