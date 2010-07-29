@@ -56,7 +56,7 @@
             <table cellspacing=2 cellpadding=2>
                 <tr><td class="field_title">Taxable</td><td><%= material.isTaxable()%></td><tr>
                 <tr><td class="field_title">Kosher Production</td><td><%= material.isKosherProduction() %></td><tr>
-                <tr><td class="field_title">Signup Promo</td><td><input type='checkbox' value='true' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.CUST_PROMO.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"CHECKED":"" %>></td><tr>
+                <tr><td class="field_title">Eligible for Perishable Only Promotion</td><td><input type='checkbox' value='true' name='<%= FormElementNameHelper.getFormElementName(material, EnumAttributeName.CUST_PROMO.getName()) %>' <%= (true == material.getAttributeBoolean(EnumAttributeName.CUST_PROMO))?"CHECKED":"" %>></td><tr>
             </table>
 
             <!-- bottle deposit amount -->

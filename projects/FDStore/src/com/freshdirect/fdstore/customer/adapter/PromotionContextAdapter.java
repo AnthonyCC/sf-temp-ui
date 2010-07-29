@@ -531,4 +531,14 @@ public class PromotionContextAdapter implements PromotionContextI {
 		return this.getUser().getShoppingCart().getDeliveryReservation();
 	}
 	
+	public boolean isAlreadyRedeemedPromotion(String promoCode){
+		boolean result = false;
+		FDCartModel cart = this.getShoppingCart();
+		if(cart instanceof FDModifyCartModel){
+			FDModifyCartModel modifyCart = (FDModifyCartModel) cart;
+			Set<String> usedPromoCodes = modifyCart.getOriginalOrder().getUsedPromotionCodes();
+			result = usedPromoCodes.contains(promoCode);
+		}
+		return result;
+	}
 }

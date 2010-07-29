@@ -163,7 +163,7 @@ public class FDPromotionNewDAO {
 			
 			promo.addStrategy(new LimitedUseStrategy(rs.getInt("MAX_USAGE")));
 			int redeemCnt = rs.getInt("REDEEM_CNT");
-			if(!rs.wasNull())
+			if(!rs.wasNull() && redeemCnt > 0)
 				promo.addStrategy(new MaxRedemptionStrategy(redeemCnt));
 			
 			if("X".equalsIgnoreCase(rs.getString("RULE_BASED"))) {

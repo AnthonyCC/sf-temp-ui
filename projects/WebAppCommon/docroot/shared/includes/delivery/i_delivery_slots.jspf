@@ -20,6 +20,7 @@ private final static String TIMESLOT_BG_ODD = "f7f7f7";
 <%
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 boolean isNextDayTimeSlotNotAvailable = false;
+boolean hasDiscountedTimeslots = false;
 Date nextDay = DateUtil.getNextDate();
 if (timeslots.size() > 0) { 
 	DlvZoneModel zoneModel = null;
@@ -137,10 +138,10 @@ if (timeslots.size() > 0) {
 							if (!normalAvailCapacity && availCapacity ) {
 								request.setAttribute("shownCTSlot", "TRUE");
 							}
-							double zonePromoAmountSpec=0;							
+							double zonePromoAmountSpec=0;	
 							if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null)
 								zonePromoAmountSpec=PromotionHelper.getDiscount(user_ct,slot);
-							
+								if(zonePromoAmountSpec > 0) hasDiscountedTimeslots = true;
 							%>
 							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;">
 								<div class="control">
@@ -225,3 +226,10 @@ nextDayVal.add(Calendar.DATE, 1);
 <% } else { %>
 <input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
 <% } %>
+<%
+	if(hasDiscountedTimeslots) {
+%>
+<input type="hidden" id="hasDiscountedTimeslots" name="hasDiscountedTimeslots" value="true"/>
+<%
+	}
+%>

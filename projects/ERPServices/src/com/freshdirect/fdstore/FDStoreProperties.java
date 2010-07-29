@@ -785,7 +785,7 @@ public class FDStoreProperties {
 		//APPDEV-659
 		defaults.put(PROMO_VALID_RT_STATUSES, "LIVE");
 		
-		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "120");
+		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "300"); //every 5 mins
 		defaults.put(PROP_REDEMPTION_SERVER_COUNT, "5");
 		
 		refresh();

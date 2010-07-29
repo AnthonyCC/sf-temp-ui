@@ -199,5 +199,7 @@ public interface RequestParamName {
     public static final String REQ_PARAM_CARTONNUMBER = "cartonNumber";
     
     public static final String REQ_PARAM_IS_PROMO_ELIGIBLE = "isEligible";
+    
+    public static final String REQ_PARAM_IGNORE_PROMO_ERRORS = "ignorePromoErrors";
 
 }

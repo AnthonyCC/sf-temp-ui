@@ -115,4 +115,6 @@ public interface PromotionContextI {
 	public String getDepotCode(AddressModel addr);
 	
 	public Set<String> getLineItemDiscountCodes();
+	
+	public boolean isAlreadyRedeemedPromotion(String promoCode);
 }

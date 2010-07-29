@@ -16,8 +16,8 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 	}
 
 	public int evaluate(String promotionCode, PromotionContextI context) {
-		if(context.getUser().getAllAppliedPromos().contains(promotionCode)){
-			//Promotion already applied. Give it to the customer.
+		if(context.isAlreadyRedeemedPromotion(promotionCode) || context.getUser().getAllAppliedPromos().contains(promotionCode)){
+			//allow if modifying that order OR Promotion already applied beginning of the session. Give it to the customer. 
 			return ALLOW;
 		} else {
 			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode);

@@ -488,17 +488,20 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 		}
 
-		// SORI changes
+		/*
+		 * Get all applied promotions before invalidating the cache.
+		 */
+		//Get applied promos
+		Set<String> appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();
+		//Clear all applied promotions
+		user.clearAllAppliedPromos();
 		
 		user.setPostPromoConflictEnabled(true);
 		// make sure we're not using stale data
 		user.invalidateCache();
         // make sure we're not using stale order history data
 		user.invalidateOrderHistoryCache();
-		//Get applied promos
-		Set<String> appliedPromos = user.getPromotionEligibility().getAppliedPromotionCodes();
-		//Clear all applied promotions
-		user.clearAllAppliedPromos();
+
 		// recalculate promotion
 		user.updateUserState();		
 		//Check if current applied promotions are still available to the user. The max redemption count 

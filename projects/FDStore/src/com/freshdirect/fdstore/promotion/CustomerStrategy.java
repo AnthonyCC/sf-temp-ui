@@ -39,7 +39,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 		//Evaluate Delivery Pass Status
 		if(dpStatus != null){
 			if(!context.getUser().getDeliveryPassStatus().equals(dpStatus)) return DENY;
-			if(dpStatus.equals(EnumDlvPassStatus.EXPIRED) && dpStartDate != null && dpEndDate != null) {
+			if(dpStartDate != null && dpEndDate != null) {
 				Date dpExpDate = context.getUser().getDlvPassInfo().getExpDate();
 				if(dpExpDate.before(dpStartDate) || dpExpDate.after(dpEndDate)) return DENY;
 			}
