@@ -22,6 +22,7 @@ import java.util.TreeMap;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -493,16 +494,23 @@ public class DispatchProviderController extends JsonRpcController implements
 	}
 	
 	public int deleteServiceTimeScenario(String sCode) {
-		int result=0;
+		
 		DlvServiceTimeScenario scenario=null;
-		scenario = getLocationManagerService().getServiceTimeScenario(sCode);
-		if(scenario.getScenarioDays()!=null && scenario.getScenarioDays().size()==0
-				&& scenario.getScenarioZones().size()==0){
-			getLocationManagerService().deleteServiceTimeScenario(scenario);
-			return 1;
-		}else{
-			return result;
+		String[] scenarioCodes = StringUtil.decodeStrings(sCode);
+		List processedList = new ArrayList();
+		if(scenarioCodes != null && scenarioCodes.length > 0) {
+			for(String _sCode : scenarioCodes) {
+				scenario = getLocationManagerService().getServiceTimeScenario(_sCode);
+				if(scenario.getScenarioDays()!=null && scenario.getScenarioDays().size()==0
+						&& scenario.getScenarioZones().size()==0
+							&& !processedList.contains(_sCode)){
+					getLocationManagerService().deleteServiceTimeScenario(scenario);
+					processedList.add(_sCode);
+					return 1;
+				}
+			}
 		}
+		return 0;
 	}
 	
 	public Collection getScenarioZones(String scenarioId){

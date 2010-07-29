@@ -124,8 +124,18 @@
   	background-color: #deb887;
 }
 
+.defaultScenario {
+  	background-color: #deb887;
+  	font-weight: bold;
+}
+
 .eXtremeTable .confirmedRow {
   	background-color: #c7eb9e;
+}
+
+.orphanScenario {
+  	background-color: #c7eb9e;
+  	font-weight: bold;
 }
 
 .eXtremeTable .earlyWarningRow {

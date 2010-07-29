@@ -12,7 +12,7 @@
   String todateRangeVal = request.getParameter("todaterange") != null ? request.getParameter("todaterange") : ""; 
 %>
 <% 
-	String pageTitle = "Service Time Scenario";
+	String pageTitle = "Scenario";
 %>
 
   <tmpl:put name='title' direct='true'>Routing : <%=pageTitle%></tmpl:put>
@@ -37,7 +37,7 @@
 					</span>
 					<span>
 					
-                  <span style="font-size: 12px;font-weight: plain;">From:</span><input maxlength="40" name="fromdaterange" id="fromdaterange" value="<%= fromdateRangeVal %>" />
+                  <span style="font-size: 12px;font-weight: plain;">From:</span><input style="width:80px;" maxlength="12" name="fromdaterange" id="fromdaterange" value="<%= fromdateRangeVal %>" />
                   <span>
 						<a href="#" id="trigger_Date" style="font-size: 9px;">
                         <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
@@ -54,7 +54,7 @@
 		                    	  );
 	    				</script>
                     </span>
-                  <span style="font-size: 12px;font-weight: plain;">To:</span><input maxlength="40" name="todaterange" id="todaterange" value="<%= todateRangeVal %>" />
+                  <span style="font-size: 12px;font-weight: plain;">To:</span><input style="width:80px;" maxlength="12" name="todaterange" id="todaterange" value="<%= todateRangeVal %>" />
                   						
 	    			</span>
 					<span>
@@ -73,10 +73,15 @@
 		                    	  );
 	    				</script>
                     </span>
-                    				
-					<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-					<span><input id="view_button" type="image" alt="View" src="./images/icons/clear.gif"  onclick="document.getElementById('fromdaterange').value='';document.getElementById('todaterange').value='';" /></span>
-				</div>
+                    &nbsp;&nbsp;				
+					<span><input id="view_button" height="18"  type="button" value="View"   onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+					<span><input id="clear_button" height="18"  type="button" value="Clear" onclick="document.getElementById('fromdaterange').value='';document.getElementById('todaterange').value='';" /></span>
+					<span><input id="delete_button" height="18" type="button" value="Delete" onclick="javascript:deleteScenarioHandlers();" /></span>
+					&nbsp;&nbsp;&nbsp;
+					<span><div style="width:80px;float:right;" class="orphanScenario">Orphan</div></span>
+					&nbsp;&nbsp;&nbsp;
+					<span><div style="width:80px;float:right;" class="defaultScenario">Default</div></span>
+				</div>				
 			</div>
 			<div>
 				<span class="screenmessages"><jsp:include page='/common/messages.jsp'/></span>
@@ -120,45 +125,48 @@
 		</div>
 	</div> 
 	 <script>
-      addRowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0);
-      function addRowHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol) {
-    	   addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, false);
-      }
+	 rowHandlers('ec_table', 'rowMouseOver', 'editdlvservicetimescenario.do','id',0, 0,false,3);
       
-      function addHandlers(tableId, rowClassName, url, paramName, columnIndex, checkCol, needKeyPress) {
+      function deleteScenarioHandlers() {
     		
-    		var previousClass = null;
-    	    var table = document.getElementById(tableId);
-    	    
-    	    if(table != null) {
-    		    var rows = table.tBodies[0].getElementsByTagName("tr");	 	       
-    		    for (i = 0; i < rows.length; i++) {	    	
-    		        var cells = rows[i].getElementsByTagName("td");
-    		        
-    		        for (j = 1; j < cells.length; j++) {
-    		        	
-    		            cells[j].onmouseover = function () {
-    		            	previousClass = this.parentNode.className;
-    		            	this.parentNode.className = this.parentNode.className + " " + rowClassName ;
-    		            };
-    		        
-    		            cells[j].onmouseout = function () {
-    		              	this.parentNode.className = previousClass;
-    		            };
-    		        
-    		            if(checkCol == -1 || checkCol != j ) {
-    						if(!(needKeyPress && (j == (cells.length-1)))) {	            
-    					    	cells[j].onclick = function () {			    		
-    					      		var cell = this.parentNode.getElementsByTagName("td")[columnIndex];
-    					      		var x= this.parentNode.getElementsByTagName("td")[3];    					      		
-    					      		location.href = url+"?"+ paramName + "=" + x.innerHTML;			      		
-    					    	};
-    					    }
-    			    	}   			    		    	
-    		        }
-    		    }
-    		}
-    	}
+    	  var table = document.getElementById('ec_table');
+    	  
+    	    var checkboxList = table.getElementsByTagName("input");    
+    	    var paramValues = null;
+    	    for (i = 0; i < checkboxList.length; i++) {
+    	    	if (checkboxList[i].type=="checkbox" && checkboxList[i].checked) {
+    	    		var rowFld = checkboxList[i].parentNode.parentNode.getElementsByTagName("td")[3];  		
+    	    		if (paramValues != null) {
+    	    			paramValues = paramValues+","+rowFld.innerHTML;
+    	    		} else {
+    	    			paramValues = rowFld.innerHTML;
+    	    		}
+    	    	}
+    	    }
+    	    if(paramValues == null || paramValues.trim().length == 0) {
+    	    	alert("Select a Service Time Scenario!");
+      		} else {
+	  		   
+	  		  	var confirmed=confirm('Are you sure you want to  delete Scenario.');
+         	 	if(confirmed) {
+         	 		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");             	 	
+             	 	var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,paramValues);
+             	 	location.href = location.href;
+         	 	}
+      	    }  
+     }
+     function deleteScenarioFormCallback(result, exception) {
+      	  
+          if(exception) {               
+                alert('Unable to connect to host system. Please contact system administrator!');               
+                return;
+          }
+          if(result == 0) {
+              	alert('Please delete Zones or ScenarioDays associated with Scenario before deleting the scenario.');
+          }                           
+ 	}  
+				
+  	
     </script>   
   </tmpl:put>
 </tmpl:insert>
