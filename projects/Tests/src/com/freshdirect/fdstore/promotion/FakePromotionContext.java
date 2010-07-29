@@ -243,4 +243,10 @@ public class FakePromotionContext implements PromotionContextI {
 	public Set<String> getLineItemDiscountCodes() {
 		return null;
 	}
+
+	@Override
+	public boolean isAlreadyRedeemedPromotion(String promoCode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
