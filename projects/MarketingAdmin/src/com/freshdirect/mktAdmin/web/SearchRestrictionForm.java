@@ -1,11 +1,7 @@
 package com.freshdirect.mktAdmin.web;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,12 +11,10 @@ import org.apache.log4j.Category;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mktAdmin.constants.EnumCompetitorType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
-import com.freshdirect.mktAdmin.model.CompetitorAddressModel;
 import com.freshdirect.mktAdmin.model.RestrictionSearchBean;
 
 
@@ -51,7 +45,7 @@ public class SearchRestrictionForm extends AbstractMktAdminForm {
 			Collection promoModelList=getMarketAdminService().getPromotionModel(new String[]{promotionCode});
 			Iterator iterator=promoModelList.iterator();
 			if(iterator.hasNext()){
-				form.setPromotion((FDPromotionModel)iterator.next());	
+				form.setPromotion((FDPromotionNewModel)iterator.next());	
 			}				
 			//form.setSearchCount(100);
 			String actionType=request.getParameter("action_type"); 
@@ -95,7 +89,7 @@ public class SearchRestrictionForm extends AbstractMktAdminForm {
 			Collection promoModelList=getMarketAdminService().getPromotionModel(new String[]{promotionCode});			
 			Iterator iterator=promoModelList.iterator();
 			if(iterator.hasNext()){
-				model.setPromotion((FDPromotionModel)iterator.next());	
+				model.setPromotion((FDPromotionNewModel)iterator.next());	
 			}
 		}	
 		} catch (MktAdminApplicationException e) {

@@ -85,6 +85,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			this.promotion.setPercentOff(NVL.apply(request.getParameter("hd_perc"), "").trim());
 			String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
 			String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
+			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
 			if("".equals(headerDiscountType)){
 				actionResult.addError(true, "discountEmpty", " Please select one discount type under HEADER.");
 			}
@@ -114,6 +115,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 				this.promotion.setPercentOff("");
 				this.promotion.setExtendDpDays(null);
 				this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
+				this.promotion.setCombineOffer(true);
 			}else if("hd_extend_dp".equalsIgnoreCase(headerDiscountType)){
 				String extendDpDays = NVL.apply(request.getParameter("extendDpDays"), "").trim();
 				if(NumberUtil.isInteger(extendDpDays)){
@@ -125,9 +127,10 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 					actionResult.addError(true, "extendDpDaysRequired", " Extend Delivery Pass Days value should be integer.");
 				}
 				this.promotion.setOfferType(EnumOfferType.DP_EXTN.getName());
+				this.promotion.setCombineOffer(true);
 			}
 			
-			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
+//			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
 			this.promotion.setPromotionType(promotionType);
 			setWSPromotionCode();
 		}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
@@ -175,6 +178,20 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			String excFromSubtotal = NVL.apply(request.getParameter("excFromSubtotal"), "").trim();
 			this.promotion.setSubTotalExcludeSkus(excFromSubtotal);
 			populateDcpdData(request);
+			validateDcpdData(request, actionResult);
+			if(!"".equals(excFromSubtotal)){
+				String[] excFromSubtotalArr = excFromSubtotal.split(",");
+				ContentFactory contentFactory = ContentFactory.getInstance();
+				List invalidExcFromSubtotal = new ArrayList();
+				for (int i = 0; i < excFromSubtotalArr.length; i++) {
+					if(null==contentFactory.getContentNode(FDContentTypes.DEPARTMENT, excFromSubtotalArr[i].toLowerCase())){
+						invalidExcFromSubtotal.add(excFromSubtotalArr[i]);
+					}
+				}
+				if(!invalidExcFromSubtotal.isEmpty()){
+					actionResult.addError(true, "invalidExcludeSkus", invalidExcFromSubtotal.toString()+" are invalid SKUs for excluding from SubTotal." );
+				}
+			}
 			this.promotion.setSkuQuantity(Integer.parseInt(skuQuantity));
 			if(!NumberUtil.isDouble(subTotal)){
 				this.promotion.setMinSubtotal(subTotal);			

@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,7 +122,7 @@ private final static FDPromotionNewModelFactory INSTANCE = new FDPromotionNewMod
 			}
 			
 		}
-		Collections.sort(users);
+		Collections.sort(users, new StringComparator());
 		return users;
 	}
 	
@@ -135,7 +136,18 @@ private final static FDPromotionNewModelFactory INSTANCE = new FDPromotionNewMod
 			}
 			
 		}
-		Collections.sort(users);
+		Collections.sort(users,new StringComparator());
 		return users;
+	}
+	
+	private class StringComparator implements Comparator{
+
+		@Override
+		public int compare(Object arg0, Object arg1) {
+			String str1 =(String) arg0;
+			String str2 =(String) arg1;
+			return str1.toLowerCase().compareTo(str2.toLowerCase());
+		}
+		
 	}
 }

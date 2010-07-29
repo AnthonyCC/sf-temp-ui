@@ -3,11 +3,11 @@ package com.freshdirect.mktAdmin.model;
 import java.io.Serializable;
 import java.util.Collection;
 
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 
 public class RestrictionSearchBean implements Serializable {
 	
-	private FDPromotionModel promotion=null;
+	private FDPromotionNewModel promotion=null;
 	private String serachKey="";
 	private long searchCount=100;
 	private Collection promotionList=null;	
@@ -20,10 +20,10 @@ public class RestrictionSearchBean implements Serializable {
 	public RestrictionSearchBean(){	
 	}
 	
-	public FDPromotionModel getPromotion() {
+	public FDPromotionNewModel getPromotion() {
 		return promotion;
 	}
-	public void setPromotion(FDPromotionModel promotion) {
+	public void setPromotion(FDPromotionNewModel promotion) {
 		this.promotion = promotion;
 	}
 	public Collection getPromotionList() {

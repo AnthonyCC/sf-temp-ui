@@ -1,7 +1,5 @@
 package com.freshdirect.mktAdmin.model;
 
-import com.freshdirect.fdstore.promotion.FDPromotionModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
 

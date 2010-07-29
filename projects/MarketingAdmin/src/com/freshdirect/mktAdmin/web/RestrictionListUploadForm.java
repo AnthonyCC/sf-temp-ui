@@ -16,16 +16,11 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.multipart.support.ByteArrayMultipartFileEditor;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.SimpleFormController;
 
-import com.freshdirect.fdstore.promotion.FDPromotionModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.constants.EnumListUploadActionType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
 import com.freshdirect.mktAdmin.exception.MktAdminSystemException;
-import com.freshdirect.mktAdmin.model.FileUploadBean;
 import com.freshdirect.mktAdmin.model.RestrictionListUploadBean;
 import com.freshdirect.mktAdmin.service.MarketAdminServiceIntf;
 

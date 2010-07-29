@@ -19,8 +19,8 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
-import com.freshdirect.fdstore.promotion.FDPromotionModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
 import com.freshdirect.mktAdmin.exception.MktAdminApplicationException;
@@ -72,7 +72,7 @@ public class CSVFileParser implements FileParser {
 			//fs = new POIFSFileSystem(input);
 			modelList=new HashSet();
 			String [] nextLine;
-			FDPromotionModel fdModel=FDPromotionModelFactory.getInstance().getPromotion(fileUploadBean.getPromotionCode());
+			FDPromotionNewModel fdModel=FDPromotionNewModelFactory.getInstance().getPromotion(fileUploadBean.getPromotionCode());
 			String promotionId=fdModel.getId();
 			boolean isHearderRead=false;
 		        while ((nextLine = reader.readNext()) != null) {

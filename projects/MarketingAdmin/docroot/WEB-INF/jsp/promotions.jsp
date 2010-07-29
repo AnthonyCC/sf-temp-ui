@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
-<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromotionModel' %>
+<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromotionNewModel' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 

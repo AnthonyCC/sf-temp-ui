@@ -42,6 +42,22 @@
 					<fd:ErrorHandler result="<%=result%>" name="subtotalNumber" id="errorMsg">
 						<%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidDepts" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidCats" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					
+					<fd:ErrorHandler result="<%=result%>" name="invalidSKUs" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidBrands" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidExcludeSkus" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>
+					</fd:ErrorHandler>
 				</div>
 				<%-- Promotion edit, edit cart requirement --%>
 					<%@ include file="/includes/promotions/i_promo_edit_cartreq.jspf" %>

@@ -12,9 +12,8 @@ import java.util.Set;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.delivery.model.RestrictedAddressModel;
-import com.freshdirect.fdstore.promotion.FDPromotionModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
+import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
+import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mktAdmin.constants.EnumCompetitorStatusType;
 import com.freshdirect.mktAdmin.constants.EnumFileContentType;
@@ -643,7 +642,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 
 		public Collection getAllPromotions() throws MktAdminApplicationException {
 			// TODO Auto-generated method stub
-			return FDPromotionModelFactory.getInstance().getPromotions();
+			return FDPromotionNewModelFactory.getInstance().getPromotions();
 		}
 				
 
@@ -664,7 +663,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 		public Collection getPromotionModel(String[] promotionCodes) throws MktAdminApplicationException{
             List promoModelList=new ArrayList();   
 			for(int i=0;i<promotionCodes.length;i++){
-				FDPromotionModel model=FDPromotionModelFactory.getInstance().getPromotion(promotionCodes[i]);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCodes[i]);
 				LOGGER.debug("getMktAdminDAOImpl().getPromotionModel() :"+model.getId());	
 				promoModelList.add(model);
 			}
@@ -676,7 +675,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			// TODO Auto-generated method stub               			
 			try{				
 				LOGGER.debug("getMktAdminDAOImpl().removeRestrictedCustomers() :"+promotionCode+" customerId :"+customerId);
-				FDPromotionModel model=FDPromotionModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
 				getMktAdminDAOImpl().deleteRestrictedCustomers(model.getId(),customerId);
 			} catch (SQLException e) {	
 				LOGGER.warn("catching the database error");
@@ -694,7 +693,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			try {						
 				LOGGER.debug(" List size at the begining:"+emailAddress.length);
 				// since oracle does not support in query with more than some number I am deviding this with 100 of collection
-				FDPromotionModel fdModel=FDPromotionModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel fdModel=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
 				
 				Map customerIdMap=getMktAdminDAOImpl().getCustomerIdsForEmailAddress(emailAddress);
 				
@@ -746,7 +745,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			try
 			{
 				LOGGER.debug("getMktAdminDAOImpl().isRestrictedCustomersExist() :"+promotionCode);
-				FDPromotionModel model=FDPromotionModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
 				Collection collection=getMktAdminDAOImpl().getRestrictedCustomers(model.getId(),"",0,100);
 				if(collection.size()>0)
 					restrictedCustomerExist=true;
@@ -767,7 +766,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			try
 			{
 				LOGGER.debug("getMktAdminDAOImpl().isRestrictedCustomersExist() :"+promotionCode);
-				FDPromotionModel model=FDPromotionModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
 				Collection collection=getMktAdminDAOImpl().getRestrictedCustomers(model.getId(),"",0,100000);
 				FileParser handler= FileParserFactory.getFileParser(fileType.getName());
 				FileDownloadBean bean=new FileDownloadBean();
@@ -791,7 +790,7 @@ public class MarketAdminServiceImpl implements MarketAdminServiceIntf {
 			try
 			{
 				LOGGER.debug("getMktAdminDAOImpl().deleteRestrictionCustomer() :"+promotionCode);
-				FDPromotionModel model=FDPromotionModelFactory.getInstance().getPromotion(promotionCode);
+				FDPromotionNewModel model=FDPromotionNewModelFactory.getInstance().getPromotion(promotionCode);
 				getMktAdminDAOImpl().deleteRestrictedCustomer(model.getId());
 			} catch (SQLException e) {	
 				LOGGER.warn("catching the database error");

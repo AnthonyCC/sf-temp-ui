@@ -14,10 +14,13 @@
 	PromoFilterCriteria  promoFilter =  (PromoFilterCriteria)request.getSession().getAttribute("filter");
 	String offerType = "";
 	String customerType ="";
-	String promoStatus = "";
+	String promoStatus = "LIVE";
 	String createdBy = "";
 	String modifiedBy = "";
 	String keyword = "";
+	if(null == promoFilter || promoFilter.isEmpty()){
+		promoFilter = new PromoFilterCriteria(offerType,customerType,promoStatus,createdBy,modifiedBy,keyword);
+	}
 	if(null !=request.getParameter("promo_filter_submit")){
 		offerType =request.getParameter("offerType");
 		customerType =request.getParameter("customerType");

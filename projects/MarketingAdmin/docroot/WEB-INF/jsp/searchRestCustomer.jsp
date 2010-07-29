@@ -1,6 +1,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
-<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromotionModel' %>
+<%@ page import='com.freshdirect.fdstore.promotion.management.FDPromotionNewModel' %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
