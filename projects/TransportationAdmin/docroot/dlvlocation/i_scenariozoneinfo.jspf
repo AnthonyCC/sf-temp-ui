@@ -106,7 +106,7 @@
       	  	}
       	  }
        	  var result=jsonrpcClient.AsyncDispatchProvider.doScenarioZone(sendScenarioFormCallback,_currentBatchId,_data);
-      	  showForm();
+       	 
      }
     
      function sendScenarioFormCallback(result, exception) {
