@@ -55,11 +55,6 @@
   		editDepotPanel.render(document.body);
         editDepotPanel.show();
      }
-
-     function showForm() {          
-    	 editDepotPanel.render(document.body);
-    	 editDepotPanel.show();
-     }
       
      function doAdd() {
      		var _zone = document.getElementById('szone').value;
