@@ -105,11 +105,11 @@
       	  		_data[i][4] = records[i].getData('serviceTimeAdjustment');
       	  	}
       	  }
-       	  var result=jsonrpcClient.AsyncDispatchProvider.doScenarioZone(sendFormCallback,_currentBatchId,_data);
+       	  var result=jsonrpcClient.AsyncDispatchProvider.doScenarioZone(sendScenarioFormCallback,_currentBatchId,_data);
       	  showForm();
      }
     
-     function sendFormCallback(result, exception) {
+     function sendScenarioFormCallback(result, exception) {
      	 if(exception) {               
              alert('Unable to connect to host system. Please contact system administrator!');               
              return;
