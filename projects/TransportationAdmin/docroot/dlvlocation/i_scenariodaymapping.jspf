@@ -119,7 +119,7 @@
                       </td> 
 		         </tr> 
 		         <tr>
-		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendForm()" /> </td>
+		                  <td colspan="2" align="center"><input type="button" value="Add" onclick="javascript:sendForm()" /> </td>
 		         </tr> 
 		      </table>   
 	      </div>      

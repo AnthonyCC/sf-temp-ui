@@ -583,10 +583,11 @@ public class LocationController extends AbstractMultiActionController  {
 					}
 				}
 			}
+			removeEntityList(scenarioSet);
+			saveMessage(request, getMessage("app.actionmessage.103", null));
+		}else{
+			saveMessage(request, getMessage("app.actionmessage.154", null));
 		}
-		removeEntityList(scenarioSet);
-		saveMessage(request, getMessage("app.actionmessage.103", null));
-
 		return dlvServiceTimeScenarioHandler(request, response);
 	}
 	
