@@ -26,8 +26,8 @@
 					<td class="alignL"><%= (null == promotion.getRedemptionCode() ||"".equals(promotion.getRedemptionCode()))?"None - Automatic": promotion.getRedemptionCode() %></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">Additional terms:</td>
-					<td class="alignL"><%= promotion.getTerms() %> <a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');" class="greenLink">Preview</a></td>
+					<td class="promo_detail_label">Terms &amp; Conditions:</td>
+					<td class="alignL"><%= promotion.getTerms() %></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Start:</td>
@@ -77,10 +77,10 @@
 					</td>
 					<td class="alignL"><span class="gray">Eligibility list required</span></td>
 				</tr>
-<!--				<tr>-->
-<!--					<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(promotion.isRuleBased())?"checked ":"" %>/></td>-->
-<!--					<td class="alignL"><span class="gray">Timeslot dependent/window steering</span></td>-->
-<!--				</tr>-->
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="ruleBased" disabled <%=(promotion.isRuleBased())?"checked ":"" %>/></td>
+					<td class="alignL"><span class="gray">Additional rules apply requiring publish</span></td>
+				</tr>
 			</table>
 		</td>
 		<%-- offer descrip moved into /includes/promotions/i_promo_status.jsp --%>

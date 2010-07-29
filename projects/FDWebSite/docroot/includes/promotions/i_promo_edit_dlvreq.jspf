@@ -75,7 +75,7 @@
 						//-->
 						</script>
 						<input type="text" id="dlvDateInStartDate" name="dlvDateInStartDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="dlvDateInStartDate_trigger" name="dlvDateInStartDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a><span class="gray">&nbsp;&nbsp;to&nbsp;&nbsp;</span><input type="text" id="dlvDateInEndDate" name="dlvDateInEndDate" class="w100px" /> <a href="#" onclick="return false;" class="promo_ico_cont" id="dlvDateInEndDate_trigger" name="dlvDateInEndDate_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
-						<input type="button" value="ADD" onclick="if ($('dlvDateInStartDate').value!=='' && $('dlvDateInEndDate').value!=='') { addRow('dlvDateTable', 'dlvDateIn', 'dlvDates', true, dlvDatesIndex); }" class="promo_btn_grn padLR4" /><span class="gray8pt">Single or range of days allowed</span>
+						<input type="button" value="ADD" onclick="if( estEndDate('dlvDateInStartDate', 'dlvDateInEndDate') ){ addRow('dlvDateTable', 'dlvDateIn', 'dlvDates', true, dlvDatesIndex); };" class="promo_btn_grn padLR4" /><span class="gray8pt">Single or range of days allowed</span>
 						<br /><img width="1" height="10" src="/media_stat/crm/images/clear.gif" alt="" /><br />
 						<table id="dlvDateTable" name="dlvDateTable" class="tableCollapse" style="display: none;">
 							<thead>

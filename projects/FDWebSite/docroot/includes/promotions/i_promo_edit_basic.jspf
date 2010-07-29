@@ -55,7 +55,7 @@
 					<td class="alignL"><textarea id="audience_description" name="audience_description" rows="3" cols="30" class="w600px" ><%= promotion.getAudienceDesc() %></textarea></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">Additional Terms:<br /><% if (promotion.getPromotionCode() != null && !"".equals(promotion.getPromotionCode())) { %><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoId%>','small');" class="greenLink">Preview</a><% } %></td>
+					<td class="promo_detail_label">Terms &amp; Conditions:</td>
 					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" ><%= promotion.getTerms() %></textarea></td>
 				</tr>
 				<tr class="flatRow">
@@ -67,7 +67,7 @@
 						<input type="text" id="edit_basic_cal_start_in" name="edit_basic_cal_start_in" class="w100px" value="<%= promotion.getStartDateStr() %>"/> <a href="" class="promo_ico_cont" id="edit_basic_cal_start_trigger" name="edit_basic_cal_start_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
 						&nbsp;&nbsp;
 						<input type="text" id="edit_basic_cal_startTime_in" name="edit_basic_cal_startTime_in" class="w75px" value="<%= promotion.getStartTimeStr() %>"/> <a href="" class="promo_ico_cont" id="edit_basic_cal_startTime_trigger" name="edit_basic_cal_startTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
-						<input type="hidden" id="edit_basic_cal_start_hidden" name="edit_basic_cal_start_hidden" />
+						<input type="hidden" id="edit_basic_cal_start_hidden" name="edit_basic_cal_start_hidden" value="<%= promotion.getStartDateStr() %> <%= promotion.getStartTimeStr() %>"
 					</td>
 				</tr>
 				<tr class="flatRow">
@@ -90,7 +90,7 @@
 									<input type="text" id="edit_basic_cal_endSingle_in" name="edit_basic_cal_endSingle_in" class="w100px"  value="<%= "single".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %>"/> <a href="" class="promo_ico_cont"  id="edit_basic_cal_endSingle_trigger" name="edit_basic_cal_endSingle_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
 									&nbsp;&nbsp;
 									<input type="text" id="edit_basic_cal_endSingleTime_in" name="edit_basic_cal_endSingleTime_in" class="w75px"  value="<%= "single".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>"/> <a href="" class="promo_ico_cont" id="edit_basic_cal_endSingleTime_trigger" name="edit_basic_cal_endSingleTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
-									<input type="hidden" id="edit_basic_cal_endSingle_hidden" name="edit_basic_cal_endSingle_hidden" />
+									<input type="hidden" id="edit_basic_cal_endSingle_hidden" name="edit_basic_cal_endSingle_hidden" value="<%= "single".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %> <%= "single".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>"  />
 								</td>
 							</tr>
 							<tr>
@@ -110,7 +110,7 @@
 									<input type="text" id="edit_basic_cal_endRolling_in" name="edit_basic_cal_endRolling_in" class="w100px" value="<%= "rolling".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %>"/> <a href="#" class="promo_ico_cont" id="edit_basic_cal_endRolling_trigger" name="edit_basic_cal_endRolling_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
 									&nbsp;&nbsp;
 									<input type="text" id="edit_basic_cal_endRollingTime_in" name="edit_basic_cal_endRollingTime_in" class="w75px" value="<%= "rolling".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>" /> <a href="" class="promo_ico_cont" id="edit_basic_cal_endRollingTime_trigger" name="edit_basic_cal_endRollingTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
-									<input type="hidden" id="edit_basic_cal_endRolling_hidden" name="edit_basic_cal_endRolling_hidden" />
+									<input type="hidden" id="edit_basic_cal_endRolling_hidden" name="edit_basic_cal_endRolling_hidden" value="<%= "rolling".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %> <%= "rolling".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>" />
 								</td>
 							</tr>
 							<tr>
@@ -130,7 +130,7 @@
 									<input type="text" id="edit_basic_cal_endRedemption_in" name="edit_basic_cal_endRedemption_in" class="w100px" value="<%= "redemption".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %>" /> <a href="#" class="promo_ico_cont" id="edit_basic_cal_endRedemption_trigger" name="edit_basic_cal_endRedemption_trigger"><img src="/media_stat/crm/images/calendar.gif" width="16" height="16" alt="" /></a>
 									&nbsp;&nbsp;
 									<input type="text" id="edit_basic_cal_endRedemptionTime_in" name="edit_basic_cal_endRedemptionTime_in" class="w75px" value="<%= "redemption".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>"/> <a href="" class="promo_ico_cont" id="edit_basic_cal_endRedemptionTime_trigger" name="edit_basic_cal_endRedemptionTime_trigger"><img src="/media_stat/crm/images/blue_clock.gif" width="16" height="16" alt="" /></a>
-									<input type="hidden" id="edit_basic_cal_endRedemption_hidden" name="edit_basic_cal_endRedemption_hidden" />
+									<input type="hidden" id="edit_basic_cal_endRedemption_hidden" name="edit_basic_cal_endRedemption_hidden" value="<%= "redemption".equalsIgnoreCase(endType)?promotion.getExpirationDateStr():"" %> <%= "redemption".equalsIgnoreCase(endType)?promotion.getExpirationTimeStr():"" %>"  />
 								</td>
 							</tr>
 						</table>
@@ -166,10 +166,10 @@
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
-<!--				<tr>-->
-<!--					<td class="promo_detail_label"><input type="checkbox" id="ruleBased" name="ruleBased" <%=(promotion.isRuleBased())?"checked ":"" %>/></td>-->
-<!--					<td class="alignL"><span class="gray">Timeslot dependent/window steering</span></td>-->
-<!--				</tr>-->
+				<tr>
+					<td class="promo_detail_label"><input type="checkbox" id="ruleBased" name="ruleBased" <%=(promotion.isRuleBased())?"checked ":"" %>/></td>
+					<td class="alignL"><span class="gray">Additional rules apply requiring publish</span></td>
+				</tr>
 			</table>
 		</td>
 		<%-- no contents, filler --%>
@@ -182,5 +182,11 @@
 <script type="text/javascript">
 <!--
 	setupCals("edit_basic");
+	document.observe("dom:loaded", function() {
+		checkForMidnight('edit_basic_cal_start_hidden');
+		checkForMidnight('edit_basic_cal_endSingle_hidden', '11:59 PM');
+		checkForMidnight('edit_basic_cal_endRolling_hidden', '11:59 PM');
+		checkForMidnight('edit_basic_cal_endRedemption_hidden', '11:59 PM');
+	});
 //-->
 </script>

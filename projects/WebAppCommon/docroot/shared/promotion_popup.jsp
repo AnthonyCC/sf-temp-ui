@@ -16,7 +16,7 @@
 <% if (!"".equals(promoCode)) { %>
 	<fd:GetPromotionNew id="promotion" promotionId="<%=promoCode%>">
 		<tmpl:insert template='/shared/template/small_pop.jsp'>
-			<tmpl:put name='title' direct='true'>FreshDirect - <%= promoCode %> Promotion</tmpl:put>
+			<tmpl:put name='title' direct='true'>FreshDirect - <%= promotion.getName() %></tmpl:put>
 				<tmpl:put name='content' direct='true'>
 					<fd:IncludeMedia name='<%= "/media/editorial/promotions/" + promoCode + ".html" %>'>
 					<table cellpadding="0" cellspacing="0" border="0" width="100%" class="promoPopupTerms">

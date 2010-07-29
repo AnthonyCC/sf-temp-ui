@@ -69,7 +69,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String createdBy;
 	private String modifiedBy;
 	private Date lastPublishedDate;
-	private boolean applyFraud = true;
+	private boolean applyFraud = false;
 	private String startDateStr;
 	private String startTimeStr;
 	private String expirationDateStr;

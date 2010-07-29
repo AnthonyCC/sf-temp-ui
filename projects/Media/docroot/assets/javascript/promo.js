@@ -129,8 +129,9 @@
 		if(profileNameFld != null && profileNameFld.value.length > 0 
 			&& profileValueFld != null && profileValueFld.value.length > 0) {
 			addProfileRow(tmpConditionValue,profileValueFld.value, profileValueFld.value,profileNameFld.value,  toFormId);
-			profileNameFld.selectedIndex=0;
+			profileValueFld.selectedIndex=0;
 			profileValueFld.value='';
+			profileNameFld.value='';
 		}
 		for( var i in shortcuts ) {
 			//if ($(i)) {
@@ -508,8 +509,8 @@
 		var canElem = baseId+'CancelCont';
 			if (index>=0) { canElem += '['+index+']'; }
 
-		$(editElem).toggle();
-		$(canElem).toggle();
+		toggleDisp(editElem);
+		toggleDisp(canElem);
 
 		return true;
 	}
@@ -533,9 +534,9 @@
 
 		//hide table if all data rows are deleted
 		if (!profileTableFld.hasChildNodes()) {
-			$(fromTableId).toggle();
+			toggleDisp(fromTableId);
 		}else if (profileTableFld.childNodes.length == 1 && profileTableFld.firstChild.nodeType == 3 ) { 
-			$(fromTableId).toggle();
+			toggleDisp(fromTableId);
 		}
 
 		return true;
@@ -704,6 +705,7 @@
 						rowCancelCont.id = baseId+'CancelCont';
 							if (index>=0) { rowCancelCont.id = rowCancelCont.id+'['+index+']'; }
 						rowCancelCont.setAttribute('style', 'display: none;');
+						rowCancelCont.style.display = 'none'; /* for IE6 - 7 */
 						
 							tempTd = document.createElement('td');
 							var CancelContTd1Id = baseId+'CancelContTd1';
@@ -976,3 +978,71 @@ function checkOffer() {
 		return false;
 	}
 }
+
+/* Seperate toggle function from prototype for IE7 usage */
+	function toggleDisp(elemId) {
+		var elemId = elemId || '';
+			if (elemId == '' || !$(elemId)) { return false; }
+
+		var elem = $(elemId);
+
+		(elem.style.display == 'block' || elem.style.display == '')
+			?elem.style.display = 'none'
+			:elem.style.display = '';
+	}
+
+/*
+ *	Check date field for no value, and fill it with "CURRENT_DATE setTime"
+ *
+ *	setTime is an optional time to use. Defaults to "12:00 AM"
+ */
+	function checkForMidnight(elemId, setTime) {
+		var elemId = elemId || '';
+			if (elemId == '' || !$(elemId)) { return false; }
+		var setTime = setTime || '12:00 AM';
+			
+		var elem = $(elemId);
+
+		if (elem.value == '' || ((elem.value).replace(' ', ''))=='' ) {
+			//no value set, default
+			var d = new Date();
+			elem.value = (d.getMonth()+1) + "/"  + d.getDate() + "/" + d.getFullYear() + " "+setTime;
+			return true;
+		}
+	}
+
+/*
+ *	gets next day using a date string
+ *
+ *	assumes MM/DD/YYYY, returns in same format
+ *	if no dateStr is passed in, uses today's date.
+ */
+	function getTomorrow(dateStr) {
+		var date = new Date();
+
+		var dateStr = dateStr || '';
+		var parts = dateStr.split('/');
+		
+		if (dateStr != '') {
+			date.setFullYear(parseInt(parts[2]));
+			date.setMonth(parts[0]-0);
+			date.setDate(parts[1]);
+		}
+		
+		date.setDate(date.getDate() + 1); //inc to next day
+
+		return date.getMonth() + "/"  + date.getDate() + "/" + date.getFullYear();
+	}
+
+/*  */
+	function estEndDate(elemId1, elemId2) {
+		var elemId1 = elemId1 || '';
+		var elemId2 = elemId2 || '';
+			if (elemId1 == '' || !$(elemId1) || elemId2 == '' || !$(elemId2)) { return false; }
+		
+		if ($(elemId1).value!='' && $(elemId2).value=='') {
+			$(elemId2).value = getTomorrow($(elemId1).value);
+		}
+		if ($(elemId1).value!='' && $(elemId2).value!='') { return true; }
+		return false;
+	}
