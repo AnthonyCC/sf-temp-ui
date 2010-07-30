@@ -90,9 +90,12 @@ if(promo_details){
 	            			Boolean value = (Boolean)obj;
 	            			String displayValue = value.booleanValue() ? "IN" : "NOT IN";
 	            			
-	            	%>	            		
-					<td&nbsp;&nbsp;<b>The customer is <span class="error"><%= displayValue %></span> the restriction list.</b>
-	            	</td>
+	            	        if(value){ %>       		
+							<td>&nbsp;&nbsp;<b>The customer is <span style="color:#009900;"><%= displayValue %></span> the restriction list.</b></td>
+							<% } else { %>
+							<td>&nbsp;&nbsp;<b>The customer is <span class="error"><%= displayValue %></span> the restriction list.</b></td>
+							<%} %>
+			            	
 	            	<% } %>
 	            	<fd:ErrorHandler result="<%= result %>" name="<%=ActionError.GENERIC%>" id='errorMsg'><tr><td colspan="3"><span class="error"><%=errorMsg%></span></td></tr></fd:ErrorHandler>
 	            	</tr>	

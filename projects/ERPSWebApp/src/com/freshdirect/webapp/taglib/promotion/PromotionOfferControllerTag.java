@@ -439,7 +439,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			List invalidBrands = new ArrayList();
 			String[] eligibleBrandArr = eligibleBrand.split(",");
 			for (int i = 0; i < eligibleBrandArr.length; i++) {
-				if(null==contentFactory.getContentNode(FDContentTypes.BRAND, eligibleBrandArr[i].toUpperCase())){
+				if(null==contentFactory.getContentNode(FDContentTypes.BRAND, eligibleBrandArr[i].toLowerCase())){
 					invalidBrands.add(eligibleBrandArr[i]);
 				}
 			}

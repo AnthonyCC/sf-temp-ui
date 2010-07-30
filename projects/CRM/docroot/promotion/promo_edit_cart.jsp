@@ -12,7 +12,7 @@
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id='currentAgent'>
 		<%
-		String successPage ="/promotion/promo_edit.jsp?promoId="+promoId;
+		String successPage ="/promotion/promo_edit.jsp?promoId=";
 		%>
 		<fd:PromotionOfferController result="result" promotion="<%= promotion %>" actionName="promoCart" successPage="<%= successPage %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>

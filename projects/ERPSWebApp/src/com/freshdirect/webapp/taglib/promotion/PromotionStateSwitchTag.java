@@ -178,8 +178,10 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 						result.addError(true, "catNameEmpty", "Promotion category id is required for SAMPLE offer.");
 					}
 				}else if(EnumPromotionType.HEADER.getName().equals(promotion.getPromotionType()) ){
-					if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim())){
-						result.addError(true, "maxAmountEmpty", "Discount value is required");
+					if(!"DLV".equalsIgnoreCase(promotion.getWaiveChargeType())){
+						if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim()) && null== promotion.getExtendDpDays()){
+							result.addError(true, "maxAmountEmpty", "Discount value is required");
+						}
 					}
 					if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
 						if(!"ZONE".equalsIgnoreCase(promotion.getGeoRestrictionType())){					
