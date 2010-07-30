@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.promotion;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -16,6 +15,7 @@ import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
+import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
@@ -96,6 +96,10 @@ public class StoreImportedPromotionTag extends AbstractControllerTag {
 
 					// save change log entries
 					FDPromotionNewManager.storeChangeLogEntries(pk.getId(), promotion.getAuditChanges());
+					
+					
+					// Refresh promo cache
+					FDPromotionNewModelFactory.getInstance().forceRefresh();
 				}
 			} catch (FDResourceException e) {
 				LOGGER.error("Failed to save promotion with code " + promotion.getPromotionCode(), e);
