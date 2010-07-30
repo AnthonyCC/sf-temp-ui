@@ -18,8 +18,19 @@
 		<tmpl:insert template='/shared/template/small_pop.jsp'>
 			<tmpl:put name='title' direct='true'>FreshDirect - <%= promotion.getName() %></tmpl:put>
 				<tmpl:put name='content' direct='true'>
+					<style>
+						.promoPopupTerms {
+							width: 330px;
+						}
+						.promoPopupTerms th {
+							text-align: center;
+						}
+					</style>
 					<fd:IncludeMedia name='<%= "/media/editorial/promotions/" + promoCode + ".html" %>'>
 					<table cellpadding="0" cellspacing="0" border="0" width="100%" class="promoPopupTerms">
+						<tr>
+							<th><%= promotion.getName() %></th>
+						</tr>
 						<tr>
 							<td><%= promotion.getTerms() %></td>
 						</tr>

@@ -130,6 +130,7 @@ String userId = request.getParameter("userId");
 							<td class="alignL">Range <span class="gray">order # </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeStart() : "" %> <span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeEnd() : "" %> <span class="grayIta8pt">(first order == 1)</span></td>
 						</tr>
 					<% } %>
+					</fd:PromotionCustReqController>
 					<% if ( !"".equals(cohortsString) ) { %>
 						<tr>
 							<td class="promo_detail_label">Smart Store cohort(s):</td>

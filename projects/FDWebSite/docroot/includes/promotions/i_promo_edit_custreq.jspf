@@ -17,7 +17,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Eligible list:</td>
-					<td class="alignL vTop padL8R16"><%= null!= promotion.getAssignedCustomerSize() && promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %><span class="grayIta8pt"> Add/Edit via Marketing Admin</span></td>
+					<td class="alignL vTop padL8R16"><%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %><span class="grayIta8pt"> Add/Edit via Marketing Admin</span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
