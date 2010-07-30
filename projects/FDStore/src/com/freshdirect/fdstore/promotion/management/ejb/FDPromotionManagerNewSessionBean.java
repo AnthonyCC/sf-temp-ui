@@ -24,7 +24,6 @@ import com.freshdirect.fdstore.promotion.PromotionDecorator;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
-import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
@@ -77,17 +76,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			PrimaryKey pk = FDPromotionManagerNewDAO.createPromotion(conn, promotion);
-			conn.commit();
+
 			return pk;
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Promotion code or redemption code already exists.");
@@ -111,20 +104,14 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotion(conn, promotion);
 
 			if (saveLog) {
 				storePromoChangeLog(promotion, conn, promotion.getPK());
 			}
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -148,16 +135,10 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.createPromotions(conn, promotions);
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -215,18 +196,10 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
 			PrimaryKey pk = FDPromotionManagerNewDAO.createPromotionBasic(conn, promotion);
 			storePromoChangeLog(promotion, conn, pk);
-			conn.commit();
 			return pk;
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -281,7 +254,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionBasic(conn, promotion);
 			/*FDPromoChangeModel changeModel = new FDPromoChangeModel();
 			changeModel.setPromotionId(promotion.getId());
@@ -290,14 +263,8 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			changeModel.setUserId(promotion.getModifiedBy());
 			FDPromotionManagerNewDAO.savePromoChangeLog(conn, changeModel);	*/
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -520,17 +487,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 	Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionOfferInfo(conn, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -555,17 +516,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionCartInfo(conn, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -588,17 +543,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionPaymentInfo(conn, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -621,17 +570,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionDlvZoneInfo(conn, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -654,17 +597,11 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionCustReqInfo(conn, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
 						"Name or promotion code or redemption code already exists.");
@@ -834,28 +771,28 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionStatus(conn, status, promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-                    close(conn);
+			close(conn);
 		}
 	}
 	public void storePromotionHoldStatus(FDPromotionNewModel promotion) throws FDResourceException{
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerNewDAO.storePromotionHoldStatus(conn,promotion);
 			storePromoChangeLog(promotion, conn, promotion.getPK());
-			conn.commit();
+
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-                    close(conn);
+			close(conn);
 		}
 	}
 	
@@ -863,23 +800,17 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			conn.setAutoCommit(false);
+
 			FDPromotionManagerDAO.storeAssignedCustomers(conn,promotion, assignedCustomerUserIds);
-			conn.commit();
+
 		} catch (SQLException sqle) {
-			if (conn != null) {
-				try {
-					conn.rollback();
-				} catch (SQLException e) {
-				}
-			}
 			if (sqle.getMessage().toLowerCase().indexOf(
 					"invalid customer id(s)") > -1) {
 				throw new FDPromoCustNotFoundException(sqle.getMessage());
 			}
 			throw new FDResourceException(sqle);
 		} finally {
-                    close(conn);
+			close(conn);
 		}
 	}
 	
@@ -892,7 +823,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new FDResourceException(sqle);
 		} finally {
-                    close(conn);
+			close(conn);
 		}
 	}
 
