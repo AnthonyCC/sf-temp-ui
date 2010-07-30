@@ -261,7 +261,17 @@
 										</tr>
 									</table>
 								<% }else{ %>
-									<span class="error">Error with Sample Product, verify catId and prodId.</span>
+								<table style="border-collapse: collapse;">
+										<tr>
+											<td class="bordLgrayDash gray8pt padL8R16">cat id</td>
+											<td class="bordLgrayDash padL8R16">&nbsp;</td>
+										</tr>
+										<tr>
+											<td class="bordLgrayDash gray8pt padL8R16">prod id</td>
+											<td class="bordLgrayDash padL8R16">&nbsp;</td>
+										</tr>
+									</table>
+<!--									<span class="error">Error with Sample Product, verify catId and prodId.</span>-->
 								<% } %>
 							</td>
 						</tr>

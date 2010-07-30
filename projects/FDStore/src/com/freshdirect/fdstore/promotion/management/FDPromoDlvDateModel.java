@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.promotion.management;
 import java.util.Date;
 
 import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.util.DateUtil;
 
 public class FDPromoDlvDateModel extends ModelSupport{
 
@@ -28,4 +29,14 @@ public class FDPromoDlvDateModel extends ModelSupport{
 	public void setDlvDateEnd(Date dlvDateEnd) {
 		this.dlvDateEnd = dlvDateEnd;
 	}
+	@Override
+	public String toString() {
+		
+		if(null != dlvDateStart && null != dlvDateEnd){
+			return "Start Date:"+DateUtil.formatDate(dlvDateStart)+" End Date:"+DateUtil.formatDate(dlvDateStart);
+		}
+		return super.toString();
+	}
+	
+	
 }

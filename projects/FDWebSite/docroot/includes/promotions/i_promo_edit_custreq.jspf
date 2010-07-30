@@ -70,8 +70,8 @@
 					<td class="alignL vTop padL8R16">
 						<select id="dpStatus" name="dpStatus">
 						    <option value="">None</option>
-							<option value="<%= EnumDlvPassStatus.ACTIVE.getName()%>" <%= (csm!=null && EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.ACTIVE.getDisplayName() %></option>
-							<option value="<%= EnumDlvPassStatus.READY_TO_USE.getName() %>" <%= (csm!=null && EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.READY_TO_USE.getDisplayName() %></option>
+							<option value="<%= EnumDlvPassStatus.ACTIVE.getName()%>" <%= (csm!=null && EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.ACTIVE.getDisplayName() %>/<%= EnumDlvPassStatus.READY_TO_USE.getDisplayName() %></option>
+<!--							<option value="<%= EnumDlvPassStatus.READY_TO_USE.getName() %>" <%= (csm!=null && EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %> ><%= EnumDlvPassStatus.READY_TO_USE.getDisplayName() %></option>-->
 							<option value="<%= EnumDlvPassStatus.EXPIRED.getName() %>" <%= (csm!=null && EnumDlvPassStatus.EXPIRED.getName().equalsIgnoreCase(csm.getDpStatus())?"selected":"") %>><%= EnumDlvPassStatus.EXPIRED.getDisplayName() %></option>
 						</select>
 					</td>

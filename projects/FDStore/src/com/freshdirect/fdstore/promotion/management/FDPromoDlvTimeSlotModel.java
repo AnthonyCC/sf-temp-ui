@@ -33,5 +33,15 @@ public class FDPromoDlvTimeSlotModel extends ModelSupport {
 	public void setDlvTimeEnd(String dlvTimeEnd) {
 		this.dlvTimeEnd = dlvTimeEnd;
 	}
+	@Override
+	public String toString() {
+		if(null!=dlvTimeStart && null != dlvTimeEnd){
+			return "Start Time:"+dlvTimeStart+" End Time:"+dlvTimeEnd;
+		}
+		return super.toString();
+		
+	}
+	
+	
 	
 }

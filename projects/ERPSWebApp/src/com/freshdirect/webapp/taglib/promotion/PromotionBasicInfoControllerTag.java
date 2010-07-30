@@ -163,7 +163,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			changeModel.setUserId(promotion.getCreatedBy());
 		}else{
 			changeModel.setActionDate(promotion.getModifiedDate());
-			changeModel.setActionType(EnumPromoChangeType.MODIFY);
+			changeModel.setActionType(EnumPromoChangeType.BASIC_INFO);
 			changeModel.setUserId(promotion.getModifiedBy());
 			FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
 			if(null != oldPromotion){
@@ -247,7 +247,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 					changeDetailModel.setChangeSectionId(EnumPromotionSection.BASIC_INFO);
 					promoChangeDetails.add(changeDetailModel);
 				}
-				if(this.promotion.isApplyFraud()==(oldPromotion.isApplyFraud())){
+				if(this.promotion.isApplyFraud()!=(oldPromotion.isApplyFraud())){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 					changeDetailModel.setChangeFieldName("Apply Fraud");
 					changeDetailModel.setChangeFieldOldValue(oldPromotion.isApplyFraud()?"Y":"N");
@@ -255,7 +255,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 					changeDetailModel.setChangeSectionId(EnumPromotionSection.BASIC_INFO);
 					promoChangeDetails.add(changeDetailModel);
 				}
-				if(this.promotion.isNeedCustomerList()==(oldPromotion.isNeedCustomerList())){
+				if(this.promotion.isNeedCustomerList()!=(oldPromotion.isNeedCustomerList())){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
 					changeDetailModel.setChangeFieldName("Need Eligibility List");
 					changeDetailModel.setChangeFieldOldValue(oldPromotion.isNeedCustomerList()?"Y":"N");
@@ -302,6 +302,9 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		}
 		if(null == promotion.getOfferDesc() ||"".equals(promotion.getOfferDesc())){
 			result.addError(true, "offerDescEmpty", " Offer Description is required.");
+		}
+		if(null == promotion.getTerms() ||"".equals(promotion.getTerms())){
+			result.addError(true, "termsEmpty", " Terms is required.");
 		}
 		if(null == promotion.getAudienceDesc() ||"".equals(promotion.getAudienceDesc())){
 			result.addError(true, "audiDescEmpty", " Audience Description is required.");

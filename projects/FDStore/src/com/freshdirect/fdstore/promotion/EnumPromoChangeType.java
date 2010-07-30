@@ -23,6 +23,13 @@ public class EnumPromoChangeType extends Enum {
 	public static final EnumPromoChangeType CLONE = new EnumPromoChangeType("CLONE", "Clone Promotion");
 	public static final EnumPromoChangeType IMPORT = new EnumPromoChangeType("IMPORT", "Import Promotion");
 	
+	public static final EnumPromoChangeType BASIC_INFO = new EnumPromoChangeType("BASIC_INFO", "Edit basic information");
+	public static final EnumPromoChangeType OFFER_INFO = new EnumPromoChangeType("OFFER_INFO", "Edit offer");
+	public static final EnumPromoChangeType CUST_REQ_INFO = new EnumPromoChangeType("CUST_REQ_INFO", "Edit customer requirement");
+	public static final EnumPromoChangeType CART_REQ_INFO = new EnumPromoChangeType("CART_REQ_INFO", "Edit cart requirement");
+	public static final EnumPromoChangeType DELIVERY_REQ_INFO = new EnumPromoChangeType("DELIVERY_REQ_INFO", "Edit delivery requirement");
+	public static final EnumPromoChangeType PAYMENT_INFO = new EnumPromoChangeType("PAYMENT_INFO", "Edit payment requirement");
+	
 	private final String description;
 	
 	public EnumPromoChangeType(String name, String description) {

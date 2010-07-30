@@ -1,4 +1,6 @@
-<table width="100%" cellspacing="0" cellpadding="0" border="0" class="promo_table1">
+
+<%@page import="com.freshdirect.fdstore.promotion.EnumPromoChangeType"%>
+<%@page import="com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel"%><table width="100%" cellspacing="0" cellpadding="0" border="0" class="promo_table1">
 	<tr class="flatRow">
 		<%-- sets the column widths --%>
 		<td width="16px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -14,33 +16,32 @@
 									<td>&nbsp;</td>
 									<td><%= DateUtil.formatDate(promoChange.getActionDate()) %></td>
 									<td><%= DateUtil.formatTime(promoChange.getActionDate()) %></td>
-									<td><%= promoChange.getActionType().getDescription() %></td>
+									<td><%= promoChange.getActionType().getDescription() %>
+									<% if(EnumPromoChangeType.CLONE.equals(promoChange.getActionType())){
+											if(null != promoChange.getChangeDetails()&& !promoChange.getChangeDetails().isEmpty()){
+												FDPromoChangeDetailModel detailModel = (FDPromoChangeDetailModel)promoChange.getChangeDetails().get(0);
+											
+										%> - From ID: <%=detailModel.getChangeFieldOldValue()%>
+										<%}} %></td>
 									<td><%= promoChange.getUserId() %></td>
 									<td>&nbsp;</td>									
 									<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 								
 									
 							</tr>
-							<% if(null ==promoChange.getChangeDetails() || promoChange.getChangeDetails().isEmpty()){ %>
-								<%-- 
-									<tr>
-										<td colspan="7" style="background-color: #ccc;"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-									</tr>
-								--%>
-							<% } else{ %>
-							<logic:iterate id="promoChangeDetail" collection="<%= promoChange.getChangeDetails() %>" type="com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel" indexId="idy">
-							<tr>
-									<td>&nbsp;</td>
-									<td><%= DateUtil.formatDate(promoChange.getActionDate()) %></td>
-									<td><%= DateUtil.formatTime(promoChange.getActionDate()) %></td>
-									<td><%= promoChangeDetail.getChangeSectionId().getDescription() %></td>
-									<td>&nbsp;</td>
-									<td>&nbsp;</td>
-									<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
-									
-							</tr>
-							</logic:iterate>
-							<% } %>
+<!--							<logic:iterate id="promoChangeDetail" collection="<%= promoChange.getChangeDetails() %>" type="com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel" indexId="idy">-->
+<!--							<tr>-->
+<!--									<td>&nbsp;</td>-->
+<!--									<td><%= DateUtil.formatDate(promoChange.getActionDate()) %></td>-->
+<!--									<td><%= DateUtil.formatTime(promoChange.getActionDate()) %></td>-->
+<!--									<td><%= promoChangeDetail.getChangeSectionId().getDescription() %></td>-->
+<!--									<td>&nbsp;</td>-->
+<!--									<td>&nbsp;</td>-->
+<!--									<td><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>-->
+<!--									-->
+<!--							</tr>-->
+<!--							</logic:iterate>-->
+							<%-- } --%>
 	</logic:iterate>
 	
 </table>

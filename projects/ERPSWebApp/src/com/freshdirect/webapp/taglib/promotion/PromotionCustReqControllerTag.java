@@ -202,13 +202,18 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		List promoChangeDetails = new ArrayList<FDPromoChangeDetailModel>();
 		FDPromoChangeModel changeModel = new FDPromoChangeModel();
 		changeModel.setActionDate(promotion.getModifiedDate());
-		changeModel.setActionType(EnumPromoChangeType.MODIFY);
+//		changeModel.setActionType(EnumPromoChangeType.MODIFY);
 		changeModel.setUserId(promotion.getModifiedBy());
 		changeModel.setPromotionId(promotion.getId());
 		changeModel.setChangeDetails(promoChangeDetails);
 		promoChanges.add(changeModel);
 		promotion.setAuditChanges(promoChanges);
 		
+		if("promoPayment".equalsIgnoreCase(this.getActionName())){
+			changeModel.setActionType(EnumPromoChangeType.PAYMENT_INFO);
+		}else if("promoCustReq".equalsIgnoreCase(this.getActionName())){
+			changeModel.setActionType(EnumPromoChangeType.CUST_REQ_INFO);
+		}
 		FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
 		if(null != oldPromotion && null != oldPromotion.getCustStrategies() && !oldPromotion.getCustStrategies().isEmpty()){
 			

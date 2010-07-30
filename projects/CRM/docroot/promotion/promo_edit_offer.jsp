@@ -71,6 +71,12 @@
 					<fd:ErrorHandler result="<%=result%>" name="invalidBrands" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidCategoryName" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="invalidProductName" id="errorMsg">
+						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>
 					<%-- Promotion edit, edit basic (with slight difs for new) --%>
 				</div>
 				<%@ include file="/includes/promotions/i_promo_edit_offer.jspf" %>

@@ -155,13 +155,13 @@ public abstract class AbstractPromotionGetterTag extends AbstractGetterTag<List<
 	
 	protected static Comparator<PromoNewRow> COMP_CREATED = new Comparator<PromoNewRow>() {
 	    public int compare(PromoNewRow p1, PromoNewRow p2) {
-	        return p1.createdBy.toUpperCase().compareTo(p2.createdBy);
+	        return p1.createdBy.toUpperCase().compareTo(p2.createdBy.toUpperCase());
 	    }
 	};
 	
 	protected static Comparator<PromoNewRow> COMP_MODIFIED = new Comparator<PromoNewRow>() {
 	    public int compare(PromoNewRow p1, PromoNewRow p2) {
-	        return p1.modifiedBy.toUpperCase().compareTo(p2.modifiedBy);
+	        return p1.modifiedBy.toUpperCase().compareTo(p2.modifiedBy.toUpperCase());
 	    }
 	};
 	

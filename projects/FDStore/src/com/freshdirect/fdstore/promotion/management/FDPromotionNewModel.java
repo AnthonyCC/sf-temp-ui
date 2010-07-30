@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.promotion.AssignedCustomerParam;
+import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -83,6 +84,17 @@ public class FDPromotionNewModel extends ModelSupport {
 	private Integer maxItemCount;
 	private boolean onHold;
 	private String geoRestrictionType;
+	
+	private String dcpdDepts = "";
+	private String dcpdCats = "";
+	private String dcpdRecps = "";
+	private	String dcpdSkus = "";
+	private String dcpdBrands = "";
+	
+	private String cartDepts = "";
+	private String cartCats = "";
+	private	String cartSkus = "";
+	private String cartBrands = "";
 	/*
 	 * Number of successful publishes
 	 */
@@ -381,7 +393,83 @@ public class FDPromotionNewModel extends ModelSupport {
 	public List<FDPromoContentModel> getDcpdData() {
 		return dcpdData;
 	}
+	
+	public void getDcpdDataString(){
+		if(null != dcpdData && !dcpdData.isEmpty()){
+			StringBuffer deptBuffer = new StringBuffer();
+			StringBuffer catBuffer = new StringBuffer();
+			StringBuffer recpBuffer = new StringBuffer();
+			StringBuffer skuBuffer = new StringBuffer();
+			StringBuffer brandBuffer = new StringBuffer();
+			for (Iterator iterator = dcpdData.iterator(); iterator.hasNext();) {
+				FDPromoContentModel contentModel = (FDPromoContentModel) iterator.next();
+				if(EnumDCPDContentType.DEPARTMENT.equals(contentModel.getContentType())){					
+					deptBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.CATEGORY.equals(contentModel.getContentType())){					
+					catBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.RECIPE.equals(contentModel.getContentType())){					
+					recpBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.SKU.equals(contentModel.getContentType())){
+					if(skuBuffer.length()<=0){
+						if(contentModel.isExcluded())
+							skuBuffer.append("Excluded Skus: ");						
+					}
+					skuBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.BRAND.equals(contentModel.getContentType())){
+					if(brandBuffer.length()<=0){
+						if(contentModel.isExcluded())
+							brandBuffer.append("Excluded Skus: ");						
+					}
+					brandBuffer.append(contentModel.getContentId()+",");
+				}
+			}
+			dcpdDepts = deptBuffer.toString();
+			dcpdCats = catBuffer.toString();
+			dcpdRecps = recpBuffer.toString();
+			dcpdSkus = skuBuffer.toString();
+			dcpdBrands = brandBuffer.toString();
+		}
+	}
 
+	public void getCartContentString(){
+		if(null != cartStrategies && !cartStrategies.isEmpty()){
+			StringBuffer deptBuffer = new StringBuffer();
+			StringBuffer catBuffer = new StringBuffer();
+//			StringBuffer recpBuffer = new StringBuffer();
+			StringBuffer skuBuffer = new StringBuffer();
+			StringBuffer brandBuffer = new StringBuffer();
+			for (Iterator iterator = cartStrategies.iterator(); iterator.hasNext();) {
+				FDPromoContentModel contentModel = (FDPromoContentModel) iterator.next();
+				if(EnumDCPDContentType.DEPARTMENT.equals(contentModel.getContentType())){					
+					deptBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.CATEGORY.equals(contentModel.getContentType())){					
+					catBuffer.append(contentModel.getContentId()+",");
+				}
+				/*if(EnumDCPDContentType.RECIPE.equals(contentModel.getContentType())){
+					if(recpBuffer.length()<=0){
+						recpBuffer.append("Recipes: ");
+					}
+					recpBuffer.append(contentModel.getContentId()+",");
+				}*/
+				if(EnumDCPDContentType.SKU.equals(contentModel.getContentType())){					
+					skuBuffer.append(contentModel.getContentId()+",");
+				}
+				if(EnumDCPDContentType.BRAND.equals(contentModel.getContentType())){					
+					brandBuffer.append(contentModel.getContentId()+",");
+				}
+			}
+			cartDepts = deptBuffer.toString();
+			cartCats = catBuffer.toString();
+//			cartRecps = recpBuffer.toString();
+			cartSkus = skuBuffer.toString();
+			cartBrands = brandBuffer.toString();
+		}
+	}
 	public void setDcpdData(List<FDPromoContentModel> dcpdData) {
 		this.dcpdData = dcpdData;
 	}
@@ -797,4 +885,78 @@ public class FDPromotionNewModel extends ModelSupport {
 		clearAssignedCustomerUserIds();
 		clearAuditChanges();
 	}
+
+	public String getDcpdDepts() {
+		return dcpdDepts;
+	}
+
+	public void setDcpdDepts(String dcpdDepts) {
+		this.dcpdDepts = dcpdDepts;
+	}
+
+	public String getDcpdCats() {
+		return dcpdCats;
+	}
+
+	public void setDcpdCats(String dcpdCats) {
+		this.dcpdCats = dcpdCats;
+	}
+
+	public String getDcpdRecps() {
+		return dcpdRecps;
+	}
+
+	public void setDcpdRecps(String dcpdRecps) {
+		this.dcpdRecps = dcpdRecps;
+	}
+
+	public String getDcpdSkus() {
+		return dcpdSkus;
+	}
+
+	public void setDcpdSkus(String dcpdSkus) {
+		this.dcpdSkus = dcpdSkus;
+	}
+
+	public String getDcpdBrands() {
+		return dcpdBrands;
+	}
+
+	public void setDcpdBrands(String dcpdBrands) {
+		this.dcpdBrands = dcpdBrands;
+	}
+
+	public String getCartDepts() {
+		return cartDepts;
+	}
+
+	public void setCartDepts(String cartDepts) {
+		this.cartDepts = cartDepts;
+	}
+
+	public String getCartCats() {
+		return cartCats;
+	}
+
+	public void setCartCats(String cartCats) {
+		this.cartCats = cartCats;
+	}
+
+	public String getCartSkus() {
+		return cartSkus;
+	}
+
+	public void setCartSkus(String cartSkus) {
+		this.cartSkus = cartSkus;
+	}
+
+	public String getCartBrands() {
+		return cartBrands;
+	}
+
+	public void setCartBrands(String cartBrands) {
+		this.cartBrands = cartBrands;
+	}
+
+	
 }

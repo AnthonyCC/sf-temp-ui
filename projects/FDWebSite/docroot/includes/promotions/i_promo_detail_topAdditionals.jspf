@@ -31,7 +31,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Start:</td>
-					<td class="alignL"><%= promotion.getStartDate() %> </td>
+					<td class="alignL"><%= DateUtil.formatDate(promotion.getStartDate()) %>&nbsp;<%= DateUtil.formatTime(promotion.getStartDate()) %></td>
 				</tr>
 				<%-- use either v1 or v2 --%>
 					<%
@@ -43,7 +43,7 @@
 								<td class="alignL">
 									<% if(null !=promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays()>0){ %>
 									<%= endType %> - <%= promotion.getRollingExpirationDays() %> <span class="gray">days after eligibility induction</span><br />
-									<span class="gray">Valid until:<% } %></span> <%= promotion.getExpirationDate() %>
+									<span class="gray">Valid until:<% } %></span> <%= DateUtil.formatDate(promotion.getExpirationDate()) %>&nbsp;<%= DateUtil.formatTime(promotion.getExpirationDate()) %>
 								</td>
 							</tr>
 						<%-- END v1 --%>
@@ -55,7 +55,7 @@
 								<td class="promo_detail_label">End:</td>
 								<td class="alignL">
 									<%= endType %> - <span class="gray">limit</span> <%= promotion.getRedeemCount() %> <span class="gray">settled orders</span><br />
-									<span class="gray">Valid until:</span> <%= promotion.getExpirationDate() %>
+									<span class="gray">Valid until:</span> <%= DateUtil.formatDate(promotion.getExpirationDate()) %>&nbsp;<%= DateUtil.formatTime(promotion.getExpirationDate()) %>
 								</td>
 							</tr>
 						<%-- END v2 --%>

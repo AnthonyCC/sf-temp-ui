@@ -68,7 +68,7 @@ if(promo_details){
 						
 						
 						<%if(promotion.getAssignedCustomerSize() > 0){ %>
-						<td class="gray"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
+						<td class="gray"><a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 						Marketing Admin Functions:
 						<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/searchRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','searchRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')"> Search </a> | 
 						<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/editRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Edit</a> |

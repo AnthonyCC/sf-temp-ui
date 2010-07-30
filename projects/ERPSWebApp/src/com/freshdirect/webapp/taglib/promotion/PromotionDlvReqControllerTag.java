@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
@@ -12,16 +13,23 @@ import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
 
+import javax.ejb.FinderException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.enums.WeekDay;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
+import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.management.FDDuplicatePromoFieldException;
+import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
+import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoDlvDateModel;
@@ -35,6 +43,7 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
 
 public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 
@@ -54,13 +63,15 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			ActionResult actionResult) throws JspException {
 
 		try {
+			Date date = new Date();
 			String residential = NVL.apply(request.getParameter("residential"),"").trim();
 			String commerical = NVL.apply(request.getParameter("commerical"),"").trim();
 			String pickup = NVL.apply(request.getParameter("pickup"),"").trim();
 			String exSameDayDlv = NVL.apply(request.getParameter("exSameDayDlv"),"").trim();
 			String geoRestrictionType= NVL.apply(request.getParameter("edit_dlvreq_geoRest"),"").trim();
 			String dlvDatesLength = NVL.apply(request.getParameter("dlvDatesIndexValue"),"");
-			
+			FDPromoDlvZoneStrategyModel dlvZoneModel = new FDPromoDlvZoneStrategyModel();
+			FDPromoZipRestriction zipRestriction = new FDPromoZipRestriction();
 			if(!"".equalsIgnoreCase(dlvDatesLength)){
 				List<FDPromoDlvDateModel> dlvDates = new ArrayList<FDPromoDlvDateModel>();
 			
@@ -89,7 +100,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			promotion.setGeoRestrictionType(geoRestrictionType);
 			if("ZIP".equalsIgnoreCase(geoRestrictionType)){				
 				String zipType = NVL.apply(request.getParameter("edit_dlvreq_zipType"),"").trim();
-				FDPromoZipRestriction zipRestriction = new FDPromoZipRestriction();
+				
 				TreeMap zipRestrictionMap = new TreeMap();	
 				zipRestriction.setStartDate(new Date());
 				zipRestriction.setType(zipType);
@@ -153,7 +164,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				if(!isADayAdded){
 					actionResult.addError(true, "daysEmpty", " Atleast a day should be selected for the ZONE type geography restriction.");
 				}
-				FDPromoDlvZoneStrategyModel dlvZoneModel = new FDPromoDlvZoneStrategyModel();
+				
 				dlvZoneModel.setDlvDays(daysSelected.toString());
 				if("ALL".equals(zoneType)){
 					dlvZoneModel.setDlvZones(new String[]{"ALL"});
@@ -172,11 +183,12 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 //			String thu = request.getParameter("edit_dlvreq_chkThu");
 //			String fri = request.getParameter("edit_dlvreq_chkFri");
 //			String sat = request.getParameter("edit_dlvreq_chkSat");
-//			String sun = request.getParameter("edit_dlvreq_chkSun");			
+//			String sun = request.getParameter("edit_dlvreq_chkSun");				
 			}				
 			List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
+			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
 			if(null != custStrategies && !custStrategies.isEmpty()){
-				FDPromoCustStrategyModel custModel = (FDPromoCustStrategyModel)custStrategies.get(0);
+				custModel = (FDPromoCustStrategyModel)custStrategies.get(0);
 				custModel.setOrderTypeHome(!"".equals(residential));
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
@@ -184,7 +196,7 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 				custStrategies.add(custModel);
 			}else{
 				custStrategies = new ArrayList<FDPromoCustStrategyModel>();
-				FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
+				custModel = new FDPromoCustStrategyModel();
 				custModel.setOrderTypeHome(!"".equals(residential));
 				custModel.setOrderTypeCorporate(!"".equals(commerical));
 				custModel.setOrderTypePickup(!"".equals(pickup));
@@ -195,8 +207,16 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 			promotion.setCustStrategies(custStrategies);
 			validateDlvReq(request,actionResult);
 			
-			if(actionResult.isSuccess())
-			FDPromotionNewManager.storePromotionDlvZoneInfo(promotion);
+			if(actionResult.isSuccess()){
+				HttpSession session = pageContext.getSession();
+				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+				this.promotion.setModifiedBy(agent.getUserId());
+				this.promotion.setModifiedDate(date);
+				populatePromoChangeModel(dlvZoneModel);
+				populatePromoChangeModel(zipRestriction);
+				populatePromoChangeModel(custModel);
+				FDPromotionNewManager.storePromotionDlvZoneInfo(promotion);
+			}
 		} catch (FDResourceException e) {
 			throw new JspException(e);
 		} catch (FDDuplicatePromoFieldException e) {
@@ -208,6 +228,8 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 		} catch (FDPromoCustNotFoundException e) {
 			actionResult.setError(e.getMessage());
 			return true;
+		} catch(FinderException fe){
+			throw new JspException(fe);
 		}
 		pageContext.setAttribute("availableDeliveryZones", getAvailableDeliveryZones(actionResult));
 		return true;
@@ -269,6 +291,186 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 		}
 	}
 	
+	
+	private void populatePromoChangeModel(FDPromoCustStrategyModel model) throws FDResourceException,
+	FinderException {
+			List promoChanges = new ArrayList<FDPromoChangeModel>();
+			List promoChangeDetails = new ArrayList<FDPromoChangeDetailModel>();
+			FDPromoChangeModel changeModel = null;
+			if(null !=promotion.getAuditChanges()){
+				promoChanges = promotion.getAuditChanges();
+				if(!promoChanges.isEmpty()){
+					changeModel = (FDPromoChangeModel)promoChanges.get(0);
+				}
+			}			
+			if(null == changeModel){
+				changeModel = new FDPromoChangeModel();				
+				changeModel.setActionDate(promotion.getModifiedDate());
+				changeModel.setActionType(EnumPromoChangeType.DELIVERY_REQ_INFO);
+				changeModel.setUserId(promotion.getModifiedBy());
+				changeModel.setPromotionId(promotion.getId());
+				changeModel.setChangeDetails(promoChangeDetails);
+				promoChanges.add(changeModel);
+			}else{
+				promoChangeDetails = changeModel.getChangeDetails();//.addAll(promoChangeDetails);
+			}
+			
+			promotion.setAuditChanges(promoChanges);
+			
+			FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
+			
+			if(null != oldPromotion && null != oldPromotion.getCustStrategies() && !oldPromotion.getCustStrategies().isEmpty()){
+				FDPromoCustStrategyModel oldCustModel = (FDPromoCustStrategyModel)oldPromotion.getCustStrategies().get(0);
+				if(null != oldCustModel){
+					if(oldCustModel.isOrderTypeCorporate()!=model.isOrderTypeCorporate()){
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setChangeFieldName("Address Type - Corporate");
+						changeDetailModel.setChangeFieldOldValue(oldCustModel.isOrderTypeCorporate()?"X":"");
+						changeDetailModel.setChangeFieldNewValue(model.isOrderTypeCorporate()?"X":"");
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+						promoChangeDetails.add(changeDetailModel);
+					}
+					if(oldCustModel.isOrderTypeHome()!=model.isOrderTypeHome()){
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setChangeFieldName("Address Type - Home");
+						changeDetailModel.setChangeFieldOldValue(oldCustModel.isOrderTypeHome()?"X":"");
+						changeDetailModel.setChangeFieldNewValue(model.isOrderTypeHome()?"X":"");
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+						promoChangeDetails.add(changeDetailModel);
+					}
+					if(oldCustModel.isOrderTypePickup()!=model.isOrderTypePickup()){
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setChangeFieldName("Address Type - Pickup");
+						changeDetailModel.setChangeFieldOldValue(oldCustModel.isOrderTypePickup()?"X":"");
+						changeDetailModel.setChangeFieldNewValue(model.isOrderTypePickup()?"X":"");
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+						promoChangeDetails.add(changeDetailModel);
+					}
+				}								
+			}
+			boolean noDlvDates = false;
+			if((null==oldPromotion.getDlvDates()|| oldPromotion.getDlvDates().isEmpty()) && (null==promotion.getDlvDates()||promotion.getDlvDates().isEmpty())){
+				noDlvDates = true;
+			}
+			if(!noDlvDates){
+				FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+				changeDetailModel.setChangeFieldName("Delivery Dates");
+				changeDetailModel.setChangeFieldOldValue(null!=oldPromotion.getDlvDates()&&!oldPromotion.getDlvDates().isEmpty()?oldPromotion.getDlvDates().toString():"");
+				changeDetailModel.setChangeFieldNewValue(null!=promotion.getDlvDates()&&!promotion.getDlvDates().isEmpty()?promotion.getDlvDates().toString():"");
+				changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+				promoChangeDetails.add(changeDetailModel);
+			}
+			if((null !=promotion.getGeoRestrictionType() && null!=oldPromotion.getGeoRestrictionType()) && !promotion.getGeoRestrictionType().equalsIgnoreCase(oldPromotion.getGeoRestrictionType())){
+				FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+				changeDetailModel.setChangeFieldName("Geo Restriction Type");
+				changeDetailModel.setChangeFieldOldValue(oldPromotion.getGeoRestrictionType());
+				changeDetailModel.setChangeFieldNewValue(promotion.getGeoRestrictionType());
+				changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+				promoChangeDetails.add(changeDetailModel);
+			}
+			changeModel.setChangeDetails(promoChangeDetails);
+			
+	}
+	
+	private void populatePromoChangeModel(FDPromoDlvZoneStrategyModel model) throws FDResourceException,
+	FinderException {
+			
+			List promoChanges = new ArrayList<FDPromoChangeModel>();
+			List promoChangeDetails = new ArrayList<FDPromoChangeDetailModel>();
+			/*if(null !=promotion.getAuditChanges()){
+				promoChanges = promotion.getAuditChanges();				
+			}*/
+			FDPromoChangeModel changeModel = new FDPromoChangeModel();
+			changeModel.setActionDate(promotion.getModifiedDate());
+			changeModel.setActionType(EnumPromoChangeType.DELIVERY_REQ_INFO);
+			changeModel.setUserId(promotion.getModifiedBy());
+			changeModel.setPromotionId(promotion.getId());
+			changeModel.setChangeDetails(promoChangeDetails);
+			promoChanges.add(changeModel);
+			promotion.setAuditChanges(promoChanges);
+			
+			FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
+			if(null != oldPromotion && null != oldPromotion.getDlvZoneStrategies() && !oldPromotion.getDlvZoneStrategies().isEmpty()){
+			
+				FDPromoDlvZoneStrategyModel oldDlvModel = (FDPromoDlvZoneStrategyModel)oldPromotion.getDlvZoneStrategies().get(0);
+				if(null != oldDlvModel){
+					if(null !=oldDlvModel.getDlvZones() && (null !=model.getDlvZones())){					
+						FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+						changeDetailModel.setChangeFieldName("Zones");
+						changeDetailModel.setChangeFieldOldValue(null !=oldDlvModel.getDlvZones() && oldDlvModel.getDlvZones().length > 0?Arrays.asList(oldDlvModel.getDlvZones()).toString():"");
+						changeDetailModel.setChangeFieldNewValue(null !=model.getDlvZones() && model.getDlvZones().length > 0?Arrays.asList(model.getDlvZones()).toString():"");
+						changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+						promoChangeDetails.add(changeDetailModel);
+					}
+					if(oldDlvModel.getDlvDays()!= model.getDlvDays()){
+						if(null == oldDlvModel.getDlvDays()|| null == model.getDlvDays() || !oldDlvModel.getDlvDays().equalsIgnoreCase(model.getDlvDays())){
+							FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+							changeDetailModel.setChangeFieldName("Delivery Days");
+							changeDetailModel.setChangeFieldOldValue(oldDlvModel.getDlvDays());
+							changeDetailModel.setChangeFieldNewValue(model.getDlvDays());
+							changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+							promoChangeDetails.add(changeDetailModel);
+						}						
+					}
+					if(oldDlvModel.getDlvTimeSlots()!= model.getDlvTimeSlots()){
+						if(null == oldDlvModel.getDlvTimeSlots()|| null == model.getDlvTimeSlots() || oldDlvModel.getDlvTimeSlots().size()!=(model.getDlvTimeSlots().size())){
+							FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+							changeDetailModel.setChangeFieldName("No.of Delivery Timeslots");
+							changeDetailModel.setChangeFieldOldValue(null == oldDlvModel.getDlvTimeSlots()?" ":""+oldDlvModel.getDlvTimeSlots().size());
+							changeDetailModel.setChangeFieldNewValue(null == model.getDlvTimeSlots()?" ":""+model.getDlvTimeSlots().size());
+							changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+							promoChangeDetails.add(changeDetailModel);
+						}
+					}
+				}
+				
+			}
+			
+	}
+	
+	private void populatePromoChangeModel(FDPromoZipRestriction model) throws FDResourceException,
+	FinderException {
+			
+			List promoChanges = new ArrayList<FDPromoChangeModel>();
+			List promoChangeDetails = new ArrayList<FDPromoChangeDetailModel>();
+			FDPromoChangeModel changeModel = null;
+			if(null !=promotion.getAuditChanges()){
+				promoChanges = promotion.getAuditChanges();
+				if(!promoChanges.isEmpty()){
+					changeModel = (FDPromoChangeModel)promoChanges.get(0);
+				}
+			}			
+			if(null == changeModel){
+				changeModel = new FDPromoChangeModel();				
+				changeModel.setActionDate(promotion.getModifiedDate());
+				changeModel.setActionType(EnumPromoChangeType.DELIVERY_REQ_INFO);
+				changeModel.setUserId(promotion.getModifiedBy());
+				changeModel.setPromotionId(promotion.getId());
+				changeModel.setChangeDetails(promoChangeDetails);
+				promoChanges.add(changeModel);
+			}else{
+				promoChangeDetails = changeModel.getChangeDetails();//.addAll(promoChangeDetails);
+			}
+			promotion.setAuditChanges(promoChanges);
+			
+			FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
+			if(null != oldPromotion && null != oldPromotion.getZipRestrictions() && !oldPromotion.getZipRestrictions().isEmpty()){
+				TreeMap map = (TreeMap)oldPromotion.getZipRestrictions();
+				for(Iterator i = map.keySet().iterator(); i.hasNext(); ){
+					FDPromoZipRestriction zipRestriction = (FDPromoZipRestriction) map.get((Date)i.next());
+					
+					String zipCodes = NVL.apply(zipRestriction.getZipCodes(), "");
+					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+					changeDetailModel.setChangeFieldName("Zip Codes");
+					changeDetailModel.setChangeFieldOldValue(null !=zipRestriction.getZipCodes()?zipRestriction.getZipCodes():"");
+					changeDetailModel.setChangeFieldNewValue(null !=model.getZipCodes() ?model.getZipCodes():"");
+					changeDetailModel.setChangeSectionId(EnumPromotionSection.DELIVERY_REQ_INFO);
+					promoChangeDetails.add(changeDetailModel);
+				}				
+			}
+			changeModel.setChangeDetails(promoChangeDetails);
+			
+	}
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		
 		pageContext.setAttribute("availableDeliveryZones", getAvailableDeliveryZones(actionResult));

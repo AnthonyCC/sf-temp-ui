@@ -173,7 +173,7 @@
 	if (csm != null) {
 		dpStatus = csm.getDpStatus();
 		EnumDlvPassStatus dp_status = EnumDlvPassStatus.getEnum(dpStatus);
-		dpStatusString = dp_status != null ? dp_status.getDisplayName() : "None";
+		dpStatusString = dp_status != null ? (EnumDlvPassStatus.ACTIVE.equals(dp_status)?EnumDlvPassStatus.ACTIVE.getDisplayName()+"/"+EnumDlvPassStatus.READY_TO_USE.getDisplayName():dp_status.getDisplayName()) : "None";
 	}
 
 	String paymentType = "";

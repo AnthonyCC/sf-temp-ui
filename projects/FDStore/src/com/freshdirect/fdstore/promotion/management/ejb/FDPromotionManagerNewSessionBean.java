@@ -522,6 +522,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			conn.setAutoCommit(false);
 			FDPromotionManagerNewDAO.storePromotionOfferInfo(conn, promotion);
+			storePromoChangeLog(promotion, conn, promotion.getPK());
 			conn.commit();
 		} catch (SQLException sqle) {
 			if (conn != null) {
@@ -556,6 +557,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			conn.setAutoCommit(false);
 			FDPromotionManagerNewDAO.storePromotionCartInfo(conn, promotion);
+			storePromoChangeLog(promotion, conn, promotion.getPK());
 			conn.commit();
 		} catch (SQLException sqle) {
 			if (conn != null) {
@@ -621,6 +623,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			conn = getConnection();
 			conn.setAutoCommit(false);
 			FDPromotionManagerNewDAO.storePromotionDlvZoneInfo(conn, promotion);
+			storePromoChangeLog(promotion, conn, promotion.getPK());
 			conn.commit();
 		} catch (SQLException sqle) {
 			if (conn != null) {

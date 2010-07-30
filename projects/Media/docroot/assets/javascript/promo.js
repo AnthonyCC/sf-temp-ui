@@ -1046,3 +1046,18 @@ function checkOffer() {
 		if ($(elemId1).value!='' && $(elemId2).value!='') { return true; }
 		return false;
 	}
+}
+
+function deleteRestriction(url)
+{
+  var config='width=300,height=400,menubar=yes,status=yes,scrollbars=yes,resizable=yes';
+
+  //alert("url"+url);
+  var doCancel = confirm ("Are you sure you want to delete these Restriction?");
+  if(doCancel == false){
+          return;
+  } 
+  
+  pop = window.open (url,"deleteRestriction",config);
+  return;
+}
