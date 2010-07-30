@@ -139,15 +139,12 @@ private final static FDPromotionNewModelFactory INSTANCE = new FDPromotionNewMod
 		Collections.sort(users,new StringComparator());
 		return users;
 	}
-	
-	private class StringComparator implements Comparator{
 
+
+	private class StringComparator implements Comparator<String> {
 		@Override
-		public int compare(Object arg0, Object arg1) {
-			String str1 =(String) arg0;
-			String str2 =(String) arg1;
+		public int compare(String str1, String str2) {
 			return str1.toLowerCase().compareTo(str2.toLowerCase());
 		}
-		
 	}
 }
