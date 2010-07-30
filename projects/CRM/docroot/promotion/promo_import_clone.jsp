@@ -146,9 +146,22 @@
 <%			} else if (!storeResult.isSuccess()) {
 %>			<div class="title18" style="padding: 0.3em 0 1em 0; color: #c00; font-weight: bold;">Save failed.</div>
 <%			}
+
+			String v;
+
+			v = request.getParameter("newName");
+			String valName = (v != null && !"".equals(v) ? v : promotion.getName());
+
+			v = request.getParameter("newPromoCode");
+			// String valCode = (v != null && !"".equals(v) ? v : FDPromotionUtils.generateCloneCode(promotion.getPromotionCode()));
+			String valCode = FDPromotionUtils.generateCloneCode(promotion.getPromotionCode());
+			
+			v = request.getParameter("newRedemptionCode");
+			String valRedemption = (v != null && !"".equals(v) ? v : promotion.getRedemptionCode());
+
 %>			<div class="pic-row">
 				<div>Name:</div>
-				<input id="promoname-input" type="text" name="newName" value="<%= promotion.getName() %>" size="16" maxlength="32"/>
+				<input id="promoname-input" type="text" name="newName" value="<%= valName %>" size="16" maxlength="32"/>
 				<button type="button" onclick="doCheckName($('promoname-input').value); return false;">Check</button>
 			</div>
 			<div class="pic-row-err">
@@ -159,7 +172,7 @@
 
 			<div class="pic-row">
 				<div>Promotion code:</div>
-				<input id="promocode-input" type="text" name="newPromoCode" value="<%= FDPromotionUtils.generateCloneCode(promotion.getPromotionCode()) %>" size="16" maxlength="16"/>
+				<input id="promocode-input" type="text" name="newPromoCode" value="<%= valCode %>" size="16" maxlength="16"/>
 				<button type="button" onclick="doCheckCode($('promocode-input').value); return false;">Check</button>
 			</div>
 			<div class="pic-row-err">
@@ -170,7 +183,7 @@
 
 			<div class="pic-row">
 				<div>Redemption code:</div>
-				<input id="rcode-input" type="text" name="newRedemptionCode" value="<%= promotion.getRedemptionCode() %>" size="16" maxlength="16"/>
+				<input id="rcode-input" type="text" name="newRedemptionCode" value="<%= valRedemption %>" size="16" maxlength="16"/>
 				<button type="button" onclick="doCheckRedemptionCode($('rcode-input').value); return false;">Check</button>
 			</div>
 			<div class="pic-row-err">

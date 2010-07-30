@@ -179,12 +179,12 @@ public class ImportPromotionTag extends BodyTagSupport {
 		
 		// check if new promo code is entered in UI
 		String promoCode = request.getParameter("newPromoCode");
-		if (promoCode == null) {
+		if (promoCode != null && !"".equals(promoCode)) {
+			LOGGER.debug("Using overridden promo code " + promoCode);
+		} else {
 			// get default code
 			promoCode = promotion.getPromotionCode();
 			LOGGER.debug("Using existing promo code " + promoCode);
-		} else {
-			LOGGER.debug("Using overridden promo code " + promoCode);
 		}
 
 		if (FDPromotionNewManager.isPromotionCodeUsed(promoCode)) {
