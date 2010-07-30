@@ -14,9 +14,6 @@
 --%>
 <% if (promo_create_edit) { isEmptyPromoDlvreq = true; } %>
 
-
-
-
 <table width="100%" class="bordBotLgray">
 	<tr>
 		<td class="vTop">
@@ -32,6 +29,33 @@
 		<td width="1%"><img width="16" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 	</tr>
 </table>
+
+<%
+	//construct the ordType string
+	String ordType = "";
+		if (csm != null) {
+			ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
+			ordType += (csm.isOrderTypeCorporate())
+							? (csm.isOrderTypeHome()) ? ", Corporate" : "Corporate"
+							: "";
+			ordType += (csm.isOrderTypePickup())
+							? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
+							: "";
+			}
+%>
+
+<%
+	if (
+			(EnumPromotionStatus.DRAFT.equals(promotion.getStatus())) || (
+				("".equals(ordType)) &&
+				(zsm == null) &&
+				(dlvDates == null) &&
+				(zipRests == null || zipRests.size() <= 0)
+			)
+		) {
+		isEmptyPromoDlvreq = true;
+	}
+%>
 
 <table width="100%">
 	<tr>
@@ -49,54 +73,46 @@
 							<td class="alignL">&nbsp;</td>
 						</tr>
 				<% }else{ %>
-					<%
-						//construct the ordType string
-						String ordType = "";
-							if (csm != null) {
-								ordType += (csm.isOrderTypeHome()) ? "Residential" : "";
-								ordType += (csm.isOrderTypeCorporate())
-												? (csm.isOrderTypeHome()) ? ", Corporate" : "Corporate"
-												: "";
-								ordType += (csm.isOrderTypePickup())
-												? (csm.isOrderTypeHome() || csm.isOrderTypeCorporate()) ? ", Pickup" : "Pickup"
-												: "";
-								}
-					%>
-					<tr>
-						<td class="promo_detail_label">Address type:</td>
-						<td class="alignL"><%= ordType %></td>
-					</tr>
-					
-					<tr>
-						<td class="promo_detail_label">Delivery day(s):</td>
-						<td class="alignL"><%= (zsm != null) ? dlvDaysString : "" %></td>
-					</tr>
-					<tr>
-						<td class="promo_detail_label">Delivery Date(s):</td>
-						<td class="alignL">
-							
-							<%
-								if (dlvDates != null) { %>
-									<table style="border-collapse: collapse;">
-									<%
-										for (int n = 0; n < dlvDates.size(); n++) {
-											FDPromoDlvDateModel tempDd = (FDPromoDlvDateModel)dlvDates.get(n);
-											if (tempDd != null) {
-												%><tr>
-													<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateStart()).split(" ")[0] %></td>
-													<td class="bordLgrayDash padL8R16 gray"> to </td>
-													<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateEnd()).split(" ")[0] %></td>
-												</tr>
-												<%
+					<% if (!"".equals(ordType)) { %>
+						<tr>
+							<td class="promo_detail_label">Address type:</td>
+							<td class="alignL"><%= ordType %></td>
+						</tr>
+					<% } %>
+					<% if (zsm != null) { %>
+						<tr>
+							<td class="promo_detail_label">Delivery day(s):</td>
+							<td class="alignL"><%= (zsm != null) ? dlvDaysString : "" %></td>
+						</tr>
+					<% } %>
+					<% if (dlvDates != null) { %>
+						<tr>
+							<td class="promo_detail_label">Delivery Date(s):</td>
+							<td class="alignL">
+								
+								<%
+									if (dlvDates != null) { %>
+										<table style="border-collapse: collapse;">
+										<%
+											for (int n = 0; n < dlvDates.size(); n++) {
+												FDPromoDlvDateModel tempDd = (FDPromoDlvDateModel)dlvDates.get(n);
+												if (tempDd != null) {
+													%><tr>
+														<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateStart()).split(" ")[0] %></td>
+														<td class="bordLgrayDash padL8R16 gray"> to </td>
+														<td class="bordLgrayDash padL8R16"><%= DateUtil.formatDate(tempDd.getDlvDateEnd()).split(" ")[0] %></td>
+													</tr>
+													<%
+												}
 											}
-										}
-									%>
-									</table>
-									<%
-								}
-							%>
-						</td>
-					</tr>
+										%>
+										</table>
+										<%
+									}
+								%>
+							</td>
+						</tr>
+					<% } %>
 					<%
 						//ZIP or ZONE
 						if (zipRests != null && zipRests.size() > 0) {

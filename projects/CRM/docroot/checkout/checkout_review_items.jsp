@@ -355,14 +355,24 @@
 							//fix for APPDEV-685
 							//change page called to fix product link
 						%>
+						<%-- discount msg --%>
+						<%
+							String discountMsg = null;
+							if(cartLine.getDiscount() != null) {
+								Discount discount = cartLine.getDiscount();
+								PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+								discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000;\">"+promotion.getDescription()+"</a>";
+							}
+						%>
 			
 							<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/order/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 							<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 							<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
+							<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10rbold"><%= discountMsg %></span><% } %>
 							<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 							<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br />&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><% }%></div>
 							</td>
-							<td align="right">(<%= cartLine.getUnitPrice() %>) </td>
+							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>">(<%= cartLine.getUnitPrice() %>)</span> </td>
 							
 							<% if (makegood) { %>
 								<td align="right">
@@ -376,7 +386,7 @@
 								</td>
 							<% } %>
 
-							<td align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
 							<td><%= cartLine.isEstimatedPrice() ? "*" : "" %><strong><%=cartLine.hasTax() ? "&nbsp;T" : ""%></strong></td>
 							<td><strong><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></strong></td>
 
@@ -610,7 +620,7 @@
 						String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();
 					%>
 						<tr valign="top" class="orderSummary">
-							<td colspan="3" align="right"><%= desc %>:</td>
+							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= discount.getPromotionCode() %>','small')"><%= desc %></a></b>:</td>
 							<td align="right">-<%= CCFormatter.formatCurrency(discount.getAmount()) %></td>
 							<td colspan="3"></td>	   
 						</tr>

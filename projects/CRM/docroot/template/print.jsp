@@ -5,6 +5,7 @@
 <html>
 <head>
     <title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>
+		<link rel="stylesheet" type="text/css" href="/assets/css/giftcards.css" />
 		<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
         <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 </head>

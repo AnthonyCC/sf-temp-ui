@@ -108,6 +108,15 @@
     deptTotalMap.put("est", new Double(((Double)deptTotalMap.get("est")).doubleValue() + cartLine.getPrice()));
 	allDeptsMap.put(cartLine.getDepartmentDesc(), deptTotalMap);
 %>
+<%-- discount msg --%>
+<%
+	String discountMsg = null;
+	if(cartLine.getDiscount() != null) {
+		Discount discount = cartLine.getDiscount();
+		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+		discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000; font-weight: bold;\">"+promotion.getDescription()+"</a>";
+	}
+%>
 <tr valign="middle">
 	<td align="center">
 		<%=cartLine.getDisplayQuantity()%>
@@ -119,9 +128,10 @@
 		&nbsp;<FONT CLASS="text10"><%= cartLine.getDescription() %></FONT>
 		<%=cartLine.getConfigurationDesc()%>
         <font color="#888888"><%= cartLine.getSkuCode() %></font>
+		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
 	</TD>
-	<td>(<%= cartLine.getUnitPrice() %>)</td>
-	<td ALIGN="RIGHT"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></td>
+	<td><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
+	<td ALIGN="RIGHT"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
 	<TD>
 		<%if (cartLine.isEstimatedPrice()) {
 				hasEstimatedItems = true;

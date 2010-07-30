@@ -16,15 +16,23 @@
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">Order instance:</td>
-					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm!=null) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (current order count based on placed/settled order) </span></td>
+					<td class="promo_detail_label">Eligible list:</td>
+					<td class="alignL vTop padL8R16"><%= null!= promotion.getAssignedCustomerSize() && promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %><span class="grayIta8pt"> Add/Edit via Marketing Admin</span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">Smart Store cohort:</td>
+					<td class="promo_detail_label">Order instance:</td>
+					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm != null && csm.getOrderRangeStart() > 0) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null && csm.getOrderRangeEnd() > 0) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (First order == 1, current order count based on placed/settled order) </span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td class="alignL vTop padL8R16"><span class="grayIta8pt">AND</span></td>
+				</tr>
+				<tr>
+					<td class="promo_detail_label"><div style="text-align: left;" class="fright">Smart Store cohort:<br />(match any)</div></td>
 					<td class="alignL vTop padL8R16">
 					<%
 					

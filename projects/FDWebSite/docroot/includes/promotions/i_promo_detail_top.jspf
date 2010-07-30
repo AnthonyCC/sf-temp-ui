@@ -4,7 +4,7 @@
 		<td><span class="gray">ID:</span> <%= promotion.getId() %> <span class="gray">-</span> <%= promotion.getPromotionCode() %></td>
 		<td><img width="24" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td><span class="gray">Status:</span>
-		<% if(EnumPromotionStatus.LIVE.equals(promotion.getStatus()	)){ %> 
+		<% if(EnumPromotionStatus.LIVE.equals(promotion.getStatus())){ %> 
 		<span class="BG_live"><%= promotion.getStatus().getDescription() %></span>
 		<%} else { %>
 		<%= promotion.getStatus().getDescription() %>

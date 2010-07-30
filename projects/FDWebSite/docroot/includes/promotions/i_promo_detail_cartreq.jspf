@@ -26,6 +26,13 @@
 	</tr>
 </table>
 
+<%
+	if (
+			EnumPromotionStatus.DRAFT.equals(promotion.getStatus()) //this detail section is only none in Draft Status
+		) {
+		isEmptyPromoCartreq = true;
+	}
+%>
 <table width="100%">
 	<tr>
 		<td class="vTop">
@@ -42,39 +49,18 @@
 							<td class="alignL">&nbsp;</td>
 						</tr>
 				<% }else{ %>
-					<tr>
-						<td class="promo_detail_label">Subtotal >=</td>
-						<td class="alignL"><%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ? "$ "+FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal())) : "" %></td>
-					</tr>
-					<%--
-						//This should refer to the actual object once it's defined
-
-						
-						<% if (dpcdExcludedFromSubtotal.size() > 0) { %>
-							<tr>
-								<td class="promo_detail_label">Exclude from subtotal:</td>
-								<td class="alignL">
-									<table style="border-collapse: collapse;">
-									<% 
-										for (int n = 0; n < dpcdExcludedFromSubtotal.size(); n++) {
-											FDPromoContentModel tempDpcd = (FDPromoContentModel)dpcdExcludedFromSubtotal.get(n);
-											ContentNodeModel ref = ContentFactory.getInstance().getContentNode(tempDpcd.getContentId());
-									%>
-											<tr>
-												<td class="bordLgrayDash gray8pt padL8R16"><%= tempDpcd.getContentId() %></td>
-												<td class="bordLgrayDash padL8R16"><%= (ref!=null)?ref.getFullName():"" %></td>
-											</tr>
-									<% } %>
-									</table>
-								</td>
-							</tr>
-						<% } %>
-
-					--%>
-					<tr>
-						<td class="promo_detail_label">Exclude from Subtotal:</td>
-						<td class="alignL"><%= null!=promotion.getSubTotalExcludeSkus()&& !"null".equalsIgnoreCase(promotion.getSubTotalExcludeSkus())?(promotion.getSubTotalExcludeSkus()):"" %></td>
-					</tr>
+					<% if ( promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal()) && !"0.00".equals(FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal()))) ) { %>
+						<tr>
+							<td class="promo_detail_label">Subtotal >=</td>
+							<td class="alignL"><%= (promotion.getMinSubtotal() != null && !"".equals(promotion.getMinSubtotal())) ? "$ "+FormatterUtil.formatToTwoDecimal(Double.parseDouble(promotion.getMinSubtotal())) : "" %></td>
+						</tr>
+					<% } %>
+					<% if (null != promotion.getSubTotalExcludeSkus() && !"null".equalsIgnoreCase(promotion.getSubTotalExcludeSkus())) { %>
+						<tr>
+							<td class="promo_detail_label">Exclude from Subtotal:</td>
+							<td class="alignL"><%= null != promotion.getSubTotalExcludeSkus() && !"null".equalsIgnoreCase(promotion.getSubTotalExcludeSkus()) ? (promotion.getSubTotalExcludeSkus()) : "" %></td>
+						</tr>
+					<% } %>
 					<tr>
 						<td class="promo_detail_label">Need Dry Goods:</td>
 						<td class="alignL"><%= (promotion.isNeedDryGoods()) ? "Yes" : "No" %></td>

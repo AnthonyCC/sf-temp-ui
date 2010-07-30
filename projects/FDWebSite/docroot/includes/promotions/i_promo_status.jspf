@@ -7,33 +7,42 @@
 			<% if(promotion.isOnHold()){ %>
 			<input type="button" value="RELEASE HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>'); return false;" class="promo_btn_whtGray fleft" />
 			<% } else { %>
-			<%
-				if ((
-						EnumPromotionStatus.APPROVE.equals(promotion.getStatus()) ||
-						EnumPromotionStatus.CANCELLING.equals(promotion.getStatus())
-					)
-				) {
-			%>
-					<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-			<%
-				} else {
-			%>
-					<!-- <div class="promo_btn_dgray_disabled fleft noMargLR" style="width: 149px; text-align: center;">PUBLISH</div> -->
-			<%		
-				}
-			%>
-			<% if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())){ %>
-			
-			<div class="promo_action promo_btn_dblue fleft" style="width: 80px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-			<% } else if(EnumPromotionStatus.TEST.equals(promotion.getStatus())){ %>
-			<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
-			<% } %>
-			<% if(!EnumPromotionStatus.CANCELLED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.LIVE.equals(promotion.getStatus()) && promotion.getPublishes()<=0){%>
-				<input type="button" value="ON HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>') ; return false;" class="promo_btn_whtGray fleft" />
-			<% } %>
-			<% if(!EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLED.equals(promotion.getStatus())){ %>
-			<input type="button" value="CANCEL" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= promotion.getPublishes()<=0?EnumPromotionStatus.CANCELLED.getName() : EnumPromotionStatus.CANCELLING.getName()%>'); return false;" class="promo_btn_whtRed fleft" />
-			<% } %>
+				<%
+					if ((
+							EnumPromotionStatus.APPROVE.equals(promotion.getStatus()) ||
+							EnumPromotionStatus.CANCELLING.equals(promotion.getStatus())
+						)
+					) {
+				%>
+						<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				<%
+					} else {
+				%>
+						<!-- <div class="promo_btn_dgray_disabled fleft noMargLR" style="width: 149px; text-align: center;">PUBLISH</div> -->
+				<%		
+					}
+				%>
+				<%
+					boolean showingOtherButtons = false; //eliminate margin spacing for lone buttons
+					if(EnumPromotionStatus.PROGRESS.equals(promotion.getStatus())){ 
+						showingOtherButtons = true;
+				%>
+				
+						<div class="promo_action promo_btn_dblue fleft" style="width: 80px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.TEST.getName()%>');">TEST&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				<%
+					} else if(EnumPromotionStatus.TEST.equals(promotion.getStatus())){
+						showingOtherButtons = true;
+				%>
+						<div class="promo_action promo_btn_dblue fleft" style="width: 90px;"><a href="javascript:{}" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= EnumPromotionStatus.APPROVE.getName()%>');">APPROVE&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+				<% } %>
+				<% if(!EnumPromotionStatus.CANCELLED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.LIVE.equals(promotion.getStatus()) && promotion.getPublishes()<=0){ 
+					showingOtherButtons = true;
+				%>
+					<input type="button" value="ON HOLD" onclick="javascript:editPromotionHoldStatus(this.form,'<%= promoId %>') ; return false;" class="promo_btn_whtGray fleft" />
+				<% } %>
+				<% if(!EnumPromotionStatus.EXPIRED.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLING.equals(promotion.getStatus()) && !EnumPromotionStatus.CANCELLED.equals(promotion.getStatus())){ %>
+					<input type="button" value="CANCEL" onclick="javascript:editPromotionStatus(this.form,'<%= promoId %>','<%= promotion.getPublishes()<=0?EnumPromotionStatus.CANCELLED.getName() : EnumPromotionStatus.CANCELLING.getName()%>'); return false;" class="promo_btn_whtRed fleft<%= (showingOtherButtons) ? "" : " noMargL" %>" />
+				<% } %>
 			<% } %>
 			<%--
 				Different buttons for this section:

@@ -25,6 +25,15 @@
 	</tr>
 </table>
 
+<%
+	if (
+			(EnumPromotionStatus.DRAFT.equals(promotion.getStatus())) || ( //only none if no type has been set
+				(promotion.getPromotionType() == null || "".equals(promotion.getPromotionType()))
+			)
+		) {
+		isEmptyPromoOffer = true;
+	}
+%>
 
 <table width="100%">
 	<tr>
@@ -73,22 +82,24 @@
 							<% } %>
 								</tr>
 						<% } %>
-						<tr>
-							<td class="promo_detail_label"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
-							<td class="alignL"><span class="gray">Allow offer combination</span></td>
-						</tr>
+						<% if (EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()) { %>
+							<tr>
+								<td class="promo_detail_label"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
+								<td class="alignL"><span class="gray">Allow offer combination</span></td>
+							</tr>
+						<% } %>
 					<%
 						//LINE_ITEM TYPE display
 						}else if ( EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
 					%>
-						<% if (promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) { %>
+						<% if (promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff())) { %>
 								<tr>
 									<td class="promo_detail_label">Discount:</td>
 									<td class="alignL"><%= promotion.getPercentOff()%> %</td>
 								</tr>
 						<% } %>
 						<%-- max items call --%>
-						<% if ( true ) { %>
+						<% if ( promotion.getMaxItemCount() > 0 ) { %>
 								<tr>
 									<td class="promo_detail_label">Max # items:</td>
 									<td class="alignL"><%= promotion.getMaxItemCount() %></td>
@@ -224,18 +235,24 @@
 								</tr>
 						<% } %>
 						<%-- checkboxes --%>
+						<% if (EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()) { %>
 							<tr>
 								<td class="promo_detail_label"><input type="checkbox" id="li_allowOffer" name="li_allowOffer" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()?"checked":"" %> disabled /></td>
 								<td class="alignL"><span class="gray">Allow offer combination</span></td>
 							</tr>
+						<% } %>
+						<% if (promotion.isFavoritesOnly()) { %>
 							<tr>
 								<td class="promo_detail_label"><input type="checkbox" id="li_favorites" name="li_favorites" <%= promotion.isFavoritesOnly()?"checked":"" %> disabled /></td>
 								<td class="alignL"><span class="gray">Favorites only</span></td>
 							</tr>
+						<% } %>
+						<% if (promotion.isPerishable()) { %>
 							<tr>
 								<td class="promo_detail_label"><input type="checkbox" id="li_perishables" name="li_perishables" <%= promotion.isPerishable()?"checked":"" %> disabled /></td>
 								<td class="alignL"><span class="gray">Perishables only</span></td>
 							</tr>
+						<% } %>
 					<%
 						//SAMPLE TYPE display
 						}else if ( EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())) {

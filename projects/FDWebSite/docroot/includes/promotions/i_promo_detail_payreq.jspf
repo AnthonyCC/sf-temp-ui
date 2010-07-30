@@ -24,6 +24,17 @@
 	</tr>
 </table>
 
+<%
+	if (
+			(EnumPromotionStatus.DRAFT.equals(promotion.getStatus())) || (
+				("0".equals(eCheckMin) || "".equals(eCheckMin)) &&
+				(csm == null || "".equals(paymentType))
+			)
+		) {
+		isEmptyPromoPayreq = true;
+	}
+%>
+
 <table width="100%">
 	<tr>
 		<td class="vTop">
@@ -40,14 +51,18 @@
 							<td class="alignL">&nbsp;</td>
 						</tr>
 				<% }else{ %>
-					<tr>
-						<td class="promo_detail_label">Payment Method:</td>
-						<td class="alignL"><%= (csm != null) ? paymentType : "" %></td>
-					</tr>
-					<tr>
-						<td class="promo_detail_label">Prior eCheck use:</td>
-						<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><span class="gray" > min. </span><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>
-					</tr>
+					<% if ( csm != null && !"".equals(paymentType) ) { %>
+						<tr>
+							<td class="promo_detail_label">Payment Method:</td>
+							<td class="alignL"><%= (csm != null) ? paymentType : "" %></td>
+						</tr>
+					<% } %>
+					<% if (!"0".equals(eCheckMin) && !"".equals(eCheckMin)) { %>
+						<tr>
+							<td class="promo_detail_label">Prior eCheck use:</td>
+							<td class="alignL"><%= (csm != null) ? eCheckBool : "" %><% if(!"".equals(eCheckMin)){ %><span class="gray" > min. </span><%= (csm != null) ? eCheckMin : "" %><span class="gray"> settled orders</span><% } %></td>
+						</tr>
+					<% } %>
 				<% } %>
 			</table>
 		</td>
