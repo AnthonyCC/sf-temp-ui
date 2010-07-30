@@ -345,6 +345,7 @@ public class LocationController extends AbstractMultiActionController  {
 
 			Set<DlvServiceTimeType> dispatchSet=new HashSet();
 			String arrEntityList[] = getParamList(request);
+			Map constriantMap=new HashMap();
 			Collection zoneLst = locationManagerService.getZonesForServiceTimeTypes(Arrays.asList(arrEntityList));
 			
 			DlvServiceTimeType tmpEntity = null;
@@ -358,15 +359,22 @@ public class LocationController extends AbstractMultiActionController  {
 				try {
 					domainManagerService.removeEntity(dispatchSet);
 					saveMessage(request, getMessage("app.actionmessage.103", null));
-				} catch (DataIntegrityViolationException e) {
-					e.printStackTrace();
+				} catch (DataIntegrityViolationException ex) {			
+					
+					String expmsg=ex.getCause().getCause().toString();
+					if(expmsg.indexOf("DLV.ACT_BUILDING_STTYPE_FK")>-1)
+						constriantMap.put("BUILDING", "DLV.ACT_BUILDING_STTYPE_FK");
+					if(expmsg.indexOf("DLV.ACT_DELIVERY_LOCATIONST_FK")>-1)
+						constriantMap.put("LOCATION", "ACT_DELIVERY_LOCATIONST_FK");
+					if(expmsg.indexOf("ACT_SERVICETIMETYPE_ZONEST_FK")>-1)
+						constriantMap.put("SCENARIO ZONES", "ACT_SERVICETIMETYPE_ZONEST_FK");
 					hasError = true;
 				}
 			} else {
 				hasError = true;
 			}
 			if(hasError) {
-				saveMessage(request, getMessage("app.actionmessage.127", null));
+				saveMessage(request, getMessage("app.actionmessage.154", new Object[]{constriantMap.keySet()}));
 			}
 		return dlvServiceTimeTypeHandler(request, response);			
 	}
