@@ -94,8 +94,7 @@
 	}
 	%>
 	<table border="1">
-				<tr>
-					<th >&nbsp;</th>
+				<tr>					
 					<th >Offer Type:<%= null!=offerType && !"".equalsIgnoreCase(offerType) ? offerType:"ALL" %></th>
 					<th >Customer Type:<%= null!=customerType && !"".equalsIgnoreCase(customerType) ? customerType:"ALL" %></th>
 					<th >Status:<%= null!=promoStatus && !"".equalsIgnoreCase(promoStatus) ? promoStatus:"ALL" %></th>
@@ -112,8 +111,7 @@
 	JspTableSorter sort = new JspTableSorter(request);
 %>
 		<tbody>
-			<tr>
-				<th width="14px" align="center">&nbsp;</th>
+			<tr>				
 				<th width="193px">Name</th>
 				<th width="143px">Redemption Code</th>
 				<th width="90px">Type</th>
@@ -160,9 +158,7 @@
 			Date expire = p.getExpire();
 		%>
 		
-		<tr valign="top">
-		
-			<td >&nbsp;</td>
+		<tr valign="top">		
 			<td  style="font-weight: normal"><div style="width:180px;"><%=p.getName()%></div>
 			<% boolean isChef = p.isChef();
 			   boolean isNewCust = p.isNewCust();

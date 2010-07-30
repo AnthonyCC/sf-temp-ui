@@ -57,6 +57,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			if(actionResult.isSuccess()){
 				populatePromoChangeModel();
 				savePromotion();
+				setSuccessPage(getSuccessPage()+promotion.getPromotionCode());
 			}
 		} catch (FDResourceException e) {
 			throw new JspException(e);
@@ -81,6 +82,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException,
 			FDPromoCustNotFoundException {
 		if("promoOffer".equalsIgnoreCase(this.getActionName())){
+			setWSPromotionCode();
 			FDPromotionNewManager.storePromotionOfferInfo(promotion);
 		}else if("promoCart".equalsIgnoreCase(this.getActionName())){
 			FDPromotionNewManager.storePromotionCartInfo(promotion);
@@ -144,7 +146,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			
 //			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
 			this.promotion.setPromotionType(promotionType);
-			setWSPromotionCode();
+//			setWSPromotionCode();
 			clearSampleTypeInfo();
 			clearLineItemTypeInfo();
 		}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
@@ -175,7 +177,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			clearHeaderTypeInfo();
 			clearSampleTypeInfo();
 //			this.promotion.setOfferType("");
-			setWSPromotionCode();
+//			setWSPromotionCode();
 		}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
 			this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
 			this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
@@ -199,7 +201,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			clearHeaderTypeInfo();
 			clearLineItemTypeInfo();
 			this.promotion.setPercentOff("");
-			setWSPromotionCode();
+//			setWSPromotionCode();
 		}
 		}else if("promoCart".equalsIgnoreCase(this.getActionName())){
 			//TODO:Validations
@@ -437,7 +439,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			List invalidBrands = new ArrayList();
 			String[] eligibleBrandArr = eligibleBrand.split(",");
 			for (int i = 0; i < eligibleBrandArr.length; i++) {
-				if(null==contentFactory.getContentNode(FDContentTypes.SKU, eligibleBrandArr[i].toUpperCase())){
+				if(null==contentFactory.getContentNode(FDContentTypes.BRAND, eligibleBrandArr[i].toUpperCase())){
 					invalidBrands.add(eligibleBrandArr[i]);
 				}
 			}
@@ -455,7 +457,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		List promoChangeDetails = new ArrayList<FDPromoChangeDetailModel>();
 		FDPromoChangeModel changeModel = new FDPromoChangeModel();
 		changeModel.setActionDate(promotion.getModifiedDate());
-		//changeModel.setActionType(EnumPromoChangeType.MODIFY);
+		changeModel.setActionType(EnumPromoChangeType.MODIFY);
 		changeModel.setUserId(promotion.getModifiedBy());
 		changeModel.setPromotionId(promotion.getId());
 		changeModel.setChangeDetails(promoChangeDetails);
@@ -463,14 +465,16 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		promotion.setAuditChanges(promoChanges);
 		
 		FDPromotionNewModel oldPromotion = FDPromotionNewManager.loadPromotion(promotion.getPromotionCode());
-		if("promoCart".equalsIgnoreCase(this.getActionName())){
-			populateCartChangeModel(promoChangeDetails, changeModel,
-					oldPromotion);
-			
-		}else if("promoOffer".equalsIgnoreCase(this.getActionName())){
-			populateOfferChangeModel(promoChangeDetails, changeModel,
-					oldPromotion);
-		}		
+		if(null != oldPromotion){
+			if("promoCart".equalsIgnoreCase(this.getActionName())){
+				populateCartChangeModel(promoChangeDetails, changeModel,
+						oldPromotion);
+				
+			}else if("promoOffer".equalsIgnoreCase(this.getActionName())){
+				populateOfferChangeModel(promoChangeDetails, changeModel,
+						oldPromotion);
+			}		
+		}
 		
 	}
 
@@ -494,6 +498,14 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			changeDetailModel.setChangeSectionId(EnumPromotionSection.OFFER_INFO);
 			promoChangeDetails.add(changeDetailModel);
 		}
+		/*if(!promotion.getPromotionCode().equalsIgnoreCase(oldPromotion.getPromotionCode())){
+			FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
+			changeDetailModel.setChangeFieldName("Promotion Code");
+			changeDetailModel.setChangeFieldOldValue(NVL.apply(oldPromotion.getPromotionCode(),"").trim());
+			changeDetailModel.setChangeFieldNewValue(NVL.apply(promotion.getPromotionCode(),"").trim());
+			changeDetailModel.setChangeSectionId(EnumPromotionSection.OFFER_INFO);
+			promoChangeDetails.add(changeDetailModel);	
+		}*/
 		if(EnumPromotionType.HEADER.getName().equals(promotion.getPromotionType()) && EnumPromotionType.HEADER.getName().equals(oldPromotion.getPromotionType())){							
 			populateOfferHeaderChangeModel(promoChangeDetails, oldPromotion);
 		}else if(EnumPromotionType.LINE_ITEM.getName().equals(promotion.getPromotionType()) && EnumPromotionType.LINE_ITEM.getName().equals(oldPromotion.getPromotionType())){
@@ -631,7 +643,8 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			changeDetailModel.setChangeFieldNewValue(null !=promotion.getExtendDpDays()?""+promotion.getExtendDpDays():"");
 			changeDetailModel.setChangeSectionId(EnumPromotionSection.OFFER_INFO);
 			promoChangeDetails.add(changeDetailModel);	
-		}		
+		}
+		
 	}
 
 

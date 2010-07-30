@@ -422,7 +422,7 @@ public class FDPromotionNewModel extends ModelSupport {
 				if(EnumDCPDContentType.BRAND.equals(contentModel.getContentType())){
 					if(brandBuffer.length()<=0){
 						if(contentModel.isExcluded())
-							brandBuffer.append("Excluded Skus: ");						
+							brandBuffer.append("Excluded Brands: ");						
 					}
 					brandBuffer.append(contentModel.getContentId()+",");
 				}

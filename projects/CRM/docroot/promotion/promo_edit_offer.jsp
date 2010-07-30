@@ -10,7 +10,7 @@
 	<tmpl:put name='content' direct='true'>
 	<crm:GetCurrentAgent id='currentAgent'>
 	<%
-	String successPage ="/promotion/promo_edit.jsp?promoId="+promoId;
+	String successPage ="/promotion/promo_edit.jsp?promoId=";
 	%>
 		
 		<fd:PromotionOfferController result="result" promotion="<%= promotion %>" actionName="promoOffer" successPage="<%= successPage %>">

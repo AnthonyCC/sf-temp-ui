@@ -184,7 +184,10 @@ public class PromotionDlvReqControllerTag extends AbstractControllerTag {
 //			String fri = request.getParameter("edit_dlvreq_chkFri");
 //			String sat = request.getParameter("edit_dlvreq_chkSat");
 //			String sun = request.getParameter("edit_dlvreq_chkSun");				
-			}				
+			}else if("NONE".equalsIgnoreCase(geoRestrictionType)){
+				promotion.setZipRestrictions(null);
+				promotion.setDlvZoneStrategies(Collections.EMPTY_LIST);
+			}
 			List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();
 			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
 			if(null != custStrategies && !custStrategies.isEmpty()){

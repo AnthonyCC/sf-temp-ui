@@ -1061,3 +1061,9 @@ function deleteRestriction(url)
   pop = window.open (url,"deleteRestriction",config);
   return;
 }
+
+function filterSubmit(){
+	
+	document.forms['frmPromoList'].action = "/main/promo_home.jsp";
+	document.forms['frmPromoList'].submit();
+}

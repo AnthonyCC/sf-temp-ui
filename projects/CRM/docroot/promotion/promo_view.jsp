@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
 <%@ page import="com.freshdirect.webapp.util.*" %>
+<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 <tmpl:insert template='/template/top_nav.jsp'>
 <%
 	PromoFilterCriteria  promoFilter =  (PromoFilterCriteria)request.getSession().getAttribute("filter");
@@ -49,7 +50,7 @@
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 		<%-- Top-Row, page specific nav --%>
 		<div class="promo_page_header">
-		<form method='POST' name="frmPromoList">
+		<form method='POST' name="frmPromoList" id="frmPromoList" action="/main/promo_home.jsp">
 			<table>
 				<tr>
 					<td class="grayIta10pt">&nbsp;</td>

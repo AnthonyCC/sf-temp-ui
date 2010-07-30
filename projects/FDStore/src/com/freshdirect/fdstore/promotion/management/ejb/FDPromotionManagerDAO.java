@@ -710,7 +710,9 @@ public class FDPromotionManagerDAO {
 				conn.prepareStatement(UPDATE_PROMO_CUSTOMER_QUERY);
 			Iterator<String> iter = custIdList.iterator();
 			Calendar calendar = Calendar.getInstance();
-			calendar.setTime(promotion.getExpirationDate());
+			Calendar calendar1 = Calendar.getInstance();
+			calendar.setTime(new java.util.Date());
+			calendar1.setTime(promotion.getExpirationDate());			
 			if(null != promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() > 0){
 				calendar.add(Calendar.DATE, promotion.getRollingExpirationDays());
 			}
@@ -722,8 +724,12 @@ public class FDPromotionManagerDAO {
 					ps.setString(2, customerId);
 					ps.setNull(3, Types.INTEGER);										
 					
-					if(promotion.getExpirationDate()!= null){						
-						ps.setDate(4, new Date(calendar.getTimeInMillis()));
+					if(promotion.getExpirationDate()!= null){				
+						if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
+							ps.setDate(4, new Date(calendar.getTimeInMillis()));
+						}else{
+							ps.setDate(4, new Date(calendar1.getTimeInMillis()));
+						}
 					}else{
 						ps.setNull(4, Types.DATE);
 					}

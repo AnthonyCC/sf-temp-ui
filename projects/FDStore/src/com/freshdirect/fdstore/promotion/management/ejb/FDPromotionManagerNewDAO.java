@@ -1949,12 +1949,13 @@ public class FDPromotionManagerNewDAO {
 			conn.prepareStatement(
 				"UPDATE CUST.PROMOTION_NEW"
 				+ " SET"
-				+ " CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
+				+ " CODE=?, CAMPAIGN_CODE = ?, COMBINE_OFFER = ?, PERISHABLEONLY = ? ,FAVORITES_ONLY = ?, PERCENT_OFF = ?, WAIVE_CHARGE_TYPE = ?," 
 				+ " CATEGORY_NAME=?, PRODUCT_NAME=?, EXTEND_DP_DAYS =?,"
 				+ " MAX_AMOUNT =?, OFFER_TYPE = ?, MAX_ITEM_COUNT =?, MODIFIED_BY =?, MODIFY_DATE =?"
 				+ " WHERE ID = ?");
 		int i = 1;
 //		i = setupPreparedStatement(ps, promotion, i);
+		ps.setString(i++, promotion.getPromotionCode());
 		ps.setString(i++, promotion.getPromotionType());
 		ps.setString(i++, promotion.isCombineOffer()?"Y":"N");
 		ps.setString(i++, promotion.isPerishable()?"Y":"N");
