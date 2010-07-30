@@ -96,7 +96,11 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		this.promotion.setTerms(NVL.apply(request.getParameter("terms"), "").trim());		
 		String startDateStr = request.getParameter("edit_basic_cal_start_in");
 		String startTimeStr =request.getParameter("edit_basic_cal_startTime_in");
-		this.promotion.setStartDate(getDate(startDateStr,startTimeStr));		
+		this.promotion.setStartDate(getDate(startDateStr,startTimeStr));
+		if(null !=promotion.getStartDate()){
+			this.promotion.setStartDateStr(DateUtil.formatDate(promotion.getStartDate()));
+			this.promotion.setStartTimeStr(DateUtil.formatTime(promotion.getStartDate()));
+		}
 		String endType =NVL.apply(request.getParameter("end_type"), "").trim();
 		if("rolling".equalsIgnoreCase(endType)){
 			String rollingExpirationDays = NVL.apply(request.getParameter("rolling_expiration_days"), "").trim();
@@ -304,7 +308,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			result.addError(true, "offerDescEmpty", " Offer Description is required.");
 		}
 		if(null == promotion.getTerms() ||"".equals(promotion.getTerms())){
-			result.addError(true, "termsEmpty", " Terms is required.");
+			result.addError(true, "termsEmpty", " Terms & Conditions is required.");
 		}
 		if(null == promotion.getAudienceDesc() ||"".equals(promotion.getAudienceDesc())){
 			result.addError(true, "audiDescEmpty", " Audience Description is required.");

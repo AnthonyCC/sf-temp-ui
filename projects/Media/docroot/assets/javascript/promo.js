@@ -1046,7 +1046,7 @@ function checkOffer() {
 		if ($(elemId1).value!='' && $(elemId2).value!='') { return true; }
 		return false;
 	}
-}
+
 
 function deleteRestriction(url)
 {

@@ -55,7 +55,7 @@
 					<td class="alignL"><textarea id="audience_description" name="audience_description" rows="3" cols="30" class="w600px" ><%= promotion.getAudienceDesc() %></textarea></td>
 				</tr>
 				<tr>
-					<td class="promo_detail_label">Terms &amp; Conditions:</td>
+					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Terms &amp; Conditions:</span></td>
 					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" ><%= promotion.getTerms() %></textarea></td>
 				</tr>
 				<tr class="flatRow">

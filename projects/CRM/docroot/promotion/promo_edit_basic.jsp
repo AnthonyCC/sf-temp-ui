@@ -55,6 +55,9 @@
 					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>					
+					<fd:ErrorHandler result="<%=result%>" name="termsEmpty" id="errorMsg">
+					 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
 					<fd:ErrorHandler result="<%=result%>" name="usageError" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
@@ -68,9 +71,6 @@
 					<fd:ErrorHandler result="<%=result%>" name="endDateBefore" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
-					<fd:ErrorHandler result="<%=result%>" name="termsEmpty" id="errorMsg">
-					 <%@ include file="/includes/i_error_messages.jspf" %>   
-				</fd:ErrorHandler>
 				</div>
 				<%@ include file="/includes/promotions/i_promo_edit_basic.jspf" %>
 			</div>
