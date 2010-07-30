@@ -205,7 +205,7 @@ public class FDPromotionNewDAO {
 			
 			if(promoType.getName().equals(EnumPromotionType.LINE_ITEM.getName())){
 				//boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("RECOMMENDED_ITEMS_ONLY"));
-				boolean favoritesOnly = "X".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
+				boolean favoritesOnly = "Y".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
 				if(favoritesOnly) {
 					promo.addStrategy(new RecommendationStrategy());
 				}
@@ -490,29 +490,6 @@ public class FDPromotionNewDAO {
 		return promo;
 	}
 	
-	private static void decorateOrderTypestrategy(ResultSet rs, Promotion promo) throws SQLException {
-		Set<EnumOrderType> orderTypes = new HashSet<EnumOrderType>();
-
-		if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
-			orderTypes.add(EnumOrderType.HOME);
-		}
-
-		if ("X".equals(rs.getString("ORDERTYPE_DEPOT"))) {
-			orderTypes.add(EnumOrderType.DEPOT);
-		}
-		if ("X".equals(rs.getString("ORDERTYPE_PICKUP"))) {
-			orderTypes.add(EnumOrderType.PICKUP);
-		}
-
-		if ("X".equals(rs.getString("ORDERTYPE_CORPORATE"))) {
-			orderTypes.add(EnumOrderType.CORPORATE);
-		}
-
-		if (!orderTypes.isEmpty()) {
-			promo.addStrategy(new OrderTypeStrategy(orderTypes));
-		}
-	}
-
 	private static void decorateSampleStrategy(ResultSet rs, Promotion promo) throws SQLException {
 		
 		SampleStrategy s = new SampleStrategy();
@@ -609,7 +586,7 @@ public class FDPromotionNewDAO {
 		
 		if("LINE_ITEM".equals(rs.getString("CAMPAIGN_CODE"))){
 			LineItemDiscountApplicator applicator = new LineItemDiscountApplicator(minSubtotal, percentOff);
-			boolean recItemsOnly = "X".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
+			boolean recItemsOnly = "Y".equalsIgnoreCase(rs.getString("FAVORITES_ONLY"));
 			applicator.setFavoritesOnly(recItemsOnly);
 			if(recItemsOnly){
 				applicator.addLineItemStrategy(new RecommendedLineItemStrategy());
@@ -848,14 +825,14 @@ public class FDPromotionNewDAO {
 			if(contentType.equalsIgnoreCase("Sku")){
 				if(strategy.getSkus().isEmpty()) {
 					//First time exclude is set.
-					strategy.setExcludeSkus("X".equalsIgnoreCase(rs.getString("EXCLUDE")));
+					strategy.setExcludeSkus("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
 				}
 				strategy.addSku(contentId);
 			}
 			else if(contentType.equalsIgnoreCase("Brand")){
 				if(strategy.getBrands().isEmpty()) {
 					//First time exclude is set.
-					strategy.setExcludeBrands("X".equalsIgnoreCase(rs.getString("EXCLUDE")));
+					strategy.setExcludeBrands("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
 				}
 				strategy.addBrand(contentId);
 			} else {
@@ -886,14 +863,14 @@ public class FDPromotionNewDAO {
 			if(contentType.equalsIgnoreCase("Sku")){
 				if(strategy.getSkus().isEmpty()) {
 					//First time exclude is set.
-					strategy.setExcludeSkus("X".equalsIgnoreCase(rs.getString("EXCLUDE")));
+					strategy.setExcludeSkus("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
 				}
 				strategy.addSku(contentId);
 			}
 			else if(contentType.equalsIgnoreCase("Brand")){
 				if(strategy.getBrands().isEmpty()) {
 					//First time exclude is set.
-					strategy.setExcludeBrands("X".equalsIgnoreCase(rs.getString("EXCLUDE")));
+					strategy.setExcludeBrands("Y".equalsIgnoreCase(rs.getString("EXCLUDE")));
 				}
 				strategy.addBrand(contentId);
 			} else {
@@ -1111,10 +1088,6 @@ public class FDPromotionNewDAO {
 			if ("X".equals(rs.getString("ORDERTYPE_HOME"))) {
 				orderTypes.add(EnumOrderType.HOME);
 			}
-
-			/*if ("X".equals(rs.getString("ORDERTYPE_DEPOT"))) {
-				orderTypes.add(EnumOrderType.DEPOT);
-			}*/
 			
 			if ("X".equals(rs.getString("ORDERTYPE_PICKUP"))) {
 				orderTypes.add(EnumOrderType.PICKUP);
