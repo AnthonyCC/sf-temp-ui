@@ -39,10 +39,20 @@ if (lastDept==null || !lastDept.equalsIgnoreCase(cartLine.getDepartmentDesc())) 
 	}
 } 
 %>
+<%-- discount msg --%>
+<%
+	String discountMsg = null;
+	if(cartLine.getDiscount() != null) {
+		Discount discount = cartLine.getDiscount();
+		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+		discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000;\">"+promotion.getDescription()+"</a>";
+	}
+%>
 <tr valign="top" align="center">
 	<td><%=quantity.toString()%><%=(cart.hasSettledReturn() && cartLine.hasReturnLine())? "<span style='color:#cc0000'>/"+cartLine.getReturnedQuantity()+"</span>":""%><%=" "+cartLine.getUnitsOfMeasure()%> <%=cartLine.getLabel()%><%=cartLine.hasRestockingFee()?"**":""%></td>
 	<td align="left"><div style="margin-left:8px; text-indent:-7px;"><font class="text10bold"><%= cartLine.getDescription() %></font>
-		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
+		<% if (cartLine.getConfigurationDesc()!=null && !"".equals(cartLine.getConfigurationDesc().trim())) { %>(<%= cartLine.getConfigurationDesc() %>)<% } %>
+		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10rbold"><%= discountMsg %></span><% } %></div><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br></td>
 	<td><%if(cartLine.hasInvoiceLine() && cartLine.isPricedByLb()){%><%=invoiceLine.getWeight()%>&nbsp;lb <%}%></td>
     <% if(cartLine.getDiscount() != null) { %>
         <td><font color="#FF0000"><%=cartLine.getUnitPrice()%></font></td>

@@ -1571,8 +1571,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Get the Active delivery pass from the list.
 				DeliveryPassModel dlvPass = dlvPasses.get(0);
 				// pass has to be applied to this order.
-				extendDeliveryPass(dlvpsb, dlvPass, dpExtendDays/7 , pk.getId(),
-						"Extended DP by "+dpExtendDays,
+				extendDeliveryPassByDays(dlvpsb, dlvPass, dpExtendDays , pk.getId(),
+						"Extended DP by "+dpExtendDays+" days",
 						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_APPLIED
 								.getName());
 			}
@@ -1816,7 +1816,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Get the Active delivery pass from the list.
 				DeliveryPassModel dlvPass = dlvPasses.get(0);
 				// pass has to be applied to this order.
-				cancelPassExtensionDays(dlvpsb, dlvPass, order, currentDPExtendDays);
+				extendDeliveryPassByDays(dlvpsb, dlvPass, -currentDPExtendDays , saleId,
+						"DP Extension Promotion Reversed "+currentDPExtendDays+" days",
+						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
+								.getName());
 			}
 			
 			boolean isRestored = false;
@@ -2109,7 +2112,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Get the Active delivery pass from the list.
 				DeliveryPassModel dlvPass = dlvPasses.get(0);
 				// pass has to be applied to this order.
-				cancelPassExtensionDays(dlvpsb, dlvPass, fdOrder, dpCurrentExtendDays);
+				extendDeliveryPassByDays(dlvpsb, dlvPass, -dpCurrentExtendDays , saleId,
+						"DP Extension Promotion Reversed "+dpCurrentExtendDays+" days",
+						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_REMOVED
+								.getName());
 			}
 			
 			int dpExtendDays =  order.getDlvPassExtendDays();
@@ -2123,8 +2129,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Get the Active delivery pass from the list.
 				DeliveryPassModel dlvPass = dlvPasses.get(0);
 				// pass has to be applied to this order.
-				extendDeliveryPass(dlvpsb, dlvPass, dpExtendDays/7 , saleId,
-						"Extended DP by "+dpExtendDays,
+				extendDeliveryPassByDays(dlvpsb, dlvPass, dpExtendDays , saleId,
+						"Extended DP by "+dpExtendDays+" days",
 						EnumDlvPassExtendReason.EXTEND_DP_PROMOTION_APPLIED
 								.getName());
 			}
@@ -4328,6 +4334,43 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			return;
 		}
 		dlvpsb.extendExpirationPeriod(dlvPass, numOfWeeks * 7);
+
+		// Create a activity log to track the delivery credits.
+		ErpActivityRecord activityRecord = createActivity(action, note,
+				dlvPass, saleID, reason);
+		logActivity(activityRecord);
+
+	}
+	
+	private void extendDeliveryPassByDays(DlvPassManagerSB dlvpsb,
+			DeliveryPassModel dlvPass, int noOfDays, String saleID,
+			String note, String reason) throws RemoteException {
+
+		EnumAccountActivityType action = null;
+		if (noOfDays < 0) {
+			action = EnumAccountActivityType.REDUCE_DLV_PASS;
+			/**
+			 * Under this scenario, you shouldn't reduce the expiration period.
+			 * 1) The purchased pass might have been pending during the order
+			 * being made(with delivery promo) and "active" when you cancel the
+			 * order. Since you've not given an extension for the pass, dont
+			 * reduce. 2) The pass purchased is pending, Delivery promo applied
+			 * on subsequent order before the pass being activated. If that
+			 * order(using delivery promo) is cancelled after the DP is active,
+			 * dont curtail his expiration date.
+			 * 
+			 */
+			if ((dlvPass.getOrgExpirationDate() != null)
+					&& (dlvPass.getOrgExpirationDate().compareTo(
+							dlvPass.getExpirationDate()) == 0)) {
+				return;
+			}
+		} else if (noOfDays > 0) {
+			action = EnumAccountActivityType.EXTEND_DLV_PASS;
+		} else {
+			return;
+		}
+		dlvpsb.extendExpirationPeriod(dlvPass, noOfDays);
 
 		// Create a activity log to track the delivery credits.
 		ErpActivityRecord activityRecord = createActivity(action, note,

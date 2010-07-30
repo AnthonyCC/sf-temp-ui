@@ -136,6 +136,9 @@ public class FDPromotionNewDAO {
 		while (rs.next()) {
 			PrimaryKey pk = new PrimaryKey(rs.getString("ID"));
 			String promoCode = rs.getString("CODE");
+            if(promoCode.equals("CD_1280264357632")){
+         	   System.out.println();
+            }			
 			String name = rs.getString("NAME");
 			String description = rs.getString("DESCRIPTION");
 			EnumPromotionType promoType = EnumPromotionType.getEnum(rs.getString("CAMPAIGN_CODE"));

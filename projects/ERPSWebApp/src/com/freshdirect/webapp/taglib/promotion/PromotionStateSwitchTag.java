@@ -177,9 +177,17 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 					if("".equals(NVL.apply(promotion.getCategoryName(),"").trim())){
 						result.addError(true, "catNameEmpty", "Promotion category id is required for SAMPLE offer.");
 					}
-				}else if(EnumPromotionType.HEADER.getName().equals(promotion.getPromotionType()) && EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
-					if(!"ZONE".equalsIgnoreCase(promotion.getGeoRestrictionType())){
-						result.addError(true, "wsZoneRequired", "For a Window Steering promotion, ZONE type georestriction should be configured.");
+				}else if(EnumPromotionType.HEADER.getName().equals(promotion.getPromotionType()) ){
+					if("".equals(NVL.apply(promotion.getPercentOff(),"").trim()) && "".equals(NVL.apply(promotion.getMaxAmount(),"").trim())){
+						result.addError(true, "maxAmountEmpty", "Discount value is required");
+					}
+					if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
+						if(!"ZONE".equalsIgnoreCase(promotion.getGeoRestrictionType())){					
+							result.addError(true, "wsZoneRequired", "For a Window Steering promotion, ZONE type georestriction should be configured.");
+						}
+						if(!promotion.isCombineOffer()){
+							result.addError(true, "combineOfferRequired", "For a Window Steering promotion, 'combine offer' should be selected.");
+						}
 					}
 				}
 				List<FDPromoCustStrategyModel> custStrategies = promotion.getCustStrategies();

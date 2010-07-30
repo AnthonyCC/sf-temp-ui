@@ -37,11 +37,11 @@ public class PercentOffApplicator implements PromotionApplicatorI {
 		if(e == PromotionStrategyI.DENY) return false;
 			
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
-		if (preDeduction < this.getMinSubtotal()) {
+		double subTotal = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		if (subTotal < this.getMinSubtotal()) {
 			return false;
 		}
-		double amount = preDeduction * this.percentOff;
+		double amount = context.getShoppingCart().getPreDeductionTotal() * this.percentOff;
 		return context.applyHeaderDiscount(promo, amount);
 	}
 	

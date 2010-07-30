@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.FDPromotionZoneRulesEngine;
+import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.NVL;
 
@@ -90,7 +91,7 @@ public class AddressFinder {
 				e.printStackTrace();
 			}    
 			if(zInfo!=null){
-				zonePromoAmount = FDPromotionZoneRulesEngine.getDiscount(user,zInfo.getZoneCode());
+				zonePromoAmount = PromotionHelper.getDiscount(user,zInfo.getZoneCode());
 			}
 		}
 		return zonePromoAmount;

@@ -30,8 +30,9 @@ public class PromotionHelper {
 	 * @param user
 	 * @return
 	 */
-	public static Set<String> getEligiblePromoCodes(FDUserI user, String zoneId) {
-		Set<String> zonePromoCodes = new HashSet<String>();
+	public static double getDiscount(FDUserI user, String zoneId) {
+		//Set<String> zonePromoCodes = new HashSet<String>();
+		double discountAmount = 0.0;
 		Set<String> eligiblePromoCodes = user.getPromotionEligibility().getEligiblePromotionCodes();
 		for(Iterator<String> it=eligiblePromoCodes.iterator(); it.hasNext();){
 			String promoId = it.next();
@@ -39,11 +40,15 @@ public class PromotionHelper {
 			if(p !=  null && p.getOfferType() != null && p.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
 				PromotionApplicatorI app = p.getApplicator();
 				DlvZoneStrategy zoneStrategy = app != null ? app.getDlvZoneStrategy() : null;
-				if(zoneStrategy != null && zoneStrategy.isZonePresent(zoneId))
-					zonePromoCodes.add(promoId);
+				if(zoneStrategy != null && zoneStrategy.isZonePresent(zoneId)) {
+					double promoAmount = p.getHeaderDiscountTotal();
+					if(promoAmount > discountAmount)
+						//Get the max amount when multiple discounts are there for that zone.
+						discountAmount = promoAmount;
+				}
 			}
 		}
-		return zonePromoCodes;
+		return discountAmount;
 	}
 	
 	 public static double getDiscount(FDUserI user, FDTimeslot timeSlot) {

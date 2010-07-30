@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.ZonePromoDiscount;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -40,7 +42,7 @@ public class FDPromotionVisitor {
 		resolveConflicts(eligibilities);
 		resolveLineItemConflicts(context, eligibilities);
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
-		applyPromotions(context, eligibilities);
+		Set<String> combinableOffers = applyPromotions(context, eligibilities);
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
 		LOGGER.info("Promotion eligibility:context.isPostPromoConflictEnabled() " + context.isPostPromoConflictEnabled());
 		if(context.isPostPromoConflictEnabled()){
@@ -55,14 +57,21 @@ public class FDPromotionVisitor {
 		//Now Apply redemption promo if any.
 		
         //Get the redemption promotion if user redeemed one.
+		double redemptionValue = 0.0;
+		String redeemCode = "";
         PromotionI redeemedPromotion = context.getRedeemedPromotion();
         if(redeemedPromotion != null){
-        	if(eligibilities.isEligible(redeemedPromotion.getPromotionCode())) {
+        	redeemCode = redeemedPromotion.getPromotionCode();
+        	if(eligibilities.isEligible(redeemCode)) {
         		boolean e = redeemedPromotion.apply(context);
-        		if(e)
+        		if(e){
         			eligibilities.setApplied(redeemedPromotion.getPromotionCode());
+        			if(redeemedPromotion.isDollarValueDiscount())
+        				redemptionValue = context.getShoppingCart().getDiscountValue(redeemCode);
+        		}
         	}
         }
+        
         //Finally add applied line item discounts to the applied list.
         Set<String> appliedSet =  context.getLineItemDiscountCodes();
         for (Iterator<String> i = appliedSet.iterator(); i.hasNext();) {
@@ -70,6 +79,11 @@ public class FDPromotionVisitor {
         	if(eligibilities.isEligible(code)) 
         		eligibilities.setApplied(code);
         }
+        
+        
+        //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
+        reconcileDiscounts(context, eligibilities, combinableOffers, redemptionValue);
+       
 		LOGGER.info("Promotion eligibility: after redemption apply " + eligibilities);
 		//applyZonePromotion(context, eligibilities);
 		LOGGER.info("Apply Promotions - END TIME ");
@@ -78,6 +92,31 @@ public class FDPromotionVisitor {
 		//LOGGER.info("Promotion eligibility: after applyZonePromotion() " + eligibilities);
 		
 		return eligibilities;
+	}
+
+
+
+
+	private static void reconcileDiscounts(PromotionContextI context,
+			FDPromotionEligibility eligibilities, Set<String> combinableOffers,
+			double redemptionValue) {
+		double remainingBalance = context.getShoppingCart().getPreDeductionTotal() - redemptionValue;
+        for (Iterator<String> i = combinableOffers.iterator(); i.hasNext();) {
+        	String promoCode = i.next();
+        	if(remainingBalance <= 0) {
+        		context.getShoppingCart().removeDiscount(promoCode);
+        	} else {
+	        	double oldDiscountAmt = context.getShoppingCart().getDiscountValue(promoCode);
+	        	double newDiscountAmt = Math.min(remainingBalance, oldDiscountAmt);
+	        	if(oldDiscountAmt != newDiscountAmt) {
+		        	context.getShoppingCart().removeDiscount(promoCode);
+		        	context.getShoppingCart().addDiscount(new Discount(promoCode, EnumDiscountType.DOLLAR_OFF, newDiscountAmt));
+	        	}
+	        	//Discount can be applied now.
+	        	eligibilities.setApplied(promoCode);
+	        	remainingBalance -= newDiscountAmt;
+        	}
+        }
 	}
 
 	
@@ -118,9 +157,6 @@ public class FDPromotionVisitor {
          for (Iterator i = promotions.iterator(); i.hasNext();) {
                PromotionI autopromotion  = (PromotionI) i.next(); 
                String promoCode = autopromotion.getPromotionCode();
-               if(promoCode.equals("CD_1279997384920")){
-            	   System.out.println();
-               }
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
@@ -239,7 +275,7 @@ public class FDPromotionVisitor {
 		return true;
 	}			
 
-	private static void applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
+	private static Set applyPromotions(PromotionContextI context, FDPromotionEligibility eligibilities) {
         String headerPromoCode = "";
       //Step 1: Process all sample, delivery promo, extend DP promo, automatic non-combinable header and line item offers.
         for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
@@ -263,7 +299,8 @@ public class FDPromotionVisitor {
         }
         boolean isCombinableOfferApplied = false;
         //Step 2: Process all automatic combinable header and line item offers.
-        for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
+        Set<String> combinableOffers = new HashSet<String>();
+        for (Iterator<String> i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
             String promoCode = (String) i.next();
             PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
             if(promo.isDollarValueDiscount() && !promo.isRedemption() && promo.isCombineOffer()) {
@@ -272,11 +309,13 @@ public class FDPromotionVisitor {
                   if (applied ) {
                 	  if(promo.isHeaderDiscount()){
                 		  isCombinableOfferApplied = true;  
+                		  combinableOffers.add(promoCode);
                 	  } 
+                	  /*
                 	  if(!promo.isLineItemDiscount()){
 	                      //Add applied  promos to the applied list. 
 	                      eligibilities.setApplied(promoCode);
-                  	  }
+                  	  }*/
                   }
             }
       }
@@ -290,6 +329,7 @@ public class FDPromotionVisitor {
         		context.getShoppingCart().removeDiscount(code);
         	}
         }
+        return combinableOffers;
 
   }
 

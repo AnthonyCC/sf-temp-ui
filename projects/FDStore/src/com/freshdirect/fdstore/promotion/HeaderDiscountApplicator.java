@@ -22,12 +22,12 @@ public class HeaderDiscountApplicator implements PromotionApplicatorI {
 		if(e == PromotionStrategyI.DENY) return false;
 		
 		PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-		double preDeduction = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
-		if (preDeduction < this.discountRule.getMinSubtotal()) {
+		double subTotal = context.getSubTotal(promo.getExcludeSkusFromSubTotal());
+		if (subTotal < this.discountRule.getMinSubtotal()) {
 			return false;
 		}
        
-		double amount = Math.min(preDeduction, this.discountRule.getMaxAmount());
+		double amount = Math.min(context.getShoppingCart().getPreDeductionTotal(), this.discountRule.getMaxAmount());
 		if(promo.getOfferType() != null && promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
 			return context.applyZoneDiscount(promo, amount);
 		}

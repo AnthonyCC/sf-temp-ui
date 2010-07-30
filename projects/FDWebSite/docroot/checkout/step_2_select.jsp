@@ -197,12 +197,12 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		hasCapacity = hasCapacity || lst.hasCapacity();
 	}
 	request.setAttribute("listPos", "SystemMessage,CategoryNote");
-	//get zone promotion codes
-    double zonePromoAmount=0.0;
+	//get zone promotion amount
+    double zonePromoAmount=PromotionHelper.getDiscount(user,zoneId);
     String zonePromoString=null;
-	Set promoCodes=PromotionHelper.getEligiblePromoCodes(user,zoneId);
-	if(promoCodes != null && promoCodes.size() > 0)
+	if(zonePromoAmount > 0)
 	{
+        zonePromoString = CCFormatter.formatCurrency(zonePromoAmount);
 		request.setAttribute("SHOW_WINDOWS_STEERING","true");
 	}
 %>
@@ -382,7 +382,7 @@ if (errorMsg!=null) {%>
 	</td>
 	<td align="right">
 	<%if(zonePromoAmount>0){ %>
-	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
+	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save <%= zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
 	<%}%>
 	</td></tr>
 	</table>

@@ -82,6 +82,12 @@
 				<fd:ErrorHandler result="<%=result%>" name="minSubTotalEmpty" id="errorMsg">
 					 <%@ include file="/includes/i_error_messages.jspf" %>   
 				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="maxAmountEmpty" id="errorMsg">
+					 <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
+				<fd:ErrorHandler result="<%=result%>" name="combineOfferRequired" id="errorMsg">
+					 <%@ include file="/includes/i_error_messages.jspf" %>   
+				</fd:ErrorHandler>
 			</div>
 			<div class="promo_page_header noBorder">
 				<table width="100%" border="0">

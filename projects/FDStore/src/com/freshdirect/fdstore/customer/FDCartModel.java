@@ -1043,7 +1043,8 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 			for (Iterator<ErpDiscountLineModel> iter = this.discounts.iterator(); iter.hasNext();) {
 				ErpDiscountLineModel discountLine = iter.next();
 				if(promoCode.equals(discountLine.getDiscount().getPromotionCode())) {
-					discountValue += MathUtil.roundDecimal(discountLine.getDiscount().getAmount());
+					discountValue = MathUtil.roundDecimal(discountLine.getDiscount().getAmount());
+					break;
 				}
 			}
 		}

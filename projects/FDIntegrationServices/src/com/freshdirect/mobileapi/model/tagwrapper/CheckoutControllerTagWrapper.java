@@ -71,8 +71,8 @@ public class CheckoutControllerTagWrapper extends ControllerTagWrapper implement
                 SESSION_PARAM_SMART_STORE_PREV_RECOMMENDATIONS, SESSION_PARAM_AUTHORIZED_PEOPLE, SESSION_PARAM_PICKUP_AGREEMENT,
                 SESSION_PARAM_RECENT_ORDER_NUMBER, SESSION_PARAM_DLV_PASS_SESSION_ID, SESSION_PARAM_REFERENCED_ORDER,
                 SESSION_PARAM_MAKE_GOOD_ORDER }); //gets,sets
-        addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
-                REQ_PARAM_BILLING_REF, REQ_PARAM_IGNORE_PROMO_ERRORS });//gets,sets
+        addExpectedRequestValues(new String[] { SESSION_PARAM_RECENT_ORDER_NUMBER, REQ_PARAM_IGNORE_PROMO_ERRORS }, new String[] { REQ_PARAM_PAYMENT_METHOD_ID,
+                REQ_PARAM_BILLING_REF });//gets,sets
         getWrapTarget().setActionName(ACTION_SUBMIT_ORDER);
         setMethodMode(true);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);

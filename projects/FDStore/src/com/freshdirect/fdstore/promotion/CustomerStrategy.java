@@ -63,8 +63,12 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 
 	public boolean evaluateOrderType(EnumOrderType orderType){
-		if(allowedOrderTypes != null && allowedOrderTypes.size() > 0 && !allowedOrderTypes.contains(orderType)) return false;
-		return true;
+		if(allowedOrderTypes != null && allowedOrderTypes.size() > 0){
+			for(Iterator<EnumOrderType> it = allowedOrderTypes.iterator();it.hasNext();){
+				if(it.next().getName().equals(orderType.getName())) return true;
+			}
+		}
+		return false;
 	}
 	
 	public int getPrecedence() {
