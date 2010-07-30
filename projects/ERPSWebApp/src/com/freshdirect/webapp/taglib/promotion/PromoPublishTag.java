@@ -81,6 +81,11 @@ public class PromoPublishTag extends AbstractControllerTag {
 
 			final boolean result = publisher.doPublish();
 
+			
+			// Refresh promo cache
+			FDPromotionNewModelFactory.getInstance().forceRefresh();
+
+
 			// Post mortem actions
 			if (!result) {
 				actionResult.addError(true, "promo.publish", "An error occured during publish");
