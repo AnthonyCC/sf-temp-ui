@@ -54,7 +54,7 @@
 		<% } %>
 		<!-- <tr valign="top" class="list_content" <%--= counter % 2 == 0 ? "class='list_odd_row'" : "" --%> style="padding-top: 3px; padding-bottom: 3px;"> -->
 			<td class="border_bottom">&nbsp;</td>
-			<td class="border_bottom" style="font-weight: normal"><div style="width:180px;"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>"><%=p.getName()%></a></div>			
+			<td class="border_bottom" style="font-weight: normal"><div style="width:180px;"><a href="/promotion/promo_details.jsp?promoId=<%= p.getCode() %>" title="<%= p.getCode() %>"><%=p.getName()%></a></div>			
                 <% if(p.isChef()){ %>
                 <div class="promo_ico_cont fleft"><img width="16" height="16" src="/media_stat/crm/images/purple_star.gif" /></div>
                 <% } %>
