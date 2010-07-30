@@ -75,6 +75,7 @@
         	addSysMessage("Scenario to Day already exists", true);
           }else {
           	addSysMessage("Scenario to Day Mapping added successfully", false);
+          	editPanel.hide();
           }                           
       }
       

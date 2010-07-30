@@ -493,24 +493,28 @@ public class DispatchProviderController extends JsonRpcController implements
 		return result;
 	}
 	
-	public int deleteServiceTimeScenario(String sCode) {
+	public boolean deleteServiceTimeScenario(String sCode) {
 		
 		DlvServiceTimeScenario scenario=null;
 		String[] scenarioCodes = StringUtil.decodeStrings(sCode);
 		List processedList = new ArrayList();
+		List scenarioLst = new ArrayList();
 		if(scenarioCodes != null && scenarioCodes.length > 0) {
 			for(String _sCode : scenarioCodes) {
 				scenario = getLocationManagerService().getServiceTimeScenario(_sCode);
 				if(scenario.getScenarioDays()!=null && scenario.getScenarioDays().size()==0
 						&& scenario.getScenarioZones().size()==0
 							&& !processedList.contains(_sCode)){
-					getLocationManagerService().deleteServiceTimeScenario(scenario);
 					processedList.add(_sCode);
-					return 1;
+					scenarioLst.add(scenario);
 				}
 			}
 		}
-		return 0;
+		if(scenarioLst.size()>0){
+			getLocationManagerService().removeEntity(scenarioLst);
+			return true;
+		}
+		return false;
 	}
 	
 	public Collection getScenarioZones(String scenarioId){

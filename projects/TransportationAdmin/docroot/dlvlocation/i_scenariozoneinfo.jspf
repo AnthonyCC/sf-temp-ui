@@ -81,7 +81,22 @@
                 alert("Please choose only one from ServiceTime group!!");   
 
             }
-                 
+            if(depotDataTable.getRecordSet() != null 
+     	  			&& depotDataTable.getRecordSet().getRecords()) {
+            		var _data = new Array();
+  	  				var records = depotDataTable.getRecordSet().getRecords();
+      	  			for(i=0; i<records.length; i++) {
+      	  				_data[i] = new Array();
+      	  				_data[i][0] = records[i].getData('scenarioZonesId');      	  				
+      	  			}
+
+      	  			for(k=0; k<_data.length;k++){
+						if(_zone ==_data[k][0]){
+							alert('Zone selected is already associated to Scenario.');
+							hasError=true;
+						}
+          	  		}
+      	  	}   
         	if(_stimeAdj.trim().length==0)
         	{  	_stimeOpt=''; 	}
         	   		
@@ -115,9 +130,14 @@
              return;
          }
          if(result){
-        	 alert('Scenario to Zone Mapping added successfully');	
-         }                                 
-     }
+        	 alert('Scenario to Zone Mapping added successfully');
+        	 editDepotPanel.hide();	
+         }else{
+        	 alert('Scenario to Zone Mapping failed.');
+        	 editDepotPanel.show();
+         }
+                                              
+     }   
  </script>
        
    <div style='display:none;height:0px;width:0px;'> 

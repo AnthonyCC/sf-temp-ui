@@ -453,7 +453,7 @@ public class LocationController extends AbstractMultiActionController  {
 			Collection scenariosWithNoDays= new ArrayList();
 			List finalScenarioList=new ArrayList();
 			Set<DlvScenarioDay> scenarioLst=new HashSet<DlvScenarioDay>();
-			if(("".equals(startDate)||startDate==null)&&(endDate==null||"".equals(endDate))){
+			if(("".equals(startDate)||startDate==null)||(endDate==null||"".equals(endDate))){
 				scenarios  = locationManagerService.getDlvServiceTimeScenarioDays();
 			    scenariosWithNoDays = locationManagerService.getScenariosWithNoDay();		
 					
@@ -529,7 +529,7 @@ public class LocationController extends AbstractMultiActionController  {
 			
 		}catch (Exception e) {
 			e.printStackTrace();
-			saveMessage(request, getMessage("app.actionmessage.154", null));
+			saveMessage(request, getMessage("app.actionmessage.155", null));
 			return new ModelAndView("dlvServiceTimeScenarioView");	
 		}		
 	}
@@ -594,7 +594,7 @@ public class LocationController extends AbstractMultiActionController  {
 			removeEntityList(scenarioSet);
 			saveMessage(request, getMessage("app.actionmessage.103", null));
 		}else{
-			saveMessage(request, getMessage("app.actionmessage.154", null));
+			saveMessage(request, getMessage("app.actionmessage.156", null));
 		}
 		return dlvServiceTimeScenarioHandler(request, response);
 	}

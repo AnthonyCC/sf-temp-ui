@@ -7,7 +7,7 @@
          <id name="scenariodayId" type="string">
             <column name="ID" length="16" />
             <generator class="sequence">
-    			<param name="sequence">DELIVERY_SCENARIO_SEQ</param>
+    			<param name="sequence">DEL_SCENDAYS_SEQ</param>
 			</generator>
         </id>
         

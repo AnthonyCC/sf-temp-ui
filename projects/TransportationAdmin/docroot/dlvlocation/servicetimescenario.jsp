@@ -74,13 +74,15 @@
 	    				</script>
                     </span>
                     &nbsp;&nbsp;				
-					<span><input id="view_button" height="18"  type="button" value="View"   onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+					<span><input id="view_button" height="18"  type="button" value="View"   onclick="javascript:doCompositeLink('fromdaterange','todaterange','dlvservicetimescenariodisplay.do');" /></span>
 					<span><input id="clear_button" height="18"  type="button" value="Clear" onclick="document.getElementById('fromdaterange').value='';document.getElementById('todaterange').value='';" /></span>
-					<span><input id="delete_button" height="18" type="button" value="Delete" onclick="javascript:deleteScenarioHandlers();" /></span>
+					<span><input id="delete_button" height="18" type="button" value="Delete Scenario" onclick="javascript:deleteScenarioHandlers();" /></span>
 					&nbsp;&nbsp;&nbsp;
-					<span><div style="width:80px;float:right;" class="orphanScenario">Orphan</div></span>
 					&nbsp;&nbsp;&nbsp;
-					<span><div style="width:80px;float:right;" class="defaultScenario">Default</div></span>
+					<div style="width:80px;float:right;">
+						<div style="width:80px;" class="orphanScenario">Orphan</div>
+						<div style="width:80px;" class="defaultScenario">Default</div>
+					</div>
 				</div>				
 			</div>
 			<div>
@@ -150,8 +152,7 @@
 	  		  	var confirmed=confirm('Are you sure you want to  delete Scenario.');
          	 	if(confirmed) {
          	 		var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");             	 	
-             	 	var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,paramValues);
-             	 	location.href = location.href;
+             	 	var result = jsonrpcClient.AsyncDispatchProvider.deleteServiceTimeScenario(deleteScenarioFormCallback,paramValues);             	 	
          	 	}
       	    }  
      }
@@ -161,7 +162,10 @@
                 alert('Unable to connect to host system. Please contact system administrator!');               
                 return;
           }
-          if(result == 0) {
+          if(result) {
+            	alert('Service Time Scenarios deleted sucessfully.');
+            	location.href = location.href;
+          } else{
               	alert('Please delete Zones or ScenarioDays associated with Scenario before deleting the scenario.');
           }                           
  	}  

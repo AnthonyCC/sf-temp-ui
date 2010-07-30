@@ -127,6 +127,8 @@
 .defaultScenario {
   	background-color: #deb887;
   	font-weight: bold;
+  	padding:2px;
+  	text-align:center;
 }
 
 .eXtremeTable .confirmedRow {
@@ -136,6 +138,8 @@
 .orphanScenario {
   	background-color: #c7eb9e;
   	font-weight: bold;
+  	padding:2px;
+  	text-align:center;
 }
 
 .eXtremeTable .earlyWarningRow {
