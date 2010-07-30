@@ -98,7 +98,7 @@
 	//get zone promotion codes
 	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
     
-    /get zone promotion amount
+    //get zone promotion amount
     String zoneId = cart.getDeliveryZone();
     double zonePromoAmount=PromotionHelper.getDiscount(user,zoneId);
     String zonePromoString=null;
