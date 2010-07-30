@@ -90,7 +90,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 			}
 			if (sqle.getMessage().toLowerCase().indexOf("unique") > -1) {
 				throw new FDDuplicatePromoFieldException(
-						"Name or promotion code or redemption code already exists.");
+						"Promotion code or redemption code already exists.");
 			/* } else if (sqle.getMessage().toLowerCase().indexOf("not found") > -1) {
 				throw new FDPromoTypeNotFoundException(
 						"Promotion type not found");
