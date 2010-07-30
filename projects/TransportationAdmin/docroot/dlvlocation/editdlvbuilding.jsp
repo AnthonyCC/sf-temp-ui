@@ -116,33 +116,33 @@
                <tr>
                   <td>Service Time Type</td>
                   <td> 
-                  <form:select path="buildingDetail.dlvServiceTimeType" disabled="true">
+                  <form:select path="dlvServiceTimeType" disabled="true">
                         <form:option value="null" label="--Please Select Service Time"/>
                     <form:options items="${servicetimetypes}" itemLabel="name" itemValue="code" />
                    </form:select>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="buildingDetail.dlvServiceTimeType" />
+                  &nbsp;<form:errors path="dlvServiceTimeType" />
                 </td>
                </tr>
                <tr>
                   <td>Service Time Override</td>
                   <td>                  
-                    <form:input maxlength="50" size="30" path="buildingDetail.serviceTimeOverride" disabled="true"/>
+                    <form:input maxlength="50" size="30" path="serviceTimeOverride" disabled="true"/>
                 </td>
                 <td>
-                  &nbsp;<form:errors path="buildingDetail.serviceTimeOverride" />
+                  &nbsp;<form:errors path="serviceTimeOverride" />
                 </td>
                </tr>
                
                <tr>
                   <td>Service Time Adjustment</td>
                   <td>                  
-                    <form:input maxlength="1" size="1" path="buildingDetail.serviceTimeOperator" disabled="true"/>
-                    <form:input maxlength="50" size="24" path="buildingDetail.serviceTimeAdjustable" disabled="true"/>
+                    <form:input maxlength="1" size="1" path="serviceTimeOperator" disabled="true"/>
+                    <form:input maxlength="50" size="24" path="serviceTimeAdjustable" disabled="true"/>
                   </td>
                   <td>
-                  &nbsp;<form:errors path="buildingDetail.serviceTimeAdjustable" />&nbsp;<form:errors path="buildingDetail.serviceTimeOperator" />
+                  &nbsp;<form:errors path="serviceTimeAdjustable" />&nbsp;<form:errors path="serviceTimeOperator" />
                	  </td>
                </tr>
                

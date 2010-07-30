@@ -384,10 +384,12 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		result.setOther(buildingDetail.getOther());
 		result.setDifficultReason(buildingDetail.getDifficultReason());
 		result.setDifficultToDeliver(buildingDetail.getDifficultToDeliver());
-		result.setServiceTimeType(buildingDetail.getServiceTimeType());
-		result.setServiceTimeOverride(buildingDetail.getServiceTimeOverride());
-		result.setServiceTimeOperator(buildingDetail.getServiceTimeOperator());
-		result.setServiceTimeAdjustable(buildingDetail.getServiceTimeAdjustable());	
+		
+		result.setServiceTimeType(buildingDetail.getBuilding().getServiceTimeType());
+		result.setServiceTimeOverride(buildingDetail.getBuilding().getServiceTimeOverride());
+		result.setServiceTimeOperator(buildingDetail.getBuilding().getServiceTimeOperator());
+		result.setServiceTimeAdjustable(buildingDetail.getBuilding().getServiceTimeAdjustable());	
+		
 		result.setAdditional(buildingDetail.getAdditional());
 		result.setIsNew(buildingDetail.getIsNew());
 		result.setCrossStreet(buildingDetail.getCrossStreet());
@@ -513,10 +515,10 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		buildingDetail.setOther(buildingDtl.getOther());
 		buildingDetail.setDifficultReason(buildingDtl.getDifficultReason());
 		buildingDetail.setDifficultToDeliver(buildingDtl.getDifficultToDeliver());
-		buildingDetail.setServiceTimeType(buildingDtl.getServiceTimeType());
-		buildingDetail.setServiceTimeOverride(buildingDtl.getServiceTimeOverride());
-		buildingDetail.setServiceTimeOperator(buildingDtl.getServiceTimeOperator());
-		buildingDetail.setServiceTimeAdjustable(buildingDtl.getServiceTimeAdjustable());		
+		buildingDetail.getBuilding().setServiceTimeType(buildingDtl.getServiceTimeType());
+		buildingDetail.getBuilding().setServiceTimeOverride(buildingDtl.getServiceTimeOverride());
+		buildingDetail.getBuilding().setServiceTimeOperator(buildingDtl.getServiceTimeOperator());
+		buildingDetail.getBuilding().setServiceTimeAdjustable(buildingDtl.getServiceTimeAdjustable());		
 		buildingDetail.setAdditional(buildingDtl.getAdditional());
 		buildingDetail.setIsNew(buildingDtl.getIsNew());
 		buildingDetail.setCrossStreet(buildingDtl.getCrossStreet());
@@ -745,10 +747,19 @@ private DlvBuildingDetail encode(DlvBuildingDtl buildingDtl) {
 		}
 		DlvBuilding building = getLocationManagerService().getDlvBuilding(modelIn.getBuilding().getBuildingId());
 		modelIn.setBuilding(building);
+		
+		
 		try {
 			DlvBuildingDetail buildingDetail=encode(modelIn);
+			DlvBuilding modifiedBuilding = buildingDetail.getBuilding();
+			building.setServiceTimeAdjustable(modifiedBuilding.getServiceTimeAdjustable());
+			building.setServiceTimeOperator(modifiedBuilding.getServiceTimeOperator());
+			building.setServiceTimeOverride(modifiedBuilding.getServiceTimeOverride());
+			building.setServiceTimeType(modifiedBuilding.getServiceTimeType());
+			
 			//getLocationManagerService().saveEntity(domainObject);
 			getLocationManagerService().saveEntity(buildingDetail);
+			getLocationManagerService().saveEntity(buildingDetail.getBuilding());
 			
 			modelIn.setIsNew("false");
 		} catch(Exception e) {

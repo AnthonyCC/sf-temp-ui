@@ -35,14 +35,7 @@ public class DlvBuildingDetail implements java.io.Serializable, TrnBaseEntityI  
 	
 	private String difficultReason;
 	private String difficultToDeliver;
-
-	private DlvServiceTimeType serviceTimeType;
-	private BigDecimal serviceTimeOverride;
-	private BigDecimal serviceTimeAdjustable;
-	private String serviceTimeOperator;
 	private String additional;
-	
-
 	private String isNew;
 	
 	private String crossStreet;
@@ -106,7 +99,7 @@ public class DlvBuildingDetail implements java.io.Serializable, TrnBaseEntityI  
 	}
 	public void setBuilding(DlvBuilding building) {
 		this.building = building;
-		this.setDlvBuildingDtlId(building.getBuildingId());
+		this.setDlvBuildingDtlId(building.getBuildingId());		
 	}
 	public String getAddrType() {
 		return addrType;
@@ -273,57 +266,8 @@ public class DlvBuildingDetail implements java.io.Serializable, TrnBaseEntityI  
 		return this.operationHours.add(opHours);
 	}
 	
-	public DlvServiceTimeType getServiceTimeType() {
-		return serviceTimeType;
-	}
-
-	public void setServiceTimeType(DlvServiceTimeType serviceTimeType) {
-		this.serviceTimeType = serviceTimeType;
-	}
-
-	public BigDecimal getServiceTimeAdjustable() {
-		return serviceTimeAdjustable;
-	}
-
-	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
-		if(serviceTimeAdjustable==null)
-			this.serviceTimeOperator=null;
-		this.serviceTimeAdjustable = serviceTimeAdjustable;
-		
-	}
-
-	public String getServiceTimeOperator() {
-		return serviceTimeOperator;
-	}
-
-	public void setServiceTimeOperator(String serviceTimeOperator) {
-		this.serviceTimeOperator = serviceTimeOperator;
-	}
-
-	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
-		this.serviceTimeOverride = serviceTimeOverride;
-	}
 	
-	public BigDecimal getServiceTimeOverride() {
-		return serviceTimeOverride;
-	}
 	
-	public String getDlvServiceTimeType() {
-		if(getServiceTimeType() == null) {
-			return null;
-		}
-		return getServiceTimeType().getCode();
-	}
-
-	public void setDlvServiceTimeType(String serviceTimeType) {
-		if("null".equals(serviceTimeType)) {
-			setServiceTimeType(null);
-		} else {
-			DlvServiceTimeType trnServiceTimeType = new DlvServiceTimeType();
-			trnServiceTimeType.setCode(serviceTimeType);
-			setServiceTimeType(trnServiceTimeType);
-		}
-	}
 	
 
 

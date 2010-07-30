@@ -18,6 +18,11 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	private String geocodeConfidence;
 	private String geocodeQuality;
 	
+	private DlvServiceTimeType serviceTimeType;
+	private BigDecimal serviceTimeOverride;
+	private BigDecimal serviceTimeAdjustable;
+	private String serviceTimeOperator;
+	
 	private DlvBuildingDetail buildingDetail;
 	Set buildingDetails= new HashSet(0);
 	
@@ -135,6 +140,58 @@ public class DlvBuilding implements java.io.Serializable, TrnBaseEntityI  {
 	}
 	public void setState(String state) {
 		this.state = state;
+	}
+	
+	public DlvServiceTimeType getServiceTimeType() {
+		return serviceTimeType;
+	}
+
+	public void setServiceTimeType(DlvServiceTimeType serviceTimeType) {
+		this.serviceTimeType = serviceTimeType;
+	}
+
+	public BigDecimal getServiceTimeAdjustable() {
+		return serviceTimeAdjustable;
+	}
+
+	public void setServiceTimeAdjustable(BigDecimal serviceTimeAdjustable) {
+		if(serviceTimeAdjustable==null)
+			this.serviceTimeOperator=null;
+		this.serviceTimeAdjustable = serviceTimeAdjustable;
+		
+	}
+
+	public String getServiceTimeOperator() {
+		return serviceTimeOperator;
+	}
+
+	public void setServiceTimeOperator(String serviceTimeOperator) {
+		this.serviceTimeOperator = serviceTimeOperator;
+	}
+
+	public void setServiceTimeOverride(BigDecimal serviceTimeOverride) {
+		this.serviceTimeOverride = serviceTimeOverride;
+	}
+	
+	public BigDecimal getServiceTimeOverride() {
+		return serviceTimeOverride;
+	}
+	
+	public String getDlvServiceTimeType() {
+		if(getServiceTimeType() == null) {
+			return null;
+		}
+		return getServiceTimeType().getCode();
+	}
+
+	public void setDlvServiceTimeType(String serviceTimeType) {
+		if("null".equals(serviceTimeType)) {
+			setServiceTimeType(null);
+		} else {
+			DlvServiceTimeType trnServiceTimeType = new DlvServiceTimeType();
+			trnServiceTimeType.setCode(serviceTimeType);
+			setServiceTimeType(trnServiceTimeType);
+		}
 	}
 
 }
