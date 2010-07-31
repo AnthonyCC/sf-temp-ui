@@ -120,7 +120,7 @@
        </form>  
      </div>
      <script>
-      addHandlers('ec_table', 'rowMouseOver', 'editdlvlocation.do','id',0, 0, true);
+      addHandlers('ec_table', 'rowMouseOver', 'editdlvlocation.do','id',0, 0, true,0);
     </script>   
   </tmpl:put>
 </tmpl:insert>
