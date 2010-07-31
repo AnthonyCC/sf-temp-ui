@@ -36,6 +36,7 @@ function checkPromoPopup(JSONstring) {
 	if (params.status != "ok") {
 		//stick values into overlay html		
 		$('promoCode').innerHTML = params.promoCode;
+		$('more_info').innerHTML = params.promoTerms;
 		
 		//$('MB_frame').style.border = 'none';
 		Modalbox.show($('gcResendBox'), {
@@ -95,7 +96,7 @@ function checkPromoTimeSlotPopup(JSONstring) {
 	if (params.status != "ok") {
 		//stick values into overlay html		
 		$('promoCode').innerHTML = params.promoCode;
-		
+		$('more_info').innerHTML = params.promoTerms;
 
 		Modalbox.show($('gcResendBox'), {
 			loadingString: 'Loading Preview...',
@@ -151,7 +152,7 @@ function checkPromoPaymentPopup(JSONstring) {
 	if (params.status != "ok") {
 		//stick values into overlay html		
 		$('promoCode').innerHTML = params.promoCode;
-		
+		$('more_info').innerHTML = params.promoTerms;
 
 		Modalbox.show($('gcResendBox'), {
 			loadingString: 'Loading Preview...',

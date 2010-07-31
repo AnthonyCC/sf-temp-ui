@@ -1,4 +1,3 @@
-
 <%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
 <%@page import="com.freshdirect.customer.ErpPaymentMethodI"%>
 <%@page import="java.util.Collection"%>
@@ -15,8 +14,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName' %>
 <%@ page import='com.freshdirect.fdstore.customer.FDUserI' %>
 <%@ page import='com.freshdirect.fdstore.promotion.Promotion' %>
-
-
+<%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <% 
 boolean isByAddress = false;
 boolean isByTimeSlot = false;
@@ -88,10 +86,18 @@ if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getP
 	}
 }
 if(!result){
-	json = new JSONObject();
-	json.put("status", "error");
-	json.put("promoCode", user.getRedeemedPromotion().getRedemptionCode());
-}
-%>
+		json = new JSONObject();
+		json.put("status", "error");
+		json.put("promoCode", user.getRedeemedPromotion().getRedemptionCode());
+	
+	if(null != promotion && !"".equals(promotion.getPromotionCode())){ %>
+		<fd:GetPromotionNew id="promotionNew" promotionId="<%= promotion.getPromotionCode() %>">
+		<%
+			String promoTerms = (promotionNew.getTerms() != null && !"".equals(promotionNew.getTerms())) ? promotionNew.getTerms() : "No additional information is available.";
+			json.put("promoTerms", promoTerms);
+		%>
+		</fd:GetPromotionNew>
+	<% } %>
+<% } %>
 
  <%=json.toString()%>
