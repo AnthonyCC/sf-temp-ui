@@ -175,6 +175,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					promotion.setTmpAssignedCustomerUserIds(custIds);
 					FDPromotionNewManager.storeAssignedCustomers(promotion, custIds);
 					promotion.setTmpAssignedCustomerUserIds("");
+					request.setAttribute("SUCCESS", true);
 				}
 			}
 		} catch (FDResourceException e) {

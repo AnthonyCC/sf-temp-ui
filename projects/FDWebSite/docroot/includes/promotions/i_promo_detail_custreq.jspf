@@ -54,13 +54,7 @@ String userId = request.getParameter("userId");
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 				</tr>
-				<%-- check if we're empty --%>
-				<% if (isEmptyPromoCustreq) { %>
-						<tr>
-							<td class="promo_detail_label grayIta10pt">-None-</td>
-							<td class="alignL">&nbsp;</td>
-						</tr>
-				<% }else{ %>
+				
 					<%
 						String searchButton = request.getParameter("search");
 						String updateCustButton = request.getParameter("updateCustIds");
@@ -86,7 +80,8 @@ String userId = request.getParameter("userId");
 							<td class="promo_detail_label">Eligible list:</td>
 							
 							<td class="alignL">
-							<%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %>
+							<%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : " " %>
+						<%if(FDStoreProperties.isPromoPublishNodeMaster() || EnumPromotionStatus.LIVE.equals(promotion.getStatus())){ %>
 							<%if(promotion.getAssignedCustomerSize() > 0){ %>
 								<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 								Marketing Admin Functions:
@@ -116,21 +111,35 @@ String userId = request.getParameter("userId");
 						%>
 							<tr>
 								<td >&nbsp;</td>
-								<td>&nbsp;&nbsp;<b>The customer is <span class="error"><%= displayValue %></span> the restriction list.</b>
+								<td>&nbsp;&nbsp;<b>The customer is <%if(value){ %><span style="color:#009900;"><% } else { %><span class="error"><% }%><%= displayValue %></span> the restriction list.</b>
 							</tr>
 						<% } %>
+						<% if(null!=request.getAttribute("SUCCESS")){
+						%>
+						<tr>
+								<td >&nbsp;</td>
+								<td>&nbsp;&nbsp;<b><span style="color:#009900;">Added to list successfully.</span> </b>
+							</tr>
+							<% } %>
 						<tr>
 							<td class="promo_detail_label">Add to list:</td>
 							<td class="alignL"><textarea id="assignedCustIds" name="assignedCustIds" rows="3" cols="32"><%= promotion.getTmpAssignedCustomerUserIds() %></textarea><input type="submit" id="updateCustIds" name="updateCustIds" value="UPDATE" class="promo_btn_green"/></td>
-						</tr>
+						</tr><% } else { %></td></tr><% } %>
 					<% } %>
+					<%-- check if we're empty --%>
+				<% if (isEmptyPromoCustreq) { %>
+						<!-- <tr>
+							<td class="promo_detail_label grayIta10pt">-None-</td>
+							<td class="alignL">&nbsp;</td>
+						</tr> -->
+				<% }else{ %>
 					<% if ( csm != null && (promotion.getCustStrategies().get(0).getOrderRangeStart() > 0 || promotion.getCustStrategies().get(0).getOrderRangeEnd() > 0) ) { %>
 						<tr>
 							<td class="promo_detail_label">Order instance:</td>
 							<td class="alignL">Range <span class="gray">order # </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeStart() : "" %> <span class="gray"> to </span><%= (csm != null) ? promotion.getCustStrategies().get(0).getOrderRangeEnd() : "" %> <span class="grayIta8pt">(first order == 1)</span></td>
 						</tr>
 					<% } %>
-					</fd:PromotionCustReqController>
+					
 					<% if ( !"".equals(cohortsString) ) { %>
 						<tr>
 							<td class="promo_detail_label">Smart Store cohort(s):</td>
@@ -187,6 +196,7 @@ String userId = request.getParameter("userId");
 						</tr>
 					<% } %>
 				<% } %>
+				</fd:PromotionCustReqController>
 			</table>
 		</td>
 		<%-- no contents, filler --%>

@@ -740,10 +740,10 @@ public class FDPromotionManagerDAO {
 					}*/
 				}else{
 					ps1.setNull(1, Types.INTEGER);
-					if(promotion.getExpirationDate()!= null){						
+					if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
 						ps1.setDate(2, new Date(calendar.getTimeInMillis()));
 					}else{
-						ps1.setNull(2, Types.DATE);
+						ps1.setDate(2, new Date(calendar1.getTimeInMillis()));
 					}
 					ps1.setString(3, promotion.getId());				
 					ps1.setString(4, customerId);
