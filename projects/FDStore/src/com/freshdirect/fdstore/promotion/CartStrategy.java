@@ -44,7 +44,7 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 							if(PromotionStrategyI.RESET==allowORdeny || PromotionStrategyI.DENY==allowORdeny){
 								Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
 								if(null != skuSet && skuSet.contains(cartLine.getSkuCode())){
-									qualifiedSku++;;
+									qualifiedSku += cartLine.getQuantity();
 									allowORdeny = PromotionStrategyI.ALLOW;
 								}							
 							}

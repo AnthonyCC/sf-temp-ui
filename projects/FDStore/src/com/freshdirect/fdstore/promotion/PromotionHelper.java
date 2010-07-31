@@ -150,23 +150,13 @@ public class PromotionHelper {
 			return isEligible;
 		}
 		
-		public static boolean checkPromoEligibilityForPayment(FDUserI user, String paymentId)throws FDResourceException{
+		public static boolean checkPromoEligibilityForPayment(FDUserI user, ErpPaymentMethodI paymentMethod)throws FDResourceException{
 			//This block is executed only if current eligibility is true. So default is set to true.
 			boolean isEligible = true;
 			Promotion promotion = (Promotion)user.getRedeemedPromotion();
 			if(null != promotion){
-				FDIdentity identity = user.getIdentity();
-				PromotionContextI promotionContext = new PromotionContextAdapter(user);
-				Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods( identity );
-				ErpPaymentMethodI paymentMethod = null;
-	
-				for ( ErpPaymentMethodI item : paymentMethods ) {
-					if ( item.getPK().getId().equals( paymentId ) ) {
-						paymentMethod = item;
-						break;
-					}
-				}
 				if(null != paymentMethod){
+					PromotionContextI promotionContext = new PromotionContextAdapter(user);
 					for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
 						PromotionStrategyI strategy = i.next();
 						if (strategy instanceof CustomerStrategy) {

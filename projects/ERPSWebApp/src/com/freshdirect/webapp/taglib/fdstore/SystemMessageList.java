@@ -158,7 +158,8 @@ public interface SystemMessageList {
 	public final static String MSG_PROMO_NOT_UNIQUE_INFO	= "Some of the information you provided matches an existing account, so you are not eligible for this promotion(one per household/company). If you believe that you should be eligible, please contact our Customer Service Team at {0}.";
 //	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "Sorry, you are not eligible for this promotion.";
 	public final static String MSG_REDEMPTION_NOT_ELIGIBLE = "We''re sorry, your account is not eligible for the code you entered ({0}).";//"Sorry, you are not eligible for this promotion.";
-	public final static String MSG_REDEMPTION_EXCEEDED	= "Sorry, Redemption Limit for one or promotions has been reached.";
+	public final static String MSG_REDEMPTION_EXCEEDED	= "Sorry, Promotion Redemption Limit has been reached. Click Submit to Continue.";
+	public final static String MSG_CART_REDEMPTION_EXCEEDED	= "Sorry, Promotion Redemption Limit has been reached";
 	
 	public final static String MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT = "PLEASE NOTE: Discount will be applied when qualifying timeslot is selected.";
 	public final static String MSG_REDEMPTION_NOTE_DLV_ADDRESS	= "NOTICE: Your code will be accepted when you select a valid delivery address.";

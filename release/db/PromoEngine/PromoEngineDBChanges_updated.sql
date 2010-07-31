@@ -118,7 +118,7 @@ UPDATE CUST.PROMOTION_NEW set status='LIVE' where id in(SELECT id from CUST.PROM
 
 UPDATE CUST.PROMOTION_NEW set status='CANCELLED' where id in(SELECT id from CUST.PROMOTION P where P.ACTIVE  is null);
 
-UPDATE CUST.PROMOTION_NEW set status='EXPIRED' where expiration_date < sysdate-7;
+--UPDATE CUST.PROMOTION_NEW set status='EXPIRED' where expiration_date < sysdate-7; This is not required as expired status is display only
 
 UPDATE CUST.PROMOTION_NEW set NEEDCUSTOMERLIST = 'X' where ID IN (SELECT PROMOTION_ID FROM CUST.PROMO_CUSTOMER);
 

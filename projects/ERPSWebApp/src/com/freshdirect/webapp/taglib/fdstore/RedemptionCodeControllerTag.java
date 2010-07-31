@@ -11,18 +11,27 @@ import javax.servlet.jsp.JspException;
 
 import sun.security.x509.CertAndKeyGen;
 
+import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
 import com.freshdirect.fdstore.giftcard.FDGiftCardI;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
 import com.freshdirect.fdstore.giftcard.FDGiftCardModel;
 import com.freshdirect.fdstore.promotion.CustomerStrategy;
 import com.freshdirect.fdstore.promotion.DlvZoneStrategy;
+import com.freshdirect.fdstore.promotion.EnumOrderType;
 import com.freshdirect.fdstore.promotion.Promotion;
 import com.freshdirect.fdstore.promotion.PromotionApplicatorI;
+import com.freshdirect.fdstore.promotion.PromotionContextI;
+import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.PromotionStrategyI;
 import com.freshdirect.fdstore.promotion.WaiveChargeApplicator;
@@ -138,29 +147,42 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 				FDCartI cart = user.getShoppingCart();
 				List prevdiscounts = new ArrayList(cart.getDiscounts());
 				user.updateUserState();
-				boolean eligible = user.getPromotionEligibility().isEligible(promotion.getPromotionCode());
-				boolean isApplied = user.getPromotionEligibility().isApplied(promotion.getPromotionCode());
+				String promoCode = promotion.getPromotionCode();
+				boolean eligible = user.getPromotionEligibility().isEligible(promoCode);
+				boolean isApplied = user.getPromotionEligibility().isApplied(promoCode);
+				int errorCode = user.getPromoErrorCode(promoCode);
 //				request.setAttribute("isEligible", eligible);
 				Object[] params = new Object[] { redemptionCode };
 				if (!eligible) {
-					user.setRedeemedPromotion(null);
-					
 					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){						
 						actionResult.addError(true,"signup_warning",MessageFormat.format(
 								SystemMessageList.MSG_PROMO_NOT_UNIQUE_INFO,
 								new Object[] { user
 										.getCustomerServiceContact() }));
 						actionResult.addError(true, "redemption_error",  MessageFormat.format(SystemMessageList.MSG_REDEMPTION_NOT_ELIGIBLE,params));
-					}else
-					if (promotion.getExpirationDate() != null && new Date().after(promotion.getExpirationDate())) {
-						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_REDEMPTION_HAS_EXPIRED,params));
-					} else if (!isApplied) {
-						
-							actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
-					} else {
-						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_ALREADY_USED);
+						user.setRedeemedPromotion(null);
 					}
-	
+					else if (promotion.getExpirationDate() != null && new Date().after(promotion.getExpirationDate())) {
+						actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_REDEMPTION_HAS_EXPIRED,params));
+						user.setRedeemedPromotion(null);
+					} else if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
+						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_CART_REDEMPTION_EXCEEDED);
+						user.setRedeemedPromotion(null);
+					} else {
+						AddressModel shippingAddress = cart.getDeliveryAddress();
+						ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
+						if(shippingAddress == null || !PromotionHelper.checkPromoEligibilityForAddress(user, shippingAddress)){
+							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS);
+							request.setAttribute("promoError", "true");
+						} else if(paymentMethod == null || !PromotionHelper.checkPromoEligibilityForPayment(user, paymentMethod)){
+							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_PAYMENT);
+							request.setAttribute("promoError", "true");
+						}else if (!isApplied) {
+							actionResult.addError(true, "redemption_error", MessageFormat.format(SystemMessageList.MSG_INVALID_CODE, params));
+						} else { 
+							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_ALREADY_USED);
+						}
+					} 
 				} else if (!isApplied) {
 					request.setAttribute("isEligible", eligible);
 					if(user.isFraudulent()&& promotion.isFraudCheckRequired()){
@@ -182,22 +204,10 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					} else if (promotion.isSampleItem()) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE);
 					} else{
-						CustomerStrategy custStrategy = (CustomerStrategy)promotion.getStrategy(CustomerStrategy.class);
-						if(null != custStrategy && null != custStrategy.getAllowedOrderTypes() && custStrategy.getAllowedOrderTypes().size()>0 && cart.getDeliveryAddress() == null){
-							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS);
-						} else if(null != custStrategy && null != custStrategy.getPaymentTypes() && custStrategy.getPaymentTypes().size()>0 && cart.getPaymentMethod() == null){
-							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_PAYMENT);
-						} else{
-							DlvZoneStrategy dlvZoneStrategy = (DlvZoneStrategy)promotion.getStrategy(DlvZoneStrategy.class);
-							if(null != dlvZoneStrategy){
-								if((null != dlvZoneStrategy.getDlvTimeSlots() && !dlvZoneStrategy.getDlvTimeSlots().isEmpty())||(null != dlvZoneStrategy.getDlvDates() && !dlvZoneStrategy.getDlvDates().isEmpty())){
-									actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_TIMESLOT);
-								}
-							}
-						}
+						FDReservation reservation = cart.getDeliveryReservation();
+							if(reservation == null || !PromotionHelper.checkPromoEligibilityForTimeslot(user, reservation.getTimeslotId()))
+								actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_TIMESLOT);
 					}
-					
-					
 				} else {
 					/*
 					 * The redemption promotion is applied. Check if there is any previously

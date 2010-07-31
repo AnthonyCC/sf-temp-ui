@@ -696,13 +696,14 @@ FDIdentity identity = user.getIdentity();
 
 
 	
-	if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode))) {
+	if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) {
 		%>
-		<tr>
-			<td colspan="7"><br></td>
-		</tr>
-		<tr align="right"><% String errorMsg1 = ""; %>
-			<td colspan="7"><fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg"><span class="promotionError"><% errorMsg1 = errorMsg;%><%=errorMsg%></span></fd:ErrorHandler></td>
+        <tr align="right"><% String errorMsg1 = ""; %>
+			<td colspan="7">
+                <fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg">
+                    <span class="promotionError"><% errorMsg1 = errorMsg;%><%=errorMsg%></span>
+                </fd:ErrorHandler>
+            </td>
 		</tr>
 		<tr>
 			<td colspan="7"><br></td>
@@ -721,14 +722,6 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="2" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
 		</tr>
 		
-        <%--
-    	<tr>
-			<td colspan="3" align="right"><b>Enter promotion code: </b></td>
-			<td colspan="2" align="right"><input type="text" size="10" maxlength="16" class="text10" name="redemptionCode" value=""></td>
-			<td colspan="2" align="right"><input type="image" name="redemptionCodeSubmit" src="/media_stat/images/buttons/apply.gif" border="0" alt="APPLY" vspace="0"></td>
-		</tr>
-		--%>
-
 		<%
 	}
 
@@ -742,11 +735,7 @@ FDIdentity identity = user.getIdentity();
 		double redemptionAmt = 0;
 		String warningMessage = "";
 		if (cart.getSubTotal() < redemptionPromo.getMinSubtotal()) {
-			List headerDiscountRules = redemptionPromo.getHeaderDiscountRules();
-			if (headerDiscountRules!=null) {
-				HeaderDiscountRule rule = (HeaderDiscountRule) headerDiscountRules.get(0);
-				redemptionAmt = rule.getMaxAmount();
-			}
+            redemptionAmt = redemptionPromo.getHeaderDiscountTotal();
 			warningMessage = MessageFormat.format(SystemMessageList.MSG_REDEMPTION_MIN_NOT_MET, new Object[] { new Double(redemptionPromo.getMinSubtotal()) } );
 			
 		} else if (redemptionPromo.isLineItemDiscount()) {
@@ -783,7 +772,26 @@ FDIdentity identity = user.getIdentity();
 		}
 	}
 	%>
-
+    <%
+        //This logic is invoked to display redemption failure due to address and payment method.
+        if (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") != null) {
+    %>
+		<tr valign="top">
+			<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
+			<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionPromo.getHeaderDiscountTotal()) %></td>
+			<td colspan="1"></td>
+			<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
+		</tr>
+   		<tr align="right">
+			<td colspan="7"><br><fd:ErrorHandler result="<%=redemptionResult%>" name="redemption_error" id="errorMsg"><span class="promotionError"><%=errorMsg%></span></fd:ErrorHandler></td>
+		</tr>
+        <tr align="right">
+            <td colspan="7"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')">Click here for details</a></b></td>
+        </tr>
+    
+    <%
+        }    
+    %>
 	<tr>
 		<td colspan="7" align="right"><%
 	if (identity == null || user.isEligibleForSignupPromotion()) {

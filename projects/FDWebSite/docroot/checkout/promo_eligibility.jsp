@@ -1,4 +1,7 @@
 
+<%@page import="com.freshdirect.fdstore.customer.FDIdentity"%>
+<%@page import="com.freshdirect.customer.ErpPaymentMethodI"%>
+<%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
 <%@page import="com.freshdirect.customer.ErpAddressModel"%>
 <%@page import="com.freshdirect.customer.ErpDepotAddressModel"%>
@@ -70,7 +73,17 @@ if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getP
 	else if(isByPayment){
 		String paymentMethodList = request.getParameter( "paymentMethodList" );
 		if(null != paymentMethodList){
-			result = PromotionHelper.checkPromoEligibilityForPayment(user,paymentMethodList);			
+			FDIdentity identity = user.getIdentity();
+			Collection<ErpPaymentMethodI> paymentMethods = FDCustomerManager.getPaymentMethods( identity );
+			ErpPaymentMethodI paymentMethod = null;
+
+			for ( ErpPaymentMethodI item : paymentMethods ) {
+				if ( item.getPK().getId().equals( paymentMethodList ) ) {
+					paymentMethod = item;
+					break;
+				}
+			}
+			result = PromotionHelper.checkPromoEligibilityForPayment(user,paymentMethod);			
 		}		
 	}
 }

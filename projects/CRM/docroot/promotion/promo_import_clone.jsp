@@ -172,8 +172,7 @@
 
 			<div class="pic-row">
 				<div>Promotion code:</div>
-				<input id="promocode-input" type="text" name="newPromoCode" value="<%= valCode %>" size="16" maxlength="16"/>
-				<button type="button" onclick="doCheckCode($('promocode-input').value); return false;">Check</button>
+				<%= valCode %>
 			</div>
 			<div class="pic-row-err">
 				<div>&nbsp;</div>
