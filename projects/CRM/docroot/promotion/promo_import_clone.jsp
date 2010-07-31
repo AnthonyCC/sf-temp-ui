@@ -26,7 +26,7 @@
 <%
 	final BrowserInfo bi = new BrowserInfo(request);
 
-	if (!result.isSuccess()) {
+	if (null != result && !result.isSuccess()) {
 %>
 	<div style="padding-top: 2em; width: 400px; margin-left: auto; margin-right: auto">
 	<fd:ErrorHandler id="errorMsg" result="<%= result %>" name="promo.import">

@@ -91,6 +91,8 @@ public class ImportPromotionTag extends BodyTagSupport {
 			
 			// reset state
 			promotion.setStatus(EnumPromotionStatus.DRAFT);
+		}else{
+			promotion = new FDPromotionNewModel();
 		}
 		
 		if (result != null)

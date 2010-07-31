@@ -83,6 +83,14 @@
 								<td width="100px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 								<td width="300px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 							</tr>
+							<%
+							endType ="Single";
+							if (promotion != null && null != promotion.getRedeemCount() && promotion.getRedeemCount()>0 ){
+								endType ="Redemption";
+							} else if (promotion != null && null !=promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() >0){
+								endType="Rolling";
+							}
+							%>
 							<tr>
 								<td><input type="radio" id="edit_basic_endType_single" name="end_type" value="single" <%= "single".equalsIgnoreCase(endType)?"checked":"" %>/></td>
 								<td>Single</td>

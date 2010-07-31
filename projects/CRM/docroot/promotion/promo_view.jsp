@@ -101,7 +101,7 @@
 								};
 							} else {
 								statuses = new EnumPromotionStatus[]{
-										EnumPromotionStatus.LIVE, EnumPromotionStatus.CANCELLED
+										EnumPromotionStatus.CANCELLED,EnumPromotionStatus.EXPIRED
 								};
 							}
 

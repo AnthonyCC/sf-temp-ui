@@ -166,7 +166,7 @@ public class FDPromotionManagerNewDAO {
 
 		// Shift status PUBLISHED to EXPIRED automatically if promo is expired
 		EnumPromotionStatus status = EnumPromotionStatus.getEnum(rs.getString("status"));
-		if (EnumPromotionStatus.PUBLISHED.equals(status) &&
+		if ((EnumPromotionStatus.PUBLISHED.equals(status)||EnumPromotionStatus.LIVE.equals(status)) &&
 				expDate != null && (new java.util.Date()).after(expDate) ) {
 			status = EnumPromotionStatus.EXPIRED;
 		}
@@ -1669,17 +1669,16 @@ public class FDPromotionManagerNewDAO {
 			PreparedStatement ps = null;
 
 			// switch promo status CANCELLING to CANCELLED. Modified date has to be updated to make sure website picks up the change into the cache.
-			ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate, , MODIFIED_BY =?, MODIFY_DATE =? WHERE CODE=?");
-			ps.setString(1, EnumPromotionStatus.CANCELLED.getName());
-			ps.setString(2, promo.getPromotionCode());
-	        
-	        ps.setString(3, promo.getModifiedBy());
+			ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate,MODIFIED_BY =?, MODIFY_DATE =? WHERE CODE=?");
+			ps.setString(1, EnumPromotionStatus.CANCELLED.getName());	        
+	        ps.setString(2, promo.getModifiedBy());
 			if (promo.getModifiedDate() != null) {
-				ps.setTimestamp(4, new java.sql.Timestamp(promo
+				ps.setTimestamp(3, new java.sql.Timestamp(promo
 						.getModifiedDate().getTime()));
 			} else {
-				ps.setNull(4, Types.DATE);
-			}	
+				ps.setNull(3, Types.DATE);
+			}
+			ps.setString(4, promo.getPromotionCode());
 			try {
 				final int k = ps.executeUpdate();
 				

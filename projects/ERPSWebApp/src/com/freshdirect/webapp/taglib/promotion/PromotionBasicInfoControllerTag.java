@@ -127,7 +127,12 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			this.promotion.setRollingExpirationDays(null);
 			this.promotion.setExpirationDate(getDate(expDateStr,expTimeStr));
 			
-		}			
+		}
+		
+		if(null !=promotion.getExpirationDate()){
+			this.promotion.setExpirationDateStr(DateUtil.formatDate(promotion.getExpirationDate()));
+			this.promotion.setExpirationTimeStr(DateUtil.formatTime(promotion.getExpirationDate()));
+		}
 		this.promotion.setMaxUsage(NVL.apply(request.getParameter("usage_limit"), "").trim());		
 //		if(request.getParameter("percentOff1")!=null && request.getParameter("percentOff1").trim().length()>0)
 //		    this.promotion.setPercentOff(NVL.apply(request.getParameter("percentOff1"), "").trim());

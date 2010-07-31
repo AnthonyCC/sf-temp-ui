@@ -715,6 +715,8 @@ public class FDPromotionManagerDAO {
 			calendar1.setTime(promotion.getExpirationDate());			
 			if(null != promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() > 0){
 				calendar.add(Calendar.DATE, promotion.getRollingExpirationDays());
+			}else{
+				calendar.setTime(promotion.getExpirationDate());
 			}
 			while (iter.hasNext()) {
 				String customerId = iter.next();
@@ -724,7 +726,7 @@ public class FDPromotionManagerDAO {
 					ps.setString(2, customerId);
 					ps.setNull(3, Types.INTEGER);										
 					
-					if(promotion.getExpirationDate()!= null){				
+					if(promotion.getExpirationDate()!= null && null != promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() > 0){				
 						if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
 							ps.setDate(4, new Date(calendar.getTimeInMillis()));
 						}else{
@@ -740,10 +742,14 @@ public class FDPromotionManagerDAO {
 					}*/
 				}else{
 					ps1.setNull(1, Types.INTEGER);
-					if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
-						ps1.setDate(2, new Date(calendar.getTimeInMillis()));
+					if(promotion.getExpirationDate()!= null && null != promotion.getRollingExpirationDays() && promotion.getRollingExpirationDays() > 0){
+						if(calendar.before(calendar1) || (!calendar.before(calendar1) && !calendar1.before(calendar))){
+							ps1.setDate(2, new Date(calendar.getTimeInMillis()));
+						}else{
+							ps1.setDate(2, new Date(calendar1.getTimeInMillis()));
+						}
 					}else{
-						ps1.setDate(2, new Date(calendar1.getTimeInMillis()));
+						ps1.setNull(2, Types.DATE);
 					}
 					ps1.setString(3, promotion.getId());				
 					ps1.setString(4, customerId);
