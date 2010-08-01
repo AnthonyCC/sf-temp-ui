@@ -307,6 +307,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			user.updateDlvPassInfo();
 			//Remove the Delivery Pass Session ID If any.
 			session.removeAttribute(DlvPassConstants.DLV_PASS_SESSION_ID);
+			//Clear All Applied promotions
+			user.clearAllAppliedPromos();
 
 			//if it's make good order, reject complaints 
 			if(EnumPaymentType.MAKE_GOOD.equals(origOrder.getPaymentMethod().getPaymentType())){

@@ -56,6 +56,7 @@ import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.promotion.PromotionErrorType;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
@@ -673,7 +674,11 @@ public class SubmitOrderAction extends WebActionSupport {
 				user.setShoppingCart( new FDCartModel() );
 
 			}
-
+			if(user.getRedeemedPromotion() != null){
+				// This forceRefresh is for redemption count on the promo to be reloaded once 
+				// user successfully places an order.
+				PromotionFactory.getInstance().forceRefreshRedemptionCnt(user.getRedeemedPromotion().getPromotionCode());
+			}
 			user.setRedeemedPromotion(null);
 			
 			//Siva: Modified to track user last order zipcode and not a pick up order.
@@ -690,6 +695,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			//Now store the user to update the service_Type
 			//invalidate gift cards.
 			user.invalidateGiftCards();
+			//Clear All Applied promotions
+			user.clearAllAppliedPromos();
+			
 			FDCustomerManager.storeUser(fdUser);
 			session.setAttribute(SessionName.USER, user);
 			

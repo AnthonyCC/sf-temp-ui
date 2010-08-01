@@ -1742,9 +1742,11 @@ public class FDPromotionManagerNewDAO {
 	
 			// save status
 			try {
-				ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate WHERE CODE=?");
+				ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate,MODIFIED_BY = ?, MODIFY_DATE = sysdate WHERE CODE=?");
 				ps.setString(1, status.getName());
-				ps.setString(2, promoCode);
+		        ps.setString(2, "System");
+				ps.setString(3, promoCode);
+
 
 				ps.executeUpdate();
 			} finally {

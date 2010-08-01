@@ -243,6 +243,17 @@ public class PromotionFactory {
 			getRedeemPromotions().remove(promoId);
 		}
 	}
+	
+	public void forceRefreshRedemptionCnt(String promoId) {
+		if(getRedemptions().get(promoId) != null){
+			/*
+			 * The updated promotion is a redemption promotion.So Remove the promotion 
+			 * object to reload during next request.
+			 */
+			getRedemptions().remove(promoId);
+		}
+	}
+	
 
 	private CacheI<String, PromotionI> getRedeemPromotions() {
 		return this.redeemPromotions;
