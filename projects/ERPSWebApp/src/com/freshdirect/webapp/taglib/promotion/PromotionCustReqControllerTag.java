@@ -175,7 +175,8 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 					promotion.setTmpAssignedCustomerUserIds(custIds);
 					FDPromotionNewManager.storeAssignedCustomers(promotion, custIds);
 					promotion.setTmpAssignedCustomerUserIds("");
-					request.setAttribute("SUCCESS", true);
+					setSuccessPage("/promotion/promo_details.jsp?promoId="+promotion.getPromotionCode()+"&SUCCESSCUST=true");
+//					request.setAttribute("SUCCESS", true);
 				}
 			}
 		} catch (FDResourceException e) {
@@ -188,6 +189,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 			return true;
 		} catch (FDPromoCustNotFoundException e) {
 			actionResult.setError(e.getMessage());
+			request.setAttribute("custNotErr", true);
 			return true;
 		} catch(FinderException fe){
 			throw new JspException(fe);

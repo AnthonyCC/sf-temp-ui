@@ -99,7 +99,7 @@ String userId = request.getParameter("userId");
 									<input type="text" id="userId" name="userId" value="<%= userId %>"class="w200px" />
 									<input type="submit" value="SEARCH" id="search" name="search" class="promo_btn_gry" />
 								</td>
-							</tr>
+						</tr>
 						<% } %>
 						<fd:ErrorHandler result="<%= result %>" name="<%=ActionError.GENERIC%>" id='errorMsg'><tr><td colspan="2"><span class="error"><%=errorMsg%></span></td></tr></fd:ErrorHandler>
 						<%
@@ -114,7 +114,7 @@ String userId = request.getParameter("userId");
 								<td>&nbsp;&nbsp;<b>The customer is <%if(value){ %><span style="color:#009900;"><% } else { %><span class="error"><% }%><%= displayValue %></span> the restriction list.</b>
 							</tr>
 						<% } %>
-						<% if(null!=request.getAttribute("SUCCESS")){
+						<% if(null == request.getAttribute("custNotErr") && obj==null && null!=request.getParameter("SUCCESSCUST")){
 						%>
 						<tr>
 								<td >&nbsp;</td>
