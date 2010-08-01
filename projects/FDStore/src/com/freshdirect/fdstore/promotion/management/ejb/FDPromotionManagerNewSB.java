@@ -102,5 +102,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public List<String> loadAssignedCustomerUserIds(String promotionId) throws RemoteException, FDResourceException;
 	
 	public boolean lookupPromotion(String promotionCode) throws RemoteException, FDResourceException;
+	
+	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException, RemoteException;
 }
 

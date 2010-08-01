@@ -42,7 +42,9 @@
 	boolean promo_edit_delivery = snav_pageURI.indexOf("/promo_edit_delivery.jsp") > -1;
 	boolean promo_edit_payment = snav_pageURI.indexOf("/promo_edit_payment.jsp") > -1;
 %>
+
 <div class="promo_nav">
+<% if(FDStoreProperties.getPromoPublishNodeType().equals("master")) { %>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
@@ -70,6 +72,17 @@
 			<a href="/promotion/promo_publish.jsp">Publish</a>
 		</div>
 	<% } %>
+<% } else { %>
+	<% if (promo_home || promo_view) { %>
+		<div class="promo_sub_nav_on">
+			View
+		</div>
+	<% }else{ %>
+		<div class="promo_sub_nav">
+			<a href="/promotion/promo_view.jsp">View</a>
+		</div>
+	<% } %>
+<% } %>	
 <script type="text/javascript">
 	function showImportPanel() {
 		var ctPanel = new YAHOO.widget.Panel("importPanel", {

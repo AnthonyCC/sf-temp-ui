@@ -876,6 +876,8 @@
 	}
 
 function doPublish(promocode) {
+	document.getElementById("publish").disabled=true;
+
 	var uri = '/api/promo.jsp?action=publish&promoCode='+promocode;
 	$C.asyncRequest('GET', uri, {
 		success: function(resp) {

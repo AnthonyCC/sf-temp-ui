@@ -55,6 +55,22 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
+	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+
+			List<FDPromotionNewModel> promoList = FDPromotionManagerNewDAO.getModifiedOnlyPromotions(conn, lastModified);
+
+			return promoList;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+		    close(conn);
+		}
+	}
+	
 	public FDPromotionNewModel getPromotion(String promoId) throws FDResourceException {
 		Connection conn = null;
 		try {

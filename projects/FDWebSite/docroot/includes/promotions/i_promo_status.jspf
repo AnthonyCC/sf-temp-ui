@@ -14,7 +14,7 @@
 						)
 					) {
 				%>
-						<div class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
+						<div id="publish" class="promo_action promo_btn_dblue fleft" style="width: 140px;"><a href="#" onclick="doPublish('<%= promotion.getPromotionCode() %>'); return false;">PUBLISH TO PROD&nbsp;<img src="/media_stat/crm/images/yellow_r_arrow.gif" height="12px" width="12px" alt="" /></a></div>
 				<%
 					} else {
 				%>

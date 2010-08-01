@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
@@ -119,6 +120,22 @@ public class FDPromotionManagerNewDAO {
 		return promoList;
 	}
 
+	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date desc";
+	
+	public static List<FDPromotionNewModel> getModifiedOnlyPromotions(Connection conn, java.util.Date lastModified) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(getModifiedOnlyPromotions);
+		ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
+		ResultSet rs = ps.executeQuery();
+		List<FDPromotionNewModel> promoList = new ArrayList<FDPromotionNewModel>();
+		while (rs.next()) {
+			FDPromotionNewModel promotion = populate(conn, rs);
+			promoList.add(promotion);
+		}
+		rs.close();
+		ps.close();
+		return promoList;
+	}
+	
 	private static FDPromotionNewModel loadPromotionResult(ResultSet rs)
 			throws SQLException {
 
