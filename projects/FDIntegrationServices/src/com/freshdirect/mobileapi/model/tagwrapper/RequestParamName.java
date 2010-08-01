@@ -201,5 +201,6 @@ public interface RequestParamName {
     public static final String REQ_PARAM_IS_PROMO_ELIGIBLE = "isEligible";
     
     public static final String REQ_PARAM_IGNORE_PROMO_ERRORS = "ignorePromoErrors";
-
+    
+    public static final String  REQ_PARAM_PROMO_ERROR_FLAG = "promoError";
 }

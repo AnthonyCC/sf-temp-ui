@@ -46,6 +46,7 @@ public class RedemptionCodeControllerTagWrapper extends ControllerTagWrapper imp
 
         addRequestValue(REQ_PARAM_REDEMPTION_CODE, redemptionCode);
         addRequestValue(REQ_PARAM_IS_PROMO_ELIGIBLE, false);
+        addRequestValue(REQ_PARAM_PROMO_ERROR_FLAG, "");
         getWrapTarget().setActionName(ACTION_APPLY_CODE);
         setMethodMode(true);
         ResultBundle result = new ResultBundle(executeTagLogic(), this);

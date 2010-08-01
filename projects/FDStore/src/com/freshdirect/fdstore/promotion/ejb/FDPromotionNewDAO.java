@@ -225,7 +225,7 @@ public class FDPromotionNewDAO {
 			PromotionStrategyI cartStrategyI = cartStrategyData.get(pk);
 			if(null != cartStrategyI){
 				CartStrategy cartStrategy = (CartStrategy)cartStrategyI;
-				cartStrategy.setNeedDryGoods(("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))|| "X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS")))?true:false);
+				cartStrategy.setNeedDryGoods("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))?true:false);
 				cartStrategy.setMinSkuQuantity(rs.getInt("HASSKUQUANTITY"));
 				promo.addStrategy(cartStrategy);				
 			}
@@ -456,7 +456,7 @@ public class FDPromotionNewDAO {
 		PromotionStrategyI cartStrategyI = loadCartStrategy(conn,promoId);
 		if(null != cartStrategyI){
 			CartStrategy cartStrategy = (CartStrategy)cartStrategyI;
-			cartStrategy.setNeedDryGoods(("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))|| "X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS")))?true:false);
+			cartStrategy.setNeedDryGoods("X".equalsIgnoreCase(rs.getString("NEEDDRYGOODS"))?true:false);
 			cartStrategy.setMinSkuQuantity(rs.getInt("HASSKUQUANTITY"));
 			promo.addStrategy(cartStrategy);				
 		}

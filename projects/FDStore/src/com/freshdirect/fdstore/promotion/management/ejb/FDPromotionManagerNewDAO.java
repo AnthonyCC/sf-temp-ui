@@ -2366,13 +2366,12 @@ public class FDPromotionManagerNewDAO {
 		storeAssignedGroups(conn, id, promotion);
 		storeAttributeList(conn, id, promotion.getAttributeList());
 		storeCartStrategy(conn, id, promotion);
+		//removeCustomerStrategy before creating new one.
+		removeCustomerStrategy(conn, id);
 		storeCustomerStrategy(conn, id, promotion);
 		storePromoDlvZoneStrategy(conn, id, promotion);
 		storePromoDlvDates(conn, id, promotion);
-
-		if (!promotion.getZipRestrictions().isEmpty()) {
-			storeGeography(conn, id, promotion.getZipRestrictions());
-		}
+		storeGeography(conn, id, promotion.getZipRestrictions());
 	}
 
 	public static void updatePromotionBasic(Connection conn, FDPromotionNewModel promotion) throws SQLException {

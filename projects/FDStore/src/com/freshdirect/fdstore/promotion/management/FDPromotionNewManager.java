@@ -242,7 +242,9 @@ public class FDPromotionNewManager {
 
 		try {
 			FDPromotionManagerNewSB sb = managerHome.create();
-			return sb.fixPromoStatusAfterPublish(codes);
+			boolean val = sb.fixPromoStatusAfterPublish(codes);
+			FDPromotionNewModelFactory.getInstance().forceRefresh();
+			return val;
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

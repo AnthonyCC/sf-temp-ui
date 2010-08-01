@@ -28,37 +28,42 @@ public class CartStrategy extends DCPDLineItemStrategy implements PromotionStrat
 		int qualifiedSku=0;
 		int allowORdeny = PromotionStrategyI.RESET;
 		FDCartModel cart = context.getShoppingCart();
+		int nonQualifiedSku = 0;
 		if(null != cart){
 			try {
 				if (needDryGoods && !cart.hasItemsFrom(DRY_GOODS)) {
 					return PromotionStrategyI.DENY;
 				}
-				List<FDCartLineI> orderLines = cart.getOrderLines();
-				if(null != orderLines && !orderLines.isEmpty()){
-					
-					for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
-						FDCartLineI cartLine = iterator.next();
+				if(!contentKeys.isEmpty() || !dcpdData.isEmpty()){
+					List<FDCartLineI> orderLines = cart.getOrderLines();
+					if(null != orderLines && !orderLines.isEmpty()){
 						
-						if(!contentKeys.isEmpty() || !dcpdData.isEmpty()){
-							allowORdeny = evaluate(cartLine, promotionCode, context);							
-							if(PromotionStrategyI.RESET==allowORdeny || PromotionStrategyI.DENY==allowORdeny){
+						for (Iterator<FDCartLineI> iterator = orderLines.iterator(); iterator.hasNext();) {
+							FDCartLineI cartLine = iterator.next();
+							if(contentKeys.size() > 0)
+								allowORdeny = evaluate(cartLine, promotionCode, context);							
+							if(PromotionStrategyI.ALLOW != allowORdeny){
 								Set<String> skuSet =dcpdData.get(EnumDCPDContentType.SKU);
 								if(null != skuSet && skuSet.contains(cartLine.getSkuCode())){
 									qualifiedSku += cartLine.getQuantity();
-									allowORdeny = PromotionStrategyI.ALLOW;
-								}							
+								}else {
+									nonQualifiedSku++;
+								}
+							}
+							if(qualifiedSku >= minSkuQuantity) {
+								allowORdeny = PromotionStrategyI.ALLOW;
+								break;
 							}
 						}
-						if(PromotionStrategyI.RESET==allowORdeny || (PromotionStrategyI.ALLOW ==allowORdeny && qualifiedSku >= minSkuQuantity))
-							break;
-								
+						if(nonQualifiedSku == orderLines.size() || qualifiedSku < minSkuQuantity)
+							allowORdeny = PromotionStrategyI.DENY; 
 					}
 				}
 			} catch (FDResourceException e) {
 				throw new FDRuntimeException(e);
 			}
 		}
-		if(PromotionStrategyI.RESET==allowORdeny)
+		if(PromotionStrategyI.RESET==allowORdeny )
 			//At this point there are no cart eligiblity set.
 			return PromotionStrategyI.ALLOW;
 		

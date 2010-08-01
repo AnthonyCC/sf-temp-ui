@@ -172,7 +172,7 @@
 
 			<div class="pic-row">
 				<div>Promotion code:</div>
-				<%= valCode %>
+				<input id="promocode-input" type="text" name="newPromoCode" value="<%= valCode %>" size="16" maxlength="16" readOnly="true" />
 			</div>
 			<div class="pic-row-err">
 				<div>&nbsp;</div>

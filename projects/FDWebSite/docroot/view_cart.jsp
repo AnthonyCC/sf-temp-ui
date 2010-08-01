@@ -76,7 +76,7 @@ if (user.isEligibleForClientCodes()) {
     <%@ include file="/includes/i_error_messages.jspf" %>   
 </fd:ErrorHandler>
 <%
-if(cart.hasHeaderDiscount() && cart.getTotalLineItemsDiscountAmount()>0){
+if(cart.getNonCombinableHeaderPromotion() != null && cart.getTotalLineItemsDiscountAmount()>0){
 StringBuffer buffer = new StringBuffer(
 					SystemMessageList.MSG_PROMOTION_APPLIED_VARY1);
 			result.addWarning(new ActionWarning("promo_war1", buffer

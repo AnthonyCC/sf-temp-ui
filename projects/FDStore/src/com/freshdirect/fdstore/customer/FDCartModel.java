@@ -1362,4 +1362,23 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				return true;
 		return false;
 	}
+	
+	public PromotionI getNonCombinableHeaderPromotion() {
+		List<ErpDiscountLineModel> l = this.getDiscounts();
+		if(l.isEmpty())
+			return null;
+
+		Iterator<ErpDiscountLineModel> i = l.iterator();
+		while(i.hasNext()) {
+			//Get the non combinable applied discount from the cart.
+			ErpDiscountLineModel model = i.next();
+			if(model==null) continue;
+			Discount applied = model.getDiscount();
+			if(applied == null) continue;
+			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
+			if(promo != null && !promo.isRedemption() && !promo.isCombineOffer())
+				return promo;
+		}
+		return null;
+	}
 }

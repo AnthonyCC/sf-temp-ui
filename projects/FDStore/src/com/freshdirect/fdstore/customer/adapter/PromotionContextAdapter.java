@@ -466,7 +466,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 			if(model==null) return null;
 			Discount applied = model.getDiscount();
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
-			if(promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
+			if( promo.getOfferType() != null &&promo.getOfferType().equals(EnumOfferType.WINDOW_STEERING)){
 				return applied;
 			}
 		}
@@ -474,22 +474,7 @@ public class PromotionContextAdapter implements PromotionContextI {
 	}
 	
 	public PromotionI getNonCombinableHeaderPromotion() {
-		List<ErpDiscountLineModel> l = this.getShoppingCart().getDiscounts();
-		if(l.isEmpty())
-			return null;
-
-		Iterator<ErpDiscountLineModel> i = l.iterator();
-		while(i.hasNext()) {
-			//Get the non combinable applied discount from the cart.
-			ErpDiscountLineModel model = i.next();
-			if(model==null) continue;
-			Discount applied = model.getDiscount();
-			if(applied == null) continue;
-			PromotionI promo = PromotionFactory.getInstance().getPromotion(applied.getPromotionCode());
-			if(promo != null && !promo.isRedemption() && !promo.isCombineOffer())
-				return promo;
-		}
-		return null;
+		return this.getShoppingCart().getNonCombinableHeaderPromotion();
 	}
 	
 	public boolean isPostPromoConflictEnabled(){
