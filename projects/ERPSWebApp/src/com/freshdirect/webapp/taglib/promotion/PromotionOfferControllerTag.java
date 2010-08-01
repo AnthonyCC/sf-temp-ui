@@ -56,7 +56,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 			this.populatePromotionModel(request,actionResult);
 			if(actionResult.isSuccess()){
 				populatePromoChangeModel();
-				savePromotion();
+				savePromotion(actionResult);
 				setSuccessPage(getSuccessPage()+promotion.getPromotionCode());
 			}
 		} catch (FDResourceException e) {
@@ -78,7 +78,7 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 	}
 
 
-	private void savePromotion() throws FDResourceException,
+	private void savePromotion(ActionResult actionResult) throws FDResourceException,
 			FDDuplicatePromoFieldException, FDPromoTypeNotFoundException,
 			FDPromoCustNotFoundException {
 		if("promoOffer".equalsIgnoreCase(this.getActionName())){
@@ -93,116 +93,124 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 		
 		if("promoOffer".equalsIgnoreCase(this.getActionName())){
 			//TODO: Validations
-		String promotionType = NVL.apply(request.getParameter("discount_type"), "").trim();
-		if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotionType)){
-			this.promotion.setMaxAmount("");
-			this.promotion.setPercentOff(NVL.apply(request.getParameter("hd_perc"), "").trim());
-			String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
-			String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
-			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
-			if("".equals(headerDiscountType)){
-				actionResult.addError(true, "discountEmpty", " Please select one discount type under HEADER.");
-			}
-			else if("perc".equalsIgnoreCase(headerDiscountType)){				
-				String percentOff = NVL.apply(request.getParameter("hd_perc"), "").trim();
-				this.promotion.setPercentOff(percentOff);
+			String promotionType = NVL.apply(request.getParameter("discount_type"), "").trim();
+			if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotionType)){
 				this.promotion.setMaxAmount("");
-				this.promotion.setWaiveChargeType("");
-				this.promotion.setExtendDpDays(null);
-				this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
-				if(!NumberUtil.isInteger(percentOff)){
-					actionResult.addError(true, "percentOffNumber", " Discount % value for HEADER should be integer.");
+				this.promotion.setPercentOff(NVL.apply(request.getParameter("hd_perc"), "").trim());
+				String headerDiscountType = NVL.apply(request.getParameter("header_discount_type"), "").trim();
+				String offerType = NVL.apply(request.getParameter("header_discount_type_all"), "").trim();
+				this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
+				if("".equals(headerDiscountType)){
+					actionResult.addError(true, "discountEmpty", " Please select one discount type under HEADER.");
 				}
-			}else if("amount".equalsIgnoreCase(headerDiscountType)){
-				String maxAmount = NVL.apply(request.getParameter("hd_amt"), "").trim();
-				this.promotion.setMaxAmount(maxAmount);
-				this.promotion.setPercentOff("");
-				this.promotion.setWaiveChargeType("");
-				this.promotion.setExtendDpDays(null);
-				this.promotion.setOfferType(offerType);
-				if(!NumberUtil.isDouble(maxAmount)){
-					actionResult.addError(true, "maxAmountNumber", " Discount $ value should be number.");
-				}
-			}else if("hd_free".equalsIgnoreCase(headerDiscountType)){
-				this.promotion.setWaiveChargeType("DLV");
-				this.promotion.setMaxAmount("");
-				this.promotion.setPercentOff("");
-				this.promotion.setExtendDpDays(null);
-				this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
-				this.promotion.setCombineOffer(true);
-			}else if("hd_extend_dp".equalsIgnoreCase(headerDiscountType)){
-				String extendDpDays = NVL.apply(request.getParameter("extendDpDays"), "").trim();
-				if(NumberUtil.isInteger(extendDpDays)){
-					this.promotion.setExtendDpDays(Integer.parseInt(extendDpDays));
+				else if("perc".equalsIgnoreCase(headerDiscountType)){				
+					String percentOff = NVL.apply(request.getParameter("hd_perc"), "").trim();
+					this.promotion.setPercentOff(percentOff);
 					this.promotion.setMaxAmount("");
 					this.promotion.setWaiveChargeType("");
+					this.promotion.setExtendDpDays(null);
+					this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
+					if(!NumberUtil.isInteger(percentOff)){
+						actionResult.addError(true, "percentOffNumber", " Discount % value for HEADER should be integer.");
+					}
+				}else if("amount".equalsIgnoreCase(headerDiscountType)){
+					String maxAmount = NVL.apply(request.getParameter("hd_amt"), "").trim();
+					this.promotion.setMaxAmount(maxAmount);
 					this.promotion.setPercentOff("");
-				}else{
-					actionResult.addError(true, "extendDpDaysRequired", " Extend Delivery Pass Days value should be integer.");
+					this.promotion.setWaiveChargeType("");
+					this.promotion.setExtendDpDays(null);
+					this.promotion.setOfferType(offerType);
+					if(!NumberUtil.isDouble(maxAmount)){
+						actionResult.addError(true, "maxAmountNumber", " Discount $ value should be number.");
+					}
+				}else if("hd_free".equalsIgnoreCase(headerDiscountType)){
+					this.promotion.setWaiveChargeType("DLV");
+					this.promotion.setMaxAmount("");
+					this.promotion.setPercentOff("");
+					this.promotion.setExtendDpDays(null);
+					this.promotion.setOfferType(EnumOfferType.WAIVE_DLV_CHARGE.getName());
+					this.promotion.setCombineOffer(true);
+				}else if("hd_extend_dp".equalsIgnoreCase(headerDiscountType)){
+					String extendDpDays = NVL.apply(request.getParameter("extendDpDays"), "").trim();
+					if(NumberUtil.isInteger(extendDpDays)){
+						this.promotion.setExtendDpDays(Integer.parseInt(extendDpDays));
+						this.promotion.setMaxAmount("");
+						this.promotion.setWaiveChargeType("");
+						this.promotion.setPercentOff("");
+					}else{
+						actionResult.addError(true, "extendDpDaysRequired", " Extend Delivery Pass Days value should be integer.");
+					}
+					this.promotion.setOfferType(EnumOfferType.DP_EXTN.getName());
+					this.promotion.setCombineOffer(true);
 				}
-				this.promotion.setOfferType(EnumOfferType.DP_EXTN.getName());
+				
+	//			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
+				this.promotion.setPromotionType(promotionType);
+	//			setWSPromotionCode();
+				clearSampleTypeInfo();
+				clearLineItemTypeInfo();
+			}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
+				this.promotion.setMaxAmount("");
+				this.promotion.setOfferType(EnumOfferType.LINE_ITEM.getName());
+				String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
+				this.promotion.setPercentOff(percentOff);
+				if(!NumberUtil.isInteger(percentOff)){
+					actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be integer.");
+				}
+				String maxItems = NVL.apply(request.getParameter("li_maxItems"), "").trim();
+				if(!"".equals(maxItems)){
+					if(NumberUtil.isInteger(maxItems)){
+						this.promotion.setMaxItemCount(Integer.parseInt(maxItems));
+					}else{
+						actionResult.addError(true, "maxItemsNumber", " Max # items value should be integer.");
+					}
+				}else{
+					this.promotion.setMaxItemCount(null);
+				}
+				populateDcpdData(request);
+	
+				validateDcpdData(request, actionResult);
+				this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_allowOffer"), "").trim()));
+				this.promotion.setFavoritesOnly(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_favorites"), "").trim()));
+				this.promotion.setPerishable(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_perishables"), "").trim()));
+				this.promotion.setPromotionType(promotionType);
+				clearHeaderTypeInfo();
+				clearSampleTypeInfo();
+	//			this.promotion.setOfferType("");
+	//			setWSPromotionCode();
+			}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
+				this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
+				this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
+				this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
+				ContentFactory contentFactory = ContentFactory.getInstance();
+				if(!"".equalsIgnoreCase(promotion.getCategoryName())){
+					if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
+						actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
+					}
+				}
+				if(!"".equalsIgnoreCase(promotion.getProductName())){
+					if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
+						actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
+					}
+				}
+				
+				
+				this.promotion.setPromotionType(promotionType);
+	//			this.promotion.setOfferType("");
 				this.promotion.setCombineOffer(true);
+				clearHeaderTypeInfo();
+				clearLineItemTypeInfo();
+				this.promotion.setPercentOff("");
+	//			setWSPromotionCode();
 			}
-			
-//			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("hd_allow_offer"), "").trim()));
-			this.promotion.setPromotionType(promotionType);
-//			setWSPromotionCode();
-			clearSampleTypeInfo();
-			clearLineItemTypeInfo();
-		}else if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotionType)){
-			this.promotion.setMaxAmount("");
-			this.promotion.setOfferType(EnumOfferType.LINE_ITEM.getName());
-			String percentOff = NVL.apply(request.getParameter("li_discount"), "").trim();
-			this.promotion.setPercentOff(percentOff);
-			if(!NumberUtil.isInteger(percentOff)){
-				actionResult.addError(true, "liPercentOffNumber", " Discount % value for LINE ITEM should be integer.");
-			}
-			String maxItems = NVL.apply(request.getParameter("li_maxItems"), "").trim();
-			if(!"".equals(maxItems)){
-				if(NumberUtil.isInteger(maxItems)){
-					this.promotion.setMaxItemCount(Integer.parseInt(maxItems));
-				}else{
-					actionResult.addError(true, "maxItemsNumber", " Max # items value should be integer.");
-				}
+			String oldPromoCode = this.promotion.getPromotionCode();
+			String newPromoCode = this.promotion.getPromotionCode();
+			if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(this.promotion.getOfferType())){
+				newPromoCode = this.promotion.getPromotionCode().replace("CD", "WS");
 			}else{
-				this.promotion.setMaxItemCount(null);
+				newPromoCode = this.promotion.getPromotionCode().replace("WS", "CD");
 			}
-			populateDcpdData(request);
-
-			validateDcpdData(request, actionResult);
-			this.promotion.setCombineOffer(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_allowOffer"), "").trim()));
-			this.promotion.setFavoritesOnly(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_favorites"), "").trim()));
-			this.promotion.setPerishable(!"".equalsIgnoreCase(NVL.apply(request.getParameter("li_perishables"), "").trim()));
-			this.promotion.setPromotionType(promotionType);
-			clearHeaderTypeInfo();
-			clearSampleTypeInfo();
-//			this.promotion.setOfferType("");
-//			setWSPromotionCode();
-		}else if(EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotionType)){
-			this.promotion.setOfferType(EnumOfferType.SAMPLE.getName());
-			this.promotion.setCategoryName(NVL.apply(request.getParameter("categoryName"), "").trim());
-			this.promotion.setProductName(NVL.apply(request.getParameter("productName"), "").trim());
-			ContentFactory contentFactory = ContentFactory.getInstance();
-			if(!"".equalsIgnoreCase(promotion.getCategoryName())){
-				if(null == contentFactory.getContentNode(FDContentTypes.CATEGORY, promotion.getCategoryName().toLowerCase())){
-					actionResult.addError(true, "invalidCategoryName", promotion.getCategoryName()+" is invalid category Id." );
-				}
-			}
-			if(!"".equalsIgnoreCase(promotion.getProductName())){
-				if(null == contentFactory.getContentNode(FDContentTypes.PRODUCT, promotion.getProductName().toLowerCase())){
-					actionResult.addError(true, "invalidProductName", promotion.getProductName()+" is invalid product Id" );
-				}
-			}
-			
-			
-			this.promotion.setPromotionType(promotionType);
-//			this.promotion.setOfferType("");
-			this.promotion.setCombineOffer(true);
-			clearHeaderTypeInfo();
-			clearLineItemTypeInfo();
-			this.promotion.setPercentOff("");
-//			setWSPromotionCode();
-		}
+			validatePromoCodeForWS(oldPromoCode,newPromoCode,actionResult);
 		}else if("promoCart".equalsIgnoreCase(this.getActionName())){
 			//TODO:Validations
 			String subTotal = NVL.apply(request.getParameter("subTotal"), "").trim();
@@ -271,12 +279,24 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 	}
 
 
-	private void setWSPromotionCode() {
+	private void setWSPromotionCode() {		
 		if(EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(this.promotion.getOfferType())){
 			this.promotion.setPromotionCode(this.promotion.getPromotionCode().replace("CD", "WS"));
 		}else{
 			this.promotion.setPromotionCode(this.promotion.getPromotionCode().replace("WS", "CD"));
 		}
+	}
+
+
+	private void validatePromoCodeForWS(String oldPromoCode, String newPromoCode,ActionResult actionResult) {
+		if(null != oldPromoCode && null != newPromoCode && this.promotion.getPublishes()>0 && !oldPromoCode.equalsIgnoreCase(newPromoCode)){
+			if(oldPromoCode.indexOf("CD_")>-1){
+				actionResult.addError(true, "wsAndCdErr", "Promotion can't be changed to 'WINDOW STEERING' once published. Please create a new promotion for 'WINDOW STEERING'." );
+			}else{
+				actionResult.addError(true, "wsAndCdErr", "'WINDOW STEERING' promotion can't be changed to other type, once published. Please create a new promotion." );
+			}
+		}
+		
 	}
 
 

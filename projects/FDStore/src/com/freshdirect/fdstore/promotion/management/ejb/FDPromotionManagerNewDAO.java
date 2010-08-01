@@ -97,16 +97,25 @@ public class FDPromotionManagerNewDAO {
 
 	public static List<FDPromotionNewModel> getPromotions(Connection conn) throws SQLException {
 
-		PreparedStatement ps = conn
-				.prepareStatement("SELECT * FROM CUST.PROMOTION_NEW");
-		ResultSet rs = ps.executeQuery();
+		PreparedStatement ps = null;
+		ResultSet rs = null;		
 		List<FDPromotionNewModel> promoList = new ArrayList<FDPromotionNewModel>();
-		while (rs.next()) {
-			FDPromotionNewModel promotion = populate(conn, rs);
-			promoList.add(promotion);
+		try {
+			ps = conn.prepareStatement("SELECT * FROM CUST.PROMOTION_NEW");
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				FDPromotionNewModel promotion = populate(conn, rs);
+				promoList.add(promotion);
+			}
+		} finally{
+			if(rs!=null){
+				rs.close();
+			}
+			if(ps!=null){
+				ps.close();
+			}
 		}
-		rs.close();
-		ps.close();
+		
 		return promoList;
 	}
 
@@ -1289,38 +1298,54 @@ public class FDPromotionManagerNewDAO {
 
 	protected static List<FDPromoDlvZoneStrategyModel> loadPromoDlvZoneStrategies(Connection conn, String promotionId)
 			throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(LOAD_PROMO_DLV_ZONE_STRATEGY);
-		ps.setString(1, promotionId);
-		ResultSet rs = ps.executeQuery();
-	    List<FDPromoDlvZoneStrategyModel> list = new ArrayList<FDPromoDlvZoneStrategyModel>();		
-		while (rs.next()) {
-			FDPromoDlvZoneStrategyModel dlvZoneStrategyModel = new FDPromoDlvZoneStrategyModel();
-			dlvZoneStrategyModel.setId(rs.getString("id"));
-			dlvZoneStrategyModel.setPromotionId(promotionId);
-			dlvZoneStrategyModel.setDlvDays(rs.getString("DLV_DAYS"));
-			Array array = rs.getArray(4);
-			String[] zoneCodes = (String[])array.getArray();
-			dlvZoneStrategyModel.setDlvZones(zoneCodes);
-			
-			PreparedStatement ps1 = conn.prepareStatement(LOAD_PROMO_TIME_SLOTS);
-			ps1.setString(1, dlvZoneStrategyModel.getId());
-			ResultSet rs1 = ps1.executeQuery();
-			List<FDPromoDlvTimeSlotModel> timeSlotList = new ArrayList<FDPromoDlvTimeSlotModel>();
-			while(rs1.next()){
-				FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
-				timeSlotModel.setId(rs1.getString("id"));
-				timeSlotModel.setPromoDlvZoneId(dlvZoneStrategyModel.getId());
-				timeSlotModel.setDayId(rs1.getInt("DAY_ID"));
-				timeSlotModel.setDlvTimeStart(rs1.getString("START_TIME"));
-				timeSlotModel.setDlvTimeEnd(rs1.getString("END_TIME"));
-				timeSlotList.add(timeSlotModel);
+		
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		ResultSet rs1 = null;
+		PreparedStatement ps1 = null;
+		List<FDPromoDlvZoneStrategyModel> list = new ArrayList<FDPromoDlvZoneStrategyModel>();
+		try {
+			ps = conn.prepareStatement(LOAD_PROMO_DLV_ZONE_STRATEGY);
+			ps.setString(1, promotionId);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				FDPromoDlvZoneStrategyModel dlvZoneStrategyModel = new FDPromoDlvZoneStrategyModel();
+				dlvZoneStrategyModel.setId(rs.getString("id"));
+				dlvZoneStrategyModel.setPromotionId(promotionId);
+				dlvZoneStrategyModel.setDlvDays(rs.getString("DLV_DAYS"));
+				Array array = rs.getArray(4);
+				String[] zoneCodes = (String[]) array.getArray();
+				dlvZoneStrategyModel.setDlvZones(zoneCodes);
+
+				ps1 = conn.prepareStatement(LOAD_PROMO_TIME_SLOTS);
+				ps1.setString(1, dlvZoneStrategyModel.getId());
+				rs1 = ps1.executeQuery();
+				List<FDPromoDlvTimeSlotModel> timeSlotList = new ArrayList<FDPromoDlvTimeSlotModel>();
+				while (rs1.next()) {
+					FDPromoDlvTimeSlotModel timeSlotModel = new FDPromoDlvTimeSlotModel();
+					timeSlotModel.setId(rs1.getString("id"));
+					timeSlotModel.setPromoDlvZoneId(dlvZoneStrategyModel
+							.getId());
+					timeSlotModel.setDayId(rs1.getInt("DAY_ID"));
+					timeSlotModel.setDlvTimeStart(rs1.getString("START_TIME"));
+					timeSlotModel.setDlvTimeEnd(rs1.getString("END_TIME"));
+					timeSlotList.add(timeSlotModel);
+				}
+				dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);
+				list.add(dlvZoneStrategyModel);
 			}
-			dlvZoneStrategyModel.setDlvTimeSlots(timeSlotList);		
-			list.add(dlvZoneStrategyModel);
-		}	
-		rs.close();
-		ps.close();
-	    
+		} finally  {
+			if(rs!=null){
+				rs.close();
+			}if(ps!=null){
+				ps.close();
+			}if(rs1!=null){
+				rs1.close();
+			}if(ps1!=null){
+				ps1.close();
+			}
+		}
+			    
 		return list;		
 	}
 	
@@ -1336,6 +1361,8 @@ public class FDPromotionManagerNewDAO {
 			String userId = rs.getString("USER_ID");
 			userIds.add(userId);
 		}
+		ps.close();
+		rs.close();
 		return userIds;
 	}
 	
@@ -1352,6 +1379,8 @@ public class FDPromotionManagerNewDAO {
 			String userId = rs.getString("USER_ID");
 			userIds.add(userId);
 		}
+		ps.close();
+		rs.close();
 		return userIds;
 	}
 	
@@ -1416,6 +1445,8 @@ public class FDPromotionManagerNewDAO {
 		List<FDPromoChangeModel> auditChanges= new ArrayList<FDPromoChangeModel>();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		ResultSet rs1 = null;
+		PreparedStatement ps1 =null; 
 		
 		try {
 			ps = conn.prepareStatement("SELECT * FROM CUST.PROMO_CHANGE WHERE PROMOTION_ID=? ORDER BY ACTION_DATE DESC");
@@ -1429,9 +1460,9 @@ public class FDPromotionManagerNewDAO {
 				promoChangeModel.setActionType(EnumPromoChangeType.getEnum(rs.getString("ACTION_TYPE")));
 				promoChangeModel.setActionDate(rs.getTimestamp("ACTION_DATE"));
 				promoChangeModel.setUserId(rs.getString("USER_ID"));
-				PreparedStatement ps1 = conn.prepareStatement("SELECT * FROM CUST.PROMO_CHANGE_DETAIL WHERE CHANGE_ID=?");
+				ps1 = conn.prepareStatement("SELECT * FROM CUST.PROMO_CHANGE_DETAIL WHERE CHANGE_ID=?");
 				ps1.setString(1,promoChangeModel.getId());
-				ResultSet rs1 =ps1.executeQuery();
+				rs1 =ps1.executeQuery();
 				List<FDPromoChangeDetailModel> auditChangeDetails= new ArrayList<FDPromoChangeDetailModel>();
 				while(rs1.next()){
 					FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
@@ -1451,8 +1482,13 @@ public class FDPromotionManagerNewDAO {
 		} finally {
 			if (rs != null)
 				rs.close();
+			if (rs1 != null)
+				rs1.close();
 			if (ps != null)
 				ps.close();
+			if (ps1!= null){
+				ps1.close();
+			}
 		}
 		
 		
@@ -2319,6 +2355,8 @@ public class FDPromotionManagerNewDAO {
 				isDuplicate = true;
 			}
 		}
+		rs.close();
+		ps.close();
 		return isDuplicate;
 	}
 	

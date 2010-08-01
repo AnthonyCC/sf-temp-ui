@@ -38,7 +38,7 @@ String userId = request.getParameter("userId");
 			(EnumPromotionStatus.DRAFT.equals(promotion.getStatus())) || (
 				(promotion.getAssignedCustomerSize() <= 0) &&
 				(attrList == null || attrList.size() <= 0) &&
-				(csm == null || (promotion.getCustStrategies().get(0).getOrderRangeStart() <= 0 && promotion.getCustStrategies().get(0).getOrderRangeEnd() <= 0))
+				(csm == null || (promotion.getCustStrategies().get(0).getOrderRangeStart() <= 0 && promotion.getCustStrategies().get(0).getOrderRangeEnd() <= 0 && "None".equals(dpStatusString) && "".equals(cohortsString)))
 			)
 		) {
 		isEmptyPromoCustreq = true;
