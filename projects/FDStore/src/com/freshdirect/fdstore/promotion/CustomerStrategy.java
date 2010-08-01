@@ -26,6 +26,7 @@ public class CustomerStrategy implements PromotionStrategyI {
 	}
 	
 	public int evaluate(String promotionCode, PromotionContextI context) {
+		
 		//Evaluate Cohorts
 		if(cohorts != null && cohorts.size() > 0 && !cohorts.contains(context.getUser().getCohortName())) return DENY;
 		
@@ -45,19 +46,31 @@ public class CustomerStrategy implements PromotionStrategyI {
 			}
 		}
 		
+		//Evaluate Order Types
+		if(!evaluateOrderType(context.getOrderType())) {
+			context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode());
+			return DENY;
+		}
+		
 		//Evaluate Payment Types
 		FDCartModel cart = context.getShoppingCart();
-		if(paymentTypes != null && paymentTypes.size() > 0 && cart.getPaymentMethod() != null) {
+		if(paymentTypes != null && paymentTypes.size() > 0 ) {
+			if(cart.getPaymentMethod() == null){
+				context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_PAYMENT_METHOD_SELECTED.getErrorCode());
+				return DENY;
+			}
 			EnumCardType currentCardType = cart.getPaymentMethod().getCardType();
-			if(!paymentTypes.contains(currentCardType)) return DENY;
+			if(!paymentTypes.contains(currentCardType)) {
+				context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode());
+				return DENY;
+			}
 			if(priorEcheckUse > 0 && currentCardType.equals(EnumCardType.ECP)){
 				int validEcheckOrderCount = context.getSettledECheckOrderCount();
 				if(validEcheckOrderCount  < priorEcheckUse) return DENY;
 			}
 		}
 		
-		//Evaluate Order Types
-		if(!evaluateOrderType(context.getOrderType())) return DENY;
+
 		
 		return ALLOW;
 	}

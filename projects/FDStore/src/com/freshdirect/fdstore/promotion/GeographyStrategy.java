@@ -44,6 +44,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 
 		PromotionGeography g = this.getGeography(new Date());
 		if (g == null || !isAllowedGeography(context, g)) {
+			context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode());
 			return DENY;
 		}
 
@@ -89,7 +90,7 @@ public class GeographyStrategy implements PromotionStrategyI {
 		return false;
 	}
 	public int getPrecedence() {
-		return 300;
+		return 3000;
 	}
 
 	public String toString() {

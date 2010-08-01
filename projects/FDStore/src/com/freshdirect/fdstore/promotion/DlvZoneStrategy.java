@@ -69,6 +69,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){
 					FDReservation dlvReservation = context.getDeliveryReservation();
 					if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
+						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
 						return DENY;
 					}
 					int day = dlvReservation.getTimeslot().getDayOfWeek();		
@@ -78,8 +79,16 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 						TimeOfDay dlvEndTimeOfDay = dlvReservation.getTimeslot().getDlvTimeslot().getEndTime();
 						List<PromotionDlvTimeSlot> dlvTimeSlotList = dlvTimeSlots.get(day);
 						if(null != dlvTimeSlotList){
-							return checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList) ? ALLOW : DENY;
+							if(checkDlvTimeSlots(dlvStartTimeOfDay,dlvEndTimeOfDay, dlvTimeSlotList))
+								return ALLOW;
+							else{
+								context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
+								return DENY;
+							}
 						}
+					}
+					if(!e){
+						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
 					}
 					return e ? ALLOW : DENY;
 				}else {
@@ -87,6 +96,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 				}
 			}
 		}
+		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
 		return DENY;
 	}
 

@@ -13,6 +13,11 @@ public  class PromotionErrorType extends Enum{
 	public static final PromotionErrorType ERROR_GENERIC = new PromotionErrorType("100", 100, "Generic Error");
 	public static final PromotionErrorType ERROR_REDEMPTION_EXCEEDED = new PromotionErrorType("101", 101, "Redemption exceeded");
 	public static final PromotionErrorType NO_ELIGIBLE_CART_LINES = new PromotionErrorType("102", 102, "No Eligible Cart Lines");
+	public static final PromotionErrorType NO_DELIVERY_ADDRESS_SELECTED = new PromotionErrorType("103", 103, "No Delivery Address Selected");
+	public static final PromotionErrorType NO_PAYMENT_METHOD_SELECTED = new PromotionErrorType("104", 104, "No Payment Method Selected");
+	public static final PromotionErrorType NO_ELIGIBLE_ADDRESS_SELECTED = new PromotionErrorType("105", 105, "No Eligible Address Selected");
+	public static final PromotionErrorType NO_ELIGIBLE_PAYMENT_SELECTED = new PromotionErrorType("106", 106, "No Eligible Payment Selected");
+	public static final PromotionErrorType NO_ELIGIBLE_TIMESLOT_SELECTED = new PromotionErrorType("107", 107, "No Eligible Timeslot Selected");
 	
 	private int code; 	
 	private String description;

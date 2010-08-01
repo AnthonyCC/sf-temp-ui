@@ -169,12 +169,12 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_CART_REDEMPTION_EXCEEDED);
 						user.setRedeemedPromotion(null);
 					} else {
-						AddressModel shippingAddress = cart.getDeliveryAddress();
-						ErpPaymentMethodI paymentMethod = cart.getPaymentMethod();
-						if(shippingAddress == null || !PromotionHelper.checkPromoEligibilityForAddress(user, shippingAddress)){
+						if(errorCode == PromotionErrorType.NO_ELIGIBLE_ADDRESS_SELECTED.getErrorCode() 
+								|| errorCode == PromotionErrorType.NO_DELIVERY_ADDRESS_SELECTED.getErrorCode()){
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_DLV_ADDRESS);
 							request.setAttribute("promoError", "true");
-						} else if(paymentMethod == null || !PromotionHelper.checkPromoEligibilityForPayment(user, paymentMethod)){
+						} else if(errorCode == PromotionErrorType.NO_ELIGIBLE_PAYMENT_SELECTED.getErrorCode() 
+								|| errorCode == PromotionErrorType.NO_PAYMENT_METHOD_SELECTED.getErrorCode()){
 							actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_PAYMENT);
 							request.setAttribute("promoError", "true");
 						}else if (!isApplied) {
@@ -204,8 +204,7 @@ public class RedemptionCodeControllerTag extends AbstractControllerTag {
 					} else if (promotion.isSampleItem()) {
 						actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_PRODUCT_UNAVAILABLE);
 					} else{
-						FDReservation reservation = cart.getDeliveryReservation();
-							if(reservation == null || !PromotionHelper.checkPromoEligibilityForTimeslot(user, reservation.getTimeslotId()))
+						if(errorCode == PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode()) 
 								actionResult.addError(true, "redemption_error", SystemMessageList.MSG_REDEMPTION_NOTE_TIMESLOT);
 					}
 				} else {
