@@ -57,66 +57,76 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
 		IZoneModel zone = orderModel.getDeliveryInfo().getDeliveryZone();
-		ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
-		IBuildingModel building = location.getBuilding();
-		
-		IZoneScenarioModel zoneScenario = null;
-		if(scenario != null && scenario.getZoneConfiguration() != null) {
-			if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
-				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
-			} else {
-				zoneScenario = scenario.getZoneConfiguration().get(CONSTANT_ALLZONES);
-			}
-		}
-		//if zoneScenario is null then there is no scenario level override, let find serviceTime first
-		if(location.getServiceTimeOverride() > 0) {
-			return location.getServiceTimeOverride();
-		} else if(building.getServiceTimeOverride() > 0) {
-			return building.getServiceTimeOverride();
-		} else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
-			return zoneScenario.getServiceTimeOverride();
-		}
-		// Couldn't find serviceTime going to find the serviceTimeType
-		IServiceTimeTypeModel serviceTimeType = null;
-		if(location.getServiceTimeType() != null) {
-			serviceTimeType = location.getServiceTimeType();
-		} else if(building.getServiceTimeType() != null) {
-			serviceTimeType = building.getServiceTimeType();
-		} else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null) {
-			serviceTimeType = zoneScenario.getServiceTimeType();
-		} else {
-			serviceTimeType = zone.getServiceTimeType();
-		}
-		// Got the serviceTimeType lets calculate
-		double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
-											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));			
-		double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
-											, ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
-		
-		//Lets see if we need a adjustment
-		double serviceTimeAdjustment = 0;
-		EnumArithmeticOperator adjustmentOperator = null;
-		if(location.getAdjustmentOperator() != null) {
-			adjustmentOperator = location.getAdjustmentOperator();
-			serviceTimeAdjustment = location.getServiceTimeAdjustment();
-		} else if(building.getAdjustmentOperator() != null) {
-			adjustmentOperator = building.getAdjustmentOperator();
-			serviceTimeAdjustment = building.getServiceTimeAdjustment();
-		} else if(zoneScenario != null && zoneScenario.getAdjustmentOperator() != null) {
-			adjustmentOperator = zoneScenario.getAdjustmentOperator();
-			serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
-		} 
-		if(adjustmentOperator != null) {
-			if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
-				serviceTimeAdjustment = -serviceTimeAdjustment;
-			}
-			if((valY + serviceTimeAdjustment) > 0) {
-				valY = valY + serviceTimeAdjustment;
-			} else {
-				valY = 0;
-			}
-		}
-		return valY;
+        ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
+        IBuildingModel building = location.getBuilding();
+        
+        IZoneScenarioModel zoneScenario = null;
+        
+        if(scenario != null && scenario.getZoneConfiguration() != null) {
+              if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
+                    zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
+              } else {
+                    zoneScenario = scenario.getZoneConfiguration().get(CONSTANT_ALLZONES);
+              }
+        }
+        //if zoneScenario is null then there is no scenario level override, let find serviceTime first
+        if(location.getServiceTimeOverride() > 0) {
+              return location.getServiceTimeOverride();
+        } else if(building.getServiceTimeOverride() > 0) {
+              return building.getServiceTimeOverride();
+        } else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
+              return zoneScenario.getServiceTimeOverride();
+        }
+        int stPriority = 0;
+        // Couldn't find serviceTime going to find the serviceTimeType
+        IServiceTimeTypeModel serviceTimeType = null;
+        if(location.getServiceTimeType() != null) {
+              stPriority = 3;
+              serviceTimeType = location.getServiceTimeType();
+        } else if(building.getServiceTimeType() != null) {
+              stPriority = 2;
+              serviceTimeType = building.getServiceTimeType();
+        } else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null) {
+              stPriority = 1;
+              serviceTimeType = zoneScenario.getServiceTimeType();
+        } else {
+              serviceTimeType = zone.getServiceTimeType();
+        }
+        // Got the serviceTimeType lets calculate
+        double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
+                                                              , ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));                  
+        double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
+                                                              , ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
+        
+        int adjustmentPriority = 0;
+        //Lets see if we need a adjustment
+        double serviceTimeAdjustment = 0;
+        EnumArithmeticOperator adjustmentOperator = null;
+        if(location.getAdjustmentOperator() != null) {
+              adjustmentPriority = 3;
+              adjustmentOperator = location.getAdjustmentOperator();
+              serviceTimeAdjustment = location.getServiceTimeAdjustment();
+        } else if(building.getAdjustmentOperator() != null) {
+              adjustmentPriority = 2;
+              adjustmentOperator = building.getAdjustmentOperator();
+              serviceTimeAdjustment = building.getServiceTimeAdjustment();
+        } else if(zoneScenario != null && zoneScenario.getAdjustmentOperator() != null) {
+              adjustmentPriority = 1;
+              adjustmentOperator = zoneScenario.getAdjustmentOperator();
+              serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
+        } 
+        if(adjustmentOperator != null && adjustmentPriority > stPriority) {
+              if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
+                    serviceTimeAdjustment = -serviceTimeAdjustment;
+              }
+              if((valY + serviceTimeAdjustment) > 0) {
+                    valY = valY + serviceTimeAdjustment;
+              } else {
+                    valY = 0;
+              }
+        }
+        return valY;
+
 	}
 	
 		
