@@ -161,13 +161,14 @@ public class RoutingLoadListener extends MessageDrivenBeanSupport {
 		if(locationModel == null) {
 			IBuildingModel buildingModel = proxy.getBuildingLocation(baseModel);			
 			baseModel.setLocationId(proxy.getLocationId());
-			if(buildingModel != null && buildingModel.getBuildingId() != null) {																		    							
+			if(buildingModel != null && buildingModel.getBuildingId() != null) {
+				baseModel.setBuilding(buildingModel);
 				saveLocationLst.add(baseModel);
 			} else {				
 				buildingModel = proxy.getNewBuilding(null, baseModel);
 				//buildingModel = proxy.getNewBuilding(null, baseModel);
 				if(buildingModel != null) {
-						
+					baseModel.setBuilding(buildingModel);	
 					saveLocationLst.add(baseModel);
 					saveBuildingLst.add(buildingModel);
 				}

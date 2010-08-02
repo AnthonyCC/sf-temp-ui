@@ -118,7 +118,9 @@ public class GeographyService extends BaseService implements IGeographyService {
 				buildingModel = getBuildingLocation(locModel);					
 				result.setNewBuilding(true);
 			}
-						
+			if(buildingModel != null && locModel.getBuilding() != null) {
+				locModel.getBuilding().setBuildingId(buildingModel.getBuildingId());
+			}			
 			insertLocation(locModel);			
 			locationModel = getLocation(locModel);				
 			
@@ -168,7 +170,9 @@ public class GeographyService extends BaseService implements IGeographyService {
 				insertBuilding(buildingModel);
 				buildingModel = getBuildingLocation(locModel);				
 			}
-						
+			if(buildingModel != null && locModel.getBuilding() != null) {
+				locModel.getBuilding().setBuildingId(buildingModel.getBuildingId());
+			}
 			insertLocation(locModel);			
 			locationModel = getLocation(locModel);	
 		}
