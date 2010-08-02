@@ -193,13 +193,16 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				do {
 					IZoneScenarioModel model = new ZoneScenarioModel();                                                                                                                                                                                           
 					model.setZone(rs.getString("ZONE_CODE"));
-
-					IServiceTimeTypeModel locServiceTimeType = new ServiceTimeTypeModel();
-					locServiceTimeType.setCode( rs.getString("SERVICETIME_TYPE"));
-					locServiceTimeType.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
-					locServiceTimeType.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
-
-					model.setServiceTimeType(locServiceTimeType);
+					
+					String serviceTimeType = rs.getString("SERVICETIME_TYPE");
+					if(serviceTimeType != null) {
+						IServiceTimeTypeModel locServiceTimeType = new ServiceTimeTypeModel();
+						locServiceTimeType.setCode(serviceTimeType);
+						locServiceTimeType.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
+						locServiceTimeType.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
+	
+						model.setServiceTimeType(locServiceTimeType);
+					}
 
 					model.setAdjustmentOperator(EnumArithmeticOperator.getEnum(rs.getString("SERVICETIME_OPERATOR")));
 					model.setServiceTimeAdjustment(rs.getDouble("SERVICETIME_ADJUSTMENT"));

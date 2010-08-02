@@ -102,7 +102,7 @@
         	   		
      		if(!hasError) {
      			depotDataTable.addRow({scenarioZonesId:_zone, serviceTimeType:_stype, serviceTimeOverride:_stimeOverride,
-     				serviceTimeOperator:_stimeOpt,serviceTimeAdjustment:_stimeAdj, delete:''});
+     				serviceTimeOperator:_stimeOpt,serviceTimeAdjustment:_stimeAdj});
      		}
      }
          
