@@ -763,13 +763,17 @@ FDIdentity identity = user.getIdentity();
 		String rerrMsg = (rerr != null ? rerr.getDescription() : null);
 		
 		// display if message is not empty and does not match the previously displayed error message (if exists)
-		if (!"".equalsIgnoreCase(warningMessage) && !warningMessage.equalsIgnoreCase(rerrMsg)) {
-%>
-		<tr align="right">
-			<td colspan="7"><span class="text11rbold"><%= warningMessage %></span></td>
-		</tr>
-		<%
-		}
+		if(null !=rerrMsg && !"".equals(rerrMsg)){ %>
+			<tr align="right">
+				<td colspan="7"><span class="text11rbold"><%= rerrMsg %></span></td>
+			</tr>
+		<%} else  if (!"".equalsIgnoreCase(warningMessage) && !warningMessage.equalsIgnoreCase(rerrMsg)) {
+			%>
+			<tr align="right">
+				<td colspan="7"><span class="text11rbold"><%= warningMessage %></span></td>
+			</tr>
+			<%
+			}
 	}
 	%>
     <%

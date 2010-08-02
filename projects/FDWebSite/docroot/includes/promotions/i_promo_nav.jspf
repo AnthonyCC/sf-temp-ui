@@ -44,7 +44,7 @@
 %>
 
 <div class="promo_nav">
-<% if(FDStoreProperties.getPromoPublishNodeType().equals("master")) { %>
+<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
@@ -109,9 +109,11 @@
 			<a href="/promotion/export_promo_list.jsp?actionName=export">Export .xls</a>
 		</div>
 	<% } %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
 		<div class="promo_sub_nav">
 			<span onclick="showImportPanel(); return false;" style="cursor: pointer;">Import</span>
 		</div>
+		<% } %>
 	
 	<%-- test links --
 		<div class="promo_sub_nav_debug">
