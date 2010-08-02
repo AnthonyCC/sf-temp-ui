@@ -85,12 +85,7 @@
 							<%
 								String hd_allow_offer_checked = "";
 								hd_allow_offer_checked = 
-									(
-										(EnumOfferType.DP_EXTN.getName().equalsIgnoreCase(promotion.getOfferType())) ||
-										(EnumOfferType.WAIVE_DLV_CHARGE.getName().equalsIgnoreCase(promotion.getOfferType())) ||
-										(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && !"".equals(promotion.getPercentOff())) ||
-										(!"".equals(promotion.getMaxAmount()))
-									)
+									(promotion.isCombineOffer())
 									? "checked"
 									: "";
 								
