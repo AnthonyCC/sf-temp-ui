@@ -1744,7 +1744,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	@Override
 	public boolean isEligibleForClientCodes() {
 		if (cliCodeEligible == null)
-			cliCodeEligible = hasCorporateOrder();
+			cliCodeEligible = FDStoreProperties.isClientCodesEnabled() && hasCorporateOrder();
 
 		LOGGER.debug("Customer eligible for Client Codes: " + cliCodeEligible);
 		

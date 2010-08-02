@@ -407,6 +407,9 @@ public class FDStoreProperties {
 	//Standing Orders
 	private final static String SO_GLOBAL_ENABLER = "fdstore.standingorders.enabled";
 	
+	//Standing Orders
+	private final static String CLIENT_CODES_GLOBAL_ENABLER = "fdstore.clientcodes.enabled";
+
 	//new products revamp
 	private static final String PROP_NEWPRODUCTS_DEPTID="fdstore.newProducts.DeptId";
 	private static final String PROP_NEWPRODUCTS_CATID="fdstore.newProducts.CatId";
@@ -752,6 +755,9 @@ public class FDStoreProperties {
 		//Standing Orders
 		defaults.put(SO_GLOBAL_ENABLER, "false");
 		
+		//Client Codes
+		defaults.put(CLIENT_CODES_GLOBAL_ENABLER, "false");
+
 		//new products revamp
 		defaults.put(PROP_NEWPRODUCTS_DEPTID, "newproduct");
 		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
@@ -1724,6 +1730,10 @@ public class FDStoreProperties {
 
 	public static boolean isStandingOrdersEnabled() {
 		return Boolean.valueOf(config.getProperty(SO_GLOBAL_ENABLER)).booleanValue();
+	}
+	
+	public static boolean isClientCodesEnabled() {
+		return Boolean.valueOf(config.getProperty(CLIENT_CODES_GLOBAL_ENABLER)).booleanValue();
 	}
 	
 	//new products revamp
