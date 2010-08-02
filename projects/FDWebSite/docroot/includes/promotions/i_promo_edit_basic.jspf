@@ -33,30 +33,30 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="nameEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Name:</span></td>
-					<td class="alignL"><input type="text" id="promo_name" name="promo_name" class="w300px" value="<%= promotion.getName() %>"/></td>
+					<td class="alignL"><input type="text" id="promo_name" name="promo_name" class="w300px" value="<%= promotion.getName() %>" maxlength="32" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="descriptionEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Description:</span></td>
-					<td class="alignL"><input type="text" id="promo_description" name="promo_description" class="w450px" value="<%= promotion.getDescription() %>"/></td>
+					<td class="alignL"><input type="text" id="promo_description" name="promo_description" class="w450px" value="<%= promotion.getDescription() %>" maxLength="255" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Redemption code:</td>
-					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" /> <span class="grayIta8pt">Blank/None = automatic application</span></td>
+					<td class="alignL"><input type="text" id="redemption_code" name="redemption_code" class="w150px" value="<%= promotion.getRedemptionCode() %>" maxlength="16" /> <span class="grayIta8pt">Blank/None = automatic application</span></td>
 				</tr>
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="offerDescEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Offer description:</span></td>
-					<td class="alignL"><textarea id="offer_description" name="offer_description" rows="3" cols="30" class="w600px" ><%= promotion.getOfferDesc() %></textarea></td>
+					<td class="alignL"><textarea id="offer_description" name="offer_description" rows="3" cols="30" class="w600px" onkeyup="return maxLen(this, 255);" ><%= promotion.getOfferDesc() %></textarea></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Audience description:</span></td>
-					<td class="alignL"><textarea id="audience_description" name="audience_description" rows="3" cols="30" class="w600px" ><%= promotion.getAudienceDesc() %></textarea></td>
+					<td class="alignL"><textarea id="audience_description" name="audience_description" rows="3" cols="30" class="w600px" onkeyup="return maxLen(this, 255);" ><%= promotion.getAudienceDesc() %></textarea></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><span <fd:ErrorHandler result="<%=result%>" name="audiDescEmpty" id="errorMsg">class="error"</fd:ErrorHandler>>* Terms &amp; Conditions:</span></td>
-					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" ><%= promotion.getTerms() %></textarea></td>
+					<td class="alignL"><textarea id="terms" name="terms" rows="3" cols="30" class="w600px" onkeyup="return maxLen(this, 255);" ><%= promotion.getTerms() %></textarea></td>
 				</tr>
 				<tr class="flatRow">
 					<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>

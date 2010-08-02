@@ -656,3 +656,12 @@ function clearElements(elemId){
 		}
 	}
 }
+
+String.prototype.count=function(s1) { 
+	return (this.length - this.replace(new RegExp(s1,"g"), '').length) / s1.length;
+}
+
+/* max length for text fields (like textarea) */
+function maxLen(elem, len) {
+	if (elem.value.length+elem.value.count('\n') >= len) { elem.value = (elem.value).substring(0,len-elem.value.count('\n')); }
+}
