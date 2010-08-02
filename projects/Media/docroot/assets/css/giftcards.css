@@ -783,7 +783,7 @@ a.gcIcon:link img, a.gcIcon:visited img, a.gcIcon:active img, a.gcIcon:hover img
 		position: relative;
 		top: 0;
 		width: 200px;
-		left: -250;
+		left: -250px;
 		background-color: #fff;
 	}
 	.gc_CO_usersCardsContainer {
