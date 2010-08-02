@@ -886,11 +886,13 @@ function doPublish(promocode) {
 			} else {
 				alert('Publish failed.');
 			}
-			window.location.reload();
+			//window.location.reload();
+			promotionDetailSubmit(promocode);
 		},
 		failure: function(resp) {
 			alert('An error has occured during publish.');
-			window.location.reload();
+			//window.location.reload();
+			promotionDetailSubmit(promocode);
 		}
 	});
 }
