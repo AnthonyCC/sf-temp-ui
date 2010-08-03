@@ -97,11 +97,12 @@
 	height: 76%;
 }
 .promo_page_content-view_content5 {
-	overflow-y: auto;
+	overflow: auto;
 	border: 1px solid #000;
 	min-height: 520px;
 	max-height: 520px;
 	height: 76%;
+	width: 100%;
 }
 a.greenLink, a.greenLink:hover, a.greenLink:active {
 	color: #093;
