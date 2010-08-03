@@ -1,0 +1,4 @@
+weblogic.home=/home/csongor/FreshDirect/bea/10.3
+domain.home=/home/csongor/FreshDirect/src/labor
+domain.name=domain2
+server.port=7003
