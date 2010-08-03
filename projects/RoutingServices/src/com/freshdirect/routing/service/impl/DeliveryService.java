@@ -80,13 +80,16 @@ public class DeliveryService extends BaseService implements IDeliveryService {
         int stPriority = 0;
         // Couldn't find serviceTime going to find the serviceTimeType
         IServiceTimeTypeModel serviceTimeType = null;
-        if(location.getServiceTimeType() != null) {
+        if(location.getServiceTimeType() != null
+        		&& location.getServiceTimeType().getCode() != null) {
               stPriority = 3;
               serviceTimeType = location.getServiceTimeType();
-        } else if(building.getServiceTimeType() != null) {
+        } else if(building.getServiceTimeType() != null
+        		&& building.getServiceTimeType().getCode() != null) {
               stPriority = 2;
               serviceTimeType = building.getServiceTimeType();
-        } else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null) {
+        } else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null
+        		&& zoneScenario.getServiceTimeType().getCode() != null) {
               stPriority = 1;
               serviceTimeType = zoneScenario.getServiceTimeType();
         } else {
