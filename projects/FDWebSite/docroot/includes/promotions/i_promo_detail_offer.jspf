@@ -60,6 +60,7 @@
 						//HEADER TYPE display
 						if ( EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) ) {
 					%>
+					<tr><td class="promo_detail_label">Offer Type:</td> <td class="alignL"> <%=null !=promotion.getOfferType()&& !"".equals(promotion.getOfferType())? (null !=EnumOfferType.getEnum(promotion.getOfferType())?EnumOfferType.getEnum(promotion.getOfferType()).getDescription():" "):"Generic" %></td></tr>
 						<% if (
 								( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
 								( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) ) ||
@@ -81,6 +82,7 @@
 								<td class="alignL">Extend Delivery Pass <%= promotion.getExtendDpDays()%> days <span class="grayIta8pt"> (Customer must have active pass)</span></td>
 							<% } %>
 								</tr>
+								
 						<% } %>
 						<% if (EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && promotion.isCombineOffer()) { %>
 							<tr>

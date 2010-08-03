@@ -25,7 +25,7 @@
 				</tr>
 				<tr>
 					<td class="promo_detail_label">Order instance:</td>
-					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm != null && csm.getOrderRangeStart() > 0) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null && csm.getOrderRangeEnd() > 0) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (First order == 1, current order count based on placed/settled order) </span></td>
+					<td class="alignL vTop padL8R16"><input type="text" id="orderRangeStart" name="orderRangeStart" class="w30px alignC" value="<%= (csm != null && csm.getOrderRangeStart()!=null && csm.getOrderRangeStart() > 0) ? csm.getOrderRangeStart():""%>" /><span class="gray"> to </span><input type="text" id="orderRangeEnd" name="orderRangeEnd" class="w30px alignC" value="<%= (csm!=null && csm.getOrderRangeEnd()!=null && csm.getOrderRangeEnd() > 0) ? csm.getOrderRangeEnd():""%>" /><span class="grayIta8pt"> (First order == 1, current order count based on placed/settled order) </span></td>
 				</tr>
 				<tr>
 					<td class="promo_detail_label"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" /></td>

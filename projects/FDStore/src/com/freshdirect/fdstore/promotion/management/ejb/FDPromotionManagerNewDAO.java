@@ -1078,8 +1078,8 @@ public class FDPromotionManagerNewDAO {
 				promoCustStrategyModel.setCohorts(cohorts.split(","));
 			}
 			promoCustStrategyModel.setDpStatus(rs.getString("DP_STATUS"));
-			promoCustStrategyModel.setDpExpStart(rs.getDate("DP_EXP_START"));
-			promoCustStrategyModel.setDpExpEnd(rs.getDate("DP_EXP_END"));
+			promoCustStrategyModel.setDpExpStart(rs.getTimestamp("DP_EXP_START"));
+			promoCustStrategyModel.setDpExpEnd(rs.getTimestamp("DP_EXP_END"));
 			promoCustStrategyModel.setOrderTypeHome("X".equalsIgnoreCase(rs.getString("ORDERTYPE_HOME"))?true:false);
 			promoCustStrategyModel.setOrderTypePickup("X".equalsIgnoreCase(rs.getString("ORDERTYPE_PICKUP"))?true:false);
 			promoCustStrategyModel.setOrderTypeCorporate("X".equalsIgnoreCase(rs.getString("ORDERTYPE_CORPORATE"))?true:false);
@@ -2346,7 +2346,7 @@ public class FDPromotionManagerNewDAO {
 
 	public static boolean isRedemptionCodeExists(Connection conn, String redemptionCode) throws SQLException{
 		boolean isDuplicate = false;
-		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where STATUS not in('EXPIRED','CANCELLED','CANCELLING') and upper(redemption_code) = upper(?)");
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and upper(redemption_code) = upper(?)");
 		ps.setString(1, redemptionCode);
 		ResultSet rs = ps.executeQuery();
 		int count =0;
@@ -2361,7 +2361,7 @@ public class FDPromotionManagerNewDAO {
 	
 	public static boolean isRedemptionCodeExists(Connection conn, String redemptionCode, String promotionId) throws SQLException{
 		boolean isDuplicate = false;
-		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where STATUS not in('EXPIRED','CANCELLED','CANCELLING') and id <> ? and upper(redemption_code) = upper(?)");
+		PreparedStatement ps =	conn.prepareStatement("select count(*) from CUST.Promotion_new where (STATUS not in('CANCELLED') AND (STATUS not in('LIVE','PUBLISHED') OR EXPIRATION_DATE >= sysdate)) and id <> ? and upper(redemption_code) = upper(?)");
 		ps.setString(1, promotionId);
 		ps.setString(2, redemptionCode);
 		ResultSet rs = ps.executeQuery();

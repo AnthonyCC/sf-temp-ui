@@ -151,6 +151,8 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 			this.promotion.setPromotionCode("CD_"+new Date().getTime());*/
 			this.promotion.setCreatedBy(agent.getUserId());
 			this.promotion.setCreatedDate(date);
+			this.promotion.setModifiedBy(agent.getUserId());
+			this.promotion.setModifiedDate(date);
 		}else{
 			this.promotion.setModifiedBy(agent.getUserId());
 			this.promotion.setModifiedDate(date);			

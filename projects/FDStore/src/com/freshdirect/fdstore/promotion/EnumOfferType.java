@@ -10,8 +10,8 @@ public class EnumOfferType extends Enum {
 
 	public static final EnumOfferType SAMPLE = new EnumOfferType("SAMPLE", "Sample Item Promotions");
 	public static final EnumOfferType LINE_ITEM = new EnumOfferType("LINE_ITEM", "Line Item Promotions");
-	public static final EnumOfferType GIFT_CARD= new EnumOfferType("GIFT_CARD", "Gift Card Promotions");
-	public static final EnumOfferType WINDOW_STEERING = new EnumOfferType("WINDOW_STEERING", "Window Steering Promotions");
+	public static final EnumOfferType GIFT_CARD= new EnumOfferType("GIFT_CARD", "Gift Certificate");
+	public static final EnumOfferType WINDOW_STEERING = new EnumOfferType("WINDOW_STEERING", "Window Steering");
 	public static final EnumOfferType WAIVE_DLV_CHARGE = new EnumOfferType("WAIVECHARGE", "Waive Delivery Charge");
 	public static final EnumOfferType DP_EXTN = new EnumOfferType("DPETXN", "Delivery Pass Extension");
 	public static final EnumOfferType GENERIC = new EnumOfferType("GENERIC", "All other header promotions");

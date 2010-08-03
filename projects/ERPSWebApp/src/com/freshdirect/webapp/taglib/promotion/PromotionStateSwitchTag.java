@@ -204,7 +204,9 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 				if(null == promotion.getMinSubtotal() || "".equals(promotion.getMinSubtotal())){
 					result.addError(true, "minSubTotalEmpty", "Minimum Sub Total is required for the promotion.");
 				}
-				
+				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
+					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
+				}
 			}
 			
 		}

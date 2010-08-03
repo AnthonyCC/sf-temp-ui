@@ -167,6 +167,7 @@
 	FDPromoCustStrategyModel csm = ( promotion != null && promotion.getCustStrategies() != null && promotion.getCustStrategies().size()>0 ) ? (FDPromoCustStrategyModel)promotion.getCustStrategies().get(0) : null;
 	String eCheckBool = "NO";
 	String eCheckMin = "";
+	boolean excludeSameDayDlv = false;
 	if (csm != null && csm.getPriorEcheckUse() != null) {
 		if (!"".equals(csm.getPriorEcheckUse())) { eCheckBool = "YES"; }
 		if (!"".equals(csm.getPriorEcheckUse())) { eCheckMin = csm.getPriorEcheckUse(); }
@@ -182,6 +183,7 @@
 				}
 			}
 		}
+		excludeSameDayDlv = csm.isExcludeSameDayDlv();
 	}
 	String dpStatus = ""; //ACT
 	String dpStatusString = ""; //Active

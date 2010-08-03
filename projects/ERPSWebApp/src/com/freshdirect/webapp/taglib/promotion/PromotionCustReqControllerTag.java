@@ -1,8 +1,10 @@
 package com.freshdirect.webapp.taglib.promotion;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
@@ -330,7 +332,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		
 		try {
 			if(!"".equalsIgnoreCase(dpExpStartDate)){			
-				model.setDpExpStart(DateUtil.parseMDY(dpExpStartDate));
+				model.setDpExpStart(getDate(dpExpStartDate,"11:59:59 pm"));//DateUtil.parseMDY(dpExpStartDate));
 			}else{
 				model.setDpExpStart(null);
 			}
@@ -340,7 +342,7 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		}
 		try {
 			if(!"".equalsIgnoreCase(dpExpEndDate)){			
-				model.setDpExpEnd(DateUtil.parseMDY(dpExpEndDate));
+				model.setDpExpEnd(getDate(dpExpEndDate,"11:59:59 pm"));//DateUtil.parseMDY(dpExpEndDate));
 			}else{
 				model.setDpExpEnd(null);
 			}
@@ -444,8 +446,17 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 		}
 	}
 	
+	private Date getDate(String dateStr, String time) throws ParseException{
+				
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+		Date date = sdf.parse(dateStr+" "+time);
+		Calendar cal = DateUtil.toCalendar(date);				
+		return cal.getTime();	
+}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		// default impl
 	}
+	
+	
 }

@@ -1002,11 +1002,11 @@ public class FDPromotionNewDAO {
 			String status = rs.getString("dp_status");
 			if(status != null){
 				strategy.setDPStatus(EnumDlvPassStatus.getEnum(status));
-				Date dpStartDate = rs.getDate("dp_exp_start");
+				Date dpStartDate = rs.getTimestamp("dp_exp_start");
 				if(dpStartDate != null){
 					strategy.setDPStartDate(dpStartDate);
 				}
-				Date dpEndDate = rs.getDate("dp_exp_end");
+				Date dpEndDate = rs.getTimestamp("dp_exp_end");
 				
 				if(dpEndDate != null){
 					strategy.setDPEndDate(dpEndDate);
@@ -1061,11 +1061,11 @@ public class FDPromotionNewDAO {
 			String status = rs.getString("dp_status");
 			if(status != null){
 				strategy.setDPStatus(EnumDlvPassStatus.getEnum(status));
-				Date dpStartDate = rs.getDate("dp_exp_start");
+				Date dpStartDate = rs.getTimestamp("dp_exp_start");
 				if(dpStartDate != null){
 					strategy.setDPStartDate(dpStartDate);
 				}
-				Date dpEndDate = rs.getDate("dp_exp_end");
+				Date dpEndDate = rs.getTimestamp("dp_exp_end");
 				
 				if(dpEndDate != null){
 					strategy.setDPEndDate(dpEndDate);

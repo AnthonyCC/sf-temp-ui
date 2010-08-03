@@ -113,6 +113,12 @@
 							</td>
 						</tr>
 					<% } %>
+					<% if ( excludeSameDayDlv) { %>
+					<tr>
+						<td class="promo_detail_label"><input type="checkbox" id="" disabled <%=(excludeSameDayDlv)?"checked ":"" %>/></td>
+						<td class="alignL"><span class="gray">Exclude Same Day Delivery</span></td>
+					</tr>
+				<% } %>
 					<%
 						//ZIP or ZONE
 						if (zipRests != null && zipRests.size() > 0) {
