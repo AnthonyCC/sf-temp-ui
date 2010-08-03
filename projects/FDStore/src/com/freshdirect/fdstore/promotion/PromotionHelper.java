@@ -140,10 +140,15 @@ public class PromotionHelper {
 						PromotionApplicatorI app = promotion.getApplicator();
 						if (app != null) {
 							DlvZoneStrategy dlvZoneStrategy = app.getDlvZoneStrategy();
-							isEligible = dlvZoneStrategy != null ? dlvZoneStrategy.isTimeSlotEligible(timeSlot) : isEligible;								
+							if(dlvZoneStrategy != null) {
+								if(dlvZoneStrategy.getDlvTimeSlots() != null && !dlvZoneStrategy.getDlvTimeSlots().isEmpty()){
+									isEligible = dlvZoneStrategy.isTimeSlotEligible(timeSlot);
+								} else if(dlvZoneStrategy.getDlvDates() != null && !dlvZoneStrategy.getDlvDates().isEmpty()) {
+									isEligible = dlvZoneStrategy.checkDlvDates(user.getShoppingCart().getDeliveryReservation());
+								}
+							}
 						}
 					}
-					
 				}
 				
 			}

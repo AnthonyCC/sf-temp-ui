@@ -43,8 +43,18 @@ public class FDPromotionVisitor {
 		resolveLineItemConflicts(context, eligibilities);
 		LOGGER.info("Promotion eligibility:after resolve conflicts " + eligibilities);					
 		Set<String> combinableOffers = applyPromotions(context, eligibilities);
+		
+        //Add applied line item discounts to the applied list.
+        Set<String> appliedSet =  context.getLineItemDiscountCodes();
+        for (Iterator<String> i = appliedSet.iterator(); i.hasNext();) {
+        	String code = i.next();
+        	if(eligibilities.isEligible(code)) 
+        		eligibilities.setApplied(code);
+        }
+        
 		LOGGER.info("Promotion eligibility: after apply " + eligibilities);
 		LOGGER.info("Promotion eligibility:context.isPostPromoConflictEnabled() " + context.isPostPromoConflictEnabled());
+		
 		if(context.isPostPromoConflictEnabled()){
 			// post resolve conflict
 			boolean e = postResolveConflicts(context,eligibilities);
@@ -72,13 +82,7 @@ public class FDPromotionVisitor {
         	}
         }
         
-        //Finally add applied line item discounts to the applied list.
-        Set<String> appliedSet =  context.getLineItemDiscountCodes();
-        for (Iterator<String> i = appliedSet.iterator(); i.hasNext();) {
-        	String code = i.next();
-        	if(eligibilities.isEligible(code)) 
-        		eligibilities.setApplied(code);
-        }
+
         
         
         //Reconcile the discounts to make sure total header discounts does not exceed pre-deduction total(subtotal + dlv charge + tax).
@@ -157,6 +161,9 @@ public class FDPromotionVisitor {
          for (Iterator i = promotions.iterator(); i.hasNext();) {
                PromotionI autopromotion  = (PromotionI) i.next(); 
                String promoCode = autopromotion.getPromotionCode();
+               if(promoCode.equals("CD_1278620655837")){
+            	   System.out.println();
+               }
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 

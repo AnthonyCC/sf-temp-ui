@@ -65,7 +65,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		String zoneCode =context.getDeliveryZone();
 		if(null != zoneCode && !"".equals(zoneCode.trim())){
-			if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context)){
+			if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
 				if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){
 					FDReservation dlvReservation = context.getDeliveryReservation();
 					if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
@@ -115,8 +115,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		return isOK;
 	}
 
-	private boolean checkDlvDates(PromotionContextI context) {
-		FDReservation dlvReservation = context.getDeliveryReservation();
+	public boolean checkDlvDates(FDReservation dlvReservation) {
 		boolean isOK = false;
 		if(null != dlvReservation){
 			

@@ -2,6 +2,7 @@ package com.freshdirect.fdstore.customer;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -89,10 +90,11 @@ public class FDPromotionEligibility implements Serializable {
 	
 	
 	public void removeAppliedLineItemPromotions(){			
-		for ( String promoCode : appliedPromos ) {
+		for ( Iterator<String> it = appliedPromos.iterator(); it.hasNext(); ) {
+			String promoCode = it.next();
 			PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
 			if(promo.isLineItemDiscount()) {
-				removeAppliedPromo(promo.getPromotionCode());
+				it.remove();
 			}
 		}
 	}
