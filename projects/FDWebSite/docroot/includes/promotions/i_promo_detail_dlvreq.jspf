@@ -60,7 +60,7 @@
 <table width="100%">
 	<tr>
 		<td class="vTop">
-			<table width="100%">
+			<table width="100%" class="promo_detail_table">
 				<tr>
 					<%-- sets the column widths --%>
 					<td width="130px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
@@ -120,6 +120,7 @@
 							<tr>
 								<td class="promo_detail_label">ZIP code:</td>
 								<td class="alignL">
+									<div style="vertical-align: top; word-wrap: break-word; width: 800px;">
 									<%
 										if (zipRests != null) {
 											Set zipSet = zipRests.entrySet();
@@ -130,6 +131,7 @@
 											}
 										}
 									%>
+									</div>
 								</td>
 							</tr>
 						<% } %>

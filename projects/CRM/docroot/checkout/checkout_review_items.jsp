@@ -361,14 +361,14 @@
 							if(cartLine.getDiscount() != null) {
 								Discount discount = cartLine.getDiscount();
 								PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-								discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000;\">"+promotion.getDescription()+"</a>";
+								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+CCFormatter.formatCurrency(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 							}
 						%>
 			
 							<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/order/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 							<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 							<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
-							<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10rbold"><%= discountMsg %></span><% } %>
+							<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
 							<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
 							<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br />&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><% }%></div>
 							</td>
@@ -610,7 +610,8 @@
 				<%
 					} // TODO: missing else branch.
 				}
-	
+				%>
+			<%-- is this code still needed? 20100802 
 				if (cart.getTotalDiscountValue() > 0) { 
 					discounts = cart.getDiscounts();
 					for (Iterator iter = discounts.iterator(); iter.hasNext();) {
@@ -622,12 +623,13 @@
 						<tr valign="top" class="orderSummary">
 							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= discount.getPromotionCode() %>','small')"><%= desc %></a></b>:</td>
 							<td align="right">-<%= CCFormatter.formatCurrency(discount.getAmount()) %></td>
-							<td colspan="3"></td>	   
+							<td colspan="3">here?</td>	   
 						</tr>
 					<%
 					}
 				}
-
+			--%>
+			<%
 				if (isRedemptionApplied) {
 				    if (redemptionPromo.isSampleItem()) {
 				%>
@@ -647,15 +649,6 @@
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 						</tr>
                 <%                        
-                } else if (redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
-                %>
-                    <tr valign="top" class="orderSummary">
-                        <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
-                        <td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getLineItemDiscountAmount(promoCode)) %></b></td>
-                        <td colspan="1"></td>
-                        <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-                    </tr>
-                    <%
                 } else if (redemptionPromo.isExtendDeliveryPass()) {
                     %>
                         <tr valign="top" class="orderSummary">
@@ -684,6 +677,15 @@
 				<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 				<td colspan="2"></td>
 			</tr>
+			<%
+				if (redemptionPromo!= null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+			%>
+				<tr valign="top" class="">
+					<td colspan="7" align="right">
+						<br />
+						To remove promotion code <%= redemptionPromo.getRedemptionCode() %>, <b><a href="<%= request.getRequestURI() %>?action=removeCode" class="note">click here.</a></b></td>
+				</tr>
+			 <% } %>
 			<%
 				if (isRedemptionApplied && redemptionPromo.isHeaderDiscount()) {
 					if (request.getAttribute("redeem_override_msg") != null) {

@@ -22,6 +22,7 @@
 <%@ page import="com.freshdirect.customer.ErpClientCode"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page import="com.freshdirect.fdstore.util.IgnoreCaseString"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <% if (user.isEligibleForClientCodes()) { %>
@@ -284,15 +285,14 @@ FDIdentity identity = user.getIdentity();
 			if(cartLine.getDiscount() != null) {
 				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-				discountMsg = "<a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"color: #ff0000;\">"+promotion.getDescription()+"</a>";
+				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 			}
 		%>
-
 			<td colspan="2"><div style="margin-left:16px; text-indent:-8px;"><span class="text10bold"><a href="/product_modify.jsp?cartLine=<%= cartLine.getRandomId() %>&trk=cart"><%= cartLine.getDescription() %></a></span>&nbsp;<%=!cartLine.getConfigurationDesc().equals("")?"("+cartLine.getConfigurationDesc()+")":""%>
 			<%= fdProduct.getKosherInfo().isKosherProduction() ? " <span class=\"kosher\">**</span>":""  %>
 			<%= cartLine.getApplicableRestrictions().contains(EnumDlvRestrictionReason.PLATTER) ? " <font color=\"#FF9933\">**</font>":""  %>
 			<% if ((cart instanceof FDModifyCartModel) && !(cartLine instanceof FDModifyCartLineI)) { %><span class="text10rbold">(new)</span><% } %>
-			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10rbold"><%= discountMsg %></span><% } %>
+			<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span class="text10bold"><%= discountMsg %></span><% } %>
 			<% if (displayShortTermUnavailability && earliestAvailability != null && !(cartLine instanceof FDModifyCartLineI)) { %><br>&nbsp;&nbsp;<span class="text10rbold">Earliest Delivery <%=earliestAvailability%></span><%  }%>
 			</div>
 			</td>
@@ -557,7 +557,8 @@ FDIdentity identity = user.getIdentity();
 			<td colspan="2"></td>
 		</tr>
 		<%
-	}
+	} %>
+	<%
 	
 	if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
@@ -627,15 +628,6 @@ FDIdentity identity = user.getIdentity();
             <tr valign="top" class="orderSummary">
                 <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
                 <td colspan="1" align="right"><b>$0.00</b></td>
-                <td colspan="1"></td>
-                <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
-            </tr>
-        <%
-	    } else if (redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
-        %>
-            <tr valign="top" class="orderSummary">
-                <td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
-                <td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getLineItemDiscountAmount(promoCode)) %></b></td>
                 <td colspan="1"></td>
                 <td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
             </tr>
@@ -819,10 +811,23 @@ FDIdentity identity = user.getIdentity();
 	%>
 		</td>
 	</tr>
-    <tr>
-    
-			<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br /><span style="color: #900;">*NEW</span> <a href="/your_account/giftcards.jsp?trk=cart">Have a FreshDirect Gift Card? Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
-	</tr>
+	<%
+		if (redemptionPromo!= null && redemptionPromo.isLineItemDiscount() && cart.isDiscountInCart(promoCode)) {
+        %>
+            <tr valign="top" class="">
+                <td colspan="7" align="right">
+					<br />
+					To remove promotion code <%= redemptionPromo.getRedemptionCode() %>, <b><a href="<%= request.getRequestURI() %>?action=removeCode" class="note">click here.</a></b></td>
+            </tr>
+			<tr>
+				<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br />Have a FreshDirect Gift Card? <a href="/your_account/giftcards.jsp?trk=cart">Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
+			</tr>
+     <% }else{ %>
+			<tr>
+			
+					<td colspan="7" align="right" class="text13bold"><% if (user.isGiftCardsEnabled()) { %><br /><span style="color: #900;">*NEW</span> <a href="/your_account/giftcards.jsp?trk=cart">Have a FreshDirect Gift Card? Enter it here.</a><br /><br /><% }else{ %> &nbsp; <% } %></td>
+			</tr>
+	 <% } %>
 	<% 
 	if (user!=null && user.getIdentity() !=null) {
 	    %><fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'><%
@@ -841,6 +846,7 @@ FDIdentity identity = user.getIdentity();
 	<tr><td colspan="7" align="right"><br><strong>T</strong> = Taxable Item&nbsp;&nbsp;&nbsp;&nbsp;<strong>S</strong> = Special Price&nbsp;&nbsp;&nbsp;&nbsp;<strong>D</strong> = State Bottle Deposit</td></tr>
 </table>
 </div>
+
 <a name="cartRec"></a>
 <div style="padding-top: 1em">
 <%-- display items just added to cart  --%>
