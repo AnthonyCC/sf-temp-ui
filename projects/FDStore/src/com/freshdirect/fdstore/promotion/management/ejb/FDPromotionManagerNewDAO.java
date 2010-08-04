@@ -390,6 +390,9 @@ public class FDPromotionManagerNewDAO {
 	public static PrimaryKey createPromotion(Connection conn, ModelI model)
 			throws SQLException {
 		FDPromotionNewModel promotion = (FDPromotionNewModel) model;
+		//Update Promotion modified date to current system date in case user delays to cancel from source to target environment.
+		promotion.setModifiedDate(new java.util.Date());
+		
 		PrimaryKey pk = createPromotionBasic(conn, promotion);
 		promotion.setPK(pk);
 		updateLeftOutAttributes(conn, promotion);
@@ -1720,7 +1723,9 @@ public class FDPromotionManagerNewDAO {
 			
 			
 			PreparedStatement ps = null;
-
+			//Update Promotion modified date to current system date in case user delays to cancel from source to target environment.
+			promo.setModifiedDate(new java.util.Date());
+			
 			// switch promo status CANCELLING to CANCELLED. Modified date has to be updated to make sure website picks up the change into the cache.
 			ps = conn.prepareStatement("UPDATE CUST.PROMOTION_NEW SET STATUS=?, PUBLISHES=PUBLISHES+1, PUBLISH_DATE=sysdate,MODIFIED_BY =?, MODIFY_DATE =? WHERE CODE=?");
 			ps.setString(1, EnumPromotionStatus.CANCELLED.getName());	        
@@ -2416,6 +2421,8 @@ public class FDPromotionManagerNewDAO {
 	}
 
 	public static void updatePromotion(Connection conn, FDPromotionNewModel promotion) throws SQLException {
+		//Update Promotion modified date to current system date in case user delays to cancel from source to target environment.
+		promotion.setModifiedDate(new java.util.Date());
 		updatePromotionBasic(conn, promotion);
 		updateLeftOutAttributes(conn, promotion);
 		String id = promotion.getPK().getId();
