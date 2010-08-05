@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -29,6 +30,7 @@ import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
@@ -112,11 +114,12 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		FDStandingOrdersManager mgr = FDStandingOrdersManager.getInstance();
 		FDSessionUser user = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
 
+		FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
 		if ("skip".equalsIgnoreCase(action)) {
 			if (!so.isDeleted()) {
 				try {
 					so.skipDeliveryDate();
-					mgr.save(so);
+					mgr.save(info, so);
 				} catch (FDResourceException e) {
 					result.addError(true, "GENERAL", "Failed to execute action '"+action+"' due to an exception " + e);
 				}
@@ -128,7 +131,7 @@ public class ManageStandingOrdersTag extends AbstractGetterTag {
 		} else if ("cancel".equalsIgnoreCase(action)) {
 			if (!so.isDeleted()) {
 				try {
-					mgr.delete(so);
+					mgr.delete(info, so);
 				} catch (FDResourceException e) {
 					result.addError(true, "GENERAL", "Failed to execute action '"+action+"' due to an exception " + e);
 				}

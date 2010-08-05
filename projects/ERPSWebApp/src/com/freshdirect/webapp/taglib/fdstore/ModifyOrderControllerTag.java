@@ -254,15 +254,15 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 		String reason = NVL.apply( request.getParameter("cancel_reason"), "").trim();
 		String notes = NVL.apply( request.getParameter("cancel_notes"), "").trim();
         
-		StringBuffer sb = new StringBuffer("Order #");
-		sb.append(this.orderId);
-		sb.append(" cancelled: ");
+		StringBuffer sb = new StringBuffer("Order Cancelled (");
 		if (!"".equals(reason)) {
-			sb.append(reason+". ");
+			sb.append(reason);
+			sb.append(". ");
 		}
 		if (!"".equals(notes) ) {
 			sb.append(notes);
 		}
+		sb.append(")");
 		
 		FDActionInfo info = AccountActivityUtil.getActionInfo(session, sb.toString());
 

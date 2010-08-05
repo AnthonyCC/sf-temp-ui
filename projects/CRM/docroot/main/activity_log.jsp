@@ -7,10 +7,10 @@
 <%@ page import='com.freshdirect.webapp.util.*'%>
 <%@ page import='com.freshdirect.framework.util.*'%>
 
-<%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ taglib uri="crm" prefix="crm" %>
+<%@ taglib uri="http://jakarta.apache.org/struts/tags-template-1.0" prefix='tmpl' %>
+<%@ taglib uri="http://jakarta.apache.org/struts/tags-logic-1.0" prefix='logic'%>
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
+<%@ taglib uri="/WEB-INF/tld/crm.tld" prefix="crm" %>
 <crm:GetFDUser id="user">
 <fd:AccountActivity activities='activities'>
 <%!
@@ -62,7 +62,10 @@ if (comp == null) {
 			<tr valign="top"">
 				<td width="1%"></td>
 				<td width="18%"><%= CCFormatter.formatDateTime(activity.getDate()) %></td>
-				<td width="52%"><b><%= activity.getActivityType().getName() %></b><%= (activity.getNote() != null && !"".equals(activity.getNote())) ? " - " : "" %><%= activity.getNote() %></td>
+				<td width="52%"><b><%= activity.getActivityType().getName() %></b><%= (activity.getNote() != null && !"".equals(activity.getNote())) ? " - " : "" %><%= activity.getNote() %>
+					<% if (activity.getChangeOrderId() != null) { %><i>(Order #: <%= activity.getChangeOrderId() %>)</i><% } %>
+					<% if (activity.getStandingOrderId() != null) { %><i>(Standing Order #: <%= activity.getStandingOrderId() %>)</i><% } %>
+				</td>
 				<td width="14%"><%= activity.getMasqueradeAgent() == null ? activity.getInitiator() : activity.getMasqueradeAgent() + " as " + activity.getInitiator() %></td>
 				<td width="14%"><%= activity.getSource().getName() %></td>
 			</tr>

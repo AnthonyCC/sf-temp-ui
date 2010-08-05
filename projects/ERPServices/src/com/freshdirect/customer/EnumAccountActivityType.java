@@ -17,6 +17,8 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	
 	private static int idCounter = 0;
 
+	public final static EnumAccountActivityType		UNKNOWN								= new EnumAccountActivityType( "Unknown", "Unknown Message" );
+	
 	public final static EnumAccountActivityType		CHANGE_PASSWORD						= new EnumAccountActivityType( "Chg Password", "Change Password" );
 	public final static EnumAccountActivityType		CANCEL_ORDER						= new EnumAccountActivityType( "Cancel Order", "Cancel Order" );
 	public final static EnumAccountActivityType		ACTIVATE_ACCOUNT					= new EnumAccountActivityType( "Activate Acct", "Activate Account" );
@@ -89,7 +91,17 @@ public class EnumAccountActivityType implements java.io.Serializable {
 	public final static EnumAccountActivityType		MASQUERADE_LOGIN					= new EnumAccountActivityType( "MasqueradeLogin", "Masquerade agent logged in." );
 	public final static EnumAccountActivityType		MASQUERADE_LOGOUT					= new EnumAccountActivityType( "MasqueradeLogout", "Masquerade agent logged out." );
 
-    
+	public final static EnumAccountActivityType		PLACE_ORDER							= new EnumAccountActivityType( "Place Order", "Place Order" );
+	public final static EnumAccountActivityType		PLACE_GC_ORDER						= new EnumAccountActivityType( "Place GC Order", "Place GiftCard Order" );
+	public final static EnumAccountActivityType		PLACE_DON_ORDER						= new EnumAccountActivityType( "Place Don Order", "Place Donation Order" );
+	public final static EnumAccountActivityType		PLACE_SUBS_ORDER					= new EnumAccountActivityType( "Place Subs Order", "Place Subscription Order" );
+	public final static EnumAccountActivityType		MODIFY_ORDER						= new EnumAccountActivityType( "Modify Order", "Modify Order" );
+
+	public final static EnumAccountActivityType		STANDINGORDER_CREATED				= new EnumAccountActivityType( "SO-Created", "Standing Order created." );
+	public final static EnumAccountActivityType		STANDINGORDER_MODIFIED				= new EnumAccountActivityType( "SO-Modified", "Standing Order modified." );
+	public final static EnumAccountActivityType		STANDINGORDER_DELETED				= new EnumAccountActivityType( "SO-Deleted", "Standing Order deleted." );
+	public final static EnumAccountActivityType		STANDINGORDER_SAVE_FAILED			= new EnumAccountActivityType( "SO-SaveFailed", "Standing Order update/save failed." );
+	
     private EnumAccountActivityType(String code, String name) {
         this.id = idCounter++;
         this.code = code;
@@ -116,7 +128,9 @@ public class EnumAccountActivityType implements java.io.Serializable {
     }
 
 	public static EnumAccountActivityType getActivityType(String code) {
-		return ACCOUNT_ACTIVITY_MAP.get(code);
+		EnumAccountActivityType activityType = ACCOUNT_ACTIVITY_MAP.get(code);
+		// to avoid null pointer exception in case of unrecognized messages (when you need to downgrade)
+		return activityType != null ? activityType : UNKNOWN;
 	}
 
 	@Override

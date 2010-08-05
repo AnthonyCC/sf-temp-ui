@@ -265,14 +265,15 @@ public class SubmitOrderAction extends WebActionSupport {
 			
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();
+			String note = "GiftCard Order Created";
 			if ( isBulkOrder ) {
 				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getBulkRecipentList().getFDRecipentsList().getRecipients() );
 				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
+				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			} else {
 				List<ErpRecipentModel> repList = convertSavedToErpRecipientModel( user.getRecipientList().getRecipients() );
 				// new order -> place it
-				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
+				orderNumber = FDCustomerManager.placeGiftCardOrder( AccountActivityUtil.getActionInfo( session, note ), cart, Collections.<String>emptySet(), sendEmail, cra, status, repList, isBulkOrder );
 			}
 			
 			//update or create everyItemEverOrdered Customer List
@@ -572,7 +573,7 @@ public class SubmitOrderAction extends WebActionSupport {
 						new Object[] {origCutoff}));
 					return ERROR;
 				}
-				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
+				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Modified");
 				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
 				info.setPR1(isPR1);
 				FDCustomerManager.modifyOrder(
@@ -587,7 +588,7 @@ public class SubmitOrderAction extends WebActionSupport {
 				
 			} else {
 				// new order -> place it
-				FDActionInfo info=AccountActivityUtil.getActionInfo(session);
+				FDActionInfo info=AccountActivityUtil.getActionInfo(session, "Order Created");
 				boolean isPR1=CTDeliveryCapacityLogic.isPR1(user,reservation.getTimeslot());
 				info.setPR1(isPR1);
 
@@ -599,15 +600,16 @@ public class SubmitOrderAction extends WebActionSupport {
 			 * Standing Order related post actions
 			 */
 			if (orderNumber != null && EnumCheckoutMode.NORMAL != mode) {
+				FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 				switch(mode) {
 				case CREATE_SO:
 					{
 						try {
-							String soPk = FDStandingOrdersManager.getInstance().manageStandingOrder(cart, standingOrder);
+							info.setNote("Standing Order Created w/First Order Placed");
+							String soPk = FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, standingOrder, orderNumber);
 							standingOrder.setId( soPk );
 						} catch (FDResourceException e) {
 							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
-							LOGGER.warn( e.getFDStackTrace() );
 						}
 					}
 					break;
@@ -615,20 +617,14 @@ public class SubmitOrderAction extends WebActionSupport {
 					{
 						// update standing order + customer list
 						try {
-							FDStandingOrdersManager.getInstance().manageStandingOrder(cart, standingOrder);
+							info.setNote("Standing Order Modified w/New Order Checkout");
+							FDStandingOrdersManager.getInstance().manageStandingOrder(info, cart, standingOrder, orderNumber);
 							
 							// perform cache cleanup
 							QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, standingOrder.getCustomerListId(), null);
-
 						} catch (FDResourceException e) {
 							LOGGER.error("Failed to create shopping list for standing order, corresponding order ID="+orderNumber, e);
-							LOGGER.warn( e.getFDStackTrace() );
-							/// result.addError(true, "techical_difficulty", "Failed to update standing order.");
 						}
-						
-
-						standingOrder.clearLastError();
-
 					}
 					break;
 				}
@@ -640,8 +636,6 @@ public class SubmitOrderAction extends WebActionSupport {
 					LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderNumber, e);
 					LOGGER.warn( e.getFDStackTrace() );
 				}
-
-				FDStandingOrdersManager.getInstance().save( standingOrder );
 			}
 
 			
@@ -1007,7 +1001,9 @@ public class SubmitOrderAction extends WebActionSupport {
 			boolean modifying = false;
 			EnumDlvPassStatus status = user.getDeliveryPassStatus();		
 
-			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session), cart, Collections.<String>emptySet(), sendEmail,cra,status,optIn );
+			String note = "Donation Order Created";
+
+			orderNumber = FDCustomerManager.placeDonationOrder(AccountActivityUtil.getActionInfo(session, note), cart, Collections.<String>emptySet(), sendEmail,cra,status,optIn );
 			
 			//update or create everyItemEverOrdered Customer List
 			try{

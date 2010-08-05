@@ -18,6 +18,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -33,6 +34,7 @@ import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.metaparadigm.jsonrpc.JSONRPCBridge;
 
@@ -254,7 +256,9 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 		}
 
 		try {
-			FDListManager.renameCustomerList(user.getIdentity(), EnumCustomerListType.SO, oldList, newList);
+			FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+			info.setNote("Standing Order Renamed (from " + oldList + " to " + newList + ")");
+			FDListManager.renameCustomerList(info, EnumCustomerListType.SO, oldList, newList);
 		}
 		catch (FDCustomerListExistsException e) {
 			throw new NameExists();

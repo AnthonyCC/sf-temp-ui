@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.ejb.EJBObject;
 
+import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -15,7 +17,8 @@ public interface FDStandingOrdersSB extends EJBObject {
 	public Collection<FDStandingOrder> loadActiveStandingOrders() throws RemoteException;
 	public Collection<FDStandingOrder> loadCustomerStandingOrders(FDIdentity identity) throws RemoteException;
 	public FDStandingOrder load(PrimaryKey pk) throws RemoteException;
-	public void delete(FDStandingOrder so) throws RemoteException;
-	public String save(FDStandingOrder so) throws RemoteException;
+	public void delete(FDActionInfo info, FDStandingOrder so) throws RemoteException;
+	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws RemoteException;
 	public void assignStandingOrderToOrder(PrimaryKey salePK, PrimaryKey standingOrderPK) throws RemoteException;		
+	public void logActivity(ErpActivityRecord record) throws RemoteException;
 }

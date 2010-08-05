@@ -14,7 +14,8 @@
 %><%@page import="com.metaparadigm.jsonrpc.JSONSerializer"
 %><%@page import="com.freshdirect.webapp.util.json.EnumStandingOrderFrequencyJSONSerializer"
 %><%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
-%><%
+%><%@page import="com.freshdirect.fdstore.customer.FDActionInfo"
+%><%@page import="com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil"%><%
 	// serve only AJAX requests!
 	if (request.getHeader("X-Requested-With") != null) {
 		// Prevent caching AJAX responses on browser-side
@@ -45,7 +46,9 @@
 						if (item.ordinal() == ord) {
 							
 							so.recalculateFrequency( item.getFrequency() );
-							FDStandingOrdersManager.getInstance().save( so );
+							FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+							info.setNote("Changing standing order's frequency (" + item.getFrequency() + ")");
+							FDStandingOrdersManager.getInstance().save( info, so );
 	
 							%><div><%= StringUtil.escapeHTML(so.getCustomerListName()) %> will be now delivered</div><div style="padding-top: 1em; font-weight: bold"><%= item.getTitle() %></div><%
 							
@@ -71,7 +74,8 @@
 				if (soId != null && !"".equals(soId)) {
 					FDStandingOrder so = FDStandingOrdersManager.getInstance().load(new PrimaryKey(soId));
 					if (!so.isDeleted()) {
-						FDStandingOrdersManager.getInstance().delete(so);
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						FDStandingOrdersManager.getInstance().delete(info, so);
 					}
 				}
 				
@@ -85,7 +89,9 @@
 						Date d = so.getNextDeliveryDate();
 						
 						so.skipDeliveryDate();
-						FDStandingOrdersManager.getInstance().save( so );
+						FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+						info.setNote("Skipping standing orders next delivery date (" + new SimpleDateFormat("EEEE, MMMM d.").format( d ) + ")");
+						FDStandingOrdersManager.getInstance().save( info, so );
 
 						%>You will not receive a delivery on <%= new SimpleDateFormat("EEEE, MMMM d.").format( d ) %><%
 					}

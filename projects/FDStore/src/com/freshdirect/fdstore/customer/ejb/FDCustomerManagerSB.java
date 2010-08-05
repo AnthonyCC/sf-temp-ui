@@ -336,15 +336,14 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDResourceException if an error occured while accessing remote resources
      */
 	public String placeOrder(
-		FDIdentity identity,
+		FDActionInfo info,
 		ErpCreateOrderModel createOrder,
 		Set<String> usedPromotionCodes,
 		String rsvId,
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status,
-		boolean pr1)
+		EnumDlvPassStatus status)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,
@@ -370,7 +369,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDResourceException if an error occured while accessing remote resources
      */
     public void modifyOrder(
-		FDIdentity identity,
+		FDActionInfo info,
 		String saleId,
 		ErpModifyOrderModel order,
 		Set<String> usedPromotionCodes,
@@ -378,8 +377,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		boolean sendEmail,
 		CustomerRatingI cra,
 		CrmAgentRole agentRole,
-		EnumDlvPassStatus status,
-		boolean pr1)
+		EnumDlvPassStatus status)
 		throws FDResourceException,
 		ErpFraudException,
 		ErpAuthorizationException,
@@ -396,7 +394,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDResourceException if an error occured while accessing remote resources
      */
     public void modifyAutoRenewOrder(
-		FDIdentity identity,
+		FDActionInfo info,
 		String saleId,
 		ErpModifyOrderModel order,
 		Set<String> usedPromotionCodes,
@@ -586,7 +584,7 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @return String sale id
      * @throws FDResourceException if an error occured while accessing remote resources
      */
-	public String placeSubscriptionOrder( FDIdentity identity,
+	public String placeSubscriptionOrder( FDActionInfo info,
 		                      ErpCreateOrderModel createOrder,
 		                      Set<String> usedPromotionCodes,
 		                      String rsvId,
@@ -602,7 +600,7 @@ public interface FDCustomerManagerSB extends EJBObject {
 		                             RemoteException;	
 
 	
-	public String placeGiftCardOrder( FDIdentity identity,
+	public String placeGiftCardOrder( FDActionInfo info,
             ErpCreateOrderModel createOrder,
             Set<String> usedPromotionCodes,
             String rsvId,
@@ -695,7 +693,7 @@ public interface FDCustomerManagerSB extends EJBObject {
     
     public String[] sendGiftCardCancellationEmail(String saleId, String certNum, boolean toRecipient, boolean toPurchaser, boolean newRecipient, String newRecipientEmail) throws RemoteException, FDResourceException;
     
-    public String placeDonationOrder( FDIdentity identity,
+    public String placeDonationOrder( FDActionInfo info,
             ErpCreateOrderModel createOrder,
             Set<String> usedPromotionCodes,
             String rsvId,

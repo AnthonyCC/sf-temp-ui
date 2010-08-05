@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
@@ -54,7 +55,7 @@ public interface FDListManagerSB extends EJBObject {
 	
 	public void renameCustomerCreatedList(FDIdentity identity, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
 
-	public void renameCustomerList(FDIdentity identity, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
+	public void renameCustomerList(FDActionInfo info, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException, RemoteException;
 
 	// SmartStore
 	public FDCustomerProductList getOrderDetails(String erpCustomerId, List<String> skus) throws FDResourceException, RemoteException;

@@ -862,4 +862,19 @@ class FDCustomerListDAO {
 		rs.close();
 		ps.close();
 	}
+	
+	public String getStandingOrderIdByListName(Connection conn, FDIdentity identity, String name) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("SELECT so.id FROM cust.standing_order so " +
+				"INNER JOIN cust.customerlist cl ON so.customerlist_id = cl.id WHERE cl.name = ? AND cl.customer_id = ?");
+		ps.setString(1, name);
+		ps.setString(2, identity.getErpCustomerPK());
+		ResultSet rs = ps.executeQuery();
+		String standingOrderId = null;
+		if (rs.next()) {
+			standingOrderId = rs.getString(1);
+		}
+		rs.close();
+		ps.close();
+		return standingOrderId;
+	}
 }

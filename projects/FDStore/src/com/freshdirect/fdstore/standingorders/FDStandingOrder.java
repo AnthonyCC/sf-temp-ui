@@ -353,9 +353,4 @@ public class FDStandingOrder extends ModelSupport {
 	public List<FDOrderInfoI> getAllOrders( FDUserI user ) throws FDResourceException {
 		return FDStandingOrdersManager.getInstance().getAllOrders( user, this );		
 	}
-	
-	@ExcludeFromXmlSerializer
-	public void save() throws FDResourceException {
-		FDStandingOrdersManager.getInstance().save( this );
-	}
 }

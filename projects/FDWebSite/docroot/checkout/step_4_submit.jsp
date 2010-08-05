@@ -19,8 +19,6 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 <fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
-	//final boolean dontPlaceOrder = EnumCheckoutMode.MODIFY_SO.equals(user.getCheckoutMode());
-	//String actionName = dontPlaceOrder ? "updateStandingOrder" : "submitOrder";
 	String actionName = "submitOrder";
 %>
 <tmpl:insert template='/common/template/checkout_nav.jsp'>

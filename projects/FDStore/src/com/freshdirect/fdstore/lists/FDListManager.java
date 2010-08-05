@@ -11,6 +11,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.FDUserI;
@@ -339,13 +340,13 @@ public class FDListManager {
 		}
 	}
 
-	public static void renameCustomerList(FDIdentity identity, EnumCustomerListType type, 
+	public static void renameCustomerList(FDActionInfo info, EnumCustomerListType type, 
 			String oldName, String newName)
 			throws FDCustomerListExistsException, FDResourceException {
 		lookupManagerHome();
 		try {
 			FDListManagerSB sb = managerHome.create();
-			sb.renameCustomerList(identity, type, oldName, newName);
+			sb.renameCustomerList(info, type, oldName, newName);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");

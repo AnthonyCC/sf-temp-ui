@@ -74,7 +74,7 @@ public class ErpActivityRecord implements java.io.Serializable {
 	}
 
 	public String getNote() {
-		return this.note;
+		return this.note != null && this.note.length() != 0 ? this.note : this.type.getName();
 	}
 
 	

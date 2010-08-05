@@ -1408,15 +1408,14 @@ public class FDCustomerManager {
 			FDCustomerManagerSB sb = managerHome.create();
 			String orderId =
 				sb.placeOrder(
-					info.getIdentity(),
+					info,
 					createOrder,
 					appliedPromos,
 					cart.getDeliveryReservation().getPK().getId(),
 					sendEmail,
 					cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
-					status,
-					info.isPR1()
+					status
 				);
 
 			return orderId;
@@ -1488,7 +1487,7 @@ public class FDCustomerManager {
 			EnumSaleType type = cart.getOriginalOrder().getOrderType();
 			if (EnumSaleType.REGULAR.equals(type)){
 				sb.modifyOrder(
-						info.getIdentity(),
+						info,
 						saleId,
 						order,
 						appliedPromos,
@@ -1496,10 +1495,10 @@ public class FDCustomerManager {
 						sendEmail,
 						cra,
 						info.getAgent() == null ? null : info.getAgent().getRole(),
-						status,info.isPR1());
+						status);
 			}else if (EnumSaleType.SUBSCRIPTION.equals(type)){
 				sb.modifyAutoRenewOrder(
-						info.getIdentity(),
+						info,
 						saleId,
 						order,
 						appliedPromos,
@@ -2701,7 +2700,7 @@ public class FDCustomerManager {
 			
 			FDCustomerManagerSB sb = managerHome.create();
 				
-				orderId=sb.placeSubscriptionOrder( info.getIdentity(),
+				orderId=sb.placeSubscriptionOrder( info,
 				 								  createOrder,
 				                                 appliedPromos,
 				                                 cart.getDeliveryReservation().getPK().getId(),
@@ -2759,7 +2758,7 @@ public class FDCustomerManager {
 			/*  -- */
 			FDCustomerManagerSB sb = managerHome.create();
 
-			orderId = sb.placeGiftCardOrder(info.getIdentity(), createOrder,
+			orderId = sb.placeGiftCardOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
 							.getId(), sendEmail, cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),
@@ -3326,7 +3325,7 @@ public class FDCustomerManager {
 			createOrder.setCharges(new ArrayList<ErpChargeLineModel>());
 			FDCustomerManagerSB sb = managerHome.create();
 
-			orderId = sb.placeDonationOrder(info.getIdentity(), createOrder,
+			orderId = sb.placeDonationOrder(info, createOrder,
 					appliedPromos, cart.getDeliveryReservation().getPK()
 							.getId(), sendEmail, cra,
 					info.getAgent() == null ? null : info.getAgent().getRole(),

@@ -52,6 +52,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -71,6 +72,7 @@ import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.lists.FDCustomerProductListLineItem;
 import com.freshdirect.fdstore.lists.FDListManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 import com.freshdirect.fdstore.util.IgnoreCaseString;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -335,8 +337,9 @@ public class FDShoppingCartControllerTag extends BodyTagSupport implements Sessi
 								
 								if ( temporaryCart.getSubTotal() >= user.getMinimumOrderAmount() ) {
 									try {
-										so.clearLastError();				
-										so.save();
+										so.clearLastError();
+										FDActionInfo info = AccountActivityUtil.getActionInfo(pageContext.getSession());
+										FDStandingOrdersManager.getInstance().save( info, so );
 									} catch ( FDResourceException e ) {
 										LOGGER.warn( "Could not save standing order.", e );
 									}

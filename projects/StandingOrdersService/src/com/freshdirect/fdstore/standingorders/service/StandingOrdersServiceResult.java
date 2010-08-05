@@ -22,6 +22,7 @@ public class StandingOrdersServiceResult implements Serializable {
 		private String				errorDetail;
 		private boolean				hasInvalidItems		= false;
 		private FDCustomerInfo 		customerInfo;
+		private String				saleId;
 		
 		public Result( ErrorCode errCode, String errorHeader, String errorDetail, FDCustomerInfo custInfo ) {
 			if ( errCode == null ) {
@@ -52,12 +53,13 @@ public class StandingOrdersServiceResult implements Serializable {
 			this.status = status;
 		}
 		
-		public Result( Status status, boolean hasInvalidItems ) {
+		public Result( Status status, boolean hasInvalidItems, String saleId ) {
 			if ( status == Status.FAILURE ) {
 				throw new IllegalArgumentException( "Failure state requires error code and text." );
 			}			
 			this.status = status;
 			this.hasInvalidItems = hasInvalidItems;
+			this.saleId = saleId;
 		}
 		
 		public boolean isError() {
@@ -93,6 +95,9 @@ public class StandingOrdersServiceResult implements Serializable {
 			return customerInfo;
 		}
 		
+		public String getSaleId() {
+			return saleId;
+		}
 		
 		@Override
 		public String toString() {

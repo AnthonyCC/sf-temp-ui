@@ -16,6 +16,7 @@ import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
@@ -166,16 +167,6 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 				if ( outcome.equals( Action.NONE ) ) {
 					return false; // SKIP_BODY
 				}
-			} else if ( "updateStandingOrder".equalsIgnoreCase( action ) ) {
-				/*
-				 * Just save Standing Order (DO NOT SUBMIT ORDER)
-				 * and jump back to Standing Order page
-				 */
-
-				if (performUpdateStandingOrder(session, result)) {
-					this.setSuccessPage( FDURLUtil.getStandingOrderLandingPage(getUser().getCurrentStandingOrder(), null) );
-					return true;
-				}
 			} else if ( "gc_submitGiftCardOrder".equalsIgnoreCase( action ) || 
 						"gc_submitGiftCardBulkOrder".equalsIgnoreCase( action ) || 
 						"gc_onestep_submitGiftCardOrder".equalsIgnoreCase( action ) || 
@@ -296,32 +287,7 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 
 
 
-	private boolean performUpdateStandingOrder(HttpSession session, ActionResult result) {
-		FDSessionUser user = (FDSessionUser) getUser();
-		
-		
-		FDStandingOrder standingOrder = user.getCurrentStandingOrder();
-
-		// update standing order + customer list
-		try {
-			FDStandingOrdersManager.getInstance().manageStandingOrder(getCart(), standingOrder);
-			
-			// perform cache cleanup
-			QuickCartCache.invalidateOnChange(session, QuickCart.PRODUCT_TYPE_SO, standingOrder.getCustomerListId(), null);
-
-		} catch (Exception e) {
-			result.addError(true, "techical_difficulty", "Failed to update standing order.");
-		}
-
-		// drop interim cart and restore the original shopping cart
-		try {
-			ShoppingCartUtil.restoreCart(pageContext.getSession());
-		} catch (FDAuthenticationException e) {
-		} catch (FDResourceException e) {
-			result.addError(true, "techical_difficulty", "Failed to restore your original shopping cart.");
-		}
-
-		
+	private boolean performUpdateStandingOrder(HttpSession session, ActionResult result) {	
 		return result.isSuccess();
 	}
 

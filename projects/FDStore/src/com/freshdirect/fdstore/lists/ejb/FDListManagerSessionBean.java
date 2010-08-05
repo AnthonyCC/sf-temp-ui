@@ -9,9 +9,13 @@ import java.util.List;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.ErpActivityRecord;
+import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -20,6 +24,7 @@ import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
+import com.freshdirect.fdstore.customer.ejb.FDSessionBeanSupport;
 import com.freshdirect.fdstore.customer.ejb.FDUserDAO;
 import com.freshdirect.fdstore.lists.FDCustomerCreatedList;
 import com.freshdirect.fdstore.lists.FDCustomerList;
@@ -33,10 +38,9 @@ import com.freshdirect.fdstore.lists.FDCustomerRecipeListLineItem;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDStandingOrderList;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class FDListManagerSessionBean extends SessionBeanSupport {
+public class FDListManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final long	serialVersionUID	= 3548977965120918261L;
 	
@@ -400,15 +404,18 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 		}	
 	}
 	
-	public void renameCustomerList(FDIdentity identity, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException {
+	public void renameCustomerList(FDActionInfo info, EnumCustomerListType type, String oldName, String newName) throws FDCustomerListExistsException, FDResourceException {
 		Connection conn = null;			
 		try {
 			conn = getConnection();
 			FDCustomerListDAO dao = new FDCustomerListDAO();
 			if (type == null)
 				type = EnumCustomerListType.CC_LIST;
-			if (dao.isCustomerList(conn, identity, type, newName)) throw new FDCustomerListExistsException();
-			dao.renameCustomerList(conn, identity, type, oldName, newName);
+			if (dao.isCustomerList(conn, info.getIdentity(), type, newName)) throw new FDCustomerListExistsException();
+			dao.renameCustomerList(conn, info.getIdentity(), type, oldName, newName);
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_MODIFIED);
+			rec.setStandingOrderId(dao.getStandingOrderIdByListName(conn, info.getIdentity(), newName));
+			this.logActivity(rec);
 		}catch (FDCustomerListExistsException e) {
 			getSessionContext().setRollbackOnly();
 			throw e;
@@ -459,5 +466,9 @@ public class FDListManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 		}
+	}
+
+	public void logActivity(ErpActivityRecord record) {
+		new ErpLogActivityCommand(LOCATOR, record).execute();
 	}
 }

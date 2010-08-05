@@ -1420,16 +1420,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public String placeOrder(FDIdentity identity,
+	public String placeOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String reservationId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status, boolean pr1)
+			CrmAgentRole agentRole, EnumDlvPassStatus status)
 			throws FDResourceException, ErpFraudException,
 			ErpAuthorizationException, ReservationException,
 			DeliveryPassException, FDPaymentInadequateException,
 			ErpTransactionException, InvalidCardException, ErpAddressVerificationException {
 
 		PrimaryKey pk = null;
+		FDIdentity identity = info.getIdentity();
 		try {
 
 			DlvManagerSB dlvSB = this.getDlvManagerHome().create();
@@ -1580,7 +1581,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDDeliveryManager.getInstance().commitReservation(reservationId,
 					identity.getErpCustomerPK(), pk.getId(),
-					createOrder.getDeliveryInfo().getDeliveryAddress(), pr1);
+					createOrder.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
 
 			if (null != createOrder.getSelectedGiftCards()
 					&& createOrder.getSelectedGiftCards().size() > 0) {
@@ -1620,6 +1621,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.create();
 			paymentManager.authorizeSaleRealtime(pk.getId());
 
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_ORDER);
+			rec.setChangeOrderId(pk.getId());
+			this.logActivity(rec);
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
@@ -1838,6 +1842,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 			ErpActivityRecord rec = info
 					.createActivity(EnumAccountActivityType.CANCEL_ORDER);
+			rec.setChangeOrderId(saleId);
+			rec.setStandingOrderId(order.getStandingOrderId());
 			this.logActivity(rec);
 
 			if (sendEmail) {
@@ -1927,15 +1933,16 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
 	 */
-	public void modifyOrder(FDIdentity identity, String saleId,
+	public void modifyOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> usedPromotionCodes,
 			String oldReservationId, boolean sendEmail, CustomerRatingI cra,
-			CrmAgentRole agentRole, EnumDlvPassStatus status, boolean pr1)
+			CrmAgentRole agentRole, EnumDlvPassStatus status)
 			throws FDResourceException, ErpTransactionException,
 			ErpFraudException, ErpAuthorizationException,
 			DeliveryPassException, FDPaymentInadequateException,
 			InvalidCardException, ErpAddressVerificationException {
 
+		FDIdentity identity = info.getIdentity();
 		try {
 			// !!! verify that the sale belongs to the customer
 
@@ -2150,7 +2157,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// identity.getErpCustomerPK(), saleId);
 				FDDeliveryManager.getInstance().commitReservation(
 						newReservationId, identity.getErpCustomerPK(), saleId,
-						order.getDeliveryInfo().getDeliveryAddress(), pr1);
+						order.getDeliveryInfo().getDeliveryAddress(), info.isPR1());
 			}
 			if (order.getSelectedGiftCards() != null
 					&& order.getSelectedGiftCards().size() > 0) {
@@ -2182,6 +2189,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					.create();
 			paymentManager.authorizeSaleRealtime(saleId);
 
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
+			rec.setChangeOrderId(saleId);
+			rec.setStandingOrderId(fdOrder.getStandingOrderId());
+			this.logActivity(rec);
 			if (sendEmail) {
 
 				fdOrder = getOrder(saleId);
@@ -2209,13 +2220,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		 */
 	}
 
-	public void modifyAutoRenewOrder(FDIdentity identity, String saleId,
+	public void modifyAutoRenewOrder(FDActionInfo info, String saleId,
 			ErpModifyOrderModel order, Set<String> usedPromotionCodes,
 			String oldReservationId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status)
 			throws FDResourceException, ErpTransactionException,
 			ErpFraudException, ErpAuthorizationException, DeliveryPassException {
 
+		FDIdentity identity = info.getIdentity();
 		try {
 
 			FDOrderI fdOrder = getOrder(identity, saleId);
@@ -2225,6 +2237,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			sb.modifyOrder(saleId, order, usedPromotionCodes, cra, agentRole,
 					false);
 
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.MODIFY_ORDER);
+			rec.setChangeOrderId(saleId);
+			this.logActivity(rec);
 			if (sendEmail) {
 
 				fdOrder = getOrder(saleId);
@@ -4210,8 +4225,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				// Set it to actionInfo object to write to the activity log.
 				actionInfo.setIdentity(identity);
 				saleId = orderInfo.getSaleId();
+				FDOrderI order = getOrder(saleId);
 				this.cancelOrder(actionInfo, saleId, sendEmail, 0);
 				successOrders.add(orderInfo);
+				ErpActivityRecord rec = actionInfo.createActivity(EnumAccountActivityType.CANCEL_ORDER);
+				rec.setNote("Order Cancelled (w/ " + customerOrders.size() + " others)");
+				rec.setChangeOrderId(saleId);
+				rec.setStandingOrderId(order.getStandingOrderId());
+				this.logActivity(rec);
 			} catch (FDResourceException fe) {
 				LOGGER
 						.error("System Error occurred while processing Sale ID : "
@@ -4555,13 +4576,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured while accessing remote resources
 	 */
-	public String placeSubscriptionOrder(FDIdentity identity,
+	public String placeSubscriptionOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String rsvId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status)
 			throws FDResourceException, ErpFraudException,
 			DeliveryPassException {
 
+		FDIdentity identity = info.getIdentity();
 		PrimaryKey pk = null;
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
@@ -4580,6 +4602,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				String dlvPassId = dlvpsb.create(newPass);
 				newPass.setPK(new PrimaryKey(dlvPassId));
 			}
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_SUBS_ORDER);
+			rec.setChangeOrderId(pk.getId());
+			this.logActivity(rec);
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
@@ -4613,7 +4638,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *             if an error occured while accessing remote resources
 	 * @throws ErpAuthorizationException
 	 */
-	public String placeGiftCardOrder(FDIdentity identity,
+	public String placeGiftCardOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String rsvId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status,
@@ -4621,6 +4646,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			FDResourceException, ErpFraudException, ErpAuthorizationException,
 			ErpAddressVerificationException {
 
+		FDIdentity identity = info.getIdentity();
 		PrimaryKey pk = null;
 		try {
 			if (FDStoreProperties.isGivexBlackHoleEnabled()
@@ -4641,6 +4667,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// store giftcard recipent record
 			// storeCustomerRecipents(recipentList,
 			// eb.getCurrentOrder().getId(), customerPk);
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_GC_ORDER);
+			rec.setChangeOrderId(pk.getId());
+			this.logActivity(rec);
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
@@ -5554,13 +5583,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return balance;
 	}
 
-	public String placeDonationOrder(FDIdentity identity,
+	public String placeDonationOrder(FDActionInfo info,
 			ErpCreateOrderModel createOrder, Set<String> usedPromotionCodes,
 			String rsvId, boolean sendEmail, CustomerRatingI cra,
 			CrmAgentRole agentRole, EnumDlvPassStatus status, boolean isOptIn)
 			throws FDResourceException, ErpFraudException,
 			ErpAuthorizationException {
 		PrimaryKey pk = null;
+		FDIdentity identity = info.getIdentity();
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			String customerPk = identity.getErpCustomerPK();
@@ -5586,6 +5616,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			ErpSaleEB eb = this.getErpSaleHome().findByPrimaryKey(
 					new PrimaryKey(pk.getId()));
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.PLACE_DON_ORDER);
+			rec.setChangeOrderId(pk.getId());
+			this.logActivity(rec);
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);

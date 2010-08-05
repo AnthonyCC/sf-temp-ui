@@ -192,7 +192,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			
 			if ( result.getStatus() != Status.SKIPPED ) {
 				try {
-					soManager.save( so );
+					FDActionInfo info = new FDActionInfo(EnumTransactionSource.STANDING_ORDER, so.getCustomerIdentity(),
+							INITIATOR_NAME, "Updating Standing Order Status", null);
+					soManager.save( info, so );
 				} catch (FDResourceException re) {
 					invalidateFCHome();
 					invalidateMailerHome();
@@ -216,7 +218,22 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		activityRecord.setDate( new Date() );
 		activityRecord.setInitiator( INITIATOR_NAME );
 		activityRecord.setSource( EnumTransactionSource.STANDING_ORDER );
-		activityRecord.setNote( result.getErrorHeader() + ";" + result.getErrorDetail() );
+		if (result.getErrorHeader() != null || result.getErrorDetail() != null) {
+			String note;
+			if (result.getErrorHeader() != null) {
+				if (result.getErrorDetail() != null)
+					note = result.getErrorHeader() + ";" + result.getErrorDetail();
+				else
+					note = result.getErrorHeader();
+			} else {
+				if (result.getErrorDetail() != null)
+					note = result.getErrorDetail();
+				else
+					note = null;
+			}
+			activityRecord.setNote( note );
+		}
+		activityRecord.setChangeOrderId( result.getSaleId() );
 		
 		Status status = result.getStatus();
 		
@@ -495,7 +512,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		
 		// making a reservation ...
-		FDActionInfo reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order #"+so.getId(), null );
+		FDActionInfo reserveActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Reserving timeslot for Standing Order", null );
 		
 		FDReservation reservation = null;
 		FDTimeslot selectedTimeslot = null;
@@ -625,7 +642,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// ==========================
 		
 		try {
-			FDActionInfo orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order #"+so.getId(), null );
+			FDActionInfo orderActionInfo = new FDActionInfo( EnumTransactionSource.STANDING_ORDER, customer, INITIATOR_NAME, "Placing order for Standing Order", null );
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
 
@@ -636,7 +653,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			// step delivery date 
 			so.skipDeliveryDate();
 			
-			return new Result(Status.SUCCESS, hasInvalidItems);
+			return new Result(Status.SUCCESS, hasInvalidItems, orderId);
 			
 		} catch ( DeliveryPassException e ) {
 			e.printStackTrace();
