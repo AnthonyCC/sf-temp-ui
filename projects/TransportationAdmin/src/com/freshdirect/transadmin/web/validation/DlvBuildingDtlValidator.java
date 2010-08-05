@@ -35,10 +35,10 @@ public class DlvBuildingDtlValidator extends AbstractValidator {
 					  validateIntegerMinMax("walkUpFloors", "Walk Up Floors", model.getWalkUpFloors(), 1, 20, errors);
 		}
 		
-		if("1".equals(model.getDifficultToDeliver())) {
-			validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),model.getServiceTimeOverride(),
-			model.getServiceTimeAdjustable(),"ST Type or ST Override or ST Adjustment",errors);
-		}
+		
+		validateServiceTimeGroup("serviceTimeAdjustable",model.getDlvServiceTimeType(),model.getServiceTimeOverride(),
+		model.getServiceTimeAdjustable(),"ST Type or ST Override or ST Adjustment",errors);
+		
 		
 		/*--What ? if ("1".equals(model.getSvcEnt())) {
 		     ValidationUtils.rejectIfEmpty(errors, "svcScrubbedStreet", "app.error.112", new Object[]{"Location/Address"},"required field");

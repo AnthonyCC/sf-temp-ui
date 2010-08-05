@@ -50,21 +50,13 @@ function do_refresh()
 	   if(document.getElementById("deliveryBuildingDtlForm").difficultToDeliver[0].checked==true){
 	        //alert("if->");
 	        $('difficultToDeliver').checked = true;
-	        $('difficultReason').disabled=false;
-		 $('dlvServiceTimeType').disabled=false;
-		 $('serviceTimeOverride').disabled=false;
-		 $('serviceTimeOperator').disabled=false;
-		  $('serviceTimeAdjustable').disabled=false;
+	        $('difficultReason').disabled=false;		
  			//$('extraTimeNeeded').disabled=false; 
 	   }
 	   else {
    	        //alert("else->");
    	        $('difficultToDeliver').checked = false;
-		$('difficultReason').disabled=true;
-		 $('dlvServiceTimeType').disabled=true;
-		 $('serviceTimeOverride').disabled=true;
-		 $('serviceTimeOperator').disabled=true;
-		  $('serviceTimeAdjustable').disabled=true;
+		$('difficultReason').disabled=true;		
  			//$('extraTimeNeeded').disabled=true; 
 			//serviceTimeOverride
 	   }

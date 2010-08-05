@@ -316,10 +316,6 @@ public class DlvBuildingDtlFormController extends AbstractFormController {
 		model.setDifficultToDeliver(request.getParameter("difficultToDeliver"));
 		if(!"1".equals(model.getDifficultToDeliver())){
 			model.setDifficultReason("");
-			model.setServiceTimeType(new DlvServiceTimeType());
-			model.setServiceTimeAdjustable(new BigDecimal(0));
-			model.setServiceTimeOperator("");
-			model.setServiceTimeOverride(new BigDecimal(0));
 			model.setAdditional("");
 		}
 	
