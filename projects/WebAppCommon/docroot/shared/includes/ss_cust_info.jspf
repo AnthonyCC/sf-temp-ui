@@ -3,6 +3,7 @@
 %><%@ page import="com.freshdirect.smartstore.fdstore.VariantSelectorFactory"
 %><%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"
 %><%@ page import="com.freshdirect.fdstore.util.DYFUtil"
+%><%@ page import="com.freshdirect.smartstore.Variant"
 %><%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@ page import="java.util.List"
 %><%@ page import="java.util.Iterator"
@@ -129,9 +130,20 @@ tr.ss:hover {background: #fafafa;}
 						EnumSiteFeature feature = (EnumSiteFeature) it.next();
 						
 						OverriddenVariantsHelper.VariantInfo vi = vInfoList.get(feature);
+						String variantId = null;
+						if (vi != null) {
+							variantId = vi.variant;
+						} else {
+							Variant variant = VariantSelectorFactory.getSelector(feature).getVariant(ss_user.getCohortName());
+							if (variant != null) {
+								variantId = variant.getId();
+							} else {
+								variantId = "<i>not assigned</i>";
+							}
+						}
 				%>	<tr class="ss">
 						<td class="ss" style="font-weight: bold;"><%= feature.getName() %></td>
-						<td class="ss"><%= vi != null ? vi.variant : VariantSelectorFactory.getSelector(feature).getVariant(ss_user.getCohortName()).getId() %></td>
+						<td class="ss"><%= variantId %></td>
 						<td class="ss"><span><%= vi != null ? "overridden" : "&nbsp;" %></span><% if (EnumSiteFeature.DYF.equals(feature) && DYFUtil.isCustomerEligible(ss_user) ) { %><span style="padding-left: 4px;">eligible</span><% } %></td>
 					</tr>
 				<%
