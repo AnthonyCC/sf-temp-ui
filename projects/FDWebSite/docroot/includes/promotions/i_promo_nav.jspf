@@ -16,6 +16,9 @@
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
 <%@ page import="com.freshdirect.framework.util.DateUtil"%>
+<%@ page import="com.freshdirect.crm.CrmAgentModel" %>
+<%@ page import="com.freshdirect.crm.CrmAgentRole" %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
 <%@ taglib uri='logic' prefix='logic' %>
 
 <%-- include calendar setup/callbacks --%>
@@ -41,10 +44,12 @@
 	boolean promo_edit_cart = snav_pageURI.indexOf("/promo_edit_cart.jsp") > -1;
 	boolean promo_edit_delivery = snav_pageURI.indexOf("/promo_edit_delivery.jsp") > -1;
 	boolean promo_edit_payment = snav_pageURI.indexOf("/promo_edit_payment.jsp") > -1;
+	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+	boolean isADMUser = agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE));
 %>
 
 <div class="promo_nav">
-<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+<% if(FDStoreProperties.isPromoPublishNodeMaster() && isADMUser) { %>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
@@ -109,7 +114,7 @@
 			<a href="/promotion/export_promo_list.jsp?actionName=export">Export .xls</a>
 		</div>
 	<% } %>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && isADMUser) { %>
 		<div class="promo_sub_nav">
 			<span onclick="showImportPanel(); return false;" style="cursor: pointer;">Import</span>
 		</div>

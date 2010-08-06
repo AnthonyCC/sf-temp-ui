@@ -67,13 +67,13 @@
 					<td>
 						<select id="offerType" name="offerType" class="promo_filter">
 							<option value="">ALL</option>
-							<option value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - Generic</option>
-							<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumPromotionType.GIFT_CARD.getDescription() %></option>
-							<option value="<%= EnumPromotionType.WINDOW_STEERING.getName() %>" <%= EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumPromotionType.WINDOW_STEERING.getDescription() %></option>
-							<option value="<%= EnumPromotionType.WAIVE_CHARGE.getName() %>" <%= EnumPromotionType.WAIVE_CHARGE.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumPromotionType.WAIVE_CHARGE.getDescription() %></option>
-							<option value="<%= EnumPromotionType.DP_EXTENSION.getName() %>" <%= EnumPromotionType.DP_EXTENSION.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumPromotionType.DP_EXTENSION.getDescription() %></option>
-							<option value="<%= EnumPromotionType.LINE_ITEM.getName() %>" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumPromotionType.LINE_ITEM.getDescription() %></option>
-							<option value="<%= EnumPromotionType.SAMPLE.getName() %>" <%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumPromotionType.SAMPLE.getDescription() %></option>
+							<option value="<%= EnumOfferType.GENERIC.getName() %>" <%= EnumOfferType.GENERIC.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - Generic</option>
+							<option value="<%= EnumOfferType.GIFT_CARD.getName() %>" <%= EnumOfferType.GIFT_CARD.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumOfferType.GIFT_CARD.getDescription() %></option>
+							<option value="<%= EnumOfferType.WINDOW_STEERING.getName() %>" <%= EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumOfferType.WINDOW_STEERING.getDescription() %></option>
+							<option value="<%= EnumOfferType.WAIVE_DLV_CHARGE.getName() %>" <%= EnumOfferType.WAIVE_DLV_CHARGE.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumOfferType.WAIVE_DLV_CHARGE.getDescription() %></option>
+							<option value="<%= EnumOfferType.DP_EXTN.getName() %>" <%= EnumOfferType.DP_EXTN.getName().equalsIgnoreCase(offerType)?"selected":""%>>Header - <%= EnumOfferType.DP_EXTN.getDescription() %></option>
+							<option value="<%= EnumOfferType.LINE_ITEM.getName() %>" <%= EnumOfferType.LINE_ITEM.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumOfferType.LINE_ITEM.getDescription() %></option>
+							<option value="<%= EnumOfferType.SAMPLE.getName() %>" <%= EnumOfferType.SAMPLE.getName().equalsIgnoreCase(offerType)?"selected":""%>><%= EnumPromotionType.SAMPLE.getDescription() %></option>
 						</select>
 					</td>
 					<td>

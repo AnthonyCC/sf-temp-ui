@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
 import com.freshdirect.fdstore.promotion.EnumPromotionType;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
@@ -111,7 +112,7 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 	private boolean checkOfferType(PromoFilterCriteria filter,
 			 FDPromotionNewModel promotion) {
 		boolean isMatched = false;
-		if(promotion.getPromotionType().equalsIgnoreCase(EnumPromotionType.getEnum(filter.getOfferType()).getName())){
+		if(promotion.getOfferType().equalsIgnoreCase(EnumOfferType.getEnum(filter.getOfferType()).getName())){
 			isMatched = true;
 		}
 		return isMatched;

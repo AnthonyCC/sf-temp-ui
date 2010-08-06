@@ -70,7 +70,7 @@ public class CrmLoginFilter implements Filter {
 				return;
 			}
 		}
-		if (request.getRequestURI().indexOf(promoDir+"/") >= 0) {
+		if (request.getRequestURI().indexOf(promoDir+"/") >= 0 && (request.getRequestURI().indexOf("/promotion/promo_view.jsp")<=-1 && request.getRequestURI().indexOf("/promotion/export_promo_list.jsp")<=-1 && request.getRequestURI().indexOf("/promotion/promo_details.jsp")<=-1)) {
 			if (!agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) {
 				response.sendRedirect(noAuthPage);
 				return;
