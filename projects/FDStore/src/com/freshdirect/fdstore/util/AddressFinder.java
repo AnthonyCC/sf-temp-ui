@@ -26,14 +26,17 @@ import com.freshdirect.framework.util.NVL;
 
 public class AddressFinder {
 
-	public static ErpAddressModel getShipToAddress(FDUserI user,String addressId, TimeslotContext timeslotCtx) throws FDResourceException{
+	public static ErpAddressModel getShipToAddress(FDUserI user,String addressId, TimeslotContext timeslotCtx, HttpServletRequest request) throws FDResourceException{
 		
 		Collection shipToAddresses = new ArrayList();
 		ErpAddressModel address = null;
-		if(timeslotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeslotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
-			if(user.isHomeUser()){
-				shipToAddresses=FDCustomerManager.getShipToAddresses(user.getIdentity());
-				//check whether Customer having more than one address else get from shoppingCart address
+			addressId = request.getParameter("addressId");
+			if(addressId != null && !"".equals(addressId)){
+				address = FDCustomerManager.getShipToAddress(user.getIdentity(), addressId);
+				return address;
+			}else{
+				if(user!=null&&!timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM))
+					shipToAddresses=FDCustomerManager.getShipToAddresses(user.getIdentity());
 				if(shipToAddresses.size() > 1){
 					if(addressId==null){
 						addressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity()); // default address
@@ -45,34 +48,24 @@ public class AddressFinder {
 							break;
 						} 
 					}
-					if (address == null) {
-						// no address found (no default) -> pick the first one
-						address = (ErpAddressModel)shipToAddresses.iterator().next();
-						addressId = address.getPK().getId();
-					}
 				}else{
 					if(user.getShoppingCart()!=null){
 						address=user.getShoppingCart().getDeliveryAddress();
 					}
-					
-					if (address == null) {
-						// no address found (no default) -> pick the first one
-						address = (ErpAddressModel)shipToAddresses.iterator().next();
-						addressId = address.getPK().getId();
-					}
+					if(address==null)
+						address = (ErpAddressModel)shipToAddresses.iterator().next();					
 				}
 			}
-		}
 		
-		if(timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
+		
+		if(timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){
 			if(user.getShoppingCart()!=null){
 				address=user.getShoppingCart().getDeliveryAddress();
 			}
 		}
 		
 	  return address;
-			
-	}//end getDeliveryAddresses		
+	}		
 	
 	public static Collection<ErpAddressModel> getShipToAddresses(FDUserI user) throws FDResourceException {
 	

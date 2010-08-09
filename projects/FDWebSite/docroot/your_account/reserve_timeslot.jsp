@@ -153,8 +153,7 @@ String actionName = request.getParameter("actionName");
 					Select this option to make this a standing weekly reservation. Please note that reservations not used will be released. At any time you can return to this page to update your reservation.
 				</td>
 			</tr>
-				
-				<input type="hidden" name="addressId" value="<%=address.getPK().getId()%>">
+				<input type="hidden" name="addressId" value="<%=address.getPK()!=null ? address.getPK().getId(): null %>">
 				<input type="hidden" name="actionName" value="">
 			
 			<tr>

@@ -1,17 +1,11 @@
 <%
-
 Collection shipToAddresses = new ArrayList();
 ErpAddressModel address = null;
-if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
-	if(user.isHomeUser()){
-	    shipToAddresses = AddressFinder.getShipToAddresses(user);
-	} 
-	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx);
-}else{
-	address = ((FDUserI)session.getAttribute(SessionName.USER)).getShoppingCart().getDeliveryAddress();
-}
-
+if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
+	shipToAddresses = AddressFinder.getShipToAddresses(user);
+	address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 %>
+
 <%if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)){%>
 <table width="693" cellpadding="0" cellspacing="0" border="0">
 			<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) ||(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))){ %>
@@ -54,7 +48,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.
 			<%}}%>
 			
 			<% 
-			if ((shipToAddresses.size() > 1 && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && shipToAddresses.size()>1 && !isCheckAddress)) { 
+			if ((shipToAddresses.size() > 1 && !timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) || (timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER) && shipToAddresses.size()>1 && !isCheckAddress)) { 
 			%>
 				<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
 				     <FORM name="addressForm" method="POST" action="/your_account/delivery_info_avail_slots.jsp">
@@ -95,9 +89,7 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeSlotCtx.
 					<td class="text12">
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
 						<b><%=address.getAddress1()%><br><%=address.getCity()%>, <%=address.getState()%> <%=address.getZipCode()%></b><br>
-						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
-							<a href="/your_account/delivery_info_check_slots.jsp" class="text11">change address</a>
-						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
+						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
 							<a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a>
 						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && isCheckAddress){%>
 							<br><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a>
