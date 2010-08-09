@@ -209,6 +209,9 @@ public class DispatchCommand extends WebPlanInfo {
 		            	resourceInfo.setPunchInfo(tempPunchInfo);
 		            	if(resourceInfo.getPunchInfo()==null)resourceInfo.setPunchInfo(new PunchInfo());
 		            	setStatus(resourceInfo.getPunchInfo());
+		            }// added new  code for black hole testing 
+		            else {
+		            	resourceInfo.setPunchInfo(new FulltimePunchInfo(this));
 		            }
 				}
 			}

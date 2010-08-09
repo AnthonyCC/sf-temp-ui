@@ -163,10 +163,11 @@ public class DispatchPlanUtil {
 		Map resourceReqs=getResourceRequirements(zone);
 		Set resources=dispatch.getDispatchResources();
 		command.setResourceRequirements(resourceReqs);
-		if(punchInfos!=null && !punchInfos.isEmpty())
+		//Comment code for black hole testing
+		//if(punchInfos!=null && !punchInfos.isEmpty())
 			command.setResources(employeeManagerService,resources,resourceReqs,punchInfos);
-		else
-			command.setResources(employeeManagerService,resources,resourceReqs);
+		/*else
+			command.setResources(employeeManagerService,resources,resourceReqs);*/
 		//command.setResources(employeeManagerService,resources,resourceReqs,resourceSchedule);
 		command.setEzpassNumber(dispatch.getEzpassNumber());
 		command.setGpsNumber(dispatch.getGpsNumber());		

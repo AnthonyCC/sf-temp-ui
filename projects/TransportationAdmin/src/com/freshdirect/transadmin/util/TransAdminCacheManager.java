@@ -60,37 +60,47 @@ public class TransAdminCacheManager {
 
 
 //	 make the time constant in property
-	private CustomExpiringReference employeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+	private CustomExpiringReference employeeDataHolder = new CustomExpiringReference
+													(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
+															, CustomExpiringReference.STORE_EMPLOYEEDATA) {
 
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
 					return this.getEx();
 				} else {
-					return loadAllEmployeeData();
+					List data = loadAllEmployeeData();
+					/*if(data != null && data.size() > 0)
+						this.writeToStore(data);*/
+					return data != null && data.size() > 0 ? data : null;
 				}
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
-			return Collections.EMPTY_LIST;
+			return null;
 		}
 	};
 
 
 //	 make the time constant in property
-	private CustomExpiringReference terminatedEmployeeDataHolder = new CustomExpiringReference(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000) {
+	private CustomExpiringReference terminatedEmployeeDataHolder = new CustomExpiringReference
+												(TransportationAdminProperties.getEmployeeCacheExpiryTime() * 60 * 1000
+														, CustomExpiringReference.STORE_TERMINATEDEMPLOYEEDATA) {
 
 		protected Object load() {
 			try {
 				if(TransportationAdminProperties.isKronosBlackhole()) {
 					return this.getEx();
 				} else {
-					return loadAllTerminatedEmployeeData();
+					List data = loadAllTerminatedEmployeeData();
+					/*if(data != null && data.size() > 0)
+						this.writeToStore(data);*/
+					return data != null && data.size() > 0 ? data : null;					
 				}				
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
 			}
-			return Collections.EMPTY_LIST;
+			return null;
 		}
 	};
 
@@ -99,7 +109,7 @@ public class TransAdminCacheManager {
 	class EmployeeActiveInactiveReference extends CustomExpiringReference {
 				
 		public EmployeeActiveInactiveReference(long refreshPeriod) {
-			super(refreshPeriod);			
+			super(refreshPeriod, STORE_ACTINACTEMPLOYEEDATA);			
 			// TODO Auto-generated constructor stub
 		}
 				
@@ -109,13 +119,16 @@ public class TransAdminCacheManager {
 					return this.getEx();
 				} else {
 					List <EmployeeInfo> _listInfo = loadActiveInactiveEmployeeData();
+					if(_listInfo == null || _listInfo.size() == 0) {
+						_listInfo = (List <EmployeeInfo>)this.getEx();
+					}
 					Map<String, EmployeeInfo> employeeMapping = new HashMap<String, EmployeeInfo>();
 					if(_listInfo != null) {
 						for(EmployeeInfo _info : _listInfo){
 							employeeMapping.put(_info.getEmployeeId(), _info);
 						}
 					}
-					return employeeMapping;
+					return employeeMapping != null && employeeMapping.size() > 0 ? employeeMapping : null;					
 				}				
 			} catch (SapException e) {
 				LOGGER.error("Could not load load Referral program due to: ", e);
@@ -218,19 +231,47 @@ public class TransAdminCacheManager {
 	public Collection getAllEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  new ArrayList((List)this.employeeDataHolder.get());
+		//added new code
+		if(null!=(this.employeeDataHolder.get()))
+		{
+			return  new ArrayList((List)this.employeeDataHolder.get());
+			
+		}
+		else{
+			return new ArrayList();
+		}
+		//return  new ArrayList((List)this.employeeDataHolder.get());
 	}
 
 	public Collection getActiveInactiveEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  new ArrayList(((Map)this.activeInactivedEmployeeDataHolder.get()).values());
+		//added new code
+		if(null!=(this.activeInactivedEmployeeDataHolder.get()))
+		{
+			return  new ArrayList((((Map)this.activeInactivedEmployeeDataHolder.get()).values()));
+		}
+			else{
+				return new ArrayList();
+			}
+		
+		
+		//return  new ArrayList(((Map)this.activeInactivedEmployeeDataHolder.get()).values());
 	}
 
 	public Collection getAllTerminatedEmployeeInfo(EmployeeManagerI mgr) {
 		// TODO Auto-generated method stub
 		this.manager=mgr;
-		return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());
+		//added new code
+		
+		if(null!=(this.terminatedEmployeeDataHolder.get()))
+		{
+			return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());	
+		}
+		else{
+			return new ArrayList();
+		}
+		//return  new ArrayList((List)this.terminatedEmployeeDataHolder.get());
 	}
 
 
@@ -249,6 +290,20 @@ public class TransAdminCacheManager {
 
 	public EmployeeInfo getActiveInactiveEmployeeInfo(String empId,EmployeeManagerI mgr) {
 		this.manager=mgr;
+		//added new code
+	/*List empList = (List) this.activeInactivedEmployeeDataHolder.get();
+		if(empList!=null) 
+		{
+		for(int i=0;i<empList.size();i++){
+			EmployeeInfo info=(EmployeeInfo)empList.get(i);
+			if(info != null && info.getEmployeeId().equalsIgnoreCase(empId))
+				return info;
+		}
+		
+		}
+		return null;*/
+		
+		
 		return this.activeInactivedEmployeeDataHolder.getEmployeeMapping().get(empId);
 	}	
 	
