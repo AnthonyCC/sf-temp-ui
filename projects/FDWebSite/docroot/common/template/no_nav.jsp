@@ -51,7 +51,7 @@
 		modOrder = true;
        	color = "6699CC";
        	suffix = "_blue";
-	} else if (tmplUser.getCurrentStandingOrder() != null) {
+	} else if (tmplUser.getCheckoutMode() != EnumCheckoutMode.NORMAL) {
 		// STANDING ORDER
 		modOrder = true;		
        	color = "996699";

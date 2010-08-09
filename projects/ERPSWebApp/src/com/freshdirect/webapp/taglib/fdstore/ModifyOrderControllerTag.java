@@ -48,6 +48,7 @@ import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
@@ -363,6 +364,8 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 				}
 			}
 			cart.refreshAll();
+			currentUser.setCurrentStandingOrder(null);
+			currentUser.setCheckoutMode(EnumCheckoutMode.NORMAL);
 			currentUser.setShoppingCart( cart );
 			//Reload gift card balance.
 			loadGiftCardsIntoCart(currentUser, order);

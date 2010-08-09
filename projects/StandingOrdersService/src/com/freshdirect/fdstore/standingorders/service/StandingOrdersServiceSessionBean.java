@@ -646,6 +646,13 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			CustomerRatingI cra = new CustomerRatingAdaptor( customerUser.getFDCustomer().getProfile(), customerUser.isCorporateUser(), customerUser.getAdjustedValidOrderCount() );
 			String orderId = FDCustomerManager.placeOrder( orderActionInfo, cart, null, false, cra, null );
 
+			try {
+				FDStandingOrdersManager.getInstance().assignStandingOrderToSale(orderId, so);
+			} catch (FDResourceException e) {
+				LOGGER.error("Failed to assign standing order to sale, corresponding order ID="+orderId, e);
+				LOGGER.warn( e.getFDStackTrace() );
+			}
+			
 			LOGGER.info( "Order placed successfully. OrderId = " + orderId );
 			
 			sendSuccessMail( so, customerInfo, orderId, hasInvalidItems );

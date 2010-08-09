@@ -112,10 +112,6 @@ public class CreateStandingOrderTag extends BodyTagSupport {
 					throw new JspException("Error redirecting " + ioe.getMessage());
 				}
 			}
-
-		} else if ("cancelStandingOrder".equalsIgnoreCase("action")) {
-			FDSessionUser u = (FDSessionUser) pageContext.getSession().getAttribute(SessionName.USER);
-			u.setCurrentStandingOrder(null);
 		}		
 
 		return EVAL_BODY_BUFFERED;

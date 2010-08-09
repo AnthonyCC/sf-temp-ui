@@ -31,10 +31,10 @@ public class CancelStandingOrderCheckoutTag extends BodyTagSupport {
 		FDStandingOrder so = user.getCurrentStandingOrder();
 		
 		/* "chkplc".equalsIgnoreCase(request.getParameter("trk")) &&  <<< vmi magia a cancel gombhoz */
-		if ( so != null && !EnumCheckoutMode.NORMAL.equals( origMode ) ) {
+		user.setCurrentStandingOrder(null);
+		if ( !EnumCheckoutMode.NORMAL.equals( origMode ) ) {
 			
 			// RESET
-			user.setCurrentStandingOrder(null);
 			user.setCheckoutMode(EnumCheckoutMode.NORMAL);
 
 			if ( origMode == EnumCheckoutMode.MODIFY_SO ) {

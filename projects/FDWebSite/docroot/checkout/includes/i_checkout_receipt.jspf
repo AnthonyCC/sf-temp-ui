@@ -57,6 +57,7 @@ if ( cart.getStandingOrderId() != null && user.getCheckoutMode() != EnumCheckout
 	<div style="width: 430px; height: 1px; margin: 1em 0 1em 0; color: #996699;">&nbsp;</div>
 	<% 
 		// standing orders - return to normal mode
+		user.setCurrentStandingOrder(null);
 		user.setCheckoutMode( EnumCheckoutMode.NORMAL );
 		session.setAttribute( "checkout_mode", EnumCheckoutMode.NORMAL );
 } %>
