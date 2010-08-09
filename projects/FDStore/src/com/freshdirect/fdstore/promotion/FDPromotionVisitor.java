@@ -126,25 +126,6 @@ public class FDPromotionVisitor {
 	
     
 
-	private static void applyZonePromotion(PromotionContextI context, FDPromotionEligibility eligibilities) 
-    {    
-    	
-    	if(FDPromotionZoneRulesEngine.isEligible(context))//iPhone check
-    	{
-			String promoCode=FDPromotionZoneRulesEngine.getPromoCode(context);
-			//if(promoCode!=null&&eligibilities.isEligible(promoCode))
-			if(promoCode !=null && eligibilities.isEligible(promoCode) )
-			{
-				
-				PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-				if(promo.apply(context)) {
-					Discount discount = new ZonePromoDiscount(promoCode, EnumDiscountType.DOLLAR_OFF,promo.getHeaderDiscountTotal() );
-					context.addDiscount(discount);
-					eligibilities.setApplied(promoCode);
-				}
-			} 
-    	}
-    }
 	private static void resolveLineItemConflicts(PromotionContextI context, FDPromotionEligibility eligibilities) {
 		//Reload the promo variant map based on new promotion eligibilities.	
 		Map pvMap = PromoVariantHelper.getPromoVariantMap(context.getUser(), eligibilities);

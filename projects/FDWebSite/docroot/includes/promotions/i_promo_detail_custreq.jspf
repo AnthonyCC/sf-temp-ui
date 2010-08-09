@@ -80,8 +80,8 @@ String userId = request.getParameter("userId");
 							<td class="promo_detail_label">Eligible list:</td>
 							
 							<td class="alignL">
-							<%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : " " %>
-						<%if(FDStoreProperties.isPromoPublishNodeMaster() || EnumPromotionStatus.LIVE.equals(promotion.getStatus())){ %>
+							<%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %>
+						<%if((FDStoreProperties.isPromoPublishNodeMaster() || EnumPromotionStatus.LIVE.equals(promotion.getStatus())) && isADMUser){ %>
 							<%if(promotion.getAssignedCustomerSize() > 0){ %>
 								<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 								Marketing Admin Functions:
