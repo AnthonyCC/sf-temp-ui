@@ -31,7 +31,7 @@ public class DeliveryTimeValidator {
 		boolean chefsTable = user.isChefsTable();
 
 		List<FDTimeslot> deliverySlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(
-				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), deliveryAddress);
+				DateUtil.truncate(nextDate), DateUtil.addDays(DateUtil.truncate(nextDate), 1), deliveryAddress).getTimeslots();
 
 		FDTimeslot deliverySlot = null;
 		for (FDTimeslot candidateSlot : deliverySlots) {

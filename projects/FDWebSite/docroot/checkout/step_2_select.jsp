@@ -318,6 +318,11 @@ zonePromoEnabled=true;
     <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 		<%@ include file="/includes/i_error_messages.jspf" %>
     </fd:ErrorHandler>
+    <%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
+		<fd:ErrorHandler result='<%=DeliveryTimeSlotResult%>' name='deliveryTime' id='errorMsg'>
+				<%@ include file="/includes/i_error_messages.jspf" %>
+		</fd:ErrorHandler>
+	<%}%>
 <%
 String errorMsg = (String) session.getAttribute(SessionName.SIGNUP_WARNING);
 if (errorMsg==null && user.isPromotionAddressMismatch()) {

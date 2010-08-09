@@ -363,7 +363,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List<FDTimeslot> getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZone(Date begDate, Date endDate, ContactAddressModel address) throws FDResourceException {
 		try {			
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
 			DlvManagerSB sb = getDlvManagerHome().create();
@@ -371,13 +371,13 @@ public class FDDeliveryManager {
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
 			}			
-			
-			
+			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
+			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				retLst = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);
+				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);				
 			}
-
-			return retLst;
+			return dynamicTimeslots;
+			
 		} catch (RemoteException re) {
 			re.printStackTrace();
 			throw new FDResourceException(re);
@@ -434,7 +434,7 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List<FDTimeslot> getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
+	public FDDynamicTimeslotList getTimeslotsForDepot(Date begDate, Date endDate, String regionId, String zoneCode, ContactAddressModel address) throws FDResourceException {
 
 		try {
 			List<FDTimeslot> retLst = new ArrayList<FDTimeslot>();
@@ -443,12 +443,12 @@ public class FDDeliveryManager {
 			for ( DlvTimeslotModel timeslot : timeslots ) {
 				retLst.add(new FDTimeslot(timeslot));
 			}
-			
+			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
+			dynamicTimeslots.setTimeslots(retLst);
 			if(FDStoreProperties.isDynamicRoutingEnabled()) {
-				//RoutingUtil.getInstance().sendDateRangeAndZoneForTimeslots(retLst, address);*/
-				retLst = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);
+				dynamicTimeslots = this.getTimeslotsForDateRangeAndZoneEx(retLst, address);				
 			}
-			return retLst;
+			return dynamicTimeslots;
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
@@ -913,8 +913,8 @@ public class FDDeliveryManager {
 		}
 	}
 
-	public List<FDTimeslot> getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
-		return RoutingUtil.getInstance().getTimeslotsForDateRangeAndZoneEx(timeSlots, address);
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws FDResourceException {
+		return RoutingUtil.getInstance().getTimeslotsForDateRangeAndZoneEx(timeSlots, address);		
 	}
 
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address, FDTimeslot timeslot) throws FDResourceException {

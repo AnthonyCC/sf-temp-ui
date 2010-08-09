@@ -195,7 +195,8 @@ public class ClickToCallUtil {
 				Calendar endCal = Calendar.getInstance();
 				endCal.add(Calendar.DATE, 2);
 				endCal = DateUtil.truncate(endCal);
-				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), (ContactAddressModel)address);
+				List<FDTimeslot> timeSlots = FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime()
+							, endCal.getTime(), (ContactAddressModel)address).getTimeslots();
 				if(null == timeSlots || timeSlots.size()==0){
 					displayClick2CallInfo = true;
 				}else{

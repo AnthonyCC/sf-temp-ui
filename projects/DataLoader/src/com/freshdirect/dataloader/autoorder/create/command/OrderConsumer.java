@@ -167,7 +167,7 @@ public class OrderConsumer implements IConsumer {
 			//System.out.println("-------> find timeslots from " + begCal.getTime() + " to " + endCal.getTime());
 
 			List timeSlots =
-				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), address);
+				FDDeliveryManager.getInstance().getTimeslotsForDateRangeAndZone(begCal.getTime(), endCal.getTime(), address).getTimeslots();
 
 			FDTimeslot slot = null;
 

@@ -268,8 +268,7 @@ public class RoutingUtil {
 	}
 
 	public static boolean updateReservation(DlvReservationModel reservation, IOrderModel order) throws RoutingServiceException {
-		
-		
+				
 		RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
 		
 		DeliveryServiceProxy dlvService=new DeliveryServiceProxy();
@@ -331,8 +330,7 @@ public class RoutingUtil {
 		
 		IPackagingModel historyPackageInfo = getHistoricOrderSize(order);	
 		context.setHistoryPackageInfo(historyPackageInfo);
-		
-		
+				
 		Map<java.util.Date, RoutingAnalyzerCommand> analyzerCommands = getAnalyzerCommand(_timeSlots, address, context, locModel);
 		order.getDeliveryInfo().setDeliveryZone(dlvService.getDeliveryZone(_timeSlots.get(0).getZoneCode()));
 		
@@ -418,8 +416,8 @@ public class RoutingUtil {
 		return data;
 	}
 	
-	public List<FDTimeslot> getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) {
-
+	public FDDynamicTimeslotList getTimeslotsForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) {
+		
 		try {
 				DlvManagerSB sb = getDlvManagerHome().create();
 				return sb.getTimeslotForDateRangeAndZoneEx(timeSlots, address);
@@ -432,7 +430,9 @@ public class RoutingUtil {
 				ce.printStackTrace();
 
 			}
-			return new ArrayList<FDTimeslot>();
+			FDDynamicTimeslotList dynamicTimeslots = new FDDynamicTimeslotList();
+			dynamicTimeslots.setTimeslots(new ArrayList<FDTimeslot>());
+			return dynamicTimeslots;
 	}
 	
 	public   void sendDateRangeAndZoneForTimeslots(List<FDTimeslot> timeSlots, ContactAddressModel address) {

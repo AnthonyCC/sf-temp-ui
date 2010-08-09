@@ -13,6 +13,7 @@ String zonePromoString=null;
 	List messages = DeliveryTimeSlotResult.getMessages();
 	List comments = DeliveryTimeSlotResult.getComments();
     String zoneId = "";
+   
 	%>
 <% if(timeSlotCtx!=null){
 
@@ -33,7 +34,11 @@ String zonePromoString=null;
 			<%} %>
 		</script>
 	<% } %>
-
+	<%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
+		<fd:ErrorHandler result='<%=DeliveryTimeSlotResult%>' name='deliveryTime' id='errorMsg'>
+				<%@ include file="/includes/i_error_messages.jspf" %>
+		</fd:ErrorHandler>
+	<%}%>
 	<%if(timeSlotCtx.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)|| timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)|| timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){%>
 		<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
 	<%}%>
@@ -45,6 +50,7 @@ String zonePromoString=null;
 				<%@ include file="/includes/i_error_messages.jspf" %>
 		</fd:ErrorHandler>
 	<%}%>
+	
 	
 	<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
 		

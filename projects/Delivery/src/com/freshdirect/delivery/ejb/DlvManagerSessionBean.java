@@ -29,7 +29,6 @@ import java.util.List;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.ObjectNotFoundException;
-import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
@@ -40,7 +39,6 @@ import com.freshdirect.common.pricing.MunicipalityInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpActivityRecord;
-import com.freshdirect.customer.ejb.ErpCustomerEB;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
@@ -74,6 +72,7 @@ import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.restriction.ejb.DlvRestrictionDAO;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
@@ -293,7 +292,10 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			if(!isForced) {
 				List<FDTimeslot> routingTimeslots = new ArrayList<FDTimeslot>(); 
 				routingTimeslots.add(new FDTimeslot(timeslotModel));
-				routingTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots, address);
+				FDDynamicTimeslotList dynamicTimeslots = this.getTimeslotForDateRangeAndZoneEx(routingTimeslots, address);
+				if(routingTimeslots != null) {
+					dynamicTimeslots.getTimeslots();
+				}
 				if(routingTimeslots != null && routingTimeslots.size() > 0) {
 					
 					TimeslotCapacityContext context = new TimeslotCapacityContext();					
@@ -1690,10 +1692,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 
 
-	public List<FDTimeslot> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, ContactAddressModel address) {
+	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> _timeSlots, ContactAddressModel address) {
 
 		long startTime = System.currentTimeMillis();
 		List<FDTimeslot> timeSlots = _timeSlots;
+		FDDynamicTimeslotList result = new FDDynamicTimeslotList();
 		if(RoutingUtil.hasAnyDynamicEnabled(_timeSlots)) {
 			try {
 				timeSlots = RoutingUtil.getTimeslotForDateRangeAndZone(_timeSlots, address);
@@ -1712,10 +1715,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				logTimeslots(null,null,RoutingActivityType.GET_TIMESLOT,null,0,address);
 				e.printStackTrace();
 				LOGGER.debug("Exception in getTimeslotForDateRangeAndZoneEx():"+e.toString());
+				result.setError(e);
 			}
 		}
-
-		return timeSlots;
+		result.setTimeslots(timeSlots);
+		return result;
 	}
 
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation, ContactAddressModel address , FDTimeslot timeslot) {

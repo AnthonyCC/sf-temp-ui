@@ -29,7 +29,6 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.model.DlvZoneModel;
@@ -41,6 +40,7 @@ import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDInvalidAddressException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -49,12 +49,11 @@ import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
-import com.freshdirect.fdstore.promotion.FDPromotionRulesEngine;
-import com.freshdirect.fdstore.promotion.PromotionContextI;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.webapp.ActionError;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 /**
@@ -105,7 +104,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	}
 
 	protected Object getResult() throws FDResourceException {
-
+		
+		Result result = null;
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -128,6 +128,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		List dateRanges = getDateRanges(baseRange, (containsSpecialHoliday && !deliveryInfo), restrictions, specialHoliday, containsAdvanceOrderItem);
 
 		List timeslotList = new ArrayList();
+		Exception dynaError = null;
+		
 		if(address == null) {
 			return null;
 		}
@@ -141,10 +143,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		
 		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
 			DateRange range = (DateRange) i.next();
-			List timeslots = this.getTimeslots(
+			
+			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
 				range.getStartDate(),
 				range.getEndDate());
+			
+			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
+				dynaError = dynamicTimeslots.getError();
+			} 
+			List timeslots = dynamicTimeslots.getTimeslots();
+			
 			timeslotList.add(new FDTimeslotList(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
 				.getEndDate()), restrictions));
 		}
@@ -203,8 +212,18 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				}
 			}
 		}  
+		result = new Result(timeslotList, zonesMap, ctActive, messages, comments);
+		if(dynaError != null && dynaError instanceof RoutingServiceException) {
+			
+			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
+					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
+					"If you continue to experience difficulties loading this page, " +
+					"please call our customer service department"+
+					(user != null ? " at " + user.getCustomerServiceContact() : "")));
+		}
+		 
 		
-		return new Result(timeslotList, zonesMap, ctActive, messages, comments);
+		return result;
 	}
 
 	private ErpAddressModel performCosResidentialMerge()
@@ -236,7 +255,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return model;
 	}
 
-	private List getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
+	private FDDynamicTimeslotList getTimeslots(ErpAddressModel address, Date startDate, Date endDate) throws FDResourceException {
 
 		if (address instanceof ErpDepotAddressModel) {
 			ErpDepotAddressModel depotAddress = (ErpDepotAddressModel) address;

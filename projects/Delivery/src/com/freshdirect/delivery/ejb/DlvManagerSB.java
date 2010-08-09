@@ -40,6 +40,7 @@ import com.freshdirect.delivery.model.DlvZoneModel;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
@@ -128,7 +129,7 @@ public interface DlvManagerSB extends EJBObject {
 
 	public List<Date> getCutoffTimesByDate(Date day) throws RemoteException;
 	
-	public List<FDTimeslot> getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
+	public FDDynamicTimeslotList getTimeslotForDateRangeAndZoneEx(List<FDTimeslot> timeSlots, ContactAddressModel address) throws RemoteException;
 	
 	public IDeliveryReservation reserveTimeslotEx(DlvReservationModel reservation,ContactAddressModel address , FDTimeslot timeslot) throws RemoteException;
 	

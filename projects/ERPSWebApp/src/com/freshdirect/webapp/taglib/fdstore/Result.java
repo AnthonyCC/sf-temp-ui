@@ -3,7 +3,9 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.List;
 import java.util.Map;
 
-public class Result {
+import com.freshdirect.framework.webapp.ActionResult;
+
+public class Result extends ActionResult {
 	public boolean isZoneCtActive() {
 		return zoneCtActive;
 	}
