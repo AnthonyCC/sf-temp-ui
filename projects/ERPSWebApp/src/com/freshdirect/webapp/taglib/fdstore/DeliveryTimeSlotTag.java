@@ -53,7 +53,6 @@ import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.webapp.ActionError;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 /**
@@ -213,7 +212,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			}
 		}  
 		result = new Result(timeslotList, zonesMap, ctActive, messages, comments);
-		if(dynaError != null && dynaError instanceof RoutingServiceException) {
+		if(dynaError != null) {
 			
 			result.addError(new ActionError("deliveryTime", "We are sorry. Our system is temporarily experiencing a problem " +
 					"displaying the available timeslots. Please try to refresh this page in about three minutes. " +
