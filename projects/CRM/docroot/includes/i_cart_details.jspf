@@ -122,7 +122,8 @@
 </tr>
 <tr><td colspan="<%= hasInvoice ? "14" : "11"%>" class="list_separator" style="padding: 0px;"><img src="/media_stat/crm/images/clear.gif" width="1" height="1"></td></tr>	
 
-        <%  if (order.getTotalDiscountValue() > 0.0) { 
+        <% 
+		if (order.getTotalDiscountValue() > 0.0) { 
 	    		if (hasInvoice) {
 					List discounts = order.getDiscounts();
 					List actualDiscounts = order.getActualDiscounts();
@@ -132,7 +133,8 @@
 						ErpDiscountLineModel discountLine2 = (ErpDiscountLineModel) iter2.next();
 						Discount discount2 = discountLine2.getDiscount();
 						PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-						String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();		
+						String desc = "";
+						if (promotion != null) { desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription(); }
         %>        
 				<tr>
 		            <td colspan="3"></td>
@@ -148,7 +150,9 @@
 						ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
 						Discount discount = discountLine.getDiscount();
 						PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-						String desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription();		
+						System.out.println("ok until here.1");
+						String desc = "";
+						if (promotion != null) { desc = EnumPromotionType.SIGNUP.equals(promotion.getPromotionType()) ? "Free Food" : promotion.getDescription(); }
 		%>
 				<tr>
 		            <td colspan="3"></td>

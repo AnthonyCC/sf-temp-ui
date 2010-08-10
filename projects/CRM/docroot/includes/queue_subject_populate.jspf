@@ -13,7 +13,8 @@
 	
 	function populateSubject(queue, subjectField){
 		subjectField.options.length = 1;
-		var numSubj = queues[queue].subjects.length;
+		var numSubj = 0;
+		if (queues[queue] != null && queues[queue].subjects != null) { numSubj = queues[queue].subjects.length; }
 		subjectField.options[0].text = numSubj==0 ? "-Select Queue then Subject-" : "-Select Subject-";
 		subjectField.disabled = numSubj==0;
 		for (i=0; i < numSubj; i++) {

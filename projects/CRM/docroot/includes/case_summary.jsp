@@ -13,7 +13,7 @@
 <link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
 <%
 String pageURI = request.getRequestURI();
-String height = "100";
+String height = "85";
 String width = "48";
 
 boolean case_mgmt = pageURI.indexOf("case_mgmt") > -1;

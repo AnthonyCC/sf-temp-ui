@@ -29,7 +29,7 @@ session.setAttribute(SessionName.USER,null); %>
 			<crm:FindCases id='cases' template='<%= template %>'>
             	<%@ include file="/includes/case_list.jspf"%>
 			<div>
-				<iframe id="case_summary" name="case_summary" src="/includes/case_summary.jsp?<%=NVL.apply(request.getQueryString(),"")%>" width="100%" height="240" scrolling="no" FrameBorder="0"></iframe>
+				<iframe id="case_summary" name="case_summary" src="/includes/case_summary.jsp?<%=NVL.apply(request.getQueryString(),"")%>" width="100%" height="270" scrolling="auto" FrameBorder="0"></iframe>
 			</div>
 			<jsp:include page='/includes/case_search.jsp'/>
             </crm:FindCases>

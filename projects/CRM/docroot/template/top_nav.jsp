@@ -20,6 +20,9 @@
 	<!-- Sam Skin CSS -->
 	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
 
+	<%@ include file="/shared/template/includes/yui.jspf" %>
+
+	<%-- protoype must load AFTER YUI. YUI doesn't extend elements, so the modalbox usages will fail --%>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
 	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>
@@ -37,7 +40,6 @@
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
 
-<%@ include file="/shared/template/includes/yui.jspf" %>
 <% if ("true".equals(request.getAttribute("needsCCL"))) {%>
     <%@ include file="/shared/template/includes/ccl.jspf"%>
     <%@ include file="/common/template/includes/ccl_crm.jspf"%>

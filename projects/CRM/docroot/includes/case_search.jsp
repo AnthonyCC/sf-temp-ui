@@ -132,22 +132,18 @@ CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
                             document.getElementById("endDate").value=field.value;
                         }
 
-                        </script>
+						<% if (template.getQueue() != null) { %>
+							populateSubject('<%= template.getQueue().getCode()%>', case_search.subject);
+							<% if (template.getSubject() != null) { %>
+								case_search.subject.value='<%= template.getSubject().getCode() %>';
+							<% } %>
+						<% } %>
+						</script>
                     </td>
                 </tr>
                 </table>
             </td>
         </tr>
-		<% if (template.getQueue() != null) { %>
-		<script language="JavaScript">
-		<!--
-			populateSubject('<%= template.getQueue().getCode()%>', case_search.subject);
-			<% if (template.getSubject() != null) { %>
-				case_search.subject.value='<%= template.getSubject().getCode() %>';
-			<% } %>
-		//->
-		</script>
-		<% } %>
 		<tr>
 			<td>Status</td>
 			<td colspan="2">

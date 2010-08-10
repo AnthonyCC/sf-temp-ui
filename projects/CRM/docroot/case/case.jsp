@@ -13,7 +13,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 
-<tmpl:insert template='/template/top_nav_changed_dtd.jsp'>
+<tmpl:insert template='/template/top_nav.jsp'>
 
     <tmpl:put name='title' direct='true'>Case Details</tmpl:put>
 	<crm:GetCase id="cm" caseId='<%= request.getParameter("case") %>'>
@@ -97,7 +97,7 @@
 				</table>
 			</div>
 			
-			<div class="case_content" <%= (session.getAttribute(SessionName.USER) != null) ? "style='height: 78%;'" : "" %>>
+			<div class="case_content">
 
 				<%@ include file="/includes/case_details.jspf" %>
 
@@ -112,7 +112,7 @@
 						<td colspan="1" class="case_header_color"><img src="/media_stat/crm/images/clear.gif" width="1" height="3"></td>
 					</tr>
 				</table>
-				<div class="case_content<%=forPrint?"":"_scroll"%>" style="width: 100%; bottom: 0px; height: <%= (session.getAttribute(SessionName.USER) != null) ? "35": "42" %>%;">
+				<div class="case_content<%=forPrint?"":"_scroll"%>" style="width: 100%; bottom: 0px;<%= (session.getAttribute(SessionName.USER) == null) ? " height: 35%;" : "" %>">
 					<%@ include file="/includes/case_actions.jspf" %>
 				</div>
 

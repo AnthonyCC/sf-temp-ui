@@ -499,7 +499,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 
 <%--top buffer --%>
 <tr bgcolor="<%=rowColor%>">
-    <td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+    <td colspan="7" style="font-size: 1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
 <tr valign="top" bgcolor="<%=rowColor%>">
 
@@ -651,14 +651,14 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 </tr>
 
 <tr bgcolor="<%=rowColor%>">
-	<td colspan="4">&nbsp;</td>
-    	<td colspan="3"></td>
+	<td colspan="4" style="font-size: 1px;">&nbsp;</td>
+	<td colspan="3" style="font-size: 1px;">&nbsp;</td>
 </tr>
 
 
 <%--bottom buffer--%>
 <tr bgcolor="<%=rowColor%>">
-    <td colspan="7"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
+    <td colspan="7" style="font-size: 1px;"><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td>
 </tr>
     <%
         }

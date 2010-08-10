@@ -15,6 +15,13 @@ String pageURI = request.getRequestURI();
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/lang/calendar-en.js"></script>
     <script type="text/javascript" src="/ccassets/javascript/jscalendar-1.0/calendar-setup.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_iframe.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_overtwo.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/iframecontentmws.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_scroll.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
 
 </head>
 <body>
@@ -32,7 +39,7 @@ String pageURI = request.getRequestURI();
 				
 				<jsp:include page='/includes/case_header.jsp'/>
 
-				<div style="height: 95%; overflow: auto; border: 0px solid #000;">
+				<div style="overflow: auto; border: 0px solid #000;">
 					<div class="side_nav">
 						<jsp:include page='/includes/case_mgmt_side_nav.jsp'/>
 						
@@ -56,12 +63,12 @@ String pageURI = request.getRequestURI();
 						</div>
 					</div>
 					
-					<div style="width: 84%; overflow-y: auto; float: left;">
+					<div style="width: 84%; overflow-y: auto; float: right;">
 						<tmpl:get name="content"/>
 					</div>
 				</div>
 			</div>
-			<div class="footer"><jsp:include page='/includes/copyright.jsp'/></div>
+			<div class="footer" style="clear: both;"><jsp:include page='/includes/copyright.jsp'/></div>
 		<% } catch (Exception ex) {
 			ex.printStackTrace();
 			throw ex;
