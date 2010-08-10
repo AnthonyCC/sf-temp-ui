@@ -83,7 +83,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	if ( EnumCheckoutMode.NORMAL == user.getCheckoutMode() || EnumCheckoutMode.CREATE_SO == user.getCheckoutMode() ) {
 		rsv = user.getReservation();
 
-		address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx);
+		address = AddressFinder.getShipToAddress(user, addressId, timeSlotCtx, request);
 
 		if(rsv != null){
 			preReserveSlotId = rsv.getTimeslotId();
