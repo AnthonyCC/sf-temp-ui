@@ -283,7 +283,7 @@ public class DispatchController extends AbstractMultiActionController {
 							s.setScribId(r.getId().getResourceId());
 							
 							/*This is the requested date for the shift being exported.This is always the date defined in the planning scrib, 
-							  except if Role = “Yard Worker”.  For these employees, the date shall be dependent on start time.  
+							  except if Role = Yard Worker.  For these employees, the date shall be dependent on start time.  
 							  If the Employee Start time >= 9:00 PM, then Date = D -1.*/
 
 							boolean isYardWorker = false;
@@ -305,8 +305,8 @@ public class DispatchController extends AbstractMultiActionController {
 								} else s.setScribDate(p.getPlanDate());
 							}else s.setScribDate(p.getPlanDate());
 							
-							/*The time shall be equal to “Start Time” for all employees except those with Role = “Runner”
-							 •For Role = “Runner” the Time in the Kronos file shall be First Delivery Time – 30 minutes.  
+							/*The time shall be equal to Start Time for all employees except those with Role = Runner
+							  For Role = Runner the Time in the Kronos file shall be First Delivery Time – 30 minutes.  
 							 */							
 							if(r.getId().getAdjustmentTime()!=null)
 								s.setStartTime(r.getId().getAdjustmentTime());
