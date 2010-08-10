@@ -32,11 +32,17 @@
 			<div class="cont_row">
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
 					<span class="scrTitle"><%=pageTitle%></span>
-						<span ><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
-
-							<input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" /></span>
-						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','zone','plan.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doAutoDispatch('daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
+						<span >
+							Week Of:<input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
+						 	<a href="#" id="trigger_planDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
+						 	<select id="planDay" name="planDay">
+                         	 	<option value="All">-All Days</option>
+                      			<option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option><option value="8">Sun</option>
+                    	    </select>	
+						 <input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" /></span>
+						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','planDay','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('daterange','planDay','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doAutoDispatch('daterange','planDay','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
 					<span>
                      <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','daterange','y')" />
                      <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','daterange','y','1')" />                    
@@ -84,17 +90,18 @@
 				</div>
      </div>   
      <script>
-     	 function doAutoDispatch(compId1,compId2, url) {
+     	 function doAutoDispatch(compId1,compId2,compId3, url) {
      	 	var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
 			if (hasConfirmed) {
-			  	doCompositeLink(compId1,compId2, url);
+			  	doCompositeLink(compId1,compId2,compId3, url);
 			} 
      	 }
-         function doCompositeLink(compId1,compId2, url) {
+         function doCompositeLink(compId1,compId2,compId3, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
+          var param3 = document.getElementById(compId3).value;
           
-          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2;
+          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
         } 
       addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
       
@@ -127,6 +134,18 @@
          var id3 = "file";          
         location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3  ;
 	  }
+
+	   Calendar.setup(
+               {
+                 showsTime : false,
+                 electric : false,
+                 inputField : "daterange",
+                 ifFormat : "%m/%d/%Y",
+                 singleClick: true,
+                 button : "trigger_planDate" 
+                }
+               );
+
     </script>   
   </tmpl:put>
 </tmpl:insert>

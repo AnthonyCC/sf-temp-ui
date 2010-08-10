@@ -24,6 +24,14 @@ public class Scrib
 	private String supervisorCode;
 	private String supervisorName;
 	
+	private String shiftType;
+		
+	public String getShiftType() {
+		return shiftType;
+	}
+	public void setShiftType(String shiftType) {
+		this.shiftType = shiftType;
+	}	
 	public int getCount() {
 		return count;
 	}

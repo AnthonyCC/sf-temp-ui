@@ -593,10 +593,11 @@ public class ModelUtil {
 			{
 				RouteDecorator r1=(RouteDecorator)o1;
 				RouteDecorator r2=(RouteDecorator)o2;
-				if(r1.getZone().getPriority().intValue()==-1) return 1;
-				if(r2.getZone().getPriority().intValue()==-1) return -1;
-				return r1.getZone().getPriority().intValue()-r2.getZone().getPriority().intValue();
-
+				if(r1.getZone()!=null && r2.getZone()!=null){
+					if(r1.getZone().getPriority().intValue()==-1) return 1;
+					if(r2.getZone().getPriority().intValue()==-1) return -1;
+					return r1.getZone().getPriority().intValue()-r2.getZone().getPriority().intValue();
+				}
 			}
 			return 0;
 		}

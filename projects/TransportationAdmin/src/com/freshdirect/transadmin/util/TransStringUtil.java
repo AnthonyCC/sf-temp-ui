@@ -36,6 +36,7 @@ public class TransStringUtil {
 	
 	public static DateFormat dateFormatwithTime = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");
 	
+	public static DateFormat dateFormatwithTime1 = new SimpleDateFormat("MM/dd/yyyy hh:mm aaa");	
 		
 	public static Calendar clientCalendar = Calendar.getInstance();
 	
@@ -158,6 +159,15 @@ public class TransStringUtil {
 	public static Date getDatewithTime(String clientDate) throws ParseException {       
         return dateFormatwithTime.parse(clientDate);
 	}
+	public static boolean checkHourOfDate(Date clientDate) throws ParseException {       
+        boolean isGreater=false;        
+        Calendar cal=Calendar.getInstance();
+		cal.setTime(clientDate);
+		if(cal.get(Calendar.HOUR)>9){
+			isGreater=true;
+		}
+        return isGreater;
+	}
 	public static Date getDate(String dateString) throws ParseException {		
         return (Date)dateFormat.parse(dateString);
 	}
@@ -251,6 +261,10 @@ public class TransStringUtil {
 	
 	public static String getServerDate(Date dateVal) throws ParseException {		
         return serverDateFormat.format(dateVal);
+	}
+	
+	public static String getServerDate1(Date dateVal) throws ParseException {		
+		return dateFormat.format(dateVal);
 	}
 	
 	public static String getDayofWeek(String clientDate) throws ParseException {	
