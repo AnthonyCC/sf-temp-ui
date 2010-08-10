@@ -48,4 +48,6 @@ public interface IIssue {
 	public final static String PROCESS_RETRIEVEORDER_NOTFOUND = "ISSUE034";
 	
 	public final static String PROCESS_RETRIEVEORDER_UNSUCCESSFUL = "ISSUE035";
+	
+	public final static String PROCESS_HANDOFFBATCH_ERROR = "ISSUE036";
 }

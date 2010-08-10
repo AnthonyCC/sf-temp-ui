@@ -9,6 +9,8 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRouteModel;
+import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.model.IZoneModel;
@@ -85,5 +87,9 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	
 	public int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate, String cutOff) throws RoutingServiceException {
 		return getService().updateTimeslotForDynamicStatus(timeslotId, isDynamic, type, baseDate, cutOff);
+	}
+	
+	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
+		return getService().retrieveRoutingSession(schedulerId, sessionDescription);
 	}
 }

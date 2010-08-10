@@ -5,14 +5,13 @@ import java.util.Date;
 public class RoutingStopModel extends OrderModel implements IRoutingStopModel, Comparable  {
 	
 	private int stopNo;
-	
-	private ILocationModel location;
-	
+		
 	private boolean isDepot;
 	
-	private Date timeWindowStart;
-	private Date timeWindowStop;
 	private Date stopArrivalTime;
+	private Date stopDepartureTime;
+	
+	private String routingRouteId;
 	
 	public RoutingStopModel() {
 		super();	
@@ -39,31 +38,6 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 		this.stopArrivalTime = stopArrivalTime;
 	}
 
-	public Date getTimeWindowStart() {
-		return timeWindowStart;
-	}
-
-	public void setTimeWindowStart(Date timeWindowStart) {
-		this.timeWindowStart = timeWindowStart;
-	}
-
-	public Date getTimeWindowStop() {
-		return timeWindowStop;
-	}
-
-	public void setTimeWindowStop(Date timeWindowStop) {
-		this.timeWindowStop = timeWindowStop;
-	}
-
-	
-	public ILocationModel getLocation() {
-		return location;
-	}
-
-	public void setLocation(ILocationModel location) {
-		this.location = location;
-	}
-	
 	public int getStopNo() {
 		return stopNo;
 	}
@@ -72,11 +46,29 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 		this.stopNo = stopNo;
 	}
 
+	public Date getStopDepartureTime() {
+		return stopDepartureTime;
+	}
+
+	public void setStopDepartureTime(Date stopDepartureTime) {
+		this.stopDepartureTime = stopDepartureTime;
+	}
+
+	public String getRoutingRouteId() {
+		return routingRouteId;
+	}
+
+	public void setRoutingRouteId(String routingRouteId) {
+		this.routingRouteId = routingRouteId;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
-		result = PRIME * result + stopNo;
-		return result;
+		return
+		(this.getOrderNumber() == null) ?
+				PRIME * result +  stopNo :
+					this.getOrderNumber().hashCode() ^ stopNo;
 	}
 
 	public boolean equals(Object obj) {
@@ -87,9 +79,11 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 		if (getClass() != obj.getClass())
 			return false;
 		final IRoutingStopModel other = (IRoutingStopModel) obj;
-		if (stopNo != other.getStopNo())
-			return false;
-		return true;
+		if (stopNo == other.getStopNo() && (this.getOrderNumber() != null && other.getOrderNumber() != null 
+				&& this.getOrderNumber().equalsIgnoreCase(other.getOrderNumber()))) {
+			return true;
+		}
+		return false;
 	}
 
 	
@@ -113,6 +107,16 @@ public class RoutingStopModel extends OrderModel implements IRoutingStopModel, C
 
 		return 0;
 	}
-
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("Order No: ").append(this.getOrderNumber()).append(" Sequence No: ").append(this.getStopNo())
+									.append(" Address: ").append(this.getDeliveryInfo().getDeliveryLocation().getBuilding().getSrubbedStreet())
+															.append(",").append(this.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode())
+									.append(" Stop A-Time: ").append(this.getStopArrivalTime())
+									.append(" Stop D-Time: ").append(this.getStopDepartureTime());
+		
+		return buf.toString();
+	}
 	
 }

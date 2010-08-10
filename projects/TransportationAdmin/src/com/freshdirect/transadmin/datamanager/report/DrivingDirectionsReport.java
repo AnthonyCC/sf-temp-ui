@@ -57,12 +57,12 @@ public class DrivingDirectionsReport {
 					_directions = _route.getDrivingDirection();
 					_stops = _route.getStops().toArray();
 						
-					xlsfo.append(regionBefore(_baseRouteId, _route.getRouteStartTime()));
+					xlsfo.append(regionBefore(_baseRouteId, _route.getStartTime()));
 					if(_directions != null && _directions.getPathDirections() != null) {					
 				        
 				        List paths = _directions.getPathDirections();
 				        xlsfo.append("<fo:block color=\""+SECTION_COLOR+"\">").append("Depart ")
-				        					.append(TransStringUtil.formatTime(_route.getRouteStartTime()))
+				        					.append(TransStringUtil.formatTime(_route.getStartTime()))
 				        					.append(" - DPT/FD").append("</fo:block>");	
 				        
 				        for(int intCount=0; intCount < paths.size(); intCount++) {
@@ -88,10 +88,10 @@ public class DrivingDirectionsReport {
 					        			.append(": ").append(TransStringUtil.formatTime(_nextStop.getStopArrivalTime()))
 					        			.append("   Stop ").append(intCount+1)			        			
 					        			.append(" - [ ")
-						        		.append(_nextStop.getLocation().getBuilding().getStreetAddress1())
-						        						.append(", ").append(_nextStop.getLocation().getBuilding().getCity())
-						        						.append(", ").append(_nextStop.getLocation().getBuilding().getState())
-						        						.append(", ").append(_nextStop.getLocation().getBuilding().getZipCode())
+						        		.append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress1())
+						        						.append(", ").append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getCity())
+						        						.append(", ").append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getState())
+						        						.append(", ").append(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode())
 						        						.append(" ]");
 					        			xlsfo.append("</fo:block>");
 					        			

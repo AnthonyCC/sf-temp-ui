@@ -2,7 +2,9 @@ package com.freshdirect.routing.dao;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
@@ -34,5 +36,7 @@ public interface IGeographyDAO {
 	void insertLocation(ILocationModel model) throws SQLException;
 	
 	void insertBuilding(IBuildingModel model) throws SQLException;
+	
+	Map<String, IAreaModel> getAreaLookup() throws SQLException;
 	
 }

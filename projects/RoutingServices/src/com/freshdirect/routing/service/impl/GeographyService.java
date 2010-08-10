@@ -13,6 +13,7 @@ import com.freshdirect.routing.constants.EnumGeocodeQualityType;
 import com.freshdirect.routing.dao.IGeographyDAO;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.GeographicLocation;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
@@ -41,6 +42,15 @@ public class GeographyService extends BaseService implements IGeographyService {
 	private IGeographyDAO geographyDAOImpl;
 
 	private IGeocodeEngine baseGeocodeEngine = new BaseGeocodeEngine();
+	
+	public Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException {
+		try {
+			return geographyDAOImpl.getAreaLookup();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_SAVEERROR);
+		}
+	}
 	
 	public ILocationModel getLocation(ILocationModel model) throws RoutingServiceException  {
 		try {

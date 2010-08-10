@@ -37,6 +37,14 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	private Date totalServiceTime;
 	private Date routeCompleteTime;
 	
+	private boolean isDepot;
+	
+	public boolean isDepot() {
+		return isDepot;
+	}
+	public void setDepot(boolean isDepot) {
+		this.isDepot = isDepot;
+	}
 	public String getTotalDistance() {
 		return totalDistance;
 	}

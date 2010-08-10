@@ -438,6 +438,20 @@ public class RoutingDataEncoder {
 	
 	
 	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptionsEx() {
+		return routeInfoRetrieveOptions(RoutingDetailLevel.rdlStop);
+		
+	}	
+	
+	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveFullOptions() {
+		return routeInfoRetrieveOptions(RoutingDetailLevel.rdlOrder);
+	}
+	
+	
+	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptions() {
+		return routeInfoRetrieveOptions(RoutingDetailLevel.rdlSession);				
+	}
+	
+	private static RoutingRouteInfoRetrieveOptions routeInfoRetrieveOptions(RoutingDetailLevel level) {
 		//param1 level;
 		//param2 retrieveActivities;
 		//param3 retrieveEquipment;
@@ -445,7 +459,7 @@ public class RoutingDataEncoder {
 		//param5 retrieveBuilt;
 		//param6 retrievePublished;
 		RoutingRouteInfoRetrieveOptions routingRetrieveOptions = new RoutingRouteInfoRetrieveOptions();
-		routingRetrieveOptions.setLevel(RoutingDetailLevel.rdlStop);
+		routingRetrieveOptions.setLevel(level);
 		routingRetrieveOptions.setRetrieveActivities(RoutingServicesProperties.getRoutingParamRetrieveActivities());
 		routingRetrieveOptions.setRetrieveEquipment(RoutingServicesProperties.getRoutingParamRetrieveEquipment());
 		routingRetrieveOptions.setRetrieveActive(RoutingServicesProperties.getRoutingParamRetrieveActive());
@@ -453,26 +467,6 @@ public class RoutingDataEncoder {
 		routingRetrieveOptions.setRetrievePublished(RoutingServicesProperties.getRoutingParamRetrievePublished());
 		routingRetrieveOptions.setTimeZoneOptions(encodeTimeZoneOptions());
 		return routingRetrieveOptions;
-		
-	}	
-	
-	
-	public static RoutingRouteInfoRetrieveOptions encodeRouteInfoRetrieveOptions() {
-		//param1 level;
-		//param2 retrieveActivities;
-		//param3 retrieveEquipment;
-		//param4 retrieveActive;
-		//param5 retrieveBuilt;
-		//param6 retrievePublished;
-		RoutingRouteInfoRetrieveOptions routingRetrieveOptions = new RoutingRouteInfoRetrieveOptions();
-		routingRetrieveOptions.setLevel(RoutingDetailLevel.rdlSession);
-		routingRetrieveOptions.setRetrieveActivities(RoutingServicesProperties.getRoutingParamRetrieveActivities());
-		routingRetrieveOptions.setRetrieveEquipment(RoutingServicesProperties.getRoutingParamRetrieveEquipment());
-		routingRetrieveOptions.setRetrieveActive(RoutingServicesProperties.getRoutingParamRetrieveActive());
-		routingRetrieveOptions.setRetrieveBuilt(RoutingServicesProperties.getRoutingParamRetrieveBuilt());
-		routingRetrieveOptions.setRetrievePublished(RoutingServicesProperties.getRoutingParamRetrievePublished());
-		routingRetrieveOptions.setTimeZoneOptions(encodeTimeZoneOptions());
-		return routingRetrieveOptions;		
 	}
 	
 	public static RoutingSessionIdentity encodeRoutingSessionIdentity(String regionId, String sessionId) {

@@ -18,6 +18,7 @@ import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.routing.model.BuildingModel;
+import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeographicLocation;
@@ -510,8 +511,11 @@ public class ModelUtil {
 		bmodel.setZipCode(zipCode);
 		
 		ILocationModel _locModel = new LocationModel(bmodel);
-		_stop.setLocation(_locModel);
-				
+		
+		DeliveryModel deliveryInfo = new DeliveryModel();
+		deliveryInfo.setDeliveryLocation(_locModel);
+		_stop.setDeliveryInfo(deliveryInfo);
+		
 		return _stop;
 	}
 	

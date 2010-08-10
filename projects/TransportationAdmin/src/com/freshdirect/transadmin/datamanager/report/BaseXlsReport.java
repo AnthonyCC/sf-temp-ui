@@ -180,7 +180,7 @@ public class BaseXlsReport {
     
     protected double getDoubleVal(String str) {
     	double result = 0.0;
-    	if(TransStringUtil.isValidDecimal(str)) {
+    	if(str != null && TransStringUtil.isValidDecimal(str)) {
 			result = Double.parseDouble(str);
 		}
 		return result;

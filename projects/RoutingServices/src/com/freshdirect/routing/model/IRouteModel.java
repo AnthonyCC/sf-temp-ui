@@ -7,9 +7,9 @@ public interface IRouteModel {
 	
 	String getRouteId();
 	void setRouteId(String routeId);
-
-	Date getRouteStartTime();
-	void setRouteStartTime(Date routeStartTime);
+	
+	Date getStartTime();
+	void setStartTime(Date startTime);
 
 	TreeSet getStops();
 	void setStops(TreeSet stops);
@@ -19,4 +19,18 @@ public interface IRouteModel {
 	
 	Date getCompletionTime();
 	void setCompletionTime(Date completionTime);
+	
+	String getRoutingRouteId();
+	void setRoutingRouteId(String routingRouteId);
+	
+	double getDistance();
+	void setDistance(double distance);
+	
+	double getTravelTime();
+	void setTravelTime(double travelTime);
+
+	double getServiceTime();
+	void setServiceTime(double serviceTime);
+	
+	void appendRoutingRoute(String routingRouteId);
 }

@@ -69,6 +69,10 @@ public class RoutingServiceLocator {
 	public IRoutingEngineService getRoutingEngineService() {
 		return (IRoutingEngineService)factory.getBean("routingEngineService");
 	}
+	
+	public IHandOffService getHandOffService() {
+		return (IHandOffService)factory.getBean("handOffService");
+	}
 
 	public RouteNetWebService getRouteNetService() throws AxisFault {
 		RouteNetWebServiceStub stub = new RouteNetWebServiceStub(RoutingServicesProperties.getRoadNetProviderURL());

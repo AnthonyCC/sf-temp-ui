@@ -29,4 +29,10 @@ public interface IAreaModel {
 
 	int getStemToTime();
 	void setStemToTime(int stemToTime);
+	
+	String getPrefix();
+	void setPrefix(String prefix);
+	
+	String getDeliveryModel();
+	void setDeliveryModel(String deliveryModel);
 }

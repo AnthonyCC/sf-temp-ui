@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class SecurityManager {
 	
-	private static List UNSECURED_URL = new ArrayList();
+	private static List<String> UNSECURED_URL = new ArrayList<String>();
 	
 	static {
 		UNSECURED_URL.add("accessdenied.do");
@@ -24,6 +24,9 @@ public class SecurityManager {
 		UNSECURED_URL.add("dispatchDashboardScreen.do");
 		UNSECURED_URL.add("gmapexport.do");
 		UNSECURED_URL.add("gpsadmin.do");
+		UNSECURED_URL.add("cutoffreport.do");
+		UNSECURED_URL.add("sapupload.do"); 
+		UNSECURED_URL.add("communityreport.do");    
 	}
 	
 	public static String getUserRole(ServletRequest request, Set roles) {		
@@ -36,8 +39,7 @@ public class SecurityManager {
 					return _tmpRole; 
 				}
 			}
-		}
-		
+		}		
 		return  null;
     }
 	
@@ -52,13 +54,11 @@ public class SecurityManager {
 					return _tmpRole; 
 				}
 			}
-		}
-		
+		}		
 		return null;
     }
 	
     public static boolean isUserAdmin(ServletRequest request) {
-
 		return "TrnAdmin".equalsIgnoreCase(getUserRole(request));
 	}
     

@@ -1,12 +1,10 @@
 package com.freshdirect.routing.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.TreeSet;
 
 import com.freshdirect.routing.constants.EnumRoutingNotification;
-import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
@@ -130,13 +128,20 @@ public class RoutingDataDecoder {
 			
 			result = new RouteModel();
 			result.setRouteId(route.getRouteID());
-			result.setRouteStartTime(route.getStartTime().getTime());
+			result.setStartTime(route.getStartTime() != null ? route.getStartTime().getTime() : null);
+			result.setCompletionTime(route.getCompleteTime() != null ? route.getCompleteTime().getTime() : null);
+			
+			result.setDistance(route.getDistance());
+			result.setTravelTime(route.getTravelTime());
+			result.setServiceTime(route.getServiceTime());
+						
 			result.setStops(new TreeSet());
 			
 			IRoutingStopModel _stop = null;
 			ILocationModel _locModel = null;
 			IBuildingModel building = null;
 			IGeographicLocation _geoLocModel = null;
+			IDeliveryModel deliveryInfo = null;
 			
 			RoutingStop _refStop = null;
 			
@@ -146,25 +151,40 @@ public class RoutingDataDecoder {
 					_refStop = route.getStops()[intCount];
 					
 					if(_refStop.getSequenceNumber() >= 0) {
+						
+						/*_stop = new RoutingStopModel((_refStop.getLocationIdentity() != null
+														&& _refStop.getLocationIdentity().getLocationID() != null
+															&& _refStop.getLocationIdentity().getLocationID().startsWith("MDP"))
+																? (intCount+1) : _refStop.getSequenceNumber());*/
 						_stop = new RoutingStopModel(_refStop.getSequenceNumber());
+						
 						building = new BuildingModel();
-											
+						
+						building.setSrubbedStreet(_refStop.getAddress().getLine1());
 						building.setStreetAddress1(_refStop.getAddress().getLine1());
 						building.setCity(_refStop.getAddress().getRegion1()); 
 						building.setState(_refStop.getAddress().getRegion3());
 						building.setZipCode(_refStop.getAddress().getPostalCode());
 						
 						_locModel = new LocationModel(building);
-						_stop.setLocation(_locModel);
-						
+											
 						_geoLocModel = new GeographicLocation();
 						_geoLocModel.setLatitude(""+_refStop.getLatitude());
 						_geoLocModel.setLongitude(""+_refStop.getLongitude());
 										
 						
 						building.setGeographicLocation(_geoLocModel);
+						deliveryInfo = new DeliveryModel();
+						deliveryInfo.setDeliveryLocation(_locModel);
+						_stop.setDeliveryInfo(deliveryInfo);
 						
-						_stop.setStopArrivalTime(Calendar.getInstance().getTime());
+						//_stop.setStopArrivalTime(Calendar.getInstance().getTime());
+						_stop.setOrderNumber((_refStop.getOrders() != null
+													&& _refStop.getOrders().length > 0 ? _refStop.getOrders()[0].getOrderNumber() : IRoutingStopModel.DEPOT_STOPNO));
+						_stop.setStopArrivalTime(_refStop.getArrival() != null ? _refStop.getArrival().getTime() : null);
+						_stop.setStopDepartureTime(_refStop.getArrival() != null ? RoutingDateUtil.addSeconds(_refStop.getArrival().getTime()
+														, _refStop.getServiceTime()) : null);
+						
 						result.getStops().add(_stop);
 					}
 				}

@@ -4,6 +4,8 @@ import java.util.Date;
 
 public interface IRoutingStopModel extends IOrderModel {
 	
+	String DEPOT_STOPNO = "9999999999";
+	
 	 boolean isDepot();
 
 	 void setDepot(boolean isDepot);
@@ -11,21 +13,15 @@ public interface IRoutingStopModel extends IOrderModel {
 	 Date getStopArrivalTime();
 
 	 void setStopArrivalTime(Date stopArrivalTime);
-
-	 Date getTimeWindowStart();
-
-	 void setTimeWindowStart(Date timeWindowStart);
-
-	 Date getTimeWindowStop();
-
-	 void setTimeWindowStop(Date timeWindowStop);
-
-	
-	 ILocationModel getLocation();
-
-	 void setLocation(ILocationModel location);
-	
+		
 	 int getStopNo();
 
 	 void setStopNo(int stopNo);
+	
+	 Date getStopDepartureTime();
+
+	 void setStopDepartureTime(Date stopDepartureTime);
+	 
+	 String getRoutingRouteId();
+	 void setRoutingRouteId(String routingRouteId);
 }

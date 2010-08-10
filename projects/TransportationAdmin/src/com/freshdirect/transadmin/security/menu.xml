@@ -43,25 +43,12 @@
 		 <access-uris></access-uris>
 	     <access-roles></access-roles>
 	     
-	     <menu id="RUT001" title="Routing In" orientation="RIGHT" link="routinginput.do">
-	     	<access-uris>routinginput.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>
 	     
-	     <menu id="RUT002" title="Routing out" orientation="RIGHT" link="routingoutput.do">
-	     	<access-uris>routingoutput.do</access-uris>
+	      <menu id="RUT001" title="HandOff" orientation="RIGHT" link="handoff.do">
+	     	<access-uris>handoff.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>
+	     </menu>  
 	     
-	     <menu id="RUT003" title="Routing Merge" orientation="RIGHT" link="routingmerge.do">
-	     	<access-uris>routingmerge.do,rsmergefile.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>
-	     
-	     <menu id="RUT004" title="Service Time Type" orientation="LEFT" link="dlvservicetimetype.do">
-	     	<access-uris>dlvservicetimetype.do,deletedlvservicetimetype.do,editdlvservicetimetype.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>
 	     
 	     <!--
 		 <menu id="RUT005" title="Service Time" orientation="LEFT" link="dlvservicetime.do">
@@ -69,23 +56,28 @@
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	     -->
-	     <menu id="RUT006" title="Service Time Scenario" orientation="LEFT" link="dlvservicetimescenario.do">
+	     <menu id="RUT002" title="Service Time Scenario" orientation="RIGHT" link="dlvservicetimescenario.do">
 	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	      
+	     <menu id="RUT003" title="Service Time Type" orientation="RIGHT" link="dlvservicetimetype.do">
+	     	<access-uris>dlvservicetimetype.do,deletedlvservicetimetype.do,editdlvservicetimetype.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>
 	          
      	 
-     	<menu id="RUT007" title="SCRIB" orientation="LEFT" link="scrib.do">
+     	<menu id="RUT004" title="SCRIB" orientation="LEFT" link="scrib.do">
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
      	 
-     	 <menu id="RUT008" title="Early Warning" orientation="LEFT" link="earlywarning.do">
+     	 <menu id="RUT005" title="Early Warning" orientation="LEFT" link="earlywarning.do">
 	     	<access-uris>earlywarning.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
      	 
-     	 <menu id="RUT009" title="Unassigned" orientation="LEFT" link="unassigned.do">
+     	 <menu id="RUT006" title="Unassigned" orientation="LEFT" link="unassigned.do">
 	     	<access-uris>unassigned.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
@@ -168,7 +160,23 @@
 	     <menu id="ADO005" title="Geo Restriction" orientation="RIGHT" link="geographyrestriction.do">
 	     	<access-uris>geographyrestriction.do</access-uris>
 	     	<access-roles>TrnAdmin</access-roles>	     
-	     </menu>       	     
+	     </menu>
+	    	     
+	     
+	     <menu id="ADO006" title="Routing In" orientation="LEFT" link="routinginput.do">
+	     	<access-uris>routinginput.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="ADO007" title="Routing out" orientation="LEFT" link="routingoutput.do">
+	     	<access-uris>routingoutput.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
+	     
+	     <menu id="ADO008" title="Routing Merge" orientation="LEFT" link="routingmerge.do">
+	     	<access-uris>routingmerge.do,rsmergefile.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>    	     
          
 </menu>
 </menus>

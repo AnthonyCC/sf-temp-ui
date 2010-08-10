@@ -1,6 +1,7 @@
 package com.freshdirect.routing.model;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 public class RouteModel extends BaseModel implements IRouteModel {
@@ -9,11 +10,25 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private TreeSet stops;
 	
-	private Date routeStartTime;
+	private Date startTime;
 	
 	private Date completionTime;
 	
 	private IDrivingDirection drivingDirection;
+	
+	private String routingRouteId;
+	
+	private double distance;
+	private double travelTime;
+	private double serviceTime;
+		
+	public String getRoutingRouteId() {
+		return routingRouteId;
+	}
+
+	public void setRoutingRouteId(String routingRouteId) {
+		this.routingRouteId = routingRouteId;
+	}
 
 	public IDrivingDirection getDrivingDirection() {
 		return drivingDirection;
@@ -31,12 +46,14 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		this.routeId = routeId;
 	}
 
-	public Date getRouteStartTime() {
-		return routeStartTime;
+	
+
+	public Date getStartTime() {
+		return startTime;
 	}
 
-	public void setRouteStartTime(Date routeStartTime) {
-		this.routeStartTime = routeStartTime;
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
 	}
 
 	public TreeSet getStops() {
@@ -54,7 +71,40 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	public void setCompletionTime(Date completionTime) {
 		this.completionTime = completionTime;
 	}
+	
+	public double getDistance() {
+		return distance;
+	}
 
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+	
+
+	public double getTravelTime() {
+		return travelTime;
+	}
+
+	public void setTravelTime(double travelTime) {
+		this.travelTime = travelTime;
+	}
+
+	public double getServiceTime() {
+		return serviceTime;
+	}
+
+	public void setServiceTime(double serviceTime) {
+		this.serviceTime = serviceTime;
+	}
+
+	public void appendRoutingRoute(String routingRouteId) {
+		if(this.getRoutingRouteId() == null) {
+			this.setRoutingRouteId(routingRouteId);
+		} else {
+			this.setRoutingRouteId(this.getRoutingRouteId()+","+routingRouteId);
+		}
+	}
+	
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -76,5 +126,20 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		} else if (!routeId.equals(other.routeId))
 			return false;
 		return true;
+	}
+	
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("############################### ").append(routeId).append(" ").append(this.getStartTime()).append(" -> ")
+									.append(getStops() != null ? this.getStops().size() : 0).append(" Stops ###############################\n");
+		/*if(getStops() != null) {
+			Iterator itr = this.getStops().iterator();
+			while(itr.hasNext()) {
+				IRoutingStopModel stop = (IRoutingStopModel)itr.next();
+				buf.append("\t").append(stop.toString()).append("\n");
+			}
+		}
+		buf.append("####################################################################################################\n\n");*/
+		return buf.toString();
 	}
 }

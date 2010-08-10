@@ -41,6 +41,8 @@ public class ProcessContext implements Serializable {
 	
 	private Object serviceTimeTypeCache;
 	
+	private int maxSessionSize;
+	
 	public Object getUserId() {
 		return userId;
 	}
@@ -197,5 +199,12 @@ public class ProcessContext implements Serializable {
 	public void setServiceTimeTypeCache(Object serviceTimeTypeCache) {
 		this.serviceTimeTypeCache = serviceTimeTypeCache;
 	}
-
+	
+	public int getMaxSessionSize() {
+		return maxSessionSize;
+	}
+	public void setMaxSessionSize(int maxSessionSize) {
+		this.maxSessionSize = maxSessionSize;
+	}
+	
 }

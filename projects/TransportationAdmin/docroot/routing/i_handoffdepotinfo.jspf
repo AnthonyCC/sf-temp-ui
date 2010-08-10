@@ -1,0 +1,123 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+</style>
+<script>
+      var depotDataTable;
+      var editDepotPanel; 
+      var _currentBatchId;
+           
+      function showDepotTable(inputVal) {
+      	 _currentBatchId = inputVal;	
+         editDepotPanel = new YAHOO.widget.Panel("paneldept", {       
+                          width: "500", 
+                          height: "500px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        var depotDataIncrementer = function() {         
+         	var result = jsonrpcClient.AsyncHandOffProvider.getHandOffBatchById(_currentBatchId);
+            return result.depotSchedule.list;
+         };
+          
+        depotDataSource = new YAHOO.util.DataSource(depotDataIncrementer);                           
+                            		  
+		var depotColumns =  [ 
+			    {key:"area", label:"Zone",sortable:false, width: 75, className:"forms1"}, 
+			    {key:"depotArrivalTimeInfo", label:"Depot Arrival Time",sortable:false, width: 150, className:"forms1"},
+			    {key:"truckDepartureTimeInfo", label:"Truck Departure Time",sortable:false, width: 150, className:"forms1"},
+			    {key:'delete',label:' ',formatter:function(elCell) {
+        										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+        										elCell.style.cursor = 'pointer';
+    			}}			    
+		 ];
+				 	 
+  		depotDataTable = new YAHOO.widget.DataTable("contdepottable", depotColumns, depotDataSource, { selectionMode:"single" });
+  		
+  		depotDataTable.subscribe('cellClickEvent',function(ev) {
+    	var target = YAHOO.util.Event.getTarget(ev);
+    	var column = depotDataTable.getColumn(target);
+    		if (column.key == 'delete') {
+        		depotDataTable.deleteRow(target);
+    		} 
+		});
+
+  		editDepotPanel.render(document.body);
+        editDepotPanel.show();
+     }
+     
+     function doAdd() {
+     		var _zone = document.getElementById('dzone').value;
+     		var _arrivetime = document.getElementById('darrival').value;
+     		var _departtime = document.getElementById('tdeparture').value;
+     		
+     		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 && _departtime.trim().length > 0) {
+     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime, truckDepartureTimeInfo:_departtime, delete:''});
+     		} else {
+     			alert("Please enter the required values zone, arrivaltime, departure time!");
+     		}
+     }
+         
+     function submitDepotTable() { 
+     	  var _data = new Array();
+     	  if(depotDataTable.getRecordSet() != null 
+     	  			&& depotDataTable.getRecordSet().getRecords()) {
+      	  	var records = depotDataTable.getRecordSet().getRecords();
+      	  	for(i=0; i<records.length; i++) {
+      	  		_data[i] = new Array();
+      	  		_data[i][0] = records[i].getData('area');
+      	  		_data[i][1] = records[i].getData('depotArrivalTimeInfo');
+      	  		_data[i][2] = records[i].getData('truckDepartureTimeInfo');
+      	  	}
+      	  }      	  
+      	  jsonrpcClient.AsyncHandOffProvider.doRoutingOut(_currentBatchId, _data);
+      	  depotDataTable.destroy();	
+      	  editDepotPanel.hide();
+      	  sDataTable.destroy();
+          showTable();
+     }
+ </script>
+       
+   <div style='display:none;height:0px;width:0px;'> 
+      <div id="paneldept">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+      					&nbsp;&nbsp;&nbsp;Depot Truck Schedule</div>
+      <div class="bd">
+      	 	<table cellpadding="1" cellspacing="0">
+		    	<tr>
+                   <td>Zone                   
+                      <select id="dzone" style="width: 50;" name="dzone">  
+                    	<c:forEach var="zone" items="${zones}">       
+		              		<option value="<c:out value="${zone.code}"/>"><c:out value="${zone.code}"/></option>
+			        	</c:forEach>                                      
+			          </select>
+                   </td>                               
+                   <td>                 
+	                   Depot Arrival<input size="10" id="darrival" onblur="this.value=time(this.value);" /> 
+	               </td>                                      
+                   <td>                 
+	                   Truck Departure<input size="10" id="tdeparture" onblur="this.value=time(this.value);" /> 
+	               </td>
+	               <td>                 
+	                   <input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+	               </td>
+	               
+               </tr>
+            </table>
+            <hr/>
+            <div id="parentcontdepottable" style="height:375px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+	      	 	<div id="contdepottable"></div> 
+	      	 </div>	
+	      	 <hr/>
+	      	 <div align="center">
+	      	 	<input type="button" id="route_out" value="&nbsp;Submit&nbsp;" onclick="javascript:submitDepotTable();" />
+	      	 </div>	      
+        </div>
+   	 </div>
+   	</div>

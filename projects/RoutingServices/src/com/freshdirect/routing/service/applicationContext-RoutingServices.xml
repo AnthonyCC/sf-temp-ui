@@ -26,7 +26,11 @@
 	
 	<bean id="routingInfoDAO" class="com.freshdirect.routing.dao.impl.RoutingInfoDAO">
 		<property name="dataSource" ref="dataSource"/>
-	</bean>	
+	</bean>
+	
+	<bean id="handOffDAO" class="com.freshdirect.routing.dao.impl.HandOffDAO">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>		
 	
     <bean id="deliveryService" class="com.freshdirect.routing.service.impl.DeliveryService">
            <property name="deliveryDAOImpl" ref="deliveryDAO"/>    		
@@ -46,6 +50,10 @@
 			
 	<bean id="routingInfoService" class="com.freshdirect.routing.service.impl.RoutingInfoService">
            <property name="routingInfoDAOImpl" ref="routingInfoDAO"/>    		
+	</bean>
+	
+	<bean id="handOffService" class="com.freshdirect.routing.service.impl.HandOffService">
+           <property name="handOffDAOImpl" ref="handOffDAO"/>    		
 	</bean>
     
     <bean id="deliveryServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
@@ -84,6 +92,17 @@
 	<bean id="plantServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="target" ref="plantService"/>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+				<prop key="*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="handOffServiceMng" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="handOffService"/>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>

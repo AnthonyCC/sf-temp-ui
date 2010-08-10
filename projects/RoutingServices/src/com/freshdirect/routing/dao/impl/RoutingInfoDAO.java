@@ -169,51 +169,49 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	}
 	
 	private static final String GET_SCENARIO_ZONEMAPPING = "select DZ.ZONE_CODE " +
-	", DZ.SERVICETIME_TYPE , DZ.SERVICETIME_OVERRIDE , DZ.SERVICETIME_OPERATOR , DZ.SERVICETIME_ADJUSTMENT, " +
-	"FIXED_SERVICE_TIME ,VARIABLE_SERVICE_TIME " +
-	"FROM DLV.SCENARIO_ZONES DZ, DLV.SERVICETIME_TYPE ST where DZ.CODE = ? and DZ.SERVICETIME_TYPE = ST.CODE(+)";
-
+			", DZ.SERVICETIME_TYPE , DZ.SERVICETIME_OVERRIDE , DZ.SERVICETIME_OPERATOR , DZ.SERVICETIME_ADJUSTMENT, " +
+			"FIXED_SERVICE_TIME ,VARIABLE_SERVICE_TIME " +
+			"FROM DLV.SCENARIO_ZONES DZ, DLV.SERVICETIME_TYPE ST where DZ.CODE = ? and DZ.SERVICETIME_TYPE = ST.CODE(+)";
+	
 	public Map<String, IZoneScenarioModel> getRoutingScenarioMapping(final String code)  throws SQLException {
-
+		
 		final Map<String, IZoneScenarioModel> results = new HashMap<String, IZoneScenarioModel>();
 		PreparedStatementCreator creator=new PreparedStatementCreator() {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-
+				
 				PreparedStatement ps =
 					connection.prepareStatement(GET_SCENARIO_ZONEMAPPING);
 				ps.setString(1,code);
-
+				
 				return ps;
 			}
 		};
-
+		
 		jdbcTemplate.query(creator, 
-				new RowCallbackHandler() { 
-			public void processRow(ResultSet rs) throws SQLException {                                                                     
-				do {
-					IZoneScenarioModel model = new ZoneScenarioModel();                                                                                                                                                                                           
-					model.setZone(rs.getString("ZONE_CODE"));
-					
-					String serviceTimeType = rs.getString("SERVICETIME_TYPE");
-					if(serviceTimeType != null) {
-						IServiceTimeTypeModel locServiceTimeType = new ServiceTimeTypeModel();
-						locServiceTimeType.setCode(serviceTimeType);
-						locServiceTimeType.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
-						locServiceTimeType.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
-	
-						model.setServiceTimeType(locServiceTimeType);
-					}
-
-					model.setAdjustmentOperator(EnumArithmeticOperator.getEnum(rs.getString("SERVICETIME_OPERATOR")));
-					model.setServiceTimeAdjustment(rs.getDouble("SERVICETIME_ADJUSTMENT"));
-					model.setServiceTimeOverride(rs.getDouble("SERVICETIME_OVERRIDE"));
-
-					results.put(model.getZone(), model);
-				} while(rs.next());                                                                           
-			}
-		}
-		);
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	do {
+				    		IZoneScenarioModel model = new ZoneScenarioModel();				    						    		
+				    		model.setZone(rs.getString("ZONE_CODE"));
+				    		
+				    		String serviceTimeType = rs.getString("SERVICETIME_TYPE");
+				    		if(serviceTimeType != null) {
+					    		IServiceTimeTypeModel locServiceTimeType = new ServiceTimeTypeModel();
+					    		locServiceTimeType.setCode( serviceTimeType);
+					    		locServiceTimeType.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
+					    		locServiceTimeType.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME"));
+					    		model.setServiceTimeType(locServiceTimeType);
+				    		}    						    		
+				    		
+				    		model.setAdjustmentOperator(EnumArithmeticOperator.getEnum(rs.getString("SERVICETIME_OPERATOR")));
+				    		model.setServiceTimeAdjustment(rs.getDouble("SERVICETIME_ADJUSTMENT"));
+				    		model.setServiceTimeOverride(rs.getDouble("SERVICETIME_OVERRIDE"));
+				    		
+				    		results.put(model.getZone(), model);
+				    	 } while(rs.next());		        		    	
+				      }
+				  }
+			);
 		return results;
 	}
-
 }

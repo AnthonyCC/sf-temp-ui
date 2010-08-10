@@ -1,0 +1,103 @@
+package com.freshdirect.routing.service.proxy;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
+import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.model.IHandOffBatch;
+import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.model.TriggerHandOffResult;
+import com.freshdirect.routing.service.IHandOffService;
+import com.freshdirect.routing.service.RoutingServiceLocator;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
+
+public class HandOffServiceProxy  extends BaseServiceProxy  {	
+		
+	public IHandOffService getService() {
+		return RoutingServiceLocator.getInstance().getHandOffService();
+	}
+	
+	public TriggerHandOffResult createNewHandOffBatch(Date deliveryDate, String userId, String scenario, Date cutOffDateTime) throws RoutingServiceException {
+		return getService().createNewHandOffBatch(deliveryDate, userId, scenario, cutOffDateTime);
+	}
+	
+	public List<IHandOffBatchStop> getOrderByCutoff(final Date deliveryDate, final Date cutOff) throws RoutingServiceException {
+		return getService().getOrderByCutoff(deliveryDate, cutOff);
+	}
+	
+	public void updateHandOffBatchMessage(String handOffBatchId, String message) throws RoutingServiceException {
+		getService().updateHandOffBatchMessage(handOffBatchId, message);
+	}
+	
+	public void updateHandOffBatchStatus(String handOffBatchId, EnumHandOffBatchStatus status) throws RoutingServiceException {
+		getService().updateHandOffBatchStatus(handOffBatchId, status);
+	}
+	
+	public void addNewHandOffBatchAction(String handOffBatchId, Date actionDateTime
+											, EnumHandOffBatchActionType actionType
+												, String userId) throws RoutingServiceException {
+		getService().addNewHandOffBatchAction(handOffBatchId, actionDateTime, actionType, userId);
+	}
+	
+	public void addNewHandOffBatchSession(String handOffBatchId, String sessionName, String region) throws RoutingServiceException {
+		getService().addNewHandOffBatchSession(handOffBatchId, sessionName, region);
+	}
+	
+	public void addNewHandOffBatchStops(List<IHandOffBatchStop> dataList) throws RoutingServiceException {
+		getService().addNewHandOffBatchStops(dataList);
+	}
+	
+	public Set<IHandOffBatch> getHandOffBatch(Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatch(deliveryDate);
+	}
+	
+	public IHandOffBatch getHandOffBatchById(String batchId) throws RoutingServiceException {
+		return getService().getHandOffBatchById(batchId);
+	}
+	
+	public Map<String, Integer> getHandOffBatchRouteCnt(Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatchRouteCnt(deliveryDate);
+	}
+	
+	public void clearHandOffBatch(String handOffBatchId) throws RoutingServiceException {
+		getService().clearHandOffBatch(handOffBatchId);
+	}
+	
+	public void clearHandOffBatchStopRoute(String handOffBatchId) throws RoutingServiceException {
+		getService().clearHandOffBatchStopRoute(handOffBatchId);
+	}
+	
+	public void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException {
+		getService().updateHandOffBatchDetails(routes, stops);
+	}
+	
+	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId) throws RoutingServiceException {
+		return getService().getHandOffBatchStops(batchId);
+	}
+	
+	public List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException {
+		return getService().getHandOffBatchRoutes(batchId);
+	}
+	
+	public void addNewHandOffBatchDepotSchedules(String handOffBatchId, Set<IHandOffBatchDepotSchedule> dataList) throws RoutingServiceException {
+		getService().addNewHandOffBatchDepotSchedules(handOffBatchId, dataList);
+	}
+	
+	public Map<EnumSaleStatus, Integer> getOrderStatsByCutoff(Date deliveryDate, Date cutOff) throws RoutingServiceException {
+		return getService().getOrderStatsByCutoff(deliveryDate, cutOff);
+	}
+	
+	public IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId) throws RoutingServiceException {
+		return getService().getHandOffBatchStopsByRoute(deliveryDate, routeId);
+	}
+	
+	public void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws RoutingServiceException {
+		getService().updateHandOffBatchCommitEligibility(handOffBatchId, isEligibleForCommit);
+	}
+}

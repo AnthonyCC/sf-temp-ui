@@ -1,7 +1,10 @@
 package com.freshdirect.routing.service;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
@@ -55,5 +58,7 @@ public interface IGeographyService {
 								, String country)  throws RoutingServiceException;
 	
 	ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException;
+	
+	Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException;
 
 }

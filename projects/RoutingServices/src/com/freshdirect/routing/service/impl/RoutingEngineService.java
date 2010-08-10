@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.axis2.AxisFault;
 
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.IRoutingConstants;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -19,8 +20,9 @@ import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingImportOrder;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
-import com.freshdirect.routing.proxy.stub.transportation.SaveLocationsExOptions;
+import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -150,7 +152,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 			RoutingSession[] routingSession = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
 													, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());			
 			if(routingSession != null && routingSession.length > 0) {				
-				sessionId = ""+routingSession[0].getSessionIdentity().getInternalSessionID();
+				sessionId = ""+routingSession[0].getSessionIdentity().getInternalSessionID();				
 			}
 			
 		} catch (RemoteException exp) {
@@ -160,6 +162,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		return sessionId;
 	}
 	
+		
 	public void schedulerSaveLocation(IOrderModel orderModel, String locationType) throws RoutingServiceException {
 		try {
 			IRoutingSchedulerIdentity schId = RoutingDataEncoder.encodeSchedulerId(null, orderModel);

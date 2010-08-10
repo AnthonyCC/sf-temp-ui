@@ -39,6 +39,8 @@ public class TransportationAdminProperties {
 	private final static String PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDER		= "transportation.filename.routingoutorder";
 
 	private final static String PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK		= "transportation.filename.routingouttruck";
+	
+	private final static String PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDERTRUCK		= "transportation.filename.routingoutordertruck";
 
 	private final static String PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT		= "transportation.filename.cutoffreport";
 
@@ -202,6 +204,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDER,"trn_orderassignment_");
 
 		defaults.put(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK,"trn_truck_");
+		
+		defaults.put(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDERTRUCK,"trn_routestops_");
 
 		defaults.put(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT,"trn_cutoffreport_");
 
@@ -386,6 +390,10 @@ public class TransportationAdminProperties {
     public static String getRoutingOutputTruckFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTTRUCK);
     }
+    
+    public static String getRoutingOutputRouteStopFilename() {
+    	return get(PROP_TRANSPORTATION_FILENAME_ROUTINGOUTORDERTRUCK);
+    }    
 
     public static String getRoutingCutOffRptFilename() {
     	return get(PROP_TRANSPORTATION_FILENAME_CUTOFFREPORT);

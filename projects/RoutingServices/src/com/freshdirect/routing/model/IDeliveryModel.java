@@ -36,4 +36,6 @@ public interface IDeliveryModel  {
 	String getReservationId();
 	void setReservationId(String reservationId);
 	
+	String getServiceType();
+	void setServiceType(String serviceType);	
 }

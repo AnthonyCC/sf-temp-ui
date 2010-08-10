@@ -245,8 +245,8 @@ public class DispatchProviderController extends JsonRpcController implements
 											
 											String deliveryModel = ((TrnArea)areaMapping.get(routeMapping.getRouteMappingId().getGroupCode())).getDeliveryModel();
 											List comunities = dispatchManagerService.matchCommunity
-																	(Double.parseDouble(_stop.getLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0
-																				, Double.parseDouble(_stop.getLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0
+																	(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0
+																				, Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0
 																				, deliveryModel);
 											if(comunities != null && comunities.size() > 0) {
 												if(!reportData.containsKey(routingRouteId)) {

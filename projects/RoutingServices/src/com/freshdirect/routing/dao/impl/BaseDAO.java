@@ -11,4 +11,8 @@ public class BaseDAO {
 	public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
+	
+	public boolean getBoolean(String value) {
+		return (value != null && "1".equalsIgnoreCase(value));
+	}
 }

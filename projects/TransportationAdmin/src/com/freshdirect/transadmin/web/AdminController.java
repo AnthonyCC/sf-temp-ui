@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.service.LogManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -24,6 +25,17 @@ public class AdminController extends AbstractMultiActionController {
 
 	private LogManagerI logManager;
 	
+	private LocationManagerI locationManagerService;
+	
+	
+	public LocationManagerI getLocationManagerService() {
+		return locationManagerService;
+	}
+
+	public void setLocationManagerService(LocationManagerI locationManagerService) {
+		this.locationManagerService = locationManagerService;
+	}
+
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
@@ -146,5 +158,6 @@ public class AdminController extends AbstractMultiActionController {
 		}
 		return mav;
 	}
+		
 
 }

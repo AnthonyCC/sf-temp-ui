@@ -127,7 +127,12 @@
                 
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
                 <prop key="/geographyrestriction.do">adminController</prop>
-               
+               	<prop key="/handoff.do">handOffFormController</prop>
+               	<prop key="/handoff.ax">asyncHandOffController</prop>
+               	
+               	<prop key="/cutoffreport.do">handOffController</prop>
+               	<prop key="/sapupload.do">handOffController</prop> 
+               	<prop key="/communityreport.do">handOffController</prop>               
 			</props>
 		</property>
 	</bean>
@@ -144,6 +149,12 @@
         <property name="zoneManagerService" ref="zoneManager"/>
 	</bean>
 	
+	<bean id="handOffController" class="com.freshdirect.transadmin.web.HandOffController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/> 
+		<property name="domainManagerService" ref="domainManager"/> 
+		<property name="dispatchManagerService" ref="dispatchManager"/>      
+	</bean>
+	
 	<bean id="downloadController" class="com.freshdirect.transadmin.web.DownloadController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
 	</bean>
@@ -156,9 +167,11 @@
 	<bean id="adminController" class="com.freshdirect.transadmin.web.AdminController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="logManager" ref="logManagerBase"/>
+		<property name="locationManagerService" ref="locationManager"/>
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
 	</bean>
 	
+		
 	<bean id="restrictionController" class="com.freshdirect.transadmin.web.RestrictionController">
 		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
         <property name="restrictionManagerService" ref="restrictionManager"/>
@@ -252,6 +265,10 @@
             <prop key="/notification.do">notificationHandler</prop>
             <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>
             <prop key="/geographyrestriction.do">geographyRestrictionsHandler</prop>
+            
+            <prop key="/cutoffreport.do">cutOffReportHandler</prop>
+            <prop key="/sapupload.do">sapUploadHandler</prop>
+            <prop key="/communityreport.do">communityReportHandler</prop>
         </props>
 		</property>
 	</bean>
@@ -508,6 +525,16 @@
         <property name="formView" value="zoneexpansionView" />
 	</bean>
 	
+	<bean id="handOffFormController" class="com.freshdirect.transadmin.web.HandOffFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.HandOffCommand"/>
+        <property name="validator" ref="handOffValidator"/>
+        <property name="successView" value="routingHandOff" />
+        <property name="formView" value="routingHandOff" />
+	</bean>
+	
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
 		<property name="restrictionManagerService" ref="restrictionManager"/>
 	  	<property name="domainManagerService" ref="zoneExpansionBase"/>
@@ -547,6 +574,14 @@
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncDomainProvider" value="com.freshdirect.transadmin.web.json.IDomainProvider" />				
+			</map>
+		</property>
+	</bean>
+	
+	<bean name="asyncHandOffController" class="com.freshdirect.transadmin.web.json.HandOffProviderController">		
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncHandOffProvider" value="com.freshdirect.transadmin.web.json.IHandOffProvider" />				
 			</map>
 		</property>
 	</bean>
@@ -616,5 +651,7 @@
 	<bean id="scheduleValidator" class="com.freshdirect.transadmin.web.validation.ScheduleValidator"/>
 	
 	<bean id="zoneWorkTableValidator" class="com.freshdirect.transadmin.web.validation.ZoneWorkTableValidator"/>
+	
+	<bean id="handOffValidator" class="com.freshdirect.transadmin.web.validation.HandOffValidator"/>
 		
 </beans>

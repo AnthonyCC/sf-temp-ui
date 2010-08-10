@@ -9,7 +9,7 @@
 package com.freshdirect.sap.bapi;
 
 import com.freshdirect.customer.EnumSaleType;
-
+import com.freshdirect.sap.command.SapSendHandOff;
 import com.freshdirect.sap.jco.JcoBapiFunctionFactory;
 
 /**
@@ -52,5 +52,7 @@ public abstract class BapiFactory {
 	public abstract BapiCartonInfo getCartonInfoProvider();
 	
 	public abstract BapiSendEmployeeInfo getSendEmployeeInfoSender();
+	
+	public abstract BapiSendHandOff getHandOffSender();
 
 }

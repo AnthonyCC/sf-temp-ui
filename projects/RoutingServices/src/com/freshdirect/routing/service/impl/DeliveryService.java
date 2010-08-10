@@ -7,11 +7,8 @@ import java.util.Map;
 
 import org.apache.axis2.client.Stub;
 
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
-import com.freshdirect.routing.model.AreaModel;
-import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IDeliveryModel;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -19,6 +16,7 @@ import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IDrivingDirection;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
@@ -29,7 +27,6 @@ import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingRouteCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
@@ -57,79 +54,78 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 	public double getServiceTime(IOrderModel orderModel, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
 		IZoneModel zone = orderModel.getDeliveryInfo().getDeliveryZone();
-        ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
-        IBuildingModel building = location.getBuilding();
-        
-        IZoneScenarioModel zoneScenario = null;
-        
-        if(scenario != null && scenario.getZoneConfiguration() != null) {
-              if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
-                    zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
-              } else {
-                    zoneScenario = scenario.getZoneConfiguration().get(CONSTANT_ALLZONES);
-              }
-        }
-        //if zoneScenario is null then there is no scenario level override, let find serviceTime first
-        if(location.getServiceTimeOverride() > 0) {
-              return location.getServiceTimeOverride();
-        } else if(building.getServiceTimeOverride() > 0) {
-              return building.getServiceTimeOverride();
-        } else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
-              return zoneScenario.getServiceTimeOverride();
-        }
-        int stPriority = 0;
-        // Couldn't find serviceTime going to find the serviceTimeType
-        IServiceTimeTypeModel serviceTimeType = null;
-        if(location.getServiceTimeType() != null
-        		&& location.getServiceTimeType().getCode() != null) {
-              stPriority = 3;
-              serviceTimeType = location.getServiceTimeType();
-        } else if(building.getServiceTimeType() != null
-        		&& building.getServiceTimeType().getCode() != null) {
-              stPriority = 2;
-              serviceTimeType = building.getServiceTimeType();
-        } else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null
-        		&& zoneScenario.getServiceTimeType().getCode() != null) {
-              stPriority = 1;
-              serviceTimeType = zoneScenario.getServiceTimeType();
-        } else {
-              serviceTimeType = zone.getServiceTimeType();
-        }
-        // Got the serviceTimeType lets calculate
-        double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
-                                                              , ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));                  
-        double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
-                                                              , ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
-        
-        int adjustmentPriority = 0;
-        //Lets see if we need a adjustment
-        double serviceTimeAdjustment = 0;
-        EnumArithmeticOperator adjustmentOperator = null;
-        if(location.getAdjustmentOperator() != null) {
-              adjustmentPriority = 3;
-              adjustmentOperator = location.getAdjustmentOperator();
-              serviceTimeAdjustment = location.getServiceTimeAdjustment();
-        } else if(building.getAdjustmentOperator() != null) {
-              adjustmentPriority = 2;
-              adjustmentOperator = building.getAdjustmentOperator();
-              serviceTimeAdjustment = building.getServiceTimeAdjustment();
-        } else if(zoneScenario != null && zoneScenario.getAdjustmentOperator() != null) {
-              adjustmentPriority = 1;
-              adjustmentOperator = zoneScenario.getAdjustmentOperator();
-              serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
-        } 
-        if(adjustmentOperator != null && adjustmentPriority > stPriority) {
-              if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
-                    serviceTimeAdjustment = -serviceTimeAdjustment;
-              }
-              if((valY + serviceTimeAdjustment) > 0) {
-                    valY = valY + serviceTimeAdjustment;
-              } else {
-                    valY = 0;
-              }
-        }
-        return valY;
-
+		ILocationModel location = orderModel.getDeliveryInfo().getDeliveryLocation();
+		IBuildingModel building = location.getBuilding();
+		
+		IZoneScenarioModel zoneScenario = null;
+		
+		if(scenario != null && scenario.getZoneConfiguration() != null) {
+			if(scenario.getZoneConfiguration().containsKey(zone.getZoneNumber())) {
+				zoneScenario = scenario.getZoneConfiguration().get(zone.getZoneNumber());
+			} else {
+				zoneScenario = scenario.getZoneConfiguration().get(CONSTANT_ALLZONES);
+			}
+		}
+		//if zoneScenario is null then there is no scenario level override, let find serviceTime first
+		if(location.getServiceTimeOverride() > 0) {
+			return location.getServiceTimeOverride();
+		} else if(building.getServiceTimeOverride() > 0) {
+			return building.getServiceTimeOverride();
+		} else if(zoneScenario != null && zoneScenario.getServiceTimeOverride() > 0) {
+			return zoneScenario.getServiceTimeOverride();
+		}
+		int stPriority = 0;
+		// Couldn't find serviceTime going to find the serviceTimeType
+		IServiceTimeTypeModel serviceTimeType = null;
+		if(location.getServiceTimeType() != null
+				&& location.getServiceTimeType().getCode() != null) {
+			stPriority = 3;
+			serviceTimeType = location.getServiceTimeType();
+		} else if(building.getServiceTimeType() != null
+				&& building.getServiceTimeType().getCode() != null) {
+			stPriority = 2;
+			serviceTimeType = building.getServiceTimeType();
+		} else if(zoneScenario != null && zoneScenario.getServiceTimeType() != null
+				&& zoneScenario.getServiceTimeType().getCode() != null) {				
+			stPriority = 1;
+			serviceTimeType = zoneScenario.getServiceTimeType();
+		} else {
+			serviceTimeType = zone.getServiceTimeType();
+		}
+		// Got the serviceTimeType lets calculate
+		double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
+											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));			
+		double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
+											, ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
+		
+		int adjustmentPriority = 0;
+		//Lets see if we need a adjustment
+		double serviceTimeAdjustment = 0;
+		EnumArithmeticOperator adjustmentOperator = null;
+		if(location.getAdjustmentOperator() != null) {
+			adjustmentPriority = 3;
+			adjustmentOperator = location.getAdjustmentOperator();
+			serviceTimeAdjustment = location.getServiceTimeAdjustment();
+		} else if(building.getAdjustmentOperator() != null) {
+			adjustmentPriority = 2;
+			adjustmentOperator = building.getAdjustmentOperator();
+			serviceTimeAdjustment = building.getServiceTimeAdjustment();
+		} else if(zoneScenario != null && zoneScenario.getAdjustmentOperator() != null) {
+			adjustmentPriority = 1;
+			adjustmentOperator = zoneScenario.getAdjustmentOperator();
+			serviceTimeAdjustment = zoneScenario.getServiceTimeAdjustment();
+		} 
+		if(adjustmentOperator != null && adjustmentPriority > stPriority) {
+			if(adjustmentOperator.equals(EnumArithmeticOperator.SUB)) {
+				serviceTimeAdjustment = -serviceTimeAdjustment;
+			}
+			if((valY + serviceTimeAdjustment) > 0) {
+				valY = valY + serviceTimeAdjustment;
+			} else {
+				valY = 0;
+			}
+		}
+		return valY;
 	}
 	
 		
@@ -188,44 +184,25 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		
 		IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
 		
-		String region = "MDP";
-		String _area = "070";
-		String date = "2010-04-30";
+		//String region = "MDP";
+		//String sessionDescription = "chiguita_Depot_20100707_190849";
 		
-		String sessDesc = "asarro_Depot_20100430_230816";
-		String url = "";//"http://upsprod.freshdirect.com:81";
+		String region = "FD";
+		String sessionDescription = "chiguita_Trucks_20100707_190955";
+		String url = "http://10.55.20.148:81";
 		
 		schedulerId.setRegionId(region);
-		
-		IAreaModel area = new AreaModel();
-		area.setAreaCode(_area);
-		schedulerId.setArea(area);
-		schedulerId.setDeliveryDate(DateUtil.parse(date));
-		
-		TransportationWebService port =  new TransportationWebServiceStub(url);
-		((Stub)port)._getServiceClient().getOptions().setTimeOutInMilliSeconds(10*1000);
-		RoutingSession[] routingSession = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder
-										.encodeRoutingSessionCriteria(schedulerId, sessDesc)
-				, RoutingDataEncoder.encodeRouteInfoRetrieveOptions());
-		
-		if(routingSession != null && routingSession.length > 0) {				
-			
-			RoutingRouteCriteria criteria = new RoutingRouteCriteria();
-			criteria.setRegionIdentity(region);
-			criteria.setRouteID(_area+"-"+"5");
-			criteria.setDateStart(schedulerId.getDeliveryDate());
-			criteria.setInternalSessionID(routingSession[0].getSessionIdentity().getInternalSessionID());
-						
-			RoutingRoute[] route = port.retrieveRoutingRoutesByCriteria(criteria, RoutingDataEncoder.encodeRouteInfoRetrieveOptionsEx());
-			for(RoutingRoute _route : route) {
-				RoutingStop[] _stops = _route.getStops();
-				for(RoutingStop _stop : _stops) {					
-					System.out.println(DateUtil.formatTime(_stop.getArrival().getTime())
-							+"-"+_stop.getServiceTime()+"-"+_stop.getSequenceNumber()+"_"+_stop.getLocationIdentity().getLocationID());
-				}
+				
+		TransportationWebService port = new TransportationWebServiceStub(url);
+		((Stub) port)._getServiceClient().getOptions().setTimeOutInMilliSeconds(30 * 1000);
+		RoutingSession[] sessions = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
+				, RoutingDataEncoder.encodeRouteInfoRetrieveFullOptions());			
+		if(sessions != null) {
+			for(RoutingSession session : sessions) {
+				RoutingRoute[] routes = session.getRoutes();
+				System.out.println(RoutingDataDecoder.decodeRouteList(routes));
 			}
 		}
-		
 		
 	}
 	
@@ -341,6 +318,27 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 			zoneModel = (IZoneModel)zoneMapping.get(zoneCode);
 		}
 		return zoneModel;
+	}
+	
+	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
+		
+		try {
+			TransportationWebService port = getTransportationSuiteBatchService(schedulerId);//RoutingServiceLocator.getInstance().getTransportationSuiteService();
+			RoutingSession[] sessions = port.retrieveRoutingSessionsByCriteria(RoutingDataEncoder.encodeRoutingSessionCriteria(schedulerId, sessionDescription)
+													, RoutingDataEncoder.encodeRouteInfoRetrieveFullOptions());			
+			if(sessions != null) {
+				for(RoutingSession session : sessions) {
+					RoutingRoute[] routes = session.getRoutes();
+					return RoutingDataDecoder.decodeRouteList(routes);
+				}
+			}
+			
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			throw new RoutingServiceException(exp, IIssue.PROCESS_RETRIEVESESSION_UNSUCCESSFUL);
+		}
+		
+		return null;
 	}
 		
 }

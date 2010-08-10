@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -102,6 +104,8 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		+ "and rd.start_date = (select max(start_date) from dlv.region_data where start_date <= sysdate and region_id=r.id) "
 		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 		+ "order by z.zone_code";
+	
+	private static final String GET_AREA = "select * from transp.trn_area a ";
 	
 	private static final String INSERT_LOCATION_INFORMATION_NOKEY = "INSERT INTO DLV.DELIVERY_LOCATION ( ID,"+
 																		"APARTMENT, BUILDINGID) VALUES ( "+
@@ -825,7 +829,42 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 
 		return result;
 	}
+	
+	public Map<String, IAreaModel> getAreaLookup() throws SQLException {
+		final Map<String, IAreaModel> result = new HashMap<String, IAreaModel>();
 
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps =
+					connection.prepareStatement(GET_AREA);
+				
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator,
+				new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+
+				do {
+					
+					IAreaModel areaModel = new AreaModel();
+					areaModel.setAreaCode(rs.getString("CODE"));
+					areaModel.setDepot("X".equalsIgnoreCase(rs.getString("IS_DEPOT")));
+					areaModel.setPrefix(rs.getString("PREFIX"));
+					areaModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
+					
+					result.put(areaModel.getAreaCode(), areaModel);				    		
+
+				} while(rs.next());
+			}
+		}
+		);
+
+		return result;
+	}
+	
 	public List getZoneMapping(final double latitude, final double longitude) throws SQLException {
 		final List result = new ArrayList();
 

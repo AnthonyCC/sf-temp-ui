@@ -671,7 +671,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 					result.setRouteCompleteTime(_model.getRouteCompleteTime());
 					result.setLastDepartureTime(_model.getStopDepartureTime());
 				}
-				noOfCartons += getDoubleVal(_model.getTotalSize1())+getDoubleVal(_model.getTotalSize2());
+				//noOfCartons += getDoubleVal(_model.getTotalSize1())+getDoubleVal(_model.getTotalSize2());
 			}
 		}
 		result.setNoOfCartons(noOfCartons);		

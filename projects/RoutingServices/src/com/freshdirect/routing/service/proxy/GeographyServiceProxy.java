@@ -1,7 +1,9 @@
 package com.freshdirect.routing.service.proxy;
 
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
@@ -103,6 +105,10 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 													, apartmentNumber, city
 													, state, zipCode
 																, country);
+	}
+	
+	public Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException {
+		return getService().getAreaLookup();
 	}
 	
 	public ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException {

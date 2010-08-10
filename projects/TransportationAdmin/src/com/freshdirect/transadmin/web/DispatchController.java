@@ -40,6 +40,7 @@ import com.freshdirect.routing.model.IRoutingStopModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
@@ -823,6 +824,7 @@ public class DispatchController extends AbstractMultiActionController {
 				
 				DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 				RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
+				HandOffServiceProxy handOffProxy = new HandOffServiceProxy();
 				
 				Iterator _itr = routingRouteIds.iterator();
 				String routingRouteId = null;
@@ -831,34 +833,37 @@ public class DispatchController extends AbstractMultiActionController {
 				
 				while(_itr.hasNext()) {
 					routingRouteId = (String)_itr.next();
-					Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
-					boolean hasRoutes = false;
-					
-					if(routes != null && routes.size() == 1) {
+					_tmpRoute = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+					if(_tmpRoute != null) {
+						directionRoutes.put(routingRouteId, _tmpRoute);
+					} else {
+						Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
+						boolean hasRoutes = false;
 						
-						RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
-						
-						
-						
-						IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-						schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+						if(routes != null && routes.size() == 1) {
+							
+							RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
+													
+							IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+							schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+									
+							String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
+							
+							List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
+																	, routeMapping.getRouteMappingId().getRoutingRouteID());
+							
+							if(routingRoutes != null && routingRoutes.size() > 0) {
+								_tmpRoute = (IRouteModel)routingRoutes.get(0);
 								
-						String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
-						
-						List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
-																, routeMapping.getRouteMappingId().getRoutingRouteID());
-						
-						if(routingRoutes != null && routingRoutes.size() > 0) {
-							_tmpRoute = (IRouteModel)routingRoutes.get(0);
-							System.out.println("_tmpRoute >>"+_tmpRoute.getRouteId());
-							if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
-								directionRoutes.put(routingRouteId, _tmpRoute);
-								hasRoutes = true;
-							} 
+								if(_tmpRoute.getStops() != null && _tmpRoute.getStops().size() > 0) {
+									directionRoutes.put(routingRouteId, _tmpRoute);
+									hasRoutes = true;
+								} 
+							}
 						}
-					}
-					if(!hasRoutes) {
-						directionRoutes.put(routingRouteId, null);
+						if(!hasRoutes) {
+							directionRoutes.put(routingRouteId, null);
+						}
 					}
 				}
 				DrivingDirectionsReport reportEngine = new DrivingDirectionsReport();
@@ -893,66 +898,89 @@ public class DispatchController extends AbstractMultiActionController {
 		mav.getModel().put("gpsgpxxml","------ NO DIRECTIONS AVAILABLE --------");
 		try {
 			if(routingRouteIds != null && routingRouteIds.size() > 0) {
-				
+
 				DeliveryServiceProxy proxy = new DeliveryServiceProxy();
 				RoutingEngineServiceProxy engineProxy = new RoutingEngineServiceProxy();
-				
+				HandOffServiceProxy handOffProxy = new HandOffServiceProxy();
+
 				Iterator _itr = routingRouteIds.iterator();
 				String routingRouteId = null;
 				Map directionRoutes = new TreeMap();
 				IRouteModel route = null;
-				
+
 				routingRouteId = (String)_itr.next();
-				Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
-				 				
-				if(routes != null && routes.size() == 1) {
-					
-					RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
-									
-					IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
-					schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
-							
-					String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
-					
-					List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
-															, routeMapping.getRouteMappingId().getRoutingRouteID());
-					
-					if(routingRoutes != null && routingRoutes.size() > 0) {
-						route = (IRouteModel)routingRoutes.get(0);						
+
+				route = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+				if(route == null) {
+					Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
+
+					if(routes != null && routes.size() == 1) {
+
+						RouteMapping routeMapping = (RouteMapping)routes.toArray()[0];	
+
+						IRoutingSchedulerIdentity schedulerId = new RoutingSchedulerIdentity();
+						schedulerId.setRegionId(RoutingServicesProperties.getDefaultTruckRegion());
+
+						String sessionId = engineProxy.retrieveRoutingSession(schedulerId, routeMapping.getRoutingSessionID());
+
+						List routingRoutes = proxy.getRoutes(TransStringUtil.getDate(routeDate), sessionId
+								, routeMapping.getRouteMappingId().getRoutingRouteID());
+						route = (IRouteModel)routingRoutes.get(0);
+					} 
+					if(route != null) {
+
 						if(route.getStops() != null && route.getStops().size() > 0) {
 							if(route != null) {
 								route.getStops().add(ModelUtil.getStop(Integer.MIN_VALUE, "DPT-FD", "", "",
 										"", "40740250", "-73951989", true));
 								route.getStops().add(ModelUtil.getStop(Integer.MAX_VALUE, "DPT-FD", "", "",
 										"", "40740250", "-73951989", true));
-					
-								
+
+
 								List points = new ArrayList();
-								
+
 								Iterator stopIterator = route.getStops().iterator();
 								IRoutingStopModel _stop = null;
 								IGeoPoint _geoPoint = null;
-								
+
 								while (stopIterator.hasNext()) {
-									
+
 									_stop = (IRoutingStopModel) stopIterator.next();
 									_geoPoint = new GeoPoint();
-									_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLatitude()));
-									_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLongitude()));
+									if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
+											.getBuilding().getGeographicLocation().getLatitude())) {
+										_geoPoint.setLatitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
+												.getBuilding().getGeographicLocation().getLatitude()));
+									} else {
+										_geoPoint.setLatitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
+												.getBuilding().getGeographicLocation().getLatitude()) * 1000000.0));
+
+									}
+
+									if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
+											.getBuilding().getGeographicLocation().getLongitude())) {
+										_geoPoint.setLongitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
+												.getBuilding().getGeographicLocation().getLongitude()));
+									} else {
+										_geoPoint.setLongitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
+												.getBuilding().getGeographicLocation().getLongitude()) * 1000000.0));
+
+									}
+									
 									points.add(_geoPoint);
 								}
 								route.setDrivingDirection(proxy.buildDriverDirections(points));
-								
+
 								Object[] _stops = route.getStops().toArray();								
 								IRoutingStopModel _nextStop = null;
-																
+
 								StringBuffer strBuf = new StringBuffer();
 								strBuf.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>");
 								strBuf.append("<gpx xmlns=\"http://www.topografix.com/GPX/1/1\" xmlns:gpxx=\"http://www.garmin.com/xmlschemas/GpxExtensions/v3\" xmlns:gpxtpx=\"http://www.garmin.com/xmlschemas/TrackPointExtension/v1\" creator=\"navi 265W\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.garmin.com/xmlschemas/GpxExtensions/v3 http://www.garmin.com/xmlschemas/GpxExtensionsv3.xsd\">");
 								strBuf.append("<metadata><link href=\"http://www.freshdirect.com\">");
 								strBuf.append("<text>FD DELIVERY ROUTES BY DATE</text></link><time>2010-02-11T16:19:07Z</time>");
 								strBuf.append("</metadata>");
-																
+
 								strBuf.append("<rte>");
 								strBuf.append("<name>").append("FD Route ").append(TransStringUtil.getServerDate(routeDate)).append("</name>");
 								String strStopNo = "";
@@ -961,23 +989,23 @@ public class DispatchController extends AbstractMultiActionController {
 								if(_stops != null) {
 									for(int intCount=0; intCount<_stops.length; intCount++) {
 										_nextStop = (IRoutingStopModel)_stops[intCount];
-										strBuf.append("<rtept lat=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0)
-												.append("\" lon=\"").append(TransStringUtil.getLong(_nextStop.getLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0).append("\">");
-										
-										if(_nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude() != null 
-													&& _nextStop.getLocation().getBuilding().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
+										strBuf.append("<rtept lat=\"").append(TransStringUtil.getLong(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude())/1000000.0)
+										.append("\" lon=\"").append(TransStringUtil.getLong(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLongitude())/1000000.0).append("\">");
+
+										if(_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude() != null 
+												&& _nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getGeographicLocation().getLatitude().equalsIgnoreCase("40740250")) {
 											strStopNo = "";
 											zipCode = "";
 											addLocation = "FreshDirect";
 										} else{
 											strStopNo = "["+_nextStop.getStopNo()+"]";
-											zipCode = ","+_nextStop.getLocation().getBuilding().getZipCode();
-											addLocation = "-"+_nextStop.getLocation().getBuilding().getStreetAddress1();
+											zipCode = ","+_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode();
+											addLocation = "-"+_nextStop.getDeliveryInfo().getDeliveryLocation().getBuilding().getStreetAddress1();
 										}
 										strBuf.append("<name>").append(strStopNo).append(addLocation)						        						
-						        						.append(zipCode)
-													.append("</name>");
-										
+										.append(zipCode)
+										.append("</name>");
+
 										strBuf.append("</rtept>");
 
 									}
@@ -991,12 +1019,12 @@ public class DispatchController extends AbstractMultiActionController {
 					}
 				}
 			}
-		
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.123", null));
 		}
-		
+
 		return mav;
 	}
 	
@@ -1028,8 +1056,25 @@ public class DispatchController extends AbstractMultiActionController {
 						
 						_stop = (IRoutingStopModel) stopIterator.next();
 						_geoPoint = new GeoPoint();
-						_geoPoint.setLatitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLatitude()));
-						_geoPoint.setLongitude(Integer.parseInt(_stop.getLocation().getBuilding().getGeographicLocation().getLongitude()));
+						if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
+															.getBuilding().getGeographicLocation().getLatitude())) {
+							_geoPoint.setLatitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
+									.getBuilding().getGeographicLocation().getLatitude()));
+						} else {
+							_geoPoint.setLatitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
+									.getBuilding().getGeographicLocation().getLatitude()) * 1000000.0));
+							
+						}
+						
+						if(TransStringUtil.isValidInteger(_stop.getDeliveryInfo().getDeliveryLocation()
+								.getBuilding().getGeographicLocation().getLongitude())) {
+							_geoPoint.setLongitude(Integer.parseInt(_stop.getDeliveryInfo().getDeliveryLocation()
+									.getBuilding().getGeographicLocation().getLongitude()));
+						} else {
+							_geoPoint.setLongitude((int)(Double.parseDouble(_stop.getDeliveryInfo().getDeliveryLocation()
+									.getBuilding().getGeographicLocation().getLongitude()) * 1000000.0));
+
+						}
 						points.add(_geoPoint);
 					}
 					route.setDrivingDirection(proxy.buildDriverDirections(points));

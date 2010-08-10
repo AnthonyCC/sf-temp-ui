@@ -1,6 +1,5 @@
 package com.freshdirect.routing.model;
 
-import java.math.BigInteger;
 
 public class AreaModel extends BaseModel implements IAreaModel  {
 	
@@ -21,7 +20,26 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	
     private int stemToTime;
 	
-	
+    private String prefix;
+    
+    private String deliveryModel;
+        
+	public String getDeliveryModel() {
+		return deliveryModel;
+	}
+
+	public void setDeliveryModel(String deliveryModel) {
+		this.deliveryModel = deliveryModel;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
 	public int getStemFromTime() {
 		return stemFromTime;
 	}

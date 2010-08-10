@@ -94,6 +94,16 @@ public class RoutingServicesProperties {
 
 	private final static String PROP_ROUTINGSUBSCRIPTION_MAIL_FROM = "routingsubscription.mail.from";
 	
+	private final static String PROP_DEPOT_DEPARTTIMEDIFF = "routingservices.depot.departtimediff";
+	
+	private final static String PROP_CUTOFFSIMSTANDBY_ENABLED		= "routingservices.cutoffsimstandby.enabled";
+	
+	private final static String PROP_ROADNETSESSIONSIZE_THRESHOLD = "routingservices.roadnetsessionsize.threshold";
+	
+	private final static String PROP_HANDOFFROUTEIN_MULTITHREADENABLED		= "routingservices.handoffroutein.multithreadenabled";
+	
+	private final static String PROP_DEFAULT_PLANTCODE		= "routingservices.default.plantcode";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -141,6 +151,13 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROUTINGSUBSCRIPTION_MAIL_CC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_ROUTINGSUBSCRIPTION_MAIL_FROM, "applicationdevelopment@freshdirect.com");
 		
+		defaults.put(PROP_DEPOT_DEPARTTIMEDIFF, "0");
+		
+		defaults.put(PROP_CUTOFFSIMSTANDBY_ENABLED, "false");
+		
+		defaults.put(PROP_ROADNETSESSIONSIZE_THRESHOLD, "3000");
+		defaults.put(PROP_HANDOFFROUTEIN_MULTITHREADENABLED, "true");
+		defaults.put(PROP_DEFAULT_PLANTCODE, "001");
 		refresh();		
 	}
 
@@ -169,6 +186,10 @@ public class RoutingServicesProperties {
 		
 	public static void set(String key, String value) {
 		config.setProperty(key, value);
+	}
+	
+	public static int getDepotDepartTimeDiff() {
+		return getIntVal(get(PROP_DEPOT_DEPARTTIMEDIFF));
 	}
 	
 	public static String getRoutingFlowType() {
@@ -260,6 +281,11 @@ public class RoutingServicesProperties {
         return (new Boolean(get(PROP_DYNAMICANALYZE_MULTITHREADENABLED))).booleanValue();
     }
 	
+	public static boolean isHandOffRouteInMultiThread() {
+        return (new Boolean(get(PROP_HANDOFFROUTEIN_MULTITHREADENABLED))).booleanValue();
+    }
+	
+	
 	public static boolean isLDProcessingEnabled() {
         return (new Boolean(get(PROP_LDPROCESSING_ENABLED))).booleanValue();
     }
@@ -341,4 +367,17 @@ public class RoutingServicesProperties {
 	public static int getOMUseOriginalThreshold() {
 		return getIntVal(get(PROP_ORDERMETRICSUSEACTUAL_THRESHOLD));
 	}
+	
+	public static boolean getRoutingCutOffStandByEnabled() {
+        return (new Boolean(get(PROP_CUTOFFSIMSTANDBY_ENABLED))).booleanValue();
+    }
+	
+	public static int getRoadnetSessionSizeThreshold() {
+		return getIntVal(get(PROP_ROADNETSESSIONSIZE_THRESHOLD));
+	}
+	
+	public static String getDefaultPlantCode() {
+		return get(PROP_DEFAULT_PLANTCODE);
+	}
+	
 }
