@@ -103,12 +103,12 @@ public class TimeslotCapacityWrapper implements Serializable {
 		if(timeslot.getRoutingSlot() != null 
 				&& timeslot.getRoutingSlot().getDeliveryMetrics() != null ) {
 			
-			return (int)(((timeslot.getRoutingSlot().getDeliveryMetrics().getTotalCapacityTime() - 
+			return Math.max(0, ((int)(((timeslot.getRoutingSlot().getDeliveryMetrics().getTotalCapacityTime() - 
 							(timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedServiceTime() 
 							+ timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedTravelTime()
 							+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedServiceTime()
 							+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedTravelTime()))/(60.0))
-							* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())
+							* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())))
 							+ timeslot.getTotalAllocation();
 
 		}
@@ -120,12 +120,12 @@ public class TimeslotCapacityWrapper implements Serializable {
 		if(timeslot.getRoutingSlot() != null 
 				&& timeslot.getRoutingSlot().getDeliveryMetrics() != null ) {
 
-			int newCapacity = (int)(((timeslot.getRoutingSlot().getDeliveryMetrics().getTotalCapacityTime() - 
+			int newCapacity = Math.max(0,((int)(((timeslot.getRoutingSlot().getDeliveryMetrics().getTotalCapacityTime() - 
 											(timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedServiceTime() 
 											+ timeslot.getRoutingSlot().getDeliveryMetrics().getConfirmedTravelTime()
 											+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedServiceTime()
 											+ timeslot.getRoutingSlot().getDeliveryMetrics().getReservedTravelTime()))/(60.0))
-											* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())
+											* timeslot.getRoutingSlot().getSchedulerId().getArea().getDeliveryRate())))
 											+ timeslot.getTotalAllocation();
 			if(timeslot.getCapacity() != 0) {
 				return (int)(((double)timeslot.getChefsTableCapacity()/timeslot.getCapacity() )* (double)newCapacity);				

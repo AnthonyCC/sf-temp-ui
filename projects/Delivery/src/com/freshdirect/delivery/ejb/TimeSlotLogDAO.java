@@ -20,20 +20,29 @@ public class TimeSlotLogDAO {
 	
 	private static final String EMPTY_TIMESLOT="1";
 	private static final String AVAILABLE_TIMESLOT="0";
-	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM,RESERVATION_ID, ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?,?)";
-	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY) VALUES (?,?,?,?,?)";
+	private static final String TIMESLOT_LOG_INSERT="INSERT INTO DLV.TIMESLOT_LOG (ID, EVENT_DTM,RESERVATION_ID, " +
+			"ORDER_ID, CUSTOMER_ID, EVENTTYPE,RESPONSE_TIME,COMMENTS) VALUES (?,SYSDATE,?,?,?,?,?,?)";
+	
+	private static final String TIMESLOT_LOG_DTL_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME" +
+			", END_TIME, IS_EMPTY, ZONE_CODE) VALUES (?,?,?,?,?,?)";
+	
 	private static final String TIMESLOT_LOG_DTL_WITH_COST_INSERT="INSERT INTO DLV.TIMESLOT_LOG_DTL (TIMESLOT_LOG_ID, BASE_DATE, START_TIME, END_TIME, IS_EMPTY, ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, CAPACITY, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
-	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,TOTAL_DISTANCE, TOTAL_PU_QTY, TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL ,  IS_FILTERED ,  IS_MISSED_TW"+
-	") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,TOTAL_DISTANCE, TOTAL_PU_QTY" +
+	", TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL " +
+	",  IS_FILTERED ,  IS_MISSED_TW, ZONE_CODE"+
+	") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	
 	private static final String TIMESLOT_COST_LOG_INSERT=" INSERT INTO DLV.TIMESLOT_COST_LOG " +
 	"(TIMESLOT_LOG_ID , ADD_DISTANCE, ADD_RUNTIME, ADD_STOPCOST, CAPACITY, COSTPERMILE, FIXED_RT_COST, MAXRUNTIME,"+
 	"OT_HOURLY_WAGE,PERCENT_AVAIL,PREF_RUNTIME , REG_HOURLY_WAGE, REG_WAGE_SECS, ROUTE_ID ,STOP_SEQ ,"+ 
 	" TOTAL_DISTANCE, TOTAL_PU_QTY, TOTAL_QTY, TOTAL_ROUTE_COST , TOTAL_RUNTIME ,  TOTAL_SVC_TIME,"+ 
-	" TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL ,  IS_FILTERED ,  IS_MISSED_TW)"+
-	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
+	" TOTAL_TRAVEL_TIME,  TOTAL_WAIT_TIME,  IS_AVAIL ,  IS_FILTERED ,  IS_MISSED_TW, ZONE_CODE)"+
+	" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"; 
 	  
 	
-	public static void addEntry(Connection conn,String reservationId,String orderId,String customerId,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) throws SQLException{
+	public static void addEntry(Connection conn,String reservationId,String orderId,String customerId
+				,RoutingActivityType actionType,List<java.util.List<IDeliverySlot>> slots, int responseTime,String comments ) 
+										throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(TIMESLOT_LOG_INSERT);
 		PreparedStatement ps1=null;
@@ -73,10 +82,11 @@ public class TimeSlotLogDAO {
 		    		ps.setString(5, AVAILABLE_TIMESLOT);
 		    	}
 		    	else {
-		    		ps.setString(5, EMPTY_TIMESLOT);
+		    		ps.setString(5, EMPTY_TIMESLOT);		    		
 		    	}
 		    	if(isAnalyseCall ) {
 		    		IDeliverySlotCost cost=slot.getDeliveryCost();
+		    		
 		    		if(cost!=null) {
 			    		ps.setInt(6, cost.getAdditionalDistance());
 			    		ps.setInt(7, cost.getAdditionalRunTime());
@@ -102,7 +112,7 @@ public class TimeSlotLogDAO {
 			    		ps.setInt(27, cost.getTotalWaitTime());
 			    		ps.setString(28, get(cost.isAvailable()));
 			    		ps.setString(29, get(cost.isFiltered()));
-			    		ps.setString(30, get(cost.isMissedTW()));
+			    		ps.setString(30, get(cost.isMissedTW()));			    		
 		    		} else {
 		    			ps.setInt(6, 0);
 			    		ps.setInt(7, 0);
@@ -128,10 +138,11 @@ public class TimeSlotLogDAO {
 			    		ps.setInt(27, 0);
   		    		    ps.setNull(28, java.sql.Types.VARCHAR);
 			    		ps.setNull(29, java.sql.Types.VARCHAR);
-			    		ps.setNull(30, java.sql.Types.VARCHAR);
-
+			    		ps.setNull(30, java.sql.Types.VARCHAR);			    		
 		    		}
-		    		
+		    		ps.setString(31, slot.getZoneCode());
+		    	} else {
+		    		ps.setString(6, slot.getZoneCode());
 		    	}
 		    	
 		    	ps.addBatch();

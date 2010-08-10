@@ -570,8 +570,10 @@ public class RoutingUtil {
 	private static IDeliverySlot getDeliverySlot(DlvTimeslotModel timeSlot) {
 
 		IDeliverySlot deliverySlot=new DeliverySlot();
+		
 		IRoutingSchedulerIdentity identity=new RoutingSchedulerIdentity();
 		identity.setDeliveryDate(timeSlot.getBaseDate());
+		deliverySlot.setZoneCode(timeSlot.getZoneCode());
 		deliverySlot.setSchedulerId(identity);
 		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
 		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());

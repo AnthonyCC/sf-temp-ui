@@ -2098,7 +2098,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			TimeSlotLogDAO.addEntry(conn,(null==reservation)?null:reservation.getId(), (null==order)?RoutingUtil.getOrderNo(address):order.getOrderNumber(), (null==reservation)?address.getCustomerId():reservation.getCustomerId() , actionType, slots,responseTime,getAddressString(address)  );
+			TimeSlotLogDAO.addEntry(conn,
+									(null==reservation)?null:reservation.getId(),
+											(null==order)?RoutingUtil.getOrderNo(address):order.getOrderNumber()
+													, (null==reservation)?address.getCustomerId():reservation.getCustomerId() 
+															, actionType
+																, slots
+																	,responseTime
+																		, getAddressString(address)  );
 
 		} catch (SQLException e) {
 			e.printStackTrace();
