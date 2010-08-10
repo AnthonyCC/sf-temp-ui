@@ -306,7 +306,7 @@ public class DispatchController extends AbstractMultiActionController {
 							}else s.setScribDate(p.getPlanDate());
 							
 							/*The time shall be equal to Start Time for all employees except those with Role = Runner
-							  For Role = Runner the Time in the Kronos file shall be First Delivery Time – 30 minutes.  
+							  For Role = Runner the Time in the Kronos file shall be First Delivery Time minus 30 minutes.  
 							 */							
 							if(r.getId().getAdjustmentTime()!=null)
 								s.setStartTime(r.getId().getAdjustmentTime());
