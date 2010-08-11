@@ -183,6 +183,11 @@ List comments = DeliveryTimeSlotResult.getComments();
 		hasCapacity = hasCapacity || lst.hasCapacity();
 	}
 %>
+<%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
+		<fd:ErrorHandler result='<%=DeliveryTimeSlotResult%>' name='deliveryTime' id='errorMsg'>
+				<%@ include file="/includes/i_error_messages.jspf" %>
+		</fd:ErrorHandler>
+	<%}%>
 <%if(kosherRestriction){%>
 <table>
 	<tr valign="top">
