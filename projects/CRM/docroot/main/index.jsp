@@ -282,7 +282,7 @@ session.setAttribute(SessionName.USER,null);
 						<% if (searchErrorMsg != null && !searchErrorMsg.equals("") && "customer".equalsIgnoreCase(searchType)) { %>
 							<span class="error">&raquo; <%= searchErrorMsg %></span><br />
 						<% } %>
-						<form name="giftcard_search" id="giftcard_search" action="/gift_card/giftcard_landing.jsp">
+						<form name="giftcard_search" id="giftcard_search" action="/gift_card/giftcard_landing.jsp" style="margin-bottom: 0px;">
 						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; 0px;">
 							<tr>
 								<td><span class="module_header_text">Gift Card Search <a href="javascript:popResizeHelp('<%= FDStoreProperties.getCrmGiftCardHelpLink() %>','715','940','kbit')" onmouseover="return overlib('Click for Gift Card Help.', AUTOSTATUS, WRAP);" onmouseout="nd();" class="help">?</a></span></td>
