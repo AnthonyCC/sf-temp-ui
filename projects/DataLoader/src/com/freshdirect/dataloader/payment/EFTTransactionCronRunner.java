@@ -22,6 +22,9 @@ import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumTransactionSource;
+import com.freshdirect.customer.ErpAbstractSettlementModel;
+import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -30,10 +33,10 @@ import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.payment.EFTTransaction;
+import com.freshdirect.payment.EnumPaymentMethodType;
 import com.freshdirect.payment.ejb.ReconciliationHome;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 import com.freshdirect.payment.fraud.EnumRestrictionReason;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 /**
  * @author jng
@@ -121,6 +124,10 @@ public class EFTTransactionCronRunner {
 					String description = paymentResponse.getDescription();
 					int usageCode = 2;
 					ErpAffiliate aff = ErpAffiliate.getAffiliateByMerchant(EnumCardType.ECP, paymentTransaction.getMerchantId());
+					reconciliationSB.addSettlement( getSettlementModel(amount,accountNumber,aff,sequenceNumber,paymentResponse,description), 
+													saleId, 
+													aff, 
+													false);
 					reconciliationSB.processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
 				} catch (Exception e) {
 					LOGGER.error("EFTTransactionCronRunner.processFailedTransactions: Account Number = " + StringUtil.maskCreditCard(paymentTransaction.getBankAccountNumber()) + "-"+ e.getMessage());						
@@ -129,7 +136,20 @@ public class EFTTransactionCronRunner {
 		}
 			
 	}
-			
+	
+	private static ErpSettlementModel getSettlementModel( double amount,String accountNumber, ErpAffiliate aff,String sequenceNumber,EnumPaymentResponse paymentResponse,String description) {
+		ErpSettlementModel model=new ErpSettlementModel();
+		model.setPaymentMethodType(EnumPaymentMethodType.ECHECK);
+		model.setCardType(EnumCardType.ECP);
+		model.setAmount(amount);
+		model.setSequenceNumber(sequenceNumber);
+		model.setResponseCode(paymentResponse);
+		model.setTransactionSource(EnumTransactionSource.SYSTEM);			
+		model.setDescription(description);
+		model.setCcNumLast4(accountNumber.substring(accountNumber.length()-4));
+		model.setAffiliate(aff);
+		return model;
+	}
 	static private EnumPaymentResponse getPaymentResponse(EFTTransaction paymentTransaction) {
 		
 		EnumRestrictionReason restrictedReason = EnumRestrictionReason.GENERAL_ACCOUNT_PROBLEM;		
