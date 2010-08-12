@@ -451,6 +451,9 @@ public class FDStoreProperties {
 	
 	private final static String PROP_REDEMPTION_SERVER_COUNT = "promotion.redemption.server.count";
 	
+	//Delivery Pass at Checkout (APPDEV-664)
+	private final static String PROP_DP_CART_ENABLED = "fdstore.dpcart.enabled";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -793,6 +796,9 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "300"); //every 5 mins
 		defaults.put(PROP_REDEMPTION_SERVER_COUNT, "5");
+		
+		//Delivery Pass at Checkout (APPDEV-664)
+		defaults.put(PROP_DP_CART_ENABLED, "false");
 		
 		refresh();
 	}
@@ -1842,6 +1848,11 @@ public class FDStoreProperties {
 
 	public static int getRedemptionServerCount() {
 		return Integer.parseInt(config.getProperty(PROP_REDEMPTION_SERVER_COUNT));
+	}
+	
+	//Delivery Pass at Checkout (APPDEV-664)
+	public static boolean isDPCartEnabled() {
+		return Boolean.valueOf(config.getProperty(PROP_DP_CART_ENABLED)).booleanValue();
 	}
 
 	public static void forceRefresh() {

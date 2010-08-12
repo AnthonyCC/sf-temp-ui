@@ -130,23 +130,23 @@
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Department:</td>
-					<td class="alignL vTop padL8R16"><textarea id="departments" name="departments" rows="" cols="" class="w100p h75px"><%= depts.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated department ids</div></td>
+					<td class="alignL vTop padL8R16"><textarea id="departments" name="departments" rows="" cols="" class="w100p h75px"><%= depts.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated department ids</div></td>
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Category:</td>
-					<td class="alignL vTop padL8R16"><textarea id="categories" name="categories" rows="" cols="" class="w100p h75px"><%= cats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated category ids</div></td>
+					<td class="alignL vTop padL8R16"><textarea id="categories" name="categories" rows="" cols="" class="w100p h75px"><%= cats.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated category ids</div></td>
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Recipe:</td>
-					<td class="alignL vTop padL8R16"><textarea id="recipes" name="recipes" rows="" cols="" class="w100p h75px"><%= recps.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated recipe ids<br />Individual recipes only, not categories</div></td>
+					<td class="alignL vTop padL8R16"><textarea id="recipes" name="recipes" rows="" cols="" class="w100p h75px"><%= recps.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated recipe ids<br />Individual recipes only, not categories</div></td>
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">SKU:<br /><input type="checkbox" id="isInelgSkus" name="isInelgSkus" <%=("".equals(elgSkus.toString()))? "checked " : ""%>/>Ineligible</td>
-					<td class="alignL vTop padL8R16"><textarea id="eligibleSku"  name ="eligibleSku" rows="" cols="" class="w100p h75px"><%= ("".equals(elgSkus.toString()))? inElgSkus.toString() : elgSkus.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated SKUs</div></td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleSku"  name ="eligibleSku" rows="" cols="" class="w100p h75px"><%= ("".equals(elgSkus.toString()))? inElgSkus.toString() : elgSkus.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated SKUs</div></td>
 				</tr>
 				<tr>
 					<td class="promo_edit_offer_label">Brand:<br /><input type="checkbox" id="isInelgBrands" name="isInelgBrands" <%=("".equals(elgBrnds.toString()))? "checked " : ""%>/>Ineligible</td>
-					<td class="alignL vTop padL8R16"><textarea id="eligibleBrand" name="eligibleBrand" rows="" cols="" class="w100p h75px"><%= ("".equals(elgBrnds.toString()))? inElgBrnds.toString() : elgBrnds.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-seperated brand ids</div></td>
+					<td class="alignL vTop padL8R16"><textarea id="eligibleBrand" name="eligibleBrand" rows="" cols="" class="w100p h75px"><%= ("".equals(elgBrnds.toString()))? inElgBrnds.toString() : elgBrnds.toString() %></textarea><div class="grayIta8pt vTop">Enter comma-separated brand ids</div></td>
 				</tr>
 				<!-- <tr>
 					<td class="promo_edit_offer_label">Ineligible SKU:</td>

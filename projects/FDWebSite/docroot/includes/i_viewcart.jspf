@@ -558,6 +558,28 @@ FDIdentity identity = user.getIdentity();
 		</tr>
 		<%
 	} %>
+	<%-- DPCart APPDEV-664 --%>
+	<%if (user!=null && user.getIdentity() !=null) { %>
+		<%
+		if (
+			(
+				FDStoreProperties.isDPCartEnabled() || 
+				( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
+			)
+				&& !cart.isDlvPassApplied() 
+				&& EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) 
+				&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
+		) { %>
+			<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart.html" %>' />
+			<!-- 
+				<tr valign="top" class="dpCart">
+					<td colspan="3" align="right"></td>
+					<td colspan="4" align="right">[<%=user.getFDCustomer().getProfile().getAttribute("dpcart")%>]<br />
+					[<%=EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus())%>]</td>
+				</tr>
+			-->
+		<% } %>
+	<% } %>
 	<%
 	
 	if (cart.getMiscellaneousCharge() > 0.0) {%>
@@ -861,3 +883,17 @@ FDIdentity identity = user.getIdentity();
 	}
 %>
 </div>
+
+
+<%-- DPCart APPDEV-664 : popup --%>
+<%if (user!=null && user.getIdentity() !=null) { %>
+	<%
+	if (
+		(
+			FDStoreProperties.isDPCartEnabled() || 
+			( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
+		) && !cart.isDlvPassApplied() && EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) && cart.getDeliverySurcharge() > 0
+	) { %>
+		<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart_popup.html" %>' />
+	<% } %>
+<% } %>
