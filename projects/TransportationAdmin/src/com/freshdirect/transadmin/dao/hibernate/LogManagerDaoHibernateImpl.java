@@ -34,7 +34,9 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 	public Collection getTimeSlotLogs(Date fromDate, Date toDate) {
 		
-		String query = "from TimeslotLog a where a.eventDtm between ? and ? order by a.eventDtm desc";
+		//String query = "from TimeslotLog a where a.eventDtm between ? and ? order by a.eventDtm desc ";//
+		String query = "from TimeslotLog a left join fetch a.timeslotLogDtls where a.eventDtm between ? and ? order by a.eventDtm desc ";
+		//String query = "from TimeslotLog a,a.timeslotLogDtls d where a.eventDtm between ? and ? and a.id=d.timeslot_log_id order by a.eventDtm desc ";
 
 		return (Collection) getHibernateTemplate().find(query,
 				new Object[] { fromDate, toDate });
