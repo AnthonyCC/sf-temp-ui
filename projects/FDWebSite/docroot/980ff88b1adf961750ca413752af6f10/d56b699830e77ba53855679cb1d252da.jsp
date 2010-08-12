@@ -71,10 +71,10 @@
 	try {
 		
 		FDUser loginUser = FDCustomerManager.recognize( identity );
-    	UserUtil.createSessionUser(request, response, loginUser);
-    	
     	// masquerade
     	loginUser.setMasqueradeAgent(agentId);
+
+    	UserUtil.createSessionUser(request, response, loginUser);
 	} catch ( FDAuthenticationException ex ) {
 		out.print("Authentication failed.");
 		return;	

@@ -50,7 +50,10 @@ public class UserUtil {
 		FDSessionUser sessionUser = new FDSessionUser(loginUser, session);
 		sessionUser.isLoggedIn(true);
 
-		CookieMonster.storeCookie(sessionUser, response);
+		if (loginUser.getMasqueradeAgent() != null)
+			CookieMonster.clearCookie(response);
+		else
+			CookieMonster.storeCookie(sessionUser, response);
 		sessionUser.updateUserState();
 
 		session.setAttribute(SessionName.USER, sessionUser);
