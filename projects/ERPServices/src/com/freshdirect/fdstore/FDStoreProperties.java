@@ -454,6 +454,8 @@ public class FDStoreProperties {
 	//Delivery Pass at Checkout (APPDEV-664)
 	private final static String PROP_DP_CART_ENABLED = "fdstore.dpcart.enabled";
 	
+	private final static String PROP_PROMO_LINE_ITEM_EMAIL = "promotion.lineitem.email.display";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -796,6 +798,7 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "300"); //every 5 mins
 		defaults.put(PROP_REDEMPTION_SERVER_COUNT, "5");
+		defaults.put(PROP_PROMO_LINE_ITEM_EMAIL, "true");
 		
 		//Delivery Pass at Checkout (APPDEV-664)
 		defaults.put(PROP_DP_CART_ENABLED, "false");
@@ -1855,6 +1858,11 @@ public class FDStoreProperties {
 		return Boolean.valueOf(config.getProperty(PROP_DP_CART_ENABLED)).booleanValue();
 	}
 
+	public static boolean isPromoLineItemEmailDisplay() {
+		return "true".equalsIgnoreCase( get(PROP_PROMO_LINE_ITEM_EMAIL) );
+	}
+	
+	
 	public static void forceRefresh() {
 		refresh(true);
 	}

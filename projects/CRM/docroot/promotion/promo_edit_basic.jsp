@@ -59,6 +59,9 @@
 					<fd:ErrorHandler result="<%=result%>" name="termsEmpty" id="errorMsg">
 					 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>
+					<fd:ErrorHandler result="<%=result%>" name="windowStrgEmpty" id="errorMsg">
+					 <%@ include file="/includes/i_error_messages.jspf" %>   
+					</fd:ErrorHandler>					
 					<fd:ErrorHandler result="<%=result%>" name="usageError" id="errorMsg">
 						 <%@ include file="/includes/i_error_messages.jspf" %>   
 					</fd:ErrorHandler>

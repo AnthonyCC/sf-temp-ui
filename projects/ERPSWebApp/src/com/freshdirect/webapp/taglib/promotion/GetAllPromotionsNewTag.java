@@ -73,7 +73,7 @@ public class GetAllPromotionsNewTag extends AbstractPromotionGetterTag {
 		for (Object object: promotions) {
 			boolean isMatched = true;
 			FDPromotionNewModel promotion = (FDPromotionNewModel)object;
-			if(null != filter.getOfferType() && null != EnumOfferType.getEnum(filter.getOfferType())){
+			if(null != filter.getOfferType() && null != EnumOfferType.getEnum(filter.getOfferType()) && null!=promotion.getOfferType()){
 				isMatched = checkOfferType(filter,promotion);
 			}
 			if(isMatched){

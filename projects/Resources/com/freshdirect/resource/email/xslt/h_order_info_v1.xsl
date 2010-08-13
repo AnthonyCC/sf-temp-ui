@@ -175,7 +175,26 @@
                     </xsl:otherwise>
 				</xsl:choose>
 			</tr>
-			
+			<xsl:choose>
+			<xsl:when test="discount != ''">
+			<tr valign="middle">
+				<td align="right" width="40"></td>
+				<td width="16"></td>
+				<td width="22"></td>
+				<td colspan="2">
+				<div style="margin-left:16px; text-indent:-8px;">
+				<xsl:value-of select="discount/promotionDescription"/>&nbsp;<font color="red">(You Saved <xsl:value-of select="format-number(discountAmount, '$###,##0.00', 'USD')"/>)</font>
+				</div>
+				</td>
+				<td width="70" align="right"></td>
+				<td width="60" align="right"></td>
+				<td width="10"></td>
+				<td width="3" colspan="3"></td>
+			</tr>
+			</xsl:when>
+			<xsl:otherwise>
+			</xsl:otherwise>
+				</xsl:choose>
 		</xsl:for-each>	
 		
 		<tr><td colspan="11">

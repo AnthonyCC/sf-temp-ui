@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -35,6 +34,7 @@ import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.common.address.PhoneNumber;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmCaseSubject;
@@ -59,7 +59,6 @@ import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpAuthorizationModel;
-import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpClientCodeReport;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintInfoModel;
@@ -125,6 +124,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.EnumIPhoneCaptureType;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerCreditHistoryModel;
 import com.freshdirect.fdstore.customer.FDCustomerCreditModel;
 import com.freshdirect.fdstore.customer.FDCustomerFactory;
@@ -150,7 +150,8 @@ import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.FDGiftCardEmailFactory;
-import com.freshdirect.fdstore.promotion.ejb.FDPromotionDAO;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.fdstore.promotion.ejb.FDPromotionNewDAO;
 import com.freshdirect.fdstore.request.FDProductRequest;
 import com.freshdirect.fdstore.request.FDProductRequestDAO;
@@ -1626,6 +1627,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			this.logActivity(rec);
 			if (sendEmail) {
 				FDOrderI order = getOrder(pk.getId());
+				if(FDStoreProperties.isPromoLineItemEmailDisplay()){
+					setPromotionDescriptionForEmail(order);
+				}
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 
 				int orderCount = getValidOrderCount(identity);
@@ -1649,6 +1653,24 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if(ex instanceof ErpAddressVerificationException) throw (ErpAddressVerificationException)ex;
 			
 			throw new FDResourceException(re);
+		}
+	}
+
+	private void setPromotionDescriptionForEmail(FDOrderI order) {
+		if(null !=order){
+			List<FDCartLineI> orderLines = order.getOrderLines();
+			if(null!= orderLines){
+				for (Iterator iterator = orderLines.iterator(); iterator.hasNext();) {
+					FDCartLineI cartLineI = (FDCartLineI) iterator.next();
+					Discount discount = cartLineI.getDiscount();
+					if(null != discount){
+						PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
+						if(null != promotion && null !=promotion.getDescription()){
+							discount.setPromotionDescription(promotion.getDescription());
+						}
+					}						
+				}
+			}
 		}
 	}
 
@@ -2196,6 +2218,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (sendEmail) {
 
 				fdOrder = getOrder(saleId);
+				if(FDStoreProperties.isPromoLineItemEmailDisplay()){
+					setPromotionDescriptionForEmail(fdOrder);
+				}
 				FDCustomerInfo fdInfo = this.getCustomerInfo(identity);
 				int orderCount = getValidOrderCount(identity);
 				fdInfo.setNumberOfOrders(orderCount);

@@ -13,6 +13,7 @@ import javax.servlet.jsp.JspException;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
@@ -54,8 +55,13 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 				validatePromotion(request,actionResult);
 				if(actionResult.isSuccess()){
 					if("createBasicPromo".equalsIgnoreCase(getActionName())){//null == promotion.getId()){
-						this.promotion.setStatus(EnumPromotionStatus.DRAFT);			
-						this.promotion.setPromotionCode("CD_"+new Date().getTime());
+						this.promotion.setStatus(EnumPromotionStatus.DRAFT);		
+						
+						if(EnumOfferType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())){
+							this.promotion.setPromotionCode("WS_"+new Date().getTime());
+						}else{
+							this.promotion.setPromotionCode("CD_"+new Date().getTime());
+						}
 						FDPromotionNewManager.createPromotionBasic(promotion);
 						setSuccessPage(getSuccessPage()+promotion.getPromotionCode()+"&SUCCESS=SUCCESS");
 					}else{
@@ -136,7 +142,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		this.promotion.setMaxUsage(NVL.apply(request.getParameter("usage_limit"), "").trim());		
 //		if(request.getParameter("percentOff1")!=null && request.getParameter("percentOff1").trim().length()>0)
 //		    this.promotion.setPercentOff(NVL.apply(request.getParameter("percentOff1"), "").trim());
-		this.promotion.setWaiveChargeType(NVL.apply(request.getParameter("waiveChargeType"), "").trim());		
+//		this.promotion.setWaiveChargeType(NVL.apply(request.getParameter("waiveChargeType"), "").trim());		
 		this.promotion.setRuleBased("on".equals(NVL.apply(request.getParameter("ruleBased"), "off")));
 		this.promotion.setApplyFraud("on".equals(NVL.apply(request.getParameter("dontApplyFraud"), "off"))); //opposite
 		this.promotion.setNeedCustomerList("on".equals(NVL.apply(request.getParameter("eligibilityList"), "off")));
@@ -146,13 +152,19 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		
 		if("createBasicPromo".equalsIgnoreCase(getActionName())){//null == promotion.getId()){
 			this.promotion.setPromotionType(EnumPromotionType.HEADER.getName());
-			this.promotion.setOfferType(EnumPromotionType.GENERIC.getName());
+//			this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
 			/*this.promotion.setStatus(EnumPromotionStatus.DRAFT);			
 			this.promotion.setPromotionCode("CD_"+new Date().getTime());*/
 			this.promotion.setCreatedBy(agent.getUserId());
 			this.promotion.setCreatedDate(date);
 			this.promotion.setModifiedBy(agent.getUserId());
 			this.promotion.setModifiedDate(date);
+			String isWindowSteering = NVL.apply(request.getParameter("windowStrg"), "");
+			if("true".equalsIgnoreCase(isWindowSteering)){
+				this.promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
+			}else if("false".equalsIgnoreCase(isWindowSteering)){
+				this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
+			}
 		}else{
 			this.promotion.setModifiedBy(agent.getUserId());
 			this.promotion.setModifiedDate(date);			
@@ -331,6 +343,9 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		}
 		if(null != promotion.getStartDate() && null != promotion.getExpirationDate() && promotion.getExpirationDate().before(promotion.getStartDate())){
 			result.addError(true, "endDateBefore", " Promotion Expiration/End Date should not be before promotion start date.");
+		}
+		if(null == promotion.getOfferType() || "".equals(promotion.getOfferType())){
+			result.addError(true, "windowStrgEmpty", " Promotion 'Window Steering'/'Non Window Steering' should be selected.");
 		}
 	}
 	

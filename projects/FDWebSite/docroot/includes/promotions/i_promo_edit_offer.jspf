@@ -11,11 +11,14 @@
 	<tr>
 		<td><img width="0" height="50" src="/media_stat/crm/images/clear.gif" alt="" /></td>
 		<td class="bordLgrayDash noBorderTL alignC"><input type="radio" id="discount_type_header" name="discount_type" value="<%= EnumPromotionType.HEADER.getName() %>" <%= EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> HEADER</td>
+		<% if(promotion.getPromotionCode().indexOf("WS_")<=-1){ %>
 		<td class="bordLgrayDash noBorderT alignC"><input type="radio" id="discount_type_line_item" name="discount_type" value="<%= EnumPromotionType.LINE_ITEM.getName() %>" <%= EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> LINE ITEM</td>
 		<td class="bordLgrayDash noBorderTR alignC"><input type="radio" id="discount_type_sample" name="discount_type" value="<%= EnumPromotionType.SAMPLE.getName() %>" <%= EnumPromotionType.SAMPLE.getName().equalsIgnoreCase(promotion.getPromotionType())?"checked":"" %>/> SAMPLE</td>
+		<%} %>
 	</tr>
 	<tr>
 		<td><img width="0" height="500" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+		<% if(promotion.getPromotionCode().indexOf("WS_")<=-1){ %>
 	<%-- HEADER COL --%>
 		<td class="bordLgrayDash noBorderL vTop">
 			<table width="100%">
@@ -54,8 +57,7 @@
 								<td colspan="2" align="left">
 								<select id="header_discount_type_all" name="header_discount_type_all" class="promo_filter w150px">
 									<option value="<%= EnumPromotionType.GENERIC.getName() %>" ><%= EnumPromotionType.GENERIC.getDescription() %></option>
-									<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.GIFT_CARD.getDescription() %></option>
-									<option value="<%= EnumPromotionType.WINDOW_STEERING.getName() %>" <%= EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.WINDOW_STEERING.getDescription() %></option>
+									<option value="<%= EnumPromotionType.GIFT_CARD.getName() %>" <%= EnumPromotionType.GIFT_CARD.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.GIFT_CARD.getDescription() %></option>									
 								</select></td>
 							</tr>
 							<tr>
@@ -197,5 +199,70 @@
 				</tr>
 			</table>
 		</td>
+		<% } else if(promotion.getPromotionCode().indexOf("WS_")>-1){ %>
+		<td class="bordLgrayDash noBorderL vTop">
+			<table width="100%">
+				<tr>
+					<%-- sets the column widths --%>
+					<td width="75px"><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+					<td><img width="1" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+				</tr>
+				<tr>
+					<td class="promo_edit_offer_label">Discount:</td>
+					<td class="alignL vTop padL8R16">
+						<table class="tableCollapse">
+							
+							<tr>
+								<td><input type="radio" id="header_discount_type" name="header_discount_type" value="amount" <%= !"".equals(promotion.getMaxAmount())?"checked":""%> onclick="checkOffer();" /></td>
+								<td>$ <input type="text" id="hd_amt" name="hd_amt" class="w50px" value="<%= promotion.getMaxAmount()%>"/></td>
+							</tr>
+							<tr>
+								<td colspan="2">&nbsp;</td>
+							</tr>
+							<tr>
+								<td colspan="2" align="left">
+								<select id="header_discount_type_all" name="header_discount_type_all" class="promo_filter w150px">									
+									<option value="<%= EnumPromotionType.WINDOW_STEERING.getName() %>" <%= EnumPromotionType.WINDOW_STEERING.getName().equalsIgnoreCase(promotion.getOfferType())?"selected":""%>><%= EnumPromotionType.WINDOW_STEERING.getDescription() %></option>
+								</select></td>
+							</tr>
+							<tr>
+								<td colspan="2" class="bordLgrayDash noBorderTRL">&nbsp;</td>
+							</tr>
+							
+							<tr>
+								<td colspan="2"><img width="1" height="1" src="/media_stat/crm/images/clear.gif" alt="" class="promo_edit_offer-spacer" /></td>
+							</tr>
+							
+							<tr>
+								<td colspan="2">&nbsp;</td>
+							</tr>
+							<%
+								String hd_allow_offer_checked = "";
+								hd_allow_offer_checked = 
+									(promotion.isCombineOffer())
+									? "checked"
+									: "";
+								
+								String hd_allow_offer_disabled = "";
+								hd_allow_offer_disabled = 
+									(
+										(EnumOfferType.DP_EXTN.getName().equalsIgnoreCase(promotion.getOfferType())) ||
+										(EnumOfferType.WAIVE_DLV_CHARGE.getName().equalsIgnoreCase(promotion.getOfferType()))
+									)
+									? "disabled"
+									: "";
+								
+							%>
+							<tr>
+								<td class="vTop"><input type="checkbox" id="hd_allow_offer" name="hd_allow_offer" <%= hd_allow_offer_checked %> <%= hd_allow_offer_disabled %> /></td>
+								<td ><span class="gray">Combine offer</span></td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</td>
+		
+		<% } %>
 	</tr>
 </table>

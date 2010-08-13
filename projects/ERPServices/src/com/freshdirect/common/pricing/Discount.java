@@ -19,6 +19,7 @@ public class Discount implements java.io.Serializable {
 	private final String promotionCode;
 	private final EnumDiscountType discountType;
 	private final double amount;
+	private String promotionDescription=" ";
 
 	public Discount(String promotionCode, EnumDiscountType promotionType, double amount) {
 		this.promotionCode = promotionCode;
@@ -45,6 +46,14 @@ public class Discount implements java.io.Serializable {
 		buf.append(this.discountType.toString());
 		buf.append(']');
 		return buf.toString();
+	}
+
+	public String getPromotionDescription() {
+		return promotionDescription;
+	}
+
+	public void setPromotionDescription(String promotionDescription) {
+		this.promotionDescription = promotionDescription;
 	}
 
 }

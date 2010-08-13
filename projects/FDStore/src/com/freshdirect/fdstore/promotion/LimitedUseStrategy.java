@@ -17,9 +17,14 @@ public class LimitedUseStrategy implements PromotionStrategyI {
 	public int evaluate(String promotionCode, PromotionContextI context) {
 		int usage = context.getPromotionUsageCount(promotionCode);
 		if (usage >= this.maxUsage) {
+			if(this.maxUsage == 1){
+				context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_USAGE_LIMIT_ONE_EXCEEDED.getErrorCode());
+			}
+			else{
+				context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_USAGE_LIMIT_MORE_EXCEEDED.getErrorCode());
+			}
 			return DENY;
-		}
-		
+		}		
 		return ALLOW;
 	}
 
