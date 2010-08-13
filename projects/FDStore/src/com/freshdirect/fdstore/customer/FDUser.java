@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
 
@@ -186,7 +187,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private Set<String> allAppliedPromos = new HashSet<String>();
 	
 	protected SortedSet<IgnoreCaseString> clientCodesHistory = null; 
-	private Map<String, Integer> promoErrorCodes = new HashMap<String, Integer>();
+	private Map<String, Integer> promoErrorCodes = new ConcurrentHashMap <String, Integer>();
 	
 	private String masqueradeAgent;
 	
@@ -387,6 +388,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.getShoppingCart().clearCharge(EnumChargeType.MISCELLANEOUS);
 
 		AddressModel address = this.shoppingCart.getDeliveryAddress();
+		
 		if (address != null) {
 			// DLV
 			FeeCalculator calc = new FeeCalculator("DLV");
@@ -1544,7 +1546,7 @@ public class FDUser extends ModelSupport implements FDUserI {
 		ErpGCDlvInformationHolder holder = null;
 		try {
 			if (null == cachedRecipientInfo){
-				cachedRecipientInfo = new HashMap<String, ErpGCDlvInformationHolder>();
+				cachedRecipientInfo = new ConcurrentHashMap<String, ErpGCDlvInformationHolder>();
 			}
 
 			if (null !=cachedRecipientInfo){

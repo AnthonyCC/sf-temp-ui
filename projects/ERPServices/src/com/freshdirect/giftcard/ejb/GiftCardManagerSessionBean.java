@@ -9,10 +9,10 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -222,7 +222,7 @@ public class GiftCardManagerSessionBean extends ERPSessionBeanSupport {
 	
 	public Map getGiftCardRecepientsForOrders(List saleIds) throws RemoteException,FDResourceException{
 		Connection conn = null;
-        Map recipientListAll = new HashMap();
+        Map recipientListAll = new ConcurrentHashMap();
 		try {
 			if(null != saleIds && !saleIds.isEmpty()){
 				for (Iterator iterator = saleIds.iterator(); iterator

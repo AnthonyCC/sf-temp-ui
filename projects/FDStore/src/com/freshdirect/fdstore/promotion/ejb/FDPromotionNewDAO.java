@@ -17,6 +17,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +47,6 @@ import com.freshdirect.fdstore.promotion.LimitedUseStrategy;
 import com.freshdirect.fdstore.promotion.LineItemDiscountApplicator;
 import com.freshdirect.fdstore.promotion.MaxLineItemCountStrategy;
 import com.freshdirect.fdstore.promotion.MaxRedemptionStrategy;
-import com.freshdirect.fdstore.promotion.OrderTypeStrategy;
 import com.freshdirect.fdstore.promotion.PercentOffApplicator;
 import com.freshdirect.fdstore.promotion.PerishableLineItemStrategy;
 import com.freshdirect.fdstore.promotion.ProfileAttributeStrategy;
@@ -1118,7 +1118,7 @@ public class FDPromotionNewDAO {
 		ps.setString(1, erpCustomerId);
 		ResultSet rs = ps.executeQuery();
 		// promotionPK -> FDPromoAudience 
-		Map<String,AssignedCustomerParam> audiencePromoDtls = new HashMap<String,AssignedCustomerParam>();
+		Map<String,AssignedCustomerParam> audiencePromoDtls = new ConcurrentHashMap<String,AssignedCustomerParam>();
 
 		while (rs.next()) {
 			String promoId = rs.getString("CODE");

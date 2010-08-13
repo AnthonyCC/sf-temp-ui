@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
@@ -75,7 +75,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private Date startDate;
 	private long lastRequestDate;
-	private Map<String,SessionImpressionLogEntry> impressions = new HashMap<String,SessionImpressionLogEntry>();
+	private Map<String,SessionImpressionLogEntry> impressions = new ConcurrentHashMap<String,SessionImpressionLogEntry>();
 
 	private String sessionId = null;
 

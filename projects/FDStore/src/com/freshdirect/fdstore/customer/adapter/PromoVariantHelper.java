@@ -2,11 +2,11 @@ package com.freshdirect.fdstore.customer.adapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -23,7 +23,6 @@ import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.TabRecommendation;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.FDStoreRecommender;
-import com.freshdirect.smartstore.fdstore.OverriddenVariantsHelper;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.smartstore.fdstore.VariantSelection;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
@@ -35,7 +34,7 @@ public class PromoVariantHelper {
 		eligibilities.setEligiblity(recommendedPromos, false);
         VariantSelection helper = VariantSelection.getInstance();
         List ssFeatures = EnumSiteFeature.getSmartSavingsFeatureList();
-        Map promoVariantMap = new HashMap();
+        Map promoVariantMap = new ConcurrentHashMap();
         
         for (Iterator it = ssFeatures.iterator(); it.hasNext();) {
             // fetch variant assignment (cohort -> variant map)
