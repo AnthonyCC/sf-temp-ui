@@ -163,7 +163,7 @@ public class TransStringUtil {
         boolean isGreater=false;        
         Calendar cal=Calendar.getInstance();
 		cal.setTime(clientDate);
-		if(cal.get(Calendar.HOUR)>9){
+		if(cal.get(Calendar.HOUR)>=21){
 			isGreater=true;
 		}
         return isGreater;
@@ -591,6 +591,11 @@ public class TransStringUtil {
         return clientCalendar.getTime();
 	}
 	
+	public static Date getAdjustedDayOf(Date _date, int _days) {
+		clientCalendar.setTime(_date);
+		clientCalendar.add(Calendar.DATE, _days) ;
+		return clientCalendar.getTime();
+	}	
 	public static Date getWeekOf(Date _date) {
 		clientCalendar.setTime(_date);
 		int adjust = Calendar.MONDAY - clientCalendar.get( Calendar.DAY_OF_WEEK ) ;

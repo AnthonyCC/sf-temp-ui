@@ -211,7 +211,7 @@ public class DispatchController extends AbstractMultiActionController {
 			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
-			saveMessage(request, getMessage("app.actionmessage.151", null));
+			saveMessage(request, getMessage("app.actionmessage.158", null));
 			return new ModelAndView("planView");	
 		}
 
@@ -299,9 +299,9 @@ public class DispatchController extends AbstractMultiActionController {
 								if(r.getId().getAdjustmentTime()!=null)
 									isGreater = TransStringUtil.checkHourOfDate(r.getId().getAdjustmentTime());
 								else
-									isGreater = TransStringUtil.checkHourOfDate(p.getStartTime());								
-								if(isGreater){									
-									s.setScribDate(TransStringUtil.getAdjustedWeekOf(p.getPlanDate(), -1));
+									isGreater = TransStringUtil.checkHourOfDate(p.getStartTime());
+								if(isGreater){
+									s.setScribDate(TransStringUtil.getAdjustedDayOf(p.getPlanDate(),-1));
 								} else s.setScribDate(p.getPlanDate());
 							}else s.setScribDate(p.getPlanDate());
 							
