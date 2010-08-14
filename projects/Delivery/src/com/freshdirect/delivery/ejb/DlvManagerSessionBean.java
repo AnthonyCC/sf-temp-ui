@@ -2012,6 +2012,49 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
+	
+	public List<DlvReservationModel> getReRouteReservations() throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			return DlvManagerDAO.getReRouteReservations(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB getReRouteReservations(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB getReRouteReservations(): Exception while cleaning: " + e);
+			}
+		}
+
+	}
+	
+	public void clearReRouteReservations() throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = this.getConnection();
+			DlvManagerDAO.clearReRouteReservations(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			LOGGER.warn("DlvManagerSB clearReRouteReservations(): " + e);
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("DlvManagerSB clearReRouteReservations(): Exception while cleaning: " + e);
+			}
+		}
+
+	}
+	
 
 	public List<DlvReservationModel> getExpiredReservations() throws DlvResourceException {
 		Connection conn = null;
@@ -2315,6 +2358,29 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				throw new DlvResourceException(e);
 			}
 		}
+	}
+	
+	public void cancelRoutingReservation(DlvReservationModel reservation, ContactAddressModel address) {
+
+		long startTime = System.currentTimeMillis();
+		if(reservation == null || address == null || !reservation.isInUPS())
+			return ;
+
+		IOrderModel order= RoutingUtil.getOrderModel(address,reservation.getOrderId(),reservation.getId());
+		try {
+            RoutingUtil.cancelTimeslot(reservation, order);
+			long endTime=System.currentTimeMillis();
+			logTimeslots(reservation,order,RoutingActivityType.CANCEL_TIMESLOT
+									,RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId()))
+											,(int)(endTime-startTime),address);			
+
+		} catch (Exception e) {
+			logTimeslots(reservation,order,RoutingActivityType.CANCEL_TIMESLOT,null,0,address);
+			e.printStackTrace();
+			LOGGER.debug("Exception in cancelRoutingReservation():"+ e.toString());
+			LOGGER.debug(reservation);
+		}
+
 	}
 	
 	public List getActiveZoneCodes() throws RemoteException{

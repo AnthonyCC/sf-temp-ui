@@ -12,4 +12,6 @@ public interface ICapacityProvider {
 	
 	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, String baseDate, String cutOff, String accessCode);
 	
+	int flagReRouteReservation(String deliveryDate, String zone);
+	
 }

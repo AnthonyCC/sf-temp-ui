@@ -3,6 +3,7 @@ package com.freshdirect.routing.dao;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -20,4 +21,6 @@ public interface IRoutingInfoDAO {
 	Map<String, IZoneScenarioModel> getRoutingScenarioMapping(final String code)  throws SQLException;
 	
 	Map<String, IServiceTimeTypeModel> getRoutingServiceTimeTypes()  throws SQLException;
+	
+	int flagReRouteReservation(final Date deliveryDate, final List<String> zones) throws SQLException;
 }

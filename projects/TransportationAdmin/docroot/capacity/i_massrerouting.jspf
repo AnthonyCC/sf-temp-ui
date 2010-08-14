@@ -1,0 +1,103 @@
+<script>
+            
+      var reRoutePanel;
+                       
+      var r_jsonrpcClient = new JSONRpcClient("capacityprovider.ax");
+                  	    
+    function showReRouteForm() {
+        reRoutePanel = new YAHOO.widget.Panel("panel-reroute", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: true,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+    	  reRoutePanel.render(document.body);
+    	  reRoutePanel.show();        
+	}       
+    
+	function sendReRouteRequest() {       	                           
+      	  
+      	  var p_rDate = YAHOO.util.Dom.get("reRouteDate").value;
+       	  var p_rZone = YAHOO.util.Dom.get("reRouteZone").value;
+		  	  
+  		   		  
+      	  if(p_rDate.trim().length == 0) {
+      		YAHOO.util.Dom.get("errContainer-reroute").innerHTML = "Please enter the required values";		
+      	  } else {
+	    	  var result = r_jsonrpcClient.AsyncCapacityProvider.flagReRouteReservation(sendReRouteRequestCallback
+						    	  															, p_rDate ,p_rZone);  
+		  }
+    }
+
+	function sendReRouteRequestCallback(result, exception) {
+    	  
+        if(exception) {               
+            alert('Unable to connect to host system. Please contact system administrator!');               
+            return;
+        }
+        YAHOO.util.Dom.get("errContainer-reroute").innerHTML = result + " Reservations have been requested for ReRoute";                             
+    }
+      
+    function hideReRouteForm() { 
+      	YAHOO.util.Dom.get("errContainer-reroute").value = "";
+      	reRoutePanel.hide();
+    }
+         
+</script>
+   
+    <div style='display:none;height:0px;width:0px;'>
+      <div id="panel-reroute">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />
+      				&nbsp;&nbsp;&nbsp;Mass ReRouting Console</div>
+      <div class="bd">
+      	<div id="errContainer-reroute" style="color:#00FF00;"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">           		
+				<tr><td>Delivery Date </td>
+				<td> <span><input maxlength="10" size="10" name="reRouteDate" id="reRouteDate" value='<c:out value="${reRouteDate}"/>' /></span>
+                     <span><a href="#" id="trigger_reRouteDate" style="font-size: 9px;">
+                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    </a></span>
+                     <script language="javascript">                 
+                      Calendar.setup(
+                      {
+                        showsTime : false,
+                        electric : false,
+                        inputField : "reRouteDate",
+                        ifFormat : "%m/%d/%Y",
+                        singleClick: true,
+                        button : "trigger_reRouteDate" 
+                       }
+                      );
+                      
+                               
+                  </script></td></tr>
+				
+				<tr><td>Delivery Zone</td>
+				<td><select id="reRouteZone" name="reRouteZone">
+                      <option value="">All Zones</option> 
+                      <c:forEach var="zone" items="${zones}">                             
+                          <c:choose>
+                            <c:when test="${param.zone == zone.zoneCode}" > 
+                              <option selected value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
+                            </c:when>
+                            <c:otherwise> 
+                              <option value="<c:out value="${zone.zoneCode}"/>"><c:out value="${zone.displayName}"/></option>
+                            </c:otherwise> 
+                          </c:choose>      
+                        </c:forEach>   
+                   </select></td></tr>
+				
+												
+				<tr>
+					<td colspan="2" align="center"><input type="button" value="Request ReRoute" onclick="javascript:sendReRouteRequest()" /> </td>
+				</tr> 
+		</table>
+        </div>
+    </div>
+    </div>
+    </div>

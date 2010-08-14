@@ -66,7 +66,9 @@
                  <td>
                      <input type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doCompositeLink('rDate','unassigned.do', 'autorefresh')" />
                   </td> 
-                  
+                  <td>
+                     <input type = "button" value="&nbsp;Mass ReRoute&nbsp;" onclick="javascript:showReRouteForm()" />
+                  </td>
               </tr>
               </table>        
               
@@ -144,6 +146,7 @@
             </ec:row>
           </ec:table>
            <%@ include file='i_unassignededitor.jspf'%>
+           <%@ include file='i_massrerouting.jspf'%>
     </div>
    
     <script>

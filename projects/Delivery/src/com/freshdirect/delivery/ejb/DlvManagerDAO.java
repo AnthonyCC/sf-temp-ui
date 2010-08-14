@@ -1070,7 +1070,38 @@ public class DlvManagerDAO {
 		return reservations;
 	}
 	
-	 
+	private static final String FETCH_REROUTE_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
+	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
+	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) " +
+	" AND  R.DO_REROUTE = 'X' ORDER BY T.BASE_DATE, Z.ZONE_CODE";
+	public static List<DlvReservationModel> getReRouteReservations(Connection conn)  throws SQLException {
+		PreparedStatement ps =
+			conn.prepareStatement(FETCH_REROUTE_RESERVATIONS_QUERY);
+		
+		ResultSet rs = ps.executeQuery();
+		List<DlvReservationModel>  reservations = new ArrayList<DlvReservationModel>();
+		while (rs.next()) {
+			DlvReservationModel rsv = loadReservationFromResultSet(rs);
+			reservations.add(rsv);
+		}
+
+		rs.close();
+		ps.close();
+       
+		return reservations;
+	}
+	
+	public static void clearReRouteReservations(Connection conn) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement("UPDATE DLV.RESERVATION r SET r.DO_REROUTE =null WHERE r.ID in (SELECT R.ID FROM  DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
+					" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) " +
+						" AND R.DO_REROUTE = 'X')");	
+		int result = ps.executeUpdate();
+		if (result <= 0) {
+		    ps.close();
+			throw new SQLException("Cannot find reroute reservation to clear: ");
+		}
+		ps.close();
+	} 
 	
 	private static final String LOCK_EXPIRED_RESERVATIONS="UPDATE DLV.RESERVATION SET STATUS_CODE=25 WHERE EXPIRATION_DATETIME<= SYSDATE AND STATUS_CODE=5";
 	private static final String GET_LOCKED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS FROM DLV.RESERVATION R, "+

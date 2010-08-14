@@ -29,6 +29,14 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
 	private static final String GET_SERVICETIMETYPE_QRY = "SELECT * FROM DLV.SERVICETIME_TYPE";
 	
+	private static final String UPDATE_REROUTERESERVATION_BYDATE = "UPDATE DLV.RESERVATION r SET r.DO_REROUTE = 'X' WHERE r.ID in " +
+			"(SELECT rx.ID from dlv.reservation rx, dlv.timeslot t, dlv.zone z where t.BASE_DATE = ? " +
+			" and rx.STATUS_CODE in ('5','10') and (rx.UNASSIGNED_ACTION is null or rx.UNASSIGNED_ACTION <> 'RESERVE_TIMESLOT') and rx.TIMESLOT_ID = t.ID and t.ZONE_ID = z.ID)";
+	
+	private static final String UPDATE_REROUTERESERVATION_BYDATEZONE = "UPDATE DLV.RESERVATION r SET r.DO_REROUTE = 'X' WHERE r.ID in " +
+	"(SELECT rx.ID from dlv.reservation rx, dlv.timeslot t, dlv.zone z where t.BASE_DATE = ? " +
+	" and rx.STATUS_CODE in ('5','10') and (rx.UNASSIGNED_ACTION is null or rx.UNASSIGNED_ACTION <> 'RESERVE_TIMESLOT') and rx.TIMESLOT_ID = t.ID and t.ZONE_ID = z.ID and z.ZONE_CODE in (";
+	
 	public Map<String, IServiceTimeTypeModel> getRoutingServiceTimeTypes()  throws SQLException {
 		
 		final Map<String, IServiceTimeTypeModel> results = new HashMap<String, IServiceTimeTypeModel>();
@@ -213,5 +221,37 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 				  }
 			);
 		return results;
+	}
+	
+	public int flagReRouteReservation(final Date deliveryDate, final List<String> zones) throws SQLException {
+
+		Connection connection=null;
+		int result = 0;
+		
+		try{
+			if(zones == null || zones.size() == 0) {
+				
+				result = this.jdbcTemplate.update(UPDATE_REROUTERESERVATION_BYDATE, new Object[] {deliveryDate});
+			} else {
+				StringBuffer updateQ = new StringBuffer();
+				updateQ.append(UPDATE_REROUTERESERVATION_BYDATEZONE);
+				int intCount = 0;
+				for(String zone : zones) {
+					updateQ.append("'").append(zone).append("'");
+					intCount++;
+					if(intCount != zones.size()) {
+						updateQ.append(",");
+					}
+				}
+				updateQ.append(") )");
+				result = this.jdbcTemplate.update(updateQ.toString(), new Object[] {deliveryDate});
+			}			
+			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		}finally{
+			if(connection!=null) connection.close();
+		}
+		return result;
 	}
 }

@@ -139,6 +139,10 @@ public interface DlvManagerSB extends EJBObject {
 	
 	public List<DlvReservationModel> getUnassignedReservations(Date _date) throws DlvResourceException, RemoteException;
 	
+	List<DlvReservationModel> getReRouteReservations() throws DlvResourceException, RemoteException;
+	
+	void clearReRouteReservations() throws DlvResourceException, RemoteException;
+	
 	public void setUnassignedInfo(String reservationId,RoutingActivityType activity )throws  RemoteException;
 	
 	public void clearUnassignedInfo(String reservationId )throws  RemoteException;
@@ -164,7 +168,9 @@ public interface DlvManagerSB extends EJBObject {
 	
 	void setReservationUpdateStatusInfo(String reservationId, double orderSize, double serviceTime, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
 	
-	public List getActiveZoneCodes() throws RemoteException;
-	public List<DlvZoneModel> getActiveZones() throws RemoteException;
+	List getActiveZoneCodes() throws RemoteException;
+	List<DlvZoneModel> getActiveZones() throws RemoteException;
+	
+	void cancelRoutingReservation(DlvReservationModel reservation, ContactAddressModel address) throws RemoteException;
 	
 }   

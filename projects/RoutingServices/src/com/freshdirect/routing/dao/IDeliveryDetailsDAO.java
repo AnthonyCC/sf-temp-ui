@@ -16,9 +16,7 @@ import com.freshdirect.routing.model.IUnassignedModel;
 public interface IDeliveryDetailsDAO {
 	
 	IDeliveryModel getDeliveryInfo(String saleId) throws SQLException;
-	
-	//IServiceTimeModel getServiceTime(String serviceTimeType, String zoneType) throws SQLException;
-	
+		
 	String getDeliveryType(String zoneCode) throws SQLException;
 	
 	String getDeliveryZoneType(String zoneCode) throws SQLException;
@@ -49,5 +47,5 @@ public interface IDeliveryDetailsDAO {
 	
 	int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode,final String cutOff, final boolean isDynamic) throws SQLException;
 	
-	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;
+	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;	
 }

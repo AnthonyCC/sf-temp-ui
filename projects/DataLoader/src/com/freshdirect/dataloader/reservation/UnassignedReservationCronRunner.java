@@ -1,5 +1,6 @@
 package com.freshdirect.dataloader.reservation;
 
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,6 +16,7 @@ import org.apache.log4j.Category;
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.ContactAddressModel;
 import com.freshdirect.customer.ErpDepotAddressModel;
+import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.depot.DlvDepotModel;
 import com.freshdirect.delivery.depot.DlvLocationModel;
 import com.freshdirect.delivery.ejb.DlvManagerHome;
@@ -22,6 +24,7 @@ import com.freshdirect.delivery.ejb.DlvManagerSB;
 import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.fdstore.FDDepotManager;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -32,7 +35,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.constants.EnumRoutingNotification;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
-import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 
@@ -87,10 +89,11 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				FDCustomerManagerHome home = (FDCustomerManagerHome) ctx.lookup("freshdirect.fdstore.CustomerManager");
 
 				custManager = home.create();
+				cron.processReRouteReservation(dlvManager, custManager, dlvManager.getReRouteReservations());
 				
 				if(hasArg) {
 					
-					List<DlvReservationModel> _unassignedReservations=dlvManager.getUnassignedReservations(startDate.getTime());
+					List<DlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime());
 					
 					if(_unassignedReservations!=null && !_unassignedReservations.isEmpty()) {
 						
@@ -125,12 +128,14 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				List<IRoutingNotificationModel> cancelledNotifications = new ArrayList<IRoutingNotificationModel>();
 				List<IRoutingNotificationModel> unUsedNotifications = new ArrayList<IRoutingNotificationModel>();
 				
-				for (IRoutingNotificationModel notification : notifications) {
-					if(notification.getNotificationType() != null 
-							&& notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
-						cancelledNotifications.add(notification);
-					} else {
-						unUsedNotifications.add(notification);
+				if(notifications != null) {
+					for (IRoutingNotificationModel notification : notifications) {
+						if(notification.getNotificationType() != null 
+								&& notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
+							cancelledNotifications.add(notification);
+						} else {
+							unUsedNotifications.add(notification);
+						}
 					}
 				}
 				System.out.println("Total no of notifications processed :"+cancelledNotifications.size()+ " , Unused:"+unUsedNotifications.size());
@@ -138,6 +143,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 					dlvManager.processCancelNotifications(cancelledNotifications, unUsedNotifications);
 				}
 			} catch (Exception e) {
+				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with notification exception : ").append(e.toString()).toString());
 				email(Calendar.getInstance().getTime(),e.toString());
 			}	
@@ -155,6 +161,37 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				}
 			} catch (NamingException e) {
 				LOGGER.warn("Could not close CTX due to following NamingException", e);
+			}
+		}
+	}
+	
+	private void processReRouteReservation(DlvManagerSB dlvManager, FDCustomerManagerSB sb
+												, List<DlvReservationModel> reRouteReservations) {
+		System.out.println("Total no of reroute reservations processed :"+ (reRouteReservations != null ? reRouteReservations.size() : 0));
+		if(reRouteReservations != null && reRouteReservations.size() > 0) {			
+			
+			for (DlvReservationModel reservation : reRouteReservations) {
+				FDIdentity identity = getIdentity(reservation.getCustomerId());
+				ContactAddressModel address;
+				try {
+					address = sb.getAddress(identity, reservation.getAddressId());
+					dlvManager.cancelRoutingReservation(reservation, address);
+				} catch (FDResourceException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
+			}
+			try {
+				dlvManager.clearReRouteReservations();
+			} catch (DlvResourceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 	}

@@ -1,11 +1,14 @@
 package com.freshdirect.transadmin.web.json;
 
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.freshdirect.framework.util.MD5Hasher;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 
@@ -68,6 +71,26 @@ public class CapacityProviderController extends JsonRpcController implements
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+		
+		return 0;
+	}
+	
+	public int flagReRouteReservation(String deliveryDate, String zone) {
+		
+		try {
+			List<String> zones = new ArrayList<String>();
+			if(zone != null && !TransStringUtil.isEmpty(zone)) {
+				zones.add(zone);
+			}
+			return new RoutingInfoServiceProxy().flagReRouteReservation(TransStringUtil.getDate(deliveryDate)
+																		, zones);
+		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return 0;

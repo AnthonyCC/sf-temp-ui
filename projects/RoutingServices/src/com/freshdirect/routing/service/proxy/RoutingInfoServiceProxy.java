@@ -2,6 +2,7 @@ package com.freshdirect.routing.service.proxy;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
@@ -31,6 +32,10 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	
 	public Map<String, IServiceTimeTypeModel> getRoutingServiceTimeTypes()  throws RoutingServiceException {
 		return getService().getRoutingServiceTimeTypes();
+	}
+	
+	public int flagReRouteReservation(Date deliveryDate, List<String> zones) throws RoutingServiceException {
+		return getService().flagReRouteReservation(deliveryDate, zones);
 	}
 		
 	public IRoutingInfoService getService() {

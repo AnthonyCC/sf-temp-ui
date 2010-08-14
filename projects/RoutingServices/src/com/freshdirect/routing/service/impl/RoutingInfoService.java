@@ -62,6 +62,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
 		}
 	}
+	
+	public int flagReRouteReservation(Date deliveryDate, List<String> zones) throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.flagReRouteReservation(deliveryDate, zones);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
 
 	public IRoutingInfoDAO getRoutingInfoDAOImpl() {
 		return routingInfoDAOImpl;

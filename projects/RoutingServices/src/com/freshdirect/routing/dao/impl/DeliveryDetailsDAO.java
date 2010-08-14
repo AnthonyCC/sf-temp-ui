@@ -130,6 +130,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"from (select NUM_REGULAR_CARTONS, NUM_FREEZER_CARTONS, NUM_ALCOHOL_CARTONS from cust.sale s " +
 			"where s.CUSTOMER_ID = ? and s.STATUS = 'STL' and s.TYPE = 'REG' order by s.CROMOD_DATE desc) tbl where rownum <= ?";
 	
+		
 	public IPackagingModel getHistoricOrderSize(final String customerId, final int range) throws SQLException {
 		
 		final IPackagingModel model = new PackagingModel();
@@ -199,36 +200,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return model;
 	}
 	
-	/*public IServiceTimeModel getServiceTime(final String serviceTimeType, final String zoneType) throws SQLException {
-		final IServiceTimeModel model = new ServiceTimeModel();  
-		model.setNew(true);
 		
-        PreparedStatementCreator creator=new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-                PreparedStatement ps =
-                    connection.prepareStatement(GET_SERVICETIME_QRY);
-                ps.setString(1,serviceTimeType);
-                ps.setString(2,zoneType);
-                return ps;
-            }  
-        };
-        jdbcTemplate.query(creator, 
-       		  new RowCallbackHandler() { 
-       		      public void processRow(ResultSet rs) throws SQLException {
-       		    	
-       		    	do {        		    		
-       		    		model.setFixedServiceTime(rs.getDouble("FIXED_SERVICE_TIME"));
-       		    		model.setVariableServiceTime(rs.getDouble("VARIABLE_SERVICE_TIME")); 
-       		    		model.setNew(false);
-       		    	   }
-       		    	   while(rs.next());		        		    	
-       		      }
-       		  }
-       	); 
-        
-		return model;
-	}*/
-	
 	public String getDeliveryType(final String zoneCode) throws SQLException {
 		
 		return (String)jdbcTemplate.queryForObject(GET_DELIVERYTYPE_QRY, new Object[]{zoneCode}, String.class);	
@@ -660,5 +632,4 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return result;
 	}
 
-	
 }

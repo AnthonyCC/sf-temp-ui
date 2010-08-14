@@ -445,6 +445,7 @@ public class CapacityController extends AbstractMultiActionController {
 	public ModelAndView unassignedHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
 		String rDate = request.getParameter("rDate");
+		String reRouteDate = request.getParameter("reRouteDate");
 				
 		List<UnassignedCommand> unassigneds = new ArrayList<UnassignedCommand>();
 		
@@ -452,6 +453,9 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		if(TransStringUtil.isEmpty(rDate)) {
 			rDate = TransStringUtil.getNextDate();
+		}
+		if(TransStringUtil.isEmpty(reRouteDate)) {
+			reRouteDate = TransStringUtil.getNextDate();
 		}
 		
 		if(!TransStringUtil.isEmpty(rDate)) {
@@ -504,8 +508,10 @@ public class CapacityController extends AbstractMultiActionController {
 		}
 		
 		mav.getModel().put("rDate", rDate);
+		mav.getModel().put("reRouteDate", reRouteDate);
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("unassigneds", unassigneds );
+		mav.getModel().put("zones", domainManagerService.getZones());
 		return mav;
 	}
 	
