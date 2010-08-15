@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		super(batch, userId);
 	}
 
-	public void doExecute() throws Exception {
+	public Object doExecute() throws Exception {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
@@ -150,7 +149,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTCOMPLETED);
 		proxy.updateHandOffBatchDetails(s_routes, s_stops);
-				
+		return null;		
 	}
 	
 	private void processResult(String batchId, Map<IHandOffBatchSession

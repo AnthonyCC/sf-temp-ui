@@ -31,4 +31,6 @@ public interface IProcessMessage {
 	String INFO_MESSAGE_STANDBYMODE = "Handoff creation is now in standby mode you will not be able to commit the handoff.";
 	
 	String INFO_MESSAGE_HANDOFFBATCHTRIGERRED = "HandOff Batch created successfully";
+	
+	String ERROR_MESSAGE_INELIGIBLECOMMIT = "Batch Commit : InEligible";
 }

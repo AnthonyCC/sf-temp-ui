@@ -1,5 +1,6 @@
 package com.freshdirect.routing.service;
 
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -42,14 +43,16 @@ public interface IHandOffService {
 	
 	void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException;
 	
-	List<IHandOffBatchStop> getHandOffBatchStops(String batchId) throws RoutingServiceException;
+	List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException;
 	List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException;
 	
 	void addNewHandOffBatchDepotSchedules(String handOffBatchId, Set<IHandOffBatchDepotSchedule> dataList) throws RoutingServiceException;
 	
 	Map<EnumSaleStatus, Integer> getOrderStatsByCutoff(Date deliveryDate, Date cutOff) throws RoutingServiceException;
 	
-	IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId) throws RoutingServiceException;
+	IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId, boolean filterException) throws RoutingServiceException;
 	
 	void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws RoutingServiceException;
+	
+	void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException;
 }

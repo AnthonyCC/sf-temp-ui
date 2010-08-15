@@ -2,6 +2,8 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
+import com.freshdirect.customer.EnumSaleStatus;
+
 public interface IOrderModel {
 	
 	String getOrderNumber();
@@ -36,4 +38,7 @@ public interface IOrderModel {
 	
 	double getUnassignedOrderSize();
 	void setUnassignedOrderSize(double unassignedOrderSize);
+	
+	EnumSaleStatus getStatus();
+	void setStatus(EnumSaleStatus status);
 }

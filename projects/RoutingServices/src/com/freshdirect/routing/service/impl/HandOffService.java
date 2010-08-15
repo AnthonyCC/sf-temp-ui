@@ -186,9 +186,9 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId) throws RoutingServiceException {
+	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException {
 		try {
-			return getHandOffDAOImpl().getHandOffBatchStops(batchId);
+			return getHandOffDAOImpl().getHandOffBatchStops(batchId, filterException);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -210,9 +210,9 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	public IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId) throws RoutingServiceException {
+	public IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId, boolean filterException) throws RoutingServiceException {
 		try {
-			return getHandOffDAOImpl().getHandOffBatchStopsByRoute(deliveryDate, routeId);
+			return getHandOffDAOImpl().getHandOffBatchStopsByRoute(deliveryDate, routeId, filterException);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -226,6 +226,12 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	
+	public void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException {
+		try {
+			getHandOffDAOImpl().updateHandOffStopException(handOffBatchId, exceptionOrderIds);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 	
 }

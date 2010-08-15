@@ -47,12 +47,14 @@ public interface IHandOffDAO {
 	
 	void clearHandOffBatchStopsRoute(String handOffBatchId) throws SQLException;
 	
-	List<IHandOffBatchStop> getHandOffBatchStops(final String batchId) throws SQLException;
+	List<IHandOffBatchStop> getHandOffBatchStops(final String batchId, final boolean filterException) throws SQLException;
 	List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException;
 	
 	Map<EnumSaleStatus, Integer> getOrderStatsByCutoff(final Date deliveryDate, final Date cutOff) throws SQLException;
 	
-	IHandOffBatchRoute getHandOffBatchStopsByRoute(final Date deliveryDate, final String routeId) throws SQLException;
+	IHandOffBatchRoute getHandOffBatchStopsByRoute(final Date deliveryDate, final String routeId, final boolean filterException) throws SQLException;
 	
 	void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws SQLException;
+	
+	void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws SQLException;
 }

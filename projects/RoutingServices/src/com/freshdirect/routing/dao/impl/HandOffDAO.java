@@ -181,7 +181,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String GET_HANDOFFBATCH_STOPS = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID , s.AREA, s.DELIVERY_TYPE " +
 			", s.WINDOW_STARTTIME ,s.WINDOW_ENDTIME  ,s.LOCATION_ID , s.SESSION_NAME " +
-			",s.ROUTE_NO ,s.ROUTING_ROUTE_NO ,s.STOP_SEQUENCE ,s.STOP_ARRIVALDATETIME ,s.STOP_DEPARTUREDATETIME " +
+			",s.ROUTE_NO ,s.ROUTING_ROUTE_NO ,s.STOP_SEQUENCE ,s.STOP_ARRIVALDATETIME ,s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION  " +
 			",dd.ADDR_TYPE ,dd.COMPANY_NAME ,dd.DIFFICULT_TO_DELIVER ,dd.DIFFICULT_REASON ,dd.ADDITIONAL  " +
 			",dd.IS_DOORMAN  ,dd.IS_WALKUP  ,dd.IS_ELEVATOR ,dd.IS_HOUSE  ,dd.IS_FREIGHT_ELEVATOR " +
 			",dd.SVC_ENT  ,dd.SVC_SCRUBBED_STREET  ,dd.SVC_CITY ,dd.SVC_STATE ,dd.SVC_ZIP ,dd.HAND_TRUCK_ALLOWED " +
@@ -205,7 +205,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String GET_HANDOFFBATCH_STOPBYROUTE = "select hb.DELIVERY_DATE, s.BATCH_ID , s.WEBORDER_ID , s.ERPORDER_ID " +
 			", s.AREA, s.DELIVERY_TYPE, s.WINDOW_STARTTIME , s.WINDOW_ENDTIME  , s.LOCATION_ID , s.SESSION_NAME, s.ROUTE_NO " +
-			", s.ROUTING_ROUTE_NO , s.STOP_SEQUENCE , s.STOP_ARRIVALDATETIME , s.STOP_DEPARTUREDATETIME" +
+			", s.ROUTING_ROUTE_NO , s.STOP_SEQUENCE , s.STOP_ARRIVALDATETIME , s.STOP_DEPARTUREDATETIME, s.IS_EXCEPTION " +
 			", b.SCRUBBED_STREET bSCRUBBED_STREET, b.ZIP bzip ,b.COUNTRY  bCOUNTRY, b.CITY bCITY, b.STATE bSTATE" +
 			", b.LONGITUDE  BLONG, b.LATITUDE BLAT, l.APARTMENT LOCAPART" +
 			", r.ROUTE_NO RROUTE_NO,r.ROUTING_ROUTE_NO RROUTING_ROUTE_NO, r.AREA RAREA " +
@@ -217,6 +217,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"and HB.BATCH_ID = R.BATCH_ID  and R.ROUTE_NO = S.ROUTE_NO " +
 			"and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID order by s.ROUTE_NO, s.STOP_SEQUENCE";
 	
+	private static final String UPDATE_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = 'X' " +
+																		" where BATCH_ID = ? AND WEBORDER_ID in (";
 	
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
@@ -256,7 +258,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public List<IHandOffBatchStop> getHandOffBatchStops(final String batchId) throws SQLException {
+	public List<IHandOffBatchStop> getHandOffBatchStops(final String batchId, final boolean filterException) throws SQLException {
 
 		final List<IHandOffBatchStop> result = new ArrayList<IHandOffBatchStop>();
 
@@ -276,7 +278,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 					do { 
 							
 						IHandOffBatchStop infoModel = new HandOffBatchStop();
-						result.add(infoModel);
+						
 						infoModel.setOrderNumber(rs.getString("WEBORDER_ID"));
 						infoModel.setErpOrderNumber(rs.getString("ERPORDER_ID"));
 						infoModel.setRouteId(rs.getString("ROUTE_NO"));
@@ -284,6 +286,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setStopNo(rs.getInt("STOP_SEQUENCE"));
 						infoModel.setStopArrivalTime(rs.getTimestamp("STOP_ARRIVALDATETIME"));
 						infoModel.setStopDepartureTime(rs.getTimestamp("STOP_DEPARTUREDATETIME"));
+						infoModel.setException("X".equalsIgnoreCase(rs.getString("IS_EXCEPTION")));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();
 						deliveryModel.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
@@ -349,7 +352,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												
 						deliveryModel.setDeliveryLocation(locationModel);
 						infoModel.setDeliveryInfo(deliveryModel);
-	
+						if(!infoModel.isException() || filterException) {
+							result.add(infoModel);
+						}
 					} while(rs.next());		        		    	
 				}
 		}
@@ -357,7 +362,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		return result;
 	}
 	
-	public IHandOffBatchRoute getHandOffBatchStopsByRoute(final Date deliveryDate, final String routeId) throws SQLException {
+	public IHandOffBatchRoute getHandOffBatchStopsByRoute(final Date deliveryDate, final String routeId, final boolean filterException) throws SQLException {
 		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
 		
 		PreparedStatementCreator creator = new PreparedStatementCreator() {
@@ -392,7 +397,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							result.add(routeModel);
 						}
 						IHandOffBatchStop infoModel = new HandOffBatchStop();
-						routeModel.getStops().add(infoModel);
+						
 						infoModel.setOrderNumber(rs.getString("WEBORDER_ID"));
 						infoModel.setErpOrderNumber(rs.getString("ERPORDER_ID"));
 						infoModel.setRouteId(rs.getString("ROUTE_NO"));
@@ -400,6 +405,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setStopNo(rs.getInt("STOP_SEQUENCE"));
 						infoModel.setStopArrivalTime(rs.getTimestamp("STOP_ARRIVALDATETIME"));
 						infoModel.setStopDepartureTime(rs.getTimestamp("STOP_DEPARTUREDATETIME"));
+						infoModel.setException("X".equalsIgnoreCase(rs.getString("IS_EXCEPTION")));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();
 						deliveryModel.setDeliveryDate(rs.getDate("DELIVERY_DATE"));
@@ -427,7 +433,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												
 						deliveryModel.setDeliveryLocation(locationModel);
 						infoModel.setDeliveryInfo(deliveryModel);
-	
+						if(!infoModel.isException() || filterException) {
+							routeModel.getStops().add(infoModel);
+						}
 					} while(rs.next());		        		    	
 				}
 		}
@@ -516,13 +524,16 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
-			
+			String routingRouteId = null;
 			for(IHandOffBatchRoute model : dataList) {
+				if(model.getRoutingRouteId() != null) {
+					routingRouteId = model.getRoutingRouteId().substring(0 , Math.min(model.getRoutingRouteId().length(), 1024));
+				}
 				//System.out.println("ROUTE --->"+model.getBatchId()+"-"+model.getSessionName()+"-"+model.getRouteId());
 				batchUpdater.update(new Object[]{ model.getBatchId()
 											, model.getSessionName()
 											, model.getRouteId()
-											, model.getRoutingRouteId()
+											, routingRouteId
 											, model.getArea()
 											, model.getStartTime()
 											, model.getStartTime()
@@ -921,6 +932,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						infoModel.setOrderNumber(rs.getString("weborder_id"));
 						infoModel.setErpOrderNumber(rs.getString("erporder_id"));
 						infoModel.setCustomerNumber(rs.getString("customer_id"));
+						infoModel.setStatus(EnumSaleStatus.getSaleStatus(rs.getString("status")));
 						//infoModel.setCustomerName(rs.getString("customer_id"));
 						
 						IDeliveryModel deliveryModel = new DeliveryModel();
@@ -1004,5 +1016,31 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
+	public void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws SQLException {
+		
+		Connection connection = null;		
+		try {
+			if(exceptionOrderIds != null && exceptionOrderIds.size() > 0) {
+				StringBuffer updateQ = new StringBuffer();
+				updateQ.append(UPDATE_HANDOFFBATCH_STOPEXCEPTION);
+				int intCount = 0;
+				for(String expOrder : exceptionOrderIds) {
+					updateQ.append("'").append(expOrder).append("'");
+					intCount++;
+					if(intCount != exceptionOrderIds.size()) {
+						updateQ.append(",");
+					}
+				}
+				updateQ.append(")");
+				this.jdbcTemplate.update(updateQ.toString()
+												, new Object[] {handOffBatchId});
+				
+				connection=this.jdbcTemplate.getDataSource().getConnection();
+			}
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
 	
 }

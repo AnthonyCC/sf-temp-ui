@@ -2,6 +2,8 @@ package com.freshdirect.routing.model;
 
 import java.util.Date;
 
+import com.freshdirect.customer.EnumSaleStatus;
+
 public class OrderModel extends BaseModel implements IOrderModel {
 	
 	private String orderNumber;	
@@ -18,6 +20,8 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	private String unassignedAction;
 	
 	private String updateStatus;
+	
+	private EnumSaleStatus status;
 	
 	private double unassignedServiceTime;
 	private double unassignedOrderSize;
@@ -115,6 +119,11 @@ public class OrderModel extends BaseModel implements IOrderModel {
 		this.unassignedTime = unassignedTime;
 	}
 
-	
+	public EnumSaleStatus getStatus() {
+		return status;
+	}
 
+	public void setStatus(EnumSaleStatus status) {
+		this.status = status;
+	}
 }

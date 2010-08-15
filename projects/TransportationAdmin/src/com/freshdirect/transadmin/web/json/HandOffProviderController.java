@@ -5,9 +5,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.mail.MessagingException;
+
+import com.freshdirect.customer.EnumSaleStatus;
+import com.freshdirect.mail.ErpMailSender;
 import com.freshdirect.routing.handoff.action.HandOffCancelAction;
 import com.freshdirect.routing.handoff.action.HandOffCommitAction;
 import com.freshdirect.routing.handoff.action.HandOffRoutingInAction;
@@ -20,6 +25,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
 
@@ -145,20 +151,41 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		return true;
 	}
 	
-	public boolean doHandOffCommit(String handOffBatchId) {
+	public String doHandOffCommit(String handOffBatchId, boolean force) {
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		IHandOffBatch batch;
+		
 		try {
 			batch = proxy.getHandOffBatchById(handOffBatchId);
-			HandOffCommitAction process = new HandOffCommitAction(batch, userId);
-			process.execute();
+			HandOffCommitAction process = new HandOffCommitAction(batch, userId, force);
+			Map<String, EnumSaleStatus> exceptions = (Map<String, EnumSaleStatus>) process.execute();
+			
+			if(exceptions == null || exceptions.keySet().size() == 0) {
+				ErpMailSender emailer = new ErpMailSender();
+				emailer.sendMail(RoutingServicesProperties.getHandOffMailFrom(), RoutingServicesProperties.getHandOffMailTo()
+											, RoutingServicesProperties.getHandOffMailCC(), RoutingServicesProperties.getHandOffMailSubject()
+											, process.getProcessResponse());
+			} else {
+				StringBuffer exceptionMessage = new StringBuffer();
+				exceptionMessage.append("Below are the list of order exceptions");
+				for(Map.Entry<String, EnumSaleStatus> exp : exceptions.entrySet()) {
+					
+					exceptionMessage.append("\n").append(exp.getKey()+"="+exp.getValue().getName());
+				}
+				exceptionMessage.append("\n"+"Do you want to force the commit?");
+				return exceptionMessage.toString();
+			}
+			
 		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return true;
+		return null;
 	}
 	
 	public String getServiceTimeScenario(String deliveryDate) {

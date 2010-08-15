@@ -89,10 +89,10 @@ public abstract class AbstractHandOffAction {
 		return formatter.format(input);
 	}
 	
-	public void execute() {
+	public Object execute() {
 		long startTime = System.currentTimeMillis();
 		try {
-			doExecute();
+			return doExecute();
 		} catch (Exception exp) {
 			HandOffServiceProxy proxy = new HandOffServiceProxy();
 			exp.printStackTrace();
@@ -109,9 +109,10 @@ public abstract class AbstractHandOffAction {
 		} 
 		long endTime = System.currentTimeMillis();
 		System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
+		return null;
 	}
 	
-	public abstract void doExecute() throws Exception;
+	public abstract Object doExecute() throws Exception;
 	
 	public abstract EnumHandOffBatchStatus getFailureStatus();
 }

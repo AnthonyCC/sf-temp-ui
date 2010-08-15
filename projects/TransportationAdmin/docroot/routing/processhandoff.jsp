@@ -272,7 +272,15 @@
       					//jsonrpcClient.AsyncHandOffProvider.doHandOffStop(currentBatchId);
       					alert("Feature not available");
       				} else if(actionType == 'COMMIT') {
-      					jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId);
+      					var result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false);
+      					if(result != null) {
+      						if(confirm(result)) {
+      							result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, true);
+      							if(result != null) {
+      								alert('Unable to force commit. Contact AppSupport!');
+      							}
+      						}
+      					}
       				} else {
       					alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
       				}    				

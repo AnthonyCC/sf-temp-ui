@@ -11,6 +11,7 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 	
 	private String routeId;
 	
+	private boolean isException;
 	
 	public HandOffBatchStop(IRoutingStopModel refModel) {
 		super();
@@ -216,5 +217,12 @@ public class HandOffBatchStop extends RoutingStopModel implements IHandOffBatchS
 		}
 		return null;
 	}
-	
+
+	public boolean isException() {
+		return isException;
+	}
+
+	public void setException(boolean isException) {
+		this.isException = isException;
+	}
 }

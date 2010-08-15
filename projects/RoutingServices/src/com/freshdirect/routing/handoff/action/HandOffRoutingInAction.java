@@ -2,8 +2,8 @@ package com.freshdirect.routing.handoff.action;
 
 import static com.freshdirect.routing.manager.IProcessMessage.ERROR_MESSAGE_NOORDER;
 import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTINGINCOMPLETED;
-import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTINGINPROGRESS;
 import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTINGINDATACOLLECTIONPROGRESS;
+import static com.freshdirect.routing.manager.IProcessMessage.INFO_MESSAGE_ROUTINGINPROGRESS;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,11 +34,12 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void doExecute() throws Exception {
+	public Object doExecute() throws Exception {
 		
 		RoutingInTask task = new RoutingInTask();
 		Thread routingInThread = new Thread(task, "RoutingInTask");
 		routingInThread.start();
+		return null;
 	}
 	
 	private class RoutingInTask  implements Runnable {

@@ -14,7 +14,7 @@ public class HandOffStopAction extends AbstractHandOffAction {
 		super(batch, userId);
 	}
 
-	public void doExecute() throws Exception {
+	public Object doExecute() throws Exception {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 				
@@ -22,6 +22,7 @@ public class HandOffStopAction extends AbstractHandOffAction {
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 												, EnumHandOffBatchActionType.STOP, this.getUserId());
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_BATCHSTOPCOMPLETED);
+		return null;
 		
 	}
 

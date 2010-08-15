@@ -77,8 +77,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		getService().updateHandOffBatchDetails(routes, stops);
 	}
 	
-	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId) throws RoutingServiceException {
-		return getService().getHandOffBatchStops(batchId);
+	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException {
+		return getService().getHandOffBatchStops(batchId, filterException);
 	}
 	
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException {
@@ -93,11 +93,15 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return getService().getOrderStatsByCutoff(deliveryDate, cutOff);
 	}
 	
-	public IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId) throws RoutingServiceException {
-		return getService().getHandOffBatchStopsByRoute(deliveryDate, routeId);
+	public IHandOffBatchRoute getHandOffBatchStopsByRoute(Date deliveryDate, String routeId, boolean filterException) throws RoutingServiceException {
+		return getService().getHandOffBatchStopsByRoute(deliveryDate, routeId, filterException);
 	}
 	
 	public void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws RoutingServiceException {
 		getService().updateHandOffBatchCommitEligibility(handOffBatchId, isEligibleForCommit);
+	}
+	
+	public void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException {
+		getService().updateHandOffStopException(handOffBatchId, exceptionOrderIds);
 	}
 }

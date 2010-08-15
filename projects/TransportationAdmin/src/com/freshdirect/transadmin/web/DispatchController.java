@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -29,11 +28,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
-import com.freshdirect.framework.util.DateComparator;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
 import com.freshdirect.routing.model.IGeoPoint;
@@ -55,7 +52,6 @@ import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.RouteMappingId;
-import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnRouteNumber;
 import com.freshdirect.transadmin.model.TrnRouteNumberId;
@@ -68,9 +64,9 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
-import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -981,7 +977,7 @@ public class DispatchController extends AbstractMultiActionController {
 				
 				while(_itr.hasNext()) {
 					routingRouteId = (String)_itr.next();
-					_tmpRoute = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+					_tmpRoute = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId, true);
 					if(_tmpRoute != null) {
 						directionRoutes.put(routingRouteId, _tmpRoute);
 					} else {
@@ -1058,7 +1054,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 				routingRouteId = (String)_itr.next();
 
-				route = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId);
+				route = handOffProxy.getHandOffBatchStopsByRoute(TransStringUtil.getDate(routeDate), routingRouteId, true);
 				if(route == null) {
 					Collection routes = domainManagerService.getRouteMapping(TransStringUtil.getServerDate(routeDate), routingRouteId);
 

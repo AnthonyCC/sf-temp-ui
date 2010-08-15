@@ -16,4 +16,7 @@ public interface IHandOffBatchStop extends IRoutingStopModel, BapiSendHandOff.Ha
 	
 	String getRoutingRouteId();
 	void setRoutingRouteId(String routingRouteId);
+	
+	boolean isException();
+	void setException(boolean isException);
 }

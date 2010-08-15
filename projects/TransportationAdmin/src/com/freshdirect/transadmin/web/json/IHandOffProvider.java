@@ -1,7 +1,9 @@
 package com.freshdirect.transadmin.web.json;
 
 import java.util.List;
+import java.util.Map;
 
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.transadmin.web.model.HandOffBatchInfo;
 
 
@@ -19,7 +21,7 @@ public interface IHandOffProvider {
 	
 	boolean doHandOffStop(String handOffBatchId);
 	
-	boolean doHandOffCommit(String handOffBatchId);
+	String doHandOffCommit(String handOffBatchId, boolean force);
 	
 	String getServiceTimeScenario(String deliveryDate);
 }

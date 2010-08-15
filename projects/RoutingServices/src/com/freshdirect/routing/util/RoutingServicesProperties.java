@@ -104,6 +104,14 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_DEFAULT_PLANTCODE		= "routingservices.default.plantcode";
 	
+	private final static String PROP_HANDOFF_MAILFROM		= "routingservices.handoff.mailfrom";
+	
+	private final static String PROP_HANDOFF_MAILTO		= "routingservices.handoff.mailto";
+	
+	private final static String PROP_HANDOFF_MAILCC		= "routingservices.handoff.mailcc";
+	
+	private final static String PROP_HANDOFF_MAILSUBJECT		= "routingservices.handoff.mailsubject";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -158,6 +166,11 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_ROADNETSESSIONSIZE_THRESHOLD, "3000");
 		defaults.put(PROP_HANDOFFROUTEIN_MULTITHREADENABLED, "true");
 		defaults.put(PROP_DEFAULT_PLANTCODE, "001");
+		
+		defaults.put(PROP_HANDOFF_MAILFROM, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_HANDOFF_MAILTO, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_HANDOFF_MAILCC, "applicationdevelopment@freshdirect.com");
+		defaults.put(PROP_HANDOFF_MAILSUBJECT, "HandOff Process Notification");
 		refresh();		
 	}
 
@@ -378,6 +391,22 @@ public class RoutingServicesProperties {
 	
 	public static String getDefaultPlantCode() {
 		return get(PROP_DEFAULT_PLANTCODE);
+	}
+	
+	public static String getHandOffMailFrom() {
+		return get(PROP_HANDOFF_MAILFROM);
+	}
+	
+	public static String getHandOffMailTo() {
+		return get(PROP_HANDOFF_MAILTO);
+	}
+	
+	public static String getHandOffMailCC() {
+		return get(PROP_HANDOFF_MAILCC);
+	}
+	
+	public static String getHandOffMailSubject() {
+		return get(PROP_HANDOFF_MAILSUBJECT);
 	}
 	
 }
