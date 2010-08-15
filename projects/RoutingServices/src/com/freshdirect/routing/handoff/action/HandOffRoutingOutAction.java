@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
@@ -52,7 +53,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
 		
 		DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
-		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession, Map<String, Set<IRouteModel>>>();
+		Map<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sessionMapping = new HashMap<IHandOffBatchSession
+																						, Map<String, Set<IRouteModel>>>();
 		
 		List<IHandOffBatchStop> s_stops = new ArrayList<IHandOffBatchStop>();
 		List<IHandOffBatchRoute> s_routes = new ArrayList<IHandOffBatchRoute>();
@@ -146,10 +148,41 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		
 		//processResult(this.getBatch().getBatchId(), sessionMapping);
+		checkStopExceptions();
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTCOMPLETED);
 		proxy.updateHandOffBatchDetails(s_routes, s_stops);
 		return null;		
+	}
+	
+	// Same Exception check but with a force option will performed during Commit Operation
+	private void checkStopExceptions() throws RoutingServiceException {
+		
+		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
+													, this.getBatch().getCutOffDateTime());
+		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
+		if(handOffStops != null) {
+			for(IHandOffBatchStop stop : handOffStops) {				
+				if(stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0) {
+					exceptions.put(stop.getOrderNumber(), stop.getStatus());
+				}
+			}
+		}
+				
+		List<String> exceptionOrderIds = new ArrayList<String>();
+			
+		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
+		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
+		while( itrStop.hasNext()) {
+			IHandOffBatchStop stop = itrStop.next();
+			if(exceptions.containsKey(stop.getOrderNumber())) {
+				exceptionOrderIds.add(stop.getOrderNumber());
+			}
+		}
+		if(exceptionOrderIds.size() > 0) {
+			proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
+		}
 	}
 	
 	private void processResult(String batchId, Map<IHandOffBatchSession

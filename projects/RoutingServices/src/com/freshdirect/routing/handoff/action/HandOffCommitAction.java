@@ -41,16 +41,12 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		processResponse = null;
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		
-		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
 																, this.getBatch().getCutOffDateTime());
 		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
-				if(stop.getStatus() != null && (stop.getStatus().equals(EnumSaleStatus.NOT_SUBMITTED)
-						|| stop.getStatus().equals(EnumSaleStatus.NEW)
-						//|| stop.getStatus().equals(EnumSaleStatus.MODIFIED)
-						|| stop.getStatus().equals(EnumSaleStatus.MODIFIED_CANCELED))) {
+				if(stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0) {
 					exceptions.put(stop.getOrderNumber(), stop.getStatus());
 				}
 			}

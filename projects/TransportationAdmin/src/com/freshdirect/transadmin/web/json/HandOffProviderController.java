@@ -173,7 +173,7 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 					
 					exceptionMessage.append("\n").append(exp.getKey()+"="+exp.getValue().getName());
 				}
-				exceptionMessage.append("\n"+"Do you want to force the commit?");
+				exceptionMessage.append("\n\n"+"Do you want to force the commit?");
 				return exceptionMessage.toString();
 			}
 			

@@ -57,4 +57,6 @@ public interface IHandOffDAO {
 	void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws SQLException;
 	
 	void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws SQLException;
+	
+	void clearHandOffStopException(String handOffBatchId) throws SQLException;
 }

@@ -220,6 +220,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String UPDATE_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = 'X' " +
 																		" where BATCH_ID = ? AND WEBORDER_ID in (";
 	
+	private static final String CLEAR_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = NULL " +
+							" where BATCH_ID = ? and IS_EXCEPTION = 'X' ";
+	
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
 		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
@@ -1042,5 +1045,20 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			if(connection!=null) connection.close();
 		}
 	}
+	
+	public void clearHandOffStopException(String handOffBatchId) throws SQLException {
+		
+		Connection connection = null;		
+		try {
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_STOPEXCEPTION
+					, new Object[] {handOffBatchId});
+
+			connection=this.jdbcTemplate.getDataSource().getConnection();
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
+	
 	
 }
