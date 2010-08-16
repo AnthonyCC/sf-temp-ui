@@ -20,7 +20,7 @@ public abstract class CustomExpiringReference<X> extends ExpiringReference {
 	protected static final String STORE_ACTINACTEMPLOYEEDATA = "TRANSAPP_STORE_ACTINACT_EMPLOYEEDATA.ser";
 	
 	
-	protected final long storeRefreshPeriod = 60 * 60 * 1000;
+	//protected final long storeRefreshPeriod = 60 * 60 * 1000;
 
 	protected long storeLastRefresh = 0;
 	
@@ -30,8 +30,9 @@ public abstract class CustomExpiringReference<X> extends ExpiringReference {
 	}
 	
 	protected void synchronizeStore(Object data) {
-		if (System.currentTimeMillis() - storeLastRefresh > this.storeRefreshPeriod) {
+		if (System.currentTimeMillis() - storeLastRefresh > this.refreshPeriod) {
 			writeToStore(data);
+			storeLastRefresh = System.currentTimeMillis();
 		}
 	}
 	
