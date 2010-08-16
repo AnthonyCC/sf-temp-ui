@@ -104,10 +104,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		+ "and to_char(di.cutofftime, 'HH:MI AM') = to_char(?, 'HH:MI AM')";
 	
 	private static String GET_ORDERSTATSBY_DATE_CUTOFF = "SELECT /*+ USE_NL(s, sa) */ s.status, count(*) as order_count "
-		+ "from cust.customer@DBSTOSBY.NYC.FRESHDIRECT.COM c, cust.fdcustomer@DBSTOSBY.NYC.FRESHDIRECT.COM fdc " 
-		+ ", cust.customerinfo@DBSTOSBY.NYC.FRESHDIRECT.COM ci " 
-		+ ", cust.sale@DBSTOSBY.NYC.FRESHDIRECT.COM s, cust.salesaction@DBSTOSBY.NYC.FRESHDIRECT.COM sa " 
-		+ ", cust.deliveryinfo@DBSTOSBY.NYC.FRESHDIRECT.COM di, dlv.reservation@DBSTOSBY.NYC.FRESHDIRECT.COM rs "
+		+ "from cust.customer c, cust.fdcustomer fdc " 
+		+ ", cust.customerinfo ci " 
+		+ ", cust.sale s, cust.salesaction sa " 
+		+ ", cust.deliveryinfo di, dlv.reservation rs "
 		+ "where c.id = ci.customer_id and c.id = fdc.erp_customer_id and c.id = s.customer_id " 
 		+ "and s.id = sa.sale_id  and sa.CUSTOMER_ID = s.CUSTOMER_ID  and sa.requested_date = ? and s.cromod_date=sa.action_date and sa.action_type IN ('CRO', 'MOD') "
 		+ "and s.type ='REG' "

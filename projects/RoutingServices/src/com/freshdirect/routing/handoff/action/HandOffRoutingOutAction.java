@@ -159,33 +159,57 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	private void checkStopExceptions() throws RoutingServiceException {
 		
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
-													, this.getBatch().getCutOffDateTime());
+																, this.getBatch().getCutOffDateTime());
 		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
 		if(handOffStops != null) {
-			for(IHandOffBatchStop stop : handOffStops) {				
+			for(IHandOffBatchStop stop : handOffStops) {
 				if(stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0) {
 					exceptions.put(stop.getOrderNumber(), stop.getStatus());
 				}
 			}
 		}
-				
 		List<String> exceptionOrderIds = new ArrayList<String>();
-			
+		if(exceptions.size() > 0) {
+			for(Map.Entry<String, EnumSaleStatus> exp : exceptions.entrySet()) {
+				exceptionOrderIds.add(exp.getKey());
+			}
+		}
+		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
+		
+		int noOfRoutes = routes != null ? routes.size() : 0;
+		int noOfStops = stops != null ? stops.size() : 0;
+		if(noOfRoutes == 0 || noOfStops == 0) {
+			throw new RoutingServiceException("Error in route mappinge check cutoff report"
+													+ " ,"+noOfRoutes + "Routes /"+noOfStops+" Stops" 
+													, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+		Map<String, IHandOffBatchRoute> routeMapping = new HashMap<String, IHandOffBatchRoute>();
+		Iterator<IHandOffBatchRoute> itr = routes.iterator();
+		while(itr.hasNext()) {
+			IHandOffBatchRoute route = itr.next();
+			routeMapping.put(route.getRouteId(), route);
+		}
+		
 		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 		while( itrStop.hasNext()) {
 			IHandOffBatchStop stop = itrStop.next();
-			if(exceptions.containsKey(stop.getOrderNumber())) {
-				exceptionOrderIds.add(stop.getOrderNumber());
+			if(stop.getRouteId() == null || stop.getRouteId().trim().length() == 0
+					|| !routeMapping.containsKey(stop.getRouteId())) {
+				throw new RoutingServiceException("Error in route generation check cutoff report Stop No:"+stop.getOrderNumber()
+														+ " ,"+noOfRoutes + "Routes /"+noOfStops+" Stops"
+															, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);				
 			}
 		}
+		
 		if(exceptionOrderIds.size() > 0) {
 			proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
 		}
 	}
 	
-	private void processResult(String batchId, Map<IHandOffBatchSession
+	/*private void processResult(String batchId, Map<IHandOffBatchSession
 									, Map<String, Set<IRouteModel>>> sessionMapping) throws RoutingServiceException {
 				
 		for(Map.Entry<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sesEntry : sessionMapping.entrySet()) {
@@ -200,7 +224,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SESSION END >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");			
 		}
 		
-	}
+	}*/
 	
 	protected class RouteComparator implements Comparator<IRouteModel> {		
 		
