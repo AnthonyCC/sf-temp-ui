@@ -112,7 +112,7 @@ public class FDPromotionNewDAO {
 		return buf.toString();
 	}
 	
-	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date desc";
+	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date asc";
 	
 	public static List<PromotionI> loadModifiedOnlyPromotions(Connection conn, Date lastModified) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(getModifiedOnlyPromotions);

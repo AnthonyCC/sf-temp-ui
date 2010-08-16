@@ -120,7 +120,7 @@ public class FDPromotionManagerNewDAO {
 		return promoList;
 	}
 
-	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date desc";
+	private final static String getModifiedOnlyPromotions = "SELECT * FROM CUST.PROMOTION_NEW where modify_date > ? order by modify_date asc";
 	
 	public static List<FDPromotionNewModel> getModifiedOnlyPromotions(Connection conn, java.util.Date lastModified) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(getModifiedOnlyPromotions);
@@ -424,8 +424,8 @@ public class FDPromotionManagerNewDAO {
 								"AUDIENCE_DESC, TERMS, REDEEM_CNT, HASSKUQUANTITY, " +
 								"PERISHABLEONLY, NEEDDRYGOODS, NEEDCUSTOMERLIST, " +
 								"RULE_BASED, FAVORITES_ONLY, COMBINE_OFFER, " +
-								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES)"
-						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?)");
+								"CREATED_BY, CREATE_DATE, MODIFIED_BY, MODIFY_DATE, DONOT_APPLY_FRAUD, PUBLISHES,OFFER_TYPE)"
+						+ " VALUES(?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?,?,?,?,?,?,?,?, ?,?,?)");
 
 		int i = 1;
 		ps.setString(i++, id); // 1
@@ -453,7 +453,11 @@ public class FDPromotionManagerNewDAO {
 		}
 		
 		ps.setInt(i++, promotion.getPublishes()); // 32
-		
+		if (!"".equals(promotion.getOfferType())) {
+			ps.setString(i++, promotion.getOfferType()); // 8
+		} else {
+			ps.setNull(i++, Types.VARCHAR);
+		}
 		// Execute update
 		if (ps.executeUpdate() != 1) {
 			ps.close();
