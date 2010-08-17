@@ -126,7 +126,8 @@ public class ReconciliationSessionBean extends SessionBeanSupport{
 		}else if(refund){
 			info.setId(sale.getCashbackId(affiliate, amount));
 		}else{
-			info.setId(settlement.getPK() != null ? settlement.getPK().getId() : "");
+			//info.setId(settlement.getPK() != null ? settlement.getPK().getId() : "");
+			info.setId(settlement!=null && settlement.getPK() != null ? settlement.getPK().getId() : "");
 		}
 		
 		//info.setTransactionCount(refund || settlementFail || cbk || cbr || chargeSettlement ? 1 : sale.getNumberOfCaptures());
