@@ -66,7 +66,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 		String zoneCode =context.getDeliveryZone();
 		if(null != zoneCode && !"".equals(zoneCode.trim())){
 			if(null == dlvDates || dlvDates.size()==0 || checkDlvDates(context.getDeliveryReservation())){
-				if(null != dlvZones && dlvZones.size() != 0 && (dlvZones.contains(zoneCode) || dlvZones.contains("ALL"))){
+				if(null != dlvZones && dlvZones.size() != 0 && ((dlvZones.contains(zoneCode) || dlvZones.contains("ALL")))){
 					FDReservation dlvReservation = context.getDeliveryReservation();
 					if(null == dlvDays || dlvDays.isEmpty() || null ==dlvReservation){
 						context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.NO_ELIGIBLE_TIMESLOT_SELECTED.getErrorCode());
@@ -92,6 +92,9 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 					}
 					return e ? ALLOW : DENY;
 				}else {
+					if(null != dlvZones && dlvZones.size() != 0){
+						return DENY;
+					}
 					return ALLOW;
 				}
 			}
