@@ -148,8 +148,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		} catch (FDResourceException re) {
 			invalidateFCHome();
 			invalidateMailerHome();
-			re.printStackTrace();
-			LOGGER.error( "Could not retrieve standing orders list! - FDResourceException" );
+			LOGGER.error( "Could not retrieve standing orders list! - FDResourceException", re );
 			sendTechnicalMail( "Could not retrieve standing orders list! - FDResourceException" );
 			return null;
 		}
@@ -172,8 +171,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			} catch (FDResourceException re) {
 				invalidateFCHome();
 				invalidateMailerHome();
-				re.printStackTrace();
-				LOGGER.error( "Processing standing order failed with FDResourceException!" );
+				LOGGER.error( "Processing standing order failed with FDResourceException!", re );
 				result = new Result( ErrorCode.TECHNICAL, ErrorCode.TECHNICAL.getErrorHeader(), "Processing standing order failed with FDResourceException!", null );
 			}
 			
@@ -198,8 +196,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				} catch (FDResourceException re) {
 					invalidateFCHome();
 					invalidateMailerHome();
-					re.printStackTrace();
-					LOGGER.error( "Saving standing order failed! (FDResourceException)" );
+					LOGGER.error( "Saving standing order failed! (FDResourceException)", re );
 				}
 				
 				logActivity( so, result );
@@ -268,11 +265,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			MailerGatewaySB mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
 		} catch ( FDResourceException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending success mail failed", e);
 		} catch ( RemoteException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending success mail failed", e);
 		} catch ( CreateException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending success mail failed", e);
 		}
 	}
 	
@@ -283,11 +280,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			MailerGatewaySB mailer = mailerHome.create();
 			mailer.enqueueEmail( mail );
 		} catch ( FDResourceException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending notification mail failed", e);
 		} catch ( RemoteException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending notification mail failed", e);
 		} catch ( CreateException e ) {
-			e.printStackTrace();
+			LOGGER.error("sending notification mail failed", e);
 		}
 	}
 	
@@ -345,7 +342,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			customerInfo = so.getUserInfo();
 			customerUser = so.getUser();
 		} catch ( FDAuthenticationException e ) {
-			e.printStackTrace();
 			LOGGER.warn( "Failed to retreive customer information.", e );
 		}
 		
@@ -558,8 +554,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		try {
 			zoneInfo = FDDeliveryManager.getInstance().getZoneInfo(deliveryAddressModel, selectedTimeslot.getBegDateTime() );
 		} catch (FDInvalidAddressException e) {
-			e.printStackTrace();
-			LOGGER.info( "Invalid zone info. - FDInvalidAddressException" );
+			LOGGER.info( "Invalid zone info. - FDInvalidAddressException", e );
 			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 		if ( zoneInfo == null ) {
@@ -663,31 +658,25 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return new Result(Status.SUCCESS, hasInvalidItems, orderId);
 			
 		} catch ( DeliveryPassException e ) {
-			e.printStackTrace();
-			LOGGER.info( "DeliveryPassException while placing order." );
+			LOGGER.info( "DeliveryPassException while placing order.", e );
 			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpFraudException e ) {
-			e.printStackTrace();
-			LOGGER.info( "ErpFraudException while placing order." );
+			LOGGER.info( "ErpFraudException while placing order.", e );
 			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpAuthorizationException e ) {
-			e.printStackTrace();
-			LOGGER.info( "ErpAuthorizationException while placing order." );
+			LOGGER.info( "ErpAuthorizationException while placing order.", e );
 			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( FDPaymentInadequateException e ) {
-			LOGGER.info( "FDPaymentInadequateException while placing order." );
+			LOGGER.info( "FDPaymentInadequateException while placing order.", e );
 			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ErpTransactionException e ) {
-			e.printStackTrace();
-			LOGGER.info( "ErpTransactionException while placing order." );
+			LOGGER.info( "ErpTransactionException while placing order.", e );
 			return new Result( ErrorCode.PAYMENT, customerInfo );
 		} catch ( ReservationException e ) {
-			e.printStackTrace();
-			LOGGER.info( "ReservationException while placing order." );
+			LOGGER.info( "ReservationException while placing order.", e );
 			return new Result( ErrorCode.TIMESLOT, customerInfo );
 		} catch ( ErpAddressVerificationException e ) {
-			e.printStackTrace();
-			LOGGER.info( "ErpAddressVerificationException while placing order." );
+			LOGGER.info( "ErpAddressVerificationException while placing order.", e );
 			return new Result( ErrorCode.ADDRESS, customerInfo );
 		}
 	}
@@ -703,7 +692,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				}
 			}			
 		} catch (FDAuthenticationException e) {
-			e.printStackTrace();
+			LOGGER.error("authentication error while sending notification mail", e);
 		}		
 	}
 	
