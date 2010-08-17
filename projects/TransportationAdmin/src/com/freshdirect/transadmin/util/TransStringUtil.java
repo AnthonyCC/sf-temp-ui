@@ -21,7 +21,7 @@ public class TransStringUtil {
 	public static DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	
 	public static DateFormat serverDateFormat = new SimpleDateFormat("dd-MMM-yyyy");
-			
+	
 	public static DateFormat dayFormat = new SimpleDateFormat("EEEE");
 	
 	public static DateFormat serverDayFormat = new SimpleDateFormat("EEE");
@@ -163,7 +163,7 @@ public class TransStringUtil {
         boolean isGreater=false;        
         Calendar cal=Calendar.getInstance();
 		cal.setTime(clientDate);
-		if(cal.get(Calendar.HOUR)>=21){
+		if(cal.get(Calendar.HOUR_OF_DAY)>=21){
 			isGreater=true;
 		}
         return isGreater;
@@ -595,7 +595,8 @@ public class TransStringUtil {
 		clientCalendar.setTime(_date);
 		clientCalendar.add(Calendar.DATE, _days) ;
 		return clientCalendar.getTime();
-	}	
+	}
+
 	public static Date getWeekOf(Date _date) {
 		clientCalendar.setTime(_date);
 		int adjust = Calendar.MONDAY - clientCalendar.get( Calendar.DAY_OF_WEEK ) ;
