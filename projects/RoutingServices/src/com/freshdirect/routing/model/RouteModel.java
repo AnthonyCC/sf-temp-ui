@@ -1,7 +1,8 @@
 package com.freshdirect.routing.model;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 
 public class RouteModel extends BaseModel implements IRouteModel {
@@ -16,17 +17,17 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private IDrivingDirection drivingDirection;
 	
-	private String routingRouteId;
+	private List<String> routingRouteId;
 	
 	private double distance;
 	private double travelTime;
 	private double serviceTime;
 		
-	public String getRoutingRouteId() {
+	public List<String> getRoutingRouteId() {
 		return routingRouteId;
 	}
 
-	public void setRoutingRouteId(String routingRouteId) {
+	public void setRoutingRouteId(List<String> routingRouteId) {
 		this.routingRouteId = routingRouteId;
 	}
 
@@ -99,10 +100,9 @@ public class RouteModel extends BaseModel implements IRouteModel {
 
 	public void appendRoutingRoute(String routingRouteId) {
 		if(this.getRoutingRouteId() == null) {
-			this.setRoutingRouteId(routingRouteId);
-		} else {
-			this.setRoutingRouteId(this.getRoutingRouteId()+","+routingRouteId);
-		}
+			this.setRoutingRouteId(new ArrayList<String>());
+		} 
+		this.getRoutingRouteId().add(routingRouteId);
 	}
 	
 	public int hashCode() {

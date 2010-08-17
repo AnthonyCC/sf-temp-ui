@@ -25,6 +25,7 @@ import com.freshdirect.sap.bapi.BapiInfo;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffStopIn;
 import com.freshdirect.sap.command.SapSendHandOff;
+import com.freshdirect.sap.ejb.SapException;
 
 public class HandOffCommitAction extends AbstractHandOffAction {
 	
@@ -107,7 +108,13 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 																	, this.getBatch().getDeliveryDate()
 																	, this.getBatch().getBatchId(), true);
 			
-			sapHandOffEngine.execute();
+			try {
+				sapHandOffEngine.execute();
+			} catch (SapException e) {
+				success = false;
+				e.printStackTrace();//Handled in the below section
+				sapResponse.append(e.getMessage()).append("\n");
+			}
 			
 			BapiInfo[] bapiInfos = sapHandOffEngine.getBapiInfos();
 			
@@ -126,8 +133,6 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 						}
 					}
 				}
-			} else {
-				sapResponse.append("SAP response is empty");
 			}
 		} else {
 			success = false;

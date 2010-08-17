@@ -1,3 +1,4 @@
+<%@ include file='/common/i_calendar.jspf'%> 
 <script>
             
       var reRoutePanel;
@@ -14,7 +15,8 @@
                           modal: true,
                           visible: true,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
-        
+
+          initCustomCalendar("trigger_reRouteDate","reRouteDate","calContainer");	
     	  reRoutePanel.render(document.body);
     	  reRoutePanel.show();        
 	}       
@@ -57,25 +59,21 @@
       	<div id="errContainer-reroute" style="color:#00FF00;"></div>
       	<div style="background-color:#D7C8FF">
 	      	<table class="forms1">           		
-				<tr><td>Delivery Date </td>
-				<td> <span><input maxlength="10" size="10" name="reRouteDate" id="reRouteDate" value='<c:out value="${reRouteDate}"/>' /></span>
-                     <span><a href="#" id="trigger_reRouteDate" style="font-size: 9px;">
-                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
-                    </a></span>
-                     <script language="javascript">                 
-                      Calendar.setup(
-                      {
-                        showsTime : false,
-                        electric : false,
-                        inputField : "reRouteDate",
-                        ifFormat : "%m/%d/%Y",
-                        singleClick: true,
-                        button : "trigger_reRouteDate" 
-                       }
-                      );
-                      
-                               
-                  </script></td></tr>
+				<tr>
+				<td>Delivery Date </td>
+				<td>
+					<div id="calContainer"></div>
+		            <span>
+		            	<input maxlength="10" size="10" name="reRouteDate" id="reRouteDate" value='<c:out value="${reRouteDate}"/>' />
+		            </span>
+                    <span>
+                    	<a id="trigger_reRouteDate" style="font-size: 9px;">
+                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                       	 </a>
+                     </span>
+                       		
+				</td>
+				</tr>
 				
 				<tr><td>Delivery Zone</td>
 				<td><select id="reRouteZone" name="reRouteZone">

@@ -93,5 +93,16 @@ public class RoutingUtil {
 		}
 	}
 	
+	public static String[] toStringArray(List<String> source) {
+		if(source != null) {
+			String[] result = new String[source.size()];
+			int intCount = 0;
+			for(String unit : source) {
+				result[intCount++] = unit;
+			}
+			return result;
+		}
+		return null;
+	}
 	
 }

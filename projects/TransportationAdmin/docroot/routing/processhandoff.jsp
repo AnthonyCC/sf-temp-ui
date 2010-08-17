@@ -124,7 +124,7 @@
 				 	<input type = "button" value="&nbsp;Clear&nbsp;" onclick="javascript:document.getElementById('deliveryDate').value='';"  />
 				 	&nbsp;&nbsp;&nbsp;<input type = "button" id="refreshgrid" value="&nbsp;Refresh&nbsp;" onclick="javascript:refreshTable();"  />	
 				 	&nbsp;&nbsp;&nbsp;<input type="checkbox" name="autoRefresh" onclick="doAutoRefresh(this)" />&nbsp;Auto Refresh	
-				 			
+				 	&nbsp;&nbsp;&nbsp;<div style="font-weight:bold;float:right;color:green;margin:5px" id="lastUpdateTime"></div>		
 			    </td>   
 			  </tr>
 								
@@ -148,7 +148,7 @@
       var sDataTable;
      					  
       function refreshTable() {
-      		sDataTable.getDataSource().sendRequest('', myCallback);
+      		sDataTable.getDataSource().sendRequest('', myCallback);      		
       }   
       
       function showTable() {
@@ -156,6 +156,7 @@
          var dataIncrementer = function() {         
          	var result = jsonrpcClient.AsyncHandOffProvider.getHandOffBatch
          												(document.getElementById("deliveryDate").value);
+            updateRefreshTimestamp();
             return result.list;
          };
           
@@ -212,8 +213,6 @@
             },
             scope: sDataTable
         };
-        
-  		 
       }
       
       var actionMapping = {
@@ -228,6 +227,11 @@
 	     CPF: {ROUTEIN:0,ROUTEOUT:0,COMMIT:0,CANCEL:0},	     
 	     CAN: {},	     
 	     CPD: {}	           		      	 
+      }
+      
+      function updateRefreshTimestamp() {
+      	var d = new Date();        
+  		document.getElementById("lastUpdateTime").innerHTML = d.getHours() + ':' + d.getMinutes()+ ':' + d.getSeconds();
       }
       
       function doReport(elDropdown, actionType, currentStatus, currentBatchId) {

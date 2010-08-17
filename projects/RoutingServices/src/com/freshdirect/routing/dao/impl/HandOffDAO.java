@@ -1,5 +1,6 @@
 package com.freshdirect.routing.dao.impl;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -15,6 +17,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -50,6 +55,7 @@ import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingUtil;
 
 public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
@@ -245,7 +251,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 						result.add(infoModel);
 						
 						infoModel.setRouteId(rs.getString("ROUTE_NO"));
-						infoModel.setRoutingRouteId(rs.getString("ROUTING_ROUTE_NO"));
+						Array array = rs.getArray("ROUTING_ROUTE_NO");
+						if(array != null) {							 							
+							infoModel.setRoutingRouteId(new ArrayList<String>(Arrays.asList((String[]) array.getArray())));
+						}
 						infoModel.setArea(rs.getString("AREA"));
 						infoModel.setSessionName(rs.getString("SESSION_NAME"));
 						infoModel.setStartTime(rs.getTimestamp("STARTTIME"));
@@ -388,7 +397,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							routeModel = new HandOffBatchRoute();
 							
 							routeModel.setRouteId(rs.getString("RROUTE_NO"));
-							routeModel.setRoutingRouteId(rs.getString("RROUTING_ROUTE_NO"));
+							Array array = rs.getArray("RROUTING_ROUTE_NO");
+							if(array != null) {															
+								routeModel.setRoutingRouteId(new ArrayList<String>(Arrays.asList((String[]) array.getArray())));
+							}
+							
+							//routeModel.setRoutingRouteId(rs.getString("RROUTING_ROUTE_NO"));
 							routeModel.setArea(rs.getString("RAREA"));
 							//routeModel.setSessionName(rs.getString("SESSION_NAME"));
 							routeModel.setStartTime(rs.getTimestamp("RSTARTTIME"));
@@ -517,7 +531,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
-			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.ARRAY));
 			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 			batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
@@ -527,10 +541,12 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 
 			batchUpdater.compile();			
 			connection = this.jdbcTemplate.getDataSource().getConnection();
-			String routingRouteId = null;
+			ArrayDescriptor desc = ArrayDescriptor.createDescriptor("TRANSP.HANDOFF_ROUTING_ROUTE_NO", connection);
+			
+			ARRAY routingRouteId = null;
 			for(IHandOffBatchRoute model : dataList) {
-				if(model.getRoutingRouteId() != null) {
-					routingRouteId = model.getRoutingRouteId().substring(0 , Math.min(model.getRoutingRouteId().length(), 1024));
+				if(model.getRoutingRouteId() != null) {					
+					routingRouteId = new ARRAY(desc, connection, RoutingUtil.toStringArray(model.getRoutingRouteId()));
 				}
 				//System.out.println("ROUTE --->"+model.getBatchId()+"-"+model.getSessionName()+"-"+model.getRouteId());
 				batchUpdater.update(new Object[]{ model.getBatchId()

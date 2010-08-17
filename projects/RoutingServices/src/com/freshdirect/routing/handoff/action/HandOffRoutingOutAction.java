@@ -112,9 +112,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									routeCnts.put(areaEntry.getKey(), 0);
 								}
 								routeCnts.put(areaEntry.getKey(), routeCnts.get(areaEntry.getKey()).intValue()+1);
-								if(route.getRoutingRouteId() == null) {
-									route.setRoutingRouteId(route.getRouteId());
-								}
+								route.appendRoutingRoute(route.getRouteId());//New VArray Change
 								route.setRouteId(areaLookup.get(areaEntry.getKey()).getPrefix()
 														+ areaEntry.getKey()+ formatRouteNumber(routeCnts.get(areaEntry.getKey())));
 								Iterator itr = route.getStops().iterator();
@@ -129,8 +127,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									s_stop.setBatchId(this.getBatch().getBatchId());
 									s_stop.setRouteId(route.getRouteId());
 									s_stop.setSessionName(sesEntry.getKey().getSessionName());
-									if(s_stop.getRoutingRouteId() == null) {
-										s_stop.setRoutingRouteId(route.getRoutingRouteId());
+									if(s_stop.getRoutingRouteId() == null
+											&& route.getRoutingRouteId() != null
+												&& route.getRoutingRouteId().size() > 0) {
+										s_stop.setRoutingRouteId(route.getRoutingRouteId().get(0));
 									}
 									s_stops.add(s_stop);
 								}

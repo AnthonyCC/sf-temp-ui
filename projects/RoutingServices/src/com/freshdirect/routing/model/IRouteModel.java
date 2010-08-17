@@ -1,6 +1,7 @@
 package com.freshdirect.routing.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.TreeSet;
 
 public interface IRouteModel {
@@ -20,8 +21,8 @@ public interface IRouteModel {
 	Date getCompletionTime();
 	void setCompletionTime(Date completionTime);
 	
-	String getRoutingRouteId();
-	void setRoutingRouteId(String routingRouteId);
+	List<String> getRoutingRouteId();
+	void setRoutingRouteId(List<String> routingRouteId);
 	
 	double getDistance();
 	void setDistance(double distance);
