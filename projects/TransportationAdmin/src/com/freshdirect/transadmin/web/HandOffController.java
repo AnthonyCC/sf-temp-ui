@@ -403,8 +403,7 @@ public class HandOffController extends AbstractMultiActionController  {
 		if(batch != null) {
 			List routes = proxy.getHandOffBatchRoutes(batch.getBatchId());
 			List stops = proxy.getHandOffBatchStops(batch.getBatchId(), true);
-			
-			
+						
 			Iterator<IHandOffBatchRoute> itr = routes.iterator();
 			while(itr.hasNext()) {
 				IHandOffBatchRoute route = itr.next();

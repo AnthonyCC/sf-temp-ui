@@ -148,10 +148,11 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		}
 		
 		//processResult(this.getBatch().getBatchId(), sessionMapping);
+				
+		proxy.updateHandOffBatchDetails(s_routes, s_stops);
 		checkStopExceptions();
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTCOMPLETED);
-		proxy.updateHandOffBatchDetails(s_routes, s_stops);
 		return null;		
 	}
 	
@@ -182,7 +183,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		int noOfRoutes = routes != null ? routes.size() : 0;
 		int noOfStops = stops != null ? stops.size() : 0;
 		if(noOfRoutes == 0 || noOfStops == 0) {
-			throw new RoutingServiceException("Error in route mappinge check cutoff report"
+			throw new RoutingServiceException("Error in route mapping check cutoff report"
 													+ " ,"+noOfRoutes + "Routes /"+noOfStops+" Stops" 
 													, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
