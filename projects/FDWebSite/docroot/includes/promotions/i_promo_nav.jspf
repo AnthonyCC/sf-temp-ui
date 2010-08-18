@@ -392,7 +392,7 @@
 
 		}
 
-	String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thusday", "Friday", "Saturday" };
+	String[] strDays = new String[] { "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" };
 	String dlvDaysString = "";
 	String dlvDays = (zsm != null && zsm.getDlvDays() != null && !"".equals(zsm.getDlvDays())) ? zsm.getDlvDays() : null;
 		if (dlvDays != null && dlvDays.length()>0) {

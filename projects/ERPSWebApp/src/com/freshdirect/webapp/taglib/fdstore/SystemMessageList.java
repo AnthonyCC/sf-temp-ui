@@ -161,7 +161,7 @@ public interface SystemMessageList {
 	public final static String MSG_REDEMPTION_EXCEEDED	= "Sorry, Promotion Redemption Limit has been reached. Click Submit to Continue.";
 	public final static String MSG_CART_REDEMPTION_EXCEEDED	= "We''re sorry, the code you entered ({0}) has reached its maximum redemption limit.";
 	public final static String MSG_CART_USAGE_LIMIT_ONE_EXCEEDED	= "We''re sorry, you have already used the promotion ({0}) on an order.";
-	public final static String MSG_CART_USAGE_LIMIT_MORE_EXCEEDED	= "We''re sorry, you have already reached the maximum allowable redemption on the promotion ({0}).";
+	public final static String MSG_CART_USAGE_LIMIT_MORE_EXCEEDED	= "We''re sorry, you have already reached the maximum allowable redemption on this promotion ({0}).";
 	
 	public final static String MSG_REDEMPTION_NO_ELIGIBLE_TIMESLOT = "PLEASE NOTE: Discount will be applied when qualifying timeslot is selected.";
 	public final static String MSG_REDEMPTION_NOTE_DLV_ADDRESS	= "NOTICE: Your code will be accepted when you select a valid delivery address.";
