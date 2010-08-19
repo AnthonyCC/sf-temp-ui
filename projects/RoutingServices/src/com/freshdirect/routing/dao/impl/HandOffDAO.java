@@ -555,7 +555,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, routingRouteId
 											, model.getArea()
 											, model.getStartTime()
-											, model.getStartTime()
+											, model.getCompletionTime()
 											, model.getDistance()
 											, model.getTravelTime()
 											, model.getServiceTime()

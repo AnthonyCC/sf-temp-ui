@@ -32,7 +32,7 @@
 			    {key:"area", label:"Zone",sortable:false, width: 75, className:"forms1"}, 
 			    {key:"depotArrivalTimeInfo", label:"Depot Arrival Time",sortable:false, width: 150, className:"forms1"},
 			    {key:"truckDepartureTimeInfo", label:"Truck Departure Time",sortable:false, width: 150, className:"forms1"},
-			    {key:'delete',label:' ',formatter:function(elCell) {
+			    {key:'deleteBtn',label:' ',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
         										elCell.style.cursor = 'pointer';
     			}}			    
@@ -43,7 +43,7 @@
   		depotDataTable.subscribe('cellClickEvent',function(ev) {
     	var target = YAHOO.util.Event.getTarget(ev);
     	var column = depotDataTable.getColumn(target);
-    		if (column.key == 'delete') {
+    		if (column.key == 'deleteBtn') {
         		depotDataTable.deleteRow(target);
     		} 
 		});
@@ -58,7 +58,7 @@
      		var _departtime = document.getElementById('tdeparture').value;
      		
      		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 && _departtime.trim().length > 0) {
-     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime, truckDepartureTimeInfo:_departtime, delete:''});
+     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime, truckDepartureTimeInfo:_departtime, deleteBtn:''});
      		} else {
      			alert("Please enter the required values zone, arrivaltime, departure time!");
      		}

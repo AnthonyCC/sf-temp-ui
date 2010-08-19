@@ -152,7 +152,7 @@ public class HandOffFormController extends BaseFormController {
 		StringBuffer strBuf = new StringBuffer();
 		if(messages != null) {
 			for(String message : messages) {
-				strBuf.append(message).append("</br>");
+				strBuf.append(message).append("<br/> ");
 			}
 		}
 		return strBuf.toString();

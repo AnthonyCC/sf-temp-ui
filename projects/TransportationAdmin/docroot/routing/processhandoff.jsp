@@ -241,13 +241,17 @@
 					elDropdown.value = '';
 					return;
 				}
-				var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
+				try  {
+					var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
 				
-      			if(checkExceptionResult != null) {
-      				if(!confirm(checkExceptionResult)) {
-      					elDropdown.value = '';
-      					return;
+      				if(checkExceptionResult != null) {
+      					if(!confirm(checkExceptionResult)) {
+      						elDropdown.value = '';
+      						return;
+      					}
       				}
+      			} catch(rpcException) {
+      				alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
       			}
 				
       			if(actionType == 'CutOff Report') {
@@ -274,29 +278,33 @@
 						elDropdown.value = '';
 						return;
 					}
-      				if(actionType == 'ROUTEOUT') {
-      					showDepotTable(currentBatchId);
+					try {
+      					if(actionType == 'ROUTEOUT') {
+      						showDepotTable(currentBatchId);
       					
-      				} else if(actionType == 'ROUTEIN') {
-      					jsonrpcClient.AsyncHandOffProvider.doRoutingIn(currentBatchId);
-      				} else if(actionType == 'CANCEL') {
-      					jsonrpcClient.AsyncHandOffProvider.doHandOffCancel(currentBatchId);
-      				} else if(actionType == 'STOP') {
-      					//jsonrpcClient.AsyncHandOffProvider.doHandOffStop(currentBatchId);
-      					alert("Feature not available");
-      				} else if(actionType == 'COMMIT') {
-      					var result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, false);
-      					if(result != null) {
-      						if(confirm(result)) {
-      							result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, true, false);
-      							if(result != null) {
-      								alert('Unable to force commit. Contact AppSupport!');
+      					} else if(actionType == 'ROUTEIN') {
+      						jsonrpcClient.AsyncHandOffProvider.doRoutingIn(currentBatchId);
+      					} else if(actionType == 'CANCEL') {
+      						jsonrpcClient.AsyncHandOffProvider.doHandOffCancel(currentBatchId);
+      					} else if(actionType == 'STOP') {
+      						//jsonrpcClient.AsyncHandOffProvider.doHandOffStop(currentBatchId);
+      						alert("Feature not available");
+      					} else if(actionType == 'COMMIT') {
+      						var result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, false);
+      						if(result != null) {
+      							if(confirm(result)) {
+      								result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, true, false);
+      								if(result != null) {
+      									alert('Unable to force commit. Contact AppSupport!');
+      								}
       							}
       						}
-      					}
-      				} else {
-      					alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
-      				}    				
+      					} else {
+      						alert("Processing "+actionType+" on BATCH ID:"+currentBatchId);
+      					} 
+      				} catch(rpcException) {
+      					alert("There was a problem in communication to the server. Please try to refresh the browser window!\n"+e);
+      				}   				
       				sDataTable.destroy();
                 	showTable();
       			}
