@@ -33,9 +33,12 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 	
 	private boolean force;
 	
-	public HandOffCommitAction(IHandOffBatch batch, String userId, boolean force) {
+	private boolean isCommitCheck;
+	
+	public HandOffCommitAction(IHandOffBatch batch, String userId, boolean force, boolean isCommitCheck) {
 		super(batch, userId);
 		this.force = force;
+		this.isCommitCheck = isCommitCheck;
 	}
 
 	public Object doExecute() throws Exception {
@@ -53,7 +56,7 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 			}
 		}
 		List<String> exceptionOrderIds = new ArrayList<String>();
-		if(force && exceptions.size() > 0) {
+		if(exceptions.size() > 0) {
 			for(Map.Entry<String, EnumSaleStatus> exp : exceptions.entrySet()) {
 				exceptionOrderIds.add(exp.getKey());
 			}
@@ -74,11 +77,13 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 			routeMapping.put(route.getRouteId(), route);
 		}
 		
+		Map<String, EnumSaleStatus> foundExceptions = new HashMap<String, EnumSaleStatus>();
+		
 		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 		while( itrStop.hasNext()) {
 			IHandOffBatchStop stop = itrStop.next();
 			if(exceptions.containsKey(stop.getOrderNumber()) && !force) {
-				return exceptions;
+				foundExceptions.put(stop.getOrderNumber(), exceptions.get(stop.getOrderNumber()));
 			}
 			if(stop.getRouteId() == null || stop.getRouteId().trim().length() == 0
 					|| !routeMapping.containsKey(stop.getRouteId())) {
@@ -98,56 +103,63 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		if(exceptionOrderIds.size() > 0) {
 			proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
 		}
-		boolean success = true;
-		StringBuffer sapResponse = new StringBuffer();
-		if(this.getBatch().isEligibleForCommit()) {
-			
-    		SapSendHandOff sapHandOffEngine = new SapSendHandOff((List<HandOffRouteIn>)routes
-																	, (List<HandOffStopIn>)stops
-																	, RoutingServicesProperties.getDefaultPlantCode()
-																	, this.getBatch().getDeliveryDate()
-																	, this.getBatch().getBatchId(), true);
-			
-			try {
-				sapHandOffEngine.execute();
-			} catch (SapException e) {
-				success = false;
-				e.printStackTrace();//Handled in the below section
-				sapResponse.append(e.getMessage()).append("\n");
-			}
-			
-			BapiInfo[] bapiInfos = sapHandOffEngine.getBapiInfos();
-			
-			if(bapiInfos != null) {
-				for (int i = 0; i < bapiInfos.length; i++) {
-					
-					BapiInfo bi = bapiInfos[i];
-					sapResponse.append(bi.getMessage()).append("\n");
-					if (BapiInfo.LEVEL_ERROR == bi.getLevel()) {
-						success = false;
-					}
-					
-					if(BapiInfo.LEVEL_INFO == bi.getLevel()) {
-						if("ZWAVE/000".equals(bi.getCode()) && bi.getMessage().indexOf("PLEASE RETRY") >= 0){
+		
+		if(!force && foundExceptions.size() > 0) {
+			return foundExceptions;
+		}
+		
+		if(!isCommitCheck) {
+			boolean success = true;
+			StringBuffer sapResponse = new StringBuffer();
+			if(this.getBatch().isEligibleForCommit()) {
+				
+	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff((List<HandOffRouteIn>)routes
+																		, (List<HandOffStopIn>)stops
+																		, RoutingServicesProperties.getDefaultPlantCode()
+																		, this.getBatch().getDeliveryDate()
+																		, this.getBatch().getBatchId(), true);
+				
+				try {
+					sapHandOffEngine.execute();
+				} catch (SapException e) {
+					success = false;
+					e.printStackTrace();//Handled in the below section
+					sapResponse.append(e.getMessage()).append("\n");
+				}
+				
+				BapiInfo[] bapiInfos = sapHandOffEngine.getBapiInfos();
+				
+				if(bapiInfos != null) {
+					for (int i = 0; i < bapiInfos.length; i++) {
+						
+						BapiInfo bi = bapiInfos[i];
+						sapResponse.append(bi.getMessage()).append("\n");
+						if (BapiInfo.LEVEL_ERROR == bi.getLevel()) {
 							success = false;
+						}
+						
+						if(BapiInfo.LEVEL_INFO == bi.getLevel()) {
+							if("ZWAVE/000".equals(bi.getCode()) && bi.getMessage().indexOf("PLEASE RETRY") >= 0){
+								success = false;
+							}
 						}
 					}
 				}
+			} else {
+				success = false;
+				sapResponse.append(ERROR_MESSAGE_INELIGIBLECOMMIT);
 			}
-		} else {
-			success = false;
-			sapResponse.append(ERROR_MESSAGE_INELIGIBLECOMMIT);
+			processResponse = sapResponse.toString();
+			if(success) {
+				proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.COMPLETED);			
+				proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_BATCHCOMMITCOMPLETED);		
+			} else {
+				proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.COMMMITFAILED);
+				proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), sapResponse.toString());
+			}
+			proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
+												, EnumHandOffBatchActionType.COMMIT, this.getUserId());
 		}
-		processResponse = sapResponse.toString();
-		if(success) {
-			proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.COMPLETED);			
-			proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_BATCHCOMMITCOMPLETED);		
-		} else {
-			proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.COMMMITFAILED);
-			proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), sapResponse.toString());
-		}
-		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
-											, EnumHandOffBatchActionType.COMMIT, this.getUserId());
 		return null;
 	}
 

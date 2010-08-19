@@ -91,6 +91,25 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				custManager = home.create();
 				cron.processReRouteReservation(dlvManager, custManager, dlvManager.getReRouteReservations());
 				
+				List<IRoutingNotificationModel> notifications = dlvManager.retrieveNotifications();
+				List<IRoutingNotificationModel> cancelledNotifications = new ArrayList<IRoutingNotificationModel>();
+				List<IRoutingNotificationModel> unUsedNotifications = new ArrayList<IRoutingNotificationModel>();
+				
+				if(notifications != null) {
+					for (IRoutingNotificationModel notification : notifications) {
+						if(notification.getNotificationType() != null 
+								&& notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
+							cancelledNotifications.add(notification);
+						} else {
+							unUsedNotifications.add(notification);
+						}
+					}
+				}
+				System.out.println("Total no of notifications processed :"+cancelledNotifications.size()+ " , Unused:"+unUsedNotifications.size());
+				if(cancelledNotifications.size() > 0 || unUsedNotifications.size() > 0) {
+					dlvManager.processCancelNotifications(cancelledNotifications, unUsedNotifications);
+				}
+				
 				if(hasArg) {
 					
 					List<DlvReservationModel> _unassignedReservations = dlvManager.getUnassignedReservations(startDate.getTime());
@@ -111,42 +130,19 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 						startDate.add(Calendar.DATE, 1);
 					}
 				}
+				
+				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
+					
+					for (DlvReservationModel reservation : unassignedReservations) {
+						cron.processReservation(dlvManager,custManager,reservation);
+					}
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with exception : ").append(e.toString()).toString());
 				email(Calendar.getInstance().getTime(),e.toString());
 			}
-			if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 			
-				for (DlvReservationModel reservation : unassignedReservations) {
-					cron.processReservation(dlvManager,custManager,reservation);
-				}
-			}
-			
-			try {
-				List<IRoutingNotificationModel> notifications = dlvManager.retrieveNotifications();
-				List<IRoutingNotificationModel> cancelledNotifications = new ArrayList<IRoutingNotificationModel>();
-				List<IRoutingNotificationModel> unUsedNotifications = new ArrayList<IRoutingNotificationModel>();
-				
-				if(notifications != null) {
-					for (IRoutingNotificationModel notification : notifications) {
-						if(notification.getNotificationType() != null 
-								&& notification.getNotificationType().equals(EnumRoutingNotification.SchedulerOrdersCanceledNotification)) {
-							cancelledNotifications.add(notification);
-						} else {
-							unUsedNotifications.add(notification);
-						}
-					}
-				}
-				System.out.println("Total no of notifications processed :"+cancelledNotifications.size()+ " , Unused:"+unUsedNotifications.size());
-				if(cancelledNotifications.size() > 0 || unUsedNotifications.size() > 0) {
-					dlvManager.processCancelNotifications(cancelledNotifications, unUsedNotifications);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				LOGGER.info(new StringBuilder("UnassignedReservationCronRunner failed with notification exception : ").append(e.toString()).toString());
-				email(Calendar.getInstance().getTime(),e.toString());
-			}	
 			LOGGER.info("UnassignedReservationCronRunner finished");
 		}catch (NamingException e) {
 				e.printStackTrace();

@@ -21,7 +21,7 @@ public interface IHandOffProvider {
 	
 	boolean doHandOffStop(String handOffBatchId);
 	
-	String doHandOffCommit(String handOffBatchId, boolean force);
+	String doHandOffCommit(String handOffBatchId, boolean force, boolean isCommitCheck);
 	
 	String getServiceTimeScenario(String deliveryDate);
 }

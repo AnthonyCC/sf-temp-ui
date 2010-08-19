@@ -151,30 +151,37 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 		return true;
 	}
 	
-	public String doHandOffCommit(String handOffBatchId, boolean force) {
+	public String doHandOffCommit(String handOffBatchId, boolean force, boolean isCommitCheck) {
 		String userId = com.freshdirect.transadmin.security.SecurityManager.getUserName(getHttpServletRequest());
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		IHandOffBatch batch;
 		
 		try {
 			batch = proxy.getHandOffBatchById(handOffBatchId);
-			HandOffCommitAction process = new HandOffCommitAction(batch, userId, force);
+			HandOffCommitAction process = new HandOffCommitAction(batch, userId, force, isCommitCheck);
 			Map<String, EnumSaleStatus> exceptions = (Map<String, EnumSaleStatus>) process.execute();
 			
-			if(exceptions == null || exceptions.keySet().size() == 0) {
-				ErpMailSender emailer = new ErpMailSender();
-				emailer.sendMail(RoutingServicesProperties.getHandOffMailFrom(), RoutingServicesProperties.getHandOffMailTo()
-											, RoutingServicesProperties.getHandOffMailCC(), RoutingServicesProperties.getHandOffMailSubject()
-											, process.getProcessResponse());
-			} else {
+			boolean hasError = (exceptions != null && exceptions.keySet().size() > 0);
+			if(hasError) {
 				StringBuffer exceptionMessage = new StringBuffer();
 				exceptionMessage.append("Below are the list of order exceptions");
 				for(Map.Entry<String, EnumSaleStatus> exp : exceptions.entrySet()) {
 					
 					exceptionMessage.append("\n").append(exp.getKey()+"="+exp.getValue().getName());
 				}
-				exceptionMessage.append("\n\n"+"Do you want to force the commit?");
+				if(isCommitCheck) {
+					exceptionMessage.append("\n\n"+"Report will not contain these orders. Do you want to continue?");
+				} else {
+					exceptionMessage.append("\n\n"+"Do you want to force the commit?");
+				}
 				return exceptionMessage.toString();
+			}
+			
+			if(!isCommitCheck) {
+				ErpMailSender emailer = new ErpMailSender();
+				emailer.sendMail(RoutingServicesProperties.getHandOffMailFrom(), RoutingServicesProperties.getHandOffMailTo()
+											, RoutingServicesProperties.getHandOffMailCC(), RoutingServicesProperties.getHandOffMailSubject()
+											, process.getProcessResponse());
 			}
 			
 		} catch (RoutingServiceException e) {

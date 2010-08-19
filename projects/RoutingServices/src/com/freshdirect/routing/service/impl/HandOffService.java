@@ -2,6 +2,7 @@ package com.freshdirect.routing.service.impl;
 
 import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,13 @@ public class HandOffService extends BaseService implements IHandOffService {
 		
 		String handOffBatchId = null;
 		try {
-			StringBuffer strMessageBuf = new StringBuffer();
+			
 			boolean isStandByMode = false;
 			Map<EnumSaleStatus, Integer> orderStats = getHandOffDAOImpl().getOrderStatsByCutoff(deliveryDate, cutOffDateTime);
+			List<String> messages = new ArrayList<String>();
+						
+			List<String> exceptions = new ArrayList<String>();
+			
 			for(Map.Entry<EnumSaleStatus, Integer> statusEntry : orderStats.entrySet()) {
 				
 				if(statusEntry.getKey().equals(EnumSaleStatus.NOT_SUBMITTED)
@@ -51,11 +56,16 @@ public class HandOffService extends BaseService implements IHandOffService {
 						|| statusEntry.getKey().equals(EnumSaleStatus.MODIFIED)
 							|| statusEntry.getKey().equals(EnumSaleStatus.MODIFIED_CANCELED)) {
 					
-					strMessageBuf.append(IProcessMessage.ERROR_MESSAGE_PENDINGORDER).append("\n");
+					exceptions.add(statusEntry.getKey() +"="+ statusEntry.getValue());
 				}
 			}
+			if(exceptions.size() > 0) {
+				messages.add(IProcessMessage.ERROR_MESSAGE_PENDINGORDER);
+				messages.addAll(exceptions);
+			}
+			
 			if(RoutingServicesProperties.getRoutingCutOffStandByEnabled()) {
-				strMessageBuf.append(IProcessMessage.INFO_MESSAGE_STANDBYMODE).append("\n");
+				messages.add(IProcessMessage.INFO_MESSAGE_STANDBYMODE);
 				isStandByMode = true;
 			}
 			
@@ -63,9 +73,9 @@ public class HandOffService extends BaseService implements IHandOffService {
 			getHandOffDAOImpl().addNewHandOffBatchAction(handOffBatchId, RoutingDateUtil.getCurrentDateTime()
 															, EnumHandOffBatchActionType.CREATE
 															, userId);
-			strMessageBuf.append(IProcessMessage.INFO_MESSAGE_HANDOFFBATCHTRIGERRED);
+			messages.add(IProcessMessage.INFO_MESSAGE_HANDOFFBATCHTRIGERRED);
 			result.setHandOffBatchId(handOffBatchId);
-			result.setMessage(strMessageBuf.toString());
+			result.setMessages(messages);
 		}  catch (SQLException exp) {
 			throw new RoutingServiceException(exp, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		} catch (ParseException e) {

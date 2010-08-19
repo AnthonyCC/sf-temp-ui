@@ -104,6 +104,7 @@ public class HandOffProcessManager {
 		//Save Building
 		if(buildingLst != null && buildingLst.size() > 0) {
 			try {
+				
 				service.insertBuildings(buildingLst);
 			} catch (RoutingServiceException e) {
 				e.printStackTrace();
@@ -112,7 +113,8 @@ public class HandOffProcessManager {
 		}
 		//Save Locations
 		if(locLst != null && locLst.size() > 0) {
-			try {				
+			try {
+				
 				service.insertLocations(locLst);
 			} catch (RoutingServiceException e) {
 				e.printStackTrace();

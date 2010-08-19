@@ -241,6 +241,15 @@
 					elDropdown.value = '';
 					return;
 				}
+				var checkExceptionResult = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, true);
+				
+      			if(checkExceptionResult != null) {
+      				if(!confirm(checkExceptionResult)) {
+      					elDropdown.value = '';
+      					return;
+      				}
+      			}
+				
       			if(actionType == 'CutOff Report') {
       				location.href = 'cutoffreport.do?handOffBatchId='+currentBatchId;
       			} else if(actionType == 'SAP Upload Files') {
@@ -276,10 +285,10 @@
       					//jsonrpcClient.AsyncHandOffProvider.doHandOffStop(currentBatchId);
       					alert("Feature not available");
       				} else if(actionType == 'COMMIT') {
-      					var result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false);
+      					var result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, false, false);
       					if(result != null) {
       						if(confirm(result)) {
-      							result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, true);
+      							result = jsonrpcClient.AsyncHandOffProvider.doHandOffCommit(currentBatchId, true, false);
       							if(result != null) {
       								alert('Unable to force commit. Contact AppSupport!');
       							}

@@ -1,5 +1,7 @@
 package com.freshdirect.transadmin.datamanager.report;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -754,11 +756,13 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		}
 	}
 	
+	private MathContext mc = new MathContext(2);
+	
 	private double getFormattedDistance(String distance) {
 		
 		double result = 0;
 		try {
-			result = Double.parseDouble(distance)/10;
+			result = new BigDecimal(Double.parseDouble(distance)/10).round(mc).doubleValue();
 		} catch (Exception e) {
 			//Do Nothing
 		}

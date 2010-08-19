@@ -112,6 +112,7 @@ public class HandOffFormController extends BaseFormController {
 			TrnCutOff cutOff = getDomainManagerService().getCutOff(bean.getCutOff());
 			Set<IHandOffBatch> batches = proxy.getHandOffBatch(bean.getDeliveryDate());
 			boolean hasRunningbatch = false;
+			
 			for(IHandOffBatch batch : batches) {
 				if(batch != null && !(batch.getStatus().equals(EnumHandOffBatchStatus.CANCELLED)
 										|| batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED))) {
@@ -131,7 +132,7 @@ public class HandOffFormController extends BaseFormController {
 					
 					routeInManager.execute();
 				}
-				saveErrorMessage(request, triggerResult.getMessage());
+				saveErrorMessage(request, formatMessages(triggerResult.getMessages()));
 			}
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
@@ -144,6 +145,17 @@ public class HandOffFormController extends BaseFormController {
 		mav.getModel().putAll(referenceData(request));
 
 		return mav;
+	}
+	
+	private String formatMessages(List<String> messages) {
+		
+		StringBuffer strBuf = new StringBuffer();
+		if(messages != null) {
+			for(String message : messages) {
+				strBuf.append(message).append("</br>");
+			}
+		}
+		return strBuf.toString();
 	}
 
 }

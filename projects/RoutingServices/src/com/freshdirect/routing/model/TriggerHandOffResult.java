@@ -1,29 +1,19 @@
 package com.freshdirect.routing.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class TriggerHandOffResult implements Serializable {
 	
 	private String handOffBatchId;
-	private String message;
+	private List<String> messages;
 	
-	public TriggerHandOffResult() {
-		super();
+	public List<String> getMessages() {
+		return messages;
 	}
 
-	public TriggerHandOffResult(String handOffBatchId, String message) {
-		super();
-		this.handOffBatchId = handOffBatchId;
-		this.message = message;
-	}
-	
-	
-	public String getMessage() {
-		return message;
-	}
-	
-	public void setMessage(String message) {
-		this.message = message;
+	public void setMessages(List<String> messages) {
+		this.messages = messages;
 	}
 
 	public String getHandOffBatchId() {

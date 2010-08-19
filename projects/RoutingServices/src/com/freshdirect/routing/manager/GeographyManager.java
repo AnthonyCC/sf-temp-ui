@@ -51,7 +51,7 @@ public class GeographyManager extends BaseProcessManager {
 				}
 				locModel.setBuilding(buildingModel);
 
-				((Map)request.getLocationList()).put(locModel.getBuilding().getStreetAddress1()
+				((Map)request.getLocationList()).put(locModel.getBuilding().getSrubbedStreet()
 															+"$"+locModel.getApartmentNumber()
 																+"$"+locModel.getBuilding().getZipCode(), locModel);
 			} else {
@@ -71,7 +71,8 @@ public class GeographyManager extends BaseProcessManager {
 		
 		Object tmpBuildingList = request.getBuildingList();
 		if(tmpBuildingList != null) {
-			Object tmpBuilding = ((Map)tmpBuildingList).get(locModel.getBuilding().getStreetAddress1()+"$"+locModel.getBuilding().getZipCode());
+			Object tmpBuilding = ((Map)tmpBuildingList).get(locModel.getBuilding().getSrubbedStreet()
+							+"$"+locModel.getBuilding().getZipCode());
 			if(tmpBuilding != null) {
 				return (IBuildingModel)tmpBuilding;
 			}
@@ -85,7 +86,7 @@ public class GeographyManager extends BaseProcessManager {
 		
 		Object tmpLocationList = request.getLocationList();
 		if(tmpLocationList != null) {
-			Object tmpLocation = ((Map)tmpLocationList).get(locModel.getBuilding().getStreetAddress1()
+			Object tmpLocation = ((Map)tmpLocationList).get(locModel.getBuilding().getSrubbedStreet()
 					+"$"+locModel.getApartmentNumber()
 					+"$"+locModel.getBuilding().getZipCode());
 			if(tmpLocation != null) {		
