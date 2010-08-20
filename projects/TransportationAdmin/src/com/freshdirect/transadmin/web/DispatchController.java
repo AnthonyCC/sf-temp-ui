@@ -2,6 +2,7 @@ package com.freshdirect.transadmin.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -149,7 +150,7 @@ public class DispatchController extends AbstractMultiActionController {
 			if(day==null)day="All";
 			String[] dates=getDates(daterange,day);			
 			Collection dataList= new ArrayList();
-			Collection plans=new ArrayList();
+			List<Plan> plans=new ArrayList();
 			if((!TransStringUtil.isEmpty(daterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)) {
 	
 				try 
@@ -189,6 +190,7 @@ public class DispatchController extends AbstractMultiActionController {
 						{
 							try {
 								String file=request.getParameter("file");
+								Collections.sort(plans, new PlanDateComparator());
 								updateKronos(plans,dates,file,request,response);
 								return null;
 								//saveMessage(request, getMessage("app.actionmessage.146", null));
@@ -254,128 +256,249 @@ public class DispatchController extends AbstractMultiActionController {
 		return null;		
 	}
 	
+	public static class PlanDateComparator implements Comparator<Plan> {
 
-	public void updateKronos(Collection plans,String[] dates,String file,HttpServletRequest request, HttpServletResponse response) throws Exception
+		@Override
+		public int compare(Plan o1, Plan o2) {
+			return(o1.getPlanDate().compareTo(o2.getPlanDate()));
+		}
+	}
+
+	public static class PlanStartDateComparator implements Comparator<Plan> {
+
+		@Override
+		public int compare(Plan o1, Plan o2) {
+			return(o1.getStartTime().compareTo(o2.getStartTime()));
+		}
+	}
+	public static class PlanFirstDeliveryTimeComparator implements Comparator<Plan> {
+
+		@Override
+		public int compare(Plan o1, Plan o2) {
+			return(o1.getFirstDeliveryTime().compareTo(o2.getFirstDeliveryTime()));
+		}
+	}
+	public static class PlanMaxTimeComparator implements Comparator<Plan> {
+
+		@Override
+		public int compare(Plan o1, Plan o2) {
+			return(o1.getMaxTime().compareTo(o2.getMaxTime()));
+		}
+	}	
+	
+	public void updateKronos(List<Plan> plans,String[] dates,String file,HttpServletRequest request, HttpServletResponse response) throws Exception
 	{			
-		response.setContentType("application/x-zip-compressed");
-		response.setHeader("Content-Disposition", "attachment; filename=Upload_All.zip"); 
-		Map kronos=new HashMap();		
-		for(Iterator i=plans.iterator();i.hasNext();)
+		
+		Map<String, Scrib> scribMap = new HashMap<String, Scrib>();
+		Map<String, Map<String, Scrib>> resMapScrib = new HashMap<String, Map<String, Scrib>>();
+		Map<String, Map<String, Map<String, Scrib>>> kronos = new HashMap<String, Map<String, Map<String, Scrib>>>();	
+				
+		for(Iterator<Plan> i=plans.iterator();i.hasNext();)
 		{
-			Plan p=(Plan)i.next();
-			Set resources=p.getPlanResources();
-			if(resources!=null)
-				for(Iterator j=resources.iterator();j.hasNext();)
+			Plan p = i.next();
+			String planDate=TransStringUtil.getDate(p.getPlanDate());
+			if(kronos.containsKey(planDate)) {
+				resMapScrib=kronos.get(planDate);
+			} else {
+				resMapScrib = new HashMap<String, Map<String, Scrib>>();
+			}
+			Set<PlanResource> resources = p.getPlanResources();
+			if(resources!=null) {
+				for(Iterator<PlanResource> j=resources.iterator();j.hasNext();)
 				{
-						PlanResource r=(PlanResource)j.next();
+					PlanResource r = j.next();
+					boolean addEntry=false;
+						if(!resMapScrib.containsKey(r.getId().getResourceId())) {
+							scribMap = new HashMap<String, Scrib>();
+							addEntry=true;
+						} else {
+							scribMap=resMapScrib.get(r.getId().getResourceId());
+						}
 						if(DispatchPlanUtil.isEligibleForKronosFileGeneration(domainManagerService.getEmployeeRole(r.getId().getResourceId())))
-						{
-							if(kronos.get(r.getId().getResourceId())!=null) continue;
-							/*Date _tmpRange = TransStringUtil.getDate(daterange);
-							String day=new SimpleDateFormat("EEE").format(_tmpRange).toUpperCase();
-							ScheduleEmployee ws=employeeManagerService.getSchedule(r.getId().getResourceId(),
-														TransStringUtil.getServerDate(TransStringUtil.getWeekOf(_tmpRange)),day);*/
-							Scrib s=new Scrib();
+						{			
+							Scrib s = new Scrib();
+							//Set Scrib id for a resource
 							s.setScribId(r.getId().getResourceId());
 							
-							/*This is the requested date for the shift being exported.This is always the date defined in the planning scrib, 
-							  except if Role = Yard Worker.  For these employees, the date shall be dependent on start time.  
-							  If the Employee Start time >= 9:00 PM, then Date = D -1.*/
-
-							boolean isYardWorker = false;
-							for(Iterator subType=r.getEmployeeRoleType().getSubRoles().iterator();subType.hasNext();){
-								EmployeeSubRoleType subRole=(EmployeeSubRoleType)subType.next();
-								if("007".equalsIgnoreCase(subRole.getCode())){
-									isYardWorker=true;
-									break;
-								}								
-							}
-							boolean isGreater=false;
-							if(isYardWorker){
-								if(r.getId().getAdjustmentTime()!=null)
-									isGreater = TransStringUtil.checkHourOfDate(r.getId().getAdjustmentTime());
-								else
-									isGreater = TransStringUtil.checkHourOfDate(p.getStartTime());
-								if(isGreater){
-									s.setScribDate(TransStringUtil.getAdjustedDayOf(p.getPlanDate(),-1));
-								} else s.setScribDate(p.getPlanDate());
-							}else s.setScribDate(p.getPlanDate());
+							//Set scheduled emp date
+							getKronosEmployeeDate(p, r, s);
 							
-							/*The time shall be equal to Start Time for all employees except those with Role = Runner
-							  For Role = Runner the Time in the Kronos file shall be First Delivery Time minus 30 minutes.  
-							 */							
-							if(r.getId().getAdjustmentTime()!=null)
-								s.setStartTime(r.getId().getAdjustmentTime());
-							else
-							{
-								if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
-								{
-									s.setStartTime(new Date(p.getFirstDeliveryTime().getTime()-30*60*1000));
-								}//ws!=null&&ws.getTime()!=null)s.setStartTime(ws.getTime());
-								else s.setStartTime(p.getStartTime());
+							s.setShiftType(getShiftForPlan(p));
+							//set Employee Time	
+							setKronosEmployeeTime(p, r, s);							
+							//set shift duration
+							double maxTime = getKronosEmployeeShiftDuration(p, r, s);	
+							s.setShiftDuration(maxTime);
+							
+							scribMap.put(s.getShiftType(),s);
+							if(addEntry) {
+								resMapScrib.put(r.getId().getResourceId(), scribMap);
 							}
-							String _hourOfDay = TransStringUtil.formatTimeFromDate(p.getFirstDeliveryTime());
-							int dayOfweek = TransStringUtil.getClientDayofWeek(TransStringUtil.getDatewithTime(p.getPlanDate()));
-							double hourOfDay = Double.parseDouble(_hourOfDay);
-							if (hourOfDay < 12 && dayOfweek != 7) {
-								s.setShiftType("AM");
-							} else if (hourOfDay < 10 && dayOfweek != 7) {
-								s.setShiftType("AM");
-							} else {
-								s.setShiftType("PM");
-							}
-							kronos.put(r.getId().getResourceId(),s);	
-						}					
+						}
+						
 				}			
-		}		
-			
+			}
+			kronos.put(TransStringUtil.getDate(p.getPlanDate()),resMapScrib);
+		}	
+		generateKronosFiles(response, kronos);
+						
+	}	
+
+	private void setKronosEmployeeTime(Plan p, PlanResource r, Scrib s)
+			throws ParseException {
+		if(r.getId().getAdjustmentTime()!=null)
+			s.setStartTime(r.getId().getAdjustmentTime());
+		else
+		{
+			List<Plan> resPlans = getPlansForDate(p, r, s);
+			Collections.sort(resPlans,new PlanFirstDeliveryTimeComparator());
+			if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
+			{
+				s.setStartTime(new Date(resPlans.get(0).getFirstDeliveryTime().getTime()-30*60*1000));
+			}
+			else {
+				
+				s.setStartTime(resPlans.get(0).getStartTime());
+			}
+		}
+	}
+
+	private void getKronosEmployeeDate(Plan p, PlanResource r, Scrib s)	throws ParseException {
+		
+		boolean isYardWorker = false;
+		for(Iterator subType=r.getEmployeeRoleType().getSubRoles().iterator();subType.hasNext();){
+			EmployeeSubRoleType subRole=(EmployeeSubRoleType)subType.next();
+			if("007".equalsIgnoreCase(subRole.getCode())){
+				isYardWorker=true;
+				break;
+			}								
+		}
+		boolean isGreater=false;
+		if(isYardWorker){
+			if(r.getId().getAdjustmentTime()!=null)
+				isGreater = TransStringUtil.checkHourOfDate(r.getId().getAdjustmentTime());
+			else
+				isGreater = TransStringUtil.checkHourOfDate(p.getStartTime());								
+			if(isGreater){									
+				s.setScribDate(TransStringUtil.getAdjustedDayOf(p.getPlanDate(),-1));
+			} else s.setScribDate(p.getPlanDate());
+		}else
+			s.setScribDate(p.getPlanDate());
+	}
+
+	private double getKronosEmployeeShiftDuration(Plan p, PlanResource r, Scrib s) throws ParseException {
+		double maxTime=0;
+		if("Depot".equalsIgnoreCase(p.getRegion().getCode()))
+		{
+			Collection depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(p.getPlanDate()),p.getRegion().getCode());
+			List<Plan> resPlans=new ArrayList<Plan>();
+			for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
+				Plan _depotPlan = iterator.next();
+					String shiftType = getShiftForPlan(_depotPlan);
+					if(shiftType.equalsIgnoreCase(s.getShiftType())){
+						Set _depotPlanRsr = _depotPlan.getPlanResources();
+						for (Iterator<PlanResource> itr = _depotPlanRsr.iterator(); itr.hasNext();) {
+							PlanResource _pr = itr.next();
+							if(r.getId().getResourceId().equals(_pr.getId().getResourceId())){
+								resPlans.add(_depotPlan);
+							}
+						}
+					}
+			}			
+			for (Iterator<Plan>it =resPlans.iterator();it.hasNext();) {
+				Plan _p = it.next();
+				maxTime = maxTime + Double.parseDouble(TransStringUtil.formatTime1(_p.getMaxTime()));
+			}
+		}else{
+			maxTime = Double.parseDouble(TransStringUtil.formatTime1(p.getMaxTime()));
+		}
+		return maxTime;
+	}	
+
+	private String getShiftForPlan(Plan p) throws ParseException {		
+		int dayOfweek = TransStringUtil.getClientDayofWeek(TransStringUtil.getDatewithTime(p.getPlanDate()));
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(p.getFirstDeliveryTime()));
+		if (hourOfDay < 12 && dayOfweek != 7) {
+			return "AM";
+		} else if (hourOfDay < 10 && dayOfweek == 7) {
+			return "AM";
+		} else
+			return "PM";		
+	}
+
+	private List<Plan> getPlansForDate(Plan p, PlanResource r,Scrib s) throws ParseException {
+		
+		Collection depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(p.getPlanDate()));
+		List<Plan> resPlans=new ArrayList<Plan>();
+		for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
+			Plan _rPlan = iterator.next();
+			String shiftType=getShiftForPlan(_rPlan);
+			if(shiftType.equalsIgnoreCase(s.getShiftType())){
+				Set _rPlanRsr = _rPlan.getPlanResources();
+				for (Iterator<PlanResource> itr = _rPlanRsr.iterator(); itr.hasNext();) {
+					PlanResource _pr = itr.next();
+					if(r.getId().getResourceId().equals(_pr.getId().getResourceId())){
+						resPlans.add(_rPlan);
+					}
+				}
+			}
+		}
+		return resPlans;
+	}
+
+	private void generateKronosFiles(HttpServletResponse response, Map<String, Map<String, Map<String, Scrib>>> kronos)
+			throws IOException, ParseException {
+		
+		response.setContentType("application/x-zip-compressed");
+		response.setHeader("Content-Disposition", "attachment; filename=Upload_All.zip"); 
+		
 		OutputStream out=response.getOutputStream();
 		ByteArrayOutputStream  f1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream  f2 = new ByteArrayOutputStream();
-		ByteArrayOutputStream  f3 = new ByteArrayOutputStream();			
+		ByteArrayOutputStream  f3 = new ByteArrayOutputStream();		
 		
-		Map<String,List> map=new HashMap();
-		for (Iterator i = kronos.values().iterator(); i.hasNext();) {
-			Scrib s = (Scrib) i.next();
-			String line1 = s.getScribId() + ","
-					+ TransStringUtil.getDate(s.getScribDate()) + ","
-					+ TransStringUtil.getServerTime(s.getStartTime()) + ","
-					+ s.getShiftType() + "\n";
-			String line2 = s.getScribId() + ","
-					+ TransStringUtil.getDate(s.getScribDate()) + "\n";
-
-			f1.write(line1.getBytes());
-			f2.write(line2.getBytes());
-
-			String date = TransStringUtil.getDate(s.getScribDate());
-			List scribLst = new ArrayList();
-			List temp = new ArrayList();
-			if (map.containsKey(date)) {
-				scribLst = map.get(date);
-				scribLst.add(s);
-				map.put(date, scribLst);
-			} else {
-				temp.add(s);
-				map.put(date, temp);
-			}
-		}
-		f1.flush();
-		f2.flush();
+		String header1 = "Kronos ID , Date , Time , Shift , \n"; f1.write(header1.getBytes());
+		String header2 = "Kronos ID , Date , \n";f2.write(header2.getBytes());
+		String header3 = "Kronos ID \t Date \t Time \t Shift \t \n";f3.write(header3.getBytes());
 		
-		for (String date : map.keySet()) {
-			String header = date + "\n";
-			f3.write(header.getBytes());
-			List tmpBean = map.get(date);
-			for (Iterator itr = tmpBean.iterator(); itr.hasNext();) {
-				Scrib s = (Scrib) itr.next();
-				String line3 = s.getScribId() + "\t"
-						+ TransStringUtil.getDate(s.getScribDate()) + "\t"
-						+ TransStringUtil.getServerTime(s.getStartTime()) + "\t"
-						+ s.getShiftType() + "\n";
-				f3.write(line3.getBytes());
+		for(Iterator<String> dates = kronos.keySet().iterator();dates.hasNext();) {
+			String date=dates.next();
+			
+			Map<String, Map<String, Scrib>> resMap=kronos.get(date);
+			for(Iterator<String> resIds=kronos.get(date).keySet().iterator();resIds.hasNext(); ) {
+				String resId=resIds.next();
+				
+				Map<String, Scrib> shiftMap=resMap.get(resId);
+				for(Iterator<String> shifts=shiftMap.keySet().iterator();shifts.hasNext();) {
+					String shift = shifts.next();
+					Scrib scribEntry = shiftMap.get(shift);
+					String line1 = scribEntry.getScribId() + ","
+									+ TransStringUtil.getDate(scribEntry.getScribDate()) + ","
+									+ TransStringUtil.getServerTime(scribEntry.getStartTime()) + ","				
+									+ scribEntry.getShiftDuration() + "\n";
+					String line2 = scribEntry.getScribId() + ","+ TransStringUtil.getDate(scribEntry.getScribDate()) + "\n";
+					String line3 = scribEntry.getScribId() + "\t"
+									+ TransStringUtil.getDate(scribEntry.getScribDate()) + "\t"
+									+ TransStringUtil.getServerTime(scribEntry.getStartTime()) + "\t"				
+									+ scribEntry.getShiftDuration() + "\n";
+				
+					f1.write(line1.getBytes());
+					f2.write(line2.getBytes());
+					f3.write(line3.getBytes());
+				}
+				f1.flush();
+				f2.flush();
+				f3.flush();
 			}
+			
+			String line3 = "\n";
+			f3.write(line3.getBytes());
+			
+			f1.flush();
+			f2.flush();
+			f3.flush();
 		}
-		f3.flush();
+	
 	
 		ZipOutputStream zipout = new ZipOutputStream(out);
 					 
@@ -409,8 +532,7 @@ public class DispatchController extends AbstractMultiActionController {
 		zipout.flush();
 		out.flush();
 		zipout.close();
-						
-	}
+	}	
 				
 	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
 
