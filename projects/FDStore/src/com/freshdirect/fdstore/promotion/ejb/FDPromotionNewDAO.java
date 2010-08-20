@@ -323,7 +323,7 @@ public class FDPromotionNewDAO {
 	public static String getRedemptionPromotionId(Connection conn, String redemptionCode) throws SQLException {
 		String promoId = null;
 		//TODO later the select query need to be changed to return ID column instead of Code. 
-		PreparedStatement ps = conn.prepareStatement("SELECT code FROM CUST.PROMOTION_NEW where UPPER(redemption_code) = UPPER(?)");
+		PreparedStatement ps = conn.prepareStatement("SELECT code FROM CUST.PROMOTION_NEW where UPPER(redemption_code) = UPPER(?) and status "+getStatusReplacementString()+" order by expiration_date desc");
 		ps.setString(1, redemptionCode);
 		ResultSet rs = ps.executeQuery();
 
