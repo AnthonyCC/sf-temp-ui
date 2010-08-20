@@ -32,11 +32,16 @@ public class HandOffBatchInfo implements java.io.Serializable {
 	}
 	
 	public String getDeliveryDate() {
+		StringBuffer strBuf = new StringBuffer();
 		try {
-			return TransStringUtil.getDate(batch.getDeliveryDate());
+			strBuf.append(TransStringUtil.getDate(batch.getDeliveryDate())).append("\n");
+			if(batch.getCutOffDateTime() != null) {
+				strBuf.append(TransStringUtil.getServerTime(batch.getCutOffDateTime()));
+			}
 		} catch (ParseException e) {
 			return null;
 		}
+		return strBuf.toString();
 	}
 	
 	public String getCreationInfo() {
