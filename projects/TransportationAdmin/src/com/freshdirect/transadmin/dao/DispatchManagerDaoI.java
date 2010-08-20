@@ -16,6 +16,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	Collection getPlanList(String date) throws DataAccessException;
 	
+	Collection getPlanList(String date, String region) throws DataAccessException;
+	
 	Collection getPlanForResource(String date, String resourceId) throws DataAccessException;
 	
 	Collection getDispatchForResource(String date, String resourceId) throws DataAccessException;
