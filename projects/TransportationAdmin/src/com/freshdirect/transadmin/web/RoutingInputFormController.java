@@ -1,6 +1,7 @@
 package com.freshdirect.transadmin.web;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -78,8 +79,8 @@ public class RoutingInputFormController extends BaseRoutingFormController {
 	protected ModelAndView onSubmit(HttpServletRequest request,HttpServletResponse response,
 		      Object command, BindException errors) throws ServletException, IOException
 		  {
-		    // cast the bean
-		    
+			System.out.println(" ################### RoutingInputFormController onSubmit:BEGIN >"+Calendar.getInstance().getTime());
+			// cast the bean
 		    FileUploadCommand bean = (FileUploadCommand) command;
 		    //let's see if there's content there
 		    byte[] bytes = bean.getFile();
@@ -109,7 +110,7 @@ public class RoutingInputFormController extends BaseRoutingFormController {
 		    ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 			mav.getModel().put(this.getCommandName(), command);		
 			mav.getModel().putAll(referenceData(request));
-			
+			System.out.println(" ################### RoutingInputFormController onSubmit:END >"+Calendar.getInstance().getTime());
 			return mav;
 	}
 

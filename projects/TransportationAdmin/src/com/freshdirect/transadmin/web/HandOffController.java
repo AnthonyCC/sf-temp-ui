@@ -317,8 +317,10 @@ public class HandOffController extends AbstractMultiActionController  {
 						}
 					}
 				}
-
-				new XlsCutOffReport().generateCutOffReport(reportFileName, result);
+				XlsCutOffReport report = new XlsCutOffReport();
+				report.setNeedsDistanceFactor(false);
+				
+				report.generateCutOffReport(reportFileName, result);
 
 				File outputFile = new File(reportFileName);
 				response.setBufferSize((int)outputFile.length());

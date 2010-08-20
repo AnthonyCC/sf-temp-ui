@@ -35,7 +35,17 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
     private short rownum;	
     private short cellnum;
     
-        
+    private boolean needsDistanceFactor = true;
+    //private MathContext mc = new MathContext(2);
+    
+	public boolean isNeedsDistanceFactor() {
+		return needsDistanceFactor;
+	}
+
+	public void setNeedsDistanceFactor(boolean needsDistanceFactor) {
+		this.needsDistanceFactor = needsDistanceFactor;
+	}
+
 	public void generateCutOffReport(String file, CutOffReportData reportData)
 										throws ReportGenerationException {
 
@@ -668,7 +678,7 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 					result.setTotalServiceTime(_model.getTotalServiceTime());
 					result.setTotalTravelTime(_model.getTotalTravelTime());
 					result.setRouteStartTime(_model.getRouteStartTime());
-					result.setFirstDepartureTime(_model.getStopDepartureTime());
+					result.setFirstDepartureTime(_model.getStopArrivalTime());
 				} else if(i == (size-1)) {
 					result.setRouteCompleteTime(_model.getRouteCompleteTime());
 					result.setLastDepartureTime(_model.getStopDepartureTime());
@@ -755,14 +765,13 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			this.lastDepartureTime = lastDepartureTime;
 		}
 	}
-	
-	private MathContext mc = new MathContext(2);
-	
+		
 	private double getFormattedDistance(String distance) {
 		
 		double result = 0;
-		try {
-			result = new BigDecimal(Double.parseDouble(distance)/10).round(mc).doubleValue();
+		try {			
+			result = isNeedsDistanceFactor() ? Double.parseDouble(distance)/10 : Double.parseDouble(distance);
+			//result = new BigDecimal(result).round(mc).doubleValue();
 		} catch (Exception e) {
 			//Do Nothing
 		}

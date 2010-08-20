@@ -122,7 +122,7 @@ public class PlantService extends BaseService implements IPlantService {
 	}
 	
 	private Map loadPackingInfo(List dataList) throws SapException {
-		System.out.println("loadPackingInfo ORDERNOS >>"+dataList);		
+		System.out.println("loadPackingInfo ORDERNOS >>"+ (dataList != null ? dataList.size() : 0));		
 		SapCartonInfo cartonInfos = new SapCartonInfo(dataList);
 		cartonInfos.execute();
 		return cartonInfos.getCartonInfos();
