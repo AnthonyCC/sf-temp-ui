@@ -25,13 +25,20 @@ public class Scrib
 	private String supervisorName;
 	
 	private String shiftType;
-		
+	private double shiftDuration;
+	
 	public String getShiftType() {
 		return shiftType;
 	}
 	public void setShiftType(String shiftType) {
 		this.shiftType = shiftType;
-	}	
+	}
+	public double getShiftDuration() {
+		return shiftDuration;
+	}
+	public void setShiftDuration(double shiftDuration) {
+		this.shiftDuration = shiftDuration;
+	}
 	public int getCount() {
 		return count;
 	}
