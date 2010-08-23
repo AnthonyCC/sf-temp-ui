@@ -888,7 +888,6 @@ FDIdentity identity = user.getIdentity();
 
 <%-- DPCart APPDEV-664 : popup --%>
 <%if (user!=null && user.getIdentity() !=null) { %>
-	-<%=user.getDlvPassInfo().getStatus()%>-
 	<%
 	if (
 		(
