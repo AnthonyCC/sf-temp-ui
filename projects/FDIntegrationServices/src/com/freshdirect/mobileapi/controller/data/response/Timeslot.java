@@ -21,6 +21,8 @@ public class Timeslot implements DateFormat {
     private Date cutoffDate;
 
     private Boolean isChefsTable;
+    
+    private double steeringDiscount;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat(STANDARDIZED_DATE_FORMAT);
 
@@ -39,6 +41,7 @@ public class Timeslot implements DateFormat {
         this.cutoffDate = slot.getCutoffDateTime();
         this.isChefsTable = slot.isChefsTable();
         this.full = slot.isFull();
+        this.steeringDiscount = slot.getSteeringDiscount();
     }
 
     public Timeslot(Date rangeStart, Date rangeEnd, Date cutoff) {
@@ -98,5 +101,13 @@ public class Timeslot implements DateFormat {
     public boolean isFull() {
         return full;
     }
+
+	public double getSteeringDiscount() {
+		return steeringDiscount;
+	}
+
+	public void setSteeringDiscount(double steeringDiscount) {
+		this.steeringDiscount = steeringDiscount;
+	}
 
 }

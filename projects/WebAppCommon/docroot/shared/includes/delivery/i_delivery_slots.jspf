@@ -138,10 +138,13 @@ if (timeslots.size() > 0) {
 							if (!normalAvailCapacity && availCapacity ) {
 								request.setAttribute("shownCTSlot", "TRUE");
 							}
-							double zonePromoAmountSpec=0;	
+							double zonePromoAmountSpec = 0;	
 							if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null)
-								zonePromoAmountSpec=PromotionHelper.getDiscount(user_ct,slot);
-								if(zonePromoAmountSpec > 0) hasDiscountedTimeslots = true;
+								//zonePromoAmountSpec=PromotionHelper.getDiscount(user_ct,slot);
+								zonePromoAmountSpec = slot.getSteeringDiscount();
+								if(zonePromoAmountSpec > 0) {
+									hasDiscountedTimeslots = true;
+								}
 							%>
 							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;">
 								<div class="control">

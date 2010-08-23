@@ -49,6 +49,7 @@ import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -186,7 +187,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 				for(Iterator k = col.iterator(); k.hasNext();){
 					FDTimeslot timeslot = (FDTimeslot) k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
-					
+					ts.setSteeringDiscount(PromotionHelper.getDiscount(user, timeslot));
 					
 					if ((ts.getCapacity() <= 0 ||  
 							GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions, timeslot, messages, geoRestrictionRange, comments)) 

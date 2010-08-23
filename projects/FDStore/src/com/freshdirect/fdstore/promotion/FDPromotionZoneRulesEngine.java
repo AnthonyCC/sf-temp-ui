@@ -40,7 +40,9 @@ public class FDPromotionZoneRulesEngine implements Serializable {
 		//deny windows steering to iPhone users
 		boolean result=true;
 		FDUserI user=ctx.getUser();
-		if(EnumTransactionSource.IPHONE_WEBSITE.equals(user.getApplication()) && !isSameDiscountedSlot(ctx))	{
+		//if(EnumTransactionSource.IPHONE_WEBSITE.equals(user.getApplication()) && !isSameDiscountedSlot(ctx))	{
+		// Window Steering IPhone Implemented - Included IPhone Orders Also
+		if(!isSameDiscountedSlot(ctx))	{
 			result=false;
 		}
 		return result;

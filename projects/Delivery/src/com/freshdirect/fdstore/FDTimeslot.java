@@ -141,8 +141,14 @@ public class FDTimeslot implements Serializable {
 		return dlvTimeslot;
 	}
 	
+	public double getSteeringDiscount() {
+		return dlvTimeslot.getSteeringDiscount();
+	}
+
+	
 	public String toString() {
 		return dlvTimeslot.toString();
 	}
-
+	
+	
 }

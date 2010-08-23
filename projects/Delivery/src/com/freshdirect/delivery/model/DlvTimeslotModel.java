@@ -54,7 +54,17 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	private String isDynamic;
 	private String isClosed;
 	
-		
+	/* Window Steering Discount Value*/
+	private double steeringDiscount;
+	
+	public double getSteeringDiscount() {
+		return steeringDiscount;
+	}
+
+	public void setSteeringDiscount(double steeringDiscount) {
+		this.steeringDiscount = steeringDiscount;
+	}
+
 	public String getIsDynamic() {
 		return isDynamic;
 	}

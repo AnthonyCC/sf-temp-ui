@@ -28,7 +28,7 @@ public class Timeslot {
     private int normalAvailCapacity = 0;
 
     private boolean chefsTable = false;
-
+        
     public static List<Timeslot> wrap(List<FDTimeslot> slots, boolean chefTableUser) {
         List<Timeslot> result = new ArrayList<Timeslot>();
         for (FDTimeslot slot : slots) {
@@ -72,6 +72,7 @@ public class Timeslot {
                     newInstance.zoneModel.getCtReleaseTime()) ? 1 : 0;
             newInstance.chefsTable = (newInstance.normalAvailCapacity < 1 && newInstance.availCapacity > 0);
         }
+                
         return newInstance;
     }
 
@@ -143,5 +144,9 @@ public class Timeslot {
     public static String getTimeslotReservationTypeCode() {
         return EnumReservationType.ONETIME_RESERVATION.getName();
     }
+
+	public double getSteeringDiscount() {
+		return slot.getSteeringDiscount();
+	}
 
 }
