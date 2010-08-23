@@ -566,10 +566,17 @@ FDIdentity identity = user.getIdentity();
 				FDStoreProperties.isDPCartEnabled() || 
 				( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
 			)
-				&& !cart.isDlvPassApplied() 
-				&& EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) 
-				&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
-				&& cart.getDeliverySurcharge() > 0
+			&& !cart.isDlvPassApplied() 
+			&& 
+				(
+					EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.SHORT_SHIPPED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.ORDER_CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+					EnumDlvPassStatus.PASS_RETURNED.equals(user.getDlvPassInfo().getStatus())
+				)
+			&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
+			&& cart.getDeliverySurcharge() > 0
 		) { %>
 			<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart.html" %>' />
 		<% } %>
@@ -881,16 +888,24 @@ FDIdentity identity = user.getIdentity();
 
 <%-- DPCart APPDEV-664 : popup --%>
 <%if (user!=null && user.getIdentity() !=null) { %>
+	-<%=user.getDlvPassInfo().getStatus()%>-
 	<%
 	if (
 		(
 			FDStoreProperties.isDPCartEnabled() || 
 			( user.getFDCustomer().getProfile().getAttribute("dpcart") != null && "true".equalsIgnoreCase(user.getFDCustomer().getProfile().getAttribute("dpcart")))
 		)
-			&& !cart.isDlvPassApplied() 
-			&& EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) 
-			&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
-			&& cart.getDeliverySurcharge() > 0
+		&& !cart.isDlvPassApplied() 
+		&& 
+			(
+				EnumDlvPassStatus.NONE.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.SHORT_SHIPPED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.ORDER_CANCELLED.equals(user.getDlvPassInfo().getStatus()) || 
+				EnumDlvPassStatus.PASS_RETURNED.equals(user.getDlvPassInfo().getStatus())
+			)
+		&& (!"PICKUP".equals(user.getSelectedServiceType().getName()) && !"CORPORATE".equals(user.getSelectedServiceType().getName()))
+		&& cart.getDeliverySurcharge() > 0
 	) { %>
 		<fd:IncludeMedia name='<%= "/media/editorial/dpcart/dpcart_popup.html" %>' />
 	<% } %>
