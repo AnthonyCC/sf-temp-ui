@@ -4,8 +4,13 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Expression;
+import org.hibernate.criterion.Order;
+
 import com.freshdirect.transadmin.dao.LogManagerDaoI;
 import com.freshdirect.transadmin.model.ActivityLog;
+import com.freshdirect.transadmin.model.TimeslotLog;
 
 public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		implements LogManagerDaoI {
@@ -34,12 +39,19 @@ public class LogManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 	public Collection getTimeSlotLogs(Date fromDate, Date toDate) {
 		
-		//String query = "from TimeslotLog a where a.eventDtm between ? and ? order by a.eventDtm desc ";//
-		String query = "from TimeslotLog a left join fetch a.timeslotLogDtls where a.eventDtm between ? and ? order by a.eventDtm desc ";
-		//String query = "from TimeslotLog a,a.timeslotLogDtls d where a.eventDtm between ? and ? and a.id=d.timeslot_log_id order by a.eventDtm desc ";
-
+		
+		String query = "from TimeslotLog a where a.eventDtm between ? and ? order by a.eventDtm desc ";
+		
 		return (Collection) getHibernateTemplate().find(query,
 				new Object[] { fromDate, toDate });
 	}
+	/*public Collection getTimeSlotLogs(Date fromDate, Date toDate) {
+		return (Collection)getHibernateTemplate().getSessionFactory().getCurrentSession().createCriteria(TimeslotLog.class)
+			.add(Expression.between("eventDtm", fromDate, toDate))
+			.addOrder( Order.desc("eventDtm") )
+		   //.setFetchMode("timeslotLogDtls",FetchMode.JOIN)
+		   .uniqueResult();
+
+	}*/
 
 }
