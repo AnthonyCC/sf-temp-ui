@@ -1,0 +1,24 @@
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
+<%--
+
+  restaurants.jspf
+	requires:
+	provides:
+		the see all button on 4mm pages
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+<% 
+	int totalCount = FourMinuteMealsHelper.getTotalCount();
+	String countStr = Integer.toString(totalCount);
+	if ( totalCount < 50 || totalCount > 120 )
+		countStr = "";
+	else if ( totalCount < 100 )
+		countStr = "_0"+countStr;
+	else 
+		countStr = "_"+countStr;		
+%>
+
+<div class="seeall"><a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/see_all_btns/dpt_4mm_seeall_btn<%=countStr%>.gif" border="0" alt="see all <%=totalCount%> meals" /><br/>
+<span  style="text-decoration:underline">click here</span></a></div>

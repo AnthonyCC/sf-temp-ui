@@ -25,22 +25,35 @@ public class BrandModel extends ContentNodeModelImpl {
 	    return FDAttributeFactory.constructImage(this, "BRAND_LOGO_SMALL");
 	}
 
-        public Image getLogoLarge() {
-            return FDAttributeFactory.constructImage(this, "BRAND_LOGO");
-        }
-        public Html getPopupContent() {
-            return FDAttributeFactory.constructHtml(this, "BRAND_POPUP_CONTENT");
-        }
-	
-        public ProducerModel getProducer() {
-            Object value = getCmsAttributeValue("producer");
-            return value instanceof ContentKey ? (ProducerModel) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value) : null;
-        }
+    public Image getLogoLarge() {
+        return FDAttributeFactory.constructImage(this, "BRAND_LOGO");
+    }
+    public Html getPopupContent() {
+        return FDAttributeFactory.constructHtml(this, "BRAND_POPUP_CONTENT");
+    }
+
+    public ProducerModel getProducer() {
+        Object value = getCmsAttributeValue("producer");
+        return value instanceof ContentKey ? (ProducerModel) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value) : null;
+    }
         
 	
 	public List<ProductModel> getFeaturedProducts() {
-            ContentNodeModelUtil.refreshModels(this, "FEATURED_PRODUCTS", featuredProducts, false);
+        ContentNodeModelUtil.refreshModels(this, "FEATURED_PRODUCTS", featuredProducts, false);
 
-            return new ArrayList(featuredProducts);
+        return new ArrayList<ProductModel>(featuredProducts);
 	}
+	
+	public String getChefName() {
+		return this.getAttribute("CHEF_NAME", null);
+	}
+	
+	public Image getChefImage() {
+	    return FDAttributeFactory.constructImage(this, "CHEF_IMAGE", null);
+	}
+	
+	public String getChefBlurb() {
+		return this.getAttribute("CHEF_BLURB", null);
+	}
+
 }

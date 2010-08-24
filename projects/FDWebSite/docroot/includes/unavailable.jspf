@@ -1,4 +1,13 @@
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.DisplayObject"%>
+<%@ page import='java.util.*' %>
 <%@ page import='com.freshdirect.fdstore.content.util.*' %>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
 <%
 //**************************************************************
 //***          Unavailable display                           ***

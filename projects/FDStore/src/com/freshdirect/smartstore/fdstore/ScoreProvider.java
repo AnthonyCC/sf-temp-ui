@@ -1088,6 +1088,27 @@ public class ScoreProvider implements DataAccess {
 			"Popularity_Discretized",
 			FactorUtil.getLogDiscretizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_COLUMN, 2)
 		);
+
+		// SHORT TERM POPULARITY
+		rangeConverters.put(
+		        "Popularity8W",
+			FactorRangeConverter.getRawGlobalScores(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
+		);
+			
+		rangeConverters.put(
+			"Popularity8W_Normalized",
+			FactorUtil.getMaxNormalizedGlobalConvereter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
+		);
+		
+		rangeConverters.put(
+			"Popularity8W_NormalizedDepartment",
+			FactorUtil.getDepartmentMaxNormalizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN)
+		);
+		
+		rangeConverters.put(
+			"Popularity8W_Discretized",
+			FactorUtil.getLogDiscretizedGlobalConverter(FactorUtil.GLOBAL_POPULARITY_8W_COLUMN, 2)
+		);
 		
 		
 		// QUANTITY

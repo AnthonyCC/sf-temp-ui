@@ -75,7 +75,7 @@ public class FDURLUtil {
 	 */
 	public static String getProductURI(ProductModel productNode, String trackingCode, String variantId) {
 		
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -157,7 +157,7 @@ public class FDURLUtil {
 	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, 
 			String trackingCodeEx, int rank, String impressionId, String ymalSetId, String originatingProductId) {
 		
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -194,7 +194,8 @@ public class FDURLUtil {
 				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trkd=" + trackingCodeEx);
 			}
 
-			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
+			if (rank >= 0)
+				uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
 		}
 		if (impressionId != null) {
 		    uri.append(ProductDisplayUtil.URL_PARAM_SEP).append(ProductDisplayUtil.IMPRESSION_ID+"=").append(impressionId);
@@ -208,14 +209,14 @@ public class FDURLUtil {
 	 * Generates URL for products in search page
 	 * 
 	 * @param productNode
-	 * @param trackingCode	trk
-	 * @param trackingCode2	trkd
-	 * @param rank			rank
+	 * @param trackingCode	Tracking Code (trk)
+	 * @param trackingCodeEx Tracking Code Detail (trkd)
+	 * @param rank			Rank (if value is greater or equal to 0)
 	 * @return
 	 */
 	public static String getProductURI(ProductModel productNode, String trackingCode, String trackingCodeEx, int rank) {
 		
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
@@ -234,7 +235,8 @@ public class FDURLUtil {
 			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trkd=" + trackingCodeEx);
 		}
 
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
+		if (rank >= 0)
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "rank=" + rank);
 
 		return uri.toString();
 	}
@@ -245,7 +247,7 @@ public class FDURLUtil {
 		ProductModel actProd = productNode.getProduct();
 		Map<String,String> cfgOptions = config.getOptions();
 		
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
@@ -293,7 +295,7 @@ public class FDURLUtil {
 	 * @return link to category page
 	 */
 	public static String getCategoryURI(String catId, String trackingCode) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.CATEGORY_PAGE_BASE + "?catId=" + catId);
@@ -369,14 +371,16 @@ public class FDURLUtil {
 	/**
 	 * Extracts parameters from request and put them to string buffer
 	 * 
-	 * @param buf<StringBuffer> Buffer that will have parameters
+	 * @param buf Buffer that will have parameters
 	 * @param params Request parameters
 	 */
-	public static void appendCommonParameters(StringBuffer buf, Map<String,String[]> params ) {
+	public static void appendCommonParameters(Appendable buf, Map<String,String[]> params ) {
 		Map<String, String> _p = collectCommonParameters(params, null);
 
 		for ( Map.Entry<String,String> e : _p.entrySet() ) {
-	        buf.append("&"+e.getKey()+"=" + e.getValue());
+			try {
+				buf.append("&"+e.getKey()+"=" + e.getValue());
+			} catch (IOException e1) {}
 		}
 	}
 
@@ -396,16 +400,16 @@ public class FDURLUtil {
 	 * @param params
 	 * @param suffix
 	 */
-	public static void appendCommonParameters(JspWriter out, Map<String,String[]> params, String suffix) {
+	public static void appendCommonParameters(Appendable out, Map<String,String[]> params, String suffix) {
 		Map<String, String> _p = collectCommonParameters(params, suffix);
 		for ( Map.Entry<String,String> e : _p.entrySet() ) {
 	        appendHiddenField(out, e.getKey().toString(), e.getValue().toString());
 		}
 	}
 	
-	private static void appendHiddenField(Writer out, String name, String value) {
+	private static void appendHiddenField(Appendable out, String name, String value) {
 		try {
-			out.write("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\">\n");
+			out.append("<input type=\"hidden\" name=\"" + name + "\" value=\"" + value + "\">\n");
 		} catch (IOException e) {}
 	}
 
@@ -416,8 +420,9 @@ public class FDURLUtil {
 	 * @param request
 	 * @return
 	 */
+	@SuppressWarnings( "unchecked" )
 	public static String getCategoryURI(HttpServletRequest request, ProductModel productNode) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// "/category.jsp?catId="+request.getParameter("catId")+"&prodCatId="+request.getParameter("catId")+"&productId="+productNode+"&trk="
 		
@@ -434,8 +439,9 @@ public class FDURLUtil {
 	}
 	
 	// called from grocery_product.jsp
+	@SuppressWarnings( "unchecked" )
 	public static String getCartConfirmPageURI(HttpServletRequest request) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// "/grocery_cart_confirm.jsp?catId="+request.getParameter("catId")+"&trk="+ptrk;
 		
@@ -448,8 +454,9 @@ public class FDURLUtil {
 	
 
 	// called from product.jsp
+	@SuppressWarnings( "unchecked" )
 	public static String getCartConfirmPageURI(HttpServletRequest request, ProductModel productNode) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;		
 		
@@ -463,8 +470,9 @@ public class FDURLUtil {
 	
 
 	// called from recipe.jsp
+	@SuppressWarnings( "unchecked" )
 	public static String getRecipeCartConfirmPageURI(HttpServletRequest request, String catId) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// "/grocery_cart_confirm.jsp?catId="+catIdParam+"&recipeId="+recipeId;
 		String recipeId	= request.getParameter("recipeId");
@@ -479,8 +487,9 @@ public class FDURLUtil {
 	}
 
 	// called from recipe.jsp > i_recipe_body.jspf
+	@SuppressWarnings( "unchecked" )
 	public static String getRecipePageURI(HttpServletRequest request, Recipe recipe, RecipeVariant variant, String catId, boolean crm) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// "<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>"
 
@@ -509,7 +518,7 @@ public class FDURLUtil {
 	 * @return link to category page
 	 */
 	public static String getDepartmentURI(String deptId, String trackingCode) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.DEPARTMENT_PAGE_BASE + "?deptId=" + deptId);
@@ -542,7 +551,7 @@ public class FDURLUtil {
 	 * @return
 	 */
 	public static String getStandingOrderLandingPage(FDStandingOrder so, String action) {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		uri.append(STANDING_ORDER_DETAIL_PAGE);
 		uri.append("?ccListId=" + so.getCustomerListId());
 		if (action != null) {
@@ -552,7 +561,7 @@ public class FDURLUtil {
 	}
 
 	public static String getStandingOrderMainPage() {
-		StringBuffer uri = new StringBuffer();
+		StringBuilder uri = new StringBuilder();
 		uri.append(STANDING_ORDER_MAIN_PAGE);
 		return uri.toString();
 	}
@@ -583,7 +592,7 @@ public class FDURLUtil {
 	    final ProductModel productNode = orderLine.lookupProduct();
 	    
 	    
-	    StringBuffer qsLink = new StringBuffer();
+	    StringBuilder qsLink = new StringBuilder();
 
 	    String cartType = qc.getProductType();
 	    final boolean isCCLorSO = QuickCart.PRODUCT_TYPE_CCL.equals(cartType) || QuickCart.PRODUCT_TYPE_SO.equals(cartType);

@@ -1,12 +1,12 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
@@ -41,7 +41,8 @@ import com.freshdirect.webapp.util.TransactionalProductImpression;
 public class TxProductPricingSupportTag extends BodyTagSupport {
 	private static final long serialVersionUID = 2149022868536471972L;
 
-	
+	static final DecimalFormat QUANTITY_FORMATTER = new DecimalFormat("0.##");
+
 	// JavaScript namespace to avoid conflicts with another pricing scripts
 	private String namespace; 
 
@@ -120,8 +121,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 		if (content != null) {
 			try {
-				JspWriter out = pageContext.getOut();
-				out.print(content);
+				pageContext.getOut().print(content);
 			} catch (Exception e) {
 			}
 		}
@@ -136,7 +136,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 		if (skus != null) {
 			// Legacy way - work with skus
-			appendCoreScriptLegacy(buf);
+			appendCoreScriptLegacy(buf, customer, skus);
 		} else if (impressions != null) {
 			_txImpressions = new ArrayList<TransactionalProductImpression>();
 			
@@ -146,15 +146,25 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 				}
 			}
 
-			appendCoreScript(buf);
+			appendCoreScript(buf, _txImpressions, customer);
 			if (!onlyCore)
-				appendConfiguratorScript(buf);
+				appendConfiguratorScript(buf, customer, _txImpressions, namespace, formName, inputNamePostfix, false);
 		}
 
 		return buf.toString();
 	}
 
 
+	public static String getHTMLFragment(FDUserI customer, Collection<TransactionalProductImpression> impressions, boolean onlyCore, String namespace, String formName, String formNamePostfix, boolean setMinQuantity) {
+		StringBuffer buf = new StringBuffer();
+
+		appendCoreScript(buf, impressions, customer);
+		if (!onlyCore)
+			appendConfiguratorScript(buf, customer, impressions, namespace, formName, formNamePostfix, setMinQuantity);
+
+		return buf.toString();
+	}
+	
 
 	/**
 	 * PART I
@@ -162,7 +172,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 	 * 
 	 * @param buf
 	 */
-	private void appendCoreScript(StringBuffer buf) {
+	private static void appendCoreScript(StringBuffer buf, Collection<TransactionalProductImpression> _txImpressions, FDUserI customer) {
 		// NOTE: this code replaces i_pricing_script.jsp
 		
 		buf.append("<script type=\"text/javascript\">\n");
@@ -189,7 +199,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 			if (product == null)
 				continue;
 			
-			appendCoreScriptInternal(buf, productInfo, product);
+			appendCoreScriptInternal(buf, customer, productInfo, product);
 		}
 		
 		buf.append("</script>\n");
@@ -202,7 +212,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 	 * 
 	 * @param buf
 	 */
-	private void appendCoreScriptLegacy(StringBuffer buf) {
+	private static void appendCoreScriptLegacy(StringBuffer buf, FDUserI customer, Collection<SkuModel> skus) {
 		// NOTE: this code replaces i_pricing_script.jsp
 		
 		buf.append("<script type=\"text/javascript\">\n");
@@ -224,7 +234,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 				FDProductInfo productInfo = FDCachedFactory.getProductInfo(sku.getSkuCode());
 				FDProduct product = FDCachedFactory.getProduct(productInfo);
 
-				appendCoreScriptInternal(buf, productInfo, product);
+				appendCoreScriptInternal(buf, customer, productInfo, product);
 			} catch (FDResourceException e) {
 			} catch (FDSkuNotFoundException e) {
 			}
@@ -235,7 +245,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 
 
 
-	private void appendCoreScriptInternal(StringBuffer buf, FDProductInfo productInfo, FDProduct product) {
+	private static void appendCoreScriptInternal(StringBuffer buf, FDUserI customer, FDProductInfo productInfo, FDProduct product) {
 		Pricing pricing = product.getPricing();
 		MaterialPrice[] matPrices = pricing.getZonePrice(customer.getPricingZoneId()).getMaterialPrices();
 		CharacteristicValuePrice[] cvPrices = pricing.getCharacteristicValuePrices();
@@ -289,7 +299,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 	 * 
 	 * @param buf
 	 */
-	private void appendConfiguratorScript(StringBuffer buf) {
+	private static void appendConfiguratorScript(StringBuffer buf, FDUserI customer, Collection<TransactionalProductImpression> _txImpressions, String namespace, String formName, String formNamePostfix, boolean setMinQuantity) {
 		final int nConfProd = _txImpressions.size();
 
 		final String nsObj = namespace;
@@ -359,7 +369,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 			SkuModel sku = tpi.getSku();
 
 			// ie. "_dyf_3" or "_3"
-			String inpPx = "_" + (inputNamePostfix != null ? inputNamePostfix+"_"+j : Integer.toString(j));
+			String inpPx = "_" + (formNamePostfix != null ? formNamePostfix+"_"+j : Integer.toString(j));
 
 			buf.append("<script type=\"text/javascript\">\n");
 			
@@ -369,7 +379,7 @@ public class TxProductPricingSupportTag extends BodyTagSupport {
 				buf.append( nsObj + ".pricings["+j+"].setQuantity("+ tpi.getConfiguration().getQuantity() +");\n");
 				buf.append( nsObj + ".pricings["+j+"].setSalesUnit(\"\");\n");
 			} else {
-				buf.append( nsObj + ".pricings["+j+"].setQuantity(0);\n");
+				buf.append( nsObj + ".pricings["+j+"].setQuantity("+(setMinQuantity ? Double.toString(tpi.getConfiguration().getQuantity()) : "0")+");\n");
 				buf.append( nsObj + ".pricings["+j+"].setSalesUnit(\""+ tpi.getConfiguration().getSalesUnit() +"\");\n");
 			}
 			

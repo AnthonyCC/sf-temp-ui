@@ -182,7 +182,7 @@
 <tmpl:put name='rightNav' direct='true'>
 	<td width="155" colspan="2" align="center" class="rnav">
 		<img src="/media_stat/images/layout/clear.gif" height="10" width="1"><br />
-		<%@ include file="/common/template/includes/right_side_nav_new.jspf" %>
+		<%@ include file="/common/template/includes/right_side_nav.jspf" %>
 	</td>
 </tmpl:put>
 <tmpl:put name='header_1' direct='true'><td width="743" colspan="4"><%@ include file="/common/template/includes/deptnav.jspf" %></td></tmpl:put>

@@ -26,21 +26,21 @@ public class ProductPricingFactory {
 		return instance;
 	}
 
-	public ProductModel getPricingAdapter(ProductModel pm, PricingContext pCtx){
+	public ProductModelPricingAdapter getPricingAdapter(ProductModel pm, PricingContext pCtx){
 		if (pm == null) {
 			return null;
 		} else if(pm instanceof ProductModelPricingAdapter) {
-			return pm;
+			return (ProductModelPricingAdapter)pm;
 		} else {
 			return new ProductModelPricingAdapter(pm, pCtx);
 		}
 	}
 
-	public List<ProductModel> getPricingAdapter(List<ProductModel> list, PricingContext pCtx) {
+	public List<ProductModelPricingAdapter> getPricingAdapter(List<ProductModel> list, PricingContext pCtx) {
 		if (list == null) {
 			return null;
 		}
-		List<ProductModel> res = new ArrayList<ProductModel>(list.size());
+		List<ProductModelPricingAdapter> res = new ArrayList<ProductModelPricingAdapter>(list.size());
 		for (ProductModel p : list) {
 			res.add(getPricingAdapter(p,pCtx));
 		}

@@ -11,7 +11,6 @@ import com.freshdirect.cms.ui.service.BulkLoaderService;
 import com.freshdirect.cms.ui.service.BulkLoaderServiceAsync;
 import com.freshdirect.cms.ui.service.ContentService;
 import com.freshdirect.cms.ui.service.ContentServiceAsync;
-import com.freshdirect.fdstore.FDStoreProperties;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.maps.client.Maps;
@@ -32,6 +31,8 @@ public class CmsGwt implements EntryPoint {
     private static BulkLoaderServiceAsync bulkLoaderService;
     
     private static Map<String, NavigableRelationInfo> navigableInfo;
+    
+    private static boolean gmapsApiLoaded = false;
 
     public CmsGwt() {
     	contentService = (ContentServiceAsync) GWT.create(ContentService.class);
@@ -53,17 +54,7 @@ public class CmsGwt implements EntryPoint {
 			public void onSuccess(String result) {
 				Maps.loadMapsApi(result, "2", false, new Runnable() {
 		            public void run() {
-		            	mainLayout = MainLayout.getInstance();              
-		                
-		            	contentService.getUser(new BaseCallback<GwtUser>() {
-		                    @Override
-		                    public void onSuccess(GwtUser result) {
-		                        CmsGwt.currentUser = result;
-		                        mainLayout.userChanged();
-		                        History.fireCurrentHistoryState();
-		                    }
-		                });
-		                RootPanel.get().add(mainLayout);
+		            	gmapsApiLoaded = true;
 		            }
 		        });
 			}
@@ -74,6 +65,19 @@ public class CmsGwt implements EntryPoint {
 				
 			}
 		});
+
+    	
+    	mainLayout = MainLayout.getInstance();              
+		                
+    	contentService.getUser(new BaseCallback<GwtUser>() {
+            @Override
+            public void onSuccess(GwtUser result) {
+                CmsGwt.currentUser = result;
+                mainLayout.userChanged();
+                History.fireCurrentHistoryState();
+            }
+        });
+        RootPanel.get().add(mainLayout);
     	
     }
 
@@ -92,6 +96,11 @@ public class CmsGwt implements EntryPoint {
 	public static MainLayout getMainLayout() {
 		return mainLayout;
 	}
+	
+	public static boolean isGmapsApiLoaded() {
+		return gmapsApiLoaded;
+	}
+ 
 	
 	
 	public static void getNavigableRelations(String contentType, final AsyncCallback<NavigableRelationInfo> callback) {
@@ -126,5 +135,5 @@ public class CmsGwt implements EntryPoint {
 	    }
 	    console.log(message);
 	}-*/;
- 
+	
 }

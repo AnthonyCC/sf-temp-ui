@@ -22,7 +22,7 @@
  *
  */
 
-var supported = /MSIE ((5\.5)|[67])/.test(navigator.userAgent) &&
+var supported = /MSIE ((5\.5)|[6])/.test(navigator.userAgent) &&
 				navigator.platform == "Win32";
 
 var realSrc;
@@ -65,8 +65,8 @@ function fixImage() {
 					"AlphaImageLoader(src='" + src + "',sizingMethod='scale')";
 	}
 	else {
-		// remove filter
-		element.runtimeStyle.filter = "";
+		// remove filter - don't
+		// element.runtimeStyle.filter = "";
 	}
 }
 

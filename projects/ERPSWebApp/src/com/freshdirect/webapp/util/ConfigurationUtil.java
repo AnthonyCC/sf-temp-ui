@@ -1,6 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDProductSelection;

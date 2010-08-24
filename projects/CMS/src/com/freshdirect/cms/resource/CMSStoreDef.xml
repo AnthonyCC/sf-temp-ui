@@ -468,7 +468,9 @@
 				<EnumValue value="24" label="Package Layout 1"/>
 				<EnumValue value="25" label="All Static Media"/>
 				<EnumValue value="26" label="Vertical Labeled Category"/>
-				<EnumValue value="27" label="Featured Menu"/>
+				<EnumValue value="27" label="Featured Menu"/>				
+				<EnumValue value="40" label="4minute-meals landing page"/><!-- 4minute-meals department page -->
+				<EnumValue value="41" label="4minute-meals restaurant page"/><!-- 4minute-meals category page -->
                 <EnumValue value="97" label="Media No Nav"/><!-- [APPREQ-77] new layout -->
 				<EnumValue value="98" label="Multi Item Layout - Horizontal"/>
 				<EnumValue value="99" label="Multi Item Layout - Vertical"/>
@@ -959,6 +961,8 @@
 			<AttributeDef type="S" name="ALT_TEXT" label="Alt Text" />
 			<AttributeDef type="S" name="KEYWORDS" label="Keywords" />
 			<AttributeDef type="S" name="BLURB"  label="Blurb"/>
+			<AttributeDef type="S" name="CHEF_NAME" label="Chef name"/>
+			<AttributeDef type="S" name="CHEF_BLURB" label="Chef blurb text"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="FEATURED_PRODUCTS" label="Featured Products" cardinality="Many" inheritable="true">
@@ -972,6 +976,9 @@
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<RelationshipDef name="BRAND_LOGO_MEDIUM" label="Medium Brand Logo">
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="CHEF_IMAGE" label="Chef image">
 				<DestinationDef contentType="Image" />
 			</RelationshipDef>
 			<!-- text stuff -->

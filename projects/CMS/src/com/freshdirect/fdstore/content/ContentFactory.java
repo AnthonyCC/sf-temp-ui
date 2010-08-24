@@ -36,6 +36,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author:Robert Gayle$
  */
 public class ContentFactory {
+	
 	private final static Category LOGGER = LoggerFactory.getInstance(ContentFactory.class);
 
 	private static ContentFactory instance = new ContentFactory();
@@ -96,7 +97,7 @@ public class ContentFactory {
 	public ContentFactory() {
 		this.store = null;
 
-		// ISTVAN, chagned HashMap to ConcurrentHashMap
+		// ISTVAN, changed HashMap to ConcurrentHashMap
 		this.contentNodes = new ConcurrentHashMap<String, ContentNodeModel>();
 		this.nodesByKey = new ConcurrentHashMap<ContentKey, ContentNodeModel>();
 		this.skuProduct = new LruCache<String,ContentKey>(40000);
@@ -127,14 +128,14 @@ public class ContentFactory {
 		List<BrandModel> brandList = new ArrayList<BrandModel>();
 		Set<ContentKey> brandSet = loadKey("Brand", false);
 		for ( ContentKey brandKey : brandSet ) {
-			brandList.add((BrandModel)ContentNodeModelUtil.constructModel(brandKey, true));
+			BrandModel brand = (BrandModel)ContentNodeModelUtil.constructModel(brandKey, true); 
+			brandList.add( brand );
 		}
 		theStore.setBrands(brandList);
 
 		List<Domain> domainList = new ArrayList<Domain>();
 		Set<ContentKey> domainSet = loadKey("Domain", false);
-		for (Iterator<ContentKey> i = domainSet.iterator(); i.hasNext();) {
-			ContentKey domainKey = i.next();
+		for ( ContentKey domainKey : domainSet ) {
 			Domain domain = (Domain) ContentNodeModelUtil.constructModel(domainKey, false);
 			domainList.add(domain);
 		}
@@ -189,6 +190,10 @@ public class ContentFactory {
 		return m;
 	}
 	
+	public ContentNodeModel getContentNode(String type, String id) {
+	    return getContentNodeByKey(new ContentKey( ContentType.get( type ), id) );
+	}
+	
 	public ContentNodeModel getContentNode(ContentType type, String id) {
 	    return getContentNodeByKey(new ContentKey(type, id));
 	}
@@ -225,10 +230,11 @@ public class ContentFactory {
 		// find the one in the PRIMARY_HOME (if there's one)
 		ProductModel prod = null;
 		CategoryModel primaryHome = null;
-		for (Iterator<ProductModel> i = refs.iterator(); i.hasNext();) {
-		        prod = i.next();
+		Iterator<ProductModel> i = refs.iterator();
+		while ( i.hasNext() ) {
+	        prod = i.next();
 
-		        if (prod == null) {
+			if (prod == null) {
 				// product not found, skip
 				continue;
 			}
@@ -436,14 +442,14 @@ public class ContentFactory {
 		}
 		List<BrandModel> brands = this.store.getBrands();
 		if (brands != null) {
-			for ( BrandModel bm : brands ) {
-				cacheBrand( bm );
+			for ( BrandModel brand : brands ) {
+				cacheBrand( brand );
 			}
 		}
 		List<Domain> storeDomains = this.store.getDomains();
 		if (storeDomains != null) {
-			for ( Domain d : storeDomains ) {
-				cacheDomain( d );
+			for ( Domain domain : storeDomains ) {
+				cacheDomain( domain );
 			}
 		}
 	}
@@ -468,8 +474,8 @@ public class ContentFactory {
 		 */
 		List<DomainValue> dmvList = domain.getDomainValues();
 		if (dmvList != null) {
-			for ( DomainValue dv : dmvList ) {
-				cacheDomainValue(domain, dv);
+			for ( DomainValue domainValue : dmvList ) {
+				cacheDomainValue(domain, domainValue);
 			}
 		}
 	}
@@ -505,8 +511,7 @@ public class ContentFactory {
 			if(cmsCNode != null) {
 				model = ContentNodeModelUtil.constructModel(key, true);
 			}
-		}
-			
+		}			
 		return model;
 	}
 	

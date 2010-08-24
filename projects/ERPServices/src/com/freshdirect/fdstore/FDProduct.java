@@ -284,6 +284,11 @@ public class FDProduct extends FDSku implements AttributesI {
 	public List getNutritionInfoList(ErpNutritionInfoType type) {
 		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoList(type);
 	}
+	
+	public List<EnumClaimValue> getClaims() {
+		return getNutritionInfoList( ErpNutritionInfoType.CLAIM );
+	}
+
 
 	public boolean hasOANClaim() {
 		return hasClaim(EnumClaimValue.OAN_ORGANIC);

@@ -2,16 +2,18 @@ package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class GetDlvRestrictionsTag extends AbstractGetterTag {
+public class GetDlvRestrictionsTag extends AbstractGetterTag<List<RestrictionI>> {
 
 	private EnumDlvRestrictionReason reason;
 	private boolean withinHorizon = false;
@@ -24,7 +26,7 @@ public class GetDlvRestrictionsTag extends AbstractGetterTag {
 		this.reason = reason;
 	}
 
-	protected Object getResult() throws Exception {
+	protected List<RestrictionI> getResult() throws Exception {
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		if (withinHorizon) {
 			Calendar cal = Calendar.getInstance();
@@ -52,7 +54,7 @@ public class GetDlvRestrictionsTag extends AbstractGetterTag {
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
 		protected String getResultType() {
-			return "java.util.List";
+			return "java.util.List<com.freshdirect.delivery.restriction.RestrictionI>";
 		}
 	}
 }

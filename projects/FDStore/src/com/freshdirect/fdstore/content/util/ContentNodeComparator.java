@@ -18,7 +18,6 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -26,7 +25,8 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**@author ekracoff on Feb 13, 2004*/
-public class ContentNodeComparator implements Comparator {
+public class ContentNodeComparator implements Comparator<ContentNodeModel> {
+	
 	private static Logger LOGGER = LoggerFactory.getInstance(ContentNodeComparator.class);
 
 	List<SortStrategyElement> strategy;
@@ -35,11 +35,7 @@ public class ContentNodeComparator implements Comparator {
 		this.strategy = strategy;
 	}
 
-	public int compare(Object obj1, Object obj2) {
-
-		ContentNodeModel node1 = (ContentNodeModel) obj1;
-		ContentNodeModel node2 = (ContentNodeModel) obj2;
-
+	public int compare(ContentNodeModel node1, ContentNodeModel node2) {
 		int rslt = 0;
 		for (Iterator<SortStrategyElement> i = strategy.iterator(); i.hasNext() && rslt == 0;) {
 			SortStrategyElement strategyElement = i.next();
@@ -196,12 +192,12 @@ public class ContentNodeComparator implements Comparator {
 				return Double.NaN;
 			}
 
-			List nList = skuModel.getProduct().getNutrition();
+			List<FDNutrition> nList = skuModel.getProduct().getNutrition();
 
 			boolean foundNutrition = false;
 			double servingSize = -1;
 			double nutValue = Double.NaN; //in case nutrition value is not found
-			for (Iterator iNut = nList.iterator(); iNut.hasNext() && (servingSize == 0 || !foundNutrition);) {
+			for (Iterator<FDNutrition> iNut = nList.iterator(); iNut.hasNext() && (servingSize == 0 || !foundNutrition);) {
 				FDNutrition fdNut = (FDNutrition) iNut.next();
 				if (fdNut.getName().equals(ErpNutritionType.getType("SERVING_SIZE").getDisplayName())) {
 					servingSize = fdNut.getValue();
@@ -452,33 +448,33 @@ public class ContentNodeComparator implements Comparator {
 		}
 	}
 	
-	private int compareByProductRating(
-			ContentNodeModel node1,
-			ContentNodeModel node2, boolean descending) {
-			Integer attrib1 = getProductRating(node1);
-			Integer attrib2 = getProductRating(node2);
-			
-			if (attrib1 == null && attrib2 == null)
-				return 0;
+	private int compareByProductRating( ContentNodeModel node1, ContentNodeModel node2, boolean descending ) {
+		
+		Integer attrib1 = getProductRating(node1);
+		Integer attrib2 = getProductRating(node2);
+		
+		if (attrib1 == null && attrib2 == null)
+			return 0;
 
-			if (attrib1 == null)
-				return descending ? -1 : 1;
+		if (attrib1 == null)
+			return descending ? -1 : 1;
 
-			if (attrib2 == null)
-				return  descending ? 1 : -1;
+		if (attrib2 == null)
+			return  descending ? 1 : -1;
 
-			if (attrib1.equals(attrib2))
-				return 0;
+		if (attrib1.equals(attrib2))
+			return 0;
 
-			return attrib1.compareTo(attrib2);
-		}
+		return attrib1.compareTo(attrib2);
+	}
+	
 	private Object getWineAttribute(ContentNodeModel node, String attributeName) {
 		if(!(node instanceof ProductModel))
 			return null;
 		ProductModel pm = (ProductModel) node;	
 		Object attrValue = null;			
 		if(EnumWineSortType.RATING.equals(EnumWineSortType.getWineSortType(attributeName))){
-			List ratingValues = pm.getWineRating1();
+			List<DomainValue> ratingValues = pm.getWineRating1();
 			if(ratingValues != null && ratingValues.size() > 0){
 				DomainValue dv = (DomainValue) ratingValues.get(0);
 				try {
@@ -489,21 +485,21 @@ public class ContentNodeComparator implements Comparator {
 			}
 		}
 		if(EnumWineSortType.REGION.equals(EnumWineSortType.getWineSortType(attributeName))) {
-			List regionValues = pm.getNewWineRegion();
+			List<DomainValue> regionValues = pm.getNewWineRegion();
 			if(regionValues != null && regionValues.size() > 0){
 				DomainValue dv = (DomainValue) regionValues.get(0);
 				attrValue = dv.getValue();
 			}
 		}
 		if(EnumWineSortType.VARIETY.equals(EnumWineSortType.getWineSortType(attributeName))) {
-			List varietalValues = pm.getWineVarietal();
+			List<DomainValue> varietalValues = pm.getWineVarietal();
 			if(varietalValues != null && varietalValues.size() > 0){
 				DomainValue dv = (DomainValue) varietalValues.get(0);
 				attrValue = dv.getValue();
 			}
 		}
 		if(EnumWineSortType.VINTAGE.equals(EnumWineSortType.getWineSortType(attributeName))){
-			List vintageValues = pm.getWineVintage();
+			List<DomainValue> vintageValues = pm.getWineVintage();
 			if(vintageValues != null && vintageValues.size() > 0){
 				DomainValue dv = (DomainValue) vintageValues.get(0);
 				try {
@@ -520,8 +516,8 @@ public class ContentNodeComparator implements Comparator {
 		boolean isProduct1 = node1 instanceof ProductModel || node1 instanceof SkuModel || (node1 instanceof CategoryModel && ((CategoryModel)node1).getTreatAsProduct());
 		boolean isProduct2 = node2 instanceof ProductModel || node2 instanceof SkuModel || (node2 instanceof CategoryModel && ((CategoryModel)node2).getTreatAsProduct());
 
-		List parentList1 = new ArrayList();
-		List parentList2 = new ArrayList();
+		List<ContentNodeModel> parentList1 = new ArrayList<ContentNodeModel>();
+		List<ContentNodeModel> parentList2 = new ArrayList<ContentNodeModel>();
 
 		fillParentList(parentList1, node1);
 		fillParentList(parentList2, node2);
@@ -566,7 +562,7 @@ public class ContentNodeComparator implements Comparator {
 		return r;
 	}
 
-	private void fillParentList(List parentList, ContentNodeModel node) {
+	private void fillParentList(List<ContentNodeModel> parentList, ContentNodeModel node) {
 		parentList.clear();
 		ContentNodeModel theNode = (node instanceof SkuModel ? node.getParentNode() : node);
 		if (theNode instanceof CategoryModel && !((CategoryModel)theNode).getTreatAsProduct()) {

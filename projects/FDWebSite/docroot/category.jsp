@@ -11,7 +11,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='oscache' prefix='oscache' %>
 
-
 <fd:CheckLoginStatus />
 
 <%
@@ -119,8 +118,6 @@
 	    }
 	}
 %>
-
-<!-- include template <%= jspTemplate %> layout : <%= EnumLayoutType.getLayoutType(layouttype)%> -->
 <tmpl:insert template='<%=jspTemplate%>'>
 	
 	<% if (!noLeftNav) { %>
@@ -213,7 +210,8 @@
 					<table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
 						 
 						<% 
-						if ( !"nm".equalsIgnoreCase(introTitle) && introTitle != null && introTitle.trim().length() > 0 ) {
+						if ( !"nm".equalsIgnoreCase(introTitle) && introTitle != null && introTitle.trim().length() > 0 
+								&& EnumLayoutType.FOURMM_CATEGORY.getId() != layouttype ) {
 							
 							showLine=true; %>
 							<tr><td align="center"><% 
@@ -244,6 +242,7 @@
 								&& !( layouttype == EnumLayoutType.GROCERY_CATEGORY.getId() 
 										&& currentFolder.getEditorial() != null 
 										&& (currentFolder instanceof CategoryModel && ((CategoryModel)currentFolder).getCategoryLabel() != null )) 
+								&& EnumLayoutType.FOURMM_CATEGORY.getId() != layouttype
 							) { 
 							
 							if ( layouttype != EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) 
@@ -362,7 +361,7 @@
 	  	if ( request.getAttribute("brandsList") != null ) {
 			brands = (Set)request.getAttribute("brandsList");
 	   	}
-	   	if ( EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layouttype && EnumLayoutType.VALENTINES_CATEGORY.getId() != layouttype ) { 
+	   	if ( EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layouttype && EnumLayoutType.VALENTINES_CATEGORY.getId() != layouttype && EnumLayoutType.FOURMM_CATEGORY.getId() != layouttype ) { 
 	   		%><%@ include file="/includes/i_bottom_template.jspf" %><%
 		} %>
 			

@@ -39,10 +39,7 @@ public interface ConfigurationStrategy {
 		 * @return a product impression of the product
 		 */
 		public ProductImpression configure(ProductModel productModel, ConfigurationContext context) {
-			
-			
-			for(Iterator i = productModel.getSkus().iterator(); i.hasNext(); ) {
-				SkuModel  skuModel = (SkuModel)i.next();
+			for (SkuModel skuModel : productModel.getSkus()) {
 				if (skuModel.isUnavailable()) continue;
 				
 				

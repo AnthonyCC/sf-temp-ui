@@ -21,7 +21,7 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  * @author zsombor
  *
  */
-public class FeaturedItemsTag extends RecommendationsTag {
+public class ProductGroupRecommenderTag extends RecommendationsTag {
 
     /**
      * 
@@ -30,9 +30,14 @@ public class FeaturedItemsTag extends RecommendationsTag {
     ContentNodeModel nodeModel;
     private boolean noShuffle = false;
     private Set shoppingCart = null;
+    String siteFeature=null;
     
     public void setCurrentNode(ContentNodeModel cnm) {
         this.nodeModel = cnm;
+    }
+    
+    public void setSiteFeature(String sf) {
+    	this.siteFeature=sf;
     }
     
     /* (non-Javadoc)
@@ -56,7 +61,12 @@ public class FeaturedItemsTag extends RecommendationsTag {
         if (shoppingCart != null) {
         	si.setCartContents(shoppingCart);
         }
-        Recommendations results = recommender.getRecommendations(EnumSiteFeature.FEATURED_ITEMS, user, si);
+        
+        EnumSiteFeature siteFeat = EnumSiteFeature.getEnum(siteFeature);
+        if(siteFeat==null) {
+        	throw new IllegalArgumentException("illegal argument: siteFeature");
+        }
+		Recommendations results = recommender.getRecommendations(siteFeat, user, si);
 
         collectRequestId(request, results, user);
 

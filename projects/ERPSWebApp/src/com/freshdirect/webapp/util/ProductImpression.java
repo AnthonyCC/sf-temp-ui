@@ -165,6 +165,7 @@ public class ProductImpression {
 	 *
 	 * @return
 	 */
+	@Deprecated
 	public boolean validate() {
 		boolean isValid = true;
 		

@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.framework.webapp;
 
 import javax.ejb.*;
@@ -16,13 +8,12 @@ import javax.servlet.jsp.tagext.*;
 
 /**
  * Base class for simple jsp tags
- *
- * @version $Revision$
- * @author $Author$
  */ 
 public class BodyTagSupport extends javax.servlet.jsp.tagext.BodyTagSupport {
     
-    /** looks up a home interface based on its binding to the local
+	private static final long	serialVersionUID	= 1485400029613429371L;
+
+	/** looks up a home interface based on its binding to the local
      * comp/env space in the webapp deployment descriptor
      * @param envName the name the homne interface is bound to in the web deployment descriptor
      * @throws NamingException any errors while trying to locate the home interface

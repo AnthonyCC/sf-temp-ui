@@ -10,6 +10,7 @@
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%!
     java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -124,38 +125,7 @@ Recipe recipe = null;
     <tr valign="top">
      <td><font class="title18"><%= orderLine.getDescription() %></font>&nbsp;&nbsp;&nbsp;&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a>
      <br><font class="space4pix"><br></font>
-     Quantity: <font class="text10bold">
-     <%  String sell_by = prdNode.getSellBySalesunit();
-         String quantityTextSecondary = prdNode.getQuantityTextSecondary();
-         if ( (sell_by == null) || "".equals(sell_by) || "QUANTITY".equalsIgnoreCase(sell_by) ){  %>
-              <%= quantityFormatter.format(orderLine.getQuantity()) %>
- <%        if (quantityTextSecondary != null) { %>
-              <%= quantityTextSecondary %>
-<%          } else if (isSoldByLB) { %>
-               lb
- <%         }
-        } else {
-            FDSalesUnit[] units = prdNode.getSku(orderLine.getSkuCode()).getProduct().getSalesUnits();
-            FDSalesUnit fdsu = null;
-            for (int i=0; i<units.length; i++) {
-                if (units[i].getName().equals(orderLine.getSalesUnit())) {
-                    fdsu = units[i];
-                    break;
-                }
-            }
-            String salesUnitDescr = (fdsu != null) ? fdsu.getDescription() : "";
-            if ("SALES_UNIT".equals(sell_by)) { %>
-                <%= salesUnitDescr %>
-    <%      } else if ("BOTH".equals(sell_by)) { %>
-                <%= quantityFormatter.format(orderLine.getQuantity()) %>
-            <%  if (quantityTextSecondary != null) { %>
-                    <%= quantityTextSecondary %>
-            <%  } else { %>
-                    <%= salesUnitDescr %>
-    <%          }
-            }
-        }   %>
-        </font>
+     Quantity: <span class="text10bold"><display:OrderLineQuantity product="<%= prdNode %>" orderline="<%= orderLine %>" customer="<%= userd %>"/></span>
 	    <br><font class="space2pix"><br></font>
 	       Options: <font class="text10bold"><%= orderLine.getConfigurationDesc() %></font>
 	    <br><font class="space2pix"><BR></font>

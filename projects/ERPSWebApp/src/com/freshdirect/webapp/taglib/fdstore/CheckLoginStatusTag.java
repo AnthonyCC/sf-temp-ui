@@ -23,7 +23,6 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.util.RobotRecognizer;
 
 
-
 public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSupport implements SessionName {
     
 	private static final long	serialVersionUID	= -5813651711727931409L;

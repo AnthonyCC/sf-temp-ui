@@ -31,6 +31,7 @@ import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
@@ -81,6 +82,7 @@ import com.freshdirect.deliverypass.DeliveryPassInfo;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DlvPassConstants;
 import com.freshdirect.deliverypass.DlvPassUsageInfo;
+import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDPAutoRenewalType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -127,9 +129,6 @@ import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.giftcard.ServiceUnavailableException;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.mail.ejb.MailerGatewaySB;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
-import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
-import com.freshdirect.routing.service.util.LocationLocatorResult;
 import com.freshdirect.smartstore.Variant;
 import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 
@@ -1219,7 +1218,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static List getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
+	public static List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -1677,7 +1676,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static List getAlerts(String customerId) throws FDResourceException {
+	public static List<ErpCustomerAlertModel> getAlerts(String customerId) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -1761,13 +1760,12 @@ public class FDCustomerManager {
 			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);
 			timer = System.currentTimeMillis() - timer;
 
-			Map invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines);
+			Map<Integer,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines);
 			cart.setAvailability(new FDCompositeAvailability(invs));
 
 			if (LOGGER.isInfoEnabled()) {
 				int unavCount = 0;
-				for (Iterator i = invs.keySet().iterator(); i.hasNext();) {
-					Integer key = (Integer) i.next();
+				for ( Integer key : invs.keySet() ) {
 					FDAvailabilityI inv = (FDAvailabilityI) invs.get(key);
 					FDReservation deliveryReservation = cart.getDeliveryReservation();
 					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
@@ -1833,7 +1831,7 @@ public class FDCustomerManager {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public static List locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException {
+	public static List<FDCustomerOrderInfo> locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -1864,7 +1862,7 @@ public class FDCustomerManager {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 
-	public static List locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException {
+	public static List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2134,7 +2132,7 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static Map getProductPopularity() throws FDResourceException {
+	public static Map<String, Integer> getProductPopularity() throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2148,7 +2146,7 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static List getReminderListForToday() throws FDResourceException {
+	public static List<String> getReminderListForToday() throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2332,7 +2330,7 @@ public class FDCustomerManager {
 		}
 	}
 
-	public static Map loadProfileAttributeNames() throws FDResourceException {
+	public static Map<String, ProfileAttributeName> loadProfileAttributeNames() throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2346,7 +2344,7 @@ public class FDCustomerManager {
 		}
 	}
 		
-	public static List loadProfileAttributeNameCategories() throws FDResourceException {
+	public static List<String> loadProfileAttributeNameCategories() throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2398,7 +2396,7 @@ public class FDCustomerManager {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public static List getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
+	public static List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity, String dlvPassId, int noOfDaysOld) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
@@ -2424,7 +2422,7 @@ public class FDCustomerManager {
 				//Return Empty map.
 				return dlvPassesInfo;
 			}
-			Map usageInfos = sb.getDlvPassesUsageInfo(identity);
+			Map<String, DlvPassUsageInfo> usageInfos = sb.getDlvPassesUsageInfo(identity);
 			
 			List<Object> historyInfo = null;
 			for ( DeliveryPassModel model : dlvPasses ) {
@@ -2489,11 +2487,11 @@ public class FDCustomerManager {
 		}
 	}
 	
-	public static Map cancelOrders(FDActionInfo actionInfo,  List customerOrders, boolean sendEmail) throws FDResourceException {
+	public static Map<String, List<FDCustomerOrderInfo>> cancelOrders(FDActionInfo actionInfo,  List<FDCustomerOrderInfo> customerOrders, boolean sendEmail) throws FDResourceException {
 		lookupManagerHome();
 		try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.cancelOrders(actionInfo, customerOrders, sendEmail);
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.cancelOrders(actionInfo, customerOrders, sendEmail);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2508,8 +2506,7 @@ public class FDCustomerManager {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.storeRetentionSurvey(fdIdentity, profileAttr
-					, profileValue, caseInfo);
+			sb.storeRetentionSurvey(fdIdentity, profileAttr, profileValue, caseInfo);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -2522,8 +2519,8 @@ public class FDCustomerManager {
 		
 		lookupManagerHome();
 		try {
-				FDCustomerManagerSB sb = managerHome.create();
-				return sb.hasPurchasedPass(customerPK);
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.hasPurchasedPass(customerPK);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2641,8 +2638,7 @@ public class FDCustomerManager {
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 
-			for (Iterator it = EnumSiteFeature.getEnumList().iterator(); it.hasNext();) {
-				EnumSiteFeature feature = (EnumSiteFeature) it.next();
+			for ( EnumSiteFeature feature : EnumSiteFeature.getEnumList() ) {
 				if (feature.isSmartStore()) {
 					Variant variant = VariantSelectorFactory.getSelector(feature).select(user);
 					if (variant != null) {
@@ -2829,7 +2825,7 @@ public class FDCustomerManager {
 		}
 	}
 	    
-	    public static void storeProductRequest(List productRequest) throws FDResourceException {
+	    public static void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
 			lookupManagerHome();
 			try {
 				FDCustomerManagerSB sb = managerHome.create();
@@ -3429,7 +3425,7 @@ public class FDCustomerManager {
 	}
 
 		
-		public static List getTopFaqs() throws FDResourceException {
+		public static List<String> getTopFaqs() throws FDResourceException {
 			
 				lookupManagerHome();
 				
@@ -3511,5 +3507,134 @@ public class FDCustomerManager {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to bean");
 		}
+	}
+	
+	
+	public static void createCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
+		lookupManagerHome();
+		try {			
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			sb.createCounter( customerId, counterId, initialValue );
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}		
+	}
+	
+	public static void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException {
+		lookupManagerHome();
+		try {			
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			sb.updateCounter( customerId, counterId, newValue );
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}		
+	}
+	
+	public static Integer getCounter( String customerId, String counterId ) throws FDResourceException {
+		lookupManagerHome();
+		try {			
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			return sb.getCounter( customerId, counterId );
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}		
+	}
+	
+	/**
+	 * Convenience method for decrement type counters.
+	 * 
+	 * @param customerId	id of the customer
+	 * @param counterId		name of the counter
+	 * @param initialValue	initial value of the counter
+	 * @return	value of the counter
+	 * @throws FDResourceException
+	 */
+	public static int decrementCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
+		
+		if ( customerId == null || customerId.trim().length() == 0 ) {
+			return initialValue;
+		}
+		
+		lookupManagerHome();
+		try {			
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			Integer counter = sb.getCounter( customerId, counterId );
+			
+			if ( counter == null ) {
+				sb.createCounter( customerId, counterId, initialValue );
+				counter = initialValue;
+			}
+			
+			if ( counter > 0 ) {
+				sb.updateCounter( customerId, counterId, --counter );
+			}
+			
+			return counter;
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}				
+	}
+	
+	
+	
+
+	/**
+	 * Convenience method to get a counter value and create if not exits.
+	 * 
+	 * @param customerId	Customer ID
+	 * @param counterId		Counter identifier string
+	 * @param initialValue	Positive integer number
+	 * @return True if counter has not reached 0 yet.
+	 * @throws FDResourceException
+	 */
+	public static boolean testCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
+		if ( customerId == null || customerId.trim().length() == 0 ) {
+			return true;
+		}
+
+		lookupManagerHome();
+		try {			
+			FDCustomerManagerSB sb = managerHome.create();
+			
+			Integer counter = sb.getCounter( customerId, counterId );
+			
+			if ( counter == null ) {
+				sb.createCounter( customerId, counterId, initialValue );
+				counter = initialValue;
+			}
+			
+			return counter > 0;
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to bean");
+		}				
+			
 	}
 }

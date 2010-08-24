@@ -15,9 +15,13 @@ import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ComponentGroupModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.EnumProductLayout;
@@ -28,11 +32,13 @@ import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.PrioritizedI;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 public class ProductModelPricingAdapter implements ProductModel, Serializable, Cloneable, PrioritizedI {
+	
 	private static final long serialVersionUID = -6112229358347075169L;
 
 	private final PricingContext pricingCtx;
@@ -45,6 +51,23 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		this.prodModel = pModel;
 		this.pricingCtx = pCtx;
 	}
+	
+	@Override
+	public boolean equals( Object obj ) {
+		if ( this == obj ) {
+			return true;
+		}
+		if ( obj instanceof ProductModel ) {
+			return getContentKey().equals( ((ProductModel)obj).getContentKey() );
+		}		
+		return false;		
+	}
+	
+	@Override
+	public int hashCode() {
+		return getContentKey().hashCode();
+	}
+	
 	@Override
 	public boolean enforceQuantityMax() {
 		return false;
@@ -55,94 +78,98 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
    }
    
    
-       @Override
+   @Override
     public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
-           return prodModel.getValidSkuCode(ctx, skuCode);
+       return prodModel.getValidSkuCode(ctx, skuCode);
     }
-       
-       public PriceCalculator getPriceCalculator() {
-           return new PriceCalculator(pricingCtx, prodModel, prodModel.getDefaultSku(pricingCtx));
-       }
+   
+   public PriceCalculator getPriceCalculator() {
+       return new PriceCalculator(pricingCtx, prodModel, prodModel.getDefaultSku(pricingCtx));
+   }
 
-       public PriceCalculator getPriceCalculator(String skuCode) {
-           return new PriceCalculator(pricingCtx, prodModel, prodModel.getValidSkuCode(pricingCtx, skuCode));
-       }
-       
-       
-       /* price calculator calls */
-       
-       public String getDefaultPrice() {
-           return getPriceCalculator().getDefaultPrice();
-       }
-       
-       public String getDefaultPriceOnly() {
-           return getPriceCalculator().getDefaultPriceOnly();
-       }
+   public PriceCalculator getPriceCalculator(String skuCode) {
+       return new PriceCalculator(pricingCtx, prodModel, prodModel.getValidSkuCode(pricingCtx, skuCode));
+   }
+   
+   
+   /* price calculator calls */
+   
+   public double getDefaultPriceValue() {
+       return getPriceCalculator().getDefaultPriceValue();
+   }
+   
+   public String getDefaultPrice() {
+       return getPriceCalculator().getDefaultPrice();
+   }
+   
+   public String getDefaultPriceOnly() {
+       return getPriceCalculator().getDefaultPriceOnly();
+   }
 
-       public String getDefaultUnitOnly() {
-           return getPriceCalculator().getDefaultUnitOnly();
-       }
+   public String getDefaultUnitOnly() {
+       return getPriceCalculator().getDefaultUnitOnly();
+   }
 
-       public int getDealPercentage(String skuCode) {
-           return getPriceCalculator(skuCode).getDealPercentage();
-       }
+   public int getDealPercentage(String skuCode) {
+       return getPriceCalculator(skuCode).getDealPercentage();
+   }
 
 
-       public int getTieredDealPercentage(String skuCode) {
-           return getPriceCalculator(skuCode).getTieredDealPercentage();
-       }
-       
+   public int getTieredDealPercentage(String skuCode) {
+       return getPriceCalculator(skuCode).getTieredDealPercentage();
+   }
+   
 
-       public int getHighestDealPercentage(String skuCode) {
-           return getPriceCalculator(skuCode).getHighestDealPercentage();
-       }
+   public int getHighestDealPercentage(String skuCode) {
+       return getPriceCalculator(skuCode).getHighestDealPercentage();
+   }
 
-       public String getTieredPrice(double savingsPercentage) {
-           return getPriceCalculator().getTieredPrice(savingsPercentage);
-       }
+   public String getTieredPrice(double savingsPercentage) {
+       return getPriceCalculator().getTieredPrice(savingsPercentage);
+   }
 
-       public double getPrice(double savingsPercentage) {
-           return getPriceCalculator().getPrice(savingsPercentage);
-       }
+   public double getPrice(double savingsPercentage) {
+       return getPriceCalculator().getPrice(savingsPercentage);
+   }
 
-       
-       public String getPriceFormatted(double savingsPercentage) {
-           return getPriceCalculator().getPriceFormatted(savingsPercentage);
-       }
-       
+   
+   public String getPriceFormatted(double savingsPercentage) {
+       return getPriceCalculator().getPriceFormatted(savingsPercentage);
+   }
+   
 
-       public String getWasPriceFormatted(double savingsPercentage) {
-           return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
-       }
-       
-       public String getAboutPriceFormatted(double savingsPercentage) {
-           return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
-       }
-       
-       public String getSizeDescription() throws FDResourceException {
-           return getPriceCalculator().getSizeDescription();
-       }
-       
-       public String getKosherSymbol() throws FDResourceException {
-           return getPriceCalculator().getKosherSymbol();
-       }
-       
-       public String getKosherType() throws FDResourceException {
-           return getPriceCalculator().getKosherType();
-       }
+   public String getWasPriceFormatted(double savingsPercentage) {
+       return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
+   }
+   
+   public String getAboutPriceFormatted(double savingsPercentage) {
+       return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
+   }
+   
+   public String getSizeDescription() throws FDResourceException {
+       return getPriceCalculator().getSizeDescription();
+   }
+   
+   public String getKosherSymbol() throws FDResourceException {
+       return getPriceCalculator().getKosherSymbol();
+   }
+   
+   public String getKosherType() throws FDResourceException {
+       return getPriceCalculator().getKosherType();
+   }
 
-       
-       public boolean isKosherProductionItem() throws FDResourceException {
-           return getPriceCalculator().isKosherProductionItem();
-       }
+   
+   public boolean isKosherProductionItem() throws FDResourceException {
+       return getPriceCalculator().isKosherProductionItem();
+   }
 
-       public int getKosherPriority() throws FDResourceException {
-           return getPriceCalculator().getKosherPriority();
-       }
-       
-       
-       /* end of the price calculator calls */
-       
+   public int getKosherPriority() throws FDResourceException {
+       return getPriceCalculator().getKosherPriority();
+   }
+   
+   
+   /* end of the price calculator calls */
+   
        
    
 	@Override
@@ -161,7 +188,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getAlsoSoldAs() {
+	public List<ProductModel> getAlsoSoldAs() {
 		return this.prodModel.getAlsoSoldAs();
 	}
 
@@ -171,7 +198,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getAlsoSoldAsRefs() {
+	public List<ProductModel> getAlsoSoldAsRefs() {
 		return this.prodModel.getAlsoSoldAsRefs();
 	}
 
@@ -221,7 +248,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getBrands() {
+	public List<BrandModel> getBrands() {
 		return this.prodModel.getBrands();
 	}
 
@@ -231,13 +258,12 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public Set getCommonNutritionInfo(ErpNutritionInfoType type)
-			throws FDResourceException {
+	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
 		return this.prodModel.getCommonNutritionInfo(type);
 	}
 
 	@Override
-	public List getComponentGroups() {
+	public List<ComponentGroupModel> getComponentGroups() {
 		return this.prodModel.getComponentGroups();
 	}
 
@@ -262,7 +288,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getCountryOfOrigin() throws FDResourceException {
+	public List<String> getCountryOfOrigin() throws FDResourceException {
 		return this.prodModel.getCountryOfOrigin();
 	}
 
@@ -379,7 +405,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 
 
 	@Override
-	public List getHowtoCookitFolders() {
+	public List<CategoryModel> getHowtoCookitFolders() {
 		return this.prodModel.getHowtoCookitFolders();
 	}
 
@@ -401,7 +427,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getNewWineRegion() {
+	public List<DomainValue> getNewWineRegion() {
 		return this.prodModel.getNewWineRegion();
 	}
 
@@ -473,7 +499,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getProductBundle() {
+	public List<ProductModel> getProductBundle() {
 		return this.prodModel.getProductBundle();
 	}
 
@@ -503,8 +529,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public EnumOrderLineRating getProductRatingEnum()
-			throws FDResourceException {
+	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return this.prodModel.getProductRatingEnum();
 	}
 
@@ -544,7 +569,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getRating() {
+	public List<DomainValue> getRating() {
 		return this.prodModel.getRating();
 	}
 
@@ -574,7 +599,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getRelatedRecipes() {
+	public List<Recipe> getRelatedRecipes() {
 		return this.prodModel.getRelatedRecipes();
 	}
 
@@ -621,9 +646,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 
 	@Override
 	public SkuModel getSku(String skuCode) {
-		List skus = getSkus();
-		for (Iterator sIter = skus.iterator(); sIter.hasNext();) {
-			SkuModel s = (SkuModel) sIter.next();
+		List<SkuModel> skus = getSkus();
+		for ( SkuModel s : skus ) {
 			if (s.getSkuCode().equalsIgnoreCase(skuCode)) {
 				return s;
 			}
@@ -640,10 +664,10 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	 * @return Value of property skus.
 	 */
 	public List<SkuModel> getSkus() {
-		List skuModels = prodModel.getSkus();
-		List skuAdapters = new ArrayList<SkuModel>(skuModels.size());
+		List<SkuModel> skuModels = prodModel.getSkus();
+		List<SkuModel> skuAdapters = new ArrayList<SkuModel>(skuModels.size());
 		for(Iterator<SkuModel> it = skuModels.iterator(); it.hasNext();){
-			SkuModel sku = (SkuModel)it.next();
+			SkuModel sku = it.next();
 			skuAdapters.add(new SkuModelPricingAdapter(sku, pricingCtx));
 		}
 		return skuAdapters;
@@ -681,28 +705,28 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getUsageList() {
+	public List<Domain> getUsageList() {
 		return this.prodModel.getUsageList();
 	}
 
 	@Override
-	public List getVariationMatrix() {
+	public List<Domain> getVariationMatrix() {
 		return this.prodModel.getVariationMatrix();
 	}
 
 	@Override
-	public List getVariationOptions() {
+	public List<Domain> getVariationOptions() {
 		return this.prodModel.getVariationOptions();
 	}
 
 
 	@Override
-	public List getWeRecommendImage() {
+	public List<ProductModel> getWeRecommendImage() {
 		return this.prodModel.getWeRecommendImage();
 	}
 
 	@Override
-	public List getWeRecommendText() {
+	public List<ProductModel> getWeRecommendText() {
 		return this.prodModel.getWeRecommendText();
 	}
 
@@ -797,27 +821,27 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getYmalCategories() {
+	public List<CategoryModel> getYmalCategories() {
 		return this.prodModel.getYmalCategories();
 	}
 
 	@Override
-	public List getYmalProducts() {
+	public List<ProductModel> getYmalProducts() {
 		return this.prodModel.getYmalProducts();
 	}
 
 	@Override
-	public List getYmalProducts(Set removeSkus) {
+	public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
 		return this.prodModel.getYmalProducts(removeSkus);
 	}
 
 	@Override
-	public List getYmalRecipes() {
+	public List<Recipe> getYmalRecipes() {
 		return this.prodModel.getYmalRecipes();
 	}
 
 	@Override
-	public List getYmals() {
+	public List<ContentNodeModel> getYmals() {
 		return this.prodModel.getYmals();
 	}
 
@@ -972,9 +996,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return this.prodModel.getEditorialTitle();
 	}
 
-
+	
 	@Override
-	public Collection getParentKeys() {
+	public Collection<ContentKey> getParentKeys() {
 		return this.prodModel.getParentKeys();
 	}
 
@@ -1055,7 +1079,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getRelatedProducts() {
+	public List<ProductModel> getRelatedProducts() {
 		return this.prodModel.getRelatedProducts();
 	}
 

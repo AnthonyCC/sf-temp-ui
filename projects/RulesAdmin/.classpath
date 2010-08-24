@@ -13,6 +13,5 @@
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
 	<classpathentry kind="con" path="com.bea.workshop.wls.syslib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="com.bea.workshop.wls.core.AppLibrariesContainer/DevEAR"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

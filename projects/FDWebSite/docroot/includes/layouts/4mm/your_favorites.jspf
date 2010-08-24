@@ -1,0 +1,43 @@
+<%@page import="java.util.HashSet"%>
+<%@page import="com.freshdirect.fdstore.content.EnumBurstType"%>
+<%@page import="java.util.Set"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="java.util.List"%>
+
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<%--
+  your_favorites.jspf
+	requires:
+		DepartmentModel dept
+		boolean yourFavoritesShown	:	will set this true if recommender is shown
+		FDUserI user;
+	provides:
+		4mm your favorites recommender
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+<fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_YF" facility="4mm_dept_yf" currentNode="<%= dept %>" id="deptYf">		
+	<%  
+	List<ProductModel> YFProds = deptYf.getProducts(); 
+	if ( YFProds.size() >=3 ) {
+		Set<EnumBurstType> hideBursts = new HashSet<EnumBurstType>(1);
+		hideBursts.add( EnumBurstType.YOUR_FAVE );
+		yourFavoritesShown = true;
+		%>
+		<div class="carousel-box">
+			<div class="separator"><img src="/media_stat/images/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
+			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= YFProds %>" id="your_favourites_carousel" trackingCode="yf-4mm" maxItems="12">
+				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage"  enableQuickBuy="true" customer="<%= user %>"/>
+				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+				<div class="productname">
+					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+				</div>
+				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+			</display:Carousel>
+		</div>
+	<% } %>
+</fd:ProductGroupRecommender>			

@@ -35,7 +35,9 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  */
 public class ErpNutritionSessionBean extends SessionBeanSupport {
     
-    private static Category LOGGER = LoggerFactory.getInstance( ErpNutritionSessionBean.class );
+	private static final long	serialVersionUID	= 270497771665382812L;
+	
+	private static Category LOGGER = LoggerFactory.getInstance( ErpNutritionSessionBean.class );
     
     /** Constructor
      */

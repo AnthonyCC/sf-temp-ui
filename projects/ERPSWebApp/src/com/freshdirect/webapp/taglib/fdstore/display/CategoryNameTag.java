@@ -21,6 +21,8 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
 
 public class CategoryNameTag extends BodyTagSupport {
 
+	private static final long	serialVersionUID	= 6930552128020277946L;
+	
 	CategoryModel	category;							// category (mandatory)
 	String			action;								// URL (optional)
 	String			style		= "font-weight:bold";	// CSS style modification (optional)

@@ -24,6 +24,10 @@ public class SearchScoringRegistry {
     protected ScoringAlgorithm globalScoring;
     
     protected ScoringAlgorithm personalScoring;
+    
+    protected ScoringAlgorithm shortTermPopularityScoring;
+
+	private static String SHORT_TERM_POPULARITY_DEFAULT = "Popularity8W_Discretized;QualityRating_Discretized2";
 
     
     public synchronized static SearchScoringRegistry getInstance() {
@@ -45,6 +49,22 @@ public class SearchScoringRegistry {
         return globalScoring;
     }
 
+    public synchronized ScoringAlgorithm getShortTermPopularityScoringAlgorithm() {
+    	if (shortTermPopularityScoring == null) {
+			String algorithm = FDStoreProperties.getShortTermPopularityScoring();
+			if (algorithm == null || algorithm.length() == 0)
+				algorithm = SHORT_TERM_POPULARITY_DEFAULT;
+    		try {
+				shortTermPopularityScoring = GlobalCompiler.getInstance().createScoringAlgorithm(algorithm);
+			} catch (CompileException e) {
+	            LOGGER.error("Creating scoring algorithm  : " + algorithm, e);
+	            throw new FDRuntimeException(e);
+			}
+    		ScoreProvider.getInstance().acquireFactors(new ArrayList<String>(Arrays.asList(shortTermPopularityScoring.getVariableNames())));
+    	}
+        return shortTermPopularityScoring;
+    }
+    
     public synchronized void setGlobalScoringAlgorithm(String global) {
         try {
             globalScoring = GlobalCompiler.getInstance().createScoringAlgorithm(global);

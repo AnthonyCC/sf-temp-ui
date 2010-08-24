@@ -17,13 +17,14 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class OrganicFilter extends AbstractProductFilter{
 	private static final Category LOGGER = LoggerFactory.getInstance( OrganicFilter.class );
 	//private EnumOrganicValue noneOrgaincValue = EnumOrganicValue.getValueForCode("NONE");
+	
 	public boolean applyTest(ProductModel product) throws FDResourceException {
 		
 		SkuModel sku=null;
 			boolean result = false;
 			//LOGGER.debug("IN OrganicFilter with product: "+product.getContentName());
-			 for (Iterator iSku = product.getPrimarySkus().iterator(); iSku.hasNext() && result==false;) {
-			 	sku = (SkuModel) iSku.next();
+			 for (Iterator<SkuModel> iSku = product.getPrimarySkus().iterator(); iSku.hasNext() && result==false;) {
+			 	sku = iSku.next();
 				try {
 					if (sku.isUnavailable()) continue;
 					result = sku.getProduct().hasOANClaim();

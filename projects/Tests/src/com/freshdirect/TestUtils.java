@@ -78,6 +78,7 @@ import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSessionBean;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSessionBean;
+import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSessionBean;
@@ -106,7 +107,7 @@ import com.freshdirect.smartstore.ejb.VariantSelectionSessionBean;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
+import com.freshdirect.webapp.taglib.smartstore.ProductGroupRecommenderTag;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpSession;
@@ -255,8 +256,8 @@ public class TestUtils {
         return aspectSystem;
     }
 
-    public static FeaturedItemsTag createFeaturedItemsTag(MockPageContext ctx, String contentKey) {
-        FeaturedItemsTag fit = new FeaturedItemsTag() {
+    public static ProductGroupRecommenderTag createFeaturedItemsTag(MockPageContext ctx, String contentKey) {
+        ProductGroupRecommenderTag fit = new ProductGroupRecommenderTag() {
             @Override
             protected void collectRequestId(HttpServletRequest request, Recommendations recommendations, FDUserI user) {
                 LOG.info("collectRequestId called " + recommendations);
@@ -267,6 +268,7 @@ public class TestUtils {
         fit.setItemCount(5);
         fit.setNoShuffle(true);
         fit.setCurrentNode(ContentFactory.getInstance().getContentNode(contentKey));
+        fit.setSiteFeature(EnumSiteFeature.FEATURED_ITEMS.getName());
         return fit;
     }
 

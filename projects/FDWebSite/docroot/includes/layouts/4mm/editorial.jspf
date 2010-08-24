@@ -1,0 +1,43 @@
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModelUtil"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<%--
+  editorial.jspf
+	requires:
+		FDUserI user;
+	provides:
+		4mm editorial recommender
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+
+<% 	
+CategoryModel category = FourMinuteMealsHelper.get4mmEditorialRecommender(); 
+if ( category != null ) {
+	%>
+	<display:ItemGrabber id='categoryProducts' category='<%= category %>' depth='0' >
+		<display:UniqueFilter in="<%= categoryProducts %>" out="products" groupId="4mm-default">
+		<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)products ); %>
+		<div class="carousel-box">
+			<div class="separator"><img src="<%= category.getCategoryTitle().getPath() %>" alt="<%= category.getFullName() %>"  class="carousel-box-title"/></div>
+			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= products %>" id="cat2_carousel" trackingCode="edt-4mm" maxItems="12">
+				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
+				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+				<div class="productname">
+					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+				</div>
+				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+			</display:Carousel>
+		</div>
+		</display:UniqueFilter>
+	</display:ItemGrabber>
+<% } %>

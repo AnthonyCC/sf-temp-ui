@@ -15,18 +15,21 @@ import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumLayoutType;
 import com.freshdirect.fdstore.content.ProductContainer;
-import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.util.SortStrategyElement;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
 public class LayoutManager extends BodyTagSupport {
+	
+	private static final long	serialVersionUID	= -4387696427307262039L;
+	
 	//tag inputs
 	private String resultName = null;
 	private boolean isDepartment = false;
 	private boolean isCategory = false;
 	private ContentNodeModel currentNode = null;
 	private String layoutSettingsName = null;
+	
 	//Work variables
 	private int layoutType = -1;
 	
@@ -371,6 +374,24 @@ public class LayoutManager extends BodyTagSupport {
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
 			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+		} else if (layoutType == EnumLayoutType.FOURMM_DEPARTMENT.getId()) {
+			s.setLayoutFileName("/includes/layouts/4mm/landing_page_layout.jsp");
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRICE,sortDescending));
+			s.setReturnHiddenFolders(false);
+		} else if (layoutType == EnumLayoutType.FOURMM_CATEGORY.getId()) {
+			s.setLayoutFileName("/includes/layouts/4mm/restaurant_page_layout.jsp");
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+			s.setReturnSecondaryFolders( true );
+			s.setReturnHiddenFolders( false );	
+			s.setFilterDiscontinued( true );
+			s.setIncludeUnavailable( false );
+			
 		} else {
 			// default to the generic layout using the default settings for the ItemGrabber
 			s.setLayoutFileName("/includes/layouts/generic_layout.jsp");
@@ -421,21 +442,19 @@ public class LayoutManager extends BodyTagSupport {
 				s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 				// TODO: what more I need to do here?
 		} // top 10
+		
 		if (layoutType == EnumLayoutType.TEMPLATE_LAYOUT.getId()) {				
 			s.setLayoutFileName("/includes/layouts/template_layouts.jsp");
 			s.setIncludeUnavailable(false);
-	}
-
+		}
 		
-		
-
-		
-		// ok.. create the layoutManager setting object
+		// ok.. return the layoutManager setting object
 		return s;
 	}
 
 	
 	public static class Settings {
+		
 		private int grabberDepth = 99;
 		private boolean filterDiscontinued = true;
 		private boolean ignoreShowChildren = false;
@@ -444,7 +463,7 @@ public class LayoutManager extends BodyTagSupport {
 		private boolean ignoreDuplicateProducts = false;
 		private boolean includeUnavailable = true; //include the unavailable jspf file.
 		private String layoutFileName = null;
-		private List sortStrategy = new ArrayList();
+		private List<SortStrategyElement> sortStrategy = new ArrayList<SortStrategyElement>();
 		private boolean returnSkus = false;
 
 		public boolean isFilterDiscontinued() {
@@ -479,7 +498,7 @@ public class LayoutManager extends BodyTagSupport {
 			return returnSecondaryFolders;
 		}
 
-		public List getSortStrategy() {
+		public List<SortStrategyElement> getSortStrategy() {
 			return sortStrategy;
 		}
 		
@@ -507,7 +526,8 @@ public class LayoutManager extends BodyTagSupport {
 					+ layoutFileName
 					+ "\n returnSkus ="
 					+ returnSkus);
-			}
+		}
+		
 		public void setFilterDiscontinued(boolean b) {
 			filterDiscontinued = b;
 		}
@@ -540,7 +560,7 @@ public class LayoutManager extends BodyTagSupport {
 			returnSecondaryFolders = b;
 		}
 
-		public void setSortStrategy(List sortStrategy) {
+		public void setSortStrategy(List<SortStrategyElement> sortStrategy) {
 			this.sortStrategy = sortStrategy;
 		}
 

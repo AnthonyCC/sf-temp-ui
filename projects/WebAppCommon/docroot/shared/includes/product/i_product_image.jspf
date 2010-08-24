@@ -1,15 +1,19 @@
-<%@page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.BrowserInfo"%>
 <%
-	Image productImage = productNode.getDetailImage();
-	Image zoomImage=(Image) productNode.getZoomImage();
+	final ProductModel __pi_prd = (ProductModel) productNode;
+
+	Image productImage = __pi_prd.getDetailImage();
+	Image zoomImage=(Image) __pi_prd.getZoomImage();
 	
 	
 	
 	BrowserInfo browserInfo = new BrowserInfo((HttpServletRequest) pageContext.getRequest());
 	boolean supportsPNG = !(browserInfo.isInternetExplorer() && browserInfo.getVersionNumber() < 8.0);
 	
-	//boolean isDeal = productNode.hasWasPrice();
-	int dealPercentage = productNode.getHighestDealPercentage();
+	//boolean isDeal = __pi_prd.hasWasPrice();
+	int dealPercentage = __pi_prd.getHighestDealPercentage();
 	//boolean isDeal = dealPercentage > 0;
 	boolean isDeal = false;
 	if ( (FDStoreProperties.getBurstsLowerLimit()<=dealPercentage) && (FDStoreProperties.getBurstUpperLimit()>=dealPercentage )){
@@ -22,13 +26,13 @@
 		if ( isDeal ) { %>
 			<div style="padding: 0px; border: 0px; margin: 0px auto; position: relative;" width="<%= productImage.getWidth() %>px" height="<%= productImage.getHeight() %>px">
 					<div style="position: absolute; top: 0px; left: 0px">
-						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)">
+						<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
 							<img alt="SAVE" src="<%=burstImage %>" width="55px" height="55px" style="border: 0">
 						</a>
 					</div>
 		<% } %>
 		
-		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',335,375)">
+		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
 			<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
 		</a><br/>
 				
@@ -58,6 +62,6 @@
 <% 
 	//Show product summary link only in test environments
 	if (FDStoreProperties.isAnnotationMode()) { 
-		%><br/><br/><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%= productNode %>&catId=<%= productNode.getParentNode() %>',800,555)" class="text12">Product Summary</a><br/><br/><% 
+		%><br/><br/><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',800,555)" class="text12">Product Summary</a><br/><br/><% 
 	} 
 %>

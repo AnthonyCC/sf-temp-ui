@@ -62,6 +62,21 @@ public class PriceCalculator {
     
     
     
+    public double getDefaultPriceValue() {
+        try {
+            if (skuModel == null)
+                return 0.0;
+            FDProductInfo productInfo = getProductInfo();
+            if (productInfo == null)
+                return 0.0;
+            return getZonePriceInfoModel().getDefaultPrice();
+        } catch (FDResourceException e) {
+            throw new RuntimeException(e);
+        } catch (FDSkuNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public String getDefaultPrice() {
         try {
             if (skuModel == null)

@@ -26,7 +26,7 @@ import com.freshdirect.smartstore.fdstore.VariantSelectorFactory;
 import com.freshdirect.smartstore.impl.FeaturedItemsRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
+import com.freshdirect.webapp.taglib.smartstore.ProductGroupRecommenderTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
 
@@ -93,7 +93,7 @@ public class ImpressionTest extends RecommendationServiceTestBase {
 
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService().getVariant()));
 
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();

@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -13,10 +12,10 @@ import com.freshdirect.fdstore.FDResourceException;
  *
  */
 public class FilterChain extends AbstractProductFilter {
-	// List<AbstractProductFilter>
-	List filters;
+	
+	List<AbstractProductFilter> filters;
 
-	public FilterChain(List filters) {
+	public FilterChain(List<AbstractProductFilter> filters) {
 		this.filters = filters;
 	}
 
@@ -24,7 +23,7 @@ public class FilterChain extends AbstractProductFilter {
 	 * Convenience method
 	 */
 	public FilterChain(AbstractProductFilter f1, AbstractProductFilter f2) {
-		this.filters = new ArrayList();
+		this.filters = new ArrayList<AbstractProductFilter>();
 		if (f1 != null)
 			this.filters.add(f1);
 		if (f2 != null)
@@ -32,12 +31,10 @@ public class FilterChain extends AbstractProductFilter {
 	}
 
 	public boolean applyTest(ProductModel prod) throws FDResourceException {
-		for (Iterator it=filters.iterator(); it.hasNext();) {
-			AbstractProductFilter filter = (AbstractProductFilter) it.next();
+		for ( AbstractProductFilter filter : filters ) {
 			if (!filter.applyTest(prod))
 				return false;
 		}
-
 		return true;
 	}
 }

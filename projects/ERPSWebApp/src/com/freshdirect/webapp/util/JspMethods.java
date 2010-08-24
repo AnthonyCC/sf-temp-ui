@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -30,22 +29,18 @@ import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ConfiguredProduct;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
-import com.freshdirect.fdstore.content.Domain;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.MediaI;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
-import com.freshdirect.fdstore.util.ProductDisplayUtil;
 import com.freshdirect.fdstore.util.HowToCookItUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
@@ -161,22 +156,6 @@ public class JspMethods {
 		return taxonomy;
 	}
 
-//	public static String getDisplayName(ContentNodeModel content_node,
-//			ProductModel prodNode) {
-//		if (content_node == null
-//				|| prodNode == null
-//				|| !(ContentNodeI.TYPE_CATEGORY.equals(content_node
-//						.getContentType())))
-//			return "";
-//		String nameToUse = JspMethods.getProductNameToUse(content_node);
-//		if (nameToUse == null || nameToUse.equalsIgnoreCase("full"))
-//			return prodNode.getFullName();
-//		if (nameToUse != null && nameToUse.equalsIgnoreCase("nav"))
-//			return prodNode.getNavName();
-//		if (nameToUse != null && nameToUse.equalsIgnoreCase("glance"))
-//			return prodNode.getGlanceName();
-//		return prodNode.getFullName();
-//	}
 
 	public static String getDisplayName(ProductModel prodNode, String nameToUse) {
 		if (prodNode == null)
@@ -282,32 +261,6 @@ public class JspMethods {
 					+ ((ContentNodeModel) obj1).getFullName();
 			String name2 = ((ContentNodeModel) obj2).getContentType() + ":"
 					+ ((ContentNodeModel) obj2).getFullName();
-			return name1.compareToIgnoreCase(name2);
-		}
-	}
-
-	public static class DomainNameComparator implements Comparator {
-
-		// handles Domains or DomainRefs, DomainValue
-		public int compare(Object obj1, Object obj2) {
-			String name1 = null;
-			String name2 = null;
-			if (obj1 instanceof Domain) {
-				name1 = ((Domain) obj1).getName();
-			}
-			if (obj1 instanceof DomainValue) {
-				name1 = ((DomainValue) obj1).getDomain().getName();
-			}
-
-			if (obj2 instanceof Domain) {
-				name2 = ((Domain) obj1).getName();
-			}
-			if (obj2 instanceof DomainValue) {
-				name2 = ((DomainValue) obj2).getDomain().getName();
-			}
-
-			if (name1 == null || name2 == null)
-				return 0;
 			return name1.compareToIgnoreCase(name2);
 		}
 	}
@@ -437,14 +390,14 @@ public class JspMethods {
 		}
 	}
 
-	public static List sorter(Collection CatsAndProds, String orderBy) {
+	public static List<ContentNodeModel> sorter(Collection<ContentNodeModel> CatsAndProds, String orderBy) {
 		return JspMethods.sorter(CatsAndProds, orderBy, true, true);
 	}
 
-	public static List sorter(Collection CatsAndProds,
+	public static List<ContentNodeModel> sorter(Collection<ContentNodeModel> CatsAndProds,
 			String orderBy, boolean reverseOrder, boolean includeFolder) {
 		// sort the items by folder + (specified-attribute | Name | price)
-		List sortedList = new ArrayList(CatsAndProds);
+		List<ContentNodeModel> sortedList = new ArrayList<ContentNodeModel>(CatsAndProds);
 		MyAttributeComparator sortByRatingAttribute = new MyAttributeComparator(
 				orderBy);
 		sortByRatingAttribute.setReverseOrder(reverseOrder);
@@ -456,7 +409,7 @@ public class JspMethods {
 
 	/* utility method */
 	public static void dumpRequest(HttpServletRequest request) {
-		Enumeration rpn = request.getParameterNames();
+		Enumeration<String> rpn = request.getParameterNames();
 		while (rpn.hasMoreElements()) {
 			String paramName = (String) rpn.nextElement();
 			String paramValues[] = request.getParameterValues(paramName);
@@ -483,15 +436,15 @@ public class JspMethods {
 	 * Utility method used in layouts/featured_all.jsp and layouts/how_to_cookit.jspf
 	 * Extracted from CatLayoutManager.jspf
 	 */
-	public static String displayFAProducts(LinkedList productLinks,
+	public static String displayFAProducts(LinkedList<String> productLinks,
 			boolean showPrices, boolean listIsUnavailable) {
 		return displayFAProducts(productLinks, null, showPrices,
 				listIsUnavailable);
 	}
 
 	// *******************************************************
-	public static String displayFAProducts(LinkedList productLinks,
-			LinkedList productPrices, boolean showPrices,
+	public static String displayFAProducts(LinkedList<String> productLinks,
+			LinkedList<String> productPrices, boolean showPrices,
 			boolean listIsUnavailable) {
 		if (productLinks.size() < 1)
 			return "";
@@ -629,10 +582,6 @@ public class JspMethods {
 		StringBuffer indicators = new StringBuffer(300);
 		StringBuffer rolloverText = new StringBuffer(300);
 
-		// *** load the variables with the appropriate stuff for use by
-		// Hoizontal & generic
-		String organicIndicator = "/media_stat/images/template/icon_organic.gif";
-		String inSeasonIndicator = "/media_stat/images/template/icon_in_season.gif";
 		String imagePath = null;
 		ContentNodeModel displayFolder = null;
 		ProductModel displayProduct = null;
@@ -793,20 +742,8 @@ public class JspMethods {
 
 	}
 	
-	/**
-	 * This is here for marker, some jsp-s still call it, but the meaning of the 
-	 * original function is questionable.
-	 * 
-	 * @param obj
-	 * @return
-	 */
-	public static ProductModel getFeaturedProduct(Object obj) {
-	    if (obj instanceof ProductModel) {
-	        return (ProductModel) obj;
-	    }
-	    return null;
-	}
-    private final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+	private final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
     public static String safeJavaScriptVariable(String s) {
         StringBuilder buf = new StringBuilder();
@@ -820,6 +757,55 @@ public class JspMethods {
         }
         return buf.toString();
     }
+
+
+
+    /**
+     * Helper method to escape JavaScript string
+     * 
+     * @param input
+     * @return escaped string
+     */
+	public static String javaScriptEscape(String input) {
+		if (input == null) {
+			return input;
+		}
+
+		StringBuilder filtered = new StringBuilder(input.length());
+		char prevChar = '\0';
+
+		for (int i = 0; i < input.length(); ++i) {
+			char c = input.charAt(i);
+			if (c == '"') {
+				filtered.append("\\\"");
+			} else if (c == '\'') {
+				filtered.append("\\'");
+			} else if (c == '\\') {
+				filtered.append("\\\\");
+			} else if (c == '/') {
+				filtered.append("\\/");
+			} else if (c == '\t') {
+				filtered.append("\\t");
+			} else if (c == '\n') {
+				if (prevChar != '\r') {
+					filtered.append("\\n");
+				}
+			} else if (c == '\r') {
+				filtered.append("\\n");
+			} else if (c == '\f') {
+				filtered.append("\\f");
+			} else {
+				filtered.append(c);
+			}
+			prevChar = c;
+		}
+
+		return filtered.toString();
+	}
+
+
+
+
 
 	public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat
 			.getCurrencyInstance(Locale.US);
@@ -913,34 +899,43 @@ public class JspMethods {
 	}
 	
 	
+
 	public static class CategoryInfo {
 	    CategoryModel category;
 	    String catId;
 	    String fldrLbl;
 	    String navBar;
 	    String link;
-            CategoryModel workingCategory;
-            public CategoryModel getCategory() {
-                return category;
-            }
-            public String getCatId() {
-                return catId;
-            }
-            public String getFldrLbl() {
-                return fldrLbl;
-            }
-            public String getNavBar() {
-                return navBar;
-            }
-            public String getLink() {
-                return link;
-            }
-            public CategoryModel getWorkingCategory() {
-                return workingCategory;
-            }
-            
+        CategoryModel workingCategory;
+
+
+        public CategoryModel getCategory() {
+            return category;
+        }
+        public String getCatId() {
+            return catId;
+        }
+        public String getFldrLbl() {
+            return fldrLbl;
+        }
+        public String getNavBar() {
+            return navBar;
+        }
+        public String getLink() {
+            return link;
+        }
+        public CategoryModel getWorkingCategory() {
+            return workingCategory;
+        }
 	}
 	
+
+
+	/**
+	 * This method is called mostly from USQ JSP templates
+	 * @param request
+	 * @return
+	 */
     public static CategoryInfo getCategoryInfo(HttpServletRequest request) {
         CategoryInfo c = new CategoryInfo();
         c.catId = request.getParameter("catId");
@@ -959,7 +954,8 @@ public class JspMethods {
                 Image categoryLabel = wokingCat.getCategoryLabel();
                 if (categoryLabel != null) {
                     c.fldrLbl = categoryLabel.getPath();
-                    c.link = "/category.jsp?catId=" + tmplCat;
+                    // c.link = "/category.jsp?catId=" + tmplCat;
+                    c.link = FDURLUtil.getCategoryURI(tmplCat.getContentName(), null);
                 }
                 MediaI navbar = wokingCat.getCategoryNavBar();
                 if (navbar != null) {

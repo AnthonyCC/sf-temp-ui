@@ -2,10 +2,17 @@ package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
 
+import org.apache.log4j.Category;
+
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class PricingContext implements Serializable {
+	
 	private static final long serialVersionUID = -952611223130736556L;
+	
+	private final static Category LOGGER = LoggerFactory.getInstance(PricingContext.class);
+	
 
 	private final String pZoneId;
 	
@@ -13,7 +20,9 @@ public class PricingContext implements Serializable {
 
 	public PricingContext(String pZoneId) {
 	    if (pZoneId == null) {
-	        throw new NullPointerException("pZoneId");
+	    	// using default if null, passing an exception to have a stacktrace
+	    	LOGGER.warn( "PricingContext initialized with null! Using default master zone instead.", new NullPointerException("pZoneId") );
+	    	pZoneId = ZonePriceListing.MASTER_DEFAULT_ZONE;
 	    }
 	    this.pZoneId = pZoneId;
 	}

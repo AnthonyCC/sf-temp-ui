@@ -90,7 +90,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 	// TEST CategoryModel testCat = (CategoryModel) ContentFactory.getInstance().getContentNode("cof_ef_org");
 	// System.err.println("TEST CAT: " + testCat);
 %>
-<fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 	    request.setAttribute("recommendationsRendered","true");
 	    int ord=1;
@@ -116,7 +116,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %></logic:iterate><%
 	}
 %>
-</fd:FeaturedItemsRecommendations>
+</fd:ProductGroupRecommender>
 	</td>
 			<td></td>
 			<td bgcolor="#CCCCCC"></td>

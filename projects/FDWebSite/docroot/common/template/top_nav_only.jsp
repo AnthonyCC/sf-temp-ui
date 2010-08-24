@@ -73,7 +73,7 @@
 			<tr>
 				<td width="745" bgcolor="#999966" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 			</tr>
-			<tr valign="TOP">
+			<tr valign="top">
 				<td bgcolor="#<%=color%>" valign="bottom" width="1" rowspan="2"><IMG src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 				<td colspan="3" align="center">
 					<img src="/media_stat/images/layout/clear.gif" height="15" width="733"><br />

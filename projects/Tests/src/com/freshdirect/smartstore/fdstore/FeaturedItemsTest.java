@@ -36,7 +36,7 @@ import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.impl.YourFavoritesInCategoryRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
+import com.freshdirect.webapp.taglib.smartstore.ProductGroupRecommenderTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
 
@@ -222,7 +222,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getFeaturedItemsService().getVariant()));
 
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -287,7 +287,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     public void testAllProductInCategoryService() {
         MockPageContext ctx;
-        FeaturedItemsTag fit;
+        ProductGroupRecommenderTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getAllProductInCategoryService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
 
@@ -321,7 +321,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     public void testCandidateListService() {
         MockPageContext ctx;
-        FeaturedItemsTag fit;
+        ProductGroupRecommenderTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getCandidateListService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
@@ -351,7 +351,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     public void testManualOverrideService() {
         MockPageContext ctx;
-        FeaturedItemsTag fit;
+        ProductGroupRecommenderTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getManualOverrideService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
@@ -437,7 +437,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
 
     public void testScriptedManualOverrideService() throws CompileException {
         MockPageContext ctx;
-        FeaturedItemsTag fit;
+        ProductGroupRecommenderTag fit;
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS,
         		new SingleVariantSelector(getScriptedManualOverrideService().getVariant()));
         ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
@@ -526,7 +526,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getYourFavoritesService().getVariant()));
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
         RecommendationEventLoggerMockup eventLogger = getMockup();
         try {
@@ -673,7 +673,7 @@ public class FeaturedItemsTest extends RecommendationServiceTestBase {
     private void doScriptedYourFavoritesInFi() throws CompileException {
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "gro_baby");
         
         RecommendationEventLoggerMockup eventLogger = getMockup();
         try {

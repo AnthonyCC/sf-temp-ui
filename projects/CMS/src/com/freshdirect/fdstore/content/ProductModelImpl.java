@@ -40,6 +40,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 
 public class ProductModelImpl extends AbstractProductModelImpl {
+	
 	private static final long serialVersionUID = 2103318183933323914L;
 
 	@SuppressWarnings("unused")
@@ -51,22 +52,22 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return rnd.nextInt(n);
 	}
 
-	private static ThreadLocal activeYmalSets = new ThreadLocal() {
-		protected Object initialValue() {
-			return new HashMap();
+	private static ThreadLocal<Map<String, YmalSet>> activeYmalSets = new ThreadLocal<Map<String, YmalSet>>() {
+		protected Map<String, YmalSet> initialValue() {
+			return new HashMap<String, YmalSet>();
 		}
 	};
 	
 	private static YmalSet getCurrentActiveYmalSet(String productId) {
-		return (YmalSet) ((Map) activeYmalSets.get()).get(productId);
+		return activeYmalSets.get().get(productId);
 	}
 	
 	private static void setCurrentActiveYmalSet(String productId, YmalSet set) {
-		((Map<String, YmalSet>) activeYmalSets.get()).put(productId, set);
+		activeYmalSets.get().put(productId, set);
 	}
 
 	private static void resetActiveYmalSets() {
-		((Map) activeYmalSets.get()).clear();
+		activeYmalSets.get().clear();
 	}
 	
 	private List<SkuModel> skuModels = new ArrayList<SkuModel>();
@@ -442,21 +443,22 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	    if (context == null) {
 	        context = PricingContext.DEFAULT;
 	    }
-            List<SkuModel> skus = this.getSkus();
+        List<SkuModel> skus = this.getSkus();
 
-            ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
+        ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
-            for (ListIterator li = skus.listIterator(); li.hasNext();) {
-                    SkuModel sku = (SkuModel) li.next();
-                    if (sku.isUnavailable()) {
-                            li.remove();
-                    } else if (sku.getContentKey().equals(preferredSku)) {
-                            return sku;
-                    }
+        for (ListIterator li = skus.listIterator(); li.hasNext();) {
+            SkuModel sku = (SkuModel) li.next();
+            if (sku.isUnavailable()) {
+                li.remove();
+            } else if (sku.getContentKey().equals(preferredSku)) {
+                return sku;
             }
-            if (skus.size() == 0)
-                    return null;
-            return (SkuModel) Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
+        }
+        if (skus.size() == 0)
+            return null;
+        
+        return (SkuModel) Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
 	}
 	
 	/**
@@ -1056,9 +1058,9 @@ inner:
 	public List<CategoryModel> getYmalCategories() {
 		List<CategoryModel> l = getYmals( FDContentTypes.CATEGORY );
 		LinkedHashSet<CategoryModel> ymals = new LinkedHashSet<CategoryModel>( l );
-		YmalSet ymalSet = getActiveYmalSet();
+		YmalSet        ymalSet = getActiveYmalSet();
 		ArrayList<CategoryModel> finalList;
-		int size;
+		int            size;
 		
 		if (ymalSet != null) {
 			ymals.addAll(ymalSet.getYmalCategories());
@@ -1168,16 +1170,15 @@ inner:
 	}
 
 	public CategoryModel getPrimaryHome() {
-	    ContentKey key = (ContentKey) getCmsAttributeValue("PRIMARY_HOME");
-    
-            return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
-        }
+	    ContentKey key = (ContentKey) getCmsAttributeValue("PRIMARY_HOME"); 
+	    
+	    return key == null ? null : (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
+    }
 
 	public SkuModel getPreferredSku() {
 	    ContentKey key = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
-	    return key == null ? null
-             : (SkuModel) ContentFactory.getInstance().getContentNodeByKey(key);
+	    return key == null ? null : (SkuModel) ContentFactory.getInstance().getContentNodeByKey(key);
 	}
 
 	public List<DomainValue> getRating() {
@@ -1223,23 +1224,23 @@ inner:
 			
 
 	public Image getProdImage() {
-		return FDAttributeFactory.constructImage( this, "PROD_IMAGE" );
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE");
 	}
 
 	public Image getFeatureImage() {
-		return FDAttributeFactory.constructImage( this, "PROD_IMAGE_FEATURE" );
+        return FDAttributeFactory.constructImage(this, "PROD_IMAGE_FEATURE");
 	}
 
 	public Image getRatingRelatedImage() {
-		return FDAttributeFactory.constructImage( this, "RATING_RELATED_IMAGE" );
+        return FDAttributeFactory.constructImage(this, "RATING_RELATED_IMAGE");
 	}
 
 	public Image getAlternateImage() {
-		return FDAttributeFactory.constructImage( this, "ALTERNATE_IMAGE" );
+        return FDAttributeFactory.constructImage(this, "ALTERNATE_IMAGE");
 	}
 
 	public Image getDescriptiveImage() {
-		return FDAttributeFactory.constructImage( this, "DESCRIPTIVE_IMAGE" );
+        return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
 	public Image getRolloverImage() {
@@ -1409,9 +1410,7 @@ inner:
 
 	public CategoryModel getPerfectPair() {
 		ContentKey key = (ContentKey)getCmsAttributeValue( "PERFECT_PAIR" );
-
 		return key == null ? null : (CategoryModel)ContentFactory.getInstance().getContentNodeByKey( key );
-
 	}
 
 	public List<DomainValue> getWineClassifications() {
@@ -1535,7 +1534,7 @@ inner:
     	if (rating == EnumOrderLineRating.NO_RATING) {
     		return "";
     	}
-		return rating.getStatusCodeInDisplayFormat();
+	return rating.getStatusCodeInDisplayFormat();
     }
     
     public String getFreshnessGuaranteed() throws FDResourceException {

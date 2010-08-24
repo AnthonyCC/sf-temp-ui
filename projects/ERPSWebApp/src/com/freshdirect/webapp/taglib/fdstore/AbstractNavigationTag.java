@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
@@ -23,20 +22,18 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.AbstractProductFilter;
 import com.freshdirect.fdstore.content.BrandFilter;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.AbstractNavigator;
-import com.freshdirect.fdstore.util.NewProductsGrouping;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 
@@ -46,20 +43,20 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  */
 public abstract class AbstractNavigationTag extends BodyTagSupport {
 
-    /**
-     * 
-     */
     private static final long serialVersionUID = 1L;
 
+    @SuppressWarnings( "unused" )
+	private static Category  LOGGER = LoggerFactory.getInstance(AbstractNavigationTag.class);
+    
     public static class FilterChain extends AbstractProductFilter {
         // List<AbstractProductFilter>
-        List filters;
+        List<AbstractProductFilter> filters;
 
         public FilterChain() {
-            filters = new ArrayList();
+            filters = new ArrayList<AbstractProductFilter>();
         }
 
-        public FilterChain(List filters) {
+        public FilterChain(List<AbstractProductFilter> filters) {
             this.filters = filters;
         }
 
@@ -67,7 +64,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
          * Convenience method
          */
         public FilterChain(AbstractProductFilter f1, AbstractProductFilter f2) {
-            this.filters = new ArrayList();
+            this.filters = new ArrayList<AbstractProductFilter>();
             if (f1 != null) {
                 this.filters.add(f1);
             }
@@ -81,8 +78,8 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         }
 
         public boolean applyTest(ProductModel prod) throws FDResourceException {
-            for (Iterator it = filters.iterator(); it.hasNext();) {
-                AbstractProductFilter filter = (AbstractProductFilter) it.next();
+            for (Iterator<AbstractProductFilter> it = filters.iterator(); it.hasNext();) {
+                AbstractProductFilter filter = it.next();
                 if (!filter.applyTest(prod)) {
                     return false;
                 }
@@ -99,7 +96,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     
 
     public static class UniqueProductFilter implements TreeElementFilter {
-        Set productIds = new HashSet();
+        Set<String> productIds = new HashSet<String>();
         public boolean accept(TreeElement element) {
             if (element.getModel() instanceof ProductModel) {
                 String id = element.getModel().getContentKey().getId();
@@ -112,8 +109,6 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         }
     }
     
-
-    private static Category  LOGGER = LoggerFactory.getInstance(SmartSearchTag.class);
 
     private String           searchResults;                                           // search
     // results
@@ -222,7 +217,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         boolean noTreenav = ((String) pageContext.getRequest().getAttribute("notreenav")) != null ;
         
         List filtered;
-        List convFiltered;
+        List<ProductModel> convFiltered;
         {
             
             if (categoryId != null && !noTreenav) {
@@ -234,7 +229,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
             } else {
                 filtered = fres.getProducts();
             }
-            convFiltered = new ArrayList(filtered.size());
+            convFiltered = new ArrayList<ProductModel>(filtered.size());
             // get brand names - all or just for the selected category
             if (brandSetName != null) {
                 TreeSet brandSet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
@@ -281,7 +276,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
 
         if (categorySetName != null) {
             List products = fres.getProducts();
-            TreeSet categorySet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
+            TreeSet<CategoryModel> categorySet = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
             for (int i = 0; i < products.size(); i++) {
                 ProductModel prod = (ProductModel) products.get(i);
                 categorySet.add(prod.getPrimaryHome());
@@ -295,7 +290,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         
         if (selectedCategoriesName != null) {
             // calculate the set of the selected categories, to the root
-            Set selectedCategories = new HashSet();
+            Set<String> selectedCategories = new HashSet<String>();
             if (categoryId != null) {
                 TreeElement treeElement = contentTree.getTreeElement(categoryId);
                 while (treeElement != null) {
@@ -326,7 +321,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
      * @param multipleHome
      *            (boolean) add products to their multiple home or not.
      */
-    protected CategoryNodeTree putTree(String attrName, List products, boolean multipleHome) {
+    protected CategoryNodeTree putTree(String attrName, List<ProductModel> products, boolean multipleHome) {
         CategoryNodeTree tree = CategoryNodeTree.createTree(products, multipleHome);
         putTree(attrName, tree);
         return tree;
@@ -373,7 +368,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
     
     public abstract SearchResults getResults(Map<String, String> crtiteria);
     
-    public abstract Map getCriteria(ServletRequest request);
+    public abstract Map<String, String> getCriteria(ServletRequest request);
     
     public abstract AbstractNavigator getNavigator();
     

@@ -1,0 +1,72 @@
+<%@page import="com.freshdirect.common.pricing.PricingContext"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper.FilterResult"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper.FilterInfo"%>
+<%@page import="com.freshdirect.fdstore.content.util.FourMinuteMealsHelper.SortInfo"%>
+<%--
+
+  filter_widget.jspf
+	requires:
+		boolean		fourColumnLayout;	// true = four columns, false = three columns
+		boolean 	needToFilter;		// true = will filter items too, false = loads only default status
+	provides:
+		displays the filter widget
+	included in:
+		all.jsp
+		about.jsp
+		landing_page_layout.jsp	
+--%>
+<%	
+	PricingContext pricingContext = user != null ? user.getPricingContext() : PricingContext.DEFAULT;
+	FilterResult result = needToFilter ? FourMinuteMealsHelper.filterItems( pageContext, pricingContext ) : null;
+	
+	Map<String,List<String>> params = needToFilter ? result.getFilterParams() : FourMinuteMealsHelper.parseUrlParams( pageContext );
+	Map<String,FourMinuteMealsHelper.FilterInfo> filterInfos = needToFilter ? result.getFilterInfos() : FourMinuteMealsHelper.getFilterInfos();
+	
+	List<String> restaurantIds = FourMinuteMealsHelper.getRestaurantFilterIds();
+	List<String> selectedRestaurants = params.get(FourMinuteMealsHelper.filterParamRestaurant);
+	if (selectedRestaurants == null) selectedRestaurants = Collections.emptyList();
+	
+	List<String> nutritionIds = FourMinuteMealsHelper.getNutritionFilterIds();
+	List<String> selectedNutritions = params.get(FourMinuteMealsHelper.filterParamNutrition);
+	if (selectedNutritions == null) selectedNutritions = Collections.emptyList();
+	
+	List<String> ingredientIds = FourMinuteMealsHelper.getIngredientsFilterIds();
+	List<String> selectedIngredients = params.get(FourMinuteMealsHelper.filterParamIngredients);
+	if (selectedIngredients == null) selectedIngredients = Collections.emptyList();
+
+	List<String> priceIds = FourMinuteMealsHelper.getPriceFilterIds();
+	List<String> selectedPrices = params.get(FourMinuteMealsHelper.filterParamPrice);
+	if (selectedPrices == null) selectedPrices = Collections.emptyList();
+
+	String widgetCssClass = (fourColumnLayout) ? "col4" :"col3";
+%>
+<div class="filterwidget <%= widgetCssClass %>" style="overflow:hidden">
+<% if(fourColumnLayout) { %>
+	<ul class="filter brands">
+	<display:FilterWidgetColumn urlParameterName="<%=FourMinuteMealsHelper.filterParamRestaurant%>" itemIds="<%= restaurantIds %>" selectedIds="<%= selectedRestaurants %>" filterRows="<%= filterInfos %>" enableAll="<%= enableAllItem %>" allItemName="All Brands" id="restaurantColumn">
+	<%@ include file="/includes/layouts/4mm/filterrow.jspf"%>
+	</display:FilterWidgetColumn>
+	</ul>
+<% } %>
+	<ul class="filter ingredient">
+	<display:FilterWidgetColumn urlParameterName="<%=FourMinuteMealsHelper.filterParamIngredients%>" itemIds="<%= ingredientIds %>" selectedIds="<%= selectedIngredients %>" filterRows="<%= filterInfos %>" enableAll="<%= enableAllItem %>" allItemName="All Ingredients" id="ingredientsColumn">
+	<%@ include file="/includes/layouts/4mm/filterrow.jspf"%>
+	</display:FilterWidgetColumn>
+	</ul>
+	<ul class="filter prices">
+	<display:FilterWidgetColumn urlParameterName="<%=FourMinuteMealsHelper.filterParamPrice%>" itemIds="<%= priceIds %>" selectedIds="<%= selectedPrices %>" filterRows="<%= filterInfos %>" enableAll="<%= enableAllItem %>" allItemName="All Prices" id="priceColumn">
+	<%@ include file="/includes/layouts/4mm/filterrow.jspf"%>
+	</display:FilterWidgetColumn>
+	</ul>
+	<ul class="filter nutrition">
+	<display:FilterWidgetColumn urlParameterName="<%=FourMinuteMealsHelper.filterParamNutrition%>" itemIds="<%= nutritionIds %>" selectedIds="<%= selectedNutritions %>" filterRows="<%= filterInfos %>" enableAll="<%= enableAllItem %>" allItemName="All Nutrition" id="nutritionColumn">
+	<%@ include file="/includes/layouts/4mm/filterrow.jspf"%>
+	</display:FilterWidgetColumn>
+	</ul>
+</div>
+<div style="clear:both"></div>
+

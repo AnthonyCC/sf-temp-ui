@@ -42,24 +42,24 @@ public class CategoryModel extends ProductContainer {
 	private final class RecommendedProductsRef extends BalkingExpiringReference<List<ProductModel>> {
 	    String zoneId;
 
-        private RecommendedProductsRef(Executor executor, String zoneId) {
-            super(FIVE_MINUTES, executor);
-            this.zoneId = zoneId;
-            // synchronous load
-            try {
-                set(load());
-            } catch (RuntimeException e) {
-                LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
-                        + " synchronously");
+            private RecommendedProductsRef(Executor executor, String zoneId) {
+                super(FIVE_MINUTES, executor);
+                this.zoneId = zoneId;
+                // synchronous load
+                try {
+                    set(load());
+                } catch (RuntimeException e) {
+                    LOGGER.error("failed to initialize smart products for category " + CategoryModel.this.getContentName() + " and zone " + zoneId
+                            + " synchronously");
+                }
             }
-        }
 
 		@Override
 		protected List<ProductModel> load() {
 			CmsRecommenderService recommenderService = getRecommenderService();
 			ContentKey categoryId = CategoryModel.this.getContentKey();
 			final Recommender recommender = CategoryModel.this.getRecommender();
-			ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
+                        ContentKey recommenderId = recommender != null ? recommender.getContentKey() : null;
 			LOGGER.debug("loader started for category " + categoryId + ", zone " + zoneId + ", recommender: " + recommenderId);
 			
 			if ( recommenderService == null || recommenderId == null ) {
@@ -71,16 +71,16 @@ public class CategoryModel extends ProductContainer {
 				throw new RuntimeException();
 			}
 			
-			List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
-			List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
-			for ( String productId : prodIds ) {
-				ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
-				if ( product instanceof ProductModel && !products.contains( product ) )
-					products.add( (ProductModel)product );
+				List<String> prodIds = recommenderService.recommendNodes(recommenderId, categoryId, zoneId);
+				List<ProductModel> products = new ArrayList<ProductModel>( prodIds.size() );
+				for ( String productId : prodIds ) {
+					ContentNodeModel product = ContentFactory.getInstance().getContentNode( productId );
+					if ( product instanceof ProductModel && !products.contains( product ) )
+						products.add( (ProductModel)product );
+				}
+				LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
+				return products;
 			}
-			LOGGER.debug( "found " + products.size() + " products for category " + categoryId + ", zone " + zoneId);
-			return products;
-		}
 		
 		private CmsRecommenderService getRecommenderService() {
 			try {
@@ -113,7 +113,7 @@ public class CategoryModel extends ProductContainer {
 
 	private List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 	
-	private final List featuredBrandModels = new ArrayList();
+	private final List<BrandModel> featuredBrandModels = new ArrayList<BrandModel>();
 	
 	private List featuredNewProdBrands = new ArrayList();
 
@@ -134,7 +134,7 @@ public class CategoryModel extends ProductContainer {
 	
 	private List<ProductModel> howToCookItProducts = new ArrayList<ProductModel> ();
 	
-    final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
+        final private List<CategoryModel> virtualGroups = new ArrayList<CategoryModel>();
 	
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
@@ -318,19 +318,16 @@ public class CategoryModel extends ProductContainer {
         return new ArrayList<CategoryModel>(virtualGroups);
 	}
 
-    //FIXME detect if recommender changed
 	private ContentKey recommenderKey;
-	
 
     public List<ProductModel> getProducts() {
         List<ProductModel> prodList = getStaticProducts();
 
         Recommender recommender = getRecommender();
-        
         if ( recommender == null ) {
         	recommenderKey = null;
         } 
-                
+        
         if (recommender != null) {
         	
             boolean recommenderChanged = !recommender.getContentKey().equals( recommenderKey ); 
@@ -343,7 +340,7 @@ public class CategoryModel extends ProductContainer {
             String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
             LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
             synchronized (recommendedProductsSync) {
-                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null)
+                if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
                     recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
             }
 
@@ -373,13 +370,10 @@ public class CategoryModel extends ProductContainer {
     public List<ProductModel> getStaticProducts() {
         List<ProductModel> prodList = getPrivateProducts();
 
-        // FIXME do not cache!
-        //if (categoryAlias == null) {
-            List<CategoryModel> l = getVirtualGroupRefs();
-            if (l != null) {
-                this.categoryAlias = new CategoryAlias(l, getFilterList());
-            }
-        //}
+        List<CategoryModel> l = getVirtualGroupRefs();
+        if ( l != null ) {
+            this.categoryAlias = new CategoryAlias(l, getFilterList());
+        }
 
         if (categoryAlias != null) {
             try {
@@ -472,14 +466,14 @@ public class CategoryModel extends ProductContainer {
 	/** Getter for property featured brands.
 	 * @return List of BrandModels that are referenced by the  property brands.
 	 */
-	public List getFeaturedBrands() {
+	public List<BrandModel> getFeaturedBrands() {
 		ContentNodeModelUtil.refreshModels(this, "FEATURED_BRANDS", featuredBrandModels, false);
 
-		return new ArrayList(featuredBrandModels);
+		return new ArrayList<BrandModel>(featuredBrandModels);
 	}
 	
 	/* get Featured New Items (Products/Brands) */
-	public List getFeaturedNewProdBrands() {
+	public List<BrandModel> getFeaturedNewProdBrands() {
 		boolean bRefreshed = ContentNodeModelUtil.refreshModels(
 				this,
 				"FEATURED_NEW_PRODBRANDS",
@@ -501,14 +495,14 @@ public class CategoryModel extends ProductContainer {
 			ContentNodeModelUtil.setNearestParentForProducts(this, tempList);
 		}
 		
-		return new ArrayList(featuredNewProdBrands);
+		return new ArrayList<BrandModel>(featuredNewProdBrands);
 	}
 
 	/**
 	 * @return all the brands of available products within the category, recursively
 	 */
-	public Set getAllBrands() throws FDResourceException {
-		Set brands = new TreeSet(FULL_NAME_COMPARATOR);
+	public Set<BrandModel> getAllBrands() throws FDResourceException {
+		Set<BrandModel> brands = new TreeSet<BrandModel>(FULL_NAME_COMPARATOR);
 		this.getAllBrands(brands, this);
 		return brands;
 	}
@@ -518,22 +512,21 @@ public class CategoryModel extends ProductContainer {
 	 * points to. If it this category is not a alias category , return null.
 	 */
 	public ContentKey getAliasAttributeValue() {
-        return (ContentKey) this.getCmsAttributeValue("ALIAS");
-    }
+	    return (ContentKey) this.getCmsAttributeValue("ALIAS");
+	}
 
 	/**
 	 * Returns alias category if has
 	 *
 	 * @return category<CategoryModel>
 	 */
-	public CategoryModel getAliasCategory() {
-	    ContentKey key = getAliasAttributeValue();
-	    if (key != null) {
-	        return (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
-	    }
-	    return null;
-	}
-
+    public CategoryModel getAliasCategory() {
+        ContentKey key = getAliasAttributeValue();
+        if (key != null) {
+            return (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key);
+        }
+        return null;
+    }
 	
 	public boolean getTreatAsProduct() {
 	    return getAttribute("TREAT_AS_PRODUCT", false);
@@ -584,7 +577,6 @@ public class CategoryModel extends ProductContainer {
 			List<ProductModel> products = new ArrayList<ProductModel>();
 			try {
 				for ( CategoryModel cm : categoryRefs ) {
-					//FIXME getStaticProducts()!
 					products.addAll(cm.getStaticProducts());	
 				}
 				return filterProducts(products);
@@ -644,7 +636,7 @@ public class CategoryModel extends ProductContainer {
         
         return key != null ? (CategoryModel) ContentFactory.getInstance().getContentNodeByKey(key) : null;
     }
-        
+    
     @SuppressWarnings("unchecked")
     public List<Html> getArticles() {
         return FDAttributeFactory.constructWrapperList(this, "ARTICLES");

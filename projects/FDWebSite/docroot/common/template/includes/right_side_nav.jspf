@@ -1,33 +1,33 @@
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Collections"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.HashMap"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import='java.net.URLEncoder' %>
+<%@ page import='java.util.Locale' %>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager" %>
 <%@ page import="com.freshdirect.fdstore.content.ContentFactory" %>
 <%@ page import="com.freshdirect.fdstore.content.CategoryModel" %>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel" %>
+<%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@ page import="com.freshdirect.framework.util.*" %>
-<%@ page import='java.net.URLEncoder' %>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
-
 <%@ include file="/includes/i_promotion_counter.jspf" %>
-
 <fd:GetCart id='rsnCart'>
 <%
-Map recentProdIds = null ;
 String requestURI = request.getRequestURI().toLowerCase();
 ContentFactory contentFactory = ContentFactory.getInstance();
 ContentNodeModel cnm = contentFactory.getContentNode(request.getParameter("catId"));
 String requestProdId = request.getParameter("productId")==null?"":request.getParameter("productId");
-if (requestURI.indexOf("cart_confirm.jsp")!=-1){
-    List recentOrderLines = rsnCart.getRecentOrderLines();
-// fill up the map with the id of the items that were recently added to the cart
-    recentProdIds= new HashMap(recentOrderLines.size());
-    for (Iterator itrList = recentOrderLines.iterator();itrList.hasNext();) {
-        FDCartLineI orderLine = (FDCartLineI)itrList.next();
-        recentProdIds.put(orderLine.getProductName(),orderLine.getProductName());
-    }
-} else {
-    recentProdIds=new HashMap();
-}
 if (cnm==null) {
      cnm = ContentFactory.getInstance().getContentNode(request.getParameter("deptId"));
 }
@@ -39,8 +39,8 @@ String bannerURL = null;
 ContentNodeModel bannerSubject = null;
 String contentLink = null;
 
-List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : new ArrayList<ProductModel>());
-List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : new ArrayList<ProductModel>());
+List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : Collections.<ProductModel>emptyList());
+List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : Collections.<ProductModel>emptyList());
 
 %>
 <%-- promotional item (image) goes here --%>
@@ -48,28 +48,23 @@ List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((Produc
 boolean hasPromotions = false;
 FDUserI nav_promo_user = (FDUserI) session.getAttribute(SessionName.USER);
 if (nav_promo_user!=null) {
- hasPromotions = (nav_promo_user.getMaxSignupPromotion() > 0);
+	hasPromotions = (nav_promo_user.getMaxSignupPromotion() > 0);
 }
 
-//boolean hasPromotions = user.getShoppingCart().getDiscount() != null;
-
 %>
-
-
-
     <table border="0" cellspacing="0" cellpadding="0" width="155">
        <tr>
             <td align="right">
                 <% if (FDStoreProperties.isAdServerEnabled()) { %>
-                    <SCRIPT LANGUAGE=JavaScript>
+                    <script type="text/javascript">
                     <!--
                     OAS_AD('LittleRandy');
                     //-->
-                    </SCRIPT>                    
+                    </script>                    
                 <% } else if(bannerURL !=null){%>                
-                <a href="<%=bannerURL%>"><img src="<%=bannerImg.getPath()%>"  width="<%=bannerImg.getWidth()%>"  height="<%=bannerImg.getHeight()%>" border="0" alt=""></a>
+                <a href="<%= bannerURL %>"><img src="<%= bannerImg.getPath() %>" width="<%= bannerImg.getWidth() %>" height="<%= bannerImg.getHeight() %>" border="0" alt=""></a>
                 <%}%>
-                </td>
+            </td>
         </tr>
     </table>
 	<br>
@@ -103,11 +98,8 @@ if(weRecommendTextProds.size() > 0) {
 
     weRecCount = 0;
     String prdURL=null;
-    for(Iterator wrItr=weRecommendTextProds.iterator();wrItr.hasNext() && weRecCount<3;) {
-    
-    Object contentRefObj = wrItr.next();
-        if (!(contentRefObj instanceof ProductModel)) continue;
-        ProductModel prdMdl = ((ProductModel)contentRefObj);
+    for(Iterator<ProductModel> wrItr=weRecommendTextProds.iterator();wrItr.hasNext() && weRecCount<3;) {
+        ProductModel prdMdl = wrItr.next();
         if (prdMdl!=null) {
             if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
             // build the link so that it would also work for the grocery categories
@@ -132,10 +124,8 @@ if(weRecommendImgProds.size() > 0) {
    weRecCount = 0;
    SkuModel weRecSku = null;
    String prdURL=null;
-    for(Iterator wrItr=weRecommendImgProds.iterator();wrItr.hasNext() && weRecCount<2;) {
-        Object contentRefObj = wrItr.next();
-        if (!(contentRefObj instanceof ProductModel )) continue;
-        ProductModel prdMdl = ((ProductModel)contentRefObj);
+    for(Iterator<ProductModel> wrItr=weRecommendImgProds.iterator();wrItr.hasNext() && weRecCount<2;) {
+        ProductModel prdMdl = wrItr.next();
         if (prdMdl!=null) { 
             if (prdMdl.isUnavailable() || prdMdl.isDiscontinued()) continue;
             String prdCatID = prdMdl.getParentNode().getContentName();
@@ -183,48 +173,43 @@ if(weRecommendImgProds.size() > 0) {
 	<br>
 <% } %> 
 <% } %>
-<%@ include file="/common/template/includes/your_cart.jspf" %>
-<div class="text11">
-<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-<b>Product Request?</b><br>
+<div id="your-cart-div">
+	<%@ include file="/common/template/includes/your_cart.jspf" %>
+</div>
+<div class="text11" style="padding-top: 14px; padding-bottom: 14px">
+	<div style="font-weight: bold">Product Request?</div>
 <%
-  
-  String catId = request.getParameter("catId"); 
-  String deptId = request.getParameter("deptId"); 
-  ContentNodeModel currentFolder = null;
-  String deptName = "foo";
-  if(deptId!=null) {
-    currentFolder=ContentFactory.getInstance().getContentNode(deptId);
-    if(currentFolder != null)
-	    deptName = currentFolder.getFullName();
-  } else {
-    currentFolder=ContentFactory.getInstance().getContentNode(catId);
-    String path = "";
-    
-    if(currentFolder != null) {
-        if (currentFolder instanceof RecipeCategory) {
-        	deptName="Recipes";
-        } else {
-           if( ((CategoryModel) currentFolder).getDepartment() != null)
-    		deptName = ((CategoryModel)currentFolder).getDepartment().getFullName();
-    	}
-    }
-  }
-  if (deptName == null) { deptName = ""; }
+	String deptName = null;
+	if (cnm instanceof DepartmentModel) {
+		deptName = cnm.getFullName();
+	} else if (cnm instanceof RecipeCategory) {
+		deptName = "Recipes";
+	} else if (cnm instanceof CategoryModel) {
+		final DepartmentModel p =  ( (CategoryModel) cnm).getDepartment();
+		if (p != null)
+			deptName = p.getFullName();
+	}
+
+	if (deptName == null) {
+		deptName = "";
+	} else {
+		deptName = URLEncoder.encode(deptName, "UTF-8").replace("%27","\\%27");
+	}
 %>
-<a href="javascript:pop('/request_product.jsp?department=<%=URLEncoder.encode(deptName).replace("%27","\\%27")%>',400,585);">Click here.</a>
-<br><img src="/media_stat/images/layout/clear.gif" width="1" height="14"></div>
+	<a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Click here.</a>
+</div>
 
 </fd:GetCart>
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
-		<SCRIPT LANGUAGE=JavaScript>
+		<script type="text/javascript">
                 <!--
                 OAS_AD('SideCartBottom');
                 //-->
-      	</SCRIPT><br><br>
+      	</script>
+      	<br><br>
 	 <% } %>
 <%
 }catch(Throwable t){
-t.printStackTrace();
+	t.printStackTrace();
 }
 %>

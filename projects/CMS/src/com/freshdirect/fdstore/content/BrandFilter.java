@@ -1,7 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import java.util.Iterator;
-
 import com.freshdirect.fdstore.FDResourceException;
 
 /**
@@ -19,8 +17,7 @@ public class BrandFilter extends AbstractProductFilter {
 
     public boolean applyTest(ProductModel prod) throws FDResourceException {
         if (brand != null) {
-            for (Iterator iter = prod.getBrands().iterator(); iter.hasNext();) {
-                BrandModel bm = (BrandModel) iter.next();
+            for ( BrandModel bm : prod.getBrands() ) {
                 if (bm.getContentKey().getId().equals(brand)) {
                     return true;
                 }

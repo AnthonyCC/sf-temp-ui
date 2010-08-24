@@ -1,25 +1,17 @@
 package com.freshdirect.fdstore.pricing;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.OncePerRequestDateCache;
-import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
-import com.freshdirect.framework.util.DateRange;
-import com.freshdirect.framework.util.DateUtil;
 
 public class SkuModelPricingAdapter extends SkuModel {
 	private PricingContext pricingCtx;
@@ -39,11 +31,11 @@ public class SkuModelPricingAdapter extends SkuModel {
 	    return innerSku.getSkuCode();
 	}
 	
-	public List getVariationMatrix() {
+	public List<DomainValue> getVariationMatrix() {
 		return innerSku.getVariationMatrix();
 	}
 	
-	public List getVariationOptions() {
+	public List<DomainValue> getVariationOptions() {
 		return innerSku.getVariationOptions();
 	}
 	
@@ -90,7 +82,7 @@ public class SkuModelPricingAdapter extends SkuModel {
     	return ProductPricingFactory.getInstance().getPricingAdapter(innerSku.getProductModel(),pricingCtx);
     }
     
-	public List getBrands() {
+	public List<BrandModel> getBrands() {
 		return innerSku.getBrands();
 	}
 	

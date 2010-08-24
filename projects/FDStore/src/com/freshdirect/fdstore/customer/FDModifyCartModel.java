@@ -14,7 +14,6 @@ import java.util.Set;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumZipCheckResponses;
-import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
 import com.freshdirect.fdstore.promotion.EnumOfferType;
 import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;

@@ -270,7 +270,7 @@ if (defaultCategoryId.equals(categoryId)) {
 /* category */
 ContentNodeModel category = defaultCategoryId.equals(categoryId) ? null : ContentFactory.getInstance().getContentNode(categoryId);
 if (category != null) {
-	if (!(category instanceof CategoryModel)) {
+	if (!(category instanceof CategoryModel) && !(category instanceof DepartmentModel)) {
 		category = null;
 	}
 }
@@ -294,11 +294,15 @@ if (useLoggedIn && user != null) {
 	if (("allItems").equals(cartAlgorithm)) {
 	    FDStoreRecommender.initYmalSource(si, user, request);
 	    source = si.getYmalSource();
-	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature))
+	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) 
+	    		&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
+	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
 	    	si.setCurrentNode(source);
 	} else if ("recentlyAdded".equals(cartAlgorithm)) {
 		source = YmalUtil.resolveYmalSource(user, null, request);
-	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature))
+	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) 
+	    		&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
+	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
 			if (YmalUtil.getSelectedCartLine(user) != null)
 				si.setCurrentNode(YmalUtil.getSelectedCartLine(user).lookupProduct());
 	}
@@ -431,7 +435,8 @@ if (bRecService instanceof ScriptedRecommendationService) {
 
 
 %>
-<html>
+
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%><html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>VARIANT COMPARISON PAGE - <%= siteFeature.getName() %><%=
@@ -563,10 +568,10 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				<% } %>
     				</td>
-<% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
+<% if (EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) || siteFeature.getName().equals("PROD_GRP_POPULAR") || siteFeature.getName().equals("PROD_GRP_YF")) { %>
     				<td>
 	    				<p class="label">
-	    					Category id
+	    					Category/Department id
 	    				</p>
 	    				<p>
 	    					<input type="text" name="categoryId" value="<%= categoryId %>"
@@ -574,7 +579,7 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 	    				</p>
 	    				<% if (categoryName != null) { %>
 	    				<p class="result">
-	    					Category name: <%= categoryName %>
+	    					Cat/Dept name: <%= categoryName %>
 	    				</p>
 	    				<% } else { %>
 	    				<p class="not-found result">
@@ -585,7 +590,9 @@ table{border-collapse:collapse;border-spacing:0px;width:100%;}
 <% } %>
 <% if (!EnumSiteFeature.DYF.equals(siteFeature)
 			&& !EnumSiteFeature.FAVORITES.equals(siteFeature)
-			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)) { %>
+			&& !EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature)
+			&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
+			&& !siteFeature.getName().equals("PROD_GRP_YF")) { %>
 					<td>
 	    				<p class="label">Recent Orderlines:</p>
 						<p>

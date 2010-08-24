@@ -50,7 +50,7 @@ public class EnumKosherSymbolValue implements NutritionValueEnum {
     public final static EnumKosherSymbolValue RIBBON_K      = new EnumKosherSymbolValue("RIBBON_K","RIBBON_K", 21);
     public final static EnumKosherSymbolValue STAR_D        = new EnumKosherSymbolValue("STAR_D","STAR_D", 27);
     public final static EnumKosherSymbolValue QK            = new EnumKosherSymbolValue("QK","QK",30);
-    public final static EnumKosherSymbolValue K_ORC          = new EnumKosherSymbolValue("K_ORC","K_ORC",31);
+    public final static EnumKosherSymbolValue K_ORC         = new EnumKosherSymbolValue("K_ORC","K_ORC",31);
 	
 	private final String code;
     private final String name;

@@ -161,10 +161,10 @@ public class ContentNodeModelUtil {
 			} else {
 				value = refModel.getCmsAttributeValue( refNodeAttr );
 			}
+			
+		        List<ContentKey> newKeys = (List<ContentKey>) value;
 
-			List<ContentKey> newKeys = (List<ContentKey>)value;
-
-			if ( newKeys == null ) {
+			if (newKeys == null) {
 				newKeys = new ArrayList<ContentKey>();
 			}
 
@@ -174,13 +174,13 @@ public class ContentNodeModelUtil {
 				return false; // didn't need to refresh
 
 			childModels.clear();
-			for ( int i = 0; i < newKeys.size(); i++ ) {
-				ContentKey key = newKeys.get( i );
-
-				ContentNodeModelImpl m = buildChildContentNode( refModel, key, setParent, i );
-
-				if ( m != null ) {
-					childModels.add( m );
+			for (int i = 0; i < newKeys.size(); i++) {
+				ContentKey key = (ContentKey) newKeys.get(i);
+		
+				ContentNodeModelImpl m = buildChildContentNode(refModel, key, setParent, i);
+                                
+				if (m!=null) {
+					childModels.add(m);
 				}
 
 			}

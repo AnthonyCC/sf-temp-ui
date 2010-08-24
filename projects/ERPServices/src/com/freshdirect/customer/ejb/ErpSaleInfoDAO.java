@@ -281,7 +281,7 @@ public class ErpSaleInfoDAO {
 		+ "(select max(action_date) from cust.salesaction where action_type in ('CRO','MOD') and sale_id=s.id) "
 		+ "and s.customer_id = ? and s.type='REG' and s.dlv_pass_id = ?";
 
-	public static Collection<DlvPassUsageLine> getRecentOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId, int noOfDaysOld) throws SQLException {
+	public static List<DlvPassUsageLine> getRecentOrdersByDlvPassId(Connection conn, String erpCustomerId, String dlvPassId, int noOfDaysOld) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(GET_RECENT_ORDERS_BY_DLV_PASS);
 		//ps.setInt(1, noOfDaysOld);
 		ps.setString(1, erpCustomerId);
@@ -349,9 +349,9 @@ public class ErpSaleInfoDAO {
 			+ " and s.status in ('ENR', 'STL', 'PPG', 'CPG', 'REF', 'RET') "
 			+ "order by s.stop_sequence ";
 
-	public static List getOrdersByTruckNumber(Connection conn, String truckNumber, java.util.Date deliveryDate)
+	public static List<DlvSaleInfo> getOrdersByTruckNumber(Connection conn, String truckNumber, java.util.Date deliveryDate)
 		throws SQLException {
-		List saleInfos = new ArrayList();
+		List<DlvSaleInfo> saleInfos = new ArrayList<DlvSaleInfo>();
 
 		PreparedStatement ps = conn.prepareStatement(ORDER_BY_TRUCK_QUERY);
 		Calendar dlvCal = DateUtil.truncate(DateUtil.toCalendar(deliveryDate));
@@ -464,12 +464,12 @@ public class ErpSaleInfoDAO {
 			+ "and trunc(di.starttime) = trunc(?)) new "
 			+ "where new.id=old.id order by truck_number, stop_sequence ";
 
-	public static List getRedeliveries(Connection conn, java.util.Date date) throws SQLException {
+	public static List<RedeliverySaleInfo> getRedeliveries(Connection conn, java.util.Date date) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(redeliveryQuery);
 		ps.setDate(1, new java.sql.Date(date.getTime()));
 		ps.setDate(2, new java.sql.Date(date.getTime()));
 		ResultSet rs = ps.executeQuery();
-		List saleInfos = new ArrayList();
+		List<RedeliverySaleInfo> saleInfos = new ArrayList<RedeliverySaleInfo>();
 		RedeliverySaleInfo saleInfo = null;
 		while (rs.next()) {
 			saleInfo =
@@ -502,11 +502,11 @@ public class ErpSaleInfoDAO {
 			+ EnumDiscountType.SAMPLE.getId()
 			+ " and NVL(ol.delivery_grp, 0) = 0 ";
 
-	public static List getEveryItemEverOrdered(Connection conn, String erpCustomerId) throws SQLException {
+	public static List<FDConfiguredProduct> getEveryItemEverOrdered(Connection conn, String erpCustomerId) throws SQLException {
 		PreparedStatement ps = conn.prepareStatement(everyItemOrderedQuery);
 		ps.setString(1, erpCustomerId);
 		ResultSet rs = ps.executeQuery();
-		List products = new ArrayList();
+		List<FDConfiguredProduct> products = new ArrayList<FDConfiguredProduct>();
 		FDConfiguredProductFactory factory = FDConfiguredProductFactory.getInstance();
 		
 		while (rs.next()) {

@@ -1,0 +1,49 @@
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+
+<%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+
+<%--
+  most_popular.jspf
+	requires:
+		DepartmentModel dept
+		FDUserI user;		
+	provides:
+		meal of the week
+	included in:
+		landing_page_layout.jsp	
+--%>
+
+
+<%
+	ProductModel mealOfTheWeek = dept.getFirstAvailableFeaturedProduct();
+	if (mealOfTheWeek != null) {
+		String actionUrl = FDURLUtil.getProductURI(mealOfTheWeek,"mow");
+		List<BrandModel> mealBrands=mealOfTheWeek.getBrands();
+		MediaI brandImage = null;
+		String brandName=null;
+		if(mealBrands.size()>0) {
+			brandImage=mealBrands.get(0).getLogoLarge();
+			brandName=mealBrands.get(0).getFullName();
+		}
+		
+		%>
+		<div class="mow">
+			<img src="/media_stat/images/4mm/dpt_4mm_meal_of_week.gif" alt="Meal of the Week"/>
+			<div class="mow-desc">
+				<display:ProductImage product="<%= mealOfTheWeek %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="mow-image" enableQuickBuy="true" customer="<%= user %>"/>
+				<% if(brandImage!=null) { %>		
+					<img src="<%= brandImage.getPath() %>" /><br/>
+				<% } %>
+				<display:ProductRating product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" /> 
+				<display:ProductName product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" showBrandName="true" noBreak="true"/> 
+				<display:ProductPrice impression="<%= new ProductImpression(mealOfTheWeek) %>" showDescription="false" />
+			</div>
+		</div>
+<% } %>
+

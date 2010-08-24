@@ -31,9 +31,8 @@ import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.NVL;
-import com.freshdirect.framework.util.TextEncryptor;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.giftcard.ErpGiftCardUtil; 
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 /**
  *
  *
@@ -42,6 +41,7 @@ import com.freshdirect.giftcard.ErpGiftCardUtil;
  */
 class FDCustomerOrderInfoDAO {
 
+	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerOrderInfoDAO.class);
 	
 	private static final String ORDER_SEARCH_QUERY = "select  /*+use_nl(di,sa,scm,s)*/ s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "
@@ -70,7 +70,7 @@ class FDCustomerOrderInfoDAO {
 	" and SA.ACTION_DATE=S.CROMOD_DATE ";
 	
 
-	public static List findOrdersByCriteria(Connection conn, FDOrderSearchCriteria criteria) throws SQLException {
+	public static List<FDCustomerOrderInfo> findOrdersByCriteria(Connection conn, FDOrderSearchCriteria criteria) throws SQLException {
 		
 		CriteriaBuilder builder = new CriteriaBuilder();
 		boolean isGiftCardSearch=false;
@@ -113,7 +113,7 @@ class FDCustomerOrderInfoDAO {
 			builder.addString("c.user_id", value.toLowerCase());
 		}
 
-		Set values = criteria.getDepotLocationIds();
+		Set<String> values = criteria.getDepotLocationIds();
 		if (!values.isEmpty()) {
 			builder.addInString("di.depotlocation_id", (String[]) values.toArray(new String[values.size()]));
 		}
@@ -149,7 +149,7 @@ class FDCustomerOrderInfoDAO {
 		return runOrderQuery(conn, builder,isGiftCardSearch);
 	}
 
-	private static List runOrderQuery(Connection conn, CriteriaBuilder builder,boolean isGiftCardSearch) throws SQLException {
+	private static List<FDCustomerOrderInfo> runOrderQuery(Connection conn, CriteriaBuilder builder,boolean isGiftCardSearch) throws SQLException {
 		PreparedStatement ps=null;
 		System.out.println("query :"+GIFT_CARD_ORDER_SERACH_QUERY + " and " + builder.getCriteria());
 		if(isGiftCardSearch)
@@ -168,7 +168,7 @@ class FDCustomerOrderInfoDAO {
 		}
 		ResultSet rs = ps.executeQuery();
 		
-		List lst = new ArrayList();
+		List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
 		while (rs.next()) {
 			FDCustomerOrderInfo oInfo = new FDCustomerOrderInfo();
 			
@@ -199,7 +199,7 @@ class FDCustomerOrderInfoDAO {
 		return lst;
 	}
 	
-	public static List findCustomersByCriteria(Connection conn, FDCustomerSearchCriteria criteria) throws SQLException {
+	public static List<FDCustomerOrderInfo> findCustomersByCriteria(Connection conn, FDCustomerSearchCriteria criteria) throws SQLException {
 		CriteriaBuilder builder = new CriteriaBuilder();
 		
 		if(criteria.getOrderNumber() != null && !"".equals(criteria.getOrderNumber())) {
@@ -263,7 +263,7 @@ class FDCustomerOrderInfoDAO {
 		+ "from cust.customer c, cust.customerinfo ci, cust.fdcustomer fc, cust.address a "
 		+ "where c.id = ci.customer_id and c.id = fc.erp_customer_id and c.id = a.customer_id (+)";
 	
-	private static List customerSearch(Connection conn, CriteriaBuilder builder) throws SQLException {
+	private static List<FDCustomerOrderInfo> customerSearch(Connection conn, CriteriaBuilder builder) throws SQLException {
 		String query = CUST_SEARCH_QUERY + " and " + builder.getCriteria();
 		PreparedStatement ps = conn.prepareStatement(query);
 		Object[] obj = builder.getParams();
@@ -271,7 +271,7 @@ class FDCustomerOrderInfoDAO {
 			ps.setObject(i+1, obj[i]);
 		}
 		ResultSet rs = ps.executeQuery();
-		List lst = processCustomerResultSet(rs);
+		List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
 		rs.close();
 		ps.close();
 		return lst;
@@ -285,12 +285,12 @@ class FDCustomerOrderInfoDAO {
 		 + "where s.id = ? and c.id = ci.customer_id and s.customer_id = c.id " 
 		 + "and c.id = fc.erp_customer_id";
 
-	private static List customerSearchByOrderNumber(Connection conn, String orderNumber) throws SQLException {
+	private static List<FDCustomerOrderInfo> customerSearchByOrderNumber(Connection conn, String orderNumber) throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(CUST_BY_ORDER_QUERY);
 		ps.setString(1, orderNumber);
 		ResultSet rs = ps.executeQuery();
-		List lst = processCustomerResultSet(rs);
+		List<FDCustomerOrderInfo> lst = processCustomerResultSet(rs);
 
 		rs.close();
 		ps.close();
@@ -298,8 +298,8 @@ class FDCustomerOrderInfoDAO {
 		return lst;
 	}
 
-	private static List processCustomerResultSet(ResultSet rs) throws SQLException {
-		List lst = new ArrayList();
+	private static List<FDCustomerOrderInfo> processCustomerResultSet(ResultSet rs) throws SQLException {
+		List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
 		while (rs.next()) {
 			FDCustomerOrderInfo oInfo = new FDCustomerOrderInfo();
 			oInfo.setIdentity(new FDIdentity(rs.getString("ID")));

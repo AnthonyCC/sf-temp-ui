@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
@@ -13,13 +12,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.PriceCalculator;
-import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
-import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.ConfigurationUtil;
-import com.freshdirect.webapp.util.JspMethods;
 import com.freshdirect.webapp.util.ProductImpression;
 import com.freshdirect.webapp.util.TransactionalProductImpression;
 
@@ -53,7 +48,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String groceryStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String groceryStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
-	private final static Category LOGGER = LoggerFactory.getInstance("ProductPriceTag.java");
+	private final static Category LOGGER = LoggerFactory.getInstance( ProductPriceTag.class );
 	
 	private ProductImpression impression;
 	double savingsPercentage = 0 ; // savings % off
@@ -106,9 +101,48 @@ public class ProductPriceTag extends BodyTagSupport {
 		this.skuCode = skuCode;
 	}
 
-	public int doStartTag() {
-		JspWriter out = pageContext.getOut();
 
+	@Override
+	public int doStartTag() {
+		StringBuffer buf = new StringBuffer();
+		
+		
+		buf.append( "<span class=\"price\">" );
+		buf.append(ProductPriceTag.getHTMLFragment(
+			impression,
+			savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
+			quickShop, grcyProd, skuCode
+		));
+		buf.append("</span>\n");
+
+
+		try {
+			// write out
+			pageContext.getOut().write(buf.toString());
+		} catch (IOException e) {
+		}
+
+		return EVAL_BODY_INCLUDE;
+	}
+
+	
+	/**
+	 * Generates price HTML fragment without the outer 'price' frame 
+	 * 
+	 * @param impression
+	 * @param savingsPercentage
+	 * @param showDescription
+	 * @param showAboutPrice
+	 * @param showRegularPrice
+	 * @param showWasPrice
+	 * @param showScalePricing
+	 * @param quickShop
+	 * @param grcyProd
+	 * @param skuCode
+	 * 
+	 * @return HTML piece
+	 */
+	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode) {
 		StringBuffer buf = new StringBuffer();
 
 		String confDescription = null;
@@ -126,7 +160,7 @@ public class ProductPriceTag extends BodyTagSupport {
 			} catch (FDResourceException e1) {}
 		}
 		
-		buf.append( "<font class=\"price\">" );
+		/// buf.append( "<span class=\"price\">" );
 
 		// display description
 		if ( showDescription && confDescription != null ) {
@@ -135,18 +169,11 @@ public class ProductPriceTag extends BodyTagSupport {
 
 		// display price
 		FDProductInfo productInfo = impression.getProductInfo();
-		//LOGGER.debug("productInfo: "+productInfo);		
 		
 		if ( productInfo != null ) {	
-
 			String priceString = impression.getProductModel().getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
-			//LOGGER.debug("priceString: "+priceString);
-			
 			String scaleString = priceCalculator.getTieredPrice(savingsPercentage);
-			//LOGGER.debug("scaleString: "+scaleString);
-			
 			String wasString = priceCalculator.getWasPriceFormatted(savingsPercentage);
-			//LOGGER.debug("wasString: "+wasString);
 			
 			if (wasString != null)
 				wasString = "(was " + wasString + ")";
@@ -154,25 +181,24 @@ public class ProductPriceTag extends BodyTagSupport {
 			/* Display Sales Units price-Apple Pricing[AppDev-209].. */
 			String aboutPriceString = "";
 			String styleAbout = "";
-			//LOGGER.debug("styleAbout before aboutPriceString: |"+styleAbout+"|");
 
 			aboutPriceString = priceCalculator.getAboutPriceFormatted(0);
-                        // LOGGER.debug("showWasPrice: |"+showWasPrice+"|");
-                        // LOGGER.debug("aboutPriceString: |"+aboutPriceString+"|");
+
             
-                        if (null != aboutPriceString && !"".equals(aboutPriceString)) {
-                            showRegularPrice = false;
-                            showWasPrice = false;
-                            showScalePricing = false;
-                            styleAbout = (scaleString != null) ? styleAboutScaled : styleAboutOnly;
-                        } else {
-                            styleAbout = styleAboutOnly;
-                        }
-			//LOGGER.debug("styleAbout after aboutPriceString: |"+styleAbout+"|");
+	        if (null != aboutPriceString && !"".equals(aboutPriceString)) {
+	            showRegularPrice = false;
+	            showWasPrice = false;
+	            showScalePricing = false;
+
+	            styleAbout = (scaleString != null) ? styleAboutScaled : styleAboutOnly;
+	        } else {
+	            styleAbout = styleAboutOnly;
+	        }
+
 			
 			// style for the real price depends on what kind of deals we have
 			String styleRegular = "";
-			//LOGGER.debug("styleRegular before : |"+styleRegular+"|");			
+
 			if ( scaleString != null && !quickShop && !grcyProd)
 				styleRegular = ( wasString != null ) ? styleRegularWithBoth : styleRegularWithScaled;
 			else if (!quickShop && !grcyProd)
@@ -185,9 +211,6 @@ public class ProductPriceTag extends BodyTagSupport {
 				styleRegular = ( wasString != null ) ? groceryStyleRegularWithWas : groceryStyleRegularOnly;
 			else 
 				styleRegular = ( wasString != null ) ? quickShopStyleRegularWithWas : quickShopStyleRegularOnly;
-
-			//LOGGER.debug("styleRegular after : |"+styleRegular+"|");	
-			
 						
 			// regular price
 			if(showRegularPrice) {
@@ -264,17 +287,9 @@ public class ProductPriceTag extends BodyTagSupport {
 			}
 		}
 
-		//LOGGER.debug("end of product price tag");		
+		/// buf.append( "</span>" );
 
-		buf.append( "</font>" );
-		
-		try {
-			// write out
-			out.write(buf.toString());
-		} catch (IOException e) {
-		}
-
-		return EVAL_BODY_INCLUDE;
+		return buf.toString();
 	}
 
 	public static class TagEI extends TagExtraInfo {

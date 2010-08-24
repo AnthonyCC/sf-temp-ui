@@ -9,7 +9,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 
 public class DepartmentModel extends ProductContainer {
 
-	private final List featuredProductModels = new ArrayList();
+	private final List<ProductModel> featuredProductModels = new ArrayList<ProductModel>();
 
 	private final List<CategoryModel> categoryModels = new ArrayList<CategoryModel>();
 	
@@ -23,27 +23,27 @@ public class DepartmentModel extends ProductContainer {
 
 
 	public Image getTitleImage() {
-            return FDAttributeFactory.constructImage(this, "DEPT_TITLE");
+        return FDAttributeFactory.constructImage(this, "DEPT_TITLE");
 	}
 
 	public Image getPhoto() {
-            return FDAttributeFactory.constructImage(this, "DEPT_PHOTO");
+        return FDAttributeFactory.constructImage(this, "DEPT_PHOTO");
 	}
 
 	public Image getPhotoSmall() {
-            return FDAttributeFactory.constructImage(this, "DEPT_PHOTO_SMALL");
+        return FDAttributeFactory.constructImage(this, "DEPT_PHOTO_SMALL");
 	}
 
 	public Image getMgrPhotoNoName() {
-            return FDAttributeFactory.constructImage(this, "DEPT_MGR_NONAME");
+        return FDAttributeFactory.constructImage(this, "DEPT_MGR_NONAME");
 	}
 
 	public Image getGlobalNavBar() {
-            return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR");
+        return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR");
 	}
 
 	public Image getGlobalNavBarRollover() {
-            return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR_ROLLOVER");
+        return FDAttributeFactory.constructImage(this, "DEPT_NAVBAR_ROLLOVER");
 	}
 	
 	public boolean isUseAlternateImages() {
@@ -54,26 +54,28 @@ public class DepartmentModel extends ProductContainer {
 	    return getAttribute("HIDE_IN_QUICKSHOP", false);
 	}
 	
-       /**
-         * this is a Department level attribute, ASSOC_EDITORIAL
-         */
-        @SuppressWarnings("unchecked")
-        public List<Html> getAssocEditorial() {
-            return (List<Html>) FDAttributeFactory.constructWrapperList(this, "ASSOC_EDITORIAL");
-        }
+   /**
+     * this is a Department level attribute, ASSOC_EDITORIAL
+     */
+    @SuppressWarnings("unchecked")
+    public List<Html> getAssocEditorial() {
+        return (List<Html>) FDAttributeFactory.constructWrapperList(this, "ASSOC_EDITORIAL");
+    }
 
 	/**
 	 * @return List of Html
 	 */
+    @SuppressWarnings("unchecked")
 	public List<Html> getDepartmentBottom() {
-            return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_BOTTOM");
+        return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_BOTTOM");
 	}
 	
 	/**
 	 * @return List of Html
 	 */
+    @SuppressWarnings("unchecked")
 	public List<Html> getDepartmentMiddleMedia() {
-            return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_MIDDLE_MEDIA");
+        return FDAttributeFactory.constructWrapperList(this, "DEPARTMENT_MIDDLE_MEDIA");
 	}
 	
 
@@ -83,23 +85,20 @@ public class DepartmentModel extends ProductContainer {
 
 	public List<CategoryModel> getCategories() {
 		ContentNodeModelUtil.refreshModels(this, "categories", categoryModels, true);
-
 		return new ArrayList<CategoryModel>(categoryModels);
 	}
-	
-        public List<CategoryModel> getFeaturedCategories() {
-            ContentNodeModelUtil.refreshModels(this, "FEATURED_CATEGORIES", featuredCategories, false);
 
-            return new ArrayList<CategoryModel>(featuredCategories);
-        }
-	
-	
-        public List<CategoryModel> getDeptNav() {
-            ContentNodeModelUtil.refreshModels(this, "DEPT_NAV", deptNav, false);
-    
-            return new ArrayList<CategoryModel>(deptNav);
-        }	
-	
+    public List<CategoryModel> getFeaturedCategories() {
+        ContentNodeModelUtil.refreshModels(this, "FEATURED_CATEGORIES", featuredCategories, false);
+        return new ArrayList<CategoryModel>(featuredCategories);
+    }
+
+
+    public List<CategoryModel> getDeptNav() {
+        ContentNodeModelUtil.refreshModels(this, "DEPT_NAV", deptNav, false);
+        return new ArrayList<CategoryModel>(deptNav);
+    }	
+
 	@Override
 	public List<CategoryModel> getSubcategories() {
 	    return getCategories();
@@ -116,9 +115,9 @@ public class DepartmentModel extends ProductContainer {
 		if (bRefreshed) {
 			ContentNodeModelUtil.setNearestParentForProducts(this, featuredProductModels);
 		}
-		return new ArrayList(featuredProductModels);
+		return new ArrayList<ProductModel>(featuredProductModels);
 	}
-
+	
 	public Html getDeptStorageGuideMedia() {
 	    return FDAttributeFactory.constructHtml(this, "DEPT_STORAGE_GUIDE_MEDIA");
 	}

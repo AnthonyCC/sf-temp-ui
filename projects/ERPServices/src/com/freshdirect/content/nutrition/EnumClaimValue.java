@@ -22,6 +22,17 @@ public class EnumClaimValue implements NutritionValueEnum {
 	
 	public final static EnumClaimValue OAN_ORGANIC = new EnumClaimValue("OAN",       "Approved O&AN Store", 1);
 	public final static EnumClaimValue KOSHER_FOR_PASSOVER = new EnumClaimValue("KOS_PAS", "Kosher for Passover", 1);
+
+	public final static EnumClaimValue VEGGY = new EnumClaimValue("VEGGY", "Vegetarian", 2);
+
+	// 4mm nutrition claims
+	public final static EnumClaimValue NUTRITION_4MM_LOWCALORIE 	= new EnumClaimValue("4MM_LOWCALORIE", "Under 500 Calorie Meals", 2);
+	public final static EnumClaimValue NUTRITION_4MM_VEGETARIAN 	= VEGGY;
+	public final static EnumClaimValue NUTRITION_4MM_2VEGETABLE 	= new EnumClaimValue("4MM_2VEGETABLE", "2+ Servings of Vegetables", 2);
+	public final static EnumClaimValue NUTRITION_4MM_WHOLEGRAINS 	= new EnumClaimValue("4MM_WHOLEGRAINS", "Whole Grains", 2);
+	public final static EnumClaimValue NUTRITION_4MM_HIGHFIBER 		= new EnumClaimValue("4MM_HIGHFIBER", "High Fiber", 2);
+	public final static EnumClaimValue NUTRITION_4MM_SODIUM 		= new EnumClaimValue("4MM_SODIUM", "Sodium-Conscious", 2);
+
 	
 	private final String code;
     private final String name;
@@ -101,7 +112,7 @@ public class EnumClaimValue implements NutritionValueEnum {
         types.add(new EnumClaimValue("AL_NATR", "All Natural", 1));
 		types.add(new EnumClaimValue("AHA", "American Heart Association", 1));
 		
-		types.add(new EnumClaimValue("VEGGY",     "Vegetarian", 1));
+		types.add( VEGGY );
 		types.add(new EnumClaimValue("ATKINS",    "Atkins", 1));
 		types.add(new EnumClaimValue("NET_CARBS", "Net Carbs", 1));
 		types.add(new EnumClaimValue("NOS",       "Naturally Occurring Sulfites", 1));
@@ -112,10 +123,18 @@ public class EnumClaimValue implements NutritionValueEnum {
 		types.add(new EnumClaimValue("KOS_NOPAS", "Not certified for Passover.", 1));
 
 		types.add(new EnumClaimValue("PEANUTS", "Produced in our bakery, where tree nuts and peanuts are used.", 1));
+
+		// 4mm nutrition claims
+		types.add( NUTRITION_4MM_LOWCALORIE );
+		//types.add( NUTRITION_4MM_VEGETARIAN ); veggy is already in the list.
+		types.add( NUTRITION_4MM_2VEGETABLE );
+		types.add( NUTRITION_4MM_WHOLEGRAINS );
+		types.add( NUTRITION_4MM_HIGHFIBER );
+		types.add( NUTRITION_4MM_SODIUM );
     }
 
     public static List<EnumClaimValue> getValues() {
-    	Collections.sort(types, ClaimValueComapartor);
+    	Collections.sort(types, ClaimValueComparator);
         return Collections.unmodifiableList(types);
     }
     
@@ -128,7 +147,7 @@ public class EnumClaimValue implements NutritionValueEnum {
         return null;
     }
     
-    public static Comparator<EnumClaimValue> ClaimValueComapartor = new Comparator<EnumClaimValue>(){
+    public static Comparator<EnumClaimValue> ClaimValueComparator = new Comparator<EnumClaimValue>(){
 		public int compare(EnumClaimValue claim1, EnumClaimValue claim2) {
 		   	int diff = claim1.getPriority()- claim2.getPriority();
 		   	if (diff==0) {

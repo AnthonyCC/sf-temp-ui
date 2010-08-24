@@ -22,7 +22,7 @@ import com.freshdirect.smartstore.impl.GlobalCompiler;
 import com.freshdirect.smartstore.impl.ScriptedRecommendationService;
 import com.freshdirect.smartstore.service.RecommendationServiceFactory;
 import com.freshdirect.smartstore.service.VariantRegistry;
-import com.freshdirect.webapp.taglib.smartstore.FeaturedItemsTag;
+import com.freshdirect.webapp.taglib.smartstore.ProductGroupRecommenderTag;
 import com.freshdirect.webapp.util.FDEventUtil;
 import com.mockrunner.mock.web.MockPageContext;
 
@@ -63,7 +63,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems").getVariant()));
 
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();
@@ -103,7 +103,7 @@ public class ScriptedRecommendationServiceTest extends RecommendationServiceTest
         MockPageContext ctx = TestUtils.createMockPageContext(TestUtils.createUser("123", "456", "789"));
         VariantSelectorFactory.setVariantSelector(EnumSiteFeature.FEATURED_ITEMS, new SingleVariantSelector(getScriptedRecommendationService("FeaturedItems:between(globalPopularity,0,50)").getVariant()));
 
-        FeaturedItemsTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
+        ProductGroupRecommenderTag fit = TestUtils.createFeaturedItemsTag(ctx, "spe_cooki_cooki");
 
         try {
             RecommendationEventLoggerMockup eventLogger = getMockup();

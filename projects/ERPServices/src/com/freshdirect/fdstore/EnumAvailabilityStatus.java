@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.fdstore;
 
 import java.util.HashMap;
@@ -13,13 +5,12 @@ import java.util.Map;
 
 /**
  * Type-safe enumeration for availability statuses.
- *
- * @version $Revision$
- * @author $Author$
  */
 public class EnumAvailabilityStatus implements java.io.Serializable {
 	
-	private final static Map STATUSCODE_MAP = new HashMap();
+	private static final long	serialVersionUID	= -1531192923805339870L;
+
+	private final static Map<String, EnumAvailabilityStatus> STATUSCODE_MAP = new HashMap<String, EnumAvailabilityStatus>();
     
     public final static EnumAvailabilityStatus AVAILABLE        = new EnumAvailabilityStatus(0, "AVAL", "Available");
     public final static EnumAvailabilityStatus DISCONTINUED     = new EnumAvailabilityStatus(1, "DISC", "Discontinued");
@@ -48,7 +39,7 @@ public class EnumAvailabilityStatus implements java.io.Serializable {
     }
     
     public static EnumAvailabilityStatus getEnumByStatusCode(String statusCode){
-    	return statusCode == null ? null : (EnumAvailabilityStatus) STATUSCODE_MAP.get( statusCode.toUpperCase() );
+    	return statusCode == null ? null : STATUSCODE_MAP.get( statusCode.toUpperCase() );
     }
     
     public String toString() {

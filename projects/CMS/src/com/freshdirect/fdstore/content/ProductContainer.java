@@ -43,6 +43,17 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
         }
         return featuredProdIds;
     }
+    
+    public ProductModel getFirstAvailableFeaturedProduct() {
+        List<ProductModel> featuredProducts = getFeaturedProducts();
+        
+        for ( ProductModel prod : featuredProducts ) {
+        	if ( !prod.isUnavailable() ) {
+        		return prod;        		
+        	}
+        }
+		return null;    	
+    }
 
     public List<Domain> getRating() {
         ContentNodeModelUtil.refreshModels(this, "RATING", rating, false, true);

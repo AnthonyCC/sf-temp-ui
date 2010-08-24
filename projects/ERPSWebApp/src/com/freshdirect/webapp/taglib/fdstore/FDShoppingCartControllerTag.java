@@ -88,7 +88,6 @@ import com.freshdirect.webapp.util.FDEventUtil;
 import com.freshdirect.webapp.util.ItemSelectionCheckResult;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.RequestUtil;
-import com.metaparadigm.jsonrpc.JSONSerializer;
 
 
 public class FDShoppingCartControllerTag extends BodyTagSupport implements SessionName {

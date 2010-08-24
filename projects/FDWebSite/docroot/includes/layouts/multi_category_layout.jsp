@@ -117,7 +117,7 @@
 										<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="<%= useAlternate %>"/>										
 									</td>
 								
-								<% } else { // is a category 
+								<% } else if ( currentItem instanceof CategoryModel ) { // is a category 
 									CategoryModel category = (CategoryModel)currentItem;
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>
@@ -147,7 +147,7 @@
 										
 									</font></td>
 								
-								<% } else { // is a category 
+								<% } else if ( currentItem instanceof CategoryModel ) { // is a category 
 									CategoryModel category = (CategoryModel)currentItem;
 									String actionUrl = FDURLUtil.getCategoryURI( category, trackingCode );
 									%>

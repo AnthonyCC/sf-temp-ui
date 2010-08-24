@@ -138,7 +138,7 @@ if (currentCategory != null) {
 	// Favorite Products
 	//
 %>
-<fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="5"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		request.setAttribute("recommendationsRendered","true");
 	
@@ -207,7 +207,7 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 <%
 	}
 %>
-</fd:FeaturedItemsRecommendations>
+</fd:ProductGroupRecommender>
 <font class="space4pix"><BR></font>
 <%
 

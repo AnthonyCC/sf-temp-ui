@@ -37,28 +37,28 @@ if(deptId!=null) {
 }
 
 
-boolean onlyOneProduct = false;
-ProductModel theOnlyProduct = null;
+// boolean onlyOneProduct = false;
+// ProductModel theOnlyProduct = null;
 //Siva-Changed Tracking Code Retrievel
 String trkCode = (String)request.getAttribute("trk");
 
-Collection sortedColl = (Collection) request.getAttribute("itemGrabberResult");
-if (sortedColl==null) sortedColl = new ArrayList();
+Collection<CategoryModel> sortedColl = (Collection<CategoryModel>) request.getAttribute("itemGrabberResult");
+if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 //**************************************************************
 //***         the How To cook it Patterrn                    ***
 //**************************************************************
     ContentNodeModel owningFolder = currentFolder;
 
-    TreeMap deferDisplayProds = new TreeMap(contentNodeComparator);
-    HashMap deferDisplayPrices = new HashMap();
-    HashMap deferDisplayImages   = new HashMap();
-    Image favAllImage = null;
+    // TreeMap deferDisplayProds = new TreeMap(contentNodeComparator);
+    // HashMap deferDisplayPrices = new HashMap();
+    // HashMap deferDisplayImages   = new HashMap();
+    // Image favAllImage = null;
     boolean showPrices = ((ProductContainer)currentFolder).isFavoriteShowPrice();
     boolean folderShown = false;
     String imagePath = null;
     String imageDim = "";
-    String clearImage = "/media_stat/images/layout/clear.gif";
-    String unAvailableImg="/media_stat/images/template/not_available.gif";
+    /// String clearImage = "/media_stat/images/layout/clear.gif";
+    /// String unAvailableImg="/media_stat/images/template/not_available.gif";
     String notAvailImgName = "";
     ContentNodeModel parentNode = currentFolder.getParentNode();
     while (parentNode!=null && !(parentNode instanceof DepartmentModel)) {
@@ -73,31 +73,31 @@ if (sortedColl==null) sortedColl = new ArrayList();
 
  // don't display any heading if the favorite collection is empty or the products are unavailable.
     int favoritesShow = 0;
-    List favorites =  ((ProductContainer)currentFolder).getFeaturedProducts();
-    int foldersShown =0, productsShown=0;
-    LinkedList productLinks = new LinkedList();
-    LinkedList productPrices = new LinkedList();
-    LinkedList unAvailableProds = new LinkedList();
-    LinkedList unAvailablePrices = new LinkedList();
+    List<ProductModel> favorites =  ((ProductContainer)currentFolder).getFeaturedProducts();
+    /// int foldersShown =0, productsShown=0;
+    LinkedList<String> productLinks = new LinkedList<String>();
+    LinkedList<String> productPrices = new LinkedList<String>();
+    LinkedList<String> unAvailableProds = new LinkedList<String>();
+    LinkedList<String> unAvailablePrices = new LinkedList<String>();
     StringBuffer col1 = new StringBuffer();
     StringBuffer favoriteProducts = new StringBuffer();
     String imgName = null;
     boolean folderAsProduct = false;
-    ContentNodeModel aliasNode = null;
-    ContentNodeModel prodParent = null;
-    ContentFactory contentFactory = ContentFactory.getInstance();
-    Comparator priceComp = new ProductModel.PriceComparator();
+    // ContentNodeModel aliasNode = null;
+    // ContentNodeModel prodParent = null;
+
+    Comparator<SkuModel> priceComp = new ProductModel.PriceComparator();
 %>
-    <logic:iterate id='contentRef' collection="<%=favorites%>" type="java.lang.Object">
+    <logic:iterate id='contentRef' collection="<%=favorites%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
-        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(JspMethods.getFeaturedProduct(contentRef) ,user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
+        ProductModel product = ProductPricingFactory.getInstance().getPricingAdapter(contentRef, user.getPricingContext()); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;
-        prodParent = product.getParentNode(); 
-        List skus = product.getSkus(); 
+        ContentNodeModel prodParent = product.getParentNode(); 
+        List<SkuModel> skus = product.getSkus(); 
         if (prodParent==null || !(prodParent instanceof CategoryModel)) continue;
 
-	for (ListIterator li=skus.listIterator(); li.hasNext(); ) {
-		SkuModel sku = (SkuModel)li.next();
+	for (ListIterator<SkuModel> li=skus.listIterator(); li.hasNext(); ) {
+		SkuModel sku = li.next();
        	if ( sku.isUnavailable() ) {
 			li.remove();
 		}
@@ -108,10 +108,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
         String prodPrice = null;
         if (skuSize==0) continue;  // skip this item..it has no skus.  Hmmm?
         if (skuSize==1) {
-            sku = (SkuModel)skus.get(0);  // we only need one sku
+            sku = skus.get(0);  // we only need one sku
         }
         else {
-            sku = (SkuModel) Collections.min(skus, priceComp);
+            sku = Collections.min(skus, priceComp);
         }
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
@@ -121,7 +121,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
         </fd:FDProductInfo>
 <%
         String productPageLink_ = response.encodeURL("product.jsp?catId=" + prodParent + "&productId=" + product+"&trk=htci");
-        favAllImage = (Image)product.getCategoryImage();
+        Image favAllImage = product.getCategoryImage();
         favoriteProducts.append("<TD WIDTH=\"");
         favoriteProducts.append(tdwidth);
         favoriteProducts.append("\"><A HREF=\"");
@@ -181,12 +181,12 @@ if (sortedColl==null) sortedColl = new ArrayList();
 <%
     }
     favoriteProducts=null;
-    CategoryModel displayCategory = null;
     boolean gotAvailProdImg = false;
 %>
-    <logic:iterate id='contentNode' collection="<%=sortedColl%>" type="com.freshdirect.fdstore.content.ContentNodeModel">
+    <logic:iterate id='displayCategory' collection="<%= sortedColl %>" type="com.freshdirect.fdstore.content.CategoryModel">
 <%
-       displayCategory=(CategoryModel)contentNode;
+		//CategoryModel displayCategory = null;
+		//displayCategory=(CategoryModel)contentNode;
 %>
 <TABLE CELLSPACING="0" CELLPADDING="0" BORDER="0" WIDTH="400">
 <TR VALIGN="MIDDLE">
@@ -208,16 +208,15 @@ if (sortedColl==null) sortedColl = new ArrayList();
 </TABLE>
 <%
                // get the list of products that are eligible to be prepared for this group
-               List htciProdList = displayCategory.getHowToCookItProducts();
+               List<ProductModel> htciProdList = displayCategory.getHowToCookItProducts();
                if (htciProdList==null || htciProdList.size() ==0) continue;
                 col1.setLength(0);
                 productLinks.clear();
                 productPrices.clear();
                 gotAvailProdImg = false;
 %>                
-    <logic:iterate id='contentRef' collection="<%=htciProdList%>" type="java.lang.Object">
+    <logic:iterate id='product' collection="<%=htciProdList%>" type="com.freshdirect.fdstore.content.ProductModel">
 <% 
-        ProductModel product = JspMethods.getFeaturedProduct(contentRef); //(ProductModel)contentFactory.getProduct(contentRef.getCategoryId(),contentRef.getProductId());
         if (product.isDiscontinued() || product.isUnavailable()) continue;
         CategoryModel prodCategory = (CategoryModel)product.getParentNode(); 
 
@@ -262,10 +261,10 @@ if (sortedColl==null) sortedColl = new ArrayList();
             appendColumn.append(JspMethods.getDisplayName(product,prodNameAttribute));
             appendColumn.append("</A></div>");
             appendColumnPrices.append(lstUnitPrice);
+
             productLinks.add(appendColumn.toString());
-            productPrices.add(appendColumnPrices);
-%>    
-</logic:iterate>
+            productPrices.add(appendColumnPrices.toString());
+	%></logic:iterate>
 <%
                 String outputProducts= JspMethods.displayFAProducts(productLinks, productPrices,showPrices,false);
 %>
@@ -273,4 +272,4 @@ if (sortedColl==null) sortedColl = new ArrayList();
 <TR VALIGN="TOP">
 	<TD width="90"><%=col1.toString()%></td><%=outputProducts%></TR>
 </Table>
- </logic:iterate>
+</logic:iterate>

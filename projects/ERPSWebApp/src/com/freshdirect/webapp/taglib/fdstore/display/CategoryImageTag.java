@@ -64,7 +64,7 @@ public class CategoryImageTag extends BodyTagSupport {
 	
 	public int doStartTag() {
 		try {
-			Image catImg = category.getCategoryPhoto(); // TODO ez a kep kell?
+			Image catImg = category.getCategoryPhoto(); 
 			
 			if ( catImg == null ) {
 				LOGGER.warn( "Missing category image: " + category.getContentKey() );

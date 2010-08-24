@@ -43,6 +43,7 @@ public class FactorUtil {
 	public static String GLOBAL_TOTAL_BUYER_COUNT_COLUMN = "TOTALBUYERCOUNT";
 	public static String GLOBAL_WEEKLY_FREQUENCY_COLUMN = "WEEKLYFREQUENCY";
 	public static String GLOBAL_AVERAGE_FREQUENCY_COLUMN = "AVERAGEFREQUENCY";
+	public static String GLOBAL_POPULARITY_8W_COLUMN = "POPULARITY_8W";
 	
 	// PERSONALIZED FACTORS columns, when moved to JDK 1.5+ these should be enums
 	public static String PERSONALIZED_FREQUENCY_COLUMN = "FREQUENCY";

@@ -1,0 +1,122 @@
+.fd-carousel {
+	padding:0px 25px 10px 25px;
+	zoom:1;
+}
+
+
+.fd-carousel .yui-carousel-nav {
+	overflow:visible;
+}
+	.fd-carousel .yui-carousel-nav ul {
+		list-style-type:none;
+		text-align:center;
+		position:absolute;
+		bottom:0px;
+		height:12px;
+		left:0px;
+		width:100%;
+		margin:0px;
+		padding:0px;
+		_margin-left:25px;
+	}
+		.fd-carousel .yui-carousel-nav li {
+			overflow:hidden;
+			background: url('/media_stat/carousel/page.gif') no-repeat top left;
+			cursor:pointer;
+			display:inline;
+			clear:none;
+			width:8px;
+			height:8px;
+			margin:0px 2px;
+		}
+
+		.fd-carousel .yui-carousel-nav a {
+			display:inline-block;
+			width:8px;
+			height:8px;
+		}
+			.fd-carousel .yui-carousel-nav em {
+				display:none;
+			}
+
+		.fd-carousel .yui-carousel-nav button {
+			visibility:hidden;
+		}
+
+		.fd-carousel .yui-carousel-nav li.yui-carousel-nav-page-selected {
+			background: url('/media_stat/carousel/page_selected.gif') no-repeat top left;
+		}
+		
+		.fd-carousel .yui-carousel-button {
+			display:block;
+			overflow:hidden;
+			position:absolute;
+			width:22px;
+			top:50%;
+			height:22px;
+			margin-top:-11px;			
+		}
+
+		.fd-carousel .yui-carousel-first-button {
+			left:0px;
+			background: url('/media_stat/carousel/prev_button.gif') no-repeat;
+		}
+		
+		.fd-carousel .yui-carousel-first-button-disabled {
+			background: url('/media_stat/carousel/prev_button_disabled.gif') no-repeat;
+		}
+		
+		.fd-carousel .yui-carousel-next-button {
+			right:0px;
+			background: url('/media_stat/carousel/next_button.gif') no-repeat;
+		}
+		
+		.fd-carousel .yui-carousel-button-disabled {
+			background: url('/media_stat/carousel/next_button_disabled.gif') no-repeat;
+		}
+
+.fd-carousel .yui-carousel-content {
+	zoom:1;
+}
+	.fd-carousel .yui-carousel-element {
+		border:none;
+		zoom:1;
+	}
+	
+	.fd-carousel .yui-carousel-element li {
+		border:none;
+		zoom:1;
+	}
+	
+	.fd-carousel .yui-carousel-element .yui-carousel-item-selected {
+		border:none;
+	}
+
+	.fd-carousel .productImage {
+		height:90px !important;
+	}
+		.fd-carousel .productImage a {
+			vertical-align:bottom;
+		}
+
+	.fd-carousel .productname {
+		font-size:10px;
+		height:36px;
+		line-height:12px;
+		overflow:hidden;
+		text-overflow:ellipsis;
+	}
+
+	.fd-carousel .price div {
+		font-size:11px;
+		height:16px;
+		overflow:hidden;
+	}
+
+	
+.fd-carousel.nopager .yui-carousel-nav ul {
+	display:none;
+	visibility:hidden !important;
+}
+
+	

@@ -12,7 +12,7 @@ public class SortStrategyElement {
 	public final static int PRODUCTS_BY_WINE_ATTRIBUTE = 6;
 	public final static int PRODUCTS_BY_RATING = 7;
 	public final static int PRODUCTS_BY_DOMAIN_RATING = 8;
-        public final static int PRODUCTS_BY_WINE_COUNTRY = 9;
+	public final static int PRODUCTS_BY_WINE_COUNTRY = 9;
 
 	public final static int GROUP_BY_CATEGORY_NAME = 200;
 	public final static int GROUP_BY_CATEGORY_PRIORITY = 201;
@@ -46,12 +46,12 @@ public class SortStrategyElement {
 		this.multiAttribName = multiAttribName;
 	}
 
-        public SortStrategyElement(int sortType, boolean sortDescending, String multiAttribName){
-            this.sortType = sortType;
-            this.sortDescending = sortDescending;
-            this.secondaryAttrib = null;
-            this.multiAttribName = multiAttribName;
-        }
+    public SortStrategyElement(int sortType, boolean sortDescending, String multiAttribName){
+        this.sortType = sortType;
+        this.sortDescending = sortDescending;
+        this.secondaryAttrib = null;
+        this.multiAttribName = multiAttribName;
+    }
 	
 	public int getSortType(){
 		return sortType;

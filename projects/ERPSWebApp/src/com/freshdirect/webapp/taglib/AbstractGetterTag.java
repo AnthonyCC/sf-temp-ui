@@ -6,7 +6,6 @@ import javax.servlet.jsp.tagext.*;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import org.apache.log4j.*;
 
-
 public abstract class AbstractGetterTag<X> extends com.freshdirect.framework.webapp.BodyTagSupport {
 
 	private static final long	serialVersionUID	= 1242883824723700468L;

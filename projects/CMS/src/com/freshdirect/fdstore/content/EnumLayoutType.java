@@ -49,8 +49,11 @@ public enum EnumLayoutType implements Serializable {
 	
     // this is never rendered by layout manager
     MULTI_ITEM_MEAL_OPTION_HORZ        ("Multi Item Meal Layout Option 1", 98), //(Optional category layout 1, Salad Meal)
-    MULTI_ITEM_MEAL_OPTION_VERT        ("Multi Item Meal Layout Option 2", 99); //(Optional category layout 2, Salad Meal)
-	
+    MULTI_ITEM_MEAL_OPTION_VERT        ("Multi Item Meal Layout Option 2", 99), //(Optional category layout 2, Salad Meal)
+    
+    // 4mm specific layouts    
+    FOURMM_DEPARTMENT	("4minute-meals landing page", 40),
+    FOURMM_CATEGORY		("4minute-meals restaurant page",41);
 
     public static List<EnumLayoutType> getLayoutTypes() {
         return Arrays.asList(values());
@@ -86,5 +89,12 @@ public enum EnumLayoutType implements Serializable {
      */
     public boolean isGroceryLayout() {
         return (GROCERY_DEPARTMENT.equals(this) || GROCERY_CATEGORY.equals(this) || GROCERY_PRODUCT.equals(this));
+    }
+    
+    /**
+     * @return Returns true if layout is four minute meals related.
+     */
+    public boolean is4mmLayout() {
+    	return ( FOURMM_DEPARTMENT.equals( this ) || FOURMM_CATEGORY.equals( this ) );
     }
 }

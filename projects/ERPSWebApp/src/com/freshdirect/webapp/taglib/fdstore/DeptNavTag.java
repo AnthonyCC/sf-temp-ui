@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.jsp.tagext.TagData;
@@ -17,7 +16,9 @@ import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-public class DeptNavTag extends AbstractGetterTag {
+public class DeptNavTag extends AbstractGetterTag<DepartmentModel> {
+
+	private static final long	serialVersionUID	= -5456656217906642923L;
 
 	Logger LOGGER = LoggerFactory.getInstance(DeptNavTag.class);
 	
@@ -35,7 +36,7 @@ public class DeptNavTag extends AbstractGetterTag {
 		this.categoryList = categoryList;
 	}
 
-	protected Object getResult() throws FDResourceException {
+	protected DepartmentModel getResult() throws FDResourceException {
 		// find the department based on category
 		DepartmentModel dept = null;
 		// find the relevant category

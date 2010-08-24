@@ -14,7 +14,7 @@
   <bodycontent>empty</bodycontent>
   <attribute>
    <name>product</name>
-   <required>true</required>
+   <required>false</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
@@ -62,11 +62,19 @@
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
+   <name>enableQuickBuy</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
    <name>opacity</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
    <name>newProductPage</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>customer</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>
@@ -137,6 +145,14 @@
   </attribute>
   <attribute>
    <name>hideBursts</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>showBrandName</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>noBreak</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>
@@ -557,6 +573,186 @@
   <bodycontent>JSP</bodycontent>
   <attribute>
    <name>recommendations</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+ 	<name>Carousel</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.CarouselTag</tagclass>
+	<teiclass>com.freshdirect.webapp.taglib.fdstore.display.CarouselTag$TagEI</teiclass>
+ 	<bodycontent>JSP</bodycontent>
+	<attribute>
+		<name>id</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>itemsToShow</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>showProducts</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>showCategories</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>trackingCode</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>numItems</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>width</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>height</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>maxItems</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+ </tag>
+ <tag>
+ 	<name>ContentNodeIterator</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.ContentNodeIteratorTag</tagclass>
+	<teiclass>com.freshdirect.webapp.taglib.fdstore.display.ContentNodeIteratorTag$TagEI</teiclass>
+ 	<bodycontent>JSP</bodycontent>
+	<attribute>
+		<name>id</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>itemsToShow</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>showProducts</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>showCategories</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>noTypeCheck</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>trackingCode</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>maxItems</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>filterUnav</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+ </tag>
+<tag>
+ 	<name>UniqueFilter</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.UniqueFilterTag</tagclass>
+	<teiclass>com.freshdirect.webapp.taglib.fdstore.display.UniqueFilterTag$TagEI</teiclass>
+ 	<bodycontent>JSP</bodycontent>
+	<attribute>
+		<name>in</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>out</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>groupId</name>
+		<required>true</required>
+	</attribute>
+ </tag>
+ <tag>
+ 	<name>FilterWidgetColumn</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.FilterWidgetColumnTag</tagclass>
+	<teiclass>com.freshdirect.webapp.taglib.fdstore.display.FilterWidgetColumnTag$TagEI</teiclass>
+ 	<bodycontent>JSP</bodycontent>
+	<attribute>
+		<name>id</name>
+		<required>true</required>
+	</attribute>
+	<attribute>
+		<name>itemIds</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>selectedIds</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>filterRows</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>urlParameterName</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>allItemName</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>enableAll</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>trackingCode</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+ </tag>
+ <tag>
+  <name>OrderLineQuantity</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.OrderLineQuantityTag</tagclass>
+  <teiclass>com.freshdirect.webapp.taglib.fdstore.display.OrderLineQuantityTag$TagEI</teiclass>
+  <bodycontent>JSP</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>orderline</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>customer</name>
    <required>true</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>

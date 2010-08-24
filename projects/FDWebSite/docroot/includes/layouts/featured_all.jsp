@@ -82,7 +82,7 @@
 
 <%-- FEATURED ITEMS DISPLAY START --%>
 
-<fd:FeaturedItemsRecommendations facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
+<fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" facility="cat_feat_items" id="recommendations"  currentNode="<%= currentFolder %>" itemCount="4"><%
 
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
 		
@@ -127,7 +127,7 @@
 			</tr>
 		</table>
 	<% } %>
-</fd:FeaturedItemsRecommendations>
+</fd:ProductGroupRecommender>
 
 <%-- FEATURED ITEMS DISPLAY END --%>
 

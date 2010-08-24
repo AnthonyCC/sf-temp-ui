@@ -1,3 +1,6 @@
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Locale"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
@@ -5,7 +8,6 @@
 <%@ page import='com.freshdirect.fdstore.promotion.*' %>
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
-
 <%!
 java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
@@ -14,15 +16,15 @@ SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 	FDUserI promo_user = (FDUserI) session.getAttribute(SessionName.USER);
 	
 	if (promo_user.isEligibleForSignupPromotion()){
-                PromotionI signupPromo = user.getEligibleSignupPromotion();
-                Date expDate = signupPromo.getExpirationDate();
-                int totalDiscount = (int)signupPromo.getHeaderDiscountTotal();
-                
-                SignupDiscountRule discountRule = user.getSignupDiscountRule();
-                double minSubtotal = discountRule.getMinSubtotal();
-                double maxAmount   = discountRule.getMaxAmount();
+		PromotionI signupPromo = promo_user.getEligibleSignupPromotion();
+		Date expDate = signupPromo.getExpirationDate();
+		int totalDiscount = (int)signupPromo.getHeaderDiscountTotal();
 		
-               double totalPromotionValue = promo_user.getShoppingCart().getTotalDiscountValue();
+		SignupDiscountRule discountRule = promo_user.getSignupDiscountRule();
+		double minSubtotal = discountRule.getMinSubtotal();
+		double maxAmount   = discountRule.getMaxAmount();
+
+		double totalPromotionValue = promo_user.getShoppingCart().getTotalDiscountValue();
 		double left = maxAmount;
 		if (totalPromotionValue > 0.0) {
 			left -= totalPromotionValue;

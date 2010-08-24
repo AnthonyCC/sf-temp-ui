@@ -1,7 +1,7 @@
 package com.freshdirect.webapp.taglib.fdstore.layout;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
@@ -21,6 +21,8 @@ import com.freshdirect.fdstore.content.DepartmentModel;
  */
 public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 	
+	private static final long	serialVersionUID	= 336241157986179162L;
+	
 	// === JSP VARIABLES created ===
 	public static final String categoryIdVariableName 		= "categoryId";
 	public static final String departmentIdVariableName 	= "departmentId";
@@ -37,7 +39,6 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	}
 	
 		
-	@SuppressWarnings( "unchecked" )
 	private void setVariables() {
 		
 		String catId = pageContext.getRequest().getParameter( "catId" );
@@ -55,7 +56,8 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 			trackingCode = "cpage";
 		}
 		
-		Collection<ContentNodeModel> sortedColl = (Collection<ContentNodeModel>)pageContext.getRequest().getAttribute( "itemGrabberResult" );
+		@SuppressWarnings( "unchecked" )
+		List<ContentNodeModel> sortedColl = (List<ContentNodeModel>)pageContext.getRequest().getAttribute( "itemGrabberResult" );
 		if ( sortedColl == null )
 			sortedColl = new ArrayList<ContentNodeModel>();
 
@@ -121,7 +123,7 @@ public class InitLayoutTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 	            		VariableInfo.AT_END ),
 	            new VariableInfo(
 	            		sortedCollectionVariableName,
-	            		"java.util.Collection",
+	            		"java.util.List<ContentNodeModel>",
 	            		true, 
 	            		VariableInfo.AT_END ),
 	            new VariableInfo(

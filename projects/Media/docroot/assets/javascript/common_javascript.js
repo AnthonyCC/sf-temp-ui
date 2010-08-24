@@ -259,6 +259,18 @@ function changeColors(currentId, currentCss){
   }
 })();
 
+
+function updateYourCartPanel() {
+	YAHOO.util.Connect.asyncRequest('GET', '/ajax/yc.jsp', {
+		success: function(resp) {
+			var container = $('your-cart-div');
+			if (container) {
+				container.innerHTML = resp.responseText;
+			}
+		}
+	});
+}
+
 /* === Add/Remove functionality between two listboxes ======================= */
 /*
  *	remove selected
@@ -665,3 +677,4 @@ String.prototype.count=function(s1) {
 function maxLen(elem, len) {
 	if (elem.value.length+elem.value.count('\n') >= len) { elem.value = (elem.value).substring(0,len-elem.value.count('\n')); }
 }
+

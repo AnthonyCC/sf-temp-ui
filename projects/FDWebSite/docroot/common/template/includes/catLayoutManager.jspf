@@ -1,3 +1,5 @@
+<%@page import="java.util.List"%>
+<%@ page import="java.util.Collection"%>
 <%@ page import='com.freshdirect.fdstore.content.*,com.freshdirect.webapp.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.fdstore.attributes.*' %>
@@ -10,7 +12,7 @@
 	String trkCode= "";
 	boolean isDept = (currentFolder instanceof DepartmentModel);
 	boolean isCat = (currentFolder instanceof CategoryModel);
-	Collection sortedColl = null; 
+	List<ContentNodeModel> sortedColl = null; 
 	boolean onlyOneProduct = false;
 	ProductModel theOnlyProduct = null;
 	
@@ -51,7 +53,7 @@
 	<%
 	if ( layoutSettings != null && layoutSettings.getLayoutFileName() != null ) {
 		JspLogger.NAV.debug( " calling layout: " + layoutSettings.getLayoutFileName() ); %>          
-		<display:ItemSorter nodes='<%= (List)sortedColl %>' strategy='<%= layoutSettings.getSortStrategy() %>'/>
+		<display:ItemSorter nodes='<%= sortedColl %>' strategy='<%= layoutSettings.getSortStrategy() %>'/>
 		<jsp:include page="<%=layoutSettings.getLayoutFileName() %>" flush="false"/> 
 	<% }
 	

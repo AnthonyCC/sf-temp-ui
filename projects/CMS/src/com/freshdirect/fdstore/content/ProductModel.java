@@ -26,8 +26,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {
 
 		public int compare(ProductModel p1, ProductModel p2) {
-			// ProductModel p1 = (ProductModel) o1;
-			// ProductModel p2 = (ProductModel) o2;
 			String p1Dept = "";
 			String p2Dept = "";
 			
@@ -140,8 +138,18 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	    }
 	    
         public int compare(ProductModel model1, ProductModel model2) {
+        	
+            if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
+            	return 1;
+            }
+            
+            if (model1.isFullyAvailable() && !model2.isFullyAvailable()) {
+            	return -1;
+            }
+            
             double price1 = 0;
             double price2 = 0;
+            
             SkuModel sku1 = model1.getDefaultSku();
             if (sku1 != null) {
 				String zoneId1 = sku1.getPricingContext().getZoneId();
@@ -166,14 +174,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
                 }
             }
             
-            if (!model1.isFullyAvailable() && model2.isFullyAvailable()) {
-            	return 1;
-            }
-            
-            if (model1.isFullyAvailable() && !model2.isFullyAvailable()) {
-            	return -1;
-            }
-            
             int result = Double.compare(price1, price2);
             if (inverse) {
                 result = -result;
@@ -188,7 +188,6 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 		private int flips;
 
-		@SuppressWarnings( "null" )
 		public int compare(SkuModel obj1, SkuModel obj2) {
 			try {
 				FDProductInfo pi1 = FDCachedFactory.getProductInfo(obj1.getSkuCode());

@@ -92,7 +92,11 @@ public final class FieldFactory {
 				aField = editor;
 				break;
 			case GmapsLocation:
-				aField = new LocationField();
+				if ( CmsGwt.isGmapsApiLoaded() ) {
+					aField = new LocationField();
+				} else {
+					aField = new TextField<String>();
+				}
 				aField.setOriginalValue(attribute.getValue());
 				aField.setValue(attribute.getValue());
 				break;

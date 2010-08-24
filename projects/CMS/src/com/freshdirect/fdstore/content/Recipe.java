@@ -182,7 +182,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  @return a list of content nodes that are YMALs to this product.
 	 *  @deprecated
 	 */
-	@SuppressWarnings( "unchecked" )
+	@SuppressWarnings( { "unchecked", "rawtypes" } )
 	public List<ProductModel> getYouMightAlsoLike() {
 		return (List)getYmals();
 	}

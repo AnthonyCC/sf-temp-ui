@@ -45,6 +45,7 @@ public class PatternRowTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		if ( itemsToShow == null || itemsToShow.size() < 1 ) {
 			return SKIP_BODY;
 		} else {
+			// FIXME should be EVAL_BODY_INCLUDE, but this creates NPE-s, need to investigate
 			return EVAL_BODY_BUFFERED;
 		}
 	}
@@ -67,7 +68,7 @@ public class PatternRowTag extends com.freshdirect.framework.webapp.BodyTagSuppo
 		}
 		
 		setVariables( returnItem );
-		return EVAL_BODY_BUFFERED;
+		return EVAL_BODY_AGAIN;
 	}
 	
 	private ContentNodeModel getCurrentItem() throws OutOfItemsException {

@@ -1,3 +1,13 @@
+<%@ page import="com.freshdirect.fdstore.customer.FDUserI"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDModifyCartModel"%>
+<%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
+<%@ page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%
+	final FDUserI __yc_user = (FDUserI)session.getAttribute(SessionName.USER);
+%>
 <fd:GetCart id='cart'>
     <table border="0" cellspacing="0" cellpadding="0" width="140">
         <tr>
@@ -5,7 +15,7 @@
             <table border="0" cellspacing="0" cellpadding="0" width="140">
                 <tr valign="top">
                     <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="16" border="0"></td>
-                    <td width="118" valign="middle">Subtotal: <font class="text11bold"><%= currencyFormatter.format(cart.getSubTotal()) %></font><br></td>
+                    <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.currencyFormatter.format(cart.getSubTotal()) %></span></td>
                     <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="16" border="0"></td>
                 </tr>
                 <tr valign="top">
@@ -22,48 +32,40 @@
                 <!-- nested table with content -->
                 <table width="138" cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                        <td width="12"><img src="/media_stat/images/layout/dot_white.gif" width="10" height="1"><br></td>
+                        <td width="12">&nbsp;</td>
                         <td width="118" class="text9_lh12">
+	                        <%	if (cart instanceof FDModifyCartModel){ %>
+		                        <div>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</div>
 	                        <%
-	                        boolean modifyOrderMode = false;
-	                            FDUserI mUser = (FDUserI) session.getAttribute( SessionName.USER );
-	                            FDCartModel mCart = (FDCartModel) mUser.getShoppingCart();
-	                            
-	                            if (mCart instanceof FDModifyCartModel) {
-	                                modifyOrderMode = true;
-	                        }
-	                        %>
-	                        
-	                        <% if (modifyOrderMode){ %>
-		                        <b>You are changing a placed order.  <a href="/view_cart.jsp?trk=sidcrt">Click for details</a>.</b><br>
-	                        <% } %>
-							
-							<%
+	                        	}
+
 								String lastDept = null;
 								boolean firstRecipe = true;
+								
+								for (FDCartLineI orderLine : cart.getOrderLines()) {
 							%>
-							<logic:iterate id="orderLine" collection="<%= cart.getOrderLines() %>" type="com.freshdirect.fdstore.customer.FDCartLineI">
 								<fd:ProductGroup id='productNode' categoryId='<%= orderLine.getCategoryName() %>' productId='<%= orderLine.getProductName() %>'>
 									<%
 										if (lastDept==null || !lastDept.equalsIgnoreCase(orderLine.getDepartmentDesc())) {
 											lastDept = orderLine.getDepartmentDesc();  %>
-											<br/><b><%= lastDept %></b><br/>
+								<div style="font-weight: bold; padding-top: 1em;"><%= lastDept %></div>
 									<% } %>
-			                        <A HREF="/product_modify.jsp?cartLine=<%=orderLine.getRandomId()%>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=sidcrt" title="<%=productNode.getFullName().replace("\"","&quot;")%>"><%= productNode.getGlanceName() %></a><br>
+								<a style="display: block" href="/product_modify.jsp?cartLine=<%=orderLine.getRandomId()%>&skuCode=<%=orderLine.getSku().getSkuCode()%>&trk=sidcrt" title="<%=productNode.getFullName().replace("\"","&quot;")%>"><%= productNode.getGlanceName() %></a>
 								</fd:ProductGroup>             
-							</logic:iterate>
+							<%
+								}
+							%>
                         </td>
                     </tr>
-                </table><br><A HREF="/view_cart.jsp?trk=sidcrt"><img src="/media_stat/images/template/lists/cart_lg.gif" width="67" height="56" border="0" alt="Shopping Cart"></A><br>
-<img src="/media_stat/images/layout/cccccc.gif"  width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
-        
+                </table>
+                <br>
+                <a style="display: block" href="/view_cart.jsp?trk=sidcrt"><img src="/media_stat/images/template/lists/cart_lg.gif" width="67" height="56" border="0" alt="Shopping Cart"></a>
+				<img src="/media_stat/images/layout/cccccc.gif" width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
 <% 
-//DUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-	if (user!=null && user.getIdentity() !=null) { %>
+	if (__yc_user != null && __yc_user.getIdentity() !=null) { %>
 	        <fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
 	            <% if (customerCreditHistory.getRemainingAmount()>0.00) { %>
-	                   <font class="text11"><%= currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit will be applied at Checkout.</font><br>
-                        <img src="/media_stat/images/layout/cccccc.gif" width="125" height="1" VSPACE="10"><font class="space4pix"><br></font>
+	            <div class="text11"><%= JspMethods.currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit will be applied at Checkout.</div>
 	  			<% } %>
 	       </fd:CustomerCreditHistoryGetterTag>
 <% } %>
@@ -71,19 +73,18 @@
                 <!-- end nested table with content -->
             </td>
             <td bgcolor="#FF9933" valign="bottom" width="1"><img src="/media_stat/images/layout/ff9933.gif" 
-                width="1" height="1"><br></td>
+                width="1" height="1"></td>
         </tr>
         <% if (lastDept != null) { %>
         <tr valign="top">
             <td width="140" colspan="3">
                 <table border="0" cellspacing="0" cellpadding="0" width="140">
                     <tr valign="top">
-                    <td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
+                    	<td width="140" colspan="3" bgcolor="#FF9933"><img src="/media_stat/images/layout/ff9933.gif" width="1" height="4"></td>
                     </tr>
                     <tr valign="top">
                         <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="17" border="0"></td>
-                        <td width="118" valign="middle">Subtotal: <font class="text11bold"><%= currencyFormatter.format(cart.getSubTotal()) %></font><br>
-                            <img src="/media_stat/images/layout/clear.gif" width="118" height="1"></td>
+                        <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.currencyFormatter.format(cart.getSubTotal()) %></span></td>
                         <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="17" border="0"></td>
                     </tr>
                     <tr valign="top">
@@ -92,11 +93,10 @@
                 </table>
             </td>
         </tr>
-<% } 
-    else { %>
-    <tr valign="top">
-            <td width="140" colspan="3"><img src="/media_stat/images/template/lists/cart_btm_crnrs2.gif" width="140" height="5" border="0"></td>
-    </tr>
+		<% } else { %>
+		<tr valign="top">
+			<td width="140" colspan="3"><img src="/media_stat/images/template/lists/cart_btm_crnrs2.gif" width="140" height="5" border="0"></td>
+		</tr>
 <% } %>
-</table>
+	</table>
 </fd:GetCart>

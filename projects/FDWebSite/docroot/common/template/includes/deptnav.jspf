@@ -1,3 +1,7 @@
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@page import="java.util.LinkedHashMap"%>
 <%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="java.util.Map"%>
 <%@page import="java.util.Iterator"%>

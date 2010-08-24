@@ -39,7 +39,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         this.key = key;
         this.contentType = ContentNodeModelUtil.CONTENT_TO_TYPE_MAP.get(key.getType().getName());
     }	
-	
+
 
     //
     // core
@@ -80,13 +80,13 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
         if (node == null) return null;
 
         Object value = node.getAttributeValue(name);
-        if (value != null && !(value instanceof List<?> && ((List<?>) value).isEmpty())) {
-                return value;
+        if (value != null && !(value instanceof List && ((List<?>) value).isEmpty())) {
+            return value;
         }
 
         AttributeDefI def = node.getDefinition().getAttributeDef(name);
         if (def == null || !def.isInheritable()) {
-                return null;
+            return null;
         }
 
         ContentNodeModel parent = getParentNode();
@@ -97,27 +97,27 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
      * @deprecated
      */
     protected boolean hasAttribute(String key) {
-            return getCmsAttributeValue(key) != null;
+        return getCmsAttributeValue(key) != null;
     }
 
     protected String getAttribute(String key, String defaultValue) {
-            Object value = this.getCmsAttributeValue(key);
-            return (value != null) ? (String) value : defaultValue;
+        Object value = this.getCmsAttributeValue(key);
+        return (value != null) ? (String) value : defaultValue;
     }
 
     protected int getAttribute(String key, int defaultValue) {
-            Object value = this.getCmsAttributeValue(key);
-            return (value != null) ? ((Integer) value).intValue() : defaultValue;
+        Object value = this.getCmsAttributeValue(key);
+        return (value != null) ? ((Integer) value).intValue() : defaultValue;
     }
 
     protected boolean getAttribute(String key, boolean defaultValue) {
-            Object value = this.getCmsAttributeValue(key);
-            return (value != null) ? ((Boolean) value).booleanValue() : defaultValue;
+        Object value = this.getCmsAttributeValue(key);
+        return (value != null) ? ((Boolean) value).booleanValue() : defaultValue;
     }
 
     protected double getAttribute(String key, double defaultValue) {
-            Object value = this.getCmsAttributeValue(key);
-            return (value != null) ? ((Double) value).doubleValue() : defaultValue;
+        Object value = this.getCmsAttributeValue(key);
+        return (value != null) ? ((Double) value).doubleValue() : defaultValue;
     }
 
     //
@@ -139,13 +139,13 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     }
 
     protected void setParentNode(ContentNodeModel parentNode) {
-	    if (!fresh && this.parentNode != parentNode) {
-            throw new IllegalStateException("Cannot reparent node " + key
-                            + " from " + this.parentNode + " to " + parentNode
-                            + ". Object has to be reconstructed or cloned.");
-	    }
-	    this.parentNode = parentNode;
-	    fresh = false;
+        if (!fresh && this.parentNode != parentNode) {
+                throw new IllegalStateException("Cannot reparent node " + key
+                                + " from " + this.parentNode + " to " + parentNode
+                                + ". Object has to be reconstructed or cloned.");
+        }
+        this.parentNode = parentNode;
+        fresh = false;
     }
 
     public ContentNodeModel getParentNode() {
@@ -171,17 +171,17 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 //      }
 
     public boolean hasParentWithName(String[] contentNames) {
-            ContentNodeModel p = this.getParentNode();
-            if (p == null) {
-                    return false;
-            }
-            final String parentName = p.getContentName();
-            for (int i = contentNames.length; --i >= 0;) {
-                    if (parentName.equals(contentNames[i])) {
-                            return true;
-                    }
-            }
-            return p.hasParentWithName(contentNames);
+        ContentNodeModel p = this.getParentNode();
+        if (p == null) {
+                return false;
+        }
+        final String parentName = p.getContentName();
+        for (int i = contentNames.length; --i >= 0;) {
+                if (parentName.equals(contentNames[i])) {
+                        return true;
+                }
+        }
+        return p.hasParentWithName(contentNames);
     }
 
     //
@@ -189,27 +189,27 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
     //
 
     public Object clone() {
-            try {                   
-                    ContentNodeModelImpl clone = (ContentNodeModelImpl) super.clone();
-                    clone.fresh = true;
-                    return clone;
-            } catch (CloneNotSupportedException e) {
-                    throw new RuntimeException();
-            }
+        try {                   
+            ContentNodeModelImpl clone = (ContentNodeModelImpl) super.clone();
+            clone.fresh = true;
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException();
+        }
     }
 
     public boolean equals(Object o) {
-            if (o == this) {
-                    return true;
-            }
-            if (o instanceof ContentNodeModel) {
-                    return key.equals(((ContentNodeModel) o).getContentKey());
-            }
-            return false;
+        if (o == this) {
+        	return true;
+        }
+        if (o instanceof ContentNodeModel) {
+            return key.equals(((ContentNodeModel) o).getContentKey());
+        }
+        return false;
     }
 
     public int hashCode() {
-            return key.hashCode();
+    	return key.hashCode();
     }
 
     protected AttributeI getNotInheritedAttribute(String name) {
@@ -233,9 +233,9 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
      * Very conveniently returns contentName.
      */
     public String toString() {
-            return this.getContentName();
+        return this.getContentName();
     }
-	
+
 	
 	
 	// TODO: Remove major, monster, stupid hack to make new-style
@@ -250,7 +250,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 	}
 	
 	public Html getEditorial(){
-	        return FDAttributeFactory.constructHtml(this, "EDITORIAL");
+        return FDAttributeFactory.constructHtml(this, "EDITORIAL");
 	}
 	
 	public String getEditorialTitle(){
@@ -279,8 +279,7 @@ public abstract class ContentNodeModelImpl implements ContentNodeModel,Cloneable
 	    }
 	};
 	
-	public boolean isSearchable() {
-	    
+	public boolean isSearchable() {	    
 	    Object attributeI = find("NOT_SEARCHABLE", FIND_TRUE_VALUE);
 	    return attributeI==null;
 	}

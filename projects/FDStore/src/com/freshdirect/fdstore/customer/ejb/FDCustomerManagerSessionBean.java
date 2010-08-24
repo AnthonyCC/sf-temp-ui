@@ -42,6 +42,7 @@ import com.freshdirect.crm.CrmClick2CallModel;
 import com.freshdirect.crm.CrmClick2CallTimeModel;
 import com.freshdirect.crm.CrmSystemCaseInfo;
 import com.freshdirect.customer.CustomerRatingI;
+import com.freshdirect.customer.DlvSaleInfo;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumAlertType;
 import com.freshdirect.customer.EnumComplaintLineMethod;
@@ -100,6 +101,8 @@ import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.deliverypass.DeliveryPassModel;
 import com.freshdirect.deliverypass.DeliveryPassType;
 import com.freshdirect.deliverypass.DlvPassConstants;
+import com.freshdirect.deliverypass.DlvPassUsageInfo;
+import com.freshdirect.deliverypass.DlvPassUsageLine;
 import com.freshdirect.deliverypass.EnumDlvPassExtendReason;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerSB;
@@ -341,14 +344,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser createNewUser(AddressModel address,
-			EnumServiceType serviceType) throws FDResourceException {
+	public FDUser createNewUser(AddressModel address, EnumServiceType serviceType) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createUser(conn, address.getZipCode(),
-					serviceType);
+			FDUser user = FDUserDAO.createUser(conn, address.getZipCode(), serviceType);
 
 			return user;
 
@@ -359,14 +360,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser createNewDepotUser(String depotCode,
-			EnumServiceType serviceType) throws FDResourceException {
+	public FDUser createNewDepotUser(String depotCode, EnumServiceType serviceType) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
 
-			FDUser user = FDUserDAO.createDepotUser(conn, depotCode,
-					serviceType);
+			FDUser user = FDUserDAO.createDepotUser(conn, depotCode, serviceType);
 
 			return user;
 
@@ -377,8 +376,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDUser recognize(FDIdentity identity)
-			throws FDAuthenticationException, FDResourceException {
+	public FDUser recognize(FDIdentity identity) throws FDAuthenticationException, FDResourceException {
 
 		Connection conn = null;
 		try {
@@ -390,9 +388,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
 			// Load Promo Audience Details for this customer.
-			user
-					.setAssignedCustomerParams(getAssignedCustomerParams(user,
-							conn));
+			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
@@ -418,9 +414,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
 			// Load Promo Audience Details for this customer.
-			user
-					.setAssignedCustomerParams(getAssignedCustomerParams(user,
-							conn));
+			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
@@ -630,18 +624,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			FDUser user = FDUserDAO.reconnizeWithCookie(conn, cookie);
 
-			LOGGER
-					.debug("got FDUser via cookie id"
-							+ user.getUserServiceType());
+			LOGGER.debug("got FDUser via cookie id"+ user.getUserServiceType());
 
 			if (user.isAnonymous()) {
 				throw new FDAuthenticationException("Unrecognized user");
 			}
 
 			// Load Promo Audience Details for this customer.
-			user
-					.setAssignedCustomerParams(getAssignedCustomerParams(user,
-							conn));
+			user.setAssignedCustomerParams(getAssignedCustomerParams(user,conn));
 
 			user.setDlvPassInfo(getDeliveryPassInfo(user));
 			return user;
@@ -661,8 +651,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return
 	 * @throws SQLException
 	 */
-	private Map getAssignedCustomerParams(FDUser user, Connection conn)
-			throws SQLException {
+	private Map getAssignedCustomerParams(FDUser user, Connection conn) throws SQLException {
 		Map assignedParams = null;
 		FDIdentity identity = user.getIdentity();
 		if (identity != null) {
@@ -674,8 +663,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return assignedParams;
 	}
 
-	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity,
-			String lastOrderId) throws FDResourceException {
+	public ErpAddressModel assumeDeliveryAddress(FDIdentity identity, String lastOrderId) throws FDResourceException {
 		try {
 			FDCustomerEB eb = getFdCustomerHome().findByPrimaryKey(
 					new PrimaryKey(identity.getFDCustomerPK()));
@@ -708,8 +696,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	private static final String SHIP_TO_ADDRESS_QUERY = "SELECT * FROM CUST.ADDRESS WHERE ID = ?";
 
-	private ErpAddressModel getShipToAddress(String addressId)
-			throws SQLException {
+	private ErpAddressModel getShipToAddress(String addressId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -745,8 +732,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "and sa.action_type in ('CRO', 'MOD') "
 			+ "and sa.action_date = (select max(action_date) from cust.salesaction where s.id = sale_id and action_type in ('CRO', 'MOD'))";
 
-	public ErpAddressModel getLastOrderAddress(String lastOrderId)
-			throws SQLException {
+	public ErpAddressModel getLastOrderAddress(String lastOrderId) throws SQLException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -772,8 +758,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	private ErpAddressModel loadAddressFromResultSet(ResultSet rs)
-			throws SQLException {
+	private ErpAddressModel loadAddressFromResultSet(ResultSet rs) throws SQLException {
 		ErpAddressModel address = new ErpAddressModel();
 
 		address.setFirstName(rs.getString("FIRST_NAME"));
@@ -812,8 +797,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public FDIdentity login(String userId, String password)
-			throws FDAuthenticationException, FDResourceException {
+	public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException {
 		try {
 			// find ERPCustomerEB by userid & password
 			ErpCustomerEB erpCustomerEB;
@@ -845,8 +829,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public FDCustomerInfo getCustomerInfo(FDIdentity identity)
-			throws FDResourceException {
+	public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		try {
 			String erpCustomerPK = identity.getErpCustomerPK();
 			ErpCustomerEB eb = getErpCustomerHome().findByPrimaryKey(
@@ -884,8 +867,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity)
-			throws FDResourceException {
+	public Collection<ErpPaymentMethodI> getPaymentMethods(FDIdentity identity) throws FDResourceException {
 		try {
 			ErpCustomerEB erpCustomerEB = this.getErpCustomerHome()
 					.findByPrimaryKey(
@@ -909,9 +891,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public void addPaymentMethod(FDActionInfo info,
-			ErpPaymentMethodI paymentMethod) throws FDResourceException,
-			ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
+	public void addPaymentMethod(FDActionInfo info, ErpPaymentMethodI paymentMethod) 
+		throws FDResourceException, ErpDuplicatePaymentMethodException, ErpPaymentMethodException {
 		try {
 		
 			ErpCustomerEB erpCustomerEB = checkPaymentMethodModification(info, paymentMethod);
@@ -2184,7 +2165,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			if (order.getSelectedGiftCards() != null
 					&& order.getSelectedGiftCards().size() > 0) {
 				// Verify status of gift cards being applied on this order.
-				List verifiedList = verifyStatusAndBalance(order
+				List<ErpGiftCardModel> verifiedList = verifyStatusAndBalance(order
 						.getSelectedGiftCards(), false);
 				List badGiftCards = ErpGiftCardUtil
 						.checkForBadGiftcards(verifiedList);
@@ -2629,14 +2610,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws ErpComplaintException
 	 *             if order was not in proper state to accept complaints
 	 */
-	public void storeCustomerRecipents(List recipentList, String saleId,
-			String erpCustomerId) throws FDResourceException {
+	public void storeCustomerRecipents(List recipentList, String saleId, String erpCustomerId) throws FDResourceException {
 		Connection conn = null;
 
 		try {
 			conn = this.getConnection();
-			GiftCardPersistanceDAO.storeRecipents(conn, erpCustomerId, saleId,
-					recipentList);
+			GiftCardPersistanceDAO.storeRecipents(conn, erpCustomerId, saleId, recipentList);
 		} catch (Exception e) {
 			throw new FDResourceException(e);
 		} finally {
@@ -2653,13 +2632,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "from cust.sale s, cust.complaint c "
 			+ "where s.status = 'STL' and c.sale_id=s.id and c.amount <= ? and c.status = 'PEN' ";
 
-	public List<String> getComplaintsForAutoApproval()
-			throws FDResourceException, ErpComplaintException {
+	public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			PreparedStatement ps = conn
-					.prepareStatement(PENDING_COMPLAINT_QUERY);
+			PreparedStatement ps = conn.prepareStatement(PENDING_COMPLAINT_QUERY);
 			ps.setDouble(1, ErpServicesProperties.getCreditAutoApproveAmount());
 			ps.setDouble(2, ErpServicesProperties.getCreditAutoApproveAmount());
 			ResultSet rs = ps.executeQuery();
@@ -2728,7 +2705,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			Map erpInvs = sb.checkAvailability(new PrimaryKey(identity
+			Map<String,List<ErpInventoryModel>> erpInvs = sb.checkAvailability(new PrimaryKey(identity
 					.getErpCustomerPK()), createOrder, timeout);
 
 			Map<String, FDAvailabilityI> fdInvMap = buildAvailability(
@@ -2872,7 +2849,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
+	public List<DlvSaleInfo> getOrdersByTruck(String truckNumber, Date dlvDate) throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 			return sb.getOrdersByTruckNumber(truckNumber, dlvDate);
@@ -2914,8 +2891,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @return Map of String (productId) -> Integer (score)
 	 * @throws FDResourceException
 	 */
-	public Map<String, Integer> getProductPopularity()
-			throws FDResourceException {
+	public Map<String, Integer> getProductPopularity() throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = getConnection();
@@ -2926,8 +2902,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 			Map<String, Integer> m = new HashMap<String, Integer>();
 			while (rs.next()) {
-				m.put(rs.getString("product_id"), new Integer(rs
-						.getInt("score")));
+				m.put(rs.getString("product_id"), new Integer(rs.getInt("score")));
 			}
 
 			rs.close();
@@ -2956,27 +2931,22 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @throws FDResourceException
 	 *             if an error occured using remote resources
 	 */
-	public List locateCustomers(FDCustomerSearchCriteria criteria)
-			throws FDResourceException {
+	public List<FDCustomerOrderInfo> locateCustomers(FDCustomerSearchCriteria criteria) throws FDResourceException {
 
 		Connection conn = null;
 
 		try {
 			conn = getConnection();
-
-			return FDCustomerOrderInfoDAO.findCustomersByCriteria(conn,
-					criteria);
+			return FDCustomerOrderInfoDAO.findCustomersByCriteria(conn, criteria);
 
 		} catch (SQLException e) {
-			throw new FDResourceException(e,
-					"Counld not find customers matching criteria entered.");
+			throw new FDResourceException(e, "Could not find customers matching criteria entered.");
 		} finally {
 			close(conn);
 		}
 	}
 
-	public List locateOrders(FDOrderSearchCriteria criteria)
-			throws FDResourceException {
+	public List<FDCustomerOrderInfo> locateOrders(FDOrderSearchCriteria criteria) throws FDResourceException {
 
 		Connection conn = null;
 
@@ -2987,8 +2957,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new FDResourceException(e,
-					"Coulld not find order matching criteria entered.");
+			throw new FDResourceException(e, "Could not find order matching criteria entered.");
 		} finally {
 			close(conn);
 		}
@@ -2998,13 +2967,10 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			sb.setActive(new PrimaryKey(info.getIdentity().getErpCustomerPK()),
-					active);
+			sb.setActive(new PrimaryKey(info.getIdentity().getErpCustomerPK()), active);
 
-			this
-					.logActivity(info
-							.createActivity(active ? EnumAccountActivityType.ACTIVATE_ACCOUNT
-									: EnumAccountActivityType.DEACTIVATE_ACCOUNT));
+			this.logActivity(info.createActivity(active ? EnumAccountActivityType.ACTIVATE_ACCOUNT : 
+														EnumAccountActivityType.DEACTIVATE_ACCOUNT));
 
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
@@ -3020,20 +2986,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewayBean");
 		} catch (RemoteException re) {
-			throw new FDResourceException(re,
-					"Cannot talk to MailerGatewayBean");
+			throw new FDResourceException(re, "Cannot talk to MailerGatewayBean");
 		}
 	}
 
 	public String generatePasswordRequest(PrimaryKey fdCustomerPk,
 			java.util.Date expiration) throws FDResourceException {
 		try {
-			FDCustomerEB eb = getFdCustomerHome()
-					.findByPrimaryKey(fdCustomerPk);
+			FDCustomerEB eb = getFdCustomerHome() .findByPrimaryKey(fdCustomerPk);
 			return eb.generatePasswordRequest(expiration);
 		} catch (FinderException fe) {
-			throw new FDResourceException("Cannot find customer for pk: "
-					+ fdCustomerPk);
+			throw new FDResourceException("Cannot find customer for pk: " + fdCustomerPk);
 		} catch (RemoteException re) {
 			throw new FDResourceException("Cannot talk to customer bean");
 		}
@@ -3043,10 +3006,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throws FDResourceException, PasswordNotExpiredException {
 		try {
 
-			FDCustomerEB fdCustomerEB = getFdCustomerHome().findByUserId(
-					emailAddress);
-			FDCustomerModel fdCustomer = (FDCustomerModel) fdCustomerEB
-					.getModel();
+			FDCustomerEB fdCustomerEB = getFdCustomerHome().findByUserId( emailAddress);
+			FDCustomerModel fdCustomer = (FDCustomerModel) fdCustomerEB.getModel();
 
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.HOUR, 2);
@@ -3437,8 +3398,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	private Calendar calculateCutOffTime(FDOrderI order) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(order.getDeliveryReservation().getCutoffTime());
-		cal.add(Calendar.HOUR_OF_DAY, -1
-				* ErpServicesProperties.getCancelOrdersB4Cutoff());
+		cal.add(Calendar.HOUR_OF_DAY, -1 * ErpServicesProperties.getCancelOrdersB4Cutoff());
 		return cal;
 	}
 
@@ -3610,20 +3570,17 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			+ "FROM CUST.CUSTOMERINFO CI, CUST.ADDRESS A, CUST.FDCUSTOMER FDC "
 			+ "WHERE RSV_ADDRESS_ID IS NOT NULL AND CI.RSV_ADDRESS_ID = A.ID and CI.CUSTOMER_ID = FDC.ERP_CUSTOMER_ID and CI.RSV_DAY_OF_WEEK = ?";
 
-	public List<ReservationInfo> getRecurringReservationList()
-			throws FDResourceException {
+	public List<ReservationInfo> getRecurringReservationList() throws FDResourceException {
 		Calendar cal = Calendar.getInstance();
 		int day_of_week = cal.get(Calendar.DAY_OF_WEEK);
 		return getRRList(day_of_week);
 	}
 
-	public List<ReservationInfo> getRecurringReservationList(int day_of_week)
-			throws FDResourceException {
+	public List<ReservationInfo> getRecurringReservationList(int day_of_week) throws FDResourceException {
 		return getRRList(day_of_week);
 	}
 
-	private List<ReservationInfo> getRRList(int day_of_week)
-			throws FDResourceException {
+	private List<ReservationInfo> getRRList(int day_of_week) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
@@ -3827,8 +3784,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public Map<String, ProfileAttributeName> loadProfileAttributeNames()
-			throws FDResourceException {
+	public Map<String, ProfileAttributeName> loadProfileAttributeNames() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -3843,10 +3799,8 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 				profileName.setName(rs.getString("NAME"));
 				profileName.setDescription(rs.getString("DESCRIPTION"));
 				profileName.setCategory(rs.getString("CATEGORY"));
-				profileName.setAttributeValueType(rs
-						.getString("ATTR_VALUE_TYPE"));
-				profileName.setIsEditable("X".equalsIgnoreCase(rs
-						.getString("IS_EDITABLE")));
+				profileName.setAttributeValueType(rs.getString("ATTR_VALUE_TYPE"));
+				profileName.setIsEditable("X".equalsIgnoreCase(rs.getString("IS_EDITABLE")));
 				profileNames.put(profileName.getName(), profileName);
 			}
 
@@ -3868,15 +3822,13 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List<String> loadProfileAttributeNameCategories()
-			throws FDResourceException {
+	public List<String> loadProfileAttributeNameCategories() throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = this.getConnection();
-			ps = conn
-					.prepareStatement("SELECT DISTINCT CATEGORY FROM CUST.PROFILE_ATTR_NAME WHERE IS_EDITABLE = 'X'");
+			ps = conn.prepareStatement("SELECT DISTINCT CATEGORY FROM CUST.PROFILE_ATTR_NAME WHERE IS_EDITABLE = 'X'");
 			rs = ps.executeQuery();
 			List<String> lst = new ArrayList<String>();
 
@@ -3931,10 +3883,9 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-	public List getAlerts(PrimaryKey pk) {
+	public List<ErpCustomerAlertModel> getAlerts(PrimaryKey pk) {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this
-					.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.getAlerts(pk);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -3947,8 +3898,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public boolean isOnAlert(PrimaryKey pk, String alertType) {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this
-					.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.isOnAlert(pk, alertType);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -3961,8 +3911,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 
 	public boolean isOnAlert(PrimaryKey pk) {
 		try {
-			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this
-					.getErpCustomerManagerHome().create();
+			ErpCustomerManagerSB sb = (ErpCustomerManagerSB) this.getErpCustomerManagerHome().create();
 			return sb.isOnAlert(pk);
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
@@ -4153,13 +4102,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 * @param identity
 	 * @return
 	 */
-	public Map getDlvPassesUsageInfo(FDIdentity identity) {
-		Map mapInfo = null;
+	public Map<String, DlvPassUsageInfo> getDlvPassesUsageInfo(FDIdentity identity) {
+		Map<String, DlvPassUsageInfo> mapInfo = null;
 		try {
-			ErpCustomerManagerSB customerManagerSB = this
-					.getErpCustomerManagerHome().create();
-			mapInfo = customerManagerSB.getDlvPassesUsageInfo(identity
-					.getErpCustomerPK());
+			ErpCustomerManagerSB customerManagerSB = this.getErpCustomerManagerHome().create();
+			mapInfo = customerManagerSB.getDlvPassesUsageInfo(identity.getErpCustomerPK());
 		} catch (RemoteException ex) {
 			LOGGER.warn(ex);
 			throw new EJBException(ex);
@@ -4198,13 +4145,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		return orders;
 	}
 
-	public List getRecentOrdersByDlvPassId(FDIdentity identity,
+	public List<DlvPassUsageLine> getRecentOrdersByDlvPassId(FDIdentity identity,
 			String dlvPassId, int noOfDaysOld) throws FDResourceException {
 		try {
-			ErpCustomerManagerSB erpCustomerManagerSB = this
-					.getErpCustomerManagerHome().create();
-			return erpCustomerManagerSB.getRecentOrdersByDlvPassId(identity
-					.getErpCustomerPK(), dlvPassId, noOfDaysOld);
+			ErpCustomerManagerSB erpCustomerManagerSB = this.getErpCustomerManagerHome().create();
+			return erpCustomerManagerSB.getRecentOrdersByDlvPassId(identity.getErpCustomerPK(), dlvPassId, noOfDaysOld);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
 		} catch (RemoteException re) {
@@ -4888,14 +4833,14 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 	}
 
-    public void storeProductRequest(List productRequest) throws FDResourceException {
+    public void storeProductRequest(List<FDProductRequest> productRequest) throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
             String id = "";
             for (int i = 0; i < productRequest.size(); i++) {
                 id = this.getNextId(conn, "CUST");
-                FDProductRequest prodReq = (FDProductRequest) productRequest.get(i);
+                FDProductRequest prodReq = productRequest.get(i);
                 prodReq.setId(id);
             }
             if (productRequest.size() > 0) {
@@ -4910,7 +4855,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
     }
 
-    public List productRequestFetchAllDepts() throws FDResourceException {
+    public List<HashMap<String, String>> productRequestFetchAllDepts() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -4926,7 +4871,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
     }
 
-    public List productRequestFetchAllCats() throws FDResourceException {
+    public List<HashMap<String, String>> productRequestFetchAllCats() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -4942,7 +4887,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
         }
     }
 
-    public List productRequestFetchAllMappings() throws FDResourceException {
+    public List<HashMap<String, String>> productRequestFetchAllMappings() throws FDResourceException {
         Connection conn = null;
         try {
             conn = this.getConnection();
@@ -5093,8 +5038,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			// Check if this gift card is already attached to a customer
 			// account.
 			GiftCardManagerSB sb = this.getGiftCardGManagerHome().create();
-			return sb.getGiftCardRecepientsForCustomer(identity
-					.getErpCustomerPK());
+			return sb.getGiftCardRecepientsForCustomer(identity.getErpCustomerPK());
 			// Log the activity
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
@@ -5765,11 +5709,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	
 	private static final String TOP_FAQS =
 		"select CMSNODE_ID from CUST.TOP_FAQS where TIME_STAMP = (select max(TIME_STAMP) from CUST.TOP_FAQS)";
-	public List getTopFaqs() throws FDResourceException, RemoteException{
+	public List<String> getTopFaqs() throws FDResourceException, RemoteException{
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
-			List lst = new ArrayList();
+			List<String> lst = new ArrayList<String>();
 			PreparedStatement ps = conn.prepareStatement(TOP_FAQS);
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){			
@@ -5963,5 +5907,62 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return ccs;
 	}
+	
+	public void createCounter( String customerId, String counterId, int initialValue ) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerCounterDAO.createCounter( conn , customerId, counterId, initialValue );			
+		} catch (SQLException e) {
+			LOGGER.error( "createCounter() failed with SQLException: ", e );
+		} finally {
+			if ( conn != null ) {
+				try { 
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.error( "connection close failed with SQLException: ", e );
+				}
+			}
+		}
+	}
+	
+	public void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDCustomerCounterDAO.updateCounter( conn, customerId, counterId, newValue );			
+		} catch (SQLException e) {
+			LOGGER.error( "updateCounter() failed with SQLException: ", e );
+		} finally {
+			if ( conn != null ) {
+				try { 
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.error( "connection close failed with SQLException: ", e );
+				}
+			}
+		}		
+	}
+	
+	public Integer getCounter( String customerId, String counterId ) throws FDResourceException {
+		Connection conn = null;
+		Integer value = null;
+		try {
+			conn = getConnection();
+			value = FDCustomerCounterDAO.getCounter( conn, customerId, counterId );			
+		} catch (SQLException e) {
+			LOGGER.error( "getCounter() failed with SQLException: ", e );
+		} finally {
+			if ( conn != null ) {
+				try { 
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.error( "connection close failed with SQLException: ", e );
+				}
+			}
+		}
+		return value;
+	}
+
 }
 

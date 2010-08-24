@@ -1,7 +1,5 @@
 package com.freshdirect.webapp.util;
 
-import java.util.Iterator;
-
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
@@ -28,8 +26,7 @@ public class TransactionalProductImpression extends ProductImpression {
 		ProductModel productModel, String selectedSkuCode, FDConfigurableI configuration) {
 		super(productModel);
 		this.selectedSku = null;
-		for(Iterator i = productModel.getSkus().iterator(); i.hasNext();) {
-			SkuModel skuModel = (SkuModel)i.next();
+		for (SkuModel skuModel :  productModel.getSkus()) {
 			if (selectedSkuCode.equals(skuModel.getSkuCode())) {
 				this.selectedSku = skuModel;
 				break;
@@ -124,7 +121,7 @@ public class TransactionalProductImpression extends ProductImpression {
 
 	
 
-
+	@Deprecated
 	public boolean validate() {
 		boolean isValid = super.validate();
 		

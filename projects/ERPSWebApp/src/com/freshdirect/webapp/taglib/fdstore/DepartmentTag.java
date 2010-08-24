@@ -1,11 +1,3 @@
-/*
- * $Workfile$
- *
- * $Date$
- *
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
 import javax.servlet.jsp.tagext.TagData;
@@ -17,12 +9,8 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
-/**
- *
- * @version $Revision$
- * @author $Author$
- */
-public class DepartmentTag extends AbstractGetterTag {
+
+public class DepartmentTag extends AbstractGetterTag<ContentNodeModel> {
 
 	private static final long serialVersionUID = 3814269255327865319L;
 	
@@ -32,8 +20,7 @@ public class DepartmentTag extends AbstractGetterTag {
         this.departmentId = deptId;
     }
     
-	protected Object getResult() throws FDResourceException {
-		//System.out.println("!!!! Department id ="+this.departmentId);
+	protected ContentNodeModel getResult() throws FDResourceException {
 		return  ContentFactory.getInstance().getContentNode( this.departmentId );
 	}
 

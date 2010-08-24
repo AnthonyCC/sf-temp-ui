@@ -1,21 +1,8 @@
-/*
- * $Workfile$
- *
- * $Date$
- * 
- * Copyright (c) 2001 FreshDirect, Inc.
- *
- */
-
 package com.freshdirect.fdstore.content;
 
 import java.util.Date;
 
-/** 
- *
- * @version     $Revision$
- * @author      $Author$
- */ 
+
 public interface AvailabilityI {
 
     /**

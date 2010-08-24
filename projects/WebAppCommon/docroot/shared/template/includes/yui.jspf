@@ -24,8 +24,9 @@
 			 */
 %>
 <script type="text/javascript" src="/assets/yui/yahoo/yahoo.js"></script>
-<script type="text/javascript" src="/assets/yui/dom/dom.js"></script>
 <script type="text/javascript" src="/assets/yui/event/event.js"></script>
+<script type="text/javascript" src="/assets/yui/dom/dom.js"></script>
+<script type="text/javascript" src="/assets/yui/event-mouseenter/event-mouseenter.js"></script>
 <script type="text/javascript" src="/assets/yui/connection/connection.js"></script>
 <script type="text/javascript" src="/assets/yui/animation/animation.js"></script>
 <script type="text/javascript" src="/assets/yui/dragdrop/dragdrop.js"></script>
@@ -60,14 +61,20 @@
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete.js"></script>
 <%
 			}
+			if (request.getAttribute("__yui_animation__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/animation/animation.js"></script>
+<%
+			}
 		} else {
 			/*
 			 * Production libs
 			 */
 %>
 <script type="text/javascript" src="/assets/yui/yahoo/yahoo-min.js"></script>
-<script type="text/javascript" src="/assets/yui/dom/dom-min.js"></script>
 <script type="text/javascript" src="/assets/yui/event/event-min.js"></script>
+<script type="text/javascript" src="/assets/yui/dom/dom-min.js"></script>
+<script type="text/javascript" src="/assets/yui/event-mouseenter/event-mouseenter-min.js"></script>
 <script type="text/javascript" src="/assets/yui/connection/connection-min.js"></script>
 <script type="text/javascript" src="/assets/yui/animation/animation-min.js"></script>
 <script type="text/javascript" src="/assets/yui/dragdrop/dragdrop-min.js"></script>
@@ -100,6 +107,11 @@
 			if (request.getAttribute("__yui_load_autocomplete__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_animation__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/animation/animation-min.js"></script>
 <%
 			}
 		}

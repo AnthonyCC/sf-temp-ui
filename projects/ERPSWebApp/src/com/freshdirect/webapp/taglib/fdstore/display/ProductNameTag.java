@@ -24,13 +24,17 @@ import com.freshdirect.webapp.taglib.fdstore.SessionName;
  */
 public class ProductNameTag extends BodyTagSupport {
 	
-	ProductModel	product; 							// product (mandatory)
-	String			action;								// URL (optional)
-	String			style 		= "";					// CSS style modification (optional)
-	String			brandStyle 	= "font-weight:bold;";	// CSS style modification for brand name (optional)
-	boolean			disabled 	= false;				// Not clickable (optional)
-	boolean         showNew     = false;                // Show NEW! label right after name
-	boolean			showFavourite=false;
+	private static final long	serialVersionUID	= 2202799484204844350L;
+	
+	ProductModel	product; 								// product (mandatory)
+	String			action;									// URL (optional)
+	String			style 			= "";					// CSS style modification (optional)
+	String			brandStyle 		= "font-weight:bold;";	// CSS style modification for brand name (optional)
+	boolean			disabled 		= false;				// Not clickable (optional)
+	boolean         showNew     	= false;                // Show NEW! label right after name
+	boolean			showFavourite 	= false;
+	boolean			showBrandName 	= true;					// Show the brand part of the name
+	boolean			noBreak 		= false;				// break after the brand name
 	
 	Set<EnumBurstType> hideBursts;
 	
@@ -66,6 +70,19 @@ public class ProductNameTag extends BodyTagSupport {
 		this.showNew = showNew;
 	}
 	
+	public void setShowBrandName( boolean showBrandName ) {
+		this.showBrandName = showBrandName;
+	}
+
+	public boolean isNoBreak() {
+		return noBreak;
+	}
+
+	public void setNoBreak(boolean noBreak) {
+		this.noBreak = noBreak;
+	}
+
+	
 	public int doStartTag() {
 		JspWriter out = pageContext.getOut();
 
@@ -90,17 +107,23 @@ public class ProductNameTag extends BodyTagSupport {
 			styleStr = " style=\"" + style + "\"";
 		}
 		
-		buf.append("<span" + styleStr + ">");
+		// buf.append("<span" + styleStr + ">");
 		if ( !this.disabled && action != null )
 			buf.append("<a href=\"" + action + "\"" + styleStr + ">");
 
 		if ( shortenedProductName != null ) {
-			buf.append("<span style=\"" );
-			buf.append( brandStyle );
-			buf.append( "\">");
-			buf.append(brandName);
-			buf.append("</span>");
-			buf.append("<br/>");
+			if ( showBrandName ) {
+				buf.append("<span style=\"" );
+				buf.append( brandStyle );
+				buf.append( "\">");
+				buf.append(brandName);
+				buf.append("</span>");
+				if(!isNoBreak()) {
+					buf.append("<br/>");					
+				} else {
+					buf.append(" ");
+				}
+			}
 			buf.append(shortenedProductName);
 		} else {
 			buf.append( fullName != null && !"".equalsIgnoreCase(fullName) ? fullName : "(this product)" );
@@ -112,7 +135,7 @@ public class ProductNameTag extends BodyTagSupport {
 			buf.append("&nbsp;&nbsp;<span class=\"text10rbold\">NEW!</span>");
 		if (showFavourite && pl.isDisplayFave())
 			buf.append("&nbsp;&nbsp;<span class=\"text11prpbold\">YOUR FAVORITE</span>");	
-		buf.append("</span>");
+		// buf.append("</span>");
 
 		try {
 			// write out

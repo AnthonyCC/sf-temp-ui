@@ -92,7 +92,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 	  	tdwidth=96; 
 		showRelatedRatingImage = true; 
     } 
-%><fd:FeaturedItemsRecommendations id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
+%><fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
 		if (recommendations != null && recommendations.getProducts().size() > 0) {
 				
 				request.setAttribute("recommendationsRendered","true");
@@ -141,7 +141,7 @@ if (sortedStuff==null) sortedStuff = new ArrayList();
 <font class="space4pix"><BR></font>
 <%
 	}
-%></fd:FeaturedItemsRecommendations><%
+%></fd:ProductGroupRecommender><%
 // idealy the following td cells should be created afer we know the location of the full_name column, but..
 %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=tablewidth%>">
