@@ -57,7 +57,7 @@ public final class EnumResourceSubType extends Enum {
 	}
 
 	public static boolean isKronosFileGeneration(EnumResourceSubType temp) {
-		if (temp == MANAGER || temp == YARD_WORKER) {
+		if (temp == MANAGER) {
 			return false;
 		}
 		return true;
