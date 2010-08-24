@@ -21,12 +21,17 @@ public class PopularityComparator implements Comparator<ContentNodeModel> {
     public PopularityComparator(boolean inverse, List<ProductModel> products, PricingContext pricingContext) {
         this(inverse, false, products, pricingContext);
     }
-
+    
     public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext) {
+        this(inverse, hideUnavailable, products, pricingContext, ScriptedContentNodeComparator.createComparator(null, pricingContext, true));
+    }
+
+    public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext,
+            ScriptedContentNodeComparator globalComparator) {
         this.inverse = inverse;
         this.hideUnavailable = hideUnavailable;
         this.displayable = new HashSet<ContentKey>();
-        this.globalComparator = ScriptedContentNodeComparator.createComparator(null, pricingContext, true);
+        this.globalComparator = globalComparator;
         if (products != null) {
             for (int i = 0; i < products.size(); i++) {
                 ProductModel c = products.get(i);
