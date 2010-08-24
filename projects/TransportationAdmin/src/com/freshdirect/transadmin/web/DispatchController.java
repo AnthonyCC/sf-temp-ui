@@ -141,13 +141,18 @@ public class DispatchController extends AbstractMultiActionController {
 		try{
 	
 			String daterange = request.getParameter("daterange");
+			Date _planDate = null;
 			if(daterange==null||"".equals(daterange))daterange=TransStringUtil.getCurrentDate();
+			_planDate = getWeekOf(daterange);			
 			String zoneLst = request.getParameter("zone");
 			zoneLst = zoneLst==null?"":zoneLst;
 			ModelAndView mav = new ModelAndView("planView");
 		
 			String day=request.getParameter("planDay");
-			if(day==null)day="All";
+			if(day==null){
+				int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());
+				day=Integer.toString(dayofWeek);
+			}
 			String[] dates=getDates(daterange,day);			
 			Collection dataList= new ArrayList();
 			List<Plan> plans=new ArrayList();
@@ -206,6 +211,7 @@ public class DispatchController extends AbstractMultiActionController {
 					saveMessage(request, getMessage("app.actionmessage.123", null));
 				}				
 			}
+			request.setAttribute("planDate", getClientDate(_planDate));
 			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -975,57 +981,43 @@ public class DispatchController extends AbstractMultiActionController {
 		// if there is a dispatch record for the same date then check what user role
 		// if not admin send an error message
 		// if admin delete the existing record and run the autodispatch crap
-		try {
 
-			String daterange = request.getParameter("daterange");
-			if (daterange == null || "".equals(daterange)|| TransStringUtil.isEmpty(daterange))
-				daterange = TransStringUtil.getCurrentDate();
-			String day = request.getParameter("planDay");
-			if (day == null)
-				day = "All";
-			String[] dates = getDates(daterange, day);
-			List _noplans = new ArrayList();
-			List _unavailableEmp = new ArrayList();
-				
-			if(dates!=null){
-					for(int i=0;i<dates.length;i++){
-						String dispatchDate = TransStringUtil.getServerDate(dates[i]);
-						Collection planList = dispatchManagerService.getPlanList(dispatchDate);
-	
-						if (planList == null || planList.size() == 0) {
-							_noplans.add(dispatchDate);
-						}
-						if (TransportationAdminProperties.isAutoDispatchValidation()) {
-							Collection unavailable = employeeManagerService
-									.getUnAvailableEmployees(planList, dispatchDate);
-							if (unavailable != null && unavailable.size() > 0) {
-								_unavailableEmp.add(dispatchDate);																
-							}
-						}
-						Collection dispList = dispatchManagerService.getDispatchList(dispatchDate, null, null);
-						if (!SecurityManager.isUserAdmin(request)) {
-							saveMessage(request, getMessage("app.actionmessage.140", null));
-							return planHandler(request, response);
-						}
-						dispatchManagerService.autoDisptchRegion(dispatchDate);
-										
-					}
-					if(_unavailableEmp.size() > 0)
-						saveMessage(request, getMessage("app.actionmessage.147", new List[]{_unavailableEmp}));
-					if(_noplans.size()> 0)
-						saveMessage(request, getMessage("app.actionmessage.142", new List[]{_noplans}));
-					saveMessage(request, getMessage("app.actionmessage.143",null));	
+		String dispatchDate = request.getParameter("daterange");
+			try {
+				if (!TransStringUtil.isEmpty(dispatchDate)) {
+					dispatchDate = TransStringUtil.getServerDate(dispatchDate);
+				} else {
+					dispatchDate = TransStringUtil.getServerDate(new Date());
+				}
+			} catch (ParseException e) {
+				e.printStackTrace();
+				saveMessage(request, getMessage("app.error.115", new String[] { "Invalid Date" }));
+				return planHandler(request, response);
 			}
-			return planHandler(request, response);
-		} catch (ParseException ep) {
-			ep.printStackTrace();
-			saveMessage(request, getMessage("app.error.115", new String[]{"Invalid Date"}));
-			return planHandler(request,response);
-		} catch (Exception e) {
-			e.printStackTrace();
-			saveMessage(request, getMessage("app.actionmessage.157", null));
-			return planHandler(request,response);	
-		}
+
+			Collection planList=dispatchManagerService.getPlanList(dispatchDate);
+
+		    if(planList == null || planList.size() == 0){
+		    	saveMessage(request, getMessage("app.actionmessage.142", null));
+		    	return planHandler(request,response);
+		    }
+		    if( TransportationAdminProperties.isAutoDispatchValidation())
+		    {
+			   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
+			   if(unavailable!=null&&unavailable.size()>0)
+			   {
+				   saveMessage(request, getMessage("app.actionmessage.147", null));
+			    	return planHandler(request,response);
+			   }
+		    }
+			Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
+			if(!SecurityManager.isUserAdmin(request)){
+				  saveMessage(request, getMessage("app.actionmessage.140", null));
+				  return planHandler(request,response);
+			}
+		   dispatchManagerService.autoDisptchRegion(dispatchDate);
+		   saveMessage(request, getMessage("app.actionmessage.143", null));
+		   return planHandler(request,response);
 
 	}
 

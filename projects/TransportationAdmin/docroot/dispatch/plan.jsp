@@ -6,9 +6,10 @@
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 
 <%  pageContext.setAttribute("HAS_COPYBUTTON", "true");  
-  String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
-  String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
-   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+	int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());	
+	String day = Integer.toString(dayofWeek);
+  	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
+   //if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getDate(TransStringUtil.getCurrentWeekOf());
 %>
 <% 
 	String pageTitle = "Planning";
@@ -33,7 +34,7 @@
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
 					<span class="scrTitle"><%=pageTitle%></span>
 						<span >
-							Week Of:<input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
+							Week Of:<input maxlength="40" name="daterange" id="daterange" value='<c:out value="${planDate}"/>' style="width:100px"/>
 						 	<a href="#" id="trigger_planDate" style="font-size: 9px;">
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 						 	<select id="planDay" name="planDay">
@@ -89,12 +90,18 @@
 					</div></div>
 				</div>
      </div>   
-     <script>
+     <script>     
      	 function doAutoDispatch(compId1,compId2,compId3, url) {
-     	 	var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
-			if (hasConfirmed) {
-			  	doCompositeLink(compId1,compId2,compId3, url);
-			} 
+     		var param1 = document.getElementById(compId1).value;
+     		var param2 = document.getElementById(compId2).value;
+ 			if(param2=='All'){
+				alert('Auto-dispatch cannot be performed for entire week. Please choose a day.');
+			}else{
+      	 		var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR "+param1+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
+				if (hasConfirmed) {
+			  		doCompositeLink(compId1,compId2,compId3, url);
+				} 
+			}
      	 }
          function doCompositeLink(compId1,compId2,compId3, url) {
           var param1 = document.getElementById(compId1).value;
@@ -104,7 +111,7 @@
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
         } 
       addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
-      
+      document.getElementById("planDay").value='<%=request.getParameter("planDay")!=null?request.getParameter("planDay"):day%>';  
       function doDelete(tableId, url) 
       {    
 		    var paramValues = getParamList(tableId, url);
