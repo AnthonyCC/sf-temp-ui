@@ -130,10 +130,15 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 						startDate.add(Calendar.DATE, 1);
 					}
 				}
-				
+				System.out.println("Final List of Unassigned Being Processed :"+ unassignedReservations.size());
 				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
-					
+					int unassignedProcessedCnt = 0;
 					for (DlvReservationModel reservation : unassignedReservations) {
+						unassignedProcessedCnt++;
+						if(unassignedProcessedCnt > FDStoreProperties.getUnassignedProcessingLimit()) {							
+							System.out.println("Unassigned Processing Batch Completed : "+FDStoreProperties.getUnassignedProcessingLimit());
+							break;
+						}						
 						cron.processReservation(dlvManager,custManager,reservation);
 					}
 				}
@@ -195,7 +200,7 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
     @Override
     public void processReservation(DlvManagerSB dlvManager,FDCustomerManagerSB sb,DlvReservationModel reservation) {
     	try {
-    		
+    		//System.out.println("Processing >>"+reservation.getId()+"->"+reservation.getUnassignedActivityType());
     		FDIdentity identity = getIdentity(reservation.getCustomerId());
     		ContactAddressModel address = sb.getAddress(identity, reservation.getAddressId());
     		

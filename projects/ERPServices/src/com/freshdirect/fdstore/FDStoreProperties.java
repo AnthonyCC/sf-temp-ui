@@ -460,7 +460,9 @@ public class FDStoreProperties {
 
 	// 4mm department internal cache refresh interval - in minutes
 	private final static String PROP_4MM_REFRESH_INTERVAL = "fdstore.4mm.cache.refresh.interval";
-
+	
+	private static final String PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT = "fdstore.routing.unassignedprocesinglimit";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -809,7 +811,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_DP_CART_ENABLED, "false");
 		
 		defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");		
-		
+		defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "100");
 		refresh();
 	}
 
@@ -1875,6 +1877,10 @@ public class FDStoreProperties {
 
 	public static int get4mmRefreshInterval() {
 		return Integer.parseInt(config.getProperty(PROP_4MM_REFRESH_INTERVAL));
+	}
+	
+	public static int getUnassignedProcessingLimit() {
+		return Integer.parseInt(get(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT));
 	}
 
 	public static void forceRefresh() {
