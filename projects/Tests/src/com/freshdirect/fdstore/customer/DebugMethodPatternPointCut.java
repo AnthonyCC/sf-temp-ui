@@ -26,7 +26,9 @@ public class DebugMethodPatternPointCut extends MethodPatternPointcut {
             System.out.println(arg0.toString());
         }
         try {
-            return super.matchesJointpoint(arg0);
+            synchronized(DebugMethodPatternPointCut.class) {
+                return super.matchesJointpoint(arg0);
+            }
         } catch (RuntimeException e) {
             LOG.error("error in " + this.getClass().getName() + ", pattern: " + pattern + " with method : "+arg0 + ", problem:" + e.getMessage(), e);
             throw e;
