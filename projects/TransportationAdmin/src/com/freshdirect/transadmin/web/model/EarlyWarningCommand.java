@@ -22,8 +22,7 @@ public class EarlyWarningCommand extends BaseCommand {
 	private String percentageAllocated;
 	
 	private List<EarlyWarningCommand> timeslotDetails;
-	
-			
+				
 	private String referenceId;
 	
 	private boolean isRegion;
@@ -34,6 +33,15 @@ public class EarlyWarningCommand extends BaseCommand {
 	private int dynamicActiveCount = 0;
 	private int dynamicInActiveCount = 0;
 		
+	private boolean isDiscounted;
+		
+	public boolean isDiscounted() {
+		return isDiscounted;
+	}
+
+	public void setDiscounted(boolean isDiscounted) {
+		this.isDiscounted = isDiscounted;
+	}
 
 	public int getOpenCount() {
 		return openCount;

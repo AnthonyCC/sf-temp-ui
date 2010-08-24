@@ -161,7 +161,8 @@
 	
 	<bean id="capacityController" class="com.freshdirect.transadmin.web.CapacityController">
 		<property name="domainManagerService" ref="domainManager"/>
-		<property name="methodNameResolver" ref="transAdminControllerResolver"/>        
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>   
+		<property name="zoneManagerService" ref="zoneManager"/>     
 	</bean>
 	
 	<bean id="adminController" class="com.freshdirect.transadmin.web.AdminController">

@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -16,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
-import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
@@ -28,14 +29,27 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.web.model.Capacity;
 import com.freshdirect.transadmin.web.model.EarlyWarningCommand;
+import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.UnassignedCommand;
 
 public class CapacityController extends AbstractMultiActionController {
 	
 	private DomainManagerI domainManagerService;
 	
+	private ZoneManagerI zoneManagerService;
+		
+	public ZoneManagerI getZoneManagerService() {
+		return zoneManagerService;
+	}
+
+	public void setZoneManagerService(ZoneManagerI zoneManagerService) {
+		this.zoneManagerService = zoneManagerService;
+	}
+
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;
 	}
@@ -57,15 +71,27 @@ public class CapacityController extends AbstractMultiActionController {
 		String rType = request.getParameter("rType");
 		
 		ModelAndView mav = new ModelAndView("earlyWarningView");
+		Map<String, List<TimeRange>> discountMapping = null;
 		
-		Map<String, List<Capacity>> capacityMapping = null;
+		try {
+			if(rDate != null) {
+				discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(TransStringUtil.getDate(rDate));
+				
+			}			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 		if("T".equalsIgnoreCase(rType)) {			
-			processEarlyWarning(mav, new TimeEarlyWarningFormatter(), 
-					executeEarlyWarningTime(mav, rDate, cutOff, rType));
+			processEarlyWarning(mav, new TimeEarlyWarningFormatter()
+												, executeEarlyWarningTime(mav, rDate, cutOff, rType)
+												, discountMapping);
 		} else {
-			processEarlyWarning(mav, new OrderEarlyWarningFormatter(), 
-					executeEarlyWarningOrder(mav, rDate, cutOff, rType));
+			processEarlyWarning(mav, new OrderEarlyWarningFormatter()
+												, executeEarlyWarningOrder(mav, rDate, cutOff, rType)
+												, discountMapping);
 		}
 		
 		
@@ -259,7 +285,8 @@ public class CapacityController extends AbstractMultiActionController {
 	}
 	
 	private void processEarlyWarning(ModelAndView mav, EarlyWarningFormatter formatter
-										, Map<String, List<Capacity>> capacityMapping)  {
+										, Map<String, List<Capacity>> capacityMapping
+										, Map<String, List<TimeRange>> discountMapping)  {
 		
 		List<EarlyWarningCommand> capacity = new ArrayList<EarlyWarningCommand>();
 		Map<Region, Capacity> regionCapacity = new HashMap<Region, Capacity>();
@@ -273,6 +300,17 @@ public class CapacityController extends AbstractMultiActionController {
 		try {
 			while(_capItr.hasNext()) {
 				_zoneCode = _capItr.next();
+				List<TimeRange> discountSlots = new ArrayList<TimeRange>();
+				
+				if(discountMapping != null) {					
+					if(discountMapping.containsKey(_zoneCode)) {
+						discountSlots.addAll(discountMapping.get(_zoneCode));
+					}
+					if(discountMapping.containsKey("ALL")) {
+						discountSlots.addAll(discountMapping.get("ALL"));
+					}
+				}
+				
 				Zone _refZone = zoneMapping.get(_zoneCode);
 				Iterator<Capacity> _childItr = capacityMapping.get(_zoneCode).iterator();
 				
@@ -296,6 +334,7 @@ public class CapacityController extends AbstractMultiActionController {
 				int closedCount = 0;
 				int dynamicActiveCount = 0;
 				int dynamicInActiveCount = 0;
+				boolean hasDiscount = false;
 				
 				while(_childItr.hasNext()) {
 					_capacity = _childItr.next();
@@ -335,6 +374,11 @@ public class CapacityController extends AbstractMultiActionController {
 						_timeslotCommand.setPercentageConfirmed(""+Math.round((_capacity.getTotalConfirmed()/_capacity.getTotalCapacity())*100.0)+"%");
 						_timeslotCommand.setPercentageAllocated(""+Math.round((_capacity.getTotalAllocated()/_capacity.getTotalCapacity())*100.0)+"%");								
 					}
+					boolean isDiscounted = this.isDiscounted(discountSlots, _zoneCode, _capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime());
+					if(isDiscounted) {
+						_timeslotCommand.setDiscounted(isDiscounted);
+						hasDiscount = true;
+					}
 				}
 				if(totalCapacity > 0) {
 					percentageConfirmed = (totalConfirmed/totalCapacity)*100.0;
@@ -350,6 +394,8 @@ public class CapacityController extends AbstractMultiActionController {
 				_displayCommand.setClosedCount(closedCount);				
 				_displayCommand.setDynamicActiveCount(dynamicActiveCount);
 				_displayCommand.setDynamicInActiveCount(dynamicInActiveCount);
+				_displayCommand.setDiscounted(hasDiscount);
+				
 				capacity.add(_displayCommand);
 				
 				if(!regionCapacity.containsKey(_refZone.getRegion())) {
@@ -366,7 +412,10 @@ public class CapacityController extends AbstractMultiActionController {
 				_tmpRegCapacity.setClosedCount(_tmpRegCapacity.getClosedCount() + closedCount);
 				
 				_tmpRegCapacity.setDynamicActiveCount(_tmpRegCapacity.getDynamicActiveCount() + dynamicActiveCount);
-				_tmpRegCapacity.setDynamicInActiveCount(_tmpRegCapacity.getDynamicInActiveCount() + dynamicInActiveCount);				
+				_tmpRegCapacity.setDynamicInActiveCount(_tmpRegCapacity.getDynamicInActiveCount() + dynamicInActiveCount);
+				if(_displayCommand.isDiscounted()) {
+					_tmpRegCapacity.setDiscounted(_displayCommand.isDiscounted());
+				}
 				
 			}
 			
@@ -404,6 +453,7 @@ public class CapacityController extends AbstractMultiActionController {
 				_regDisplayCommand.setClosedCount(_regCap.getClosedCount());
 				_regDisplayCommand.setDynamicActiveCount(_regCap.getDynamicActiveCount());
 				_regDisplayCommand.setDynamicInActiveCount(_regCap.getDynamicInActiveCount()); 
+				_regDisplayCommand.setDiscounted(_regCap.isDiscounted());
 				
 				if(_regCap.getTotalCapacity() > 0) {
 					_regPerConfirmed = (_regCap.getTotalConfirmed()/_regCap.getTotalCapacity())*100.0;
@@ -434,6 +484,22 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		mav.getModel().put("earlywarnings", capacity );
 		mav.getModel().put("earlywarnings_region", regCapacity );
+	}
+	
+	private boolean isDiscounted(List<TimeRange> discountSlots, String zoneCode, Date startTime, Date endTime) {		
+		if(discountSlots != null) {			
+			for(TimeRange slot : discountSlots) {
+				TimeOfDay windowStart = new TimeOfDay(startTime);
+				TimeOfDay windowEnd = new TimeOfDay(endTime);
+				
+				if((slot.getStartTime().equals(windowStart) || windowStart.after(slot.getStartTime())) && 
+						(windowEnd.before(slot.getEndTime()) || (slot.getEndTime().equals(windowEnd)))) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -515,113 +581,6 @@ public class CapacityController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	class Capacity {
-		
-		private Date deliveryStartTime;
-		private Date deliveryEndTime;
-		private boolean manuallyClosed;
-		private String referenceId;
-		private boolean dynamicActive;
-		
-		int openCount = 0;
-		int closedCount = 0;
-		int dynamicActiveCount = 0;
-		int dynamicInActiveCount = 0;
-		
-		
-		@Override
-		public String toString() {
-			return "Capacity [deliveryEndTime=" + deliveryEndTime
-					+ ", deliveryStartTime=" + deliveryStartTime + "]";
-		}
-		
-		
-		public int getOpenCount() {
-			return openCount;
-		}
-
-		public void setOpenCount(int openCount) {
-			this.openCount = openCount;
-		}
-
-		public int getClosedCount() {
-			return closedCount;
-		}
-
-		public void setClosedCount(int closedCount) {
-			this.closedCount = closedCount;
-		}
-
-		public int getDynamicActiveCount() {
-			return dynamicActiveCount;
-		}
-
-		public void setDynamicActiveCount(int dynamicActiveCount) {
-			this.dynamicActiveCount = dynamicActiveCount;
-		}
-
-		public int getDynamicInActiveCount() {
-			return dynamicInActiveCount;
-		}
-
-		public void setDynamicInActiveCount(int dynamicInActiveCount) {
-			this.dynamicInActiveCount = dynamicInActiveCount;
-		}
-
-		public boolean isDynamicActive() {
-			return dynamicActive;
-		}
-		public void setDynamicActive(boolean dynamicActive) {
-			this.dynamicActive = dynamicActive;
-		}
-		public String getReferenceId() {
-			return referenceId;
-		}
-		public void setReferenceId(String referenceId) {
-			this.referenceId = referenceId;
-		}
-		public boolean isManuallyClosed() {
-			return manuallyClosed;
-		}
-		public void setManuallyClosed(boolean manuallyClosed) {
-			this.manuallyClosed = manuallyClosed;
-		}
-		public Date getDeliveryStartTime() {
-			return deliveryStartTime;
-		}
-		public void setDeliveryStartTime(Date deliveryStartTime) {
-			this.deliveryStartTime = deliveryStartTime;
-		}
-		public Date getDeliveryEndTime() {
-			return deliveryEndTime;
-		}
-		public void setDeliveryEndTime(Date deliveryEndTime) {
-			this.deliveryEndTime = deliveryEndTime;
-		}
-		private double totalCapacity = 0;
-		private double totalConfirmed = 0;
-		private double totalAllocated = 0;
-		
-		public double getTotalCapacity() {
-			return totalCapacity;
-		}
-		public void setTotalCapacity(double totalCapacity) {
-			this.totalCapacity = totalCapacity;
-		}
-		public double getTotalConfirmed() {
-			return totalConfirmed;
-		}
-		public void setTotalConfirmed(double totalConfirmed) {
-			this.totalConfirmed = totalConfirmed;
-		}
-		public double getTotalAllocated() {
-			return totalAllocated;
-		}
-		public void setTotalAllocated(double totalAllocated) {
-			this.totalAllocated = totalAllocated;
-		}
-	}
-	
 	interface EarlyWarningFormatter {
 		
 		String formatCapacity(double value);
@@ -664,6 +623,6 @@ public class CapacityController extends AbstractMultiActionController {
 			return tmpModel.getCutOffTime().getAsDate();
 		}
 		return null;
-	}
+	}	
 
 }

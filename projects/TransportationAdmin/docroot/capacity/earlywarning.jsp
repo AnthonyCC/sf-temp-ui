@@ -244,7 +244,10 @@
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell" property="referenceId" />
 				  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="capacityDynamicButtonCell" property="dynamicActive" />										  	                           
+									filterable="false" sortable="false" cell="capacityDynamicButtonCell" property="dynamicActive" />
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="discount" property="isDiscounted" />					
+																			  	                           
 	            </ec:row>
 	          </ec:table>
 	    </td>
@@ -267,7 +270,9 @@
 				  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="capacityCloseButtonCell"  property="referenceId" />
 				  <ec:column title=" " width="5px" 
-									filterable="false" sortable="false" cell="capacityDynamicButtonCell"  property="dynamicActive" />									  	                           
+									filterable="false" sortable="false" cell="capacityDynamicButtonCell"  property="dynamicActive" />
+				  <ec:column title=" " width="5px" 
+									filterable="false" sortable="false" cell="discount" property="isDiscounted" />															  	                           
 	            </ec:row>
 	          </ec:table>
 	    
@@ -301,6 +306,7 @@
 							<td class="tableHeader" >% Allocated</td>
 							<td class="tableHeader" >&nbsp;</td>
 							<td class="tableHeader" >&nbsp;</td>
+							<td class="tableHeader" >&nbsp;</td>
 						</tr>
 						</thead>
 						<tbody class="tableBody" >
@@ -326,7 +332,9 @@
 										class="<%= _commandTS.getDynamicActiveCount() > 0 ? "dynamic_enabled" : "dynamic_disabled" %>" 
 												value="<%= (_commandTS.getDynamicActiveCount() > 0 ? "D" : "S") %>" 
 														onclick="updateDynamicTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
-														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>						
+														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
+														
+								<td><%= _commandTS.isDiscounted() ? "<img src=\"images/dollar.gif\" style=\"border:0\"/>" : "&nbsp;" %></td>																				
 							</tr>
 	    					
 	    			   <%}
