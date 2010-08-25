@@ -8,8 +8,7 @@
 <%  pageContext.setAttribute("HAS_COPYBUTTON", "true");  
 	int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());	
 	String day = Integer.toString(dayofWeek);
-  	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
-   //if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getDate(TransStringUtil.getCurrentWeekOf());
+  	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";  	  
 %>
 <% 
 	String pageTitle = "Planning";
@@ -92,7 +91,7 @@
      </div>   
      <script>     
      	 function doAutoDispatch(compId1,compId2,compId3, url) {
-     		var param1 = document.getElementById(compId1).value;
+     		var param1 = getDate(compId1,compId2);
      		var param2 = document.getElementById(compId2).value;
  			if(param2=='All'){
 				alert('Auto-dispatch cannot be performed for entire week. Please choose a day.');
@@ -103,6 +102,37 @@
 				} 
 			}
      	 }
+
+     	 function getDate(compId1,compId2){
+         	  var d= new Date();
+         	  var param1=document.getElementById(compId1).value;
+         	  if (param1 == '') { param1= d.getMonth()+1+"/"+d.getDate()+"/"+d.getFullYear(); }
+     		  param1 = (param1).split('/');
+              var param2 = document.getElementById(compId2).value;
+              var day = 1000*60*60*24;
+              dayArr = [];
+              dayArr['2'] = 1; //mon
+              dayArr['3'] = 2;
+              dayArr['4'] = 3;
+              dayArr['5'] = 4;
+              dayArr['6'] = 5;
+              dayArr['7'] = 6;
+              dayArr['8'] = 0; //sun
+
+              var d= new Date();
+
+              d.setMonth(param1[0]-1);
+              d.setDate(param1[1]);
+              d.setYear(param1[2]);
+
+              if (('2345678').indexOf(param2) > -1){
+                  while (d.getDay() != dayArr[param2]) {
+                      d.setMilliseconds(d.getMilliseconds()+day);
+                  }
+              }
+              return d.getMonth()+1+"/"+d.getDate()+"/"+d.getFullYear();
+         }
+         
          function doCompositeLink(compId1,compId2,compId3, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
