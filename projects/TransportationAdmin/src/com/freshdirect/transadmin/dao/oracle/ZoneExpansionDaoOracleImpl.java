@@ -283,7 +283,7 @@ public class ZoneExpansionDaoOracleImpl implements ZoneExpansionDaoI{
 	//insert new zone into TRANSP.ZONE table
 	private static String INSERT_ZONE_TRANSPZONE=" insert into transp.zone select" 
 		+" (select code from DLV.WORKTABLE where code=?) as zone_code, (select name from DLV.WORKTABLE where code=?) as name, UNATTENDED, ZONE_TYPE, AREA," 
-		+" REGION, OBSOLETE, PRIORITY, stem_from_time, stem_to_time, stem_time, cos_enabled FROM"
+		+" REGION, OBSOLETE, PRIORITY, stem_from_time, stem_to_time, stem_time, cos_enabled, servicetime_type FROM"
 		+" transp.zone x where x.ZONE_CODE = (select zone_code from transp.zone where rownum=1)";
 		
 	
