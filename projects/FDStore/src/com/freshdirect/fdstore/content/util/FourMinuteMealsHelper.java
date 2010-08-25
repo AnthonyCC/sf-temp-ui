@@ -139,8 +139,8 @@ public class FourMinuteMealsHelper {
 		
 		private List<MediaI> restaurantMedia;
 		
-		private MediaI mealHeaderMedia;
-		private MediaI sideHeaderMedia;		
+		private MediaI mealHeaderMedia = null;
+		private MediaI sideHeaderMedia = null;		
 		
 		private DomainValue extraVeggieSideDV;
 		private DomainValue extraStarchSideDV;
@@ -161,7 +161,13 @@ public class FourMinuteMealsHelper {
 	private static FilterCache cache;
 
 	// First time init.
-	static { init(); }
+	static { 
+		try {
+			init(); 
+		} catch (Exception e) {
+			LOGGER.error( "Four-minute-meals helper cache initialization failed. Please check CMS data.", e );
+		}
+	}
 	
 	
 	// === Public getters ===
@@ -423,10 +429,12 @@ public class FourMinuteMealsHelper {
 		newCache.filterPage = (CategoryModel) ContentFactory.getInstance().getContentNodeByKey( filterPageKey );
 
 		// section header media
-		List<? extends MediaI> sectionHeaders = newCache.filterPage.getTopMedia();
-		if ( sectionHeaders != null && sectionHeaders.size() == 2 ) {
-			newCache.mealHeaderMedia = sectionHeaders.get( 0 );
-			newCache.sideHeaderMedia = sectionHeaders.get( 1 );
+		if ( newCache.filterPage != null ) {
+			List<? extends MediaI> sectionHeaders = newCache.filterPage.getTopMedia();
+			if ( sectionHeaders != null && sectionHeaders.size() == 2 ) {
+				newCache.mealHeaderMedia = sectionHeaders.get( 0 );
+				newCache.sideHeaderMedia = sectionHeaders.get( 1 );
+			}
 		}
 		
 		// filtering 
