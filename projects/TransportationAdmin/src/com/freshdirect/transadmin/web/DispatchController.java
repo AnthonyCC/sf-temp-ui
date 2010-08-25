@@ -149,10 +149,11 @@ public class DispatchController extends AbstractMultiActionController {
 			ModelAndView mav = new ModelAndView("planView");
 		
 			String day=request.getParameter("planDay");
-			if(day==null){
+			if(day==null && !"y".equalsIgnoreCase(request.getParameter("kronos"))){
 				int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());
 				day=Integer.toString(dayofWeek);
 			}
+			if(day==null)day = "All";
 			String[] dates=getDates(daterange,day);			
 			Collection dataList= new ArrayList();
 			List<Plan> plans=new ArrayList();
@@ -469,7 +470,10 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		for(Iterator<String> dates = kronos.keySet().iterator();dates.hasNext();) {
 			String date=dates.next();
-			
+
+			String h3 = date + "\n";
+			f3.write(h3.getBytes());
+
 			Map<String, Map<String, Scrib>> resMap=kronos.get(date);
 			for(Iterator<String> resIds=kronos.get(date).keySet().iterator();resIds.hasNext(); ) {
 				String resId=resIds.next();
