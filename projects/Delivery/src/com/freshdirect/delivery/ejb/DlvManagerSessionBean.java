@@ -91,6 +91,7 @@ import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
@@ -2277,8 +2278,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		RoutingEngineServiceProxy proxy = new RoutingEngineServiceProxy();
 		try {
 			if(purge) {
-				LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Purge: " + schedulerId);
-				proxy.purgeOrders(schedulerId, true);
+				DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+				List<IOrderModel> reservationForSchedulerId = dlvProxy.getRoutingOrderByDate(schedulerId.getDeliveryDate()
+																								, schedulerId.getArea().getAreaCode());
+				
+				if(reservationForSchedulerId == null || reservationForSchedulerId.size() == 0) {
+					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Purge: " + schedulerId);
+					proxy.purgeOrders(schedulerId, true);
+				} else {
+					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Unable to Purge: " + reservationForSchedulerId);
+				}
 			}
 			return proxy.retrieveCapacityMetrics(schedulerId, slots);
 		} catch (RoutingServiceException e) {

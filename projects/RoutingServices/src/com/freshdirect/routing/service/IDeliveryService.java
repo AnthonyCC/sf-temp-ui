@@ -53,4 +53,6 @@ public interface IDeliveryService {
 	int updateTimeslotForDynamicStatus(String timeslotId, boolean isDynamic, String type, Date baseDate, String cutOff) throws RoutingServiceException;
 	
 	List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException;
+	
+	List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode) throws RoutingServiceException;
 }

@@ -92,4 +92,8 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 	public List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException {
 		return getService().retrieveRoutingSession(schedulerId, sessionDescription);
 	}
+	
+	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode) throws RoutingServiceException {
+		return getService().getRoutingOrderByDate(deliveryDate, zoneCode);
+	}
 }

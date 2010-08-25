@@ -165,7 +165,7 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_ROADNETSESSIONSIZE_THRESHOLD, "3000");
 		defaults.put(PROP_HANDOFFROUTEIN_MULTITHREADENABLED, "true");
-		defaults.put(PROP_DEFAULT_PLANTCODE, "001");
+		defaults.put(PROP_DEFAULT_PLANTCODE, "1000");
 		
 		defaults.put(PROP_HANDOFF_MAILFROM, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_HANDOFF_MAILTO, "applicationdevelopment@freshdirect.com");

@@ -86,6 +86,13 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where r.ID = ? and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
+	private static final String GET_RESERVATIONBYDATE_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
+	" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
+	"t.END_TIME ETIME, z.ZONE_CODE ZCODE, " +
+	"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
+	"from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
+	"where t.BASE_DATE = ? and r.TIMESLOT_ID = t.ID and t.ZONE_ID = z.ID and z.ZONE_CODE = ?";
+	
 	private static final String UPDATE_UNASSIGNEDRESERVATION_QRY = "update dlv.reservation r set r.ORDER_SIZE = ?,  r.SERVICE_TIME = ? " +
 			", r.UPDATE_STATUS = ?	where r.ID = ?  ";
 	
@@ -495,6 +502,64 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		);
 		return order;
 	}
+	
+	public List<IOrderModel> getRoutingOrderByDate(final Date deliveryDate, final String zoneCode) throws SQLException {
+
+		final List<IOrderModel> result = new ArrayList<IOrderModel>();
+
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps =
+					connection.prepareStatement(GET_RESERVATIONBYDATE_QRY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+				ps.setString(2, zoneCode);
+				
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+			public void processRow(ResultSet rs) throws SQLException {				    	
+				do { 
+					IOrderModel order = new OrderModel();	
+					result.add(order);
+					
+					order.setOrderNumber(rs.getString("OID"));
+					order.setCustomerNumber(rs.getString("CID"));
+					
+					order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
+					order.setUnassignedAction(rs.getString("UACTION"));
+					order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
+		    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+					EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
+		    		if(_status != null) {
+		    			order.setUpdateStatus(_status.value());
+		    		}
+					
+					IDeliveryModel dModel = new DeliveryModel();
+					dModel.setDeliveryDate(rs.getDate("BDATE"));
+					dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
+					dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
+					dModel.setReservationId(rs.getString("RID"));
+					dModel.setOrderSize(rs.getDouble("OSIZE"));
+					dModel.setServiceTime(rs.getDouble("SRTIME"));
+					
+					
+					IZoneModel zModel = new ZoneModel();
+					zModel.setZoneNumber(rs.getString("ZCODE"));
+
+					dModel.setDeliveryZone(zModel);
+
+					order.setDeliveryInfo(dModel);
+
+				} while(rs.next());		        		    	
+			}
+		}
+		);
+		return result;
+	}
+	
 	
 	public int updateRoutingOrderByReservation(final String reservationId, final double orderSize, final double serviceTime) throws SQLException {
 

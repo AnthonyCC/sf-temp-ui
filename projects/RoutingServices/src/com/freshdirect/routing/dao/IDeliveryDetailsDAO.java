@@ -47,5 +47,7 @@ public interface IDeliveryDetailsDAO {
 	
 	int updateTimeslotForDynamicStatusByZone(final Date baseDate, final String zoneCode,final String cutOff, final boolean isDynamic) throws SQLException;
 	
-	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;	
+	int updateTimeslotForDynamicStatusByRegion(final Date baseDate, final String regionCode,final String cutOff, final boolean isDynamic) throws SQLException;
+	
+	List<IOrderModel> getRoutingOrderByDate(final Date deliveryDate, final String zoneCode) throws SQLException;
 }
