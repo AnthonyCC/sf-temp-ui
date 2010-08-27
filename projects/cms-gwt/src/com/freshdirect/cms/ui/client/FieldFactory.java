@@ -214,6 +214,11 @@ public final class FieldFactory {
     	final GwtNodeData nodeData = cn;
     	
     	ContentNodeAttributeI attribute = nodeData.getNode().getOriginalAttribute(key);
+    	
+    	if ( attribute == null ) {
+    		CmsGwt.log( "Null attribute [" + key + "] found in node [" + cn.getNode().getKey() + "]", true );
+    		return null;
+    	}
         
         boolean readonly = attribute.isReadonly() || nodeData.isReadonly();
 
