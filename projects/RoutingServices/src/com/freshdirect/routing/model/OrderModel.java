@@ -23,9 +23,11 @@ public class OrderModel extends BaseModel implements IOrderModel {
 	
 	private EnumSaleStatus status;
 	
-	private double unassignedServiceTime;
-	private double unassignedOrderSize;
+	private double overrideServiceTime;
+	private double overrideOrderSize;
 	
+	private double reservedServiceTime;
+	private double reservedOrderSize;
 	
 	public String getErpOrderNumber() {
 		return erpOrderNumber;
@@ -35,20 +37,36 @@ public class OrderModel extends BaseModel implements IOrderModel {
 		this.erpOrderNumber = erpOrderNumber;
 	}
 
-	public double getUnassignedServiceTime() {
-		return unassignedServiceTime;
+	public double getOverrideServiceTime() {
+		return overrideServiceTime;
 	}
 
-	public void setUnassignedServiceTime(double unassignedServiceTime) {
-		this.unassignedServiceTime = unassignedServiceTime;
+	public double getOverrideOrderSize() {
+		return overrideOrderSize;
 	}
 
-	public double getUnassignedOrderSize() {
-		return unassignedOrderSize;
+	public double getReservedServiceTime() {
+		return reservedServiceTime;
 	}
 
-	public void setUnassignedOrderSize(double unassignedOrderSize) {
-		this.unassignedOrderSize = unassignedOrderSize;
+	public double getReservedOrderSize() {
+		return reservedOrderSize;
+	}
+
+	public void setOverrideServiceTime(double overrideServiceTime) {
+		this.overrideServiceTime = overrideServiceTime;
+	}
+
+	public void setOverrideOrderSize(double overrideOrderSize) {
+		this.overrideOrderSize = overrideOrderSize;
+	}
+
+	public void setReservedServiceTime(double reservedServiceTime) {
+		this.reservedServiceTime = reservedServiceTime;
+	}
+
+	public void setReservedOrderSize(double reservedOrderSize) {
+		this.reservedOrderSize = reservedOrderSize;
 	}
 
 	public String getUpdateStatus() {

@@ -130,10 +130,11 @@
 			  <ec:column property="customerId" title="Customer ID" width="5px"/>
 			  <ec:column property="zone" title="Zone" width="5px"/>
 			  
-			  <ec:column property="unassignedOrderSize" title="* SIZE" width="5px"/>
-			  <ec:column property="unassignedServiceTime" title="* SERVICE TIME" width="5px"/>
+			  <ec:column property="overrideOrderSize" title="* SIZE" width="5px"/>
+			  <ec:column property="overrideServiceTime" title="* SERVICE TIME" width="5px"/>
 			  <ec:column property="orderSize" title="SIZE" width="5px"/>
 			  <ec:column property="serviceTime" title="SERVICE TIME" width="5px"/>
+			  <ec:column property="packageInfo" title="PACKAGING INFO" />
 			  <ec:column property="updateStatus" title="STATUS" width="5px"/>
 			  			  
 			  <ec:column property="unassignedAction" title="Unassigned By"/>

@@ -28,9 +28,9 @@ public class UnassignedCommand extends BaseCommand {
 		
 	private double serviceTime;
 	
-	private double unassignedOrderSize;
+	private double overrideOrderSize;
 	
-	private double unassignedServiceTime;
+	private double overrideServiceTime;
 	
 	private boolean manuallyClosed;
 	private boolean dynamicActive;
@@ -39,8 +39,32 @@ public class UnassignedCommand extends BaseCommand {
 	
 	private String isChefsTable;
 	
-	
-	
+	private String packageInfo;
+			
+	public double getOverrideOrderSize() {
+		return overrideOrderSize;
+	}
+
+	public double getOverrideServiceTime() {
+		return overrideServiceTime;
+	}
+
+	public void setOverrideOrderSize(double overrideOrderSize) {
+		this.overrideOrderSize = overrideOrderSize;
+	}
+
+	public void setOverrideServiceTime(double overrideServiceTime) {
+		this.overrideServiceTime = overrideServiceTime;
+	}
+
+	public String getPackageInfo() {
+		return packageInfo;
+	}
+
+	public void setPackageInfo(String packageInfo) {
+		this.packageInfo = packageInfo;
+	}
+
 	public String getIsForced() {
 		return isForced;
 	}
@@ -73,22 +97,6 @@ public class UnassignedCommand extends BaseCommand {
 		this.serviceTime = serviceTime;
 	}
 	
-	public double getUnassignedOrderSize() {
-		return unassignedOrderSize;
-	}
-
-	public void setUnassignedOrderSize(double unassignedOrderSize) {
-		this.unassignedOrderSize = unassignedOrderSize;
-	}
-
-	public double getUnassignedServiceTime() {
-		return unassignedServiceTime;
-	}
-
-	public void setUnassignedServiceTime(double unassignedServiceTime) {
-		this.unassignedServiceTime = unassignedServiceTime;
-	}
-
 	public boolean isManuallyClosed() {
 		return manuallyClosed;
 	}

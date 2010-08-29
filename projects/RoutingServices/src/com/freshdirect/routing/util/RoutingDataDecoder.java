@@ -374,8 +374,8 @@ public class RoutingDataDecoder {
     		dModel.setDeliveryStartTime(model.getDeliveryWindowStart().getAsCalendar().getTime());
     		dModel.setDeliveryEndTime(model.getDeliveryWindowEnd().getAsCalendar().getTime());
     		dModel.setReservationId(model.getIdentity().getOrderNumber());
-    		dModel.setOrderSize(model.getQuantity());
-			dModel.setServiceTime(model.getServiceTime());
+    		dModel.setCalculatedOrderSize(model.getQuantity());
+			dModel.setCalculatedServiceTime(model.getServiceTime());
     		
     		IZoneModel zModel = new ZoneModel();
     		IAreaModel areaModel = new AreaModel();

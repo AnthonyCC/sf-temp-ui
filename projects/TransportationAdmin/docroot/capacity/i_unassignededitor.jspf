@@ -18,43 +18,25 @@
                           visible: false,
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
-        editPanel.render();
-        
-        /*waitPanel = new YAHOO.widget.Panel("wait", { width: "240px", 
-                                                          fixedcenter: true, 
-                                                          close: true, 
-                                                          draggable: false, 
-                                                          zindex:4,
-                                                          modal: true,
-                                                          visible: false
-                                                        } 
-                                                    );
-        
-        waitPanel.setHeader("Loading, please wait...");
-        waitPanel.setBody("<img src=\"images/rel_interstitial_loading.gif\"/>");*/
-        
+        editPanel.render();        
 	}
        
               
       function populateOrder(reservationId) {          
-        
-          /*waitPanel.render(document.body);
-          waitPanel.show();*/
-          
+                 
     	  var result = jsonrpcClient.AsyncCapacityProvider.getRoutingOrderByReservation(populateOrderCallback
 																							, reservationId); 
       	  
       }
       
       function populateOrderCallback(result, exception) {
-    	  //waitPanel.hide();	                    
+    	                      
           editPanel.render(document.body);    
-          //editPanel.moveTo(450, 200);
           
           if(result != null && result.orderNumber != null) {
         	  YAHOO.util.Dom.get("reservationId").value = result.deliveryInfo.reservationId;
-        	  YAHOO.util.Dom.get("orderSize").value = result.deliveryInfo.orderSize;
-        	  YAHOO.util.Dom.get("serviceTime").value = result.deliveryInfo.serviceTime;
+        	  YAHOO.util.Dom.get("orderSize").value = result.overrideOrderSize;
+        	  YAHOO.util.Dom.get("serviceTime").value = result.overrideServiceTime;
         	  
           } else {
         	  addSysMessage("Unable to load data", true);

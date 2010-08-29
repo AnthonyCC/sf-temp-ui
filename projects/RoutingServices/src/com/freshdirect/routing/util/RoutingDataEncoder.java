@@ -180,7 +180,7 @@ public class RoutingDataEncoder {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
-		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
+		order.setServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(locationType);
@@ -205,13 +205,13 @@ public class RoutingDataEncoder {
 		order.setReservedTime(baseCalendar);
 		order.setConfirmed(true);
 		
-		order.setQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
+		order.setQuantity((int)orderModel.getDeliveryInfo().getCalculatedOrderSize());
 		
 		if(needTimeSlot) {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
-		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
+		order.setServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -234,9 +234,9 @@ public class RoutingDataEncoder {
 		order.setOrderType(orderType);
 		order.setReservedTime(baseCalendar);
 				
-		order.setQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
+		order.setQuantity((int)orderModel.getDeliveryInfo().getCalculatedOrderSize());
 
-		order.setServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
+		order.setServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -347,8 +347,8 @@ public class RoutingDataEncoder {
 		//param2 area;
 		//param3 deliveryDate;
 		SchedulerUpdateOrderOptions options = new SchedulerUpdateOrderOptions();
-		options.setNewQuantity((int)orderModel.getDeliveryInfo().getOrderSize());
-		options.setNewServiceTime((int)(orderModel.getDeliveryInfo().getServiceTime()*60));
+		options.setNewQuantity((int)orderModel.getDeliveryInfo().getCalculatedOrderSize());
+		options.setNewServiceTime((int)(orderModel.getDeliveryInfo().getCalculatedServiceTime()*60));
 				
 		return options;
 	}

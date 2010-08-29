@@ -27,11 +27,11 @@ public interface IDeliveryModel  {
 	IPackagingModel getPackagingInfo();
 	void setPackagingInfo(IPackagingModel packageInfo);
 	
-	double getServiceTime();
-	void setServiceTime(double serviceTime);
+	double getCalculatedServiceTime();
+	double getCalculatedOrderSize();
 	
-	double getOrderSize();
-	void setOrderSize(double orderSize);
+	void setCalculatedServiceTime(double calculatedServiceTime);
+	void setCalculatedOrderSize(double calculatedOrderSize);
 	
 	String getReservationId();
 	void setReservationId(String reservationId);

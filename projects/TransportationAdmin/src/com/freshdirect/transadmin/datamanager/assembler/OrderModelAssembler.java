@@ -60,7 +60,7 @@ public class OrderModelAssembler implements IDataAssembler {
 			infoModel.setCustomerNumber(tmpOutputModel.getCustomerNumber());
 			infoModel.setPackageSize1(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
 			infoModel.setPackageSize2(""+tmpOutputModel.getDeliveryInfo().getPackagingInfo().getTotalSize2());
-			infoModel.setServiceTime(""+(long)tmpOutputModel.getDeliveryInfo().getServiceTime());
+			infoModel.setServiceTime(""+(long)tmpOutputModel.getDeliveryInfo().getCalculatedServiceTime());
 			infoModel.setDeliveryStartTime(tmpOutputModel.getDeliveryInfo().getDeliveryStartTime());
 			infoModel.setDeliveryEndTime(tmpOutputModel.getDeliveryInfo().getDeliveryEndTime());
 			infoModel.setDeliveryDate(tmpOutputModel.getDeliveryInfo().getDeliveryDate());	

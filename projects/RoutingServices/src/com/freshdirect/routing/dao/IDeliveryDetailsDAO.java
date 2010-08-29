@@ -35,7 +35,7 @@ public interface IDeliveryDetailsDAO {
 	
 	IOrderModel getRoutingOrderByReservation(final String reservationId) throws SQLException;
 	
-	int updateRoutingOrderByReservation(final String reservationId, final double orderSize, final double serviceTime) throws SQLException;
+	int updateRoutingOrderByReservation(final String reservationId, final double overrideOrderSize, final double overriderServiceTime) throws SQLException;
 	
 	int updateTimeslotForStatus(final String timeslotId, final boolean isClosed) throws SQLException;
 	

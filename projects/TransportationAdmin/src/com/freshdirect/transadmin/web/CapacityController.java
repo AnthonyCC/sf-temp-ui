@@ -552,12 +552,19 @@ public class CapacityController extends AbstractMultiActionController {
 					_unassigned.setReservationId(_order.getOrder().getDeliveryInfo().getReservationId());
 					_unassigned.setZone(_order.getOrder().getDeliveryInfo().getDeliveryZone().getZoneNumber());
 					
-					_unassigned.setOrderSize(_order.getOrder().getDeliveryInfo().getOrderSize());
-					_unassigned.setServiceTime(_order.getOrder().getDeliveryInfo().getServiceTime());
+					_unassigned.setOrderSize(_order.getOrder().getReservedOrderSize());
+					_unassigned.setServiceTime(_order.getOrder().getReservedServiceTime());
 					
-					_unassigned.setUnassignedOrderSize(_order.getOrder().getUnassignedOrderSize());
-					_unassigned.setUnassignedServiceTime(_order.getOrder().getUnassignedServiceTime());
+					_unassigned.setOverrideOrderSize(_order.getOrder().getOverrideOrderSize());
+					_unassigned.setOverrideServiceTime(_order.getOrder().getOverrideServiceTime());
 					
+					if(_order.getOrder() != null && _order.getOrder().getDeliveryInfo() != null
+														&& _order.getOrder().getDeliveryInfo().getPackagingInfo() != null) {
+						_unassigned.setPackageInfo(_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfCartons()
+														+","+_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfCases()
+														+","+_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfFreezers());
+					}
+										
 					_unassigned.setUpdateStatus(_order.getOrder().getUpdateStatus());
 					
 					_unassigned.setManuallyClosed(_order.getSlot().isManuallyClosed());

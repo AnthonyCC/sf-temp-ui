@@ -12,20 +12,14 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private String serviceType;
 	
 	private IPackagingModel packagingInfo;
-	private double serviceTime;
-	private double orderSize;
+	
+	private double calculatedServiceTime;
+	private double calculatedOrderSize;
 	
 	private ILocationModel deliveryLocation;
 	
 	private String reservationId;
-	
-	public double getOrderSize() {
-		return orderSize;
-	}
-	public void setOrderSize(double orderSize) {
-		this.orderSize = orderSize;
-	}
-	
+		
 	public String getReservationId() {
 		return reservationId;
 	}
@@ -52,28 +46,23 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setDeliveryLocation(ILocationModel deliveryLocation) {
 		this.deliveryLocation = deliveryLocation;
 	}
-		
-	public void setServiceTime(double serviceTime) {
-		this.serviceTime = serviceTime;
-	}
+	
 	public IPackagingModel getPackagingInfo() {
 		return packagingInfo;
 	}
+	
 	public void setPackagingInfo(IPackagingModel packagingInfo) {
 		this.packagingInfo = packagingInfo;
-		this.setOrderSize(packagingInfo.getTotalSize1());		
+		this.setCalculatedOrderSize(packagingInfo.getTotalSize1());		
 	}
-	public double getServiceTime() {
-		return serviceTime;
-	}
+	
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}
 	public void setDeliveryDate(Date deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
-	
-	
+		
 	public Date getDeliveryStartTime() {
 		return deliveryStartTime;
 	}
@@ -92,8 +81,20 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setDeliveryZone(IZoneModel deliveryZone) {
 		this.deliveryZone = deliveryZone;
 	}
-		
-			
+				
+	public double getCalculatedServiceTime() {
+		return calculatedServiceTime;
+	}	
+	public void setCalculatedServiceTime(double calculatedServiceTime) {
+		this.calculatedServiceTime = calculatedServiceTime;
+	}
+	
+	public double getCalculatedOrderSize() {
+		return calculatedOrderSize;
+	}
+	public void setCalculatedOrderSize(double calculatedOrderSize) {
+		this.calculatedOrderSize = calculatedOrderSize;
+	}
 	public String toString() {
 		return deliveryDate+"|"+deliveryZone+"|"+deliveryStartTime+"|"+deliveryEndTime;
 	}

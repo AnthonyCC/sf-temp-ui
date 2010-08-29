@@ -7,7 +7,6 @@ import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 
 
@@ -56,7 +55,7 @@ public class EstimationManager extends BaseProcessManager {
 			request.addProcessInfo(processInfo);			
 		}
 		
-		request.getDeliveryInfo().setServiceTime(serviceTime);
+		request.getDeliveryInfo().setCalculatedServiceTime(serviceTime);
 
 	}
 }

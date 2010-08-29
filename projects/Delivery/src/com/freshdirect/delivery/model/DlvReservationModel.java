@@ -37,27 +37,59 @@ public class DlvReservationModel extends ModelSupport {
 	private RoutingActivityType unassignedActivityType;
 	private String profileName;	
 	private boolean inUPS;
-	private Double orderSize;
-	private Double serviceTime;
+	
+	private Double overrideOrderSize;
+	private Double overrideServiceTime;
+	
 	private Double reservedOrderSize;
 	private Double reservedServiceTime;
 	private EnumRoutingUpdateStatus updateStatus;
 		
-
-	public Double getOrderSize() {
-		return orderSize;
+	private Long noOfCartons;
+	
+	private Long noOfFreezers;
+	
+	private Long noOfCases;
+	
+	
+	public Double getOverrideOrderSize() {
+		return overrideOrderSize;
 	}
 
-	public void setOrderSize(Double orderSize) {
-		this.orderSize = orderSize;
+	public Double getOverrideServiceTime() {
+		return overrideServiceTime;
 	}
 
-	public Double getServiceTime() {
-		return serviceTime;
+	public void setOverrideOrderSize(Double overrideOrderSize) {
+		this.overrideOrderSize = overrideOrderSize;
 	}
 
-	public void setServiceTime(Double serviceTime) {
-		this.serviceTime = serviceTime;
+	public void setOverrideServiceTime(Double overrideServiceTime) {
+		this.overrideServiceTime = overrideServiceTime;
+	}
+
+	public Long getNoOfCartons() {
+		return noOfCartons;
+	}
+
+	public Long getNoOfFreezers() {
+		return noOfFreezers;
+	}
+
+	public Long getNoOfCases() {
+		return noOfCases;
+	}
+
+	public void setNoOfCartons(Long noOfCartons) {
+		this.noOfCartons = noOfCartons;
+	}
+
+	public void setNoOfFreezers(Long noOfFreezers) {
+		this.noOfFreezers = noOfFreezers;
+	}
+
+	public void setNoOfCases(Long noOfCases) {
+		this.noOfCases = noOfCases;
 	}
 
 	public Double getReservedOrderSize() {
@@ -120,7 +152,8 @@ public class DlvReservationModel extends ModelSupport {
 		String timeslotId,
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,
-		Double orderSize, Double serviceTime, Double reservedOrderSize, Double reservedServiceTime, EnumRoutingUpdateStatus status) {
+		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -136,11 +169,17 @@ public class DlvReservationModel extends ModelSupport {
 		this.unassignedActivityType=unassignedActivityType;
 		this.inUPS=inUPS;
 		//this.routingOrderId=routingOrderId;
-		this.orderSize = orderSize;
-		this.serviceTime = serviceTime;
+		//this.orderSize = orderSize;
+		this.overrideOrderSize = overrideOrderSize;
+		this.overrideServiceTime = overrideServiceTime;
+		
 		this.reservedOrderSize = reservedOrderSize;
 		this.reservedServiceTime = reservedServiceTime;
 		this.updateStatus = status;
+		
+		this.noOfCartons =  noOfCartons;
+		this.noOfCases =  noOfCases;
+		this.noOfFreezers =  noOfFreezers;
 	}
 
 	public DlvReservationModel(
@@ -152,11 +191,13 @@ public class DlvReservationModel extends ModelSupport {
 		String timeslotId,
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS, 
-		Double orderSize, Double serviceTime, Double reservedOrderSize, Double reservedServiceTime, EnumRoutingUpdateStatus status) {
+		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime,
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status) {
 			
 		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate
 						,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS
-						, orderSize, serviceTime, reservedOrderSize, reservedServiceTime , status);
+						, overrideOrderSize, overrideServiceTime, reservedOrderSize, reservedServiceTime,
+						noOfCartons, noOfCases, noOfFreezers, status);
 		this.setPK(pk);
 
 	}

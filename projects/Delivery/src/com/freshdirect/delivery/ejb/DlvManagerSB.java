@@ -166,7 +166,9 @@ public interface DlvManagerSB extends EJBObject {
 	
 	void processCancelNotifications(List<IRoutingNotificationModel> notifications, List<IRoutingNotificationModel> unUsedNotifications) throws DlvResourceException, RemoteException;
 	
-	void setReservationUpdateStatusInfo(String reservationId, double orderSize, double serviceTime, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
+	void setReservationUpdateStatus(String reservationId, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
+	
+	void setReservationUpdateStatusInfo(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
 	
 	List getActiveZoneCodes() throws RemoteException;
 	List<DlvZoneModel> getActiveZones() throws RemoteException;

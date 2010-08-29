@@ -74,27 +74,29 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	
 	private static final String GET_UNASSIGNED_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
 			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
-			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
-			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED " +
+			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE," +
+			"R.NUM_CARTONS NCARTONS, R.NUM_FREEZERS NFREEZERS, R.NUM_CASES NCASES, " +
+			" r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where t.BASE_DATE = ?  AND (unassigned_datetime IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS in ('FLD','OVD'))) and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID ORDER BY z.ZONE_CODE, t.START_TIME";
 	
 	private static final String GET_UNASSIGNEDRESERVATION_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
 			" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
 			"t.END_TIME ETIME, s.CROMOD_DATE SCROMODDATE, z.ZONE_CODE ZCODE, " +
-			"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
+			"R.NUM_CARTONS NCARTONS, R.NUM_FREEZERS NFREEZERS, R.NUM_CASES NCASES, " +
+			"r.ORDER_SIZE OSIZE,r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
 			"from dlv.reservation r, dlv.timeslot t, cust.sale s, dlv.zone z " +
 			"where r.ID = ? and r.TIMESLOT_ID = t.ID and r.ORDER_ID = s.ID(+) and t.ZONE_ID = z.ID";
 	
 	private static final String GET_RESERVATIONBYDATE_QRY = "select r.ID RID, r.STATUS_CODE STATUS, r.CUSTOMER_ID CID, r.TYPE RTYPE, r.ORDER_ID OID," +
 	" r.UNASSIGNED_DATETIME UDATETIME, r.UNASSIGNED_ACTION UACTION, r.IS_FORCED FORCEFLAG, r.CHEFSTABLE CTFLAG, t.BASE_DATE BDATE, t.START_TIME STIME, " +
-	"t.END_TIME ETIME, z.ZONE_CODE ZCODE, " +
+	"t.END_TIME ETIME, z.ZONE_CODE ZCODE, R.NUM_CARTONS NCARTONS, R.NUM_FREEZERS NFREEZERS, R.NUM_CASES NCASES, " +
 	"r.ORDER_SIZE OSIZE, r.SERVICE_TIME SRTIME, R.RESERVED_ORDER_SIZE ROSIZE, R.RESERVED_SERVICE_TIME RSRTIME, r.UPDATE_STATUS UPDSTATUS " +
 	"from dlv.reservation r, dlv.timeslot t, dlv.zone z " +
 	"where t.BASE_DATE = ? and r.TIMESLOT_ID = t.ID and t.ZONE_ID = z.ID and z.ZONE_CODE = ?";
 	
-	private static final String UPDATE_UNASSIGNEDRESERVATION_QRY = "update dlv.reservation r set r.ORDER_SIZE = ?,  r.SERVICE_TIME = ? " +
-			", r.UPDATE_STATUS = ?	where r.ID = ?  ";
+	private static final String UPDATE_UNASSIGNEDRESERVATION_QRY = "update dlv.reservation r " +
+											"set R.ORDER_SIZE = ? , R.SERVICE_TIME = ? , r.UPDATE_STATUS = ? where r.ID = ?  ";
 	
 	private static final String UPDATE_TIMESLOTFORSTATUS_QRY = "update dlv.timeslot t set t.IS_CLOSED = ? where t.ID=? ";
 	
@@ -406,8 +408,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		order.setCreateModifyTime(rs.getTimestamp("SCROMODDATE"));
 				    		order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
 				    		order.setUnassignedAction(rs.getString("UACTION"));
-				    		order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
-				    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+				    		
+				    		order.setOverrideOrderSize(rs.getDouble("OSIZE"));
+				    		order.setOverrideServiceTime(rs.getDouble("SRTIME"));
+				    		
+				    		order.setReservedOrderSize(rs.getDouble("ROSIZE"));
+				    		order.setReservedServiceTime(rs.getDouble("RSRTIME"));
 							
 				    		EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
 				    		if(_status != null) {
@@ -419,8 +425,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 				    		dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
 				    		dModel.setReservationId(rs.getString("RID"));
-				    		dModel.setOrderSize(rs.getDouble("ROSIZE"));
-							dModel.setServiceTime(rs.getDouble("RSRTIME"));
+				    						    		
+				    		IPackagingModel pModel = new PackagingModel();
+				    		pModel.setNoOfCartons(rs.getLong("NCARTONS"));
+				    		pModel.setNoOfCases(rs.getLong("NCASES"));
+				    		pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
+				    		dModel.setPackagingInfo(pModel);
 				    		
 				    		IZoneModel zModel = new ZoneModel();
 				    		zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -438,8 +448,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		root.setSlot(slot);
 				    		root.setIsChefsTable(rs.getString("CTFLAG"));
 				    		root.setIsForced(rs.getString("FORCEFLAG"));
-				    		
-				    		
+				    					    		
 				    		
 				    		orders.add(root);
 				    	 } while(rs.next());		        		    	
@@ -473,8 +482,13 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					order.setCreateModifyTime(rs.getTimestamp("SCROMODDATE"));
 					order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
 					order.setUnassignedAction(rs.getString("UACTION"));
-					order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
-		    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+					
+					order.setOverrideOrderSize(rs.getDouble("OSIZE"));
+		    		order.setOverrideServiceTime(rs.getDouble("SRTIME"));
+		    		
+		    		order.setReservedOrderSize(rs.getDouble("ROSIZE"));
+		    		order.setReservedServiceTime(rs.getDouble("RSRTIME"));
+		    		
 					EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
 		    		if(_status != null) {
 		    			order.setUpdateStatus(_status.value());
@@ -485,9 +499,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 					dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
 					dModel.setReservationId(rs.getString("RID"));
-					dModel.setOrderSize(rs.getDouble("OSIZE"));
-					dModel.setServiceTime(rs.getDouble("SRTIME"));
 					
+					IPackagingModel pModel = new PackagingModel();
+					pModel.setNoOfCartons(rs.getLong("NCARTONS"));
+					pModel.setNoOfCases(rs.getLong("NCASES"));
+					pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
+					dModel.setPackagingInfo(pModel);
 					
 					IZoneModel zModel = new ZoneModel();
 					zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -530,8 +547,13 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					
 					order.setUnassignedTime(rs.getTimestamp("UDATETIME"));
 					order.setUnassignedAction(rs.getString("UACTION"));
-					order.setUnassignedOrderSize(rs.getDouble("OSIZE"));
-		    		order.setUnassignedServiceTime(rs.getDouble("SRTIME"));
+					
+					order.setOverrideOrderSize(rs.getDouble("OSIZE"));
+		    		order.setOverrideServiceTime(rs.getDouble("SRTIME"));
+		    		
+		    		order.setReservedOrderSize(rs.getDouble("ROSIZE"));
+		    		order.setReservedServiceTime(rs.getDouble("RSRTIME"));
+		    		
 					EnumRoutingUpdateStatus _status = EnumRoutingUpdateStatus.getEnum(rs.getString("UPDSTATUS"));
 		    		if(_status != null) {
 		    			order.setUpdateStatus(_status.value());
@@ -542,9 +564,12 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					dModel.setDeliveryStartTime(rs.getTimestamp("STIME"));
 					dModel.setDeliveryEndTime(rs.getTimestamp("ETIME"));
 					dModel.setReservationId(rs.getString("RID"));
-					dModel.setOrderSize(rs.getDouble("OSIZE"));
-					dModel.setServiceTime(rs.getDouble("SRTIME"));
 					
+					IPackagingModel pModel = new PackagingModel();
+					pModel.setNoOfCartons(rs.getLong("NCARTONS"));
+					pModel.setNoOfCases(rs.getLong("NCASES"));
+					pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
+					dModel.setPackagingInfo(pModel);
 					
 					IZoneModel zModel = new ZoneModel();
 					zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -561,12 +586,14 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 	}
 	
 	
-	public int updateRoutingOrderByReservation(final String reservationId, final double orderSize, final double serviceTime) throws SQLException {
+	public int updateRoutingOrderByReservation(final String reservationId
+												, final double overrideOrderSize
+												, final double overriderServiceTime) throws SQLException {
 
 		Connection connection=null;
 		int result = 0;
 		try{
-			result = this.jdbcTemplate.update(UPDATE_UNASSIGNEDRESERVATION_QRY, new Object[] {new Double(orderSize), new Double(serviceTime)
+			result = this.jdbcTemplate.update(UPDATE_UNASSIGNEDRESERVATION_QRY, new Object[] {new Double(overrideOrderSize), new Double(overriderServiceTime)
 												, EnumRoutingUpdateStatus.OVERRIDDEN.value(), reservationId});
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	

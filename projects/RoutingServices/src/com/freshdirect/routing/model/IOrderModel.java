@@ -33,11 +33,17 @@ public interface IOrderModel {
 	String getUpdateStatus();
 	void setUpdateStatus(String updateStatus);
 	
-	double getUnassignedServiceTime();
-	void setUnassignedServiceTime(double unassignedServiceTime);
+	double getOverrideServiceTime();
+	double getOverrideOrderSize();
 	
-	double getUnassignedOrderSize();
-	void setUnassignedOrderSize(double unassignedOrderSize);
+	double getReservedServiceTime();
+	double getReservedOrderSize();
+	
+	void setOverrideServiceTime(double overrideServiceTime);
+	void setOverrideOrderSize(double overrideOrderSize);
+	
+	void setReservedServiceTime(double reservedServiceTime);
+	void setReservedOrderSize(double reservedOrderSize);
 	
 	EnumSaleStatus getStatus();
 	void setStatus(EnumSaleStatus status);
