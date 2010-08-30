@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 4, 2008 3:51:59 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping  schema="transp">
+    <class name="com.freshdirect.transadmin.model.AssetType" table="ASSET_TYPE">
+        <id name="code" type="string">
+            <column name="CODE" length="40" />
+            <generator class="assigned" />
+        </id>
+        <property name="description" type="string">
+            <column name="DESCRIPTION" length="40" />
+        </property>
+        
+    </class>
+</hibernate-mapping>

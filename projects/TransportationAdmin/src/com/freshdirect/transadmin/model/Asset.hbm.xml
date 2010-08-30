@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 5, 2008 2:34:34 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.Asset" table="ASSET">
+       <id name="assetId" type="string">
+            <column name="ASSET_ID" length="40" />
+             <generator class="sequence">
+    			<param name="sequence">ASSETSEQ</param>
+			</generator>
+        </id>        
+        <many-to-one name="assetType" class="com.freshdirect.transadmin.model.AssetType" fetch="select" lazy="false">
+            <column name="ASSET_TYPE" length="40" />
+        </many-to-one>
+        <property name="assetNo" type="string">
+            <column name="ASSET_NO" length="40" />
+        </property>
+        <property name="assetDescription" type="string">
+            <column name="ASSET_DESCRIPTION" length="256" />
+        </property>
+        <property name="assetStatus" column="ASSET_STATUS" type="com.freshdirect.transadmin.constants.EnumAssetStatusDataType" />              
+        <set name="assetAttributes" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="ASSET_ID" length="40" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.AssetAttribute" />
+        </set>
+        
+    </class>
+</hibernate-mapping>

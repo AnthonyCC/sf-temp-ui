@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Nov 18, 2008 3:11:24 PM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.AssetAttribute" table="ASSET_ATTRIBUTE">
+        <composite-id name="id" class="com.freshdirect.transadmin.model.AssetAttributeId">
+            <key-property name="assetId" type="string">
+                <column name="ASSET_ID" length="40" />
+            </key-property>
+            <key-property name="attributeType" type="string">
+                <column name="ATTRIBUTE_TYPE" length="40" />
+            </key-property>
+        </composite-id>
+        <property name="attributeValue" type="string">
+            <column name="ATTRIBUTE_VALUE" length="40" />
+        </property>
+    </class>
+</hibernate-mapping>

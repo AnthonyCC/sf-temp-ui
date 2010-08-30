@@ -132,7 +132,11 @@
                	
                	<prop key="/cutoffreport.do">handOffController</prop>
                	<prop key="/sapupload.do">handOffController</prop> 
-               	<prop key="/communityreport.do">handOffController</prop>               
+               	<prop key="/communityreport.do">handOffController</prop> 
+               	
+               	<prop key="/asset.do">assetController</prop> 
+               	<prop key="/editasset.do">assetFormController</prop> 
+               	<prop key="/asset.ax">asyncAssetController</prop>               	         
 			</props>
 		</property>
 	</bean>
@@ -191,7 +195,12 @@
         <property name="locationManagerService" ref="locationManager"/>
         <property name="domainManagerService" ref="domainManager"/>
 	</bean>
-
+	
+	<bean id="assetController" class="com.freshdirect.transadmin.web.AssetController">
+		<property name="methodNameResolver" ref="transAdminControllerResolver"/>
+        <property name="assetManagerService" ref="assetManagerService"/>        
+	</bean>
+	
 	<!--
 	  - This bean is a MethodNameResolver definition for a MultiActionController.
 	  -->
@@ -270,6 +279,8 @@
             <prop key="/cutoffreport.do">cutOffReportHandler</prop>
             <prop key="/sapupload.do">sapUploadHandler</prop>
             <prop key="/communityreport.do">communityReportHandler</prop>
+            
+            <prop key="/asset.do">assetHandler</prop>
         </props>
 		</property>
 	</bean>
@@ -304,8 +315,7 @@
         <property name="successView" value="regionEdit" />
         <property name="formView" value="regionEdit" />
 	</bean>
-	
-	
+		
 	<bean id="zoneTypeFormController" class="com.freshdirect.transadmin.web.ZoneTypeFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="employeeManagerService" ref="employeeManager"/>
@@ -536,6 +546,16 @@
         <property name="formView" value="routingHandOff" />
 	</bean>
 	
+	<bean id="assetFormController" class="com.freshdirect.transadmin.web.AssetFormController">
+		<property name="assetManagerService" ref="assetManagerService"/>
+		<property name="sessionForm" value="true"/>
+        <property name="commandName" value="assetForm"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.model.Asset"/>
+        <property name="validator" ref="assetValidator"/>
+        <property name="successView" value="assetEdit" />
+        <property name="formView" value="assetEdit" />
+	</bean>
+	
 	<bean name="asyncGeographyController" class="com.freshdirect.transadmin.web.json.GeographyProviderController">
 		<property name="restrictionManagerService" ref="restrictionManager"/>
 	  	<property name="domainManagerService" ref="zoneExpansionBase"/>
@@ -583,6 +603,15 @@
 		<property name="ajaxServices">
 			<map>
 				<entry key="AsyncHandOffProvider" value="com.freshdirect.transadmin.web.json.IHandOffProvider" />				
+			</map>
+		</property>
+	</bean>
+	
+	<bean name="asyncAssetController" class="com.freshdirect.transadmin.web.json.AssetProviderController">	
+		<property name="assetManagerService" ref="assetManagerService"/>	
+		<property name="ajaxServices">
+			<map>
+				<entry key="AsyncAssetProvider" value="com.freshdirect.transadmin.web.json.IAssetProvider" />				
 			</map>
 		</property>
 	</bean>
@@ -654,5 +683,6 @@
 	<bean id="zoneWorkTableValidator" class="com.freshdirect.transadmin.web.validation.ZoneWorkTableValidator"/>
 	
 	<bean id="handOffValidator" class="com.freshdirect.transadmin.web.validation.HandOffValidator"/>
+	<bean id="assetValidator" class="com.freshdirect.transadmin.web.validation.AssetValidator"/>
 		
 </beans>

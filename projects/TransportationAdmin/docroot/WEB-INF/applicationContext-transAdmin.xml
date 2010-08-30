@@ -61,6 +61,11 @@
 				<value>com/freshdirect/transadmin/model/EmployeeTeam.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvScenarioZones.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvScenarioDay.hbm.xml</value>
+				
+				<value>com/freshdirect/transadmin/model/AssetType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/AssetAttributeType.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/Asset.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/AssetAttribute.hbm.xml</value>
             </list>
         </property>
         <property name="hibernateProperties">
@@ -171,6 +176,10 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
+	<bean id="assetManagerDAO" class="com.freshdirect.transadmin.dao.hibernate.AssetManagerDaoHibernateImpl">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>	
+	
     <!-- who is driving the transactions? No one... Probably should use directly -->
     <bean id="domainManager" class="com.freshdirect.transadmin.service.impl.DomainManagerImpl">
         <property name="domainManagerDao" ref="domainManagerDAO"/>
@@ -199,7 +208,10 @@
         <property name="logManagerDao" ref="logManagerDAO"/>
     </bean>
     
-     
+    <bean id="assetManagerService" class="com.freshdirect.transadmin.service.impl.AssetManagerImpl">
+        <property name="assetManagerDao" ref="assetManagerDAO"/>
+    </bean>
+         
      <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"/>
 	</bean>   
@@ -302,5 +314,15 @@
     	<property name="dispatchManagerDao" ref="dispatchManagerDAO"/>
     </bean>
    
+   <bean id="assetManagerServiceBase" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+         <property name="target" ref="assetManagerService"/>
+        <property name="transactionManager" ref="txManager"/>
+        <property name="transactionAttributes">
+            <props>
+            	<prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>       
+    </bean>
    
 </beans>

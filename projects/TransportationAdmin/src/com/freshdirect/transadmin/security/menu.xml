@@ -178,5 +178,9 @@
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
 	     </menu>    	     
          
+         <menu id="ADO009" title="Asset" orientation="RIGHT" link="asset.do?pAssetType=GPS">
+	     	<access-uris>asset.do,editasset.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+	     </menu>
 </menu>
 </menus>
