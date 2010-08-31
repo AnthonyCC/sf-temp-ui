@@ -12,6 +12,7 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.ScribLabel;
 
 public interface DispatchManagerI extends BaseManagerI {
 	
@@ -80,6 +81,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	public Collection getScribList(String date);
 	
+	public Collection getScribList(String date, String region);
+	
 	public Scrib getScrib(String id);
 	
 	public Collection getUserPref(String userId);
@@ -89,4 +92,8 @@ public interface DispatchManagerI extends BaseManagerI {
 	int addScenarioDayMapping(DlvScenarioDay scenarioDay);
 	
 	void deleteDefaultScenarioDay(String sDate, String sDay);
+	
+	boolean addScribLabel(ScribLabel sLabel);
+	
+	ScribLabel getScribLabelByDate(String date);
 }

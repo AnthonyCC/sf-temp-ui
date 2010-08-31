@@ -4,7 +4,6 @@ package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -24,7 +23,9 @@ public class Zone implements java.io.Serializable {
 	private final BigDecimal DEFAULT_PRIORITY=new BigDecimal(-1);
     private BigInteger stemFromTime;
     private BigInteger stemToTime;
-    private DlvServiceTimeType defaultServiceTimeType;
+    private BigInteger maxstemTime;
+    
+	private DlvServiceTimeType defaultServiceTimeType;
 	
 	
     public DlvServiceTimeType getDefaultServiceTimeType() {
@@ -172,7 +173,12 @@ public class Zone implements java.io.Serializable {
 		this.stemToTime = stemToTime;
 	}
 
-	
-	
+	public BigInteger getMaxstemTime() {
+		return maxstemTime;
+	}
+
+	public void setMaxstemTime(BigInteger maxstemTime) {
+		this.maxstemTime = maxstemTime;
+	}	
 
 }

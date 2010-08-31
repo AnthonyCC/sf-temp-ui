@@ -49,6 +49,7 @@
 				<value>com/freshdirect/transadmin/model/RouteMapping.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/ActivityLog.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/Scrib.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/ScribLabel.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/UserPref.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/ScheduleEmployee.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TimeslotLog.hbm.xml</value>

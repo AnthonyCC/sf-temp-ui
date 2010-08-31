@@ -2,6 +2,9 @@ package com.freshdirect.transadmin.web;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +32,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.ErpTruckMasterInfo;
@@ -65,9 +73,9 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
+import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
@@ -79,6 +87,10 @@ public class DispatchController extends AbstractMultiActionController {
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
+	
+	private short rownum;
+	private short cellnum;
+
 	private static DispatchComparator DISPATCH_COMPARATOR=new DispatchComparator();
 	private static class DispatchComparator implements Comparator{
 
@@ -139,30 +151,28 @@ public class DispatchController extends AbstractMultiActionController {
 	 */
 	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 		try{
-	
+			String weekdaterange = request.getParameter("weekdate");
 			String daterange = request.getParameter("daterange");
-			Date _planDate = null;
-			if(daterange==null||"".equals(daterange))daterange=TransStringUtil.getCurrentDate();
-			_planDate = getWeekOf(daterange);			
+			Date _weekDate = null;
+			if(weekdaterange==null||"".equals(weekdaterange))weekdaterange=TransStringUtil.getCurrentDate();
+				_weekDate = getWeekOf(weekdaterange);
 			String zoneLst = request.getParameter("zone");
 			zoneLst = zoneLst==null?"":zoneLst;
 			ModelAndView mav = new ModelAndView("planView");
 		
 			String day=request.getParameter("planDay");
-			if(day==null && !"y".equalsIgnoreCase(request.getParameter("kronos"))){
-				int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());
-				day=Integer.toString(dayofWeek);
-			}
-			if(day==null)day = "All";
-			String[] dates=getDates(daterange,day);			
+			if(day==null)day="All";
+			String[] dates=null;
+			if(!TransStringUtil.isEmpty(daterange))
+				dates=getDates(daterange,day);
+			else if(!TransStringUtil.isEmpty(weekdaterange))
+				dates=getDates(weekdaterange,day);
 			Collection dataList= new ArrayList();
 			List<Plan> plans=new ArrayList();
-			if((!TransStringUtil.isEmpty(daterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)) {
-	
+			if((!TransStringUtil.isEmpty(weekdaterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)||!TransStringUtil.isEmpty(daterange)) {
 				try 
-				{						
-					//String date = TransStringUtil.formatDateSearch(daterange);
-					if(dates!=null)
+				{				
+					if(dates!=null && TransStringUtil.isEmpty(daterange))
 					{	
 						for(int i=0;i<dates.length;i++)
 						{
@@ -185,34 +195,57 @@ public class DispatchController extends AbstractMultiActionController {
 							plans.addAll(tempPlans);
 							dataList.addAll(tempList);
 						}//end for loop
-						
-						if("y".equalsIgnoreCase(request.getParameter("unavailable")))
-						{							
-							mav = new ModelAndView("unavailableView");
-							mav.getModel().put("unavailable",plans);
-							return mav;
-						}
-						if("y".equalsIgnoreCase(request.getParameter("kronos")))
-						{
-							try {
-								String file=request.getParameter("file");
-								Collections.sort(plans, new PlanDateComparator());
-								updateKronos(plans,dates,file,request,response);
-								return null;
-								//saveMessage(request, getMessage("app.actionmessage.146", null));
-							} catch (Exception e) {
-								e.printStackTrace();
-								saveMessage(request, getMessage("app.actionmessage.145", null));
+					}
+					if(!TransStringUtil.isEmpty(daterange)){
+						String dateQryStr = TransStringUtil.formatDateSearch(daterange);
+						String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
+						Collection tempList= new ArrayList();
+						Collection tempPlans= new ArrayList();
+						if(dateQryStr != null || zoneQryStr != null) {
+							tempList = getPlanInfo(dateQryStr,zoneQryStr);
+							if("y".equalsIgnoreCase(request.getParameter("unavailable")))
+							{
+								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+								tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(daterange));
 							}
+							if("y".equalsIgnoreCase(request.getParameter("kronos")))
+							{									
+								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
+							}							
+						}							
+						plans.addAll(tempPlans);
+						dataList.addAll(tempList);
+					}
+					
+					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
+					{							
+						mav = new ModelAndView("unavailableView");
+						mav.getModel().put("unavailable",plans);
+						return mav;
+					}
+					if("y".equalsIgnoreCase(request.getParameter("kronos")))
+					{
+						try {
+							String file=request.getParameter("file");
+							Collections.sort(plans, new PlanDateComparator());
+							updateKronos(plans,dates,file,request,response);
+							return null;
+							//saveMessage(request, getMessage("app.actionmessage.146", null));
+						} catch (Exception e) {
+							e.printStackTrace();
+							saveMessage(request, getMessage("app.actionmessage.145", null));
 						}
-						mav.getModel().put("planlist",dataList);
-					}					
+					}
+					if(dataList.size()==0)
+						saveMessage(request, getMessage("app.actionmessage.159", null));
+					mav.getModel().put("planlist",dataList);
+									
 				} catch (Exception e) {
 					e.printStackTrace();
 					saveMessage(request, getMessage("app.actionmessage.123", null));
 				}				
 			}
-			request.setAttribute("planDate", getClientDate(_planDate));
+			request.setAttribute("weekDate", getClientDate(_weekDate));
 			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -459,27 +492,47 @@ public class DispatchController extends AbstractMultiActionController {
 		response.setContentType("application/x-zip-compressed");
 		response.setHeader("Content-Disposition", "attachment; filename=Upload_All.zip"); 
 		
-		OutputStream out=response.getOutputStream();
+		OutputStream out = response.getOutputStream();
 		ByteArrayOutputStream  f1 = new ByteArrayOutputStream();
 		ByteArrayOutputStream  f2 = new ByteArrayOutputStream();
-		ByteArrayOutputStream  f3 = new ByteArrayOutputStream();		
-		
+
 		String header1 = "Kronos ID , Date , Time , Shift , \n"; f1.write(header1.getBytes());
 		String header2 = "Kronos ID , Date , \n";f2.write(header2.getBytes());
-		String header3 = "Kronos ID \t Date \t Time \t Shift \t \n";f3.write(header3.getBytes());
-		
+		HSSFWorkbook wb = new HSSFWorkbook();
+
 		for(Iterator<String> dates = kronos.keySet().iterator();dates.hasNext();) {
-			String date=dates.next();
-
-			String h3 = date + "\n";
-			f3.write(h3.getBytes());
-
-			Map<String, Map<String, Scrib>> resMap=kronos.get(date);
-			for(Iterator<String> resIds=kronos.get(date).keySet().iterator();resIds.hasNext(); ) {
-				String resId=resIds.next();
+			String date = dates.next();			
+			HSSFSheet sheet = wb.createSheet(TransStringUtil.getServerDate(date));		
+		
+			rownum = 0;	
+		    cellnum = 0;
+			HSSFRow row = sheet.createRow((short)rownum++);
+			HSSFCell hssfCell = row.createCell((short)cellnum++);
+			
+		    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("KronosID"));
+	        		        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Date"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Time"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Shift"));
+	        
+	        row = sheet.createRow(rownum++);//blank Row
+	    
+			Map<String, Map<String, Scrib>> resMap = kronos.get(date);
+			for(Iterator<String> resIds = kronos.get(date).keySet().iterator();resIds.hasNext(); ) {
 				
-				Map<String, Scrib> shiftMap=resMap.get(resId);
-				for(Iterator<String> shifts=shiftMap.keySet().iterator();shifts.hasNext();) {
+				String resId = resIds.next();
+			    Map<String, Scrib> shiftMap = resMap.get(resId);		    
+			    
+			    for(Iterator<String> shifts=shiftMap.keySet().iterator();shifts.hasNext();) {
 					String shift = shifts.next();
 					Scrib scribEntry = shiftMap.get(shift);
 					String line1 = scribEntry.getScribId() + ","
@@ -487,34 +540,48 @@ public class DispatchController extends AbstractMultiActionController {
 									+ TransStringUtil.getServerTime(scribEntry.getStartTime()) + ","				
 									+ scribEntry.getShiftDuration() + "\n";
 					String line2 = scribEntry.getScribId() + ","+ TransStringUtil.getDate(scribEntry.getScribDate()) + "\n";
-					String line3 = scribEntry.getScribId() + "\t"
-									+ TransStringUtil.getDate(scribEntry.getScribDate()) + "\t"
-									+ TransStringUtil.getServerTime(scribEntry.getStartTime()) + "\t"				
-									+ scribEntry.getShiftDuration() + "\n";
-				
+					
+					cellnum = 0;
+					row = sheet.createRow(rownum++);
+			              
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			        hssfCell.setCellValue(new HSSFRichTextString(scribEntry.getScribId()));
+			        
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.getDate(scribEntry.getScribDate())));
+			        
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.getServerTime(scribEntry.getStartTime())));
+			        
+			        hssfCell = row.createCell(cellnum++);		        
+			        hssfCell.setCellType(HSSFCell.CELL_TYPE_NUMERIC);
+			        hssfCell.setCellValue(new HSSFRichTextString(Double.toString(scribEntry.getShiftDuration())));		
+			
 					f1.write(line1.getBytes());
-					f2.write(line2.getBytes());
-					f3.write(line3.getBytes());
+					f2.write(line2.getBytes());					
 				}
 				f1.flush();
-				f2.flush();
-				f3.flush();
-			}
-			
-			String line3 = "\n";
-			f3.write(line3.getBytes());
-			
+				f2.flush();				
+			}			
 			f1.flush();
-			f2.flush();
-			f3.flush();
+			f2.flush();			
 		}
-	
-	
+		try{
+			FileOutputStream outS = new FileOutputStream(new File(TransportationAdminProperties.getKronosUploadIndividualFileName()));
+			wb.write(outS);
+			outS.close();
+	    } catch (IOException ioExp) {
+		   	ioExp.printStackTrace();  
+		}
+
 		ZipOutputStream zipout = new ZipOutputStream(out);
 					 
-		String[] filenames = new String[]{TransportationAdminProperties.getKronosUploadAllFileName(), TransportationAdminProperties.getKronosUploadAllEmptyFileName(), TransportationAdminProperties.getKronosUploadIndividualFileName()};
+		String[] filenames = new String[]{TransportationAdminProperties.getKronosUploadAllFileName(), TransportationAdminProperties.getKronosUploadAllEmptyFileName(),TransportationAdminProperties.getKronosUploadIndividualFileName()};
 		byte[] buf = new byte[1024];
-		
+		File outputFile = new File(TransportationAdminProperties.getKronosUploadIndividualFileName());
 		for (int i = 0; i < filenames.length; i++) {
 			InputStream in;
 			if (i == 0) {
@@ -522,7 +589,7 @@ public class DispatchController extends AbstractMultiActionController {
 			} else if (i == 1) {
 				in = new ByteArrayInputStream(f2.toByteArray());
 			} else
-				in = new ByteArrayInputStream(f3.toByteArray());
+				in = new FileInputStream(outputFile);
 			// Add ZIP entry to output stream.
 			zipout.putNextEntry(new ZipEntry(filenames[i]));
 
@@ -538,11 +605,10 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		f1.close();
 		f2.close();
-		f3.close();
 		zipout.flush();
 		out.flush();
 		zipout.close();
-	}	
+	}
 				
 	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
 
@@ -566,8 +632,6 @@ public class DispatchController extends AbstractMultiActionController {
 
 		return planInfos;
 	}
-
-
 
 	/**
 	 * Custom handler for welcome
@@ -987,51 +1051,41 @@ public class DispatchController extends AbstractMultiActionController {
 		// if admin delete the existing record and run the autodispatch crap
 
 		String dispatchDate = request.getParameter("daterange");
-		if(dispatchDate==null||"".equals(dispatchDate))dispatchDate=TransStringUtil.getCurrentDate();
-			
-		String day=request.getParameter("planDay");
-		if(day==null){
-			int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());
-			day=Integer.toString(dayofWeek);
-		}
-		String[] dates = null;
-		try {
-			dates = getDates(dispatchDate, day);
-		} catch (Exception e) {				
-			e.printStackTrace();
-			saveMessage(request, getMessage("app.error.115", new String[] { "Invalid Date" }));
-			return planHandler(request, response);
-		}
-		int d1 = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());
-		int d2 = Integer.parseInt(day);
-		if(d2 >= d1){
-			   String datQryStr = TransStringUtil.getServerDate(dates[0]);
-			   Collection planList=dispatchManagerService.getPlanList(datQryStr);
-		       if(planList == null || planList.size() == 0){
-			    	saveMessage(request, getMessage("app.actionmessage.142", null));
-			    	return planHandler(request,response);
-		       }
-		       if( TransportationAdminProperties.isAutoDispatchValidation())
-		       {
-			   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, datQryStr);
-			   if(unavailable!=null&&unavailable.size()>0)
-				   {
-					   saveMessage(request, getMessage("app.actionmessage.147", null));
-				    	return planHandler(request,response);
-				   }
-			    }
-				Collection dispList = dispatchManagerService.getDispatchList(datQryStr,null,null);
-				if(!SecurityManager.isUserAdmin(request)){
-					  saveMessage(request, getMessage("app.actionmessage.140", null));
-					  return planHandler(request,response);
+			try {
+				if (!TransStringUtil.isEmpty(dispatchDate)) {
+					dispatchDate = TransStringUtil.getServerDate(dispatchDate);
+				} else {
+					dispatchDate = TransStringUtil.getServerDate(new Date());
 				}
-			   dispatchManagerService.autoDisptchRegion(datQryStr);
-			   saveMessage(request, getMessage("app.actionmessage.143", null));
-			   return planHandler(request,response);
-		}
-	   saveMessage(request, getMessage("app.actionmessage.160", null));
-	   return planHandler(request,response);
+			} catch (ParseException e) {
+				e.printStackTrace();
+				saveMessage(request, getMessage("app.error.115", new String[] { "Invalid Date" }));
+				return planHandler(request, response);
+			}
 
+			Collection planList=dispatchManagerService.getPlanList(dispatchDate);
+
+		    if(planList == null || planList.size() == 0){
+		    	saveMessage(request, getMessage("app.actionmessage.142", null));
+		    	return planHandler(request,response);
+		    }
+		    if( TransportationAdminProperties.isAutoDispatchValidation())
+		    {
+			   Collection unavailable=employeeManagerService.getUnAvailableEmployees(planList, dispatchDate);
+			   if(unavailable!=null&&unavailable.size()>0)
+			   {
+				   saveMessage(request, getMessage("app.actionmessage.147", null));
+			    	return planHandler(request,response);
+			   }
+		    }
+			Collection dispList = dispatchManagerService.getDispatchList(dispatchDate,null,null);
+			if(!SecurityManager.isUserAdmin(request)){
+				  saveMessage(request, getMessage("app.actionmessage.140", null));
+				  return planHandler(request,response);
+			}
+		   dispatchManagerService.autoDisptchRegion(dispatchDate);
+		   saveMessage(request, getMessage("app.actionmessage.143", null));
+		   return planHandler(request,response);
 	}
 
 	public ModelAndView unassignedRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException  {

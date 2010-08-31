@@ -4,7 +4,7 @@
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
-
+<script type="text/javascript" language="javascript" src="js/SelectionHandlers.js"></script>
 <%  pageContext.setAttribute("HAS_COPYBUTTON", "true");  
   String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
   String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
@@ -15,7 +15,9 @@
 %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
-
+<tmpl:put name='yui-lib'>
+	<%@ include file='/common/i_yui.jspf'%>	
+</tmpl:put>
 	<tmpl:put name='title' direct='true'> Routing : <%=pageTitle%></tmpl:put>
 
   <tmpl:put name='content' direct='true'> 
@@ -31,17 +33,21 @@
 		<div class="cont_topleft">
 			<div class="cont_row">
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
-					<span class="scrTitle"><%=pageTitle%></span>
-						<span><input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
-						 <span><a href="#" id="trigger_scribDate" style="font-size: 9px;">
-                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
-                    	 <select id="scribDay" name="scribDay" >
-                          	<option value="All">--All Days</option>
-                      		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
-                    	 </select>				
-						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						<span> <input type = "button" value="&nbsp;Generate Plan&nbsp;" onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do','y')" /></span>
+					<div style="float:left;">
+							<span class="scrTitle"><%=pageTitle%></span>
+							<span>Week Of:<input style="width:85px;" maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
+							<span><a href="#" id="trigger_scribDate" style="font-size: 9px;">
+	                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
+	                    	 <select id="scribDay" name="scribDay" >
+	                          	<option value="All">--All Days</option>
+	                      		<option value="2">Monday</option><option value="3">Tuesday</option><option value="4">Wednesday</option><option value="5">Thurdsay</option><option value="6">Friday</option><option value="7">Saturday</option><option value="8">Sunday</option>
+	                    	 </select>				
+							<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','scribDay','scrib.do')" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+							<span>&nbsp;&nbsp;</span>
+							<span> <input style="font-size:11px" type = "button" height="18" value="Generate Plan" onclick="javascript:showGeneratePlanForm();" /></span>
+							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
+							<span>&nbsp;&nbsp;</span>
+						</div>				
 				</div>
 			</div>
 		</div> 
@@ -80,7 +86,8 @@
               <ec:column property="count1" sortable="true" title="No of HandTrucks"/> 
               <ec:column cell="date" format="hh:mm aaa"  property="waveStart" title="*Wave Start"/>     
 			  <ec:column cell="date" format="HH:mm"  property="prefTime" title="*Pref Time"/>  
-			  <ec:column cell="date" format="HH:mm"  property="maxTime1" title="*Max Time"/>  
+			  <ec:column cell="date" format="HH:mm"  property="maxTime1" title="*Max Time"/>
+			  <ec:column property="scribLabel" title="Scrib Label" />  
             </ec:row>
           </ec:table>
        </form>
@@ -130,6 +137,8 @@
       	filters+="&scribDay="+document.getElementById("scribDay").value;
       	return escape(filters)
       }
-    </script>   
+    </script>
+     <%@ include file='i_generateplan.jspf'%>
+     <%@ include file='i_addlabel.jspf'%>     
   </tmpl:put>
 </tmpl:insert>

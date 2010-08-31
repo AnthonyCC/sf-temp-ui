@@ -180,7 +180,9 @@ public class TransportationAdminProperties {
 
 	//Zone Expansion
 	private final static String PROP_ZONE_EXPANSION_WORKTABLES		= "transportation.zoneexpansion.worktables";
-	
+	//Holiday Planning
+	private final static String PROP_HOLIDAY_PLANNING_LABELS		= "transportation.holidayplanning.lables";
+
 	static {
 
 
@@ -318,7 +320,8 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_GPSUPLOAD_FILENAME,"Current.gpx");
 		
 		defaults.put(PROP_ZONE_EXPANSION_WORKTABLES,"ZONE_WORKTABLE=146,CT_ZONE_WORKTABLE=200,HAMP_ZONE_WORKTABLE=3268085,NJ_ZONE_WORKTABLE=2152018,COS_ZONE_WORKTABLE=1742307,CTCOS_ZONE_WORKTABLE=250");
-		
+		defaults.put(PROP_HOLIDAY_PLANNING_LABELS,"Snow, Heavy Rain, Memorial Day");
+
 		refresh();
 	}
 
@@ -663,6 +666,9 @@ public class TransportationAdminProperties {
 	
 	public static String getGpsUploadFilename() {
 		return get(PROP_TRANSPORTATION_GPSUPLOAD_FILENAME);
+    }
+	public static String getScribHolidayLabels() {
+		return get(PROP_HOLIDAY_PLANNING_LABELS);
     }
 	
 }

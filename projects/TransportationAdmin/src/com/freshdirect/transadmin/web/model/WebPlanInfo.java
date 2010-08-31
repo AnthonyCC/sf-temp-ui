@@ -66,8 +66,22 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String referenceContextId;
 	private boolean isTeamOverride;
+	private String weekDate;
 	
-	
+	public String getWeekDate() {
+		try {
+			String wd = TransStringUtil.getDate(TransStringUtil.getWeekOf(this.planDate));
+			return wd;
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return null;
+	}
+
+	public void setWeekDate(String weekDate) {
+		this.weekDate = weekDate;
+	}
+
 	public boolean getIsTeamOverride() {
 		return isTeamOverride;
 	}

@@ -26,7 +26,14 @@ public class Scrib
 	
 	private String shiftType;
 	private double shiftDuration;
+	private String scribLabel;
 	
+	public String getScribLabel() {
+		return scribLabel;
+	}
+	public void setScribLabel(String scribLabel) {
+		this.scribLabel = scribLabel;
+	}
 	public String getShiftType() {
 		return shiftType;
 	}

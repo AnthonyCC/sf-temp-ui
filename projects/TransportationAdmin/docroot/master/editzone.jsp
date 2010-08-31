@@ -149,7 +149,7 @@
                 </td>
                </tr>
                <tr>
-                  <td>Stem To Time(mins)</td>
+                  <td>Avg To Stem Time (Mins)</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="stemToTime"/>
                 </td>
@@ -158,13 +158,18 @@
                 </td>
                </tr>
                <tr>
-                  <td>Stem From Time(mins)</td>
+                  <td>Avg From Stem Time (Mins)</td>
                   <td>                  
                     <form:input maxlength="50" size="30" path="stemFromTime"/>
                 </td>
                 <td>
                   &nbsp;<form:errors path="stemFromTime" />
                 </td>
+               </tr>
+               <tr>
+               		<td>Max Stem Time (Mins)</td>
+               		<td><form:input maxlength="50" size="30" path="maxstemTime"/></td>
+               		<td>&nbsp;<form:errors path="maxstemTime"/></td>
                </tr>
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>

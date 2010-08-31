@@ -9,6 +9,7 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.ScribLabel;
 
 public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
@@ -53,6 +54,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	public Collection getScribList(String date);
 	
+	public Collection getScribList(String date, String region);
+	
 	public Scrib getScrib(String id);
 
 	public Collection getUserPref(String userId);
@@ -62,4 +65,8 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	int addScenarioDayMapping(DlvScenarioDay scenarioDay)throws DataAccessException ;
 	
 	void deleteDefaultScenarioDay(String sDate, String sDay);
+	
+	boolean addScribLabel(ScribLabel sLabel);
+	
+	ScribLabel getScribLabelByDate(String date);
 }

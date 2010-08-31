@@ -42,6 +42,7 @@ import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
+import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -561,6 +562,42 @@ public class DispatchProviderController extends JsonRpcController implements
 		return true;
 	}
 	
+	public boolean addScribLabel(String date,String label){
+		try{
+			Date _scribDate = null;
+			if (!TransStringUtil.isEmpty(date)
+					&& !TransStringUtil.isEmpty(label)) {
+				_scribDate = TransStringUtil.getDate(date);
+				ScribLabel _tempLabel = dispatchManagerService
+						.getScribLabelByDate(TransStringUtil
+								.getServerDate(date));
+				getDispatchManagerService().removeEntityEx(_tempLabel);
+				ScribLabel _sLabel = new ScribLabel(_scribDate, label);
+
+				return dispatchManagerService.addScribLabel(_sLabel);
+			}
+		}catch(DataIntegrityViolationException ex){
+			ex.printStackTrace();
+			return false;
+		}catch (ParseException e) {
+			e.printStackTrace();
+		}			
+		return false;
+	}
 	
+	public String getScribLabel(String Date) {
+		
+		ScribLabel slabel;
+		try {
+			slabel = dispatchManagerService.getScribLabelByDate(TransStringUtil.getServerDate(Date));
+			if(slabel != null) {
+				return slabel.getScribLabel();
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return null;
+	}
 	
 }

@@ -19,12 +19,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.model.Plan;
+import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.scrib.PlanTree;
 import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
@@ -101,10 +104,12 @@ public class ScribController extends AbstractMultiActionController
 				for(int i=0;i<dates.length;i++)
 				{
 					Collection scribs=dispatchManagerService.getScribList(dates[i]);
+					ScribLabel scribLabel = dispatchManagerService.getScribLabelByDate(dates[i]);
 					if(scribs!=null)
 					for(Iterator j=scribs.iterator();j.hasNext();)
 					{
 						Scrib s=(Scrib)j.next();
+						if (scribLabel!=null)s.setScribLabel(scribLabel.getScribLabel());
 						if(s.getSupervisorCode()!=null)
 						{
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(s.getSupervisorCode());
@@ -112,51 +117,99 @@ public class ScribController extends AbstractMultiActionController
 							s.setSupervisorName(webEmp.getEmpInfo().getName());
 						}
 					}
-					allScribs.addAll(scribs);
-					if("y".equalsIgnoreCase(request.getParameter("p")))
-					{
-						createPlan(dates[i],request);						
-					}
-				}
-				if("y".equalsIgnoreCase(request.getParameter("p")))
-				{					
-					saveMessage(request, getMessage("app.actionmessage.149", null));
+					allScribs.addAll(scribs);					
 				}
 			}
-			ModelAndView mav = new ModelAndView("scribView");	
-			mav.getModel().put("scriblist",allScribs);
+			ModelAndView mav = new ModelAndView("scribView");
+			mav.getModel().put("scriblist", allScribs);
+			Collection regions = domainManagerService.getRegions();
+			mav.getModel().put("regions", regions);
+			
+			List scribDates = new ArrayList();
+			for (Iterator it = allScribs.iterator(); it.hasNext();) {
+				Scrib s = (Scrib) it.next();
+				if (!s.getScribDate().before(TransStringUtil.getAdjustedWeekOf(Calendar.getInstance().getTime(), 0))) {
+					if (!scribDates.contains(TransStringUtil.getServerDate(s.getScribDate())))
+						scribDates.add(TransStringUtil.getServerDate(s.getScribDate()));
+				}
+			}
+			mav.getModel().put("scribDates", scribDates);
+
+			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
+				createPlan(request);
+				saveMessage(request, getMessage("app.actionmessage.149", null));
+			}
+			//get the predefined Scrib labels
+			String scribLabels= TransportationAdminProperties.getScribHolidayLabels();
+			String[] _scribLabels = StringUtil.decodeStrings(scribLabels);
+			List sLabels=new ArrayList();
+			for(String _slabel:_scribLabels){
+				sLabels.add(_slabel);
+			}
+			mav.getModel().put("sLabels", sLabels);
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			saveMessage(request, getMessage("app.actionmessage.151", null));
-			return new ModelAndView("scribView");	
+			return new ModelAndView("scribView");
 		}
 	}
 	
-	public void createPlan(String scribDate,HttpServletRequest request)throws Exception 
+	public void createPlan(HttpServletRequest request) throws Exception 
 	{		
 		
-		Collection planList=dispatchManagerService.getPlanList(scribDate);
-		for(Iterator i=planList.iterator();i.hasNext();)
-		{
-			Plan p=(Plan)i.next();
-			p.setUserId(SecurityManager.getUserName(request));
+		String _regions = request.getParameter("dlvregion_selected");
+		String _dates = request.getParameter("dlvdates_selected");
+		String[] regions = StringUtil.decodeStrings(_regions);
+		String[] dates = StringUtil.decodeStrings(_dates);
+
+		if (dates!=null && dates.length > 0 && regions != null && regions.length > 0) {
+			for (String scribDate : dates) {
+
+				for (String region : regions) {
+					
+					Collection planList = dispatchManagerService
+												.getPlanList(scribDate, region);
+					for (Iterator i = planList.iterator(); i.hasNext();) {
+						Plan p = (Plan) i.next();
+						p.setUserId(SecurityManager.getUserName(request));
+					}
+					dispatchManagerService.removeEntity(planList);
+					Date date = TransStringUtil.serverDateFormat.parse(scribDate);
+					Collection scribs = dispatchManagerService.getScribList(scribDate, region);
+					String day = new SimpleDateFormat("EEE").format(date).toUpperCase();
+					Collection employees = employeeManagerService.getScheduledEmployees(day, scribDate);
+					filldate(date, employees);
+
+					PlanTree tree = new PlanTree();
+					tree.prepare(scribs);
+					tree.prepare(employees);
+					tree.prepareTeam(domainManagerService.getTeamInfo());
+					Collection plans = tree.getPlan();
+					for (Iterator i = plans.iterator(); i.hasNext();)
+						getDispatchManagerService().savePlan((Plan) i.next());					
+				}//end regions loop
+				if("y".equalsIgnoreCase(request.getParameter("o"))){
+					Collection dlvregions = domainManagerService.getRegions();
+					for(String region: regions){
+						for (Iterator it = dlvregions.iterator(); it.hasNext();) {
+							Region _r = (Region) it.next();
+							if(_r.getCode().equals(region)){
+								
+							}else{
+								Collection planList = dispatchManagerService.getPlanList(scribDate, _r.getCode());
+								for (Iterator i = planList.iterator(); i.hasNext();) {
+									Plan p = (Plan) i.next();
+									p.setUserId(SecurityManager.getUserName(request));
+								}
+								dispatchManagerService.removeEntity(planList);
+							}
+						}						
+					}
+				}
+			}//end dates loop
 		}
-		dispatchManagerService.removeEntity(planList);
-		Date date=TransStringUtil.serverDateFormat.parse(scribDate);
-		Collection scribs=dispatchManagerService.getScribList(scribDate);
-		String day=new SimpleDateFormat("EEE").format(date).toUpperCase();
-		Collection employees=employeeManagerService.getScheduledEmployees(day,scribDate);
-		filldate(date,employees);
-		
-		PlanTree tree=new PlanTree();
-		tree.prepare(scribs);
-		tree.prepare(employees);
-		tree.prepareTeam(domainManagerService.getTeamInfo());
-		Collection plans=tree.getPlan();
-		for(Iterator i=plans.iterator();i.hasNext();)
-		getDispatchManagerService().savePlan((Plan)i.next());
 	}
 	
 	public ModelAndView deleteScribHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 

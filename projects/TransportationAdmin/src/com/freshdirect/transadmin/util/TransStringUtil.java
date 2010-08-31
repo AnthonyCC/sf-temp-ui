@@ -141,6 +141,9 @@ public class TransStringUtil {
 	public static Date getServerDateString(String clientDate) throws ParseException {       
         return serverDateFormat.parse(clientDate);
 	}
+	public static Date getServerDateString1(String clientDate) throws ParseException {       
+        return dateFormat.parse(clientDate);
+	}
 	public static String getServerTime(Date clientDate) throws ParseException {       
         return serverTimeFormat.format(clientDate);
 	}
@@ -168,6 +171,17 @@ public class TransStringUtil {
 		}
         return isGreater;
 	}
+	
+	public static double getHourOfDate(Date clientDate) throws ParseException {       
+          
+        Calendar cal=Calendar.getInstance();
+		cal.setTime(clientDate);
+		int h=cal.get(Calendar.HOUR);
+		double m=cal.get(Calendar.MINUTE)/60;
+		double finalVal = h+m;	
+        return finalVal;
+	}
+	
 	public static Date getDate(String dateString) throws ParseException {		
         return (Date)dateFormat.parse(dateString);
 	}
@@ -252,6 +266,8 @@ public class TransStringUtil {
 		try {
 			String strDate1 = dateFormat.format(dateVal1);
 			String strDate2 = dateFormat.format(dateVal2);
+			if(strDate1.equals(strDate2))
+				return true;
 			
 		} catch (Exception e) {
 			// Do Nothing
@@ -642,5 +658,45 @@ public class TransStringUtil {
 		java.util.Date deliveryWindow = delWindCal.getTime();
 		System.out.println("deliveryWindow >>"+deliveryWindow);
 
+	}
+	
+	public String[] getDates(String date,String day) throws Exception
+	{		
+		Date d=TransStringUtil.getDate(date);
+		Calendar c=Calendar.getInstance();
+		c.setFirstDayOfWeek(Calendar.MONDAY);
+		c.setTime(d);
+		if("All".equalsIgnoreCase(day))
+		{
+			String[] dates=new String[7];			
+			for(int i=2;i<=8;i++)
+			{
+				c.set(Calendar.DAY_OF_WEEK , i);
+				String ds=TransStringUtil.getServerDate1(c.getTime());
+				dates[i-2]=ds;
+			}
+			return dates;
+		}
+		else
+		{
+			if(day==null)
+			{
+				return new String[]{TransStringUtil.getServerDate1(c.getTime())};
+			}
+			else
+			{
+				try {
+					int k=Integer.parseInt(day);
+					{
+					c.set(Calendar.DAY_OF_WEEK , k);
+					}
+					String ds=TransStringUtil.getServerDate1(c.getTime());
+					return new String[]{ds};
+				} catch (Exception e) {
+					
+				}
+			}
+		}
+		return null;		
 	}
  }

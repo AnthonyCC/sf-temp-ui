@@ -28,6 +28,7 @@ import com.freshdirect.transadmin.model.ResourceI;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -608,6 +609,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return getDispatchManagerDao().getScribList(date);
 	}
 
+	public Collection getScribList(String date, String region) {
+		return getDispatchManagerDao().getScribList(date, region);
+	}
+
 	public Scrib getScrib(String id) {
 		return getDispatchManagerDao().getScrib(id);
 	}
@@ -626,6 +631,14 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	}
 	public void deleteDefaultScenarioDay(String sDate, String sDay){
 		getDispatchManagerDao().deleteDefaultScenarioDay(sDate,sDay);
+	}
+	
+	public boolean addScribLabel(ScribLabel sLabel){
+		return getDispatchManagerDao().addScribLabel(sLabel);
+	}
+	
+	public ScribLabel getScribLabelByDate(String date){
+		return getDispatchManagerDao().getScribLabelByDate(date);
 	}
 	
 }

@@ -1154,3 +1154,9 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 #serviceTimeOperator {
 	width:40px;
 }
+
+.holidaylabel {
+	float:left;
+	font-weight:bold;
+	text-align:center;
+}

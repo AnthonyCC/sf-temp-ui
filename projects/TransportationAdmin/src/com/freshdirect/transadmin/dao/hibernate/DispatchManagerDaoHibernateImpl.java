@@ -20,6 +20,7 @@ import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.Scrib;
+import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class DispatchManagerDaoHibernateImpl extends
@@ -304,6 +305,22 @@ public class DispatchManagerDaoHibernateImpl extends
 
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
+	
+	public Collection getScribList(String date, String region) {
+		
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Scrib s");
+		strBuf
+				.append(" where s.scribDate='")
+				.append(date)
+				.append("' ");
+			if(region!=null)	
+				strBuf.append("and s.region.code='").append(region+"' ");
+			
+				strBuf.append("order by s.scribDate,s.region,s.firstDlvTime,s.zone,s.startTime");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
 
 	public Scrib getScrib(String id) {
 		return (Scrib) getEntityById("Scrib", "scribId", id);
@@ -347,5 +364,23 @@ public class DispatchManagerDaoHibernateImpl extends
 			     return null;
 			 }
 		});
+	}
+	
+	public boolean addScribLabel(ScribLabel sLabel) {
+		if (sLabel!=null){
+			try{
+				saveEntity(sLabel);
+			}catch(DataIntegrityViolationException ex){
+				ex.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	public ScribLabel getScribLabelByDate(String date) throws DataAccessException {
+		return (ScribLabel) getEntityById("ScribLabel", "date", date);
 	}
 }

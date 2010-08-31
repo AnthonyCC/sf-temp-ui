@@ -5,10 +5,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 
-<%  pageContext.setAttribute("HAS_COPYBUTTON", "true");  
-	int dayofWeek = TransStringUtil.getClientDayofWeek(TransStringUtil.getCurrentDate());	
-	String day = Integer.toString(dayofWeek);
-  	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";  	  
+<%  
+	pageContext.setAttribute("HAS_COPYBUTTON", "true");  
+	String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
+    String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
 %>
 <% 
 	String pageTitle = "Planning";
@@ -30,23 +30,28 @@
 
 		<div class="cont_topleft">
 			<div class="cont_row">
-				<div class="cont_Litem" id="page_<%=pageTitle%>">
-					<span class="scrTitle"><%=pageTitle%></span>
-						<span >
-							Week Of:<input maxlength="40" name="daterange" id="daterange" value='<c:out value="${planDate}"/>' style="width:100px"/>
+				<div class="cont_Litem" id="page_<%=pageTitle%>">						
+						<div class="scrTitle" style="float:left;padding-top:3px"><%=pageTitle%></div>
+						<div style="float:left;text-align:center;font-weight:bold">Week<br>
+							<input maxlength="40" name="weekdate" id="weekdate" value='<c:out value="${weekDate}"/>' style="width:100px"/>
+						 	<a href="#" id="trigger_planWDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
+						</div>
+						<div style="float:left;text-align:center;font-weight:bold">Date<br>&nbsp;
+							<input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
 						 	<a href="#" id="trigger_planDate" style="font-size: 9px;">
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
-						 	<select id="planDay" name="planDay">
-                         	 	<option value="All">-All Days</option>
-                      			<option value="2">Mon</option><option value="3">Tue</option><option value="4">Wed</option><option value="5">Thur</option><option value="6">Fri</option><option value="7">Sat</option><option value="8">Sun</option>
-                    	    </select>	
-						 <input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" /></span>
-						<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','planDay','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
-						<span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('daterange','planDay','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> <a href="#"  onclick="javascript:doAutoDispatch('daterange','planDay','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
-					<span>
-                     <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','daterange','y')" />
-                     <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','daterange','y','1')" />                    
-                  </span>
+						</div>&nbsp;
+						<div style="float:left;text-align:center;font-weight:bold">Zone<br>&nbsp;
+							<input maxlength="40" size="20" name="zone" id="zone" value="<%= zoneVal %>" style="width:100px" />
+						</div>	&nbsp;					
+						<div style="float:left;"><br>
+	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
+						  <span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> 
+							<a href="#"  onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
+	                      <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','daterange','y')" />
+	                      <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','daterange','y','1')" />                  
+	                   </div>  
 				</div>
 			</div>
 		</div> 
@@ -69,7 +74,8 @@
             <ec:row interceptor="obsoletemarker">
               <ec:column title=" " width="5px" 
                     filterable="false" sortable="false" cell="selectcol"
-                    property="planId" />              
+                    property="planId" />             
+              <ec:column cell="date" property="weekDate" sortable="true" title="Week"/>
               <ec:column cell="date" property="planDate" sortable="true" title="Date"/>
               <ec:column property="planDay" sortable="true" title="Day"/>
               <ec:column  cell="tooltip" alias="zoneCode" property="zoneNameEx" title="Zone"/>
@@ -89,59 +95,41 @@
 					</div></div>
 				</div>
      </div>   
-     <script>     
-     	 function doAutoDispatch(compId1,compId2,compId3, url) {
-     		var param1 = getDate(compId1,compId2);
-     		var param2 = document.getElementById(compId2).value;
- 			if(param2=='All'){
-				alert('Auto-dispatch cannot be performed for entire week. Please choose a day.');
-			}else{
-      	 		var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR "+param1+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
-				if (hasConfirmed) {
-			  		doCompositeLink(compId1,compId2,compId3, url);
-				} 
-			}
-     	 }
+     <script>
 
-     	 function getDate(compId1,compId2){
-         	  var d= new Date();
-         	  var param1=document.getElementById(compId1).value;
-         	  if (param1 == '') { param1= d.getMonth()+1+"/"+d.getDate()+"/"+d.getFullYear(); }
-     		  param1 = (param1).split('/');
-              var param2 = document.getElementById(compId2).value;
-              var day = 1000*60*60*24;
-              dayArr = [];
-              dayArr['2'] = 1; //mon
-              dayArr['3'] = 2;
-              dayArr['4'] = 3;
-              dayArr['5'] = 4;
-              dayArr['6'] = 5;
-              dayArr['7'] = 6;
-              dayArr['8'] = 0; //sun
-
-              var d= new Date();
-
-              d.setMonth(param1[0]-1);
-              d.setDate(param1[1]);
-              d.setYear(param1[2]);
-
-              if (('2345678').indexOf(param2) > -1){
-                  while (d.getDay() != dayArr[param2]) {
-                      d.setMilliseconds(d.getMilliseconds()+day);
-                  }
-              }
-              return d.getMonth()+1+"/"+d.getDate()+"/"+d.getFullYear();
-         }
-         
-         function doCompositeLink(compId1,compId2,compId3, url) {
+      function doAutoDispatch(compId1,compId2,compId3, url) {
+    	  	var param2 = document.getElementById(compId2).value;
+     	 	var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR THE "+param2+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
+			if (hasConfirmed) {
+				if(param2==''){
+			  		alert('Please enter the date to auto-dispatch');
+				}else{
+					doCompositeLink(compId1,compId2,compId3, url);
+				}
+			} 
+      }
+      function doCompositeLink(compId1,compId2,compId3, url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
           var param3 = document.getElementById(compId3).value;
           
           location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
-        } 
-      addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
-      document.getElementById("planDay").value='<%=request.getParameter("planDay")!=null?request.getParameter("planDay"):day%>';  
+      } 
+
+      addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
+      function getFilterTestValue() {
+             var filters = getFilterValue(document.getElementById("planListForm"),false);
+             var param1 = document.getElementById("weekdate").value;
+     		 var param2 = document.getElementById("daterange").value;
+     		 var param3 = document.getElementById("zone").value;
+             filters+="&weekdate="+param1;
+             filters+="&daterange="+param2;
+             filters+="&zone="+param3;                                                               
+             return escape(filters) + "&weekdate="+param1+"&daterange="+param2+"&zone="+param3;
+       }
+ 
+   //   addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
+      
       function doDelete(tableId, url) 
       {    
 		    var paramValues = getParamList(tableId, url);
@@ -159,16 +147,17 @@
 		
 	  function doUnavailable(url,id1,param2)
 	  {
-	  	var param1 = document.getElementById(id1).value;
-        var id2 = "unavailable";
+	     var param1 = document.getElementById(id1).value;
+         var id2 = "unavailable";
           
          javascript:pop(url+"?"+id1+"="+ param1+"&"+id2+"="+param2, 400,600);
 	  }
-	   function doKronos(url,id1,param2,param3)
+
+	  function doKronos(url,id1,param2,param3)
 	  {
 	  	var param1 = document.getElementById(id1).value;
         var id2 = "kronos"; 
-         var id3 = "file";          
+        var id3 = "file";          
         location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3  ;
 	  }
 
@@ -180,6 +169,16 @@
                  ifFormat : "%m/%d/%Y",
                  singleClick: true,
                  button : "trigger_planDate" 
+                }
+               );
+	   Calendar.setup(
+               {
+                 showsTime : false,
+                 electric : false,
+                 inputField : "weekdate",
+                 ifFormat : "%m/%d/%Y",
+                 singleClick: true,
+                 button : "trigger_planWDate" 
                 }
                );
 
