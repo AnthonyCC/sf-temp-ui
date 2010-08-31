@@ -2,7 +2,7 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import='com.freshdirect.transadmin.web.ui.*' %>
-
+<%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <%    
   pageContext.setAttribute("HAS_ADDBUTTON", "false");
   pageContext.setAttribute("HAS_DELETEBUTTON", "false");
@@ -57,13 +57,12 @@
 		<div class="cont_topleft">
 			<div class="cont_row">
 				<div class="cont_Litem">
-					<span class="scrTitle">
-						Schedule
-					</span>
-					<span style="vertical-align:middle;">Week Of :<input maxlength="10" size="10" name="scheduleDate" id="scheduleDate" value='<c:out value="${scheduleDate}"/>' />
-                    <a href="#" id="trigger_scheduleDate" style="font-size: 9px;">
-                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
-                    </a>
+					<div class="scrTitle" style="float:left;padding-top:3px">Schedule</div>
+					<div style="float:left;text-align:center;font-weight:bold">Week Of<br>
+						<input maxlength="10" size="10" name="scheduleDate" id="scheduleDate" style="width:75px" value='<c:out value="${scheduleDate}"/>' />
+                    	<a href="#" id="trigger_scheduleDate" style="font-size: 9px;">
+                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    	</a>
                      <script language="javascript">                 
                       Calendar.setup(
                       {
@@ -76,23 +75,46 @@
                        }
                       );
                       </script>
-                      &nbsp;Status : 
-										
-					<select id="statusFilter" ><option value="a">TransApp Active</option>
-													   <option value="i">TransApp Inactive</option>
-													   <option value="ae">All Employees</option>
-													   </select>
-					</span>
-					
+                       
+					</div>
+					<div style="float:left;text-align:center;font-weight:bold">Status<br>&nbsp;				
+						<select id="statusFilter" style="font-size:11px;">
+							<option value="a">TransApp Active</option>
+							<option value="i">TransApp Inactive</option>
+							<option value="ae">All Employees</option>
+						</select>					
+					</div>
+					<div style="float:left;text-align:center;font-weight:bold"> Date<br>&nbsp;
+							<input maxlength="10" size="10" name="uploadScheduleDate" id="uploadScheduleDate" style="width:75px" value='<c:out value="${uploadScheduleDate}"/>' />
+                    		<a href="#" id="trigger_uploadScheduleDate" style="font-size: 10px;">
+                        		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                    		</a>
+	                     <script language="javascript">                 
+	                      Calendar.setup(
+	                      {
+	                        showsTime : false,
+	                        electric : false,
+	                        inputField : "uploadScheduleDate",
+	                        ifFormat : "%m/%d/%Y",
+	                        singleClick: true,
+	                        button : "trigger_uploadScheduleDate" 
+	                       }
+	                      );
+	                      </script>
+                    </div>
+				<div style="float:left;"><br>&nbsp;
 					<span>
-                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter()" />
+                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter();" />
                   </span> 
                   <span>
                      <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
                   </span>
                   <span>
                      <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
-                  </span> 
+                  </span>
+                  <span>
+                     <input style="font-size:11px;width:100px;" type = "button" value="Export Schedules" onclick="javascript:window.open('uploadschedules.do','upload','height=250,width=400,resizable=no');" />
+                  </span>  </div>
 				</div>
 			</div>
 		</div>
@@ -139,6 +161,24 @@
 		</div>
 	</div>	
 		<script>
+		   function uploadSchedules(){
+			   var param1 = "y";
+			   var param2 = document.getElementById("uploadScheduleDate").value;
+			   if(param2==''){
+					alert('Please select date to upload schedules.');
+			   }else{
+				   var confirmed = confirm ("You are about to export REGULAR Schedules.  Do you want to continue? IF NOT, choose cancel to export MASTER Schedules.");
+				   if(confirmed){
+			   			location.href = "employee.do?empstatus=S&export="+param1+"&sDate="+param2;
+			   	   }else{
+				   		var masterconfirm=confirm ("You are about to upload MASTER Schedules.  Do you want to continue?");
+				   		if(masterconfirm)
+					   		var param3 = '01/01/1900';
+				   			location.href = "employee.do?empstatus=S&export="+param1+"&sDate="+param3;
+			   	   }
+			   }
+		   }
+
 		   function massEdit() {
 			var table_schedule = document.getElementById("ec_table");
 			var checked = "";  

@@ -1,0 +1,171 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editPanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editPanel = new YAHOO.widget.Panel("panel-1", {       
+        				  width: "600", 
+            			  height: "450px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        //editPanel.render();
+        initCustomCalendar("trigger_rDate","rDate","calContainer");	
+        
+            		 
+	}
+     
+    // function fillOptions(src, dest) {
+     
+    	// document.getElementById(dest).value = document.getElementById(src).value;
+    // }	
+	 
+
+     function showGeneratePlanForm() {          
+          addSysMessage("", false);
+          editPanel.render(document.body);
+          editPanel.show();
+     }
+             
+      function submitGeneratePlan(compId1,compId2,url,generatePlan) {       	                           
+      	  
+			var hasConfirmed = confirm ("You are about to perform Generate Plan.  IF PLANS ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
+			if (hasConfirmed) 
+			{
+			  var hasConfirmed = confirm ("Do you want PLANS FOR REGIONS other than ones selected for dates selected get OVERRIDDEN?")	
+	  		  var param4 = "";
+	  		  if (hasConfirmed) 
+			  		var param4="&o=y";
+			  var param1 = getValues(compId1);         
+	          var param2 = getValues(compId2);
+	          var param3 = "";
+	          if(generatePlan!=null)param3="&p="+generatePlan;
+		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2+param3+param4;
+			} 	
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result == 0) {
+          	addSysMessage("Scenario to Day Mapping failed", true);
+          }else if(result == 2){
+        	addSysMessage("Scenario to Day already exists", true);
+          }else {
+          	addSysMessage("Scenario to Day Mapping added successfully", false);
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+          editPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+     
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="panel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Generate Plan</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	
+	      		<table class="forms1">
+										
+					<tr>
+						<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:left;font-weight:bold;">Region</td>
+					</tr>
+					<tr>
+						<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:center;font-size:9px">Available</td>
+						<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:center;font-size:9px">Selected</td>
+					</tr>
+					<tr>
+						<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="padding:8px;">
+							<select id="dlvregion_available" name="dlvregion_available" style="height:120px;width:200px;" size="2" multiple>
+							 	<c:forEach var="region" items="${regions}">       
+		              				<option value="<c:out value="${region.code}"/>"><c:out value="${region.code}"/></option>
+			        			</c:forEach>   				
+							</select>
+						</td>
+						<td class="text-align:center;">
+							<div><input type="button" value="Add &gt;&gt;" onclick="remOpt('dlvregion_available', 'dlvregion_selected'); sortByText('dlvregion_available'); sortByText('dlvregion_selected'); return false;" style="font-size:9px;width: 60px;background-color:#99FF99;"/></div>
+							<div><img width="1" height="7" src="/media_stat/crm/images/clear.gif" alt="" /></div>
+							<div><input type="button" value="&lt;&lt; Remove" onclick="remOpt('dlvregion_selected', 'dlvregion_available'); sortByText('dlvregion_available'); sortByText('dlvregion_selected'); return false;" style="font-size:9px;width: 60px;background-color:#FF9999;"/></div>
+						</td>
+						<td style="padding:8px">
+							<select id="dlvregion_selected" name="dlvregion_selected" style="height:120px;width:200px;" size="2" multiple>
+													
+							</select>
+						</td>
+					</tr>
+				</table>
+	      		<table class="forms1">
+					<tr>
+						<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:left;font-weight:bold" >Requested Date</td>
+					</tr>
+					<tr>
+						<td height="10px"><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:center;font-size:9px">Available</td>
+						<td><img width="0" height="" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="text-align:center;font-size:9px">Selected</td>
+					</tr>
+					<tr>
+						<td><img width="0" height="0" src="/media_stat/crm/images/clear.gif" alt="" /></td>
+						<td style="padding:8px;">
+							<select id="dlvdates_available" name="dlvdates_available" style="height:120px;width:200px;" size="2" multiple>
+									<c:forEach var="scribDate" items="${scribDates}">
+										<option value="<c:out value="${scribDate}"/>"><c:out value="${scribDate}"/></option>
+									</c:forEach>				
+							</select>
+						</td>
+						<td class="text-align:center;">
+							<div><input type="button" value="Add &gt;&gt;" onclick="remOpt('dlvdates_available', 'dlvdates_selected'); sortByText('dlvdates_available'); sortByText('dlvdates_selected'); return false;" style="font-size:9px;width: 60px;background-color:#99FF99;"/></div>
+							<div><img width="1" height="7" src="/media_stat/crm/images/clear.gif" alt=""/></div>
+							<div><input type="button" value="&lt;&lt; Remove" onclick="remOpt('dlvdates_selected', 'dlvdates_available'); sortByText('dlvdates_available'); sortByText('dlvdates_selected'); return false;" style="font-size:9px;width: 60px;background-color:#FF9999;"/></div>
+						</td>
+						<td style="padding:8px;">
+							<input type="hidden"/>
+							<select id="dlvdates_selected" name="dlvdates_selected" style="height:120px;width:200px;" size="2" multiple>
+									
+							</select>
+						</td>
+					</tr>
+				</table>	      	
+	      </div> 
+	       <div align="center">	      	 	
+	      	 	<input type="button" id="Generate_plan" value="&nbsp;Submit&nbsp;" onclick="javascript:submitGeneratePlan('dlvregion_selected','dlvdates_selected','scrib.do','y');" />
+	       </div>	     
+        </div>
+    </div>
+    </div>

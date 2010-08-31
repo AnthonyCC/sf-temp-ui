@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated Aug 18, 2010 11:11:24 AM by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping schema="transp">
+    <class name="com.freshdirect.transadmin.model.ScribLabel" table="SCRIB_LABEL">
+        <id name="scribLabelId" type="string">
+            <column name="ID" length="10" />
+           <generator class="sequence">
+    			<param name="sequence">SCRIBLABELSEQ</param>
+			</generator>
+        </id>    
+        <property name="date" type="timestamp">
+            <column name="SCRIB_DATE" length="7" />
+        </property>
+        <property name="scribLabel"  type="string">
+            <column name="SCRIB_LABEL" length="50" />
+        </property>    
+    </class>
+</hibernate-mapping>

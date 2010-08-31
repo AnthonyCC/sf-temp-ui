@@ -1,0 +1,141 @@
+<%@ include file='/common/i_calendar.jspf'%> 
+<script>
+            
+      var editlabelPanel;
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+	  var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
+                                 
+      function init() {
+        editlabelPanel = new YAHOO.widget.Panel("labelpanel-1", {       
+                          width: "400px", 
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        initCustomCalendar("trigger_lDate","labelDate","calContainer");       
+        	        		 
+	}   
+	
+
+     function showLabelForm() {          
+          addSysMessage("", false);
+          editlabelPanel.render(document.body);
+          editlabelPanel.show();
+     }
+             
+      function sendLabelForm() {       	                           
+      	  
+    	  var s_date = YAHOO.util.Dom.get("labelDate").value;
+       	  var s_label = YAHOO.util.Dom.get("slabel").value;
+		  
+
+		  if(s_date.trim().length == 0 || s_label.trim().length == 0) {
+      	  		addSysMessage("Please enter the required values", true);		
+      	  } else {
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScribLabel(sendLabelFormCallback, s_date ,s_label);  
+		  }
+      }
+      
+      function addSysMessage(msg, isError) {
+      		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+      		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+      }
+      
+      function sendLabelFormCallback(result, exception) {
+      	  
+          if(exception) {               
+              alert('Unable to connect to host system. Please contact system administrator!');               
+              return;
+          }
+          if(result) {
+          	addSysMessage("Label to day added successfully", false);
+          	editlabelPanel.hide();
+          	location.href = location.href;
+          }else {
+          	addSysMessage("Label to day failed to add", true);          	
+          }                           
+      }
+      
+      function hideForm() { 
+      	  YAHOO.util.Dom.get("errContainer").value = "";
+      	  editlabelPanel.hide();
+      }
+      
+      YAHOO.util.Event.addListener(window, "load", init);
+      YAHOO.util.Event.addListener(window, "unload", hideForm);
+    </script>
+   
+  <div style='display:none;height:0px;width:0px;'>
+      <div id="labelpanel-1">
+      <div class="hd"><img src="images/icons/edit_ON.gif" width="16" height="16" border="0" align="absmiddle" />&nbsp;&nbsp;&nbsp;Add Label</div>
+      <div class="bd">
+      	<div id="errContainer"></div>
+      	<div style="background-color:#D7C8FF">
+	      	<table class="forms1">
+		      	 <tr>
+		              <td>Date</td>
+		              <td>
+		                  	<div id="calContainer"></div>
+		                  	<span><input maxlength="10" size="10" name="labelDate" id="labelDate" value='' /></span>
+                    		<span><a id="trigger_labelDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                       			 </a> <script language="javascript">                 
+				                      Calendar.setup(
+				                      {
+				                        showsTime : false,
+				                        electric : false,
+				                        inputField : "labelDate",
+				                        ifFormat : "%m/%d/%Y",
+				                        singleClick: true,
+				                        button : "trigger_labelDate",
+				                        onUpdate : handleDateChangeEvt 
+				                       }
+				                      );
+				                       function handleDateChangeEvt(cal) {
+				      	  					var jsonrpcScribLabelClient = new JSONRpcClient("dispatchprovider.ax");
+				          					var resultScriblabel = jsonrpcScribLabelClient.AsyncDispatchProvider.getScribLabel
+				         												(document.getElementById("labelDate").value);
+				         					
+				         					if(resultScriblabel != null && resultScriblabel.trim().length > 0) {
+				         						document.getElementById("slabel").value = resultScriblabel;
+				         						addSysMessage("Scrib Label already exists", false);
+				         					}else{
+				         						document.getElementById("slabel").value = '';
+				         						addSysMessage("", false);
+					         				}
+					  				  }
+                     			 </script>
+                       		</span>
+                      </td> 
+		         </tr>
+		      	 <tr>
+		                  <td>Label</td>
+		                  <td>
+		                  	<select id="slabel" name="slabel" >
+		                  		<option value="<c:out value=""/>">--Please Select</option>       
+							 	<c:forEach var="slabel" items="${sLabels}">
+							 		<option value="<c:out value="${slabel}"/>"><c:out value="${slabel}"/></option>
+			        			</c:forEach>   				
+							</select>		                  	
+                    	 </td>
+		         </tr>	        
+		          
+		         <tr>
+		                  <td colspan="2" align="center"><input type="button" value="Add/Update" onclick="javascript:sendLabelForm()" /> </td>
+		         </tr> 
+		      </table>   
+	      </div>      
+        </div>
+    </div>
+    </div>
