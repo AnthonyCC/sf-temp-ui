@@ -35,7 +35,7 @@
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
 					<div style="float:left;">
 							<span class="scrTitle"><%=pageTitle%></span>
-							<span>Week Of:<input style="width:85px;" maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
+							<span><input style="width:85px;" maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
 							<span><a href="#" id="trigger_scribDate" style="font-size: 9px;">
 	                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
 	                    	 <select id="scribDay" name="scribDay" >
