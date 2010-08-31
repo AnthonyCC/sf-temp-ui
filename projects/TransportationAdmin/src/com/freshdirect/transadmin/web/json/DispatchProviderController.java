@@ -571,7 +571,8 @@ public class DispatchProviderController extends JsonRpcController implements
 				ScribLabel _tempLabel = dispatchManagerService
 						.getScribLabelByDate(TransStringUtil
 								.getServerDate(date));
-				getDispatchManagerService().removeEntityEx(_tempLabel);
+				if(_tempLabel!=null)
+					getDispatchManagerService().removeEntityEx(_tempLabel);
 				ScribLabel _sLabel = new ScribLabel(_scribDate, label);
 
 				return dispatchManagerService.addScribLabel(_sLabel);
