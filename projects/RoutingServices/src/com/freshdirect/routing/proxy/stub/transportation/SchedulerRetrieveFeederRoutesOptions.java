@@ -61,6 +61,50 @@
                                }
                             
 
+                        /**
+                        * field for VehicleCapacities
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localVehicleCapacities ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localVehicleCapacitiesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getVehicleCapacities(){
+                               return localVehicleCapacities;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param VehicleCapacities
+                               */
+                               public void setVehicleCapacities(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localVehicleCapacitiesTracker = true;
+                                       } else {
+                                          localVehicleCapacitiesTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localVehicleCapacities=param;
+                                    
+
+                               }
+                            
+
      /**
      * isReaderMTOMAware
      * @return true if the reader supports MTOM
@@ -186,7 +230,38 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                             
+                              if (localVehicleCapacitiesTracker){
+                                    if (localVehicleCapacities==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"vehicleCapacities", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"vehicleCapacities");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("vehicleCapacities");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localVehicleCapacities.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","vehicleCapacities"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -354,7 +429,14 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localVehicleCapacity));
+                             if (localVehicleCapacitiesTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "vehicleCapacities"));
                             
+                            
+                                    elementList.add(localVehicleCapacities==null?null:
+                                    localVehicleCapacities);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -448,7 +530,31 @@
                                     // A start element we are not expecting indicates an invalid parameter was passed
                                     throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
                                 }
-                              
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","vehicleCapacities").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setVehicleCapacities(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setVehicleCapacities(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

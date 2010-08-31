@@ -150,6 +150,50 @@
                             
 
                         /**
+                        * field for TotalQuantities
+                        */
+
+                        
+                                    protected com.freshdirect.routing.proxy.stub.transportation.Quantities localTotalQuantities ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localTotalQuantitiesTracker = false ;
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return com.freshdirect.routing.proxy.stub.transportation.Quantities
+                           */
+                           public  com.freshdirect.routing.proxy.stub.transportation.Quantities getTotalQuantities(){
+                               return localTotalQuantities;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param TotalQuantities
+                               */
+                               public void setTotalQuantities(com.freshdirect.routing.proxy.stub.transportation.Quantities param){
+                            
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localTotalQuantitiesTracker = true;
+                                       } else {
+                                          localTotalQuantitiesTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localTotalQuantities=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for OrderNumbers
                         * This was an Array!
                         */
@@ -421,7 +465,38 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
-                              if (localOrderNumbersTracker){
+                              if (localTotalQuantitiesTracker){
+                                    if (localTotalQuantities==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"totalQuantities", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"totalQuantities");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("totalQuantities");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localTotalQuantities.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","totalQuantities"),
+                                        factory,xmlWriter);
+                                    }
+                                } if (localOrderNumbersTracker){
                              if (localOrderNumbers!=null) {
                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
                                    boolean emptyNamespace = namespace == null || namespace.length() == 0;
@@ -645,7 +720,14 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localTotalQuantity));
-                             if (localOrderNumbersTracker){
+                             if (localTotalQuantitiesTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "totalQuantities"));
+                            
+                            
+                                    elementList.add(localTotalQuantities==null?null:
+                                    localTotalQuantities);
+                                } if (localOrderNumbersTracker){
                             if (localOrderNumbers!=null){
                                   for (int i = 0;i < localOrderNumbers.length;i++){
                                       
@@ -744,7 +826,7 @@
                     
                     reader.next();
                 
-                        java.util.ArrayList list4 = new java.util.ArrayList();
+                        java.util.ArrayList list5 = new java.util.ArrayList();
                     
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
@@ -819,16 +901,40 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","totalQuantities").equals(reader.getName())){
+                                
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setTotalQuantities(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
+                                    
+                                                object.setTotalQuantities(com.freshdirect.routing.proxy.stub.transportation.Quantities.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    }
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderNumbers").equals(reader.getName())){
                                 
                                     
                                     
                                     // Process the array and step past its final element's end.
-                                    list4.add(reader.getElementText());
+                                    list5.add(reader.getElementText());
                                             
                                             //loop until we find a start element that is not part of this array
-                                            boolean loopDone4 = false;
-                                            while(!loopDone4){
+                                            boolean loopDone5 = false;
+                                            while(!loopDone5){
                                                 // Ensure we are at the EndElement
                                                 while (!reader.isEndElement()){
                                                     reader.next();
@@ -840,20 +946,20 @@
                                                     reader.next();
                                                 if (reader.isEndElement()){
                                                     //two continuous end elements means we are exiting the xml structure
-                                                    loopDone4 = true;
+                                                    loopDone5 = true;
                                                 } else {
                                                     if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","orderNumbers").equals(reader.getName())){
-                                                         list4.add(reader.getElementText());
+                                                         list5.add(reader.getElementText());
                                                         
                                                     }else{
-                                                        loopDone4 = true;
+                                                        loopDone5 = true;
                                                     }
                                                 }
                                             }
                                             // call the converter utility  to convert and set the array
                                             
                                                     object.setOrderNumbers((java.lang.String[])
-                                                        list4.toArray(new java.lang.String[list4.size()]));
+                                                        list5.toArray(new java.lang.String[list5.size()]));
                                                 
                               }  // End of if for expected property start element
                                 
