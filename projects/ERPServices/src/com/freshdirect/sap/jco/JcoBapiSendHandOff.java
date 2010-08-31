@@ -59,7 +59,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 		for(HandOffStopIn stop : stopsIn) {
 			stops.insertRow(1);
 			stops.setValue(stop.getErpOrderNumber(), "VBELN"); // SAP Order No
-			routes.setValue(stop.getRouteId(), "ZZTRKNO"); // Route No
+			stops.setValue(stop.getRouteId(), "ZZTRKNO"); // Route No
 			stops.setValue(stop.getStopNo(), "ZZSTOPSEQ"); // Stop Sequence
 			stops.setValue(formatTime(stop.getStopArrivalTime()), "ZZDROPTIME"); // Stop Arrival Time
 			stops.setValue(stop.getBuildingType(), "BUILDING_TYPE"); // Building Type
