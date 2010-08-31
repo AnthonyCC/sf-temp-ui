@@ -19,6 +19,8 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 	private int stemFromTime;
 	
     private int stemToTime;
+    
+    private int maxStemTime;
 	
     private String prefix;
     
@@ -78,6 +80,15 @@ public class AreaModel extends BaseModel implements IAreaModel  {
 
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
+	}
+	
+	
+	public int getMaxStemTime() {
+		return maxStemTime;
+	}
+
+	public void setMaxStemTime(int maxStemTime) {
+		this.maxStemTime = maxStemTime;
 	}
 
 	public int hashCode() {

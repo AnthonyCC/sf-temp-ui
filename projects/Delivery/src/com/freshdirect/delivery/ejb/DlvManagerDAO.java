@@ -112,7 +112,7 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOTS =
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, z.zone_code, t.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, " 
 		+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, " 
 		+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
@@ -164,7 +164,7 @@ public class DlvManagerDAO {
 
 	private static final String CF_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,  "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
@@ -291,6 +291,7 @@ public class DlvManagerDAO {
 		_aModel.setDeliveryRate(rs.getDouble("AREA_DLV_RATE"));
 		_aModel.setStemFromTime(rs.getInt("stemfrom"));
 		_aModel.setStemToTime(rs.getInt("stemto"));
+		_aModel.setMaxStemTime(rs.getInt("stemmax"));
 		
 		_schId.setRegionId(RoutingUtil.getRegion(_aModel));
 		_schId.setArea(_aModel);
@@ -304,7 +305,7 @@ public class DlvManagerDAO {
 
 	private static final String DEPOT_TIMESLOTS =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, z.zone_code, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
@@ -347,7 +348,7 @@ public class DlvManagerDAO {
 
 	private static final String TIMESLOT_BY_ID =
 		"select distinct ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity, ts.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE,"
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
 			+ "where zone_id = ts.zone_id AND ts.ID = reservation.TIMESLOT_ID and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(reservation.TIMESLOT_ID) from dlv.reservation "
@@ -607,7 +608,7 @@ public class DlvManagerDAO {
 	
 	private static final String ZONE_CAPACITY_QUERY = 
 		"select t.id, t.base_date, t.start_time, t.end_time, t.cutoff_time, t.status, t.zone_id, t.capacity, t.ct_capacity" +
-		", ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
+		", ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(t.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, t.IS_DYNAMIC IS_DYNAMIC, t.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE," 
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 			+ "(select count(*) from dlv.reservation where timeslot_id=t.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 			+ "(select z.ct_release_time from dlv.zone z where z.id = t.zone_id) as ct_release_time, "
@@ -1182,7 +1183,7 @@ public class DlvManagerDAO {
 	
 	private static final String TIMESLOTS_BY_DATE =
 		"select ts.id, ts.base_date, ts.start_time, ts.end_time, ts.cutoff_time, ts.status, ts.zone_id, ts.capacity" +
-		", z.zone_code, ts.ct_capacity, ta.AREA AREA_CODE, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
+		", z.zone_code, ts.ct_capacity, ta.AREA AREA_CODE, ta.STEM_MAX_TIME stemmax, ta.STEM_FROM_TIME stemfrom, ta.STEM_TO_TIME stemto, z.NAME ZONE_NAME, TO_CHAR(ts.CUTOFF_TIME, 'HH_MI_PM') WAVE_CODE, ts.IS_DYNAMIC IS_DYNAMIC, ts.IS_CLOSED IS_CLOSED, a.IS_DEPOT IS_DEPOT, a.DELIVERY_RATE AREA_DLV_RATE, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = ' ') as base_allocation, "
 		+ "(select count(*) from dlv.reservation where timeslot_id=ts.id and status_code <> ? and status_code <> ? and chefstable = 'X') as ct_allocation, "
 		+ "(select z.ct_release_time from dlv.zone z where z.id = ts.zone_id) as ct_release_time, "
