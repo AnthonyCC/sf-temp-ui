@@ -1555,12 +1555,14 @@ public class ErpSaleEntityBean extends EntityBeanSupport implements ErpSaleI {
 
 	private final static String GET_NTH_NONCOS_REG_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
                                                                    " s.CUSTOMER_ID=? and s.type='REG' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+                                                                   //" sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+                                                                   " sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "+
                                                                    " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?  and pi.on_fd_account<>'M' ) where row_num=1";
 
 	private final static String GET_NTH_NONCOS_SUB_ORDER_QUERY="select id from ( select s.id,sa.requested_date, row_number() over (order by sa.REQUESTED_DATE DESC) row_num from cust.sale s, cust.salesaction sa, cust.deliveryinfo di,cust.paymentinfo pi where "+
     " s.CUSTOMER_ID=? and s.type='SUB' and s.id=sa.sale_id and pi.salesaction_id=sa.id and "+
-    " sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+    //" sa.action_type IN ('CRO','MOD') and sa.action_date=(select max_date from cust.sale_cro_mod_date scmd where scmd.sale_id=s.id) and "+
+    " sa.action_type IN ('CRO','MOD') and sa.action_date=s.cromod_date and "+
     " di.salesaction_id=sa.id AND s.status=?  and di.delivery_type <>'C' and pi.payment_method_type=?) where row_num=1";
 
 	public PrimaryKey ejbFindByCriteria(String customerID, EnumSaleType saleType, EnumSaleStatus saleStatus, EnumPaymentMethodType pymtMethodType) throws ObjectNotFoundException, FinderException {

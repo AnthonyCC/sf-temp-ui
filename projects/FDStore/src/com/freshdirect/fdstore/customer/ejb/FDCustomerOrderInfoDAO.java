@@ -49,10 +49,10 @@ class FDCustomerOrderInfoDAO {
 		+ "(select on_fd_account from cust.paymentinfo where salesaction_id = sa.id) as on_fd_account, "
 		+ "(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') as vip_cust, " 
 		+ "(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "
-		+ "from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.deliveryinfo di, cust.customer c, cust.fdcustomer fc "   
+		+ "from cust.sale s,  cust.salesaction sa, cust.deliveryinfo di, cust.customer c, cust.fdcustomer fc "   
 		+ "where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id " 
 		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id "
-		+ "and scm.max_date = sa.action_date ";
+		+ "and s.CROMOD_DATE = sa.action_date ";
 	
 	
 	public static final String GIFT_CARD_ORDER_SERACH_QUERY=" select  /*+use_nl(di,sa,scm,s)*/ s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "+ 
@@ -60,14 +60,14 @@ class FDCustomerOrderInfoDAO {
 	"(select on_fd_account from cust.paymentinfo where salesaction_id = sa.id) as on_fd_account, "+ 
 	"(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') as vip_cust, "+  
 	"(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "+ 
-	"from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.deliveryinfo di, "+ 
+	"from cust.sale s,  cust.salesaction sa, cust.deliveryinfo di, "+ 
 	" cust.customer c, cust.fdcustomer fc, CUST.APPLIED_GIFT_CARD agc "+     
 	" where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id "+   
 	" and s.customer_id = c.id and c.id = fc.erp_customer_id "+ 
-	" and scm.max_date = sa.action_date "+
+	//" and scm.max_date = sa.action_date "+
 	" and agc.SALESACTION_ID = sa.id "+ 
 	" and SA.ACTION_TYPE IN ('CRO','MOD') "+
-	" and SA.ACTION_DATE=S.CROMOD_DATE ";
+	" and S.CROMOD_DATE=SA.ACTION_DATE ";
 	
 
 	public static List<FDCustomerOrderInfo> findOrdersByCriteria(Connection conn, FDOrderSearchCriteria criteria) throws SQLException {

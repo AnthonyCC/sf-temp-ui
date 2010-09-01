@@ -659,16 +659,19 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			}
 		}
 	}
-	private static final String NSM_ORDERS_QUERY =
-		"select /*use_nl(s, sa)*/ s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
+	/*private static final String NSM_ORDERS_QUERY =
+		"select  s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "
 			+ "from cust.sale s, cust.sale_cro_mod_date scm, cust.salesaction sa, cust.customerinfo ci "
 			+ "where sa.action_date <= (sysdate - 1/48) and s.id = scm.sale_id "
-			//+ "and s.type = 'REG' "
 			+ "and scm.sale_id = sa.sale_id and scm.max_date = sa.action_date "
 			+ "and s.customer_id = ci.customer_id and s.status in ('NSM', 'MOD', 'MOC', 'NEW') "
-			//+ "and sa.requested_date >= sysdate order by action_date ";						
-			+" AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";
+			+" AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE))) ORDER BY action_date ";*/
 
+	private static final String NSM_ORDERS_QUERY ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+
+			" from cust.sale s, cust.salesaction sa,cust.customerinfo ci "+
+			" where s.id in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
+			" and sa.action_date <= (sysdate - 1/48) AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE)))"+
+			" and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date";
 	public List getNSMOrders() throws FDResourceException {
 		Connection conn = null;
 		try {
