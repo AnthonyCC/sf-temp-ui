@@ -238,6 +238,7 @@
 							<CmsField><attribute>recommender</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection ref="scarabRecommender"/>
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -394,6 +395,16 @@
 							<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
 						</fields>
 					</CmsSection>
+					<CmsSection id="scarabRecommender">
+						<title>SCARAB RECOMMENDER</title>
+						<fields>
+							<CmsField><attribute>SCARAB_YMAL_INCLUDE</attribute></CmsField>
+							<CmsField><attribute>SCARAB_YMAL_EXCLUDE</attribute></CmsField>
+							<CmsField><attribute>SCARAB_YMAL_PROMOTE</attribute></CmsField>
+							<CmsField><attribute>SCARAB_YMAL_DEMOTE</attribute></CmsField>
+						</fields>
+					</CmsSection>
+					
 				</sections>
 			</CmsPage>
 			<CmsPage>
@@ -708,6 +719,7 @@
 					<CmsField><attribute>EXCLUDED_RECOMMENDATION</attribute></CmsField>
 				</fields>
 			</CmsSection>
+			<CmsSection ref="scarabRecommender"/>
 		</sections>
 	</CmsPage>
 	

@@ -767,6 +767,27 @@
             <RelationshipDef name="GIFTCARD_TYPE" label="Gift Card Types" cardinality="Many">
 				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>
+			
+		<!--  Scarab Recommender -->
+            <RelationshipDef name="SCARAB_YMAL_INCLUDE" label="Include Products" cardinality="Many" inheritable="true">
+                <DestinationDef contentType="Product" />
+            </RelationshipDef>
+            <RelationshipDef name="SCARAB_YMAL_EXCLUDE" label="Exclude Products or Categories" cardinality="Many" inheritable="true">
+                <DestinationDef contentType="Product" />
+                <DestinationDef contentType="Category" />
+                <DestinationDef contentType="Department" />
+            </RelationshipDef>
+            <RelationshipDef name="SCARAB_YMAL_PROMOTE" label="Promote Products or Categories" cardinality="Many" inheritable="true">
+                <DestinationDef contentType="Product" />
+                <DestinationDef contentType="Category" />
+                <DestinationDef contentType="Department" />
+            </RelationshipDef>
+            <RelationshipDef name="SCARAB_YMAL_DEMOTE" label="Demote Products or Categories" cardinality="Many" inheritable="true">
+                <DestinationDef contentType="Product" />
+                <DestinationDef contentType="Category" />
+                <DestinationDef contentType="Department" />
+            </RelationshipDef>
+					
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
