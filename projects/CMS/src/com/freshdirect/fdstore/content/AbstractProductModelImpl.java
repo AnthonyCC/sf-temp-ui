@@ -385,7 +385,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			if(i<(countries.size()-2)){
 				temp.append(countries.get(i).toString()).append(", ");
 			}else if(countries.size()>1 && i==(countries.size()-1)){
-				temp.append(" and/or ").append(countries.get(i).toString());
+				temp.append("and").append(countries.get(i).toString());
 			} else {
 				temp.append(countries.get(i));
 			}	
