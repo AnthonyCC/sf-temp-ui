@@ -286,10 +286,13 @@
 							<spring:bind path="dispatchForm.confirmed"> 
 								<c:choose>                    
 									<c:when test='${status.value == "false"}'> 
-										<form:select path="supervisorCode" disabled='<c:out value="${status.value}" />'>
-											<form:option value="" label="Select Supervisor"/>
-											<form:options items="${supervisors}" itemLabel="name" itemValue="employeeId" />
-										</form:select>
+										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="handleResoureChangeEvent('supervisors[<c:out value="${gridRow.index}"/>]', this);">
+											<OPTION value="">Select Supervisor</OPTION>          
+											<c:forEach var="supervisorsEmp" items="${supervisors}">
+												<option <c:if test='${status.value == supervisorsEmp.employeeId}'> SELECTED </c:if> 
+											value="<c:out value="${supervisorsEmp.employeeId}"/>"><c:out value="${supervisorsEmp.name}"/>-<c:out value="${supervisorsEmp.employeeId}"/></option>                         
+											</c:forEach>
+										</SELECT>
 									</c:when>
 									<c:otherwise> 
 										<form:input maxlength="50" size="30" path="supervisorName" readOnly="true" />
@@ -420,7 +423,7 @@
 											<OPTION value="">Select Drivers</OPTION>          
 											<c:forEach var="driverEmp" items="${drivers}">
 												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
-											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
+											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/>-<c:out value="${driverEmp.employeeId}"/></option>                         
 											</c:forEach>
 										</SELECT>
 									   </c:when>
@@ -429,7 +432,7 @@
 											<OPTION value="">Select Drivers</OPTION>          
 											<c:forEach var="driverEmp" items="${drivers}">
 												<option <c:if test='${status.value == driverEmp.employeeId}'> SELECTED </c:if> 
-											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/></option>                         
+											value="<c:out value="${driverEmp.employeeId}"/>"><c:out value="${driverEmp.name}"/>-<c:out value="${driverEmp.employeeId}"/></option>                         
 											</c:forEach>
 										</SELECT>
 									   </c:otherwise> 
@@ -468,7 +471,7 @@
 										<OPTION value="">Select Helpers</OPTION>          
 										<c:forEach var="helperEmp" items="${helpers}">
 											<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
-										value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
+										value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/>-<c:out value="${helperEmp.employeeId}"/></option>                         
 										</c:forEach>
 										</SELECT>
 									   </c:when>
@@ -477,7 +480,7 @@
 											<OPTION value="">Select Helpers</OPTION>          
 											<c:forEach var="helperEmp" items="${helpers}">
 												<option <c:if test='${status.value == helperEmp.employeeId}'> SELECTED </c:if> 
-											value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/></option>                         
+											value="<c:out value="${helperEmp.employeeId}"/>"><c:out value="${helperEmp.name}"/>-<c:out value="${helperEmp.employeeId}"/></option>                         
 											</c:forEach>
 										 </SELECT>
 									   </c:otherwise> 
@@ -517,7 +520,7 @@
 											<OPTION value="">Select Runners</OPTION>          
 											<c:forEach var="runnerEmp" items="${runners}">
 												<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
-											value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
+											value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/>-<c:out value="${runnerEmp.employeeId}"/></option>                         
 											</c:forEach>
 											</SELECT>
 										   </c:when>
@@ -526,7 +529,7 @@
 												<OPTION value="">Select Runners</OPTION>          
 												<c:forEach var="runnerEmp" items="${runners}">
 													<option <c:if test='${status.value == runnerEmp.employeeId}'> SELECTED </c:if> 
-												value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/></option>                         
+												value="<c:out value="${runnerEmp.employeeId}"/>"><c:out value="${runnerEmp.name}"/>-<c:out value="${runnerEmp.employeeId}"/></option>                         
 												</c:forEach>
 											 </SELECT><br />
 										   </c:otherwise> 
