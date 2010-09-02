@@ -345,7 +345,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
 			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
-			this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+			if(referenceDispatch.getDispatchResources() != null) {
+				referenceDispatch.getDispatchResources().clear();
+			}
+			this.getDispatchManagerDao().saveDispatch(referenceDispatch);
 		}
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
@@ -429,7 +432,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
 			Plan referencePlan = this.getPlan(referencePlanId);
-			this.getDispatchManagerDao().removeEntityEx(referencePlan);
+			if(referencePlan.getPlanResources() != null) {
+				referencePlan.getPlanResources().clear();
+			}
+			this.getDispatchManagerDao().savePlan(referencePlan);
 		}
 		getDispatchManagerDao().savePlan(plan);
 	}
