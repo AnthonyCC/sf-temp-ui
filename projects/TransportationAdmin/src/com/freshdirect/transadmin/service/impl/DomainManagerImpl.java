@@ -1,5 +1,6 @@
 package com.freshdirect.transadmin.service.impl;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,6 +36,7 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransAdminCacheManager;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public class DomainManagerImpl  
@@ -708,6 +710,53 @@ public class DomainManagerImpl
 			}
 		}		
 	}
+	
+	public void saveOrUpdateEmployeeSchedule(List<ScheduleEmployee> scheduleEmp) {
+		List<ScheduleEmployee> sList=new ArrayList<ScheduleEmployee>();
+		for (Iterator<ScheduleEmployee> iterator = scheduleEmp.iterator(); iterator.hasNext();) {
+			ScheduleEmployee _scheduleEmp = iterator.next();
+		    _scheduleEmp.setWeekOf(TransStringUtil.getWeekOf(_scheduleEmp.getDate()));
+		   
+			if(_scheduleEmp != null){
+				String empId = _scheduleEmp.getEmployeeId();
+				Date weekOf = TransStringUtil.getWeekOf(_scheduleEmp.getDate());
+				String day = null;
+				String strWeekOf = getParsedDate(weekOf);
+				String DAY[] = new String[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+				try{
+					day = TransStringUtil.getDayofWeek(_scheduleEmp.getDate());
+					if ("Monday".equalsIgnoreCase(day))
+						day = DAY[0];
+					else if ("Tuesday".equalsIgnoreCase(day))
+						day = DAY[1];
+					else if ("Wednesday".equalsIgnoreCase(day))
+						day = DAY[2];
+					else if ("Thursday".equalsIgnoreCase(day))
+						day = DAY[3];
+					else if ("Friday".equalsIgnoreCase(day))
+						day = DAY[4];
+					else if ("Saturday".equalsIgnoreCase(day))
+						day = DAY[5];
+					else if ("Sunday".equalsIgnoreCase(day))
+						day = DAY[6];
+					 _scheduleEmp.setDay(day);
+					if(strWeekOf!=null && day!= null){
+						Collection schedules = getDomainManagerDao().getScheduleEmployee(empId, strWeekOf, day);
+						if(schedules != null && schedules.size() > 0) {
+							this.removeEntity(schedules);
+						}
+						sList.add(_scheduleEmp);						
+					}				
+				}catch(ParseException ex){
+					ex.printStackTrace();
+				}
+			 }	
+		}
+		if(sList.size()>0){
+			getDomainManagerDao().saveEntityList(sList);
+		}
+	}
+	
 	
 	public void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf, String day) {
 		

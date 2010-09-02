@@ -182,7 +182,10 @@ public class TransportationAdminProperties {
 	private final static String PROP_ZONE_EXPANSION_WORKTABLES		= "transportation.zoneexpansion.worktables";
 	//Holiday Planning
 	private final static String PROP_HOLIDAY_PLANNING_LABELS		= "transportation.holidayplanning.lables";
-
+	private final static String PROP_EXPORT_SCHEDULES		= "transportation.filename.exportschedules";
+	private final static String PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD	= "transportation.format.employeescheduleout";
+	private final static String PROP_TRANSPORTATION_CSVFILE_SEPARATOR	= "transportation.default.csvfileseparator";
+	
 	static {
 
 
@@ -233,7 +236,9 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_TRANSPORTATION_FILENAME_EXTGEOINLOCDB,"com/freshdirect/transadmin/datamanager/externalgeocodes_in_locationdb.xml");
 
 		defaults.put(PROP_TRANSPORTATION_FILE_SEPARATOR,"\r\n");
-
+		
+		defaults.put(PROP_TRANSPORTATION_CSVFILE_SEPARATOR,",");
+		
 		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_PROVIDERURL,"http://crm:7001/TrnAdmin/download.do");
 
 		defaults.put(PROP_TRANSPORTATION_DOWNLOAD_FOLDER,"");
@@ -322,6 +327,9 @@ public class TransportationAdminProperties {
 		defaults.put(PROP_ZONE_EXPANSION_WORKTABLES,"ZONE_WORKTABLE=146,CT_ZONE_WORKTABLE=200,HAMP_ZONE_WORKTABLE=3268085,NJ_ZONE_WORKTABLE=2152018,COS_ZONE_WORKTABLE=1742307,CTCOS_ZONE_WORKTABLE=250");
 		defaults.put(PROP_HOLIDAY_PLANNING_LABELS,"Snow, Heavy Rain, Memorial Day");
 
+		defaults.put(PROP_EXPORT_SCHEDULES,"Export_Schedules_");
+		defaults.put(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD, 	"com/freshdirect/transadmin/datamanager/employeeschedule_in.xml");
+
 		refresh();
 	}
 
@@ -346,6 +354,9 @@ public class TransportationAdminProperties {
     }
     public static String getFileSeparator() {
     	return get(PROP_TRANSPORTATION_FILE_SEPARATOR);
+    }
+    public static String getCSVFileSeparator() {
+    	return get(PROP_TRANSPORTATION_CSVFILE_SEPARATOR);
     }
 
     public static String getExtGeoLocationDBInputFormat() {
@@ -669,6 +680,14 @@ public class TransportationAdminProperties {
     }
 	public static String getScribHolidayLabels() {
 		return get(PROP_HOLIDAY_PLANNING_LABELS);
+    }
+	
+	public static String getExportSchedulesFilename() {
+		return get(PROP_EXPORT_SCHEDULES);
+    }
+	
+	public static String getEmployeeScheduleOutputFormat() {
+    	return get(PROP_TRANSPORTATION_FORMAT_EMPPLOYEESCHEDULE_UPLOAD);
     }
 	
 }

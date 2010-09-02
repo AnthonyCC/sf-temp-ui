@@ -11,6 +11,7 @@ import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.transadmin.model.DispositionType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -136,6 +137,8 @@ public interface DomainManagerI extends BaseManagerI {
 	void doGeoRestriction(String zone[][]);	
 			
 	void saveScheduleGroup(Collection schedules, String[] employeeIds, Date weekOf);
+	
+	void saveOrUpdateEmployeeSchedule(List<ScheduleEmployee> scheduleEmp);
 	
 	void copyScheduleGroup(String[] employeeIds, Date sourceWeekOf, Date destinationWeekOf, String day);
 	

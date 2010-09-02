@@ -392,8 +392,41 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return result;
 
 	}
-
+	
+	public Collection getScheduleEmployees(Date weekOf, String day) {
+		List result = new ArrayList();
+		Collection employeeInfos = getActiveInactiveEmployees();
 		
+		for (Iterator it = employeeInfos.iterator(); it.hasNext();) {
+			EmployeeInfo eInfo = (EmployeeInfo) it.next();
+			Collection schedules = getDomainManagerDao().getScheduleEmployee(eInfo.getEmployeeId(), getParsedDate(weekOf),day);
+			ScheduleEmployeeInfo sInfo = new ScheduleEmployeeInfo();
+			Collection empRoles = this.domainManagerDao.getEmployeeRole(eInfo.getEmployeeId());
+			Map<String, String> employeeTeamMapping = ModelUtil.getIdMappedTeam(domainManagerDao.getTeamInfo());
+			
+			if (empRoles != null && empRoles.size() > 0) {
+				if (EnumResourceSubType.isSchedule((EnumResourceSubType.getEnum(((EmployeeRole) empRoles.toArray()[0])
+															.getEmployeeSubRoleType().getCode())))) {
+					sInfo.setEmpRole(empRoles);
+					sInfo.setEmpInfo(eInfo);
+					sInfo.setSchedule(schedules);
+					result.add(sInfo);
+				}
+			}
+			Collection empStatus = this.domainManagerDao.getEmployeeStatus(eInfo.getEmployeeId());
+			if (empStatus != null && empStatus.size() > 0) {
+				sInfo.setTrnStatus(""+ ((EmployeeStatus) (empStatus.toArray()[0])).isStatus());
+			}
+			
+			sInfo.setLeadInfo(TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo
+										(employeeTeamMapping.get(sInfo.getEmployeeId()), this));
+			if(employeeTeamMapping.containsValue(sInfo.getEmployeeId())) {
+				sInfo.setLead(true);
+			}
+		}
+		return result;
+
+	}
 
 	public WebSchedule getSchedule(String id, Date weekOf) {
 		EmployeeInfo info = TransAdminCacheManager.getInstance().getActiveInactiveEmployeeInfo(id, this);

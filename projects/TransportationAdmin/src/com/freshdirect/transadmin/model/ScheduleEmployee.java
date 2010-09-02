@@ -16,7 +16,16 @@ public class ScheduleEmployee implements Serializable, Cloneable {
 	private String day;
 	
 	private Date weekOf;
+	private Date date;
 	
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
 	public ScheduleEmployee() {
 		super();
 	}

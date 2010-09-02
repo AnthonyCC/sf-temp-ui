@@ -660,7 +660,7 @@ public class TransStringUtil {
 
 	}
 	
-	public String[] getDates(String date,String day) throws Exception
+	public static String[] getDates(String date,String day) throws Exception
 	{		
 		Date d=TransStringUtil.getDate(date);
 		Calendar c=Calendar.getInstance();

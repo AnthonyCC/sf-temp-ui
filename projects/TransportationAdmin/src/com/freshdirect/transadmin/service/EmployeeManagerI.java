@@ -41,7 +41,8 @@ public interface EmployeeManagerI extends BaseManagerI {
 	Collection getSupervisors();
 	
 	Collection getPunchInfo(String date);
-	Collection getScheduleEmployees(Date weekOf);	
+	Collection getScheduleEmployees(Date weekOf);
+	Collection getScheduleEmployees(Date weekOf, String day);
 	WebSchedule getSchedule(String id, Date weekOf);
 	ScheduleEmployee getSchedule(String id, String weekOf, String day);
 	

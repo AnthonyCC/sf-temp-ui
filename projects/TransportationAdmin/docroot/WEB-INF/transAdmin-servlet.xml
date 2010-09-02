@@ -125,6 +125,8 @@
                 <prop key="/notification.do">adminController</prop>
                 <prop key="/gpsadmin.do">dispatchController</prop>
                 
+                <prop key="/uploadschedules.do">scheduleUploadFormController</prop>
+
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
                 <prop key="/geographyrestriction.do">adminController</prop>
                	<prop key="/handoff.do">handOffFormController</prop>
@@ -456,6 +458,13 @@
         <property name="successView" value="dlvServiceTimeTypeEdit" />
         <property name="formView" value="dlvServiceTimeTypeEdit" />
 	</bean>
+	<bean id="scheduleUploadFormController" class="com.freshdirect.transadmin.web.ScheduleUploadFormController">
+		<property name="locationManagerService" ref="locationManager"/>
+		<property name="domainManagerService" ref="domainManager"/>
+        <property name="commandClass" value="com.freshdirect.transadmin.web.model.ScheduleFileUploadCommand"/>
+        <property name="formView" value="uploadScheduleView"/>
+        <property name="successView" value="uploadScheduleView"/>        
+    </bean>
 	<bean id="routingInputFormController" class="com.freshdirect.transadmin.web.RoutingInputFormController">
 		<property name="locationManagerService" ref="locationManager"/>
 		<property name="domainManagerService" ref="domainManager"/>

@@ -1,9 +1,13 @@
 package com.freshdirect.transadmin.web;
 
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -13,15 +17,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
+import com.freshdirect.transadmin.datamanager.parser.FileCreator;
+import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -36,6 +44,7 @@ import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebTeamSchedule;
 
@@ -90,7 +99,9 @@ public class DomainController extends AbstractMultiActionController {
 	public ModelAndView employeeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
         String empStatus = request.getParameter("empstatus");
+        String sDate=request.getParameter("sDate");
         Collection dataList = null;
+        Collection empList = null;
        
         if("T".equalsIgnoreCase(empStatus)) {
         	dataList = employeeManagerService.getTerminatedEmployees();
@@ -139,8 +150,14 @@ public class DomainController extends AbstractMultiActionController {
 					}
 				}
 			}
+			if("y".equalsIgnoreCase(request.getParameter("export"))&&!TransStringUtil.isEmpty(request.getParameter("sDate"))){				
+				exportSchedules(request, response, sDate, status);
+				return null;
+			}
+			
         	request.setAttribute("status", status);
         	request.setAttribute("scheduleDate", getClientDate(_scheduleWeekOf));
+        	request.setAttribute("uploadScheduleDate", sDate);
         	return new ModelAndView("scheduleView","employees",dataList);
 		} else if("C".equalsIgnoreCase(empStatus)) {
         	
@@ -187,6 +204,133 @@ public class DomainController extends AbstractMultiActionController {
 			dataList = employeeManagerService.getEmployees();
 		}
         return new ModelAndView("employeeView","employees",dataList);
+	}
+
+	public ModelAndView uploadSchedulesHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
+		return new ModelAndView("uploadScheduleView");
+	}
+	private void exportSchedules(HttpServletRequest request,
+			HttpServletResponse response, String sDate, String status) {
+		Collection empList;
+		
+			try {
+				Date _sDate = TransStringUtil.getWeekOf(TransStringUtil.getServerDate(sDate));
+				String day = null;
+				String DAY[] = new String[] { "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN" };
+				day = TransStringUtil.getDayofWeek(sDate);
+				if ("Monday".equalsIgnoreCase(day))
+					day = DAY[0];
+				else if ("Tuesday".equalsIgnoreCase(day))
+					day = DAY[1];
+				else if ("Wednesday".equalsIgnoreCase(day))
+					day = DAY[2];
+				else if ("Thursday".equalsIgnoreCase(day))
+					day = DAY[3];
+				else if ("Friday".equalsIgnoreCase(day))
+					day = DAY[4];
+				else if ("Saturday".equalsIgnoreCase(day))
+					day = DAY[5];
+				else if ("Sunday".equalsIgnoreCase(day))
+					day = DAY[6];
+				empList = employeeManagerService.getScheduleEmployees(_sDate,day);
+				if ("a".equalsIgnoreCase(status) || "i".equalsIgnoreCase(status)) {
+					for (Iterator it = empList.iterator(); it.hasNext();) {
+						ScheduleEmployeeInfo sInfo = (ScheduleEmployeeInfo) it.next();
+						if ("a".equalsIgnoreCase(status)
+								&& "false".equalsIgnoreCase(sInfo.getTrnStatus())) {
+							it.remove();
+						}
+						if ("i".equalsIgnoreCase(status)
+								&& ("true".equalsIgnoreCase(sInfo.getTrnStatus()))) {
+							it.remove();
+						}
+						if ("i".equalsIgnoreCase(status)
+								&& sInfo.getTrnStatus() == null
+								&& "A".equalsIgnoreCase(sInfo.getStatus())) {
+							it.remove();
+						}
+						if ("a".equalsIgnoreCase(status)
+								&& sInfo.getTrnStatus() == null
+								&& "I".equalsIgnoreCase(sInfo.getStatus())) {
+							it.remove();
+						}
+					}
+				}
+				generateScheduleFile(sDate,empList,request,response);				
+			} catch (Exception e) {					
+				e.printStackTrace();
+			}		
+	}
+
+	private void generateScheduleFile(String date, Collection empList,HttpServletRequest request,
+			HttpServletResponse response) throws Exception{
+		
+		Collection schedules=new ArrayList();
+		Map<String, ScheduleEmployee> result=new HashMap();
+		for (Iterator it = empList.iterator(); it.hasNext();) {
+			ScheduleEmployeeInfo _sInfo = (ScheduleEmployeeInfo) it.next();
+			schedules = _sInfo.getSchedule();
+			ScheduleEmployee _empS=null;
+			if(_sInfo.getSchedule().size()==0){
+				_empS = new ScheduleEmployee();
+				_empS.setEmployeeId(_sInfo.getEmployeeId());
+				_empS.setDate(TransStringUtil.getDate(date));
+				result.put(_empS.getEmployeeId(),_empS);
+			}
+			
+			for (Iterator iterator = schedules.iterator(); iterator.hasNext();) {
+				ScheduleEmployee _empSchedule=(ScheduleEmployee)iterator.next();
+					_empSchedule.setDate(TransStringUtil.getDate(date));
+					result.put(_empSchedule.getEmployeeId(),_empSchedule);
+			}
+		}
+		
+		String exportFileName = TransportationAdminProperties.getExportSchedulesFilename()
+								+com.freshdirect.transadmin.security.SecurityManager.getUserName(request)
+								+".csv";
+		
+		generateEmployeeScheduleFile(TransportationAdminProperties.getEmployeeScheduleOutputFormat(), exportFileName, "row", "rowBean", result, null);
+				
+		File outputFile = new File(exportFileName);
+		response.setBufferSize((int)outputFile.length());
+
+		response.setHeader("Content-Disposition", "attachment; filename=\""+outputFile.getName()+"\"");
+		response.setContentType("application/x-download");
+		response.setHeader("Pragma", "public");
+		response.setHeader("Cache-Control", "max-age=0");
+		response.setContentLength((int)outputFile.length());
+		FileCopyUtils.copy(new FileInputStream(outputFile), response.getOutputStream());
+		
+	}
+	
+	public boolean generateEmployeeScheduleFile(String configurationPath, String outputFile, String recordName,String beanName, Map data, IDataAssembler assembler) {
+		
+        try {
+        	FileCreator creator = new FileCreator(configurationPath, outputFile);
+        	creator.setRecordSeperator(TransportationAdminProperties.getCSVFileSeparator());
+        	creator.open();        	        	
+        	
+        	if(data != null) {
+        		Iterator iterator = data.values().iterator();
+        		Object tmp = null;
+	        	while(iterator.hasNext()) {
+	        		tmp = iterator.next();
+	        		creator.setBean(beanName, tmp);
+	                creator.write(recordName);
+	                creator.setRecordSeperator("\n");
+	    		}
+	        	
+        	}        	
+            // Close buffered output to write contents
+            creator.close();
+            return true;
+        } catch (FlatwormCreatorException flatwormUnsetFieldValueError) {
+            flatwormUnsetFieldValueError.printStackTrace();  
+        } catch (IOException ioExp) {
+        	ioExp.printStackTrace();  
+        } 
+        return false;
 	}
 
 	/**

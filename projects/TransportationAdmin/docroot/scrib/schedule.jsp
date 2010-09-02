@@ -83,9 +83,21 @@
 							<option value="i">TransApp Inactive</option>
 							<option value="ae">All Employees</option>
 						</select>					
-					</div>
-					<div style="float:left;text-align:center;font-weight:bold"> Date<br>&nbsp;
-							<input maxlength="10" size="10" name="uploadScheduleDate" id="uploadScheduleDate" style="width:75px" value='<c:out value="${uploadScheduleDate}"/>' />
+					</div>					
+				<div style="float:left;"><br>&nbsp;
+					<span>
+                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter();" />
+                  </span> 
+                  <span>
+                     <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
+                  </span>
+                  <span>
+                     <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
+                  </span>
+                   </div>
+				</div>
+				<div style="float:left;font-weight:bold"> Date<br>&nbsp;
+						<span>	<input maxlength="10" size="10" name="uploadScheduleDate" id="uploadScheduleDate" style="width:75px" value='<c:out value="${uploadScheduleDate}"/>' />
                     		<a href="#" id="trigger_uploadScheduleDate" style="font-size: 10px;">
                         		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
                     		</a>
@@ -100,22 +112,13 @@
 	                        button : "trigger_uploadScheduleDate" 
 	                       }
 	                      );
-	                      </script>
-                    </div>
-				<div style="float:left;"><br>&nbsp;
-					<span>
-                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter();" />
-                  </span> 
-                  <span>
-                     <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
-                  </span>
-                  <span>
-                     <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
-                  </span>
-                  <span>
-                     <input style="font-size:11px;width:100px;" type = "button" value="Export Schedules" onclick="javascript:window.open('uploadschedules.do','upload','height=250,width=400,resizable=no');" />
-                  </span>  </div>
-				</div>
+	                      </script></span>
+	                 <span>
+	                     <input style="font-size:11px;width:50px;" type = "button" value="Export" onclick="javascript:exportSchedules();" />
+	                     <input style="font-size:11px;width:50px;" type = "button" value="Upload" onclick="javascript:uploadSchedules();" />                     
+                 	 </span>	                
+                 </div>
+                   
 			</div>
 		</div>
 
@@ -151,7 +154,6 @@
                                 <ec:column property="fri" title="FRI"/>
                                 <ec:column property="sat" title="SAT"/>
                                 <ec:column property="sun" title="SUN"/>
-                                 
 							</ec:row>
 						</ec:table>
     
@@ -161,20 +163,21 @@
 		</div>
 	</div>	
 		<script>
-		   function uploadSchedules(){
+			function uploadSchedules(){
+				 var confirmed = confirm ("You are about to upload Schedule data. Do you want to continue?");
+				 if(confirmed){
+					javascript:window.open('uploadschedules.do','upload','height=250,width=400,resizable=no');
+				 }
+			}		   	 	
+		   function exportSchedules(){
 			   var param1 = "y";
 			   var param2 = document.getElementById("uploadScheduleDate").value;
 			   if(param2==''){
-					alert('Please select date to upload schedules.');
+					alert('Please select date to export schedules.');
 			   }else{
-				   var confirmed = confirm ("You are about to export REGULAR Schedules.  Do you want to continue? IF NOT, choose cancel to export MASTER Schedules.");
+				   var confirmed = confirm ("You are about to export Schedule data for "+param2);
 				   if(confirmed){
 			   			location.href = "employee.do?empstatus=S&export="+param1+"&sDate="+param2;
-			   	   }else{
-				   		var masterconfirm=confirm ("You are about to upload MASTER Schedules.  Do you want to continue?");
-				   		if(masterconfirm)
-					   		var param3 = '01/01/1900';
-				   			location.href = "employee.do?empstatus=S&export="+param1+"&sDate="+param3;
 			   	   }
 			   }
 		   }
