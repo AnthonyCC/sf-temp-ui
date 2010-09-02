@@ -9,6 +9,10 @@
 	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do,autoDispatch.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
+	     <menu id="OPR008" title="Plan Summary" orientation="LEFT" link="plansummary.do">
+	     	<access-uris>plansummary.do</access-uris>
+	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
+	     </menu>
 	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
 	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
@@ -42,20 +46,12 @@
 	<menu id="MNM002" title="ROUTING" orientation="LEFT" link="">
 		 <access-uris></access-uris>
 	     <access-roles></access-roles>
-	     
-	     
-	      <menu id="RUT001" title="HandOff" orientation="RIGHT" link="handoff.do">
+	     	     
+	     <menu id="RUT001" title="HandOff" orientation="RIGHT" link="handoff.do">
 	     	<access-uris>handoff.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>  
+	     </menu>     
 	     
-	     
-	     <!--
-		 <menu id="RUT005" title="Service Time" orientation="LEFT" link="dlvservicetime.do">
-	     	<access-uris>dlvservicetime.do,deletedlvservicetime.do,editdlvservicetime.do</access-uris>
-	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
-	     </menu>
-	     -->
 	     <menu id="RUT002" title="Service Time Scenario" orientation="RIGHT" link="dlvservicetimescenario.do">
 	     	<access-uris>dlvservicetimescenario.do,deletedlvservicetimescenario.do,editdlvservicetimescenario.do,dlvservicetimescenariodisplay.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnPlanning</access-roles>
@@ -71,16 +67,22 @@
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
+     	 <menu id="RUT005" title="Scrib Summary" orientation="LEFT" link="scribsummaryview.do">
+	     	<access-uris>scribsummaryview.do</access-uris>
+     	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
+     	 </menu> 
      	 
-     	 <menu id="RUT005" title="Early Warning" orientation="LEFT" link="earlywarning.do">
+     	 <menu id="RUT006" title="Early Warning" orientation="LEFT" link="earlywarning.do">
 	     	<access-uris>earlywarning.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
      	 
-     	 <menu id="RUT006" title="Unassigned" orientation="LEFT" link="unassigned.do">
+     	 <menu id="RUT007" title="Unassigned" orientation="LEFT" link="unassigned.do">
 	     	<access-uris>unassigned.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu>
+     	 
+     	       	 
 </menu>
 
 	<menu id="MNM003" title="GEOGRAPHY" orientation="LEFT" link="">

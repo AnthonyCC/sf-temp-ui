@@ -47,6 +47,7 @@
  		 	    <prop key="/plan.do">dispatchController</prop>
  		 	    <prop key="/deleteplan.do">dispatchController</prop>
  		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
+ 		 	    <prop key="/plansummary.do">dispatchController</prop>
  		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/dispatchSummary.do">dispatchController</prop>
@@ -115,6 +116,7 @@
 				<prop key="/drivingdirection.do">dispatchController</prop>
                 <prop key="/unassignedactiveemployees.do">dispatchController</prop>
                 <prop key="/scrib.do">scribController</prop>
+                <prop key="/scribsummaryview.do">scribController</prop>
                 <prop key="/copyscrib.do">scribController</prop>
                 <prop key="/deletescrib.do">scribController</prop>
                 <prop key="/editscrib.do">scribFormController</prop>
@@ -126,7 +128,7 @@
                 <prop key="/gpsadmin.do">dispatchController</prop>
                 
                 <prop key="/uploadschedules.do">scheduleUploadFormController</prop>
-
+                
                 <prop key="/zoneexpansion.do">zoneExpansionFormController</prop>
                 <prop key="/geographyrestriction.do">adminController</prop>
                	<prop key="/handoff.do">handOffFormController</prop>
@@ -222,7 +224,8 @@
  		 	<prop key="/deletezone.do">zoneDeleteHandler</prop>	
  		 	<prop key="/deleteregion.do">regionDeleteHandler</prop>	
  		 	<prop key="/deletetruck.do">truckDeleteHandler</prop>
- 		 	<prop key="/plan.do">planHandler</prop>			      
+ 		 	<prop key="/plan.do">planHandler</prop>
+ 		 	<prop key="/plansummary.do">planSummaryHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
  		 	<prop key="/dispatch.do">dispatchHandler</prop>
  		 	<prop key="/dispatchSummary.do">dispatchSummaryHandler</prop>
@@ -269,6 +272,7 @@
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
             <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
             <prop key="/scrib.do">scribHandler</prop>
+            <prop key="/scribsummaryview.do">scribSummaryHandler</prop>
             <prop key="/copyscrib.do">copyScribHandler</prop>
             <prop key="/deletescrib.do">deleteScribHandler</prop>	
             <prop key="/earlywarning.do">earlyWarningHandler</prop>
@@ -277,7 +281,7 @@
             <prop key="/notification.do">notificationHandler</prop>
             <prop key="/gpsadmin.do">gpsDrivingDirectionsHandler</prop>
             <prop key="/geographyrestriction.do">geographyRestrictionsHandler</prop>
-            
+                            
             <prop key="/cutoffreport.do">cutOffReportHandler</prop>
             <prop key="/sapupload.do">sapUploadHandler</prop>
             <prop key="/communityreport.do">communityReportHandler</prop>
