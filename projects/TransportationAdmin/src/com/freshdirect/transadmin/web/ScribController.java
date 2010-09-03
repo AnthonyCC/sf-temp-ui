@@ -328,13 +328,12 @@ public class ScribController extends AbstractMultiActionController
           Map<String, List<IDeliverySlot>> selectedWindows = null;
           Map<String, List<IDeliverySlot>> baseWindows = null;
 		  
-          try {
+          /* try {
 				selectedWindows = dlvProxy.getTimeslotsByDate(_selectedDate, null, null);
 				baseWindows = dlvProxy.getTimeslotsByDate(_baseDate, null, null);
-		  } catch (RoutingServiceException e) {
-				// TODO Auto-generated catch block
+		  } catch (RoutingServiceException e) {				
 				e.printStackTrace();
-		  }
+		  } */
                     
           Set<CustomTimeOfDay> allWindows = new TreeSet<CustomTimeOfDay>();
           Map<String, Map<CustomTimeOfDay, Integer>> selectedScribMapping = new TreeMap<String, Map<CustomTimeOfDay, Integer>>();

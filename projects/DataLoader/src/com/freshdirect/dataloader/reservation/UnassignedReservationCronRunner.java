@@ -44,6 +44,8 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 	
 	public static void main(String[] args) {
 		
+		long startTime = System.currentTimeMillis();
+		
 		if(!FDStoreProperties.isDynamicRoutingEnabled()) {
 			return;
 		}
@@ -133,11 +135,18 @@ public class UnassignedReservationCronRunner extends BaseReservationCronRunner {
 				System.out.println("Final List of Unassigned Being Processed :"+ unassignedReservations.size());
 				if(unassignedReservations != null && unassignedReservations.size() > 0) {			
 					int unassignedProcessedCnt = 0;
+					int unassignedBatchCnt = 0;
+										
 					for (DlvReservationModel reservation : unassignedReservations) {
 						unassignedProcessedCnt++;
-						if(unassignedProcessedCnt > FDStoreProperties.getUnassignedProcessingLimit()) {							
-							System.out.println("Unassigned Processing Batch Completed : "+FDStoreProperties.getUnassignedProcessingLimit());
-							break;
+						unassignedBatchCnt++;
+						if(unassignedBatchCnt > 25) {
+							unassignedBatchCnt = 0;
+							long batchTime = System.currentTimeMillis();
+							if((batchTime - startTime) > (FDStoreProperties.getUnassignedProcessingLimit() * 60 * 1000)) {
+								System.out.println("Unassigned Processing Batch Completed : "+unassignedProcessedCnt);
+								break;
+							}														
 						}						
 						cron.processReservation(dlvManager,custManager,reservation);
 					}

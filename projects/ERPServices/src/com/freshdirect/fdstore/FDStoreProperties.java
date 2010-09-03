@@ -811,7 +811,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_DP_CART_ENABLED, "false");
 		
 		defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");		
-		defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "100");
+		defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "8");
 		refresh();
 	}
 
