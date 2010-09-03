@@ -65,7 +65,7 @@ request.setAttribute("listPos", "SystemMessage,ZDeliveryRight");
 			    </tr>
 			</table>
 		<%}else{ %>
-			<fd:IncludeMedia name="/media/editorial/site_access/deliveryinfo_siteaccess.ftl" withErrorReport="true"/>
+			<fd:IncludeMedia name="/media/editorial/site_access/deliveryinfo.html" withErrorReport="true"/>
 		<% } %>
     </tmpl:put>
 </tmpl:insert>

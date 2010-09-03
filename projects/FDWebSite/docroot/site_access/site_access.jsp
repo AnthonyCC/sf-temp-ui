@@ -1,7 +1,7 @@
 <%@ page import='java.util.*'  %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
-<%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName" %>
 <%@ page import="com.freshdirect.webapp.util.JspMethods" %>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -10,16 +10,20 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
-
 <%
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
-	String successPage = request.getParameter("successPage");
+	String successPage = NVL.apply(request.getParameter("successPage"), "");
 	String zipcode = NVL.apply(request.getParameter("zipcode"), "");
     String serviceType=NVL.apply(request.getParameter("serviceType"), "");
     String corpZipcode = NVL.apply(request.getParameter("corpZipcode"), "");
     String corpServiceType=NVL.apply(request.getParameter("corpServiceType"), "");
+	boolean isCorporate = "corporate".equalsIgnoreCase(serviceType);
+	/* get overlay type passed */
+	String overlayType=NVL.apply(request.getParameter("ol"), "");
+	String siteAccessPage = NVL.apply(request.getParameter("siteAccessPage"), "");
+
     
-    if (successPage == null) {
+    if (successPage == null || successPage == "") {
   		// null, default to index.jsp
   		successPage = "/index.jsp";
  	}
@@ -30,21 +34,21 @@
 		successPage = "/department.jsp?deptId=COS";
 	}
  
-	if (successPage.startsWith("/index.jsp") && isBestCellars) {
-		successPage = "/department.jsp?deptId=win";
-	}
-    
-    String refProStr="ref_prog_id=";
-    if(successPage.indexOf(refProStr)!=-1)
-    {
-        String refProgId=successPage.substring(successPage.indexOf(refProStr)+refProStr.length(),successPage.indexOf(refProStr)+refProStr.length()+successPage.substring(successPage.indexOf(refProStr)+refProStr.length(),successPage.length()).indexOf("&"));        
-        request.setAttribute("RefProgId",refProgId);
-    }
 
-	String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
-	String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;	
-    
-    //check for new serviceType, and if either GC or RH is enabled
+	String refProStr="ref_prog_id=";
+	if(successPage.indexOf(refProStr)!=-1)
+	{
+		String refProgId=successPage.substring(successPage.indexOf(refProStr)+refProStr.length(),successPage.indexOf(refProStr)+refProStr.length()+successPage.substring(successPage.indexOf(refProStr)+refProStr.length(),successPage.length()).indexOf("&"));        
+		request.setAttribute("RefProgId",refProgId);
+	}
+
+	//String moreInfoPage = "site_access_address.jsp?successPage="+ URLEncoder.encode(successPage);
+	/* moreInfo, redirect back to the same page, and pass in the overlayType */
+	String moreInfoPage = "site_access.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=moreInfo";
+	//String failurePage = "delivery.jsp?successPage="+ URLEncoder.encode(successPage)+"&serviceType="+serviceType;	
+	String failurePage = "site_access.jsp?successPage="+ URLEncoder.encode(successPage)+"&ol=na&serviceType="+serviceType;
+
+	//check for new serviceType, and if either GC or RH is enabled
 	String gcLanding = FDStoreProperties.getGiftCardLandingUrl();
 	String rhLanding = FDStoreProperties.getRobinHoodLandingUrl();
 	boolean isGiftCardEnabled = FDStoreProperties.isGiftCardEnabled();
@@ -86,224 +90,114 @@
 request.setAttribute("sitePage", "site_access");
 request.setAttribute("listPos", "CategoryNote");
     
-	String siteAccessPage = request.getParameter("siteAccessPage");
-	if(siteAccessPage == null){
-		siteAccessPage = "aboutus";
-	}
 	//String actionURI = "/site_access/site_access.jsp";
 	String actionURI = request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage;
 
-	if (request.getParameter("newRequest") == null) {
-		response.sendRedirect(response.encodeRedirectURL("/site_access/site_access_lite.jsp?successPage="+successPage));
-	}
+	//if (request.getParameter("newRequest") == null) {
+	//	response.sendRedirect(response.encodeRedirectURL("/site_access/site_access_lite.jsp?successPage="+successPage));
+	//}
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
-		<meta name="verify-v1" content="2MXiorvt33Hqj6QEBylmr/TwpVMfiUQArG0etUIxV2c=" />
-		<meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and household items at incredible prices delivered to the New York area.">
-		<meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping">
-		<title><%= isBestCellars ? "Best Cellars" : "FreshDirect"%></title>
-		<script language="javascript" src="/assets/javascript/prototype.js"></script>
-		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		<script language='javascript'>
-			function validate(){
-				var zipcode = document.forms[0].zipcode.value;
-				var corpZipCode = document.forms[0].corpZipcode.value;
-				if(zipcode !='' && corpZipCode == ''){
-					if(zipcode.length!=5 || isNaN(zipcode) || zipcode=='00000'){
-						document.forms[0].action = '<%=actionURI%>';
-					}else{
-						document.forms[0].action = "/site_access/site_access.jsp";
-					}
-				}else{
-					if(corpZipCode.length != 5 ||isNaN(corpZipCode) || corpZipCode=='00000'){
-						document.forms[0].action = '<%=actionURI%>';
-					}else{
-						document.forms[0].action = "/site_access/site_access.jsp";
-					}
-				}
-								
-				return true;
-			}
-			function gcValidate() {
-				var gcZip = $('gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>').value;
-				if(gcZip.length == 5 && !isNaN(gcZip)&& gcZip !='00000') {
-					$('site_access_gc').action = "/site_access/site_access.jsp";
-				}else{
-					$('site_access_gc').action = '<%=actionURI%>';
-				}
-				$('site_access_gc').submit();
-				
-			}
-		</script>
-	</head>
-	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20" onLoad="window.document.site_access_corp.<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>.focus();">
+		<title>FreshDirect</title>
+
+		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 		
-	<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
-    <jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
+		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		
+	</head>
+	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+	
+		
+		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
+		<jsp:include page="/common/template/includes/ad_server.jsp" flush="false"/>
 		
 		<fd:SiteAccessController action='checkByZipCode' successPage='<%= successPage %>' moreInfoPage='<%= moreInfoPage %>' failureHomePage='<%= failurePage %>' result='result'>
-		<%
-			//When there is an error during posting the request such as invalid zip code error
-			//or technical difficulty error we reset the successpage to index.jsp
-			if(request.getAttribute("failed") !=  null && request.getAttribute("failed").equals("true")) {
-				successPage = "/index.jsp";
-			}
-		%>
-			 <div align="center">
-				<table border="0" cellspacing="0" cellpadding="0" width="745">
-					<tr>
-						<td width="555" valign="top">
-							<table valign="top" border="0" cellspacing="0" cellpadding="0" width="555">
-								<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>
-								<tr>
-									<td align="left"><img src="/media/editorial/site_access/images/siteaccess_header.gif" width="551" height="49" alt="Our food is fresh. Our customers are spoiled." border="0"><br></td>
-								</tr>
-								<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="10"><br></td></tr>
-								<tr><td>
-								<img src="/media/editorial/site_access/images/siteaccess_<%= siteAccessPage %>_rev.gif" width="550" height="20" alt="" border="0" usemap="#siteAccessNav" vspace="0">
-								<map name="siteAccessNav" id="siteAccessNav">
-									<area shape="rect" coords="0,0,85,20" href='<%= "/about/index.jsp?siteAccessPage=aboutus"%>' alt="About Us" />
-									<area shape="rect" coords="90,0,210,20" href='<%= "/help/delivery_info.jsp?siteAccessPage=delivery&successPage="+successPage%>' alt="Delivery Info" />
-									<area shape="rect" coords="215,0,315,20" href='<%= "/about/plant_tour/index.jsp?siteAccessPage=tour"%>' alt="Take A Tour" />
-									<area shape="rect" coords="320,0,425,20" href='<%= "/about/tips.jsp?siteAccessPage=tips&successPage="+successPage%>' alt="Tips & Tricks" />
-									<area shape="rect" coords="430,0,550,20" href='<%= "/about/testimonial.jsp?siteAccessPage=testimonials&successPage="+successPage%>' alt="Testimonials" />
-								</map>
-								</td></tr>
-								<tr><td><img src="/media_stat/images/layout/clear.gif" width="196" height="20"></td></tr>
-								<tr>
-									<td>
-										<!-- content lands here -->
-										<tmpl:get name='content'/>
-										<!-- content ends above here-->
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td valign="top"><img src="/media_stat/images/layout/clear.gif" width="25" height="1"></td>
-						<td width="180" valign="top">
-							<table valign="top" border="0" cellspacing="0" cellpadding="0" width="180">
-								<tr valign="top">
-									<td valign="top" align="center"><font class="text12"><b>Current customer? <a href='<%= "/login/login_main.jsp?successPage=" + URLEncoder.encode(successPage) %>'>Log In</a></b></font></td>
-								</tr>
-								<tr><td><img src="/media_stat/images/layout/clear.gif" width="180" height="10"></td></tr>
-							</table>
-							<table valign="top" border="0" cellspacing="0" cellpadding="0">
-								<form name="site_access_corp" method="post" onsubmit="return validate();">
-									<input type="hidden" name="successPage" value="<%= successPage %>">
-									<input type="hidden" name="siteAccessPage" value="<%= siteAccessPage %>">
-									<input type="hidden" name="newRequest" value="pass" />
-									<tr>
-										<td align="center" colspan="5"><img src="/media/editorial/site_access/images/zipcheck_side.gif" width="179" height="163"></td>
-									</tr>
-									<tr>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="5"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="165" height="5"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="5"></td>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td>
-									</tr>
-									<tr valign="middle">
-										<input type="hidden" name="serviceType" value="<%= EnumServiceType.HOME.getName()%>">
-										<td colspan="3" align="center" class="text10bold">
-											<% if ( !"WEB".equals(serviceType) ) { %>
-												<% if ( result.hasError("technicalDifficulty") ) { %>
-													<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
-												<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
-													<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
-												<%}%>
-											<% } %>
-											HOME ZIP CODE:<br>
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= zipcode %>' name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" tabindex="1">
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="6">				
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="5"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="165" height="5"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="5"></td>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td>
-									</tr>
-									<tr valign="middle">
-										<input type="hidden" name="corpServiceType" value="<%= EnumServiceType.CORPORATE.getName()%>">
-										<td colspan="3" align="center" class="text10bold">CORPORATE ZIP CODE:<br>
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
-											<input class="text11" type="text" size="13" style="width: 122px" maxlength="5" value='<%= corpZipcode %>' name="corpZipcode" tabindex="1"><br>
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_home_go" border="0" value="Check My Area" alt="GO" hspace="4" tabindex="2"><br>
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-											<img src="/media_stat/images/template/site_access/truck_zipcheck.jpg"  width="111" height="80" ><br>
-											<img src="/media_stat/images/layout/999966.gif" width="70%" height="2" vspace="10"><br>
-											<font class="text12"><br><b>Current customer?<br> <a href='<%= "/login/login_main.jsp?successPage=" + URLEncoder.encode(successPage) %>'>Click here to log in</a>.</b></font>	
-										</td>
-									</tr>
-									<tr>
-										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>
-										<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
-										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_rt_crnr_purp.gif" width="7" height="8"></td>
-									</tr>
-									<tr>
-										<td bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-									</tr>
-									<tr><td align="center" colspan="5"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-									<tr><td align="center" colspan="5"><img src="/media/editorial/site_access/images/site_access_questions.jpg" width="132" height="196"></td></tr>
-									<tr><td align="center" colspan="5"><font class="text11">E-mail us at<br><a href="mailto:service@freshdirect.com">service@freshdirect.com</a><br>or call 1-212-796-8002</font></td></tr>
-									<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="20"></td></tr>
-									</form>
-							</table>
-							<% if (FDStoreProperties.isGiftCardEnabled() || FDStoreProperties.isRobinHoodEnabled()) { %>
-								<table cellpadding="0" cellspacing="0" border="0">
-									<form name="site_access_gc" id="site_access_gc" method="post" action="/site_access/site_access.jsp" onSubmit="gcValidate();">
-									<input type="hidden" name="successPage" value="<%= successPage %>">
-									<input type="hidden" name="serviceType" value="<%= EnumServiceType.WEB.getName()%>">
-									<input type="hidden" name="newRequest" value="pass">
-									<tr>
-										<td align="center" colspan="5"><img src="/media/editorial/site_access/images/giftcards_side.gif" width="179" height="52"></td>
-									</tr>
-									<tr>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="10"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="165" height="10"></td>
-										<td><img src="/media_stat/images/layout/clear.gif" width="6" height="10"></td>
-										<td rowspan="2" bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
-									</tr>
-									<tr valign="middle">
-										<td colspan="3" align="center" class="text10">
-											<% if ( "WEB".equals(serviceType) ) { %>
-												<% if ( result.hasError("technicalDifficulty") ) { %>
-													<font class="text11rbold"><%=result.getError("technicalDifficulty").getDescription() %></font><br /><br />
-												<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) {  %>
-													<font class="text11rbold"><%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %></font><br /><br />
-												<%}%>
-											<% } %>
-											To get started, please<br /> Enter your zip code:<br /><img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br /><input class="text11" type="text" size="13" style="width: 122px" value="<%= zipcode%>" maxlength="5" name="<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" id="gc_<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>" tabindex="3"><br />
-											<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br />
-											<input type="image" src="/media_stat/images/template/site_access/go.gif" width="27" height="16" name="site_access_gc_go" border="0" value="Check My Area" alt="GO" tabindex="4"/>
-										</td>
-									</tr>
-										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_lft_crnr_purp.gif" width="7" height="8"></td>
-										<td align="center"><img src="/media_stat/images/layout/clear.gif" width="1" height="6"></td>
-										<td rowspan="2" colspan="2" valign="bottom"><img src="/media_stat/images/layout/qs_bottom_rt_crnr_purp.gif" width="7" height="8"></td>
-									</tr>
-									<tr>
-										<td bgcolor="#996699"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-									</tr>
-									<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="50"></td></tr>
-									</form>
-								</table>
-							<% } %>
-						</td>
-					</tr>
-				</table>
-			</div>	
+			<fd:IncludeMedia name="/media/editorial/site_access/site_access.html" />
+
+			<%--
+				Put any java-related variables needed by the page into the _page_options object. 
+			--%>
+			<script type="text/javascript">
+			<!--
+				var _page_options = {
+					gc: {
+						isEnabled: <%=FDStoreProperties.isGiftCardEnabled()%>,
+						landingPage: '<%=FDStoreProperties.getGiftCardLandingUrl()%>'
+					},
+					rh: {
+						isEnabled: <%=FDStoreProperties.isRobinHoodEnabled()%>,
+						landingPage: '<%=FDStoreProperties.getRobinHoodLandingUrl()%>'
+					},
+					enums: {
+						WEB: '<%=EnumServiceType.WEB.getName()%>',
+						HOME: '<%=EnumServiceType.HOME.getName()%>',
+						CORPORATE: '<%=EnumServiceType.CORPORATE.getName()%>',
+						DLV_ZIPCODE: '<%=EnumUserInfoName.DLV_ZIPCODE.getCode()%>',
+						DLV_CORP_ZIPCODE: '<%=EnumUserInfoName.DLV_CORP_ZIPCODE.getCode()%>'
+					},
+					overlayURL: '',
+					successPage: '<%=successPage%>',
+					siteAccessPage: '<%=URLEncoder.encode(siteAccessPage)%>',
+					errMsg: '',
+					errMsg_web: '',
+					zip: {
+						home: '<%= zipcode %>',
+						cos: '<%= corpZipcode %>',
+						web: '<%= zipcode %>'
+					},
+					actionURI: '<%= request.getRequestURI()+"?siteAccessPage="+siteAccessPage+"&successPage="+successPage %>',
+					loginPage: '<%= "/login/login_main.jsp?successPage=" + URLEncoder.encode(successPage) %>',
+					serviceType: {
+						serviceType: '',
+						corpServiceType: ''
+					}
+				};
+				<% if ( !"WEB".equals(serviceType) ) { %>
+					<% if ( result.hasError("technicalDifficulty") ) { %>
+						_page_options.errMsg = "<%=result.getError("technicalDifficulty").getDescription() %>";
+					<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
+						_page_options.errMsg = "<%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %>";
+					<%}%>
+				<% } %>
+				<% if ( "WEB".equals(serviceType) ) { %>
+					<% if ( result.hasError("technicalDifficulty") ) { %>
+						_page_options.errMsg_web = "<%=result.getError("technicalDifficulty").getDescription() %>";
+					<% } else if ( result.hasError(EnumUserInfoName.DLV_ZIPCODE.getCode()) ) { %>
+						_page_options.errMsg_web = "<%=result.getError(EnumUserInfoName.DLV_ZIPCODE.getCode()).getDescription() %>";
+					<%}%>
+				<% } %>
+				/*	check if an overlayType was pased in, and put it into the js object */
+				<% if ( !"".equals(overlayType) ) { %>
+					<% if ( "moreInfo".equalsIgnoreCase(overlayType) ) { %>
+						<% if ( isCorporate ) { %>
+							_page_options.overlayURL = '<%= "site_access_address.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=CORPORATE" %>';
+						<% }else{ %>
+							_page_options.overlayURL = '<%= "site_access_address.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=HOME" %>';
+						<% } %>
+					<% } %>
+					<% if ( "altCorp".equalsIgnoreCase(overlayType) ) { %>
+						_page_options.overlayURL = '<%= "/site_access/alt_dlv_corporate.jsp" %>';
+					<% } %>
+					<% if ( "altHome".equalsIgnoreCase(overlayType) ) { %>
+						_page_options.overlayURL = '<%= "/site_access/alt_dlv_home.jsp" %>';
+					<% } %>
+					<% if ( "na".equalsIgnoreCase(overlayType) ) { %>
+						_page_options.overlayURL = '<%= "delivery.jsp?successPage=" + URLEncoder.encode(successPage) + "&serviceType=" + serviceType %>';
+					<% } %>
+					<% if ( "corpSurvey".equalsIgnoreCase(overlayType) ) { %>
+						_page_options.overlayURL = '<%= "/survey/cos_site_access_survey.jsp?successPage=" + URLEncoder.encode(successPage) %>';
+					<% } %>
+				<% } %>
+			//-->
+			</script>
+
 		
-		<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
+			<%@ include file="/includes/net_insight/i_tag_footer.jspf" %>
 		</fd:SiteAccessController>
 	</body>
 </html>

@@ -463,6 +463,9 @@ public class FDStoreProperties {
 	
 	private static final String PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT = "fdstore.routing.unassignedprocesinglimit";
 	
+	//Brand media replacement (APPDEV-1308)
+	private final static String PROP_BRAND_MEDIA_IDS = "fdstore.brand.media.ids";
+
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -812,6 +815,10 @@ public class FDStoreProperties {
 		
 		defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");		
 		defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "8");
+
+		//Brand media replacement (APPDEV-1308)
+		defaults.put(PROP_BRAND_MEDIA_IDS, "none");
+
 		refresh();
 	}
 
@@ -1869,6 +1876,11 @@ public class FDStoreProperties {
 	//Delivery Pass at Checkout (APPDEV-664)
 	public static boolean isDPCartEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_DP_CART_ENABLED)).booleanValue();
+	}
+	
+	//Brand media replacement (APPDEV-1308)
+	public static String getBrandMediaIds() {
+		return get(PROP_BRAND_MEDIA_IDS);
 	}
 
 	public static boolean isPromoLineItemEmailDisplay() {

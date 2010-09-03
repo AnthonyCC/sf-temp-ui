@@ -51,14 +51,14 @@
                 if(showPopup) 
                     buf.append(
                     "<tr><td><div class='left_nav_divider'><!-- --></div>")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
                     else
                     buf.append("<tr><td ><div class='left_nav_divider'><!-- --></div><div class=\""+divClass+"\">");
             } else {
                 if(showPopup) 
                     buf.append(
                     "<tr><td >")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
                     else
                     buf.append("<tr><td ><div class=\""+divClass+"\">");
             }
@@ -67,7 +67,7 @@
             if(showPopup) 
                 buf.append(
                 "<tr><td>")
-                .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide(this.id);\">");
+                .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
             else
                 buf.append("<tr><td ><div class=\""+divClass+"\">");
 

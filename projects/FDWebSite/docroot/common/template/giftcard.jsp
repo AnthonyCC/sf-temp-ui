@@ -24,17 +24,15 @@
 <head>
     <title><tmpl:get name='title'/></title>
 
-    <%@ include file="/common/template/includes/metatags.jspf" %>
-
-    <script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
-	<script src="/assets/javascript/prototype.js" type="text/javascript" language="javascript"></script>
-	<script src="/assets/javascript/scriptaculous.js?load=effects,builder" type="text/javascript" language="javascript"></script>
-	<script  src="/assets/javascript/modalbox.js" type="text/javascript" language="javascript"></script>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<script  src="/assets/javascript/FD_GiftCards.js" type="text/javascript" language="javascript"></script>
 
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link href="/assets/css/giftcards.css" rel="stylesheet" type="text/css" />
-	<link href="/assets/css/modalbox.css" rel="stylesheet" type="text/css" />
+
+	<%-- NOT THIS INCLUDE @ include file="/shared/template/includes/ccl.jspf" --%>
+
 <%		
     {
        String onbeforeunload = (String)request.getAttribute("windowOnBeforeUnload");

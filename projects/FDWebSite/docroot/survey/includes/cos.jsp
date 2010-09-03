@@ -44,8 +44,8 @@ String survey_source=(String)request.getAttribute("survey_source");
         %>
            <%@ include file="/includes/i_error_messages.jspf" %>   
     <% } %>
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <form method="post" name="corporateServiceSurvey" action="<%=request.getRequestURI()%>#survey">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <%-- 1 --%>
     <tr>
         <td><img src="/media_stat/images/layout/clear.gif" width="140" height="1" border="0"></td>

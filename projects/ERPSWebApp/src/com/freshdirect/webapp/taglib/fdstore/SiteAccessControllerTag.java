@@ -37,9 +37,13 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 	private String successPage = null;
 	private String moreInfoPage = null;
 	private String failureHomePage = null;
-	private String altDeliveryHomePage = "alt_dlv_home.jsp";
-	private String altDeliveryCorporatePage = "alt_dlv_corporate.jsp";
-	private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
+	//changes for APPDEV-1196
+	//private String altDeliveryHomePage = "alt_dlv_home.jsp";
+	private String altDeliveryHomePage = "/site_access/site_access.jsp?ol=altHome";
+	//private String altDeliveryCorporatePage = "alt_dlv_corporate.jsp";
+	private String altDeliveryCorporatePage = "/site_access/site_access.jsp?ol=altCorp";
+	//private String failureCorporatePage = "/survey/cos_site_access_survey.jsp";
+	private String failureCorporatePage = "/site_access/site_access.jsp?ol=corpSurvey";
 	
 	private String resultName = null;
 
@@ -200,6 +204,8 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 					}
 				} else if ("checkByAddress".equalsIgnoreCase(action)) {
 					checkByAddress(request, result);
+				} else if ("doPrereg".equalsIgnoreCase(action)) {
+					doPrereg(request, result);
 				}
 			} catch (FDResourceException re) {
 				LOGGER.warn("FDResourceException occured", re);
@@ -397,6 +403,40 @@ public class SiteAccessControllerTag extends com.freshdirect.framework.webapp.Bo
 		if ((email != null) && (!"".equals(email))) {					
 			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, user.getZipCode(),this.serviceType);
 			LOGGER.debug("SAVED FUTURE ZONE TO NOTIFY");
+		}
+	}
+	
+	private void doPrereg(HttpServletRequest request, ActionResult result) throws FDResourceException {
+		HttpSession session = pageContext.getSession();
+		String email = request.getParameter("email");
+		String userEnteredZipcode = request.getParameter("zipcode");
+	    String zipCodePattern = "\\d{5}";
+		
+
+		if (email != null)
+			email = email.trim();
+		if ((email != null) && (!"".equals(email)) && (!com.freshdirect.mail.EmailUtil.isValidEmailAddress(email))) {
+			result.addError(true, "email", SystemMessageList.MSG_EMAIL_FORMAT);
+			return;
+		}
+
+		if (userEnteredZipcode != null)
+			userEnteredZipcode = userEnteredZipcode.trim();
+		if ((userEnteredZipcode != null) && (!"".equals(userEnteredZipcode)) && (!userEnteredZipcode.matches(zipCodePattern))) {
+			result.addError(true, "zipcode", SystemMessageList.MSG_ZIP_CODE);
+			return;
+		}
+		if (!result.isSuccess()) {
+			LOGGER.debug("THERE IS AN ERROR!!");
+			return;
+		}
+
+		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+
+		if ((email != null) && (!"".equals(email))) {
+		    setServiceType("PREREG");					
+			FDDeliveryManager.getInstance().saveFutureZoneNotification(email, userEnteredZipcode, this.serviceType);
+			LOGGER.debug("SAVED PREREG TO NOTIFY");
 		}
 	}
 

@@ -22,7 +22,7 @@
             %>
             <img src="/media_stat/images/navigation/global_nav/bottom_nav_giftcards.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%
-                } else if (bottomUri.indexOf("/newproducts.jsp") > -1) { 
+                } else if (bottomUri.indexOf("/newproducts.jsp") > -1 || bottomUri.indexOf("/newproducts_dfgs.jsp") > -1) { 
             %>
             <img src="/media_stat/images/navigation/global_nav/bottom_nav_newprod.gif" width="746" height="22" alt="" border="0" usemap="#bottomlinks" />
             <%

@@ -79,7 +79,8 @@ public class DCPDReportGenerator {
     }
 
 	private String quoted(String str) {
-		return "\"" + str + "\"";
+		//escape quotes already in string
+		return "\"" + str.replaceAll("\"", "\"\"") + "\"";
 	}
 	
 

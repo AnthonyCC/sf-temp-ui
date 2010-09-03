@@ -1,6 +1,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
 <%@ page import="com.freshdirect.common.address.AddressModel" %>
+<%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
@@ -13,8 +14,10 @@ request.setAttribute("survey_source","SiteAccess Page");
 <html>
 	<head>
 		<title>FreshDirect</title>
-		<script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+			<%@ include file="/common/template/includes/metatags.jspf" %>
+			<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+			<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+			<%@ include file="/shared/template/includes/ccl.jspf" %>
 	</head>
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br />

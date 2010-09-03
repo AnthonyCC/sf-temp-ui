@@ -233,6 +233,8 @@ public class PricingEngine {
 		while (i.hasNext()) {
 			String characteristic = (String) i.next();
 			String chValue = (String) options.get(characteristic);
+			//null check instead of throwing exception in findCharacteristicValuePrice
+			chValue = (chValue == null) ? "" : chValue;
 			if (DEBUG) LOGGER.debug("trying to price CV "+characteristic+","+chValue);
 			CharacteristicValuePrice cvp = pricing.findCharacteristicValuePrice(characteristic, chValue);
 			if (cvp==null) {

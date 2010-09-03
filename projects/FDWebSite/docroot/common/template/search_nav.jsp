@@ -6,15 +6,15 @@
 %><%@page import="com.freshdirect.fdstore.util.URLGenerator"%>
 <html>  
 <head>
-	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
-    <%@ include file="/common/template/includes/metatags.jspf" %>
     <title><tmpl:get name='title'/></title>
+	<%@ include file="/common/template/includes/metatags.jspf" %>
+	<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
 
-    <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link rel="stylesheet" href="/assets/yui/container/assets/container.css" type="text/css">
 	<link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
 
-    <script type="text/javascript" src="/assets/javascript/common_javascript.js"></script>
 <%
 final String trk = "srch"; // tracking code
 String criteria = request.getParameter("searchParams");

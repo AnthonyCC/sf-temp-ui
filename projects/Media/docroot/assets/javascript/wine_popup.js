@@ -25,7 +25,7 @@ var events = 0;
 /* FUNCTIONS */
 
 /* from the prototype lib*/
-function $() {
+function _$() {
 	var elements = new Array();
 	for (var i = 0; i < arguments.length; i++) {
 		var element = arguments[i];
@@ -57,7 +57,7 @@ function click_c(id) {
 		b = bottom menu (show above)
 		lnav = left menu (show to right)
 */
-function show(id, type) {
+function show_w(id, type) {
 
 	//mark as a showing menu
 	showing[id] = 1;
@@ -106,7 +106,7 @@ function show_t(id) {
 	//check if menu should be visible
 	if (showing[id] >= 1) {
 		//call show function, pass id and type
-		show(id, 't');
+		show_w(id, 't');
 	}
 }
 
@@ -122,7 +122,7 @@ function show_b(id) {
 	//check if menu should be visible
 	if (showing[id] >= 1) {
 		//call show function, pass id and type
-		show(id, 'b');
+		show_w(id, 'b');
 	}
 
 }
@@ -139,7 +139,7 @@ function show_lnav(id) {
 	//check if menu should be visible
 	if (showing[id] >= 1) {
 		//call show function, pass id and type
-		show(id, 'lnav');
+		show_w(id, 'lnav');
 	}
 
 }
@@ -163,7 +163,7 @@ for (x in showing)
 }
 
 /* set delay to hide menu */
-function hide(id){
+function hide_w(id){
 	hideID = id;
 	showing[hideID] = 0;
 	hide_me=setTimeout("hide_delay(hideID)",delay_ms);

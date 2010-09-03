@@ -11,6 +11,9 @@
 <%@ page import='com.freshdirect.fdstore.util.*' %>
 <%@ page import="com.freshdirect.framework.webapp.*"%>
 <%@ page import='com.freshdirect.framework.util.*' %>
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@ page import='org.apache.log4j.Category' %>
+<%@ page import='com.freshdirect.framework.util.log.LoggerFactory' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -19,6 +22,8 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 
 <%!
+
+static Category LOGGER = LoggerFactory.getInstance("grocery_category_layout");
 
 public void produceBrandsAndTypes(Set brands, List typesList, Collection sortedColl) {
 	boolean checkParent = false;
@@ -368,110 +373,178 @@ String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVaria
 	       </TD></tr>
     	</table>
     </TD>
-    <TD WIDTH="10"><BR></TD>
-    <TD BGCOLOR="#CCCCCC" WIDTH="1"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="1"></TD>
-    <TD WIDTH="10"><BR></TD>
-    <TD WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>">
-    
-		<table WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>" cellpadding="0" cellspacing="0" border="0">
-		<tr>
-		    <TD WIDTH="6"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD>
-		    <td colspan="<%=(2*brandSpan)+1%>">
-		        <IMG SRC="/media/images/navigation/department/grocery/gro_choose_brand.gif" WIDTH="123" HEIGHT="10" ALT="CHOOSE A BRAND" BORDER="0"><br>
-		        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10">
-		    </TD>
-		</tr>
-		<tr VALIGN="TOP"><%
+    <td width="10"><BR></TD>
+    <td bgcolor="#cccccc" width="1"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></TD>
+    <td width="10"><br /></td>
+    <td width="<%=125*brandSpan+((brandSpan+1)*6)%>">
+		<%-- Everything inside this td is the brand section --%>
+		<%
+			//APPDEV-1308
 
+			boolean useBrandMedia = false;
+			String brandIds = FDStoreProperties.getBrandMediaIds();
+			ContentNodeModel curTest;
+			List mediaBottom = null;
 
+			if ( !("NONE").equalsIgnoreCase(brandIds) ) {
+				if ( !("ALL").equalsIgnoreCase(brandIds) ) {
+					//check for specific ids
+					String[] brandIdsArray = brandIds.split(",");
+					
+					for (int i=0; i<brandIdsArray.length; i++) {
+						if ( (brandIdsArray[i]).equalsIgnoreCase(catId) ) {
+							//we have a match
+							useBrandMedia = true;
+							LOGGER.debug("currentCategory("+currentCategory+") is in brandIds");
+						}else{
+							//no match, see if it's a department
+							curTest = ContentFactory.getInstance().getContentNode(brandIdsArray[i]);
+							if (curTest instanceof DepartmentModel) {
+								//it is, see if our current cat is a child of it
+								if ((currentCategory.getDepartment().toString()).equalsIgnoreCase(brandIdsArray[i])) {
+									//it is, match
+									useBrandMedia = true;
+									LOGGER.debug("currentCategory("+currentCategory+") is a child of a deptId("+brandIdsArray[i]+") in brandIds");
+								}
+							}
+						}
+						if (useBrandMedia) { break; } //break out once we have a match
+					}
+				}else{
+					//any id is ok
+					useBrandMedia = true;
+				}
+				//now check that we HAVE media to use
+				mediaBottom	= (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getBottomMedia() : null;
+			}
 
-	//
-	// "CHOOSE A BRAND" COLUMN
-	//
-		
-    columnRows = new int[4];
-    int availableBrands = brands.size();
-    int brandSize = availableBrands;
-    int brandsRows = availableBrands / 3;
-    if (availableBrands % 3 != 0) brandsRows++;
-    columnRows[0] = brandsRows;
+			LOGGER.debug("useBrandMedia: "+useBrandMedia);
+			LOGGER.debug("brandIds: "+brandIds);
 
-    availableBrands -= brandsRows;
-    brandsRows = availableBrands / 2;
-    if (availableBrands % 2 != 0) brandsRows++;
-    columnRows[1] = brandsRows;
-    columnRows[2] = availableBrands - brandsRows;
-    %>
-            <TD WIDTH="6"><IMG SRC="/media_stat/images/layout/clear.gif" WIDTH="6" HEIGHT="1"></TD>
-		    <TD WIDTH="125">
-<%
-    currentColumn = 0;
-    currentRow = 0;
-    brandsRows = columnRows[0];
+			//if we have a bottom media, and we want to use it, include it here
+			if (useBrandMedia && mediaBottom != null && mediaBottom.size() > 0) {
+				for (int i=0; i < mediaBottom.size(); i++) {
+					if ( ((Html)mediaBottom.get(i)).getPath() != null ) {
+						LOGGER.debug("((Html)mediaBottom.get("+i+")).getPath(): "+((Html)mediaBottom.get(i)).getPath());
+						%><fd:IncludeMedia name='<%= ((Html)mediaBottom.get(i)).getPath() %>' /><%
+					}
+				}
+				//create a js object to be available to the media that contains the brands
+				%>
+					<script type="text/javascript">
+					<!--
+						var _page_brands = new Object({
+							avail: []
+						});
 
-    numInColsDesired = 0;
-    for(int h=0; h<brandSpan;h++){
-        numInColsDesired += columnRows[h];
-    }
+						<% for (Iterator i = brands.iterator(); i.hasNext(); ) {
+							BrandModel brand = (BrandModel) i.next();
+						%>
+							_page_brands.avail[_page_brands.avail.length] = new Object({id: "<%=brand.getContentName()%>", name: "<%=brand.getFullName()%>"});
+						<% } %>
+						
+					//-->
+					</script>
+				<%
+			}else{
+				LOGGER.debug("mediaBottom is empty.");
+			}
+		%>
+		<% if (!useBrandMedia) { %>
+			<%-- START brand section --%>
+				<table WIDTH="<%=125*brandSpan+((brandSpan+1)*6)%>" cellpadding="0" cellspacing="0" border="0">
+					<tr>
+						<td width="6"><img src="/media_stat/images/layout/clear.gif" width="6" height="1" alt="" /></td>
+						<td colspan="<%=(2*brandSpan)+1%>">
+							<img src="/media/images/navigation/department/grocery/gro_choose_brand.gif" width="123" height="10" alt="CHOOSE A BRAND" border="0" /><br />
+							<img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" />
+						</td>
+					</tr>
+					<tr valign="top">
+						<td width="6"><img src="/media_stat/images/layout/clear.gif" width="6" height="1" alt="" /></td>
+						<td width="125"><%
+						//
+						// "CHOOSE A BRAND" COLUMN
+						//
+				
+						columnRows = new int[4];
+						int availableBrands = brands.size();
+						int brandSize = availableBrands;
+						int brandsRows = availableBrands / 3;
+						if (availableBrands % 3 != 0) brandsRows++;
+						columnRows[0] = brandsRows;
 
-    if (numInColsDesired != brandSize){
-        int remainder = brandSize - numInColsDesired;
-        switch (brandSpan){
-            case 1:
-                brandsRows = brandSize;
-                break;
-            case 2:
-                int remainMod2 = remainder % 2;
-                int remainDiv2 = remainder / 2;
+						availableBrands -= brandsRows;
+						brandsRows = availableBrands / 2;
+						if (availableBrands % 2 != 0) brandsRows++;
+						columnRows[1] = brandsRows;
+						columnRows[2] = availableBrands - brandsRows;
 
-                if(remainMod2 !=0){
-                    brandsRows = columnRows[0] + (remainder - remainDiv2);
-                    columnRows[1] += remainDiv2;
-                }
-                else{
-                    brandsRows = columnRows[0] + remainDiv2;
-                    columnRows[1] += remainDiv2;
-                }
-                break;
-        }
-    }
-    StringBuffer brandLink = new StringBuffer();
-    for (Iterator i = brands.iterator(); i.hasNext(); ) {
-        BrandModel brand = (BrandModel) i.next();
-        %>
-                <div style="margin-left: 8px; text-indent: -8px;">
-                    <a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&brandValue=<%= brand.getContentName() %>&groceryVirtual=<%= currentFolder.getContentName() %>&trk=cpage"><%= brand.getFullName() %></a>
-                    <br/>
-                </div>
-<%
-            
-            
-        if (++currentRow == brandsRows) {
-            	%>
-            	</TD>
-            	<TD WIDTH="6"><IMG SRC="/media_stat/images/layout/clear.gif" HEIGHT="1" WIDTH="6"></TD>
-<%
-            if (i.hasNext()) {
-            	%>
-            	<TD WIDTH="125"><%
-            }
-            currentRow = 0;
-            brandsRows = columnRows[++currentColumn];
-        }
-    }
-%>
-                </td>
-<%
-    
-    if (brands.size() > 0 ) {
-        request.setAttribute("brandsList",brands);
-    }
-%>
-            </tr>
-        </table>
-    </TD>
-</TR>
-<tr>
-    <td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
+						currentColumn = 0;
+						currentRow = 0;
+						brandsRows = columnRows[0];
+
+						numInColsDesired = 0;
+
+						for(int h=0; h<brandSpan;h++){
+							numInColsDesired += columnRows[h];
+						}
+
+						if (numInColsDesired != brandSize){
+							int remainder = brandSize - numInColsDesired;
+							switch (brandSpan){
+								case 1:
+									brandsRows = brandSize;
+									break;
+								case 2:
+									int remainMod2 = remainder % 2;
+									int remainDiv2 = remainder / 2;
+
+									if(remainMod2 !=0){
+										brandsRows = columnRows[0] + (remainder - remainDiv2);
+										columnRows[1] += remainDiv2;
+									}
+									else{
+										brandsRows = columnRows[0] + remainDiv2;
+										columnRows[1] += remainDiv2;
+									}
+									break;
+							}
+						}
+						StringBuffer brandLink = new StringBuffer();
+						for (Iterator i = brands.iterator(); i.hasNext(); ) {
+							BrandModel brand = (BrandModel) i.next();
+							%>
+								<div style="margin-left: 8px; text-indent: -8px;">
+									<a href="/category.jsp?catId=<%= currentFolder.getContentName() %>&brandValue=<%= brand.getContentName() %>&groceryVirtual=<%= currentFolder.getContentName() %>&trk=cpage"><%= brand.getFullName() %></a>
+									<br/>
+								</div>
+							<%
+							if (++currentRow == brandsRows) {
+								%></td>
+								<td width="6"><img src="/media_stat/images/layout/clear.gif" height="1" width="6" alt="" /></td>
+								<% if (i.hasNext()) { %>
+									<td width="125"><%
+								}
+
+								currentRow = 0;
+								brandsRows = columnRows[++currentColumn];
+							}
+						}
+						%>
+						</td>
+						<%
+							if (brands.size() > 0 ) {
+								request.setAttribute("brandsList",brands);
+							}
+						%>
+					</tr>
+				</table>
+			<%-- END brand section --%>
+		<% } %>
+	</td>
 </tr>
-</TABLE>
+<tr>
+	<td colspan="6"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" /></td>
+</tr>
+</table>

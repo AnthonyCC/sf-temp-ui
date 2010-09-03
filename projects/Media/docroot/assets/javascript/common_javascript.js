@@ -524,6 +524,17 @@ function updateYourCartPanel() {
 		return false;
 	};
 
+	
+	Array.prototype.inArrayRE = function (RegExpObj) {
+		var i;
+		for (i=0; i < this.length; i++) {
+			if (RegExpObj.test(this[i])) {
+				return true;
+			}
+		}
+		return false;
+	};
+
 
 	Array.prototype.clone = function () {
 		var a = new Array();
@@ -678,3 +689,92 @@ function maxLen(elem, len) {
 	if (elem.value.length+elem.value.count('\n') >= len) { elem.value = (elem.value).substring(0,len-elem.value.count('\n')); }
 }
 
+/* basic cookie functions */
+	function createCookie(name,value,days) {
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime()+(days*24*60*60*1000));
+			var expires = "; expires="+date.toGMTString();
+		}
+		else var expires = "";
+		document.cookie = name+"="+value+expires+"; path=/";
+	}
+
+	function readCookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+
+	function eraseCookie(name) {
+		createCookie(name,"",-1);
+	}
+
+/* site access interstitial overlay */
+	function sa_OL() {
+		if (!window['sa_OL_loaded']) { //run only once
+			window['sa_OL_loaded'] = true;
+			/* pages that will not show OL */
+			if (
+				(document.location.toString()).indexOf('/site_access/') == -1
+			) {
+				var mediaURL = readCookie('zipCheck_OL');
+				if (mediaURL != null && mediaURL != '') {
+					//display modalbox
+					Modalbox.show(mediaURL, {
+						loadingString: 'Loading Preview...',
+						closeValue: ' ',
+						closeString: 'Close Preview',
+						title: '',
+						overlayOpacity: .85,
+						overlayClose: true,
+						//width: 320,
+						transitions: false,
+						autoFocusing: false,
+						centered: true,
+						afterLoad: function() {
+							$('MB_overlay').style.backgroundColor = '#000';
+							window.scrollTo(0,0);
+							$('MB_window').style.width = 'auto';
+							$('MB_window').style.height = 'auto';
+							Modalbox.options.width = 'auto';
+							Modalbox.options.height = 'auto';
+							$('MB_window').style.left = parseInt(($('MB_overlay').clientWidth-$('MB_window').clientWidth)/2)+'px';
+						},
+						afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+					});
+				}
+				/* shown, erase existing cookie */
+				eraseCookie('zipCheck_OL');
+			}else{
+				if (window.console) { console.log('skipped sa_OL.'); }
+			}
+			//QA, make sure this runs once
+			if (window.console) { console.log('passed through sa_OL.'); }
+		}
+	}
+
+	//wait for page load
+	
+	/* actual function */
+	//if (window.Prototype && window.Modalbox) { document.observe("dom:loaded", function() { sa_OL(); }); }
+	
+	/* QA function with console logging */
+	if (window.Prototype && window.Modalbox) {
+		if (window.console) { console.log('Template ok.'); }
+		document.observe("dom:loaded", function() { sa_OL(); });
+	}else{
+		if (window.console) {
+			if (!window.Prototype) {
+				console.log('Prototype not loaded.');
+			}
+			if (!window.Modalbox) {
+				console.log('Modalbox not loaded.');
+			}
+		}
+	}

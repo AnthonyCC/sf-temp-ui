@@ -128,10 +128,14 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
         }
         
         //If user is coming from pretty URL redirect it to site_access_lite page
+		//APPDEV-1196 removes site access lite
         if(user==null){
         	if (request.getRequestURI().indexOf("index.jsp") <= -1 && request.getParameter("siteAccessPage")==null) {
         		StringBuffer redirBuf =	new StringBuffer();
-                redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
+                //redirBuf.append("/site_access/site_access_lite.jsp?successPage="+request.getRequestURI());
+
+                LOGGER.debug("redirecting to: /site_access/site_access.jsp?successPage="+request.getRequestURI());
+                redirBuf.append("/site_access/site_access.jsp?successPage="+request.getRequestURI());
                 
                 String requestQryString = request.getQueryString();
                 if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
