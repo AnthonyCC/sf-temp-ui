@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -30,6 +30,7 @@ import com.freshdirect.fdstore.promotion.EnumDCPDContentType;
 import com.freshdirect.fdstore.promotion.EnumPromoChangeType;
 import com.freshdirect.fdstore.promotion.EnumPromotionSection;
 import com.freshdirect.fdstore.promotion.EnumPromotionStatus;
+import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeDetailModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoContentModel;
@@ -96,8 +97,8 @@ public class PromoPublisher {
 	public boolean doPublish() {
 		// and log this event
 		Map<String, EnumPromotionStatus> preStatuses = new HashMap<String, EnumPromotionStatus>();
-		Map<String, EnumPromotionStatus> postStatuses = new HashMap<String, EnumPromotionStatus>();
-		Map<String, String> changeIDs  = new HashMap<String, String>();
+		// Map<String, EnumPromotionStatus> postStatuses = new HashMap<String, EnumPromotionStatus>();
+		// Map<String, String> changeIDs  = new HashMap<String, String>();
 
 		// store pre-statuses
 		for (FDPromotionNewModel promo : promoList) {
@@ -225,6 +226,33 @@ public class PromoPublisher {
 				LOGGER.error("Failed log publish event", e);
 			}
 
+			// also log publish event in activity log
+			final Date NOW = new Date();
+			for (String code : goodCodes) {
+				FDPromotionNewModel promotion = FDPromotionNewModelFactory.getInstance().getPromotion(code);
+				if (promotion != null) {
+					FDPromoChangeModel changeModel = new FDPromoChangeModel();
+					changeModel.setChangeDetails( new ArrayList<FDPromoChangeDetailModel>() );
+					
+					changeModel.setActionDate(NOW);
+					changeModel.setActionType(EnumPromoChangeType.PUBLISH);
+					changeModel.setUserId(agent.getUserId());
+
+					promotion.addAuditChange(changeModel);
+					
+					// this event type has no particular details
+					changeModel.setChangeDetails(new ArrayList<FDPromoChangeDetailModel>());
+					
+					try {
+						FDPromotionNewManager.storeChangeLogEntries(promotion.getPK().getId(), promotion.getAuditChanges());
+					} catch (FDResourceException e) {
+						LOGGER.error("Failed to add publish entry to agent " + agent.getUserId() + "'s activity log", e);
+					}
+				} else {
+					LOGGER.error("Unable to load missing promotion " + code);
+				}
+			}
+			
 			// return 'false' response at first negative result
 			for (Boolean b : lastResult.values()) {
 				if (!b)

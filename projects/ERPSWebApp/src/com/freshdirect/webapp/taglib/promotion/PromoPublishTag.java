@@ -1,8 +1,6 @@
 package com.freshdirect.webapp.taglib.promotion;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -16,7 +14,6 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
 import com.freshdirect.fdstore.promotion.FDPromotionNewModelFactory;
-import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
 import com.freshdirect.fdstore.promotion.pxp.PromoPublisher;
 import com.freshdirect.framework.util.log.LoggerFactory;
