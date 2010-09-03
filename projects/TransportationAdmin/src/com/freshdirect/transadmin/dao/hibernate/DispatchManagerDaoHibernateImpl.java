@@ -366,20 +366,6 @@ public class DispatchManagerDaoHibernateImpl extends
 		});
 	}
 	
-	public boolean addScribLabel(ScribLabel sLabel) {
-		if (sLabel!=null){
-			try{
-				saveEntity(sLabel);
-			}catch(DataIntegrityViolationException ex){
-				ex.printStackTrace();
-				return false;
-			}
-			return true;
-		}
-		else
-			return false;
-	}
-	
 	public ScribLabel getScribLabelByDate(String date) throws DataAccessException {
 		return (ScribLabel) getEntityById("ScribLabel", "date", date);
 	}

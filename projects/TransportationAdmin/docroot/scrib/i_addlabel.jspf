@@ -32,12 +32,16 @@
       	  
     	  var s_date = YAHOO.util.Dom.get("labelDate").value;
        	  var s_label = YAHOO.util.Dom.get("slabel").value;
-		  
+       	  var s_checkBox = 'false'; 
+
+          if(YAHOO.util.Dom.get("weekcheckBox").checked==true){
+        	  s_checkBox= 'true';
+          }  
 
 		  if(s_date.trim().length == 0 || s_label.trim().length == 0) {
       	  		addSysMessage("Please enter the required values", true);		
       	  } else {
-	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScribLabel(sendLabelFormCallback, s_date ,s_label);  
+	    	  var result = jsonrpcClient.AsyncDispatchProvider.addScribLabel(sendLabelFormCallback, s_date ,s_label,s_checkBox);  
 		  }
       }
       
@@ -118,6 +122,12 @@
                      			 </script>
                        		</span>
                       </td> 
+		         </tr>
+		         <tr>
+		                  <td>Entire Week</td>
+		                  <td>
+		                  	<INPUT type="checkbox" name="weekcheckBox" id="weekcheckBox">		                  			                  	
+                    	 </td>
 		         </tr>
 		      	 <tr>
 		                  <td>Label</td>

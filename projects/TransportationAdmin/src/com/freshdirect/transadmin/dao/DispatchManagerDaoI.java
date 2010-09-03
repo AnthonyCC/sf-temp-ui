@@ -66,7 +66,5 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	
 	void deleteDefaultScenarioDay(String sDate, String sDay);
 	
-	boolean addScribLabel(ScribLabel sLabel);
-	
 	ScribLabel getScribLabelByDate(String date);
 }

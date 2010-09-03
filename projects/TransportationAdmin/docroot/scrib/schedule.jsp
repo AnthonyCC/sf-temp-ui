@@ -85,40 +85,45 @@
 						</select>					
 					</div>					
 				<div style="float:left;"><br>&nbsp;
-					<span>
-                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter();" />
-                  </span> 
-                  <span>
-                     <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
-                  </span>
-                  <span>
-                     <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
-                  </span>
+					 <span>
+	                     <input style="font-size:11px" type = "button" value="&nbsp;View&nbsp;" onclick="javascript:doFilter();" />
+	                  </span> 
+	                  <span>
+	                     <input style="font-size:11px" type = "button" value="View Master" onclick="javascript:doMasterFilter()" />
+	                  </span>
+	                  <span>
+	                     <input style="font-size:11px" type = "button" value="Mass Edit" onclick="javascript:massEdit()" />
+	                  </span>
                    </div>
-				</div>
-				<div style="float:left;font-weight:bold"> Date<br>&nbsp;
-						<span>	<input maxlength="10" size="10" name="uploadScheduleDate" id="uploadScheduleDate" style="width:75px" value='<c:out value="${uploadScheduleDate}"/>' />
-                    		<a href="#" id="trigger_uploadScheduleDate" style="font-size: 10px;">
-                        		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
-                    		</a>
-	                     <script language="javascript">                 
-	                      Calendar.setup(
-	                      {
-	                        showsTime : false,
-	                        electric : false,
-	                        inputField : "uploadScheduleDate",
-	                        ifFormat : "%m/%d/%Y",
-	                        singleClick: true,
-	                        button : "trigger_uploadScheduleDate" 
-	                       }
-	                      );
-	                      </script></span>
-	                 <span>
-	                     <input style="font-size:11px;width:50px;" type = "button" value="Export" onclick="javascript:exportSchedules();" />
-	                     <input style="font-size:11px;width:50px;" type = "button" value="Upload" onclick="javascript:uploadSchedules();" />                     
-                 	 </span>	                
+				
+				<div style="float:left;font-weight:bold;margin-left:4px;">
+						<div style="float:left;">
+							<div style="text-align:center;">Date<br></div>
+							<div style="float:left;">
+								<input maxlength="10" size="10" name="uploadScheduleDate" id="uploadScheduleDate" style="width:75px" value='<c:out value="${uploadScheduleDate}"/>' />
+		                    		<a href="#" id="trigger_uploadScheduleDate" style="font-size: 10px;">
+		                        		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+		                    		</a>
+				                     <script language="javascript">                 
+				                      Calendar.setup(
+				                      {
+				                        showsTime : false,
+				                        electric : false,
+				                        inputField : "uploadScheduleDate",
+				                        ifFormat : "%m/%d/%Y",
+				                        singleClick: true,
+				                        button : "trigger_uploadScheduleDate" 
+				                       }
+				                      );
+				                      </script>
+			               </div>
+			           </div> 
+			           <div style="float:right;margin-left:2px;"> <br/>         
+	                   		<input style="font-size:11px;width:50px;" type = "button" value="Export" onclick="javascript:exportSchedules();" />
+	                   		<input style="font-size:11px;width:50px;" type = "button" value="Upload" onclick="javascript:uploadSchedules();" />       
+                 	 	</div>
                  </div>
-                   
+                </div>   
 			</div>
 		</div>
 

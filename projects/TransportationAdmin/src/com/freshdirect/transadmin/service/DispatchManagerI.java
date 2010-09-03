@@ -93,7 +93,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	void deleteDefaultScenarioDay(String sDate, String sDay);
 	
-	boolean addScribLabel(ScribLabel sLabel);
+	ScribLabel getScribLabelByDate(String date);	
 	
-	ScribLabel getScribLabelByDate(String date);
 }

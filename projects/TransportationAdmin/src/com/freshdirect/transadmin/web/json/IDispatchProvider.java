@@ -24,6 +24,6 @@ public interface IDispatchProvider {
 	boolean deleteServiceTimeScenario(String sCode);
 	Collection getScenarioZones(String scenarioId);
 	boolean doScenarioZone(String id, String[][] zone);
-	boolean addScribLabel(String date,String label);	
+	boolean addScribLabel(String date,String label,String checked);
 	String getScribLabel(String date);
 }

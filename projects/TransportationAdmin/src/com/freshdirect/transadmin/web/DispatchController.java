@@ -57,6 +57,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
@@ -80,7 +81,6 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
-import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -154,12 +154,20 @@ public class DispatchController extends AbstractMultiActionController {
 	 * @return a ModelAndView to render the response
 	 */
 	public ModelAndView planHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		
 		try{
+			
 			String weekdaterange = request.getParameter("weekdate");
-			String daterange = request.getParameter("daterange");
-			Date _weekDate = null;
-			if(weekdaterange==null||"".equals(weekdaterange))weekdaterange=TransStringUtil.getCurrentDate();
-				_weekDate = getWeekOf(weekdaterange);
+			String daterange = request.getParameter("daterange");			        	
+        	
+			if(weekdaterange==null||"".equals(weekdaterange))
+				weekdaterange=TransStringUtil.getCurrentDate();
+			
+			Date _weekDate = getWeekOf(weekdaterange);			
+
+			if(daterange==null)
+				daterange=TransStringUtil.getCurrentDate();
+			
 			String zoneLst = request.getParameter("zone");
 			zoneLst = zoneLst==null?"":zoneLst;
 			ModelAndView mav = new ModelAndView("planView");
@@ -171,21 +179,24 @@ public class DispatchController extends AbstractMultiActionController {
 				dates=getDates(daterange,day);
 			else if(!TransStringUtil.isEmpty(weekdaterange))
 				dates=getDates(weekdaterange,day);
+			
 			Collection dataList= new ArrayList();
 			List<Plan> plans=new ArrayList();
+			Map<String,Zone> zoneMap = new HashMap <String,Zone>();
+			List terminatedEmployees = getTermintedEmployeeIds();
 			if((!TransStringUtil.isEmpty(weekdaterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)||!TransStringUtil.isEmpty(daterange)) {
 				try 
 				{				
 					if(dates!=null && TransStringUtil.isEmpty(daterange))
 					{	
 						for(int i=0;i<dates.length;i++)
-						{
+						{   
 							String dateQryStr = TransStringUtil.formatDateSearch(dates[i]);
 							String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
 							Collection tempList= new ArrayList();
 							Collection tempPlans= new ArrayList();
 							if(dateQryStr != null || zoneQryStr != null) {
-								tempList = getPlanInfo(dateQryStr,zoneQryStr);
+								tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
 								if("y".equalsIgnoreCase(request.getParameter("unavailable")))
 								{
 									tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
@@ -194,10 +205,10 @@ public class DispatchController extends AbstractMultiActionController {
 								if("y".equalsIgnoreCase(request.getParameter("kronos")))
 								{									
 									tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
-								}							
+								}					
 							}
 							plans.addAll(tempPlans);
-							dataList.addAll(tempList);
+							dataList.addAll(tempList);							
 						}//end for loop
 					}
 					if(!TransStringUtil.isEmpty(daterange)){
@@ -206,7 +217,7 @@ public class DispatchController extends AbstractMultiActionController {
 						Collection tempList= new ArrayList();
 						Collection tempPlans= new ArrayList();
 						if(dateQryStr != null || zoneQryStr != null) {
-							tempList = getPlanInfo(dateQryStr,zoneQryStr);
+							tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
 							if("y".equalsIgnoreCase(request.getParameter("unavailable")))
 							{
 								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
@@ -215,7 +226,7 @@ public class DispatchController extends AbstractMultiActionController {
 							if("y".equalsIgnoreCase(request.getParameter("kronos")))
 							{									
 								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
-							}							
+							}						
 						}							
 						plans.addAll(tempPlans);
 						dataList.addAll(tempList);
@@ -232,7 +243,7 @@ public class DispatchController extends AbstractMultiActionController {
 						try {
 							String file=request.getParameter("file");
 							Collections.sort(plans, new PlanDateComparator());
-							updateKronos(plans,dates,file,request,response);
+							updateKronos(plans,dates,file,request,response);							
 							return null;
 							//saveMessage(request, getMessage("app.actionmessage.146", null));
 						} catch (Exception e) {
@@ -247,7 +258,7 @@ public class DispatchController extends AbstractMultiActionController {
 				} catch (Exception e) {
 					e.printStackTrace();
 					saveMessage(request, getMessage("app.actionmessage.123", null));
-				}				
+				}
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
 			return mav;
@@ -256,7 +267,6 @@ public class DispatchController extends AbstractMultiActionController {
 			saveMessage(request, getMessage("app.actionmessage.158", null));
 			return new ModelAndView("planView");	
 		}
-
 		
 	}
 	
@@ -336,11 +346,14 @@ public class DispatchController extends AbstractMultiActionController {
 		Map<String, Scrib> scribMap = new HashMap<String, Scrib>();
 		Map<String, Map<String, Scrib>> resMapScrib = new HashMap<String, Map<String, Scrib>>();
 		Map<String, Map<String, Map<String, Scrib>>> kronos = new HashMap<String, Map<String, Map<String, Scrib>>>();	
+		Map<String,Collection<EmployeeRole>> empRoleMap=new HashMap<String,Collection<EmployeeRole>>();
+		Map<String,Collection<Plan>> plansForDateMap=new HashMap<String,Collection<Plan>>();
+		Map<String,Map<String,Collection<Plan>>> plansForDateAndRegionMap= new HashMap <String,Map<String,Collection<Plan>>>();
 				
 		for(Iterator<Plan> i=plans.iterator();i.hasNext();)
 		{
 			Plan p = i.next();
-			String planDate=TransStringUtil.getDate(p.getPlanDate());
+			String planDate = TransStringUtil.getDate(p.getPlanDate());
 			if(kronos.containsKey(planDate)) {
 				resMapScrib=kronos.get(planDate);
 			} else {
@@ -358,7 +371,8 @@ public class DispatchController extends AbstractMultiActionController {
 						} else {
 							scribMap=resMapScrib.get(r.getId().getResourceId());
 						}
-						if(DispatchPlanUtil.isEligibleForKronosFileGeneration(domainManagerService.getEmployeeRole(r.getId().getResourceId())))
+						Collection<EmployeeRole> empRoles=getEmployeeRoles(empRoleMap,r.getId().getResourceId());
+						if(DispatchPlanUtil.isEligibleForKronosFileGeneration(empRoles))
 						{			
 							Scrib s = new Scrib();
 							//Set Scrib id for a resource
@@ -369,9 +383,9 @@ public class DispatchController extends AbstractMultiActionController {
 							
 							s.setShiftType(getShiftForPlan(p));
 							//set Employee Time	
-							setKronosEmployeeTime(p, r, s);							
+							setKronosEmployeeTime(p, r, s,plansForDateMap);							
 							//set shift duration
-							double maxTime = getKronosEmployeeShiftDuration(p, r, s);	
+							double maxTime = getKronosEmployeeShiftDuration(p, r, s,"Depot".equalsIgnoreCase(p.getRegion().getCode())?getPlans(p.getPlanDate(), p.getRegion().getCode(),plansForDateAndRegionMap):null);
 							s.setShiftDuration(maxTime);
 							
 							scribMap.put(s.getShiftType(),s);
@@ -379,22 +393,34 @@ public class DispatchController extends AbstractMultiActionController {
 								resMapScrib.put(r.getId().getResourceId(), scribMap);
 							}
 						}
-						
-				}			
+				}
 			}
 			kronos.put(TransStringUtil.getDate(p.getPlanDate()),resMapScrib);
+		
 		}	
 		generateKronosFiles(response, kronos);
 						
 	}	
+	private Collection<EmployeeRole> getEmployeeRoles(Map<String,Collection<EmployeeRole>> empRoleMap,String empId) {
+		if(empRoleMap.containsKey(empId)) {
+			return empRoleMap.get(empId);
+		}
+		else {
+			Collection<EmployeeRole> c=domainManagerService.getEmployeeRole(empId);
+			empRoleMap.put(empId, c);
+			return c;
+		}
+		
+	}
 
-	private void setKronosEmployeeTime(Plan p, PlanResource r, Scrib s)
+	private void setKronosEmployeeTime(Plan p, PlanResource r, Scrib s,Map<String,Collection<Plan>> plansForDateMap)
 			throws ParseException {
 		if(r.getId().getAdjustmentTime()!=null)
 			s.setStartTime(r.getId().getAdjustmentTime());
 		else
 		{
-			List<Plan> resPlans = getPlansForDate(p, r, s);
+			List<Plan> resPlans = null;
+			resPlans=getResourcePlansForShift(p.getPlanDate(), r,  s,getPlansForDate(p.getPlanDate(),plansForDateMap));
 			Collections.sort(resPlans,new PlanFirstDeliveryTimeComparator());
 			if("003".equalsIgnoreCase(r.getEmployeeRoleType().getCode()))
 			{
@@ -430,11 +456,10 @@ public class DispatchController extends AbstractMultiActionController {
 			s.setScribDate(p.getPlanDate());
 	}
 
-	private double getKronosEmployeeShiftDuration(Plan p, PlanResource r, Scrib s) throws ParseException {
+	private double getKronosEmployeeShiftDuration(Plan p, PlanResource r, Scrib s,Collection<Plan> depotPlans) throws ParseException {
 		double maxTime=0;
 		if("Depot".equalsIgnoreCase(p.getRegion().getCode()))
 		{
-			Collection depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(p.getPlanDate()),p.getRegion().getCode());
 			List<Plan> resPlans=new ArrayList<Plan>();
 			for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
 				Plan _depotPlan = iterator.next();
@@ -459,26 +484,46 @@ public class DispatchController extends AbstractMultiActionController {
 		return maxTime;
 	}	
 
+	private Collection<Plan> getPlans(Date date, String regionCode, Map<String,Map<String,Collection<Plan>>> plansForDateAndRegionMap) throws ParseException {
+		String _date=TransStringUtil.getDate(date);
+		if(plansForDateAndRegionMap.containsKey(_date)) {
+			Map<String,Collection<Plan>> plansForRegion=plansForDateAndRegionMap.get(_date);
+			if(plansForRegion.containsKey(regionCode)) {
+				return plansForRegion.get(regionCode);
+			} else {
+				Collection<Plan> depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(date),regionCode);
+				plansForRegion.put(regionCode, depotPlans);
+				return depotPlans;
+			}
+		} else {
+			Collection<Plan> depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(date),regionCode);
+			Map<String,Collection<Plan>> plansForRegion=new HashMap<String,Collection<Plan>>();
+			plansForRegion.put(regionCode, depotPlans);
+			plansForDateAndRegionMap.put(_date, plansForRegion);
+			return depotPlans;
+			
+		}
+		
+	}
 	private String getShiftForPlan(Plan p) throws ParseException {		
-		int dayOfweek = TransStringUtil.getClientDayofWeek(TransStringUtil.getDatewithTime(p.getPlanDate()));
+		int day = TransStringUtil.getDayOfWeek(p.getPlanDate());
 		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(p.getFirstDeliveryTime()));
-		if (hourOfDay < 12 && dayOfweek != 7) {
+		if (hourOfDay < 12 && day != 7) {
 			return "AM";
-		} else if (hourOfDay < 10 && dayOfweek == 7) {
+		} else if (hourOfDay < 10 && day == 7) {
 			return "AM";
 		} else
 			return "PM";		
 	}
 
-	private List<Plan> getPlansForDate(Plan p, PlanResource r,Scrib s) throws ParseException {
+	private List<Plan> getResourcePlansForShift(Date planDate,PlanResource r, Scrib s,Collection<Plan> plans) throws ParseException {
 		
-		Collection depotPlans = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(p.getPlanDate()));
 		List<Plan> resPlans=new ArrayList<Plan>();
-		for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
+		for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext();) {
 			Plan _rPlan = iterator.next();
 			String shiftType=getShiftForPlan(_rPlan);
 			if(shiftType.equalsIgnoreCase(s.getShiftType())){
-				Set _rPlanRsr = _rPlan.getPlanResources();
+				Set<PlanResource> _rPlanRsr = _rPlan.getPlanResources();
 				for (Iterator<PlanResource> itr = _rPlanRsr.iterator(); itr.hasNext();) {
 					PlanResource _pr = itr.next();
 					if(r.getId().getResourceId().equals(_pr.getId().getResourceId())){
@@ -488,6 +533,17 @@ public class DispatchController extends AbstractMultiActionController {
 			}
 		}
 		return resPlans;
+	}
+	
+	private Collection<Plan> getPlansForDate(Date planDate,Map<String,Collection<Plan>> plansForDateMap) throws ParseException {
+		String _date=TransStringUtil.getDate(planDate);
+		if(plansForDateMap.containsKey(_date)) {
+			return plansForDateMap.get(_date);
+		} else {
+			Collection<Plan> plans=dispatchManagerService.getPlanList(TransStringUtil.getServerDate(planDate));
+			plansForDateMap.put(_date, plans);
+			return plans;
+		}
 	}
 
 	private void generateKronosFiles(HttpServletResponse response, Map<String, Map<String, Map<String, Scrib>>> kronos)
@@ -614,26 +670,29 @@ public class DispatchController extends AbstractMultiActionController {
 		zipout.close();
 	}
 				
-	private Collection getPlanInfo(String dateQryStr, String zoneQryStr) {
+	private Collection<Plan> getPlanInfo(String dateQryStr, String zoneQryStr,Map<String,Zone> zoneMap, List terminatedEmployees) {
 
 		Collection plans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
-		List termintedEmployees = getTermintedEmployeeIds();
 		
 		Collection planInfos=new ArrayList();
 		Iterator it=plans.iterator();
+		
 		while(it.hasNext()) {
-
 			Plan plan=(Plan)it.next();
 			Zone zone=null;
 			if(plan.getZone()!=null) {
-				zone=domainManagerService.getZone(plan.getZone().getZoneCode());
+				if(zoneMap.containsKey(plan.getZone().getZoneCode())) {
+					zone=zoneMap.get(plan.getZone().getZoneCode());
+				} else {
+					zone=domainManagerService.getZone(plan.getZone().getZoneCode());
+					zoneMap.put(plan.getZone().getZoneCode(), zone);
+				}
 			}
+			
 			WebPlanInfo planInfo=DispatchPlanUtil.getWebPlanInfo(plan, zone, employeeManagerService);
-			planInfo.setTermintedEmployees(termintedEmployees);
+			planInfo.setTermintedEmployees(terminatedEmployees);
 			planInfos.add(planInfo);
 		}
-
-
 		return planInfos;
 	}
 

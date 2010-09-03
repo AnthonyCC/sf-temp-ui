@@ -641,10 +641,6 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		getDispatchManagerDao().deleteDefaultScenarioDay(sDate,sDay);
 	}
 	
-	public boolean addScribLabel(ScribLabel sLabel){
-		return getDispatchManagerDao().addScribLabel(sLabel);
-	}
-	
 	public ScribLabel getScribLabelByDate(String date){
 		return getDispatchManagerDao().getScribLabelByDate(date);
 	}

@@ -562,28 +562,48 @@ public class DispatchProviderController extends JsonRpcController implements
 		return true;
 	}
 	
-	public boolean addScribLabel(String date,String label){
+	public boolean addScribLabel(String date,String label, String checked){
 		try{
 			Date _scribDate = null;
-			if (!TransStringUtil.isEmpty(date)
-					&& !TransStringUtil.isEmpty(label)) {
+			List LabelLst= new ArrayList();
+			if (!TransStringUtil.isEmpty(date)&& !TransStringUtil.isEmpty(label)) {
 				_scribDate = TransStringUtil.getDate(date);
-				ScribLabel _tempLabel = dispatchManagerService
-						.getScribLabelByDate(TransStringUtil
-								.getServerDate(date));
-				if(_tempLabel!=null)
-					getDispatchManagerService().removeEntityEx(_tempLabel);
-				ScribLabel _sLabel = new ScribLabel(_scribDate, label);
-
-				return dispatchManagerService.addScribLabel(_sLabel);
+				
+				if("true".equals(checked)){
+					String[] dates = TransStringUtil.getDates(date, "All");
+					if(dates!=null){
+						for(int i=0;i<dates.length;i++){
+							ScribLabel _tempLabel = dispatchManagerService.getScribLabelByDate(TransStringUtil.getServerDate(dates[i]));
+							if(_tempLabel!=null)
+								getDispatchManagerService().removeEntityEx(_tempLabel);
+							
+								ScribLabel _sLabel = new ScribLabel(TransStringUtil.getDate(dates[i]), label);
+								LabelLst.add(_sLabel);															
+						}
+						if(LabelLst.size()>0) 
+							dispatchManagerService.saveEntityList(LabelLst);
+						return true;
+					}
+				}else{
+					ScribLabel _tempLabel = dispatchManagerService.getScribLabelByDate(TransStringUtil.getServerDate(date));
+					
+					if(_tempLabel!=null)
+						getDispatchManagerService().removeEntityEx(_tempLabel);
+						
+						ScribLabel _sLabel = new ScribLabel(_scribDate, label);						
+						dispatchManagerService.saveEntity(_sLabel);
+					return true;
+				}
 			}
 		}catch(DataIntegrityViolationException ex){
 			ex.printStackTrace();
 			return false;
 		}catch (ParseException e) {
 			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}			
-		return false;
+		return true;
 	}
 	
 	public String getScribLabel(String Date) {

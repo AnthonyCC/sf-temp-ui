@@ -49,8 +49,8 @@
 	                   	  <span>&nbsp;<input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('daterange','weekdate','zone','plan.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /></span>
 						  <span><input id="view_button" type="image" alt="Dispatch" src="./images/icons/dispatch.gif" onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do');" onmousedown="this.src='./images/icons/dispatch_ON.gif'" /> 
 							<a href="#"  onclick="javascript:doAutoDispatch('weekdate','daterange','zone','autoDispatch.do')" class="dispatch_link">Dispatch</a></span>
-	                      <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','daterange','y')" />
-	                      <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','daterange','y','1')" />                  
+	                      <input type = "button" value=" U/A " onclick="javascript:doUnavailable('plan.do','weekdate','daterange','y')" />
+	                      <input type = "button" value="Kronos Files" onclick="javascript:doKronos('plan.do','weekdate','daterange','y','1')" />                  
 	                   </div>  
 				</div>
 			</div>
@@ -145,20 +145,22 @@
 		    }
 		}
 		
-	  function doUnavailable(url,id1,param2)
+	  function doUnavailable(url,id1,id2,param3)
 	  {
 	     var param1 = document.getElementById(id1).value;
-         var id2 = "unavailable";
+	     var param2 = document.getElementById(id2).value;
+         var id3 = "unavailable";
           
-         javascript:pop(url+"?"+id1+"="+ param1+"&"+id2+"="+param2, 400,600);
+         javascript:pop(url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3, 400,600);
 	  }
 
-	  function doKronos(url,id1,param2,param3)
+	  function doKronos(url,id1,id2,param3,param4)
 	  {
 	  	var param1 = document.getElementById(id1).value;
-        var id2 = "kronos"; 
-        var id3 = "file";          
-        location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3  ;
+	  	var param2 = document.getElementById(id2).value;
+        var id3 = "kronos"; 
+        var id4 = "file";          
+        location.href =url+"?"+id1+"="+ param1+"&"+id2+"="+param2+"&"+id3+"="+param3+"&"+id4+"="+param3  ;
 	  }
 
 	   Calendar.setup(

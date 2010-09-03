@@ -1013,7 +1013,7 @@ public class DispatchPlanUtil {
 		}
 		return false;
 	}
-	public static boolean isEligibleForKronosFileGeneration(Collection c)
+	public static boolean isEligibleForKronosFileGeneration(Collection<EmployeeRole> c)
 	{
 		if(c!=null&&c.size()>0)
 		{			
