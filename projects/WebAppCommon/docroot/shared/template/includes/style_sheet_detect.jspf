@@ -1,16 +1,18 @@
-<link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css">
-<%
-if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
-%><link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css"><%
-} else {
-%><link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css"><%
-}
-%>
-<!--[if lte IE 6]>
-<link rel="stylesheet" href="/assets/css/pngfix_ie6.css" type="text/css">
-<![endif]--> 
-<link href="/assets/css/wine.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/4mm.css" rel="stylesheet" type="text/css">
-<link href="/assets/css/quickbuy.css" rel="stylesheet" type="text/css">
-<%-- Keep the media include last, so it can always override any css auto-loaded --%>
-<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html"/>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%-- this file will be included in the <head> tag --%>
+	<link rel="stylesheet" href="/assets/css/modalbox.css" type="text/css">
+	<%
+	if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
+	%><link rel="stylesheet" href="/assets/css/mac_ie.css" type="text/css"><%
+	} else {
+	%><link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css"><%
+	}
+	%>
+	<!--[if lte IE 6]>
+	<link rel="stylesheet" href="/assets/css/pngfix_ie6.css" type="text/css">
+	<![endif]--> 
+	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css">
+	<link href="/assets/css/4mm.css" rel="stylesheet" type="text/css">
+	<link href="/assets/css/quickbuy.css" rel="stylesheet" type="text/css">
+	<%-- Keep the media include last, so it can always override any css auto-loaded --%>
+	<fd:IncludeMedia name="/media/editorial/site_pages/stylesheet.html"/>
