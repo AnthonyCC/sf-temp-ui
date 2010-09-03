@@ -1,15 +1,18 @@
 package com.freshdirect.transadmin.web;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +21,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.routing.model.IDeliverySlot;
+import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
@@ -28,9 +34,10 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
-import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.scrib.PlanTree;
 import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
+import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
+import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ScribController extends AbstractMultiActionController
@@ -301,17 +308,96 @@ public class ScribController extends AbstractMultiActionController
 		
 	}
 	
+	public ModelAndView scribSummaryHandler(HttpServletRequest request, HttpServletResponse response) 
+														throws ServletException, ParseException   {
+		
+          String selectedDate = request.getParameter("selectedDate");
+          String baseDate = request.getParameter("baseDate");
+          
+          if(TransStringUtil.isEmpty(selectedDate)) { 
+        	  selectedDate = TransStringUtil.getCurrentDate();
+          }
+          
+          Date _selectedDate = TransStringUtil.getDate(selectedDate);
+          if(TransStringUtil.isEmpty(baseDate)) {
+        	  baseDate = TransStringUtil.getCurrentDate();
+          }
+          Date _baseDate = TransStringUtil.getDate(baseDate);
+          
+          DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+          Map<String, List<IDeliverySlot>> selectedWindows = null;
+          Map<String, List<IDeliverySlot>> baseWindows = null;
+		  
+          try {
+				selectedWindows = dlvProxy.getTimeslotsByDate(_selectedDate, null, null);
+				baseWindows = dlvProxy.getTimeslotsByDate(_baseDate, null, null);
+		  } catch (RoutingServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		  }
+                    
+          Set<CustomTimeOfDay> allWindows = new TreeSet<CustomTimeOfDay>();
+          Map<String, Map<CustomTimeOfDay, Integer>> selectedScribMapping = new TreeMap<String, Map<CustomTimeOfDay, Integer>>();
+          Map<String, Map<CustomTimeOfDay, Integer>> baseScribMapping = new TreeMap<String, Map<CustomTimeOfDay, Integer>>();
+          
+          Collection<Scrib> selectedScribs = dispatchManagerService.getScribList(TransStringUtil.getServerDate(selectedDate));
+          Collection<Scrib> baseScribs = dispatchManagerService.getScribList(TransStringUtil.getServerDate(baseDate));
+          
+          //relateTimeRange(allWindows, selectedWindows);
+          //relateTimeRange(allWindows, baseWindows);
+          
+          relateFirstDeliveryTime(allWindows, selectedScribMapping, selectedScribs);
+          relateFirstDeliveryTime(allWindows, baseScribMapping, baseScribs);
+                   
+          request.setAttribute("selectedDate", selectedDate);
+          request.setAttribute("baseDate", baseDate);
+          ModelAndView mav = new ModelAndView("scribSummaryView");
+          
+          mav.getModel().put("allWindows", allWindows);
+          mav.getModel().put("selectedSummaryMapping", selectedScribMapping);
+          mav.getModel().put("baseSummaryMapping", baseScribMapping);
+          mav.getModel().put("selectedDate", selectedDate);
+          mav.getModel().put("baseDate", baseDate);
+          mav.getModel().put("pageId", "scribsummary");
+          
+          return mav;
+    }
 	
+	/*private void relateTimeRange(Set<TimeRange> allWindows, Map<String, List<IDeliverySlot>> baseWindows) {
+
+		if(baseWindows != null) {
+			for(Map.Entry<String, List<IDeliverySlot>> slotMapping : baseWindows.entrySet()) {
+				if(slotMapping.getValue() != null) {
+					for(IDeliverySlot slot : slotMapping.getValue()) {
+						allWindows.add(new TimeRange(slot.getStartTime(), slot.getStopTime()));
+					}
+				}
+			}
+		}
+	}*/
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	private void relateFirstDeliveryTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
+											, Collection<Scrib> scribs) {
+		
+		CustomTimeOfDay _timeOfDay = null;
+		if(scribs != null) {        	  
+      	  for(Scrib _scrib : scribs) {
+      		  if(_scrib.getZone() != null) {
+      			 _timeOfDay = new CustomTimeOfDay(_scrib.getFirstDlvTime());
+      			allWindows.add(_timeOfDay);
+      			if(!scribMapping.containsKey(_scrib.getZone().getZoneCode())) {
+      				scribMapping.put(_scrib.getZone().getZoneCode(), new TreeMap<CustomTimeOfDay, Integer>());
+      			}
+      			if(!scribMapping.get(_scrib.getZone().getZoneCode()).containsKey(_timeOfDay)) {
+      				scribMapping.get(_scrib.getZone().getZoneCode()).put(_timeOfDay, 0);
+      			}
+      			scribMapping.get(_scrib.getZone().getZoneCode()).put(_timeOfDay
+      											, scribMapping.get(_scrib.getZone().getZoneCode()).get(_timeOfDay)
+      																			+ _scrib.getCount());
+      		  }
+      	  }        	  
+        }
+	}
 	
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;

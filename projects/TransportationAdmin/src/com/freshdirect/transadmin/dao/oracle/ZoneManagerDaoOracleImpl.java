@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
+import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
 import com.freshdirect.transadmin.web.model.TimeRange;
 
 public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
@@ -150,8 +151,8 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
        		    		Array array = rs.getArray("ZONES");
        		    		
        		    		TimeRange capacity = new TimeRange();
-       		    		capacity.setStartTime(new TimeOfDay(rs.getString("STIME")));
-       		    		capacity.setEndTime(new TimeOfDay(rs.getString("ETIME")));
+       		    		capacity.setStartTime(new CustomTimeOfDay(rs.getString("STIME")));
+       		    		capacity.setEndTime(new CustomTimeOfDay(rs.getString("ETIME")));
        		    		
        		    		if(array != null) {
        		    			String[] zoneCodes = (String[])array.getArray();

@@ -9,34 +9,34 @@
 	     	<access-uris>plan.do,deleteplan.do,editplan.do,copyplan.do,autoDispatch.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
-	     <menu id="OPR008" title="Plan Summary" orientation="LEFT" link="plansummary.do">
+	     <menu id="OPR002" title="Plan Summary" orientation="LEFT" link="plansummary.do">
 	     	<access-uris>plansummary.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
-	     <menu id="OPR002" title="Dispatch" orientation="LEFT" link="dispatch.do">
+	     <menu id="OPR003" title="Dispatch" orientation="LEFT" link="dispatch.do">
 	     	<access-uris>dispatch.do,deletedispatch.do,editdispatch.do,confirmdispatch.do,refreshRoute.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
 	     
-	     <menu id="OPR006" title="Dispatch Summary" orientation="LEFT" link="dispatchSummary.do">
+	     <menu id="OPR004" title="Dispatch Summary" orientation="LEFT" link="dispatchSummary.do">
 	     	     	<access-uris>dispatchSummary.do,refreshRouteSummary.do,unassignedactiveemployees.do</access-uris>
 	     	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>
-	      <menu id="OPR007" title="Dispatch Dashboard" orientation="LEFT" link="dispatchDashboard.do">
+	      <menu id="OPR005" title="Dispatch Dashboard" orientation="LEFT" link="dispatchDashboard.do">
 	     	     	<access-uris>dispatchDashboard.do,dispatchDashboardView.do</access-uris>
 	     	     	<access-roles>TrnAdmin,TrnGuest,TrnDispatch,TrnPlanning,TrnOperations</access-roles>
 	     </menu>	     	     
-	     <menu id="OPR003" title="Route" orientation="RIGHT" link="route.do?routetype=R">
+	     <menu id="OPR006" title="Route" orientation="RIGHT" link="route.do?routetype=R">
 	     	<access-uris>route.do,editroute.do,deleteroute.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
 	     </menu>
 	     
-	     <menu id="OPR004" title="Employee" orientation="RIGHT" link="employee.do?empstatus=S">
+	     <menu id="OPR007" title="Employee" orientation="RIGHT" link="employee.do?empstatus=S">
 	     	<access-uris>employee.do,editemployee.do,deleteemployee.do,editschedule.do,uploadschedules.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
 	     </menu>
 	     
-	     <menu id="OPR005" title="Truck" orientation="RIGHT" link="truck.do">
+	     <menu id="OPR008" title="Truck" orientation="RIGHT" link="truck.do">
 	     	<access-uris>truck.do,edittruck.do,deletetruck.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
      	</menu>
@@ -67,8 +67,8 @@
 	     	<access-uris>scrib.do,editscrib.do,copyscrib.do,deletescrib.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning,TrnOperations</access-roles>
      	 </menu>
-     	 <menu id="RUT005" title="Scrib Summary" orientation="LEFT" link="scribsummaryview.do">
-	     	<access-uris>scribsummaryview.do</access-uris>
+     	 <menu id="RUT005" title="Scrib Summary" orientation="LEFT" link="scribsummary.do">
+	     	<access-uris>scribsummary.do</access-uris>
      	 	<access-roles>TrnAdmin,TrnPlanning</access-roles>
      	 </menu> 
      	 

@@ -116,7 +116,7 @@
 				<prop key="/drivingdirection.do">dispatchController</prop>
                 <prop key="/unassignedactiveemployees.do">dispatchController</prop>
                 <prop key="/scrib.do">scribController</prop>
-                <prop key="/scribsummaryview.do">scribController</prop>
+                <prop key="/scribsummary.do">scribController</prop>
                 <prop key="/copyscrib.do">scribController</prop>
                 <prop key="/deletescrib.do">scribController</prop>
                 <prop key="/editscrib.do">scribFormController</prop>
@@ -272,7 +272,7 @@
 			<prop key="/drivingdirection.do">drivingDirectionsHandler</prop>
             <prop key="/unassignedactiveemployees.do">unassignedPunchedInEmployeeHandler</prop>
             <prop key="/scrib.do">scribHandler</prop>
-            <prop key="/scribsummaryview.do">scribSummaryHandler</prop>
+            <prop key="/scribsummary.do">scribSummaryHandler</prop>
             <prop key="/copyscrib.do">copyScribHandler</prop>
             <prop key="/deletescrib.do">deleteScribHandler</prop>	
             <prop key="/earlywarning.do">earlyWarningHandler</prop>

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -42,6 +43,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
+import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IGeoPoint;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
@@ -73,10 +75,12 @@ import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
+import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.UPSDataCacheManager;
-import com.freshdirect.transadmin.util.TransStringUtil.DateFilterException;
+import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
+import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
@@ -1132,6 +1136,97 @@ public class DispatchController extends AbstractMultiActionController {
 
 		return mav;
 	}
+	
+	public ModelAndView planSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException {
+		
+		String selectedDate = request.getParameter("selectedDate");
+        String baseDate = request.getParameter("baseDate");
+        
+        if(TransStringUtil.isEmpty(selectedDate)) { 
+      	  selectedDate = TransStringUtil.getCurrentDate();
+        }
+        
+        Date _selectedDate = TransStringUtil.getDate(selectedDate);
+        if(TransStringUtil.isEmpty(baseDate)) {
+      	  baseDate = TransStringUtil.getCurrentDate();
+        }
+        Date _baseDate = TransStringUtil.getDate(baseDate);
+        
+        DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
+        Map<String, List<IDeliverySlot>> selectedWindows = null;
+        Map<String, List<IDeliverySlot>> baseWindows = null;
+		  
+        try {
+				selectedWindows = dlvProxy.getTimeslotsByDate(_selectedDate, null, null);
+				baseWindows = dlvProxy.getTimeslotsByDate(_baseDate, null, null);
+		  } catch (RoutingServiceException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		  }
+                  
+        Set<CustomTimeOfDay> allWindows = new TreeSet<CustomTimeOfDay>();
+        Map<String, Map<CustomTimeOfDay, Integer>> selectedPlanMapping = new TreeMap<String, Map<CustomTimeOfDay, Integer>>();
+        Map<String, Map<CustomTimeOfDay, Integer>> basePlanMapping = new TreeMap<String, Map<CustomTimeOfDay, Integer>>();
+        
+        Collection<Plan> selectedScribs = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(selectedDate));
+        Collection<Plan> baseScribs = dispatchManagerService.getPlanList(TransStringUtil.getServerDate(baseDate));
+        
+        //relateTimeRange(allWindows, selectedWindows);
+        //relateTimeRange(allWindows, baseWindows);
+        
+        relateFirstDeliveryTime(allWindows, selectedPlanMapping, selectedScribs);
+        relateFirstDeliveryTime(allWindows, basePlanMapping, baseScribs);
+                 
+        request.setAttribute("selectedDate", selectedDate);
+        request.setAttribute("baseDate", baseDate);
+        ModelAndView mav = new ModelAndView("planSummaryView");
+        
+        mav.getModel().put("allWindows", allWindows);
+        mav.getModel().put("selectedSummaryMapping", selectedPlanMapping);
+        mav.getModel().put("baseSummaryMapping", basePlanMapping);
+        mav.getModel().put("selectedDate", selectedDate);
+        mav.getModel().put("baseDate", baseDate);
+        mav.getModel().put("pageId", "plansummary");
+        
+        return mav; 
+	}
+	
+	/*private void relateTimeRange(Set<TimeRange> allWindows, Map<String, List<IDeliverySlot>> baseWindows) {
+
+		if(baseWindows != null) {
+			for(Map.Entry<String, List<IDeliverySlot>> slotMapping : baseWindows.entrySet()) {
+				if(slotMapping.getValue() != null) {
+					for(IDeliverySlot slot : slotMapping.getValue()) {
+						allWindows.add(new TimeRange(slot.getStartTime(), slot.getStopTime()));
+					}
+				}
+			}
+		}
+	}*/
+	
+	private void relateFirstDeliveryTime(Set<CustomTimeOfDay> allWindows, Map<String, Map<CustomTimeOfDay, Integer>> scribMapping
+												, Collection<Plan> plans) {
+		
+		CustomTimeOfDay _timeOfDay = null;
+		if(plans != null) {        	  
+      	  for(Plan _plan : plans) {
+      		  if(_plan.getZone() != null) {
+      			 _timeOfDay = new CustomTimeOfDay(_plan.getFirstDeliveryTime());
+      			allWindows.add(_timeOfDay);
+      			if(!scribMapping.containsKey(_plan.getZone().getZoneCode())) {
+      				scribMapping.put(_plan.getZone().getZoneCode(), new TreeMap<CustomTimeOfDay, Integer>());
+      			}
+      			if(!scribMapping.get(_plan.getZone().getZoneCode()).containsKey(_timeOfDay)) {
+      				scribMapping.get(_plan.getZone().getZoneCode()).put(_timeOfDay, 0);
+      			}
+      			scribMapping.get(_plan.getZone().getZoneCode()).put(_timeOfDay
+      											, scribMapping.get(_plan.getZone().getZoneCode()).get(_timeOfDay)
+      																			+ 1);
+      		  }
+      	  }        	  
+        }
+	}
+
 	
 	/**
 	 * Custom handler for welcome
