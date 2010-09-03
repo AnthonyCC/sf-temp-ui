@@ -308,7 +308,7 @@ public class DomainController extends AbstractMultiActionController {
 		
         try {
         	FileCreator creator = new FileCreator(configurationPath, outputFile);
-        	creator.setRecordSeperator(TransportationAdminProperties.getCSVFileSeparator());
+        	creator.setRecordSeperator(TransportationAdminProperties.getFileSeparator());
         	creator.open();        	        	
         	
         	if(data != null) {
@@ -318,9 +318,7 @@ public class DomainController extends AbstractMultiActionController {
 	        		tmp = iterator.next();
 	        		creator.setBean(beanName, tmp);
 	                creator.write(recordName);
-	                creator.setRecordSeperator("\n");
-	    		}
-	        	
+	        	}	        	
         	}        	
             // Close buffered output to write contents
             creator.close();

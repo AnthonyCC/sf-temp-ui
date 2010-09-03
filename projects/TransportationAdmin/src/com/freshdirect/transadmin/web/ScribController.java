@@ -142,10 +142,7 @@ public class ScribController extends AbstractMultiActionController
 			}
 			mav.getModel().put("scribDates", scribDates);
 
-			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
-				createPlan(request);
-				saveMessage(request, getMessage("app.actionmessage.149", null));
-			}
+			
 			//get the predefined Scrib labels
 			String scribLabels= TransportationAdminProperties.getScribHolidayLabels();
 			String[] _scribLabels = StringUtil.decodeStrings(scribLabels);
@@ -154,6 +151,11 @@ public class ScribController extends AbstractMultiActionController
 				sLabels.add(_slabel);
 			}
 			mav.getModel().put("sLabels", sLabels);
+			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
+				createPlan(request);
+				saveMessage(request, getMessage("app.actionmessage.149", null));
+				return mav;
+			}
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -170,12 +172,13 @@ public class ScribController extends AbstractMultiActionController
 		String _dates = request.getParameter("dlvdates_selected");
 		String[] regions = StringUtil.decodeStrings(_regions);
 		String[] dates = StringUtil.decodeStrings(_dates);
-
+		List _regLst = new ArrayList<String>();
+		
 		if (dates!=null && dates.length > 0 && regions != null && regions.length > 0) {
 			for (String scribDate : dates) {
 
 				for (String region : regions) {
-					
+					_regLst.add(region);
 					Collection planList = dispatchManagerService
 												.getPlanList(scribDate, region);
 					for (Iterator i = planList.iterator(); i.hasNext();) {
@@ -199,10 +202,10 @@ public class ScribController extends AbstractMultiActionController
 				}//end regions loop
 				if("y".equalsIgnoreCase(request.getParameter("o"))){
 					Collection dlvregions = domainManagerService.getRegions();
-					for(String region: regions){
+					
 						for (Iterator it = dlvregions.iterator(); it.hasNext();) {
 							Region _r = (Region) it.next();
-							if(_r.getCode().equals(region)){
+							if(_regLst.contains(_r.getCode())){
 								
 							}else{
 								Collection planList = dispatchManagerService.getPlanList(scribDate, _r.getCode());
@@ -210,10 +213,10 @@ public class ScribController extends AbstractMultiActionController
 									Plan p = (Plan) i.next();
 									p.setUserId(SecurityManager.getUserName(request));
 								}
-								dispatchManagerService.removeEntity(planList);
+								if(planList.size()>0)
+									dispatchManagerService.removeEntity(planList);
 							}
-						}						
-					}
+						}					
 				}
 			}//end dates loop
 		}

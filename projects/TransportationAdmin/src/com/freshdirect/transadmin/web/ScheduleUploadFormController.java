@@ -89,7 +89,10 @@ public class ScheduleUploadFormController extends BaseFormController {
 			}catch(DataIntegrityViolationException ex){
 				ex.printStackTrace();
 				saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
-			}			
+			}catch(Exception e){
+				e.printStackTrace();
+				saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
+			}
 		}else
 			saveErrorMessage(request, getMessage("app.error.130", new Object[] {}));
 		
