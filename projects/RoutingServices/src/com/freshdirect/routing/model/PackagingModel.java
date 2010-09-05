@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
+
 public class PackagingModel extends BaseModel implements IPackagingModel {
 	
 	private long noOfCartons;
@@ -7,19 +9,19 @@ public class PackagingModel extends BaseModel implements IPackagingModel {
 	private long noOfFreezers;
 	
 	private long noOfCases;
-	
-	private double totalSize1;
-	
-	private double totalSize2;
-	
-	private boolean isDefault; 
-
-	public boolean isDefault() {
-		return isDefault;
+		
+	private EnumOrderMetricsSource source;
+		
+	public EnumOrderMetricsSource getSource() {
+		return source;
 	}
 
-	public void setDefault(boolean isDefault) {
-		this.isDefault = isDefault;
+	public void setSource(EnumOrderMetricsSource source) {
+		this.source = source;
+	}
+
+	public boolean isDefault() {
+		return source != null && source.equals(EnumOrderMetricsSource.DEFAULT);
 	}
 
 	public long getNoOfCartons() {
@@ -49,22 +51,4 @@ public class PackagingModel extends BaseModel implements IPackagingModel {
 	public String toString() {
 		return noOfCartons+"-"+noOfFreezers+"-"+noOfCases+"\n";
 	}
-
-	public double getTotalSize1() {
-		return totalSize1;
-	}
-
-	public void setTotalSize1(double totalSize1) {
-		this.totalSize1 = totalSize1;
-	}
-
-	public double getTotalSize2() {
-		return totalSize2;
-	}
-
-	public void setTotalSize2(double totalSize2) {
-		this.totalSize2 = totalSize2;
-	}
-
-	
 }

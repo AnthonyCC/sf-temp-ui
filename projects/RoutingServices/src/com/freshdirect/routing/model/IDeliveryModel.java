@@ -24,8 +24,8 @@ public interface IDeliveryModel  {
 	ILocationModel getDeliveryLocation();
 	void setDeliveryLocation(ILocationModel location);
 	
-	IPackagingModel getPackagingInfo();
-	void setPackagingInfo(IPackagingModel packageInfo);
+	IPackagingModel getPackagingDetail();
+	void setPackagingDetail(IPackagingModel packagingDetail);
 	
 	double getCalculatedServiceTime();
 	double getCalculatedOrderSize();

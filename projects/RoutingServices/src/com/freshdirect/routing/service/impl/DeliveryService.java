@@ -28,7 +28,6 @@ import com.freshdirect.routing.proxy.stub.roadnet.DriverDirectionsOptions;
 import com.freshdirect.routing.proxy.stub.roadnet.RouteNetWebService;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingRoute;
 import com.freshdirect.routing.proxy.stub.transportation.RoutingSession;
-import com.freshdirect.routing.proxy.stub.transportation.RoutingStop;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
 import com.freshdirect.routing.proxy.stub.transportation.TransportationWebServiceStub;
 import com.freshdirect.routing.service.IDeliveryService;
@@ -94,7 +93,7 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		}
 		// Got the serviceTimeType lets calculate
 		double valX = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFactorFormula()
-											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingInfo()));			
+											, ServiceTimeUtil.getServiceTimeFactorParams(orderModel.getDeliveryInfo().getPackagingDetail()));			
 		double valY = ServiceTimeUtil.evaluateExpression(scenario.getServiceTimeFormula()
 											, ServiceTimeUtil.getServiceTimeParams(serviceTimeType.getFixedServiceTime(), serviceTimeType.getVariableServiceTime(), valX ));
 		

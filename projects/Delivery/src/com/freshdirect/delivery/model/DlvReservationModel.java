@@ -13,13 +13,15 @@ package com.freshdirect.delivery.model;
  */
 import java.util.Date;
 
-import com.freshdirect.delivery.EnumReservationType;
-import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
-import com.freshdirect.framework.core.*;
-import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+
+import com.freshdirect.delivery.EnumReservationType;
+import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
+import com.freshdirect.framework.core.ModelSupport;
+import com.freshdirect.framework.core.PrimaryKey;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
+import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 
 public class DlvReservationModel extends ModelSupport {
 
@@ -51,7 +53,16 @@ public class DlvReservationModel extends ModelSupport {
 	
 	private Long noOfCases;
 	
-	
+	private EnumOrderMetricsSource metricsSource;
+		
+	public EnumOrderMetricsSource getMetricsSource() {
+		return metricsSource;
+	}
+
+	public void setMetricsSource(EnumOrderMetricsSource metricsSource) {
+		this.metricsSource = metricsSource;
+	}
+
 	public Double getOverrideOrderSize() {
 		return overrideOrderSize;
 	}
@@ -153,7 +164,7 @@ public class DlvReservationModel extends ModelSupport {
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS,
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime, 
-		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
 			
 		this.orderId = orderId;
 		this.customerId = customerId;
@@ -192,12 +203,12 @@ public class DlvReservationModel extends ModelSupport {
 		String zoneId,
 		EnumReservationType type, String addressId, Date deliveryDate, String zoneCode/*,Date unassignedDateTime*/,RoutingActivityType unassignedActivityType,boolean inUPS, 
 		Double overrideOrderSize, Double overrideServiceTime, Double reservedOrderSize, Double reservedServiceTime,
-		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status) {
+		Long noOfCartons, Long noOfCases, Long noOfFreezers, EnumRoutingUpdateStatus status, EnumOrderMetricsSource metricsSource) {
 			
 		this(orderId, customerId, statusCode, expirationDateTime, timeslotId, zoneId, type, addressId,deliveryDate
 						,zoneCode/*,unassignedDateTime*/,unassignedActivityType,inUPS
 						, overrideOrderSize, overrideServiceTime, reservedOrderSize, reservedServiceTime,
-						noOfCartons, noOfCases, noOfFreezers, status);
+						noOfCartons, noOfCases, noOfFreezers, status, metricsSource);
 		this.setPK(pk);
 
 	}

@@ -174,7 +174,7 @@ public class RoutingDataEncoder {
 		order.setReservedTime(baseCalendar);
 		order.setConfirmed(true);
 
-		order.setQuantity((int)orderModel.getDeliveryInfo().getPackagingInfo().getTotalSize1());
+		order.setQuantity((int)orderModel.getDeliveryInfo().getCalculatedOrderSize());
 
 		if(needTimeSlot) {
 			order.setDeliveryWindowStart(getTime(orderModel.getDeliveryInfo().getDeliveryStartTime()));

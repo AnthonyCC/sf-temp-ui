@@ -159,7 +159,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
        		    	
        		    	do {
        		    		model.setNoOfCartons(rs.getInt("CCOUNT")+ rs.getInt("ACOUNT"));
-       		    		model.setNoOfFreezers(rs.getInt("FCOUNT"));
+       		    		model.setNoOfFreezers(rs.getInt("FCOUNT"));       		    		
        		    	}  while(rs.next());		        		    	
        		      }
        		  }
@@ -431,7 +431,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				    		pModel.setNoOfCartons(rs.getLong("NCARTONS"));
 				    		pModel.setNoOfCases(rs.getLong("NCASES"));
 				    		pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
-				    		dModel.setPackagingInfo(pModel);
+				    		dModel.setPackagingDetail(pModel);
 				    		
 				    		IZoneModel zModel = new ZoneModel();
 				    		zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -505,7 +505,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					pModel.setNoOfCartons(rs.getLong("NCARTONS"));
 					pModel.setNoOfCases(rs.getLong("NCASES"));
 					pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
-					dModel.setPackagingInfo(pModel);
+					dModel.setPackagingDetail(pModel);
 					
 					IZoneModel zModel = new ZoneModel();
 					zModel.setZoneNumber(rs.getString("ZCODE"));
@@ -570,7 +570,7 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 					pModel.setNoOfCartons(rs.getLong("NCARTONS"));
 					pModel.setNoOfCases(rs.getLong("NCASES"));
 					pModel.setNoOfFreezers(rs.getLong("NFREEZERS"));
-					dModel.setPackagingInfo(pModel);
+					dModel.setPackagingDetail(pModel);
 					
 					IZoneModel zModel = new ZoneModel();
 					zModel.setZoneNumber(rs.getString("ZCODE"));

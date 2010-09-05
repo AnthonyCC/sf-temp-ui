@@ -6,19 +6,20 @@ import java.util.Map;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.service.IPlantService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class PlantServiceProxy extends BaseServiceProxy  {
 	
-	public IPackagingModel estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+	public OrderEstimationResult estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
 		return getService().estimateOrderSize(orderNo, scenario);
 	}
 		
 	
-	public IPackagingModel getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
+	public OrderEstimationResult getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException {
 		
 		return getService().getPackageModel(rowMap, orderSizeExpression, defaultCartonCount
@@ -30,12 +31,8 @@ public class PlantServiceProxy extends BaseServiceProxy  {
 		
 		return getService().getPackagingInfoList(orderIdLst);
 	}
-	
-	/*public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
-		return getService().estimateOrderSize(model, scenario);
-	}*/
-	
-	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
+		
+	public OrderEstimationResult estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
 		return getService().estimateOrderSize(model, scenario, historyInfo);
 	}
 	

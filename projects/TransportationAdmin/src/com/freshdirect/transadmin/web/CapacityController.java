@@ -559,10 +559,10 @@ public class CapacityController extends AbstractMultiActionController {
 					_unassigned.setOverrideServiceTime(_order.getOrder().getOverrideServiceTime());
 					
 					if(_order.getOrder() != null && _order.getOrder().getDeliveryInfo() != null
-														&& _order.getOrder().getDeliveryInfo().getPackagingInfo() != null) {
-						_unassigned.setPackageInfo(_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfCartons()
-														+","+_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfCases()
-														+","+_order.getOrder().getDeliveryInfo().getPackagingInfo().getNoOfFreezers());
+														&& _order.getOrder().getDeliveryInfo().getPackagingDetail() != null) {
+						_unassigned.setPackageInfo(_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCartons()
+														+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfCases()
+														+","+_order.getOrder().getDeliveryInfo().getPackagingDetail().getNoOfFreezers());
 					}
 										
 					_unassigned.setUpdateStatus(_order.getOrder().getUpdateStatus());

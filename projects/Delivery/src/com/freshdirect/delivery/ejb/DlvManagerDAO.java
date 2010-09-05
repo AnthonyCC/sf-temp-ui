@@ -46,6 +46,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.GenericSearchCriteria;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.AreaModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -378,7 +379,7 @@ public class DlvManagerDAO {
 
 	private static final String RESERVATION_FOR_CUSTOMER="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID" +
 			", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION" +
-			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS " +
+			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 			", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
 			"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE  R.CUSTOMER_ID = ? AND R.STATUS_CODE = ? " +
 			"AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
@@ -403,7 +404,7 @@ public class DlvManagerDAO {
 	private static final String RESERVATION_BY_CUSTOMER_AND_TIMESLOT="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID" +
 			", R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE" +
 			",R.UNASSIGNED_DATETIME,R.UNASSIGNED_ACTION,R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME" +
-			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS " +
+			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 			", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
 			"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z WHERE R.CUSTOMER_ID = ? AND R.TIMESLOT_ID=? " +
 			"AND R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID";
@@ -450,7 +451,8 @@ public class DlvManagerDAO {
 			, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
 			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
-			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS")));
+			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
+			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 		
 	}
 
@@ -996,7 +998,7 @@ public class DlvManagerDAO {
 	}
 	
 	private static final String UPDATE_RESERVATIONSTATUSONLY_QUERY = "UPDATE DLV.RESERVATION SET UPDATE_STATUS = ? WHERE ID=?";
-	public static void setReservationUpdateStatus(Connection conn, String reservationId, String status)  throws SQLException {
+	public static void setReservationMetricsStatus(Connection conn, String reservationId, String status)  throws SQLException {
 
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUSONLY_QUERY);
 		ps.setString(1, status);
@@ -1011,7 +1013,7 @@ public class DlvManagerDAO {
 
 	private static final String UPDATE_RESERVATIONSTATUS_QUERY = "UPDATE DLV.RESERVATION SET NUM_CARTONS = ? , NUM_FREEZERS = ? , NUM_CASES = ?" +
 			" , UPDATE_STATUS = ? WHERE ID=?";
-	public static void setReservationUpdateStatusInfo(Connection conn, String reservationId
+	public static void setReservationMetricsDetails(Connection conn, String reservationId
 													, long noOfCartons, long noOfCases, long noOfFreezers
 													, String status)  throws SQLException {
 		
@@ -1020,7 +1022,6 @@ public class DlvManagerDAO {
 		ps.setDouble(2, noOfCases);
 		ps.setDouble(3, noOfFreezers);
 		
-		//ps.setDouble(4, serviceTime);
 	    ps.setString(4, status);
 	    ps.setString(5, reservationId);
 	    if(ps.executeUpdate() != 1){
@@ -1030,12 +1031,35 @@ public class DlvManagerDAO {
 	    ps.close();
 	}
 	
-	private static final String UPDATE_RESERVATIONMETRICSSTATUS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?, RESERVED_SERVICE_TIME = ?, UPDATE_STATUS = ? WHERE ID=?";
-	public static void setReservationMetricsStatusInfo(Connection conn, String reservationId, double orderSize, double serviceTime, String status)  throws SQLException {
+	private static final String UPDATE_RESERVATIONSOURCE_QUERY = "UPDATE DLV.RESERVATION SET NUM_CARTONS = ? " +
+																	", NUM_FREEZERS = ? , NUM_CASES = ?" +
+																		" , METRICS_SOURCE = ? WHERE ID=?";
+	public static void setReservationMetricsDetails(Connection conn, String reservationId
+													, long noOfCartons, long noOfCases, long noOfFreezers
+													, EnumOrderMetricsSource source)  throws SQLException {
+
+		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSOURCE_QUERY);
+		ps.setDouble(1, noOfCartons);
+		ps.setDouble(2, noOfCases);
+		ps.setDouble(3, noOfFreezers);
+
+		ps.setString(4, (source != null ? source.value() : null));
+		ps.setString(5, reservationId);
+		if(ps.executeUpdate() != 1){
+			ps.close();
+			throw new SQLException("Cannot find reservation to METRICS UPDATE STATUS for id: " + reservationId);
+		}
+		ps.close();
+	}
+	
+	private static final String UPDATE_RESERVATIONMETRICSSTATUS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?" +
+			"																, RESERVED_SERVICE_TIME = ?, UPDATE_STATUS = ? WHERE ID=?";
+	public static void setReservationReservedMetrics(Connection conn, String reservationId, double reservedOrderSize
+															, double reservedServiceTime, String status)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICSSTATUS_QUERY);
-		ps.setDouble(1, orderSize);
-		ps.setDouble(2, serviceTime);
+		ps.setDouble(1, reservedOrderSize);
+		ps.setDouble(2, reservedServiceTime);
 	    ps.setString(3, status);
 	    ps.setString(4, reservationId);
 	    if(ps.executeUpdate() != 1){
@@ -1045,12 +1069,14 @@ public class DlvManagerDAO {
 	    ps.close();
 	}
 	
-	private static final String UPDATE_RESERVATIONMETRICS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?, RESERVED_SERVICE_TIME = ? WHERE ID=?";
-	public static void setReservationOrderMetrics(Connection conn, String reservationId, double orderSize, double serviceTime)  throws SQLException {
+	private static final String UPDATE_RESERVATIONMETRICS_QUERY = "UPDATE DLV.RESERVATION SET RESERVED_ORDER_SIZE = ?" +
+			"																, RESERVED_SERVICE_TIME = ? WHERE ID=?";
+	public static void setReservationReservedMetrics(Connection conn, String reservationId
+														, double reservedOrderSize, double reservedServiceTime)  throws SQLException {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONMETRICS_QUERY);
-		ps.setDouble(1, orderSize);
-		ps.setDouble(2, serviceTime);	    
+		ps.setDouble(1, reservedOrderSize);
+		ps.setDouble(2, reservedServiceTime);	    
 	    ps.setString(3, reservationId);
 	    if(ps.executeUpdate() != 1){
 	        ps.close();
@@ -1087,10 +1113,13 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_UNASSIGNED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
-	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS " +
+	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
 	"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
-	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
+	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE=TRUNC(?) " +
+	"AND (unassigned_action IS NOT NULL OR (UPDATE_STATUS IS NOT NULL AND UPDATE_STATUS <> 'SUS'))  " +
+	"ORDER BY R.unassigned_action, R.UPDATE_STATUS NULLS LAST ";
+	
 	public static List<DlvReservationModel> getUnassignedReservations(Connection conn, Date _date)  throws SQLException {
 		PreparedStatement ps =
 			conn.prepareStatement(FETCH_UNASSIGNED_RESERVATIONS_QUERY);
@@ -1111,7 +1140,7 @@ public class DlvManagerDAO {
 	
 	private static final String FETCH_REROUTE_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID, "+
 	" T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE" +
-	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS " +
+	", R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 	", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
 	"FROM DLV.RESERVATION R, DLV.TIMESLOT T, DLV.ZONE Z "+
 	" WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND t.BASE_DATE > TRUNC(SYSDATE-1) " +
@@ -1148,7 +1177,7 @@ public class DlvManagerDAO {
 	private static final String LOCK_EXPIRED_RESERVATIONS="UPDATE DLV.RESERVATION SET STATUS_CODE=25 WHERE EXPIRATION_DATETIME<= SYSDATE AND STATUS_CODE=5";
 	private static final String GET_LOCKED_RESERVATIONS_QUERY="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID, R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE" +
 			",R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION, R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME" +
-			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS " +
+			", R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME, R.UPDATE_STATUS, R.METRICS_SOURCE " +
 			", R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES " +
 			"FROM DLV.RESERVATION R, "+
             " DLV.TIMESLOT T, DLV.ZONE Z  where  r.expiration_datetime <= sysdate and r.status_code = 25 " +

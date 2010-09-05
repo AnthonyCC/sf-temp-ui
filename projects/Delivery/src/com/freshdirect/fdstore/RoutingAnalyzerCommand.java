@@ -8,6 +8,7 @@ import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IZoneModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
@@ -80,7 +81,9 @@ public class RoutingAnalyzerCommand implements Serializable, Runnable {
 				order.getDeliveryInfo().setDeliveryZone(zoneModel);
 				order.getDeliveryInfo().setDeliveryDate(deliveryDate);
 				IServiceTimeScenarioModel srvScenario = RoutingUtil.getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-				order.getDeliveryInfo().setPackagingInfo(RoutingUtil.estimateOrderSize(order, srvScenario, context.getHistoryPackageInfo()));
+				OrderEstimationResult calculatedSize = RoutingUtil.estimateOrderSize(order, srvScenario, context.getHistoryPackageInfo());
+				order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
+				order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
 				
 				srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
 				if(zoneModel.getServiceTimeType().getCode() != null) {

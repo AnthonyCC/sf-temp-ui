@@ -83,6 +83,7 @@ import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -384,7 +385,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				type,
 				address.getId(),
 				timeslotModel.getBaseDate(),
-				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, null);
+				timeslotModel.getZoneCode(),null,false,null, null, null, null, null, null, null, null, null);
 
 			return rsv;
 		} catch (SQLException se) {
@@ -408,7 +409,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 	private static final String RESERVATION_BY_ID="SELECT R.ID, R.ORDER_ID, R.CUSTOMER_ID, R.STATUS_CODE, R.TIMESLOT_ID, R.ZONE_ID" +
 			", R.EXPIRATION_DATETIME, R.TYPE, R.ADDRESS_ID,T.BASE_DATE, Z.ZONE_CODE,R.UNASSIGNED_DATETIME, R.UNASSIGNED_ACTION" +
 			", R.IN_UPS, R.ORDER_SIZE, R.SERVICE_TIME, R.RESERVED_ORDER_SIZE, R.RESERVED_SERVICE_TIME" +
-			", R.UPDATE_STATUS,R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES  FROM DLV.RESERVATION R, "+
+			", R.UPDATE_STATUS, R.METRICS_SOURCE, R.NUM_CARTONS , R.NUM_FREEZERS , R.NUM_CASES  FROM DLV.RESERVATION R, "+
             " DLV.TIMESLOT T, DLV.ZONE Z WHERE R.TIMESLOT_ID=T.ID AND R.ZONE_ID=Z.ID AND R.ID=?";
 
 	private DlvReservationModel getReservation(Connection con, String rsvId) throws SQLException {
@@ -434,7 +435,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			, rs.getBigDecimal("NUM_CARTONS") != null ? new Long(rs.getLong("NUM_CARTONS")) : null
 			, rs.getBigDecimal("NUM_FREEZERS") != null ? new Long(rs.getLong("NUM_FREEZERS")) : null
 			, rs.getBigDecimal("NUM_CASES") != null ? new Long(rs.getLong("NUM_CASES")) : null
-			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS")));
+			, EnumRoutingUpdateStatus.getEnum(rs.getString("UPDATE_STATUS"))
+			, EnumOrderMetricsSource.getEnum(rs.getString("METRICS_SOURCE")));
 
 		rs.close();
 		ps.close();
@@ -1784,10 +1786,11 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		try {
 			
 			order = RoutingUtil.calculateReservationSize(reservation, order, erpOrderId);
-			if(order.getDeliveryInfo() != null && order.getDeliveryInfo().getPackagingInfo() != null) {
-				setReservationUpdateStatusInfo(reservation.getId(), order.getDeliveryInfo().getPackagingInfo().getNoOfCartons()
-											, order.getDeliveryInfo().getPackagingInfo().getNoOfCases()
-											, order.getDeliveryInfo().getPackagingInfo().getNoOfCases()
+			if(order.getDeliveryInfo() != null && order.getDeliveryInfo().getPackagingDetail() != null
+						&& !EnumOrderMetricsSource.DEFAULT.equals(order.getDeliveryInfo().getPackagingDetail().getSource())) {
+				setReservationMetricsDetails(reservation.getId(), order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
+											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
+											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
 											, EnumRoutingUpdateStatus.PENDING);
 			}
 		} catch (Exception e) {
@@ -1804,7 +1807,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		
 		try {
 			if(reservation.getStatusCode() == 15 || reservation.getStatusCode() == 20) {
-				setReservationUpdateStatus(reservation.getId(), EnumRoutingUpdateStatus.SUCCESS);
+				setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.SUCCESS);
 			} else {
 				order = RoutingUtil.calculateReservationSize(reservation, order, timeslot);
 				if(((reservation.getReservedOrderSize() != null
@@ -1822,12 +1825,12 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 					boolean isUpdated = RoutingUtil.updateReservation(reservation, order);
 					
 					if(isUpdated) {
-						setReservationMetricsStatusInfo(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
+						setReservationReservedMetrics(reservation.getId(), order.getDeliveryInfo().getCalculatedOrderSize()
 															, order.getDeliveryInfo().getCalculatedServiceTime()
 															, EnumRoutingUpdateStatus.SUCCESS);
 					} else {
 						if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
-							this.setReservationUpdateStatus(reservation.getId(), EnumRoutingUpdateStatus.FAILED);
+							this.setReservationMetricsStatus(reservation.getId(), EnumRoutingUpdateStatus.FAILED);
 						}
 					}
 				}
@@ -1872,14 +1875,14 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 	
-	public void setReservationUpdateStatus(String reservationId, EnumRoutingUpdateStatus status) {
+	public void setReservationMetricsStatus(String reservationId, EnumRoutingUpdateStatus status) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			DlvManagerDAO.setReservationUpdateStatus(conn, reservationId, status.value());
+			DlvManagerDAO.setReservationMetricsStatus(conn, reservationId, status.value());
 
 		} catch (SQLException e) {
-			LOGGER.warn("SQLException in DlvManagerDAO.setReservationUpdateStatus() call ", e);
+			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsStatus() call ", e);
 			e.printStackTrace();
 			//throw new EJBException(e);
 		} finally {
@@ -1894,16 +1897,16 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 	
-	public void setReservationUpdateStatusInfo(String reservationId, long noOfCartons, long noOfCases
+	public void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
 											, long noOfFreezers, EnumRoutingUpdateStatus status) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			DlvManagerDAO.setReservationUpdateStatusInfo(conn, reservationId, noOfCartons, noOfCases
+			DlvManagerDAO.setReservationMetricsDetails(conn, reservationId, noOfCartons, noOfCases
 																, noOfFreezers, status.value());
 
 		} catch (SQLException e) {
-			LOGGER.warn("SQLException in DlvManagerDAO.setReservationUpdateStatusInfo() call ", e);
+			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsDetails() call ", e);
 			e.printStackTrace();
 			//throw new EJBException(e);
 		} finally {
@@ -1918,11 +1921,36 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 	}
 	
-	public void setReservationMetricsStatusInfo(String reservationId, double orderSize, double serviceTime, EnumRoutingUpdateStatus status) {
+	public void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
+												, long noOfFreezers, EnumOrderMetricsSource source) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			DlvManagerDAO.setReservationMetricsStatusInfo(conn, reservationId, orderSize, serviceTime, status.value());
+			DlvManagerDAO.setReservationMetricsDetails(conn, reservationId, noOfCartons, noOfCases
+														, noOfFreezers, source);
+
+		} catch (SQLException e) {
+			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsDetails_Source() call ", e);
+			e.printStackTrace();
+			//throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+
+	}
+	
+	public void setReservationReservedMetrics(String reservationId, double reservedOrderSize
+													, double reservedServiceTime, EnumRoutingUpdateStatus status) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DlvManagerDAO.setReservationReservedMetrics(conn, reservationId, reservedOrderSize, reservedServiceTime, status.value());
 
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException in DlvManagerDAO.setReservationUpdateStatusInfo() call ", e);
@@ -1939,16 +1967,15 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 		}
 
 	}
-
-	
-	public void setReservationOrderMetrics(String reservationId, double orderSize, double serviceTime) {
+		
+	public void setReservationReservedMetrics(String reservationId, double reservedOrderSize, double reservedServiceTime) {
 		Connection conn = null;
 		try {
 			conn = getConnection();
-			DlvManagerDAO.setReservationOrderMetrics(conn, reservationId, orderSize, serviceTime);
+			DlvManagerDAO.setReservationReservedMetrics(conn, reservationId, reservedOrderSize, reservedServiceTime);
 
 		} catch (SQLException e) {
-			LOGGER.warn("SQLException in DlvManagerDAO.setReservationUpdateStatusInfo() call ", e);
+			LOGGER.warn("SQLException in DlvManagerDAO.setReservationReservedMetrics() call ", e);
 			e.printStackTrace();
 			//throw new EJBException(e);
 		} finally {
@@ -2183,16 +2210,25 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			logTimeslots(reservation,order,RoutingActivityType.RESERVE_TIMESLOT
 								, RoutingUtil.getDeliverySlots(getTimeslotById(reservation.getTimeslotId()))
 										, (int)(endTime-startTime),address);
-			this.setReservationOrderMetrics(reservation.getId()
-												, order.getDeliveryInfo().getCalculatedOrderSize()
-												, order.getDeliveryInfo().getCalculatedServiceTime());
+			
 			if(_reservation==null || !_reservation.isReserved()) {
 					setUnassignedInfo(reservation.getId(), RoutingActivityType.RESERVE_TIMESLOT);					
 			} else {
-					clearUnassignedInfo(reservation.getId());					
-					if(reservation.getUpdateStatus() != null) {
-	    				updateReservationEx(reservation, address, timeslot);
-	    			}
+				    this.setReservationReservedMetrics(reservation.getId()
+															, order.getDeliveryInfo().getCalculatedOrderSize()
+															, order.getDeliveryInfo().getCalculatedServiceTime()
+															, EnumRoutingUpdateStatus.SUCCESS);
+					clearUnassignedInfo(reservation.getId());
+					if(!EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())
+												&& order != null && order.getDeliveryInfo() != null 
+																&& order.getDeliveryInfo().getPackagingDetail() != null
+																	&& reservation.getMetricsSource() == null) {
+						setReservationMetricsDetails(reservation.getId()
+														, order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
+														, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
+														, order.getDeliveryInfo().getPackagingDetail().getNoOfFreezers()
+														, order.getDeliveryInfo().getPackagingDetail().getSource());
+					}
 			}
 
 		} catch (Exception e) {
@@ -2200,10 +2236,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			e.printStackTrace();
 			LOGGER.debug("Exception in reserveTimeslotEx():"+e.toString());
 			LOGGER.debug(reservation);
-			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);
-			if(reservation.getUpdateStatus() != null && !EnumRoutingUpdateStatus.OVERRIDDEN.equals(reservation.getUpdateStatus())) {
-				this.setReservationUpdateStatus(reservation.getId(), EnumRoutingUpdateStatus.FAILED);
-			}
+			setUnassignedInfo(reservation.getId(),RoutingActivityType.RESERVE_TIMESLOT);			
 		}
 		setRoutingIndicator(reservation.getId(), order.getOrderNumber());
 		return _reservation;

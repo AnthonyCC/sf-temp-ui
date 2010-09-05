@@ -25,7 +25,6 @@ import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
 import com.freshdirect.routing.model.DeliverySlot;
@@ -41,6 +40,7 @@ import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.OrderModel;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
@@ -162,7 +162,9 @@ public class RoutingUtil {
 		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
 		
 		IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-		order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingInfo()));
+		OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
+		order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
+		order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
 		
 		srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
 		if(zoneModel.getServiceTimeType().getCode() != null) {
@@ -202,35 +204,29 @@ public class RoutingUtil {
 		
 		if(reservation.getOverrideOrderSize() != null) {
 			IPackagingModel pModel = new PackagingModel();
-			pModel.setNoOfCartons(reservation.getOverrideOrderSize().longValue());	
-			pModel.setTotalSize1(reservation.getOverrideOrderSize().longValue());
-			order.getDeliveryInfo().setPackagingInfo(pModel);
+			pModel.setNoOfCartons(reservation.getOverrideOrderSize().longValue());			
+			order.getDeliveryInfo().setPackagingDetail(pModel);
 
-		} else if((reservation.getUpdateStatus() == null 
-						|| EnumRoutingUpdateStatus.SUCCESS.equals(reservation.getUpdateStatus()))
-						&& (reservation.getNoOfCartons() != null 
-									&& reservation.getNoOfCases() != null 
-												&& reservation.getNoOfFreezers() != null)) {
+		} else if(reservation.getMetricsSource() != null) {
 			IPackagingModel pModel = new PackagingModel();
 			pModel.setNoOfCartons(reservation.getNoOfCartons().longValue());	
 			pModel.setNoOfCases(reservation.getNoOfCases().longValue());
 			pModel.setNoOfFreezers(reservation.getNoOfFreezers().longValue());
-			order.getDeliveryInfo().setPackagingInfo(pModel);
-		} else if(reservation.getReservedOrderSize() != null && reservation.getReservedOrderSize() == 0) {
-			IPackagingModel pModel = new PackagingModel();
-			pModel.setNoOfCartons(reservation.getOverrideOrderSize().longValue());	
-			pModel.setTotalSize1(reservation.getOverrideOrderSize().longValue());
-			order.getDeliveryInfo().setPackagingInfo(pModel);
+			pModel.setSource(reservation.getMetricsSource());
+			order.getDeliveryInfo().setPackagingDetail(pModel);
+			
 		} else {
 			IPackagingModel historyPackageInfo = getHistoricOrderSize(order);
-			order.getDeliveryInfo().setPackagingInfo(historyPackageInfo);
+			order.getDeliveryInfo().setPackagingDetail(historyPackageInfo);
 		}
-		
+					
 		Map<String, IServiceTimeTypeModel> serviceTimeTypeMapping = routingInfoproxy.getRoutingServiceTimeTypes();
 		order.getDeliveryInfo().setDeliveryLocation(locateOrder(order));
 		
 		IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
-		order.getDeliveryInfo().setPackagingInfo(estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingInfo()));
+		OrderEstimationResult calculatedSize = estimateOrderSize(order, srvScenario, order.getDeliveryInfo().getPackagingDetail());
+		order.getDeliveryInfo().setCalculatedOrderSize(calculatedSize.getCalculatedOrderSize());
+		order.getDeliveryInfo().setPackagingDetail(calculatedSize.getPackagingModel());
 		
 		srvScenario.setZoneConfiguration(routingInfoproxy.getRoutingScenarioMapping(srvScenario.getCode()));
 		if(zoneModel.getServiceTimeType().getCode() != null) {
@@ -287,9 +283,10 @@ public class RoutingUtil {
 		order.getDeliveryInfo().setDeliveryDate(reservation.getDeliveryDate());
 		IServiceTimeScenarioModel srvScenario = getRoutingScenario(order.getDeliveryInfo().getDeliveryDate());
 		
-		IPackagingModel packageModel = proxy.estimateOrderSize(erpOrderId, srvScenario);
-		if(packageModel != null) {
-			order.getDeliveryInfo().setPackagingInfo(packageModel);			
+		OrderEstimationResult result = proxy.estimateOrderSize(erpOrderId, srvScenario);
+		if(result != null && result.getPackagingModel() != null) {
+			order.getDeliveryInfo().setPackagingDetail(result.getPackagingModel());	
+			order.getDeliveryInfo().setCalculatedOrderSize(result.getCalculatedOrderSize());
 		}
 			
 		return order;
@@ -358,7 +355,7 @@ public class RoutingUtil {
 			if(reservation.getNoOfFreezers() != null) {
 				pModel.setNoOfFreezers(reservation.getNoOfFreezers());
 			}
-			order.getDeliveryInfo().setPackagingInfo(pModel);
+			order.getDeliveryInfo().setPackagingDetail(pModel);
 
 		}
 		order.setCustomerName(new StringBuffer(100).append(address.getLastName()).append(", ").append(address.getFirstName()).toString());
@@ -676,7 +673,7 @@ public class RoutingUtil {
 		return new RoutingInfoServiceProxy().getRoutingScenarioByDate(dlvDate);
 	}
 
-	protected static IPackagingModel estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
+	protected static OrderEstimationResult estimateOrderSize(IOrderModel order, IServiceTimeScenarioModel scenario, IPackagingModel historyInfo) throws RoutingServiceException {
 		return new PlantServiceProxy().estimateOrderSize(order, scenario, historyInfo);
 	}
 

@@ -1,5 +1,7 @@
 package com.freshdirect.routing.model;
 
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
+
 public interface IPackagingModel {
 	
 	long getNoOfCartons();
@@ -13,15 +15,9 @@ public interface IPackagingModel {
 	long getNoOfFreezers();
 
 	void setNoOfFreezers(long noOfFreezers);
-	
-	double getTotalSize1();
-	void setTotalSize1(double size);
-	
-	double getTotalSize2();
-	void setTotalSize2(double size);
-	
+		
 	boolean isDefault();
-
-	void setDefault(boolean isDefault);
-
+	
+	EnumOrderMetricsSource getSource();
+	void setSource(EnumOrderMetricsSource source);
 }

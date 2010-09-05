@@ -8,8 +8,8 @@ import java.util.Map;
 import com.freshdirect.routing.constants.EnumProcessInfoType;
 import com.freshdirect.routing.constants.EnumProcessType;
 import com.freshdirect.routing.model.IOrderModel;
-import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.service.exception.RoutingProcessException;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.PlantServiceProxy;
@@ -51,11 +51,12 @@ public class PlantPackagingManager extends BaseProcessManager {
 		}
 		
 		Map rowMap = (Map)((Map)request.getOrderPackageCache()).get(orderModel.getOrderNumber());
-		IPackagingModel packageModel = proxy.getPackageModel(rowMap, scenario.getOrderSizeFormula(),
+		OrderEstimationResult packagingResult = proxy.getPackageModel(rowMap, scenario.getOrderSizeFormula(),
 																(int)scenario.getDefaultCartonCount(),
 																(int)scenario.getDefaultFreezerCount(),
 																(int)scenario.getDefaultCaseCount());
-		if(packageModel != null && packageModel.isDefault()) {
+		if(packagingResult != null && packagingResult.getPackagingModel() != null 
+											&& packagingResult.getPackagingModel().isDefault()) {
 			ProcessInfo  processInfo = new ProcessInfo();
 			processInfo.setProcessType(EnumProcessType.LOAD_CARTONCOUNT);
 			processInfo.setProcessInfoType(EnumProcessInfoType.WARNING);
@@ -63,10 +64,8 @@ public class PlantPackagingManager extends BaseProcessManager {
 			request.addProcessInfo(processInfo);
 			
 		}
-		orderModel.getDeliveryInfo().setPackagingInfo(proxy.getPackageModel(rowMap,scenario.getOrderSizeFormula(),
-													(int)scenario.getDefaultCartonCount(),
-													(int)scenario.getDefaultFreezerCount(),
-													(int)scenario.getDefaultCaseCount()));
+		orderModel.getDeliveryInfo().setPackagingDetail(packagingResult.getPackagingModel());
+		orderModel.getDeliveryInfo().setCalculatedOrderSize(packagingResult.getCalculatedOrderSize());
 	}
 	
 	/*private void loadUnit(ProcessContext request, IPlantService service) throws RoutingServiceException {

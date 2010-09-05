@@ -11,7 +11,7 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	private Date deliveryEndTime;
 	private String serviceType;
 	
-	private IPackagingModel packagingInfo;
+	private IPackagingModel packagingDetail;
 	
 	private double calculatedServiceTime;
 	private double calculatedOrderSize;
@@ -46,16 +46,13 @@ public class DeliveryModel extends BaseModel implements IDeliveryModel {
 	public void setDeliveryLocation(ILocationModel deliveryLocation) {
 		this.deliveryLocation = deliveryLocation;
 	}
-	
-	public IPackagingModel getPackagingInfo() {
-		return packagingInfo;
+		
+	public IPackagingModel getPackagingDetail() {
+		return packagingDetail;
 	}
-	
-	public void setPackagingInfo(IPackagingModel packagingInfo) {
-		this.packagingInfo = packagingInfo;
-		this.setCalculatedOrderSize(packagingInfo.getTotalSize1());		
+	public void setPackagingDetail(IPackagingModel packagingDetail) {
+		this.packagingDetail = packagingDetail;
 	}
-	
 	public Date getDeliveryDate() {
 		return deliveryDate;
 	}

@@ -57,14 +57,15 @@ public class ReservationCronRunner {
 			
 			for (Iterator i = rsvInfo.iterator(); i.hasNext();) {
 				ReservationInfo info = (ReservationInfo) i.next();
-				FDIdentity Identity=new FDIdentity(info.getFdCustomerId(), info.getFdCustomerId());
-				FDUserI user=sb.recognize(Identity);
-				try {
+				FDIdentity identity = new FDIdentity(info.getCustomerId(), info.getFdCustomerId());
+				//Fix to debug Unrecognized user error failure
+				try { 
+					FDUserI user=sb.recognize(identity);
 					dsb.makeRecurringReservation(info.getCustomerId(), info.getDayOfWeek(), info.getStartTime()
 															, info.getEndTime(), info.getAddress(), user.isChefsTable());
 					
 				} catch(Exception e) {
-					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId(), e);
+					LOGGER.warn("Could not Reserve a Weekly recurring timeslot "+info.getCustomerId()+" "+identity, e);
 					LOGGER.info(new StringBuilder("Could not Reserve a Weekly recurring timeslot failed with Exception...").append(e.toString()).toString());
 					LOGGER.error(e);
 					email(Calendar.getInstance().getTime(), e.toString());

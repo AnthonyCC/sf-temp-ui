@@ -6,10 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.dao.IDeliveryDetailsDAO;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IPackagingModel;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
+import com.freshdirect.routing.model.OrderEstimationResult;
 import com.freshdirect.routing.model.PackagingModel;
 import com.freshdirect.routing.service.IPlantService;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -31,24 +33,31 @@ public class PlantService extends BaseService implements IPlantService {
 		this.deliveryDAOImpl = deliveryDAOImpl;
 	}
 
-	public IPackagingModel estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario, IPackagingModel _historyInfo) throws RoutingServiceException {
+	public OrderEstimationResult estimateOrderSize(IOrderModel model, IServiceTimeScenarioModel scenario
+														, IPackagingModel _historyInfo) throws RoutingServiceException {
 
 		int cartonCount = (int)scenario.getDefaultCartonCount(); 
 		int freezerCount = (int)scenario.getDefaultFreezerCount();
 		int caseCount = (int)scenario.getDefaultCaseCount();
 		
+		boolean isHistoryInfo = false;
 		if(_historyInfo != null && !(_historyInfo.getNoOfCartons() == 0
 				&& _historyInfo.getNoOfCases() == 0
 				&& _historyInfo.getNoOfFreezers() == 0)) {
 			cartonCount = (int)_historyInfo.getNoOfCartons(); 
 			freezerCount = (int)_historyInfo.getNoOfFreezers();
 			caseCount = (int)_historyInfo.getNoOfCases();
+			isHistoryInfo = true;
 		}
-		return getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
-				cartonCount, freezerCount, caseCount);
+		OrderEstimationResult result = getPackageModel(new HashMap(), scenario.getOrderSizeFormula(),
+															cartonCount, freezerCount, caseCount);
+		if(isHistoryInfo) {
+			result.getPackagingModel().setSource(EnumOrderMetricsSource.HISTORY);
+		}
+		return result;
 	}
 
-	public IPackagingModel estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
+	public OrderEstimationResult estimateOrderSize(String orderNo, IServiceTimeScenarioModel scenario) throws RoutingServiceException {
 		
 		IPackagingModel _historyInfo = null;
 		int cartonCount = (int)scenario.getDefaultCartonCount(); 
@@ -73,7 +82,8 @@ public class PlantService extends BaseService implements IPlantService {
 		try {			
 			
 			_historyInfo = deliveryDAOImpl.getHistoricOrderSize(model.getCustomerNumber()
-																, RoutingServicesProperties.getDefaultOrderEstimationRange());					
+																, RoutingServicesProperties.getDefaultOrderEstimationRange());
+			_historyInfo.setSource(EnumOrderMetricsSource.HISTORY);
 		} catch (SQLException e) {
 			e.printStackTrace();			
 		}	
@@ -100,12 +110,13 @@ public class PlantService extends BaseService implements IPlantService {
 		return resultMap;
 	}
 
-	public IPackagingModel getPackagingInfo(String orderNo, String orderSizeExpression, int defaultCartonCount
+	private OrderEstimationResult getPackagingInfo(String orderNo, String orderSizeExpression, int defaultCartonCount
 			, int defaultFreezerCount, int defaultCaseCount) throws RoutingServiceException {
 		
 		List orderIdLst = new ArrayList();
 		orderIdLst.add(orderNo);
 		Map rowMap = null;
+		
 		try {
 			
 			Map resultMap = loadPackingInfo(orderIdLst);
@@ -122,13 +133,13 @@ public class PlantService extends BaseService implements IPlantService {
 	}
 	
 	private Map loadPackingInfo(List dataList) throws SapException {
-		System.out.println("loadPackingInfo ORDERNOS >>"+ (dataList != null ? dataList.size() : 0));		
+		//System.out.println("loadPackingInfo ORDERNOS >>"+ (dataList != null ? dataList.size() : 0));		
 		SapCartonInfo cartonInfos = new SapCartonInfo(dataList);
 		cartonInfos.execute();
 		return cartonInfos.getCartonInfos();
 	}
 	
-	public IPackagingModel getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
+	public OrderEstimationResult getPackageModel(Map rowMap, String orderSizeExpression, int defaultCartonCount
 												, int defaultFreezerCount, int defaultCaseCount) {
 		
 		int cartonCount = 0; 
@@ -136,7 +147,7 @@ public class PlantService extends BaseService implements IPlantService {
 		int caseCount = 0;
 		boolean isDefault = true;
 		
-		if(rowMap != null) {
+		if(rowMap != null && rowMap.size() > 0) {
 			cartonCount = (getIntegerValue((Integer)rowMap.get("DRYGOODS")))+getIntegerValue(((Integer)rowMap.get("MEZZ1")))
 								+getIntegerValue(((Integer)rowMap.get("MEZZ2"))); 
 			freezerCount = getIntegerValue(((Integer)rowMap.get("FREEZER")));
@@ -154,13 +165,14 @@ public class PlantService extends BaseService implements IPlantService {
 		tmpPackageModel.setNoOfCartons(cartonCount);
 		tmpPackageModel.setNoOfCases(caseCount);
 		tmpPackageModel.setNoOfFreezers(freezerCount);
-		tmpPackageModel.setTotalSize1(ServiceTimeUtil.evaluateExpression(orderSizeExpression
-										, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
-		//tmpPackageModel.setTotalSize2(ServiceTimeUtil.evaluateExpression(RoutingServicesProperties.getTotalSize2Expression()
-										//, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
-		tmpPackageModel.setDefault(isDefault);
 		
-		return tmpPackageModel;
+		tmpPackageModel.setSource(isDefault ? EnumOrderMetricsSource.DEFAULT : EnumOrderMetricsSource.ACTUAL);
+		
+		OrderEstimationResult result = new OrderEstimationResult();
+		result.setPackagingModel(tmpPackageModel);
+		result.setCalculatedOrderSize(ServiceTimeUtil.evaluateExpression(orderSizeExpression
+				, ServiceTimeUtil.getServiceTimeFactorParams(tmpPackageModel)));
+		return result;
 	}
 	
 	private int getIntegerValue(Integer val) {

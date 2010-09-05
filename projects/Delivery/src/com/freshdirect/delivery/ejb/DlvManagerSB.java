@@ -43,6 +43,7 @@ import com.freshdirect.delivery.routing.ejb.RoutingActivityType;
 import com.freshdirect.fdstore.FDDynamicTimeslotList;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.StateCounty;
+import com.freshdirect.routing.constants.EnumOrderMetricsSource;
 import com.freshdirect.routing.constants.EnumRoutingUpdateStatus;
 import com.freshdirect.routing.model.IDeliveryReservation;
 import com.freshdirect.routing.model.IDeliverySlot;
@@ -166,13 +167,18 @@ public interface DlvManagerSB extends EJBObject {
 	
 	void processCancelNotifications(List<IRoutingNotificationModel> notifications, List<IRoutingNotificationModel> unUsedNotifications) throws DlvResourceException, RemoteException;
 	
-	void setReservationUpdateStatus(String reservationId, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
-	
-	void setReservationUpdateStatusInfo(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
-	
 	List getActiveZoneCodes() throws RemoteException;
 	List<DlvZoneModel> getActiveZones() throws RemoteException;
 	
 	void cancelRoutingReservation(DlvReservationModel reservation, ContactAddressModel address) throws RemoteException;
+	
+	void setReservationMetricsStatus(String reservationId, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
+	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers
+												, EnumRoutingUpdateStatus status) throws DlvResourceException, RemoteException;
+	void setReservationReservedMetrics(String reservationId, double orderSize, double serviceTime
+												, EnumRoutingUpdateStatus status)   throws RemoteException;
+	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
+												, long noOfFreezers, EnumOrderMetricsSource source)   throws RemoteException;
+	void setReservationReservedMetrics(String reservationId, double orderSize, double serviceTime)  throws RemoteException;
 	
 }   
