@@ -180,5 +180,7 @@ public interface DlvManagerSB extends EJBObject {
 	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
 												, long noOfFreezers, EnumOrderMetricsSource source)   throws RemoteException;
 	void setReservationReservedMetrics(String reservationId, double orderSize, double serviceTime)  throws RemoteException;
+	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers, EnumRoutingUpdateStatus status
+												, EnumOrderMetricsSource source)  throws RemoteException;
 	
 }   

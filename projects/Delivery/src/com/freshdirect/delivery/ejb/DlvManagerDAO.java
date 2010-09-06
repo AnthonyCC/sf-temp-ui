@@ -1010,6 +1010,27 @@ public class DlvManagerDAO {
 		}
 		ps.close();
 	}
+	
+	private static final String UPDATE_RESERVATIONSTATUSSOURCE_QUERY = "UPDATE DLV.RESERVATION SET NUM_CARTONS = ? , NUM_FREEZERS = ? , NUM_CASES = ?" +
+																			" , UPDATE_STATUS = ?, METRICS_SOURCE = ?  WHERE ID=?";
+	public static void setReservationMetricsDetails(Connection conn, String reservationId
+														, long noOfCartons, long noOfCases, long noOfFreezers
+														, String status, EnumOrderMetricsSource source)  throws SQLException {
+
+		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUSSOURCE_QUERY);
+		ps.setDouble(1, noOfCartons);
+		ps.setDouble(2, noOfCases);
+		ps.setDouble(3, noOfFreezers);
+
+		ps.setString(4, status);
+		ps.setString(5, source.value());
+		ps.setString(6, reservationId);
+		if(ps.executeUpdate() != 1){
+			ps.close();
+			throw new SQLException("Cannot find reservation to setReservationMetricsDetails for id: " + reservationId);
+		}
+		ps.close();
+	}
 
 	private static final String UPDATE_RESERVATIONSTATUS_QUERY = "UPDATE DLV.RESERVATION SET NUM_CARTONS = ? , NUM_FREEZERS = ? , NUM_CASES = ?" +
 			" , UPDATE_STATUS = ? WHERE ID=?";

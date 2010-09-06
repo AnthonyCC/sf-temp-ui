@@ -1791,7 +1791,8 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				setReservationMetricsDetails(reservation.getId(), order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
-											, EnumRoutingUpdateStatus.PENDING);
+											, EnumRoutingUpdateStatus.PENDING
+											, EnumOrderMetricsSource.ACTUAL);
 			}
 		} catch (Exception e) {
 			LOGGER.debug("Exception in updateReservationStatus():"+e.toString());
@@ -1904,6 +1905,31 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			DlvManagerDAO.setReservationMetricsDetails(conn, reservationId, noOfCartons, noOfCases
 																, noOfFreezers, status.value());
+
+		} catch (SQLException e) {
+			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsDetails() call ", e);
+			e.printStackTrace();
+			//throw new EJBException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+
+	}
+	
+	public void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases
+												, long noOfFreezers, EnumRoutingUpdateStatus status
+														, EnumOrderMetricsSource source) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			DlvManagerDAO.setReservationMetricsDetails(conn, reservationId, noOfCartons, noOfCases
+					, noOfFreezers, status.value(), source);
 
 		} catch (SQLException e) {
 			LOGGER.warn("SQLException in DlvManagerDAO.setReservationMetricsDetails() call ", e);
