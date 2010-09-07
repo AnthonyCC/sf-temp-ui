@@ -459,12 +459,13 @@ if (isOnePricedByLb) { %>
 <%  }%>
     </FONT>
 <%  double cvprice = 0.0;
-CharacteristicValuePrice cvp = defaultPricing.findCharacteristicValuePrice(variation.getName(), cboxValue.getName());
+	CharacteristicValuePrice cvp = null;
+	if (cboxValue != null) { cvp = defaultPricing.findCharacteristicValuePrice( variation.getName(), cboxValue.getName() ); }
 if (cvp != null) cvprice = cvp.getPrice();
 if (cvprice > 0.0) { %>
 - <%= JspMethods.currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %>
 <%  } %>
-<input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= cboxValue.getName() %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><BR>
+<input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= (cboxValue != null) ? cboxValue.getName() : "" %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><BR>
 <%  } %>
 </logic:iterate>
 </TD></tr>
