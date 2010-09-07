@@ -29,7 +29,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 	//
 	// common implementation between Product and ConfiguredProduct
-	// 
+	//
 
 	/*
 
@@ -50,7 +50,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	 ALSO_SOLD_AS
 
 	 */
-	
+
 
 	private Image getImage(String key) {
             return FDAttributeFactory.constructImage(this, key, IMAGE_BLANK);
@@ -84,7 +84,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public ProductModel getAlsoSoldAs(int idx) {
 		return getAlsoSoldAs().get(idx);
 	}
-	
+
 	/**
 	 * Can the product be recommended.
 	 * @return if the EXCLUDED_RECOMMENDATION flag is set to true (default false)
@@ -119,7 +119,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		return alsoSoldAsRefs;
 	}
 
-	
+
 	public Html getProductDescription() {
 	    return FDAttributeFactory.constructHtml(this, "PROD_DESCR");
 	}
@@ -128,11 +128,11 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	    Object a = getCmsAttributeValue("PRODUCT_TERMS_MEDIA");
 	    return a == null ? false : true;
 	}
-	
+
 	public Html getProductTerms() {
 		return FDAttributeFactory.constructHtml(this, "PRODUCT_TERMS_MEDIA");
 	}
-	
+
 	public boolean isShowTopTenImage() {
 		return getAttribute("SHOW_TOP_TEN_IMAGE", false);
 	}
@@ -160,28 +160,28 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 		    }
 		}
 		return getDefaultSku(ctx);
-    }	
+    }
 
-    
+
     public boolean isFullyAvailable() {
         return !(isHidden() || isUnavailable() || isOrphan() || isInvisible());
     }
-        
+
 	/**
 	 * Better name would be : 'IsAvailable'.
 	 */
 	public boolean isDisplayable() {
 		return isFullyAvailable();
 	}
-	
+
 	/**
-	 * temporary unavailable = unavailable but not discontinued and not hidden and not discontinued and not orphan and not invisible 
+	 * temporary unavailable = unavailable but not discontinued and not hidden and not discontinued and not orphan and not invisible
 	 * @return
 	 */
 	public boolean isTemporaryUnavailable() {
 		return isUnavailable() && !isDiscontinued() && !isHidden() && !isOrphan() && !isInvisible();
 	}
-	
+
 	/**
 	 * The product is temporary unavailable or available.
 	 * @return
@@ -189,36 +189,36 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public boolean isTemporaryUnavailableOrAvailable() {
 	    return !(isHidden() || isOrphan() || isInvisible() || isDiscontinued());
 	}
-	
-	
-    public boolean isDisplayableBasedOnCms() {        
+
+
+    public boolean isDisplayableBasedOnCms() {
         return !(isHidden() ||  isOrphan() || isInvisible());
     }
-	
+
 	public boolean isNew() {
 		return ContentFactory.getInstance().getNewProducts().containsKey(this);
 	}
-	
+
 	@Override
 	public double getNewAge() {
 		return ContentFactory.getInstance().getNewProductAge(this);
 	}
-	
+
 	@Override
 	public Date getNewDate() {
 		return ContentFactory.getInstance().getNewProducts().get(this);
 	}
-	
+
 	@Override
 	public boolean isBackInStock() {
 		return ContentFactory.getInstance().getBackInStockProducts().containsKey(this);
 	}
-	
+
 	@Override
 	public double getBackInStockAge() {
 		return ContentFactory.getInstance().getBackInStockProductAge(this);
 	}
-	
+
 	@Override
 	public Date getBackInStockDate() {
 		return ContentFactory.getInstance().getBackInStockProducts().get(this);
@@ -234,7 +234,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			return -1;
 		}
 	}
-	
+
     public int getDealPercentage() {
         return getDealPercentage(null);
     }
@@ -242,17 +242,17 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     public int getTieredDealPercentage() {
         return getTieredDealPercentage(null);
     }
-    
+
     public int getHighestDealPercentage() {
         return getHighestDealPercentage(null);
     }
-    
+
     /* price calculator calls */
 
     public String getDefaultPrice() {
         return getPriceCalculator().getDefaultPrice();
     }
-    
+
     public String getDefaultPriceOnly() {
         return getPriceCalculator().getDefaultPriceOnly();
     }
@@ -269,7 +269,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	public int getTieredDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getTieredDealPercentage();
 	}
-	
+
 	public int getHighestDealPercentage(String skuCode) {
 	    return getPriceCalculator(skuCode).getHighestDealPercentage();
 	}
@@ -289,27 +289,27 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
     public String getPriceFormatted(double savingsPercentage, String skuCode) {
         return getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
     }
-    
+
 
     public String getWasPriceFormatted(double savingsPercentage) {
         return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
     }
-    
+
     public String getAboutPriceFormatted(double savingsPercentage) {
         return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
     }
-    
+
     /* end of the price calculator calls */
-        
-	
+
+
 	public String getYmalHeader() {
 		final YmalSet activeYmalSet = getActiveYmalSet();
 		if (activeYmalSet != null && activeYmalSet.getProductsHeader() != null)
 			return activeYmalSet.getProductsHeader();
-		
+
 		return getAttribute("RELATED_PRODUCTS_HEADER", null);
 	}
-	
+
 	public List<String> getCountryOfOrigin() throws FDResourceException {
 		List<String> coolInfo = new ArrayList<String>();
 
@@ -342,7 +342,7 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 			 * { productInfo = FDCachedFactory.getProductInfo( sku.getSkuCode()); List
 			 * _countries=productInfo.getCOOLInfo(); if(_countries.size()>index) countries.add(_countries.get(index)); }
 			 * else { break; }
-			 * 
+			 *
 			 * } catch (FDSkuNotFoundException ignore) { } } index++; } text=getCOOLText(countries);
 			 */
 			Map<String, String> coolInfoMap = new HashMap<String, String>();
@@ -379,20 +379,20 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	private String getCOOLText(List<String> countries) {
 		if(countries==null)
 			return "";
-		
+
 		StringBuffer temp=new StringBuffer(50);
 		for(int i=0;i<countries.size();i++) {
 			if(i<(countries.size()-2)){
 				temp.append(countries.get(i).toString()).append(", ");
 			}else if(countries.size()>1 && i==(countries.size()-1)){
-				temp.append("and").append(countries.get(i).toString());
+				temp.append(" and ").append(countries.get(i).toString());
 			} else {
 				temp.append(countries.get(i));
-			}	
+			}
 		}
 		return temp.toString();
 	}
-	
+
 	@Override
 	public String getDefaultSkuCode() {
 	    SkuModel sku = getDefaultSku();
