@@ -644,5 +644,8 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public ScribLabel getScribLabelByDate(String date){
 		return getDispatchManagerDao().getScribLabelByDate(date);
 	}
+	public Collection getDatesByScribLabel(String slabel){
+		return getDispatchManagerDao().getDatesByScribLabel(slabel);
+	}
 	
 }

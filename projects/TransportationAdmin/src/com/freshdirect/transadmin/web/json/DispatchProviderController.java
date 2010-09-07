@@ -42,6 +42,7 @@ import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
+import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
@@ -614,11 +615,45 @@ public class DispatchProviderController extends JsonRpcController implements
 			if(slabel != null) {
 				return slabel.getScribLabel();
 			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+		} catch (ParseException e) {			
 			e.printStackTrace();
 		}		
 		return null;
+	}
+	
+	public Collection getDatesByScribLabel(String slabel) {
+		Collection dates = new ArrayList();
+		Collection labels = new ArrayList();
+		try {
+			labels = dispatchManagerService.getDatesByScribLabel(slabel);
+			
+			for (Iterator<ScribLabel> iterator = labels.iterator(); iterator.hasNext();) {
+				ScribLabel _sl = iterator.next();
+				String d = TransStringUtil.getDate(_sl.getDate());
+				dates.add(d);
+			}			
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return dates;
+	}
+	
+	public String getTotalNoTrucksByDate(String date) {
+		Collection scribs = new ArrayList();
+		int count = 0;
+		try {
+			scribs = dispatchManagerService.getScribList(TransStringUtil.getServerDate(date));
+			if(scribs.size() > 0) {
+				for (Iterator<Scrib> itr = scribs.iterator(); itr.hasNext();) {
+					Scrib _s = itr.next();
+					count = count+_s.getCount();
+				}				
+				return Integer.toString(count);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return Integer.toString(count);
 	}
 	
 }

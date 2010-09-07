@@ -369,4 +369,17 @@ public class DispatchManagerDaoHibernateImpl extends
 	public ScribLabel getScribLabelByDate(String date) throws DataAccessException {
 		return (ScribLabel) getEntityById("ScribLabel", "date", date);
 	}
+	
+	public Collection getDatesByScribLabel(String slabel) throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from ScribLabel sl");
+		strBuf
+				.append(" where sl.scribLabel='")
+				.append(slabel)
+				.append("'");
+			
+		strBuf.append("order by sl.date");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString());		
+	}
 }

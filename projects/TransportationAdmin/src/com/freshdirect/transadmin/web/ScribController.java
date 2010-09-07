@@ -151,7 +151,7 @@ public class ScribController extends AbstractMultiActionController
 				sLabels.add(_slabel);
 			}
 			mav.getModel().put("sLabels", sLabels);
-			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
+			if ("y".equalsIgnoreCase(request.getParameter("l"))) {
 				createPlan(request);
 				saveMessage(request, getMessage("app.actionmessage.149", null));
 				return mav;
@@ -399,6 +399,20 @@ public class ScribController extends AbstractMultiActionController
       		  }
       	  }        	  
         }
+	}
+	
+	public ModelAndView scribLabelHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
+	{
+		ModelAndView mav = new ModelAndView("scribLabelView");
+		//get the predefined Scrib labels
+		String scribLabels= TransportationAdminProperties.getScribHolidayLabels();
+		String[] _scribLabels = StringUtil.decodeStrings(scribLabels);
+		List sLabels=new ArrayList();
+		for(String _slabel:_scribLabels){
+			sLabels.add(_slabel);
+		}
+		mav.getModel().put("sLabels", sLabels);
+		return mav;
 	}
 	
 	public DispatchManagerI getDispatchManagerService() {

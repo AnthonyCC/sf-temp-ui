@@ -26,4 +26,6 @@ public interface IDispatchProvider {
 	boolean doScenarioZone(String id, String[][] zone);
 	boolean addScribLabel(String date,String label,String checked);
 	String getScribLabel(String date);
+	Collection getDatesByScribLabel(String slabel);
+	String getTotalNoTrucksByDate(String date);
 }

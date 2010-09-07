@@ -46,6 +46,7 @@
 							<span>&nbsp;&nbsp;</span>
 							<span> <input style="font-size:11px" type = "button" height="18" value="Generate Plan" onclick="javascript:showGeneratePlanForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
+							<span> <input style="font-size:11px" type = "button" height="18"  value="View Labels" onclick="javascript:showViewLabelsForm();" /></span>
 							<span>&nbsp;&nbsp;</span>
 						</div>				
 				</div>
@@ -95,8 +96,13 @@
 					</div></div>
 				</div>
      </div>   
-     <script>     	 
-      Calendar.setup(
+     <script>
+
+		function showViewLabelsForm(){
+			javascript:window.open('viewscriblabel.do','y','height=450,width=400');
+		}
+          	 
+     	 Calendar.setup(
                       {
                         showsTime : false,
                         electric : false,
@@ -106,7 +112,8 @@
                         button : "trigger_scribDate" 
                        }
                       );
-         function doCompositeLink(compId1,compId2, url,generatePlan) 
+
+        function doCompositeLink(compId1,compId2, url,generatePlan) 
         {
         	if(generatePlan!=null)
         	{
@@ -128,17 +135,19 @@
 	          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2;
           }
         } 
-      addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
-      document.getElementById("scribDay").value='<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>';
-      function getFilterTestValue()
-      {
-      	var filters=getFilterValue(document.getElementById("scribListForm"),false);
-      	filters+="&daterange="+document.getElementById("daterange").value;
-      	filters+="&scribDay="+document.getElementById("scribDay").value;
-      	return escape(filters)
-      }
+
+       	addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
+      	document.getElementById("scribDay").value='<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>';
+
+        function getFilterTestValue()
+      	{
+	      	var filters=getFilterValue(document.getElementById("scribListForm"),false);
+	      	filters+="&daterange="+document.getElementById("daterange").value;
+	      	filters+="&scribDay="+document.getElementById("scribDay").value;
+	      	return escape(filters)
+        }
     </script>
      <%@ include file='i_generateplan.jspf'%>
-     <%@ include file='i_addlabel.jspf'%>     
+     <%@ include file='i_addlabel.jspf'%>            
   </tmpl:put>
 </tmpl:insert>

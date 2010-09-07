@@ -120,6 +120,7 @@
                 <prop key="/copyscrib.do">scribController</prop>
                 <prop key="/deletescrib.do">scribController</prop>
                 <prop key="/editscrib.do">scribFormController</prop>
+                <prop key="/viewscriblabel.do">scribController</prop>
                 <prop key="/editschedule.do">scheduleFormController</prop>
                 <prop key="/earlywarning.do">capacityController</prop>
                 <prop key="/unassigned.do">capacityController</prop>
@@ -274,7 +275,8 @@
             <prop key="/scrib.do">scribHandler</prop>
             <prop key="/scribsummary.do">scribSummaryHandler</prop>
             <prop key="/copyscrib.do">copyScribHandler</prop>
-            <prop key="/deletescrib.do">deleteScribHandler</prop>	
+            <prop key="/deletescrib.do">deleteScribHandler</prop>
+            <prop key="/viewscriblabel.do">scribLabelHandler</prop>
             <prop key="/earlywarning.do">earlyWarningHandler</prop>
             <prop key="/unassigned.do">unassignedHandler</prop>
             <prop key="/timeslotlog.do">timeslotLogHandler</prop>

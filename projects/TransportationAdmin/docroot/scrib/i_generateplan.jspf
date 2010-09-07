@@ -19,15 +19,8 @@
                           effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
         
         //editPanel.render();
-        initCustomCalendar("trigger_rDate","rDate","calContainer");	
-        
-            		 
-	}
-     
-    // function fillOptions(src, dest) {
-     
-    	// document.getElementById(dest).value = document.getElementById(src).value;
-    // }	
+        initCustomCalendar("trigger_rDate","rDate","calContainer");      
+     } 
 	 
 
      function showGeneratePlanForm() {          
@@ -38,18 +31,17 @@
              
       function submitGeneratePlan(compId1,compId2,url,generatePlan) {       	                           
       	  
-			var hasConfirmed = confirm ("You are about to perform Generate Plan.  IF PLANS ALREADY EXIST FOR THE DAY, ALL CHANGES WILL BE LOST.  Do you want to continue?")
+			var hasConfirmed = confirm ("You are about to perform Generate Plan.  If PLAN DATA exists for the SELECTED DATE(S) and REGION(S) WILL BE LOST.  Do you want to continue?");
 			if (hasConfirmed) 
 			{
-			  var hasConfirmed = confirm ("Do you want PLANS FOR REGIONS other than ones selected for dates selected get OVERRIDDEN?")	
+			  var hasConfirmed = confirm ("Do you want PLANS FOR REGION(S) other than the ones selected for DATE(S) selected get OVERRIDDEN?");	
 	  		  var param4 = "";
-	  		  if (hasConfirmed) 
-			  		var param4="&o=y";
+	  		  if (hasConfirmed) { var param4="&o=y"; }
 			  var param1 = getValues(compId1);         
 	          var param2 = getValues(compId2);
 	          var param3 = "";
-	          if(generatePlan!=null)param3="&p="+generatePlan;
-		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+ param2+param3+param4;
+	          if(generatePlan!=null){ param3="&p="+generatePlan; }
+		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param4;
 			} 	
       }
       
