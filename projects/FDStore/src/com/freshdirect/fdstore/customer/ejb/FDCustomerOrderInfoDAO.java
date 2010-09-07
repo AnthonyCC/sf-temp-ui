@@ -44,15 +44,15 @@ class FDCustomerOrderInfoDAO {
 	@SuppressWarnings( "unused" )
 	private static Category LOGGER = LoggerFactory.getInstance(FDCustomerOrderInfoDAO.class);
 	
-	private static final String ORDER_SEARCH_QUERY = "select  /*+use_nl(di,sa,scm,s)*/ s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "
+	private static final String ORDER_SEARCH_QUERY = "select  s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "
 		+ "di.phone, di.alt_phone, s.stop_sequence, s.truck_number, s.wave_number, di.cutofftime, c.id as erp_id, fc.id as fd_id, " 
 		+ "(select on_fd_account from cust.paymentinfo where salesaction_id = sa.id) as on_fd_account, "
 		+ "(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='VIPCustomer') as vip_cust, " 
 		+ "(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "
 		+ "from cust.sale s,  cust.salesaction sa, cust.deliveryinfo di, cust.customer c, cust.fdcustomer fc "   
-		+ "where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id " 
-		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id "
-		+ "and s.CROMOD_DATE = sa.action_date ";
+		+ "where s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and s.CROMOD_DATE = sa.action_date and sa.id=di.salesaction_id " 
+		+ "and s.customer_id = c.id and c.id = fc.erp_customer_id ";
+		
 	
 	
 	public static final String GIFT_CARD_ORDER_SERACH_QUERY=" select  /*+use_nl(di,sa,scm,s)*/ s.id, sa.requested_date, s.status, sa.amount, di.last_name, di.first_name, c.user_id, di.delivery_type, "+ 
@@ -62,7 +62,7 @@ class FDCustomerOrderInfoDAO {
 	"(select p.profile_value from  cust.profile p where p.customer_id = fc.id and p.profile_name='ChefsTable') as chefs_table "+ 
 	"from cust.sale s,  cust.salesaction sa, cust.deliveryinfo di, "+ 
 	" cust.customer c, cust.fdcustomer fc, CUST.APPLIED_GIFT_CARD agc "+     
-	" where s.id=sa.sale_id and s.id = scm.sale_id and sa.id=di.salesaction_id "+   
+	" where s.id=sa.sale_id and sa.id=di.salesaction_id "+   
 	" and s.customer_id = c.id and c.id = fc.erp_customer_id "+ 
 	//" and scm.max_date = sa.action_date "+
 	" and agc.SALESACTION_ID = sa.id "+ 
