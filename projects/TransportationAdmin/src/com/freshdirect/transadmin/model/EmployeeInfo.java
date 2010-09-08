@@ -15,9 +15,13 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	
 	private String lastName;
 	
+		
 	private String middleInitial;
 	
 	private String shortName;
+	
+	
+	
 	
 	private String jobType;
 	
@@ -48,8 +52,10 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 		this.employeeId = employeeId;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		
 		this.middleInitial = middleInitial;
 		this.shortName = shortName;
+		
 		this.jobType = jobType;
 		this.hireDate = hireDate;
 		this.status = status;
@@ -84,14 +90,14 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 		return hireDate;
 	}
 
-
+	
 
 	public String getJobType() {
 		return jobType;
 	}
 
-
-
+	
+	
 	public String getLastName() {
 		return lastName;
 	}
@@ -154,6 +160,22 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 			return lastName;
 		return lastName+SEPERATOR+firstName;
 	}
+
+	public String getSupervisorInfo() {
+
+		if ((lastName == null || "".equals(lastName))
+				&& (firstName == null || "".equals(firstName))
+				&& (employeeId == null || "".equals(employeeId)))
+			return "";
+		if (lastName == null || "".equals(lastName))
+			return firstName;
+		if (firstName == null || "".equals(firstName))
+			return lastName;
+		if (employeeId == null || "".equals(employeeId))
+			return lastName;
+		return lastName + SEPERATOR + firstName + "-" + employeeId;
+	}
+
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
@@ -163,6 +185,9 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+	
+	
+	
 	public void setMiddleInitial(String middleInitial) {
 		this.middleInitial = middleInitial;
 	}
