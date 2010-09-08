@@ -1,5 +1,3 @@
-
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
@@ -12,9 +10,11 @@
 
 <% 
 	String pageId = (String)request.getAttribute("pageId");
-	String pageTitle = "Plan Summary View"; 
+	String pageTitle = "Plan Summary View";
+	boolean isScribSummary = false;
 	if(pageId != null && "scribsummary".equalsIgnoreCase(pageId)) {
-		pageTitle = "Scrib Summary View"; 
+		pageTitle = "Scrib Summary View";
+		isScribSummary = true;
 	}
 %>
 
@@ -32,6 +32,10 @@
 
   <div class="contentroot">
 		<style>
+		.summaryTable th, .summaryTable td {
+			cursor: pointer;
+			cursor: hand;
+		}
 		.summaryTable th.first {
 			border-right: 2px solid #000;
 		}
@@ -58,7 +62,7 @@
 			background-color: red;
 		}
 		.summaryTable td.yellow {
-			background-color: yellow;
+			background-color: yellow;			
 		}
 		</style>
 		<div class="cont_topleft">
@@ -91,7 +95,9 @@
 	    	
 	    	if(columns != null) {
 	    		%>
-	    		<table class="summaryTable" cellspacing="0" cellpadding="0" border="0" width="98%">				    	
+	    		<form id="summaryForm" method="post" action="">		
+	    		
+	    		<table id="tbl_summaryTable" class="summaryTable" cellspacing="0" cellpadding="0" border="0" width="98%">				    	
 				    	<tr>
 				    		<th class="first">Zone</th>
 				    		<%		
@@ -106,7 +112,7 @@
 						 		int zoneTotalCount = 0;
 						 		%>
 						 	<tr>
-						 	<td class="first">&nbsp;&nbsp;<%= selectedMapping.getKey()%>&nbsp;&nbsp;</td>
+						 	<td class="first"><%= selectedMapping.getKey()%></td>
 							<% for(CustomTimeOfDay range : columns) { 
 									int selectedCount = 0;
 									int baseCount = 0;
@@ -137,7 +143,7 @@
 							</tr>	 		
 						 	<% } %>
 							<tr>
-						 	<td class="first">&nbsp;&nbsp;Total&nbsp;&nbsp;</td>
+						 	<td class="first">Total</td>
 						 	<%
 						 	int timeRangeGrandTotal = 0;
 						 	for(Map.Entry<CustomTimeOfDay, Integer> _trTotal : timeRangeTotal.entrySet()) {
@@ -157,7 +163,7 @@
  		</div>
  		
      <script>
-      
+      var isScribSummary = <%= isScribSummary %>;
       function doCompositeLink(compId1,compId2,url) {
           var param1 = document.getElementById(compId1).value;
           var param2 = document.getElementById(compId2).value;
@@ -186,6 +192,80 @@
                  button : "trigger_baseDate" 
                 }
                );
+       onload = function() {
+    	   var table = document.getElementById("tbl_summaryTable");
+    	   var url = "scrib.do";
+    	    
+    	    if(table != null) {
+    		    var rows = table.getElementsByTagName("tr");	 	       
+    		    for (i = 0; i < rows.length; i++) {	    	
+    		        var cells = rows[i].getElementsByTagName("td");
+    		        if(cells == null || cells.length == 0) {
+    		        	cells = rows[i].getElementsByTagName("th");
+    		        }
+    		        for (j = 0; j < cells.length; j++) {
+    		        	cells[j].onclick = function () {    		        						      				      		
+    		        		if(!((this.parentNode.rowIndex == 0 && this.cellIndex == 0)
+    	    		        		|| (this.parentNode.rowIndex == ((table.rows.length)-1))
+    	    		        			|| (this.cellIndex == ((table.rows[0].cells.length)-1)))) {
+	    		        		var zoneCell = table.rows[this.parentNode.rowIndex].cells[0];
+	    		        		var firstDlvCell = table.rows[0].cells[this.cellIndex];
+	    		        		var _selectedDate = document.getElementById("selectedDate").value;
+	    		        		if(isScribSummary) {
+		    		        		if(this.cellIndex == 0) {
+		    		        			processCellClick(escape("ec_f_zoneS="+ zoneCell.innerHTML	
+				    		        										+ "&ec_f_scribDate=" + _selectedDate						        										
+							        										+ "&ec_f_a=fa")
+							        										, "scrib.do?daterange=" + _selectedDate);
+		    		        		} else if(this.parentNode.rowIndex == 0) {
+		    		        			processCellClick(escape("ec_f_firstDlvTime="+ firstDlvCell.innerHTML
+				    		        								+ "&ec_f_scribDate=" + _selectedDate							        										
+        															+"&ec_f_a=fa")
+        															, "scrib.do?daterange=" + _selectedDate);
+		    		        		} else {
+	    		        				processCellClick(escape("ec_f_zoneS="+ zoneCell.innerHTML
+	    	    		        										+"&ec_f_firstDlvTime="+ firstDlvCell.innerHTML
+	    	    		        										+ "&ec_f_scribDate=" + _selectedDate
+	    	    		        										+"&ec_f_a=fa")
+	    	    		        										, "scrib.do?daterange=" + _selectedDate);
+		    		        		}
+	    		        		} else {
+	    		        			if(this.cellIndex == 0) {
+		    		        			processCellClick(escape("ec_f_zoneCode="+ zoneCell.innerHTML	
+							        										+ "&ec_f_a=fa")
+							        										, "plan.do?daterange=" + _selectedDate
+							        											+"&weekdate="+_selectedDate);
+		    		        		} else if(this.parentNode.rowIndex == 0) {
+		    		        			processCellClick(escape("ec_f_firstDeliveryTime="+ firstDlvCell.innerHTML
+	       															+"&ec_f_a=fa")
+        															, "plan.do?daterange=" + _selectedDate
+        																	+"&weekdate="+_selectedDate);
+		    		        		} else {
+	    		        				processCellClick(escape("ec_f_zoneCode="+ zoneCell.innerHTML
+	    	    		        										+"&ec_f_firstDeliveryTime="+ firstDlvCell.innerHTML
+	    	    		        										+"&ec_f_a=fa")
+	    	    		        										, "plan.do?daterange=" + _selectedDate
+	    	    		        														+"&weekdate="+_selectedDate);
+		    		        		}
+	    		        		}
+    		        		}	      		
+				    	};    			    		    	
+    		        }
+    		    }
+    		}
+       }
+
+       function processCellClick(filterParam, formAction) {
+    	   var filters = unescape(filterParam);	      	     	
+	       var params = filters.split("&");
+	       var summaryForm = document.forms["summaryForm"];
+	       for(var i=0; i<params.length; i++) {
+	      		var param = params[i].split("=");         				
+	      		add_input(summaryForm, "hidden", param[0], param[1]);
+	       } 
+	       summaryForm.action = formAction;	      	
+	       summaryForm.submit();
+       }
 
     </script>   
   </tmpl:put>
