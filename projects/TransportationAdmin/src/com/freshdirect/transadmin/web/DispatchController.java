@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -345,7 +346,7 @@ public class DispatchController extends AbstractMultiActionController {
 		
 		Map<String, Scrib> scribMap = new HashMap<String, Scrib>();
 		Map<String, Map<String, Scrib>> resMapScrib = new HashMap<String, Map<String, Scrib>>();
-		Map<String, Map<String, Map<String, Scrib>>> kronos = new HashMap<String, Map<String, Map<String, Scrib>>>();	
+		SortedMap<String, Map<String, Map<String, Scrib>>> kronos = new TreeMap<String, Map<String, Map<String, Scrib>>>();	
 		Map<String,Collection<EmployeeRole>> empRoleMap=new HashMap<String,Collection<EmployeeRole>>();
 		Map<String,Collection<Plan>> plansForDateMap=new HashMap<String,Collection<Plan>>();
 		Map<String,Map<String,Collection<Plan>>> plansForDateAndRegionMap= new HashMap <String,Map<String,Collection<Plan>>>();
@@ -546,7 +547,7 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 	}
 
-	private void generateKronosFiles(HttpServletResponse response, Map<String, Map<String, Map<String, Scrib>>> kronos)
+	private void generateKronosFiles(HttpServletResponse response, SortedMap<String, Map<String, Map<String, Scrib>>> kronos)
 			throws IOException, ParseException {
 		
 		response.setContentType("application/x-zip-compressed");
@@ -559,7 +560,7 @@ public class DispatchController extends AbstractMultiActionController {
 		String header1 = "Kronos ID , Date , Time , Shift , \n"; f1.write(header1.getBytes());
 		String header2 = "Kronos ID , Date , \n";f2.write(header2.getBytes());
 		HSSFWorkbook wb = new HSSFWorkbook();
-
+	
 		for(Iterator<String> dates = kronos.keySet().iterator();dates.hasNext();) {
 			String date = dates.next();			
 			HSSFSheet sheet = wb.createSheet(TransStringUtil.getServerDate(date));		
