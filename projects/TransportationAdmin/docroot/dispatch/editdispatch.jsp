@@ -286,13 +286,10 @@
 							<spring:bind path="dispatchForm.confirmed"> 
 								<c:choose>                    
 									<c:when test='${status.value == "false"}'> 
-										<SELECT id="<c:out value="${status.expression}"/>" name="<c:out value="${status.expression}"/>" onchange="handleResoureChangeEvent('supervisors[<c:out value="${gridRow.index}"/>]', this);">
-											<OPTION value="">Select Supervisor</OPTION>          
-											<c:forEach var="supervisorsEmp" items="${supervisors}">
-												<option <c:if test='${status.value == supervisorsEmp.employeeId}'> SELECTED </c:if> 
-											value="<c:out value="${supervisorsEmp.employeeId}"/>"><c:out value="${supervisorsEmp.name}"/>-<c:out value="${supervisorsEmp.employeeId}"/></option>                         
-											</c:forEach>
-										</SELECT>
+										<form:select path="supervisorCode" disabled='<c:out value="${status.value}" />'>
+											<form:option value="" label="Select Supervisor"/>
+											<form:options items="${supervisors}" itemLabel="supervisorInfo" itemValue="employeeId" />
+										</form:select>
 									</c:when>
 									<c:otherwise> 
 										<form:input maxlength="50" size="30" path="supervisorName" readOnly="true" />
