@@ -56,7 +56,7 @@
 		//
 		// <div ... class="nfeat">
 %>		<div class="title16 boxTitle">NEW FEATURE ALERT!</div>
-		<div class="text13gr">Quickbuy appears only in our 4-­Minute-­Meals department.</div>
+		<div class="text13gr">Quick Buy appears only in our 4-Minute Meals department.</div>
 		<div class="bframe"><img src="/media_stat/images/quickbuy/quickbuy_button_alrt_dont.gif" onclick="FD_QuickBuy.closeNewFeatBox('<%= frameId %>_nfeat');"></div>
 <%
 		// </div>
