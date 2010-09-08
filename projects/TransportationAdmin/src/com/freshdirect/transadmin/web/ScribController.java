@@ -151,7 +151,7 @@ public class ScribController extends AbstractMultiActionController
 				sLabels.add(_slabel);
 			}
 			mav.getModel().put("sLabels", sLabels);
-			if ("y".equalsIgnoreCase(request.getParameter("l"))) {
+			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
 				createPlan(request);
 				saveMessage(request, getMessage("app.actionmessage.149", null));
 				return mav;
