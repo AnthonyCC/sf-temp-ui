@@ -30,6 +30,10 @@ function getParamList(tableId, url) {
     return paramValues;
 }
 
+function doAddNew(tableId, url) {
+  	location.href = url+"?filter="+getFilterTestValue();
+}
+
 function doDelete(tableId, url) {
     
     var paramValues = getParamList(tableId, url);

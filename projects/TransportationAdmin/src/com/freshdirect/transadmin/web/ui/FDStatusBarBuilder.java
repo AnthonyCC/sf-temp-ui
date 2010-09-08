@@ -111,10 +111,17 @@ public class FDStatusBarBuilder extends ToolbarBuilder {
     }
     
     public String getAddAction(String key, TableModel model) {
-        StringBuffer result = new StringBuffer("javascript:");
+       /*StringBuffer result = new StringBuffer("javascript:");
 
         String action = model.getTableHandler().getTable().getAction();
         result.append("location.href = ").append("'").append(formatAction(action,key)).append("'");                       
+        return result.toString();*/    	
+    	
+    	StringBuffer result = new StringBuffer("javascript:");
+
+        String action = model.getTableHandler().getTable().getAction();
+        result.append("doAddNew('").append(model.getTableHandler().getTable().getTableId())
+								.append("_table','").append(formatAction(action,key)).append("')");                              
         return result.toString();
     }
     
