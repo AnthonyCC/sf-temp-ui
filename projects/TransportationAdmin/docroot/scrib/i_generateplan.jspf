@@ -30,8 +30,12 @@
      }
              
       function submitGeneratePlan(compId1,compId2,url,generatePlan) {       	                           
-      	  
-			var hasConfirmed = confirm ("You are about to perform Generate Plan.  If PLAN DATA exists for the SELECTED DATE(S) and REGION(S) WILL BE LOST.  Do you want to continue?");
+    	  var p1 = getValues(compId1);         
+          var p2 = getValues(compId2);
+      	  if(p1==''||p2==''){
+      		alert('please select atleast one DATE and REGION.');  
+      	  }else {
+          	var hasConfirmed = confirm ("You are about to perform Generate Plan.  If PLAN DATA exists for the SELECTED DATE(S) and REGION(S) WILL BE LOST.  Do you want to continue?");
 			if (hasConfirmed) 
 			{
 			  var hasConfirmed = confirm ("Do you want PLANS FOR REGION(S) other than the ones selected for DATE(S) selected get OVERRIDDEN?");	
@@ -42,7 +46,8 @@
 	          var param3 = "";
 	          if(generatePlan!=null){ param3="&p="+generatePlan; }
 		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param4;
-			} 	
+			}
+      	  } 	
       }
       
       function addSysMessage(msg, isError) {
@@ -54,21 +59,6 @@
 	      	}
 	      	errContObj.style.fontWeight="bold";
       		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
-      }
-      
-      function sendFormCallback(result, exception) {
-      	  
-          if(exception) {               
-              alert('Unable to connect to host system. Please contact system administrator!');               
-              return;
-          }
-          if(result == 0) {
-          	addSysMessage("Scenario to Day Mapping failed", true);
-          }else if(result == 2){
-        	addSysMessage("Scenario to Day already exists", true);
-          }else {
-          	addSysMessage("Scenario to Day Mapping added successfully", false);
-          }                           
       }
       
       function hideForm() { 

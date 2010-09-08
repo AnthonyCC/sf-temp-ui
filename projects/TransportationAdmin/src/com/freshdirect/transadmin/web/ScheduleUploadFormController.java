@@ -82,20 +82,17 @@ public class ScheduleUploadFormController extends BaseFormController {
 		List<ScheduleEmployee> schedules = new ScheduleUploadDataManager()
 										.processUploadSchedules(request, bytes,
 														com.freshdirect.transadmin.security.SecurityManager.getUserName(request), domainManagerService);
-		if(schedules.size() > 0){
-			try{
-				getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
-				saveMessage(request, getMessage("app.actionmessage.161", new Object[]{}));
-			}catch(DataIntegrityViolationException ex){
-				ex.printStackTrace();
-				saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
-			}catch(Exception e){
-				e.printStackTrace();
-				saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
-			}
-		}else
-			saveErrorMessage(request, getMessage("app.error.130", new Object[] {}));
 		
+		try{
+			getDomainManagerService().saveOrUpdateEmployeeSchedule(schedules);
+			saveMessage(request, getMessage("app.actionmessage.161", new Object[]{}));
+		}catch(DataIntegrityViolationException ex){
+			ex.printStackTrace();
+			saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
+		}catch(Exception e){
+			e.printStackTrace();
+			saveErrorMessage(request, getMessage("app.error.131", new Object[] {}));
+		}		
 		
 		ModelAndView mav = new ModelAndView(getSuccessView(), errors.getModel());
 		mav.getModel().put(this.getCommandName(), command);

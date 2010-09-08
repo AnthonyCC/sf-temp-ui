@@ -5,10 +5,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <script type="text/javascript" language="javascript" src="js/SelectionHandlers.js"></script>
-<%  pageContext.setAttribute("HAS_COPYBUTTON", "true");  
+<%
+  pageContext.setAttribute("HAS_COPYBUTTON", "true");	 
   String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
   String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
-   if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
+  if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getCurrentDate();
 %>
 <% 
 	String pageTitle = "Scrib";
@@ -144,7 +145,7 @@
 	      	var filters=getFilterValue(document.getElementById("scribListForm"),false);
 	      	filters+="&daterange="+document.getElementById("daterange").value;
 	      	filters+="&scribDay="+document.getElementById("scribDay").value;
-	      	return escape(filters)
+	      	return escape(filters);
         }
     </script>
      <%@ include file='i_generateplan.jspf'%>
