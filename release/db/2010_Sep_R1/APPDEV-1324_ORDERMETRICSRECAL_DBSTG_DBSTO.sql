@@ -1,1 +1,1 @@
-alter table dlv.reservation add (NUM_CARTONS  NUMBER(5), NUM_FREEZERS  NUMBER(5), NUM_CASES  NUMBER(5));
+alter table dlv.reservation add (NUM_CARTONS  NUMBER(5), NUM_FREEZERS  NUMBER(5), NUM_CASES  NUMBER(5), METRICS_SOURCE  VARCHAR2(3));
