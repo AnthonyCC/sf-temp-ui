@@ -31,7 +31,7 @@ function getParamList(tableId, url) {
 }
 
 function doAddNew(tableId, url) {
-  	location.href = url+"?filter="+getFilterTestValue();
+  	location.href = url+"?filter="+getFilterTestValue();  	
 }
 
 function doDelete(tableId, url) {
@@ -40,13 +40,19 @@ function doDelete(tableId, url) {
     if (paramValues != null) {
     	var hasConfirmed = confirm ("Do you want to delete the selected records?")
 		if (hasConfirmed) {
-		  	location.href = url+"?id="+ paramValues;
+		  	location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
 		} 
     } else {
     	alert('Please Select a Row!');
     }
 }
-  
+
+function getFilterTestValue()
+{
+	var filters = "";
+ 	return escape(filters);
+}
+
 function doGeocode(tableId, url) {
     var paramValues = getParamList(tableId, url);
     if (paramValues != null) {
