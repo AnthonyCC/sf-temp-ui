@@ -369,6 +369,8 @@ function getDispatchFilterValue()
 {
 	var filters=getFilterValue(document.getElementById("ec"),false);
 	filters+="&dispDate="+document.getElementById("dispDate").value;
+	filters+="&zone="+document.getElementById("zone").value;
+  	filters+="&region="+document.getElementById("region").value;
 	return escape(filters)
 }
 

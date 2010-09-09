@@ -168,6 +168,8 @@ public class DispatchController extends AbstractMultiActionController {
 
 			if(daterange==null)
 				daterange=TransStringUtil.getCurrentDate();
+			else if(!"".equals(daterange)&& daterange!=null)
+				_weekDate = getWeekOf(daterange);
 			
 			String zoneLst = request.getParameter("zone");
 			zoneLst = zoneLst==null?"":zoneLst;

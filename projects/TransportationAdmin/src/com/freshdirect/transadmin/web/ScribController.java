@@ -106,17 +106,22 @@ public class ScribController extends AbstractMultiActionController
 			if(day==null)day="All";
 			String[] dates=getDates(daterange,day);
 			List allScribs=new ArrayList();
+			Set scribDates = new TreeSet();
+		
 			if(dates!=null)
 			{	
 				for(int i=0;i<dates.length;i++)
-				{
+				{					
 					Collection scribs=dispatchManagerService.getScribList(dates[i]);
-					ScribLabel scribLabel = dispatchManagerService.getScribLabelByDate(dates[i]);
+					ScribLabel scribLabel = dispatchManagerService.getScribLabelByDate(dates[i]);					
 					if(scribs!=null)
 					for(Iterator j=scribs.iterator();j.hasNext();)
 					{
 						Scrib s=(Scrib)j.next();
-						if (scribLabel!=null)s.setScribLabel(scribLabel.getScribLabel());
+						if(!(s.getScribDate().before(TransStringUtil.getServerDateString(TransStringUtil.getCurrentServerDate()))))
+							scribDates.add(TransStringUtil.getServerDate(s.getScribDate()));
+						if (scribLabel!=null)
+							s.setScribLabel(scribLabel.getScribLabel());
 						if(s.getSupervisorCode()!=null)
 						{
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(s.getSupervisorCode());
@@ -129,20 +134,12 @@ public class ScribController extends AbstractMultiActionController
 			}
 			ModelAndView mav = new ModelAndView("scribView");
 			mav.getModel().put("scriblist", allScribs);
+			
 			Collection regions = domainManagerService.getRegions();
 			mav.getModel().put("regions", regions);
-			
-			List scribDates = new ArrayList();
-			for (Iterator it = allScribs.iterator(); it.hasNext();) {
-				Scrib s = (Scrib) it.next();
-				if (!s.getScribDate().before(TransStringUtil.getAdjustedWeekOf(Calendar.getInstance().getTime(), 0))) {
-					if (!scribDates.contains(TransStringUtil.getServerDate(s.getScribDate())))
-						scribDates.add(TransStringUtil.getServerDate(s.getScribDate()));
-				}
-			}
+					
 			mav.getModel().put("scribDates", scribDates);
 
-			
 			//get the predefined Scrib labels
 			String scribLabels= TransportationAdminProperties.getScribHolidayLabels();
 			String[] _scribLabels = StringUtil.decodeStrings(scribLabels);
@@ -151,6 +148,7 @@ public class ScribController extends AbstractMultiActionController
 				sLabels.add(_slabel);
 			}
 			mav.getModel().put("sLabels", sLabels);
+			
 			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
 				createPlan(request);
 				saveMessage(request, getMessage("app.actionmessage.149", null));

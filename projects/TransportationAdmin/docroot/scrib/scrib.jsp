@@ -88,8 +88,7 @@
               <ec:column property="count1" sortable="true" title="No of HandTrucks"/> 
               <ec:column cell="date" format="hh:mm aaa"  property="waveStart" title="*Wave Start"/>     
 			  <ec:column cell="date" format="HH:mm"  property="prefTime" title="*Pref Time"/>  
-			  <ec:column cell="date" format="HH:mm"  property="maxTime1" title="*Max Time"/>
-			  <ec:column property="scribLabel" title="Scrib Label" />  
+			  <ec:column cell="date" format="HH:mm"  property="maxTime1" title="*Max Time"/>			   
             </ec:row>
           </ec:table>
        </form>
