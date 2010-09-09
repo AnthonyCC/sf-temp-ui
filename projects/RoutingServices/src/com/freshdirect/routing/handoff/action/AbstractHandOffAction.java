@@ -96,10 +96,12 @@ public abstract class AbstractHandOffAction {
 		} catch (Exception exp) {
 			HandOffServiceProxy proxy = new HandOffServiceProxy();
 			exp.printStackTrace();
+			
 			try {
 				if(getFailureStatus() != null) {
 					proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), getFailureStatus());
-					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), exp.getMessage());
+					proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), 
+														(exp.getMessage() != null ? exp.getMessage() : exp.toString()));
 				}
 			} catch (RoutingServiceException e) {
 				// TODO Auto-generated catch block

@@ -364,7 +364,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												
 						deliveryModel.setDeliveryLocation(locationModel);
 						infoModel.setDeliveryInfo(deliveryModel);
-						if(!infoModel.isException() || filterException) {
+						if(!infoModel.isException() || !filterException) {
 							result.add(infoModel);
 						}
 					} while(rs.next());		        		    	
