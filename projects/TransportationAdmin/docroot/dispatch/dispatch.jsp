@@ -311,6 +311,16 @@
     </div>
     <script>
       addMultiRowHandlersColumnFilter('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 4,'dispDate');
+
+      function getFilterTestValue()
+      {
+	      	var filters=getFilterValue(document.getElementById("ec"),false);
+	      	filters+="&dispDate="+document.getElementById("dispDate").value;
+	      	filters+="&zone="+document.getElementById("zone").value;
+	      	filters+="&region="+document.getElementById("region").value;
+	      	return escape(filters);
+      }
+      
     </script>
     <%@ include file='i_activityLog.jspf'%> 
      <%@ include file='i_ReasonCode.jspf'%> 
