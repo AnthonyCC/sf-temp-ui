@@ -1,4 +1,4 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
-	<meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area.">
-	<meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping">
-	<fd:IncludeMedia name="/media/editorial/site_pages/metadata.html"/>
+	<meta name="description" content="Online grocer providing high quality fresh foods and popular grocery and  household items at incredible prices delivered to the New York area." />
+	<meta name="keywords" content="FreshDirect, Fresh Direct, Online Groceries, Online food, Grocery delivery, Food delivery, New York food delivery, New York food, New York grocer, Online grocery shopping" />
+	<fd:IncludeMedia name="/media/editorial/site_pages/metadata.html" />

@@ -425,7 +425,18 @@ if (isOnePricedByLb) { %>
         FDVariationOption cboxValue = null;
         FDVariationOption[] options = variation.getVariationOptions();
         for (int i=0; i<options.length; i++) {
-            if (options[i].isLabelValue()) cboxValue = options[i];
+			/*
+				if using a CHECKBOX display, and NOT OPTIONAL, add the options,
+				even if they're not the "Label Value". If you don't, and none of the options
+				are set as a "Label Value", you can't add the product to the cart at all.
+			*/
+			if ( "checkbox".equals(variation.getDisplayFormat()) && !variation.isOptional() ) {
+					cboxValue = options[i];
+			}else{
+				if ( options[i].isLabelValue() ) {
+					cboxValue = options[i];
+				}
+			}
         }
         boolean isChecked = (cboxValue != null) && cboxValue.isSelected();
   %>
