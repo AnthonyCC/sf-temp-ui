@@ -94,11 +94,9 @@ sessionCounter = <%= sessionCounter %>
 	<%@ include file="/includes/layouts/4mm/editorial.jspf"%>
 	
 	<div id="ads">
-		ADVERTISEMENT #1
 		<script type="text/javascript">
 			OAS_AD('4mmAd1');
 		</script>
-		ADVERTISEMENT #2
 		<script type="text/javascript">
 			OAS_AD('4mmAd2');
 		</script>
