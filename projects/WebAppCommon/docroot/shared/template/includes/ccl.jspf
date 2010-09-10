@@ -210,7 +210,7 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 <script type="text/javascript" src="/assets/javascript/jsonrpc-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/ccl-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/fcu-min.js"></script>
-<script type="text/javascript" src="/assets/javascript/quickbuy.js"></script>
+<script type="text/javascript" src="/assets/javascript/quickbuy-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/pricing.js"></script>
 <%
 		}
