@@ -159,81 +159,40 @@ public class DispatchController extends AbstractMultiActionController {
 		try{
 			
 			String weekdaterange = request.getParameter("weekdate");
-			String daterange = request.getParameter("daterange");			        	
-        	
-			if(weekdaterange==null||"".equals(weekdaterange))
-				weekdaterange=TransStringUtil.getCurrentDate();
-			
-			Date _weekDate = getWeekOf(weekdaterange);			
+			String daterange = request.getParameter("daterange");
 
-			if(daterange==null)
-				daterange=TransStringUtil.getCurrentDate();
-			else if(!"".equals(daterange)&& daterange!=null)
+			if (weekdaterange == null || "".equals(weekdaterange))
+				weekdaterange = TransStringUtil.getCurrentDate();
+
+			Date _weekDate = getWeekOf(weekdaterange);
+
+			if (daterange == null)
+				daterange = TransStringUtil.getCurrentDate();
+			else if (!"".equals(daterange) && daterange != null)
 				_weekDate = getWeekOf(daterange);
-			
+
 			String zoneLst = request.getParameter("zone");
-			zoneLst = zoneLst==null?"":zoneLst;
+			zoneLst = zoneLst == null ? "" : zoneLst;
 			ModelAndView mav = new ModelAndView("planView");
-		
-			String day=request.getParameter("planDay");
-			if(day==null)day="All";
-			String[] dates=null;
-			if(!TransStringUtil.isEmpty(daterange))
-				dates=getDates(daterange,day);
-			else if(!TransStringUtil.isEmpty(weekdaterange))
-				dates=getDates(weekdaterange,day);
+
+			String day = request.getParameter("planDay");
+			if (day == null)day = "All";
+			String[] dates = null;
+			if (!TransStringUtil.isEmpty(daterange))
+				dates = getDates(daterange, day);
+			else if (!TransStringUtil.isEmpty(weekdaterange))
+				dates = getDates(weekdaterange, day);
 			
 			Collection dataList= new ArrayList();
 			List<Plan> plans=new ArrayList();
 			Map<String,Zone> zoneMap = new HashMap <String,Zone>();
 			List terminatedEmployees = getTermintedEmployeeIds();
+			
 			if((!TransStringUtil.isEmpty(weekdaterange)&& !TransStringUtil.isEmpty(day)) || !TransStringUtil.isEmpty(zoneLst)||!TransStringUtil.isEmpty(daterange)) {
 				try 
 				{				
-					if(dates!=null && TransStringUtil.isEmpty(daterange))
-					{	
-						for(int i=0;i<dates.length;i++)
-						{   
-							String dateQryStr = TransStringUtil.formatDateSearch(dates[i]);
-							String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
-							Collection tempList= new ArrayList();
-							Collection tempPlans= new ArrayList();
-							if(dateQryStr != null || zoneQryStr != null) {
-								tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
-								if("y".equalsIgnoreCase(request.getParameter("unavailable")))
-								{
-									tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
-									tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(dates[i]));
-								}
-								if("y".equalsIgnoreCase(request.getParameter("kronos")))
-								{									
-									tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
-								}					
-							}
-							plans.addAll(tempPlans);
-							dataList.addAll(tempList);							
-						}//end for loop
-					}
-					if(!TransStringUtil.isEmpty(daterange)){
-						String dateQryStr = TransStringUtil.formatDateSearch(daterange);
-						String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
-						Collection tempList= new ArrayList();
-						Collection tempPlans= new ArrayList();
-						if(dateQryStr != null || zoneQryStr != null) {
-							tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
-							if("y".equalsIgnoreCase(request.getParameter("unavailable")))
-							{
-								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
-								tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(daterange));
-							}
-							if("y".equalsIgnoreCase(request.getParameter("kronos")))
-							{									
-								tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
-							}						
-						}							
-						plans.addAll(tempPlans);
-						dataList.addAll(tempList);
-					}
+					getPlanListForDateRange(request, daterange, zoneLst, dates,
+							dataList, plans, zoneMap, terminatedEmployees);
 					
 					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
 					{							
@@ -264,6 +223,7 @@ public class DispatchController extends AbstractMultiActionController {
 				}
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
+			request.setAttribute("dateRange", daterange);
 			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -271,6 +231,57 @@ public class DispatchController extends AbstractMultiActionController {
 			return new ModelAndView("planView");	
 		}
 		
+	}
+
+	private void getPlanListForDateRange(HttpServletRequest request,
+			String daterange, String zoneLst, String[] dates,
+			Collection dataList, List<Plan> plans, Map<String, Zone> zoneMap,
+			List terminatedEmployees) throws DateFilterException,ParseException {
+		
+		if(dates!=null && TransStringUtil.isEmpty(daterange))
+		{	
+			for(int i=0;i<dates.length;i++)
+			{   
+				String dateQryStr = TransStringUtil.formatDateSearch(dates[i]);
+				String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
+				Collection tempList= new ArrayList();
+				Collection tempPlans= new ArrayList();
+				if(dateQryStr != null || zoneQryStr != null) {
+					tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
+					if("y".equalsIgnoreCase(request.getParameter("unavailable")))
+					{
+						tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+						tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(dates[i]));
+					}
+					if("y".equalsIgnoreCase(request.getParameter("kronos")))
+					{									
+						tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
+					}					
+				}
+				plans.addAll(tempPlans);
+				dataList.addAll(tempList);							
+			}//end for loop
+		}
+		if(!TransStringUtil.isEmpty(daterange)){
+			String dateQryStr = TransStringUtil.formatDateSearch(daterange);
+			String zoneQryStr = StringUtil.formQueryString(Arrays.asList(StringUtil.decodeStrings(zoneLst)));
+			Collection tempList= new ArrayList();
+			Collection tempPlans= new ArrayList();
+			if(dateQryStr != null || zoneQryStr != null) {
+				tempList = getPlanInfo(dateQryStr,zoneQryStr,zoneMap,terminatedEmployees);
+				if("y".equalsIgnoreCase(request.getParameter("unavailable")))
+				{
+					tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);
+					tempPlans=employeeManagerService.getUnAvailableEmployees(tempPlans, TransStringUtil.getServerDate(daterange));
+				}
+				if("y".equalsIgnoreCase(request.getParameter("kronos")))
+				{									
+					tempPlans=dispatchManagerService.getPlan(dateQryStr, zoneQryStr);									
+				}						
+			}							
+			plans.addAll(tempPlans);
+			dataList.addAll(tempList);
+		}
 	}
 	
 	public String[] getDates(String date,String day) throws Exception

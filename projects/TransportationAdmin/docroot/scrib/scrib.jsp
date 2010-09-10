@@ -35,8 +35,12 @@
 			<div class="cont_row">
 				<div class="cont_Litem" id="page_<%=pageTitle%>">
 					<div style="float:left;">
+						<div style="float:left;">
 							<span class="scrTitle"><%=pageTitle%></span>
-							<span><input style="width:85px;" maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" /></span>
+						</div>
+						<div style="margin-top:4px;float:left;">Week Of:</div>
+						<div style="float:left;">
+							<input style="width:85px;" maxlength="40" name="daterange" id="daterange" value='<c:out value="${weekDate}"/>' />
 							<span><a href="#" id="trigger_scribDate" style="font-size: 9px;">
 	                        	<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a></span>
 	                    	 <select id="scribDay" name="scribDay" >
@@ -49,7 +53,8 @@
 							<span> <input style="font-size:11px" type = "button" height="18"  value="Add Label" onclick="javascript:showLabelForm();" /></span>
 							<span> <input style="font-size:11px" type = "button" height="18"  value="View Labels" onclick="javascript:showViewLabelsForm();" /></span>
 							<span>&nbsp;&nbsp;</span>
-						</div>				
+						</div>
+					</div>			
 				</div>
 			</div>
 		</div> 
@@ -146,6 +151,23 @@
 	      	filters+="&scribDay="+document.getElementById("scribDay").value;
 	      	return escape(filters);
         }
+
+        function doDelete(tableId, url) 
+        {    
+  		    var paramValues = getParamList(tableId, url);
+  		    if (paramValues != null) {
+  		    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
+  		    	if (hasConfirmed) 
+  				{
+  		    		var param1 = document.getElementById("daterange").value;
+  		     		var param2 = document.getElementById("scribDay").value;
+  		            var filters="&daterange="+param1+"&scribDay="+param2+"&"+getFilterValue(document.getElementById("scribListForm"),false)
+  				  	location.href = url+"?id="+ paramValues+filters;
+  				} 
+  		    } else {
+  		    	alert('Please Select a Row!');
+  		    }
+  		}
     </script>
      <%@ include file='i_generateplan.jspf'%>
      <%@ include file='i_addlabel.jspf'%>            

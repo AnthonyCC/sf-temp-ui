@@ -7,8 +7,7 @@
 
 <%  
 	pageContext.setAttribute("HAS_COPYBUTTON", "true");  
-	String dateRangeVal = request.getParameter("daterange") != null ? request.getParameter("daterange") : "";
-    String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
+	String zoneVal = request.getParameter("zone") != null ? request.getParameter("zone") : "";
 %>
 <% 
 	String pageTitle = "Planning";
@@ -38,7 +37,7 @@
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 						</div>
 						<div style="float:left;text-align:center;font-weight:bold">Date<br>&nbsp;
-							<input maxlength="40" name="daterange" id="daterange" value="<%= dateRangeVal %>" style="width:100px"/>
+							<input maxlength="40" name="daterange" id="daterange" value='<c:out value="${dateRange}"/>' style="width:100px"/>
 						 	<a href="#" id="trigger_planDate" style="font-size: 9px;">
                         			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date"></a>
 						</div>&nbsp;
@@ -99,11 +98,11 @@
 
       function doAutoDispatch(compId1,compId2,compId3, url) {
     	  	var param2 = document.getElementById(compId2).value;
-     	 	var hasConfirmed = confirm ("You are about to perform auto-dispatch.  IF DISPATCHES ALREADY EXIST FOR THE "+param2+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
-			if (hasConfirmed) {
-				if(param2==''){
-			  		alert('Please enter the date to auto-dispatch');
-				}else{
+    	  	if(param2==''){
+		  		alert('Please enter the DATE to AUTO-DISPATCH for.');
+			}else{
+				var hasConfirmed = confirm ("You are about to perform AUTO-DISPATCH.  If DISPATCHES already exist for the "+param2+", ALL CHANGES WILL BE LOST.  Do you want to continue?")
+				if (hasConfirmed) {				
 					doCompositeLink(compId1,compId2,compId3, url);
 				}
 			} 
@@ -125,20 +124,21 @@
              filters+="&weekdate="+param1;
              filters+="&daterange="+param2;
              filters+="&zone="+param3;                                                               
-             return escape(filters) + "&weekdate="+param1+"&daterange="+param2+"&zone="+param3;
+             return escape(filters);
        }
  
-   //   addRowHandlersFilter('ec_table', 'rowMouseOver', 'editplan.do','id',0, 0);
-      
       function doDelete(tableId, url) 
       {    
 		    var paramValues = getParamList(tableId, url);
 		    if (paramValues != null) {
 		    	var hasConfirmed = confirm ("Do you want to delete the selected records?")
-				if (hasConfirmed) 
+		    	if (hasConfirmed) 
 				{
-					var filter="&daterange="+document.getElementById("daterange").value+"&"+getFilterValue(document.getElementById("planListForm"),false)
-				  	location.href = url+"?id="+ paramValues+filter;
+		    		var param1 = document.getElementById("weekdate").value;
+		     		var param2 = document.getElementById("daterange").value;
+		     		var param3 = document.getElementById("zone").value;
+		            var filters="&weekdate="+param1+"&daterange="+param2+"&zone="+param3+"&"+getFilterValue(document.getElementById("planListForm"),false)
+				  	location.href = url+"?id="+ paramValues+filters;
 				} 
 		    } else {
 		    	alert('Please Select a Row!');

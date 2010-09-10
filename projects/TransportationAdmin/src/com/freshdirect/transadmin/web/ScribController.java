@@ -102,6 +102,7 @@ public class ScribController extends AbstractMultiActionController
 		try {
 			String daterange = request.getParameter("daterange");
 			if(daterange==null)daterange=TransStringUtil.getCurrentDate();
+			Date _weekDate = getWeekOf(daterange);	
 			String day=request.getParameter("scribDay");
 			if(day==null)day="All";
 			String[] dates=getDates(daterange,day);
@@ -154,6 +155,7 @@ public class ScribController extends AbstractMultiActionController
 				saveMessage(request, getMessage("app.actionmessage.149", null));
 				return mav;
 			}
+			request.setAttribute("weekDate", getClientDate(_weekDate));
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

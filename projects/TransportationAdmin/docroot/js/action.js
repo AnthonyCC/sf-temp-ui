@@ -40,7 +40,7 @@ function doDelete(tableId, url) {
     if (paramValues != null) {
     	var hasConfirmed = confirm ("Do you want to delete the selected records?")
 		if (hasConfirmed) {
-		  	location.href = url+"?id="+ paramValues+"&filter="+getFilterTestValue();
+			location.href = url+"?id="+ paramValues;
 		} 
     } else {
     	alert('Please Select a Row!');
