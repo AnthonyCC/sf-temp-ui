@@ -97,7 +97,6 @@ request.setAttribute("listPos", "CategoryNote");
 	//	response.sendRedirect(response.encodeRedirectURL("/site_access/site_access_lite.jsp?successPage="+successPage));
 	//}
 %>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>

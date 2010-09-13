@@ -21,7 +21,7 @@ request.setAttribute("survey_source","SiteAccess Page");
 	</head>
 	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br />
-			<table border="0" cellspacing="0" cellpadding="0" width="500">
+			<table border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td align="center" class="text12">
 					<img src="/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" alt="FreshDirect" border="0">

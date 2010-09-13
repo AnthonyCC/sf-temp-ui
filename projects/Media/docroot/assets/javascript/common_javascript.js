@@ -751,30 +751,9 @@ function maxLen(elem, len) {
 				}
 				/* shown, erase existing cookie */
 				eraseCookie('zipCheck_OL');
-			}else{
-				if (window.console) { console.log('skipped sa_OL.'); }
 			}
-			//QA, make sure this runs once
-			if (window.console) { console.log('passed through sa_OL.'); }
 		}
 	}
 
 	//wait for page load
-	
-	/* actual function */
-	//if (window.Prototype && window.Modalbox) { document.observe("dom:loaded", function() { sa_OL(); }); }
-	
-	/* QA function with console logging */
-	if (window.Prototype && window.Modalbox) {
-		if (window.console) { console.log('Template ok.'); }
-		document.observe("dom:loaded", function() { sa_OL(); });
-	}else{
-		if (window.console) {
-			if (!window.Prototype) {
-				console.log('Prototype not loaded.');
-			}
-			if (!window.Modalbox) {
-				console.log('Modalbox not loaded.');
-			}
-		}
-	}
+	if (window.Prototype && window.Modalbox) { document.observe("dom:loaded", function() { sa_OL(); }); }
