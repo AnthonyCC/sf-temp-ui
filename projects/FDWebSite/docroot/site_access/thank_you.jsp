@@ -6,7 +6,7 @@
 <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </HEAD>
-<BODY BGCOLOR="White" TEXT="#333333" CLASS="text10" leftmargin=0 topmargin=0>
+<BODY BGCOLOR="#ffffff" TEXT="#333333" CLASS="text10" leftmargin="0" topmargin="0">
 
 <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="790" HEIGHT="100%">
 <TR VALIGN="MIDDLE">

@@ -21,7 +21,7 @@ boolean emailSent = request.getParameter("email") != null && "sent".equalsIgnore
 <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
 <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 </head>
-<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 <fd:SiteAccessController action='saveEmail' successPage='<%= successPage %>' result='result' serviceType='<%=serviceType%>'>
 
 <%!

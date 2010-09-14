@@ -109,7 +109,7 @@ request.setAttribute("listPos", "CategoryNote");
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 		
 	</head>
-	<body bgcolor="white" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
+	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 	
 		
 		<jsp:include page="/shared/template/includes/server_info.jsp" flush="false"/>
