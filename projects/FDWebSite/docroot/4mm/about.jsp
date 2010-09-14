@@ -55,9 +55,8 @@
 		String chefName=null;
 		String chefBlurb=null;
 		Image chefPhoto=null;
-		Html chefPopup=null;
 		Image brandLogo=null;
-		
+		String brandId=null;		
 %>
 <img src="/media_stat/images/4mm/chefs_header.gif" />
 <div class="chef-row">
@@ -68,7 +67,7 @@
 	chefName = brand.getChefName();
 	chefBlurb = brand.getChefBlurb();
 	chefPhoto = brand.getChefImage();
-	chefPopup = brand.getPopupContent();
+	brandId = brand.getContentName();
 %>
 <div class="chef">
 	<% if ( chefPhoto != null ) { %>
@@ -76,8 +75,8 @@
 	<% } %>
 	<div class="chef-info">
 		<h3 class="chef-name"><%= chefName %></h3>
-		<% if ( chefPopup != null ) { %>
-			<p class="chef-bio"><%= chefBlurb %> <a href="<%= chefPopup.getPath() %>" target="_blank" onclick="popup('<%= chefPopup.getPath() %>','large'); return false;">Learn&nbsp;More</a></p>
+		<% if ( brandId != null ) { %>
+			<p class="chef-bio"><%= chefBlurb %> <a href="javascript:pop('/brandpop.jsp?brandId=<%=brandId%>',400,585)">Learn&nbsp;More</a></p>
 		<% } %>
 		<div style="line-height:100%">
 			<% if ( brandLogo != null ) { %>
