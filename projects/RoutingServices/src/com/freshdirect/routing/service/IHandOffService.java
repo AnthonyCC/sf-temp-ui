@@ -55,4 +55,6 @@ public interface IHandOffService {
 	void updateHandOffBatchCommitEligibility(String handOffBatchId, boolean isEligibleForCommit) throws RoutingServiceException;
 	
 	void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException;
+	
+	void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws RoutingServiceException;
 }

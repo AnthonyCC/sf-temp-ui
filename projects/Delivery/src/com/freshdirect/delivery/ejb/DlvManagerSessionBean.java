@@ -2347,20 +2347,21 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 			if(purge) {
 				DeliveryServiceProxy dlvProxy = new DeliveryServiceProxy();
 				List<IOrderModel> reservationForSchedulerId = dlvProxy.getRoutingOrderByDate(schedulerId.getDeliveryDate()
-																								, schedulerId.getArea().getAreaCode());
+																								, schedulerId.getArea().getAreaCode()
+																								, true);
 				
 				if(reservationForSchedulerId == null || reservationForSchedulerId.size() == 0) {
 					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Purge: " + schedulerId);
 					proxy.purgeOrders(schedulerId, true);
 				} else {
-					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Unable to Purge: " + reservationForSchedulerId);
+					LOGGER.info("DlvManagerSB retrieveCapacityMetrics(): Unable to Purge: "+schedulerId+"-->" + reservationForSchedulerId);
 				}
 			}
 			return proxy.retrieveCapacityMetrics(schedulerId, slots);
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			LOGGER.warn("DlvManagerSB retrieveCapacityMetricsr(): " + e);
+			LOGGER.warn("DlvManagerSB retrieveCapacityMetrics(): " + e);
 			throw new DlvResourceException(e);
 		}
 	}

@@ -340,9 +340,9 @@ public class DeliveryService extends BaseService implements IDeliveryService {
 		return null;
 	}
 	
-	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode) throws RoutingServiceException {
+	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException {
 		try {
-			return deliveryDAOImpl.getRoutingOrderByDate(deliveryDate, zoneCode);
+			return deliveryDAOImpl.getRoutingOrderByDate(deliveryDate, zoneCode, filterExpiredCancelled);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_UNASSIGNED_UNSUCCESSFUL);

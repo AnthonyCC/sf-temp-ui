@@ -239,10 +239,19 @@ public class HandOffService extends BaseService implements IHandOffService {
 	public void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException {
 		try {
 			getHandOffDAOImpl().clearHandOffStopException(handOffBatchId);
-			getHandOffDAOImpl().updateHandOffStopException(handOffBatchId, exceptionOrderIds);
+			if(exceptionOrderIds != null && exceptionOrderIds.size() > 0) {
+				getHandOffDAOImpl().updateHandOffStopException(handOffBatchId, exceptionOrderIds);
+			}
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
 	}
 	
+	public void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws RoutingServiceException {
+		try {
+			getHandOffDAOImpl().updateHandOffBatchStopErpNo(dataList);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 }

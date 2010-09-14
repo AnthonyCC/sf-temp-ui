@@ -163,14 +163,18 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
 																, this.getBatch().getCutOffDateTime());
+		Map<String, String> orderNoToErpNo = new HashMap<String, String>();
+		
 		Map<String, EnumSaleStatus> exceptions = new HashMap<String, EnumSaleStatus>();
 		if(handOffStops != null) {
 			for(IHandOffBatchStop stop : handOffStops) {
 				if(stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0) {
 					exceptions.put(stop.getOrderNumber(), stop.getStatus());
 				}
+				orderNoToErpNo.put(stop.getOrderNumber(), stop.getErpOrderNumber());
 			}
 		}
+		
 		List<String> exceptionOrderIds = new ArrayList<String>();
 		if(exceptions.size() > 0) {
 			for(Map.Entry<String, EnumSaleStatus> exp : exceptions.entrySet()) {
@@ -193,10 +197,22 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			IHandOffBatchRoute route = itr.next();
 			routeMapping.put(route.getRouteId(), route);
 		}
+		List<IHandOffBatchStop> needsErpNoUpdate = new ArrayList<IHandOffBatchStop>();
 		
 		Iterator<IHandOffBatchStop> itrStop = stops.iterator();
 		while( itrStop.hasNext()) {
 			IHandOffBatchStop stop = itrStop.next();
+			
+			if((stop.getErpOrderNumber() == null || stop.getErpOrderNumber().trim().length() == 0)) {
+				String strNewErpNo = orderNoToErpNo.get(stop.getOrderNumber());
+				if((strNewErpNo != null && strNewErpNo.trim().length() > 0)) {
+					
+					stop.setErpOrderNumber(strNewErpNo);
+					stop.setBatchId(this.getBatch().getBatchId());
+					needsErpNoUpdate.add(stop);					
+					exceptionOrderIds.remove(stop.getOrderNumber());
+				}
+			}
 			if(stop.getRouteId() == null || stop.getRouteId().trim().length() == 0
 					|| !routeMapping.containsKey(stop.getRouteId())) {
 				throw new RoutingServiceException("Error in route generation check cutoff report Stop No:"+stop.getOrderNumber()
@@ -205,28 +221,12 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			}
 		}
 		
-		if(exceptionOrderIds.size() > 0) {
-			proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
+		if(needsErpNoUpdate.size() > 0) {
+			proxy.updateHandOffBatchStopErpNo(needsErpNoUpdate);
 		}
+		proxy.updateHandOffStopException(this.getBatch().getBatchId(), exceptionOrderIds);
 	}
-	
-	/*private void processResult(String batchId, Map<IHandOffBatchSession
-									, Map<String, Set<IRouteModel>>> sessionMapping) throws RoutingServiceException {
-				
-		for(Map.Entry<IHandOffBatchSession, Map<String, Set<IRouteModel>>> sesEntry : sessionMapping.entrySet()) {
-			System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< "+sesEntry.getKey().getRegion()+":"+sesEntry.getKey().getSessionName()+" >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-			for(Map.Entry<String, Set<IRouteModel>> areaEntry : sesEntry.getValue().entrySet()) {
-				System.out.println("\t\t\t\t@@@@@@@@@@@@@@@@@@@@@@@@@@@@ "+sesEntry.getKey().getRegion()+":"+areaEntry.getKey()+ " @@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-				for(IRouteModel tmpRoute : areaEntry.getValue()) {
-					System.out.println(tmpRoute);					
-				}
-				System.out.println("\t\t\t\t@@@@@@@@@@@@@@@@@@@@@@@@@@@@ AREA END @@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-			}			
-			System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SESSION END >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");			
-		}
 		
-	}*/
-	
 	protected class RouteComparator implements Comparator<IRouteModel> {		
 		
 		public int compare(IRouteModel obj1, IRouteModel obj2){

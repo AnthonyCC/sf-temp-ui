@@ -93,7 +93,7 @@ public class DeliveryServiceProxy extends BaseServiceProxy {
 		return getService().retrieveRoutingSession(schedulerId, sessionDescription);
 	}
 	
-	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode) throws RoutingServiceException {
-		return getService().getRoutingOrderByDate(deliveryDate, zoneCode);
+	public List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException {
+		return getService().getRoutingOrderByDate(deliveryDate, zoneCode, filterExpiredCancelled);
 	}
 }

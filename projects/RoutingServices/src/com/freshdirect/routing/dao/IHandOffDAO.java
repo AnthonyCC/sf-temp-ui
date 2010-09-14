@@ -45,6 +45,8 @@ public interface IHandOffDAO {
 	
 	void updateHandOffBatchStopRoute(List<IHandOffBatchStop> dataList) throws SQLException;
 	
+	void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws SQLException;
+	
 	void clearHandOffBatchStopsRoute(String handOffBatchId) throws SQLException;
 	
 	List<IHandOffBatchStop> getHandOffBatchStops(final String batchId, final boolean filterException) throws SQLException;

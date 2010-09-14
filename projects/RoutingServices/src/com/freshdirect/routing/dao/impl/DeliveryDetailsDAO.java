@@ -521,7 +521,8 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 		return order;
 	}
 	
-	public List<IOrderModel> getRoutingOrderByDate(final Date deliveryDate, final String zoneCode) throws SQLException {
+	public List<IOrderModel> getRoutingOrderByDate(final Date deliveryDate
+															, final String zoneCode, final boolean filterExpiredCancelled) throws SQLException {
 
 		final List<IOrderModel> result = new ArrayList<IOrderModel>();
 
@@ -540,6 +541,10 @@ public class DeliveryDetailsDAO extends BaseDAO implements IDeliveryDetailsDAO {
 				new RowCallbackHandler() { 
 			public void processRow(ResultSet rs) throws SQLException {				    	
 				do { 
+					int statusCode = rs.getInt("STATUS");
+					if(filterExpiredCancelled && (statusCode == 15 || statusCode == 20)) {
+						continue;
+					}
 					IOrderModel order = new OrderModel();	
 					result.add(order);
 					

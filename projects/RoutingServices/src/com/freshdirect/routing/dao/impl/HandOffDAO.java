@@ -229,6 +229,9 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String CLEAR_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = NULL " +
 							" where BATCH_ID = ? and IS_EXCEPTION = 'X' ";
 	
+	private static final String UPDATE_HANDOFFBATCH_STOP_ERPNO = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ERPORDER_ID = ? " +
+				"WHERE X.BATCH_ID = ? and X.WEBORDER_ID = ?";
+	
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
 		final List<IHandOffBatchRoute> result = new ArrayList<IHandOffBatchRoute>();
@@ -523,6 +526,32 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			if(connection!=null) connection.close();
 		}
 	}
+	
+	public void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws SQLException {
+		Connection connection = null;
+		try {
+			BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),UPDATE_HANDOFFBATCH_STOP_ERPNO);
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+			
+			batchUpdater.compile();			
+			connection = this.jdbcTemplate.getDataSource().getConnection();
+			
+			for(IHandOffBatchStop model : dataList) {
+				
+				batchUpdater.update(new Object[]{ model.getErpOrderNumber()
+						, model.getBatchId()
+						, model.getOrderNumber()
+				});
+			}			
+			batchUpdater.flush();
+		}finally{
+			if(connection!=null) connection.close();
+		}
+	}
+	
+	
 	
 	public void addNewHandOffBatchRoutes(List<IHandOffBatchRoute> dataList) throws SQLException {
 		Connection connection = null;

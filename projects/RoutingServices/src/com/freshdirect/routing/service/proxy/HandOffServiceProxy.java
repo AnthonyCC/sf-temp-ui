@@ -104,4 +104,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 	public void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws RoutingServiceException {
 		getService().updateHandOffStopException(handOffBatchId, exceptionOrderIds);
 	}
+	
+	public void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws RoutingServiceException {
+		getService().updateHandOffBatchStopErpNo(dataList);
+	}
 }

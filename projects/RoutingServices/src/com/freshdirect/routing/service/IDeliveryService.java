@@ -54,5 +54,5 @@ public interface IDeliveryService {
 	
 	List<IRouteModel> retrieveRoutingSession(IRoutingSchedulerIdentity schedulerId, String sessionDescription) throws RoutingServiceException;
 	
-	List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode) throws RoutingServiceException;
+	List<IOrderModel> getRoutingOrderByDate(Date deliveryDate, String zoneCode, boolean filterExpiredCancelled) throws RoutingServiceException;
 }

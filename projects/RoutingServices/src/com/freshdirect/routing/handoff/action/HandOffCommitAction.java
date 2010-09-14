@@ -63,6 +63,9 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		}
 		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
+		List<HandOffStopIn> stopsToCommit = new ArrayList<HandOffStopIn>();
+		List<HandOffRouteIn> routesToCommit = new ArrayList<HandOffRouteIn>(); 
+		
 		int noOfRoutes = routes != null ? routes.size() : 0;
 		int noOfStops = stops != null ? stops.size() : 0;
 		if(noOfRoutes == 0 || noOfStops == 0) {
@@ -97,7 +100,8 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 				}
 				if(!exceptions.containsKey(stop.getOrderNumber())) {
 					route.getStops().add(stop);
-				}
+					stopsToCommit.add(stop);
+				} 
 			}
 		}
 		if(exceptionOrderIds.size() > 0) {
@@ -112,9 +116,14 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 			boolean success = true;
 			StringBuffer sapResponse = new StringBuffer();
 			if(this.getBatch().isEligibleForCommit()) {
-				
-	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff((List<HandOffRouteIn>)routes
-																		, (List<HandOffStopIn>)stops
+				List<IHandOffBatchRoute> rootRoutesIn = (List<IHandOffBatchRoute>)routes; 
+				for(IHandOffBatchRoute route : rootRoutesIn) {
+					if(route.getStops() != null && route.getStops().size() > 0) {
+						routesToCommit.add(route);
+					}
+				}
+	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff(routesToCommit
+																		, stopsToCommit
 																		, RoutingServicesProperties.getDefaultPlantCode()
 																		, this.getBatch().getDeliveryDate()
 																		, this.getBatch().getBatchId(), true);

@@ -345,11 +345,12 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
 			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
-			if(referenceDispatch.getDispatchResources() != null) {
+			this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+			/*if(referenceDispatch.getDispatchResources() != null) {
 				referenceDispatch.getDispatchResources().clear();	
 				referenceDispatch.setConfirmed(false);
 			}
-			this.getDispatchManagerDao().saveDispatch(referenceDispatch);
+			this.getDispatchManagerDao().saveDispatch(referenceDispatch);*/
 		}
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
@@ -433,11 +434,12 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
 			Plan referencePlan = this.getPlan(referencePlanId);
-			if(referencePlan.getPlanResources() != null) {
+			this.getDispatchManagerDao().removeEntityEx(referencePlan);
+			/*if(referencePlan.getPlanResources() != null) {
 				referencePlan.getPlanResources().clear();
 				referencePlan.setOpen("Y");
 			}
-			this.getDispatchManagerDao().savePlan(referencePlan);
+			this.getDispatchManagerDao().savePlan(referencePlan);*/
 		}
 		getDispatchManagerDao().savePlan(plan);
 	}
