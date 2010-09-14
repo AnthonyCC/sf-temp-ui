@@ -64,6 +64,20 @@
 		.summaryTable td.yellow {
 			background-color: yellow;			
 		}
+		.redSummary {
+		  	background-color: red;
+		  	font-weight: bold;
+		  	padding:2px;
+		  	text-align:center;
+		  	width:350px;
+		}
+		.yellowSummary {
+		  	background-color: yellow;
+		  	font-weight: bold;
+		  	padding:2px;
+		  	text-align:center;
+		  	width:350px;
+		}
 		</style>
 		<div class="cont_topleft">
 			<div class="cont_row">
@@ -81,6 +95,10 @@
 						</span>						
 						&nbsp;&nbsp;&nbsp;&nbsp;<span><input id="view_button" type="image" alt="View" src="./images/icons/view.gif"  onclick="javascript:doCompositeLink('selectedDate','baseDate','<%= pageId %>.do');" onmousedown="this.src='./images/icons/view_ON.gif'" /><br>
 						</span>  
+				</div>
+				<div style="width:500px;float:right;">
+						<span class="redSummary">Base-selected (No.of Trucks)>0</span>
+						<span class="yellowSummary">Base-selected  (No.of Trucks)<0</span>
 				</div>
 			</div>
 		</div>

@@ -32,6 +32,10 @@
       function submitGeneratePlan(compId1,compId2,url,generatePlan) {       	                           
     	  var p1 = getValues(compId1);         
           var p2 = getValues(compId2);
+          var _date = document.getElementById("daterange").value;
+          var _day = document.getElementById("scribDay").value;
+          var param5="&daterange="+_date;
+          var param6="&scribDay="+_day;
       	  if(p1==''||p2==''){
       		alert('please select atleast one DATE and REGION.');  
       	  }else {
@@ -45,7 +49,7 @@
 	          var param2 = getValues(compId2);
 	          var param3 = "";
 	          if(generatePlan!=null){ param3="&p="+generatePlan; }
-		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param4;
+		          	location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+param3+param4+param5+param6;
 			}
       	  } 	
       }

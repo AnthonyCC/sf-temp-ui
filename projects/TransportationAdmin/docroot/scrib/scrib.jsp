@@ -142,7 +142,7 @@
         } 
 
        	addRowHandlersFilterTest('ec_table', 'rowMouseOver', 'editscrib.do','scribId',0, 0);
-      	document.getElementById("scribDay").value='<%=request.getParameter("scribDay")==null?"All":request.getParameter("scribDay")%>';
+      	document.getElementById("scribDay").value='<%=request.getAttribute("scribDay")%>';
 
         function getFilterTestValue()
       	{

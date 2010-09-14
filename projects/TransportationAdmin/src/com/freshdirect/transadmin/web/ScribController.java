@@ -153,9 +153,9 @@ public class ScribController extends AbstractMultiActionController
 			if ("y".equalsIgnoreCase(request.getParameter("p"))) {
 				createPlan(request);
 				saveMessage(request, getMessage("app.actionmessage.149", null));
-				return mav;
 			}
 			request.setAttribute("weekDate", getClientDate(_weekDate));
+			request.setAttribute("scribDay", day);
 			return mav;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
