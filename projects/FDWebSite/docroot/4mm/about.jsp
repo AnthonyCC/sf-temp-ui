@@ -83,7 +83,7 @@
 			<% if ( brandLogo != null ) { %>
 				<img src="<%= brandLogo.getPath() %>" style="vertical-align:bottom" />
 			<% } %> 
-			<a href="" style="font-weight:bold;">See&nbsp;Meals</a>
+			<!--a href="" style="font-weight:bold;">See&nbsp;Meals</a-->
 		</div>
 	</div>
 </div>
