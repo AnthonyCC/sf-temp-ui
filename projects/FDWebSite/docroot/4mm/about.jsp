@@ -112,9 +112,7 @@
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>
 		</div>					
 		<div id="ads">
-			ADVERTISEMENT #1
 			<script type="text/javascript">OAS_AD('4mmAd1');</script>
-			ADVERTISEMENT #2
 			<script type="text/javascript">OAS_AD('4mmAd2');</script>
 		</div>
 		<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/dpt_4mm_viewall.gif"  border="0" alt="View all 4-Minute Meals"/></a>
