@@ -125,7 +125,7 @@ public class DispatchManagerDaoHibernateImpl extends
 		return (Collection) getHibernateTemplate().find(strBuf.toString(),	new Object[] { planDate, startTime });		
 	}
 
-	public Collection getPlanList(String date) throws DataAccessException {
+	public Collection<Plan> getPlanList(String date) throws DataAccessException {
 
 		StringBuffer strBuf = new StringBuffer();
 		strBuf.append("from Plan p");
@@ -135,7 +135,7 @@ public class DispatchManagerDaoHibernateImpl extends
 				.append(
 						"' order by p.planDate, p.zone.zoneCode, p.startTime, p.sequence");
 
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
+		return (Collection<Plan>) getHibernateTemplate().find(strBuf.toString());
 	}
 
 	public Collection getPlanList(String date, String region) throws DataAccessException {

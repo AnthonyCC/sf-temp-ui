@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -22,8 +23,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.IDeliverySlot;
-import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
+import com.freshdirect.transadmin.model.EmployeeTeam;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.Scrib;
@@ -37,7 +38,6 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.util.scrib.PlanTree;
 import com.freshdirect.transadmin.util.scrib.ScheduleEmployeeDetails;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
-import com.freshdirect.transadmin.web.model.TimeRange;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ScribController extends AbstractMultiActionController
@@ -165,60 +165,117 @@ public class ScribController extends AbstractMultiActionController
 		}
 	}
 	
-	public void createPlan(HttpServletRequest request) throws Exception 
-	{		
+	private Map<String,List<Plan>> getPlansByRegion(Collection<Plan> plans) {
 		
-		String _regions = request.getParameter("dlvregion_selected");
-		String _dates = request.getParameter("dlvdates_selected");
-		String[] regions = StringUtil.decodeStrings(_regions);
-		String[] dates = StringUtil.decodeStrings(_dates);
-		List _regLst = new ArrayList<String>();
+		Map<String,List<Plan>> plansByRegion=new HashMap<String, List<Plan>>();
+		for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext();) {
+			Plan p =  iterator.next();
+			if(plansByRegion.containsKey(p.getRegion().getCode())){
+				List<Plan> _plans = plansByRegion.get(p.getRegion().getCode());
+				_plans.add(p);
+			}else{
+				List<Plan> _plans=new ArrayList<Plan>();
+				_plans.add(p);
+				plansByRegion.put(p.getRegion().getCode(), _plans);						
+			}
+		}
+		return plansByRegion;
+	}
+	private Map<String,List<Scrib>> getScribsByRegion(Collection<Scrib> scribs) {
+		
+		Map<String,List<Scrib>> scribsByRegion=new HashMap<String, List<Scrib>>();
+		for (Iterator<Scrib> iterator = scribs.iterator(); iterator.hasNext();) {
+			Scrib s =  iterator.next();
+			if(scribsByRegion.containsKey(s.getRegion().getCode())){
+				List<Scrib> _scribs = scribsByRegion.get(s.getRegion().getCode());
+				_scribs.add(s);
+			}else{
+				List<Scrib> _scribs=new ArrayList<Scrib>();
+				_scribs.add(s);
+				scribsByRegion.put(s.getRegion().getCode(), _scribs);						
+			}
+		}		
+		return scribsByRegion;
+	}
+	private Map<String,List<ScheduleEmployeeDetails>> getScheduledEmployeesByRegion(Collection<ScheduleEmployeeDetails> scheduleEmployees) {
+		
+		Map<String,List<ScheduleEmployeeDetails>> scheduleEmployeesByRegion = new HashMap<String, List<ScheduleEmployeeDetails>>();
+		for (Iterator<ScheduleEmployeeDetails> iterator = scheduleEmployees.iterator(); iterator.hasNext();) {
+			ScheduleEmployeeDetails s =  iterator.next();
+			if(scheduleEmployeesByRegion.containsKey(s.getSchedule().getRegion().getCode())){
+				List<ScheduleEmployeeDetails> _scheduleEmployeeList = scheduleEmployeesByRegion.get(s.getSchedule().getRegion().getCode());
+				_scheduleEmployeeList.add(s);
+			}else{
+				List<ScheduleEmployeeDetails> _scheduleEmployeeList=new ArrayList<ScheduleEmployeeDetails>();
+				_scheduleEmployeeList.add(s);
+				scheduleEmployeesByRegion.put(s.getSchedule().getRegion().getCode(), _scheduleEmployeeList);						
+			}
+		}		
+		return scheduleEmployeesByRegion;
+	}
+	public void createPlan(HttpServletRequest request) throws Exception 
+	{	
+		
+		String[] regions = StringUtil.decodeStrings(request.getParameter("dlvregion_selected"));
+		String[] dates = StringUtil.decodeStrings(request.getParameter("dlvdates_selected"));
+					
+		Collection<EmployeeTeam> teamInfo=domainManagerService.getTeamInfo();
+		Collection<Region> dlvregions = domainManagerService.getRegions();
+		List<String> _regLst = new ArrayList<String>();
 		
 		if (dates!=null && dates.length > 0 && regions != null && regions.length > 0) {
 			for (String scribDate : dates) {
-
+				
+				Map<String,List<Plan>> plansByRegion = getPlansByRegion(dispatchManagerService.getPlanList(scribDate));
+				Map<String,List<Scrib>> scribsByRegion = getScribsByRegion(dispatchManagerService.getScribList(scribDate));
+				Date date = TransStringUtil.serverDateFormat.parse(scribDate);
+				String day = new SimpleDateFormat("EEE").format(date).toUpperCase();
+				Map<String,List<ScheduleEmployeeDetails>> scheduleEmployeesByRegion = getScheduledEmployeesByRegion(employeeManagerService.getScheduledEmployees(day, scribDate));
 				for (String region : regions) {
 					_regLst.add(region);
-					Collection planList = dispatchManagerService
-												.getPlanList(scribDate, region);
-					for (Iterator i = planList.iterator(); i.hasNext();) {
-						Plan p = (Plan) i.next();
-						p.setUserId(SecurityManager.getUserName(request));
-					}
-					dispatchManagerService.removeEntity(planList);
-					Date date = TransStringUtil.serverDateFormat.parse(scribDate);
-					Collection scribs = dispatchManagerService.getScribList(scribDate, region);
-					String day = new SimpleDateFormat("EEE").format(date).toUpperCase();
-					Collection employees = employeeManagerService.getScheduledEmployees(day, scribDate);
-					filldate(date, employees);
-
+					List<Plan> planList = plansByRegion.get(region);
+					if(planList!=null){
+						for (Iterator<Plan> i = planList.iterator(); i.hasNext();) {
+							Plan p =  i.next();
+							p.setUserId(SecurityManager.getUserName(request));
+						}
+						dispatchManagerService.removeEntity(planList);
+					}					
+					
+					List<Scrib> scribs = scribsByRegion.get(region);				
+									
+					List<ScheduleEmployeeDetails> employees = scheduleEmployeesByRegion.get(region);
+					
+					if(employees!=null)filldate(date, employees);
 					PlanTree tree = new PlanTree();
-					tree.prepare(scribs);
-					tree.prepare(employees);
-					tree.prepareTeam(domainManagerService.getTeamInfo());
+					if(scribs!=null)tree.prepare(scribs);
+					if(employees!=null)tree.prepare(employees);
+					tree.prepareTeam(teamInfo);
 					Collection plans = tree.getPlan();
 					for (Iterator i = plans.iterator(); i.hasNext();)
 						getDispatchManagerService().savePlan((Plan) i.next());					
-				}//end regions loop
+				}//end loop
+				
 				if("y".equalsIgnoreCase(request.getParameter("o"))){
-					Collection dlvregions = domainManagerService.getRegions();
 					
-						for (Iterator it = dlvregions.iterator(); it.hasNext();) {
-							Region _r = (Region) it.next();
+						for (Iterator<Region> it = dlvregions.iterator(); it.hasNext();) {
+							Region _r =  it.next();
 							if(_regLst.contains(_r.getCode())){
 								
 							}else{
-								Collection planList = dispatchManagerService.getPlanList(scribDate, _r.getCode());
-								for (Iterator i = planList.iterator(); i.hasNext();) {
-									Plan p = (Plan) i.next();
-									p.setUserId(SecurityManager.getUserName(request));
+								Collection<Plan> planList = plansByRegion.get(_r.getCode());
+								if(planList!=null){
+									for (Iterator<Plan> i = planList.iterator(); i.hasNext();) {
+										Plan p = i.next();
+										p.setUserId(SecurityManager.getUserName(request));
+									}
+									if (planList.size() > 0)
+										dispatchManagerService.removeEntity(planList);
 								}
-								if(planList.size()>0)
-									dispatchManagerService.removeEntity(planList);
 							}
 						}					
 				}
-			}//end dates loop
+			}//end dates loop	
 		}
 	}
 	
