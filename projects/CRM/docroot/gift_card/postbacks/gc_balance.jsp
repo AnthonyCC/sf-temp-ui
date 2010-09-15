@@ -9,13 +9,13 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 		<%String givexNum = NVL.apply(request.getParameter("givexNum"), "");%>
         <% JSONObject json = new JSONObject(); %>
-		<crm:CrmGiftCardBalance id="gcModel" givexNum="<%= givexNum %>" result="result" actionName="getGiftCardBalance">
+		
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><crm:CrmGiftCardBalance id="gcModel" givexNum="<%= givexNum %>" result="result" actionName="getGiftCardBalance">
         <%
             if(result.isSuccess()) {
-                java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
                 if(gcModel != null){
                     if(gcModel.isActive()) {
-                        json.put("message", "<b>= "+currencyFormatter.format(gcModel.getBalance())+"</b>") ;
+                        json.put("message", "<b>= "+JspMethods.formatPrice(gcModel.getBalance())+"</b>") ;
                     } else if(gcModel.isCancelled()) {
                         json.put("message", "<b>Certificate Cancelled</b>") ;
                     } else {

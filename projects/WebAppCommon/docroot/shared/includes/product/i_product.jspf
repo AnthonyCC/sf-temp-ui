@@ -419,7 +419,7 @@ if ( skuSize == 0 ) {
 				                %><font class="text11"><%= onlyOption.getDescription() %><% 
 				                
 				                if ( cvprice > 0.0 ) { 
-				                	%> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><% 
+				                	%> - <%= JspMethods.formatPrice(cvp) %><% 
 				                } else { 
 				                	%> - no charge <% 
 				                } 
@@ -476,7 +476,7 @@ if ( skuSize == 0 ) {
 					                <option value="<%= option.getName() %>"<%= option.getName().equals(reqVariationOption) ? " SELECTED" : "" %>>&nbsp;<%= option.getDescription() %>
 					                <%
 						                if ( cvprice > 0.0 ) {
-						                    %> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><%
+						                    %> - <%= JspMethods.formatPrice(cvp) %><%
 						                } else if ( !allOptionsFree ) {
 						                    %> - no charge<%
 						                }
@@ -490,10 +490,10 @@ if ( skuSize == 0 ) {
             				
             				<%
                 			// space between multiple optional pulldowns
-                			if ( !variation.hasAttribute( EnumAttributeName.UNDER_LABEL.getName() ) ) {
+                			if ( variation.getUnderLabel() == null) {
                     			%><font class="space4pix"><br/></font><%
                 			} else {
-                    			%><br/><font class="text9"><i><%= variation.getAttribute(EnumAttributeName.UNDER_LABEL) %></i></font><br/><font class="space4pix"><br/></font><%
+                    			%><br/><font class="text9"><i><%= variation.getUnderLabel() %></i></font><br/><font class="space4pix"><br/></font><%
                 			}
             
         				} else {
@@ -539,9 +539,9 @@ if ( skuSize == 0 ) {
 		       				%><font class="text13"><%
 		       				
                 			if (theFileExists) {
-			                    %><a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %></a><%
+			                    %><a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getDescription("") %></a><%
 			                } else {
-            			        %><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %><%
+            			        %><%= variation.getDescription("") %><%
                 			} %>
                 			
                 			&nbsp;</font>
@@ -554,7 +554,7 @@ if ( skuSize == 0 ) {
 				            if ( cvp != null ) 
 				            	cvprice = cvp.getPrice();
 				            if ( cvprice > 0.0 ) {
-				                %> - <%= currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %><%
+				                %> - <%= JspMethods.formatPrice(cvp) %><%
 				            }
 				            %><input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= (cboxValue != null) ? cboxValue.getName() : "" %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><br/><%
 

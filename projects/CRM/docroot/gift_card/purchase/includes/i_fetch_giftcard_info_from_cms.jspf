@@ -18,22 +18,12 @@
 		String catIdToUse = FDStoreProperties.getGiftCardCatId();
 		String prodNameToUse = FDStoreProperties.getGiftCardProdName();
 		
-		/*
-			System.out.println("deptIdToUse 1 "+deptIdToUse);
-			System.out.println("catIdToUse 1 "+catIdToUse);
-			System.out.println("prodNameToUse 1 "+prodNameToUse);
-		*/
-
 		ContentNodeModel categoryRef = ContentFactory.getInstance().getContentNode(catIdToUse);
-			//System.out.println("prodNameToUse 1 ");
 		ProductModel prodRef = ContentFactory.getInstance().getProductByName(catIdToUse, prodNameToUse);
-			//System.out.println("prodNameToUse 2 ");
 		List gcList = null;
 		if (prodRef != null) {
 			gcList = prodRef.getGiftcardType();
 		}
-			//System.out.println("prodNameToUse 3 ");
-
 
 	// root of dynamic media
 		String mediaRootToUse = FDStoreProperties.getMediaGiftCardTemplatePath();

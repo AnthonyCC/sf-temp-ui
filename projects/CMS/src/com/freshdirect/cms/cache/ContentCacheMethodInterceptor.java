@@ -31,13 +31,13 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 	/** Null-object to represent nodes that were not found. */
 	final static Object NULL = new Serializable() {};
 
-	private final CacheI cache;
+	private final CacheI<ContentKey,Object> cache;
 
 	/** CacheI of ContentKey (parent) -> Set of ContentKey(children) */
-	private final CacheI children = new SimpleCache();
+	private final CacheI<ContentKey,Object> children = new SimpleCache<ContentKey,Object>();
 
-	public ContentCacheMethodInterceptor(CacheI cache) {
-		this.cache = new ManagedCache("CMS", cache, ContentCacheMethodInterceptor.NULL);
+	public ContentCacheMethodInterceptor(CacheI<ContentKey,Object> cache) {
+		this.cache = new ManagedCache<ContentKey,Object>("CMS", cache, ContentCacheMethodInterceptor.NULL);
 	}
 
 	public Object invoke(MethodInvocation invocation) throws Throwable {
@@ -129,7 +129,7 @@ public class ContentCacheMethodInterceptor implements MethodInterceptor {
 		return response;
 	}
 
-	private CacheI getCache() {
+	private CacheI<ContentKey,Object> getCache() {
 		return cache;
 	}
 

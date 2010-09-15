@@ -20,12 +20,12 @@
 					<td class="text11bold"><%= totalQuantity %></td>
 					
 					<td style="padding-left:30px;">
-					   <b> <%=productModel.getFullName() %></b> (<%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>)	
+					   <b> <%=productModel.getFullName() %></b> (<%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %>)	
 					</td>
 				</tr>
 			</table>
 		</td>	
-		<td align="right" style="padding-left:4px;" class="text11"><%= JspMethods.currencyFormatter.format( totalPrice ) %></td>
+		<td align="right" style="padding-left:4px;" class="text11"><%= JspMethods.formatPrice(totalPrice) %></td>
 	</tr>
 	<tr>
 		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4" border="0" /></td>
@@ -37,7 +37,7 @@
 		<td align="center" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="12" border="0" /></td>
 	</tr>
 	<tr>
-		<td align="right" colspan="2" style="padding-left:4px;" class="text13bold">TOTAL: <%= JspMethods.currencyFormatter.format( totalPrice ) %></td>
+		<td align="right" colspan="2" style="padding-left:4px;" class="text13bold">TOTAL: <%= JspMethods.formatPrice(totalPrice) %></td>
 	</tr>
 </table>
 

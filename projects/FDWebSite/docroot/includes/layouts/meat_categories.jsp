@@ -111,7 +111,6 @@
 	//**************************************************************
 
 	int maxWidth = (request.getRequestURI().toLowerCase().indexOf("department.jsp") != -1 ) ? 550 : 400;
-	System.out.println("currentFolder in meat_deals: " + currentFolder);
 	List availableList = new ArrayList();
 	String prodNameAttribute = JspMethods.getProductNameToUse(currentFolder);
 	
@@ -170,7 +169,6 @@
 						if ( separatorFilter.evaluate(contentNode) ) {
 							CategoryModel cat = (CategoryModel)contentNode;
 							Html html = cat.getSeparatorMedia();
-							System.out.println("htmlpath: " + html.getPath());
 							%>
 							<td align="center">
 					        	<fd:IncludeMedia name="<%=html.getPath()%>"/>

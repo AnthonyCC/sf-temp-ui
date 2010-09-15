@@ -16,7 +16,6 @@
 <%!	
     SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
     SimpleDateFormat longDateFormatter = new SimpleDateFormat("EEEEEEEE, MMMMMMMM d, yyyy");
-    NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
     Comparator deliveryComparator = new Comparator() {
         public int compare(Object o1, Object o2) {
             MealModel m1 = (MealModel) o1;

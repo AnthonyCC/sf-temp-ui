@@ -26,7 +26,6 @@
   
   if(isVariantExist) actionName="edit_variant_promotion";
   
-  System.out.println("isVariantExist :"+isVariantExist);
   
 %>
 <fd:PromotionController promotion="<%=promotion%>" actionName="<%=actionName%>" result="result" successPage="<%=successPage%>" zipRestrictionMap="<%=zipRestrictionMap%>">  
@@ -34,10 +33,6 @@
     <tmpl:put name='title' direct='true'>Edit Promotion</tmpl:put>
     <tmpl:put name='content' direct='true'>
 	<div style="background: #FFFFFF;">
-    <%
-       System.out.println("forPrint :"+forPrint);
-    %>
-    
 		<%if(!forPrint){%>
             <div class="sub_nav" style="text-align: left;">
             <table cellpadding="0" cellspacing="0" border="0" width="99%">

@@ -135,7 +135,7 @@ public class SkuModel extends ContentNodeModelImpl implements AvailabilityI {
 
 			FDProductInfo fdpi = this.getProductInfo();
 			
-			FDAvailabilityI av = AvailabilityFactory.createAvailability(this);
+			FDAvailabilityI av = AvailabilityFactory.createAvailability(this, fdpi);
 			
 			return new AvailabilityAdapter(fdpi, av);
 

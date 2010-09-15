@@ -93,7 +93,6 @@
         <tr>		            			
 			<%  
 				RecurringRestriction rRestriction=(RecurringRestriction)restriction;
-                System.out.println(rRestriction.getTimeRange().getStartTime().getAsHours());
 			%>            
                 <td> <%=rRestriction.getName()%> </td>			
 				<td></td>                

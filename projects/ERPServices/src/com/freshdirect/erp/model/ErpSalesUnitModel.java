@@ -89,7 +89,7 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 	 * @param alternativeUnit unit of measure
 	 */
 	public void setAlternativeUnit(String alternativeUnit) {
-		this.alternativeUnit = alternativeUnit;
+		this.alternativeUnit = alternativeUnit != null ? alternativeUnit.intern() : null;
 	}
 
 	/**
@@ -107,7 +107,7 @@ public class ErpSalesUnitModel extends ErpModelSupport implements DurableModelI 
 	 * @param baseUnit unit of measure
 	 */
 	public void setBaseUnit(String baseUnit) {
-		this.baseUnit = baseUnit;
+		this.baseUnit = baseUnit != null ? baseUnit.intern() : null;
 	}
 
 	/**

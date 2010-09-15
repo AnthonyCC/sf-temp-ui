@@ -39,9 +39,6 @@ response.setDateHeader ("Expires", 0);
 
 	successPage = "/survey/hamptons_2.jsp?info=thankyou";
 	
-	System.out.println("destination " + destination + " submitNow " + submitNow);
-	
-	
 	String question0 = request.getParameter(((FDSurveyQuestion)questions.get(0)).getName());
 	String question1 = request.getParameter(((FDSurveyQuestion)questions.get(1)).getName());
 	String[] question2 = request.getParameterValues(((FDSurveyQuestion)questions.get(2)).getName());

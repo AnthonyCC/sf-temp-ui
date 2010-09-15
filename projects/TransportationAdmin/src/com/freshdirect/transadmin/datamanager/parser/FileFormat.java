@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConversionException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormInputLineLengthException;
@@ -43,7 +43,7 @@ public class FileFormat
     // JBL - Used when parsing fails, gives access to bad line
     private String lastLine = "";
 
-    Category cat = Category.getInstance(FileFormat.class);
+    Logger cat = Logger.getLogger(FileFormat.class);
 
     public FileFormat()
     {

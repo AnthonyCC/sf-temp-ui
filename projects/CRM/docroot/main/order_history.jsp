@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -68,7 +69,7 @@
 		<td width="3%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(order.getSaleType())){%><Font color="red">A</Font>&nbsp;<% }else if(EnumSaleType.GIFTCARD.equals(order.getSaleType())){%><Font color="orange">G</Font><%}%>&nbsp;</td>
 		<td width="8%" class='<%= styleClassName %>'><% if(EnumSaleType.REGULAR.equals(order.getSaleType())){%><%= CCFormatter.formatDate(order.getRequestedDate()) %><%}else {}%>&nbsp;</td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= order.getSaleStatus().getName() %></span></td>
-		<td width="7%" align="center" class='<%= styleClassName %>'><%= CCFormatter.formatCurrency(order.getTotal()) %></td>
+		<td width="7%" align="center" class='<%= styleClassName %>'><%= JspMethods.formatPrice(order.getTotal()) %></td>
 		<td width="8%" align="center" class='<%= styleClassName %>'><%=paymentMethodType%></td>
 		<td width="11%" class='<%= styleClassName %>'><span class="time_stamp"><%= CCFormatter.formatDateTime(order.getCreateDate()) %></span></td>
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= createdBy %></span></td>
@@ -77,9 +78,9 @@
 		<td width="8%" class='<%= styleClassName %>'><span class="log_info"><%= modifiedBy %></span></td>
 		<td width="6%" class='<%= styleClassName %>'><span class="log_info"><%= order.getModificationSource().getName() %></span></td>
 		<td width="10%" class='<%= styleClassName %>' align="center">
-            <%= CCFormatter.formatCurrency(order.getApprovedCreditAmount()) %>
+            <%= JspMethods.formatPrice(order.getApprovedCreditAmount()) %>
             <% if (order.getPendingCreditAmount() > 0) { %> 
-                / <b><span class="error_detail"><%= CCFormatter.formatCurrency(order.getPendingCreditAmount()) %></span></b>
+                / <b><span class="error_detail"><%= JspMethods.formatPrice(order.getPendingCreditAmount()) %></span></b>
             <% } %>
 	        </td>
 	</tr>

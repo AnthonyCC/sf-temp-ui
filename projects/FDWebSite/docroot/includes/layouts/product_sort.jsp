@@ -290,7 +290,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %>						
         </fd:FDProductInfo>
 <%

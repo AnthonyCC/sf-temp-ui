@@ -210,9 +210,10 @@ public class TestUtils {
         container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/DlvPassManager", DlvPassManagerHome.class, DlvPassManagerSB.class,
                 DlvPassManagerSessionBean.class));
 
-        container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/ErpInfo", ErpInfoHome.class, ErpInfoSB.class, ErpInfoSessionBean.class));
+//        container.deploy(new SessionBeanDescriptor("java:comp/env/ejb/ErpInfo", ErpInfoHome.class, ErpInfoSB.class, ErpInfoSessionBean.class));
+        container.deploy(new SessionBeanDescriptor("freshdirect.erp.Info", ErpInfoHome.class, ErpInfoSB.class, ErpInfoSessionBean.class));
         container.deploy(new SessionBeanDescriptor("freshdirect.fdstore.PromotionManagerNew", FDPromotionManagerNewHome.class, FDPromotionManagerNewSB.class, FDPromotionManagerNewSessionBean.class));
-        
+
         // added for smart store
         container.deploy(new SessionBeanDescriptor("freshdirect.smartstore.VariantSelection", VariantSelectionHome.class, VariantSelectionSB.class,
                 VariantSelectionSessionBean.class));

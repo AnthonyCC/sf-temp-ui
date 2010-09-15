@@ -37,7 +37,6 @@
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp123 :"+result);
     request.setAttribute("admResult",result);
 	
 %>

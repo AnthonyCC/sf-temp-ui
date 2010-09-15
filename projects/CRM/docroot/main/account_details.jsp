@@ -168,7 +168,7 @@ String case_required_add = "<span class=\"cust_module_content_edit\">Case requir
 			
 			<div class="cust_sub_nav"><b><% if ( customer.isActive() ) { %>Active<% } else { %>Deactivated<% } %></b> <%if(editable){%><a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp") %>" class="cust_sub_nav_text"><% if ( customer.isActive() ) { %>Deactivate<% } else { %>Activate<% } %></a><%} else {%><%=case_required%><%}%></div>
 
-            <div class="cust_sub_nav">Available Store Credit: <b><%= CCFormatter.formatCurrency(customer.getCustomerCreditRemainingAmount()) %></b></div>
+            <div class="cust_sub_nav">Available Store Credit: <b><%= JspMethods.formatPrice(customer.getCustomerCreditRemainingAmount()) %></b></div>
             <% boolean promoEnabled = !user.isFraudulent(); %>
             <div class="cust_sub_nav">
                 <b><%= promoEnabled ? "<span class='yes'>Eligible" : "<span class='no'>Ineligible" %></span> for Promotion</b><% if (!promoEnabled) { %> (Matching Information)<% } %><% if (!forPrint) { %>&nbsp;&nbsp;<%if (editable) {%><a href="/customer_account/promo_eligibility.jsp?successPage=<%= request.getRequestURI() %>" class="cust_sub_nav_text">Edit Eligibility</a><%} else {%><%=case_required%><%}%><% } %>

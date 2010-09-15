@@ -15,7 +15,6 @@
 	SimpleDateFormat deliveryDateFormatter = new SimpleDateFormat("EEEE, MMM d yyyy");
 	SimpleDateFormat deliveryTimeFormatter = new SimpleDateFormat("h:mm a");
 	SimpleDateFormat monthYearFormatter = new SimpleDateFormat("MM.yyyy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 	DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <tmpl:insert template='/template/top_nav.jsp'>

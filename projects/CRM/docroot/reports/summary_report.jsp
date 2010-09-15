@@ -2,6 +2,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -47,7 +48,7 @@
 		<logic:iterate id="info" collection="<%= searchResults %>" type="java.util.Map" indexId="counter">
 		    <tr>
 			<td align="right">Sales :</td>
-			<td><%=CCFormatter.formatCurrency(((Double)info.get("sales")).doubleValue())%></td>
+			<td><%=JspMethods.formatPrice(((Double)info.get("sales")).doubleValue())%></td>
 		    </tr>
 		    <tr>
 			<td align="right"># of Orders :</td>
@@ -55,11 +56,11 @@
 		    </tr>
 		    <tr>
 			<td align="right">Avg. Order Size :</td>
-			<td><%= CCFormatter.formatCurrency(((Double)info.get("Average Order Size")).doubleValue())%></td>
+			<td><%= JspMethods.formatPrice(((Double)info.get("Average Order Size")).doubleValue())%></td>
 		    </tr>
 		    <tr>
 			<td align="right">Total Promotion Amount :</td>
-			<td><%= CCFormatter.formatCurrency(((Double)info.get("Total Promotions")).doubleValue())%></td>
+			<td><%= JspMethods.formatPrice(((Double)info.get("Total Promotions")).doubleValue())%></td>
 		    </tr>
 		    <tr>    
 			<td align="right"># of Promotions :</td>
@@ -67,7 +68,7 @@
 		    </tr>
 		    <tr>    
 			<td align="right">Average Promotion :</td>
-			<td><%= CCFormatter.formatCurrency(((Double)info.get("Average Promotion")).doubleValue())%></td>
+			<td><%= JspMethods.formatPrice(((Double)info.get("Average Promotion")).doubleValue())%></td>
 		    </tr>
 		    <tr>
 			<td align="right">Promotion % :</td>

@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.survey;
 import java.rmi.RemoteException;
 import java.util.List;
 
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
@@ -28,10 +27,10 @@ public class FDSurveyFactory {
 
     private final BuiltinSurveys builtinSurveys = new BuiltinSurveys();
     
-    private final static LazyTimedCache<SurveyKey, FDSurvey> surveyDefCache = new LazyTimedCache<SurveyKey, FDSurvey>(
+    private final static LazyTimedCache<SurveyKey, FDSurvey> surveyDefCache = new LazyTimedCache<SurveyKey, FDSurvey>("SurveyDefCache",
             FDStoreProperties.getSurveyDefCacheSize(), FDStoreProperties.getRefreshSecsSurveyDef() * 1000);
 
-    private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread<SurveyKey, FDSurvey>(surveyDefCache, "FDSurvey Refresh", 3 * 60 * 1000) {
+    private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread<SurveyKey, FDSurvey>(surveyDefCache, 3 * 60 * 1000) {
         protected void refresh(List<SurveyKey> expiredKeys) {
             try {
                 LOGGER.debug("FDSurvey Refresh reloading " + expiredKeys.size() + " survey definitions");

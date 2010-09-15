@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.freshdirect.fdstore.FDVersion;
 import com.freshdirect.framework.core.ModelSupport;
 
-public class ErpNutritionModel extends ModelSupport {
-	
+public class ErpNutritionModel extends ModelSupport implements FDVersion<Date> {
+
 	private static final long serialVersionUID = 165757752576184510L;
 
 	/** String skuCode to which this nutrition model belongs to */
@@ -520,5 +521,10 @@ public class ErpNutritionModel extends ModelSupport {
 	
 	public boolean hasNutritionInfo(ErpNutritionInfoType type) {
 		return this.info.get(type) != null;
+	}
+	
+	@Override
+	public Date getVersion() {
+		return lastModifiedDate;
 	}
 }

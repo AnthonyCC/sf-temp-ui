@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConversionException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormInputLineLengthException;
@@ -31,7 +31,7 @@ import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormUnsetFieldVa
 class Line
 {
 
-    Category cat;
+    Logger cat;
 
     private Vector recordElements;
 
@@ -41,7 +41,7 @@ class Line
 
     public Line()
     {
-        cat = Category.getInstance(Line.class);
+        cat = Logger.getLogger(Line.class);
         recordElements = new Vector();
 
         delimit = null;

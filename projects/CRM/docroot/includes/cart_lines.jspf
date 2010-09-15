@@ -2,7 +2,8 @@
 <%@ page import="com.freshdirect.fdstore.content.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 
-			<TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
+			
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0" class="order_detail">
 <%
 	if (cart.getOrderLines().size() < 1) { // Cart is empty, so print out empty cart message...
 %>
@@ -162,7 +163,7 @@
 <%	} %>
 <TD WIDTH="46%"><A HREF="<%= response.encodeURL("/order/product_modify.jsp?cartLine=" + cartLine.getRandomId()) %>"><%= cartLine.getDescription() %></A> </TD>
 				<TD WIDTH="18%"><a href="javascript:popResize('/shared/product_summary.jsp?productId=<%=_productNode%>&catId=<%=_productNode.getParentNode()%>','740','555','summ')" title="Product description & Information" class="help" style="font-size: 4pt; padding: 1px;">?</a> (<%= cartLine.getUnitPrice() %>)</TD>
-				<TD WIDTH="14%" align="right"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></TD>
+				<TD WIDTH="14%" align="right"><%= JspMethods.formatPrice(cartLine.getPrice()) %></TD>
 				<TD WIDTH="5%" align="right"><A HREF="<%= request.getRequestURI() %>?remove=1&cartLine=<%= cartLine.getRandomId() %><%= paramBuf.toString() %>" class="remove" title="Remove">X</A></TD>
 			</TR>
 </logic:iterate>

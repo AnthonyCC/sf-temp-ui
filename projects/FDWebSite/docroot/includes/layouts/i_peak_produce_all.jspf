@@ -53,8 +53,6 @@ String mediaPath="/media/editorial/peak_produce/peak_produce_"+dept_ids[i]+".htm
 
 <% sortedColl= peakProduces;
   
-//System.out.println("sortedColl :"+sortedColl);
-
 if (sortedColl==null) sortedColl = new ArrayList();
 //**************************************************************
 //***          the Multi Category Layout                     ***

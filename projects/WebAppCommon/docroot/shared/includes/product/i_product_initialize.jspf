@@ -1,5 +1,4 @@
 <%!
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
     Comparator domainValueComp = new Comparator() {
@@ -70,9 +69,9 @@
                     return -1;
                 } else {
                     // like elements are ordered by priority
-                    if (var1.getAttributeInt("priority", 0) < var2.getAttributeInt("priority", 0)) {
+                    if (var1.getPriority(0) < var2.getPriority(0)) {
                         return 1;
-                    } else if (var1.getAttributeInt("priority", 0) > var2.getAttributeInt("priority", 0)) {
+                    } else if (var1.getPriority(0) > var2.getPriority(0)) {
                         return -1;
                     } else {
                         return 0;

@@ -13,7 +13,6 @@
 
 <%!	DecimalFormat quantityFormatter = new DecimalFormat("0.##");
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("MM.dd.yyyy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 %>
 <%	
     if ((request.getQueryString() != null) && request.getQueryString().equalsIgnoreCase("clearSearch")) {

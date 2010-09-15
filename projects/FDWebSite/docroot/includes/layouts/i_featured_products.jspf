@@ -50,10 +50,10 @@
 
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        prodPrice = JspMethods.formatDefaultPrice(productInfo, yser.getPricingContext());
         hasWas=productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).isItemOnSale();
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
+            prodBasePrice=JspMethods.formatSellingPrice(productInfo, yser.getPricingContext());
         }  
         deal=productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getHighestDealPercentage();
         isDeal=deal>0;

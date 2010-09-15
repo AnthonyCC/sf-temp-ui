@@ -23,7 +23,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%!
 java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
-java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <tmpl:insert template='/common/template/robinhood.jsp'>
@@ -128,11 +127,11 @@ int idx = 0;
 				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
 					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=cartLine.getOrderedQuantity()%>&nbsp;Meals):
 				</td>
-				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.currencyFormatter.format(cart.getSubTotal())%></td>
+				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%=JspMethods.formatPrice(cart.getSubTotal())%></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" class="text13bold">
-					<span>TOTAL:</span> &nbsp;<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+					<span>TOTAL:</span> &nbsp;<%=JspMethods.formatPrice(totalPrice)%></td>
 				<td style="padding: 2px;" width="70" align="left" class="text13bold"></td>
 			</tr>
 			<tr>
@@ -167,12 +166,12 @@ int idx = 0;
             <%if(cart.getCustomerCreditsValue() > 0) { %>
             	<b>FreshDirect Store Credit:</b><BR>
             	<font class="space4pix"><br></font>
-		<%=currencyFormatter.format(cart.getCustomerCreditsValue())%><BR>
+		<%=JspMethods.formatPrice(cart.getCustomerCreditsValue())%><BR>
             	<br><br>
             <% } %>
             <b>Order Total:</b><BR>
             <font class="space4pix"><br></font>
-            <%=currencyFormatter.format(cart.getTotal())%><BR>
+            <%=JspMethods.formatPrice(cart.getTotal())%><BR>
             <br><br>
 			<b>Credit Card</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>
             <font class="space4pix"><br></font>
@@ -247,9 +246,9 @@ int idx = 0;
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center"><%=productModel.getFullName() %></td>
 			<td></td>
-			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
+			<td align="center"><%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></td>
 			<td></td>
-			<td align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %>
+			<td align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.formatPrice(cart.getSubTotal()) %>
 		
 		
 
@@ -268,7 +267,7 @@ int idx = 0;
 	<tr>
 		    <td colspan="4"><img height="1" width="170" src="/media_stat/images/layout/clear.gif"/></td>
 			<td align="right" class="orderTotal" colspan="2">
-			<b>ORDER TOTAL:&nbsp;<%= JspMethods.currencyFormatter.format( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+			<b>ORDER TOTAL:&nbsp;<%= JspMethods.formatPrice( cart.getSubTotal() ) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
     </tr>
 
 </table>

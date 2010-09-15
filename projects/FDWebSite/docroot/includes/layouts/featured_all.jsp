@@ -366,8 +366,7 @@
 					<fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 						<%
 							lstUnitPrice = "<font class=\"price\"" + ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ? " style=\"color:#C94747\"" : "" ) + ">" + 
-							                    	JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) + "/" + productInfo.getDisplayableDefaultPriceUnit().toLowerCase() + 
-							                    	"</font>";
+							                    	JspMethods.formatPrice(productInfo, user.getPricingContext()) + "</font>";
 						%>
 					</fd:FDProductInfo>
 				<%              

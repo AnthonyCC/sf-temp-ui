@@ -31,6 +31,10 @@ import com.freshdirect.fdstore.customer.FDOrderI;
  */
 public class ComplaintGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupport {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
     private String lineComplaints					= null;		// orderline complaints key
     private String deptComplaints					= null;		// department complaints key
     private String miscComplaints					= null;		// miscellaneous complaints key
@@ -118,17 +122,17 @@ public class ComplaintGrabberTag extends com.freshdirect.framework.webapp.BodyTa
 
     public int doStartTag() throws JspException {
 
-		ArrayList lineComplaintsValue = new ArrayList();
-		ArrayList deptComplaintsValue = new ArrayList();
-		ArrayList miscComplaintsValue = new ArrayList();
-		ArrayList fullComplaintsValue = new ArrayList();
-		ArrayList restockComplaintsValue = new ArrayList();
+		ArrayList<ErpComplaintLineModel> lineComplaintsValue = new ArrayList<ErpComplaintLineModel>();
+		ArrayList<ErpComplaintLineModel> deptComplaintsValue = new ArrayList<ErpComplaintLineModel>();
+		ArrayList<ErpComplaintLineModel> miscComplaintsValue = new ArrayList<ErpComplaintLineModel>();
+		ArrayList<ErpComplaintLineModel> fullComplaintsValue = new ArrayList<ErpComplaintLineModel>();
+		ArrayList<ErpComplaintLineModel> restockComplaintsValue = new ArrayList<ErpComplaintLineModel>();
 
-		ArrayList complaintsValue = new ArrayList(order.getComplaints());
+		ArrayList<ErpComplaintModel> complaintsValue = new ArrayList<ErpComplaintModel>(order.getComplaints());
 		//
 		// Remove complaints according to the parameters passed in attributes
 		//
-		for (ListIterator it = complaintsValue.listIterator(); it.hasNext(); ) {
+		for (ListIterator<?> it = complaintsValue.listIterator(); it.hasNext(); ) {
 			ErpComplaintModel complaint = (ErpComplaintModel) it.next();
 			if ( EnumComplaintStatus.REJECTED.equals( complaint.getStatus() ) && !this.retrieveRejected )
 				it.remove();
@@ -140,10 +144,10 @@ public class ComplaintGrabberTag extends com.freshdirect.framework.webapp.BodyTa
 		//
 		// Put complaint lines in proper Collection
 		//
-		for (Iterator it = complaintsValue.iterator(); it.hasNext(); ) {
+		for (Iterator<?> it = complaintsValue.iterator(); it.hasNext(); ) {
 			ErpComplaintModel complaint = (ErpComplaintModel) it.next();
-			Collection lines = complaint.getComplaintLines();
-			for (Iterator it2 = lines.iterator(); it2.hasNext(); ) {
+			Collection<?> lines = complaint.getComplaintLines();
+			for (Iterator<?> it2 = lines.iterator(); it2.hasNext(); ) {
 				ErpComplaintLineModel line = (ErpComplaintLineModel) it2.next();
 				if ( EnumComplaintLineType.ORDER_LINE.equals( line.getType() ) ) {
 					lineComplaintsValue.add(line);

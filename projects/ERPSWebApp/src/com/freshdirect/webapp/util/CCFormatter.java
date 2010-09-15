@@ -2,12 +2,10 @@ package com.freshdirect.webapp.util;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 
-import com.freshdirect.framework.util.*;
+import com.freshdirect.framework.util.DurationFormat;
 
 public class CCFormatter {
 
@@ -26,7 +24,6 @@ public class CCFormatter {
 	private static final DateFormat CC_EXP_DATE_FORMATTER = new SimpleDateFormat("MM.yyyy");
 	private static final DateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("MM.dd.yyyy hh:mm a");
 	private static final DateFormat DAY_NAME_FORMATTER = new SimpleDateFormat("EEEE");
-	private static final NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 	private static final DecimalFormat QUANTITY_FORMATTER = new java.text.DecimalFormat("0.##");
 	private static final DurationFormat DURATION_FORMATTER = new DurationFormat(false, DurationFormat.MASK_DAY | DurationFormat.MASK_HOUR | DurationFormat.MASK_MINUTE | DurationFormat.MASK_SECOND);
 	private static final DecimalFormat LATLONG_FORMATTER = new java.text.DecimalFormat("0.000000");
@@ -92,10 +89,6 @@ public class CCFormatter {
 	
 	public static synchronized String formatDayName(Date date) {
 		return DAY_NAME_FORMATTER.format(date);
-	}
-
-	public static synchronized String formatCurrency(double amount) {
-		return CURRENCY_FORMATTER.format(amount);
 	}
 
 	public static synchronized String formatQuantity(double quantity) {

@@ -45,8 +45,6 @@ if(user!=null  && user.getIdentity()!=null) {
 }
 boolean isCheckEligible	= user.isCheckEligible();
 
-System.out.println("The identity = "+identity);
-
 %>
 
 <!-- error message handling here -->

@@ -9,8 +9,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%!	
-    NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
-
     Comparator priorityComparator = new Comparator() {
 		public int compare(Object o1, Object o2) {
 			
@@ -138,12 +136,7 @@
 						imgSrc = productImage.getPath();
 						imgHeight = productImage.getHeight();
 						imgWidth = productImage.getWidth();
-						System.out.println("found img (" + imgSrc + ") for product!");
-					} else {
-						System.out.println("no img for product :(");
 					}
-				} else {
-					System.out.println("no products in this cat :(");
 				}
 			} else {
 				imgSrc = catImage.getPath();

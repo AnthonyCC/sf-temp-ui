@@ -10,16 +10,30 @@ package com.freshdirect.content.attributes;
 
 /**
  * Type-safe enumeration for attributes' data types.
- *
+ * 
  * @version $Revision: 3$
  * @author $Author: Mike Rose$
  */
-public class EnumAttributeType {
+public enum EnumAttributeType {
+	STRING(0, "S") {
+		@Override
+		public Object parseValue(String value) {
+			return value;
+		}
+	},
+	BOOLEAN(1, "B") {
+		@Override
+		public Object parseValue(String value) {
+			return Boolean.valueOf(value);
+		}
+	},
+	INTEGER(2, "I") {
+		@Override
+		public Object parseValue(String value) {
+			return Integer.valueOf(value);
+		}
+	};
 
-	public final static EnumAttributeType STRING = new EnumAttributeType(0, "S");
-	public final static EnumAttributeType BOOLEAN = new EnumAttributeType(1, "B");
-	public final static EnumAttributeType INTEGER = new EnumAttributeType(2, "I");
-	
 	protected final int id;
 	private final String name;
 
@@ -31,16 +45,18 @@ public class EnumAttributeType {
 	public String getName() {
 		return this.name;
 	}
-	
+
 	public String toString() {
 		return this.name;
 	}
 
-	public boolean equals(Object o) {
-		if (o instanceof EnumAttributeType) {
-			return this.id == ((EnumAttributeType)o).id;
-		}
-		return false;
-	}
+	public abstract Object parseValue(String value);
 
+	public static EnumAttributeType getByName(String name) {
+		for (EnumAttributeType type : EnumAttributeType.values())
+			if (type.getName().equals(name))
+				return type;
+
+		return null;
+	}
 }

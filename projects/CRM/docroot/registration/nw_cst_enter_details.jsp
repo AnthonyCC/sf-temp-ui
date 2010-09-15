@@ -42,7 +42,6 @@
 				<%@ include file="/registration/includes/i_delivery_address_info.jspf" %><br />
 				<%@ include file="/registration/includes/i_payment_info.jspf" %><br />
 			</div>
-			<% System.out.println("h"); %>
 		</form>
 	</fd:RegistrationController>
 	</tmpl:put>

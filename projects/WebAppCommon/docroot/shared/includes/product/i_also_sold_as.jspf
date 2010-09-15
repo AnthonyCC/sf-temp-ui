@@ -1,7 +1,6 @@
 <%
                         List alsoSoldAsList = null;
                         String myPKID = productNode.getContentKey().getId();
-System.err.println("I ALSO SOLD AS " + myPKID);
                         Map keepMap = new HashMap();
                         // get the also sold as stuff
 

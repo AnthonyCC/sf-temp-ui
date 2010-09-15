@@ -451,17 +451,17 @@ if(productCode!=null && prodCatId !=null ) {
             JspLogger.PRODUCT.warn("Grocery Page: catching FDSkuNotFoundException and Continuing:\n FDProductInfo:="+productInfo+"\nException message:= "+fdsnf.getMessage());
         }
 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
+        prodPrice = JspMethods.formatDefaultPrice(productInfo, user.getPricingContext());
         hasWas=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice());
+            prodBasePrice=JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
         }
         deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
         if (deal > 0) {
             dealsImage=new StringBuffer("/media_stat/images/deals/brst_lg_").append(deal).append(".gif").toString();        	
         }
         
-        priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        priceUnit = JspMethods.formatPricingUnit(productInfo);
         String salesUnitDesc = "N/A";
         firstSalesUnit = "N/A";
         if (product!=null){

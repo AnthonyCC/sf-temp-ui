@@ -55,7 +55,7 @@
 
         	
        	%><fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>"><% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()); //+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        prodPrice = JspMethods.formatDefaultPrice(productInfo, user.getPricingContext());
         
 		
 		//comment out here for DEBUG, just make everything a deal
@@ -63,7 +63,7 @@
 		//hasWas = true;
 
         if(hasWas) {
-            prodBasePrice=JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
+            prodBasePrice=JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
         }  
         deal=productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getHighestDealPercentage();
         isDeal=deal>0;

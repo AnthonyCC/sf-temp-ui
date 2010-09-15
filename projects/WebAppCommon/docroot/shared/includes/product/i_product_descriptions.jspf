@@ -281,7 +281,6 @@
 															
 							if(produceRating!=null && produceRating.trim().length()>0) {
 								String ratingMediaPath="/media/brands/fd_ratings/"+produceRatingPrefix+"/prod_rating.html";
-								//System.out.println("========================	ratingMediaPath? : "+ratingMediaPath);
 								%>
 						
 								<br /><fd:IncludeMedia name="<%=ratingMediaPath%>" /><br />

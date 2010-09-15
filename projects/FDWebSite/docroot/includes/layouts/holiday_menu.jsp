@@ -153,7 +153,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
-                    lstUnitPrice = "<font class=\"price\">"+JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase()+"</font>";
+                    lstUnitPrice = "<font class=\"price\">"+JspMethods.formatPrice(productInfo, user.getPricingContext())+"</font>";
 %>
                     </fd:FDProductInfo>
 <%              }

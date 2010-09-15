@@ -149,7 +149,6 @@ String lastGroupKey="";
 					FDAvailabilityInfo componentInfo = (FDAvailabilityInfo)e.getValue();
 					FDProduct fdp = cartLine.lookupFDProduct();
 					String matNo = StringUtils.right(componentKey, 9);
-					System.out.println(matNo);
 					FDVariationOption option = fdp.getVariationOption(matNo);
 					if (option!=null) {
 						%><b><%= option.getDescription() %></b><br><%

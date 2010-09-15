@@ -15,7 +15,6 @@
 <%@ taglib uri='bean' prefix='bean' %>
 
 <%!
-private static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 
 public class PromoRow {
@@ -160,7 +159,7 @@ if (comp == null) {
                 <td width="11%"><%=p.code%></td>
                 <td width="32%"><%=p.name%></td>
                 <td width="11%"><a href='javascript:popup("/shared/promotion_popup.jsp?promoCode=<%=p.code%>&cc=true", "<%=EnumPromotionType.SIGNUP.equals(p.type)?"large":"small"%>")'>Details</td>
-                <td width="11%"><%=CURRENCY_FORMATTER.format(p.amount)%></td>
+                <td width="11%"><%=JspMethods.formatPrice(p.amount)%></td>
                 <td width="11%"><a href="order_details.jsp?orderId=<%=p.orderNum%>" class="key"><%=p.orderNum%></td>
                 <td width="11%"><%=DATE_FORMATTER.format(p.dateUsed)%></td>
                 <td width="11%"><%=p.expires != null?DATE_FORMATTER.format(p.expires): ""%></td>

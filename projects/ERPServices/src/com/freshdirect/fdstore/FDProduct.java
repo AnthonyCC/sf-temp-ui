@@ -1,20 +1,22 @@
 package com.freshdirect.fdstore;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.content.attributes.AttributesI;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.content.nutrition.EnumClaimValue;
 import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
+import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.erp.EnumAlcoholicContent;
 
 /**
@@ -22,8 +24,8 @@ import com.freshdirect.erp.EnumAlcoholicContent;
  * It is a rough equivalent of an ErpProduct.
  *
  */
-public class FDProduct extends FDSku implements AttributesI {
-	
+public class FDProduct extends FDSku {
+
 	private static final long serialVersionUID = -6190779000162681376L;
 
 	private final Date pricingDate;
@@ -48,11 +50,11 @@ public class FDProduct extends FDSku implements AttributesI {
 	private final FDMaterial material;
 
 	/** nutrition. List<FDNutrition> */
-	private final List<FDNutrition> nutrition;
+	private List<FDNutrition> nutrition;
 
 	private FDSalesUnit[] displaySalesUnits;
 	
-
+	private transient ErpNutritionModel nutritionModel;
 
 	public FDProduct(
 		String skuCode,
@@ -82,8 +84,8 @@ public class FDProduct extends FDSku implements AttributesI {
 			FDVariation[] variations,
 			FDSalesUnit[] salesUnits,
 			Pricing pricing,
-			List<FDNutrition> nutrition,
-			FDSalesUnit[] displaySalesUnits) {
+			FDSalesUnit[] displaySalesUnits,
+			ErpNutritionModel nutritionModel) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
 			this.material = material;
@@ -91,8 +93,8 @@ public class FDProduct extends FDSku implements AttributesI {
 			this.salesUnits = salesUnits;
 			this.pricing = pricing;
 			
-			this.nutrition = nutrition;
 			this.displaySalesUnits = displaySalesUnits;
+			this.setNutritionModel(nutritionModel);
 			
 		}
 	/**
@@ -248,7 +250,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		//
 		for (int j = 0; j < this.salesUnits.length; j++) {
 			FDSalesUnit unit = this.salesUnits[j];
-			if (unit.getAttributeBoolean(EnumAttributeName.SELECTED)) {
+			if (unit.getAttributes().isSelected()) {
 				return unit;
 			}
 		}
@@ -266,23 +268,23 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean hasIngredients() {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).hasIngredients();
+		return getNutritionModel().hasIngredients();
 	}
 
 	public String getIngredients() {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getIngredients();
+		return getNutritionModel().getIngredients();
 	}
 
 	public Set getNutritionInfoNames() {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoNames();
+		return getNutritionModel().getNutritionInfoNames();
 	}
 
 	public String getNutritionInfoString(ErpNutritionInfoType type) {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoString(type);
+		return getNutritionModel().getNutritionInfoString(type);
 	}
 
 	public List getNutritionInfoList(ErpNutritionInfoType type) {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getNutritionInfoList(type);
+		return getNutritionModel().getNutritionInfoList(type);
 	}
 	
 	public List<EnumClaimValue> getClaims() {
@@ -307,23 +309,51 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 	
 	public boolean hasNutritionInfo(ErpNutritionInfoType type) {
-		return FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).hasNutritionInfo(type);
+		return getNutritionModel().hasNutritionInfo(type);
 	}
 
 	public FDKosherInfo getKosherInfo() {
 		
-		EnumKosherSymbolValue kSym = FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getKosherSymbol();
+		final ErpNutritionModel nutritionModel = getNutritionModel();
+                EnumKosherSymbolValue kSym = nutritionModel.getKosherSymbol();
 		int kPri = 999;
 		if(kSym != null){
 			kPri = kSym.getPriority();
 		}
 
-		EnumKosherTypeValue kTyp = FDNutritionCache.getInstance().getNutrition(this.getSkuCode()).getKosherType();
+		EnumKosherTypeValue kTyp = nutritionModel.getKosherType();
 
 		boolean kPrd = material.isKosherProduction();
 
 		return new FDKosherInfo(kSym, kTyp, kPrd, kPri);
 	}
+
+	
+	
+    /**
+     * @return
+     */
+    ErpNutritionModel getNutritionModel() {
+        if (nutritionModel == null) {
+            nutritionModel = FDNutritionCache.getInstance().getNutrition(this.getSkuCode());
+        }
+        return nutritionModel;
+    }
+    
+    public void setNutritionModel(ErpNutritionModel nutritionModel) {
+        this.nutritionModel = nutritionModel;
+        ArrayList<FDNutrition> fdNutritionList = new ArrayList<FDNutrition>();
+        if (this.nutritionModel != null) {
+            // Construct FDNutrition from ErpNutritionModel.value map
+            for (Iterator<String> nIter = nutritionModel.getKeyIterator(); nIter.hasNext(); ) {
+                String key = nIter.next();
+                FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutritionModel.getValueFor(key), nutritionModel
+                        .getUomFor(key));
+                fdNutritionList.add(fdn);
+            }
+        }
+        this.nutrition = fdNutritionList;
+    }
 
 	public List<FDNutrition> getNutrition() {
 		return this.nutrition;
@@ -351,7 +381,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public int getDepositsPerEach() {
-		return this.getAttributeInt(EnumAttributeName.DEPOSIT_AMOUNT);
+		return this.material.getAttributes().getDepositAmount();
 	}
 
 	public boolean hasDeposit() {
@@ -383,13 +413,14 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean isDeliveryPass() {
-		String value = this.getMaterial().getAttribute(EnumAttributeName.SPECIALPRODUCT);
-		if(value != null){
+		String value = this.getMaterial().getAttributes().getSpecialProduct();
+		if (value != null) {
 			return EnumSpecialProductType.DELIVERY_PASS.getName().equals(value);
+		} else {
+			return false;
 		}
-		return false;
 	}
-	
+
 	public ErpAffiliate getAffiliate() {
 		if (this.isWine()) {
 			if(EnumAlcoholicContent.BC_WINE.equals(this.material.getAlcoholicContent()))
@@ -401,7 +432,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	}
 
 	public boolean isQualifiedForPromotions() {
-		return this.getAttributeBoolean(EnumAttributeName.CUST_PROMO.getName(), false);
+		return this.material.getAttributes().isCustPromo();
 	}
 
 	/**
@@ -410,10 +441,10 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @param name name of the attribute
 	 * @return true if the attribute was found
 	 */
-	public boolean hasAttribute(String name) {
+/*	public boolean hasAttribute(String name) {
 		return this.material.hasAttribute(name);
 	}
-
+*/
 	/**
 	 * Get attribute as a String.
 	 *
@@ -421,21 +452,10 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @param defaultValue default value to return when attribute is not found or is of different type
 	 * @return String attribute
 	 */
-	public String getAttribute(String name, String defaultValue) {
+/*	public String getAttribute(String name, String defaultValue) {
 		return this.material.getAttribute(name, defaultValue);
 	}
-
-	/**
-	 * Get attribute as a String.
-	 *
-	 * @param attributeName EnumAttributeName instance, containing the name and the default value
-	 * @return String attribute
-	 * @throws ClassCastException if the specified attributeName is of different type
-	 */
-	public String getAttribute(EnumAttributeName attributeName) {
-		return this.material.getAttribute(attributeName);
-	}
-
+*/
 	/**
 	 * Get attribute as a boolean.
 	 *
@@ -443,32 +463,10 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @param defaultValue default value to return when attribute is not found or is of different type
 	 * @return boolean attribute
 	 */
-	public boolean getAttributeBoolean(String name, boolean defaultValue) {
+/*	public boolean getAttributeBoolean(String name, boolean defaultValue) {
 		return this.material.getAttributeBoolean(name, defaultValue);
 	}
-
-	/**
-	 * Get attribute as a boolean.
-	 *
-	 * @param attributeName EnumAttributeName instance, containing the name and the default value
-	 * @return boolean attribute
-	 * @throws ClassCastException if the specified attributeName is of different type
-	 */
-	public boolean getAttributeBoolean(EnumAttributeName attributeName) {
-		return this.material.getAttributeBoolean(attributeName);
-	}
-
-	/**
-	 * Get attribute as an integer.
-	 *
-	 * @param name name of the attribute
-	 * @param defaultValue default value to return when attribute is not found or is of different type
-	 * @return int attribute
-	 */
-	public int getAttributeInt(String name, int defaultValue) {
-		return this.material.getAttributeInt(name, defaultValue);
-	}
-
+*/
 	/**
 	 * Get attribute as a integer.
 	 *
@@ -476,9 +474,9 @@ public class FDProduct extends FDSku implements AttributesI {
 	 * @return int attribute
 	 * @throws ClassCastException if the specified attributeName is of different type
 	 */
-	public int getAttributeInt(EnumAttributeName attributeName) {
+/*	public int getAttributeInt(EnumAttributeName attributeName) {
 		return this.material.getAttributeInt(attributeName);
-	}
+	}*/
 
 	public String toString() {
 		StringBuffer buf = new StringBuffer("FDProduct[");
@@ -493,6 +491,14 @@ public class FDProduct extends FDSku implements AttributesI {
 		return buf.toString();
 	}
 
+	public boolean hasAdvanceOrderFlag() {
+		return this.material.getAttributes().isAdvanceOrderFlag();
+	}
+
+	public String getLabelName() {
+		return this.material.getAttributes().getLabelName();
+	}
+        
 	public FDSalesUnit[] getDisplaySalesUnits() {
 		return displaySalesUnits;
 	}
@@ -501,5 +507,7 @@ public class FDProduct extends FDSku implements AttributesI {
 		this.displaySalesUnits = displaySalesUnits;
 	}
 
-
+	public boolean isKosherProduction() {
+	    return material.isKosherProduction();
+	}
 }

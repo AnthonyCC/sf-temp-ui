@@ -84,7 +84,7 @@ if (brandId!=null) {
 %>
             <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
 <%   
-            prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+            prodPrice = JspMethods.formatPrice(productInfo, sessionuser.getPricingContext());
 %>  					
             </fd:FDProductInfo>
 <%

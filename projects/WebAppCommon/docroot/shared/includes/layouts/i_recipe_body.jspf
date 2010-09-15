@@ -68,7 +68,6 @@
 		return r;
 	}
 
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 %><%
@@ -486,12 +485,9 @@ int prodIdx = 0;
                 String earliestAvailability = sku.getEarliestAvailabilityMessage();
                 
                 FDProductInfo productInfo = orderLine.lookupFDProductInfo();
-                FDProduct product = orderLine.lookupFDProduct();
-                
-                String prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice());
-                String priceUnit = productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                FDProduct product = orderLine.lookupFDProduct();               
                 %>
-                <td><font class="text10bold"><%= orderLine.getDescription() %> - <%= prodPrice %>/<%=priceUnit%></font>
+                <td><font class="text10bold"><%= orderLine.getDescription() %> - <%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></font>
                     <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
                     <%@include file="/includes/product/i_scaled_prices_nobr.jspf"%>
                     <br><font class="text9nb">&nbsp;<%= orderLine.getConfigurationDesc()%></font>

@@ -38,7 +38,7 @@ public interface ListI extends Serializable, List {
      * within the collection or -1 if the primary key cannot
      * be located.
      */    
-	public int indexOf(PrimaryKey pk);
+	//public int indexOf(PrimaryKey pk);
 
     /** return the first position in the collection of the first object
      * represented by the primary key.
@@ -47,7 +47,7 @@ public interface ListI extends Serializable, List {
      * within the collection or -1 if the primary key cannot
      * be located.
      */    
-	public int lastIndexOf(PrimaryKey pk);
+	//public int lastIndexOf(PrimaryKey pk);
 
     /** replaces the elements of this collection with the elements of
      * the supplied collection
@@ -73,7 +73,7 @@ public interface ListI extends Serializable, List {
      * collection as an enumeration
      * @return an enumeration of the elements of this collection
      */
-    public Enumeration enumeration();
+    //public Enumeration enumeration();
 
   
 }

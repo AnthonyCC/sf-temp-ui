@@ -71,7 +71,8 @@ if (isShowSmaller) pymtDetailWidth="630";
 String lineWidth = isShowSmaller?"290":"310";
 %>
 
-<%@page import="com.freshdirect.fdstore.customer.FDCartModel"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
+<%@page import="com.freshdirect.fdstore.customer.FDCartModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="<%=pymtDetailWidth%>">
 <TR VALIGN="TOP">
     <TD WIDTH="290">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
@@ -160,14 +161,14 @@ String lineWidth = isShowSmaller?"290":"310";
             <FONT CLASS="text12">
             <b>Order Total:</b><BR>
             <font class="space4pix"><br></font>
-            <%= currencyFormatter.format(cart.getTotal()) %>*<BR>
+            <%= JspMethods.formatPrice(cart.getTotal()) %>*<BR>
             <% if(cart.getTotalAppliedGCAmount()> 0){ %> 
 	            <BR>
 	            <font class="space4pix"><br></font>
 	            <FONT CLASS="text12">
 	            <b>Gift Card Amount to Be Applied:</b><BR>
 	            <font class="space4pix"><br></font>
-	            <%= currencyFormatter.format(cart.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*<BR>
+	            <%= JspMethods.formatPrice(cart.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*<BR>
 	            
 	            <BR>
 	            <font class="space4pix"><br></font>
@@ -176,10 +177,10 @@ String lineWidth = isShowSmaller?"290":"310";
 	            <font class="space4pix"><br></font>
 	            <% if(cart instanceof FDCartModel) { %>
 	            
-	            	<%= currencyFormatter.format(user.getGiftcardsTotalBalance() - cart.getTotalAppliedGCAmount()-gcBufferAmount) %>
+	            	<%= JspMethods.formatPrice(user.getGiftcardsTotalBalance() - cart.getTotalAppliedGCAmount()-gcBufferAmount) %>
 		          
 	            <% } else { %>
-	            <%= currencyFormatter.format(user.getGiftcardsTotalBalance()) %>
+	            <%= JspMethods.formatPrice(user.getGiftcardsTotalBalance()) %>
 	            <% } %>*<BR>     
 	            <BR>      
             <% } %>
@@ -191,9 +192,9 @@ String lineWidth = isShowSmaller?"290":"310";
 	            <b>Amount to Be Charged to Your Account:</b><BR>
 	            <font class="space4pix"><br></font>
 	            <% if(cart instanceof FDCartModel) { %>
-	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
+	            <%= JspMethods.formatPrice(cart.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
 	            <% } else { %>
-	            <%= currencyFormatter.format(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>     
+	            <%= JspMethods.formatPrice(cart.getCCPaymentAmount()+ cart.getBufferAmt()) %>*<BR>     
 	            <% } %>
             <% } %>     
             <BR>  

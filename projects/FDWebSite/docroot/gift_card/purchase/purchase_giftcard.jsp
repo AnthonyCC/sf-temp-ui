@@ -180,7 +180,6 @@ UserUtil.initializeGiftCart(user);
            for(int k=0;k<alist.size();k++){
              errorMsg=errorMsg+(String)alist.get(k)+"\n";
            }  
-           System.out.println("errorMsg:"+errorMsg);
      %>        
        <%@ include file="/includes/i_error_messages.jspf" %>
 <%       

@@ -70,8 +70,8 @@ public class ErpSalesUnitPersistentBean extends ErpPersistentBeanSupport {
 		String description,
 		boolean displayInd) {
 		super(pk);
-		this.alternativeUnit = alternativeUnit;
-		this.baseUnit = baseUnit;
+		this.alternativeUnit = alternativeUnit != null ? alternativeUnit.intern() : null;
+		this.baseUnit = baseUnit != null ? baseUnit.intern() : null;
 		this.numerator = numerator;
 		this.denominator = denominator;
 		this.description = description;

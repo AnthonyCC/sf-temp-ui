@@ -17,9 +17,10 @@ public abstract class ExpiringReference<X> {
 	public ExpiringReference(long refreshPeriod) {
 		this.refreshPeriod = refreshPeriod;
 	}
+	
 
 	public synchronized X get() {
-		if (System.currentTimeMillis() - lastRefresh > this.refreshPeriod) {
+		if (isExpired()) {
 			this.referent = this.load();
 
 			lastRefresh = System.currentTimeMillis();

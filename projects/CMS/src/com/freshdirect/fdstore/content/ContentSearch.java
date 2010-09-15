@@ -35,7 +35,6 @@ public class ContentSearch {
     AutoComplete brandAutocompletion = new AutoComplete(new BrandNameWordList(), new SimpleCounterCreator());
         
 
-    boolean disableAutocompleter = false;
     
     Map<String, SearchRelevancyList> searchRelevancyMap;
     
@@ -48,13 +47,7 @@ public class ContentSearch {
         LOGGER.info("ContentSearch instance replaced");
     }
 
-    public void setDisableAutocompleter(boolean disableAutocompleter) {
-        this.disableAutocompleter = disableAutocompleter;
-    }
     
-    public boolean isDisableAutocompleter() {
-        return disableAutocompleter;
-    }
     
     /** Maximum number of the top spelling results that should be analyzed */
     public static int MAX_SUGGESTIONS = 5;

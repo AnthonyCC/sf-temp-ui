@@ -30,7 +30,6 @@ Smart Search Grid View
 @input trk			Tracking code (String)
 @input results		Search results
 --%><%
-final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
@@ -51,7 +50,8 @@ int n_cols = (int) Math.ceil((float)impressions.size()/GRID_ROW_SIZE); // number
 
 int rank = nav.getPageOffset()+1;
 %>
-<table style="width:100%">
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><table style="width:100%">
 	<fd:PIPLayout id="piRow" rowSize="<%= GRID_ROW_SIZE %>" impressions="<%= impressions %>" maxRowHeight="rowHeight" singleRowMode="<%= false %>">
 		<tr>
 			<% int colCount = 0; %>
@@ -65,7 +65,7 @@ int rank = nav.getPageOffset()+1;
 				double basePrice = Double.NaN;
 				if (pi.getProductInfo() != null) {
 					defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-					priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
+					priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
 					hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
 					basePrice = Double.NaN;
 					if (hasWas) {
@@ -111,14 +111,14 @@ int rank = nav.getPageOffset()+1;
 					if (defaultPrice != null) { %>
 						<div class="normal-price">
 						<% if (hasWas) { %>
-							<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+							<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 							</div>
 							<div style="white-space: nowrap;">
 							<span class="save-base-price">
-								(was <%=CURRENCY_FORMATTER.format(basePrice) %>)
+								(was <%=JspMethods.formatPrice(basePrice) %>)
 							</span>
 						<% } else { %>
-								<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+								<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 						<% } %>
 						</div>
 					<% }

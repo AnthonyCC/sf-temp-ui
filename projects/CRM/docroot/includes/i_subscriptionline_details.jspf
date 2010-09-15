@@ -1,4 +1,5 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="java.util.HashMap"%>
 <% boolean firstRecipe=true; 
    Map allDeptsMap=new HashMap();
@@ -75,7 +76,7 @@
     </td>
     <td width="8%" align="center">(<%= cartLine.getUnitPrice() %>)</td>
     <td width="6%" align="right">&nbsp;</td>
-    <td align="right"><%=CCFormatter.formatCurrency(cartLine.getPrice()) %></b></td>
+    <td align="right"><%=JspMethods.formatPrice(cartLine.getPrice()) %></b></td>
     <td width="1%" align="center">
         <b><%= (cartLine.hasTax())  ? "T" : "&nbsp;" %></b>
     </td>

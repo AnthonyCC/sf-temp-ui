@@ -13,6 +13,7 @@
 
 <%
 FDSessionUser sessionuser1 = (FDSessionUser) session.getAttribute( SessionName.USER );
+
 if(null ==sessionuser1 || null == sessionuser1.getUser() ||sessionuser1.getUser().getLevel()> FDUserI.GUEST){
 %>
 

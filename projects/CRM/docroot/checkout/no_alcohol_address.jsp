@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.customer.*'%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import='java.net.URLEncoder'%>
@@ -35,7 +36,7 @@ Unfortunately, FreshDirect does not deliver alcohol to your building. You may ch
     boolean belowMinimum = !user.isOrderMinimumMet(true);
 	if (belowMinimum) {
         %><br>
-        <b>Because your order falls below our <%= CCFormatter.formatCurrency(user.getMinimumOrderAmount()) %> minimum when alcohol is removed, please return to your cart to add items before continuing checkout.</b><br>
+        <b>Because your order falls below our <%= JspMethods.formatPrice(user.getMinimumOrderAmount()) %> minimum when alcohol is removed, please return to your cart to add items before continuing checkout.</b><br>
 <%
 	}
 %>

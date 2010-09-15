@@ -474,8 +474,12 @@ public class SapOrderAdapter implements SapOrderI {
 		 * Get orderline description.
 		 */
 		public String getDescription() {
-			// return the labelname attrib if there's one
-			return this.fdProduct.getAttribute(EnumAttributeName.LABEL_NAME.getName(), this.orderLine.getDescription());
+		    // return the labelname attrib if there's one
+		    String d = this.fdProduct.getLabelName();
+		    if (d == null) {
+			return this.orderLine.getDescription();
+		    }
+		    return d;
 		}
 
 		/**

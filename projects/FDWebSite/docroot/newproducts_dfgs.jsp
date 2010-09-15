@@ -246,7 +246,6 @@
 			<tr><td style="font-size: 18px; font-weight: normal; padding: 10px 0;" valign="middle"><%=filteredHeader%></td></tr>
 		<% } %>
 		<%
-		//System.out.println("Product size $$$$$$$$$$$ "+products.size());
 		if (products.size()!=0){
 		%>
 		<tr>

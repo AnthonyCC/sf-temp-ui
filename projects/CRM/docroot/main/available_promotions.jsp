@@ -99,7 +99,7 @@
                 <td width="1%"  class="border_bottom">&nbsp;</td>
                 <td width="20%" class="border_bottom" style="font-weight: normal"><a href="<%= linkURL %>"><%=p.getName()%></a></td>
                 <td width="20%" class="border_bottom" style="font-weight: normal"><a href="<%= linkURL %>"><%=p.getDescription() %></a>&nbsp;</td>
-				<td width="10%" class="border_bottom" style="font-weight: normal"><%=CCFormatter.formatCurrency(p.getAmount())%>&nbsp;</td>
+				<td width="10%" class="border_bottom" style="font-weight: normal"><%=JspMethods.formatPrice(p.getAmount())%>&nbsp;</td>
                 <td width="4%"  class="border_bottom" style="font-weight: normal"><a href='javascript:popup("/shared/promotion_popup.jsp?promoCode=<%=p.getCode()%>&cc=true", "<%=EnumPromotionType.SIGNUP.equals(ptype)?"large":"small"%>")'>Details</a>&nbsp;</td>
 				<td width="15%" class="border_bottom" style="font-weight: normal"><%=CCFormatter.formatDate(p.getStart())%>&nbsp;</td>
                 <td width="18%" class="border_bottom" style="font-weight: normal"><%=p.getZone()%>&nbsp;</td>

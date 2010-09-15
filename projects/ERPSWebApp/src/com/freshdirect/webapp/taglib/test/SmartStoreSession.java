@@ -12,6 +12,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUser;
 
+@SuppressWarnings("deprecation")
 public class SmartStoreSession implements javax.servlet.http.HttpSession {
 	
 	private HttpSession session;

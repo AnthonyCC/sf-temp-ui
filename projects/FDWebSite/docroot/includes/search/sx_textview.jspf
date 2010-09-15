@@ -33,7 +33,6 @@ Smart Search Text View (Tree)
 <fd:CheckLoginStatus />
 <%
 
-final java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 final FDUserI u = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 
@@ -64,7 +63,7 @@ ContentNodeModel lastSubCategory = null;
 		double realBase = 0.0;
 		if (pi.getProductInfo() != null) {
 			defaultPrice = new Double(pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).getDefaultPrice());
-			priceUnit = pi.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
+			priceUnit = JspMethods.formatPricingUnit(pi.getProductInfo());
 			hasWas = pi.getProductInfo().getZonePriceInfo(u.getPricingContext().getZoneId()).isItemOnSale();
 			wasDeal = -1;
 			basePrice = 0.0;
@@ -133,11 +132,11 @@ ContentNodeModel lastSubCategory = null;
 			if (defaultPrice != null) {%>
 				-
 				<% if (hasWas) { %>
-				<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%= CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+				<span class="<%= scaledPrices.length > 0 ? "save-price-tiered" : "save-price" %>"><%= JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				<span class="save-label">SAVE <%= wasDeal %>%</span>
-				<span class="save-base-price">was <%= CURRENCY_FORMATTER.format(basePrice) %></span> 
+				<span class="save-base-price">was <%= JspMethods.formatPrice(basePrice) %></span> 
 				<% } else { %>
-					<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=CURRENCY_FORMATTER.format(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
+					<span class="<%= scaledPrices.length > 0 ? "normal-price-tiered" : "normal-price" %>"><%=JspMethods.formatPrice(defaultPrice.doubleValue()) %>/<%= priceUnit %></span>
 				<% } %> 
 		<%
 			}			

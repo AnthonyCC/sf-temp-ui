@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConversionException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormInputLineLengthException;
@@ -50,7 +50,7 @@ class Record
 
     private RecordDefinition recordDefinition;
 
-    static Category cat = Category.getInstance(Record.class);
+    static Logger cat = Logger.getLogger(Record.class);
 
     public Record()
     {

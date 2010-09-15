@@ -30,9 +30,6 @@
 		isRecipPreview = true;
 	}
 
-	if ( request.getParameter("isEmailPreview") != null ) { System.out.println("isEmailPreview : "+(String)request.getParameter("isEmailPreview")); }
-	if ( request.getParameter("isPdfPreview") != null ) { System.out.println("isPdfPreview : "+(String)request.getParameter("isPdfPreview")); }
-	if ( request.getParameter("isRecipPreview") != null ) { System.out.println("isRecipPreview : "+(String)request.getParameter("isRecipPreview")); }
 
 	// if we're targeting an email preview or a PDF preview
 	if (isEmailPreview || isPdfPreview) {
@@ -85,8 +82,6 @@
 		<fd:IncludeMedia name="<%= mediaPath %>" parameters="<%=params%>"/>
 		<%
 		
-		//System.out.println("mediaPath : "+mediaPath);
-	
 	} else if (isRecipPreview) {
 		/*
 		 *	data is coming from the stored session, so no validation (again)
@@ -129,8 +124,6 @@
 			
 			%><%=json.toString()%><%
 		}
-		
-		//System.out.println("json.toString : "+json.toString());
 	}
 
 %>

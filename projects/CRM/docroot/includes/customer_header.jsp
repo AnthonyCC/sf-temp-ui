@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.SignupDiscountRule" %> 
 <%@ page import="com.freshdirect.crm.CrmCustomerHeaderInfo" %>
 <%@ page import="com.freshdirect.framework.core.PrimaryKey" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri="crm" prefix="crm" %>
 
@@ -76,7 +77,7 @@
                     %>
                     
                     <% if (availCredit > 0.0) { %>
-						<%= promoValue > 0 || user.isFraudulent() ? " | " : "" %><span class="cust_header_field">Available store credit</span> <b><%= CCFormatter.formatCurrency(availCredit) %></b>
+						<%= promoValue > 0 || user.isFraudulent() ? " | " : "" %><span class="cust_header_field">Available store credit</span> <b><%= JspMethods.formatPrice(availCredit) %></b>
 					<% } %>
                 
                 <% } else { %>

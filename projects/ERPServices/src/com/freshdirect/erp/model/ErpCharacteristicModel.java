@@ -168,7 +168,7 @@ public class ErpCharacteristicModel extends ErpModelSupport implements DurableMo
 		}
 		// create clone
 		ErpCharacteristicModel filteredChar = new ErpCharacteristicModel( this.getName(), list );
-		filteredChar.setAttributes( this.getAttributes() );
+		filteredChar.setAttributesKey(this.getAttributesKey());
 		return filteredChar;
 	}
 

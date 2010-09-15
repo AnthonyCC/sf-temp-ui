@@ -5,6 +5,7 @@
 <%@ page import='java.text.*' %>
 <%@ page import='com.freshdirect.webapp.util.RequestUtil'%>
 <%@ page import='com.freshdirect.fdstore.customer.adapter.FDOrderAdapter' %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -27,7 +28,6 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 
 <%!	DecimalFormat quantityFormatter = new DecimalFormat("0.##");
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 %>
 
 <tmpl:put name='content' direct='true'>
@@ -76,9 +76,9 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 					<TD WIDTH="90%">
 					<logic:iterate id="lastOrder" length="8" collection="<%= orderInfos %>" type="com.freshdirect.fdstore.customer.FDOrderInfoI">
 <% if (lastOrder.getErpSalesId().equals(orderId)) { %>
-						<b><%= dateFormatter.format( lastOrder.getRequestedDate() ) %> (<%= currencyFormatter.format( lastOrder.getTotal() ) %>)</b>. &nbsp;
+						<b><%= dateFormatter.format( lastOrder.getRequestedDate() ) %> (<%= JspMethods.formatPrice( lastOrder.getTotal() ) %>)</b>. &nbsp;
 <% } else { %>	
-						<a href="/order/quickshop/shop_from_order.jsp?orderId=<%= lastOrder.getErpSalesId() %>"><%= dateFormatter.format( lastOrder.getRequestedDate() ) %></a> (<%= currencyFormatter.format( lastOrder.getTotal() ) %>) &middot;&nbsp;
+						<a href="/order/quickshop/shop_from_order.jsp?orderId=<%= lastOrder.getErpSalesId() %>"><%= dateFormatter.format( lastOrder.getRequestedDate() ) %></a> (<%= JspMethods.formatPrice( lastOrder.getTotal() ) %>) &middot;&nbsp;
 <% } %>
 					</logic:iterate>
 					<BR>

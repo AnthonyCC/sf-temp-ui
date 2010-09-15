@@ -33,32 +33,31 @@
 <div class="home_search_module_content" style="height:91%;">
 <crm:AdminToolsController result="result">
 <%
-    
+
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    //System.out.println("restrictions in jsp123 :"+result);
     request.setAttribute("admResult",result);
-	
+
 %>
 	<fd:ErrorHandler result='<%= result %>' name='actionfailure' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	   <%@ include file="/includes/i_error_messages.jspf" %>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%= result %>' name='cancelsuccess' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	   <%@ include file="/includes/i_error_messages.jspf" %>
 	</fd:ErrorHandler>
 <crm:GenericLocator id="restrictions" searchParam='DEL_RESTRICTION_SEARCH' result="result">
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	   <%@ include file="/includes/i_error_messages.jspf" %>
 	</fd:ErrorHandler>
 	<fd:ErrorHandler result='<%= result %>' name='searchfailure' id='errorMsg'>
-	   <%@ include file="/includes/i_error_messages.jspf" %>   
-	</fd:ErrorHandler>	
+	   <%@ include file="/includes/i_error_messages.jspf" %>
+	</fd:ErrorHandler>
 <form name="delRestrictions" id="delRestrictions" method='POST' onsubmit="javascript:doSearch();">
 <%@ include file="/includes/admintools/i_del_restriction_search.jspf"%>
 <input type="hidden" name="restrictionId" value="">
  <%
            String successMsg=(String)request.getAttribute("successMsg");
             if(successMsg==null) successMsg="";
- 
+
 	int prcLimit = FDStoreProperties.getOrderProcessingLimit();
 %>
 <table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
@@ -68,7 +67,7 @@
 			<input type="submit" value="SEARCH RESTRICTIONS" class="submit">&nbsp;&nbsp;
 			<input type="button" value="CLEAR" class="submit" onclick="javascript:clearAll();">
 		</td>
-		
+
 
 	</tr>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b3> <font color="red"> <%=successMsg%> </font> <b3>
@@ -80,7 +79,7 @@
 	<tr><td colspan="2">
 	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:420;">
 		<%@ include file="/includes/admintools/restrictions_list.jspf"%>
-	</div>		
+	</div>
 	</td></tr>
     <tr colspan="2">
 	<td>
@@ -90,7 +89,7 @@
 	<tr><td colspan="2">
 	<div class="home_search_module_content" style="background=#FFFFFF; overflow:auto;width=100%;height:180;">
 		<%@ include file="/includes/admintools/add_blocked_day.jspf"%>
-	</div>		
+	</div>
 	</td></tr>
     <tr colspan="2">
 	<td>
@@ -98,22 +97,22 @@
 	</td>
 	</tr>
 	<tr><td colspan="2">
-    <span class="header_text"><b>Plater Cutoffs</b> Modify kitchen/catering website cutoff for given day of week </span>				
+    <span class="header_text"><b>Plater Cutoffs</b> Modify kitchen/catering website cutoff for given day of week </span>
 	</td></tr>
     <tr><td colspan="2">
-      <A HREF="javascript:void(0)" onclick="window.open('/admintools/platterForm.jsp?actionType=getPlatterRestriction','getPlatterRestriction','width=350,height=400,menubar=no,status=no')">View/Edit</a>					
+      <A HREF="javascript:void(0)" onclick="window.open('/admintools/platterForm.jsp?actionType=getPlatterRestriction','getPlatterRestriction','width=350,height=400,menubar=no,status=no')">View/Edit</a>
 	</td></tr>
    <!-- <tr><td colspan="2">
     <span class="header_text"><b>Holiday Pre-order</b> Reverse Restrictions on annual receuuring holiday , items only available on specific days
-	</td></tr> 
+	</td></tr>
     <tr><td colspan="2">
-      <a href="">View/Edit</a>					
+      <a href="">View/Edit</a>
 	</td></tr>  -->
     <tr><td colspan="2">
     <span class="header_text"><b>Kosher Holiday Schedule</b> Update Jewish holiday Dates
 	</td></tr>
     <tr><td colspan="2">
-      <A HREF="javascript:void(0)" onclick="window.open('/admintools/kosherForm.jsp?actionType=getKosherRestriction','getKosherRestriction','width=450,height=400,menubar=no,status=no')">View/Edit</a>					
+      <A HREF="javascript:void(0)" onclick="window.open('/admintools/kosherForm.jsp?actionType=getKosherRestriction','getKosherRestriction','width=450,height=400,menubar=no,status=no')">View/Edit</a>
 	</td></tr>
 </table>
 </form>

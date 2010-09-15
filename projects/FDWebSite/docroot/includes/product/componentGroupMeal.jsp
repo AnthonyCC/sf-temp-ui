@@ -18,7 +18,6 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%!
-	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <%
@@ -189,7 +188,7 @@ if (pgErrs.size()>0) {
 	    <span class="title13"><%=productNode.getSubtitle()%></span><br>
   <%      } %>  
 	    <span class="space2pix"><br></span>
-	  <span class="title16"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	  <span class="title16"><%= JspMethods.formatPrice(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
 	  <br><span class="space8pix"><br></span>
 	</td></tr>
 	<tr>
@@ -228,7 +227,7 @@ if (isAvailable ) {
 			FDVariationOption[] varOpts = (FDVariationOption[]) variations.get(matCharName);
 			if (varOpts==null) continue;
 			for (int optIdx=0;optIdx<varOpts.length;optIdx++ ){
-				String optSkuCode=varOpts[optIdx].getAttribute(EnumAttributeName.SKUCODE);
+				String optSkuCode=varOpts[optIdx].getSkuCode();
 				
 				//somtimes skucode attrib in erps may be missing..so handle it, so we dont get SkuNotFoundException
 				if (optSkuCode==null || "".equals(optSkuCode.trim())) {
@@ -337,7 +336,7 @@ if (isAvailable ) {
 						<select name="<%=mcName+suffix%>" CLASS="text11" <%=(!paintDropdownVertical ?"style=\"width: 190px\"" :"")%>><option value=""><%=(String)fdVarOptDesc.get(mcName)%></option>
 						<%				
 						for (int voIdx = 0; voIdx < varOpts.length; voIdx++) {
-							String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+							String optSkuCode=varOpts[voIdx].getSkuCode();
 				                        if (optSkuCode==null || "".equals(optSkuCode.trim()) ) continue;
 				                        
 							ProductModel pm = (ProductModel)cf.getProduct(optSkuCode);

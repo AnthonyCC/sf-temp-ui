@@ -12,6 +12,7 @@
 <%@ page import="com.freshdirect.fdstore.FDReservation" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDOrderHistory" %>
 <%@ page import="com.freshdirect.webapp.util.JspLogger"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -242,24 +243,24 @@
 		<table width="100%" cellpadding="2" cellspacing="0" border="0">
 	     		<tr bgcolor="white">
 		 	<td  colspan="2" align="right" style="BORDER-LEFT: orange thin dashed">Order total :</td><!--  (at 125% if estimated): -->
-		 	<td align="left" ><%= CCFormatter.formatCurrency(cart.getTotal()) %></td>
+		 	<td align="left" ><%= JspMethods.formatPrice(cart.getTotal()) %></td>
 		 	<td style="BORDER-RIGHT: orange thin dashed"  align="left">&nbsp;</td>
 		 	<% if(isPaymentRequired) { 
 		 		show = true; 
 		 	%>
-		 		<%--<td rowspan="3">&nbsp;&nbsp;Additional Payment <BR/>&nbsp;&nbsp;Method Required for: <%= CCFormatter.formatCurrency(cart.getCCPaymentAmount()) %></td>--%>
+		 		<%--<td rowspan="3">&nbsp;&nbsp;Additional Payment <BR/>&nbsp;&nbsp;Method Required for: <%= JspMethods.formatPrice(cart.getCCPaymentAmount()) %></td>--%>
 	     		<% } else { %>
 	     			<td rowspan="3">&nbsp;&nbsp;Proceed <BR/>&nbsp;&nbsp;No amount due </td>
 	     		<% } %>
 	     		</tr>
 	     		<%-- <tr bgcolor="white">
 		      	<td colspan="2" align="right" style="BORDER-LEFT: orange thin dashed; BORDER-BOTTOM: orange thin dashed">Gift Card Amount to Be Applied:</td>
-		      	<td align="left" style="BORDER-BOTTOM: orange thin dashed"><b><%= CCFormatter.formatCurrency(cart.getTotalAppliedGCAmount()) %></b></td>
+		      	<td align="left" style="BORDER-BOTTOM: orange thin dashed"><b><%= JspMethods.formatPrice(cart.getTotalAppliedGCAmount()) %></b></td>
 		      	<td style="BORDER-RIGHT: orange thin dashed; BORDER-BOTTOM: orange thin dashed" align="left">&nbsp;</td>	           
 	     		</tr>  
 	      		<tr valign="top" style="background-color: #FF9933">
 		      	<td colspan="2" align="right" style="color: white">Amount Due:</td>
-		      	<td align="left" style="color: white"><b><%= CCFormatter.formatCurrency(cart.getCCPaymentAmount()) %></b></td>
+		      	<td align="left" style="color: white"><b><%= JspMethods.formatPrice(cart.getCCPaymentAmount()) %></b></td>
 		      	<td align="left"></td>
 	     		</tr>	     --%>
 		</table>     

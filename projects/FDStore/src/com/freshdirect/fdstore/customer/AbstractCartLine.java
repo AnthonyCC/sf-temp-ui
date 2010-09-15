@@ -252,8 +252,7 @@ public abstract class AbstractCartLine extends FDProductSelection implements FDC
 	}
 
 	public boolean hasAdvanceOrderFlag() {
-		FDProduct fdp = this.lookupFDProduct();
-		return fdp.getAttributeBoolean(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(),false);
+		return this.lookupFDProduct().hasAdvanceOrderFlag();
 	}
 	
 

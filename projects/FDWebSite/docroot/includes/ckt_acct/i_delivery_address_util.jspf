@@ -1,3 +1,8 @@
+<%@page import="org.apache.log4j.Logger"%>
+<%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%!
+  final Logger LOG = LoggerFactory.getInstance(this.getClass());
+%>
 <%
 
 int leaveIndex;
@@ -41,7 +46,7 @@ if(tmpFldDlvInstructions!=null){
 					fldDlvInstructions = tmpFldDlvInstructions.substring( noteIndex+6 );
 				}
 		}catch(StringIndexOutOfBoundsException ob){
-			System.out.println("The Special instructions broke");
+			LOG.info("The Special instructions broke", ob);
 		}
 }
 %>

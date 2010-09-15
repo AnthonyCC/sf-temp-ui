@@ -163,12 +163,4 @@
 		//close stream
 		os.close();
 	
-	// Debug Prints ******************************
-		//System.out.println("----- inputFile : "+inputFile);
-		//System.out.println("----- URL inputFile : "+inputFile);
-		//System.out.println("----- getContextPath : "+request.getContextPath());
-		//System.out.println("----- URL : "+url);
-		//System.out.println("----- sw.toString() : "+sw.toString());
-	// Debug Prints ******************************
-
 %>

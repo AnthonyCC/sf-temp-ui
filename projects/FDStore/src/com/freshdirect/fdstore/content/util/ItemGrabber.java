@@ -199,21 +199,20 @@ public class ItemGrabber {
 		return rtnValue;
 	}
 	
-	private void filterDiscItems() throws FDResourceException {
-		
-		if (this.filterDiscontinued && this.skuList.size()>0) {
-			// make sure FDProductInfos are cached
-			FDCachedFactory.getProductInfos( (String[])this.skuList.toArray( new String[0] ) );
-
-			// remove discontinued products from workSet
-			for (ListIterator<ContentNodeModel> i=this.workSet.listIterator(); i.hasNext(); ) {
-				ContentNodeModel node = i.next();
-				if (node instanceof ProductModel && ((ProductModel)node).isDiscontinued() ) {
-					i.remove();
-				}
-			}			
-		}		
-	}
-
+        private void filterDiscItems() throws FDResourceException {
+    
+            if (this.filterDiscontinued && this.skuList.size() > 0) {
+                // make sure FDProductInfos are cached
+                FDCachedFactory.getProductInfos(this.skuList);
+    
+                // remove discontinued products from workSet
+                for (ListIterator<ContentNodeModel> i = this.workSet.listIterator(); i.hasNext();) {
+                    ContentNodeModel node = i.next();
+                    if (node instanceof ProductModel && ((ProductModel) node).isDiscontinued()) {
+                        i.remove();
+                    }
+                }
+            }
+        }
 
 }

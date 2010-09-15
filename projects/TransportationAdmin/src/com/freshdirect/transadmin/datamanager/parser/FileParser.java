@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConfigurationValueException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConversionException;
@@ -52,7 +52,7 @@ public class FileParser
 
     private static String EXCEPTIONS = "exception";
 
-    private Category cat = Category.getInstance(FileParser.class);
+    private Logger cat = Logger.getLogger(FileParser.class);
 
     private BufferedReader bufIn = null;
 

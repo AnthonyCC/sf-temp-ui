@@ -7,6 +7,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AutoComplete {
 
+    static boolean disableAutocompleter = false;
+
     private final static Logger LOGGER = LoggerFactory.getInstance(ContentSearch.class);
 	private AutocompleteService autocompletion;
 	private Thread autocompleteUpdater;
@@ -25,16 +27,20 @@ public class AutoComplete {
 	}
 	
 	
-	public AutocompleteService createAutocompleteService() {
-		AutocompleteService autocompletion = new AutocompleteService();
-		autocompletion.setCounterCreator(cc);
-		autocompletion.setWordList(wordlist.getWords());
-    	autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
-        return autocompletion;     
+    public AutocompleteService createAutocompleteService() {
+        AutocompleteService autocompletion = new AutocompleteService();
+        autocompletion.setCounterCreator(cc);
+        autocompletion.setWordList(wordlist.getWords());
+        autocompletion.addAllBadSingular(SearchRelevancyList.getBadPluralFormsFromCms());
+        return autocompletion;
     }
     
     public void setAutocompleteService(AutocompleteService serv) {
     	autocompletion = serv;
+    }
+    
+    public static void setDisableAutocompleter(boolean d) {
+        disableAutocompleter = d;
     }
     
     public AutocompleteService getAutocompleteService() {
@@ -42,6 +48,10 @@ public class AutoComplete {
     }
 	
     public AutocompleteService initAutocompleter(String autocompleter) {
+        if (disableAutocompleter) {
+            LOGGER.info("auto completer is disabled");
+            return null;
+        }
         LOGGER.info("initautocompleter");
         synchronized(this) {
             if (this.autocompletion == null) {

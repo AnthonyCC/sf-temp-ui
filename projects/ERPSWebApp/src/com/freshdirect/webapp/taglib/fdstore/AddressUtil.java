@@ -6,13 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
-import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpDuplicateAddressException;

@@ -115,7 +115,6 @@
 									String promotionCode = "";
 									String hideSavingsUrl = "";
                                     Date promoExpDate = new Date();
-                                    System.out.println("Smart Savings "+tab.get(k).isSmartSavings());
 									if (tab.get(k).isSmartSavings()) {
                                         
 										FDUserI xUser = (FDUserI) session.getAttribute(SessionName.USER);

@@ -52,8 +52,6 @@ request.setAttribute("listPos", "CategoryNote");
 	if(siteAccessPage == null){
 		siteAccessPage = "aboutus";
 	}
-	System.out.println("siteAccessPage: " + siteAccessPage);
-	System.out.println(request.getRequestURI());
 	String actionURI = "/site_access/site_access_lite.jsp?successPage="+URLEncoder.encode(successPage);
 	
 %>	

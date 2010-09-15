@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.JspLogger" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ page import="com.freshdirect.payment.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
@@ -20,7 +21,6 @@
 <tmpl:put name='title' direct='true'>Place auto_renew Order</tmpl:put>
 <% 
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-    System.out.println("Hello..");
     FDCartI order = (FDCartI) session.getAttribute("SUBSCRIPTION_CART");
     ErpPaymentMethodI paymentMethod=order.getPaymentMethod();
      
@@ -151,7 +151,7 @@
          
          
 		displayString = "Delivery Charge:";
-		value.append(CCFormatter.formatCurrency(order.getDeliverySurcharge()));
+		value.append(JspMethods.formatPrice(order.getDeliverySurcharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    
 	  %>   
@@ -167,13 +167,13 @@
 			</tr>
 				<td colspan="3"></td>
 				<td colspan="2">Total Tax: </td>
-				<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getTaxValue())%></td>
+				<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getTaxValue())%></td>
 			<tr>
 		<%}%>
 		
 		            <td colspan="3"></td>
 				    <td colspan="2"><b>Order Total</b></td>
-				    <td colspan="2" align="right"><b><%=CCFormatter.formatCurrency(order.getTotal()) %></td>
+				    <td colspan="2" align="right"><b><%=JspMethods.formatPrice(order.getTotal()) %></td>
 
 		</tr>
 

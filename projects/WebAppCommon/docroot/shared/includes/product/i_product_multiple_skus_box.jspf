@@ -103,14 +103,14 @@
                           <fd:FDProductInfo id="productInfo" skuCode="<%= ((SkuModel)group.get(0)).getSkuCode() %>">
 							<fd:FDProduct id="product" productInfo="<%= productInfo %>">
 							<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
-						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+						      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+						      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 						      <br/>
-						      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
+						      <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
 						      <br/>
 						    <% } else { %>
-						      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-						      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+						      <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+						      <font class="productPageSecondaryVarPriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 						    <% } %>
 						    </fd:FDProduct>
                           </fd:FDProductInfo>
@@ -195,14 +195,14 @@
 		
 			if (!allSamePrice) { // extra space below for Size desc and price %> 
 				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
-			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+			      <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+			      <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 			      <br/>
-			      <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
+			      <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
 			      <br/>
 			    <% } else { %>
-			      <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-			      <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+			      <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+			      <font class="productPageSecondaryVarPriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
 			    <% } 
 			}
 		
@@ -233,14 +233,14 @@
 	
                            if (!allSamePrice) { // extra space below for Size desc and price %> 
                            	<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale()) { %>
-                                <font class="productPageSecondaryVarPrice" color="#C94747"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-                                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
                                 <br/>
-                                <font class="text11nb">(was <%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()) %>)</font>
+                                <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
                                 <br/>
                                <% } else { %>
-                                <font class="productPageSecondaryVarPrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font>
-                                <font class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                                <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
+                                <font class="productPageSecondaryVarPriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
                                <% } 
                            }
                            
@@ -283,7 +283,6 @@
 		  }
 		  if(label != null && !freshnessList.contains(label)) {
 			freshnessList.add(label);
-			System.out.println("adding domainLabel = " + label);
 		  }
                   session.setAttribute("freshList", freshnessList);
                 %>

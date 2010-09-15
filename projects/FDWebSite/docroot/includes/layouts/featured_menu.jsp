@@ -88,7 +88,6 @@ if (sortedColl==null) sortedColl = new ArrayList();
 		<img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
 <%
 	// TEST CategoryModel testCat = (CategoryModel) ContentFactory.getInstance().getContentNode("cof_ef_org");
-	// System.err.println("TEST CAT: " + testCat);
 %>
 <fd:ProductGroupRecommender siteFeature="FEATURED_ITEMS" id="recommendations" facility="cat_feat_items"  currentNode="<%= currentFolder %>" itemCount="4"><%
 	if (recommendations != null && recommendations.getProducts().size() > 0) {
@@ -102,7 +101,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 			String fiProdPrice = null;
 			String fiSubtitle = productNode.getSubtitle();
 %><fd:FDProductInfo id="productInfo" skuCode="<%= productNode.getDefaultSku().getSkuCode() %>"><%
-			fiProdPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+			fiProdPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %></fd:FDProductInfo><%
 			String actionURI = FDURLUtil.getProductURI(productNode, recommendations.getVariant().getId(), "feat", pl.getTrackingCode(), ord, recommendations.getImpressionId(productNode));
 %>			<p style="border: 0px; padding: 0px; margin: 0px;">
@@ -164,7 +163,7 @@ if (sortedColl==null) sortedColl = new ArrayList();
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %>                      
         </fd:FDProductInfo>
 <%

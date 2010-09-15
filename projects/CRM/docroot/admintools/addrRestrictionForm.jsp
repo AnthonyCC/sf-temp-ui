@@ -33,11 +33,9 @@
      </script> 
 
     <% 
-      System.out.println("inside restrictionForm.jsp :"+request.getParameter("address1"));
       String address1=request.getParameter("address1");
       String reason = NVL.apply(request.getParameter("reason"), "all");
 	  String apartment = NVL.apply(request.getParameter("apartment"), "");
-       System.out.println("inside restrictionForm.jsp : "+apartment);
       String zipCode = NVL.apply(request.getParameter("zipCode"), "");
                               
     %>

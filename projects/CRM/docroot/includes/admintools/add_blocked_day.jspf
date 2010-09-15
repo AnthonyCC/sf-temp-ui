@@ -23,7 +23,6 @@
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp :"+result);
 	 ActionResult actResult=(ActionResult) request.getAttribute("admResult");
 %>
 <script>
@@ -46,7 +45,6 @@ function addBlockedDays() {
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    //System.out.println("restrictions in jsp :"+restrictions);
 	
 %>
 

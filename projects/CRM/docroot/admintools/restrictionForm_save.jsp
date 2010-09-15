@@ -32,7 +32,6 @@
 
 
     <% 
-      System.out.println("inside restrictionForm.jsp :"+request.getParameter("restrictionId"));
       String restrictionId=request.getParameter("restrictionId");
       String startDate = 
 			NVL.apply(request.getParameter("startDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));

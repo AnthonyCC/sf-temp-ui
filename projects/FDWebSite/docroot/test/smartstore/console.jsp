@@ -6,7 +6,7 @@
 <%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <html>
 <head>
-	<link rel="stylesheet" type="text/css" href="config.css" />
+	<link rel="stylesheet" type="text/css" href="/test/search/config.css" />
 	<title>Console</title>
 </head>
 <body>

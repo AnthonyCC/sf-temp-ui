@@ -13,6 +13,7 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.search.AttributeIndex;
+import com.freshdirect.cms.search.AutoComplete;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
@@ -65,7 +66,7 @@ public class ContentSearchTest extends FDCustomerManagerTestSupport {
         aspectSystem.add(new FDFactoryProductInfoAspect().addAvailableSku("DAI0008813", 2.0).addAvailableSku("DAI0008812", 3.0).addAvailableSku("CAN0062899", 4.0)
                 .addAvailableSku("DAI0059088", 5.0));
 
-        ContentSearch.getInstance().setDisableAutocompleter(true);
+        AutoComplete.setDisableAutocompleter(true);
     }
 
 

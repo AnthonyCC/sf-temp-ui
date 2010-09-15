@@ -13,7 +13,7 @@
 		}
 
 		if(displayPrice>0){
-			displayPriceString = "about "+ JspMethods.formatDecimal(salesUnitRatio) + baseUnit.toLowerCase() + ", " + JspMethods.currencyFormatter.format( displayPrice ) + "/" +baseUnit.toLowerCase();	
+			displayPriceString = "about "+ JspMethods.formatDecimal(salesUnitRatio) + baseUnit.toLowerCase() + ", " + JspMethods.formatPrice(displayPrice, baseUnit);	
 		}
 	}
 %>     

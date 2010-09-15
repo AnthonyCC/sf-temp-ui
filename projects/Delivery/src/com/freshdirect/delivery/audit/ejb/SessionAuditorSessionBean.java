@@ -3,7 +3,7 @@ package com.freshdirect.delivery.audit.ejb;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -12,13 +12,13 @@ import com.freshdirect.delivery.HibernateUtil;
 import com.freshdirect.delivery.audit.SessionAuditEntry;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class SessionAuditorSessionBean extends SessionBeanSupport {
 	
 	private SessionFactory sf = HibernateUtil.getSessionFactory();
 
-	private static final Category LOGGER = Category
-			.getInstance(SessionAuditorSessionBean.class);
+	private static final Logger LOGGER = LoggerFactory.getInstance(SessionAuditorSessionBean.class);
 
 	public List getSessionLogEntries(DateRange range) {
 		Session session = sf.getCurrentSession();

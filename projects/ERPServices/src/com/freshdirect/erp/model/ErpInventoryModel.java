@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import com.freshdirect.fdstore.FDVersion;
 import com.freshdirect.framework.core.ModelSupport;
 
 /**
@@ -23,7 +24,7 @@ import com.freshdirect.framework.core.ModelSupport;
  * @author     $Author$
  * @stereotype fd-model
  */
-public class ErpInventoryModel extends ModelSupport {
+public class ErpInventoryModel extends ModelSupport implements FDVersion<Date> {
 
 	/** SAP unique material number */
 	private String sapId;
@@ -90,4 +91,8 @@ public class ErpInventoryModel extends ModelSupport {
 		return buf.toString();
 	}
 
+	@Override
+	public Date getVersion() {
+		return lastUpdated;
+	}
 }

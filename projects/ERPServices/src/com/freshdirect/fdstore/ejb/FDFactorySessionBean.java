@@ -23,6 +23,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.ejb.ErpInfoHome;
@@ -36,6 +37,7 @@ import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -49,13 +51,16 @@ import com.freshdirect.framework.core.SessionBeanSupport;
 public class FDFactorySessionBean extends SessionBeanSupport {
 	private static final long serialVersionUID = 8471002847721814732L;
 
-	private transient ErpInfoHome infoHome = null;
 	private transient ErpProductHome productHome = null;
 	private transient ErpZoneInfoHome zoneHome = null;
 	
 	
 	private FDProductHelper productHelper = new FDProductHelper();
 
+	protected ErpInfoSB getErpInfoSB() {
+	    return ERPServiceLocator.getInstance().getErpInfoSessionBean();
+	}
+	
 	/**
 	 * Get current product information object for sku.
 	 *
@@ -66,11 +71,8 @@ public class FDFactorySessionBean extends SessionBeanSupport {
  	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
 	public FDProductInfo getProductInfo(final String sku) throws FDSkuNotFoundException, FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 	
 			// find ErpProductInfo by SKU, and latest version
 			ErpProductInfoModel productInfo;
@@ -84,11 +86,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			return this.productHelper.getFDProductInfo(productInfo);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
     
@@ -104,11 +102,8 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public FDProductInfo getProductInfo(final String sku, final int version) throws FDSkuNotFoundException, FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 	
 			// find ErpProductInfo by SKU, and latest version
 			ErpProductInfoModel productInfo;
@@ -122,11 +117,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			return this.productHelper.getFDProductInfo(productInfo);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
 
@@ -140,11 +131,8 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
 	public Collection getProductInfos(final String[] skus) throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 			List productInfos = new ArrayList(skus.length);
 
 			Collection erpInfos = infoSB.findProductsBySku(skus);
@@ -157,11 +145,7 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			return productInfos;
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
 
@@ -197,82 +181,60 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
     }
-    
-    public Collection getNewSkuCodes(int days) throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
+
+	public Collection<FDSku> getChangedSkus(int lastVersion) throws FDResourceException {
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
+
+			return infoSB.getChangedSkus(lastVersion);
+
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		}
+	}
+
+    public Collection getNewSkuCodes(int days) throws FDResourceException {
+		try {
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.findNewSkuCodes(days);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
     
     public Map<String, Integer> getSkusOldness() throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getSkusOldness();
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
     
     public Collection getReintroducedSkuCodes(int days) throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.findReintroducedSkuCodes(days);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
 
 	public Collection getOutOfStockSkuCodes() throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.findOutOfStockSkuCodes();
-
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
-	
-	
-	
-	
 	
 	
 	/**
@@ -335,19 +297,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 		}
     }
 	
-	private void lookupInfoHome() throws FDResourceException {
-		Context ctx = null;
-		try {
-			ctx = new InitialContext();
-			this.infoHome = (ErpInfoHome) ctx.lookup("java:comp/env/ejb/ErpInfo");
-		} catch (NamingException ex) {
-			throw new FDResourceException(ex);
-		} finally {
-			try {
-				ctx.close();
-			} catch (NamingException ne) {}
-		}
-	}
 
 	private void lookupProductHome() throws FDResourceException {
 		Context ctx = null;
@@ -395,146 +344,90 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 	}
 	
 	public Collection findSKUsByDeal(double lowerLimit, double upperLimit,List skuPrefixes)throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.findSKUsByDeal(lowerLimit, upperLimit, skuPrefixes);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
 	
 	
 	public List findPeakProduceSKUsByDepartment(List skuPrefixes)throws FDResourceException {
-		if (this.infoHome==null) {
-			this.lookupInfoHome();	
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 			return infoSB.findPeakProduceSKUsByDepartment(skuPrefixes);
 
 		} catch (RemoteException re) {
-			this.infoHome=null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome=null;
-			throw new FDResourceException(ce);
 		}
 	}
 
 	public Map<String, Date> getNewSkus() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getNewSkus();
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}
 	}
 
 	public Map<String, Date> getBackInStockSkus() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getBackInStockSkus();
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}
 	}
 
 	public Map<String, Date> getOverriddenNewSkus() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getOverriddenNewSkus();
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}
 	}
 
 	public Map<String, Date> getOverriddenBackInStockSkus() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getOverriddenBackInStockSkus();
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}
 	}
 	
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			return infoSB.getSkuAvailabilityHistory(skuCode);
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}		
 	}
 
 	public void refreshNewAndBackViews() throws FDResourceException {
-		if (this.infoHome == null) {
-			this.lookupInfoHome();
-		}
 		try {
-			ErpInfoSB infoSB = this.infoHome.create();
+			ErpInfoSB infoSB = this.getErpInfoSB();
 
 			infoSB.refreshNewAndBackViews();
 
 		} catch (RemoteException re) {
-			this.infoHome = null;
 			throw new FDResourceException(re);
-		} catch (CreateException ce) {
-			this.infoHome = null;
-			throw new FDResourceException(ce);
 		}		
 	}
 }

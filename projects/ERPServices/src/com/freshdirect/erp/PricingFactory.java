@@ -54,18 +54,14 @@ public class PricingFactory {
 		}
 	};
 
-	public static Comparator erpMatpriceComparator  = new Comparator() {
-		public int compare(Object obj1, Object obj2) {
-				ErpProductInfoModel.ErpMaterialPrice mp1 = (ErpProductInfoModel.ErpMaterialPrice) obj1;
-				ErpProductInfoModel.ErpMaterialPrice mp2 = (ErpProductInfoModel.ErpMaterialPrice) obj2;
+	public static Comparator<ErpMaterialPrice> erpMatpriceComparator  = new Comparator<ErpMaterialPrice>() {
+		public int compare(ErpMaterialPrice mp1, ErpMaterialPrice mp2) {
 				return mp1.getSapZoneId().compareTo(mp2.getSapZoneId());
 		}
 	};
 	
-    public static Comparator scaleQuantityComparator = new Comparator() {
-        public int compare(Object o1, Object o2) {
-            ErpProductInfoModel.ErpMaterialPrice mp1 = (ErpProductInfoModel.ErpMaterialPrice) o1;
-            ErpProductInfoModel.ErpMaterialPrice mp2 = (ErpProductInfoModel.ErpMaterialPrice) o2;
+    public static Comparator<ErpMaterialPrice> scaleQuantityComparator = new Comparator<ErpMaterialPrice>() {
+        public int compare(ErpMaterialPrice mp1, ErpMaterialPrice mp2) {
             return new Double(mp1.getScaleQuantity()).compareTo(new Double(mp2.getScaleQuantity()));
         }
     };

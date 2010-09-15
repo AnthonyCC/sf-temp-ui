@@ -12,7 +12,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%!
-java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 

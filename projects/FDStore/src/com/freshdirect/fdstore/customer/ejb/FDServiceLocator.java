@@ -7,6 +7,7 @@ import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ejb.ActivityLogHome;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
 import com.freshdirect.customer.ejb.ErpCustomerManagerHome;
@@ -16,21 +17,24 @@ import com.freshdirect.delivery.ejb.DlvManagerHome;
 import com.freshdirect.deliverypass.ejb.DlvPassManagerHome;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.ejb.FDFactoryHome;
+import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.fdstore.survey.ejb.FDSurveyHome;
 import com.freshdirect.fdstore.survey.ejb.FDSurveySB;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
-import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.giftcard.ejb.GiftCardManagerHome;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
 import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
+import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
+import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
 import com.freshdirect.smartstore.ejb.VariantSelectionSB;
 
-public class FDServiceLocator extends ServiceLocator {
+public class FDServiceLocator extends ERPServiceLocator {
 
     static FDServiceLocator INSTANCE = null;
     
@@ -255,6 +259,44 @@ public class FDServiceLocator extends ServiceLocator {
             throw new EJBException(e);
         }        
     }
+    
+    public FDFactoryHome getFDFactoryHome() {
+        try {
+            return (FDFactoryHome) getRemoteHome( FDStoreProperties.getFDFactoryHome() );
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public FDFactorySB getFDFactorySB() {
+        try {
+            return getFDFactoryHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+
+    // get service configuration home bean
+    private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
+        try {
+            return (SmartStoreServiceConfigurationHome) getRemoteHome("freshdirect.smartstore.SmartStoreServiceConfiguration");
+        } catch (NamingException e) {
+            throw new EJBException(e);
+        }
+    }
+    
+    public SmartStoreServiceConfigurationSB getSmartStoreServiceConfiguration() {
+        try {
+            return getServiceConfigurationHome().create();
+        } catch (RemoteException e) {
+            throw new EJBException(e);
+        } catch (CreateException e) {
+            throw new EJBException(e);
+        }
+    }
+    
     
 
 }

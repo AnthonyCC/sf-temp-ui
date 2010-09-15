@@ -27,6 +27,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	THIS INCLUDE REQUIRES:
 	- boolean showFeesSection
@@ -139,7 +140,7 @@
 				<tr>
 		            <td colspan="3"></td>
 				    <td colspan="2"><%=desc%>:</td>
-				    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(discount.getAmount()) %>)<% if (hasInvoice) { %> / <b>(<%=CCFormatter.formatCurrency( discount2.getAmount() ) %>)</b><% } %></td>
+				    <td colspan="2" align="right">(<%=JspMethods.formatPrice(discount.getAmount()) %>)<% if (hasInvoice) { %> / <b>(<%=JspMethods.formatPrice( discount2.getAmount() ) %>)</b><% } %></td>
 		            <td colspan="4"></td>
 		            <td colspan="3"></td>
 		        </tr>
@@ -157,7 +158,7 @@
 				<tr>
 		            <td colspan="3"></td>
 				    <td colspan="2"><%=desc%>:</td>
-				    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(discount.getAmount()) %>)</td>
+				    <td colspan="2" align="right">(<%=JspMethods.formatPrice(discount.getAmount()) %>)</td>
 		            <td colspan="4"></td>
 		        </tr>		
 		<%
@@ -198,7 +199,7 @@
 		<tr>
 		    <td colspan="3"></td>
 			    <td colspan="2">Credits:</td>
-			    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(order.getCustomerCreditsValue())%>)<% if (hasInvoice) {%> / <b>(<%=CCFormatter.formatCurrency( order.getActualCustomerCreditsValue() )%>)</b><%}%></td>
+			    <td colspan="2" align="right">(<%=JspMethods.formatPrice(order.getCustomerCreditsValue())%>)<% if (hasInvoice) {%> / <b>(<%=JspMethods.formatPrice( order.getActualCustomerCreditsValue() )%>)</b><%}%></td>
 			    <td colspan="4"></td>
 		    <% if (hasInvoice) { %>
 		    <td colspan="3"></td>
@@ -210,13 +211,13 @@
 		<tr>
 		    <td colspan="3"></td>
 			    <td colspan="2">Gift Card Amount to Be Applied:</td>
-			    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(cart.getTotalAppliedGCAmount())%>)</td>
+			    <td colspan="2" align="right">(<%=JspMethods.formatPrice(cart.getTotalAppliedGCAmount())%>)</td>
 			    <td colspan="4"></td>
 		</tr>
 		<tr>
 		    <td colspan="3"></td>
 			    <td colspan="2">Remaining Gift Card Balance:</td>
-			    <td colspan="2" align="right">(<%=CCFormatter.formatCurrency(user.getGiftcardsTotalBalance())%>)</td>
+			    <td colspan="2" align="right">(<%=JspMethods.formatPrice(user.getGiftcardsTotalBalance())%>)</td>
 			    <td colspan="4"></td>
 		</tr>
 	<%  } %> --%>
@@ -235,7 +236,7 @@
 		value.append("$0.00");
 	    } else {
 		displayString = "Delivery Charge:";
-		value.append(CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }
 	    
@@ -246,7 +247,7 @@
 	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
 		   returnValue.append("$0.00 (waived)");
 	        } else {
-		   returnValue.append(CCFormatter.formatCurrency(order.getDeliverySurchargeOnReturn()));
+		   returnValue.append(JspMethods.formatPrice(order.getDeliverySurchargeOnReturn()));
 		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	        }
 	     	
@@ -266,7 +267,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(order.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
-			<td colspan="2" align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(order.getMiscellaneousCharge()) %><%}%></td>
+			<td colspan="2" align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(order.getMiscellaneousCharge()) %><%}%></td>
 		    <td><b><%=order.isMiscellaneousChargeTaxable() && !order.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
 		    <td colspan="3"></td>
             <%  if (hasInvoice) { %>
@@ -280,7 +281,7 @@
 			</tr>
 				<td colspan="3"></td>
 				<td colspan="2">Total Tax: </td>
-				<td colspan="2" align="right"><%=CCFormatter.formatCurrency(hasInvoice ? order.getInvoicedTaxValue() : order.getTaxValue())%></td>
+				<td colspan="2" align="right"><%=JspMethods.formatPrice(hasInvoice ? order.getInvoicedTaxValue() : order.getTaxValue())%></td>
 			<tr>
 		<%}%>
 		
@@ -301,7 +302,7 @@
                         &nbsp;&nbsp;Waive <input type="checkbox" value="true" <%=order.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee">
 <% } %>
                         </td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge())%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge())%></td>
 		    <td><b><%=order.isPhoneChargeTaxable() && !order.isPhoneChargeWaived() ? "&nbsp;T" : "" %></b></td>
 		    <td colspan="3"></td>
             <%  if (hasInvoice) { %>
@@ -315,7 +316,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">CC Declined Charge: </td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getCCDeclinedCharge())%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getCCDeclinedCharge())%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -326,7 +327,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">Restocking Charge Freshdirect:</td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD)))%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_FD)))%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -337,7 +338,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">Restocking Charge WBL:</td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL)))%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_WBL)))%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -348,7 +349,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">Restocking Charge Best Cellars:</td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC)))%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_BC)))%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -359,7 +360,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">Restocking Charge USQ Wines:</td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ)))%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getRestockingCharges(ErpAffiliate.getEnum(ErpAffiliate.CODE_USQ)))%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -370,7 +371,7 @@
 		<tr>
             <td colspan="3"></td>
 		    <td colspan="2"><b><% if (hasEstimatedItems) { %>Estimated <% } %>Order Total</b></td>
-		    <td colspan="2" align="right"><b><%=CCFormatter.formatCurrency(order.getTotal()) %><% if (hasInvoice) { %> / <%=CCFormatter.formatCurrency( order.getInvoicedTotal() ) %></b><% } %></td>
+		    <td colspan="2" align="right"><b><%=JspMethods.formatPrice(order.getTotal()) %><% if (hasInvoice) { %> / <%=JspMethods.formatPrice( order.getInvoicedTotal() ) %></b><% } %></td>
 		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
             <td colspan="3"></td>
             <% if (hasInvoice) { %>
@@ -382,7 +383,7 @@
 		<tr>
             <td colspan="3"></td>
 			<td colspan="2">Returned Check Fee:</td>
-			<td colspan="2" align="right"><%=CCFormatter.formatCurrency(order.getChargeInvoiceTotal())%></td>
+			<td colspan="2" align="right"><%=JspMethods.formatPrice(order.getChargeInvoiceTotal())%></td>
 		    <td colspan="4"></td>
             <%  if (hasInvoice) { %>
             <td colspan="3"></td>
@@ -422,7 +423,7 @@
 	<tr>
         <td colspan="3"></td>
         <td colspan="2">Total Store Credits: </td>
-        <td colspan="2" align="right"><%= CCFormatter.formatCurrency(totalCredits) %></td>
+        <td colspan="2" align="right"><%= JspMethods.formatPrice(totalCredits) %></td>
         <td colspan="4"></td>
             <% if (hasInvoice) { %>
         	<td colspan="3"></td>
@@ -432,7 +433,7 @@
 	<tr>
         <td colspan="3"></td>
         <td colspan="2">Total Refunds: </td>
-        <td colspan="2" align="right"><%=CCFormatter.formatCurrency(totalRefunds) %></td>
+        <td colspan="2" align="right"><%=JspMethods.formatPrice(totalRefunds) %></td>
         <td colspan="4"></td>
             <% if (hasInvoice) { %>
         	<td colspan="3"></td>
@@ -442,7 +443,7 @@
 	<tr>
         <td colspan="3"></td>
         <td colspan="2">Total Credits/Refunds Issued: </td>
-        <td colspan="2" align="right"><%=CCFormatter.formatCurrency(totalRefunds + totalCredits) %></td>
+        <td colspan="2" align="right"><%=JspMethods.formatPrice(totalRefunds + totalCredits) %></td>
         <td colspan="4"></td>
             <% if (hasInvoice) { %>
         	<td colspan="3"></td>

@@ -22,7 +22,6 @@ function limitText(textArea, length) {
 </script>
 <%
 	DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 	
 	FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 	FDIdentity identity  = user.getIdentity();

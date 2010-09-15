@@ -20,7 +20,6 @@ This include expects the following:
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%!
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 
@@ -283,7 +282,7 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= defaultSku.getSkuCode() %>">
             <fd:FDProduct id="product" productInfo="<%= productInfo %>">
-                    <FONT CLASS="productPageSinglePrice"><%= currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %></font><FONT CLASS="productPageSinglePriceUnit">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></font>
+                    <FONT CLASS="productPageSinglePrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font><FONT CLASS="productPageSinglePriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
                     <br></FONT>
                 <%@ include file="/shared/includes/product/i_scaled_prices.jspf" %>
                 <input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">

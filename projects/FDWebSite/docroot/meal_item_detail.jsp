@@ -77,7 +77,7 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 
 	int unAvailCount=0;
 	for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-		String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+		String optSkuCode=varOpts[voIdx].getSkuCode();
 		if (optSkuCode==null) {
 			unAvailCount++;
 			continue;
@@ -134,7 +134,7 @@ int prodCount = 0;%>
 				if (matCharNames.contains(variations[vIdx].getName())) {
 					FDVariationOption[] varOpts = variations[vIdx].getVariationOptions();
 					for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-						String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+						String optSkuCode=varOpts[voIdx].getSkuCode();
 						if (optSkuCode==null || availOptSkuMap.get(optSkuCode)==null) continue;
 							ProductModel pm =(ProductModel)availOptSkuMap.get(optSkuCode);
 							if (pm!=null && !prodList.contains(pm)) {

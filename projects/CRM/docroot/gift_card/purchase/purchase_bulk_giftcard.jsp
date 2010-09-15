@@ -118,7 +118,6 @@
 								paymentMethods = FDCustomerManager.getPaymentMethods(identity);	
 							}
 
-							System.out.println("The identity = "+identity);
 							//these booleans are used in /includes/ckt_acct/i_credit_cardfields.jspf
 							// set both to false -- gift card purchase is allowed only with a credit card
 							boolean isECheckRestricted = false;

@@ -27,8 +27,8 @@ public class SalesUnitRatio implements Serializable {
 	private double ratio;
 
 	public SalesUnitRatio(String alternateUnit, String salesUnit, double ratio) {
-		this.alternateUnit=alternateUnit;
-		this.salesUnit=salesUnit;
+		this.alternateUnit=alternateUnit.intern();
+		this.salesUnit=salesUnit.intern();
 		this.ratio=ratio;
 	}
 

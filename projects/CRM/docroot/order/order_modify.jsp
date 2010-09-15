@@ -49,7 +49,7 @@
 	<table width="100%" border="0" cellpadding="0" cellspacing="0" style="border: solid 4px #6699CC; border-top: solid 4px #FF9900;">
 		<tr height="25" class="order_modify">
 			<td><b>CURRENTLY SCHEDULED</FONT>&nbsp;&nbsp;<%=fmtDlvDateTime%>&nbsp;@&nbsp;<%=sStartHour%>-<%=sEndHour%></b></td>
-			<td align="right"><b>Estimated Total: <%= CCFormatter.formatCurrency(order.getTotal()) %></b>&nbsp;&nbsp;</td>
+			<td align="right"><b>Estimated Total: <%= JspMethods.formatPrice(order.getTotal()) %></b>&nbsp;&nbsp;</td>
 			<td>&nbsp;</td>
 		</tr>
 		<tr>

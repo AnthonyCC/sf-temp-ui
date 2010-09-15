@@ -17,8 +17,9 @@
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
-<%@ taglib uri='freshdirect' prefix='fd' %> 
+<%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%
     String successPage = "checkout_select_payment.jsp";
@@ -26,7 +27,7 @@
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
     FDCartModel cart = user.getShoppingCart();
     FDReservation rsv = user.getReservation();
-    ErpAddressModel address = cart.getDeliveryAddress(); 
+    ErpAddressModel address = cart.getDeliveryAddress();
     boolean isStaticSlot = false;
     boolean showAdvanceOrderBand = false;
     boolean forceOrders=false;
@@ -41,7 +42,7 @@
     DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
     boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 
-    
+
     String preReserveSlotId = "";
     boolean hasPreReserved = false;
     if(rsv != null){
@@ -51,20 +52,20 @@
     String timeSlotId = request.getParameter("deliveryTimeslotId");
     if (timeSlotId == null) {
         rsv  = cart.getDeliveryReservation();
-        if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null 
+        if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null
 				&& address.getPK().getId().equals(rsv.getAddressId()))){
             timeSlotId = rsv.getTimeslotId();
         }else{
             timeSlotId = "";
         }
     }
-    
+
     boolean thxgivingRestriction = false;
     boolean kosherRestriction = false;
     boolean alcoholRestriction = false;
     boolean thxgiving_meal_Restriction=false;
 	boolean easterMealRestriction = false; //easter meals
-    
+
     for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
         EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
         if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
@@ -109,10 +110,10 @@
 	}
 %>
 <script>
-var zonePromoString=""; 
+var zonePromoString="";
 var zonePromoEnabled=false;
 <%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>"; 
+zonePromoString="<%=zonePromoString %>";
 zonePromoEnabled=true;
 <%} %>
 </script>
@@ -136,14 +137,14 @@ zonePromoEnabled=true;
 	<TD WIDTH="75%">
         &nbsp;Step 2 of 4: Select Delivery Time
         <% if (!user.isActive()) { %>
-            &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is 
+            &nbsp;&nbsp;&nbsp;!!! Checkout prevented until account is
             <a href="<%= response.encodeURL("/customer_account/deactivate_account.jsp?successPage="+request.getRequestURI()) %>" class="new">REACTIVATED</a>
         <% } %>
     </TD>
-    
-    <% if (currentAgent != null && (currentAgent.isSupervisor() || currentAgent.isAdmin())) { %>	
+
+    <% if (currentAgent != null && (currentAgent.isSupervisor() || currentAgent.isAdmin())) { %>
 		<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
-	<% } %>	
+	<% } %>
 	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
 	</TR>
 </TABLE>
@@ -193,7 +194,7 @@ List comments = DeliveryTimeSlotResult.getComments();
 	<tr valign="top">
 		<td colspan="2" class="text12">
 		<table width="100%"><tr><td><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43" border="0"></td>
-		<td class="text12"><b><span class="kosher">Kosher Delivery Note:</span></b> 
+		<td class="text12"><b><span class="kosher">Kosher Delivery Note:</span></b>
 		The custom-cut kosher items in your cart are not available for delivery on Friday, Saturday, or Sunday morning.<br>
 			<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
 			<% if (kosherRestrictions.size() > 0) { %>They are also unavailable during
@@ -203,10 +204,10 @@ List comments = DeliveryTimeSlotResult.getComments();
 			<% } %>
 			</fd:GetDlvRestrictions>
             <% if (user.isDepotUser() && isKosherSlotAvailable) { %>
-                <b>Unfortunately there is no time during the next week that custom-cut kosher items can be delivered. If you continue Checkout, these 
-                items will be removed from your cart.</b> 
+                <b>Unfortunately there is no time during the next week that custom-cut kosher items can be delivered. If you continue Checkout, these
+                items will be removed from your cart.</b>
             <% } else { %>
-                Available delivery days for all of your kosher items are marked in blue. 
+                Available delivery days for all of your kosher items are marked in blue.
             <% } %>
             <a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
 		</td>
@@ -223,18 +224,18 @@ List comments = DeliveryTimeSlotResult.getComments();
 	<!-- LOYALTY -->
 
 <table width="695">
-	<tr><td align="center">	
-	
+	<tr><td align="center">
+
 	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
 		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
 	<%}%>
-	</td>	
+	</td>
     <td>
 	<% if(user.isEligibleForPreReservation()){
 	 		FDReservation userRsv = user.getReservation();
-			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>		
+			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>
 				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12">  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
-		<% } 
+		<% }
 	}%>
 	</td>
 	<td align="right">
@@ -242,8 +243,8 @@ List comments = DeliveryTimeSlotResult.getComments();
 	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
 	<%}%>
 	</td></tr>
-	</table>	
- 
+	</table>
+
 <%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
 	<table width="100%">
 		<tr>
@@ -293,7 +294,7 @@ List comments = DeliveryTimeSlotResult.getComments();
 
 	%>
 		<span class="text12"><b>Standard Delivery Slots</b></span>
-<%    } else { 
+<%    } else {
            showAdvanceOrderBand = timeslotList.size()>1 ? true & advOrdRangeOK : false;
       }
  %>
@@ -330,18 +331,17 @@ List comments = DeliveryTimeSlotResult.getComments();
 <BR>
 <BR>
 	</td></tr>
-	
+
 <TR VALIGN="TOP">
-    <TD WIDTH="70%" style="padding-left: 10px;"><b>Delivery Charge:</b> <%	
-	String dlvCharge = CCFormatter.formatCurrency( cart.getDeliverySurcharge() );
-	System.out.println("isDlvPassApplied in checkout_delivery_time.jsp "+cart.isDlvPassApplied());
+    <TD WIDTH="70%" style="padding-left: 10px;"><b>Delivery Charge:</b> <%
+	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 	if(cart.isDlvPassApplied()) {
 	%>
 	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-	<%	
+	<%
 	} else if (cart.isDeliveryChargeWaived()) {
 	%>
-		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.	
+		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.
 	<%}else {%>
 		<%= dlvCharge %>
 	<%}%><br>(Our delivery personnel are allowed to accept tips if exceptional service is provided).</TD>
@@ -352,9 +352,9 @@ List comments = DeliveryTimeSlotResult.getComments();
 %>
 	<TR>
 	<td style="padding-left: 10px;"><font class="text12bold" color="#FF0000"><b>Important note: </b></font>
-	<font class="text12bold"><b>Delivery pass can only be used for Home delivery orders.</b></font></td>	
+	<font class="text12bold"><b>Delivery pass can only be used for Home delivery orders.</b></font></td>
 	</TR>
-<%}%>		
+<%}%>
 
 </form>
 </TABLE>

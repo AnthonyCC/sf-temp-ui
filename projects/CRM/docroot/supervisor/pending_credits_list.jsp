@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.fdstore.customer.FDComplaintInfo" %>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
 <%@ page import="com.freshdirect.customer.EnumSaleType"%>
@@ -80,9 +81,9 @@ A = Automatic Order   M = Manual Order
 			<TD width="2%"><% if(EnumSaleType.REGULAR.equals(info.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(info.getOrderType())){%>A<%}%></TD>
             <TD width="10%"><%= CCFormatter.formatDate(info.getDeliveryDate()) %></TD>
 			<TD width="10%"><%= (info.getSaleStatus() != null) ? info.getSaleStatus().getName() : "--" %></TD>
-			<TD width="8%"><%= CCFormatter.formatCurrency(info.getOrderAmount()) %></TD>
+			<TD width="8%"><%= JspMethods.formatPrice(info.getOrderAmount()) %></TD>
 			<TD width="18%"><%= info.getLastName() %>, <%= info.getFirstName() %></TD>
-			<TD width="11%"><%= CCFormatter.formatCurrency(info.getComplaintAmount()) %></TD>
+			<TD width="11%"><%= JspMethods.formatPrice(info.getComplaintAmount()) %></TD>
 			<TD width="10%"><%= "FDC".equals(info.getComplaintType())?"Store Credit":"CSH".equals(info.getComplaintType())?"Refund":"MIX".equals(info.getComplaintType())?"Mixed":"" %></TD>
 			<TD width="20%"><%= info.getComplaintNote() %></TD>
 		</TR>

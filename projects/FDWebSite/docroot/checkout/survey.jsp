@@ -13,8 +13,6 @@
 
 <fd:CheckLoginStatus id="yuzer" guestAllowed="false" recognizedAllowed="false"  /> 
 <%!
-	java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-	
 	private static Calendar startPromo = Calendar.getInstance();
         static {
             startPromo.set(2005, Calendar.MAY, 1, 0, 0, 0);

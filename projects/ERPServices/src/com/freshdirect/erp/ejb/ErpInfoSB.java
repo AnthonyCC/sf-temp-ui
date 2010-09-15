@@ -20,6 +20,7 @@ import javax.ejb.ObjectNotFoundException;
 import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.fdstore.FDSku;
 
 /**
  * the remote interface for the ErpMaterialInfo session bean
@@ -92,5 +93,9 @@ public interface ErpInfoSB extends EJBObject {
 	public List<SkuAvailabilityHistory> getSkuAvailabilityHistory(String skuCode) throws RemoteException;
 
 	public void refreshNewAndBackViews() throws RemoteException;   
+
+	public List<FDSku> getChangedSkus(Integer lastVersion) throws RemoteException;
+	
+	public List<FDSku> getLatestSkus() throws RemoteException;
 }
 

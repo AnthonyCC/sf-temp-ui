@@ -17,7 +17,6 @@
 <tmpl:insert template='/template/top_nav.jsp'>
 <crm:GetFDUser id="user">
 <%!	SimpleDateFormat monthYearFormatter = new SimpleDateFormat("MM/yyyy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 %>
 
 <%	boolean hideMerchantInfo = true;
@@ -65,7 +64,6 @@
 <%@ include file="/includes/order_summary.jspf"%>
 <% 
 
-System.out.println("result :"+result);
 if (result != null) { %>
 <fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='order_status' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler><fd:ErrorHandler result='<%=result%>' name='no_customer' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 <fd:ErrorHandler result='<%=result%>' name='expiration' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>

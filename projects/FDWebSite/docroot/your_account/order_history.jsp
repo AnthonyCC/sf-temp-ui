@@ -54,7 +54,6 @@ if (user.isEligibleForClientCodes()) {
     <tmpl:put name='content' direct='true'>
 <%
 	DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy EEEE");
-	NumberFormat currencyFormatter = JspMethods.currencyFormatter;
 	
 	boolean printHeader = false;
 %>
@@ -173,7 +172,7 @@ for (FDOrderInfoI orderInfo : orderHistoryInfo) {
 	}
 %>
         <td class="text10"><%= deliveryType %></td>
-		<td class="text10" align=right><%= currencyFormatter.format( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td class="text10" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 		<td></td>
 <%
 	String status = "";

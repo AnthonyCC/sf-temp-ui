@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.framework.webapp.ActionResult"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil"%>
 <%@ page import="com.freshdirect.framework.util.MathUtil"%>
 <%@ taglib uri="freshdirect" prefix="fd" %>
@@ -155,8 +156,8 @@ boolean dirtyLine = _is_form_returnQty != null && _is_form_returnQty[_is_index].
             <%= CCFormatter.formatQuantity( retQty ) %>
         </td>
         <td WIDTH="4%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= _is_orderline.getSalesUnitDescription() %></td>
-        <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(retAmount) %></td>
-        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= CCFormatter.formatCurrency(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></td>
+        <td WIDTH="7%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(retAmount) %></td>
+        <td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER"><%= JspMethods.formatPrice(_is_invoiceline != null ? _is_invoiceline.getPrice() - retAmountSum: _is_orderline.getPrice() - retAmountSum) %></td>
 		<td WIDTH="5%" BGCOLOR="<%= ( isErrorLine ) ? ERR_LINE_COLOR : IS_BGCOLOR %>" ALIGN="CENTER">
         	<INPUT TYPE="TEXT" id="qty<%= rid %>" orderline="<%= _is_orderline.getOrderLineId() %>" NAME="ol_credit_qty" SIZE="4" cartonGroup="QI_<%= _is_cartonNumber %>" fullQuantity="<%= _is_the_quantity %>" value="<%= _is_form_returnQty == null ? "0" : _is_form_returnQty[_is_index] %>" onblur="setEditReturnQty(<%=_is_index%>)">
 		</td>

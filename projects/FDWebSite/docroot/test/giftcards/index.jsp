@@ -43,9 +43,7 @@
 
 	ContentNodeModel categoryRef = null;
 	categoryRef = ContentFactory.getInstance().getContentNode(catId);
-	System.out.println("catId "+catId);
 	if (categoryRef!=null) {
-		System.out.println("categoryRef "+categoryRef);
 		prodRef = ContentFactory.getInstance().getProductByName(catId, prodId);
 		if (prodRef!=null) {
 			gcList = prodRef.getGiftcardType();
@@ -57,7 +55,6 @@
 		errorFound = true;
 		%><div class="error title18">catId: <%=catId%> not found (required).</div><%
 	}
-	System.out.println("errorFound 1 "+errorFound);
 	String mediaRoot = FDStoreProperties.getMediaGiftCardTemplatePath();
 	String mediaStaticRoot = "/media_stat/images/giftcards/";
 	String gcId = request.getParameter("gcId");
@@ -90,7 +87,6 @@
 		<%
 			String test = "";
 			if (gcList != null && gcList.size()>0) {
-				System.out.println("gcList.size() "+gcList.size());
 				for(int i=0;i<gcList.size();i++) {
 					DomainValue gcType=(DomainValue)gcList.get(i);
 					%>
@@ -172,7 +168,6 @@
 
 		<%
 			if (gcList != null && gcList.size()>0) {
-				System.out.println("gcList.size() "+gcList.size());
 					for(int i=0;i<gcList.size();i++) {
 						DomainValue gcType=(DomainValue)gcList.get(i);
 						%>
@@ -222,7 +217,6 @@
 <div style="font-family: monospace;">
 <%
 	if (gcList != null && gcList.size()>0) {
-		System.out.println("gcList.size() "+gcList.size());
 		for(int i=0;i<gcList.size();i++){
 			DomainValue gcType=(DomainValue)gcList.get(i);
 			%>

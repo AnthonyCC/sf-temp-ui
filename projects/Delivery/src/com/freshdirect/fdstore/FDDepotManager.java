@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.delivery.DlvProperties;
 import com.freshdirect.delivery.DlvResourceException;
@@ -40,7 +41,7 @@ public class FDDepotManager {
 
 	private static FDDepotManager instance = null;
 
-	private final ServiceLocator serviceLocator;
+	private final ERPServiceLocator serviceLocator;
 
 	private Map depotMap = new HashMap();
 
@@ -53,7 +54,7 @@ public class FDDepotManager {
 	private long lastRefresh = 0;
 
 	private FDDepotManager() throws NamingException {
-		this.serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
+		this.serviceLocator = ERPServiceLocator.getInstance();
 	}
 
 	public synchronized static FDDepotManager getInstance() throws FDResourceException {

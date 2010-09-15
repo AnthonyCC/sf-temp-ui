@@ -27,9 +27,9 @@ public class VariationComparator implements Comparator<FDVariation> {
                 return -1;
             } else {
                 // like elements are ordered by priority
-                if (var1.getAttributeInt("priority", 0) < var2.getAttributeInt("priority", 0)) {
+                if (var1.getPriority() < var2.getPriority()) {
                     return 1;
-                } else if (var1.getAttributeInt("priority", 0) > var2.getAttributeInt("priority", 0)) {
+                } else if (var1.getPriority() > var2.getPriority()) {
                     return -1;
                 } else {
                     return 0;

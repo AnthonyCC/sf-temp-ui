@@ -116,7 +116,7 @@ if (sortedColl==null) sortedColl = Collections.<CategoryModel>emptyList();
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit();
+        prodPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %>						
         </fd:FDProductInfo>
 <%

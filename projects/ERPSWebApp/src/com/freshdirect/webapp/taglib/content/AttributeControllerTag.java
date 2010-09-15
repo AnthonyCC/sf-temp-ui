@@ -16,8 +16,9 @@ import java.text.SimpleDateFormat;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
-import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.content.attributes.AttributesFacade;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
+import com.freshdirect.erp.ErpChangeCollector;
 import com.freshdirect.erp.ErpFactory;
 import com.freshdirect.erp.ErpModelSupport;
 import com.freshdirect.erp.model.ErpProductModel;
@@ -118,8 +119,10 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
         try {
         	feedback = validateAttributes(erpModel);
         	if (feedback == null) {
-        		ErpFactory.getInstance().saveAttributes(erpModel);
-        		feedback = "Attributes saved";
+        	    ErpChangeCollector c = new ErpChangeCollector();
+        	    erpModel.accept(c);
+        	    AttributesFacade.storeAttributes(c.getResult());
+        	    feedback = "Attributes saved";
         	}
         } catch (FDResourceException fdre) {
             fdre.printStackTrace();
@@ -134,10 +137,10 @@ public class AttributeControllerTag extends com.freshdirect.framework.webapp.Tag
     }
 
 	private String validateAttributes(ErpModelSupport erpModel) {
-		if (erpModel instanceof ErpProductModel) {
+		if (erpModel instanceof ErpProductModel && erpModel.getChangedAttributes() != null) {
 			ErpProductModel prod = (ErpProductModel) erpModel;
-			String new_prod_date = prod.getAttributes().getAttribute(EnumAttributeName.NEW_PRODUCT_DATE);
-			String back_prod_date = prod.getAttributes().getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE);
+			String new_prod_date = prod.getChangedAttributes().getNewProdDate();
+			String back_prod_date = prod.getChangedAttributes().getBackInStock();
 			String date = new_prod_date != null && new_prod_date.trim().length() != 0 ? new_prod_date.trim() : null;
 			if (back_prod_date != null && back_prod_date.trim().length() != 0) {
 				if (date != null)

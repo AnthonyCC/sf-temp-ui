@@ -21,9 +21,11 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.ejb.CreateException;
+import javax.ejb.EJBException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.SkuAvailabilityHistory;
@@ -40,6 +42,9 @@ class FDFactory {
 
 	private static FDFactoryHome factoryHome = null;
 
+	
+        final static FDProductInfo SKU_NOT_FOUND = new FDProductInfo(null, 0, null,null,null,null,null,null,null,null,null);
+	
 	/**@link dependency
 	 * @label creates*/
 	/*#FDProductInfo lnkFDProductInfo;*/
@@ -303,7 +308,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.AVAILABLE,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getZonePriceInfoList());
+			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getDefaultPriceUnit(), pinfo.getZonePriceInfoList());
 	}
 	
 	/**
@@ -317,7 +322,7 @@ class FDFactory {
 			EnumATPRule.JIT,
 			EnumAvailabilityStatus.TEMP_UNAV,
 			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,"",null,ZonePriceInfoListing.getDummy());
+			null,"",null,"LB",ZonePriceInfoListing.getDummy());
 	}
 
 
@@ -372,9 +377,9 @@ class FDFactory {
 	 *
 	 * @throws FDResourceException if an error occured using remote resources
 	 */
-	public static Collection getProducts(FDSku[] skus) throws FDResourceException {
+	public static Collection<FDProduct> getProducts(FDSku[] skus) throws FDResourceException {
 		// !!! optimize this, so that it only makes one call to the session bean
-		List products = new ArrayList(skus.length);
+		List<FDProduct> products = new ArrayList<FDProduct>(skus.length);
 		for (int i=0; i<skus.length; i++) {
 			try {
 				products.add( getProduct(skus[i]) );
@@ -565,4 +570,29 @@ class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+        public static List<FDSku> getChangedSkus(int lastVersion) throws FDResourceException {
+            try {
+                return ERPServiceLocator.getInstance().getErpInfoSessionBean().getChangedSkus(lastVersion);
+            } catch (EJBException re) {
+                throw new FDResourceException(re, "Error talking to session bean");
+            } catch (RemoteException re) {
+                throw new FDResourceException(re, "Error talking to session bean");
+            }
+        }
+
+        public static List<FDSku> getLatestOrChangedSkus(Integer lastVersion) throws FDResourceException {
+            try {
+                if (lastVersion == null) {
+                    return ERPServiceLocator.getInstance().getErpInfoSessionBean().getLatestSkus();
+                } else {
+                    return ERPServiceLocator.getInstance().getErpInfoSessionBean().getChangedSkus(lastVersion);
+                }
+            } catch (EJBException re) {
+                throw new FDResourceException(re, "Error talking to session bean");
+            } catch (RemoteException re) {
+                throw new FDResourceException(re, "Error talking to session bean");
+            }
+            
+        }
 }

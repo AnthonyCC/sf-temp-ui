@@ -44,7 +44,7 @@ public class VariationOption {
 
     public boolean isUnAvailable() {
         boolean unAvailable = false;
-        String optSkuCode = option.getAttribute(EnumAttributeName.SKUCODE);
+        String optSkuCode = option.getSkuCode();
         ProductModel pm;
         try {
             pm = ContentFactory.getInstance().getProduct(optSkuCode);

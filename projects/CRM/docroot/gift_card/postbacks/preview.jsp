@@ -126,7 +126,6 @@
 			%><%=json.toString()%><%
 		}
 		
-		//System.out.println("json.toString : "+json.toString());
 	}
 
 %>

@@ -74,7 +74,7 @@ String orderNumber = request.getParameter("orderId");
 					<td width="14%"><%=complaint.getApprovedBy()%></td>
 					<td width="11%"><%=CCFormatter.formatDate(complaint.getApprovedDate())%></td>
 					<td width="10%"><%=complaint.getStatus()%></td>
-					<td width="12%"><%=CCFormatter.formatCurrency(complaint.getAmount())%></td>
+					<td width="12%"><%=JspMethods.formatPrice(complaint.getAmount())%></td>
 					<td width="9%">
 <%				if(FDComplaintUtil.isComplaintReversable(complaint, creditHistory.getCreditsForComplaint(complaint.getPK().getId()))) {
 %>						<form method="POST" action="/order/reverse_credit.jsp?orderId=<%=orderNumber%>" name="reverseCredit_<%=complaint.getPK().getId()%>">

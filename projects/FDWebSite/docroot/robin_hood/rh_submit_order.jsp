@@ -233,7 +233,7 @@ boolean isCheckEligible = false;
 			<input type="radio" name="optinInd" id="optin" value="optin" />
 			<% } %>				
 			</td>
-			<%System.out.println(optinout); 
+			<% 
 			if(null!=optinout){ %>
 			 <td width="18" bgcolor="#CC3300"><img src="/media_stat/images/template/system_msgs/exclaim_CC3300.gif" width="18" height="22" border="0" alt="!"></td>
 			  <% } %>

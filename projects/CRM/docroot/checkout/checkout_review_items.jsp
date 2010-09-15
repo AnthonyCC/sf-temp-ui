@@ -361,7 +361,7 @@
 							if(cartLine.getDiscount() != null) {
 								Discount discount = cartLine.getDiscount();
 								PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+CCFormatter.formatCurrency(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+								discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 							}
 						%>
 			
@@ -386,7 +386,7 @@
 								</td>
 							<% } %>
 
-							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+							<td align="right"><span class="<%= (cartLine.getDiscount() != null) ? "text10rbold" : "text10bold" %>"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
 							<td><%= cartLine.isEstimatedPrice() ? "*" : "" %><strong><%=cartLine.hasTax() ? "&nbsp;T" : ""%></strong></td>
 							<td><strong><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></strong></td>
 
@@ -458,7 +458,7 @@
 				</tr>
 				<tr class="orderViewSummary">
 					<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
-					<td colspan="1" align="right"><b><%=CCFormatter.formatCurrency(view.getSubtotal())%></b></td>
+					<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
 					<td colspan="1"><% if (view.isEstimatedPrice()) { %>*<% } %></td>
 					<td colspan="2">&nbsp;</td>
 				</tr>
@@ -467,7 +467,7 @@
 						%>
 						<tr class="orderViewSummary">
 							<td colspan="6" align="right">Tax:</td>
-							<td colspan="1" align="right"><%=CCFormatter.formatCurrency(view.getTax())%></td>
+							<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getTax())%></td>
 							<td colspan="3">&nbsp;</td>
 						</tr>
 						<%
@@ -477,7 +477,7 @@
 						%>
 						<tr class="orderViewSummary">
 							<td colspan="6" align="right">Bottle Deposit:</td>
-							<td colspan="1" align="right"><%=CCFormatter.formatCurrency(view.getDepositValue())%></td>
+							<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getDepositValue())%></td>
 							<td colspan="3">&nbsp;</td>
 						</tr>
 						<% 
@@ -511,7 +511,7 @@
 
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right">Order Subtotal:</td>
-				<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getSubTotal())%></td>
+				<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getSubTotal())%></td>
 				<td><%= cart.isEstimatedPrice() ? "*":"" %></td>
 				<td colspan="2">&nbsp;</td>
 			</tr>
@@ -521,7 +521,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Total Tax:</td>
-						<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getTaxValue())%></td>
+						<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getTaxValue())%></td>
 						<td colspan="3"></td>
 					</tr>
 			<%
@@ -531,7 +531,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Bottle Deposit:</td>
-						<td colspan="1" align="right"><%=CCFormatter.formatCurrency(cart.getDepositValue())%></td>
+						<td colspan="1" align="right"><%=JspMethods.formatPrice(cart.getDepositValue())%></td>
 						<td colspan="3"></td>
 					</tr>
 			<%
@@ -549,7 +549,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-						<td colspan="1" align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=CCFormatter.formatCurrency(cart.getDeliverySurcharge())%><%}%></td>
+						<td colspan="1" align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getDeliverySurcharge())%><%}%></td>
 						<td><%= cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>
@@ -559,7 +559,7 @@
 				if (cart.getMiscellaneousCharge() > 0.0) {%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
-						<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(cart.getMiscellaneousCharge()) %><%}%></td>
+						<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
 						<td><%= cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>
@@ -571,7 +571,7 @@
 			%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Phone Charge<%if(cart.isPhoneChargeWaived()){%> (waived)<%}%>:</td>
-						<td align="right"><%if(cart.isPhoneChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(cart.getPhoneCharge()) %><%}%></td>
+						<td align="right"><%if(cart.isPhoneChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getPhoneCharge()) %><%}%></td>
 						<td><%= cart.isPhoneChargeTaxable() && !cart.isPhoneChargeWaived() ? "&nbsp;<strong>T</strong>":""%></td>
 						<td colspan="2"></td>
 					</tr>
@@ -595,7 +595,7 @@
 				%>
 						<tr valign="top" class="orderSummary">
 							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=signup','large')">FREE FOOD</a></b>:</td>
-							<td colspan="1" align="right">-<%=CCFormatter.formatCurrency(discount.getAmount())%></td>
+							<td colspan="1" align="right">-<%=JspMethods.formatPrice(discount.getAmount())%></td>
 							<td colspan="3"></td>	   
 						</tr>	   
 				<%
@@ -603,7 +603,7 @@
 				%>
 						<tr valign="top" class="orderSummary">
 							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= promoCode%>','small')"><%= redemptionPromo.getDescription()%></a></b>:</td>
-							<td align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(discount.getAmount()) %></td>
+							<td align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + JspMethods.formatPrice(discount.getAmount()) %></td>
 							<td><!--  --></td>
 							<td colspan="3">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 						</tr>	   
@@ -622,7 +622,7 @@
 					%>
 						<tr valign="top" class="orderSummary">
 							<td colspan="3" align="right"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%= discount.getPromotionCode() %>','small')"><%= desc %></a></b>:</td>
-							<td align="right">-<%= CCFormatter.formatCurrency(discount.getAmount()) %></td>
+							<td align="right">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 							<td colspan="3">here?</td>	   
 						</tr>
 					<%
@@ -665,7 +665,7 @@
 				%>
 					<tr valign="top" class="orderSummary">
 						<td colspan="3" align="right">Credit Applied:</td>
-						<td colspan="1" align="right">-<%=CCFormatter.formatCurrency(cart.getCustomerCreditsValue())%></td>
+						<td colspan="1" align="right">-<%=JspMethods.formatPrice(cart.getCustomerCreditsValue())%></td>
 						<td colspan="3"></td>
 					</tr>		   
 				<%
@@ -673,7 +673,7 @@
 			%>
 			<tr valign="top" class="orderTotal">
 				<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
-				<td colspan="1" align="right"><b><%= CCFormatter.formatCurrency(cart.getTotal()) %></b></td>
+				<td colspan="1" align="right"><b><%= JspMethods.formatPrice(cart.getTotal()) %></b></td>
 				<td colspan="1"><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 				<td colspan="2"></td>
 			</tr>
@@ -748,7 +748,7 @@
 				%>
 					<tr valign="top">
 						<td colspan="3"><b><a href="javascript:popup('/shared/promotion_popup.jsp?promoCode=<%=promoCode%>','small')"><%=redemptionPromo.getDescription()%></a></b></td>
-						<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + CCFormatter.formatCurrency(redemptionAmt) %></td>
+						<td colspan="1" align="right"><%= redemptionPromo.isSampleItem() ? "<b>FREE!</b>" : "-" + JspMethods.formatPrice(redemptionAmt) %></td>
 						<td colspan="1"></td>
 						<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeCode" class="note">Remove</a></td>
 					</tr>
@@ -802,7 +802,7 @@
 					%>
 							<tr>
 								<td colspan="7" align="right">
-									<span class="text11">You have <%= CCFormatter.formatCurrency(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br />
+									<span class="text11">You have <%= JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()) %> credit. Credits will be applied during check out.</span><br />
 								</td>
 							</tr>
 					<%
@@ -816,7 +816,7 @@
 		if (user.getGiftcardBalance() > 0) { %>
 			<tr valign="top" style="background-color: #FF9933;line-height: 20px;">
 				<td colspan="3" align="right" style="color: white;font-size: 13px;"><b>Gift Card Balance</b>:</td>
-				<td colspan="1" align="right" style="color: white;font-size: 13px;"><b><%= CCFormatter.formatCurrency(user.getGiftcardBalance()) %></b></td>
+				<td colspan="1" align="right" style="color: white;font-size: 13px;"><b><%= JspMethods.formatPrice(user.getGiftcardBalance()) %></b></td>
 				<td colspan="1"></td>
 				<td colspan="2">&nbsp;<a href="<%= request.getRequestURI() %>?action=removeGiftCard" class="note">Remove</a></td>
 			</tr>
@@ -844,13 +844,13 @@
 			<% if (user.getGiftcardBalance() > 0) { %>
 				<tr bgcolor="white">
 					<td colspan="3" align="right" style="border-left: orange thin dashed">Order total with Gift Cards Applied (total at 125% if estimated):</td>
-					<td align="right" ><%= CCFormatter.formatCurrency(cart.getTotal()) %></td>
+					<td align="right" ><%= JspMethods.formatPrice(cart.getTotal()) %></td>
 					<td style="BORDER-RIGHT: orange thin dashed" colspan="3" align="right"></td>
 					<td colspan="2">&nbsp;</td>
 				</tr>
 				<tr bgcolor="white">
 					<td colspan="3" align="right" style="border-left: orange thin dashed; border-bottom: orange thin dashed">Remaining Gift Card balance:</td>
-					<td align="right" style="border-bottom: orange thin dashed"><b><%= CCFormatter.formatCurrency(user.getGiftcardBalance()) %></b></td>
+					<td align="right" style="border-bottom: orange thin dashed"><b><%= JspMethods.formatPrice(user.getGiftcardBalance()) %></b></td>
 					<td style="border-right: orange thin dashed; border-bottom: orange thin dashed" colspan="3" align="right"></td>
 					<td colspan="2">&nbsp;</td>
 				</tr>

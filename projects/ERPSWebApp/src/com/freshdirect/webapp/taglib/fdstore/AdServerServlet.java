@@ -87,8 +87,6 @@ public class AdServerServlet extends HttpServlet{
 	private Connection getConnection() throws SQLException, NamingException {
 
 		Context ctx = new InitialContext();
-		if (ctx == null)
-			throw new NamingException("No Context found");
 
 		DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/AdServer");
 

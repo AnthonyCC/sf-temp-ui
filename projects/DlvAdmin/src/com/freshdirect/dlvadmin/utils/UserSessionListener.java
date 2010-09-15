@@ -6,10 +6,11 @@ package com.freshdirect.dlvadmin.utils;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.delivery.DlvResourceException;
 import com.freshdirect.delivery.audit.SessionAuditor;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
  * @author kocka
@@ -17,7 +18,7 @@ import com.freshdirect.delivery.audit.SessionAuditor;
  */
 public class UserSessionListener implements HttpSessionListener {
 
-	private static final Category LOGGER = Category.getInstance(UserSessionListener.class);
+	private static final  Logger LOGGER = LoggerFactory.getInstance(UserSessionListener.class);
 	
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpSessionListener#sessionCreated(javax.servlet.http.HttpSessionEvent)

@@ -30,8 +30,6 @@
 <BODY>
 <%
     String contentId=request.getParameter("contentNodeId");
-    System.out.println("contentId :"+contentId);
-  
 %>
 
 <form name="form1">
@@ -50,11 +48,8 @@
   if(contentId!=null){
         ContentNodeModel model1=ContentFactory.getInstance().getContentNode(contentId);                
         String parentName=model1.getParentNode().getContentName();
-        System.out.println("model :"+model1+" parentName :"+parentName);
         
 		ProductModel model= ContentFactory.getInstance().getProduct(parentName, contentId);								
-		System.out.println("model new1 :"+model);	
-        
    
 %>
 
@@ -260,7 +255,6 @@
 
 DomainValue value=model.getWineCountry();
 		if(value!=null){
-			   System.out.println("WineCountry domainName:"+value.getDomain().getFullName()+":"+value.getLabel());
  %>
 			   <%="<b>DomainName:</b><font color='blue' size='4'>"+value.getDomain().getName()+"</font>:<b>domainValue :</b><font color='blue' size='4'>"+value.getLabel()+"</font>"%>;
 		<%				

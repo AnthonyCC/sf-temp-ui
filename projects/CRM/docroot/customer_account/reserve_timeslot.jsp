@@ -52,7 +52,6 @@
 			if (fromShopping) backPage = "BUILD ORDER";
 			
 			int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
-			System.out.println("User chefstable>>>>"+request.getParameter("chefstable")+" "+user.isChefsTable());
 			if("true".equals(request.getParameter("chefstable"))|| user.isChefsTable()) {
 				timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 			}

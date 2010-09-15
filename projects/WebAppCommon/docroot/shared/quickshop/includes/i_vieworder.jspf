@@ -171,7 +171,6 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
         ProductModel productNode = orderLine.lookupProduct();
         if (productNode.getDepartment().getContentName().equalsIgnoreCase(qsDeptId)) {
             offset = idx.intValue();
-            //System.out.println("offset: " + offset);
             break;
         }
     } **/
@@ -380,7 +379,7 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
 	    <td bgcolor="#FF9933" rowspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 	    <td colspan="3">&nbsp;&nbsp;&nbsp;<%= recentOrderLine.getDisplayQuantity() %><%if (!"".equals(recentOrderLine.getLabel())){%> <%=recentOrderLine.getLabel()%><% } %></td>
 	    <td class="text11"><%= recentOrderLine.getDescription() %><% if (!"".equals(recentOrderLine.getConfigurationDesc())) { %> (<%= recentOrderLine.getConfigurationDesc() %>)<% } %> - <%= recentOrderLine.getUnitPrice() %></td>
-	    <td align="center"><%= JspMethods.currencyFormatter.format(recentOrderLine.getPrice())%></td>
+	    <td align="center"><%= JspMethods.formatPrice(recentOrderLine.getPrice())%></td>
 
 
 	    <script type="text/javascript">var pricing<%=idx%> = new Pricing();</script>

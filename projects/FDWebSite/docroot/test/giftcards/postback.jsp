@@ -36,12 +36,6 @@
 	if ( "true".equals ((String)request.getParameter("isRecipTestPreview")) ) {
 		isRecipTestPreview = true;
 	}
-	
-	System.out.println("isEmailPreview : "+(String)request.getParameter("isEmailPreview"));
-	System.out.println("isPdfPreview : "+(String)request.getParameter("isPdfPreview"));
-	System.out.println("isRecipTest : "+(String)request.getParameter("isRecipTest"));
-	System.out.println("isRecipTestAdd : "+(String)request.getParameter("isRecipTestAdd"));
-	System.out.println("isRecipTestSub : "+(String)request.getParameter("isRecipTestSub"));
 
 	String gcBaseUrl = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort();
 
@@ -104,7 +98,6 @@
 			// testing recipient list ADD?
 			if (isRecipTestAdd) {
 				String tempId = Integer.toString(ranNumbAsID);
-				System.out.println("tempId : "+(String)request.getParameter("tempId"));
 				%>
 				<div class="recipRow" id="<%= tempId %>Row">
 					<div class="recipNumber" id="<%= tempId %>Number"><%= ranNumb %>. </div>
@@ -137,7 +130,6 @@
 					json.put("gcFrom", gcFrom);
 					json.put("gcMessage", gcMessage);
 					json.put("gcMediaRoot", "/media/editorial/giftcards/"+gcId+"/");
-					System.out.println("json.toString : "+json.toString());
 				%>
 				<%=json.toString()%>
 				<%

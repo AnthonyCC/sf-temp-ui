@@ -21,7 +21,6 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
 %>
 
 <%
-System.out.println("cgeck gift_card fields 1");
 FDUserI _user = (FDUserI) session.getAttribute(SessionName.USER);
 FDIdentity _identity = null;
 if (_user != null){
@@ -44,7 +43,6 @@ String fldDeliveryMethod = "";
 String fldMessage = "";
 String fdTemplateId = "";
 String fdQuantity="";
-System.out.println("cgeck gift_card fields 2");
 // Add to recipient list button image
 String addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/add_to_recip_list_btn.gif\" width=\"130\" height=\"25\" alt=\"ADD TO RECIPIENT LIST\" border=\"0\" id=\"checkout_credit_card_edit\" />";
 
@@ -58,7 +56,6 @@ if (recipId!=null && recipId.trim().length()>0) {
     
 }
 
-System.out.println("cgeck gift_card fields 4");
 
 if (editThisRecipId) {
     fldAmount = recipModel.getFormattedAmount();
@@ -74,7 +71,6 @@ if (editThisRecipId) {
 	// Add to recipient list button image
 	addEditButton = "<input type=\"image\" name=\"checkout_credit_card_edit\" src=\"/media_stat/images/giftcards/purchase/save_changes_btn.gif\" width=\"95\" height=\"25\" alt=\"SAVE CHANGES\" border=\"0\" id=\"checkout_credit_card_edit\" />";
 }
-System.out.println("cgeck gift_card fields 5");
     
 // get the stuff from off the fields in the request object
 if (request.getParameter(EnumUserInfoName.GC_BUYER_NAME.getCode()) !=null) {
@@ -106,7 +102,6 @@ if (request.getParameter("fldMessage") !=null) {
 	fldMessage =  request.getParameter("fldMessage");
 }
 
-System.out.println("cgeck gift_card fields 6");
 
 	String value1 = "E"; //Email
 	String value2 = "P"; //PDF
@@ -124,7 +119,6 @@ System.out.println("cgeck gift_card fields 6");
 	 *	Call include to gather giftcard info from CMS
 	 */
 	
-    System.out.println("cgeck gift_card fields 7");
 	//set the options first
 	String deptId = "GC_testDept";
 	String catId = "GC_testCat";
@@ -140,9 +134,6 @@ System.out.println("cgeck gift_card fields 6");
 <input type="hidden" id="gcTemplateId" name="gcTemplateId" value="<%= fdTemplateId %>">
 <%@ include file="/gift_card/purchase/includes/i_fetch_giftcard_info_from_cms.jspf" %>
 
-<%
-System.out.println("check gift_card fields 9");
-%>
 
 <table border="0" cellspacing="0" cellpadding="0" width="100%" valign="middle">
 	<fd:ErrorHandler result='<%=result%>' name='technical_difficulty' id='errorMsg'>
@@ -273,6 +264,3 @@ System.out.println("check gift_card fields 9");
     <td></td>
 </tr>
 </table>
-<%
-   System.out.println("cgeck gift_card fields 9");
-%>

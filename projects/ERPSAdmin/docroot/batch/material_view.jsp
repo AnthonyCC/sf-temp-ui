@@ -51,8 +51,8 @@
                     <td><%= salesUnit.getNumerator() %> / <%= salesUnit.getDenominator() %></td>
                     <td><%= salesUnit.getBaseUnit() %></td>
                     <td><%= salesUnit.getDescription() %></td>
-                    <td><%= salesUnit.getAttribute(EnumAttributeName.DESCRIPTION) %></td>
-                    <td align=center><%= (true == salesUnit.getAttributeBoolean(EnumAttributeName.SELECTED))?"X":"" %></td>
+                    <td><%= salesUnit.getAttributes().getDescription() %></td>
+                    <td align=center><%= (salesUnit.getAttributes().isSelected())?"X":"" %></td>
                 </tr>
                 </logic:iterate>
             </table>
@@ -73,14 +73,15 @@
                 Collections.sort(chs, AttributeComparator.PRIORITY);
             %>
             <logic:iterate id="charac" collection="<%= chs %>" type="com.freshdirect.erp.model.ErpCharacteristicModel">
+            <% ErpsAttributes ea = charac.getAttributes(); %>
                 <table>
                     <!-- characteristic attributes -->
                     <tr><td class="field_title">Characteristic</td><td class="field"><%= charac.getName() %></td></tr>
-                    <tr><td class="field_title">Description</td><td class="field"><%= charac.getAttribute(EnumAttributeName.DESCRIPTION) %></td></tr>
-                    <tr><td class="field_title">Under Label</td><td class="field"><%= charac.getAttribute(EnumAttributeName.UNDER_LABEL) %></td></tr>
-                    <tr><td class="field_title">Priority</td><td class="field"><%= charac.getAttribute(EnumAttributeName.PRIORITY.getName(), "") %></td></tr>
-                    <tr><td class="field_title">Optional</td><td class="field"><%= charac.getAttributeBoolean(EnumAttributeName.OPTIONAL)?"yes":"no" %></td></tr>
-                    <tr><td class="field_title">Display Format</td><td class="field"><%= charac.getAttribute(EnumAttributeName.DISPLAY_FORMAT) %></td></tr>
+                    <tr><td class="field_title">Description</td><td class="field"><%= ea.getDescription("") %></td></tr>
+                    <tr><td class="field_title">Under Label</td><td class="field"><%= ea.getUnderLabel("") %></td></tr>
+                    <tr><td class="field_title">Priority</td><td class="field"><%= ea.getPriority() %></td></tr>
+                    <tr><td class="field_title">Optional</td><td class="field"><%= ea.isOptional()?"yes":"no" %></td></tr>
+                    <tr><td class="field_title">Display Format</td><td class="field"><%= ea.getDisplayFormat() %></td></tr>
                     <tr><td colspan=2>
                     <!-- characteristic values -->
                     <table cellspacing=2 cellpadding=2>
@@ -94,14 +95,15 @@
                         %>
                         <logic:iterate id="charValue" collection="<%= cvs %>" type="com.freshdirect.erp.model.ErpCharacteristicValueModel">
                             <fd:CharValuePrice id="charValuePrice" material="<%= material %>" charValue="<%= charValue %>">
+                            <% ErpsAttributes charValueAttr = charValue.getAttributes(); %>
                             <tr>
                                 <td><%= charValue.getName() %></td>
                                 <td><%= charValue.getDescription() %></td>
                                 <td><% out.print(dformat.format(charValuePrice.getPrice())); if (0.0 != charValuePrice.getPrice()) out.print(" per " + (!"".equals(charValuePrice.getPricingUnit())?charValuePrice.getPricingUnit():"each")); %></td>
-                                <td><%= charValue.getAttribute(EnumAttributeName.DESCRIPTION) %></td>
-                                <td align=center><%= charValue.getAttributeBoolean(EnumAttributeName.SELECTED)?"X":"" %></td>
-                                <td align=center><%= charValue.getAttributeBoolean(EnumAttributeName.LABEL_VALUE)?"X":"" %></td>
-                                <td align=center><% int p = charValue.getAttributeInt(EnumAttributeName.PRIORITY); if (p != 0) out.print(p); %></td>
+                                <td><%= charValueAttr.getDescription("") %></td>
+                                <td align=center><%= charValueAttr.isSelected()?"X":"" %></td>
+                                <td align=center><%= charValueAttr.isLabelValue()?"X":"" %></td>
+                                <td align=center><% int p = charValueAttr.getPriority(); if (p != 0) out.print(p); %></td>
                             </tr>
                              </fd:CharValuePrice>
                         </logic:iterate>

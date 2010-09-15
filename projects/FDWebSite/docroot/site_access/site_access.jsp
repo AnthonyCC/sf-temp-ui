@@ -71,7 +71,6 @@
                 successPageFinal = "/index.jsp";
 		} 
 		if ("".equalsIgnoreCase(successPageFinal)) {
-            System.out.println("Inside else ");
 			//success page has not been set, default to giftcard
             if(isGiftCardEnabled)
 				successPageFinal = gcLanding;

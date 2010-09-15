@@ -22,7 +22,6 @@
 		identity = user.getIdentity();
 		custId = identity.getFDCustomerPK();
 	} catch (NullPointerException ex) {
-		System.out.println("\n caught exception trying to get USER from session...\n");
 	}
 	//FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomer(custId);
 

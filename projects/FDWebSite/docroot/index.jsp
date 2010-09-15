@@ -52,12 +52,6 @@
         } else {
         	request.setAttribute("listPos", "SystemMessage,HPLeftTop,HPLeftMiddle,HPLeftBottom,HPMiddleBottom,HPRightBottom");
         }
-        System.out.println("limit: " + user.isCampaignMsgLimitViewed() );
-        System.out.println("viewed:  " + user.getCampaignMsgViewed());
-        System.out.println("isMediaEnabled: " + FDStoreProperties.IsHomePageMediaEnabled());
-        System.out.println("isAdServerEnabled: " + FDStoreProperties.isAdServerEnabled());
-        System.out.println("location2Media:  " + location2Media);
-        
 %>
 
 <% 

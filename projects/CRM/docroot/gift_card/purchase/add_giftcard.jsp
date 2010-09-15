@@ -31,7 +31,6 @@
     //used?
     String success_page = "/gift_card/purchase/purchase_giftcard.jsp";
     boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     String action_name = "addSavedRecipient";
     if(request.getParameter("checkout") != null && request.getParameter("checkout").equals("true")) {
         //user clicked checkout/continue button.

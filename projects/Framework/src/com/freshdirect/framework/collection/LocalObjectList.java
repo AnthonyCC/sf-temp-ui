@@ -1,8 +1,11 @@
 package com.freshdirect.framework.collection;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
-import com.freshdirect.framework.core.*;
+import com.freshdirect.framework.core.ModelI;
+import com.freshdirect.framework.core.PrimaryKey;
 
 /**
  * Collection of Model objects.  It assumes that all objects in
@@ -43,15 +46,15 @@ public class LocalObjectList extends ArrayList implements ListI {
     /** gets a <CODE>List</CODE> of all of the elements of this list
      * @return a <CODE>List</CODE> of models
      */
-    public List getAll() {
-        return new ArrayList(this);
-    }
+//    public List getAll() {
+//        return new ArrayList(this);
+//    }
     
     /**
      * @return  */
-    public Enumeration enumeration() {
-        return new Vector(this).elements();
-    }
+//    public Enumeration enumeration() {
+//        return new Vector(this).elements();
+//    }
     
     ////////////////// add stuff //////////////////
     
@@ -120,7 +123,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param pk the primary key to search for
      * @return  the index in this list of the first occurrence of the specified primary key, or -1 if this list contains no such element
      */
-    public int indexOf(PrimaryKey pk) {
+    private int indexOf(PrimaryKey pk) {
         if (pk!=null) {
             for (int i=0; i<this.size(); i++) {
                 if (pk.equals( ((ModelI)this.get(i)).getPK() )) {
@@ -138,7 +141,7 @@ public class LocalObjectList extends ArrayList implements ListI {
      * @param pk the primary key to search for
      * @return  the index in this list of the last occurrence of the specified primary key, or -1 if this list contains no such element
      */
-    public int lastIndexOf(PrimaryKey pk) {
+    private int lastIndexOf(PrimaryKey pk) {
         if (pk!=null) {
             for (int i=this.size()-1; i>=0; i--) {
                 if (pk.equals( ((ModelI)this.get(i)).getPK() )) {

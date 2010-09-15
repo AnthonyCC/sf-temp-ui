@@ -5,16 +5,12 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Collections;
 
-import javax.ejb.CreateException;
-import javax.naming.NamingException;
+import javax.ejb.EJBException;
 
 import org.apache.log4j.Category;
 
-import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 
 /**
@@ -47,26 +43,16 @@ public class SmartStoreServiceConfiguration {
 		return instance;
 	}
 
-	// get service configuration home bean
-	private SmartStoreServiceConfigurationHome getServiceConfigurationHome() {
-		try {
-			return (SmartStoreServiceConfigurationHome) new ServiceLocator(
-					FDStoreProperties.getInitialContext()).getRemoteHome(
-					"freshdirect.smartstore.SmartStoreServiceConfiguration");
-		} catch (NamingException e) {
-			throw new FDRuntimeException(e);
-		}
-	}
 
 	public Collection loadDynamicSiteFeatures() {
 		try {
 			SmartStoreServiceConfigurationSB sb;
-			sb = getServiceConfigurationHome().create();
+			sb = FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
 			return sb.getSiteFeatures();
 		} catch (RemoteException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
 			return Collections.EMPTY_LIST;
-		} catch (CreateException e) {
+		} catch (EJBException e) {
 			LOGGER.warn("SmartStore Service Configuration", e);
 			return Collections.EMPTY_LIST;
 		} catch (SQLException e) {

@@ -5,12 +5,12 @@ import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.content.TemplateRenderer;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.cache.MultiTemplateLoader;
@@ -25,7 +25,7 @@ import freemarker.template.TemplateExceptionHandler;
  */
 public class FreemarkerTemplateRenderer implements ITemplateRenderer {
 
-	private final static Category LOGGER = Category.getInstance(TemplateRenderer.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(TemplateRenderer.class);
 
 	private final Configuration cfg;
 	

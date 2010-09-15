@@ -43,7 +43,6 @@ function sortRestriction(colName) {
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp :"+restrictions);
     String sortColumn = NVL.apply(request.getParameter("sortColumn"), "start_time");
 	
 %>
@@ -80,7 +79,6 @@ function sortRestriction(colName) {
 	<%                
 		    	if (restriction instanceof OneTimeRestriction) {
 				    OneTimeRestriction rev = (OneTimeRestriction) restriction;
-                    System.out.println("rev.getId() :"+rev.getId());
 	%>
 	    <input type="hidden" name="custIds" value="<%= rev.getReason().getName() %>" />       
         <tr>
@@ -99,7 +97,6 @@ function sortRestriction(colName) {
               <%
                   }else if(restriction instanceof RecurringRestriction){
                   RecurringRestriction rev = (RecurringRestriction) restriction;
-                    System.out.println("rev.getId() :"+rev.getId());
                %>
 	    <input type="hidden" name="custIds" value="<%= rev.getReason().getName() %>" />
         <tr>
@@ -119,7 +116,6 @@ function sortRestriction(colName) {
               <%
                  }else if(restriction instanceof OneTimeReverseRestriction){
                   OneTimeReverseRestriction rRev = (OneTimeReverseRestriction) restriction;
-                    System.out.println("rRev.getId() :"+rRev.getId());
                %>
 	    <input type="hidden" name="custIds" value="<%= rRev.getReason().getName() %>" />
         <tr>

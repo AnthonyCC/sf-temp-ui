@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <logic:iterate id="cartLine" collection="<%= (invoicedView != null ? invoicedView.getOrderLines() : view.getOrderLines()) %>" type="com.freshdirect.fdstore.customer.FDCartLineI" indexId="lineNumber">
 <%  
@@ -72,9 +73,9 @@
     
 	<td width="5%">(<%= cartLine.getUnitPrice() %>)</td>
 	
-    <td width="5%" align="right"><%= hasInvoice && invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
+    <td width="5%" align="right"><%= hasInvoice && invoiceLine.getCustomizationPrice() > 0 ? JspMethods.formatPrice(invoiceLine.getCustomizationPrice()) : ""%></td>
 	
-    <td align="right"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></td>
+    <td align="right"><%= JspMethods.formatPrice(cartLine.getPrice()) %><%if(hasInvoice){%> / <b><%=JspMethods.formatPrice(invoiceLine.getPrice())%><%}%></b></td>
 	
     <td width="1%">&nbsp;</td>
     
@@ -102,7 +103,7 @@
     <td colspan="3">&nbsp;</td>
     <td colspan="3" align="right"><b><%= deptName %></b></td>
     <td colspan="2" align="right">
-        <%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %> / <b><%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
+        <%= JspMethods.formatPrice(((Double)deptTotalMap.get("est")).doubleValue()) %> / <b><%= JspMethods.formatPrice(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
     </td>
     <td colspan="4">&nbsp;</td>
     <td colspan="3">&nbsp;</td>
@@ -121,21 +122,21 @@
 <tr valign="top">
 	<td colspan="3">&nbsp;</td>
 	<td colspan="3" align="right">SubTotal <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getSubtotal()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getSubtotal() ) %></b><% } %></td>
+	<td colspan="2" align="right"><%= JspMethods.formatPrice(view.getSubtotal()) %><% if (hasInvoice) { %> / <b><%= JspMethods.formatPrice( invoicedView.getSubtotal() ) %></b><% } %></td>
 	<td colspan="4"><% if (hasEstimatedItems) out.print("*"); %></td>
     <td colspan="3">&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="3"></td>
 	<td colspan="3" align="right">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getDepositValue()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getDepositValue() ) %></b><% } %></td>
+	<td colspan="2" align="right"><%= JspMethods.formatPrice(view.getDepositValue()) %><% if (hasInvoice) { %> / <b><%= JspMethods.formatPrice( invoicedView.getDepositValue() ) %></b><% } %></td>
 	<td colspan="4">&nbsp;</td>
     <td colspan="3">&nbsp;</td>
 </tr>
 <tr>
 	<td colspan="3"></td>
 	<td colspan="3" align="right">Tax<%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-	<td colspan="2" align="right"><%= CCFormatter.formatCurrency(view.getTax()) %><% if (hasInvoice) { %> / <b><%= CCFormatter.formatCurrency( invoicedView.getTax() ) %></b><% } %></td>
+	<td colspan="2" align="right"><%= JspMethods.formatPrice(view.getTax()) %><% if (hasInvoice) { %> / <b><%= JspMethods.formatPrice( invoicedView.getTax() ) %></b><% } %></td>
 	<td colspan="4">&nbsp;</td>
     <td colspan="3">&nbsp;</td>
 </tr>

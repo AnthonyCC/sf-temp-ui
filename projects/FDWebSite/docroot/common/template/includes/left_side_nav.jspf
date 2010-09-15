@@ -8,11 +8,6 @@
 
 		int displayedRows = 0;
 
-		//System.out.println("nl "+nl);
-		//System.out.println("   sort: "+nl.getSortString());
-		//System.out.println("   depth "+nl.getDepth());
-		//System.out.println("   brk "+nl.breakBefore() +" "+nl.breakAfter());
-
 		boolean paintBreak = nl.breakBefore();
 
 		// !!! VS: the breakdepths implementation seems pretty inefficient

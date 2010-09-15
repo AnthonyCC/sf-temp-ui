@@ -338,7 +338,7 @@ public class ConfiguredProduct extends ProxyProduct {
 			}
 
 			// see if there's a sku code linked to this variation option
-			String optSkuCode = varOpt.getAttribute(EnumAttributeName.SKUCODE);
+			String optSkuCode = varOpt.getSkuCode();
 			if (optSkuCode == null || "".equals(optSkuCode)) {
 				continue;
 			}

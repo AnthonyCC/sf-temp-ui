@@ -1,4 +1,5 @@
 <%@ page import='com.freshdirect.webapp.taglib.giftcard.GiftCardUtil' %>
+<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import='org.json.JSONObject' %>
 <%@ page import='java.text.*' %>
@@ -7,7 +8,6 @@
 	boolean isResendFetch = false;
 	boolean isResendEmail = false;
 	boolean isSendCancellationEmail = false;
-    NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 
 	if ( "true".equals((String)request.getParameter("isResendFetch")) ) {
 		isResendFetch = true;
@@ -20,8 +20,6 @@
 		isSendCancellationEmail = true;
 	}
 
-	if ( request.getParameter("isResendFetch") != null ) { System.out.println("isResendFetch : "+(String)request.getParameter("isResendFetch")); }
-	if ( request.getParameter("isResendEmail") != null ) { System.out.println("isResendEmail : "+(String)request.getParameter("isResendEmail")); }
 
 	//if we're fetching the info for the overlay display
 	if (isResendFetch) {
@@ -41,12 +39,11 @@
     %>
          <fd:GetGiftCardRecipientDlvInfo id="dlvInfo" saleId="<%= saleId %>" certificationNum="<%= certNum %>">
     <%      
-            System.out.println("Dlv info "+dlvInfo);
             if(dlvInfo != null){
                 json.put("status", "ok"); //chamge status to OK (js will just check for != "error")
                 json.put("gcRecipName", dlvInfo.getRecepientModel().getRecipientName());
                 json.put("gcRecipEmail",dlvInfo.getRecepientModel().getRecipientEmail());
-                json.put("gcAmount", currencyFormatter.format(dlvInfo.getRecepientModel().getAmount())); //this is in the page, displayed
+                json.put("gcAmount", JspMethods.formatPrice(dlvInfo.getRecepientModel().getAmount())); //this is in the page, displayed
                 json.put("gcMessage",dlvInfo.getRecepientModel().getPersonalMessage());
                 json.put("gcSaleId",saleId);
                 json.put("gcCertNum",dlvInfo.getCertificationNumber());
@@ -96,7 +93,6 @@
 		boolean success= true;
 		String[] emailAddrs = GiftCardUtil.sendGiftCardCancellationEmail(request,saleId,certNum,isOrigRecp,isSelf,isnewRecipient,newRecipientAddr);
 		 JSONObject json = new JSONObject();
-		 System.out.println("");
 	        if(null != emailAddrs && emailAddrs.length > 0) {
 			    //if we return anything, it will de displayed in the overlay (can be html)
 	            json.put("returnMsg", "<b<span style=\"color: #f00;\">Gift Card Cancellation mails sent successfully.</span></b>");

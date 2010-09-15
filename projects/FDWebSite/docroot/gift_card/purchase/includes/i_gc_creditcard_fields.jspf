@@ -61,7 +61,6 @@ EnumServiceType serviceTypeGC = (EnumServiceType)NVL.apply(EnumServiceType.getEn
         //clear info from session.
         sessionuser.setInvalidPaymentMethod(null);
     } else {
-        //System.out.println("I am in else");
         //get the fields from the request, if the request field is not empty
         if (request.getParameter(PaymentMethodName.ACCOUNT_HOLDER)!=null) { 
             ccNameOnCard = request.getParameter(PaymentMethodName.ACCOUNT_HOLDER);

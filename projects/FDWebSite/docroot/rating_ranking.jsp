@@ -11,10 +11,13 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='bean' prefix='bean' %>
 
-<fd:CheckLoginStatus />
-<%! 
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-%>
+
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.ListIterator"%><fd:CheckLoginStatus />
 <% 
 FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 
@@ -295,7 +298,7 @@ for(Iterator itmItr = sortedStuff.iterator();itmItr.hasNext();) {
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %>                      
         </fd:FDProductInfo>
 <%

@@ -81,6 +81,7 @@ function processReturn(formName){
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
@@ -154,7 +155,7 @@ function processReturn(formName){
             <td align="right"><input type="checkbox" name="promo_checkbox" value="promo"></td>
             <td colspan="2">carry over Promotion</td>
 		    <td colspan="3" align="right">Promotion:</td>
-		    <td colspan="2" align="right">(<%= CCFormatter.formatCurrency(order.getTotalDiscountValue()) %>) / <b>(<%= CCFormatter.formatCurrency( order.getActualDiscountValue() ) %>)</b></td>
+		    <td colspan="2" align="right">(<%= JspMethods.formatPrice(order.getTotalDiscountValue()) %>) / <b>(<%= JspMethods.formatPrice( order.getActualDiscountValue() ) %>)</b></td>
             <td colspan="4">&nbsp;</td>
             <td colspan="3">&nbsp;</td>
         </tr>
@@ -165,7 +166,7 @@ function processReturn(formName){
             <td>&nbsp;</td>
             <td colspan="2">&nbsp;</td>
 		    <td colspan="3">Credits:</td>
-		    <td colspan="2">(<%= CCFormatter.formatCurrency(order.getCustomerCreditsValue()) %>) / <b>(<%= CCFormatter.formatCurrency( order.getActualCustomerCreditsValue() ) %>)</b></td>
+		    <td colspan="2">(<%= JspMethods.formatPrice(order.getCustomerCreditsValue()) %>) / <b>(<%= JspMethods.formatPrice( order.getActualCustomerCreditsValue() ) %>)</b></td>
 		    <td colspan="4">&nbsp;</td>
             <td colspan="3">&nbsp;</td>
 		</tr>
@@ -183,7 +184,7 @@ function processReturn(formName){
 		value.append("$0.00");
 	    } else {
 		displayString = "Delivery Charge:";
-		value.append(CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
+		value.append(JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDeliveryCharge() : order.getDeliverySurcharge()));
 		value.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	    }
 	    
@@ -194,7 +195,7 @@ function processReturn(formName){
 	        } else if(order.isChargedWaivedForReturn(EnumChargeType.DELIVERY)) {
 		   returnValue.append("$0.00 (waived)");
 	        } else {
-		   returnValue.append(CCFormatter.formatCurrency(order.getDeliverySurchargeOnReturn()));
+		   returnValue.append(JspMethods.formatPrice(order.getDeliverySurchargeOnReturn()));
 		   returnValue.append(order.isDeliveryChargeTaxable() ? "&nbsp;T" : "");
 	        }
 	     	
@@ -213,7 +214,7 @@ function processReturn(formName){
             <td><%if(!order.isChargeWaived(EnumChargeType.PHONE)){%><input type="checkbox" name="phone_checkbox" value="phone" <%=order.isChargedWaivedForReturn(EnumChargeType.PHONE) ? "checked" : ""%>><%}%></td>
             <td colspan="2" align="left"><%if(!order.isChargeWaived(EnumChargeType.PHONE)){%>waive Telephone Fee<%}%></td>
             <td colspan="3">Phone Handling Charge<%=(order.isChargeWaived(EnumChargeType.PHONE)? "(waived)" : "")%>: </td>
-			<td colspan="2"><%= CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)? 0.0: order.getPhoneCharge())%></td>
+			<td colspan="2"><%= JspMethods.formatPrice(order.isChargeWaived(EnumChargeType.PHONE)? 0.0: order.getPhoneCharge())%></td>
 		    <td colspan="4">&nbsp;</td>
         </tr>
     <%}%>
@@ -223,7 +224,7 @@ function processReturn(formName){
             <td><input type="checkbox" name="misc_checkbox" value="misc" <%=order.isChargeWaivedByCSROnReturn(EnumChargeType.MISCELLANEOUS) ? "checked" : ""%>></td>
             <td colspan="2" align="left">waive Miscellaneous Fee</td>
 			<td colspan="3">Misc Charge: </td>
-			<td colspan="2"><%=CCFormatter.formatCurrency(order.getMiscellaneousCharge())%></td>
+			<td colspan="2"><%=JspMethods.formatPrice(order.getMiscellaneousCharge())%></td>
 		    <td colspan="4">&nbsp;</td>
 		</tr>
 	<%}%>
@@ -232,7 +233,7 @@ function processReturn(formName){
 		<tr align="right">
             <td colspan="3">&nbsp;</td>
 			<td colspan="3">CC Declined Charge: </td>
-			<td colspan="2"><%= CCFormatter.formatCurrency(order.getCCDeclinedCharge()) %></td>
+			<td colspan="2"><%= JspMethods.formatPrice(order.getCCDeclinedCharge()) %></td>
 		    <td colspan="4">&nbsp;</td>
 		</tr>
 	<%}%>
@@ -241,7 +242,7 @@ function processReturn(formName){
 		<tr align="right">
             <td colspan="3"></td>
 			<td colspan="3">Restocking Charge FD: </td>
-			<td colspan="2"><%= CCFormatter.formatCurrency(order.getFDRestockingCharges()) %></td>
+			<td colspan="2"><%= JspMethods.formatPrice(order.getFDRestockingCharges()) %></td>
 		    <td colspan="4">&nbsp;</td>
 		</tr>
 	<%}%>
@@ -250,7 +251,7 @@ function processReturn(formName){
 		<tr align="right">
             <td colspan="3"></td>
 			<td colspan="3">Restocking Charge WBL: </td>
-			<td colspan="2" ><%= CCFormatter.formatCurrency(order.getWBLRestockingCharges()) %></td>
+			<td colspan="2" ><%= JspMethods.formatPrice(order.getWBLRestockingCharges()) %></td>
 		    <td colspan="4">&nbsp;</td>
 		</tr>
 	<%}%>
@@ -258,7 +259,7 @@ function processReturn(formName){
 	<tr align="right">
 		<td colspan="3">&nbsp;</td>
 		<td colspan="3">Order Total:</td>
-		<td colspan="2"><%= CCFormatter.formatCurrency(order.getTotal()) %> / <b><%= CCFormatter.formatCurrency( order.getInvoicedTotal() ) %></b></td>
+		<td colspan="2"><%= JspMethods.formatPrice(order.getTotal()) %> / <b><%= JspMethods.formatPrice( order.getInvoicedTotal() ) %></b></td>
 		<td><% if (hasEstimatedItems) out.print("*"); %></td>
         <td colspan="3">&nbsp;</td>          
         <td colspan="3">&nbsp;</td>

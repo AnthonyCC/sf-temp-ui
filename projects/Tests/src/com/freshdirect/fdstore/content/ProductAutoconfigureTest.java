@@ -9,9 +9,6 @@ import java.util.Map;
 
 import javax.naming.Context;
 
-import org.mockejb.interceptor.Aspect;
-import org.mockejb.interceptor.InvocationContext;
-import org.mockejb.interceptor.Pointcut;
 import org.mockejb.jndi.MockContextFactory;
 
 import com.freshdirect.cms.application.CmsManager;
@@ -21,9 +18,7 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.pricing.Pricing;
-import com.freshdirect.content.attributes.AttributeCollection;
-import com.freshdirect.content.attributes.AttributesI;
-import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.content.attributes.ErpsAttributes;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -39,16 +34,15 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
-import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
+import com.freshdirect.fdstore.aspects.FDProductAspect;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
 /**
  * Test case for the availability of ConfiguredProducts.
  */
 public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
-	public static final AttributesI			EMPTY_ATTRIBUTES		= new AttributeCollection();
 	public static final FDVariationOption[]	EMPTY_VARIATION_OPTIONS	= new FDVariationOption[0];
-	public static final FDVariationOption[] dummyVariationOptions = {new FDVariationOption(EMPTY_ATTRIBUTES, "simple", "simpleVal")};
+	public static final FDVariationOption[] dummyVariationOptions = {new FDVariationOption("simple", "simpleVal")};
 	
 	public ProductAutoconfigureTest(String name) {
 		super(name);
@@ -192,17 +186,8 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 	}
 
 	
-	public static class FDFactoryProductInfoAspect implements Aspect {
+	private static class FDFactoryProductInfoAspect extends com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect {
 
-		public Pointcut getPointcut() {
-			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
-		}
-
-		public void intercept(InvocationContext ctx) throws Exception {
-			String sku = (String) ctx.getParamVals()[0];
-			ctx.setReturnObject(getProductInfo(sku));
-		}
-	    
 		/**
 		 * Get current product information object for sku.
 		 *
@@ -213,6 +198,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 	 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 * @throws FDResourceException if an error occured using remote resources
 		 */
+	    @Override
 		public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException {			
 			Date now = new Date();
 			String[] materials = {"000000000123"};
@@ -233,25 +219,14 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 					                           EnumATPRule.MATERIAL,
 					                           EnumAvailabilityStatus.AVAILABLE,
 					                           now,
-					                           inventoryCache,"",null,ZonePriceInfoListing.getDummy());
+					                           inventoryCache,"",null,"LB",ZonePriceInfoListing.getDummy());
 
 			return productInfo;
 		}
 	}
 	
-	public static class FDFactoryProductAspect implements Aspect {
+	private static class FDFactoryProductAspect extends FDProductAspect {
 
-		public Pointcut getPointcut() {
-			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProduct\\(java.lang.String,int\\)");
-		}
-
-		public void intercept(InvocationContext ctx) throws Exception {
-			String sku = (String) ctx.getParamVals()[0];
-			Integer i = (Integer) ctx.getParamVals()[1];
-			ctx.setReturnObject(getProduct(sku, i.intValue()));
-		}
-	
-	
 		/**
 		 * Get product with specified version. 
 		 *
@@ -262,6 +237,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		 *
 		 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 */
+	    @Override
 	    public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException {
 	    	Date          			now;
 	    	FDMaterial    			material;
@@ -279,19 +255,19 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	material       = null;
 		    	
 		    	variationOptions = new FDVariationOption[2];
-		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
+		    	variationOptions[0] = new FDVariationOption(
 						"VariationOption1",
 						"test variation option 1");
-		    	variationOptions[1] = new FDVariationOption(EMPTY_ATTRIBUTES,
+		    	variationOptions[1] = new FDVariationOption(
 						"VariationOption2",
 						"test variation option 2");
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[0] = new FDVariation(
 						                        "variation",
 						                        variationOptions);
 				
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[0] = new FDSalesUnit(
 												"SalesUnit1",
 												"test sales unit 1");
 				pricing        = null;
@@ -303,15 +279,15 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	now            = new Date();
 		    	material       = null;
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[0] = new FDVariation(
 						                        "variation",
 						                        dummyVariationOptions);
 				
 				salesUnits     = new FDSalesUnit[2];
-				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[0] = new FDSalesUnit(
 						"SalesUnit1",
 						"test sales unit 1");
-				salesUnits[1] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[1] = new FDSalesUnit(
 						"SalesUnit2",
 						"test sales unit 2");
 				pricing        = null;
@@ -323,22 +299,22 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 	    		// set SELECTED SKU flag
 	    		// [segabor] This is to make new autoconfig magic work
 	    		//           For more please see APPREQ-26
-	    		AttributeCollection sel_unit_attrs = new AttributeCollection();
-	    		sel_unit_attrs.setAttribute(EnumAttributeName.SELECTED.getName(), true);
+	    		ErpsAttributes sel_unit_attrs = new ErpsAttributes(null);
+	    		sel_unit_attrs.setSelected(true);
 
 		    	// this is a product with multiple sales units
 		    	now            = new Date();
 		    	material       = null;
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[0] = new FDVariation(
 						                        "variation",
 						                        dummyVariationOptions);
 				
 				salesUnits     = new FDSalesUnit[2];
-				salesUnits[0] = new FDSalesUnit(sel_unit_attrs,
+				salesUnits[0] = new MockFDSalesUnit(sel_unit_attrs,
 						"SalesUnit1",
 						"test sales unit 1");
-				salesUnits[1] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[1] = new FDSalesUnit(
 						"SalesUnit2",
 						"test sales unit 2");
 				pricing        = null;
@@ -351,7 +327,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	material       = null;
 				variations     = new FDVariation[0];
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[0] = new FDSalesUnit(
 						"SalesUnit1",
 						"test sales unit 1");
 				pricing        = null;
@@ -366,22 +342,22 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	
 				variations     = new FDVariation[2];
 		    	variationOptions = new FDVariationOption[1];
-		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
+		    	variationOptions[0] = new FDVariationOption(
 						"VariationOption1",
 						"test variation option 1");
-				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[0] = new FDVariation(
 						                        "variation1",
 						                        variationOptions);
 		    	variationOptions = new FDVariationOption[1];
-		    	variationOptions[0] = new FDVariationOption(EMPTY_ATTRIBUTES,
+		    	variationOptions[0] = new FDVariationOption(
 						"VariationOption2",
 						"test variation option 2");
-				variations[1] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[1] = new FDVariation(
 						                        "variation2",
 						                        variationOptions);
 				
 				salesUnits     = new FDSalesUnit[1];
-				salesUnits[0] = new FDSalesUnit(EMPTY_ATTRIBUTES,
+				salesUnits[0] = new FDSalesUnit(
 						"SalesUnit1",
 						"test sales unit 1");
 				pricing        = null;
@@ -392,7 +368,7 @@ public class ProductAutoconfigureTest extends FDCustomerManagerTestSupport {
 		    	now            = new Date();
 		    	material       = null;
 				variations     = new FDVariation[1];
-				variations[0] = new FDVariation(EMPTY_ATTRIBUTES,
+				variations[0] = new FDVariation(
 						                        "variation",
 						                        dummyVariationOptions);
 				salesUnits     = null;

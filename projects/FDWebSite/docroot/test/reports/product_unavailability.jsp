@@ -53,7 +53,6 @@ class DepartmentInfoVisitor implements ContentVisitorI {
 	private DepartmentInfo currDept = null;
 	
 	public DepartmentInfoVisitor(Collection skuCodes) {
-		System.out.println(skuCodes);
 		searchSkuCodes.addAll(skuCodes);
 	}
 	

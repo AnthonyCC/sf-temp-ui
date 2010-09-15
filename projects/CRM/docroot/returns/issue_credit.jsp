@@ -16,6 +16,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.framework.util.MathUtil" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
@@ -521,13 +522,13 @@ var OL_PRICES = {};
     <tr VALIGN="bottom">
         <td WIDTH="10%" ALIGN="right"><b>orig. totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td WIDTH="10%">Subtotal&nbsp;</td>
-        <td WIDTH="13%" align="right"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal() ) %></td>
+        <td WIDTH="13%" align="right"><%= JspMethods.formatPrice( order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal() ) %></td>
         <td WIDTH="11%" ALIGN="RIGHT"><b>current</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td WIDTH="10%">Subtotal&nbsp;</td>
-        <td WIDTH="14%" align="right"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal()) - allCreditsTotal ) %></td>
+        <td WIDTH="14%" align="right"><%= JspMethods.formatPrice( (order.hasInvoice() ? order.getInvoicedSubTotal() : order.getSubTotal()) - allCreditsTotal ) %></td>
         <td WIDTH="10%" ALIGN="RIGHT"><b>new totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td WIDTH="10%">Subtotal</td>
-        <td WIDTH="13%" align="right"><%= CCFormatter.formatCurrency( (order.hasInvoice()? order.getInvoicedSubTotal() : order.getSubTotal()) - (allCreditsTotal + newComplaint.getAmount()) ) %></td>
+        <td WIDTH="13%" align="right"><%= JspMethods.formatPrice( (order.hasInvoice()? order.getInvoicedSubTotal() : order.getSubTotal()) - (allCreditsTotal + newComplaint.getAmount()) ) %></td>
     </tr>
 <%  double appliedCreditTotal = 0.0;
     for (Iterator it = appliedCredits.iterator(); it.hasNext(); ) {
@@ -539,51 +540,51 @@ var OL_PRICES = {};
     <tr VALIGN="bottom">
         <td>&nbsp;</td>
         <td>Applied Credits&nbsp;</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( appliedCreditTotal ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( appliedCreditTotal ) %></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Applied Credits&nbsp;</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( appliedCreditTotal ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( appliedCreditTotal ) %></td>
         <td>&nbsp;</td>
         <td>Applied Credits</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( appliedCreditTotal ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( appliedCreditTotal ) %></td>
     </tr>
 <%  } %>
 <%  if (order.getTotalDiscountValue() > 0) { %>
     <tr VALIGN="bottom">
         <td>&nbsp;</td>
         <td>Promotions&nbsp;</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
         <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Promotions&nbsp;</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
         <td>&nbsp;</td>
         <td>Promotions</td>
-        <td align="right">-<%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
+        <td align="right">-<%= JspMethods.formatPrice( order.hasInvoice() ? order.getActualDiscountValue() : order.getTotalDiscountValue() ) %></td>
     </tr>
 <%  } %>
 <% if(order.getDepositValue() > 0){ %>
     <tr VALIGN="bottom">
         <td ALIGN="right">&nbsp;</td>
         <td>Bottle Deposit&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
         <td ALIGN="RIGHT"><b>totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Bottle Deposit&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
         <td ALIGN="RIGHT">&nbsp;</td>
         <td>Bottle Deposit</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedDepositValue() : order.getDepositValue()) %></td>
     </tr>
 <%}%>
     <tr VALIGN="bottom">
         <td ALIGN="right">&nbsp;</td>
         <td>Tax&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
         <td ALIGN="RIGHT"><b>totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td>Tax&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
         <td ALIGN="RIGHT">&nbsp;</td>
         <td>Tax</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.hasInvoice() ? order.getInvoicedTaxValue() : order.getTaxValue()) %></td>
     </tr>
     <tr VALIGN="bottom">
         <td>&nbsp;</td>
@@ -594,7 +595,7 @@ var OL_PRICES = {};
        %>
       <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
        <% } %>       
         </td>
         <td>&nbsp;</td>
@@ -605,7 +606,7 @@ var OL_PRICES = {};
        %>
       <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
        <% } %>       
         </td>
         <td>&nbsp;</td>
@@ -616,7 +617,7 @@ var OL_PRICES = {};
        %>
       <%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
          <% } else { %>           
-            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(order.getDeliverySurcharge()) %>
+            <%= (order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(order.getDeliverySurcharge()) %>
        <% } %>       
         </td>
     </tr>
@@ -624,25 +625,25 @@ var OL_PRICES = {};
     <tr VALIGN="bottom">
         <td>&nbsp;</td>
         <td>Phone Handling&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.getPhoneCharge()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.getPhoneCharge()) %></td>
         <td>&nbsp;</td>
         <td>Phone Handling&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.getPhoneCharge()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.getPhoneCharge()) %></td>
         <td>&nbsp;</td>
         <td>Phone Handling</td>
-        <td align="right"><%= CCFormatter.formatCurrency(order.getPhoneCharge()) %></td>
+        <td align="right"><%= JspMethods.formatPrice(order.getPhoneCharge()) %></td>
     </tr>
 <%  } %>
     <tr VALIGN="bottom">
         <td>&nbsp;</td>
         <td>Order Total&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency( order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal() ) %></td>
+        <td align="right"><%= JspMethods.formatPrice( order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal() ) %></td>
         <td>&nbsp;</td>
         <td>Order Total&nbsp;</td>
-        <td align="right"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - allCreditsTotal ) %></td>
+        <td align="right"><%= JspMethods.formatPrice( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - allCreditsTotal ) %></td>
         <td>&nbsp;</td>
         <td>Order Total</td>
-        <td align="right"><%= CCFormatter.formatCurrency( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - (allCreditsTotal + newComplaint.getAmount()) ) %></td>
+        <td align="right"><%= JspMethods.formatPrice( (order.hasInvoice() ? order.getInvoicedTotal() : order.getTotal()) - (allCreditsTotal + newComplaint.getAmount()) ) %></td>
     </tr>
     <tr VALIGN="bottom">
         <td colspan="9" ALIGN="RIGHT"><INPUT TYPE="submit" value="update" class="submit" onclick="preventCreditIssue()"></td>

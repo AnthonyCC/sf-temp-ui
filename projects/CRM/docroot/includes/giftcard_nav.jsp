@@ -30,7 +30,6 @@ if(!bulk_purchase_gc){
 	boolean giftcard_generate = snav_pageURI.indexOf("generate_new_giftcard.jsp") > -1;
 	boolean bt_giftcard = snav_pageURI.indexOf("bt_giftcard.jsp") > -1;
 	boolean check_balance = snav_pageURI.indexOf("check_balance") > -1;
-	//System.out.println("calling the giftcard nav11"+purchase_gc);
 %>
 
 <div class="cust_nav_gc" style="height: 28px;">

@@ -136,44 +136,35 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 			for (Iterator itr = erpChars.iterator(); itr.hasNext();) {
 				String erpCharName = (String) itr.next();
 
-				List optionsList = new ArrayList();
 				for (int i = 0; i < fdvs.length; i++) {
 					FDVariation var = fdvs[i];
 					if (var.getName().equalsIgnoreCase(erpCharName)) {
+						int counter = 0;
 						FDVariationOption[] varOpts = var.getVariationOptions();
-						String selectedOption = configuration==null ? null : (String)configuration.getOptions().get(var.getName());
+						String selectedOption = configuration == null ? null : (String) configuration.getOptions().get(var.getName());
 						for (int voIdx = 0; voIdx < varOpts.length; voIdx++) {
-							if (selectedOption!=null && !selectedOption.equals(varOpts[voIdx].getName())) {
-								continue;
-							}
-							
-							String optSkuCode = varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
-							if (optSkuCode == null) {
-								optionsList.add(optSkuCode);
+							if (configuration != null && selectedOption != null && !selectedOption.equals(varOpts[voIdx].getName())) {
 								continue;
 							}
 
-							SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(optSkuCode);
+							SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(varOpts[voIdx].getSkuCode());
 							if (sku != null && !sku.isUnavailable()) {
-								optionsList.add(optSkuCode);
+								counter++;
 							}
 						}
 
-						if (optionsList.size() > 0) {
+						if (counter > 0) {
 							rtnVariation.put(erpCharName, varOpts);
 						} else {
 							rtnVariation.put(erpCharName, null);
 						}
+						break;
 					}
 				}
 			}
 		} catch (FDSkuNotFoundException snfe) {
-			LOGGER.warn("ComponentGroupModel: catching FDSkuNotFoundException for default sku for prod: "
-				+ p
-				+ " ,SkuCode: "
-				+ p.getDefaultSku()
-				+ " and Continuing:\nException message:= "
-				+ snfe.getMessage());
+			LOGGER.warn("ComponentGroupModel: catching FDSkuNotFoundException for default sku for prod: " + p + " ,SkuCode: "
+					+ p.getDefaultSku() + " and Continuing:\nException message:= " + snfe.getMessage());
 		}
 
 		return rtnVariation;

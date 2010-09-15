@@ -31,16 +31,8 @@ String[] checkGiftCardBuyerForm = {
 		EnumUserInfoName.REPEAT_EMAIL.getCode(), EnumUserInfoName.PASSWORD.getCode(), 
 		EnumUserInfoName.REPEAT_PASSWORD.getCode(), EnumUserInfoName.PASSWORD_HINT.getCode(),
 		EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
-						
 %>
-<% System.out.println("a"); %>
-
 <%
-
- System.out.println("b");
-
-
-System.out.println("c");
 String fldTitle 			= request.getParameter("title");
 String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
 String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
@@ -63,15 +55,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 } else {
     fldTermsAndConditions = "";
 }
-System.out.println("d");
-
- System.out.println("f");
 
 %>
-
-
-<% System.out.println("g"); %>
-
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
@@ -90,7 +75,6 @@ System.out.println("d");
 				<%@ include file="/registration/includes/i_delivery_address_info.jspf" %><br />
 				<%@ include file="/registration/includes/i_payment_info.jspf" %><br />
 			</div>
-			<% System.out.println("h"); %>
 		</form>
 	</fd:GiftCardBuyerController>
 

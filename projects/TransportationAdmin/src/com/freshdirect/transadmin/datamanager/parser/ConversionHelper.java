@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.datamanager.parser.converters.CoreConverters;
@@ -43,7 +43,7 @@ public class ConversionHelper
 
     private HashMap converterObjectCache;
 
-    static Category cat = Category.getInstance(ConversionHelper.class);
+    static Logger cat = Logger.getLogger(ConversionHelper.class);
 
     public ConversionHelper()
     {

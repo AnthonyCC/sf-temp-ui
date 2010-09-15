@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%
 //get amount for zone promotion
@@ -20,7 +21,7 @@ String zonePromoString=null;
 	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
         if(zonePromoAmount >0)
 		{
-			zonePromoString = CCFormatter.formatCurrency(zonePromoAmount);
+			zonePromoString = JspMethods.formatPrice(zonePromoAmount);
 			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 

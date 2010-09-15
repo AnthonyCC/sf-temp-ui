@@ -37,7 +37,6 @@ String custFname = null;
 String custLname = null;
 
 
-System.out.println("i_gc_creditcard_fields www");
 	//
 	// If user is new (i.e., no orders placed), prepopulate billing address fields with delivery address
 	//
@@ -93,7 +92,6 @@ System.out.println("i_gc_creditcard_fields www");
     if (request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode())!=null) { 
         ccZipCode = request.getParameter(EnumUserInfoName.BIL_ZIPCODE.getCode());
     }
-System.out.println("i_gc_creditcard_fields xxx");
 %>
 
     <%-- error system messages happen here --%>
@@ -108,7 +106,6 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 <IMG src="/media_stat/images/layout/999966.gif" WIDTH="693" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
 </TR></TABLE>
 <br>
-<% System.out.println("uiui"); %>
 <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="MIDDLE">
 	<TD WIDTH="15" ROWSPAN="10"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="13" HEIGHT="1" BORDER="0"></TD>
@@ -135,7 +132,6 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 		</select> <fd:ErrorHandler result='<%=result%>' name='<%=PaymentMethodName.CARD_BRAND%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler>
 	</td>
 </tr>
-<% System.out.println("urrrrrrrri"); %>
 <TR>
 	<TD WIDTH="105" ALIGN="RIGHT" CLASS="text12"><fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"><span class="text11rbold"></fd:ErrorHandler>*&nbsp;Card Number&nbsp;&nbsp;<fd:ErrorHandler result="<%=result%>" name="<%=PaymentMethodName.ACCOUNT_NUMBER%>"></span></fd:ErrorHandler></TD>
 	<TD WIDTH="565" CLASS="text12">
@@ -163,7 +159,6 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 		tCcExpireMonth = "0"+ccExpireMonth;
 		}
 	%>
-	<% System.out.println("tttttttttttti"); %>
 	<SELECT class="text11" name="<%=PaymentMethodName.CARD_EXP_MONTH%>" required="true">
 	<OPTION value="">Choose a month</OPTION>
 	<% for (int mnth = 1;mnth<13;mnth++) { String strMonth = mnth<10?"0"+mnth:""+mnth; %>
@@ -182,7 +177,6 @@ WIDTH="132" HEIGHT="9" border="0" alt="CREDIT CARD DETAILS">&nbsp;&nbsp;&nbsp;<F
 </tr>
 
 </TABLE>
-<% System.out.println("qqqqqqqqqqqqqqqi"); %>
 <br><br>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="693">
 <TR VALIGN="TOP">

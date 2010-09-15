@@ -22,10 +22,10 @@
                 <remote>com.freshdirect.erp.ejb.ErpCharacteristicValuePriceEB</remote>
             </ejb-ref>
             <ejb-ref>
-                <ejb-ref-name>ejb/AttributeFacade</ejb-ref-name>
+                <ejb-ref-name>ejb/Attributes</ejb-ref-name>
                 <ejb-ref-type>Session</ejb-ref-type>
-                <home>com.freshdirect.content.attributes.ejb.AttributeFacadeHome</home>
-                <remote>com.freshdirect.content.attributes.ejb.AttributeFacadeSB</remote>
+                <home>com.freshdirect.content.attributes.ejb.AttributesHome</home>
+                <remote>com.freshdirect.content.attributes.ejb.AttributesSB</remote>
             </ejb-ref>
             <ejb-ref>
                 <ejb-ref-name>ejb/ErpInfo</ejb-ref-name>
@@ -273,10 +273,10 @@
             </resource-ref>
         </session>
         <session>
-            <ejb-name>AttributeFacade</ejb-name>
-            <home>com.freshdirect.content.attributes.ejb.AttributeFacadeHome</home>
-            <remote>com.freshdirect.content.attributes.ejb.AttributeFacadeSB</remote>
-            <ejb-class>com.freshdirect.content.attributes.ejb.AttributeFacadeSessionBean</ejb-class>
+            <ejb-name>Attributes</ejb-name>
+            <home>com.freshdirect.content.attributes.ejb.AttributesHome</home>
+            <remote>com.freshdirect.content.attributes.ejb.AttributesSB</remote>
+            <ejb-class>com.freshdirect.content.attributes.ejb.AttributesSessionBean</ejb-class>
             <session-type>Stateless</session-type>
             <transaction-type>Container</transaction-type>
             <resource-ref>
@@ -930,9 +930,9 @@
         -->
         <container-transaction>
             <method>
-                <ejb-name>AttributeFacade</ejb-name>
+                <ejb-name>Attributes</ejb-name>
                 <method-intf>Remote</method-intf>
-                <method-name>storeAttributes</method-name>
+                <method-name>*</method-name>
             </method>
             <method>
                 <ejb-name>ErpNutritionSessionBean</ejb-name>
@@ -952,11 +952,6 @@
                 <ejb-name>ErpInfo</ejb-name>
                 <method-intf>Remote</method-intf>
                 <method-name>*</method-name>
-            </method>
-            <method>
-                <ejb-name>AttributeFacade</ejb-name>
-                <method-intf>Remote</method-intf>
-                <method-name>getAttributes</method-name>
             </method>
             <method>
                 <ejb-name>ErpNutritionSessionBean</ejb-name>

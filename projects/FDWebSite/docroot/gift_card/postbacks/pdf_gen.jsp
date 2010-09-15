@@ -143,7 +143,6 @@
 			os.close();
 	}else{
 		//since we can't return an error (we're assuming the file is returned)
-		System.out.println("ERROR in PostBack [pdf_gen] : no usable gcId found ("+gcId+")");
 	}
     %>
 </fd:GetGiftCardRecipientDlvInfo>    

@@ -91,7 +91,7 @@ function copyConfirm(value){
                 <table width="600" cellspacing="2" cellpadding="0">
                     <tr><th align="left">Default Pricing Unit Description</th></tr>
                     <tr>                    
-                    <td align="left"><input type=text size=20 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION) %>'></td></tr>
+                    <td align="left"><input type=text size=20 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()) %>' value='<%= product.getAttributes().getPricingUnitDescription("") %>'></td></tr>
                     <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
                 </table>
                 </form>
@@ -133,9 +133,9 @@ function copyConfirm(value){
                 <input type=hidden name=action value=save>
                 <table width="600" cellspacing="2" cellpadding="0">
                     <tr><th align="left" class="section_title">New / Back-in-Stock Manual Override</th></tr>
-                    <tr><td align="left">Date of becoming new <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.NEW_PRODUCT_DATE) %>'>
+                    <tr><td align="left">Date of becoming new <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.NEW_PRODUCT_DATE.getName()) %>' value='<%= product.getAttributes().getNewProdDate() %>'>
                     (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
-                    <tr><td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttribute(EnumAttributeName.BACK_IN_STOCK_DATE) %>'>
+                    <tr><td align="left">Back-in-stock date <input type=text size=12 name='<%= FormElementNameHelper.getFormElementName(product, EnumAttributeName.BACK_IN_STOCK_DATE.getName()) %>' value='<%= product.getAttributes().getBackInStock() %>'>
                     (use one of the following formats: MM/dd/yy, MM/dd/yyyy, MM/dd/yyyy HH:mm)</td></tr>
                     <tr><td colspan="2" align="center"><input type="submit" value="save changes"></td></tr>
                 </table>

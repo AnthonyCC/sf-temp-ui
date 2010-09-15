@@ -138,7 +138,7 @@ sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, S
         String prodPrice = null;
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
-<%      prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(yser.getPricingContext().getZoneId()).getDefaultPrice()); %>                      
+<%      prodPrice = JspMethods.formatDefaultPrice(productInfo, yser.getPricingContext()); %>                      
         </fd:FDProductInfo>
       <tr><td><b><a href="/product.jsp?catId=<%=parentCat%>&productId=<%=displayProd%>&trk=cpage"><%=prodName%></a></b>&nbsp;<%=(wineRegion!=null ? "("+wineRegion+")":"")%>&nbsp;-&nbsp;<b><%=prodPrice%></b></td></tr>
 <%

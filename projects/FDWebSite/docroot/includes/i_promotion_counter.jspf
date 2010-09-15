@@ -9,7 +9,6 @@
 <%@ page import='com.freshdirect.framework.util.*' %>
 <%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
 <%!
-java.text.NumberFormat CURRENCY_FORMATTER = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 %>
 <%
@@ -68,7 +67,7 @@ if (isQuickshop) {
                                 <a href="/promotion.jsp<%=params%>">See offer details</a><br>
                                 <img src="/media_stat/images/layout/clear.gif" width="1" height="2"><br>
 				<%  if (promo_user.getShoppingCart().getSubTotal() >= minSubtotal) { %>
-				You have <b><%=CURRENCY_FORMATTER.format(left)%></b> left.
+				You have <b><%=JspMethods.formatPrice(left)%></b> left.
                                 <font class="space2pix"><br><br></font>
 				<%  }  %>
                         </td>

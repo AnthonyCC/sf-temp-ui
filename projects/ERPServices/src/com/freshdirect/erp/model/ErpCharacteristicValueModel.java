@@ -81,6 +81,9 @@ public class ErpCharacteristicValueModel extends ErpModelSupport implements Dura
     public void setDescription(String description) {
         this.description = description;
     }
+    
+    
+    
 
 	/**
 	 * Get the durable (long-lived) ID for the business object.
@@ -102,4 +105,31 @@ public class ErpCharacteristicValueModel extends ErpModelSupport implements Dura
 		// no children
 	}
     
+	
+        public boolean isSelected() {
+            return getAttributes().isSelected();
+        }
+
+        public boolean isLabelValue() {
+            return getAttributes().isLabelValue();
+        }
+        
+        public String getSkuCode() {
+            return getAttributes().getSkucode();
+        }
+
+        public String getUnderLabel() {
+            return getAttributes().getUnderLabel();
+        }
+        
+        public int getPriority() {
+            return getAttributes().getPriority();
+        }
+        
+        public String getAttributeDescription() {
+            return getAttributes().getDescription();
+        }
+        
+        
+        
 }

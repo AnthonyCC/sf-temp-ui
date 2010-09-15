@@ -11,7 +11,8 @@
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
 <%@ taglib uri="freshdirect" prefix="fd" %>
-<script language="javascript">
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><script language="javascript">
     	function redirectToSignup() {
 		
 	    var form = document.forms['signup'];
@@ -266,7 +267,7 @@
 							<td><a href="/your_account/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
 							<td class="text10">&nbsp;&nbsp;&nbsp;&nbsp;<%= CCFormatter.defaultFormatDate( orderInfo.getRequestedDate() ) %></td>
 					                <td class="text10"><%= orderInfo.getDeliveryType().getName() %></td>
-							<td class="text10" align=right><%= CCFormatter.formatCurrency( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td class="text10" align=right><%= JspMethods.formatPrice( orderInfo.getTotal() ) %>&nbsp;&nbsp;&nbsp;&nbsp;</td>
 							<td></td>
 							<td><%= orderInfo.getOrderStatus().getDisplayName() %></td>
 						</tr>	

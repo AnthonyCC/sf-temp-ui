@@ -395,15 +395,11 @@ p.fi{margin:20px 0px;}
 					</fd:ProduceRatingCheck>
 					<fd:FDProductInfo id="productInfo" skuCode="<%=productNode.getDefaultSku().getSkuCode()%>">
 					<%
-						fiProdPrice = JspMethods.currencyFormatter
-											.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())
-											/** +"/"+productInfo.getDisplayableDefaultPriceUnit().toLowerCase() **/
-											;
+						fiProdPrice = JspMethods.formatDefaultPrice(productInfo, user.getPricingContext());
 						
 									fiHasWas = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale();
 									if (fiHasWas) {
-										fiProdBasePrice = JspMethods.currencyFormatter
-											.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getSellingPrice()); //+"/"+ productInfo.getDefaultPriceUnit().toLowerCase();
+										fiProdBasePrice = JspMethods.formatSellingPrice(productInfo, user.getPricingContext());
 									}
 					%>
 					</fd:FDProductInfo>

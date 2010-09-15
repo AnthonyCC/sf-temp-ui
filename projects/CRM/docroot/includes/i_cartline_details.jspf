@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDCartLineI"%>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%
     boolean firstRecipe = true;
@@ -116,8 +117,6 @@
 			 * There is a similar setup in the JspMethods.java file
 			 */
 	
-			//System.out.println("==== in dept peak produce include ProduceRatingCheck : ");
-
 			boolean matchFound = false; //default to false
 
 			//this is taking the place of a skuCode
@@ -125,13 +124,9 @@
 			if (!"".equals(deptIdCheck) && deptIdCheck != null) {
 				deptIdCheck= deptIdCheck.toUpperCase();
 
-				//System.out.println("	* deptIdCheck :"+deptIdCheck);
-				
 				// grab sku prefixes that should show ratings
 				String _skuPrefixes=FDStoreProperties.getRatingsSkuPrefixes();
 
-				//System.out.println("	* getRatingsSkuPrefixes :"+_skuPrefixes);
-			   
 				//if we have prefixes then check them
 				if (_skuPrefixes!=null && !"".equals(_skuPrefixes)) {
 					StringTokenizer st=new StringTokenizer(_skuPrefixes, ","); //setup for splitting property
@@ -143,20 +138,15 @@
 						
 						curPrefix=st.nextToken();
 
-						//System.out.println(spacer+"Rating _skuPrefixes checking :"+curPrefix);
-						
 						//if prefix matches get product info
 						if(deptIdCheck.startsWith(curPrefix)) {
 							matchFound=true;
 			}
 						//exit on matched sku prefix
-						//System.out.println(spacer+"Rating matchFound :"+matchFound);
 						if (matchFound) { break; }
 						spacer=spacer+"   ";
 					}
 				}
-
-				//System.out.println("Rating matchFound :"+matchFound);
 			}
 			
 			if(cartLine.getProduceRating()!=null && matchFound && cartLine.getProduceRating().isEligibleToDisplay()){ %>
@@ -170,8 +160,8 @@
     <%}%>
     </td>
     <td width="8%" align="center"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
-    <td width="6%" align="right"><%if(__cld_hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? CCFormatter.formatCurrency(invoiceLine.getCustomizationPrice()) : ""%></td>
-    <td align="right"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%=CCFormatter.formatCurrency(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=CCFormatter.formatCurrency(invoiceLine.getPrice())%><%}%></b></span></td>
+    <td width="6%" align="right"><%if(__cld_hasInvoice)%><%=invoiceLine.getCustomizationPrice() > 0 ? JspMethods.formatPrice(invoiceLine.getCustomizationPrice()) : ""%></td>
+    <td align="right"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %><%if(__cld_hasInvoice){%> / <b><%=JspMethods.formatPrice(invoiceLine.getPrice())%><%}%></b></span></td>
     <td width="1%">
         <%if (cartLine.isEstimatedPrice()) {
                 if(!__cld_hasInvoice){
@@ -212,7 +202,7 @@
 		}
 		
 		if (compLine != null) {
-%>	<td align="right"><%= CCFormatter.formatCurrency(amount) %></td>
+%>	<td align="right"><%= JspMethods.formatPrice(amount) %></td>
 	<td><%= method.getName() %></td>
 	<td><%= reason.getReason() %></td>
 <%
@@ -258,9 +248,9 @@
     <td colspan="3"></td>
     <td colspan="2"><b><%= deptName %></b></td>
     <td colspan="2" align="right">
-        <%=CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %>
+        <%=JspMethods.formatPrice(((Double)deptTotalMap.get("est")).doubleValue()) %>
         <%  if (__cld_hasInvoice) { %>
-        / <b><%=CCFormatter.formatCurrency(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
+        / <b><%=JspMethods.formatPrice(((Double)deptTotalMap.get("final")).doubleValue()) %></b>
         <%  }   %>
     </td>
     <td colspan="4"></td>
@@ -325,7 +315,7 @@
     <td colspan="2">
         SubTotal <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:
     </td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getSubtotal()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getSubtotal() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=JspMethods.formatPrice(view.getSubtotal()) %><% if (__cld_hasInvoice) { %> / <b><%=JspMethods.formatPrice( invoicedView.getSubtotal() ) %></b><% } %></td>
     <td colspan="4"><% if (hasEstimatedItems) out.print("*"); %></td>
     <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>
@@ -334,7 +324,7 @@
 <tr>
     <td colspan="3"></td>
     <td colspan="2">Bottle Deposit <%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getDepositValue()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getDepositValue() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=JspMethods.formatPrice(view.getDepositValue()) %><% if (__cld_hasInvoice) { %> / <b><%=JspMethods.formatPrice( invoicedView.getDepositValue() ) %></b><% } %></td>
     <td colspan="4"></td>
     <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>
@@ -343,7 +333,7 @@
 <tr>
     <td colspan="3"></td>
     <td colspan="2">Tax<%= order.containsAlcohol() ? "("+view.getDescription()+")" : "" %>:</td>
-    <td colspan="2" align="right"><%=CCFormatter.formatCurrency(view.getTax()) %><% if (__cld_hasInvoice) { %> / <b><%=CCFormatter.formatCurrency( invoicedView.getTax() ) %></b><% } %></td>
+    <td colspan="2" align="right"><%=JspMethods.formatPrice(view.getTax()) %><% if (__cld_hasInvoice) { %> / <b><%=JspMethods.formatPrice( invoicedView.getTax() ) %></b><% } %></td>
     <td colspan="4"></td>
     <% if (__cld_hasInvoice) { %>
         <td colspan="3"></td>

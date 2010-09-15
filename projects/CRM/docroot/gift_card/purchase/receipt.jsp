@@ -22,7 +22,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%
 	java.text.SimpleDateFormat cutoffDateFormat = new java.text.SimpleDateFormat("h:mm a 'on' EEEE, MM/d/yy");
-	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
 	SimpleDateFormat dateFormatter = new SimpleDateFormat("MM.dd.yyyy");
 	SimpleDateFormat deliveryDateFormatter = new SimpleDateFormat("EEEE, MMM d yyyy");
@@ -91,7 +90,7 @@
 												<font class="space4pix"><br /></font>
 												<font class="text12"><b>Order Total:</b><br />
 												<font class="space4pix"><br /></font>
-												<%=currencyFormatter.format(cart.getTotal())%><br /><br /><br />
+												<%=JspMethods.formatPrice(cart.getTotal())%><br /><br /><br />
 												<b>Credit Card</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
 												<font class="space4pix"><br /></font>
 												<font class="space4pix"><br /></font>
@@ -162,7 +161,7 @@
 								<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0" /></td>
 							</tr>
 							<tr>
-								<td class="recipTotal">Total <%=currencyFormatter.format(cart.getTotal())%></td>
+								<td class="recipTotal">Total <%=JspMethods.formatPrice(cart.getTotal())%></td>
 								<td width="20"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" /></td>
 							</tr>
 						</table>

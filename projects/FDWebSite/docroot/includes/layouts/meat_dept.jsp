@@ -170,7 +170,6 @@
 						if ( separatorFilter.evaluate(contentNode) ) {
 							CategoryModel cat = (CategoryModel)contentNode;
 							Html html = cat.getSeparatorMedia();
-							System.out.println("htmlpath: " + html.getPath());
 							%>
 							<td align="center">
 					        	<fd:IncludeMedia name="<%=html.getPath()%>"/>

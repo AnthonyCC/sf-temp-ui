@@ -1,4 +1,5 @@
 <%@ page import='java.text.*, java.util.*' %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ page import="com.freshdirect.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
@@ -47,7 +48,7 @@
 			<fd:ErrorHandler result='<%=result%>' name='system' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 			<fd:ErrorHandler result='<%=result%>' name='order_amount_fraud' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 			<fd:ErrorHandler result='<%=result%>' name='order_minimum' id='errorMsg'>
-				<div class="error">FreshDirect requires a $<%= FDUserI.MINIMUM_ORDER_AMOUNT %> minimum for each order. Current cart total is: <u><%= CCFormatter.formatCurrency(cart.getTotal()) %></u></div>
+				<div class="error">FreshDirect requires a $<%= FDUserI.MINIMUM_ORDER_AMOUNT %> minimum for each order. Current cart total is: <u><%= JspMethods.formatPrice(cart.getTotal()) %></u></div>
 			</fd:ErrorHandler>
 			<fd:ErrorHandler result='<%=result%>' name='processing_order' id='errorMsg'>
 				<div class="error">Your Order has already been submitted.</div>
@@ -100,7 +101,7 @@
 		<td>--</td>
 		<td><%=CCFormatter.formatDeliveryDate(cart.getDeliveryReservation().getStartTime())%></td>
 		<td>Pending</td>
-		<td><%=CCFormatter.formatCurrency(order.getTotal())%></td>
+		<td><%=JspMethods.formatPrice(order.getTotal())%></td>
 		<td><%=CCFormatter.formatDateTime(Calendar.getInstance().getTime())%></td>
 		<td><%=currentAgent.getUserId()%></td>
 		<td>Telephone</td>

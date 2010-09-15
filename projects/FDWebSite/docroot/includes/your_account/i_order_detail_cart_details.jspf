@@ -252,7 +252,7 @@ if (EnumPaymentType.MAKE_GOOD.equals(cart.getPaymentMethod().getPaymentType())) 
 <%  if (cart.hasChargeInvoice()) { %>
 <tr align="right">
 	<td colspan="2">Returned Check Fee:</td>
-	<td><%=CCFormatter.formatCurrency(cart.getChargeInvoiceTotal())%></td>
+	<td><%=JspMethods.formatPrice(cart.getChargeInvoiceTotal())%></td>
 	<td colspan="3"></td>
 </tr>
 <% } %>

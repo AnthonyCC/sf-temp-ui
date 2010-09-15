@@ -79,9 +79,9 @@ public class Variation {
             }
         }
         result.optional = variation.isOptional();
-        result.underLabel = variation.getAttribute(EnumAttributeName.UNDER_LABEL);
+        result.underLabel = variation.getUnderLabel();
         result.name = variation.getName();
-        result.description = variation.getAttribute(EnumAttributeName.DESCRIPTION);
+        result.description = variation.getDescription();
 
         return result;
     }

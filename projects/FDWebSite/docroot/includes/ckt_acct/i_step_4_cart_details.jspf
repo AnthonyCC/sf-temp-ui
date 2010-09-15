@@ -81,7 +81,7 @@ int idx = 0;
 			if(cartLine.getDiscount() != null) {
 				Discount discount = cartLine.getDiscount();
 				PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+currencyFormatter.format(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+				discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 			}
 		%>
 		
@@ -100,10 +100,10 @@ int idx = 0;
 			</td>
             <% if(cartLine.getDiscount() != null) { %>
 			<td width="70" align="right"><font color="#FF0000">(<%= cartLine.getUnitPrice() %>)</font></td>
-			<td align="right"><span class="text10bold"><font color="#FF0000"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></font></span></td>
+			<td align="right"><span class="text10bold"><font color="#FF0000"><%= JspMethods.formatPrice(cartLine.getPrice()) %></font></span></td>
             <% } else { %>
   			<td width="70" align="right">(<%= cartLine.getUnitPrice() %>)</td>
-			<td align="right"><span class="text10bold"><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+			<td align="right"><span class="text10bold"><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
             <% } %>
 			<td width="10"><%= cartLine.isEstimatedPrice() ? "*" : " " %></td>
 			<td width="70"><b><%=cartLine.hasTax() ? "&nbsp;T" : ""%><%= cartLine.hasScaledPricing() ? "&nbsp;S" : "" %><%= cartLine.hasDepositValue() ? "&nbsp;D" : "" %></b></td>
@@ -139,7 +139,7 @@ int idx = 0;
 	</td></tr>
 	<tr class="orderViewSummary">
 		<td colspan="6" align="right"><%= view.getDescription() %><% if (view.isEstimatedPrice()) { %> Estimated<% } %> Subtotal:</td>
-		<td colspan="1" align="right"><b><%=currencyFormatter.format(view.getSubtotal())%></b></td>
+		<td colspan="1" align="right"><b><%=JspMethods.formatPrice(view.getSubtotal())%></b></td>
 		<td colspan="1"><% if (view.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="3">&nbsp;</td>
 	</tr>
@@ -148,7 +148,7 @@ int idx = 0;
 		%>
 		<tr class="orderViewSummary">
 			<td colspan="6" align="right">Tax:</td>
-			<td colspan="1" align="right"><%=currencyFormatter.format(view.getTax())%></td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getTax())%></td>
 			<td colspan="4">&nbsp;</td>
 		</tr>
 		<%
@@ -157,7 +157,7 @@ int idx = 0;
 		%>
 		<tr class="orderViewSummary">
 			<td colspan="6" align="right">State Bottle Deposit:</td>
-			<td colspan="1" align="right"><%=currencyFormatter.format(view.getDepositValue())%></td>
+			<td colspan="1" align="right"><%=JspMethods.formatPrice(view.getDepositValue())%></td>
 			<td colspan="4">&nbsp;</td>
 		</tr>
 		<% 
@@ -176,7 +176,7 @@ int idx = 0;
 	
 	<tr valign="top" class="orderSummary">
 		<td colspan="3" align="right">Order Subtotal:</td>
-		<td align="right"><%=currencyFormatter.format(cart.getSubTotal())%></td>
+		<td align="right"><%=JspMethods.formatPrice(cart.getSubTotal())%></td>
 		<td><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="6">&nbsp;</td>
 	</tr>
@@ -196,7 +196,7 @@ int idx = 0;
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Delivery Charge<%if(cart.isDeliveryChargeWaived()){%> (waived)<%}%>:</td>
-			<td align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=currencyFormatter.format(cart.getDeliverySurcharge())%><%}%></td>
+			<td align="right"><%if(cart.isDeliveryChargeWaived()){%>$0.00<%}else{%><%=JspMethods.formatPrice(cart.getDeliverySurcharge())%><%}%></td>
 			<td></td>
 			<td colspan="6"><b><%=cart.isDeliveryChargeTaxable() && !cart.isDeliveryChargeWaived() ? "&nbsp;T" : "" %></b></td>
 		</tr>
@@ -207,7 +207,7 @@ int idx = 0;
 	<% if (cart.getMiscellaneousCharge() > 0.0) {%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(cart.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
-			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= currencyFormatter.format(cart.getMiscellaneousCharge()) %><%}%></td>
+			<td align="right"><%if(cart.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(cart.getMiscellaneousCharge()) %><%}%></td>
 		    	<td></td>
 			<td colspan="6"><b><%=cart.isMiscellaneousChargeTaxable() && !cart.isMiscellaneousChargeWaived()  ? "&nbsp;T" : "" %></b></td>
 		</tr>
@@ -219,7 +219,7 @@ int idx = 0;
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Total Tax:</td>
-			<td align="right"><%=currencyFormatter.format(cart.getTaxValue())%></td>
+			<td align="right"><%=JspMethods.formatPrice(cart.getTaxValue())%></td>
 			<td colspan="7"></td>
 		</tr>
 		<%
@@ -229,7 +229,7 @@ int idx = 0;
 		%>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right"><a href="javascript:popup('/shared/fee_info.jsp?type=bottle','small');">State Bottle Deposit:</a></td>
-			<td align="right"><%=currencyFormatter.format(cart.getDepositValue())%></td>
+			<td align="right"><%=JspMethods.formatPrice(cart.getDepositValue())%></td>
 			<td colspan="7"></td>
 		</tr>
 		<% 
@@ -246,7 +246,7 @@ int idx = 0;
 			%>
 			<tr valign="top" class="orderSummary">
 				<td colspan="3" align="right"><%= desc %>:</td>
-				<td align="right">-<%= currencyFormatter.format(discount.getAmount()) %></td>
+				<td align="right">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
 				<td colspan="7"></td>	   
 			</tr>
 		<%
@@ -284,13 +284,13 @@ int idx = 0;
 	<%  if (cart.getCustomerCreditsValue() > 0) { %>
 		<tr valign="top" class="orderSummary">
 			<td colspan="3" align="right">Credit Applied:</td>
-			<td align="right">-<%=currencyFormatter.format(cart.getCustomerCreditsValue())%></td>
+			<td align="right">-<%=JspMethods.formatPrice(cart.getCustomerCreditsValue())%></td>
 			<td colspan="7"></td>
 		</tr>		   
 	<%  } %>
 	<tr valign="top" class="orderTotal">
 		<td colspan="3" align="right"><b><% if (cart.isEstimatedPrice()) { %>ESTIMATED TOTAL<% } else { %>ORDER TOTAL<%}%></b>:</td>
-		<td align="right"><b><%= currencyFormatter.format(cart.getTotal()) %></b></td>
+		<td align="right"><b><%= JspMethods.formatPrice(cart.getTotal()) %></b></td>
 		<td><% if (cart.isEstimatedPrice()) { %>*<% } %></td>
 		<td colspan="6"></td>
 	</tr>

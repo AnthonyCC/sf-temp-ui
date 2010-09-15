@@ -22,6 +22,7 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.core.MockProductModel;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.ContentFactory;
@@ -61,6 +62,8 @@ public class DataGeneratorCompilerTest extends TestCase {
             		.addAvailableSku("b1sku", 2.0).addAvailableSku("b2sku", 3.0)
 					.addAvailableSku("b3sku", 4.0)
             );
+            
+            FDCachedFactory.mockInstances();
         	
         }
         

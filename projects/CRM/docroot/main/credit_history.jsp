@@ -4,6 +4,7 @@
 <%@ page import='com.freshdirect.framework.core.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -22,9 +23,9 @@
             <table width="100%">
                 <tr>
 					<td width="25%" align="center">TOTAL: <b><%=customerCreditHistory.getSumCredit()  + customerCreditHistory.getSumRefund()%></b> <span class="note">(Store Credit<%=customerCreditHistory.getSumCredit()  > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumCredit() %></b>, Refund<%=customerCreditHistory.getSumRefund() > 1 ? "s" : ""%>: <b><%=customerCreditHistory.getSumRefund()%></b>)</span--%></td>
-                    <td width="25%" align="center">Available store credit: <b><%=CCFormatter.formatCurrency(customerCreditHistory.getRemainingAmount())%></b></td>
-                    <td width="25%" align="center">Total store credit issued: <b><%=CCFormatter.formatCurrency(customerCreditHistory.getTotalCreditsIssued())%></b></td>
-                    <td width="25%" align="center">Total cash back issued: <b><%=CCFormatter.formatCurrency(customerCreditHistory.getTotalCashBack())%></b></td>
+                    <td width="25%" align="center">Available store credit: <b><%=JspMethods.formatPrice(customerCreditHistory.getRemainingAmount())%></b></td>
+                    <td width="25%" align="center">Total store credit issued: <b><%=JspMethods.formatPrice(customerCreditHistory.getTotalCreditsIssued())%></b></td>
+                    <td width="25%" align="center">Total cash back issued: <b><%=JspMethods.formatPrice(customerCreditHistory.getTotalCashBack())%></b></td>
                 </tr>
             </table>
 		</div>
@@ -63,8 +64,8 @@
                             <td width="4%" class="border_bottom"><% if(EnumSaleType.REGULAR.equals(credit.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(credit.getOrderType())){%><Font color="red">A</Font><%}%>&nbsp;</td>
                             <td width="19%" class="border_bottom"><%= credit.getDepartment() %>&nbsp;</td>
                             <td width="12%" class="border_bottom"><%= credit.getStatus().getName() %>&nbsp;</td>
-                            <td width="12%" class="border_bottom"><%= EnumComplaintLineMethod.STORE_CREDIT.equals(credit.getMethod())?CCFormatter.formatCurrency(credit.getOriginalAmount()):"&nbsp;" %></td>
-                            <td width="12%" class="border_bottom"><%= EnumComplaintLineMethod.CASH_BACK.equals(credit.getMethod())? CCFormatter.formatCurrency(credit.getOriginalAmount()):"&nbsp;" %></td>    
+                            <td width="12%" class="border_bottom"><%= EnumComplaintLineMethod.STORE_CREDIT.equals(credit.getMethod())?JspMethods.formatPrice(credit.getOriginalAmount()):"&nbsp;" %></td>
+                            <td width="12%" class="border_bottom"><%= EnumComplaintLineMethod.CASH_BACK.equals(credit.getMethod())? JspMethods.formatPrice(credit.getOriginalAmount()):"&nbsp;" %></td>    
                             <td width="11%" class="border_bottom"><span class="log_info"><%= credit.getIssuedBy() %>&nbsp;</span></td>
                             <td width="12%" class="border_bottom"><span class="log_info"><%= credit.getApprovedBy() %>&nbsp;</span></td>
                     </tr>

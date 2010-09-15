@@ -59,7 +59,6 @@ function sortRestriction(colName) {
 <%
     
 	//List restrictions = (List)session.getAttribute("DEL_RESTRICTION_SEARCH");
-    System.out.println("restrictions in jsp :"+restrictions);
     String sortColumn = NVL.apply(request.getParameter("sortColumn"), "date_modified");
 	
 %>

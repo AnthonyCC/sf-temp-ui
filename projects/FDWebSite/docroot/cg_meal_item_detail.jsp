@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.framework.util.StringUtil"%>
 <%@ page import='com.freshdirect.fdstore.content.*'  %>
 <%@ page import='com.freshdirect.fdstore.attributes.*'  %>
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
@@ -126,7 +127,7 @@ if (productNode != null) {
 
         int unAvailCount=0;
         for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-            String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+            String optSkuCode=varOpts[voIdx].getSkuCode();
             if (optSkuCode==null) {
                 unAvailCount++;
                 continue;
@@ -206,7 +207,10 @@ int prodCount = 0;%>
 				FDVariationOption[] varOpts = (FDVariationOption[]) variations.get(matCharName);
 				if (varOpts==null) continue;
 				for (int optIdx=0;optIdx<varOpts.length;optIdx++ ){
-					String optSkuCode=varOpts[optIdx].getAttribute(EnumAttributeName.SKUCODE);
+					String optSkuCode=varOpts[optIdx].getSkuCode();
+					if (StringUtil.isEmpty(optSkuCode)) {
+					    continue;
+					}
 
 					ProductModel pm =(ProductModel)cf.getProduct(optSkuCode);
 					if (pm.getSku(optSkuCode).isUnavailable()) continue;

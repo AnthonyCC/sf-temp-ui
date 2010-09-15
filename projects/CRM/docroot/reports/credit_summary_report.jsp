@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -133,10 +134,10 @@ if ("POST".equals(request.getMethod())) {
         <td width="9%" class="border_bottom"><%= credit.getStatus() %>&nbsp;</td>
         <td width="9%" class="border_bottom"><%= CCFormatter.formatDate(credit.getDeliveryDate()) %>&nbsp;</td>
         <td width="15%" class="border_bottom"><%= credit.getNote() %>&nbsp;</td>
-        <td width="7%" align="right" class="border_bottom">&nbsp;<%= CCFormatter.formatCurrency(credit.getInvoiceAmount()) %></td>
-        <td width="7%" align="right" class="border_bottom">&nbsp;<%= CCFormatter.formatCurrency(credit.getCreditAmount()) %></td>
+        <td width="7%" align="right" class="border_bottom">&nbsp;<%= JspMethods.formatPrice(credit.getInvoiceAmount()) %></td>
+        <td width="7%" align="right" class="border_bottom">&nbsp;<%= JspMethods.formatPrice(credit.getCreditAmount()) %></td>
         <td width="8%" align="center" class="border_bottom"><%= credit.getNumberOfOrders() %>&nbsp;</td>
-        <td width="10%" class="border_bottom"><%= CCFormatter.formatCurrency(credit.getPreviousCreditAmount()) %>&nbsp;</td>
+        <td width="10%" class="border_bottom"><%= JspMethods.formatPrice(credit.getPreviousCreditAmount()) %>&nbsp;</td>
         <td width="21%" class="border_bottom">
             <table cellpadding="0" cellspacing="0" border="0" width="100%" class="list_content_text">
                 <logic:iterate id="item" collection="<%= credit.getItems() %>" type="com.freshdirect.fdstore.customer.FDCreditSummary.Item" indexId="counter">

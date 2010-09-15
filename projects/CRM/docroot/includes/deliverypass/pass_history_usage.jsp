@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.deliverypass.DlvPassConstants"%>
 <%@ page import="com.freshdirect.deliverypass.DeliveryPassInfo"%>
 <%@ page import="com.freshdirect.deliverypass.DlvPassUsageLine"%>
@@ -330,8 +331,8 @@ String case_required = "<span class=\"cust_module_content_edit\">-Case required 
 							<tr>
 								<td colspan="2">	
 									<% Double refundAmt = new Double(DeliveryPassUtil.getPricePaid(historyPass)); %>
-									<input type="hidden" name="refundAmount" value=<%=CCFormatter.formatCurrency(refundAmt.doubleValue())%>>
-									<span class="info_text">Current refund amount: <b><%= CCFormatter.formatCurrency(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
+									<input type="hidden" name="refundAmount" value=<%=JspMethods.formatPrice(refundAmt.doubleValue())%>>
+									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
 								</td>
 							</tr>	
 

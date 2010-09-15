@@ -44,7 +44,7 @@ public class ComponentGroup {
             FDVariationOption[] varOpts = (FDVariationOption[]) cgm.getVariationOptions().get(matCharName);
             if (varOpts != null) {
                 for (FDVariationOption varOpt : varOpts) {
-                    String optSkuCode = varOpt.getAttribute(EnumAttributeName.SKUCODE);
+                    String optSkuCode = varOpt.getSkuCode();
                     if (optSkuCode != null) {
                         try {
                             ProductModel pm = ContentFactory.getInstance().getProduct(optSkuCode);
@@ -53,7 +53,7 @@ public class ComponentGroup {
                             }
                         } catch (FDSkuNotFoundException e) {
                             LOG.warn("Could not get product with sku:" + optSkuCode + "::desc="
-                                    + varOpt.getAttribute(EnumAttributeName.DESCRIPTION), e);
+                                    + varOpt.getDescription(), e);
                         }
                     }
                 }

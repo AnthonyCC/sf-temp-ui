@@ -11,9 +11,6 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
-<%!
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-%>
 <%
 FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.USER);
 %>
@@ -301,7 +298,7 @@ for (int displayLoop=0;displayLoop<loopCounter;displayLoop++) {
 
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-        prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+        prodPrice = JspMethods.formatPrice(productInfo, sessionuser.getPricingContext());
 %>						
         </fd:FDProductInfo>
 <%

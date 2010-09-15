@@ -22,7 +22,6 @@
 	String catId_1 = parentCat+"_feat";
 	String catId_2 = parentCat+"_edlp"; 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId_1);
-	System.out.println("category_featured_row>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	Collection dealCol = new ArrayList();
 	Collection edlpCol = new ArrayList();
@@ -45,8 +44,6 @@
 >
 <%
 		dealCol = rtnColl;        
-		System.out.println("Category>> dealCol size: " + dealCol.size());
-		System.out.println("Category>> dealCol: " + dealCol);
         //request.setAttribute("itemGrabberResult",dealCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>
@@ -68,8 +65,6 @@
 >
 <%
 		edlpCol = rtnColl;        
-		System.out.println("Category>>  edlpCol size: " + edlpCol.size());
-		System.out.println("Category>>  edlpCol: " + edlpCol);
         //request.setAttribute("itemGrabberResult",edlpCol); //** expose result of item grabber to the layout **
 %>
 </fd:ItemGrabber>

@@ -59,7 +59,6 @@
     if (pendingComplaints.size() > 0) {
 	    ErpComplaintModel pendComplaint = (ErpComplaintModel) pendingComplaints.iterator().next();
 	    ActionResult createComplaintResult = new ActionResult();
-	    // DEBUG if (createComplaintResult.isSuccess()) System.out.println("IS SUCCESS");
 	    pageContext.setAttribute("createComplaintResult", createComplaintResult);
 	    String successPage = (!inPopup) ?  "/main/order_details.jsp?orderId="+orderId : "/main/close_window.jsp";
 %>

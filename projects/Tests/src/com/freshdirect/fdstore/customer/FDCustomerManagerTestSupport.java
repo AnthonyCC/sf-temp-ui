@@ -12,6 +12,7 @@ import com.freshdirect.TestUtils;
 import com.freshdirect.cms.application.ContentServiceI;
 import com.freshdirect.customer.ErpCustomerInfoModel;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
+import com.freshdirect.fdstore.FDCachedFactory;
 import com.mockrunner.mock.ejb.MockUserTransaction;
 
 /**
@@ -45,6 +46,7 @@ public abstract class FDCustomerManagerTestSupport extends DbTestCaseSupport {
         aspectSystem = TestUtils.createAspectSystem();
 
         aspectSystem.add(customerInfoAspect = new ErpCustomerFinderAspect(null));
+        FDCachedFactory.mockInstances();
     }
     
     

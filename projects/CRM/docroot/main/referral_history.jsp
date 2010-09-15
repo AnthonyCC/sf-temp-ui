@@ -14,7 +14,6 @@
 <%@ taglib uri='bean' prefix='bean' %>
 
 <%!
-private static NumberFormat CURRENCY_FORMATTER = NumberFormat.getCurrencyInstance(Locale.US);
 private static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("MM/dd/yy");
 
 private static Comparator REF_NAME = new Comparator () {

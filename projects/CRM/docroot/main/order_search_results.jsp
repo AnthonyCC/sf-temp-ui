@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.customer.*" %>
 <%@ page import="com.freshdirect.delivery.depot.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import="org.apache.commons.lang.StringUtils"%>
@@ -20,8 +21,6 @@
     // get search params from request object
     boolean quickSearch = NVL.apply(request.getParameter("search"), "").equalsIgnoreCase("quick");
     boolean sortReversed = "true".equalsIgnoreCase(request.getParameter("reverse"));
-    
-    System.out.println("gcNumber :"+request.getParameter("gcNumber"));
     
     FDOrderSearchCriteria sc = new FDOrderSearchCriteria();
     sc.setFirstName(NVL.apply(request.getParameter("firstName"), "").trim());
@@ -243,7 +242,7 @@ String guestView = "&for=print";
             <td width="10%" class="border_bottom"><%= info.getDeliveryDate() %>&nbsp;</td>
 			<td width="10%" class="border_bottom"><%= EnumDeliveryType.getDeliveryType(info.getDeliveryType()).getName() %>&nbsp;</td>
             <td width="10%" class="border_bottom"><%= (info.getOrderStatus() != null) ? info.getOrderStatus().getName() : "--" %></td>
-            <td width="9%" class="border_bottom"><%= CCFormatter.formatCurrency(info.getAmount()) %>&nbsp;</td>
+            <td width="9%" class="border_bottom"><%= JspMethods.formatPrice(info.getAmount()) %>&nbsp;</td>
             <td width="1%" class="border_bottom" style="font-size: 5pt;">
                 <%=info.isVIP()?"<div class=\"iVip\">V I P</div> ":""%>
                 <%=info.isVIP() || info.isChefsTable() ? "" : "&nbsp;" %>

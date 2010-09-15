@@ -12,7 +12,6 @@
 boolean submitted = request.getParameter("info") != null && request.getParameter("info").indexOf("thankyou") > -1; 
 
 String redirectSuccessPage = NVL.apply(request.getParameter("successPage"), "");
-//System.err.println("Success Page " + redirectSuccessPage);
 if ("".equals(redirectSuccessPage)) {
     redirectSuccessPage = "/index.jsp";
 }

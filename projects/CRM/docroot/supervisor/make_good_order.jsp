@@ -7,6 +7,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <tmpl:insert template='/template/top_nav.jsp'>
 
@@ -115,7 +116,7 @@
 			<TD width="10%"  class="border_bottom"><%= CCFormatter.formatDate(info.getDeliveryDate()) %>&nbsp;</TD>
 			<TD width="10%"  class="border_bottom"><%= CCFormatter.formatDate(info.getOrderPlacedDate()) %>&nbsp;</TD>
 			<TD width="15%"  class="border_bottom"><%= (info.getSaleStatus() != null) ? info.getSaleStatus().getName() : "--" %></TD>
-			<TD width="15%"  class="border_bottom"><%= CCFormatter.formatCurrency(info.getAmount()) %>&nbsp;</TD>
+			<TD width="15%"  class="border_bottom"><%= JspMethods.formatPrice(info.getAmount()) %>&nbsp;</TD>
 			<TD width="20%"  class="border_bottom"><%= info.getLastName() %>, <%= info.getFirstName() %></TD>
 			<TD width="10%"  class="border_bottom"><%= info.getRoute() %>&nbsp;</TD>
 			<TD width="10%"  class="border_bottom"><%= info.getStop() %>&nbsp;</TD>

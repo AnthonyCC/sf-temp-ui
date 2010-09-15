@@ -16,7 +16,7 @@ public class ZonePriceModel implements Serializable {
 	 */
 	
 	public ZonePriceModel(String sapZoneId, MaterialPrice[] matPrices) {
-		this.sapZoneId = sapZoneId;
+		this.sapZoneId = sapZoneId != null ? sapZoneId.intern() : null;
 		this.materialPrices = matPrices;
 	}
 	

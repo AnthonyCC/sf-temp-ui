@@ -6,16 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class GeographyRestriction extends ModelSupport   {
 	
 	private static final long	serialVersionUID	= 1923999018513521720L;
-	private final static Category LOGGER = Category.getInstance(GeographyRestriction.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(GeographyRestriction.class);
 	private String name;  
 	private String active;	  
 	private String comments;

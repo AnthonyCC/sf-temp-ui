@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.payment.*" %>
 <%@ page import="com.freshdirect.payment.fraud.*" %>
 <%@ page import="com.freshdirect.ErpServicesProperties" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -132,7 +133,7 @@
     <td><%=view.getAffiliate().getName()%> Total</td>
     <td><%= sdf.format(order.getDatePlaced()) %></td>
     <td><%= order.getOrderStatus() %> </td>
-    <td align="right"><%=CCFormatter.formatCurrency(lineAmount)%></td>
+    <td align="right"><%=JspMethods.formatPrice(lineAmount)%></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -154,7 +155,7 @@
     <td><%=view.getAffiliate().getName()%> Total</td>
     <td><%= sdf.format(order.getDatePlaced()) %></td>
     <td><%= order.getOrderStatus() %> </td>
-    <td align="right"><%=CCFormatter.formatCurrency(lineAmount)%></td>
+    <td align="right"><%=JspMethods.formatPrice(lineAmount)%></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -175,7 +176,7 @@ if(order.hasInvoice()) {
     <td><%=chargeLine.getType().getName()%></td>
     <td><%= sdf.format(order.getDatePlaced()) %></td>
     <td><%= order.getOrderStatus() %> </td>
-    <td align="right"><%=CCFormatter.formatCurrency(lineAmount)%></td>
+    <td align="right"><%=JspMethods.formatPrice(lineAmount)%></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -188,7 +189,7 @@ if(order.hasInvoice()) {
     <td>Applied Credits</td>
     <td><%= sdf.format(order.getDatePlaced()) %></td>
     <td><%= order.getOrderStatus() %> </td>
-    <td align="right"><%=CCFormatter.formatCurrency(order.getActualCustomerCreditsValue())%></td>
+    <td align="right"><%=JspMethods.formatPrice(order.getActualCustomerCreditsValue())%></td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>	
   </tr>
@@ -200,7 +201,7 @@ if(order.hasInvoice()) {
   <tr>
     <td>&nbsp;</td>
     <td colspan="3" style="border-top: #999999 solid 1px;">&nbsp;</td>
-    <td style="border-top: #999999 solid 1px;" align="right"><b><%=CCFormatter.formatCurrency(totalAmount)%></b></td>
+    <td style="border-top: #999999 solid 1px;" align="right"><b><%=JspMethods.formatPrice(totalAmount)%></b></td>
     <td style="border-top: #999999 solid 1px;">&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
@@ -267,13 +268,13 @@ if(order.hasInvoice()) {
   <tr>
   	<td>&nbsp;</td>
     <td colspan="3" style="border-top: #999999 solid 1px;">&nbsp;</td>
-    <td style="border-top: #999999 solid 1px;" align="right"><b><%=CCFormatter.formatCurrency(totalFees)%></b></td>
+    <td style="border-top: #999999 solid 1px;" align="right"><b><%=JspMethods.formatPrice(totalFees)%></b></td>
     <td style="border-top: #999999 solid 1px;">&nbsp;</td>
     <td>&nbsp;</td>
   </tr>
   <tr bgcolor="#EEEEEE">
     <td colspan="4" align="right"><b>Total Charge</b></td>
-    <td align="right"><b><input type="text" align="right" size="7" name="charge_amount_1" readonly value="<%=CCFormatter.formatCurrency(order.getInvoicedTotal()+totalFees)%>"></b></td>    
+    <td align="right"><b><input type="text" align="right" size="7" name="charge_amount_1" readonly value="<%=JspMethods.formatPrice(order.getInvoicedTotal()+totalFees)%>"></b></td>    
     <td colspan="2">&nbsp;<% if (currentAgent.isSupervisor()) { %><a onclick="javascript:recalculateTotal(document.forms['charge_order']);"  class="update_price">RECALCULATE</a><% } %></td>
   </tr>
 </table>
@@ -297,7 +298,7 @@ if(order.hasInvoice()) {
     <td class="border_bottom"><%=sdf.format(txModel.getTransactionDate())%>&nbsp;</td>
     <td class="border_bottom"><%=txModel.getTransactionType().getName()%>&nbsp;</td>
     <td class="border_bottom"><%=(txModel.getTransactionInitiator() != null) ? txModel.getTransactionInitiator() : "System" %>&nbsp;</td>
-    <td class="border_bottom" align="right">&nbsp;<%=CCFormatter.formatCurrency(txModel.getAmount())%></td>
+    <td class="border_bottom" align="right">&nbsp;<%=JspMethods.formatPrice(txModel.getAmount())%></td>
     <%
     	String paymentMethodStr = "";
     	if (txModel.getTransactionType().equals(EnumTransactionType.AUTHORIZATION) ||
@@ -502,7 +503,7 @@ if(order.hasInvoice()) {
 <br clear="all">
 <table width="100%" class="cust_full_module_header" style="margin-top: 0px; margin-bottom: 5px;"><tr><td width="40%"><span class="cust_module_header_text"> 
 <FORM name="submit_charge">
-<b><i>Total Charge:&nbsp;&nbsp;</i><input type="text" align="right" size="7" name="charge_amount_2" readonly value="<%=CCFormatter.formatCurrency(order.getInvoicedTotal()+totalFees)%>">
+<b><i>Total Charge:&nbsp;&nbsp;</i><input type="text" align="right" size="7" name="charge_amount_2" readonly value="<%=JspMethods.formatPrice(order.getInvoicedTotal()+totalFees)%>">
 </FORM>
 </span></b></span></td><td width="60%"><input type="submit" class="submit" style="width: 250px;" value="CHARGE THIS ORDER" onClick="javascript:document.forms['charge_order'].submit();"></td></tr></table></div>
 </tmpl:put>

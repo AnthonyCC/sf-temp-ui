@@ -6,6 +6,7 @@
 package com.freshdirect.webapp.util;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +23,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.common.pricing.CharacteristicValuePrice;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
@@ -758,6 +760,12 @@ public class JspMethods {
         return buf.toString();
     }
 
+	private static ThreadLocal<NumberFormat> currencyFormatter = new ThreadLocal<NumberFormat>() {
+		@Override
+		protected NumberFormat initialValue() {
+			return NumberFormat.getCurrencyInstance(Locale.US);
+		}
+	};
 
 
     /**
@@ -802,13 +810,6 @@ public class JspMethods {
 
 		return filtered.toString();
 	}
-
-
-
-
-
-	public static java.text.NumberFormat currencyFormatter = java.text.NumberFormat
-			.getCurrencyInstance(Locale.US);
 
 	public static String removeChars(String source, String charsToRemove) {
 		if (source == null || charsToRemove == null || source.length() == 0
@@ -872,8 +873,7 @@ public class JspMethods {
 				if (displayPrice > 0) {
 					displayPriceString = "about " + salesUnitRatio
 							+ alternateUnit.toLowerCase() + ", "
-							+ JspMethods.currencyFormatter.format(displayPrice)
-							+ "/" + alternateUnit.toLowerCase();
+							+ JspMethods.formatPrice(displayPrice, alternateUnit);
 				}
 			}
 		} catch (FDResourceException fdre) {
@@ -966,5 +966,46 @@ public class JspMethods {
         }
         return c;
     }
+
+    public static String formatPrice(double price) {
+    	return currencyFormatter.get().format(price);
+    }
+
+    public static String formatPrice(double price, String unit) {
+    	return currencyFormatter.get().format(price) + "/" + unit.toLowerCase();
+    }
+
+    public static String formatPrice(CharacteristicValuePrice price) {
+    	return currencyFormatter.get().format(price.getPrice()) + "/" + price.getPricingUnit().toLowerCase();
+    }
+
+	public static String formatPrice(FDProductInfo productInfo, PricingContext pricingContext) {
+		if (pricingContext == null)
+			pricingContext = PricingContext.DEFAULT;
+		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getDefaultPrice()) + "/"
+				+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+	}
+
+	public static String formatSalePrice(FDProductInfo productInfo, PricingContext pricingContext) {
+		if (pricingContext == null)
+			pricingContext = PricingContext.DEFAULT;
+		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getSellingPrice()) + "/"
+				+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+	}
 	
+	public static String formatPricingUnit(FDProductInfo productInfo) {
+		return productInfo.getDisplayableDefaultPriceUnit().toLowerCase();		
+	}
+	
+	public static String formatDefaultPrice(FDProductInfo productInfo, PricingContext pricingContext) {
+		if (pricingContext == null)
+			pricingContext = PricingContext.DEFAULT;
+		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getDefaultPrice());
+	}
+	
+	public static String formatSellingPrice(FDProductInfo productInfo, PricingContext pricingContext) {
+		if (pricingContext == null)
+			pricingContext = PricingContext.DEFAULT;
+		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getDefaultPrice());
+	}
 }

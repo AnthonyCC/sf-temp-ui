@@ -13,7 +13,6 @@ import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
@@ -41,8 +40,7 @@ public class AvailabilityFactory {
 			}
 		}
 
-		FDKosherInfo ki = product.getKosherInfo();
-		if (ki.isKosherProduction()) {
+		if (product.isKosherProduction()) {
 			s.add(EnumDlvRestrictionReason.KOSHER);
 		}
 
@@ -55,7 +53,7 @@ public class AvailabilityFactory {
 			s.add(EnumDlvRestrictionReason.VALENTINES);
 		}
 		
-		String restrictions = product.getMaterial().getAttribute(EnumAttributeName.RESTRICTIONS);
+		String restrictions = product.getMaterial().getRestrictions();
 		if (restrictions != null) {
 			String[] tokens = StringUtils.split(restrictions, ",");
 			for (int i = 0; i < tokens.length; i++) {
@@ -71,16 +69,7 @@ public class AvailabilityFactory {
 		return s;
 	}
 
-	public static FDAvailabilityI createAvailability(SkuModel skuModel) throws FDResourceException {
-
-		FDProductInfo fdProductInfo;
-		//FDProduct fdProduct;
-		try {
-			fdProductInfo = skuModel.getProductInfo();
-			//fdProduct = skuModel.getProduct();
-		} catch (FDSkuNotFoundException e) {
-			return NullAvailability.UNAVAILABLE;
-		}
+	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo) throws FDResourceException {
 
 		FDAvailabilityI av = NullAvailability.AVAILABLE;
 		

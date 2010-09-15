@@ -1,12 +1,5 @@
 package com.freshdirect.framework.util;
 
-import java.lang.management.ManagementFactory;
-
-import javax.management.InstanceAlreadyExistsException;
-import javax.management.MBeanRegistrationException;
-import javax.management.MalformedObjectNameException;
-import javax.management.NotCompliantMBeanException;
-import javax.management.ObjectName;
 
 public class Counter implements Cloneable, CounterMBean {
     public final static boolean PROFILE = false;
@@ -61,9 +54,7 @@ public class Counter implements Cloneable, CounterMBean {
 
     public long end(long startime) {
         long elapsed = System.currentTimeMillis() - startime;
-        if (PROFILE) {
-            call(elapsed);
-        }
+        call(elapsed);
         return elapsed;
     }
 
@@ -85,26 +76,7 @@ public class Counter implements Cloneable, CounterMBean {
     }
 
     public Counter register() {
-        if (PROFILE) {
-            try {
-                ManagementFactory.getPlatformMBeanServer().registerMBean(this, new ObjectName("com.freshdirect.framework", "Counter", name));
-            } catch (InstanceAlreadyExistsException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (MBeanRegistrationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (NotCompliantMBeanException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (MalformedObjectNameException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            } catch (NullPointerException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
+        JMXUtil.registerToPlatformMBean(this, "com.freshdirect.framework.counter", "Counter", name);
         return this;
     }
     

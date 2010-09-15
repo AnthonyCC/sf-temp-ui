@@ -7,6 +7,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Iterator"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.crm.CrmCaseModel"%>
 <%@ page import="com.freshdirect.crm.CrmCaseTemplate"%>
 <%@ page import="com.freshdirect.crm.CrmLateIssueModel"%>
@@ -446,7 +447,7 @@ for (FDOrderInfoI orderInfo : recentOrders) {
 		<td style="text-align: center"><%= DeliveryTimeWindowFormatter.formatTime(order.getDeliveryReservation().getStartTime(), order.getDeliveryReservation().getEndTime()) %></td>
 		<td style="text-align: left"><%= order.getDeliveryAddress().getAddress1() %></td>
 		<td style="text-align: center; font-weight: bold;"><%= orderInfo.getSaleStatus() %></td>
-		<td style="text-align: right;  font-weight: bold;"><%= CCFormatter.formatCurrency(orderInfo.getTotal()) %></td>
+		<td style="text-align: right;  font-weight: bold;"><%= JspMethods.formatPrice(orderInfo.getTotal()) %></td>
 		<td style="font-weight: bold;"><%= orderInfo.getPaymentMethodType() %></td>
 		<td><%= CCFormatter.formatDateTime(orderInfo.getCreateDate()) %></td>
 <%
@@ -464,7 +465,7 @@ for (FDOrderInfoI orderInfo : recentOrders) {
 %>		<td class="orders-row-tickbox"><%= types != null && types.contains(obj) ? "x" : "&nbsp;" %></td>
 <%
 	}
-%>		<td style="text-align: center;"><%= CCFormatter.formatCurrency(orderInfo.getApprovedCreditAmount()) %><%= orderInfo.getPendingCreditAmount() > 0 ? " / "+CCFormatter.formatCurrency(orderInfo.getPendingCreditAmount()) : "" %></td>
+%>		<td style="text-align: center;"><%= JspMethods.formatPrice(orderInfo.getApprovedCreditAmount()) %><%= orderInfo.getPendingCreditAmount() > 0 ? " / "+JspMethods.formatPrice(orderInfo.getPendingCreditAmount()) : "" %></td>
 	</tr>
 <%
 }

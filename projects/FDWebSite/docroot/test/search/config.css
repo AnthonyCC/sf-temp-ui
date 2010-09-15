@@ -5,6 +5,9 @@ td.odd         { background: #eeeeff }
 td.even-stat   { background: #eedddd }
 td.odd-stat    { background: #ddddee }
 td.head        { background: #000033; color: #aaaa00 }
+
+td.head a { color: #aaaa00;	font-weight: bold; }
+
 div.high       { background: #ddddff }
 
 ul,h3,h4 {

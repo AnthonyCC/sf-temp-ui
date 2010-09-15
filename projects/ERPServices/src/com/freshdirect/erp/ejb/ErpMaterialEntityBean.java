@@ -203,7 +203,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 		// copy properties from model
 		ErpMaterialModel m = (ErpMaterialModel) model;
 		this.sapId = m.getSapId();
-		this.baseUnit = m.getBaseUnit();
+		this.baseUnit = m.getBaseUnit() != null ? m.getBaseUnit().intern() : null;
 		this.description = m.getDescription();
 		this.atpRule = m.getATPRule();
 		this.leadTime = m.getLeadTime();
@@ -315,7 +315,7 @@ public class ErpMaterialEntityBean extends VersionedEntityBeanSupport {
 	public void setFromPayload(PayloadI payload) {
 		ErpMaterialPayload p = (ErpMaterialPayload) payload;
 		this.sapId = p.sapId;
-		this.baseUnit = p.baseUnit;
+		this.baseUnit = p.baseUnit != null ? p.baseUnit.intern() : null;
 		this.description = p.description;
 		this.atpRule = p.atpRule;
 		this.leadTime = p.leadTime;

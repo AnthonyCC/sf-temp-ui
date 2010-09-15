@@ -9,9 +9,9 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
-<fd:CheckLoginStatus id="yuzer" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><fd:CheckLoginStatus id="yuzer" guestAllowed="false" redirectPage="/checkout/signup_ckt.jsp" />
 <tmpl:insert template='/common/template/checkout_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>
@@ -40,7 +40,7 @@
 		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0"></TD>
 	<TD WIDTH="145" ALIGN="RIGHT" VALIGN="top" CLASS="text10bold" >
 		<input type="image" name="form_action_name" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0"><BR>
-		<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>: <%= currencyFormatter.format(cartTotal) %></TD>
+		<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>: <%= JspMethods.formatPrice(cartTotal) %></TD>
 	<TD WIDTH="35" ALIGN="RIGHT" VALIGN="top">
 		<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif" BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"></TD>
 	</TR>

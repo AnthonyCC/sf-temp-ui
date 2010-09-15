@@ -13,7 +13,8 @@ if("true".equalsIgnoreCase(request.getParameter("xls"))) contentType = "applicat
 response.setContentType(contentType);
 %>
 
-<html>
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><html>
 <head><title>Feature Report</title>
 
 <!-- css for PC IE -->
@@ -246,7 +247,7 @@ padding-right: 0px;
                                     FDProductInfo prdInfo = FDCachedFactory.getProductInfo(defaultSku.getSkuCode());
                                     boolean unavail = prd.isUnavailable();
 %>
-                            <tr><td CLASS="noBorder"><%= ++c %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td CLASS="noBorder"><%= unavail?"<i>":"" %><%= noBreak(prd.getFullName()) %><%= unavail?"</i>":"" %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td align=right CLASS="noBorder"><%= currencyFormatter.format(prdInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>/<%= prdInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></td></tr>
+                            <tr><td CLASS="noBorder"><%= ++c %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td CLASS="noBorder"><%= unavail?"<i>":"" %><%= noBreak(prd.getFullName()) %><%= unavail?"</i>":"" %></td><td CLASS="noBorder">&nbsp;&nbsp;</td><td align=right CLASS="noBorder"><%= JspMethods.formatPrice(prdInfo, user.getPricingContext()) %></td></tr>
 <%                               }
                             }
                         }

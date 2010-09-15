@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import com.freshdirect.content.attributes.ErpsAttributesKey;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.framework.util.StringUtil;;
+import com.freshdirect.framework.util.StringUtil;
 
 /**
  * Lightweight information about a product, that is necessary for display on a category page.
@@ -15,8 +16,8 @@ import com.freshdirect.framework.util.StringUtil;;
  */
 
 public class FDProductInfo extends FDSku  {
-	
-	private static final long	serialVersionUID	= 308857606199221581L;
+
+	private static final long serialVersionUID = 308857606199221581L;
 
 	private final String[] materialNumbers;
     
@@ -42,9 +43,11 @@ public class FDProductInfo extends FDSku  {
     //Zone Price Info Listing. 
     private final ZonePriceInfoListing zonePriceInfoList;
     
+    private final String defaultPriceUnit;
+    
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		 FDInventoryCacheI inventory, String rating, String freshness,
+    		 FDInventoryCacheI inventory, String rating, String freshness, String defaultPriceUnit,
     		 ZonePriceInfoListing zonePriceInfoList) {
 
 		super(skuCode, version);
@@ -57,6 +60,7 @@ public class FDProductInfo extends FDSku  {
         this.inventory = inventory;
         this.rating=rating;
         this.zonePriceInfoList = zonePriceInfoList;
+        this.defaultPriceUnit = defaultPriceUnit;
 
         this.freshness=freshness;
 	}
@@ -123,7 +127,7 @@ public class FDProductInfo extends FDSku  {
 	 * @return unit of measure
 	 */
 	public String getDefaultPriceUnit() {
-		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPriceUnit();
+		return defaultPriceUnit;
 	}
 	
 	/**
@@ -132,8 +136,7 @@ public class FDProductInfo extends FDSku  {
 	 * @return pricing unit attribute if one, else return the default Price unit
 	 */
 	public String getDisplayableDefaultPriceUnit() {
-		
-		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDisplayableDefaultPriceUnit();
+		return FDAttributesCache.getInstance().getAttributes(new ErpsAttributesKey(getSkuCode(), null, null)).getPricingUnitDescription(defaultPriceUnit);
 	}
 
     public String getFreshness() {

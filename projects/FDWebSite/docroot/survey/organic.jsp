@@ -49,8 +49,6 @@ response.setDateHeader ("Expires", 0);
     <tmpl:put name='content' direct='true'>
 <table width="700" cellpadding="0" cellspacing="0" border="0" class="text12">
 <% 
-System.out.println("submitted? " + submitted);
-System.out.println(request.getParameter("info"));
 if (submitted) {
 %>
 <tr>

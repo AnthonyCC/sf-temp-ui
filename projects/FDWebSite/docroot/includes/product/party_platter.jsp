@@ -16,7 +16,6 @@
 <%@ taglib uri='oscache' prefix='oscache' %>
 <fd:CheckLoginStatus />
 <%!
-	java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 	java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
 <%
@@ -113,7 +112,7 @@ for (int cvIdx = 0; cvIdx < variations.length && !aVariationUnavailable; cvIdx++
 
 	int unAvailCount=0;
 	for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-		String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+		String optSkuCode=varOpts[voIdx].getSkuCode();
 		if (optSkuCode==null) {
 			unAvailCount++;
 			continue;
@@ -180,7 +179,7 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	 <tr><td valign="top" align="center" colspan="3">
 	<span class="title18"><%=productNode.getFullName()%></span><br><span class="space2pix"><br></span>
-	<span class="title16"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
+	<span class="title16"><%= JspMethods.formatDefaultPrice(defaultProductInfo, user.getPricingContext()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></span>
 	<br><span class="space8pix"><br></span>
 	</td></tr>
   	<% 
@@ -216,7 +215,7 @@ if (EnumProductLayout.MULTI_ITEM_MEAL.equals(prodLayout)) {
   <table width="<%=maxWidth%>" cellpadding="0" cellspacing="0" border="0" align="center">
 	 <tr><td valign="top" align="center">
 	<%	if (introCopyPath!=null) {   %><fd:IncludeMedia name='<%= introCopyPath %>'/> <%  }  %>
-	<tr><td align="center"><FONT CLASS="title18"><%= currencyFormatter.format(defaultProductInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></font>
+	<tr><td align="center"><FONT CLASS="title18"><%= JspMethods.formatDefaultPrice(defaultProductInfo, user.getPricingContext()) %>&nbsp;-&nbsp;<%=productNode.getBlurb()%></font>
 	<br><span class="space8pix"><br></span></td></tr>
   </table>
 <% }  %>  
@@ -251,7 +250,7 @@ if (isAvailable ) { %>
 					varList.add(variations[vIdx]);
 					FDVariationOption[] varOpts = variations[vIdx].getVariationOptions();
 					for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-						String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+						String optSkuCode=varOpts[voIdx].getSkuCode();
 						if (optSkuCode==null || availOptSkuMap.get(optSkuCode)==null) continue;
 							ProductModel pm =(ProductModel)availOptSkuMap.get(optSkuCode);
 							if (pm!=null && !prodList.contains(pm)) {
@@ -334,7 +333,7 @@ if (isAvailable ) { %>
 						<select name="<%=variation.getName()+suffix%>"><option value=""><%=variation.getDescription()%></option>
 		<%				
 						for (int voIdx = 0; voIdx < varOpts.length;voIdx++) {
-							String optSkuCode=varOpts[voIdx].getAttribute(EnumAttributeName.SKUCODE);
+							String optSkuCode=varOpts[voIdx].getSkuCode();
 							String selected= (hasTemplate && varOpts[voIdx].getName().equals(templateLine.getOptions().get(variation.getName()+suffix)) )
 							  ? "selected"
 							  : varOpts[voIdx].getName().equals(request.getParameter(variation.getName()+suffix)) 

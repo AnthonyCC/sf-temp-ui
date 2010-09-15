@@ -16,6 +16,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.PaymentMethodUtil"%>
 <%@page import="com.freshdirect.framework.util.log.LoggerFactory"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <% 
 String thisPageURI = request.getRequestURI();
 String bgcolor = "#CCFFCC"; 
@@ -186,13 +187,13 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="7%" align="right"><%= invoiceLine != null ? invoiceLine.getPrice() : orderLine.getPrice() %></td>
         <td width="3%" bgcolor="<%= bgcolor %>" align="center" style="<%= retQty == 0 ? "color: grey" : "" %>"><%= CCFormatter.formatQuantity( retQty ) %></td>
         <td width="4%" bgcolor="<%= bgcolor %>" align="center"><%= orderLine.getSalesUnitDescription() %></td>
-        <td width="7%" bgcolor="<%= bgcolor %>" align="center"><%= CCFormatter.formatCurrency( retAmount ) %></td>
-        <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatCurrency( (invoiceLine != null ? invoiceLine.getPrice() : orderLine.getPrice()) - retAmount ) %></td>
+        <td width="7%" bgcolor="<%= bgcolor %>" align="center"><%= JspMethods.formatPrice( retAmount ) %></td>
+        <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= JspMethods.formatPrice( (invoiceLine != null ? invoiceLine.getPrice() : orderLine.getPrice()) - retAmount ) %></td>
         <td width="3%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatQuantity( pendingQty ) %></td>
         <td width="2%" bgcolor="<%= bgcolor %>" align="center"><%= orderLine.getSalesUnitDescription() %></td>
         <td width="17%" bgcolor="<%= bgcolor %>"><%= pendingReason %></td>
         <td width="8%" bgcolor="<%= bgcolor %>"><%= pendingMethod %></td>
-        <td width="5%" bgcolor="<%= bgcolor %>" align="center"><%= CCFormatter.formatCurrency( pendingAmount ) %></td>
+        <td width="5%" bgcolor="<%= bgcolor %>" align="center"><%= JspMethods.formatPrice( pendingAmount ) %></td>
     </tr>
 
 <%
@@ -254,13 +255,13 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="7%" align="right">&nbsp;</td>
         <td width="3%" bgcolor="<%= bgcolor %>" align="center"><BR></td>
         <td width="4%" bgcolor="<%= bgcolor %>" align="center"><BR></td>
-        <td width="7%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatCurrency(deptRetAmount) %></td>
+        <td width="7%" bgcolor="<%= bgcolor %>" align="right"><%= JspMethods.formatPrice(deptRetAmount) %></td>
         <td width="5%" bgcolor="<%= bgcolor %>" align="right">&nbsp;</td>
         <td width="3%" bgcolor="<%= bgcolor %>" align="center">&nbsp;</td>
         <td width="2%" bgcolor="<%= bgcolor %>" align="center">&nbsp;</td>
         <td width="17%" bgcolor="<%= bgcolor %>"><%= pendingDeptReason %></td>
         <td width="8%" bgcolor="<%= bgcolor %>"><%= pendingDeptMethod %></td>
-        <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= CCFormatter.formatCurrency(pendingDeptAmount) %></td>
+        <td width="5%" bgcolor="<%= bgcolor %>" align="right"><%= JspMethods.formatPrice(pendingDeptAmount) %></td>
     </tr>
 <%
 	}
@@ -288,28 +289,28 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right"><b>orig. totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="9%">Subtotal&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal() ) %></td>
+        <td width="7%" align="center"><%= JspMethods.formatPrice( __order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal() ) %></td>
         <td width="7%" colspan="2" align="RIGHT"><b>current</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="7%">Subtotal&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - allCreditsTotal ) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - allCreditsTotal ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT"><b>new totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="8%">Subtotal</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - (allCreditsTotal +  + allPendingCreditsTotal) ) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( (__order.hasInvoice() ? __order.getInvoicedSubTotal() : __order.getSubTotal()) - (allCreditsTotal +  + allPendingCreditsTotal) ) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Tax&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
+        <td width="7%" align="center"><%= JspMethods.formatPrice( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
         <td width="7%" colspan="2" align="RIGHT"><b>totals:</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
         <td width="7%">Tax&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue() ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Tax</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue()) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( __order.hasInvoice() ? __order.getInvoicedTaxValue() : __order.getTaxValue()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     
@@ -317,14 +318,14 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Bottle Deposit&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
+        <td width="7%" align="center"><%= JspMethods.formatPrice(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="7%" colspan="2" align="RIGHT">&nbsp;</td>
         <td width="14%">Bottle Deposit&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="2%" colspan="2" align="center"><BR></td>
         <td width="3%" align="RIGHT">&nbsp;</td>
         <td width="18%">Bottle Deposit</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice(__order.hasInvoice() ? __order.getInvoicedDepositValue() : __order.getDepositValue()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     
@@ -332,28 +333,28 @@ ErpPaymentMethodI __paymentMethod	= (ErpPaymentMethodI) paymentMethod;
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Shipping&nbsp;</td>
-        <td width="7%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
+        <td width="7%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
         <td width="7%" colspan="2">&nbsp;</td>
         <td width="7%">Shipping&nbsp;</td>
-        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Shipping</td>
-        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : CCFormatter.formatCurrency(__order.getDeliverySurcharge()) %></td>
+        <td width="5%" align="center"><%= (__order.isDeliveryChargeWaived()) ? "WAIVED" : JspMethods.formatPrice(__order.getDeliverySurcharge()) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">
         <td width="4%" colspan="2"><BR></td>
         <td width="23%" align="right">&nbsp;</td>
         <td width="9%">Order Total&nbsp;</td>
-        <td width="7%" align="center"><%= CCFormatter.formatCurrency( __order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) %></td>
+        <td width="7%" align="center"><%= JspMethods.formatPrice( __order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) %></td>
         <td width="7%" colspan="2">&nbsp;</td>
         <td width="7%">Order&nbsp;Total&nbsp;</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - allCreditsTotal ) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - allCreditsTotal ) %></td>
         <td width="5%" colspan="2" align="center"><BR></td>
         <td width="17%" align="RIGHT">&nbsp;</td>
         <td width="8%">Order&nbsp;Total</td>
-        <td width="5%" align="center"><%= CCFormatter.formatCurrency( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - (allCreditsTotal + allPendingCreditsTotal) ) %></td>
+        <td width="5%" align="center"><%= JspMethods.formatPrice( (__order.hasInvoice() ? __order.getInvoicedTotal() : __order.getTotal()) - (allCreditsTotal + allPendingCreditsTotal) ) %></td>
         <td width="1%">&nbsp;</td>
     </tr>
     <tr valign="bottom">

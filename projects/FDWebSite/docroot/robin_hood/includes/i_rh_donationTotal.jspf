@@ -48,12 +48,12 @@
 	<tr>
 		<td style="padding: 2px;" align="right">
 			<span class="text11bold">Robin Hood</span> Donation Subtotal (<%=totalQuantity%> Meals):
-			<%=JspMethods.currencyFormatter.format(totalPrice)%>
+			<%=JspMethods.formatPrice(totalPrice)%>
 		</td>
 	</tr>
 	<tr>
 		<td style="padding: 2px;" align="right">
-			<span class="text13bold">TOTAL:	<%=JspMethods.currencyFormatter.format(totalPrice)%></td>
+			<span class="text13bold">TOTAL:	<%=JspMethods.formatPrice(totalPrice)%></td>
 	</tr>
 	<tr>
 		<td style="padding: 2px;">

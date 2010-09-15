@@ -17,9 +17,9 @@ import java.util.*;
  * @author $Author:Mike Rose$
  */
 public class EnumClaimValue implements NutritionValueEnum {
-	
+
 	private static final long	serialVersionUID	= -4887294112082084899L;
-	
+
 	public final static EnumClaimValue OAN_ORGANIC = new EnumClaimValue("OAN",       "Approved O&AN Store", 1);
 	public final static EnumClaimValue KOSHER_FOR_PASSOVER = new EnumClaimValue("KOS_PAS", "Kosher for Passover", 1);
 
@@ -33,7 +33,7 @@ public class EnumClaimValue implements NutritionValueEnum {
 	public final static EnumClaimValue NUTRITION_4MM_HIGHFIBER 		= new EnumClaimValue("4MM_HIGHFIBER", "High Fiber", 2);
 	public final static EnumClaimValue NUTRITION_4MM_SODIUM 		= new EnumClaimValue("4MM_SODIUM", "Sodium-Conscious", 2);
 
-	
+
 	private final String code;
     private final String name;
     private final int priority;
@@ -47,7 +47,7 @@ public class EnumClaimValue implements NutritionValueEnum {
 	public String getCode() {
 		return this.code;
 	}
-          
+
     public String getName() {
         return this.name;
     }
@@ -134,10 +134,10 @@ public class EnumClaimValue implements NutritionValueEnum {
     }
 
     public static List<EnumClaimValue> getValues() {
-    	Collections.sort(types, ClaimValueComparator);
+        Collections.sort(types, ClaimValueComparator);
         return Collections.unmodifiableList(types);
     }
-    
+
     public static EnumClaimValue getValueForCode(String code) {
         for ( EnumClaimValue value : types ) {
             if (value.getCode().equals(code)) {
@@ -146,7 +146,7 @@ public class EnumClaimValue implements NutritionValueEnum {
         }
         return null;
     }
-    
+
     public static Comparator<EnumClaimValue> ClaimValueComparator = new Comparator<EnumClaimValue>(){
 		public int compare(EnumClaimValue claim1, EnumClaimValue claim2) {
 		   	int diff = claim1.getPriority()- claim2.getPriority();

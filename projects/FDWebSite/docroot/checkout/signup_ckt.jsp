@@ -9,7 +9,6 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <fd:CheckLoginStatus />
 <%
 FDUserI usery = (FDUserI)session.getAttribute(SessionName.USER);
@@ -28,7 +27,6 @@ ActionResult ar= new ActionResult();
 Collection aerrs=result.getErrors();
 for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
     ActionError aer = (ActionError)erItr.next();
-    System.out.println(aer.getType()+" : "+aer.getDescription());
 }
 %>
 <fd:FDShoppingCart id='cart' result="sc_result">
@@ -92,7 +90,7 @@ for (Iterator erItr = aerrs.iterator();erItr.hasNext();) {
 </td>
 	<TD WIDTH="140" ALIGN="RIGHT" CLASS="text10bold" valign="top">
 		<FONT CLASS="space2pix"><BR></FONT><input type="image" name="next_step" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0" onClick="setActionName(this.form,'setPaymentMethod')"><BR>
-		<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>:  <%= currencyFormatter.format(cart.getTotal()) %></TD>
+		<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>:  <%= JspMethods.formatPrice(cart.getTotal()) %></TD>
 	<TD WIDTH="35" ALIGN="RIGHT" valign="top"><FONT CLASS="space2pix"><BR></FONT>
 		<input type="image" name="next_step" src="/media_stat/images/buttons/checkout_arrow.gif"
 		 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" ></TD>

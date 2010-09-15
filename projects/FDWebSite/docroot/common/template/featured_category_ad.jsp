@@ -16,7 +16,7 @@ FDUserI sessionuser = (FDUserI) request.getSession().getAttribute(SessionName.US
 %>
     <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
 <%   
-    prodPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(sessionuser.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+    prodPrice = JspMethods.formatPrice(productInfo, sessionuser.getPricingContext());
 %>  					
     </fd:FDProductInfo>
 <%        }%>

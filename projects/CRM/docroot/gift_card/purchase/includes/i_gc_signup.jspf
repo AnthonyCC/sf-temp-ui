@@ -17,14 +17,9 @@ String[] checkGiftCardBuyerForm = {
 		EnumUserInfoName.CUSTOMER_AGREEMENT.getCode()};
 						
 %>
-<% System.out.println("a"); %>
 
 <%
 
- System.out.println("b");
-
-
-System.out.println("c");
 String fldTitle 			= request.getParameter("title");
 String fldName 				= request.getParameter(EnumUserInfoName.DLV_FIRST_NAME.getCode());
 String fldLastName 			= request.getParameter(EnumUserInfoName.DLV_LAST_NAME.getCode());
@@ -47,14 +42,8 @@ if ("yes".equalsIgnoreCase(fldTermsAndConditions)) {
 } else {
     fldTermsAndConditions = "";
 }
-System.out.println("d");
-
- System.out.println("f");
-
 %>
 
-
-<% System.out.println("g"); %>
 <table border="0" cellspacing="1" cellpadding="0" width="685">
 	<tr valign="middle">
 	<td width="120" align="right" class="text12">Title</td>
@@ -203,7 +192,6 @@ System.out.println("d");
 <BR/>
 <br/>
 
-<% System.out.println("h"); %>
 <% // Gift Card Buyer Payment Info %>
 
 <%@ include file="/gift_card/purchase/includes/i_gc_creditcard_fields.jspf" %>

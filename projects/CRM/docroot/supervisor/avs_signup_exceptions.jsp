@@ -8,7 +8,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > AVS Signup Promo Exceptions</tmpl:put>
 
@@ -51,7 +52,7 @@
 			<TD><a href="/main/order_details.jsp?orderId=<%= info.getSaleId() %>"><%= info.getSaleId() %></a></TD>
 			<TD><%= CCFormatter.formatDate(info.getDeliveryDate()) %></TD>
 			<TD><%= (info.getOrderStatus() != null) ? info.getOrderStatus().getName() : "--" %></TD>
-			<TD><%= CCFormatter.formatCurrency(info.getAmount()) %></TD>
+			<TD><%= JspMethods.formatPrice(info.getAmount()) %></TD>
 			<TD><%= info.getLastName() %>, <%= info.getFirstName() %></TD>
 			<TD><%= info.getIdentity().getFDCustomerPK() %></TD>
 			<TD><%= info.getEmail() %></TD>

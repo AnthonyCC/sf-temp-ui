@@ -14,10 +14,6 @@
 	if ( "true".equals((String)request.getParameter("isResendEmail")) ) {
 		isResendEmail = true;
 	}
-	
-
-	if ( request.getParameter("isResendFetch") != null ) { System.out.println("isResendFetch : "+(String)request.getParameter("isResendFetch")); }
-	if ( request.getParameter("isResendEmail") != null ) { System.out.println("isResendEmail : "+(String)request.getParameter("isResendEmail")); }
 
 	//if we're fetching the info for the overlay display
 	if (isResendFetch) {

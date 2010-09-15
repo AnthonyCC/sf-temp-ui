@@ -127,7 +127,6 @@
            for(int k=0;k<alist.size();k++){
              errorMsg=errorMsg+(String)alist.get(k)+"\n";
            }  
-           System.out.println("errorMsg:"+errorMsg);
      %>        
        <%@ include file="/includes/i_error_messages.jspf" %>
 <%       
@@ -195,7 +194,6 @@ user.setAddressVerificationError(false);
 							paymentMethods = FDCustomerManager.getPaymentMethods(identity);	
 						}
 
-						//System.out.println("The identity = "+identity);
 						//these booleans are used in /includes/ckt_acct/i_credit_cardfields.jspf
 						// set both to false -- gift card purchase is allowed only with a credit card
 						boolean isECheckRestricted = false;

@@ -12,7 +12,6 @@ package com.freshdirect.webapp.taglib.callcenter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -36,12 +35,10 @@ import com.freshdirect.customer.EnumSendCreditEmail;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
 import com.freshdirect.customer.ErpCustomerEmailModel;
-import com.freshdirect.customer.ErpGiftCardComplaintLineModel;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -55,11 +52,10 @@ import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
-import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
-import com.freshdirect.webapp.util.CCFormatter;
+import com.freshdirect.webapp.util.JspMethods;
 
 public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTagSupport implements SessionName  {
 	private static final long serialVersionUID = -3777077993663056139L;
@@ -471,7 +467,7 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 
     			// System.err.println("  Max credit = " + diff);
 
-    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+CCFormatter.formatCurrency(diff)+" for this order."));
+    			result.addError(new ActionError("ol_error_"+i, "Amount exceeded the maximum available "+JspMethods.formatPrice(diff)+" for this order."));
             	addGeneralError(result);
             	return;
     		} else {

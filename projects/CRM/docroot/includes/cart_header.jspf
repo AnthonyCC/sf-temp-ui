@@ -8,7 +8,8 @@
 	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
     String order_Id = request.getParameter("orderId");
 %>
-<fd:FDShoppingCart id='cart' result='result' action='<%= cartAction %>' successPage='<%= sPage %>'>
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><fd:FDShoppingCart id='cart' result='result' action='<%= cartAction %>' successPage='<%= sPage %>'>
 <%
 	String error = request.getParameter("dlvpasserror");
 	 if (error != null && error.equals("true")){
@@ -25,7 +26,7 @@
 <table width="100%" cellpadding="2" cellspacing="0" border="0" class="module_header">
 <form name="viewcart" method="POST">
 	<tr>
-		<td class="order">(<%= cart.getOrderLines().size() %> items) <B><%= CCFormatter.formatCurrency(cart.getSubTotal()) %></B> est total<% if (cart.getOrderLines().size() > 0) { %>&nbsp;&nbsp;<input type="submit" class="update_price" onClick="setSubmitAction('updateQuantities')" value="UPDATE PRICE"><% } %></td>
+		<td class="order">(<%= cart.getOrderLines().size() %> items) <B><%= JspMethods.formatPrice(cart.getSubTotal()) %></B> est total<% if (cart.getOrderLines().size() > 0) { %>&nbsp;&nbsp;<input type="submit" class="update_price" onClick="setSubmitAction('updateQuantities')" value="UPDATE PRICE"><% } %></td>
 		<td align="right" class="order"><a href="javascript:confirmClearCart(document.viewcart)" class="clear_all">CLEAR ALL</A></td>
 	</tr>
 </table>

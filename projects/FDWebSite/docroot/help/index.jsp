@@ -22,8 +22,6 @@ function submitForm(){
 
 <%
 	DateFormat dateFormatter = new SimpleDateFormat("MM/dd/yy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
-	
 	
 	FDIdentity identity  = user.getIdentity();
         ErpCustomerInfoModel cm = null;

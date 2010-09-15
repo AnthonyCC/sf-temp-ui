@@ -40,7 +40,7 @@
 	<div class="title16"><%= prd.getFullName() %>&nbsp;<a href="/product_modify.jsp?cartLine=<%= orderLine.getRandomId() %>&trk=conf"><img src="/media_stat/images/buttons/edit_product.gif" width="32" height="14" alt="Edit" border="0"></a></div>
 	<div class="qbParam" style="margin-top:1em">Quantity: <span><display:OrderLineQuantity orderline="<%= orderLine %>" product="<%= prd %>" customer="<%= u %>"/></span></div>
 	<div class="qbParam">Options: <span><%= orderLine.getConfigurationDesc() %></span></div>
-	<div class="qbParam" style="margin-bottom:1em">Est. Price: <span><%= JspMethods.currencyFormatter.format(orderLine.getPrice()) %></span></div>
+	<div class="qbParam" style="margin-bottom:1em">Est. Price: <span><%= JspMethods.formatPrice(orderLine.getPrice()) %></span></div>
     <fd:CCLCheck>
 		<!-- Add to Shopping List  -->
 		<a href="/unsupported.jsp" onclick="document.quickbuyPanel.hide(); CCL.add_recent_cart_items(); return false;"><img src="/media_stat/ccl/lists_link_with_icon_dfgs.gif" style="border: 0;"/></a><span style="padding-left: 15px"><fd:CCLNew/></span>

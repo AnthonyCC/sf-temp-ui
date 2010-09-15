@@ -21,7 +21,8 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="crm" prefix="crm" %>
 
-<script language="javascript">
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><script language="javascript">
     	function flipAutoRenewalON() {
 	    var form = document.forms['autoRenew'];
 	    form.elements['action'].value='FLIP_AUTORENEW_ON';
@@ -316,7 +317,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							<tr>
 								<td colspan="2">	
 									<% Double refundAmt = (Double) dlvPassInfoMap.get(DlvPassConstants.REFUND_AMOUNT); %>
-									<span class="info_text">Current refund amount: <b><%= CCFormatter.formatCurrency(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
+									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
 								</td>
 							</tr>	
 							<%
@@ -324,7 +325,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							%>
 							<form name="deliverypass" method="POST">
 							<input type="hidden" name="action_name" value="extend_week">
-							<input type="hidden" name="refundAmount" value=<%=CCFormatter.formatCurrency(refundAmt.doubleValue())%>>
+							<input type="hidden" name="refundAmount" value=<%=JspMethods.formatPrice(refundAmt.doubleValue())%>>
 							<tr>
 								<td colspan="2">	
 									<select name="orderAssigned" class="combo_text" style="width: 210px;">
@@ -462,7 +463,7 @@ String caseRequiredForManualRenewal = "<span class=\"cust_module_content_edit\">
 							<tr>
 								<td colspan="2">	
 									<% Double refundAmt = (Double) dlvPassInfoMap.get(DlvPassConstants.REFUND_AMOUNT); %>
-									<span class="info_text">Current refund amount: <b><%= CCFormatter.formatCurrency(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
+									<span class="info_text">Current refund amount: <b><%= JspMethods.formatPrice(refundAmt.doubleValue()) %></b> <br>(includes refundable tax)</span>
 
 								</td>
 							</tr>	

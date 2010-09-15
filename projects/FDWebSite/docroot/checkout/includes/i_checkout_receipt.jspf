@@ -19,7 +19,6 @@
 <%--
 This page is included by step_4_confirmation.jsp and step_4_receipt.jsp
 --%>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <%
     // FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
     FDIdentity identity  = user.getIdentity();

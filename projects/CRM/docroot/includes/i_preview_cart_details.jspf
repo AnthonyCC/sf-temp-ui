@@ -15,13 +15,13 @@
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.ComplaintUtil" %>
 <%@ page import="com.freshdirect.fdstore.FDSalesUnit"%>
 <%@ page import="com.freshdirect.customer.ErpComplaintLineModel" %>
-<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@ page import="com.freshdirect.customer.ErpDiscountLineModel" %>
 <%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionI" %>
 <%@ page import="com.freshdirect.fdstore.promotion.PromotionFactory" %>
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionType" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	THIS INCLUDE REQUIRES:
 	- boolean showFeesSection
@@ -114,7 +114,7 @@
 	if(cartLine.getDiscount() != null) {
 		Discount discount = cartLine.getDiscount();
 		PromotionI promotion = PromotionFactory.getInstance().getPromotion(discount.getPromotionCode());
-		discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+CCFormatter.formatCurrency(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
+		discountMsg = promotion.getDescription()+" <span style=\"color: #ff0000;\">(You Saved "+JspMethods.formatPrice(cartLine.getDiscountAmount())+")</span> <a href=\"javascript:popup('/shared/promotion_popup.jsp?promoCode="+promotion.getPromotionCode()+"','small')\" style=\"font-weight: normal;\">See details</a>";
 	}
 %>
 <tr valign="middle">
@@ -131,7 +131,7 @@
 		<% if ( discountMsg!=null && !"".equals(discountMsg) ) { %><br />&nbsp;&nbsp;<span><%= discountMsg %></span><% } %>
 	</TD>
 	<td><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>>(<%= cartLine.getUnitPrice() %>)</span></td>
-	<td ALIGN="RIGHT"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= CCFormatter.formatCurrency(cartLine.getPrice()) %></span></td>
+	<td ALIGN="RIGHT"><span <%= (cartLine.getDiscount() != null) ? "style=\"color: #CC0000;\"" : "" %>><%= JspMethods.formatPrice(cartLine.getPrice()) %></span></td>
 	<TD>
 		<%if (cartLine.isEstimatedPrice()) {
 				hasEstimatedItems = true;
@@ -162,7 +162,7 @@
     <td colspan="4"></td>
     <td colspan="2"><b><%= deptName %></b></td>
     <td align="right">
-        <%= CCFormatter.formatCurrency(((Double)deptTotalMap.get("est")).doubleValue()) %>
+        <%= JspMethods.formatPrice(((Double)deptTotalMap.get("est")).doubleValue()) %>
     </td>
     <td></td>
     <td></td>
@@ -183,9 +183,9 @@
         <TR VALIGN="TOP">
             <td colspan="4"></td>
 		    <TD colspan="2">
-		        <% if (hasEstimatedItems) { %>Estimated Subtotal<%if(user.getAdjustedValidOrderCount()>=1){%> (<%= CCFormatter.formatCurrency(user.getMinimumOrderAmount()) %> min.)<%}%>: <% } %>
+		        <% if (hasEstimatedItems) { %>Estimated Subtotal<%if(user.getAdjustedValidOrderCount()>=1){%> (<%= JspMethods.formatPrice(user.getMinimumOrderAmount()) %> min.)<%}%>: <% } %>
 			</td>
-		    <td align="right"><%= CCFormatter.formatCurrency(order.getSubTotal()) %></td>
+		    <td align="right"><%= JspMethods.formatPrice(order.getSubTotal()) %></td>
 		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
             <td></td>
             <td></td>
@@ -197,7 +197,7 @@
 		    <TD colspan="2">
 			Gift Card Amount to Be Applied:
 		    </td>
-		    <td align="right"><%= CCFormatter.formatCurrency(cart.getTotalAppliedGCAmount()+gcBufferAmount) %></td>
+		    <td align="right"><%= JspMethods.formatPrice(cart.getTotalAppliedGCAmount()+gcBufferAmount) %></td>
 		    <td></td>
 		    <td></td>
 		    <td></td>
@@ -209,10 +209,10 @@
 		    </td>
 		    <td align="right"><% if(order instanceof FDCartModel) { %>
 	            
-	            	<%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance() - ((FDCartModel)order).getTotalAppliedGCAmount()-gcBufferAmount) %>
+	            	<%= JspMethods.formatPrice(user.getGiftcardsTotalBalance() - ((FDCartModel)order).getTotalAppliedGCAmount()-gcBufferAmount) %>
 		          
 	            <% } else { %>
-	            <%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance()) %>
+	            <%= JspMethods.formatPrice(user.getGiftcardsTotalBalance()) %>
 	            <% } %></td>
 		    <td></td>
 		    <td></td>
@@ -237,7 +237,7 @@
 			%>	
 				<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
 			<% } else { %>
-				<%= CCFormatter.formatCurrency(order.isDeliveryChargeWaived()?0.0:order.getDeliverySurcharge()) %>
+				<%= JspMethods.formatPrice(order.isDeliveryChargeWaived()?0.0:order.getDeliverySurcharge()) %>
 			<%}%>	
 			</td>
 		<%}%>
@@ -248,7 +248,7 @@
 		<tr>
             <td colspan="4"></td>
 			<td colspan="2"><a href="javascript:popup('/shared/fee_info.jsp?type=fuel','large');">Fuel Surcharge</a><%if(order.isMiscellaneousChargeWaived()){%> (waived)<%}%>:</td>
-			<td align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= CCFormatter.formatCurrency(order.getMiscellaneousCharge()) %><%}%></td>
+			<td align="right"><%if(order.isMiscellaneousChargeWaived()){%>$0.00<%}else{%><%= JspMethods.formatPrice(order.getMiscellaneousCharge()) %><%}%></td>
 		    <td><b><%=order.isMiscellaneousChargeTaxable() && !order.isMiscellaneousChargeWaived() ? "&nbsp;T" : "" %></b></td>
 			<td colspan="2"></td>
 		</tr>
@@ -257,7 +257,7 @@
 		<tr>
             <td colspan="4"></td>
 		    <td colspan="2">Bottle Deposit:</td>
-		    <td align="right"><%= CCFormatter.formatCurrency(order.getDepositValue()) %></td>
+		    <td align="right"><%= JspMethods.formatPrice(order.getDepositValue()) %></td>
 		    <td></td>
             <td></td>
             <td></td>
@@ -266,7 +266,7 @@
 		<tr>
             <td colspan="4"></td>
 		    <td colspan="2">Total Tax:</td>
-		    <td align="right"><%= CCFormatter.formatCurrency(order.getTaxValue()) %></td>
+		    <td align="right"><%= JspMethods.formatPrice(order.getTaxValue()) %></td>
 		    <td></td>
             <td></td>
             <td></td>
@@ -283,7 +283,7 @@
 		<tr>
             <td colspan="4"></td>
 		    <td colspan="2"><%=desc%>:</td>
-		    <td align="right">(<%= CCFormatter.formatCurrency(discount.getAmount()) %>)</td>
+		    <td align="right">(<%= JspMethods.formatPrice(discount.getAmount()) %>)</td>
             <td></td>
             <td></td>
             <td></td>
@@ -329,7 +329,7 @@
 		<tr>
             <td colspan="4"></td>
 		    <td colspan="2">Credits:</td>
-		    <td align="right">(<%= CCFormatter.formatCurrency(order.getCustomerCreditsValue()) %>)</td>
+		    <td align="right">(<%= JspMethods.formatPrice(order.getCustomerCreditsValue()) %>)</td>
 		    <td></td>
             <td></td>
             <td></td>
@@ -349,7 +349,7 @@
                         &nbsp;&nbsp;Waive <input type="checkbox" value="true" <%=order.isChargeWaived(EnumChargeType.PHONE)?"checked":""%> name="waive_phone_fee">
 					<%}%>
                 </td>
-			<td align="right"><%= CCFormatter.formatCurrency(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge()) %></td>
+			<td align="right"><%= JspMethods.formatPrice(order.isChargeWaived(EnumChargeType.PHONE)?0.0:order.getPhoneCharge()) %></td>
 		    <td><b><%=order.isPhoneChargeTaxable() ? "&nbsp;T" : "" %></b></td>
 			<td colspan="2"></td>
 			<%}%>
@@ -360,7 +360,7 @@
 		<tr>
             <td colspan="4"></td>
 			<td colspan="2">CC Declined Charge: </td>
-			<td align="right"><%= CCFormatter.formatCurrency(order.getCCDeclinedCharge()) %></td>
+			<td align="right"><%= JspMethods.formatPrice(order.getCCDeclinedCharge()) %></td>
 		    <td></td>
             <td></td>
             <td></td>
@@ -372,7 +372,7 @@
 		        <% if (hasEstimatedItems) { %>Estimated<% } %>
 		        <b>Order Total:</b>
 		    </td>
-		    <td align="right"><%= CCFormatter.formatCurrency(order.getTotal()) %></td>
+		    <td align="right"><%= JspMethods.formatPrice(order.getTotal()) %></td>
 		    <td><% if (hasEstimatedItems) out.print("*"); %></td>
             <td></td>
             <td></td>

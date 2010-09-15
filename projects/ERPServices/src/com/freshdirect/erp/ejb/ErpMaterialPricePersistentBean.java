@@ -83,7 +83,7 @@ public class ErpMaterialPricePersistentBean extends ErpPersistentBeanSupport {
 		super(pk);
 		this.sapId = sapId;
 		this.price = price;
-		this.pricingUnit = pricingUnit;
+		this.pricingUnit = pricingUnit.intern();
 		this.scaleQuantity = scaleQuantity;
 		this.scaleUnit = scaleUnit;
 		this.sapZoneId = sapZoneId;

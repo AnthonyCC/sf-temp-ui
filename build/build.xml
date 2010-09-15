@@ -40,6 +40,7 @@
         <property name="lucene.version" value="3.0.0" />
         <property name="gwt.compiler.style"             value="PRETTY"/>
         <property name="scarab.jar" value="scarab-java-client-2.6.jar"/>
+	<property name="memcached.jar" value="memcached-2.5.jar"/>
 
 	<path id="j2ee.classpath">
 		<pathelement location="${weblogic.home}/server/lib/weblogic_sp.jar"/>
@@ -86,6 +87,7 @@
         <pathelement location="${thirdparty.home}/iText-2.0.8.jar"/>
         <pathelement location="${thirdparty.home}/core-renderer.jar"/>
 	<pathelement location="${thirdparty.home}/${scarab.jar}"/>
+                <pathelement location="${thirdparty.home}/${memcached.jar}"/>
 	</path>
 
 	<path id="testing.classpath">
@@ -1245,6 +1247,7 @@
 					<include name="JFEP-0.1.0.jar"/>
 					<include name="roadnetservices.jar"/>
 					<include name="httpcore-4.0.1.jar"/>
+                    <include name="memcached-2.5.jar"/>
 					<lib/>
 				</zipfileset>
 				<extra/>
@@ -2177,6 +2180,8 @@
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>
                 <include name="${scarab.jar}"/>
+
+                <include name="${memcached.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-core-${lucene.version}.jar"/>
 				<include name="lucene-queries-${lucene.version}.jar"/>
@@ -2212,6 +2217,7 @@
 				<include name="lucene-core-${lucene.version}.jar"/>
                 <include name="givexclient.jar"/> 
                 <include name="${scarab.jar}"/>
+                <include name="${memcached.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="lucene-queries-${lucene.version}.jar"/>
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
@@ -2246,6 +2252,8 @@
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jxl.jar"/>
 
+		                <include name="${memcached.jar}"/>
+
 				<include name="${scarab.jar}"/>
 <!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
@@ -2277,6 +2285,7 @@
 				<include name="lcc.jar"/>
 				<include name="sapjco.jar"/>
                 <include name="givexclient.jar"/>
+		                <include name="${memcached.jar}"/>
                 <include name="${scarab.jar}"/>
 		<!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
@@ -2436,6 +2445,8 @@
 				<include name="lucene-spellchecker-${lucene.version}.jar"/>
 				<include name="jgroups-2.2.7.jar"/>
 				<include name="jxl.jar"/>
+
+		                <include name="${memcached.jar}"/>
 				<include name="${scarab.jar}"/>
 <!-- scarab runtime dependencies -->
 				<include name="httpclient-4.0.1.jar"/>
@@ -2852,7 +2863,8 @@
 				<include name="struts.jar"/>
 				<include name="spring.jar"/>
 				<include name="standard.jar"/>
-				<include name="jstl.jar"/>		
+				<include name="jstl.jar"/>
+		                <include name="${memcached.jar}"/>
 				<include name="${scarab.jar}"/>
 			<!-- scarab runtime dependencies -->
 				<include name="poi-3.5-FINAL-20090928.jar"/>

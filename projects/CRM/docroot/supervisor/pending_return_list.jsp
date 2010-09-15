@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.*" %>
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -50,7 +51,7 @@
 		<TD width="10%"><a href="/main/order_details.jsp?orderId=<%=info.getSaleId()%>"><%=info.getSaleId()%></a></TD>
 		<TD width="10%"><%= CCFormatter.formatDate(info.getDeliveryDate()) %></TD>
 		<TD width="11%"><%= (info.getOrderStatus() != null) ? info.getOrderStatus().getName() : "--" %></TD>
-		<TD width="10%"><%= CCFormatter.formatCurrency(info.getAmount()) %></TD>
+		<TD width="10%"><%= JspMethods.formatPrice(info.getAmount()) %></TD>
 		<TD width="18%"><%= info.getLastName() %>, <%= info.getFirstName() %></TD>
 		<TD width="18%"><%= info.getEmail() %></TD>
 		<TD width="11%"><%= info.getPhone() %></TD>

@@ -8,8 +8,7 @@
  */
 package com.freshdirect.fdstore;
 
-import com.freshdirect.content.attributes.AttributesI;
-import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.erp.model.ErpCharacteristicModel;
 
 /**
  * Variaton - equivalent of ErpCharacteristic.
@@ -17,7 +16,8 @@ import com.freshdirect.content.attributes.EnumAttributeName;
  * @version $Revision$
  * @author $Author$
  */
-public class FDVariation extends FDAttributeProxy {
+public class FDVariation extends FDAttributesProxy {
+	private static final long serialVersionUID = -1771593842781044141L;
 
 	/** SAP characteristic name */
 	private String name;
@@ -27,10 +27,16 @@ public class FDVariation extends FDAttributeProxy {
 	 */
 	private FDVariationOption[] variationOptions;
 
-	public FDVariation(AttributesI attributes, String name, FDVariationOption[] variationOptions) {
-		super(attributes);
-		this.name = name;
+	public FDVariation(ErpCharacteristicModel model, FDVariationOption[] variationOptions) {
+		super(model);
+		name = model.getName();
 		this.variationOptions = variationOptions;
+	}
+	
+	public FDVariation(String name, FDVariationOption[] variationOptions) {
+	    super();
+	    this.name = name;
+	    this.variationOptions = variationOptions;
 	}
 
 	/**
@@ -68,7 +74,7 @@ public class FDVariation extends FDAttributeProxy {
 	 * @return description
 	 */
 	public String getDescription() {
-		return this.getAttribute(EnumAttributeName.DESCRIPTION.getName(), this.name);
+		return getAttributes().getDescription(name);
 	}
 
 	/**
@@ -78,7 +84,7 @@ public class FDVariation extends FDAttributeProxy {
 	 * @return display format string
 	 */
 	public String getDisplayFormat() {
-		return this.getAttribute(EnumAttributeName.DISPLAY_FORMAT);
+		return getAttributes().getDisplayFormat();
 	}
 
 	/**
@@ -88,7 +94,7 @@ public class FDVariation extends FDAttributeProxy {
 	 * @return true if this variation is optional
 	 */
 	public boolean isOptional() {
-		return this.getAttributeBoolean(EnumAttributeName.OPTIONAL);
+		return getAttributes().isOptional();
 	}
 
 	public boolean equals(Object o) {
@@ -107,4 +113,21 @@ public class FDVariation extends FDAttributeProxy {
 		buf.append("\n\t]");
 		return buf.toString();
 	}
+	
+	public String getUnderLabel() {
+		return getAttributes().getUnderLabel();
+	}
+	
+        public int getPriority() {
+            return getAttributes().getPriority();
+        }
+
+        public int getPriority(int defValue) {
+            return getAttributes().getPriority(defValue);
+        }
+
+        public String getDescription(String defValue) {
+            return getAttributes().getDescription(defValue);
+        }
+        
 }

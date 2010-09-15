@@ -51,7 +51,6 @@ String noContactPhone = ""; //
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDIdentity identity  = user.getIdentity();
 ErpCustomerInfoModel cm = FDCustomerFactory.getErpCustomerInfo(identity);
-//System.out.println("This is the CM in the JSP:  " + cm.isReceiveNewsletter());
 
 lastName = cm.getLastName();
 firstName = cm.getFirstName();

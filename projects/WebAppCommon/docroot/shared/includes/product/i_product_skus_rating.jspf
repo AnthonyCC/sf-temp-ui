@@ -65,7 +65,6 @@
 
 List freshList = (List)session.getAttribute("freshList");
 String freshDays = productInfo.getFreshness();
-System.out.println("freshDays...."+freshDays);
 if(freshDays != null && freshDays.length() > 0) {
 	
 	if(freshList != null && !freshList.isEmpty()) {

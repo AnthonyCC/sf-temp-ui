@@ -26,13 +26,15 @@ Image deptMngrImg = (dept instanceof ProductContainer ? ((ProductContainer) dept
 	    <logic:iterate id="option" collection="<%= variation.getVariationOptions() %>" type="com.freshdirect.fdstore.FDVariationOption">
 		<%
 		if(!option.getName().equals("N")){
-			if(option.getAttribute("skucode","").equals(skucode)){
+		    String optSkuCode = option.getSkuCode();
+		    optSkuCode = optSkuCode == null ? "" : optSkuCode;
+			if(optSkuCode.equals(skucode)){
 			%>
 			<b><%= option.getDescription() %></b><br>
 			<%
 			}else{
 		%>
-			<a href="/shared/fd_def_popup.jsp?skucode=<%=option.getAttribute("skucode","")%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a><br>
+			<a href="/shared/fd_def_popup.jsp?skucode=<%=optSkuCode%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a><br>
 		<%
 			}
 		}

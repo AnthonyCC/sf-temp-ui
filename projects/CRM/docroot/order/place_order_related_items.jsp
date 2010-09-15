@@ -28,7 +28,6 @@
 <tmpl:put name='title' direct='true'>New Order > Related Items</tmpl:put>
 
 <%!	SimpleDateFormat dateFormatter = new SimpleDateFormat("MM/dd/yyyy");
-	NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance( Locale.US );
 %>
 
 <tmpl:put name='content' direct='true'>

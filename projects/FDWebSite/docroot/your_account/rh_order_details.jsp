@@ -83,11 +83,11 @@ int idx = 0;
 				<td colspan="2" style="padding: 2px;" align="left" valign="bottom">
 					<b><%=productModel.getFullName() %></b> Subtotal&nbsp;(<%=cartLine.getOrderedQuantity()%>&nbsp;Meals):
 				</td>
-				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %></td>
+				<td style="padding: 2px;" width="70" align="right" valign="bottom"><%= JspMethods.formatPrice( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %></td>
 			</tr>
 			<tr>
 				<td colspan="2" style="padding: 2px;" align="left" class="text13bold">
-					<span>TOTAL:</span>&nbsp;<%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
+					<span>TOTAL:</span>&nbsp;<%= JspMethods.formatPrice( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
 				</td>
 				<td style="padding: 2px;" width="70" align="left" class="text13bold"></td>
 			</tr>
@@ -193,9 +193,9 @@ int idx = 0;
 			<td class="text11bold" align="center"><%= cartLine.getOrderedQuantity() %></td>
 			<td style="padding-left:30px;" class="text11bold" align="center"><b><%=productModel.getFullName() %></b>	</td>
 			<td></td>
-			<td align="center"><%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %></td>
+			<td align="center"><%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %></td>
 			<td></td>
-			<td  align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
+			<td  align="center"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.formatPrice( cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal() ) %>
 		
 		
 
@@ -214,7 +214,7 @@ int idx = 0;
 		 <tr>
 			<td colspan="4"><img src="/media_stat/images/layout/clear.gif" width="170" height="1" /></td>
 			<td class="orderTotal" colspan="2" width="" align="right">
-			<b>ORDER TOTAL:  <%= JspMethods.currencyFormatter.format(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
+			<b>ORDER TOTAL:  <%= JspMethods.formatPrice(cart.hasInvoice() ? cart.getInvoicedSubTotal() : cart.getSubTotal()) %> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  </b></td>
         </tr>
         
 		

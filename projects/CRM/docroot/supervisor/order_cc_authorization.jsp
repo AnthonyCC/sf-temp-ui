@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.FDAuthInfoSearchCriteria" %>
 <%@ page import="com.freshdirect.common.customer.EnumCardType" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.framework.util.NVL" %>
 <%@ page import="com.freshdirect.customer.EnumSaleType"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
@@ -206,7 +207,7 @@ criteria.setTransYear(NVL.apply(request.getParameter("transYear"), ""));
                 <td width="10%" class="border_bottom"><%=CCFormatter.formatDate(info.getDeliveryDate())%>&nbsp;</td>
 				<td width="12%" class="border_bottom"><%=CCFormatter.formatDateTime(info.getTransactionDateTime())%>&nbsp;</td>
 				<td width="6%" class="border_bottom"><%=info.getSaleStatus().getName()%>&nbsp;</td>
-				<td width="9%" class="border_bottom"><%=CCFormatter.formatCurrency(info.getAuthAmount())%>&nbsp;</td>
+				<td width="9%" class="border_bottom"><%=JspMethods.formatPrice(info.getAuthAmount())%>&nbsp;</td>
 				<td width="15%" class="border_bottom"><%=info.getFirstName()%>,&nbsp;<%=info.getLastName()%></td>
 				<td width="15%" class="border_bottom"><%=info.getNameOnCard()%>&nbsp;</td>
 				<td width="25%" class="border_bottom"><i>Auth Code:</i> <%=info.getAuthCode().trim()%>, <i>Message:</i> <%=info.getAuthDescription()%><br><i>CC type:</i> <%=info.getCardType()%>, <i>Last 4</i>: <%=info.getCCLastFourNum()%></td>

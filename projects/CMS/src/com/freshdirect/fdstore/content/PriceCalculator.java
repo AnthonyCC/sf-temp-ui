@@ -406,8 +406,7 @@ public class PriceCalculator {
                 return false;
 
             FDProduct pr = getProduct();
-            FDKosherInfo ki = pr.getKosherInfo();
-            return ki.isKosherProduction();
+            return pr.isKosherProduction();
         } catch (FDSkuNotFoundException fdsnfe) {
         }
         return false;

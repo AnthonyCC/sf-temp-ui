@@ -82,7 +82,7 @@ public class FDStoreProperties {
 	private final static String PROP_AD_SERVER_PROFILE_ATTRIBS = "fdstore.adServerProfileAttribs";
 
 	private final static String PROP_AD_SERVER_USES_DEFERRED_IMAGE_LOADING = "fdstore.adServerUsesDeferredImageLoading";
-	
+
 	private final static String PROP_IMPRESSION_LIMIT = "fdstore.impressionLimit";
 	private final static String PROP_WINBACK_ROOT = "fdstore.winbackRoot";
 	private final static String PROP_MARKETING_PROMO_ROOT = "fdstore.marketingPromoRoot";
@@ -91,9 +91,9 @@ public class FDStoreProperties {
 	private final static String PROP_REFRESHSECS_PRODUCT  = "fdstore.refreshSecs.product";
 	private final static String PROP_REFRESHSECS_ZONE  = "fdstore.refreshSecs.zone";
 	private final static String PROP_PRODUCT_CACHE_SIZE	= "fdstore.product.cache.size";
-	
+
 	private final static String PROP_ZONE_CACHE_SIZE	= "fdstore.zone.cache.size";
-		
+
 	private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
 
 	private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
@@ -146,18 +146,18 @@ public class FDStoreProperties {
 
 	// SmartStore
 	private final static String DYF_STRATEGY_CACHE_ENTRIES = "fdstore.strategy.cache.entries";
-	
-	private final static String SS_GLOBAL_POPULARITY_SCORING = "fdstore.scoring.globalPopularity"; 
-	private final static String SS_USER_POPULARITY_SCORING = "fdstore.scoring.userPopularity"; 
-	private final static String SS_SHORT_TERM_POPULARITY_SCORING = "fdstore.scoring.shortTermPopularity"; 
+
+	private final static String SS_GLOBAL_POPULARITY_SCORING = "fdstore.scoring.globalPopularity";
+	private final static String SS_USER_POPULARITY_SCORING = "fdstore.scoring.userPopularity";
+	private final static String SS_SHORT_TERM_POPULARITY_SCORING = "fdstore.scoring.shortTermPopularity";
 
 	// DYF Site Feature
 	private final static String DYF_ENABLED = "fdstore.dyf.enabled";
-	
+
 	// DYF FREQBOUGHT PARAMETERS
 	private final static String DYF_FREQBOUGHT_TOPN = "fdstore.dyf.freqbought.topN";
 	private final static String DYF_FREQBOUGHT_TOPPERCENT = "fdstore.dyf.freqbought.topPercent";
-	
+
 	private final static String SMARTSTORE_NEWPRODUCTS_DAYS = "fdstore.smartstore.newProducts.days";
 	private final static String SMARTSTORE_PRELOAD_FACTORS = "fdstore.smartstore.preloadFactors";
 
@@ -166,19 +166,19 @@ public class FDStoreProperties {
 	public final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
 
 	public final static String SMARTSTORE_CMS_RECOMM_REFRESH_RATE = "fdstore.smartstore.cmsRecommenderRefreshRate";
-	
+
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
-	
+
 	// timeout of a cache entry in seconds, default 30*60
 	private final static String SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT = "fdstore.smartstore.personalScores.cache.timeout";
 
 	private final static String SMARTSTORE_OFFLINE_REC_RECENT_DAYS = "fdstore.smartstore.offlineRecommender.noOfRecentDays";
 
 	private final static String SMARTSTORE_OFFLINE_REC_MAX_AGE = "fdstore.smartstore.offlineRecommender.maxRecommendationAge";
-	
+
 	private final static String SMARTSTORE_OFFLINE_REC_SITE_FEATURES = "fdstore.smartstore.offlineRecommender.siteFeatures";
-	
+
 	private final static String SMARTSTORE_OFFLINE_REC_THREAD_COUNT = "fdstore.smartstore.offlineRecommender.threadCount";
 
 	private final static String SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH = "fdstore.smartstore.offlineRecommender.windowLength";
@@ -202,9 +202,9 @@ public class FDStoreProperties {
 
 	private static final String CUT_OFF_TIME_SAT="fdstore.cut_off_day_7";
 
-	
+
 	// customer service hours properties
-	
+
 	private static final String CLICK_TO_CALL="fdstore.click_to_call";
 
 	private static final String CUST_SERV_HOURS_SUN="fdstore.cust_serv_day_1";
@@ -221,8 +221,8 @@ public class FDStoreProperties {
 
 	private static final String CUST_SERV_HOURS_SAT="fdstore.cust_serv_day_7";
 
-	
-	
+
+
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
 	private static long lastRefresh = 0;
@@ -287,19 +287,19 @@ public class FDStoreProperties {
 	private final static Properties defaults = new Properties();
 
 	private static final String HP_LETTER_MEDIA_PATH1="fdstore.mediapath.newcustomer";
-	
+
 	private static final String HP_LETTER_MEDIA_PATH2="fdstore.mediapath.oldcustomer";
 
 	// Produce Rating changes
 	private static final String PRODUCE_RATING_ENABLED="fdstore.isProduceRatingEnabled";
 	//additional ratings 2009.06
 	private static final String PRODUCE_RATING_PREFIXES="fdstore.produceRatingPrefixes";
-	
+
 	// Freshness Guaranteed On/Off switch
 	private static final String FRESHNESS_GUARANTEED_ENABLED="fdstore.isFreshnessGuaranteedEnabled";
 	// freshness guaranteed on/off sku prefix based
 	private static final String FRESHNESS_GUARANTEED_PREFIXES="fdstore.freshnessGuaranteedPrefixes";
-	
+
 	private static final String HPLETTER_MEDIA_ENABLED="fdstore.isHomePageMediaEnabled";
 
 	//Deals changes.
@@ -308,18 +308,18 @@ public class FDStoreProperties {
 	private static final String DEALS_UPPER_LIMIT="fdstore.deals.upperLimit";
 
 	private static final String BURST_LOWER_LIMIT="fdstore.burst.lowerLimit";;
-	private static final String BURST_UPPER_LIMIT="fdstore.burst.upperLimit";	
-	
+	private static final String BURST_UPPER_LIMIT="fdstore.burst.upperLimit";
+
 	private static final String MAX_FEATURED_DEALS_FOR_PAGE="fdstore.deals.maxFeaturedDeals";
 	private static final String MAX_FEATURED_DEALS_PER_LINE="fdstore.deals.maxFeaturedDealsPerLine";
 	private static final String MIN_FEATURED_DEALS_FOR_PAGE ="fdstore.deals.minFeaturedDeals";
 
 	private static final String TEMP_DIR = "tmpdir";
-	
+
 	private static final String PROP_GEOCODE_USELOCATIONDB = "fdstore.geocode.useLocationDB";
 	private static final String PROP_ROUTING_SENDADDRESS = "fdstore.routing.sendAddress";
 
-	
+
 	// Smart Search
 	/**
 	 * @deprecated
@@ -328,14 +328,14 @@ public class FDStoreProperties {
 
 //	COOL info
     private final static String PROP_COOLINFO_REFRESH_PERIOD = "fdstore.refresh.coolinfo";
-    
+
     private static final String IMPRESSION_LOGGING = "fdstore.impression.logging";
-    
+
 //  Survey Def
 	private final static String PROP_SURVEYDEF_CACHE_SIZE	= "fdstore.surveyDef.cache.size";
 	private static final String PROP_REFRESHSECS_SURVEYDEF = "fdstore.refreshSecs.surveyDef";
 	private final static String PROP_FDSURVEY_HOME		= "fdstore.fdSurvey.home";
-	
+
 //What's Good Department
 	private final static String PROP_FDWHATSGOOD_ENABLED				= "fdstore.fdwhatsgood.enabled";
 	private final static String PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED	= "fdstore.fdwhatsgood_peakproduce.enabled";
@@ -344,19 +344,19 @@ public class FDStoreProperties {
 	private final static String PROP_FDWHATSGOOD_ROWS					= "fdstore.fdwhatsgood.rows";
 	//allow debug messages via property (default to false : off)
 	private final static String PROP_FDWHATSGOOD_DEBUG_ENABLED			= "fdstore.fdwhatsgood.debugEnabled";
-	
-	
-	
+
+
+
 	//Smart Savings
-	
+
 	private static final String SMART_SAVINGS_FEATURE_ENABLED  = "fdstore.smartsavings.enabled";
-	
+
 	private static final String DYNAMIC_ROUTING_ENABLED = "fdstore.dynamicrouting.enabled";
-	
+
 	// iPhone non-customer email media path
 	private final static String PROP_MEDIA_IPHONE_TEMPLATE_PATH	= "fdstore.media.iphone.template.path"; //Location of different ftl template of iphone.
 	private final static String IPHONE_EMAIL_SUBJECT = "fdstore.media.iphone.email.subject";
-	
+
 	//Gift Cards
 	private static final String PROP_GIFT_CARD_SKU_CODE = "fdstore.giftcard.skucode";
 	private final static String PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH	= "fdstore.media.giftcard.template.path"; //Location of different ftl templates of giftcards.
@@ -375,39 +375,39 @@ public class FDStoreProperties {
 	private static final String ROBIN_HOOD_LANDING_URL="fdstore.robinHoodLandingUrl";
 	private static final String PROP_ROBIN_HOOD_SKU_CODE = "fdstore.robinhood.skucode";
 	private static final String ROBIN_HOOD_STATUS = "fdstore.robinhood.status";
-	
+
 	private static final String PROP_ROUTING_PROVIDER_URL="fdstore.routing.providerURL";
-	
+
 	//CT & PR1
-	private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";	
-	
-	private static final String PR1_DELIVERY_CAPACITY_FILE_NAME = "fdstore.pr1.filename";	
-	
+	private static final String CT_DELIVERY_CAPACITY_FILE_NAME = "fdstore.deliverycapacity.filename";
+
+	private static final String PR1_DELIVERY_CAPACITY_FILE_NAME = "fdstore.pr1.filename";
+
 	//MEAT DEALS and EDLP
 	private final static String DEPT_MEAT_DEALS = "fdstore.department.meatdeals.isEnabled";
 	private final static String DEPT_EDLP = "fdstore.department.edlp.isEnabled";
 	private final static String DEPT_MEAT_DEALS_CATID = "fdstore.department.meatdeals.catId";
 	private final static String DEPT_EDLP_CATID = "fdstore.department.edlp.catId";
-	
+
 	//Mobile
 	private final static String MOBILE_IPHONE_LANDING_ENABLED = "fdstore.mobile.iPhone.landingEnabled";
 	private final static String MOBILE_IPHONE_LANDING_PAGE = "fdstore.mobile.iPhone.landingPage";
-	
+
 	private final static String PROP_GC_NSM_AUTHSKIP_SECS  = "fdstore.gcnsm.authskip.secs";
 	private final static String PROP_GC_NSM_FREQ_SECS  = "fdstore.gcnsm.frequency.secs";
-	
+
 	private final static String PROP_ZONE_PICKUP_ZIPCODE = "fdstore.zone.pricing.pickup.zipcode";
-	
+
 	//Windows steering
 	private final static String WINDOW_STEERING_PROMOTION_PREFIX="fdstore.windowsteering.promo.prefix";
-	
+
 	//Zone Pricing
 	private final static String PROP_ZONE_PRICING_AD_ENABLED = "fdstore.zone.pricing.ad.enabled";
 	private final static String PROP_ZONE_PRICING_ENABLED = "fdstore.zone.pricing.enabled";
-	
+
 	//Standing Orders
 	private final static String SO_GLOBAL_ENABLER = "fdstore.standingorders.enabled";
-	
+
 	//Standing Orders
 	private final static String CLIENT_CODES_GLOBAL_ENABLER = "fdstore.clientcodes.enabled";
 
@@ -415,11 +415,11 @@ public class FDStoreProperties {
 	private static final String PROP_NEWPRODUCTS_DEPTID="fdstore.newProducts.DeptId";
 	private static final String PROP_NEWPRODUCTS_CATID="fdstore.newProducts.CatId";
 	private static final String PROP_NEWPRODUCTS_GROUPS="fdstore.newproducts.groups";
-	
-	
+
+
 	//Contact us FAQs
 	private static final String PROP_FAQ_SECTIONS="fdstore.faq.sections";
-	
+
 	private static final String PROP_CRM_HELP_LINK_ADDR_VALIDATION ="crm.help.link.addr.validation";
 	private static final String PROP_CRM_HELP_LINK_GIFT_CARD ="crm.help.link.giftcard";
 	private static final String PROP_CRM_HELP_LINK_MAIN_HELP ="crm.help.link.main.help";
@@ -433,36 +433,43 @@ public class FDStoreProperties {
 	private static final String PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY ="crm.help.link.resol.satisfactory";
 	private static final String PROP_CRM_HELP_LINK_CASE_RESOLV_FIRST ="crm.help.link.resolv.first";
 	private static final String PROP_CRM_HELP_LINK_CASE_FIRST_CONTACT ="crm.help.link.first.contact";
-	
+
 	//Email Opt-Down (APPDEV-662)
 	private static final String PROP_EMAIL_OPTDOWN_ENABLED ="fdstore.email.optdown.enabled";
-	
+
 	//Google Maps API key
 	// It can be obtained from http://code.google.com/apis/maps/signup.html
 	private static final String GMAPS_API_KEY = "gmaps.api.key";
+
+	// APPDEV-1191
+        private static final String MEMCACHED_HOST = "memcached.host";
+        private static final String MEMCACHED_PORT = "memcached.port";
+
+        private static final String MEMCACHED_TTL_PRODUCT = "memcached.ttl.product";
+        private static final String MEMCACHED_TTL_PRODUCTINFO = "memcached.ttl.productInfo";
 
 	// APPDEV-1091
 	private static final String PROMO_PUBLISH_URL_KEY = "promo.publish.url";
 	//   valid values can be 'master' or 'replica'
 	private static final String PROMO_PUBLISH_NODE_TYPE = "promo.publish.node";
-	
+
 	private static final String PROMO_VALID_RT_STATUSES = "promo.valid.rt.statuses";
-	
+
 	private final static String PROP_REDEMPTION_CNT_REFRESH_PERIOD = "promotion.redeem.cnt.refresh.period";
-	
+
 	private final static String PROP_REDEMPTION_SERVER_COUNT = "promotion.redemption.server.count";
-	
+
 	//Delivery Pass at Checkout (APPDEV-664)
 	private final static String PROP_DP_CART_ENABLED = "fdstore.dpcart.enabled";
-	
+
 	private final static String PROP_PROMO_LINE_ITEM_EMAIL = "promotion.lineitem.email.display";
-	
+
 
 	// 4mm department internal cache refresh interval - in minutes
 	private final static String PROP_4MM_REFRESH_INTERVAL = "fdstore.4mm.cache.refresh.interval";
-	
+
 	private static final String PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT = "fdstore.routing.unassignedprocesinglimit";
-	
+
 	//Brand media replacement (APPDEV-1308)
 	private final static String PROP_BRAND_MEDIA_IDS = "fdstore.brand.media.ids";
 
@@ -483,7 +490,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_FDCUSTMGR_HOME,	"freshdirect.fdstore.CustomerManager");
 		defaults.put(PROP_FDPROMOTIONMGR_HOME,	"freshdirect.fdstore.PromotionManager");
 		defaults.put(PROP_FDPROMOTIONMGR_NEW_HOME,	"freshdirect.fdstore.PromotionManagerNew");
-		
+
 		defaults.put(PROP_DLVMANAGER_HOME,	"freshdirect.delivery.DeliveryManager");
 		defaults.put(PROP_DLVRESTRICTION_MGR_HOME,	"freshdirect.delivery.DeliveryRestrictionManager");
 		defaults.put(PROP_FDCUSTOMER_HOME,  "freshdirect.fdstore.Customer");
@@ -503,7 +510,7 @@ public class FDStoreProperties {
 		defaults.put(PROP_EMAIL_PRODUCT, "products@freshdirect.com");
 		defaults.put(PROP_EMAIL_FEEDBACK, "feedback@freshdirect.com");
 		defaults.put(PROP_EMAIL_CHEFSTABLE, "chefstable@freshdirect.com");
-		defaults.put(PROP_EMAIL_VENDING, "vendinginfo@freshdirect.com");		
+		defaults.put(PROP_EMAIL_VENDING, "vendinginfo@freshdirect.com");
 		defaults.put(PROP_CONTENTMANAGER_HOME,"freshdirect.content.ContentManager");
 		defaults.put(PROP_HOLIDAY_LOOKAHEAD_DAYS, "21");
 		defaults.put(PROP_AD_SERVER_ENABLED, "false");
@@ -517,9 +524,9 @@ public class FDStoreProperties {
 		defaults.put(CUT_OFF_TIME_THUS, "0-20");
 		defaults.put(CUT_OFF_TIME_FRI, "0-17");
 		defaults.put(CUT_OFF_TIME_SAT, "0-20");
-		
+
 		// customer service hours
-		
+
 		defaults.put(CLICK_TO_CALL, "false");
 		defaults.put(CUST_SERV_HOURS_SUN, "07:30-11:59");
 		defaults.put(CUST_SERV_HOURS_MON, "06:30-11:59");
@@ -624,11 +631,11 @@ public class FDStoreProperties {
 		defaults.put(CCL_AJAX_DEBUG_FACADE_EXCEPTION, "");
 
 		defaults.put(DYF_ENABLED, "false");
-		
+
 		defaults.put(DYF_FREQBOUGHT_TOPN, "10");
 		defaults.put(DYF_FREQBOUGHT_TOPPERCENT, "10.0");
-		
-		
+
+
 		defaults.put(DYF_STRATEGY_CACHE_ENTRIES, "1000");
 
 		defaults.put(SMARTSTORE_NEWPRODUCTS_DAYS, "30");
@@ -641,14 +648,14 @@ public class FDStoreProperties {
 		defaults.put(SMARTSTORE_OFFLINE_REC_RECENT_DAYS, "365");
 
 		defaults.put(SMARTSTORE_OFFLINE_REC_MAX_AGE, "5");
-		
+
 		defaults.put(SMARTSTORE_OFFLINE_REC_THREAD_COUNT, "5");
 
 		defaults.put(SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH, "300");
 
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES, "500");
 		defaults.put(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT, "" + (30*60));
-		
+
 		defaults.put(DISTRIBUTION_SAMPLES_DIR,"");
 
 		defaults.put(PROP_INVENOTRY_REFRESH_PERIOD, "10");
@@ -664,7 +671,7 @@ public class FDStoreProperties {
 		defaults.put(ADVANCE_ORDER_GAP, "false");
 		defaults.put(ADVANCE_ORDER_NEW_START, "2004-01-01");
 		defaults.put(ADVANCE_ORDER_NEW_END, "2004-01-02");
-		
+
 		// mrkting admin
 		defaults.put(MRKTING_ADMIN_URL, "http://adm.freshdirect.com/MrktAdmin");
 		//DCPD ALIAS Handling.
@@ -674,12 +681,12 @@ public class FDStoreProperties {
 		defaults.put(PRODUCE_RATING_ENABLED, "true");
 		//produce rating sku prefixes
 		defaults.put(PRODUCE_RATING_PREFIXES, "FRU,VEG,YEL");
-		
+
 		// freshness guaranteed on/off switch
 		defaults.put(FRESHNESS_GUARANTEED_ENABLED, "true");
 		// freshness guaranteed on/off sku prefix specific
 		defaults.put(FRESHNESS_GUARANTEED_PREFIXES, "FRU,VEG,MEA,SEA,DEL,CHE,DAI,HMR,VAR,CAT,BAK,PAS,YEL");
-		
+
 		defaults.put(HP_LETTER_MEDIA_PATH1, "/media/editorial/home/letter/hp_letter_new.html");
 		defaults.put(HP_LETTER_MEDIA_PATH2, "/media/editorial/home/letter/hp_letter_customer.html");
 		defaults.put(HPLETTER_MEDIA_ENABLED, "true");
@@ -693,83 +700,83 @@ public class FDStoreProperties {
 		defaults.put(MAX_FEATURED_DEALS_FOR_PAGE,"5");
 		defaults.put(MAX_FEATURED_DEALS_PER_LINE,"5");
 		defaults.put(MIN_FEATURED_DEALS_FOR_PAGE,"3");
-		
+
 		defaults.put(TEMP_DIR, "/tmp");
-		
+
 		defaults.put(PROP_GEOCODE_USELOCATIONDB, "false");
 		defaults.put(PROP_ROUTING_SENDADDRESS, "false");
 
 		defaults.put(SMART_SEARCH_ENABLED, "false");
-		
+
 		defaults.put(PROP_COOLINFO_REFRESH_PERIOD, "10");
-		
+
 		defaults.put(IMPRESSION_LOGGING, "false");
-		
+
 		defaults.put(PROP_SURVEYDEF_CACHE_SIZE, "25");
 		defaults.put(PROP_REFRESHSECS_SURVEYDEF, "600");
 		defaults.put(PROP_FDSURVEY_HOME,	"freshdirect.fdstore.FDSurvey");
 
 		defaults.put(SMART_SAVINGS_FEATURE_ENABLED, "true");
-		
+
 //		What's Good Department
 		defaults.put(PROP_FDWHATSGOOD_ENABLED, "false");
 		defaults.put(PROP_FDWHATSGOOD_PEAKPRODUCE_ENABLED, "true");
 		defaults.put(PROP_FDWHATSGOOD_BBLOCK_ENABLED, "false");
 		defaults.put(PROP_FDWHATSGOOD_ROWS, "");
 		defaults.put(PROP_FDWHATSGOOD_DEBUG_ENABLED, "false");
-		
+
 		defaults.put(DYNAMIC_ROUTING_ENABLED, "true");
 
-		// iphone 
+		// iphone
 		defaults.put(PROP_MEDIA_IPHONE_TEMPLATE_PATH,"media/mobile/iphone/");
 		defaults.put(IPHONE_EMAIL_SUBJECT, "FreshDirect SmartPhone Shopping");
-		
+
 		// Gift Card
 		defaults.put(PROP_GC_ENABLED, "false");
 		defaults.put(PROP_GC_LANDING_URL, "/gift_card/purchase/landing.jsp");
 		defaults.put(PROP_GIFT_CARD_SKU_CODE, "MKT0074896");
-		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com");		
+		defaults.put(PROP_GC_TEMPLATE_BASE_URL,"http://www.freshdirect.com");
 		defaults.put(PROP_MEDIA_GIFT_CARD_TEMPLATE_PATH,"/media/editorial/giftcards/");
-		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");	
+		defaults.put(PROP_GIFT_CARD_RECIPIENT_MAX, "10");
 		defaults.put(PROP_GC_MIN_AMOUNT, "20");
 		defaults.put(PROP_GC_MAX_AMOUNT, "5000");
 		defaults.put(PROP_GC_DEPTID, "GC_testDept");
 		defaults.put(PROP_GC_CATID, "GC_testCat");
 		defaults.put(PROP_GC_PRODNAME, "GC_testProd");
 		defaults.put(GIVEX_BLACK_HOLE_ENABLED, "false");
-		
+
 		// Robin Hood
 		defaults.put(ROBIN_HOOD_ENABLED, "false");
 		defaults.put(ROBIN_HOOD_LANDING_URL, "/robin_hood/landing.jsp");
 		defaults.put(PROP_ROBIN_HOOD_SKU_CODE, "MKT0075239");
 		defaults.put(ROBIN_HOOD_STATUS, "BUY");
-		
-		
-		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");		
-		defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");		
-		
+
+
+		defaults.put(CT_DELIVERY_CAPACITY_FILE_NAME, "ctprofile.xml");
+		defaults.put(PR1_DELIVERY_CAPACITY_FILE_NAME, "pr1profile.xml");
+
 		//Meat Deals and EDLP
 		defaults.put(DEPT_MEAT_DEALS, "true");
 		defaults.put(DEPT_EDLP, "true");
 		defaults.put(DEPT_MEAT_DEALS_CATID, "");
 		defaults.put(DEPT_EDLP_CATID, "");
-		
+
 		//Mobile
 		defaults.put(MOBILE_IPHONE_LANDING_ENABLED, "false");
 		defaults.put(MOBILE_IPHONE_LANDING_PAGE, "/media/mobile/supported.ftl");
-		
+
 		defaults.put(PROP_GC_NSM_AUTHSKIP_SECS, "600");
 		defaults.put(PROP_GC_NSM_FREQ_SECS, "600");
-		defaults.put(PROP_ZONE_PRICING_ENABLED, "true");		
+		defaults.put(PROP_ZONE_PRICING_ENABLED, "true");
 		defaults.put(PROP_ZONE_PRICING_AD_ENABLED, "true");
 		defaults.put(PROP_ZONE_PICKUP_ZIPCODE, "11101");
-		
+
 		//Window Steering
 		defaults.put(WINDOW_STEERING_PROMOTION_PREFIX,"WS_");
-		
+
 		//Standing Orders
 		defaults.put(SO_GLOBAL_ENABLER, "false");
-		
+
 		//Client Codes
 		defaults.put(CLIENT_CODES_GLOBAL_ENABLER, "false");
 
@@ -778,10 +785,10 @@ public class FDStoreProperties {
 		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
 		defaults.put(PROP_NEWPRODUCTS_CATID, "newproduct_cat");
 		defaults.put(PROP_NEWPRODUCTS_GROUPS, "<W2,W2-W4,M1-M2,M2-M3,>M3");
-		
+
 		//comma separated list of faq section ids from CMS.
 		defaults.put(PROP_FAQ_SECTIONS, "payment,order_today,prblem_my_order,order_change,delivery_feedback,promotion,gen_feedback,req_feedback,website_technical,acct_info,what_we_do,signing_up,security,shopping,home_delivery,cos,chef_table,vending,inside");
-		
+
 		// CRM Help Links to confluence.
 		defaults.put(PROP_CRM_HELP_LINK_ADDR_VALIDATION, "http://home.freshdirect.com/confluence/display/CRM/Address+Validation");
 		defaults.put(PROP_CRM_HELP_LINK_GIFT_CARD, "http://home.freshdirect.com/confluence/display/CRM/Gift+Card");
@@ -799,21 +806,26 @@ public class FDStoreProperties {
 
 		//Email Opt-Down (APPDEV-662)
 		defaults.put(PROP_EMAIL_OPTDOWN_ENABLED, "false");
-		
+
+		// memcached
+                defaults.put(MEMCACHED_PORT, "11211");
+                defaults.put(MEMCACHED_TTL_PRODUCT, "0");
+                defaults.put(MEMCACHED_TTL_PRODUCTINFO, "0");
+
 		// APPDEV-1091 Promo Publish URL
 		defaults.put(PROMO_PUBLISH_URL_KEY, "/promo_publish");
 		defaults.put(PROMO_PUBLISH_NODE_TYPE, "master");
 		//APPDEV-659
 		defaults.put(PROMO_VALID_RT_STATUSES, "LIVE");
-		
+
 		defaults.put(PROP_REDEMPTION_CNT_REFRESH_PERIOD, "300"); //every 5 mins
 		defaults.put(PROP_REDEMPTION_SERVER_COUNT, "5");
 		defaults.put(PROP_PROMO_LINE_ITEM_EMAIL, "true");
-		
+
 		//Delivery Pass at Checkout (APPDEV-664)
 		defaults.put(PROP_DP_CART_ENABLED, "false");
-		
-		defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");		
+
+		defaults.put(PROP_4MM_REFRESH_INTERVAL, "5");
 		defaults.put(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT, "8");
 
 		//Brand media replacement (APPDEV-1308)
@@ -881,15 +893,15 @@ public class FDStoreProperties {
 
 	/**
 	 * This property disables time window check on CRM issue credits page.
-	 * 
+	 *
 	 * For debug purposes.
-	 * 
+	 *
 	 * @return
 	 */
 	public static boolean getDisableTimeWindowCheck() {
 		return (new Boolean(get(PROP_CRM_DISABLE_TIME_WINDOW_CHECK)).booleanValue());
 	}
-	
+
 	public static String getFDFactoryHome() {
 		return get(PROP_FDFACTORY_HOME);
 	}
@@ -921,11 +933,11 @@ public class FDStoreProperties {
 	public static String getFDPromotionManagerHome() {
 		return get(PROP_FDPROMOTIONMGR_HOME);
 	}
-	
+
 	public static String getFDPromotionManagerNewHome() {
 		return get(PROP_FDPROMOTIONMGR_NEW_HOME);
 	}
-	
+
 	public static String getContentManagerHome() {
 		return get(PROP_CONTENTMANAGER_HOME);
 	}
@@ -1014,16 +1026,16 @@ public class FDStoreProperties {
 	public static String getAdServerUpdatesURL(){
 		return get(PROP_AD_SERVER_UPDATES_URL);
 	}
-	
+
 	public static int getImpressionLimit(){
 		String s = get(PROP_IMPRESSION_LIMIT);
 		return s == null ? 0 : Integer.parseInt(s);
 	}
-	
+
 	public static String getWinbackRoot(){
 		return get(PROP_WINBACK_ROOT);
 	}
-	
+
 	public static String getMarketingPromoRoot(){
 		return get(PROP_MARKETING_PROMO_ROOT);
 	}
@@ -1035,8 +1047,8 @@ public class FDStoreProperties {
 	public static int getRefreshSecsProduct(){
 		return Integer.parseInt(get(PROP_REFRESHSECS_PRODUCT));
 	}
-	
-	
+
+
 	public static int getRefreshSecsZone(){
 		return Integer.parseInt(get(PROP_REFRESHSECS_ZONE));
 	}
@@ -1044,8 +1056,8 @@ public class FDStoreProperties {
 	public static int getProductCacheSize() {
 		return Integer.parseInt(get(PROP_PRODUCT_CACHE_SIZE));
 	}
-	
-	
+
+
 	public static int getZoneCacheSize() {
 		return Integer.parseInt(get(PROP_ZONE_CACHE_SIZE));
 	}
@@ -1058,7 +1070,7 @@ public class FDStoreProperties {
 	public static String getFeedbackEmail(){
 		return get(PROP_EMAIL_FEEDBACK);
 	}
-	
+
 	public static String getVendingEmail(){
 		return get(PROP_EMAIL_VENDING);
 	}
@@ -1083,19 +1095,19 @@ public class FDStoreProperties {
 	public static boolean isPreloadAutocompletions() {
 		return Boolean.valueOf(get(PROP_PRELOAD_AUTOCOMPLETIONS)).booleanValue();
 	}
-	
+
 	public static boolean isPreloadSmartStore() {
 		return Boolean.valueOf(get(PROP_PRELOAD_SMARTSTORE)).booleanValue();
 	}
-	
+
 	public static boolean isPreloadNewness() {
 		return Boolean.valueOf(get(PROP_PRELOAD_NEWNESS)).booleanValue();
 	}
-	
+
 	public static boolean isPreloadReintroduced() {
 		return Boolean.valueOf(get(PROP_PRELOAD_REINTRODUCED)).booleanValue();
 	}
-	
+
 	public static Date getDlvPromoExpDate(){
 		Date d = null;
 		try{
@@ -1278,11 +1290,11 @@ public class FDStoreProperties {
 	public static boolean isDYFEnabled() {
 		return Boolean.valueOf(get(DYF_ENABLED)).booleanValue();
 	}
-	
+
 	public static float getDYFFreqboughtTopPercent() {
 		return Float.parseFloat(get(DYF_FREQBOUGHT_TOPPERCENT));
 	}
-	
+
 	public static int getDYFFreqboughtTopN() {
 		return Integer.parseInt(get(DYF_FREQBOUGHT_TOPN));
 	}
@@ -1303,12 +1315,12 @@ public class FDStoreProperties {
 	public static String getCutOffTimeRange(int day) {
 		return get("fdstore.cut_off_day_"+day);
 	}
-	
+
 	// click to call display toggle
 	public static boolean getClickToCall() {
         return (new Boolean(get(CLICK_TO_CALL))).booleanValue();
     }
-	
+
 	// customer service hours
 	public static String getCustServHoursRange(int day) {
 		return get("fdstore.cust_serv_day_"+day);
@@ -1366,8 +1378,8 @@ public class FDStoreProperties {
 	public static String getRatingsSkuPrefixes(){
 		return get(PRODUCE_RATING_PREFIXES);
 	}
-	
-	// freshness guaranteed	
+
+	// freshness guaranteed
 	public static boolean IsFreshnessGuaranteedEnabled() {
 		return Boolean.valueOf(get(FRESHNESS_GUARANTEED_ENABLED)).booleanValue();
 	}
@@ -1383,7 +1395,7 @@ public class FDStoreProperties {
 	public static String getHPLetterMediaPathForOldUser() {
 		return get(HP_LETTER_MEDIA_PATH2);
 	}
-	
+
 	public static boolean IsHomePageMediaEnabled() {
 		return Boolean.valueOf(get(HPLETTER_MEDIA_ENABLED)).booleanValue();
 	}
@@ -1392,15 +1404,15 @@ public class FDStoreProperties {
 	    return get(TEMP_DIR);
 	}
 
-	// iphone email template non-customer 
+	// iphone email template non-customer
 	public static String getMediaIPhoneTemplatePath() {
 		return get(PROP_MEDIA_IPHONE_TEMPLATE_PATH);
 	}
-	
+
 	public static String getIPhoneEmailSubject() {
 		return get(IPHONE_EMAIL_SUBJECT);
 	}
-	
+
 	// Gift Card
 	public static boolean isGiftCardEnabled() {
 		return Boolean.valueOf(get(PROP_GC_ENABLED)).booleanValue();
@@ -1432,7 +1444,7 @@ public class FDStoreProperties {
 	public static double getGiftCardMaxAmount() {
 		return Double.parseDouble(config.getProperty(PROP_GC_MAX_AMOUNT));
 	}
-	
+
 	// Robin Hood
 	public static boolean isRobinHoodEnabled() {
 		return Boolean.valueOf(get(ROBIN_HOOD_ENABLED)).booleanValue();
@@ -1446,27 +1458,27 @@ public class FDStoreProperties {
 	public static String getRobinHoodStatus() {
 		return get(ROBIN_HOOD_STATUS);
 	}
-	
+
 	//deals
 	public static String getDealsSkuPrefixes(){
 		return get(DEALS_SKU_PREFIX);
 	}
-	
+
 	public static int getDealsLowerLimit(){
 		return Integer.parseInt(get(DEALS_LOWER_LIMIT));
 	}
 	public static int getDealsUpperLimit(){
 		return Integer.parseInt(get(DEALS_UPPER_LIMIT));
-	}	
-    
+	}
+
 	public static int getBurstsLowerLimit(){
 		return Integer.parseInt(get(BURST_LOWER_LIMIT));
 	}
 	public static int getBurstUpperLimit(){
 		return Integer.parseInt(get(BURST_UPPER_LIMIT));
-	}	
+	}
 
-	
+
 	public static final int getMaxFeaturedDealsForPage() {
 		return Integer.parseInt(get(MAX_FEATURED_DEALS_FOR_PAGE));
 	}
@@ -1478,23 +1490,23 @@ public class FDStoreProperties {
 	public static int getMinFeaturedDealsForPage() {
 		return Integer.parseInt(get(MIN_FEATURED_DEALS_FOR_PAGE));
 	}
-	
+
 	public static boolean canUseLocationDB() {
         return (new Boolean(get(PROP_GEOCODE_USELOCATIONDB))).booleanValue();
     }
-	
+
 	public static boolean canSendRoutingAddress() {
         return (new Boolean(get(PROP_ROUTING_SENDADDRESS))).booleanValue();
     }
-	
-	
+
+
 	public static boolean isCmsReadonlyOptimization() {
-	   return Boolean.valueOf(get(PROP_CMS_MOSTLY_READONLY)).booleanValue(); 
+	   return Boolean.valueOf(get(PROP_CMS_MOSTLY_READONLY)).booleanValue();
 	}
 
 	/**
 	 * Is Smart Search feature enabled?
-	 * 
+	 *
 	 * @deprecated Property is no longer used
 	 */
 	public static boolean isSmartSearchEnabled() {
@@ -1509,7 +1521,7 @@ public class FDStoreProperties {
 		String frs = get(SMARTSTORE_PRELOAD_FACTORS);
 		if (frs == null)
 			return Collections.<String>emptySet();
-		
+
 		String[] factors = frs.split(",");
 		Set<String> fs = new HashSet<String>(factors.length);
 		for (int i = 0; i < factors.length; i++) {
@@ -1519,7 +1531,7 @@ public class FDStoreProperties {
 		}
 		return fs;
 	}
-	
+
 	public static boolean isSmartstoreDataSourcesCached() {
 		return Boolean.valueOf(get(SMARTSTORE_CACHE_DATA_SOURCES)).booleanValue();
 	}
@@ -1535,7 +1547,7 @@ public class FDStoreProperties {
 	public static int getSmartstorePersonalizedScoresCacheTimeout() {
 		return Integer.parseInt(get(SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT));
 	}
-	
+
 	public static int getCOOLInfoRefreshPeriod(){
 		return Integer.parseInt(get(PROP_COOLINFO_REFRESH_PERIOD));
 	}
@@ -1543,11 +1555,11 @@ public class FDStoreProperties {
 	public static int getSmartStoreDataSourceCacheSize() {
 		return Integer.parseInt(get(SMARTSTORE_CACHE_DATA_SOURCES_SIZE));
 	}
-	
+
 	public static boolean isDetailedImpressionLoggingOn() {
 	    return Boolean.valueOf(get(IMPRESSION_LOGGING)).booleanValue();
 	}
-	
+
 	public static int getSurveyDefCacheSize() {
 		return Integer.parseInt(get(PROP_SURVEYDEF_CACHE_SIZE));
 	}
@@ -1558,7 +1570,7 @@ public class FDStoreProperties {
 	public static String getFDSurveyHome() {
 		return get(PROP_FDSURVEY_HOME);
 	}
-	
+
 	public static boolean isSmartSavingsEnabled() {
 		return Boolean.valueOf(get(SMART_SAVINGS_FEATURE_ENABLED)).booleanValue();
 	}
@@ -1579,8 +1591,8 @@ public class FDStoreProperties {
 	public static boolean isWhatsGoodDebugOn() {
 		return Boolean.valueOf(get(PROP_FDWHATSGOOD_DEBUG_ENABLED)).booleanValue();
 	}
-	
-	
+
+
 	/**
 	 * Used for testing, do not call from the App.
 	 * @param lastRefresh
@@ -1598,12 +1610,12 @@ public class FDStoreProperties {
  				bccs.add(addr);
  		}
  		return bccs;
- 	}	
+ 	}
 
 	public static boolean IsAdvanceOrderGap() {
 		return Boolean.valueOf(get(ADVANCE_ORDER_GAP)).booleanValue();
 	}
-	
+
 	public static DateRange getAdvanceOrderNewRange() {
 		Date dStart = null;
 		Date dEnd = null;
@@ -1630,25 +1642,25 @@ public class FDStoreProperties {
 
 		return new DateRange(DateUtil.truncate(dStart),DateUtil.truncate(dEnd));
 	}
-	
+
 	public static String getRoutingGatewayHome() {
 		return get(PROP_ROUTINGGATEWAY_HOME);
 	}
 	public static boolean isDynamicRoutingEnabled() {
         return (new Boolean(get(DYNAMIC_ROUTING_ENABLED))).booleanValue();
     }
-	
+
 	public static boolean isGivexBlackHoleEnabled() {
         return (new Boolean(get(GIVEX_BLACK_HOLE_ENABLED))).booleanValue();
     }
-	
+
 	public static String getRoutingProviderURL() {
 		return config.getProperty(PROP_ROUTING_PROVIDER_URL);
 	}
 	public static String getCTCapacityFileName()
 	{
 		return get(CT_DELIVERY_CAPACITY_FILE_NAME);
-	}	
+	}
 
 	public static String getPR1CapacityFileName()
 	{
@@ -1657,7 +1669,7 @@ public class FDStoreProperties {
 	public static String getGCTemplateBaseUrl() {
 		return get(PROP_GC_TEMPLATE_BASE_URL);
 	}
-	
+
 	public static String getGlobalPopularityScoring() {
 	    return get(SS_GLOBAL_POPULARITY_SCORING);
 	}
@@ -1688,7 +1700,7 @@ public class FDStoreProperties {
     	}
     	return siteFeatures.toArray(new String[0]);
     }
-    
+
     public static int getOfflineRecommenderThreadCount() {
     	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_THREAD_COUNT));
     }
@@ -1696,7 +1708,7 @@ public class FDStoreProperties {
     public static int getOfflineRecommenderWindowLength() {
     	return Integer.parseInt(get(SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH));
     }
-	
+
 	public static boolean isDeptMeatDealsEnabled() {
 		return Boolean.valueOf(get(DEPT_MEAT_DEALS)).booleanValue();
 	}
@@ -1713,7 +1725,7 @@ public class FDStoreProperties {
 	public static long getCmsRecommenderRefreshRate() {
 		return Long.parseLong(get(SMARTSTORE_CMS_RECOMM_REFRESH_RATE));
 	}
-	
+
 	//Mobile
 	public static boolean isIphoneLandingEnabled() {
 		return Boolean.valueOf(get(MOBILE_IPHONE_LANDING_ENABLED)).booleanValue();
@@ -1721,20 +1733,20 @@ public class FDStoreProperties {
 	public static String getIphoneLandingPage() {
 		return get(MOBILE_IPHONE_LANDING_PAGE);
 	}
-	
-	
+
+
 	public static String getDefaultPickupZoneId() {
 		return get(PROP_ZONE_PICKUP_ZIPCODE);
 	}
-	
+
 	public static int getNSMAuthSkipSecsForGC(){
 		return Integer.parseInt(get(PROP_GC_NSM_AUTHSKIP_SECS));
 	}
-	
+
 	public static int getNSMFreqSecsForGC(){
 		return Integer.parseInt(get(PROP_GC_NSM_FREQ_SECS));
 	}
-	
+
 	public static boolean isZonePricingEnabled(){
 		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_ENABLED)).booleanValue();
 	}
@@ -1742,29 +1754,29 @@ public class FDStoreProperties {
 	public static boolean isZonePricingAdEnabled(){
 		return Boolean.valueOf(config.getProperty(PROP_ZONE_PRICING_AD_ENABLED)).booleanValue();
 	}
-	
+
 	public static String getWindowSteeringPromoPrefix() {
 		return get(WINDOW_STEERING_PROMOTION_PREFIX);
 	}
-	
+
 	/**
-	 * OSCACHE should be disabled when we are in some development environment. 
+	 * OSCACHE should be disabled when we are in some development environment.
 	 * ( = annotation or preview mode )
-	 * Jsp-s can refer to this when deciding to use oscache or not. 
-	 * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)  
+	 * Jsp-s can refer to this when deciding to use oscache or not.
+	 * @return true if we are in production mode (use oscache), false if we are in development mode (disable oscache)
 	 */
 	public static boolean useOscache() {
-		return !( isAnnotationMode() || getPreviewMode() );		
+		return !( isAnnotationMode() || getPreviewMode() );
 	}
 
 	public static boolean isStandingOrdersEnabled() {
 		return Boolean.valueOf(config.getProperty(SO_GLOBAL_ENABLER)).booleanValue();
 	}
-	
+
 	public static boolean isClientCodesEnabled() {
 		return Boolean.valueOf(config.getProperty(CLIENT_CODES_GLOBAL_ENABLER)).booleanValue();
 	}
-	
+
 	//new products revamp
 
 	public static String getNewProductsDeptId() {
@@ -1774,15 +1786,15 @@ public class FDStoreProperties {
 	public static String getNewProductsCatId() {
 		return get(PROP_NEWPRODUCTS_CATID);
 	}
-	
+
 	public static String getNewProductsGrouping() {
 		return get(PROP_NEWPRODUCTS_GROUPS);
 	}
-	
+
 	public static String getFaqSections(){
 		return get(PROP_FAQ_SECTIONS);
 	}
-	
+
 	public static String getCrmAddressValiationHelpLink(){
 		return get(PROP_CRM_HELP_LINK_ADDR_VALIDATION);
 	}
@@ -1822,7 +1834,24 @@ public class FDStoreProperties {
 	public static String getCrmResolutionSatisfHelpLink(){
 		return get(PROP_CRM_HELP_LINK_CASE_RESOL_SATISFY);
 	}
-	
+
+	public static String getMemCachedHost() {
+	    return get(MEMCACHED_HOST);
+	}
+
+	public static int getMemCachedPort() {
+	    return Integer.parseInt(get(MEMCACHED_PORT));
+	}
+
+        public static int getMemcachedProductTTL() {
+            return Integer.parseInt(get(MEMCACHED_TTL_PRODUCT));
+        }
+
+        public static int getMemcachedProductInfoTTL() {
+            return Integer.parseInt(get(MEMCACHED_TTL_PRODUCTINFO));
+        }
+
+
 	//Email Opt-Down (APPDEV-662)
 	public static boolean isEmailOptdownEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_EMAIL_OPTDOWN_ENABLED)).booleanValue();
@@ -1831,28 +1860,28 @@ public class FDStoreProperties {
 	/**
 	 * Returns API key to access Google Maps service
 	 * No default value.
-	 * 
+	 *
 	 * @return
 	 */
 	public static String getGoogleMapsAPIKey() {
 		return get(GMAPS_API_KEY);
 	}
-	
-	
-	
+
+
+
 	/**
 	 * APPDEV-1091
-	 * 
+	 *
 	 * @return URL to promotion publish servlet
 	 */
 	public static String getPromoPublishURL() {
 		return get(PROMO_PUBLISH_URL_KEY);
 	}
-	
+
 	public static String getPromoPublishNodeType() {
 		return get(PROMO_PUBLISH_NODE_TYPE);
 	}
-	
+
 	public static boolean isPromoPublishNodeMaster() {
 		return "master".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE) );
 	}
@@ -1860,11 +1889,11 @@ public class FDStoreProperties {
 	public static boolean isPromoPublishNodeReplica() {
 		return "replica".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE) );
 	}
-	
+
 	public static String getPromoValidRTStatuses() {
 		return get(PROMO_VALID_RT_STATUSES);
  	}
-	
+
 	public static int getRedeemCntRefreshPeriod() {
 		return Integer.parseInt(config.getProperty(PROP_REDEMPTION_CNT_REFRESH_PERIOD));
 	}
@@ -1872,12 +1901,12 @@ public class FDStoreProperties {
 	public static int getRedemptionServerCount() {
 		return Integer.parseInt(config.getProperty(PROP_REDEMPTION_SERVER_COUNT));
 	}
-	
+
 	//Delivery Pass at Checkout (APPDEV-664)
 	public static boolean isDPCartEnabled() {
 		return Boolean.valueOf(config.getProperty(PROP_DP_CART_ENABLED)).booleanValue();
 	}
-	
+
 	//Brand media replacement (APPDEV-1308)
 	public static String getBrandMediaIds() {
 		return get(PROP_BRAND_MEDIA_IDS);
@@ -1885,12 +1914,12 @@ public class FDStoreProperties {
 
 	public static boolean isPromoLineItemEmailDisplay() {
 		return "true".equalsIgnoreCase( get(PROP_PROMO_LINE_ITEM_EMAIL) );
-	}	
+	}
 
 	public static int get4mmRefreshInterval() {
 		return Integer.parseInt(config.getProperty(PROP_4MM_REFRESH_INTERVAL));
 	}
-	
+
 	public static int getUnassignedProcessingLimit() {
 		return Integer.parseInt(get(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT));
 	}
@@ -1898,5 +1927,5 @@ public class FDStoreProperties {
 	public static void forceRefresh() {
 		refresh(true);
 	}
-	
+
 }

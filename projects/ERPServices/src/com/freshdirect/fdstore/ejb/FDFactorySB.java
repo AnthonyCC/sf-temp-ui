@@ -21,6 +21,7 @@ import com.freshdirect.erp.SkuAvailabilityHistory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 
 /**
@@ -78,6 +79,8 @@ public interface FDFactorySB extends EJBObject {
 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 	 */
     public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException;
+    
+    public Collection<FDSku> getChangedSkus(int lastVersion) throws RemoteException, FDResourceException;
 
 	/** @return list of sku codes */
     public Collection getNewSkuCodes(int days) throws RemoteException, FDResourceException;

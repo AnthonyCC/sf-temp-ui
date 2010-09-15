@@ -96,7 +96,6 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 <%
 //FDDeliveryManager deliveryManager = FDDeliveryManager.getInstance();
 //DlvZoneInfoModel zoneInfoModel = deliveryManager.getZoneInfo(address, new Date());
-//System.err.println(zoneInfoModel.getZoneCode());
 //boolean zoneCtActive = deliveryManager.findZoneById(zoneInfoModel.getZoneCode()).isCtActive();
 //boolean zoneCtActive = false;
 %>

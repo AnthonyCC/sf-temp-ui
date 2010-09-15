@@ -68,38 +68,13 @@
 		
 		if (categoryModel != null) {
 			//we have a category
-			//System.out.println("categoryModel "+categoryModel);
 
 			deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
-			//System.out.println("deptId "+deptId);
 
 			mediaTop	= (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getTopMedia() : null;
 			mediaMiddle	= (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getMiddleMedia() : null;
 			mediaBottom	= (currentFolder instanceof CategoryModel) ? ((CategoryModel)currentFolder).getBottomMedia() : null;
 
-			/*
-				if (mediaTop != null && mediaTop.size() > 0) {
-					//System.out.println("mediaTop "+mediaTop.toString());
-					for (int i=0; i < mediaTop.size(); i++) {
-						//System.out.println("mediaTop "+i);
-						System.out.println("mediaTop "+i+" "+((Html)mediaTop.get(i)).getPath());
-					}
-				}
-				if (mediaMiddle != null && mediaMiddle.size() > 0) {
-					//System.out.println("mediaMiddle "+mediaMiddle.toString());
-					for (int i=0; i < mediaMiddle.size(); i++) {
-						System.out.println("mediaMiddle "+i+" "+((Html)mediaMiddle.get(i)).getPath());
-					}
-				}
-				if (mediaBottom != null && mediaBottom.size() > 0) {
-					//System.out.println("mediaBottom "+mediaBottom.toString());
-					for (int i=0; i < mediaBottom.size(); i++) {
-						System.out.println("mediaBottom "+i+" "+((Html)mediaBottom.get(i)).getPath());
-					}
-				}
-			*/
-
-		
 			//this needs to get the real params, not just catId
 			customSuccessPage = request.getRequestURI()+"?"+request.getQueryString();
 			//redirectSuccessPage = customSuccessPage;

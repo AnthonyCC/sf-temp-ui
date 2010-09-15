@@ -26,7 +26,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConfigurationValueException;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
@@ -49,7 +49,7 @@ public class FileCreator
 
     private String recordSeperator = null;
 
-    private Category cat = Category.getInstance(FileCreator.class);
+    private Logger cat = Logger.getLogger(FileCreator.class);
 
     private OutputStream outputStream;
 

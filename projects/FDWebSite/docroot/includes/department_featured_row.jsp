@@ -20,7 +20,6 @@ int MAX_FAVSLINES2SHOW	= 1; //number of lines of featured products
 int MIN_FAVS2SHOW		= 3; //minimum featured products required to show featured section
 int	MAX_FAVS2SHOW		= FAVS_PER_LINE*MAX_FAVSLINES2SHOW; //to keep each row matching
 String catId = request.getParameter("catId");
-System.out.println("department_featured_row>> catId: " + catId);
 ContentNodeModel node = ContentFactory.getInstance().getContentNode(catId);
 boolean isDept = (node instanceof DepartmentModel);
 boolean isCat = (node instanceof CategoryModel);
@@ -59,8 +58,6 @@ List tmpList=new ArrayList();
 <%
         sortedColl = rtnColl;
         //request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
-		System.out.println("sortedColl size-2: " + sortedColl.size());
-		System.out.println("sortedColl-2: " + sortedColl);
 %>
     </fd:ItemGrabber> 
  
@@ -73,7 +70,6 @@ List tmpList=new ArrayList();
 	<br><br>
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="bottom">
-		<% //System.out.println("-=-=-=-=-= in generic row sortedColl : "+(List)sortedColl); %>
 		<logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="idx">
 			<%
 				if (idx.intValue() >= MAX_FAVS2SHOW) { continue; }

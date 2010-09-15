@@ -116,7 +116,6 @@ Not using SSL or client certificate not required in weblogic.properties.
 <%
     }
   } catch (ClassCastException cce) {
-    System.out.println(cce.getMessage());
     cce.printStackTrace();
   }
 %>

@@ -167,8 +167,6 @@ String[] checkSurveyForm = new String[questions.size()];
 						<tr><td></td><td colspan="6">
 							<table width="100%" cellpadding="0" cellpsacing="0" border="0">
 								<logic:iterate id="answer" collection="<%= question.getAnswers() %>" type="com.freshdirect.fdstore.survey.FDSurveyAnswer" indexId="i">
-		<% System.out.println("row: "+row + " col: "+ col); %>
-		
 									<% if (col == 0) { %>
 										<tr <%= row%2 == 0 ? "bgcolor=\"#EEEEEE\"":""  %>>
 									<% } %>

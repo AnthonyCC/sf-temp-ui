@@ -51,10 +51,10 @@ tomorrow = DateUtil.truncate(tomorrow);
 DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
 boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
 boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
- //System.out.println("validRange:"+validRange);
 
 %>
-<fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><fd:CheckLoginStatus id="user" guestAllowed="false" recognizedAllowed="false" redirectPage='/checkout/view_cart.jsp' />
 <%
     String successPage = "/checkout/step_3_choose.jsp";
 
@@ -286,7 +286,7 @@ zonePromoEnabled=true;
 			<b><%= (isDepotAddress && depotAddress.isPickup())?"Service":"Delivery" %> Charge:  </b>
 
 <%	
-	String dlvCharge = CCFormatter.formatCurrency( cart.getDeliverySurcharge() );
+	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
 	if(cart.isDlvPassApplied()) {
 %>
 	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
@@ -299,7 +299,7 @@ zonePromoEnabled=true;
 	<%}else {%>
 		<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
 	<%}%><br>		
-			<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>: <%= CCFormatter.formatCurrency(cartTotal) %></TD>
+			<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>: <%= JspMethods.formatPrice(cartTotal) %></TD>
 		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 			<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
 		 	BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2"></TD>
@@ -405,10 +405,6 @@ if (errorMsg!=null) {%>
 		//start add easter meals
 		//easterMeal is for advanced ordering, easter is a sperate restriction
 	
-	//System.out.println("hasAdvanceOrderItem:"+cart.hasAdvanceOrderItem());
-	//System.out.println("advOrdRangeOK:"+advOrdRangeOK);
-	//System.out.println("easterMealRestriction:"+easterMealRestriction);
-	
 	if(cart.hasAdvanceOrderItem() && advOrdRangeOK && easterMealRestriction){%>
 	<tr valign="top">
 		<td colspan="2" class="text12">
@@ -489,8 +485,6 @@ if (errorMsg!=null) {%>
 	<span class="text12"><b>Standard Delivery Slots</b></span>
 <%} else { 
     showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
-	
-		//System.out.println("=====================showAdvanceOrderBand:"+showAdvanceOrderBand);
   }
 %>
 

@@ -55,17 +55,17 @@
 		String saleId = NVL.apply(request.getParameter("gcSaleId"), "");
 		String certNum = NVL.apply(request.getParameter("gcCertNum"), "");
 	%>
-	<fd:GetGiftCardRecipientDlvInfo id="dlvInfo" saleId="<%= saleId %>" certificationNum="<%= certNum %>">
+	
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><fd:GetGiftCardRecipientDlvInfo id="dlvInfo" saleId="<%= saleId %>" certificationNum="<%= certNum %>">
 		<%      
 			if(dlvInfo != null){ %>
                 <crm:CrmGiftCardBalance id="gcModel" result="result" actionName="getGiftCardBalance" givexNum="<%= dlvInfo.getGivexNum() %>">
 					<%
 						if(result.isSuccess()) {
-							java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 							if(gcModel != null){
 								if(gcModel.isActive()) {
 									json.put("stat", "A"); //active
-									json.put("baln", currencyFormatter.format(gcModel.getBalance()));
+									json.put("baln", JspMethods.formatPrice(gcModel.getBalance()));
 									json.put("code", "1") ;
 								} else if(gcModel.isCancelled()) {
 									json.put("stat", "C"); //cancelled

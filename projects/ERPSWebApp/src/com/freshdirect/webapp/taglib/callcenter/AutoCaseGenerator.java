@@ -171,7 +171,7 @@ public class AutoCaseGenerator {
 			caseAction.setTimestamp(new Date());
 			caseAction.setAgentPK(agent.getPK());
 			
-			caseAction.setNote("Auto-approved credits ("+ JspMethods.currencyFormatter.format(ciAmount) +", "+ciMethod+")");
+			caseAction.setNote("Auto-approved credits ("+ JspMethods.formatPrice(ciAmount) +", "+ciMethod+")");
 			newCase.addAction(caseAction);																		
 		}
 

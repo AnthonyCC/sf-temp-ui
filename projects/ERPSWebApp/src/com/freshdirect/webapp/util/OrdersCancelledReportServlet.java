@@ -125,7 +125,7 @@ public class OrdersCancelledReportServlet extends AbstractExcelReportServlet {
 		orderLine.put("ALT. PHONE", order.getAltPhone());
 		orderLine.put("DELIVERY DATE", CCFormatter.defaultFormatDate(order.getDeliveryDate()));
 		orderLine.put("ORDER STATUS", order.getOrderStatus().getDisplayName());
-		orderLine.put("AMOUNT", CCFormatter.formatCurrency(order.getAmount()));
+		orderLine.put("AMOUNT", JspMethods.formatPrice(order.getAmount()));
 		orderLine.put("CUTOFF TIME", CCFormatter.formatDeliveryTime(order.getCutoffTime()));
 		orderLine.put("START TIME", CCFormatter.formatDeliveryTime(order.getStartTime()));
 		orderLine.put("END TIME", CCFormatter.formatDeliveryTime(order.getEndTime()));

@@ -61,7 +61,7 @@
 			<TR bgcolor="<%= (rowCounter.intValue() % 2 == 0) ? "#FFFFFF" : "#EEEEEE" %>">
 				<TD WIDTH="25%"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= order.getErpSalesId() %>"><%= order.getErpSalesId() %></a><BR></TD>
 				<TD WIDTH="25%"><%= CCFormatter.formatDate( order.getRequestedDate() ) %><BR></TD>
-				<TD WIDTH="25%"><%= CCFormatter.formatCurrency( order.getTotal() ) %><BR></TD>
+				<TD WIDTH="25%"><%= JspMethods.formatPrice( order.getTotal() ) %><BR></TD>
 				<TD WIDTH="25%"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= order.getErpSalesId() %>">shop from this order</a><BR></TD>
 			</TR>
 			</logic:iterate>

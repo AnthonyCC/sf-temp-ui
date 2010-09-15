@@ -2,19 +2,16 @@ package com.freshdirect.smartstore.scoring;
 
 import java.util.Collections;
 import java.util.List;
-
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.framework.util.BalkingExpiringReference;
-import com.freshdirect.framework.util.ExpiringReference;
-import com.freshdirect.framework.util.LruCache;
-import com.freshdirect.framework.util.TimedLruCache;
-import com.freshdirect.smartstore.SessionInput;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.framework.util.BalkingExpiringReference;
+import com.freshdirect.framework.util.LruCache;
+import com.freshdirect.smartstore.SessionInput;
 
 public class CachingDataGenerator extends DataGenerator {
 

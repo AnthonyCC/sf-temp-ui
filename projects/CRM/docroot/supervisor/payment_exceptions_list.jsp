@@ -3,6 +3,7 @@
 <%@ page import='com.freshdirect.customer.*' %>
 <%@ page import="com.freshdirect.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -51,7 +52,7 @@
 		<td width="2%"><% if(EnumSaleType.REGULAR.equals(summary.getOrderType())){%>M<%}else if(EnumSaleType.SUBSCRIPTION.equals(summary.getOrderType())){%>A<%}%></td>
 		<td width="12%"><%=CCFormatter.formatDeliveryDate(summary.getDeliveryDate())%></td>
 		<td width="12%"><%=summary.getOrderStatus()%></td>
-		<td width="10%" align="center"><%=CCFormatter.formatCurrency(summary.getOrderTotal())%></td>
+		<td width="10%" align="center"><%=JspMethods.formatPrice(summary.getOrderTotal())%></td>
 		<td width="12%" class="time_stamp"><%=CCFormatter.formatDateTime(summary.getCreateDate())%></td>
 		<td width="9%" class="log_info"><%=summary.getCreatedBy()%></td>
 		<td width="8%" class="log_info"><%=summary.getCreateSource()%></td>

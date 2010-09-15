@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,6 +37,7 @@ import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -86,13 +88,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for batch " + batchNumber, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -126,13 +122,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SapId " + sapId, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -168,13 +158,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -208,13 +192,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for description \"" + description + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -307,16 +285,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 
@@ -389,16 +360,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 
@@ -467,12 +431,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -518,13 +477,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials for Characteristic \"" + charName + "\" in Class \"" + className + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -558,13 +511,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find materials in Class \"" + className + "\"", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.error("Unable to close db resources", sqle);
-				throw new EJBException(sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -637,12 +584,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -717,12 +659,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Error finding SKUs ", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -794,12 +731,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product for SKU " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -872,12 +804,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product by UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -950,12 +877,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find product like UPC " + upc, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(conn);
 		}
 	}
 
@@ -991,16 +913,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to load inventory for material " + materialNo, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1046,13 +961,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to load INVENTORY INFO", e);
 			throw new EJBException(e);
 		}finally{
-			try{
-				if(conn != null){
-					conn.close();
-				}
-			}catch (SQLException e) {
-				LOGGER.warn("Unable to close db resources", e);
-			}
+                    close(conn);
 		}
 	}
 
@@ -1093,16 +1002,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find skus", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 		
 	}
@@ -1173,16 +1075,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find skus", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1246,13 +1141,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 		} catch (SQLException sqle) {
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException sqle2) {
-				LOGGER.warn("Error closing connection", sqle2);
-			}
+                    close(conn);
 		}
 	}
 	
@@ -1309,13 +1198,7 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 				} catch (SQLException sqle) {
 					throw new EJBException(sqle);
 				} finally {
-					try {
-						if (conn != null) {
-							conn.close();
-						}
-					} catch (SQLException sqle2) {
-						LOGGER.warn("Error closing connection", sqle2);
-					}
+				    close(conn);
 				}		
 	}
 	
@@ -1372,16 +1255,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find new skus dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1408,16 +1284,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find back in stock SKU dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1464,16 +1333,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find overridden new skus dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 
@@ -1514,16 +1376,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find overridden back in stock SKU dates", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1552,16 +1407,9 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to find availability history for SKU: " + skuCode, sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(rs);
+                    close(ps);
+                    close(conn);
 		}
 	}
 	
@@ -1576,14 +1424,56 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to update materialized views (NEW_PRODUCTS and BACK_IN_STOCK_PRODUCTS)", sqle);
 			throw new EJBException(sqle);
 		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (conn != null)
-					conn.close();
-			} catch (SQLException sqle) {
-				LOGGER.warn("Unable to close db resources", sqle);
-			}
+                    close(ps);
+                    close(conn);
 		}
 	}
+	
+	public List<FDSku> getChangedSkus(Integer lastVersion) {
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<FDSku> skus = new ArrayList<FDSku>();
+		try {
+			conn = getConnection();
+			ps = conn.prepareStatement("SELECT sku_code, version FROM erps.product WHERE version > ?");
+			ps.setInt(1, lastVersion);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				skus.add(new FDSku(rs.getString(1), rs.getInt(2)));
+			}
+			return skus;
+		} catch (SQLException e) {
+			LOGGER.error("Unable to fetch the list of changed skus since last version " + lastVersion, e);
+			throw new EJBException(e);
+		} finally {
+		    close(rs);
+		    close(ps);
+		    close(conn);
+		}
+	}
+	
+        public List<FDSku> getLatestSkus() {
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;
+            List<FDSku> skus = new ArrayList<FDSku>();
+            try {
+                conn = getConnection();
+                ps = conn.prepareStatement("SELECT sku_code, max(version) FROM erps.product GROUP BY sku_code");
+                rs = ps.executeQuery();
+                while (rs.next()) {
+                    skus.add(new FDSku(rs.getString(1), rs.getInt(2)));
+                }
+                return skus;
+            } catch (SQLException e) {
+                LOGGER.error("Unable to fetch the list of latest skus " + e.getMessage(), e);
+                throw new EJBException(e);
+            } finally {
+                close(rs);
+                close(ps);
+                close(conn);
+            }
+        }
+
 }

@@ -282,7 +282,7 @@ if (prodsAvailable > 0 && !oneNotAvailable) {
 					   try {
 							if (dfltSku !=null) {
 								  FDProductInfo pi = FDCachedFactory.getProductInfo( dfltSku.getSkuCode());                                                        
-								  priceStr=currencyFormatter.format(pi.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
+								  priceStr = JspMethods.formatPrice(pi, user.getPricingContext());
 							}
 						} catch (FDResourceException fde) {
 							throw new JspException(fde);

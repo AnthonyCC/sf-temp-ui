@@ -12,13 +12,13 @@
 <%@ page import="com.freshdirect.fdstore.content.DepartmentModel" %>
 <%@ page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
 <%@ page import="com.freshdirect.framework.util.*" %>
+<%@ page import='java.net.URLEncoder' %>
 <%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
 <%@ page import="com.freshdirect.fdstore.content.Image"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
 <%@ include file="/includes/i_promotion_counter.jspf" %>
@@ -146,7 +146,7 @@ if(weRecommendImgProds.size() > 0) {
             String weRecPrice = null;
             if (weRecSku==null) continue;
             
-            weRecPrice = currencyFormatter.format(weRecSku.getProductInfo().getZonePriceInfo(nav_promo_user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ weRecSku.getProductInfo().getDisplayableDefaultPriceUnit().toLowerCase();
+            weRecPrice = JspMethods.formatPrice(weRecSku.getProductInfo(), nav_promo_user.getPricingContext());
 %>						
         <tr valign="top"><td width="12"><br></td>
             <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>

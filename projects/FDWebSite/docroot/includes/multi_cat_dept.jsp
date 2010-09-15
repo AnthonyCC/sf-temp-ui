@@ -22,7 +22,6 @@
 	String catId_1 = FDStoreProperties.getDeptMeatDealsCatId();
 	String catId_2 = FDStoreProperties.getDeptEDLPCatId(); 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId_1);
-	System.out.println("multi_cat_dept>> catId_1: " + catId_1 + " catId_2: " + catId_2);
 	List edlpProducts=new ArrayList();
 	List prodList=new ArrayList();
 	int totalDealProds = 0;
@@ -51,8 +50,6 @@
 >
 <%
 		dealCol = rtnColl;        
-		System.out.println("Deals>> dealCol size: " + dealCol.size());
-		System.out.println("Deals>> dealCol: " + dealCol);
 		totalDealProds = dealCol.size();
         request.setAttribute("itemGrabberResult",dealCol); //** expose result of item grabber to the layout **
 %>
@@ -85,8 +82,6 @@
 >
 <%
 		edlpCol = rtnColl;        
-		System.out.println("EDLP>> edlpCol size: " + edlpCol.size());
-		System.out.println("EDLP>> edlpCol: " + edlpCol);
 		totalEDLPProds = edlpCol.size();
         request.setAttribute("itemGrabberResult",edlpCol); //** expose result of item grabber to the layout **
 %>

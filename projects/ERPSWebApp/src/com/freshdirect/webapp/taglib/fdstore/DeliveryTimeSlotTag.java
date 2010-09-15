@@ -22,7 +22,7 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -53,6 +53,7 @@ import com.freshdirect.fdstore.promotion.PromotionHelper;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
@@ -64,7 +65,7 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
 public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 	
-	private final static Category LOGGER = Category.getInstance(DeliveryTimeSlotTag.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(DeliveryTimeSlotTag.class);
 	
 	private ErpAddressModel address = null;
 	private boolean deliveryInfo = false;

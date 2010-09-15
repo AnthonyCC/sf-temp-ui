@@ -111,7 +111,7 @@
 								<td>
 									<table align="right">
 									<tr>
-										<td  align="right"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>/<%= productInfo.getDefaultPriceUnit().toLowerCase() %>	</td>
+										<td  align="right"  style="padding-left:4px;" class="text11bold"> <%= JspMethods.formatPrice(productInfo, user.getPricingContext()) %>	</td>
 									</tr>
 									</table>
 								</td>
@@ -120,9 +120,9 @@
 							<tr>
 								<td align="right" class="text11bold">Total Price:</td>
 								<% if(null !=cartLine && !cartLine.getOrderedQuantity().equals("0")){ %>
-								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( cartLine.getFixedPrice() ) %>"/></td>
+								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.formatPrice(cartLine.getFixedPrice()) %>"/></td>
 								<%} else{ %>
-								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.currencyFormatter.format( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice() ) %>"/></td>
+								<td align="right"><input type="text" id="total_price" name="total_price" class="text11" size="8" value="<%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %>"/></td>
 								<%} %>
 								
 							</tr>

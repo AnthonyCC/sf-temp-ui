@@ -5,6 +5,7 @@
 <%@ page import="com.freshdirect.crm.CrmAgentList" %>
 <%@ page import="com.freshdirect.crm.CrmManager" %>
 <%@ page import="com.freshdirect.crm.CrmAgentRole" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
 <%@ taglib uri="template" prefix="tmpl" %>
 <%@ taglib uri="logic" prefix="logic" %>
@@ -207,7 +208,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
 	<logic:iterate id="info" collection="<%= infos %>" type="com.freshdirect.fdstore.customer.FDComplaintInfo" indexId="counter">
 		<tr valign="top" <%= counter.intValue() % 2 == 0 ? "class='list_odd_row'" : "" %> >
 			<td width="12%" class="border_bottom"><%= info.getComplaintType()%>&nbsp;</td>
-			<td width="12%" align="right" class="border_bottom">&nbsp;<%= CCFormatter.formatCurrency(info.getComplaintAmount()) %></td>
+			<td width="12%" align="right" class="border_bottom">&nbsp;<%= JspMethods.formatPrice(info.getComplaintAmount()) %></td>
 			<td width="12%" align="center" class="border_bottom"><%= info.getComplaintStatus().getName()!=null ? info.getComplaintStatus().getName():"&nbsp;" %></td>
 			<td width="16%" class="border_bottom"><%= info.getIssuedBy() %>&nbsp;</td>
 			<td width="16%" class="border_bottom"><%= info.getApprovedBy() %>&nbsp;</td>

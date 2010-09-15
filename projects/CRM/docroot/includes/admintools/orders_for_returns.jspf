@@ -88,7 +88,7 @@ function openURL(inLocationURL) {
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= order.getOrderStatus().getDisplayName() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCurrency(order.getAmount()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= JspMethods.formatPrice(order.getAmount()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(order.getStartTime()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>

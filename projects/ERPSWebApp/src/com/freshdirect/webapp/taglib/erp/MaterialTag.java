@@ -17,6 +17,7 @@ import javax.servlet.jsp.*;
 import com.freshdirect.erp.*;
 import com.freshdirect.erp.model.*;
 
+import com.freshdirect.fdstore.FDAttributesCache;
 import com.freshdirect.fdstore.FDResourceException;
 
 import com.freshdirect.content.attributes.*;
@@ -126,76 +127,64 @@ public class MaterialTag extends com.freshdirect.framework.webapp.BodyTagSupport
         Iterator iter = matl.getSalesUnits().iterator();
         while (iter.hasNext()) {
             ErpSalesUnitModel slu = (ErpSalesUnitModel) iter.next();
-            String description = request.getParameter(FormElementNameHelper.getFormElementName(slu,EnumAttributeName.DESCRIPTION.getName()));
+        	ErpsAttributes attributes = slu.getAttributes().clone();
+            String description = request.getParameter(FormElementNameHelper.getFormElementName(slu, EnumAttributeName.DESCRIPTION.getName()));
             if (description != null)
-                slu.getAttributes().setAttribute(EnumAttributeName.DESCRIPTION.getName(), description);
+            	description = description.trim();
+            attributes.setDescription(description);
             
             String selected = request.getParameter(EnumAttributeName.SELECTED.getName());
-            if (selected != null) {
-                if (selected.equalsIgnoreCase(FormElementNameHelper.getFormElementName(slu,EnumAttributeName.SELECTED.getName()))) {
-                    slu.getAttributes().setAttribute(EnumAttributeName.SELECTED.getName(), true);
-                } else {
-                    slu.getAttributes().setAttribute(EnumAttributeName.SELECTED.getName(), false);
-                }
-            }
+            attributes.setSelected(selected.equalsIgnoreCase(FormElementNameHelper.getFormElementName(slu, EnumAttributeName.SELECTED.getName())));
+            slu.setChangedAttributes(attributes);
         }
+    	ErpsAttributes attributes = matl.getAttributes().clone();
         //
         // taxable
         //
         String taxable = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.TAXABLE.getName()));
-        if (taxable != null) {
-            matl.getAttributes().setAttribute(EnumAttributeName.TAXABLE.getName(), true);
-        } else {
-            matl.getAttributes().setAttribute(EnumAttributeName.TAXABLE.getName(), false);
-        }
+        attributes.setTaxable(taxable != null);
+
         //
         // eligible for customer promo
         //
         String promo = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.CUST_PROMO.getName()));
-        if (promo != null) {
-            matl.getAttributes().setAttribute(EnumAttributeName.CUST_PROMO.getName(), true);
-        } else {
-            matl.getAttributes().setAttribute(EnumAttributeName.CUST_PROMO.getName(), false);
-        }
+        attributes.setCustPromo(promo != null);
         //
         // label name
         //
         String label_name = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.LABEL_NAME.getName()));
-        if (label_name != null) {
-            matl.getAttributes().setAttribute(EnumAttributeName.LABEL_NAME.getName(), label_name);
-        }
+        if (label_name != null)
+        	label_name = label_name.trim();
+        attributes.setLabelName(label_name);
         //
         // deposit amount
         //
         String deposit = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.DEPOSIT_AMOUNT.getName()));
-        if ((deposit != null) && !"".equals(deposit.trim())) {
-            matl.getAttributes().setAttribute(EnumAttributeName.DEPOSIT_AMOUNT.getName(), Integer.parseInt(deposit));
-        } else {
-            matl.getAttributes().setAttribute(EnumAttributeName.DEPOSIT_AMOUNT.getName(), 0);
+        int depositAmount = 0;
+        try {
+        	if (deposit != null)
+        		depositAmount = Integer.parseInt(deposit);
+        } catch (NumberFormatException e) {
         }
+        attributes.setDepositAmount(depositAmount);
         //
         // restrictions
         //
         String restrictions = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.RESTRICTIONS.getName()));
-        matl.getAttributes().setAttribute(EnumAttributeName.RESTRICTIONS.getName(), restrictions);
+        if (restrictions != null)
+        	restrictions = restrictions.trim();
+        attributes.setRestrictions(restrictions);
+
         //add ability to set advance order flag via erpsy-daisy gui
         String advance_order_flag = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.ADVANCE_ORDER_FLAG.getName()));
-        if (advance_order_flag != null) {
-            matl.getAttributes().setAttribute(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(), true);
-        } else {
-            matl.getAttributes().setAttribute(EnumAttributeName.ADVANCE_ORDER_FLAG.getName(), false);
-        }
+        attributes.setAdvanceOrderFlag(advance_order_flag != null);
         
         //
         // kosher production item
         //
         String kosher_prod = request.getParameter(FormElementNameHelper.getFormElementName(matl, EnumAttributeName.KOSHER_PRODUCTION.getName()));
-        if (kosher_prod != null) {
-            matl.getAttributes().setAttribute(EnumAttributeName.KOSHER_PRODUCTION.getName(), true);
-        } else {
-            matl.getAttributes().setAttribute(EnumAttributeName.KOSHER_PRODUCTION.getName(), false);
-        }
+        attributes.setKosherProduction(kosher_prod != null);
+        
+        matl.setChangedAttributes(attributes);
     }
-    
-    
 }

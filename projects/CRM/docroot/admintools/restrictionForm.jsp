@@ -33,7 +33,6 @@
 
 
     <% 
-      System.out.println("inside restrictionForm.jsp :"+request.getParameter("restrictionId"));
       String restrictionId=request.getParameter("restrictionId");
       String startDate = 
 			NVL.apply(request.getParameter("startDate"), CCFormatter.formatDateYear(Calendar.getInstance().getTime()));
@@ -57,7 +56,6 @@
 <%
       if(restrictionList!=null && restrictionList.size()>0 && request.getParameter("actionName")==null){
         RestrictionI restriction=(RestrictionI)restrictionList.get(0);
-        System.out.println("getting the restriction"+request.getParameter("actionName"));
         restrictionId=restriction.getId();
         restrictedType=restriction.getType().getName();
 		name=restriction.getName();		

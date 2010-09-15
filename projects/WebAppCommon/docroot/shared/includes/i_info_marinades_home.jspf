@@ -12,8 +12,7 @@
 
 				ProductModel marProduct = null; 
 				Image prodImg = null;
-
-				marProduct =  ContentFactory.getInstance().getProduct(option.getAttribute("skucode",""));
+				marProduct =  ContentFactory.getInstance().getProduct(option.getSkuCode());
 				prodImg = marProduct.getProdImage();
 				if(prodImg!=null){
 		%>
@@ -24,7 +23,7 @@
 			<font class="space4pix"><br><br></font>
 			</td>
 			<td width="10"><BR></td>
-			<td width="329"><font class="space4pix"><BR><BR></font><font class="text11bold"><a href="/shared/fd_def_popup.jsp?skucode=<%=option.getAttribute("skucode","")%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a></font><br>
+			<td width="329"><font class="space4pix"><BR><BR></font><font class="text11bold"><a href="/shared/fd_def_popup.jsp?skucode=<%=option.getSkuCode()%>&catId=<%=catId%>&prodId=<%=prodId%>&charName=<%=charName%>&tmpl=<%=tmpl%>&level=detail"><%= option.getDescription() %></a></font><br>
 				
 					<%if(marProduct.getBlurb()!=null){%>
 						<%=marProduct.getBlurb()%>

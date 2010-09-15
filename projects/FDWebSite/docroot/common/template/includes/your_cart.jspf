@@ -15,7 +15,7 @@
             <table border="0" cellspacing="0" cellpadding="0" width="140">
                 <tr valign="top">
                     <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="16" border="0"></td>
-                    <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.currencyFormatter.format(cart.getSubTotal()) %></span></td>
+                    <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
                     <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="16" border="0"></td>
                 </tr>
                 <tr valign="top">
@@ -65,7 +65,7 @@
 	if (__yc_user != null && __yc_user.getIdentity() !=null) { %>
 	        <fd:CustomerCreditHistoryGetterTag id='customerCreditHistory'>
 	            <% if (customerCreditHistory.getRemainingAmount()>0.00) { %>
-	            <div class="text11"><%= JspMethods.currencyFormatter.format(customerCreditHistory.getRemainingAmount()) %> credit will be applied at Checkout.</div>
+	            <div class="text11"><%= JspMethods.formatPrice(customerCreditHistory.getRemainingAmount()) %> credit will be applied at Checkout.</div>
 	  			<% } %>
 	       </fd:CustomerCreditHistoryGetterTag>
 <% } %>
@@ -84,7 +84,7 @@
                     </tr>
                     <tr valign="top">
                         <td width="11"><img src="/media_stat/images/template/lists/cart_lft.gif" width="11" height="17" border="0"></td>
-                        <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.currencyFormatter.format(cart.getSubTotal()) %></span></td>
+                        <td width="118" valign="middle">Subtotal: <span class="text11bold"><%= JspMethods.formatPrice(cart.getSubTotal()) %></span></td>
                         <td width="11"><img src="/media_stat/images/template/lists/cart_rt.gif" width="11" height="17" border="0"></td>
                     </tr>
                     <tr valign="top">

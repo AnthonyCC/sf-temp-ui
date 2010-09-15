@@ -21,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.transadmin.datamanager.parser.ConversionOption;
 import com.freshdirect.transadmin.datamanager.parser.Util;
@@ -57,7 +57,7 @@ import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormConversionEx
 public class CoreConverters
 {
 
-    static Category cat = Category.getInstance(CoreConverters.class);
+    static Logger cat = Logger.getLogger(CoreConverters.class);
 
     /**
      * Conversion function for <code>String</code>, returns the source string with padding removed if requested.

@@ -34,9 +34,6 @@
 	%>
 		<tr>
 		<%
-        //System.out.println("timeslots.getStartDate() :"+timeslots.getStartDate());
-        //System.out.println("timeslots.getEndDate() :"+timeslots.getEndDate());
-        //System.out.println("reason :"+reason);
         List spans = TimeslotPageUtil.getBand(reason, restrictionList, timeslots.getStartDate(), timeslots.getEndDate());
 		for(int i = 0, size = spans.size(); i < size; i++){
 			TimeslotPageUtil.Span span = (TimeslotPageUtil.Span)spans.get(i);

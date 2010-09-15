@@ -61,7 +61,7 @@
         <tr valign="top">
             <td width="17%"><%= CCFormatter.formatDateTime(txModel.getTransactionDate()) %></td>
             <td width="16%"><%= txModel.getTransactionSource().getName() %></td>
-            <td width="17%"><%= CCFormatter.formatCurrency(txModel.getAmount()) %></td>
+            <td width="17%"><%= JspMethods.formatPrice(txModel.getAmount()) %></td>
             <td width="50%">
 			<% 
 			//TEMP solution!

@@ -78,11 +78,11 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 		if (rootNode == null || id == null) {
 			throw new JspException("Attribute for ItemGrabberTag was null!");
 		}
-				
-		try {			
+
+		try {
 			FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
-			
-			ItemGrabber grabber = new ItemGrabber();			
+
+			ItemGrabber grabber = new ItemGrabber();
 			grabber.setIgnoreShowChildren( ignoreShowChildren );
 			grabber.setRootNode( rootNode );
 			grabber.setReturnHiddenFolders( returnHiddenFolders );
@@ -94,20 +94,20 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			grabber.setDepth( depth );
 			grabber.setPricingCtx( user != null ? user.getPricingContext() : PricingContext.DEFAULT );
 			grabber.setWorkSet( workSet );
-			
+
 			workSet = grabber.grabTheItems();
 
 		} catch (FDSkuNotFoundException ex) {
-			throw new JspException(ex);	
+			throw new JspException(ex);
 		} catch (FDResourceException ex) {
-			throw new JspException(ex);	
+			throw new JspException(ex);
 		}
-		
+
 		//sort the set
 		LOGGER.debug(">>>>>>>>>> workSet size before Sort = "+workSet.size());
-		
+
 		pageContext.setAttribute(id, workSet);
-		
+
 		return (EVAL_BODY_BUFFERED);
 	} // method doStartTag
 

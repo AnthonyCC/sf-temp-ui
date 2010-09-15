@@ -4,6 +4,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
 
 <%@ taglib uri='template' prefix='tmpl' %>
@@ -92,7 +93,7 @@ function openURL(inLocationURL) {
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= order.getOrderStatus().getDisplayName() %></span></td>
 	<td class="border_bottom">&nbsp;</td>
-	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatCurrency(order.getAmount()) %></span></td>
+	<td class="border_bottom"><span class="detail_text"><%= JspMethods.formatPrice(order.getAmount()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>
 	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDeliveryTime(order.getCutoffTime()) %></span></td>
 	<td class="border_bottom">&nbsp;</td>

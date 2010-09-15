@@ -8,8 +8,8 @@
  */
 package com.freshdirect.fdstore;
 
-import com.freshdirect.content.attributes.AttributesI;
-import com.freshdirect.content.attributes.EnumAttributeName;
+import com.freshdirect.erp.model.ErpCharacteristicValueModel;
+
 
 /**
  * Variation Option - equivalent of ErpCharacteristicValue.
@@ -17,7 +17,8 @@ import com.freshdirect.content.attributes.EnumAttributeName;
  * @version $Revision$
  * @author $Author$
  */
-public class FDVariationOption extends FDAttributeProxy {
+public class FDVariationOption extends FDAttributesProxy {
+	private static final long serialVersionUID = 4970965586298269545L;
 
 	/** SAP characteristic value name */
 	private String name;
@@ -25,10 +26,15 @@ public class FDVariationOption extends FDAttributeProxy {
 	/** Chararcteristic value description */
 	private String description;
 
-	public FDVariationOption(AttributesI attributes, String name, String description) {
-		super(attributes);
-		this.name=name;
-		this.description = description;
+	public FDVariationOption(ErpCharacteristicValueModel model) {
+		super(model);
+		this.name=model.getName();
+		this.description = model.getDescription();
+	}
+	
+	public FDVariationOption(String name, String description) {
+	    this.name = name;
+	    this.description = description;
 	}
 
 	/**
@@ -47,30 +53,23 @@ public class FDVariationOption extends FDAttributeProxy {
 	 * @return description
 	 */
 	public String getDescription() {
-		return this.getAttribute(EnumAttributeName.DESCRIPTION.getName(), this.description);
+		return getAttributes().getDescription(description);
 	}
 
 	/**
 	 * @deprecated Use isSelected() instead
 	 */
+	@Deprecated
 	public boolean isDefault() {
 		return this.isSelected();
 	}
 	
-	/**
-	 *
-	 *
-	 */
 	public boolean isSelected() {
-		return this.getAttributeBoolean( EnumAttributeName.SELECTED );
+		return getAttributes().isSelected();
 	}
 
-	/**
-	 *
-	 *
-	 */
 	public boolean isLabelValue() {
-		return this.getAttributeBoolean( EnumAttributeName.LABEL_VALUE );
+		return getAttributes().isLabelValue();
 	}
 
 	public boolean equals(Object o) {
@@ -82,5 +81,9 @@ public class FDVariationOption extends FDAttributeProxy {
 
 	public String toString() {
 		return "FDVariationOption["+this.name+"]";
+	}
+
+	public String getSkuCode() {
+		return getAttributes().getSkucode();
 	}
 }

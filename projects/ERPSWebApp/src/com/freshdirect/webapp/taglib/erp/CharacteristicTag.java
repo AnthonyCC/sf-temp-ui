@@ -133,58 +133,69 @@ public class CharacteristicTag extends com.freshdirect.framework.webapp.BodyTagS
         //
         // characteristic
         //
+    	
+    	ErpsAttributes attributes = charac.getAttributes().clone();
+
         String description = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.DESCRIPTION.getName()));
         if (description != null)
-            charac.getAttributes().setAttribute(EnumAttributeName.DESCRIPTION.getName(), description);
+        	description = description.trim();
+        
+        attributes.setDescription(description);
         
         String underLabel = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.UNDER_LABEL.getName()));
         if (underLabel != null)
-            charac.getAttributes().setAttribute(EnumAttributeName.UNDER_LABEL.getName(), underLabel);
+        	underLabel = underLabel.trim();
+        
+        attributes.setUnderLabel(underLabel);
         
         String optional = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.OPTIONAL.getName()));
-        if (optional != null) {
-            charac.getAttributes().setAttribute(EnumAttributeName.OPTIONAL.getName(), new Boolean(optional).booleanValue());
-        }
+        if (optional != null)
+            attributes.setOptional(Boolean.valueOf(optional.trim()));
+        else 
+        	attributes.setOptional(false);
+
         String dispFormat = request.getParameter(FormElementNameHelper.getFormElementName(charac, EnumAttributeName.DISPLAY_FORMAT.getName()));
-        if (dispFormat != null) {
-            charac.getAttributes().setAttribute(EnumAttributeName.DISPLAY_FORMAT.getName(), dispFormat);
-        }
+        if (dispFormat != null)
+        	dispFormat = dispFormat.trim();
+        attributes.setDisplayFormat(dispFormat);
+        
+        charac.setChangedAttributes(attributes);
+
         //
         // characteristic values
         //
         Iterator iter = charac.getCharacteristicValues().iterator();
         while (iter.hasNext()) {
             ErpCharacteristicValueModel cv = (ErpCharacteristicValueModel) iter.next();
+            ErpsAttributes attribs = cv.getAttributes().clone();
             // description
             description = request.getParameter(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.DESCRIPTION.getName()));
             if (description != null)
-                cv.getAttributes().setAttribute(EnumAttributeName.DESCRIPTION.getName(), description);
+            	description = description.trim();
+            
+            attribs.setDescription(description);
             // selected
             String selected = request.getParameter(EnumAttributeName.SELECTED.getName());
-            if (selected != null) {
-                if (selected.equalsIgnoreCase(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.SELECTED.getName()))) {
-                    cv.getAttributes().setAttribute(EnumAttributeName.SELECTED.getName(), true);
-                } else {
-                    cv.getAttributes().setAttribute(EnumAttributeName.SELECTED.getName(), false);
-                }
-            }
+            attribs.setSelected(selected != null &&
+            		selected.equalsIgnoreCase(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.SELECTED.getName())));
+
             // label value
             String labelVal = request.getParameter(EnumAttributeName.LABEL_VALUE.getName());
-            if (labelVal != null) {
-                if (labelVal.equalsIgnoreCase(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.LABEL_VALUE.getName()))) {
-                    cv.getAttributes().setAttribute(EnumAttributeName.LABEL_VALUE.getName(), true);
-                } else {
-                    cv.getAttributes().setAttribute(EnumAttributeName.LABEL_VALUE.getName(), false);
-                }
-            }
+            attribs.setLabelValue(labelVal != null &&
+            		labelVal.equalsIgnoreCase(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.LABEL_VALUE.getName())));
+
             // priority
             String priority = request.getParameter(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.PRIORITY.getName()));
-            if ((priority != null) && !"".equals(priority.trim()))
-                cv.getAttributes().setAttribute(EnumAttributeName.PRIORITY.getName(), Integer.parseInt(priority));
+            int priorityValue = priority != null ? Integer.valueOf(priority.trim()) : 0;
+            attribs.setPriority(priorityValue);
+
             // skucode
             String skucode = request.getParameter(FormElementNameHelper.getFormElementName(cv, EnumAttributeName.SKUCODE.getName()));
             if (skucode != null)
-                cv.getAttributes().setAttribute(EnumAttributeName.SKUCODE.getName(), skucode);
+            	skucode = skucode.trim();
+            attribs.setSkucode(skucode);
+            
+            cv.setChangedAttributes(attribs);
         }
     }
     

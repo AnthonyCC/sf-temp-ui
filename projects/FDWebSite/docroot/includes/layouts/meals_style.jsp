@@ -301,7 +301,7 @@ public String displayMSProducts(LinkedList productLinks, LinkedList productPrice
 %>
                     <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <% 
-                    lstUnitPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                    lstUnitPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
 %>						
                     </fd:FDProductInfo>
 <%              }

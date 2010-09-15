@@ -8,15 +8,13 @@
  */
 package com.freshdirect.webapp.taglib.fdstore;
 
-import java.io.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.servlet.http.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspException;
 
 import com.freshdirect.deliverypass.DlvPassAvailabilityInfo;
 import com.freshdirect.fdstore.FDException;
@@ -27,12 +25,7 @@ import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.framework.webapp.*;
-
-import com.freshdirect.framework.util.log.LoggerFactory;
-import org.apache.log4j.*;
-
-import com.freshdirect.webapp.util.*;
+import com.freshdirect.webapp.util.FDEventUtil;
 
 /**
  * 
@@ -42,9 +35,6 @@ import com.freshdirect.webapp.util.*;
  */
 public class AdjustAvailabilityTag extends
 		com.freshdirect.framework.webapp.BodyTagSupport {
-
-	private static Category LOGGER = LoggerFactory
-			.getInstance(AdjustAvailabilityTag.class);
 
 	private String sourcePage = null;
 

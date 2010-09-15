@@ -1,7 +1,6 @@
 package com.freshdirect.webapp.util;
 
 import java.io.IOException;
-import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -9,17 +8,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeSet;
 
 import javax.servlet.jsp.JspWriter;
 
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
-import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DepartmentModel;
@@ -30,8 +28,6 @@ import com.freshdirect.fdstore.content.StoreModel;
 import com.freshdirect.framework.util.NVL;
 
 public class SearchResultUtil {
-
-	private final static NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 
 	////////////////////////////////////////
 	///////// tree builder methods /////////
@@ -204,9 +200,7 @@ public class SearchResultUtil {
 		if (sku != null) {
 			try {
 				pi = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				productPrice = currencyFormatter.format(pi.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice())
-					+ "/"
-					+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
+				productPrice = JspMethods.formatPrice(pi, PricingContext.DEFAULT);
 			} catch (FDSkuNotFoundException ex) {
 				// safe to ignore
 			}
@@ -299,9 +293,7 @@ public class SearchResultUtil {
 		if (sku != null) {
 			try {
 				FDProductInfo pi = FDCachedFactory.getProductInfo(sku.getSkuCode());
-				String productPrice = currencyFormatter.format(pi.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPrice())
-					+ "/"
-					+ pi.getDisplayableDefaultPriceUnit().toLowerCase();
+				String productPrice = JspMethods.formatPrice(pi, PricingContext.DEFAULT);
 				
 				buf.append(" - ").append(productPrice);
 

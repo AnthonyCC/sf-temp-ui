@@ -7,9 +7,6 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%!
-    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
-%>
 <%
 FDUserI s_user = (FDUserI)session.getAttribute(SessionName.USER);
 String deptId = request.getParameter("deptId");
@@ -144,7 +141,8 @@ String prodPrice = null;
 
 %>
 
-<tmpl:insert template='<%=tmplFile%>'>
+
+<%@page import="com.freshdirect.webapp.util.JspMethods"%><tmpl:insert template='<%=tmplFile%>'>
     <tmpl:put name='title' direct='true'>FreshDirect - <%=title%></tmpl:put>
         <tmpl:put name='content' direct='true'>
 
@@ -184,7 +182,7 @@ String prodPrice = null;
                     %>
                                 <fd:FDProductInfo id="productInfo" skuCode="<%=  sku.getSkuCode() %>">
                     <%   
-                                prodPrice = currencyFormatter.format(productInfo.getZonePriceInfo(s_user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+                                prodPrice = JspMethods.formatPrice(productInfo, s_user.getPricingContext());
                     %>                      
                                 </fd:FDProductInfo>
                                 <%

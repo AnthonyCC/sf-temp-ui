@@ -117,12 +117,12 @@
 %>
 					<tr align="right">
 						<td><!--Est. Subtotal ($<%=(int) user.getMinimumOrderAmount()%> Min.) :--></td>
-						<td><%=JspMethods.currencyFormatter.format(cart
+						<td><%=JspMethods.formatPrice(cart
 									.getSubTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2"></td>
 					</tr>
 					<tr align="right">
 						<td><b><a href="<%=promotionFile%>">FREE FOOD</a></b> :</td>
-						<td><b>(-<%=JspMethods.currencyFormatter.format(discount
+						<td><b>(-<%=JspMethods.formatPrice(discount
 									.getAmount())%>)</b></td>
 					</tr>
 <%
@@ -132,7 +132,7 @@
 							
 					<tr align="right">
 						<td><a href="javascript:popup('/help/estimated_price.jsp','small')">Estimated</a> Total :</td>
-						<td><%=JspMethods.currencyFormatter.format(cart
+						<td><%=JspMethods.formatPrice(cart
 									.getTotal())%><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" border="0"><br><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br></td>
 					</tr>
 					<tr align="right"><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="15"></td></tr>												

@@ -335,7 +335,7 @@ String prodDescPath = null;
 %>
         <fd:FDProductInfo id="productInfo" skuCode="<%= sku.getSkuCode() %>">
 <%
-            skuPrice = JspMethods.currencyFormatter.format(productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).getDefaultPrice())+"/"+ productInfo.getDisplayableDefaultPriceUnit().toLowerCase();
+            skuPrice = JspMethods.formatPrice(productInfo, user.getPricingContext());
         blkFDProd = FDCachedFactory.getProduct(productInfo);
             if ("LB".equalsIgnoreCase((blkFDProd.getPricing().getZonePrice(user.getPricingContext().getZoneId()).getMaterialPrices()[0]).getPricingUnit())) {
                 isOnePricedByLb = true;
@@ -462,11 +462,11 @@ if (isOnePricedByLb) { %>
 				
         if (theFileExists) {
     %>
-            <a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %></a>
+            <a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getDescription("") %></a>
     <% 
     }else{
     %>  
-            <%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %>
+            <%= variation.getDescription("") %>
 <%  }%>
     </FONT>
 <%  double cvprice = 0.0;
@@ -474,7 +474,7 @@ if (isOnePricedByLb) { %>
 	if (cboxValue != null) { cvp = defaultPricing.findCharacteristicValuePrice( variation.getName(), cboxValue.getName() ); }
 if (cvp != null) cvprice = cvp.getPrice();
 if (cvprice > 0.0) { %>
-- <%= JspMethods.currencyFormatter.format(cvp.getPrice()) %>/<%= cvp.getPricingUnit() %>
+- <%= JspMethods.formatPrice(cvp) %>
 <%  } %>
 <input type="checkbox"<%= isChecked ? " CHECKED " : "" %> name="<%= variation.getName() %>" value="<%= (cboxValue != null) ? cboxValue.getName() : "" %>" onClick="pricing.setOption('<%= variation.getName() %>', this.checked ? this.value : '');"><BR>
 <%  } %>

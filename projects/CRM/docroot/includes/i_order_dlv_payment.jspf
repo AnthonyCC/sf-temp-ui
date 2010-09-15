@@ -1,6 +1,8 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.customer.ErpShippingInfo" %>
 <%@ page import="com.freshdirect.crm.CrmLateIssueModel,com.freshdirect.crm.CrmManager" %>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import='com.freshdirect.payment.EnumPaymentMethodType'%>
 <%-- THIS FILE DEPENDS ON THE FOLLOWING VARIABLES:
 	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -145,9 +147,9 @@
 				<tr>
 					<td width="35%">Order Total:</td>
 					<%if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
-					<td width="65%"><%= CCFormatter.formatCurrency(((FDOrderI)order).getInvoicedTotal()) %>*</td>
+					<td width="65%"><%= JspMethods.formatPrice(((FDOrderI)order).getInvoicedTotal()) %>*</td>
 					<% }else { %>
-					<td width="65%"><%= CCFormatter.formatCurrency(order.getTotal()) %>*</td>
+					<td width="65%"><%= JspMethods.formatPrice(order.getTotal()) %>*</td>
 					<% } %>	
 				</tr>  
 				 <% if(order.getTotalAppliedGCAmount()> 0){ %> 
@@ -158,7 +160,7 @@
 					<% }else { %>
 					<td width="35%"> Gift Card Amount to Be Applied:</td>	
 					<% } %>	           
-	           		<td width="65%"> <%= CCFormatter.formatCurrency(order.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*</td>
+	           		<td width="65%"> <%= JspMethods.formatPrice(order.getTotalAppliedGCAmount()+ gcBufferAmount ) %>*</td>
 	           	</tr>
 	            
 	            <%if(order instanceof FDCartModel || (order instanceof FDOrderI && !(((FDOrderI)order).hasInvoice()))){%>
@@ -167,10 +169,10 @@
 	         	 <td width="65%"> 
 	            <% if(order instanceof FDCartModel) { %>
 	            
-	            	<%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance() - order.getTotalAppliedGCAmount()-gcBufferAmount) %>
+	            	<%= JspMethods.formatPrice(user.getGiftcardsTotalBalance() - order.getTotalAppliedGCAmount()-gcBufferAmount) %>
 		          
 	            <% } else { %>
-	            <%= CCFormatter.formatCurrency(user.getGiftcardsTotalBalance()) %>
+	            <%= JspMethods.formatPrice(user.getGiftcardsTotalBalance()) %>
 	            <% } %>*
 	               
         	    <% } %></td></tr><% } %>
@@ -184,11 +186,11 @@
 					<td width="35%"> Amount to Be Charged to Your Account:</td>
 	            <td width="65%"> 
 	            <% if(order instanceof FDCartModel) { %>
-	            <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
+	            <%= JspMethods.formatPrice(order.getCCPaymentAmount()+ ccBufferAmount) %>*<BR>
 	            <% } else if(order instanceof FDOrderI && ((FDOrderI)order).hasInvoice()){ %>
-	             <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()) %>
+	             <%= JspMethods.formatPrice(order.getCCPaymentAmount()) %>
 	            <% } else { %>
-	            <%= CCFormatter.formatCurrency(order.getCCPaymentAmount()+ order.getBufferAmt()) %>*<BR>     
+	            <%= JspMethods.formatPrice(order.getCCPaymentAmount()+ order.getBufferAmt()) %>*<BR>     
 	            <% } %></td></tr>
 	            <% } %>
 				  

@@ -116,7 +116,6 @@ if (isValidPaymentId) {
 		    	ccCountry = defaultAddress.getCountry();
 			}
 		} catch (FDResourceException fe) {
-			System.out.println("Could not retrieve any delivery addresses for new user fdCustId #" + identity.getFDCustomerPK() );
 			fe.printStackTrace();
 		}
 	}
