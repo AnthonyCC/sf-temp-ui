@@ -3,6 +3,7 @@ package com.freshdirect.fdstore.standingorders.service;
 import java.io.Serializable;
 
 import com.freshdirect.fdstore.customer.FDCustomerInfo;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
 
 
@@ -35,14 +36,14 @@ public class StandingOrdersServiceResult implements Serializable {
 			this.customerInfo = custInfo;
 		}
 		
-		public Result( ErrorCode errCode, FDCustomerInfo custInfo ) {
+		public Result( ErrorCode errCode, FDCustomerInfo custInfo, FDUserI user ) {
 			if ( errCode == null ) {
 				throw new IllegalArgumentException( "Error code is required." );				
 			}
 			status = Status.FAILURE;
 			errorCode = errCode;
 			errorHeader = errCode.getErrorHeader();
-			errorDetail = errCode.getErrorDetail();
+			errorDetail = errCode.getErrorDetail(user);
 			customerInfo = custInfo;
 		}
 		

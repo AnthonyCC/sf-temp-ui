@@ -63,7 +63,7 @@
 			break;
 		case MODIFY_SO:
 			boolean __err = __so.isError();
-			String __soNextDlvDate = StandingOrderHelper.getNextDeliveryDate(__so);
+			String __soNextDlvDate = StandingOrderHelper.getPreviousDeliveryDate(__so);
 			if (isViewCartPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">
 						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>

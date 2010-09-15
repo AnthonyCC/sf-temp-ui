@@ -35,6 +35,7 @@ public class FDStandingOrder extends ModelSupport {
 	Date startTime; 			// delivery timeslot - start date
 	Date endTime;				// dlv timeslot - end date
 	Date nextDeliveryDate;		// next delivery date
+	Date previousDeliveryDate;  // previous delivery date (pseudo transient value -- not saved)
 	
 	int frequency;				// frequency in weeks (chosen by the customer; can be one, two, three, and four weeks)
 	
@@ -102,8 +103,17 @@ public class FDStandingOrder extends ModelSupport {
 	public Date getNextDeliveryDate() {
 		return nextDeliveryDate;
 	}
+
 	public void setNextDeliveryDate(Date nextDeliveryDate) {
 		this.nextDeliveryDate = nextDeliveryDate;
+	}
+
+	public Date getPreviousDeliveryDate() {
+		return previousDeliveryDate;
+	}
+
+	public void setPreviousDeliveryDate(Date previousDeliveryDate) {
+		this.previousDeliveryDate = previousDeliveryDate;
 	}
 
 	public int getFrequency() {
@@ -258,7 +268,8 @@ public class FDStandingOrder extends ModelSupport {
 		PAYMENT( "There was a problem with the payment method you selected.", "Use the link below to modify this standing order and update the payment options." ), 
 		ALCOHOL( "You must verify your age to receive deliveries containing alcohol.", "Use the link below to modify this standing order and confirm that you are over 21 years of age." ), 
 		MINORDER( "The order subtotal was below our $50 minimum.", "Please adjust the items or quantities by editing the shopping list for this standing order." ), 		
-		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." );
+		TIMESLOT( "Your selected timeslot was unavailable or sold out.", "Use the link below to modify this standing order and choose a different timeslot." ),
+		PAYMENT_ADDRESS( "The address you entered does not match the information on file with your card provider.", "Please contact a FreshDirect representative at 9999 for assistance." ); 
 		
 		private String errorHeader;
 		private String errorDetail;
@@ -269,14 +280,16 @@ public class FDStandingOrder extends ModelSupport {
 		}
 		
 		public boolean isTechnical() {
-			return name().equals( "TECHNICAL" );
+			return this == TECHNICAL;
 		}
 		
 		public String getErrorHeader() {
 			return errorHeader;
 		}
 		
-		public String getErrorDetail() {
+		public String getErrorDetail(FDUserI user) {
+			if (this == PAYMENT_ADDRESS)
+				return errorDetail.replace("9999", user.getCustomerServiceContact());
 			return errorDetail;
 		}
 	};

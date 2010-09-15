@@ -83,9 +83,9 @@ public class StandingOrderHelper {
 		return c;
 	}
 
-	public static String getNextDeliveryDate(FDStandingOrder so) {
-		if ( so == null || so.getNextDeliveryDate() == null ) 
+	public static String getPreviousDeliveryDate(FDStandingOrder so) {
+		if ( so == null || so.getPreviousDeliveryDate() == null ) 
 			return "";
-		return new SimpleDateFormat("EEEE, MMMM d.").format( so.getNextDeliveryDate() );
+		return new SimpleDateFormat("EEEE, MMMM d.").format( so.getPreviousDeliveryDate() );
 	}
 }

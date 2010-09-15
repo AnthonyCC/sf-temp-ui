@@ -33,7 +33,7 @@ public class FDStandingOrderDAO {
 		"select " + FIELDZ_ALL + " " +
 		"from CUST.STANDING_ORDER SO " +
 		"left join CUST.CUSTOMERLIST CCL on(CCL.id = SO.CUSTOMERLIST_ID) " +
-		"where SO.DELETED<>1 and LAST_ERROR IS NULL " +
+		"where SO.DELETED<>1 " +
 		"order by CCL.NAME";
 
 	private static final String CREATE_EMPTY_STANDING_ORDER = "INSERT INTO CUST.STANDING_ORDER(ID, CUSTOMER_ID, CUSTOMERLIST_ID) VALUES(?,?,?)";
@@ -250,6 +250,7 @@ public class FDStandingOrderDAO {
 		so.setStartTime( rs.getTime("START_TIME") );
 		so.setEndTime( rs.getTime("END_TIME") );
 		so.setNextDeliveryDate( rs.getDate("NEXT_DATE") );
+		so.setPreviousDeliveryDate(so.getNextDeliveryDate());
 		
 		so.setFrequency( rs.getInt("FREQUENCY") );
 		so.setAlcoholAgreement( rs.getBoolean("ALCOHOL_AGREEMENT") );
