@@ -5,7 +5,8 @@
 
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-AddressModel address = user.getAddress();
+AddressModel address = null;
+if (user != null) { user.getAddress(); }
 request.setAttribute("survey_source","SiteAccess Page");
 %>
 
@@ -21,16 +22,18 @@ request.setAttribute("survey_source","SiteAccess Page");
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 		<div align="center"><br />
-			<table border="0" cellspacing="0" cellpadding="0">
+			<table border="0" cellspacing="0" cellpadding="0" width="420">
 				<tr>
 					<td align="center" class="text12">
 					<img src="/media_stat/images/logos/fd_logo_sm_gl_nv.gif" width="195" height="38" alt="FreshDirect" border="0">
 					<br /><img src="/media_stat/images/layout/999966.gif" width="100%" height="1" border="0" vspace="8"><br />
-					The <% if(address.getAddress1()!=null && address.getAddress1().trim().length()>0){ %> address <% }else{ %> Zip Code <% } %>you entered is eligible for FreshDirect home delivery service. Unfortunately we are unable to offer the <a href="javascript:popup('/cos_info.jsp','small')">FreshDirect At The Office</a> corporate service to you at this time.
+					The <% if(address !=null && address.getAddress1()!=null && address.getAddress1().trim().length()>0){ %> address <% }else{ %> Zip Code <% } %>you entered is eligible for FreshDirect home delivery service. Unfortunately we are unable to offer the <a href="javascript:popup('/cos_info.jsp','small')">FreshDirect At The Office</a> corporate service to you at this time.
 					<br /><br />
-                    <% if(address.getAddress1()!=null && address.getAddress1().trim().length()>0){ %>
-					<%=address.getAddress1()%>, <%=address.getApartment()%><br /> <% } %>
-					ZIP <%=address.getZipCode()%>
+                    <% if(address !=null) {
+						if (address.getAddress1()!=null && address.getAddress1().trim().length()>0){ %>
+						<%=address.getAddress1()%>, <%=address.getApartment()%><br /> <% } %>
+						ZIP <%=address.getZipCode()%>
+					<% } %>
 					<br /><br />
 					We're expanding all the time based on demand, so to understand your needs, we ask that you fill out the following brief survey. Or, you can skip the survey and continue to our store.
 					<br /><br />

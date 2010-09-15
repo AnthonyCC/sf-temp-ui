@@ -4,7 +4,8 @@
 
 <%
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-AddressModel address = user.getAddress();
+AddressModel address = null;
+if (user != null) { user.getAddress(); }
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -24,10 +25,12 @@ AddressModel address = user.getAddress();
 					<br><img src="/media_stat/images/layout/999966.gif" width="400" height="1" border="0" vspace="8"><br>
 					The address you entered is not currently eligible for FreshDirect home delivery service but you can get <a href="javascript:popup('/cos_info.jsp','small')">FreshDirect At The Office</a>, our corporate delivery service.
 					<br><br>
-					<%=address.getAddress1()%>, <%=address.getApartment()%><br>
-					ZIP <%=address.getZipCode()%>
+					<% if (address != null) { %>
+						<%=address.getAddress1()%>, <%=address.getApartment()%><br>
+						ZIP <%=address.getZipCode()%>
+					<% } %>
 					<br><br>
-					If this is in fact a residential address and you would like our home delivery service instead, please call <b><%=user.getCustomerServiceContact()%></b>.
+					If this is in fact a residential address and you would like our home delivery service instead, please call <b><%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%></b>.
 					<br><br>
 					<a href="/index.jsp"><img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16" border="0"></a><br>
 					</td>

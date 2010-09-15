@@ -44,14 +44,15 @@
 			}
 		}
 	%>
-	<table border="0" cellpadding="0" cellspacing="0" width="500" height="100%">
+	<center>
+	<table border="0" cellpadding="0" cellspacing="0" width="550" height="100%" style="margin: 10px;">
 		<tr valign="middle">
-			<td width="100%" align="center">
+			<td align="center">
 				<form name="address" method="post" action="<%= request.getRequestURI() %>">
 					<input type="hidden" name="successPage" value="<%= successPage %>" />
 					<input type="hidden" name="serviceType" value="<%= serviceType %>" />
 					<input type="hidden" name="corpServiceType" value="<%= serviceType %>" />
-					<table border="0" cellpadding="0" cellspacing="0" >
+					<table border="0" cellpadding="0" cellspacing="0" width="100%">
 						<tr valign="top">
 							<td  valign="top" <%= isCorporate ? "width=\"450\" align=\"center\" class=\"bodyCopy\"" : "width=\"400\" class=\"text12\""%>>
 								<% if (isBestCellars) { %>
@@ -78,7 +79,7 @@
 								<fd:ErrorHandler result='<%=result%>' name='cantGeocode' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br /><br /></fd:ErrorHandler>
 								<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_SUGGEST.getCode()%>' id='errorMsg'><%@ include file="/shared/includes/messages/i_error_suggested_address.jspf" %></fd:ErrorHandler>
 
-								<table border="0" cellspacing="01" cellpadding="0" width="100%">
+								<table border="0" cellspacing="1" cellpadding="0" width="100%">
 									<tr valign="top">
 										<td width="130" ALIGN="RIGHT" class="bodyCopy">* Street Address</td>
 										<td><img src="/media_stat/images/layout/clear.gif" width="7" border="0" height="10" alt="" /><input type="text" class="text11" maxlength="50" size="21" name="<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>" value="<%=fldAddress1%>"><fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_ADDRESS_1.getCode()%>' id='errorMsg'><br /><span class="text11rbold"><%=errorMsg%></span></fd:ErrorHandler></td>
@@ -146,6 +147,7 @@
 			</td>
 		</tr>
 	</table>
+	</center>
 	</fd:SiteAccessController>
 </body>
 </html>

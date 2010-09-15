@@ -25,7 +25,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 					Street Address, apartment<br>
 					City, State ZIP code
 					<br><br>
-					If this is in fact a residential address and you would like our home delivery service instead, please call <b><%=user.getCustomerServiceContact()%></b>.
+					If this is in fact a residential address and you would like our home delivery service instead, please call <b><%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%></b>.
 					<br><br>
 					<img src="/media_stat/images/template/site_access/continue_to_store.gif" width="124" height="16"><br>
 					<%-- ELSE IF ELIGIBLE FOR BOTH HOME AND COS --%>
@@ -35,7 +35,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 					City, State ZIP code
 					<br><br>
 					Please select the type of delivery you would like to receive at this address. 
-					If you have any questions, please call <%=user.getCustomerServiceContact()%>.
+					If you have any questions, please call <%=(user == null)?"1-212-796-8002":user.getCustomerServiceContact()%>.
 					<br><br>
 					<img src="/media_stat/images/template/site_access/i_want_home.gif" width="194" height="16" border="0" vspace="10" alt="I WANT HOME DELIVERY"><br>
 					<img src="/media_stat/images/template/site_access/i_want_cos.gif" width="194" height="16" border="0" vspace="10" alt="I WANT FRESHDIRECT AT THE OFFICE">
