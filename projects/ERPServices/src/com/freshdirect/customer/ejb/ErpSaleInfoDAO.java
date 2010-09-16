@@ -704,7 +704,7 @@ public class ErpSaleInfoDAO {
 		return extendedInfos;
 	}
 	
-	private static final String QUERY_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status in ('STL')";
+	private static final String QUERY_ORDER_HISTORY_FOR_CUST="select count(*) from cust.sale s  where s.customer_id =? and s.status ='STL'";
 	
 	public static int getPreviousOrderHistory(Connection conn, String erpCustomerId) throws SQLException{
 		int orderCount =0;

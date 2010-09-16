@@ -398,10 +398,19 @@ public class ErpFraudPreventionSessionBean extends SessionBeanSupport {
 		try {
 			conn = getConnection();
 		
-		int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(conn,erpCustomerPk.getId());
-		if(order.getAppliedGiftCardAmount() > 0.0 && orderCount == 0){
-			//Check fraud for first order using GC.
-			checkFirstOrderUsingGC(salePk, erpCustomerPk, order);
+//		int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(conn,erpCustomerPk.getId());
+		if(order.getAppliedGiftCardAmount() > 0.0){
+			int orderCount=ErpSaleInfoDAO.getPreviousOrderHistory(conn,erpCustomerPk.getId());
+			if( orderCount == 0){
+				//Check fraud for first order using GC.
+				checkFirstOrderUsingGC(salePk, erpCustomerPk, order);
+			}else{
+				
+				//
+				// ORDER TOTAL check (TOTAL > $450 OR TOTAL > $750)
+				//
+				checkOrderTotal(salePk,erpCustomerPk, order,true);
+			}
 		}else{
 			
 			//
