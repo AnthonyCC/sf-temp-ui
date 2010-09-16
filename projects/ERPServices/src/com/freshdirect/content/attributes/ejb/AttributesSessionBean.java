@@ -41,16 +41,12 @@ public class AttributesSessionBean extends SessionBeanSupport {
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
 				ErpsAttributesKey key = new ErpsAttributesKey(rs.getString(1), rs.getString(2), rs.getString(3));
-				EnumAttributeType type = EnumAttributeType.getByName(rs.getString(4));
-				if (type == null) {
-					// skip this illegal value
-					continue;
-				}
 				EnumAttributeName name = EnumAttributeName.getByName(rs.getString(5));
 				if (name == null) {
 					// skip this illegal value
 					continue;
 				}
+				EnumAttributeType type = name.getType();
 				Object value = type.parseValue(rs.getString(6));
 				Date date = rs.getTimestamp(7);
 				ErpsAttributes attributes;
