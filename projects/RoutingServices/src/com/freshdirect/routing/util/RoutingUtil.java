@@ -1,5 +1,6 @@
 package com.freshdirect.routing.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -8,13 +9,6 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.constants.EnumGeocodeConfidenceType;
 import com.freshdirect.routing.model.IAreaModel;
-import com.freshdirect.routing.proxy.stub.transportation.Notification;
-import com.freshdirect.routing.proxy.stub.transportation.NotificationCriteria;
-import com.freshdirect.routing.proxy.stub.transportation.NotificationRetrieveOptions;
-import com.freshdirect.routing.proxy.stub.transportation.RecipientIdentity;
-import com.freshdirect.routing.proxy.stub.transportation.SchedulerOrdersCanceledNotification;
-import com.freshdirect.routing.proxy.stub.transportation.TransportationWebService;
-import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 
 public class RoutingUtil {
@@ -105,4 +99,21 @@ public class RoutingUtil {
 		return null;
 	}
 	
+	public static List<List<?>> splitList(List<?> list, int maxListSize) {
+        List<List<?>> splittedList = new ArrayList<List<?>>();
+        int itemsRemaining = list.size();
+        int start = 0;
+
+        while (itemsRemaining != 0) {
+        	int end = itemsRemaining >= maxListSize ? (start + maxListSize) : (start + itemsRemaining);
+
+            splittedList.add(list.subList(start, end));
+
+            int sizeOfFinalList = end - start;
+            itemsRemaining = itemsRemaining - sizeOfFinalList;
+            start = start + sizeOfFinalList;
+        }
+
+        return splittedList;
+    }
 }

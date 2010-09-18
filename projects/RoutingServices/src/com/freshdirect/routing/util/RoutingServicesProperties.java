@@ -112,6 +112,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_HANDOFF_MAILSUBJECT		= "routingservices.handoff.mailsubject";
 	
+	private final static String PROP_JDBCBATCHUPDATE_THRESHOLD		= "routingservices.jdbcbatchupdate.threshold";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -164,6 +166,7 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_CUTOFFSIMSTANDBY_ENABLED, "false");
 		
 		defaults.put(PROP_ROADNETSESSIONSIZE_THRESHOLD, "3000");
+		defaults.put(PROP_JDBCBATCHUPDATE_THRESHOLD, "2000");
 		defaults.put(PROP_HANDOFFROUTEIN_MULTITHREADENABLED, "true");
 		defaults.put(PROP_DEFAULT_PLANTCODE, "1000");
 		
@@ -387,6 +390,10 @@ public class RoutingServicesProperties {
 	
 	public static int getRoadnetSessionSizeThreshold() {
 		return getIntVal(get(PROP_ROADNETSESSIONSIZE_THRESHOLD));
+	}
+	
+	public static int getJDBCBatchUpdateThreshold() {
+		return getIntVal(get(PROP_JDBCBATCHUPDATE_THRESHOLD));
 	}
 	
 	public static String getDefaultPlantCode() {

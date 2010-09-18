@@ -23,6 +23,7 @@ import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingUtil;
 
 public class HandOffService extends BaseService implements IHandOffService {
 	
@@ -138,7 +139,12 @@ public class HandOffService extends BaseService implements IHandOffService {
 	
 	public void addNewHandOffBatchStops(List<IHandOffBatchStop> dataList) throws RoutingServiceException {
 		try {
-			getHandOffDAOImpl().addNewHandOffBatchStops(dataList);
+			if(dataList != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(dataList, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getHandOffDAOImpl().addNewHandOffBatchStops(bucket);
+				}
+			}
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -190,7 +196,13 @@ public class HandOffService extends BaseService implements IHandOffService {
 	public void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException {
 		try {
 			getHandOffDAOImpl().addNewHandOffBatchRoutes(routes);
-			getHandOffDAOImpl().updateHandOffBatchStopRoute(stops);
+			if(stops != null) {
+				List<List<?>> buckets = RoutingUtil.splitList(stops, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
+				for(List bucket: buckets) {
+					getHandOffDAOImpl().updateHandOffBatchStopRoute(bucket);
+				}
+			}
+			//getHandOffDAOImpl().updateHandOffBatchStopRoute(stops);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -253,5 +265,6 @@ public class HandOffService extends BaseService implements IHandOffService {
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
-	}
+	}	
+	
 }
