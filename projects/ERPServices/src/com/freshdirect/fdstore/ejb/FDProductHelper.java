@@ -94,9 +94,6 @@ class FDProductHelper {
 		// get version
 		int version = ((VersionedPrimaryKey) product.getPK()).getVersion();
 
-		// get nutritional information
-		ErpNutritionModel nutrModel = FDNutritionCache.getInstance().getNutrition(product.getSkuCode());
-
 		// construct display sales units
 		FDSalesUnit[] displaySalesUnits = this.getSalesUnits(product.getDisplaySalesUnits());
 
@@ -106,7 +103,7 @@ class FDProductHelper {
 
 		// construct FDProduct
 		return new FDProduct(product.getSkuCode(), version, product.getPricingDate(), fdMaterial, variations, salesUnits, pricing,
-				displaySalesUnits, nutrModel);
+				displaySalesUnits);
 	}
 
 	public FDProductInfo getFDProductInfo(ErpProductInfoModel erpProductInfo) throws FDResourceException {

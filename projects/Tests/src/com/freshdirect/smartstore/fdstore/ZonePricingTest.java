@@ -86,7 +86,7 @@ public class ZonePricingTest extends TestCase {
                         new CharacteristicValuePrice[0],
                         new SalesUnitRatio[0]
                 ) 
-        , salesUnits, null));
+        , salesUnits));
         aspectSystem.add(fpr);
         
     }

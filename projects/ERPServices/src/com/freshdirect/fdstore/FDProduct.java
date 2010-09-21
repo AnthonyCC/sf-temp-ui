@@ -84,8 +84,7 @@ public class FDProduct extends FDSku {
 			FDVariation[] variations,
 			FDSalesUnit[] salesUnits,
 			Pricing pricing,
-			FDSalesUnit[] displaySalesUnits,
-			ErpNutritionModel nutritionModel) {
+			FDSalesUnit[] displaySalesUnits) {
 			super(skuCode, version);
 			this.pricingDate = pricingDate;
 			this.material = material;
@@ -94,7 +93,6 @@ public class FDProduct extends FDSku {
 			this.pricing = pricing;
 			
 			this.displaySalesUnits = displaySalesUnits;
-			this.setNutritionModel(nutritionModel);
 			
 		}
 	/**
@@ -334,10 +332,7 @@ public class FDProduct extends FDSku {
      * @return
      */
     ErpNutritionModel getNutritionModel() {
-        if (nutritionModel == null) {
-            nutritionModel = FDNutritionCache.getInstance().getNutrition(this.getSkuCode());
-        }
-        return nutritionModel;
+        return FDNutritionCache.getInstance().getNutrition(this.getSkuCode());
     }
     
     public void setNutritionModel(ErpNutritionModel nutritionModel) {
