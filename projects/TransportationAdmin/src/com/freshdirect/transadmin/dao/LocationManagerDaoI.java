@@ -64,4 +64,6 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
    	DlvScenarioDay getServiceTimeScenarioDay(String code) throws DataAccessException;
    	
   	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario) throws DataAccessException;
+  	
+	Collection getDefaultZoneSupervisors(String zoneCode) throws DataAccessException;
 }

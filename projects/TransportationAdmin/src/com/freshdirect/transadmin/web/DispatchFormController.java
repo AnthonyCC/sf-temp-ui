@@ -207,7 +207,7 @@ public class DispatchFormController extends AbstractFormController {
 		String overrideReasonCode=request.getParameter("overrideReasonCode");
 		if(overrideReasonCode==null)model.setOverrideReasonCode(null);
 		
-		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
+		model=(DispatchCommand)DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),model.getDispatchDate(),employeeManagerService);
 
 		try{
 			boolean routeChanged = false;

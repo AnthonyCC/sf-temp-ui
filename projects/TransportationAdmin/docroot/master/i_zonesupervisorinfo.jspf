@@ -1,0 +1,186 @@
+<style>
+	.yui-skin-sam .yui-dt-body { cursor:pointer; } 
+	#single { margin-top:2em; }
+	
+    .hiddencolumn {
+      	display:none;
+    }
+    
+</style>
+<script>
+      var supervisorDataTable;
+      var editSupervisorPanel; 
+      var _currentZoneId;
+          
+      var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
+           
+      function showZoneSupervisorTable(inputVal) {
+      	 _currentZoneId = inputVal;	
+         editSupervisorPanel = new YAHOO.widget.Panel("panelSupervisor", {       
+                          width: "600px", 
+                          height: "375px",
+                          fixedcenter: true, 
+                          close: true, 
+                          draggable: false, 
+                          zindex:4,
+                          modal: true,
+                          visible: false,
+                          effect:{effect:YAHOO.widget.ContainerEffect.SLIDE,duration:0.25}});
+        
+        var supervisorDataIncrementer = function() {         
+         	var result = jsonrpcClient.AsyncDispatchProvider.getDefaultZoneSupervisors(_currentZoneId);
+	        return result.list;
+        };
+          
+        depotDataSource = new YAHOO.util.DataSource(supervisorDataIncrementer);
+                            		  
+		var depotColumns =  [ 
+			    {key:"dayPart", label:"DayPart",sortable:false, className:"forms1"}, 
+			    {key:"supervisorName", label:"Supervisor",sortable:false, className:"forms1"},
+			    {key:"effectiveDate", label:"Effective Date",sortable:false, className:"forms1"},
+			    {key:"supervisorId", label:"Supervisor",sortable:false, className:"hiddencolumn"},
+			    {key:'delete',label:' ',formatter:function(elCell) {
+        					elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
+        					elCell.style.cursor = 'pointer';
+    			}}			    
+		 ];
+				 	 
+  	supervisorDataTable = new YAHOO.widget.DataTable("contsupervisortable", depotColumns, depotDataSource, { selectionMode:"single" });
+  		
+  	supervisorDataTable.subscribe('cellClickEvent',function(ev) {
+    	
+	var target = YAHOO.util.Event.getTarget(ev);
+    	var column = supervisorDataTable.getColumn(target);
+    		if (column.key == 'delete') {
+        		supervisorDataTable.deleteRow(target);
+    		} 
+		});
+
+  	editSupervisorPanel.render(document.body);
+        editSupervisorPanel.show();
+     }
+      
+    function doAdd() {
+
+		var _daypart = document.getElementById('daypart').value;
+		var _supervisorName = document.getElementById('supervisorName').options[document.getElementById('supervisorName').selectedIndex].text;
+		var _effectiveDate = document.getElementById('effectiveDate').value;
+		var _supervisorId = document.getElementById('supervisorName').value;
+		var hasError=false;
+
+    	    if(_daypart==0 || _supervisorId==0 || _effectiveDate.trim().length==0){ 
+                  alert("Feilds cannot be empty. Please choose!!");   
+            	  hasError=true;
+            }
+            
+            if(supervisorDataTable.getRecordSet() != null 
+     	  			&& supervisorDataTable.getRecordSet().getRecords()) {
+            		var _data = new Array();
+  	  		var records = supervisorDataTable.getRecordSet().getRecords();
+      	  		for(i=0; i<records.length; i++) {
+      	  			_data[i] = new Array();
+				if(_daypart ==records[i].getData('dayPart') && _effectiveDate == records[i].getData('effectiveDate')){
+					supervisorDataTable.deleteRow(records[i]);
+				}
+      	  		}
+      	   }
+        	   		
+     	   if(!hasError) {
+     		supervisorDataTable.addRow({dayPart:_daypart, supervisorName:_supervisorName, effectiveDate:_effectiveDate,supervisorId:_supervisorId});
+     	   }
+     }
+         
+     function submitZoneSupervisorTable() { 
+     	  var _data = new Array();
+     	  if(supervisorDataTable.getRecordSet() != null 
+     	  			&& supervisorDataTable.getRecordSet().getRecords()) {
+      	  	var records = supervisorDataTable.getRecordSet().getRecords();
+      	  	for(i=0; i<records.length; i++) {
+      	  		_data[i] = new Array();
+      	  		_data[i][0] = records[i].getData('dayPart');
+      	  		_data[i][2] = records[i].getData('effectiveDate');
+     	  		_data[i][3] = records[i].getData('supervisorId');
+		}
+      	  }
+       	  var result=jsonrpcClient.AsyncDispatchProvider.doZoneDefaultSupervisor(sendZoneSupervisorFormCallback,_currentZoneId,_data);
+       	 
+     }
+    
+     function sendZoneSupervisorFormCallback(result, exception) {
+     	 if(exception) {               
+             alert('Unable to connect to host system. Please contact system administrator!');               
+             return;
+         }
+         if(result){
+        	 alert('Supervisor to Zone added successfully');
+        	 editSupervisorPanel.hide();	
+         }else{
+        	 alert('Supervisor to Zone failed.');
+        	 editSupervisorPanel.show();
+         }
+                                              
+     }   
+ </script>
+       
+   <div style='display:none;height:0px;width:0px;'> 
+      
+      <div id="panelSupervisor">
+      <div class="hd"><img src="images/icons/edit_ON.gif"  height="16" border="0" align="absmiddle" />
+      					&nbsp;&nbsp;&nbsp;Zone Supervisor</div>
+      <div id="errContainer"></div>
+      <div class="bd">
+      	 	<table cellpadding="1" cellspacing="0" style="font-size:12px; text-align:center;width:100%;">
+		    	<tr>
+			   <td>Daypart<br>
+			      <select id="daypart" style="margin-top:4px" name="daypart">  
+				<option value="">-Please Select</option>
+				<option value="AM">AM</option>
+				<option value="PM">PM</option>   
+			      </select>
+			   </td>                               
+			   <td>Supervisor<br>                   
+			       <select id="supervisorName" style="width: 50;margin-top:4px" name="supervisorName">  
+		                    	<option value="">-Please Select</option>
+		                    	<c:forEach var="supervisor" items="${supervisors}">       
+			              		<option value="<c:out value="${supervisor.employeeId}"/>"><c:out value="${supervisor.supervisorName}"/></option>
+				       	</c:forEach>
+			       </select>			       
+			    </td> 
+			   <td>Effective Date<br>
+				<input style="margin-top:4px" size="10" id="effectiveDate" />
+				<a id="trigger_effectiveDate" style="font-size: 9px;">
+                        			<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date" />
+                       			 </a> <script language="javascript">                 
+				                      Calendar.setup(
+				                      {
+				                        showsTime : false,
+				                        electric : false,
+				                        inputField : "effectiveDate",
+				                        ifFormat : "%m/%d/%Y",
+				                        singleClick: true,
+				                        button : "trigger_effectiveDate"                        
+				                       }
+				                      );
+						</script>
+			   </td>                    
+			   <td>                 
+				  <input type="button" id="add" style="margin-top:8px" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 
+			   </td>	              
+			</tr>
+		</table>
+            <hr/>
+	    <style>
+		#contsupervisortable table{
+			width:100%;
+		}
+	    </style>
+            <div id="parentcontsupervisortable" style="height:250px;overflow-y:auto;background-color:#F2F2F2;border:1px solid #000;">
+	      	 	<div id="contsupervisortable"></div> 
+	      	 </div>	
+	      	 <hr/>
+	      	 <div align="center">
+	      	 	<input type="button" id="route_out" value="&nbsp;Submit&nbsp;" onclick="javascript:submitZoneSupervisorTable();" />
+	      	 </div>	      
+        </div>
+   	 </div>
+   	</div>

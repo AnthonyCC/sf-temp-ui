@@ -127,8 +127,10 @@ private int getSelectedResources(List resources) {
 private void checkDate(String field, String startTime, String endTime, Errors errors) {
 	
 	try {
-		if(DateComparator.compare(DateComparator.PRECISION_MINUTE, TransStringUtil.getServerTime(startTime), TransStringUtil.getServerTime(endTime))>=0) {
-			errors.rejectValue(field, "app.error.123","Invalid Time");
+		if(startTime !=null && endTime!=null){
+			if(DateComparator.compare(DateComparator.PRECISION_MINUTE, TransStringUtil.getServerTime(startTime), TransStringUtil.getServerTime(endTime))>=0) {
+				errors.rejectValue(field, "app.error.123","Invalid Time");
+			}
 		}
 	} catch (ParseException e) {
 		errors.rejectValue(field, "typeMismatch.time", new Object[]{},"Invalid Time");	

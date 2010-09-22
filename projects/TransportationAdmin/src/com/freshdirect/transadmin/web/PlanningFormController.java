@@ -226,7 +226,7 @@ public class PlanningFormController extends AbstractFormController {
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
-		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);
+		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),null,employeeManagerService);
 
 		//set userId to command object
 		model.setUserId(getUserId(request));
@@ -235,7 +235,7 @@ public class PlanningFormController extends AbstractFormController {
 	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
 
 		WebPlanInfo _command=(WebPlanInfo)command;
-		if("true".equalsIgnoreCase(_command.getZoneModified())) {
+		if("true".equalsIgnoreCase(_command.getZoneModified())||"true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
 			return true;
 		}
 		else
@@ -247,6 +247,7 @@ public class PlanningFormController extends AbstractFormController {
 
 		WebPlanInfo _command=(WebPlanInfo)command;
 		_command.setZoneModified("false");
+		_command.setFirstDeliveryTimeModified("false");
 	}
 
 

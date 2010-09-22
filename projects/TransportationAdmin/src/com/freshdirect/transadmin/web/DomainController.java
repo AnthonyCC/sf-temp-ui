@@ -28,7 +28,10 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.transadmin.datamanager.assembler.IDataAssembler;
 import com.freshdirect.transadmin.datamanager.parser.FileCreator;
 import com.freshdirect.transadmin.datamanager.parser.errors.FlatwormCreatorException;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Region;
+import com.freshdirect.transadmin.model.ResourceI;
+import com.freshdirect.transadmin.model.ResourceInfoI;
 import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
@@ -37,6 +40,7 @@ import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -364,11 +368,10 @@ public class DomainController extends AbstractMultiActionController {
 	 */
 	public ModelAndView zoneHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
 
-       // System.out.println("inside zoneHandler");
         String zoneType = request.getParameter("zoneType");
         Collection dataList = null;
         Collection activeZoneCodes = null;
-       // System.out.println("./................."+zoneType);
+
         if("Active".equalsIgnoreCase(zoneType)) {
         	dataList = domainManagerService.getZones();
         	activeZoneCodes = zoneManagerService.getActiveZoneCodes();
@@ -376,7 +379,8 @@ public class DomainController extends AbstractMultiActionController {
         		Iterator _iterator = dataList.iterator();
         		Zone _tmpZone = null;
         		while(_iterator.hasNext()) {
-        			_tmpZone = (Zone)_iterator.next();
+        			_tmpZone = (Zone)_iterator.next();        			
+        			setResourceInfo(_tmpZone);
         			if(!activeZoneCodes.contains(_tmpZone.getZoneCode())) {
         				_iterator.remove();
         			}
@@ -386,6 +390,22 @@ public class DomainController extends AbstractMultiActionController {
         	dataList = domainManagerService.getActiveZones();
         }
 		return new ModelAndView("zoneView","zones",dataList);
+	}
+
+	private void setResourceInfo(Zone _tmpZone) {
+		WebEmployeeInfo webEmpInfo = null;		
+		for (Iterator<ZoneSupervisor> iterator = _tmpZone.getZoneSupervisors().iterator(); iterator.hasNext();) {
+			ZoneSupervisor _zoneSupervisor = iterator.next();
+			try {
+				if(_zoneSupervisor.getEffectiveDate().equals(TransStringUtil.getDate(TransStringUtil.getCurrentDate()))){
+					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
+					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+				}
+			} catch (Exception e) {				
+				e.printStackTrace();
+			}
+		}
 	}
 
 	/**

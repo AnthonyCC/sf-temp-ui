@@ -56,6 +56,7 @@
 		<form:hidden path="ignoreErrors"/>
 		<form:hidden path="errorDate"/>
 		<form:hidden path="zoneModified"/>
+		<form:hidden path="firstDeliveryTimeModified"/>		
 		<table width="100%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td class="screentitle">Add/Edit Plan</td>
@@ -128,8 +129,18 @@
 						</tr>   
 						<tr>
 							<td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
-							<td>     
-								<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);" />             
+							<td>
+								<c:if test='${!empty planForm.planId}'>
+									<c:set var="hasPlan" value="true"/>
+								</c:if>
+								<c:choose>          
+									<c:when test='${hasPlan}'>     
+										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);"/>             
+									</c:when>
+									<c:otherwise> 
+										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);" onChange="firstDeliveryTimeChanged()"/>
+									</c:otherwise>
+								</c:choose>
 							</td>
 							<td><form:errors path="firstDeliveryTime" />&nbsp;</td>                 
 						</tr>
@@ -261,7 +272,11 @@
 		function zoneChanged() {
 			document.getElementById("zoneModified").value = "true";
 			submitData();
-		} 
+		}
+		function  firstDeliveryTimeChanged() {
+			document.getElementById("firstDeliveryTimeModified").value = "true";
+			submitData();
+		}
 		function submitData() {
 			document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("planForm").submit();

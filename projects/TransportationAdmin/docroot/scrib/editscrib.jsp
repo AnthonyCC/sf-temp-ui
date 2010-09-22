@@ -49,7 +49,8 @@
 	<br/> 
 	<div align="center">
 		<form:form commandName = "scribForm" method="post">		
-		
+		<form:hidden path="firstDeliveryTimeModified"/>
+		<form:hidden path="zoneModified"/>		
 		<table width="100%" cellpadding="0" cellspacing="0" border="0">
 			<tr>
 				<td class="screentitle">Add/Edit Scrib</td>
@@ -76,11 +77,23 @@
 						<tr>
 							<td>Zone</td>
 							<td> 
-								
-								<form:select path="zoneS" >
-									<form:option value="" label="--Please Select Zone"/>
-									<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
-								</form:select>
+								<c:if test='${!empty scribForm.scribId}'>
+									<c:set var="hasScrib" value="true"/>
+								</c:if>
+								<c:choose>          
+									<c:when test='${hasScrib}'>    
+										<form:select path="zoneS">
+											<form:option value="" label="--Please Select Zone"/>
+											<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
+										</form:select>
+									</c:when>
+									<c:otherwise>
+										<form:select path="zoneS" onChange="zoneChanged()">
+											<form:option value="" label="--Please Select Zone"/>
+											<form:options items="${zones}" itemLabel="displayName" itemValue="zoneCode" />
+										</form:select> 
+									</c:otherwise>
+								</c:choose>
 							</td>
 							<td><form:errors path="zoneS" />&nbsp;</td>
 						</tr>
@@ -93,8 +106,18 @@
 						</tr>
 						<tr>
 							<td>First Dlv Time</td>
-							<td>         
-								<form:input maxlength="50" size="24" path="firstDlvTimeS" onblur="this.value=time(this.value);" /> 
+							<td>  
+								<c:if test='${!empty scribForm.scribId}'>
+									<c:set var="hasScrib" value="true"/>
+								</c:if>
+								<c:choose>          
+									<c:when test='${hasScrib}'>     
+										<form:input maxlength="50" size="24" path="firstDlvTimeS" onblur="this.value=time(this.value);"/>             
+									</c:when>
+									<c:otherwise> 
+										<form:input maxlength="50" size="24" path="firstDlvTimeS" onblur="this.value=time(this.value);" onChange="firstDeliveryTimeChanged()"/>
+									</c:otherwise>
+								</c:choose>							
 							</td>
 							<td><form:errors path="firstDlvTimeS" />&nbsp;</td>                 
 						</tr>
@@ -174,8 +197,8 @@
 			submitData();
 		} 
 		function submitData() {
-			document.getElementById("ignoreErrors").value = "true";
-			document.getElementById("planForm").submit();
+			//document.getElementById("ignoreErrors").value = "true";
+			document.getElementById("scribForm").submit();
 		}
 		function bullpen() {
 			if(document.getElementById("isBullpen1").checked) {
@@ -188,6 +211,10 @@
 			document.getElementById("zoneModified").value = "true";
 			document.getElementById("ignoreErrors").value = "true";
 			document.getElementById("planForm").submit();
+		}
+		function  firstDeliveryTimeChanged() {
+			document.getElementById("firstDeliveryTimeModified").value = "true";
+			submitData();			
 		}
 		function back()
 	    {

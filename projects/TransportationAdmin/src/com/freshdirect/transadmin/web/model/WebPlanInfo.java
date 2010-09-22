@@ -66,7 +66,16 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	private String referenceContextId;
 	private boolean isTeamOverride;
+	private String firstDeliveryTimeModified;
 	
+	public String getFirstDeliveryTimeModified() {
+		return firstDeliveryTimeModified;
+	}
+
+	public void setFirstDeliveryTimeModified(String firstDeliveryTimeModified) {
+		this.firstDeliveryTimeModified = firstDeliveryTimeModified;
+	}
+
 	public String getWeekDate() {
 		try {
 			if(this.planDate!=null){

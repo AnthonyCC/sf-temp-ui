@@ -210,9 +210,15 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 	
 	public Collection getDlvScenarioZones(String scenarioId)  throws DataAccessException {
 		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from DlvScenarioZones sz");
-		//strBuf.append(" where gd.restrictionId='").append(restrictionId).append("'");		
+		strBuf.append("from DlvScenarioZones sz");			
 		strBuf.append(" where sz.scenarioZonesId.scenarioId='").append(scenarioId).append("'");		
+		return (Collection) getHibernateTemplate().find(strBuf.toString());
+	}
+	
+	public Collection getDefaultZoneSupervisors(String zoneCode)  throws DataAccessException {
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from ZoneSupervisor s");			
+		strBuf.append(" where s.zone.zoneCode='").append(zoneCode).append("'");		
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
 	}
 

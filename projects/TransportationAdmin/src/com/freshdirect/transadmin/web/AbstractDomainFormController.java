@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import com.freshdirect.transadmin.service.DomainManagerI;
+import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 
 public abstract class AbstractDomainFormController extends AbstractFormController {
@@ -13,6 +14,16 @@ public abstract class AbstractDomainFormController extends AbstractFormControlle
 	private DomainManagerI domainManagerService;
 	
 	private LocationManagerI locationManagerService;
+	
+	private EmployeeManagerI employeeManagerService;
+	
+	public EmployeeManagerI getEmployeeManagerService() {
+		return employeeManagerService;
+	}
+
+	public void setEmployeeManagerService(EmployeeManagerI employeeManagerService) {
+		this.employeeManagerService = employeeManagerService;
+	}
 
 	public DomainManagerI getDomainManagerService() {
 		return domainManagerService;

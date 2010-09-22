@@ -1,29 +1,30 @@
 package com.freshdirect.transadmin.web;
 
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.ServletRequestDataBinder;
 
 
+
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnAreaPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnZoneTypePropertyEditor;
 
 public class ZoneFormController extends AbstractDomainFormController {
-
-
 
 	protected Map referenceData(HttpServletRequest request) throws ServletException {
 
@@ -32,6 +33,7 @@ public class ZoneFormController extends AbstractDomainFormController {
 		refData.put("areas", getDomainManagerService().getAreas());
 		refData.put("regions", getDomainManagerService().getRegions());
 		refData.put("servicetimetypes", getLocationManagerService().getServiceTimeTypes());		
+		refData.put("supervisors", DispatchPlanUtil.getSortedResources(getEmployeeManagerService().getSupervisors()));		
 		return refData;
 	}
 

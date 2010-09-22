@@ -79,6 +79,8 @@
 							  <ec:column alias="region" property="region.name" title="Region"/>
 							  <ec:column alias="serviceTimeType" property="defaultServiceTimeType.name" title="ServiceTime Type"/>
 							  <ec:column alias="unattended" property="unattended" title="Unattended"/>
+                              <ec:column  filterable="true" property="amZoneSupervisors"  cell="com.freshdirect.transadmin.web.ui.FDZoneSupervisorCell" title="AM Supervisors" alias="amSupervisors"/>
+            				  <ec:column  filterable="true" property="pmZoneSupervisors"  cell="com.freshdirect.transadmin.web.ui.FDZoneSupervisorCell" title="PM Supervisors" alias="pmSupervisors"/>
                               <ec:column alias="priority" property="priority" title="Priority"/>
                               <ec:column alias="enableCOS" property="cosEnabled" title="COS Enabled"/>
                               <ec:column alias="stemfrom" property="stemToTime" title="Avg To Stem Time(Mins)"/>

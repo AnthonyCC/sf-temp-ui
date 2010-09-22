@@ -22,6 +22,7 @@ import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.UPSRouteInfo;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -298,7 +299,7 @@ public class DispatchPlanUtil {
 
 	}
 
-	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,EmployeeManagerI employeeManagerService) {
+	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String isfirstDlvTimeModified,String dispatchDate,EmployeeManagerI employeeManagerService) {
 
 		setResourceReq(planInfo,zone);
 		boolean isZoneModified=false;
@@ -308,9 +309,62 @@ public class DispatchPlanUtil {
 			planInfo.setZoneName(zone.getName());
 			planInfo.setRegionCode(zone.getRegion().getCode());
 			planInfo.setRegionName(zone.getRegion().getName());
+			planInfo.setSupervisorCode(null);			
+		}
+		if(zone!=null && "true".equals(isfirstDlvTimeModified)) {
+			
+			try {
+				String shift = getShiftForPlan(planInfo,dispatchDate);					
+				Date _currentDate = null;
+				if(dispatchDate!=null && planInfo.getPlanDate()==null)
+					_currentDate = TransStringUtil.getServerDateString1(dispatchDate);
+				else						
+					_currentDate = planInfo.getPlanDate();
+				if("AM".equals(shift)){
+					for (Iterator<ZoneSupervisor> itr = zone.getAmZoneSupervisors().iterator(); itr.hasNext();) {
+						ZoneSupervisor _supervisor = itr.next();					
+						if(_supervisor.getEffectiveDate().equals(_currentDate)){
+							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
+							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
+								planInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
+							}							
+							planInfo.setSupervisorCode(_supervisor.getSupervisorId());
+						}
+					}
+				}else if("PM".equals(shift)){
+					for (Iterator<ZoneSupervisor> itr = zone.getPmZoneSupervisors().iterator(); itr.hasNext();) {
+						ZoneSupervisor _supervisor = itr.next();						
+						if(_supervisor.getEffectiveDate().equals(_currentDate)){
+							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
+							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
+								planInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
+							}
+							planInfo.setSupervisorCode(_supervisor.getSupervisorId());
+						}
+					}
+				}
+			} catch (ParseException e) {				
+				e.printStackTrace();
+			}			
+			
 		}
 		setResourceInfo(planInfo,isZoneModified,employeeManagerService);
 		return planInfo;
+	}
+	
+	private static String getShiftForPlan(WebPlanInfo planInfo, String dispatchDate) throws ParseException {		
+		int day;
+		if(dispatchDate!=null && planInfo.getPlanDate()==null)
+			day = TransStringUtil.getDayOfWeek(TransStringUtil.getDate(dispatchDate));
+		else
+			day = TransStringUtil.getDayOfWeek(planInfo.getPlanDate());
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime())));
+		if (hourOfDay < 12 && day != 7) {
+			return "AM";
+		} else if (hourOfDay < 10 && day == 7) {
+			return "AM";
+		} else
+			return "PM";		
 	}
 
 	public static boolean isBullpen(String bullpen) {
@@ -448,7 +502,6 @@ public class DispatchPlanUtil {
 	    }
 		return true;
 	}
-
 
 	private static WebPlanInfo setResourceInfo(WebPlanInfo model, boolean isZoneModified,EmployeeManagerI employeeManagerService) {
 

@@ -38,7 +38,8 @@
 				<value>com/freshdirect/transadmin/model/Region.hbm.xml</value>  				
 			    <value>com/freshdirect/transadmin/model/TrnAdHocRoute.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/TrnZoneType.hbm.xml</value>  				
-				<value>com/freshdirect/transadmin/model/Zone.hbm.xml</value>  								
+				<value>com/freshdirect/transadmin/model/Zone.hbm.xml</value>
+				<value>com/freshdirect/transadmin/model/ZoneSupervisor.hbm.xml</value>  								
 				<value>com/freshdirect/transadmin/model/ZonetypeResource.hbm.xml</value>  				
 				<value>com/freshdirect/transadmin/model/DispositionType.hbm.xml</value>
 

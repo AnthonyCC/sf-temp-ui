@@ -27,6 +27,24 @@ public class Scrib
 	private String shiftType;
 	private double shiftDuration;
 	private String scribLabel;
+	private String firstDeliveryTimeModified;
+	private String zoneModified;
+	
+	public String getZoneModified() {
+		return zoneModified;
+	}
+
+	public void setZoneModified(String zoneModified) {
+		this.zoneModified = zoneModified;
+	}
+
+	public String getFirstDeliveryTimeModified() {
+		return firstDeliveryTimeModified;
+	}
+
+	public void setFirstDeliveryTimeModified(String firstDeliveryTimeModified) {
+		this.firstDeliveryTimeModified = firstDeliveryTimeModified;
+	}
 	
 	public String getScribLabel() {
 		return scribLabel;

@@ -65,5 +65,7 @@ public interface LocationManagerI  extends BaseManagerI {
    	DlvScenarioDay getServiceTimeScenarioDay(String code);
    	
    	void deleteServiceTimeScenario(DlvServiceTimeScenario scenario);
+   	
+   	Collection getDefaultZoneSupervisors(String zoneId);
 
 }

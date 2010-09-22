@@ -141,4 +141,7 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
     public Collection getDlvScenarioZones(String scenarioId)  {
 		return getLocationManagerDao().getDlvScenarioZones(scenarioId);
 	}
+    public Collection getDefaultZoneSupervisors(String zoneId)  {
+		return getLocationManagerDao().getDefaultZoneSupervisors(zoneId);
+	}
 }

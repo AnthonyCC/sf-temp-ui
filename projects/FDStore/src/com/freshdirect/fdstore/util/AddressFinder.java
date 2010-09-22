@@ -49,11 +49,13 @@ public class AddressFinder {
 						} 
 					}
 				}else{
-					if(user.getShoppingCart()!=null){
+					if(user.getShoppingCart()!=null) {
 						address=user.getShoppingCart().getDeliveryAddress();
+						user.getShoppingCart().setDeliveryAddress(null);
 					}
-					if(address==null)
-						address = (ErpAddressModel)shipToAddresses.iterator().next();					
+					if(address==null) {
+						address = (ErpAddressModel)shipToAddresses.iterator().next();
+					}
 				}
 			}
 		

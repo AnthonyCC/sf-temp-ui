@@ -2,6 +2,7 @@
 <%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 
 
 <%   
@@ -13,6 +14,10 @@
 	String pageTitle = "Add/Edit Zone";
 %>
 <tmpl:insert template='/common/sitelayout.jsp'>
+
+<tmpl:put name='yui-lib'>
+	<%@ include file='/common/i_yui.jspf'%>	
+</tmpl:put>	
 
 <tmpl:put name='title' direct='true'>Operations : Zones : Active : <%=pageTitle%></tmpl:put>
   <tmpl:put name='content' direct='true'>
@@ -175,6 +180,7 @@
               <tr>
                   <td colspan="3" align="center">
                    <input type = "submit" value="&nbsp;Save&nbsp;"  />
+				   <input type = "button" value="&nbsp;Default Supervisor&nbsp;" onclick="javascript:showZoneSupervisorTable(document.getElementById('zoneCode').value);"/>
                 </td>     
               </tr>
               </table>        
@@ -187,6 +193,6 @@
      </div>
      </div>
      </div>
-     
+     <%@ include file='i_zonesupervisorinfo.jspf'%>   
   </tmpl:put>
 </tmpl:insert>

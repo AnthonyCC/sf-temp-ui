@@ -48,5 +48,11 @@
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>
+          <set name="zoneSupervisors" inverse="true" lazy="false" cascade="all,delete-orphan">
+            <key>
+                <column name="ZONE_CODE" length="5" not-null="true" />
+            </key>
+            <one-to-many class="com.freshdirect.transadmin.model.ZoneSupervisor" />
+        </set>
     </class>
 </hibernate-mapping>

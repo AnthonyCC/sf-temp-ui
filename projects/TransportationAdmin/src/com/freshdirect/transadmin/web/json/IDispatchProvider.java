@@ -28,4 +28,6 @@ public interface IDispatchProvider {
 	String getScribLabel(String date);
 	Collection getDatesByScribLabel(String slabel);
 	String getTotalNoTrucksByDate(String date);
+	Collection getDefaultZoneSupervisors(String zoneId);
+	boolean doZoneDefaultSupervisor(String id, String[][] zone);
 }

@@ -173,7 +173,18 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 			return lastName;
 		if (employeeId == null || "".equals(employeeId))
 			return lastName;
-		return lastName + SEPERATOR + firstName + "-" + employeeId;
+		return lastName + SEPERATOR + firstName + " - " + employeeId;
+	}
+	
+	public String getSupervisorName() {
+		
+		if((lastName==null ||"".equals(lastName))&&(firstName==null || "".equals(firstName)))
+			return "";
+		if(lastName==null || "".equals(lastName))
+			return firstName;
+		if(firstName==null || "".equals(firstName))
+			return lastName;
+		return lastName+", "+firstName;
 	}
 
 	public void setEmployeeId(String employeeId) {

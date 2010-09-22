@@ -39,11 +39,13 @@ import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -61,7 +63,9 @@ import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.ScenarioZoneCommand;
 import com.freshdirect.transadmin.web.model.SpatialBoundary;
+import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
+import com.freshdirect.transadmin.web.model.ZoneSupervisorCommand;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchProviderController extends JsonRpcController implements
@@ -654,6 +658,54 @@ public class DispatchProviderController extends JsonRpcController implements
 			e.printStackTrace();
 		}		
 		return Integer.toString(count);
+	}
+	
+	public Collection getDefaultZoneSupervisors(String zoneId){
+		Collection tempLst = Collections.EMPTY_LIST;
+		Collection zoneLst = new ArrayList();
+		if(zoneId!=null){
+			tempLst = locationManagerService.getDefaultZoneSupervisors(zoneId);
+			for (Iterator iterator = tempLst.iterator(); iterator.hasNext();) {
+				
+				ZoneSupervisor _zoneSupervisor = (ZoneSupervisor) iterator.next();
+				WebEmployeeInfo emp = employeeManagerService.getEmployeeEx(_zoneSupervisor.getSupervisorId());
+				_zoneSupervisor.setSupervisorName(emp.getEmpInfo().getSupervisorName());
+				_zoneSupervisor.setSupervisorId(emp.getEmpInfo().getEmployeeId());
+				zoneLst.add(new ZoneSupervisorCommand(_zoneSupervisor));							
+			}
+		}		
+		return zoneLst;	
+	}
+	
+	public boolean doZoneDefaultSupervisor(String id, String[][] zone){
+		
+		List selZoneSupervisorLst= new ArrayList();
+		
+		for(int i=0;i<zone.length;i++) {
+					
+			try {
+				ZoneSupervisor _supervisor= new ZoneSupervisor();
+				_supervisor.setDayPart(TransStringUtil.isEmpty(zone[i][0])? null:zone[i][0]);
+				_supervisor.setSupervisorId(TransStringUtil.isEmpty(zone[i][3])? null:zone[i][3]);
+				_supervisor.setEffectiveDate(TransStringUtil.isEmpty(zone[i][2])? null:TransStringUtil.getServerDateString1(zone[i][2]));
+				_supervisor.setZoneCode(id);
+				selZoneSupervisorLst.add(_supervisor);				
+			} catch(ParseException exp) {
+				return false;
+			}
+		}
+		if(id != null) {
+			getLocationManagerService().removeEntity(
+				getLocationManagerService().getDefaultZoneSupervisors(id));
+		}
+		if(selZoneSupervisorLst.size() > 0) {
+			try{
+				getLocationManagerService().saveEntityList(selZoneSupervisorLst);
+			}catch(Exception ex){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

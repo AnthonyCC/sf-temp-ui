@@ -131,6 +131,11 @@
       function handleResoureChangeEvent(target, src) {			
 			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
 	  }
+
+      function  firstDeliveryTimeChanged() {
+			document.getElementById("firstDeliveryTimeModified").value = "true";			
+			dispatchForm.submit();
+	  }
       
       </script>
       <style>
@@ -152,6 +157,7 @@
       <input type=hidden name="zoneId" value="" />
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
 	  <form:hidden path="overrideUser" />
+	  <form:hidden path="firstDeliveryTimeModified"/>
     
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
@@ -283,16 +289,16 @@
 					<tr>
 						<td>Supervisor</td>
 						<td>      
-							<spring:bind path="dispatchForm.confirmed"> 
-								<c:choose>                    
-									<c:when test='${status.value == "false"}'> 
+							<spring:bind path="dispatchForm.confirmed">
+								<c:choose>
+									<c:when test='${status.value=="false"}'> 
 										<form:select path="supervisorCode" disabled='<c:out value="${status.value}" />'>
 											<form:option value="" label="Select Supervisor"/>
 											<form:options items="${supervisors}" itemLabel="supervisorInfo" itemValue="employeeId" />
 										</form:select>
 									</c:when>
 									<c:otherwise> 
-										<form:input maxlength="50" size="30" path="supervisorName" readOnly="true" />
+										<form:input maxlength="50" size="30" path="supervisorName" readOnly="true" cssClass="noborder"/>
 									</c:otherwise> 
 								</c:choose>
 							</spring:bind>  
@@ -324,14 +330,19 @@
 						<td><a id="timeFirstDlv_toggler">First Dlv.&nbsp;Time</a></td>
 						<td>  
 							 <spring:bind path="dispatchForm.confirmed"> 
+								<c:if test="${!empty dispatchForm.dispatchId }">
+										<c:set var="hasDispatch" value="true"/>
+								</c:if>
 								<c:choose>                    
-								<c:when test='${status.value == "false"}'> 
-									<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" />
-									<!-- <div id="timeFirstDlv_picker" class="time_picker_div"></div> -->
-								</c:when>
-								 <c:otherwise> 
-								 <form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>
-								</c:otherwise> 
+									<c:when test='${!hasDispatch}'>   
+										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" onChange="firstDeliveryTimeChanged()";/>									
+									</c:when>									
+									<c:when test='${status.value == "false"}'> 
+										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" />									
+									</c:when>
+									 <c:otherwise> 
+									 	<form:input maxlength="50" size="8" path="firstDeliveryTime" readOnly="true"/>
+									</c:otherwise> 
 								 </c:choose>
 							 </spring:bind> 
 						</td>

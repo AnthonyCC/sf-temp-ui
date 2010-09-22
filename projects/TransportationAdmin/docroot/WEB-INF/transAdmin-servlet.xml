@@ -306,6 +306,7 @@
 	<bean id="zoneFormController" class="com.freshdirect.transadmin.web.ZoneFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="locationManagerService" ref="locationManager"/>
+		<property name="employeeManagerService" ref="employeeManager"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="zoneForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.model.Zone"/>

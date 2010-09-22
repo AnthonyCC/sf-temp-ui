@@ -29,16 +29,20 @@ import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
 import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.util.DispatchPlanUtil;
+import com.freshdirect.transadmin.util.ScribUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.editor.RegionPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnAreaPropertyEditor;
 import com.freshdirect.transadmin.web.editor.TrnZoneTypePropertyEditor;
 import com.freshdirect.transadmin.web.model.CopyPlanCommand;
+import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class ScribFormController extends AbstractDomainFormController {
 			
@@ -96,13 +100,33 @@ public class ScribFormController extends AbstractDomainFormController {
 	protected void onBind(HttpServletRequest request, Object command) {
 
 		Scrib model = (Scrib) command;
-		String zoneId=request.getParameter("zoneS");
-		Zone zone= getDomainManagerService().getZone(zoneId);
+		String zoneId = request.getParameter("zoneS");
+		Zone zone = getDomainManagerService().getZone(zoneId);
 		if(zone!=null)
 		{
 			model.setZone(zone);
 			model.setRegion(zone.getRegion());
 		}
+		model= ScribUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);		
+	}
+
+	
+
+	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
+
+		Scrib _command = (Scrib) command;
+		if("true".equalsIgnoreCase(_command.getZoneModified())|| "true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
+			return true;
+		}
+		else
+			return isFormChangeRequest(request);
+	}
+
+	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
+																							throws Exception {
+		Scrib _command=(Scrib)command;
+		_command.setZoneModified("false");
+		_command.setFirstDeliveryTimeModified("false");
 	}
 
 	protected void preProcessDomainObject(Object domainObject) {
