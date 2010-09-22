@@ -1,10 +1,8 @@
 package com.freshdirect.fdstore;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +14,6 @@ import com.freshdirect.content.nutrition.EnumKosherSymbolValue;
 import com.freshdirect.content.nutrition.EnumKosherTypeValue;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
-import com.freshdirect.content.nutrition.ErpNutritionType;
 import com.freshdirect.erp.EnumAlcoholicContent;
 
 /**
@@ -49,13 +46,9 @@ public class FDProduct extends FDSku {
 
 	private final FDMaterial material;
 
-	/** nutrition. List<FDNutrition> */
-	private List<FDNutrition> nutrition;
 
 	private FDSalesUnit[] displaySalesUnits;
 	
-	private transient ErpNutritionModel nutritionModel;
-
 	public FDProduct(
 		String skuCode,
 		int version,
@@ -71,9 +64,6 @@ public class FDProduct extends FDSku {
 		this.variations = variations;
 		this.salesUnits = salesUnits;
 		this.pricing = pricing;
-		
-		this.nutrition = nutrition;
-		
 	}
 	
 	public FDProduct(
@@ -335,30 +325,13 @@ public class FDProduct extends FDSku {
         return FDNutritionCache.getInstance().getNutrition(this.getSkuCode());
     }
     
-    public void setNutritionModel(ErpNutritionModel nutritionModel) {
-        this.nutritionModel = nutritionModel;
-        ArrayList<FDNutrition> fdNutritionList = new ArrayList<FDNutrition>();
-        if (this.nutritionModel != null) {
-            // Construct FDNutrition from ErpNutritionModel.value map
-            for (Iterator<String> nIter = nutritionModel.getKeyIterator(); nIter.hasNext(); ) {
-                String key = nIter.next();
-                FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), nutritionModel.getValueFor(key), nutritionModel
-                        .getUomFor(key));
-                fdNutritionList.add(fdn);
-            }
-        }
-        this.nutrition = fdNutritionList;
-    }
-
 	public List<FDNutrition> getNutrition() {
-		return this.nutrition;
+		return this.getNutritionModel().getNutritionList();
 	}
 
 	public boolean hasNutritionFacts() {
-		if (nutrition.size() == 0)
-			return false;
 		boolean result = false;
-		for (FDNutrition nutr : nutrition) {
+		for (FDNutrition nutr : getNutrition()) {
 			if (nutr.getName().equals("Ignore"))
 				return false;
 			if (nutr.getValue() != 0)
@@ -430,59 +403,23 @@ public class FDProduct extends FDSku {
 		return this.material.getAttributes().isCustPromo();
 	}
 
-	/**
-	 * Check for the presence of an attribute.
-	 *
-	 * @param name name of the attribute
-	 * @return true if the attribute was found
-	 */
-/*	public boolean hasAttribute(String name) {
-		return this.material.hasAttribute(name);
-	}
-*/
-	/**
-	 * Get attribute as a String.
-	 *
-	 * @param name name of the attribute
-	 * @param defaultValue default value to return when attribute is not found or is of different type
-	 * @return String attribute
-	 */
-/*	public String getAttribute(String name, String defaultValue) {
-		return this.material.getAttribute(name, defaultValue);
-	}
-*/
-	/**
-	 * Get attribute as a boolean.
-	 *
-	 * @param name name of the attribute
-	 * @param defaultValue default value to return when attribute is not found or is of different type
-	 * @return boolean attribute
-	 */
-/*	public boolean getAttributeBoolean(String name, boolean defaultValue) {
-		return this.material.getAttributeBoolean(name, defaultValue);
-	}
-*/
-	/**
-	 * Get attribute as a integer.
-	 *
-	 * @param attributeName EnumAttributeName instance, containing the name and the default value
-	 * @return int attribute
-	 * @throws ClassCastException if the specified attributeName is of different type
-	 */
-/*	public int getAttributeInt(EnumAttributeName attributeName) {
-		return this.material.getAttributeInt(attributeName);
-	}*/
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer("FDProduct[");
-		buf.append(this.getSkuCode()).append(" v").append(this.getVersion()).append(" pd ").append(this.getPricingDate());
+		StringBuilder buf = new StringBuilder("FDProduct[");
+		buf.append(this.getSkuCode()).append(" v").append(this.getVersion()).append(" pd ").append(this.getPricingDate()).append("\n\tsalesUnits:");
 		for (int i = 0; i < this.salesUnits.length; i++) {
 			buf.append("\n\t").append(this.salesUnits[i].toString());
 		}
+		buf.append("\n\tvariations:");
 		for (int i = 0; i < this.variations.length; i++) {
 			buf.append("\n\t").append(this.variations[i].toString());
 		}
-		buf.append("\n]");
+                buf.append("\n\tdisplaySalesUnits:");
+                for (int i = 0; i < this.displaySalesUnits.length; i++) {
+                    buf.append("\n\t").append(this.displaySalesUnits[i].toString());
+                }
+                
+		buf.append("\n\t").append(this.material).append("\n]");
 		return buf.toString();
 	}
 

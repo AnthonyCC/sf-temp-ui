@@ -39,7 +39,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
     @Override
     public void remove(K key) {
         MemcachedClient client = MemcacheConfiguration.getClient();
-        if (client != null) {
+        if (client != null && MemcacheConfiguration.isEnabled()) {
             client.set(prefix + toStringKey(key), 10, NULL);
         }
     }
@@ -49,7 +49,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
         final String stringKey = prefix + toStringKey(key);
         try {
             MemcachedClient client = MemcacheConfiguration.getClient();
-            if (client != null) {
+            if (client != null && MemcacheConfiguration.isEnabled()) {
                 Object value = client.get(stringKey);
                 if (NULL.equals(value)) {
                     return null;
@@ -64,6 +64,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
             return null;
         } catch (OperationTimeoutException e) {
             LOG.error("timeout for get:"+e.getMessage());
+            MemcacheConfiguration.timeoutError();
             return null;
         }
     }
@@ -74,7 +75,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
         // LOG.debug("put " + stringKey + "->" + object);
         try {
             MemcachedClient client = MemcacheConfiguration.getClient();
-            if (client != null) {
+            if (client != null && MemcacheConfiguration.isEnabled()) {
                 if (object == null) {
                     client.set(stringKey, ttl, NULL);
                 } else {
@@ -83,6 +84,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
             } 
         } catch (OperationTimeoutException e) {
             LOG.error("timeout for set:"+e.getMessage());
+            MemcacheConfiguration.timeoutError();
             return;
         }
     }
@@ -114,7 +116,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
     @Override
     public Map<String, String> getStats() {
         MemcachedClient client = MemcacheConfiguration.getClient();
-        Map<String, String> result = new HashMap();
+        Map<String, String> result = new HashMap<String, String>();
         if (client != null) {
             Map<SocketAddress, Map<String, String>> stats = client.getStats();
             for (Map.Entry<SocketAddress, Map<String, String>> k : stats.entrySet()) {

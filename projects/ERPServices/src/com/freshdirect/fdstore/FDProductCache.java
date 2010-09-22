@@ -54,7 +54,7 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
         
 
     public FDProductCache(int ttl) {
-        super(5 * DateUtil.MINUTE, "p/", ttl);
+        super(5 * DateUtil.MINUTE, "pr/", ttl);
     }
     
     public FDProductCache(boolean mock) {
@@ -67,6 +67,10 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
             return getFDProduct(new FDSku(skuCode, vs));
         }
         throw new FDSkuNotFoundException("SKU not found in lastVersion cache:" + skuCode);
+    }
+    
+    public Integer getLastVersion(String skuCode) {
+        return lastVersions.get(skuCode);
     }
     
     public FDProduct getFDProduct(FDSku key) throws FDSkuNotFoundException, FDResourceException {

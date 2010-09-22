@@ -109,6 +109,10 @@
 		</thead>
 		<tbody>
 			<tr>
+				<td class="even">Memcached working:</td>
+				<td class="even"><%= (MemcacheConfiguration.isEnabled() && (MemcacheConfiguration.getClient() != null)) %></td>
+			</tr>
+			<tr>
 				<td class="odd">fdstore.properties:</td>
 				<td class="odd"><%= FDStoreProperties.getMemCachedHost()%> : <%= FDStoreProperties.getMemCachedPort() %></td>
 			</tr>

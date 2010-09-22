@@ -22,6 +22,8 @@ public class ZonePriceInfoModel implements Serializable {
 
 	private final boolean showBurstImage;
 
+	
+
 	public ZonePriceInfoModel(double sellingPrice, double promoPrice, boolean itemOnSale, int dealPercentage,
 			int tieredDealPercentage, String sapZoneId) {
 		this(sellingPrice, promoPrice, itemOnSale, dealPercentage, tieredDealPercentage, sapZoneId, true);
@@ -81,4 +83,11 @@ public class ZonePriceInfoModel implements Serializable {
 	public boolean isShowBurstImage() {
 		return showBurstImage;
 	}
+	
+        @Override
+        public String toString() {
+            return "ZonePriceInfoModel[" + sapZoneId + " sellingPrice:" + sellingPrice + " promoPrice:" + promoPrice + " itemOnSale:" + itemOnSale
+                    + " dealPercentage:" + dealPercentage + " tieredDealPercentage:" + tieredDealPercentage + " highestDealPercentage:" + highestDealPercentage
+                    + " showBurstImage:" + showBurstImage + "]";
+        }
 }

@@ -50,7 +50,12 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
     }
     
     
-    protected V getFromExternalCache(K key) {
+    /**
+     * This is only public for testing purposes.
+     * @param key
+     * @return
+     */
+    public V getFromExternalCache(K key) {
         if (memCache != null) {
             return memCache.get(getStringKey(key));
         }

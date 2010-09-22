@@ -2,7 +2,6 @@ package com.freshdirect.fdstore;
 
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
-import com.freshdirect.erp.ErpModelSupport;
 import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
@@ -114,5 +113,15 @@ public class FDMaterial extends FDAttributesProxy {
 	
 	public String getRestrictions() {
 		return getAttributes().getRestrictions();
+	}
+	
+	@Override
+	public String toString() {
+	    return "FDMaterial[materialNumber:'" + materialNumber + "' atpRule:'" + atpRule 
+	        + "' salesUnitCharacteristic:'" + salesUnitCharacteristic
+                + "' quantityCharacteristic:'" + quantityCharacteristic 
+                + "' alcoholicContent:'" + alcoholicContent 
+                + "' taxable:'" + taxable + "' kosherProduction:'" + kosherProduction 
+                + "' platter:'" + platter + "' blockedDays:'" + blockedDays;
 	}
 }

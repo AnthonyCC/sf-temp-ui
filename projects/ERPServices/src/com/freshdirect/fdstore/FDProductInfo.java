@@ -168,17 +168,13 @@ public class FDProductInfo extends FDSku  {
     	return null;
     }
     
-	public String toString() {
-		StringBuffer buf=new StringBuffer("FDProductInfo[");
-		buf.append(this.getSkuCode()).append(" v").append(this.getVersion());
-		buf.append("\n\t").append(this.materialNumbers);
-        buf.append("\n\t").append(this.availStatus.getShortDescription());
-        buf.append("\n\t").append(this.availDate);
-        buf.append("\n\t").append(this.rating);
-        buf.append("\n\t").append(this.rating);
-        buf.append("\n]");
-		return buf.toString();
-	}
+    public String toString() {
+        return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:" 
+                + this.materialNumbers + "\n\t" + this.availStatus.getShortDescription() 
+                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating + "\n\tatpRule:" + this.atpRule 
+                + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.defaultPriceUnit + "\n\tavailDate:"+this.availDate 
+                + "\n\t" + this.zonePriceInfoList + "\n]";
+    }
 
 	public List<String> getCountryOfOrigin() {
 		if(materialNumbers==null) 
