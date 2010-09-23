@@ -1157,5 +1157,9 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setMasqueradeAgent(String agent) {
 		user.setMasqueradeAgent(agent);
 	}
+	
+	public void updateSurcharges() {
+		user.updateSurcharges();
+	}
 }
 

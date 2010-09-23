@@ -666,6 +666,8 @@ public class SubmitOrderAction extends WebActionSupport {
 			} else {
 				// Clear the cart from the session by replacing it with a new cart
 				user.setShoppingCart( new FDCartModel() );
+				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
+				user.updateSurcharges();
 
 			}
 			if(user.getRedeemedPromotion() != null){

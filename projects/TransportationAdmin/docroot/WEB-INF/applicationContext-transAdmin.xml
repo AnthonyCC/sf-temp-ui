@@ -19,9 +19,7 @@
 
                 <value>com/freshdirect/transadmin/model/DlvServiceTimeType.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvLocation.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/DlvBuildingDtl.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DlvBuilding.hbm.xml</value>
-				<value>com/freshdirect/transadmin/model/DlvServiceTime.hbm.xml</value>				
 				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  

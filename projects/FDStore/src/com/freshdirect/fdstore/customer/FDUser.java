@@ -383,7 +383,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     }
 
 
-    private void updateSurcharges() {
+    public void updateSurcharges() {
 		this.getShoppingCart().clearCharge(EnumChargeType.DELIVERY);
 		this.getShoppingCart().clearCharge(EnumChargeType.MISCELLANEOUS);
 

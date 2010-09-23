@@ -13,7 +13,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.Zone;
@@ -44,14 +43,7 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 
 		return getDataList("DlvServiceTime");
 	}
-
-	public Collection getServiceTimesForZoneTypes(List zoneTypeLst) throws DataAccessException {
-
-		DetachedCriteria crit = DetachedCriteria.forClass(DlvServiceTime.class);
-		crit.add(Expression.in("id.zoneType", zoneTypeLst));
-		return this.getHibernateTemplate().findByCriteria(crit);
-	}
-
+	
 	public Collection getZonesForServiceTimeTypes(List serviceTypeLst) throws DataAccessException {
 		DetachedCriteria crit = DetachedCriteria.forClass(Zone.class);
 		crit.add(Expression.in("defaultServiceTimeType.code", serviceTypeLst));
@@ -106,21 +98,6 @@ public class LocationManagerDaoHibernateImpl extends BaseManagerDaoHibernateImpl
 		strBuf.append(" and sd.dayOfWeek=").append(dayOfWeek);
 		strBuf.append(" Order By s.code");
 		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}
-
-	public DlvServiceTime getServiceTime(String code, String zoneType) throws DataAccessException {
-
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from DlvServiceTime dl");
-
-		strBuf.append(" where dl.id.serviceTimeType='").append(code).append("'");
-
-		strBuf.append(" and dl.id.zoneType='").append(zoneType).append("'");
-		List dataList = ((List) getHibernateTemplate().find(strBuf.toString()));
-		if(dataList.size() > 0) {
-			return (DlvServiceTime)dataList.get(0);
-		}
-		return null;
 	}
 
 	public Collection getDeliveryLocations(String srubbedAddress, String apt, String zipCode

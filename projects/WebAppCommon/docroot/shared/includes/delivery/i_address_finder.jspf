@@ -88,9 +88,11 @@ if(!timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER))
 				if(address!=null){ %>
 					<td class="text12">
 						<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-						<b><%=address.getAddress1()%><br><%=address.getCity()%>, <%=address.getState()%> <%=address.getZipCode()%></b><br>
+						<b><%=address.getAddress1()%><br><%=address.getCity()%> <%=address.getState()%> <%=address.getZipCode()%></b><br>
 						<%if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){%>
 							<a href="/help/delivery_info_check_slots.jsp" class="text11">change address</a>
+						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)){%>
+							<a href="/your_account/delivery_info_check_slots.jsp" class="text11">change address</a>
 						<%}else if(timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM) && isCheckAddress){%>
 							<br><a href="/main/delivery_available_slots.jsp" class="order_detail">View all addresses for this customer</a>
 						<%}%>

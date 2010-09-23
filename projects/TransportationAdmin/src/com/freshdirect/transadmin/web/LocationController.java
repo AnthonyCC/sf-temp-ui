@@ -36,7 +36,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.model.TrnZoneType;
@@ -44,7 +43,6 @@ import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.LocationManagerI;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-import com.freshdirect.transadmin.web.model.ServiceTimeCommand;
 
 public class LocationController extends AbstractMultiActionController  {
 	
@@ -599,74 +597,6 @@ public class LocationController extends AbstractMultiActionController  {
 		return dlvServiceTimeScenarioHandler(request, response);
 	}
 	
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView dlvServiceTimeHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {		
-		
-		Collection dataList = locationManagerService.getServiceTimes();
-		List commandList = new ArrayList();
-				
-		Map zoneTypeMap = new HashMap();
-		Collection zoneLst = domainManagerService.getZoneTypes();
-		if(zoneLst != null) {
-			Iterator iterator = zoneLst.iterator();
-			TrnZoneType type = null;
-			while(iterator.hasNext()) {
-				type = (TrnZoneType)iterator.next();
-				zoneTypeMap.put(type.getZoneTypeId(), type.getName());
-			}
-		}
-		if(dataList != null) {
-			Iterator iterator = dataList.iterator();
-			DlvServiceTime serviceTime = null;
-			ServiceTimeCommand tmpCommand = null;
-			while(iterator.hasNext()) {
-				serviceTime = (DlvServiceTime)iterator.next();
-				tmpCommand = new ServiceTimeCommand(serviceTime);
-				tmpCommand.setZoneTypeName((String)zoneTypeMap.get(tmpCommand.getZoneType()));
-				commandList.add(tmpCommand);
-			}
-		}		
-		ModelAndView modelView = new ModelAndView("dlvServiceTimeView","dlvservicetimelist",commandList);
-		//modelView.addObject("referencemapping", zoneTypeMap);
-		return modelView;
-	}
-	
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView dlvServiceTimeDeleteHandler(HttpServletRequest request, HttpServletResponse response) 
-								throws ServletException, ParseException {
-		
-		Set dispatchSet=new HashSet();
-		String arrEntityList[] = getParamList(request);
-		StringTokenizer splitter = null;
-		Object tmpBean = null;
-		if (arrEntityList != null) {			
-			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				splitter = new StringTokenizer(arrEntityList[intCount], "$p$g");
-				tmpBean = locationManagerService.getServiceTime(splitter.nextToken(), splitter.nextToken());
-				if(tmpBean != null) {
-					dispatchSet.add(tmpBean);
-				}
-			}
-		}		
-		//locationManagerService.removeEntity(dispatchSet);
-		removeEntityList(dispatchSet);
-		saveMessage(request, getMessage("app.actionmessage.103", null));
-
-		return dlvServiceTimeHandler(request, response);
-	}
-		
-
 	public LocationManagerI getLocationManagerService() {
 		return locationManagerService;
 	}

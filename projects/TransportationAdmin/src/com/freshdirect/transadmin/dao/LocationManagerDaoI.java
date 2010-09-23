@@ -9,7 +9,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 
@@ -20,8 +19,6 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	DlvServiceTimeType getServiceTimeType(String id) throws DataAccessException;
 	
 	Collection getServiceTimes() throws DataAccessException;
-	
-	DlvServiceTime getServiceTime(String code, String zoneType) throws DataAccessException;
 	
 	Collection getDeliveryLocations(String srubbedAddress, String apt, String zipCode, String confidence, String quality) throws DataAccessException;
 	
@@ -46,8 +43,6 @@ public interface LocationManagerDaoI extends BaseManagerDaoI {
 	Collection getScenariosWithNoDay() throws DataAccessException;
 	
 	Collection getDefaultServiceTimeScenarioDay() throws DataAccessException;
-	
-	Collection getServiceTimesForZoneTypes(List zoneTypeLst) throws DataAccessException;
 	
 	Collection getZonesForServiceTimeTypes(List serviceTypeLst) throws DataAccessException; 
 	

@@ -66,10 +66,7 @@
  		 	    <prop key="/updatedlvlocation.do">locationController</prop>
  		 	    <prop key="/senddlvlocation.do">locationController</prop>
  		 	    <prop key="/editdlvlocation.do">deliveryLocationFormController</prop> 
-   		 	    <prop key="/dlvservicetime.do">locationController</prop>
- 		 	    <prop key="/deletedlvservicetime.do">locationController</prop>
- 		 	    <prop key="/editdlvservicetime.do">dlvServiceTimeFormController</prop>
- 		 	    <prop key="/dlvservicetimetype.do">locationController</prop>
+   		 	    <prop key="/dlvservicetimetype.do">locationController</prop>
  		 	    <prop key="/deletedlvservicetimetype.do">locationController</prop>
  		 	    <prop key="/editdlvservicetimetype.do">dlvServiceTimeTypeFormController</prop>
  		 	    <prop key="/routinginput.do">routingInputFormController</prop> 
@@ -242,8 +239,6 @@
 	 	    <prop key="/deletedlvlocation.do">dlvLocationDeleteHandler</prop>	 	    
 	 	    <prop key="/updatedlvlocation.do">dlvLocationUpdateHandler</prop>
 	 	    <prop key="/senddlvlocation.do">dlvLocationSendHandler</prop>
-	 	    <prop key="/dlvservicetime.do">dlvServiceTimeHandler</prop>	 	   
-	 	    <prop key="/deletedlvservicetime.do">dlvServiceTimeDeleteHandler</prop>
 	 	    <prop key="/dlvservicetimetype.do">dlvServiceTimeTypeHandler</prop>	 	   
 	 	    <prop key="/deletedlvservicetimetype.do">dlvServiceTimeTypeDeleteHandler</prop>
 	 	    <prop key="/download.do">downloadHandler</prop>
@@ -442,18 +437,6 @@
         <property name="validator" ref="deliveryBuildingDtlValidator"/>
         <property name="successView" value="deliveryBuildingDtlEdit" />
         <property name="formView" value="deliveryBuildingDtlEdit" />
-	</bean>
-    
-	
-	<bean id="dlvServiceTimeFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeFormController">
-		<property name="locationManagerService" ref="locationManager"/>
-		<property name="domainManagerService" ref="domainManager"/>
-		<property name="sessionForm" value="true"/>
-        <property name="commandName" value="dlvServiceTimeForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.DlvServiceTime"/>
-        <property name="validator" ref="dlvServiceTimeValidator"/>
-        <property name="successView" value="dlvServiceTimeEdit" />
-        <property name="formView" value="dlvServiceTimeEdit" />
 	</bean>
 	
 	<bean id="dlvServiceTimeTypeFormController" class="com.freshdirect.transadmin.web.DlvServiceTimeTypeFormController">
@@ -681,7 +664,6 @@
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
 	<bean id="assignmentValidator" class="com.freshdirect.transadmin.web.validation.AssignmentValidator"/>
 	<bean id="deliveryLocationValidator" class="com.freshdirect.transadmin.web.validation.DlvLocationValidator"/>
-	<bean id="dlvServiceTimeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeValidator"/>
 	<bean id="dlvServiceTimeTypeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeTypeValidator"/>
 	<bean id="deliveryBuildingValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingValidator"/>
 	<bean id="deliveryBuildingDtlValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingDtlValidator"/>

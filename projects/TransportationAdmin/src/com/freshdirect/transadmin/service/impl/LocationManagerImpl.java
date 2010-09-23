@@ -13,7 +13,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 import com.freshdirect.transadmin.service.LocationManagerI;
@@ -71,10 +70,6 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 		return getLocationManagerDao().getServiceTimes(); 
 	}
 	
-	public DlvServiceTime getServiceTime(String code, String zoneType) {
-		return getLocationManagerDao().getServiceTime(code, zoneType); 
-	}
-	
 	public Collection getDeliveryLocations(String srubbedAddress, String apt,String zipCode, String confidence, String quality) {
 		return getLocationManagerDao().getDeliveryLocations(srubbedAddress, apt, zipCode, confidence, quality); 
 	}
@@ -116,10 +111,6 @@ public class LocationManagerImpl extends BaseManagerImpl  implements LocationMan
 	
 	public Collection getDlvServiceTimeScenarioDays(){
 		return getLocationManagerDao().getDlvServiceTimeScenarioDays();
-	}
-	
-	public Collection getServiceTimesForZoneTypes(List zoneTypeLst) {
-		return getLocationManagerDao().getServiceTimesForZoneTypes(zoneTypeLst);
 	}
 	
 	public Collection getZonesForServiceTimeTypes(List serviceTypeLst) {

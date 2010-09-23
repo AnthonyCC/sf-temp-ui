@@ -7,7 +7,6 @@ import com.freshdirect.transadmin.model.DlvBuilding;
 import com.freshdirect.transadmin.model.DlvBuildingDetail;
 import com.freshdirect.transadmin.model.DlvLocation;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
-import com.freshdirect.transadmin.model.DlvServiceTime;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
 import com.freshdirect.transadmin.model.DlvServiceTimeType;
 
@@ -18,8 +17,6 @@ public interface LocationManagerI  extends BaseManagerI {
 	DlvServiceTimeType getServiceTimeType(String id);
 	
 	Collection getServiceTimes();
-	
-	DlvServiceTime getServiceTime(String code, String zoneType);
 	
 	Collection getDeliveryLocations(String srubbedAddress, String apt, String zipCode, String confidence, String quality);
 	
@@ -48,8 +45,6 @@ public interface LocationManagerI  extends BaseManagerI {
 	DlvServiceTimeScenario getDefaultServiceTimeScenario();
 	
 	Collection getDefaultServiceTimeScenarioDay();
-	
-	Collection getServiceTimesForZoneTypes(List zoneTypeLst);
 	
 	Collection getZonesForServiceTimeTypes(List serviceTypeLst);
 	
