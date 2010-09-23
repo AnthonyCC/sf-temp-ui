@@ -20,6 +20,7 @@ public class OrderModelAssembler implements IDataAssembler {
 		OrderInfoModel tmpInputModel = (OrderInfoModel)objInput;
 		IOrderModel infoModel = new OrderModel();
 		infoModel.setOrderNumber(tmpInputModel.getOrderNumber());
+		infoModel.setErpOrderNumber(tmpInputModel.getOrderNumber());
 		infoModel.setCustomerNumber(tmpInputModel.getCustomerNumber());
 		
 		IDeliveryModel deliveryModel = new DeliveryModel();

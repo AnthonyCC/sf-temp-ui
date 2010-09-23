@@ -107,7 +107,7 @@ public class RouteInputDataManager extends RouteDataManager {
 		while(iterator.hasNext()) {
 			
 			tmpInputModel = (IOrderModel)iterator.next();			
-			batchOrderList.add(tmpInputModel.getOrderNumber());
+			batchOrderList.add(tmpInputModel.getOrderNumber());//In old Routing In Process ErpOrderId is order no
 			intCount++;
 			if(intCount == batchCount) {				
 				outputOrderList.add(batchOrderList);
@@ -119,7 +119,7 @@ public class RouteInputDataManager extends RouteDataManager {
 		if(batchOrderList.size() > 0) {
 			outputOrderList.add(batchOrderList);
 		}	
-		context.setOrderIdLst(outputOrderList);
+		context.setErpOrderIdLst(outputOrderList);
 	}
 	
 	//Process Chain generated

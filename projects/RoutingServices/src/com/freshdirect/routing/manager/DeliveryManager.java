@@ -75,7 +75,8 @@ public class DeliveryManager extends BaseProcessManager {
 		orderModel.getDeliveryInfo().setDeliveryZone(zoneModel);	
 		
 		if(orderModel.getDeliveryInfo().getDeliveryEndTime() != null
-				&& RoutingServicesProperties.isIncrementWindowEndTime()) {
+				&& RoutingServicesProperties.isIncrementWindowEndTime()
+					&& !request.isHandOffProcess()) {
 			//Fix for time increase window end time by a second
 			orderModel.getDeliveryInfo().setDeliveryEndTime(RoutingDateUtil
 										.addSeconds(orderModel.getDeliveryInfo().getDeliveryEndTime(), 1));

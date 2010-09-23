@@ -114,6 +114,10 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_JDBCBATCHUPDATE_THRESHOLD		= "routingservices.jdbcbatchupdate.threshold";
 	
+	private final static String PROP_DEFAULT_ORDERSIZE		= "routingservices.default.ordersize";
+	
+	private final static String PROP_DEFAULT_SERVICETIME		= "routingservices.default.servicetime";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -174,6 +178,10 @@ public class RoutingServicesProperties {
 		defaults.put(PROP_HANDOFF_MAILTO, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_HANDOFF_MAILCC, "applicationdevelopment@freshdirect.com");
 		defaults.put(PROP_HANDOFF_MAILSUBJECT, "HandOff Process Notification");
+		
+		defaults.put(PROP_DEFAULT_ORDERSIZE, "5");
+		defaults.put(PROP_DEFAULT_SERVICETIME, "180");
+		
 		refresh();		
 	}
 
@@ -414,6 +422,14 @@ public class RoutingServicesProperties {
 	
 	public static String getHandOffMailSubject() {
 		return get(PROP_HANDOFF_MAILSUBJECT);
+	}
+	
+	public static int getDefaultOrderSize() {
+		return getIntVal(get(PROP_DEFAULT_ORDERSIZE));
+	}
+	
+	public static int getDefaultServiceTime() {
+		return getIntVal(get(PROP_DEFAULT_SERVICETIME));
 	}
 	
 }

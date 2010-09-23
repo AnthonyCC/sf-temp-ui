@@ -73,6 +73,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 															
 					IProcessManager rootProcessMgr = getRoutingInProcessChain();
 					ProcessContext context = new ProcessContext();
+					context.setHandOffProcess(true);
 					context.setHandOffBatchId(HandOffRoutingInAction.this.getBatch().getBatchId());
 					context.setUserId(HandOffRoutingInAction.this.getUserId());
 					
@@ -129,7 +130,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 			int intCount = 0;
 			int batchCount = 500;
 			for(IHandOffBatchStop tmpInputModel : dataList) {
-				batchOrderList.add(tmpInputModel.getOrderNumber());
+				batchOrderList.add(tmpInputModel.getErpOrderNumber());
 				intCount++;
 				if(intCount == batchCount) {				
 					outputOrderList.add(batchOrderList);
@@ -141,7 +142,7 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 			if(batchOrderList.size() > 0) {
 				outputOrderList.add(batchOrderList);
 			}	
-			context.setOrderIdLst(outputOrderList);
+			context.setErpOrderIdLst(outputOrderList);
 		}		
 	}
 	

@@ -147,7 +147,7 @@ public class PlantService extends BaseService implements IPlantService {
 		int caseCount = 0;
 		boolean isDefault = true;
 		
-		if(rowMap != null && rowMap.size() > 0) {
+		if(rowMap != null && rowMap.keySet() != null && rowMap.keySet().size() > 0) {
 			cartonCount = (getIntegerValue((Integer)rowMap.get("DRYGOODS")))+getIntegerValue(((Integer)rowMap.get("MEZZ1")))
 								+getIntegerValue(((Integer)rowMap.get("MEZZ2"))); 
 			freezerCount = getIntegerValue(((Integer)rowMap.get("FREEZER")));

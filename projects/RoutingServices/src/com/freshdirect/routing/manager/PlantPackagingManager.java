@@ -31,7 +31,7 @@ public class PlantPackagingManager extends BaseProcessManager {
 		IServiceTimeScenarioModel scenario = request.getRoutingScenario();
 		
 		IOrderModel orderModel = request.getOrderInfo();
-		List orderList = (List)request.getOrderIdLst();
+		List orderList = (List)request.getErpOrderIdLst();
 		Map dataMap = new HashMap();
 		if(orderList != null && request.getOrderPackageCache() == null) {			
 			Iterator tmpIterator = orderList.iterator();
@@ -50,7 +50,7 @@ public class PlantPackagingManager extends BaseProcessManager {
 			request.setOrderPackageCache(dataMap);			
 		}
 		
-		Map rowMap = (Map)((Map)request.getOrderPackageCache()).get(orderModel.getOrderNumber());
+		Map rowMap = (Map)((Map)request.getOrderPackageCache()).get(orderModel.getErpOrderNumber());
 		OrderEstimationResult packagingResult = proxy.getPackageModel(rowMap, scenario.getOrderSizeFormula(),
 																(int)scenario.getDefaultCartonCount(),
 																(int)scenario.getDefaultFreezerCount(),

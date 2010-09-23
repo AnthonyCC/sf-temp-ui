@@ -15,7 +15,7 @@ public class ProcessContext implements Serializable {
 	
 	private Object dataModel;
 	
-	private Object orderIdLst;
+	private Object erpOrderIdLst;
 	
 	private Object orderPackageCache;
 	
@@ -43,6 +43,14 @@ public class ProcessContext implements Serializable {
 	
 	private int maxSessionSize;
 	
+	private boolean isHandOffProcess;
+		
+	public boolean isHandOffProcess() {
+		return isHandOffProcess;
+	}
+	public void setHandOffProcess(boolean isHandOffProcess) {
+		this.isHandOffProcess = isHandOffProcess;
+	}
 	public Object getUserId() {
 		return userId;
 	}
@@ -82,15 +90,15 @@ public class ProcessContext implements Serializable {
 	public void setDataModel(Object dataModel) {
 		this.dataModel = dataModel;
 	}
+		
+	/* THis is for calculating bulk order size */
+	public Object getErpOrderIdLst() {
+		return erpOrderIdLst;
+	}
+	public void setErpOrderIdLst(Object erpOrderIdLst) {
+		this.erpOrderIdLst = erpOrderIdLst;
+	}
 	
-	public Object getOrderIdLst() {
-		return orderIdLst;
-	}
-
-	public void setOrderIdLst(Object orderIdLst) {
-		this.orderIdLst = orderIdLst;
-	}
-
 	public Object getDeliveryTypeCache() {
 		return deliveryTypeCache;
 	}
