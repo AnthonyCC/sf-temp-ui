@@ -78,25 +78,26 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
                 for (int i = 0; i < size; i++) {
                     FDSku sku = changedSkus.get((offset + i) % size);
                 
-                    FDProductInfo externalItem = this.getFromExternalCache(sku.getSkuCode());
-                    if (externalItem == null) {
-                        externalItem = FDFactory.getProductInfo(sku.getSkuCode());
-                        if (externalItem != null) {
-                            this.putToExternalCache(sku.getSkuCode(), externalItem);
-                        }
-                    }
-                    data.put(sku.getSkuCode(), externalItem);
-                    if (p.shouldLogMessage(i)) {
-                        LOGGER.info("already loaded " + i + " from " + size);
-                    }
+                    try {
+						FDProductInfo externalItem = this.getFromExternalCache(sku.getSkuCode());
+						if (externalItem == null) {
+						    externalItem = FDFactory.getProductInfo(sku.getSkuCode());
+						    if (externalItem != null) {
+						        this.putToExternalCache(sku.getSkuCode(), externalItem);
+						    }
+						}
+						data.put(sku.getSkuCode(), externalItem);
+						if (p.shouldLogMessage(i)) {
+						    LOGGER.info("already loaded " + i + " from " + size);
+						}
+					} catch (FDSkuNotFoundException e) {
+			            LOGGER.error("changed sku which is not found (contradictory and critical)", e);
+					}
                 }
             }
             LOGGER.info("FDProductInfo loaded [" + data.size() + ']');
             return data;
         } catch (FDResourceException e) {
-            throw new FDRuntimeException(e);
-        } catch (FDSkuNotFoundException e) {
-            LOGGER.error("changed sku which is not found (contradictory and critical)", e);
             throw new FDRuntimeException(e);
         }
     }
