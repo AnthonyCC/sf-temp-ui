@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -106,11 +107,11 @@ public class ErpInvoicePersistentBean extends ErpTransactionPersistentBean {
 		ps.setString(2, this.getParentPK().getId());
 		ps.setTimestamp(3, new java.sql.Timestamp(this.model.getTransactionDate().getTime()));
 		ps.setString(4, this.getTransactionType().getCode());
-		ps.setDouble(5, this.model.getAmount());
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(this.model.getAmount())));
 		ps.setString(6, this.model.getTransactionSource().getCode());
 		ps.setString(7, this.model.getInvoiceNumber());
-		ps.setDouble(8, this.model.getTax());
-		ps.setDouble(9, this.model.getActualSubTotal()); 
+		ps.setBigDecimal(8, new BigDecimal(String.valueOf(this.model.getTax())));
+		ps.setBigDecimal(9, new BigDecimal(String.valueOf(this.model.getActualSubTotal()))); 
 		ps.setString(10, this.model.getCustomerId());	
 		
 		try {

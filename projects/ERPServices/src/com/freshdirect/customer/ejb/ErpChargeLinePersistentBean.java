@@ -1,5 +1,6 @@
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,8 +8,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 
-import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.common.pricing.Discount;
+import com.freshdirect.common.pricing.EnumDiscountType;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpChargeLineModel;
 import com.freshdirect.framework.core.ModelI;
@@ -96,20 +97,20 @@ public class ErpChargeLinePersistentBean extends ErpReadOnlyPersistentBean {
 		PreparedStatement ps = conn.prepareStatement("INSERT INTO CUST.CHARGELINE (ID, SALESACTION_ID, AMOUNT, REASON_CODE, TYPE, PROMOTION_TYPE, PROMOTION_AMT, PROMOTION_CAMPAIGN, TAX_RATE) values (?,?,?,?,?,?,?,?,?)");
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
-		ps.setDouble(3, this.model.getAmount());
+		ps.setBigDecimal(3, new BigDecimal(this.model.getAmount()));
 		ps.setString(4, this.model.getReasonCode());
 		ps.setString(5, this.model.getType().getCode());
 		Discount d = this.model.getDiscount();
 		if (d != null) {
 			ps.setInt(6, d.getDiscountType().getId());
-			ps.setDouble(7, d.getAmount());
+			ps.setBigDecimal(7, new BigDecimal(d.getAmount()));
 			ps.setString(8, d.getPromotionCode());
 		} else {
 			ps.setNull(6, Types.INTEGER);
 			ps.setNull(7, Types.DOUBLE);
 			ps.setNull(8, Types.VARCHAR);
 		}
-		ps.setDouble(9, this.model.getTaxRate());
+		ps.setBigDecimal(9, new BigDecimal(this.model.getTaxRate()));
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");

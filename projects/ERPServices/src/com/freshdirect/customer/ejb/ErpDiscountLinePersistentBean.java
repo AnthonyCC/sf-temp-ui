@@ -3,6 +3,7 @@
  */
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -100,7 +101,7 @@ public class ErpDiscountLinePersistentBean extends ErpReadOnlyPersistentBean {
 		Discount d = this.model.getDiscount();
 		if (d != null) {
 			ps.setInt(index++, d.getDiscountType().getId());
-			ps.setDouble(index++, d.getAmount());
+			ps.setBigDecimal(index++, new BigDecimal(String.valueOf(d.getAmount())));
 			ps.setString(index++, d.getPromotionCode());
 		} else {
 			ps.setNull(index++, Types.INTEGER);

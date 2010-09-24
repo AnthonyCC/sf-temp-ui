@@ -2,6 +2,7 @@
 
 package com.freshdirect.customer.ejb;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -95,15 +96,15 @@ public class ErpInvoiceLinePersistentBean extends ErpReadOnlyPersistentBean {
 		ps.setString(1, id);
 		ps.setString(2, this.getParentPK().getId());
 		ps.setString(3, this.model.getOrderLineNumber());
-		ps.setDouble(4, this.model.getActualPrice());
-		ps.setDouble(5, this.model.getQuantity());
-		ps.setDouble(6, this.model.getTaxValue());
-		ps.setDouble(7, this.model.getDepositValue());
+		ps.setBigDecimal(4, new BigDecimal(String.valueOf(this.model.getActualPrice())));
+		ps.setBigDecimal(5, new BigDecimal(String.valueOf(this.model.getQuantity())));
+		ps.setBigDecimal(6, new BigDecimal(String.valueOf(this.model.getTaxValue())));
+		ps.setBigDecimal(7, new BigDecimal(String.valueOf(this.model.getDepositValue())));
 		ps.setString(8, this.model.getMaterialNumber());
-		ps.setDouble(9, this.model.getWeight());
-		ps.setDouble(10, this.model.getCustomizationPrice());
-		ps.setDouble(11, this.model.getActualCost());
-		ps.setDouble(12, this.model.getActualDiscountAmount());
+		ps.setBigDecimal(9, new BigDecimal(String.valueOf(this.model.getWeight())));
+		ps.setBigDecimal(10, new BigDecimal(String.valueOf(this.model.getCustomizationPrice())));
+		ps.setBigDecimal(11, new BigDecimal(String.valueOf(this.model.getActualCost())));
+		ps.setBigDecimal(12, new BigDecimal(String.valueOf(this.model.getActualDiscountAmount())));
 		try {
 			if (ps.executeUpdate() != 1) {
 				throw new SQLException("Row not created");
