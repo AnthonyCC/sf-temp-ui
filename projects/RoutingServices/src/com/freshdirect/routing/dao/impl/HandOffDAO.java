@@ -70,7 +70,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 							"SESSION_NAME, REGION ) VALUES (?,?,?)";
 	
 	private static final String INSERT_HANDOFFBATCH_DEPOTSCHEDULE = "INSERT INTO TRANSP.HANDOFF_BATCHDEPOTSCHEDULE ( BATCH_ID,"+
-							"AREA , DEPOTARRIVALTIME, TRUCKDEPARTURETIME ) VALUES (?,?,?,?)";
+							"AREA , DEPOTARRIVALTIME, TRUCKDEPARTURETIME, ORIGIN_ID ) VALUES (?,?,?,?,?)";
 	
 	private static final String INSERT_HANDOFFBATCH_STOP = "INSERT INTO TRANSP.HANDOFF_BATCHSTOP ( BATCH_ID,"+
 																	"WEBORDER_ID, ERPORDER_ID, " +
@@ -142,7 +142,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_DATERANGE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO, b.CUTOFF_DATETIME" +
 			", B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.DELIVERY_DATE > (sysdate - ?) and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+) " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -150,7 +150,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_DELIVERYDATE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO" +
 			", b.CUTOFF_DATETIME, B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.DELIVERY_DATE = ? and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+)  " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -158,7 +158,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_BYID = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO, b.CUTOFF_DATETIME" +
 			", B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.BATCH_ID = ? and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+)  " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -220,7 +220,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			" from transp.HANDOFF_BATCH hb , TRANSP.HANDOFF_BATCHROUTE r, transp.HANDOFF_BATCHSTOP s" +
 			", DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
 			" where HB.DELIVERY_DATE  = ? and HB.BATCH_STATUS = 'CPD' and R.ROUTE_NO = ? " +
-			"and HB.BATCH_ID = R.BATCH_ID  and R.ROUTE_NO = S.ROUTE_NO " +
+			"and HB.BATCH_ID = R.BATCH_ID and HB.BATCH_ID = s.BATCH_ID  and R.ROUTE_NO = S.ROUTE_NO " +
 			"and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID order by s.ROUTE_NO, s.STOP_SEQUENCE";
 	
 	private static final String UPDATE_HANDOFFBATCH_STOPEXCEPTION = "UPDATE TRANSP.HANDOFF_BATCHSTOP SET IS_EXCEPTION = 'X' " +
@@ -734,7 +734,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		String _sessionName = rs.getString("SESSION_NAME");
 		String _actionBy = rs.getString("ACTION_BY");
 		String _depotArea = rs.getString("DEPOT_AREA");
-		
+				
 		if(!batchMapping.containsKey(_batchId)) {
 			
 			IHandOffBatch _batch = new HandOffBatch();
@@ -778,6 +778,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			depotSchedule.setArea(_depotArea);
 			depotSchedule.setDepotArrivalTime(rs.getTimestamp("DEPOTARRIVALTIME"));
 			depotSchedule.setTruckDepartureTime(rs.getTimestamp("TRUCKDEPARTURETIME"));
+			depotSchedule.setOriginId(rs.getString("ORIGIN_ID"));
 			batchMapping.get(_batchId).getDepotSchedule().add(depotSchedule);
 		}		
 	}
@@ -838,6 +839,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
 				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
 				
 				batchUpdater.compile();
 	
@@ -849,6 +851,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 												, model.getArea()
 												, model.getDepotArrivalTime()
 												, model.getTruckDepartureTime()
+												, model.getOriginId()
 										});
 				}			
 				batchUpdater.flush();

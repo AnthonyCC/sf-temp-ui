@@ -22,7 +22,9 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	private double distance;
 	private double travelTime;
 	private double serviceTime;
-		
+	
+	private String originId;
+	
 	public List<String> getRoutingRouteId() {
 		return routingRouteId;
 	}
@@ -46,8 +48,6 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	public void setRouteId(String routeId) {
 		this.routeId = routeId;
 	}
-
-	
 
 	public Date getStartTime() {
 		return startTime;
@@ -104,7 +104,15 @@ public class RouteModel extends BaseModel implements IRouteModel {
 		} 
 		this.getRoutingRouteId().add(routingRouteId);
 	}
-	
+		
+	public String getOriginId() {
+		return originId;
+	}
+
+	public void setOriginId(String originId) {
+		this.originId = originId;
+	}
+
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;

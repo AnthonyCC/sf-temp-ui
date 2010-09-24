@@ -9,18 +9,20 @@ public class HandOffBatchDepotSchedule extends BaseModel implements IHandOffBatc
 	private String area;
 	private Date depotArrivalTime;
 	private Date truckDepartureTime;
+	private String originId;
 	
 	public HandOffBatchDepotSchedule() {
 		super();
 	}
 	
 	public HandOffBatchDepotSchedule(String batchId, String area,
-			Date depotArrivalTime, Date truckDepartureTime) {
+			Date depotArrivalTime, Date truckDepartureTime, String originId) {
 		super();
 		this.batchId = batchId;
 		this.area = area;
 		this.depotArrivalTime = depotArrivalTime;
 		this.truckDepartureTime = truckDepartureTime;
+		this.originId = originId;
 	}
 
 	public String getBatchId() {
@@ -55,10 +57,18 @@ public class HandOffBatchDepotSchedule extends BaseModel implements IHandOffBatc
 		this.truckDepartureTime = truckDepartureTime;
 	}
 
+	public String getOriginId() {
+		return originId;
+	}
+
+	public void setOriginId(String originId) {
+		this.originId = originId;
+	}
+
 	@Override
 	public int hashCode() {
-		return (area==null || batchId==null || depotArrivalTime==null|| truckDepartureTime==null) ?	super.hashCode() :
-			area.hashCode() ^ batchId.hashCode() ^ depotArrivalTime.hashCode() ^ truckDepartureTime.hashCode();		
+		return (area==null || batchId==null || depotArrivalTime==null|| truckDepartureTime==null || originId==null) ?	super.hashCode() :
+			area.hashCode() ^ batchId.hashCode() ^ depotArrivalTime.hashCode() ^ truckDepartureTime.hashCode() ^ originId.hashCode();		
 	}
 
 	@Override
@@ -90,6 +100,11 @@ public class HandOffBatchDepotSchedule extends BaseModel implements IHandOffBatc
 				return false;
 		} else if (!truckDepartureTime.equals(other.truckDepartureTime))
 			return false;
+		if (originId == null) {
+			if (other.originId != null)
+				return false;
+		} else if (!originId.equals(other.originId))
+			return false;
 		return true;
 	}
 
@@ -107,7 +122,8 @@ public class HandOffBatchDepotSchedule extends BaseModel implements IHandOffBatc
 	public String toString() {
 		return "HandOffBatchDepotSchedule [batchId=" + batchId  + ", area=" + area + ", depotarrivaltime="
 				+ depotArrivalTime+ ", truckdeparturetime="
-				+ truckDepartureTime + "]";
+				+ truckDepartureTime+ ", originId="
+				+ originId + "]";
 	}
 	
 	

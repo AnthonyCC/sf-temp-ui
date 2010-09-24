@@ -33,5 +33,8 @@ public interface IRouteModel {
 	double getServiceTime();
 	void setServiceTime(double serviceTime);
 	
+	String getOriginId();
+	void setOriginId(String originId);
+	
 	void appendRoutingRoute(String routingRouteId);
 }

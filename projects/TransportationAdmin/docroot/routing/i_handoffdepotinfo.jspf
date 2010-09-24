@@ -11,7 +11,7 @@
       function showDepotTable(inputVal) {
       	 _currentBatchId = inputVal;	
          editDepotPanel = new YAHOO.widget.Panel("paneldept", {       
-                          width: "500", 
+                          width: "600px", 
                           height: "500px",
                           fixedcenter: true, 
                           close: true, 
@@ -29,9 +29,10 @@
         depotDataSource = new YAHOO.util.DataSource(depotDataIncrementer);                           
                             		  
 		var depotColumns =  [ 
-			    {key:"area", label:"Zone",sortable:false, width: 75, className:"forms1"}, 
+			    {key:"area", label:"Zone",sortable:false, width: 50, className:"forms1"}, 
 			    {key:"depotArrivalTimeInfo", label:"Depot Arrival Time",sortable:false, width: 150, className:"forms1"},
 			    {key:"truckDepartureTimeInfo", label:"Truck Departure Time",sortable:false, width: 150, className:"forms1"},
+			    {key:"originId", label:"Origin ID", sortable:false, width: 100, className:"forms1"},
 			    {key:'deleteBtn',label:' ',formatter:function(elCell) {
         										elCell.innerHTML = '<img src="images/icons/delete.gif" title="delete row" />';
         										elCell.style.cursor = 'pointer';
@@ -56,11 +57,14 @@
      		var _zone = document.getElementById('dzone').value;
      		var _arrivetime = document.getElementById('darrival').value;
      		var _departtime = document.getElementById('tdeparture').value;
+     		var _originid  = document.getElementById('toriginid').value;
      		
-     		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 && _departtime.trim().length > 0) {
-     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime, truckDepartureTimeInfo:_departtime, deleteBtn:''});
+     		if(_zone.trim().length > 0 && _arrivetime.trim().length > 0 
+     					&& _departtime.trim().length > 0 && _originid.trim().length > 0) {
+     			depotDataTable.addRow({area:_zone, depotArrivalTimeInfo:_arrivetime
+     									, truckDepartureTimeInfo:_departtime, originId:_originid, deleteBtn:''});
      		} else {
-     			alert("Please enter the required values zone, arrivaltime, departure time!");
+     			alert("Please enter the required values zone, arrivaltime, departure time, origin id!");
      		}
      }
          
@@ -74,6 +78,7 @@
       	  		_data[i][0] = records[i].getData('area');
       	  		_data[i][1] = records[i].getData('depotArrivalTimeInfo');
       	  		_data[i][2] = records[i].getData('truckDepartureTimeInfo');
+      	  		_data[i][3] = records[i].getData('originId');
       	  	}
       	  }      	  
       	  jsonrpcClient.AsyncHandOffProvider.doRoutingOut(_currentBatchId, _data);
@@ -103,6 +108,9 @@
 	               </td>                                      
                    <td>                 
 	                   Truck Departure<input size="10" id="tdeparture" onblur="this.value=time(this.value);" /> 
+	               </td>
+	               <td>                 
+	                   Origin ID<input size="20" id="toriginid" /> 
 	               </td>
 	               <td>                 
 	                   <input type="button" id="add" value="&nbsp;ADD&nbsp;" onclick="javascript:doAdd();" /> 

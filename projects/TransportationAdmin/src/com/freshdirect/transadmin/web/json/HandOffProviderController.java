@@ -87,7 +87,8 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			for(int intCount =0; intCount < schedule.length; intCount++) {
 				depotSchInfo.add(new HandOffBatchDepotSchedule(batch.getBatchId(), schedule[intCount][0]
 				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][1])
-				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][2])));				
+				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][2])
+				                                          , schedule[intCount][3]));				
 			}
 			batch.setDepotSchedule(depotSchInfo);
 			HandOffRoutingOutAction process = new HandOffRoutingOutAction(batch, userId);

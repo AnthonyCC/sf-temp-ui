@@ -34,6 +34,10 @@ public class HandOffBatchDepotScheduleInfo implements java.io.Serializable {
 		}
 	}
 	
+	public String getOriginId() {
+		return depotSchedule.getOriginId();
+	}
+	
 	public String getDelete() {
 		return "";
 	}

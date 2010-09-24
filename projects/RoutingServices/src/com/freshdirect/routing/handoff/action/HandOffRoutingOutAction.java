@@ -299,7 +299,8 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 							_order.setStopDepartureTime(currDepotDeparture);
 						}
 						_matchSchedule = matchSchedule(_order
-														, (List)groupSchedule.get(splitStringForCode(routeID)));
+														, (List)groupSchedule.get(splitStringForCode(routeID))
+														, route.getOriginId());
 						if(_matchSchedule != null) {
 							_order.setRoutingRouteId(routeID); //_order.setRouteStartTime(_matchSchedule.getTruckDepartureTime());
 							_matchSchedule.addOrder(_order);
@@ -356,7 +357,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		return result;
 	}
 	
-	private CustomTruckScheduleInfo matchSchedule(IRoutingStopModel order, List scheduleLst) {
+	private CustomTruckScheduleInfo matchSchedule(IRoutingStopModel order, List scheduleLst, String routeOriginId) {
 		
 		CustomTruckScheduleInfo _schInfo = null;
 		CustomTruckScheduleInfo _preSchInfo = null;
@@ -367,11 +368,14 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 									
 			while(_itrSchedule.hasNext()) {
 				_schInfo = (CustomTruckScheduleInfo)_itrSchedule.next();
-						
-				if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
-					break;
-				} else {
-					_preSchInfo = _schInfo;
+				
+				if(_schInfo.getOriginId() != null &&
+						routeOriginId != null && routeOriginId.equalsIgnoreCase(_schInfo.getOriginId())) {
+					if(_schInfo.getDepotArrivalTime().after(order.getStopDepartureTime())) {
+						break;
+					} else {
+						_preSchInfo = _schInfo;
+					}
 				}
 			}
 		}
@@ -388,6 +392,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			this.setArea(info.getArea());
 			this.setDepotArrivalTime(info.getDepotArrivalTime());
 			this.setTruckDepartureTime(info.getTruckDepartureTime());
+			this.setOriginId(info.getOriginId());
 		}
 				
 		public List getOrders() {

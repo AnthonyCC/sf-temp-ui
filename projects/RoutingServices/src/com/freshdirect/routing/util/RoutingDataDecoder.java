@@ -134,7 +134,9 @@ public class RoutingDataDecoder {
 			result.setDistance(route.getDistance());
 			result.setTravelTime(route.getTravelTime());
 			result.setServiceTime(route.getServiceTime());
-						
+			
+			result.setOriginId(route.getOrigin() != null ? route.getOrigin().getLocationID() : null);
+			
 			result.setStops(new TreeSet());
 			
 			IRoutingStopModel _stop = null;
