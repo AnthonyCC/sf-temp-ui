@@ -75,6 +75,10 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Map getHTOutScan(Date routeDate);
 	
+	// added new code Appdev 808
+	List getHTOutScanAsset(Date routeDate);
+	List getEmployeeWorkedSixDays(Date planDate);
+	
 	Map getHTInScan(Date routeDate);
 	
 	List matchCommunity(double latitiude, double longitude, String deliveryModel);

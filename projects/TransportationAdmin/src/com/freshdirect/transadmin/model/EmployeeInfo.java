@@ -73,11 +73,9 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	}
 
 
-
 	public String getEmployeeId() {
 		return employeeId;
 	}
-
 
 
 	public String getFirstName() {
@@ -96,8 +94,7 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 		return jobType;
 	}
 
-	
-	
+		
 	public String getLastName() {
 		return lastName;
 	}
@@ -107,7 +104,6 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	public String getMiddleInitial() {
 		return middleInitial;
 	}
-
 
 
 	public String getShortName() {
@@ -121,7 +117,6 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	}
 
 
-
 	public String getSupervisorFirstName() {
 		return supervisorFirstName;
 	}
@@ -133,17 +128,14 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	}
 
 
-
 	public String getSupervisorLastName() {
 		return supervisorLastName;
 	}
 
 
-
 	public String getSupervisorMiddleInitial() {
 		return supervisorMiddleInitial;
 	}
-
 
 
 	public String getSupervisorShortName() {
@@ -196,9 +188,7 @@ public class EmployeeInfo implements java.io.Serializable, TrnBaseEntityI, Resou
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
-	
-	
-	
+			
 	public void setMiddleInitial(String middleInitial) {
 		this.middleInitial = middleInitial;
 	}

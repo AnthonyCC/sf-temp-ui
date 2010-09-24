@@ -3,7 +3,11 @@ package com.freshdirect.customer;
 import java.io.Serializable;
 import java.util.*;
 
-public class ErpRouteMasterInfo implements Serializable {
+//import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
+
+//import com.freshdirect.transadmin.model.Plan;
+
+public class ErpRouteMasterInfo implements Serializable, Comparable<ErpRouteMasterInfo> {
 	
 	public ErpRouteMasterInfo(
 		String routeNumber,
@@ -22,6 +26,10 @@ public class ErpRouteMasterInfo implements Serializable {
 		
 	}
 
+	public ErpRouteMasterInfo() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public void setDetails(List list) {
 		if(list == null)
 			list = new ArrayList();
@@ -33,7 +41,7 @@ public class ErpRouteMasterInfo implements Serializable {
 		return details;
 	}
 	
-	public String toString() {
+	public String toString1() {
 		return "ErpRouteMasterInfo[routeNumber: "
 			+ this.routeNumber
 			+ " zoneNumber: "
@@ -101,6 +109,20 @@ public class ErpRouteMasterInfo implements Serializable {
 		this.firstDlvTime = firstDlvTime;
 	}
 
+	 //added new code Appdev- 808
+	public String toString() {
+		return this.getRouteNumber() != null ? this.getRouteNumber().toString() : "";
+	}
+	
+	
+	@Override
+	public int compareTo(ErpRouteMasterInfo  o) {
+		// TODO Auto-generated method stub
+		return this.toString().compareTo(o.toString());
+	}
 
+	
 
+				
+	
 }

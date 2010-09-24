@@ -1,9 +1,19 @@
+
 <%@ taglib uri='template' prefix='tmpl' %>
-<%@ taglib uri="/tld/extremecomponents" prefix="ec" %>
+
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import= 'com.freshdirect.transadmin.util.TransStringUtil' %>
 <%@ page import= 'com.freshdirect.transadmin.web.model.WebDispatchStatistics' %>
+<%@ page import= 'com.freshdirect.transadmin.web.model.DispatchResourceInfo' %>
+<%@ page import= 'com.freshdirect.transadmin.model.EmployeeInfo' %>
+<%@ page import= 'com.freshdirect.transadmin.model.RouteInfo' %>
+<%@ page import= 'com.freshdirect.transadmin.web.model.WebPlanResource' %>
+<%@ page import= 'com.freshdirect.customer.ErpRouteMasterInfo'%>
+<%@ page import= 'com.freshdirect.transadmin.web.model.WebDispatchStatistics' %>
+<%@ page import = 'java.util.*'%>
+<%@ page import = 'java.util.Iterator'%>
+ <%@page import ='java.util.List'%>
 <%  pageContext.setAttribute("HAS_ADDBUTTON", "false"); 
   pageContext.setAttribute("HAS_CONFIRMBUTTON", "false"); 
   pageContext.setAttribute("HAS_DELETEBUTTON", "false"); 
@@ -17,107 +27,313 @@
     <tmpl:put name='title' direct='true'>Dispatch Summary</tmpl:put>
 
   <tmpl:put name='content' direct='true'>
-    <br/> 
-    <div class="contentroot">               
-      <table width="100%" cellpadding="0" cellspacing="0" border="0">
-          <c:if test="${not empty messages}">
-          <tr>
-            <td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
-          </tr>
-          </c:if>         
-          <tr>
-            <td>
-
-              <table border = "0">
-              <input type="hidden" id="dispDate" name="dispDate" value="" />
-                <tr>
-                <td> 
-                    <span style="font-size: 18px;font-weight: bold;">Today: <%= TransStringUtil.getFullMonthDate(new Date()) %></span>
-                </td>
-
-                     <script language="javascript">                 
-                    function refreshRoute() {
-                        var hasConfirmed = confirm ("This action can overwrite existing Route/Truck Assignment. Are you sure you want to perform this operation?");
-                        if(hasConfirmed) {
-                           location.href = "<c:out value="${pageContext.request.contextPath}"/>/refreshRouteSummary.do?dispDate=<%= dateRangeVal %>&summary=true";
-                        }
-                    }
-                    
-                    function doUnassignedEmployees() {
-        	 
-        	            javascript:pop('unassignedactiveemployees.do', 400,600);
-                    }
+    <br/>
+    <script language="javascript">                 
+                                       
+                  
                   </script>
- 
-                  <td>
-                     <input type = "button" value="&nbsp;Refresh Route&nbsp;" onclick="javascript:refreshRoute()" />
-                  </td> 
-                   <td>
-                     <input type = "button" value="&nbsp;Unassigned Employees&nbsp;" onclick="javascript:doUnassignedEmployees()" />
-                  </td>  
-              </tr>
-              </table>        
-              
-            </td>           
-          </tr>  
-          <tr><td>
-          <table class="appusertitle">
-          <% WebDispatchStatistics ws=(WebDispatchStatistics)request.getAttribute("statistics"); %>
-          <tr><td>Planned Route:</td><td><%=ws.getPlannedRoute()%></td>          
-          </tr>
-          
-          <td>Dispatch Route:</td><td><%=ws.getDispatchRoute()%></td>
-          </tr>  
-          <tr>
-          <td> Pay Code Exception:</td><td><%=ws.getPaycodeEx()%></td>          
-          </tr> 
-          <tr>          
-          <td>Unassigned :</td><td><%=ws.getUnassigned()%></td>
-          </tr>      
-          </table> 
-          </td></tr>        
-        </table>    
-       <script>
-         function doCompositeLink(compId1,compId2, compId3, url) {
-          var param1 = document.getElementById(compId1).value;
-          var param2 = document.getElementById(compId2).value;
-          var param3 = document.getElementById(compId3).value;
-          location.href = url+"?"+compId1+"="+ param1+"&"+compId2+"="+param2+"&"+compId3+"="+param3;
-        } 
-
-        
-      </script>      
-      </div>
+    <div class="contentroot">               
     
-    <div align="center">
-      <ec:table items="dispatchInfos"   action="${pageContext.request.contextPath}/dispatchSummary.do"
-            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
-            width="98%"  rowsDisplayed="25" view="fd">
-           
-            <ec:exportPdf fileName="dispatchschedule.pdf" tooltip="Export PDF" 
-                      headerTitle="Dispatch Schedule" />
-              <ec:exportXls fileName="dispatchschedule.xls" tooltip="Export PDF" />
-              <ec:exportCsv fileName="dispatchschedule.csv" tooltip="Export CSV" delimiter="|"/>
-              
-            <ec:row interceptor="dispatchobsoletemarker">
-              <ec:column alias="trnConfirm" width="5" cell="confirmcol" property="confirmedValue" title="C"  />            
-              <ec:column alias="trnZoneRegion" property="regionZone" title="Region-Zone" />
-              <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeslotslotName"  property="startTimeEx" title="Start Time"/>  
-              <ec:column  cell="date" format="hh:mm aaa" alias="trnTimeEndslotslotName" property="firstDeliveryTimeEx" title="First Dlv."/>
-              <ec:column alias="trnRouterouteNumber" property="route"  width="10" title="Route"/>
-              <ec:column alias="trnTrucktruckNumber" property="truck" width="10"  title="Truck"/>
-              <ec:column alias="trnNoOfStops" property="noOfStops" width="10"  title="Stops"/>
-              <ec:column alias="trnStatus" property="dispatchStatus"  title="Status"/>              
-              <ec:column property="drivers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Driver"  filterable="true" alias="drivers"/>
-              <ec:column property="helpers"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Helper"  filterable="true" alias="helpers"/>
-              <ec:column property="runners"  cell="com.freshdirect.transadmin.web.ui.FDDispatchSummaryResourceCell" title="Runner"  filterable="true" alias="runners"/>
-              <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/>              
-            </ec:row>
-          </ec:table>
-    </div>
+	<table border="0">
+		<tr>
+			<td>
+				<span style="font-size: 18px;font-weight: bold;">Today: <%= TransStringUtil.getFullMonthDate(new Date()) %></span>
+			</td>
+		</tr>
+	</table>
+	<c:if test="${not empty messages}">
+		<table border = "1">
+			<tr>
+				<td class="screenmessages"><jsp:include page='/common/messages.jsp'/></td>
+			</tr>
+		</table>
+	</c:if> 
+	<table cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+                <table width="200">
+                <tr>
+                    
+                      <td style="font-weight: bold; font-size:  12px; text-align: center;">Today's Schedule Problems</td>
+                	
+                </tr>
+                <tr>
+					<td>
+						<center>
+						<table width="200" cellpadding="0" cellspacing="0" border="0">  
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+								<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+									<div style="width: 200px; font-size: 12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									    List of Employees
+										 <%String  wpr =(String)request.getAttribute("statistics4");%>
+									  
+										  <%=wpr%>
+																			
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+								<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+							</tr>
+						</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+			
+			<td>
+                <table width="200">
+                <tr>
+                	<td style="font-weight: bold; font-size:  12px; 12px; text-align: center;">Unassigned Routes</td>
+                </tr>
+                <tr>
+					<td>
+						<center>
+						<table width="200" cellpadding="0" cellspacing="0" border="0">  
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+								<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+									<div style="width: 200px;font-size: 12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									
+								   	<% String   routes =(String)request.getAttribute("statistics3");%>
+									  
+									   <%=routes%>
+									
+										</div>
+								</td>
+							</tr>
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+								<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+							</tr>
+						</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+			
+			<td>
+                <table width="200">
+                <tr>
+                	<td style="font-weight: bold; font-size:  12px; text-align: center;">Employees Punched but Not Working</td>
+                </tr>
+                <tr>
+					<td>
+						<center>
+						<table width= "200" cellpadding="0" cellspacing="0" border="0">  
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+								<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+									<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									
+										     <% String webEmpInfo =(String)request.getAttribute("statistics1");%>
+										      									      
+	    										<%=webEmpInfo%>             
+                                          
+								</td>
+							</tr>
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+								<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+							</tr>
+						</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+			<td>
+                <table width="200">
+                <tr>
+                	<td>
+                		<table width="100%" style="font-weight: bold; font-size:  12px; text-align: center;">
+                			<tr><td colspan="2">Dispatch Metrics </td></tr>
+                			<tr><td>AM Shift</td><td> PM Shift</td></tr>
+                		</table>
+					</td>
+                </tr>
+                <tr>
+					<td>
+						<center>
+	                		<table width="100%" style="font-weight: bold; text-size: 12px; text-align: center;">
+	                			<tr>
+	                				<td>
+										<table width="200" cellpadding="0" cellspacing="0" border="0">  
+											<tr>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+												<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+											</tr>
+											<tr>
+												<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+													<div style="width: 200px;  font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+														
+														 <% WebDispatchStatistics wsAM=(WebDispatchStatistics)request.getAttribute("statistics"); %>
+                                                           1.#of Routes Planned:<%=wsAM.getPlannedRoute()%> 
+                                                           <br/>         
+                                                           2.#of Routes Actual:<%=wsAM.getDispatchRoute()%>
+                                                           <br/>
+                                                           3.#of 6 Days(Consecutive Worked):<%=wsAM.getEmployeesWorkedSixdays()%>
+                                                           <br/>
+                                                           4.#of Dispatch Team Changes:
+                                                           <br/>
+                                                           5.#of Dispatch Team Changes out of region:
+                                                           <br/>
+                                                           6.# of Fire Trucks/MOT:<%=wsAM.getFireTruckorMOT()%> 
+														   <br/>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+												<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+											</tr>
+										</table>
+									</td>
+	                				<td>
+										<table width="200" cellpadding="0" cellspacing="0" border="0">  
+											<tr>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+												<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+											</tr>
+											<tr>
+												<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+													<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+														<% WebDispatchStatistics wsPM=(WebDispatchStatistics)request.getAttribute("statistics"); %>
+                                                           1.#of Routes Planned :<%=wsPM.getPlannedRoute()%> 
+                                                           <br/>         
+                                                           2.#of Routes Actual:<%=wsPM.getDispatchRoute()%>
+                                                           <br/>
+                                                           3.#of 6 Days(Consecutive Worked):<%=wsPM.getEmployeesWorkedSixdays()%>
+                                                           <br/>
+                                                           4.#of Dispatch Team Changes:
+                                                           <br/>
+                                                           5.#of Dispatch Team Changes out of region:
+                                                           <br/>
+                                                           6.#of Fire Trucks/MOT:<%=wsPM.getFireTruckorMOT()%>
+                                                           <br/>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+												<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+												<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+	                		</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+                <table width="200">
+                <tr>
+                	<td style="font-weight: bold; font-size:  12px;text-align: center;">Handtruck Inventory</td>
+                </tr>
+                <tr>
+					<td>
+						<center>
+						<table width="200" cellpadding="0" cellspacing="0" border="0">  
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+								<td height="7" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+									
+									  <div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px; ">
+										List of HT
+											                                                                               
+                                           <% String htO= (String)request.getAttribute("statistics7"); %>
+                                                   
+                                              <%=htO%> 
+                                                                                          	                                      													
+									   
+									</div>	                 
+                                   									
+								</td>
+							</tr>
+							<tr>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+								<td height="7" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="7"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+							</tr>
+						</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+			<td>
+                <table width="200">
+                <tr>
+                	<td style="font-weight: bold; font-size:  12px;text-align: center;">Top 10 Ready Routes</td>
+                </tr>
+                <tr>
+					<td>
+						<center>
+						<table width="200" cellpadding="0" cellspacing="0" border="0">  
+							<tr>
+								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
+								<td height="5" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
+									<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									  List of Managers for ready Route
+									<% String  dispatchreadyroutes =(String)request.getAttribute("statistics8");%>
+									    
+										<%=dispatchreadyroutes%>	
+									
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/bottom_left_curve.gif"></td>
+								<td height="5" style="border-bottom: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/bottom_right_curve.gif"></td>
+							</tr>
+						</table>
+						</center>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	</div>
+    <form name="dispatchForm" action="./dispatchSummary.do" >
     
-    <script>
-      //addMultiRowHandlers('ec_table', 'rowMouseOver', 'editdispatch.do','id',0, 0,'dispDate');
-    </script>   
+    </form> 
+   
   </tmpl:put>
 </tmpl:insert>

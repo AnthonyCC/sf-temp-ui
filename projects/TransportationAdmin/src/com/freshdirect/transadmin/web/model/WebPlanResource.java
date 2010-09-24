@@ -6,11 +6,22 @@ import java.util.Date;
 
 import com.freshdirect.transadmin.model.EmployeeInfo;
 
-public class WebPlanResource  implements Serializable
+
+public class WebPlanResource  implements Serializable, Comparable<WebPlanResource>  
 {
 	String planId;
 	WebEmployeeInfo emp;
 	String paycode;
+	private String shiftType;
+
+	
+	public String getShiftType() {
+		return shiftType;
+	}
+
+	public void setShiftType(String shiftType) {
+		this.shiftType = shiftType;
+	}
 	
 	public WebEmployeeInfo getEmp() {
 		return emp;
@@ -47,10 +58,24 @@ public class WebPlanResource  implements Serializable
 	public String getFirstName() {
 		return emp.getFirstName();
 	}
+	
+	// added new code Appdev 808
+	public String getNameWithFirstInitial() {
+		return emp.getNameWithFirstInitial();
+	}
+	
+	public String getJobTypeFirstInitial() {
+		return emp.getJobTypeWithFirstInitial();
+	}
+	
 	public Date getHireDate() {
 		return emp.getHireDate();
 	}
 	public String getJobType() {
+		return emp.getJobType();
+	}
+	
+	public String getFirstLetterJobType() {
 		return emp.getJobType();
 	}
 	public String getLastName() {
@@ -95,7 +120,7 @@ public class WebPlanResource  implements Serializable
 	public void setEmpRole(Collection empRole) {
 		emp.setEmpRole(empRole);
 	}
-	public String toString() {
+	public String toString1() {
 		return emp.toString();
 	}
 	public String getPaycode() {
@@ -105,6 +130,20 @@ public class WebPlanResource  implements Serializable
 		this.paycode = paycode;
 	}
 	
+	//added new code Appdev-808
+	public String toString() {
+		return emp.getLastName() != null ? emp.getNameWithFirstInitial().toString() : "";
+	}
+
+	@Override
+	public int compareTo(WebPlanResource o) {
+		// TODO Auto-generated method stub
+		return this.toString().compareTo(o.toString());
+	}
+
+   
+	}
+	
 	
 
-}
+

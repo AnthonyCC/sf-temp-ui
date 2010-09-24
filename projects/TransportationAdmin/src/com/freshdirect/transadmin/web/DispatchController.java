@@ -41,6 +41,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.freshdirect.customer.ErpRouteMasterInfo;
 import com.freshdirect.customer.ErpTruckMasterInfo;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.routing.model.GeoPoint;
@@ -58,7 +59,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.EmployeeRole;
+import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
@@ -85,16 +86,21 @@ import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.WebDispatchStatistics;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebPlanInfo;
+import com.freshdirect.transadmin.web.model.WebPlanResource;
 import com.freshdirect.transadmin.web.util.TransWebUtil;
 
 public class DispatchController extends AbstractMultiActionController {
 
+	private static final Object OUT = null;
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
 	
+	
+
 	private short rownum;
 	private short cellnum;
+	private Collection unsorted;
 
 	private static DispatchComparator DISPATCH_COMPARATOR=new DispatchComparator();
 	private static class DispatchComparator implements Comparator{
@@ -147,6 +153,8 @@ public class DispatchController extends AbstractMultiActionController {
 		this.domainManagerService = domainManagerService;
 	}
 
+	
+	
 
 	/**
 	 * Custom handler for welcome
@@ -323,6 +331,10 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		return null;		
 	}
+	
+	
+	
+	
 	
 	public static class PlanDateComparator implements Comparator<Plan> {
 
@@ -765,7 +777,7 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 
-	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
 		Collection c=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
@@ -773,11 +785,279 @@ public class DispatchController extends AbstractMultiActionController {
 		DispatchPlanUtil.setDispatchStatus(c,false);
 		mav.getModel().put("dispatchInfos",c);
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
-		dispatchStatisticsHandler(request,response);
+		
+		Collection r = dispatchManagerService.getUnusedDispatchRoutes(getServerDate(TransStringUtil.getDispatchCurrentDate()));
+		mav.getModel().put("routes",r);
+		
+		
+		Collection emp=this.getDispatchManagerService().getUnassignedActiveEmployees();
+		mav.getModel().put("unassignedEmployees",emp);
+		
+		     
+		try {
+			dispatchHandTruckInvHandler(request,response);
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		dispatchReadyRouteHandler(request,response);
+		
+		try {
+			dispatchStatisticsHandler(request,response);
+		} catch (ParseException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		dispatchEmpHandler(request,response);
+		
+		try {
+			dispatchUnavailableEmpHandler(request,response);
+		      } catch (DateFilterException e1) {
+			// TODO Auto-generated catch block
+		    	e1.printStackTrace();
+	    	}
+		 	
+			try {
+				try {
+					dispatchRoutHandler(request,response);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} catch (DateFilterException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		return mav;
+	}
+	// added new code AppDev-808
+	public ModelAndView dispatchUnavailableEmpHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException 
+	{
+		List<Plan> tempPlans= new ArrayList();
+		List<WebPlanResource> unempList= new ArrayList();
+		ModelAndView mav = new ModelAndView("unavailableView");
+		tempPlans = (List<Plan>)dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);
+		
+		unempList =(List<WebPlanResource>)this.getEmployeeManagerService().getUnAvailableEmployees(tempPlans, TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()));
+		
+		
+		Collections.sort((List)unempList);						
+		try {
+			request.setAttribute("statistics4",getUnAvailableEmployeeInfo(tempPlans,unempList));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+						
+					
+		return mav;
+	}
+		
+	
+	private String getUnAvlEmployeeInfo(Map<String, WebPlanResource> unAvlResMap) {
+		StringBuffer StrBfr = new StringBuffer(100);
+		
+		List<WebEmployeeInfo> tempList = new ArrayList();
+		
+		for(Iterator<String> ite = unAvlResMap.keySet().iterator();ite.hasNext();) {
+			String resId=ite.next();
+			WebPlanResource _wr = unAvlResMap.get(resId);
+			WebEmployeeInfo empInfo = null;
+			empInfo = _wr.getEmp();
+			empInfo.setShiftType(_wr.getShiftType());
+			tempList.add(_wr.getEmp());
+			
+		} 
+		
+
+		Collections.sort(tempList);
+			
+		int i = 0;
+		for(WebEmployeeInfo wb:tempList) {
+			StrBfr.append(wb.getLastName()).append(",").append(wb.getNameWithFirstInitial()).append("("+(wb.getJobTypeWithFirstInitial())+")").append("-").append(wb.getShiftType()).append("<br />");
+			i++;
+				if (i >= 10) {
+					break;
+	     		}
+			}
+				
+		return StrBfr.toString();		
+	}
+		
+
+	public String getUnAvailableEmployeeInfo(List<Plan> plans,List<WebPlanResource> unAvlResources) throws Exception
+	{			
+		
+		Map<String, WebPlanResource> resMap = new HashMap<String, WebPlanResource>();
+				
+		for(Iterator<Plan> i=plans.iterator();i.hasNext();)
+		{
+			Plan p = i.next();
+			String planDate=TransStringUtil.getDate(p.getPlanDate());
+			Set<PlanResource> resources = p.getPlanResources();
+			if(resources!=null) {
+				for(Iterator<PlanResource> j=resources.iterator();j.hasNext();)
+				{
+					PlanResource r = j.next();
+					boolean isUnavailable = isUnavailableRes(unAvlResources, r);
+					if(isUnavailable){
+						WebPlanResource wp = new WebPlanResource();
+						WebEmployeeInfo empInfo = employeeManagerService.getEmployeeEx(r.getId().getResourceId());
+							
+						wp.setEmp(empInfo);
+						wp.setShiftType(getShiftForPlan(p));
+						resMap.put(r.getId().getResourceId(), wp);						
+					}			
+				}
+			}
+		}
+		
+		return getUnAvlEmployeeInfo(resMap);
+	}	
+	
+	private boolean isUnavailableRes(List<WebPlanResource> unAvlResources,PlanResource r) {
+		List tempLst = new ArrayList();
+		for (Iterator<WebPlanResource> iterator = unAvlResources.iterator(); iterator.hasNext();) {
+			WebPlanResource _wr = iterator.next();
+			tempLst.add(_wr.getEmployeeId());		
+		}
+		if(tempLst.contains(r.getId().getResourceId())){
+			return true;
+		}
+		return false;
+	}
+
+	public ModelAndView dispatchEmpHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
+	{
+		
+		  
+		ModelAndView mav = new ModelAndView("unassignedActiveEmployeeView");
+			
+			
+			Collection emp =this.getDispatchManagerService().getUnassignedActiveEmployees();
+			List<WebEmployeeInfo> tempEmp = new ArrayList<WebEmployeeInfo>();
+			tempEmp.addAll(emp);
+							
+			request.setAttribute("statistics1",getEmployeesInfo(tempEmp) );
+						
+					
 		return mav;
 	}
 	
-	public ModelAndView dispatchStatisticsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException 
+	private String getEmployeesInfo(List<WebEmployeeInfo> webEmpInfo) {
+		StringBuffer _webEmpInfo=new StringBuffer(100);
+				
+		Collections.sort(webEmpInfo);
+				
+		 int i = 0;
+		 for(WebEmployeeInfo wb:webEmpInfo) {
+			_webEmpInfo.append(wb.getLastName()).append(",").append(wb.getNameWithFirstInitial()).append("("+(wb.getJobTypeWithFirstInitial())+")").append("<br />");
+			i++;
+				if (i >= 10) {
+					break;
+	     		}
+			}
+						
+		return _webEmpInfo.toString();
+	}
+	
+	
+	public ModelAndView dispatchRoutHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException, ParseException 
+	{
+		
+		ModelAndView mav = new ModelAndView("unassignedRouteView");		
+						
+		Collection r = dispatchManagerService.getUnusedDispatchRoutes(getServerDate(TransStringUtil.getDispatchCurrentDate()));
+        
+		List<ErpRouteMasterInfo> routeList = new ArrayList<ErpRouteMasterInfo>();
+		routeList.addAll(r);
+		
+		request.setAttribute("statistics3", getRouterNumbers(routeList));
+        
+        return mav;			
+		
+	}
+	 private String getRouterNumbers(Collection<ErpRouteMasterInfo> routes) {
+		 StringBuffer _routes=new StringBuffer(100);
+		 Collections.sort((List)routes);
+		 int i =0;
+		for(ErpRouteMasterInfo rm:routes) {
+			_routes.append(rm.getRouteNumber()).append(",").append(rm.getFirstDlvTime()).append("<br/> ").append("\n");
+			
+			i++;
+			if (i >= 10) {
+				break;
+     		}
+		}
+		
+		return _routes.toString();
+	}
+	
+		
+	public ModelAndView dispatchReadyRouteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException
+	  {
+		ModelAndView mav = new ModelAndView("dispatchDashboardView");		
+		
+		Collection c = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+		Collection<DispatchCommand> cr = DispatchPlanUtil.getsortedDispatchView(c, 1);
+		
+		request.setAttribute("statistics8", getDispatchReadyRoute(cr));
+		return mav;
+	 }
+   private String getDispatchReadyRoute(Collection<DispatchCommand> dispatchreadyroutes) {
+		
+		// TODO Auto-generated method stub
+
+      StringBuffer _dispatchreadyroutes=new StringBuffer(100);
+             int i=0;
+           for(DispatchCommand rde:dispatchreadyroutes) {
+		
+	         _dispatchreadyroutes.append(rde.getRoute()).append(",").append(rde.getTruck()).append(",").append(rde.getDrivers()).append(",").append(rde.getHelpers()).append("\n");			
+	              i++;
+	              if (i >= 10) {
+	            	break;
+
+                 }	
+		       }
+    return _dispatchreadyroutes.toString();
+    }
+			
+	
+	public ModelAndView dispatchHandTruckInvHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException, DateFilterException
+	{
+		ModelAndView mav = new ModelAndView("dispatchSummaryView");	
+		
+				
+		List htO  = dispatchManagerService.getHTOutScanAsset(TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate()));
+		
+		request.setAttribute("statistics7",getHTScanOutInfo(htO));
+		
+		 return mav;	
+	}
+		
+	
+	private String getHTScanOutInfo(List htO) {
+		 
+		Collections.sort(htO); 
+		StringBuffer _htO=new StringBuffer(100);
+		int i = 0;
+		for (Iterator iterator = htO.iterator(); iterator.hasNext();) {
+			String object = (String) iterator.next();
+			_htO.append(object+" OUT ").append("<br />");	
+			
+			i++;
+			if (i >= 10) {
+				break;
+     
+		 }	
+		}
+		
+	return _htO.toString();
+	}
+		
+
+	public ModelAndView dispatchStatisticsHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException 
 	{
 		
 		try {
@@ -786,13 +1066,23 @@ public class DispatchController extends AbstractMultiActionController {
 			String date=TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate());
 			Collection c3=dispatchManagerService.getPlan(date, null);
 			Collection c4=employeeManagerService.getUnAvailableEmployees(c3, TransStringUtil.getCurrentServerDate());
+									
+		    List planList=dispatchManagerService.getEmployeeWorkedSixDays(TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate()));
+			Collection dataList = domainManagerService.getAdHocRoutes();
 			
-			WebDispatchStatistics s=new WebDispatchStatistics();
+			WebDispatchStatistics s = new WebDispatchStatistics();
+			 
 			s.calculateDispatchRoute(c1);
 			s.calculateUnassigned(c2);
 			s.calculatePlanRoute(c3);
 			s.calculatePaycode(c4);
+			s.calculateFireTruckorMOT(dataList);
+			
+			s.calculateEmployeesWorkedSixdays(planList);
+			//s.calculateDispatchId(c);
+			//s.calculateDispatchIdRegion(c);
 			request.setAttribute("statistics", s);
+			
 		} catch (DateFilterException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1099,7 +1389,7 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 
 	public ModelAndView routeRefreshHandler(HttpServletRequest request, HttpServletResponse response)
-	throws ServletException, ParseException {
+	throws ServletException, ParseException, DateFilterException {
 		String dispDate = request.getParameter("dispDate");
 		String isSummary = request.getParameter("summary");
 		boolean changed = false;
@@ -1108,6 +1398,7 @@ public class DispatchController extends AbstractMultiActionController {
 		} else {
 			//By default get the today's dispatches.
 			changed = dispatchManagerService.refreshRoute(new Date());
+
 		}
 		if(changed){
 			saveMessage(request, getMessage("app.actionmessage.134", null));
@@ -1169,6 +1460,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 		ModelAndView mav = new ModelAndView("unassignedRouteView");
 		String routeDate = request.getParameter("routeDate");
+         
 		try {
 			mav.getModel().put("routes", dispatchManagerService.getUnusedDispatchRoutes(TransStringUtil.getServerDate(routeDate)));
 		}  catch (ParseException e) {
@@ -1607,6 +1899,8 @@ public class DispatchController extends AbstractMultiActionController {
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		
 		return mav;
-	}	
+	}
+	
+	
 
 }

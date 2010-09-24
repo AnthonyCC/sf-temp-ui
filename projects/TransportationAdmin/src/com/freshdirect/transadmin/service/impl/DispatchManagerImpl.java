@@ -602,6 +602,29 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		}
 		return null;
 	}
+	//added new code Appdev 808
+	
+	public List getHTOutScanAsset(Date routeDate) 
+	{
+		try {
+			if(!TransportationAdminProperties.isAirclicBlackhole()) {
+				return routeManagerDao.getHTOutScanAsset(routeDate);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public List getEmployeeWorkedSixDays(Date planDate) 
+	{
+		
+		 return routeManagerDao.getEmployeeWorkedSixDays(planDate);
+		
+	  }
+	
+		
 
 	public void setLogManager(LogManagerI logManager) {
 		this.logManager = logManager;

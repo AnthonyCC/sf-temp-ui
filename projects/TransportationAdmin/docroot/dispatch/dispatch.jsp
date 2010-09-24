@@ -66,7 +66,11 @@
                            location.href = "<c:out value="${pageContext.request.contextPath}"/>/refreshRoute.do?dispDate=<%= dateRangeVal %>";
                         }
                     }
-                    
+
+                    function doUnassignedEmployees() {
+                     	 
+        	            javascript:pop('unassignedactiveemployees.do', 400,600);
+                    }
 
                     function sendRequest(tableId, url, message, action) {
                       var table = document.getElementById(tableId);
@@ -184,7 +188,7 @@
                   &nbsp;<form:errors path="dispDate" />
                 </td>
                 <td> 
-                  <select id="zone" name="zone">
+                  <select id="zone" width="70" name="zone">
                       <option value="">Select Zone</option> 
                       <c:forEach var="zone" items="${zones}">                             
                           <c:choose>
@@ -223,11 +227,14 @@
                      <input style="font-size:11px" type = "button" value="Refresh Route" onclick="javascript:refreshRoute()" />
                   </td>
                   <td>
+                     <input style="font-size:11px" type = "button" value="U/E" onclick="javascript:doUnassignedEmployees()" />
+                  </td>
+                  <td>
                      <input style="font-size:11px" type = "button" value="Unassigned Routes" onclick="javascript:doUnassignedRoutes('dispDate')" />
                   </td> 
                   <%if(com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request)){%> 
                   <td>
-                     <input style="font-size:11px" type = "button" value="Activity Log" onclick="javascript:doActivityLog('dispDate')" />
+                     <input style="font-size:11px" type = "button" value="Act.Log" onclick="javascript:doActivityLog('dispDate')" />
                   </td>
                   <td>
                      <input style="font-size:11px" type = "button" value="Reason Code"  border="0" onclick="javascript:doReasonCode()" />
@@ -305,6 +312,7 @@
                <ec:column alias="trnTruckGpsNumber" property="extras" width="10"  title="Extras"/>
               <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
               <ec:column property="override"  title="Override Dispatch"/>
+               <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/> 
               
             </ec:row>
           </ec:table>

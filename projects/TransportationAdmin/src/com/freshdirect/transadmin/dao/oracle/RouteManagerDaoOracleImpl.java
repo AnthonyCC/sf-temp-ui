@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.BatchSqlUpdate;
 
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
 import com.freshdirect.transadmin.model.RouteMappingId;
@@ -139,7 +141,92 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 				LOGGER.warn(e.toString(), e);
 			}
 			return result;
-	}	
+	}
+	
+	// added new code Appdev 808
+	
+	public List getHTOutScanAsset(Date routeDate) throws DataAccessException {
+		final List result = new ArrayList();
+		try {
+			
+			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
+			final String scanEndTime=TransStringUtil.getDate(routeDate)+":11:59:59PM";
+			final StringBuffer strBuf = new StringBuffer();
+			strBuf.append("SELECT asset , MIN(SCANDATE) FROM transp.assettracking WHERE ");
+			strBuf.append("scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') ");
+            strBuf.append(" AND asset LIKE 'HT%' AND assetstatus='OUT'  GROUP BY asset ");
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(strBuf.toString());
+	             
+	            
+				ps.setString(1, scanStartTime);
+	              
+				ps.setString(2,scanEndTime);
+	                return ps;
+	            }  
+	        };
+	        jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	
+	       		    	 while(rs.next()) {
+	       		    		 result.add(rs.getString(1));//, rs.getString(2));
+	       		    	 }
+	       		      }
+	       		   });
+	        	
+			} catch (ParseException e) {
+				LOGGER.warn(e.toString(), e);
+			}
+			return result;
+	}
+	
+	
+	// added new code Appdev 808
+	
+	public List getEmployeeWorkedSixDays(Date planDate) throws DataAccessException {
+		final List result = new ArrayList();
+		try {
+			DateUtil dateU = null;
+			Date startDate = dateU.addDays(planDate, -6);
+			Date endDate = dateU.addDays(planDate, 6);
+			final String planStartTime= TransStringUtil.getDate(startDate)+":12:00:00AM";
+			final String planEndTime=TransStringUtil.getDate(endDate)+":11:59:59PM";
+			final StringBuffer strBuf = new StringBuffer();
+			strBuf.append("select count(distinct(pr.resource_id)) as total from transp.plan_resource pr, transp.plan p where pr.plan_id = p.plan_id ");
+			strBuf.append("and p.plan_date between to_date(?, 'mm/dd/yyyy:hh:mi:ssam')and to_date(?,'mm/dd/yyyy:hh:mi:ssam')");
+            strBuf.append("group by resource_id having count(resource_id)= 6");
+			PreparedStatementCreator creator=new PreparedStatementCreator() {
+	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+	                PreparedStatement ps =
+	                    connection.prepareStatement(strBuf.toString());
+	             
+	            
+				ps.setString(1, planStartTime);
+	              
+				ps.setString(2,planEndTime);
+	                return ps;
+	            }  
+	        };
+	        jdbcTemplate.query(creator, 
+	       		  new RowCallbackHandler() { 
+	       		      public void processRow(ResultSet rs) throws SQLException {
+	       		    	
+	       		    	 while(rs.next()) {
+	       		    		 result.add(rs.getString(1));
+	       		    	 }
+	       		      }
+	       		   });
+	        	
+			} catch (ParseException e) {
+				LOGGER.warn(e.toString(), e);
+			}
+			return result;
+	}
+	
+		
 	
 	public Date getHTOutScanTimeForRoute(final String routeId) throws DataAccessException {
 		
@@ -208,6 +295,12 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 				LOGGER.warn(e.toString(), e);
 			}
 			return result;
-	}	
+	}
+	
+	
+	
+	
+
+	
 	
 }

@@ -82,6 +82,7 @@ public class DateUtil {
 		cal.add(Calendar.DATE, days);
 		return cal.getTime();
 	}
+	
 
 	public static Date addHours(Date date, int hours) {
 		Calendar cal = Calendar.getInstance();

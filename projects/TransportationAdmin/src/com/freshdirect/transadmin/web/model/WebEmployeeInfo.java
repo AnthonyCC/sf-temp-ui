@@ -15,9 +15,11 @@ public class WebEmployeeInfo implements Serializable, Comparable<WebEmployeeInfo
 
 private String employeeId;
 
-//	private String firstName;
-//
-//	private String lastName;
+	private String firstName;
+
+	private String lastName;
+	
+	private String shiftType;
 //
 //	private String middleInitial;
 //
@@ -43,6 +45,15 @@ private String employeeId;
 	// private EmployeeroleId id;
 	//private EmployeeRoleType employeeRoleType;
 
+	
+
+	public String getShiftType() {
+		return shiftType;
+	}
+
+	public void setShiftType(String shiftType) {
+		this.shiftType = shiftType;
+	}
 	private String region;
 	private boolean bullpen;
 	private EmployeeInfo empInfo;
@@ -50,7 +61,6 @@ private String employeeId;
 	private String trnStatus;
 	private EmployeeInfo leadInfo;
 	private boolean isLead;
-
 	
 	public WebEmployeeInfo(EmployeeInfo eInfo,Collection eRole){
 		this.empInfo=eInfo;
@@ -143,7 +153,28 @@ private String employeeId;
 
 		return empList;
 	}
+	
+	//added new code Appdev808 
+	public String getNameWithFirstInitial() {
+	
+		  StringBuffer buf=new StringBuffer();
+				
+		  buf.append((getFirstName()).substring(0, 1));
+		 		 		
+		  return buf.toString();
+		}
+	     
+	public String getJobTypeWithFirstInitial() {
+		
+		  StringBuffer buf=new StringBuffer();
+				
+		  buf.append((getJobType()).substring(0, 1));
+		 		 		
+		  return buf.toString();
+		}
 
+	
+	
 	public void setEmployeeRoleType(Collection employeeRoles) {
 		      this.empRole=employeeRoles;
 	}
@@ -159,8 +190,9 @@ private String employeeId;
 	public String getFirstName() {
 		return empInfo.getFirstName();
 	}
-
-
+	
+	
+	
 	public Date getHireDate() {
 		return empInfo.getHireDate();
 	}
@@ -170,6 +202,9 @@ private String employeeId;
 		return empInfo.getJobType();
 	}
 
+	public String getFirstLetterJobType() {
+		return empInfo.getJobType();
+	}
 
 	public String getLastName() {
 		return empInfo.getLastName();
@@ -299,4 +334,7 @@ private String employeeId;
 		// TODO Auto-generated method stub
 		return this.toString().compareTo(o.toString());
 	}
+
+
+	
 }
