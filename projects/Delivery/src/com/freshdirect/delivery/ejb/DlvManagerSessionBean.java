@@ -1790,7 +1790,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 						&& !EnumOrderMetricsSource.DEFAULT.equals(order.getDeliveryInfo().getPackagingDetail().getSource())) {
 				setReservationMetricsDetails(reservation.getId(), order.getDeliveryInfo().getPackagingDetail().getNoOfCartons()
 											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
-											, order.getDeliveryInfo().getPackagingDetail().getNoOfCases()
+											, order.getDeliveryInfo().getPackagingDetail().getNoOfFreezers()
 											, EnumRoutingUpdateStatus.PENDING
 											, EnumOrderMetricsSource.ACTUAL);
 			}
