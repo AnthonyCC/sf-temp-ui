@@ -36,7 +36,7 @@ public class ProductUtil {
     }
 
     public static String readContent(URL url) throws IOException {
-        LOG.debug("Reading content from: " + url.toString());
+        //LOG.debug("Reading content from: " + url.toString());
         Writer out = new StringWriter();
         InputStream in = null;
         in = url.openStream();

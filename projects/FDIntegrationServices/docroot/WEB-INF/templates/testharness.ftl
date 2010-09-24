@@ -13,6 +13,31 @@ $(document).ready(function(){
   } else {
     $("#version").val("1");
   }
+  
+  // Setup the ajax indicator
+	$("body").append('<div id="ajaxBusy"><p><img src="../images/loading_color.gif"></p></div>');
+	$('#ajaxBusy').css({
+		display:"none",
+		margin:"0px",
+		paddingLeft:"0px",
+		paddingRight:"0px",
+		paddingTop:"0px",
+		paddingBottom:"0px",
+		position:"absolute",
+		right:"3px",
+		top:"3px",
+		width:"auto"
+	});
+
+	// Ajax activity indicator bound 
+	// to ajax start/stop document events
+	$(document).ajaxStart(function(){ 
+		$('#ajaxBusy').show(); 
+	}).ajaxStop(function(){ 
+		$('#ajaxBusy').hide();
+	});
+  
+  
 });
 
 
@@ -246,6 +271,10 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
+  } else if (loaddata == "QuickShopEveryItemOrdered") {
+  	$("#url").val("/saptest12@freshdirect.com//dept/id/gro/quickshopeveryitem/");
+  	$("#payload").val("");
+  	$("#result").val("");
   } else if (loaddata == "RemoveMultipleItems") {
   	$("#url").val("/saptest12@freshdirect.com/cart/removemultipleitems/");
   	var postdata = '{'+
@@ -404,8 +433,8 @@ function doStuff() {
 </head>
 <body>
 <form name="f1">
-  <p>URL: <input id="url" name="url" type="text" size="70" /> Ver: <input id="version" name="version" type="text" size="3" />
-  - or -
+  <p><b>URL:</b> <input id="url" name="url" type="text" size="70" /> <b>Ver:</b> <input id="version" name="version" type="text" size="3" />
+  <b>- or -</b>
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
   <option value="">========== LOGIN ==========</option>
   <option value="Login">Login</option>
@@ -458,6 +487,7 @@ function doStuff() {
   <option value="QuickShopOrder">QUICKSHOP - Shop from Order</option>
   <option value="ShoppingLists">QUICKSHOP - Shopping Lists</option>
   <option value="QuickShopLists">QUICKSHOP - Shop from Shopping List</option>
+  <option value="QuickShopEveryItemOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>
   <option value="WGDCategoryProducts">WHATS GOOD - Category Products</option>
@@ -483,12 +513,12 @@ function doStuff() {
   <option value="HelpContactUs">Help - Contact Us</option>
   <option value="HelpLearnMorePromo">Help - Learn More Promo</option>
   </select>
-  </p>
-  <p><input value="Go" type="button" onclick='JavaScript:doStuff()'></p>
-  <p>Payload:<br />
-  <textarea id="payload" name="payload" rows="15" cols="100"></textarea></p>
-  <p>Result:<br />
-  <textarea id="result" name="result" rows="15" cols="100"></textarea></p>
+  
+  <input value="Go" type="button" onclick='JavaScript:doStuff()'></p>
+  <p><b>Payload:</b><br />
+  <textarea id="payload" name="payload" rows="5" cols="120"></textarea></p>
+  <p><b>Result:</b><br />
+  <textarea id="result" name="result" rows="20" cols="120"></textarea></p>
   <div id="result"></div>
 </form>
 </body>

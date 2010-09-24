@@ -301,6 +301,12 @@
 		<from>^/v/([0-9]+)/(.*)/order/id/(.*)/quickshop/</from>
 		<to last="true">/order.do?orderId=$3&amp;action=quickshop&amp;ver=$1</to>
 	</rule>
+	
+	<!-- QuickShop from Previous Order By Dept -->
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/dept/id/(.*)/quickshopeveryitem/</from>
+		<to last="true">/order.do?orderId=every&amp;qsDeptId=$3&amp;action=quickshopeveryitem&amp;ver=$1</to>
+	</rule>
 
 	<!-- List Shopping lists -->
 	<rule>

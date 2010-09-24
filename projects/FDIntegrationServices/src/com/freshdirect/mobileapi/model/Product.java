@@ -504,7 +504,7 @@ public class Product {
             Collections.sort(variations, new VariationComparator());
 
             for (FDVariation variation : variations) {
-                LOG.debug("Variation added: " + variation.getName());
+                //LOG.debug("Variation added: " + variation.getName());
                 this.variations.add(Variation.wrap(variation, this));
             }
         }
@@ -1651,7 +1651,7 @@ public class Product {
         if (productLabeling.isDisplayDeal()) {
         */
         
-        LOG.debug("product is :"+product.getProductModel().getClass());
+        //LOG.debug("product is :"+product.getProductModel().getClass());
         if( (FDStoreProperties.getBurstsLowerLimit()<=this.getHighestDealPercentage()) && (FDStoreProperties.getBurstUpperLimit()>=this.getHighestDealPercentage()) ){
             image = new Image("/media_stat/images/deals/brst_lg_" + getHighestDealPercentage() + ".png", 55, 55);
         }
@@ -1664,7 +1664,7 @@ public class Product {
         ProductLabeling productLabeling = new ProductLabeling(this.user, this.product.getProductModel(), (variant == null ? null : variant
                 .getHideBursts()));
         
-        LOG.debug("product is :"+product.getProductModel().getClass());
+        //LOG.debug("product is :"+product.getProductModel().getClass());
 
         if ( productLabeling.isDisplayDeal()) {                   	
             image = new Image("/media_stat/images/deals/brst_sm_" + getHighestDealPercentage() + ".png", 35, 35);

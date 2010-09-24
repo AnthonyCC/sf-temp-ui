@@ -54,7 +54,9 @@ public class OrderController extends BaseController {
     private static final String ACTION_CANCEL_ORDER_MODIFY = "cancelmodify";
 
     private static final String ACTION_QUICK_SHOP = "quickshop";
-
+    
+    private static final String ACTION_QUICK_SHOP_EVERYITEM = "quickshopeveryitem";
+    
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
      */
@@ -89,6 +91,10 @@ public class OrderController extends BaseController {
             model = getProductsFromOrder(model, user, orderId);
         } else if (ACTION_CANCEL_ORDER_MODIFY.equals(action)) {
             model = cancelOrderModify(model, user, request);
+        } else if (ACTION_QUICK_SHOP_EVERYITEM.equals(action)) {  
+        	String orderId = request.getParameter("orderId");
+        	String deptId = request.getParameter("qsDeptId");
+            model = getProductsFromOrderDept(model, user, orderId, (deptId != null && deptId.trim().length() > 0) ? deptId : null);
         }
 
         return model;
@@ -233,7 +239,7 @@ public class OrderController extends BaseController {
 
         List<ProductConfiguration> products;
         try {
-            products = order.getOrderProducts(orderId, user);
+            products = order.getOrderProducts(orderId, null, user);
         } catch (ModelException e) {
             throw new FDException(e);
         }
@@ -242,5 +248,21 @@ public class OrderController extends BaseController {
         setResponseMessage(model, quickShop, user);
         return model;
     }
+    
+    private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user, String orderId, String deptId) throws FDException, JsonException {
+        Order order = new Order();
+
+        List<ProductConfiguration> products;
+        try {
+            products = order.getOrderProducts(orderId, deptId, user);
+        } catch (ModelException e) {
+            throw new FDException(e);
+        }
+        QuickShop quickShop = new QuickShop();
+        quickShop.setProducts(products);
+        setResponseMessage(model, quickShop, user);
+        return model;
+    }
+
 
 }

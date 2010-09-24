@@ -157,7 +157,7 @@ public class Order {
      * @throws FDException 
      * @throws ModelException 
      */
-    public List<ProductConfiguration> getOrderProducts(String orderId, SessionUser user) throws FDException, ModelException {
+    public List<ProductConfiguration> getOrderProducts(String orderId, String deptId, SessionUser user) throws FDException, ModelException {
         List<ProductConfiguration> result = new ArrayList<ProductConfiguration>();
 
         QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(user);
@@ -165,7 +165,12 @@ public class Order {
         ResultBundle resultBundle = wrapper.getQuickCartFromOrder(orderId);
         QuickCart quickCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
 
-        Iterator<FDProductSelectionI> products = quickCart.getProducts().iterator();
+        Iterator<FDProductSelectionI> products = null;
+        if(deptId != null) {
+        	products = quickCart.getProducts(deptId).iterator();
+        } else {
+        	products = quickCart.getProducts().iterator();
+        }
 
         List<FDCartLineI> cartLines = user.getShoppingCart().getOrderLines();
 
@@ -182,10 +187,9 @@ public class Order {
                 }
                 
                 if (sku == null) {
-                    LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
+                    //LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
                     if (product.getSkuCode() != null) {
-                        LOG
-                                .debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
+                        //LOG.debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
                         productConfiguration.populateProductWithModel(productData, product.getSkuCode());
                     } else {
                         LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
@@ -217,4 +221,5 @@ public class Order {
 
         return result;
     }
+      
 }

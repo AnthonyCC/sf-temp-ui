@@ -182,9 +182,9 @@ public class ProductSearchResult {
         long startTime = System.currentTimeMillis();
         inCart = product.isInProductInCart();
         long endTime = System.currentTimeMillis() - startTime;
-        if (LOGGER.isDebugEnabled()) {
+        /*if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Calculating in cart took:" + endTime + "msec");
-        }
+        }*/
 
         this.platter = product.isPlatter();
         //        this.cancellationNote = product.getCancellationNote();

@@ -12,7 +12,7 @@ import com.freshdirect.webapp.taglib.fdstore.QuickShopControllerTag;
  */
 public class QuickShopControllerTagWrapper extends NonStandardControllerTagWrapper implements RequestParamName, SessionParamName {
     public static final String QUICK_CART_ID = "quickCart";
-
+        
     public QuickShopControllerTagWrapper(SessionUser user) {
         super(new QuickShopControllerTag(), user);
     }
