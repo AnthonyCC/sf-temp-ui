@@ -1,12 +1,13 @@
-/*
-ModalBox - The pop-up window thingie with AJAX, based on prototype and script.aculo.us.
+//  
+//  ModalBox - The pop-up window thingie with AJAX, based on Prototype JS framework.
+//  
+//  Created by Andrew Okonetchnikov
+//  Copyright 2006-2010 okonet.ru. All rights reserved.
+//
+//  Licensed under MIT license.
+//
 
-Copyright Andrey Okonetchnikov (andrej.okonetschnikow@gmail.com), 2006-2007
-All rights reserved.
- 
-VERSION 1.6.1
-Last Modified: 04/13/2008
-*/
+//  this is a manually modified version for FD
 
 if (!window.Modalbox)
 	var Modalbox = new Object();
@@ -28,7 +29,7 @@ Modalbox.Methods = {
 		slideUpDuration: .5, // Default Modalbox hiding slide up effect in seconds
 		resizeDuration: .25, // Default resize duration seconds
 		inactiveFade: true, // Fades MB window on inactive state
-		transitions: false, // Toggles transition effects. Transitions are enabled by default
+		transitions: false, // Toggles transition effects. Transitions are disabled by default
 		loadingString: "Please wait. Loading...", // Default loading string message
 		closeString: "Close window", // Default title attribute for close window link
 		closeValue: "&times;", // Default string for close link in the header
@@ -36,6 +37,7 @@ Modalbox.Methods = {
 		method: 'get', // Default Ajax request method
 		autoFocusing: true, // Toggles auto-focusing for form elements. Disable for long text pages.
 		aspnet: false, // Should be use then using with ASP.NET costrols. Then true Modalbox window will be injected into the first form element.
+		resizeCSSID: '',
 		centered: false
 	},
 	_options: new Object,
@@ -54,13 +56,16 @@ Modalbox.Methods = {
 		this.MBoverlay = new Element("div", { id: "MB_overlay", style: "opacity: 0" });
 		
 		//Creating the modal window
-		this.MBwindow = new Element("div", {id: "MB_window", style: "display: none"}).update(
-			this.MBframe = new Element("div", {id: "MB_frame"}).update(
-				this.MBheader = new Element("div", {id: "MB_header"}).update(
-					this.MBcaption = new Element("div", {id: "MB_caption"})
+		this.MBwindowwrapper = new Element("div", {id: "MB_windowwrapper"}).update(
+			this.MBwindow = new Element("div", {id: "MB_window", style: "display: none"}).update(
+				this.MBframe = new Element("div", {id: "MB_frame"}).update(
+					this.MBheader = new Element("div", {id: "MB_header"}).update(
+						this.MBcaption = new Element("div", {id: "MB_caption"})
+					)
 				)
-			)
+			)	
 		);
+		
 		this.MBclose = new Element("a", {id: "MB_close", title: this.options.closeString, href: "#"}).update("<span>" + this.options.closeValue + "</span>");
 		this.MBheader.insert({'bottom':this.MBclose});
 		
@@ -72,7 +77,7 @@ Modalbox.Methods = {
 		// Inserting into DOM. If parameter set and form element have been found will inject into it. Otherwise will inject into body as topmost element.
 		// Be sure to set padding and marging to null via CSS for both body and (in case of asp.net) form elements. 
 		var injectToEl = this.options.aspnet ? $(document.body).down('form') : $(document.body);
-		injectToEl.insert({'top':this.MBwindow});
+		injectToEl.insert({'top':this.MBwindowwrapper});
 		injectToEl.insert({'top':this.MBoverlay});
 		
 		// Initial scrolling position of the window. To be used for remove scrolling effect during ModalBox appearing
@@ -172,16 +177,32 @@ Modalbox.Methods = {
 	},
 	
 	resize: function(byWidth, byHeight, options) { // Change size of MB without loading content
+		// release any MB_content height set prior to establish scrollbars in content area
+		$(this.MBcontent).setStyle({height:''});
+		
 		var oWidth = $(this.MBoverlay).getWidth();
 		var wHeight = $(this.MBwindow).getHeight();
 		var wWidth = $(this.MBwindow).getWidth();
 		var hHeight = $(this.MBheader).getHeight();
 		var cHeight = $(this.MBcontent).getHeight();
 		var newHeight = ((wHeight - hHeight + byHeight) < cHeight) ? (cHeight + hHeight) : (wHeight + byHeight);
-		var newWidth = wWidth + byWidth;
+
+		var el = $(this.MBwindow);
+		var windowBottomMargin = 10;		
+		var windowOffset = (parseInt(el.getStyle('margin-top'), 0) + parseInt(el.getStyle('margin-bottom'), 0) + parseInt(el.getStyle('border-top-width'), 0) + parseInt(el.getStyle('border-bottom-width'), 0)) + windowBottomMargin;
+		
+		if ((newHeight + windowOffset) > document.viewport.getHeight()) {
+			// adjust window height to account for margins and border widths
+			newHeight = document.viewport.getHeight() - windowOffset - windowBottomMargin;
+			// calculate content height including header height and padding values
+			newcHeight = newHeight - hHeight - parseInt($(this.MBframe).getStyle('padding-bottom'), 0) - parseInt($(this.MBcontent).getStyle('padding-bottom'), 0);
+			$(this.MBcontent).setStyle({height:newcHeight + 'px'});
+		}
+		var newWidth = wWidth + byWidth;	
         this.options.width = newWidth;
 		if(options) this.setOptions(options); // Passing callbacks
-		if(this.options.transitions) {
+		if(this.options.transitions && !Modalbox.animating) {
+			Modalbox.animating = true;
 			new Effect.Morph(this.MBwindow, {
 				style: "width:" + newWidth + "px; height:" + newHeight + "px; left:" + ((oWidth - newWidth)/2) + "px",
 				duration: this.options.resizeDuration, 
@@ -191,25 +212,74 @@ Modalbox.Methods = {
 				afterFinish: function(fx) {
 					fx.element.setStyle({overflow:"visible"});
 					this.event("_afterResize"); // Passing internal callback
-					this.event("afterResize"); // Passing callback
+					this.event("afterResize"); // Passing callback	
+					Modalbox.animating = false;				
 				}.bind(this)
 			});
 		} else {
 			this.MBwindow.setStyle({width: newWidth + "px", height: newHeight + "px"});
 			setTimeout(function() {
 				this.event("_afterResize"); // Passing internal callback
-				this.event("afterResize"); // Passing callback
+				this.event("afterResize"); // Passing callback			
 			}.bind(this), 1);
 		}
 		
 	},
 	
 	resizeToContent: function(options){
-		
 		// Resizes the modalbox window to the actual content height.
 		// This might be useful to resize modalbox after some content modifications which were changed ccontent height.
 		
+		if (typeof options == "undefined") {
+			options = new Object();
+		}
+		
+		// check to see if MB_content includes any images
+		var mbimages = $('MB_content').select('img');
+		var totalimages = mbimages.length;
+		if (mbimages[0]) {
+			if (typeof options.imagesloaded == "undefined") {
+
+				var loadedImages = $A();
+				var loadedImageTotal = 0;					
+				mbimages.each(function(o,idx) {
+					loadedImages[idx] = new Image();						
+					loadedImages[idx].src = o.src;												
+					loadedImages[idx].onload = function() {		
+						loadedImageTotal++;
+						if (loadedImageTotal == totalimages) {
+							// make sure all images have been rendered by checking their height
+							var imageincomplete = false;
+							mbimages.each(function(i) {
+								if (i.height == 0) {
+									imageincomplete = true;
+								}
+							});
+							if (imageincomplete || Modalbox.animating) {
+								// some image hasn't been rendered yet, trigger resize loop until it is
+								Modalbox.resizeToContent();								
+							}
+							else {
+								// trigger one final resize, but set imagesloaded option to skip inspection of images
+								options.imagesloaded = true;
+								Modalbox.resizeToContent(options);
+							}
+						}					
+					}
+				})	
+			}
+		}
+
 		var byHeight = this.options.height - $(this.MBwindow).getHeight();
+		if (options.resizeCSSID && $(options.resizeCSSID)) {
+			// byWidth is the amount of pixels needed to increase/decrease window to meet width of options.resizeCSSID
+			// plus a 10 pixel margin to accommodate scrollbars
+			var byWidth = $(options.resizeCSSID).getWidth() - $(this.MBwindow).getWidth() + (parseInt($(this.MBcontent).getStyle('padding-left'), 0) + parseInt($(this.MBcontent).getStyle('padding-right'), 0)) + 15;
+		}
+		else {
+			// don't change width
+			var byWidth = 0;
+		}
 		if(byHeight != 0) {
 			if(options) this.setOptions(options); // Passing callbacks
 			Modalbox.resize(0, byHeight);
@@ -217,6 +287,7 @@ Modalbox.Methods = {
 	},
 	
 	resizeToInclude: function(element, options){
+		
 		// Resizes the modalbox window to the camulative height of element. Calculations are using CSS properties for margins and border.
 		// This method might be useful to resize modalbox before including or updating content.
 		
@@ -245,7 +316,7 @@ Modalbox.Methods = {
 					}.bind(this));
 				} else // URL given as a parameter. We'll request it via Ajax
 					new Ajax.Request( this.content, { method: this.options.method.toLowerCase(), parameters: this.options.params, 
-						onSuccess: function(transport) {
+						onComplete: function(transport) {
 							var response = new String(transport.responseText);
 							this._insertContent(transport.responseText.stripScripts(), function(){
 								response.extractScripts().map(function(script) { 

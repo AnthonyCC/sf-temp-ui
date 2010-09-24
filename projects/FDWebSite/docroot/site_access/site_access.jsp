@@ -11,6 +11,7 @@
 <%@ taglib uri="freshdirect" prefix="fd" %>
 
 <%
+	response.addHeader("Pragma", "no-cache"); 
 	boolean isBestCellars = request.getServerName().toLowerCase().indexOf("bestcellars") > -1;
 	String successPage = NVL.apply(request.getParameter("successPage"), "");
 	String zipcode = NVL.apply(request.getParameter("zipcode"), "");
@@ -103,10 +104,12 @@ request.setAttribute("listPos", "CategoryNote");
 		<title>FreshDirect</title>
 
 		<%@ include file="/common/template/includes/metatags.jspf" %>
+		<meta http-equiv="X-UA-Compatible" content="IE=8">
+
 		<%@ include file="/common/template/includes/i_javascripts.jspf" %>
+		<script src="/assets/javascript/swfobject.js" type="text/javascript"></script>
 		
 		<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
-		
 	</head>
 	<body bgcolor="#ffffff" text="#333333" class="text11" marginwidth="0" marginheight="20" leftmargin="0" topmargin="20">
 	

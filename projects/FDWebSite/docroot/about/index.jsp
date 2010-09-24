@@ -6,7 +6,7 @@
 <fd:CheckLoginStatus />
 
 <%
-
+	response.addHeader("Pragma", "no-cache"); 
 	String noMobile = "FALSE";
 	if ( request.getParameter("noMobile") != null ) {
 		noMobile = request.getParameter("noMobile");
