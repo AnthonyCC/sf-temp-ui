@@ -18,10 +18,13 @@ String zonePromoString=null;
 	%>
 <% if(timeSlotCtx!=null){
 
-	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS)||timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM)||timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
-        if(zonePromoAmount >0)
-		{
-			zonePromoString = JspMethods.formatPrice(zonePromoAmount);
+	if(timeSlotCtx.equals(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS) 
+				|| timeSlotCtx.equals(TimeslotContext.CHECK_AVAL_SLOTS_CRM) 
+					|| timeSlotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)) {
+		
+		if(zonePromoAmount >0) {
+			//zonePromoString = JspMethods.formatPrice(zonePromoAmount);
+			zonePromoString = CCFormatter.formatQuantity(zonePromoAmount);
 			request.setAttribute("SHOW_WINDOWS_STEERING","true");
 		}
 
@@ -29,7 +32,7 @@ String zonePromoString=null;
 		<script type="text/javascript" language="javascript">
 			var zonePromoString=""; 
 			var zonePromoEnabled=false;
-			<%if(zonePromoAmount>0){ %>
+			<%if(zonePromoAmount>0) { %>
 				zonePromoString="<%=zonePromoString %>"; 
 				zonePromoEnabled=true;
 			<%} %>
