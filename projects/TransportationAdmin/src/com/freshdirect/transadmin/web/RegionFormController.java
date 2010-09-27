@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RegionFormController extends AbstractDomainFormController {

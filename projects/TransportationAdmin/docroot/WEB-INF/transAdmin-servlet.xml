@@ -42,13 +42,10 @@
  		 	    <prop key="/editregion.do">regionFormController</prop>
  		 	    <prop key="/deletezone.do">domainController</prop>
  		 	    <prop key="/deleteregion.do">domainController</prop>
- 		 	    <prop key="/edittruck.do">truckFormController</prop>
- 		 	    <prop key="/deletetruck.do">domainController</prop>
  		 	    <prop key="/plan.do">dispatchController</prop>
  		 	    <prop key="/deleteplan.do">dispatchController</prop>
  		 	    <prop key="/editplan.do">planningFormController</prop> 		 	    
  		 	    <prop key="/plansummary.do">dispatchController</prop>
- 		 	    <prop key="/assignment.do">assignmentFormController</prop>
  		 	    <prop key="/dispatch.do">dispatchController</prop>
  		 	    <prop key="/dispatchSummary.do">dispatchController</prop>
  		 	    <prop key="/dispatchDashboard.do">dispatchController</prop>
@@ -96,7 +93,6 @@
 				<prop key="/deletecutoff.do">domainController</prop>					                
 				<prop key="/editcutoff.do">cutOffFormController</prop>
 				<prop key="/viewfile.do">genericBeanFormController</prop> 
-				<prop key="/routenumber.do">dispatchController</prop>
 				<prop key="/accessdenied.do">domainController</prop>
 
 				<prop key="/georestriction.do">restrictionController</prop>
@@ -221,7 +217,6 @@
  		 	<prop key="/deleteroute.do">routeAdHocDeleteHandler</prop>	
  		 	<prop key="/deletezone.do">zoneDeleteHandler</prop>	
  		 	<prop key="/deleteregion.do">regionDeleteHandler</prop>	
- 		 	<prop key="/deletetruck.do">truckDeleteHandler</prop>
  		 	<prop key="/plan.do">planHandler</prop>
  		 	<prop key="/plansummary.do">planSummaryHandler</prop>			      
  		 	<prop key="/deleteplan.do">planDeleteHandler</prop>
@@ -257,7 +252,6 @@
  		 	<prop key="/deletedlvservicetimescenario.do">dlvServiceTimeScenarioDeleteHandler</prop>	
  		 	<prop key="/cutoff.do">cutOffHandler</prop>					                
  		 	<prop key="/deletecutoff.do">cutOffDeleteHandler</prop>
- 		 	<prop key="/routenumber.do">routeNumberHandler</prop> 
  		 	<prop key="/accessdenied.do">accessDeniedHandler</prop>
 
 		 	<prop key="/georestriction.do">geoRestrictionHandler</prop>					                
@@ -351,16 +345,6 @@
         <property name="formView" value="cutOffEdit" />
 	</bean>
 	
-	<bean id="truckFormController" class="com.freshdirect.transadmin.web.TruckFormController">
-		<property name="domainManagerService" ref="domainManager"/>
-		<property name="sessionForm" value="true"/>
-        <property name="commandName" value="truckForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.model.TrnTruck"/>
-        <property name="validator" ref="truckValidator"/>
-        <property name="successView" value="truckEdit" />
-        <property name="formView" value="truckEdit" />
-	</bean>
-	
 	<bean id="routeFormController" class="com.freshdirect.transadmin.web.RouteFormController">
 		<property name="domainManagerService" ref="domainManager"/>
 		<property name="sessionForm" value="true"/>
@@ -395,17 +379,6 @@
         <property name="validator" ref="dispatchValidator"/>
         <property name="successView" value="dispatchEdit" />
         <property name="formView" value="dispatchEdit" />
-	</bean>
-	
-	<bean id="assignmentFormController" class="com.freshdirect.transadmin.web.AssignmentFormController">
-		<property name="domainManagerService" ref="domainManager"/>
-		<property name="dispatchManagerService" ref="dispatchManager"/>
-		<property name="sessionForm" value="true"/>
-        <property name="commandName" value="assignmentForm"/>
-        <property name="commandClass" value="com.freshdirect.transadmin.web.model.AssignmentCommand"/> 
-        <property name="validator" ref="assignmentValidator"/>       
-        <property name="successView" value="assignmentView" />
-        <property name="formView" value="assignmentView" />
 	</bean>
 	
 	<bean id="copyPlanFormController" class="com.freshdirect.transadmin.web.CopyPlanFormController">		
@@ -656,13 +629,11 @@
 	<bean id="employeeValidator" class="com.freshdirect.transadmin.web.validation.EmployeeValidator"/>
 	<bean id="zoneValidator" class="com.freshdirect.transadmin.web.validation.ZoneValidator"/>
 	<bean id="regionValidator" class="com.freshdirect.transadmin.web.validation.RegionValidator"/>	
-	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>
-	<bean id="truckValidator" class="com.freshdirect.transadmin.web.validation.TruckValidator"/>
+	<bean id="zoneTypeValidator" class="com.freshdirect.transadmin.web.validation.ZoneTypeValidator"/>	
 	<bean id="routeValidator" class="com.freshdirect.transadmin.web.validation.RouteAdHocValidator"/>
 	<bean id="planValidator" class="com.freshdirect.transadmin.web.validation.PlanValidator"/>
 	<bean id="dispatchValidator" class="com.freshdirect.transadmin.web.validation.DispatchValidator"/>
 	<bean id="copyPlanValidator" class="com.freshdirect.transadmin.web.validation.CopyPlanValidator"/>
-	<bean id="assignmentValidator" class="com.freshdirect.transadmin.web.validation.AssignmentValidator"/>
 	<bean id="deliveryLocationValidator" class="com.freshdirect.transadmin.web.validation.DlvLocationValidator"/>
 	<bean id="dlvServiceTimeTypeValidator" class="com.freshdirect.transadmin.web.validation.DlvServiceTimeTypeValidator"/>
 	<bean id="deliveryBuildingValidator" class="com.freshdirect.transadmin.web.validation.DlvBuildingValidator"/>

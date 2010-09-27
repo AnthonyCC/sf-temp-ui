@@ -24,8 +24,6 @@ import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZonetypeResource;
@@ -54,11 +52,6 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnRoute tr WHERE tr.obsolete IS NULL AND ZONE_ID='"+zoneId+"'  Order By ROUTE_NUMBER");
 	}
 
-	public Collection getTrucks() throws DataAccessException {
-
-		return getDataList("TrnTruck where OBSOLETE IS NULL Order By TRUCK_NUMBER");
-	}
-
 	public Collection getZoneTypes() throws DataAccessException {
 
 		return getDataList("TrnZoneType Order By ID");
@@ -80,20 +73,7 @@ public class DomainManagerDaoHibernateImpl
 
 	public String[] getTimings() throws DataAccessException {
 		return new String[]{"AM","PM"};
-	}
-
-	public String[] getTruckTypes() throws DataAccessException {
-		return new String[]{"None","Pickup","Regular"};
-	}
-
-	public Collection getSupervisors() throws DataAccessException {
-
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnEmployee te where te.obsolete IS NULL AND te.trnEmployeeJobType.jobTypeId = '9'  Order By  LAST_NAME");
-
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}
-
+	}	
 
 	public Zone getZone(String code) throws DataAccessException  {
 		return (Zone)getEntityById("Zone","zoneCode",code);
@@ -102,10 +82,6 @@ public class DomainManagerDaoHibernateImpl
 
 	public TrnAdHocRoute getAdHocRoute(String id) throws DataAccessException  {
 		return (TrnAdHocRoute)getEntityById("TrnAdHocRoute","routeId",id);
-	}
-
-	public TrnTruck getTruck(String id) throws DataAccessException  {
-		return (TrnTruck)getEntityById("TrnTruck","truckId",id);
 	}
 
 	public TrnZoneType getZoneType(String id) throws DataAccessException  {
@@ -208,21 +184,6 @@ public class DomainManagerDaoHibernateImpl
 	}
 
 	// employee
-
-
-	public Collection getEmployeeJobType() throws DataAccessException {
-
-		return getDataList("TrnEmployeeJobType");
-	}
-
-
-	// not used
-	public TrnEmployee getEmployee(String id) throws DataAccessException  {
-		//return (TrnEmployee)getEntityById("TrnEmployee","employeeId",id);
-		return null;
-	}
-
-
 	public Collection getEmployeeRole(String empId) throws DataAccessException {
 		// TODO Auto-generated method stub
 		StringBuffer strBuf = new StringBuffer();

@@ -29,7 +29,6 @@ import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.service.DomainManagerI;
@@ -88,10 +87,6 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getAdHocRoutes();
 	}
 	
-	public Collection getRouteForZone(String zoneId) {
-		return getDomainManagerDao().getRouteForZone(zoneId);
-	}
-	
 	public Collection getTrucks() {
 		// get the data from CacheManager
 		// if data does not exist then get the data from sap and add it in cache
@@ -116,27 +111,12 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getTimings();
 	}
 	
-	public String[] getTruckTypes() {
-		return getDomainManagerDao().getTruckTypes();
-	}
-	
-	public Collection getSupervisors() {
-		return getDomainManagerDao().getSupervisors(); 
-	}
-		
-	
-	
-	
 	public Zone getZone(String id)  {
 		return getDomainManagerDao().getZone(id);	
 	}
 	
 	public TrnAdHocRoute getAdHocRoute(String id)  {
 		return getDomainManagerDao().getAdHocRoute(id);	
-	}
-	
-	public TrnTruck getTruck(String id)  {
-		return getDomainManagerDao().getTruck(id);	
 	}
 	
 	public TrnArea getArea(String id)  {
@@ -165,17 +145,9 @@ public class DomainManagerImpl
 		return getDomainManagerDao().getDeliveryModels();
 	}
 
-	public Collection getRoutes() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
 	public Collection getBalanceBys() {
 		return EnumBalanceBy.getEnumList();
 	}
-		
-	
 	
 	public Collection getZonetypeResources(String zoneTypeId) {
 		return getDomainManagerDao().getZonetypeResources(zoneTypeId);

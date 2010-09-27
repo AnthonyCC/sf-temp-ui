@@ -15,7 +15,6 @@ import com.freshdirect.transadmin.model.ScheduleEmployee;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
@@ -23,9 +22,7 @@ import com.freshdirect.transadmin.web.model.WebSchedule;
 
 public interface DomainManagerI extends BaseManagerI {
 	
-	Collection getRegions();
-	
-	
+	Collection getRegions();	
 	
 	Collection getZones();
 	
@@ -37,32 +34,21 @@ public interface DomainManagerI extends BaseManagerI {
 	
 	Collection getRoutes(String requestedDate);
 	
-	Collection getRouteForZone(String zoneId);
-	
 	Collection getTrucks();
 	
 	ErpTruckMasterInfo getERPTruck(String truckId);
 	
 	Collection getZoneTypes();
 	
-	
 	String[] getDays();
 	
 	String[] getTimings();
 	
-	String[] getTruckTypes();
-	
 	Collection getEmployeeJobType();
-	
-	Collection getSupervisors();
-		
-	
 	
 	Zone getZone(String id);
 	
 	TrnAdHocRoute getAdHocRoute(String id);
-	
-	TrnTruck getTruck(String id);
 	
 	TrnZoneType getZoneType(String id);
 	

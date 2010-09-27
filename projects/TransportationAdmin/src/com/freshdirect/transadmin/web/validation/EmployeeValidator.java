@@ -2,8 +2,6 @@ package com.freshdirect.transadmin.web.validation;
 
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
-
-import com.freshdirect.transadmin.model.TrnEmployee;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 

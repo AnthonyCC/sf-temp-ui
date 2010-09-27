@@ -37,7 +37,6 @@ import com.freshdirect.transadmin.model.ScheduleEmployeeInfo;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
@@ -623,30 +622,6 @@ public class DomainController extends AbstractMultiActionController {
 			saveMessage(request, getMessage("app.actionmessage.127", null));
 		}
 		return cutOffHandler(request, response);
-	}
-
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView truckDeleteHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
-		Set truckSet=new HashSet();
-		String arrEntityList[] = getParamList(request);
-		TrnTruck tmpEntity = null;
-		if (arrEntityList != null) {
-			int arrLength = arrEntityList.length;
-			for (int intCount = 0; intCount < arrLength; intCount++) {
-				tmpEntity = domainManagerService.getTruck(arrEntityList[intCount]);
-				tmpEntity.setObsolete(IS_OBSOLETE);
-				truckSet.add(tmpEntity);
-			}
-		}
-		domainManagerService.saveEntityList(truckSet);
-		saveMessage(request, getMessage("app.actionmessage.103", null));
-		return truckHandler(request, response);
 	}
 
 	/**

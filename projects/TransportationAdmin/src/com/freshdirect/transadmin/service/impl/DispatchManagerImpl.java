@@ -64,20 +64,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	protected BaseManagerDaoI getBaseManageDao() {
 		return getDispatchManagerDao();
 	}
-
-	public Collection getDrivers() {
-					
-		return getDispatchManagerDao().getDrivers(); 
-	}
 	
 	public List matchCommunity(double latitiude, double longitude, String deliveryModel) {
 		
 		return getSpatialManagerDao().matchCommunity(latitiude, longitude, deliveryModel); 
-	}
-	
-	public Collection getHelpers() {
-		
-		return getDispatchManagerDao().getHelpers();
 	}	
 		
 	public Collection getPlan() {
@@ -89,7 +79,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return getDispatchManagerDao().getPlan(dateRange, zoneLst);
 	}
 	
-	public Collection getPlanList(String date) {
+	public Collection<Plan> getPlanList(String date) {
 		return getDispatchManagerDao().getPlanList(date);
 	}
 	

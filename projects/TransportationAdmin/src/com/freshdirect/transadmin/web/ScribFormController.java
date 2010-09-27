@@ -26,7 +26,6 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.ResourceId;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;

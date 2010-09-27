@@ -37,7 +37,7 @@
 	     </menu>
 	     
 	     <menu id="OPR008" title="Truck" orientation="RIGHT" link="truck.do">
-	     	<access-uris>truck.do,edittruck.do,deletetruck.do</access-uris>
+	     	<access-uris>truck.do</access-uris>
 	     	<access-roles>TrnAdmin,TrnOperations</access-roles>
      	</menu>
    	     

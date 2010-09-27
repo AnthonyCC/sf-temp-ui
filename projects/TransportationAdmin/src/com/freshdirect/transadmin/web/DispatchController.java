@@ -67,8 +67,6 @@ import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.model.Scrib;
-import com.freshdirect.transadmin.model.TrnRouteNumber;
-import com.freshdirect.transadmin.model.TrnRouteNumberId;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.security.SecurityManager;
 import com.freshdirect.transadmin.service.DispatchManagerI;
@@ -1468,37 +1466,6 @@ public class DispatchController extends AbstractMultiActionController {
 			e.printStackTrace();
 			mav.getModel().put("routes",dispatchManagerService.getUnusedDispatchRoutes(TransStringUtil.getCurrentServerDate()));
 		}
-		return mav;
-	}
-	
-	/**
-	 * Custom handler for welcome
-	 * @param request current HTTP request
-	 * @param response current HTTP response
-	 * @return a ModelAndView to render the response
-	 */
-	public ModelAndView routeNumberHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-
-		String routeDate = request.getParameter("routeDate");
-		ModelAndView mav = new ModelAndView("routeNumberView");
-		mav.getModel().put("routeDate", routeDate);
-		List dataList = new ArrayList();
-		
-		if(!TransStringUtil.isEmpty(routeDate)) {
-			Map routeInfoGrp = this.getDispatchManagerService().getRouteNumberGroup(getServerDate(routeDate), null, null);
-			Iterator _iterator = routeInfoGrp.keySet().iterator();
-			
-			while(_iterator.hasNext()) {
-				
-				RouteMappingId key = (RouteMappingId)_iterator.next();
-				TrnRouteNumber _routeNo = new TrnRouteNumber();
-				_routeNo.setRouteNumberId(new TrnRouteNumberId(key.getRouteDate(), key.getCutOffId(), key.getGroupCode()));
-				_routeNo.setCurrentVal(new BigDecimal(routeInfoGrp.get(key).toString()));
-				dataList.add(_routeNo);
-			}
-			mav.getModel().put("routenumberlist",dataList);
-		}
-
 		return mav;
 	}
 	

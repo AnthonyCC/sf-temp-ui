@@ -34,10 +34,6 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Plan getPlan(String id);
 	
-	Collection getDrivers();
-	
-	Collection getHelpers();
-	
 	void copyPlan(Collection addPlanList, Collection removePlanList);
 	
 	void autoDisptch(String date);

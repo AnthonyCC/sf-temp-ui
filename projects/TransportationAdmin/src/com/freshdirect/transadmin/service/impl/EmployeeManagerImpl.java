@@ -211,11 +211,6 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 		return getDomainManagerDao().getEmployeeSubRoleType(subRoleTypeId);
 	}
 
-	public Collection getEmployeeJobType() {
-
-		return getDomainManagerDao().getEmployeeJobType();
-	}
-
 	public Collection getEmployeeRoleTypes() {
 		return getDomainManagerDao().getEmployeeRoleTypes();
 	}

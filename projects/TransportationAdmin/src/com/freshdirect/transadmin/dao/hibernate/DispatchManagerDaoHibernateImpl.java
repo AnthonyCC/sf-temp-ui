@@ -26,24 +26,6 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 public class DispatchManagerDaoHibernateImpl extends
 		BaseManagerDaoHibernateImpl implements DispatchManagerDaoI {
 
-	public Collection getDrivers() throws DataAccessException {
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnEmployee te");
-		strBuf
-				.append(" WHERE te.obsolete IS NULL AND te.trnEmployeeJobType.jobTypeId in ('1','2','9')  Order By  LAST_NAME");
-
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}
-
-	public Collection getHelpers() throws DataAccessException {
-
-		StringBuffer strBuf = new StringBuffer();
-		strBuf.append("from TrnEmployee te WHERE te.obsolete IS NULL ");
-		strBuf.append("  Order By  LAST_NAME");
-
-		return (Collection) getHibernateTemplate().find(strBuf.toString());
-	}
-
 	public Collection getPlan() throws DataAccessException {
 
 		return getDataList("TrnDispatchPlan Order By  PLAN_DATE");

@@ -21,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.ResourceId;
-import com.freshdirect.transadmin.model.TrnDispatchPlan;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.TransStringUtil;

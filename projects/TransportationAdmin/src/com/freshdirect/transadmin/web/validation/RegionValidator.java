@@ -5,7 +5,6 @@ import org.springframework.validation.ValidationUtils;
 
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.TrnRoute;
 
 public class RegionValidator extends AbstractValidator {	
 	

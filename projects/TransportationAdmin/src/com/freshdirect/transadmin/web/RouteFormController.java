@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
-import com.freshdirect.transadmin.model.TrnRoute;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class RouteFormController extends AbstractDomainFormController {

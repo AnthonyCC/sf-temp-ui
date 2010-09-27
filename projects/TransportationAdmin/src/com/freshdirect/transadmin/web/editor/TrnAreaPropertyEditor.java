@@ -3,7 +3,6 @@ package com.freshdirect.transadmin.web.editor;
 import java.beans.PropertyEditorSupport;
 
 import com.freshdirect.transadmin.model.TrnArea;
-import com.freshdirect.transadmin.model.TrnEmployee;
 
 public class TrnAreaPropertyEditor extends PropertyEditorSupport {
 	

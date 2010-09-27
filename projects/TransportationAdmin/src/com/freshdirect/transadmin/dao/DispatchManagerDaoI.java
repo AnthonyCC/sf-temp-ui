@@ -35,10 +35,6 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 
 	Plan getPlan(String id) throws DataAccessException;
 
-	Collection getDrivers() throws DataAccessException;
-
-	Collection getHelpers() throws DataAccessException;
-	
 	//Added for new dispatch model.
 	Collection getDispatchList(String date, String zone, String region) throws DataAccessException;
 	

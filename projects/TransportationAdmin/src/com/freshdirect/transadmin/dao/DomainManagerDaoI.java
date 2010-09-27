@@ -12,8 +12,6 @@ import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
-import com.freshdirect.transadmin.model.TrnEmployee;
-import com.freshdirect.transadmin.model.TrnTruck;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
 
@@ -23,23 +21,13 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 
 	Collection getAdHocRoutes() throws DataAccessException;
 	
-	Collection getRouteForZone(String zoneId) throws DataAccessException;
-
-	Collection getTrucks() throws DataAccessException;
-	
 	String[] getDays() throws DataAccessException;
 
 	String[] getTimings() throws DataAccessException;
 
-	String[] getTruckTypes() throws DataAccessException;	
-
-	Collection getSupervisors() throws DataAccessException;
-
 	Zone getZone(String id) throws DataAccessException;
 
 	TrnAdHocRoute getAdHocRoute(String id) throws DataAccessException;
-
-	TrnTruck getTruck(String id) throws DataAccessException;
 
 	Collection getTimeSlots() throws DataAccessException;		
 	
@@ -76,10 +64,6 @@ public interface DomainManagerDaoI extends BaseManagerDaoI {
 	Collection getEmployeeRoleTypes() throws DataAccessException;
 	
 	Collection getEmployeeSubRoleTypes() throws DataAccessException;
-	
-	Collection getEmployeeJobType() throws DataAccessException;
-	
-	TrnEmployee getEmployee(String id) throws DataAccessException;
 	
 	EmployeeRoleType getEmployeeRoleType(String roleTypeId)  throws DataAccessException;
 	
