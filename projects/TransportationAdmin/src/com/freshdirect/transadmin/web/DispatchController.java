@@ -59,7 +59,7 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
 import com.freshdirect.transadmin.model.Dispatch;
-import com.freshdirect.transadmin.model.EmployeeInfo;
+import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
 import com.freshdirect.transadmin.model.Plan;
@@ -1059,7 +1059,10 @@ public class DispatchController extends AbstractMultiActionController {
 	{
 		
 		try {
-			Collection c1=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c1=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate())
+												, null, null, true
+												,TransWebUtil.isPunch(request, dispatchManagerService)
+												,TransWebUtil.isAirClick(request, dispatchManagerService));
 			Collection c2=this.getDispatchManagerService().getUnassignedActiveEmployees();
 			String date=TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate());
 			Collection c3=dispatchManagerService.getPlan(date, null);
