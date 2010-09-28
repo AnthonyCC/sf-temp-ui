@@ -23,7 +23,6 @@
 				<value>com/freshdirect/transadmin/model/DlvServiceTimeScenario.hbm.xml</value> 
 				<value>com/freshdirect/transadmin/model/TrnArea.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/TrnCutOff.hbm.xml</value>  
-				<value>com/freshdirect/transadmin/model/TrnRouteNumber.hbm.xml</value>  
 				<value>com/freshdirect/transadmin/model/TrnDeliveryModel.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/Dispatch.hbm.xml</value>
 				<value>com/freshdirect/transadmin/model/DispatchReason.hbm.xml</value>  	  				
