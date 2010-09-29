@@ -395,20 +395,20 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 					<td><img src="/media_stat/images/layout/clear.gif" width="650" height="1" alt="" /></td>
 				</tr>
 				<tr>
-					<td colspan="2" style="font-size: 12px;"><strong>Need to run an errand, but your delivery is on it's way?</strong> FreshDirect can now deliver your order, even if you're not at home to receive it. The delivery team will carefully repack your order with frozen gel packs. Then they'll leave your order on your doorstep or in a location that you designate as your Special Delivery Instructions. <strong>We guarantee you order will remain cool and fresh at least 30 minutes from drop-off.</strong><br /><br /><br /></td>
+					<td colspan="2" style="font-size: 12px;"><strong>Need to run an errand during your FreshDirect delivery window?</strong> FreshDirect will deliver your order even if you’re not home to receive it. If the delivery arrives while you are not home, the delivery team will carefully repack your order with frozen gel packs and leave the order on your doorstep or in a location that you designate. We guarantee that your order will remain cool and fresh for at least 30 minutes from drop-off.<br /><br /><br /></td>
 				</tr>
 				<tr>
 					<td colspan="2"><a href="javascript:popup('/help/unattended_delivery.jsp','large')" style="font-size: 16px;"><strong>FAQ</strong> for Unattended Delivery – Click Here.</a><br /><br /><br /></td>
 				</tr>
 				<tr>
 					<td colspan="2"><span style="color: #900; font-weight: bold; font-size: 12px;">IMPORTANT:</span><br />
-						<span style="font-weight: bold; font-size: 12px;">Please add your preferred drop location.</span><br /><textarea onkeyup="return maxLen(this, 255);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
+						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location.</span><br /><textarea onkeyup="return maxLen(this, 255);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
 					<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler><br /><br /></td>
 				</tr>
 				<tr>
 					<td valign="top"><input type="checkbox" class="checkbox" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" value="OPT_IN"  onclick="resetUnattendedDeliveryInstructions()" <%= unattendedOptIn ? "checked" : "" %> /></td>
 					<td style="font-size: 12px;"><strong>I do not want this service.</strong><br />
-						(Select this if you prefer your order is not delivered if you are not home.)</td>
+						(Select this if you do not authorize FreshDirect to deliver your order if you are not home.)</td>
 				</tr>
 			</table>
 
