@@ -3,11 +3,77 @@
 <%@ page import='com.freshdirect.fdstore.customer.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.customer.*' %>
+<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<%
+	//get un.address string
+
+	String allAddresses = (String)NVL.apply(session.getAttribute("allAddresses"), "");
+	Boolean newSession = ((String)NVL.apply(session.getAttribute("newSession"), "true")).equals("true"); 
+	Integer oldAddressCount = (Integer)NVL.apply(session.getAttribute("addressCount"), 0);
+
+	String newAddressId = "";
+	
+	FDSessionUser dlvInfoUser = (FDSessionUser) session.getAttribute(SessionName.USER);
+	Collection shippingAddresses = FDCustomerManager.getShipToAddresses(dlvInfoUser.getIdentity());
+	Integer addressCount = shippingAddresses.size();
+	ErpAddressModel newAddress = null;
+
+	
+	String redirectURL = "";
+
+	if (addressCount > 0 && !newSession) {
+
+		//loop and remove old addresses
+		for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
+			ErpAddressModel thisAddress = (ErpAddressModel)i.next();
+			if ( allAddresses.indexOf((String)thisAddress.getPK().getId()) == -1 ) {
+				//this address is new
+				newAddressId = (String)thisAddress.getPK().getId();
+				newAddress = thisAddress;
+				allAddresses += (String)thisAddress.getPK().getId()+",";
+			}
+		}
+	}else{
+		allAddresses = "";
+		for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
+			ErpAddressModel thisAddress = (ErpAddressModel)i.next();
+			allAddresses += (String)thisAddress.getPK().getId()+",";
+		}
+	}
+	
+	if ( oldAddressCount != addressCount) {
+		//regenerate list
+		allAddresses = "";
+		for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
+			ErpAddressModel thisAddress = (ErpAddressModel)i.next();
+			allAddresses += (String)thisAddress.getPK().getId()+",";
+		}
+		oldAddressCount = addressCount;
+	}
+		//set in session
+		session.setAttribute("allAddresses", allAddresses);
+		session.setAttribute("newSession", "false");
+		session.setAttribute("oldAddressCount", oldAddressCount);
+		
+	if ( newAddress != null ) {
+		//check for unattended
+		%>
+		<fd:UnattendedDelivery id="zone" address="<%= newAddress %>" checkUserOptions="true">
+			<%
+				if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(newAddress.getUnattendedDeliveryFlag())) {
+					//redirect
+					response.sendRedirect(response.encodeRedirectURL("/your_account/edit_delivery_address_unattended.jsp?page=udConfirm&addressId="+newAddressId));
+				}
+			%>
+		</fd:UnattendedDelivery>
+		<%
+	}
+%>
+
 <tmpl:insert template='/common/template/dnav.jsp'>
     <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Delivery Addresses</tmpl:put>
     <tmpl:put name='content' direct='true'>

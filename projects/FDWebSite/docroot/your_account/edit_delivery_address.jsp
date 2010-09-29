@@ -10,44 +10,49 @@
 <tmpl:put name='content' direct='true'>
 <fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">
 
-<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
-	<%@ include file="/includes/i_error_messages.jspf" %>
-</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
+		<%@ include file="/includes/i_error_messages.jspf" %>
+	</fd:ErrorHandler>
 
-<fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
-<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
-	<%@ include file="/includes/i_error_messages.jspf" %>	
-</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%=result%>' field='<%=checkAddressForm%>'>
+		<% String errorMsg = SystemMessageList.MSG_MISSING_INFO; %>
+		<%@ include file="/includes/i_error_messages.jspf" %>	
+	</fd:ErrorHandler>
 
-<TABLE WIDTH="675" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-<TR><TD width="675" class="text11">
-<font class="title18">Edit Delivery Address</font><br>
-</td></tr></table>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><br><br>
-<form name="address" method="post">
-<input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
-<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
-<TR VALIGN="TOP">
-<TD WIDTH="675"><img src="/media_stat/images/navigation/delivery_address.gif" WIDTH="116" HEIGHT="9" border="0" alt="DELIVERY ADDRESS">
-&nbsp;&nbsp;&nbsp;<FONT CLASS="text9">* Required information</FONT><BR>
-<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
-</TR></TABLE>
-<font class="space4pix"><br></font><%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br><br>
-	<%//@ include file="/includes/ckt_acct/i_delivery_special_field.jspf" %><BR><BR>
-<TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="675">
-	<TR VALIGN="TOP" BGCOLOR="#FF9933">
-		<TD WIDTH="675" COLSPAN="2"><IMG src="/media_stat/images/layout/ff9933.gif" HSPACE="0" WIDTH="1" HEIGHT="1" BORDER="0"></TD>
-	</TR>
-<TR>
-<TD WIDTH="375"></TD>
-<TD WIDTH="300" ALIGN="RIGHT" VALIGN="TOP"><FONT CLASS="space2pix"><BR></FONT><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><image src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery"></a><input type="image" src="/media_stat/images/buttons/save_changes.gif" height="16" width="84" alt="Save New Address" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
-</TR>
-<%--<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10" alt="" border="0"></td></tr>
-<tr><td colspan="2"><%@ include file="/includes/i_footer_account.jspf" %></td></tr>--%>	
-</table>
-<BR>
+	<table width="675" border="0" cellpadding="0" cellspacing="0">
+		<tr><td width="675" class="text11">
+			<font class="title18">Edit Delivery Address</font><br />
+		</td></tr>
+	</table>
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br />
+	<img src="/media_stat/images/layout/ff9933.gif" width="675" height="1" border="0"><br />
+	<img src="/media_stat/images/layout/clear.gif" width="1" height="8" border="0"><br /><br />
+
+	<form name="address" method="post">
+		<input type="hidden" name="updateShipToAddressId" value="<%=request.getParameter("addressId")%>">
+
+		<table border="0" cellspacing="0" cellpadding="2" width="675">
+			<tr valign="top">
+				<td width="675"><img src="/media_stat/images/navigation/delivery_address.gif" width="116" height="9" border="0" alt="DELIVERY ADDRESS">
+					&nbsp;&nbsp;&nbsp;<font class="text9">* Required information</font><br />
+					<img src="/media_stat/images/layout/999966.gif" width="675" height="1" border="0" vspace="3"><br /></td>
+			</tr>
+		</table>
+
+		<font class="space4pix"><br /></font><%@ include file="/includes/ckt_acct/i_delivery_address_field.jspf" %><br /><br />
+		<%//@ include file="/includes/ckt_acct/i_delivery_special_field.jspf" %><br /><br />
+
+		<table cellpadding="0" cellspacing="0" border="0" width="675">
+			<tr valign="top" bgcolor="#ff9933">
+				<td width="675" colspan="2"><img src="/media_stat/images/layout/ff9933.gif" hspace="0" width="1" height="1" border="0"></td>
+			</tr>
+		<tr>
+			<td width="375"></td>
+			<td width="300" align="right" valign="top"><font class="space2pix"><br /></font><a href="<%=response.encodeURL("/your_account/delivery_information.jsp")%>"><image src="/media_stat/images/buttons/cancel.gif" height="16" width="54" alt="Cancel" border="0" hspace="4" vspace="4" name="cancel_delivery"></a><input type="image" src="/media_stat/images/buttons/save_changes.gif" height="16" width="84" alt="Save New Address" border="0" hspace="4" vspace="4" name="edit_delivery_address"></td>
+		</tr>
+		</table>
+		<br />
+	</form>
 </fd:RegistrationController>
 </tmpl:put>
 </tmpl:insert>
