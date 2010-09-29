@@ -36,10 +36,11 @@
                     <span style="font-size: 18px;font-weight: bold;">Dispatch</span>
                 </td>                
                   <td> 
-                    <span><input maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' /></span>
-                     <span><a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
-                        <img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
-                    </a></span>
+                     <input style="width:85px;" maxlength="10" size="10" name="dispDate" id="dispDate" value='<c:out value="${dispDate}"/>' />
+                     <a href="#" id="trigger_dispatchDate" style="font-size: 9px;">
+                        		<img src="./images/icons/calendar.gif" width="16" height="16" border="0" alt="Select Date" title="Select Date">
+                     </a>
+                    
                      <script language="javascript">                 
                       Calendar.setup(
                       {
@@ -188,7 +189,7 @@
                   &nbsp;<form:errors path="dispDate" />
                 </td>
                 <td> 
-                  <select id="zone" width="70" name="zone">
+                  <select id="zone" width="60" name="zone">
                       <option value="">Select Zone</option> 
                       <c:forEach var="zone" items="${zones}">                             
                           <c:choose>

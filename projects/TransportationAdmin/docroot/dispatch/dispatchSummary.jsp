@@ -54,7 +54,7 @@
                 <table width="200">
                 <tr>
                     
-                      <td style="font-weight: bold; font-size:  12px; text-align: center;">Today's Schedule Problems</td>
+                      <td style="font-weight: bold; font-size:  12px; text-align: center;">Today's Schedule Problems<br/><br/></td>
                 	
                 </tr>
                 <tr>
@@ -68,12 +68,9 @@
 							</tr>
 							<tr>
 								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-									<div style="width: 200px; font-size: 12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
-									    List of Employees
-										 <%String  wpr =(String)request.getAttribute("statistics4");%>
-									  
-										  <%=wpr%>
-																			
+									<div style="width: 200px; font-size: 12px;  height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									   	 <%String  wpr =(String)request.getAttribute("unAvailableEmpList");%>									  
+										 <%=wpr%>
 									</div>
 								</td>
 							</tr>
@@ -92,7 +89,7 @@
 			<td>
                 <table width="200">
                 <tr>
-                	<td style="font-weight: bold; font-size:  12px; 12px; text-align: center;">Unassigned Routes</td>
+                	<td style="font-weight: bold; font-size:  12px; 12px; text-align: center;">Unassigned Routes<br/><br/></td>
                 </tr>
                 <tr>
 					<td>
@@ -105,9 +102,9 @@
 							</tr>
 							<tr>
 								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-									<div style="width: 200px;font-size: 12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									<div style="width: 200px;font-size: 12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
 									
-								   	<% String   routes =(String)request.getAttribute("statistics3");%>
+								   	<% String   routes =(String)request.getAttribute("unAvailableRoutes");%>
 									  
 									   <%=routes%>
 									
@@ -142,12 +139,12 @@
 							</tr>
 							<tr>
 								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-									<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+									<div style="width: 200px; font-size:  12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
 									
-										     <% String webEmpInfo =(String)request.getAttribute("statistics1");%>
+										     <% String webEmpInfo =(String)request.getAttribute("unassignedEmpList");%>
 										      									      
 	    										<%=webEmpInfo%>             
-                                          
+                                    </div>
 								</td>
 							</tr>
 							<tr>
@@ -162,10 +159,10 @@
 				</table>
 			</td>
 			<td>
-                <table width="200">
+                <table width="200" align="right">
                 <tr>
                 	<td>
-                		<table width="100%" style="font-weight: bold; font-size:  12px; text-align: center;">
+                		<table width="100%" style="font-weight: bold; font-size:  12px; text-align: center;" cellpadding="0" cellspacing="0">
                 			<tr><td colspan="2">Dispatch Metrics </td></tr>
                 			<tr><td>AM Shift</td><td> PM Shift</td></tr>
                 		</table>
@@ -185,20 +182,20 @@
 											</tr>
 											<tr>
 												<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-													<div style="width: 200px;  font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+													<div style="width: 200px;  font-size:  12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
 														
-														 <% WebDispatchStatistics wsAM=(WebDispatchStatistics)request.getAttribute("statistics"); %>
-                                                           1.#of Routes Planned:<%=wsAM.getPlannedRoute()%> 
+														 <% WebDispatchStatistics amStats=(WebDispatchStatistics)request.getAttribute("statistics"); %>
+                                                          	Routes Planned: <b><%=amStats.getPlannedAmRoute()%></b> 
                                                            <br/>         
-                                                           2.#of Routes Actual:<%=wsAM.getDispatchRoute()%>
+                                                            Routes Actual: <b><%=amStats.getDispatchAmRoute()%></b>
                                                            <br/>
-                                                           3.#of 6 Days(Consecutive Worked):<%=wsAM.getEmployeesWorkedSixdays()%>
+                                                            Employees worked six consecutive days:<b><%=amStats.getEmpAmWorkedSixdays()%></b>
                                                            <br/>
-                                                           4.#of Dispatch Team Changes:
+                                                            Dispatch Team Changes:<b><%=amStats.getAMTeamChange()%></b>
                                                            <br/>
-                                                           5.#of Dispatch Team Changes out of region:
+                                                            Dispatch Team Changes out of region:
                                                            <br/>
-                                                           6.# of Fire Trucks/MOT:<%=wsAM.getFireTruckorMOT()%> 
+                                                            Fire Trucks/MOT: <b><%=amStats.getAMfireTruckorMOT()%> </b>
 														   <br/>
 													</div>
 												</td>
@@ -219,19 +216,19 @@
 											</tr>
 											<tr>
 												<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-													<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
-														<% WebDispatchStatistics wsPM=(WebDispatchStatistics)request.getAttribute("statistics"); %>
-                                                           1.#of Routes Planned :<%=wsPM.getPlannedRoute()%> 
+													<div style="width: 200px; font-size:  12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+														<% WebDispatchStatistics pmStats=(WebDispatchStatistics)request.getAttribute("statistics"); %>
+                                                           Routes Planned: <b><%=pmStats.getPlannedPmRoute()%></b> 
                                                            <br/>         
-                                                           2.#of Routes Actual:<%=wsPM.getDispatchRoute()%>
+                                                           Routes Actual: <b><%=pmStats.getDispatchPmRoute()%></b>
                                                            <br/>
-                                                           3.#of 6 Days(Consecutive Worked):<%=wsPM.getEmployeesWorkedSixdays()%>
+                                                           Employees worked six consecutive days:<b><%=pmStats.getEmpPmWorkedSixdays()%></b>
                                                            <br/>
-                                                           4.#of Dispatch Team Changes:
+                                                           Dispatch Team Changes:<b><%=pmStats.getPMTeamChange()%></b>
                                                            <br/>
-                                                           5.#of Dispatch Team Changes out of region:
+                                                           Dispatch Team Changes out of region:
                                                            <br/>
-                                                           6.#of Fire Trucks/MOT:<%=wsPM.getFireTruckorMOT()%>
+                                                           Fire Trucks/MOT: <b><%=pmStats.getPMfireTruckorMOT()%></b>
                                                            <br/>
 													</div>
 												</td>
@@ -269,15 +266,10 @@
 							<tr>
 								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
 									
-									  <div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px; ">
-										List of HT
-											                                                                               
-                                           <% String htO= (String)request.getAttribute("statistics7"); %>
-                                                   
-                                              <%=htO%> 
-                                                                                          	                                      													
-									   
-									</div>	                 
+									  <div style="width: 200px; font-size:  12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px; ">
+                                           <% String htOUT= (String)request.getAttribute("handTruckInvList"); %>                                                   
+                                           <%=htOUT%>                                                  	                                      													
+									   </div>	                 
                                    									
 								</td>
 							</tr>
@@ -293,27 +285,24 @@
 				</table>
 			</td>
 			<td>
-                <table width="200">
+                <table width="300" align="center">
                 <tr>
                 	<td style="font-weight: bold; font-size:  12px;text-align: center;">Top 10 Ready Routes</td>
                 </tr>
                 <tr>
 					<td>
 						<center>
-						<table width="200" cellpadding="0" cellspacing="0" border="0">  
+						<table width="300" cellpadding="0" cellspacing="0" border="0">  
 							<tr>
 								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/top_left_curve.gif"></td>
-								<td height="5" width="200" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
+								<td height="5" width="300" style="border-top: 1px solid rgb(153, 153, 102);"><img height="1" width="1" alt="" src="/media_stat/images/layout/clear.gif"></td>
 								<td height="5"><img height="6" width="6" src="/media_stat/images/layout/top_right_curve.gif"></td>
 							</tr>
 							<tr>
 								<td colspan="3" style="border-left: 1px solid rgb(153, 153, 102); border-right: 1px solid rgb(153, 153, 102);">
-									<div style="width: 200px; font-size:  12px; height: 100px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
-									  List of Managers for ready Route
-									<% String  dispatchreadyroutes =(String)request.getAttribute("statistics8");%>
-									    
+									<div style="width: 300px; font-size:  12px; height: 142px; overflow-y: scroll; border: 1px solid #383; margin: 5px;">
+										<% String  dispatchreadyroutes =(String)request.getAttribute("readyRoutes");%>
 										<%=dispatchreadyroutes%>	
-									
 									</div>
 								</td>
 							</tr>

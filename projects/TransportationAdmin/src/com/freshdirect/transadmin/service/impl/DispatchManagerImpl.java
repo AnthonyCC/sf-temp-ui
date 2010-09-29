@@ -607,14 +607,13 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return null;
 	}
 	
-	public List getEmployeeWorkedSixDays(Date planDate) 
-	{
-		
-		 return routeManagerDao.getEmployeeWorkedSixDays(planDate);
-		
-	  }
+	public List getResourcesWorkedForSixConsecutiveDays(Date date) {
+		return routeManagerDao.getResourcesWorkedForSixConsecutiveDays(date);
+	}
 	
-		
+	public List getDispatchTeamResourcesChanged(Date date, String type, String field) {
+		return routeManagerDao.getDispatchTeamResourcesChanged(date,type,field);
+	}
 
 	public void setLogManager(LogManagerI logManager) {
 		this.logManager = logManager;

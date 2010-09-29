@@ -120,7 +120,7 @@ public class WebPlanResource  implements Serializable, Comparable<WebPlanResourc
 	public void setEmpRole(Collection empRole) {
 		emp.setEmpRole(empRole);
 	}
-	public String toString1() {
+	public String toString() {
 		return emp.toString();
 	}
 	public String getPaycode() {
@@ -129,11 +129,6 @@ public class WebPlanResource  implements Serializable, Comparable<WebPlanResourc
 	public void setPaycode(String paycode) {
 		this.paycode = paycode;
 	}
-	
-	//added new code Appdev-808
-	public String toString() {
-		return emp.getLastName() != null ? emp.getNameWithFirstInitial().toString() : "";
-	}
 
 	@Override
 	public int compareTo(WebPlanResource o) {
@@ -141,9 +136,4 @@ public class WebPlanResource  implements Serializable, Comparable<WebPlanResourc
 		return this.toString().compareTo(o.toString());
 	}
 
-   
-	}
-	
-	
-
-
+}

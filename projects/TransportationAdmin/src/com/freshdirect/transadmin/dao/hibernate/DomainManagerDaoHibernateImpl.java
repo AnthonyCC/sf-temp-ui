@@ -48,10 +48,6 @@ public class DomainManagerDaoHibernateImpl
 		return getDataList("TrnAdHocRoute where OBSOLETE IS NULL Order By ROUTE_ID");
 	}
 
-	public Collection getRouteForZone(String zoneId) throws DataAccessException {
-		return getDataList("TrnRoute tr WHERE tr.obsolete IS NULL AND ZONE_ID='"+zoneId+"'  Order By ROUTE_NUMBER");
-	}
-
 	public Collection getZoneTypes() throws DataAccessException {
 
 		return getDataList("TrnZoneType Order By ID");

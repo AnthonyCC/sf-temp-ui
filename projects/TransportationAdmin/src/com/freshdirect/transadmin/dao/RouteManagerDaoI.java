@@ -17,8 +17,11 @@ public interface RouteManagerDaoI {
 	
 	List getHTOutScanAsset(Date routeDate) throws DataAccessException;
 	
-	List getEmployeeWorkedSixDays(Date planDate) throws DataAccessException;
+	List getResourcesWorkedForSixConsecutiveDays(Date date) throws DataAccessException;
+	
 	Date getHTOutScanTimeForRoute(String routeId) throws DataAccessException;
 	
 	Map getHTInScan(Date routeDate) throws DataAccessException;
+	
+	List getDispatchTeamResourcesChanged(Date date, String type, String field) throws DataAccessException;
 }

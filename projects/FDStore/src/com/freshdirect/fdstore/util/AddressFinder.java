@@ -52,10 +52,10 @@ public class AddressFinder {
 					if(user.getShoppingCart()!=null) {
 						address=user.getShoppingCart().getDeliveryAddress();
 						user.getShoppingCart().setDeliveryAddress(null);
-					}
-					if(address==null) {
-						address = (ErpAddressModel)shipToAddresses.iterator().next();
-					}
+					}					
+				}
+				if(address==null) {
+					address = (ErpAddressModel)shipToAddresses.iterator().next();
 				}
 			}
 		

@@ -143,89 +143,120 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			return result;
 	}
 	
-	// added new code Appdev 808
-	
 	public List getHTOutScanAsset(Date routeDate) throws DataAccessException {
 		final List result = new ArrayList();
 		try {
 			
-			final String scanStartTime= TransStringUtil.getDate(routeDate)+":12:00:00AM";
-			final String scanEndTime=TransStringUtil.getDate(routeDate)+":11:59:59PM";
+			final String scanStartTime = TransStringUtil.getDate(routeDate)+ ":12:00:00AM";
+			final String scanEndTime = TransStringUtil.getDate(routeDate)+ ":11:59:59PM";
 			final StringBuffer strBuf = new StringBuffer();
-			strBuf.append("SELECT asset , MIN(SCANDATE) FROM transp.assettracking WHERE ");
-			strBuf.append("scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') ");
-            strBuf.append(" AND asset LIKE 'HT%' AND assetstatus='OUT'  GROUP BY asset ");
+			strBuf
+					.append("SELECT asset, MIN(SCANDATE) FROM transp.assettracking");
+			strBuf
+					.append(" WHERE scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')");
+			strBuf
+					.append(" AND asset LIKE 'HT%' AND assetstatus='OUT'  GROUP BY asset ");
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(strBuf.toString());
+
+					ps.setString(1, scanStartTime);
+					ps.setString(2, scanEndTime);
+					return ps;
+				}
+			};
+			jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					do {
+						result.add(rs.getString(1));// , rs.getString(2));
+					} while (rs.next());
+				}
+			});
+
+		} catch (ParseException e) {
+			LOGGER.warn(e.toString(), e);
+		}
+		return result;
+	}
+	
+	
+	private static String GET_EMPS_WORKED_CONSECUTIVELY = "select  T.R from (" 
+					+" (select distinct pr.resource_id as R, P.PLAN_DATE as D from transp.plan_resource pr, transp.plan p"
+					+" where pr.plan_id = p.plan_id and p.plan_date BETWEEN TO_DATE(?, 'mm/dd/yyyy') AND TO_DATE(?, 'mm/dd/yyyy')) UNION"
+					+" (select distinct dr.resource_id as R, d.dispatch_DATE as D from transp.dispatch_resource dr, transp.dispatch d"
+					+" where dr.dispatch_id = d.dispatch_id and d.dispatch_date BETWEEN TO_DATE(?, 'mm/dd/yyyy') AND TO_DATE(?, 'mm/dd/yyyy'))"
+					+" )T group by T.R having count(T.R)=6";
+	
+	public List getResourcesWorkedForSixConsecutiveDays(Date date) throws DataAccessException {
+		final List result = new ArrayList();
+		try {	
+			
+			final String startTime = TransStringUtil.getDate(TransStringUtil.addDays(date, -5));
+			final String endTime = TransStringUtil.getDate(date);
+		
+			final StringBuffer strBuf = new StringBuffer(GET_EMPS_WORKED_CONSECUTIVELY);
 			PreparedStatementCreator creator=new PreparedStatementCreator() {
 	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
 	                PreparedStatement ps =
-	                    connection.prepareStatement(strBuf.toString());
-	             
-	            
-				ps.setString(1, scanStartTime);
-	              
-				ps.setString(2,scanEndTime);
-	                return ps;
+	                    connection.prepareStatement(strBuf.toString());	             
+	            		ps.setString(1, startTime);	              
+	            		ps.setString(2, endTime);
+	            		ps.setString(3, startTime);	              
+	            		ps.setString(4, endTime);
+	            		return ps;
 	            }  
 	        };
 	        jdbcTemplate.query(creator, 
 	       		  new RowCallbackHandler() { 
 	       		      public void processRow(ResultSet rs) throws SQLException {
-	       		    	
-	       		    	 while(rs.next()) {
-	       		    		 result.add(rs.getString(1));//, rs.getString(2));
-	       		    	 }
+	       		    	 do {
+	       		    		 result.add(rs.getString(1));
+	       		    	 } while(rs.next());
 	       		      }
 	       		   });
 	        	
 			} catch (ParseException e) {
 				LOGGER.warn(e.toString(), e);
 			}
-			return result;
+		return result;
 	}
 	
-	
-	// added new code Appdev 808
-	
-	public List getEmployeeWorkedSixDays(Date planDate) throws DataAccessException {
+	private static String GET_TEAM_CHNAGES = "select distinct AL.NEW_VALUE from TRANSP.ACTIVITY_LOG al"
+										+" where AL.LOG_DATE BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')"
+										+" and type = ? and FIELD_NAME = ? and al.new_value is NOT NULL";
+
+	public List getDispatchTeamResourcesChanged(Date date, final String type, final String field) throws DataAccessException {
 		final List result = new ArrayList();
 		try {
-			DateUtil dateU = null;
-			Date startDate = dateU.addDays(planDate, -6);
-			Date endDate = dateU.addDays(planDate, 6);
-			final String planStartTime= TransStringUtil.getDate(startDate)+":12:00:00AM";
-			final String planEndTime=TransStringUtil.getDate(endDate)+":11:59:59PM";
-			final StringBuffer strBuf = new StringBuffer();
-			strBuf.append("select count(distinct(pr.resource_id)) as total from transp.plan_resource pr, transp.plan p where pr.plan_id = p.plan_id ");
-			strBuf.append("and p.plan_date between to_date(?, 'mm/dd/yyyy:hh:mi:ssam')and to_date(?,'mm/dd/yyyy:hh:mi:ssam')");
-            strBuf.append("group by resource_id having count(resource_id)= 6");
-			PreparedStatementCreator creator=new PreparedStatementCreator() {
-	            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
-	                PreparedStatement ps =
-	                    connection.prepareStatement(strBuf.toString());
-	             
-	            
-				ps.setString(1, planStartTime);
-	              
-				ps.setString(2,planEndTime);
-	                return ps;
-	            }  
-	        };
-	        jdbcTemplate.query(creator, 
-	       		  new RowCallbackHandler() { 
-	       		      public void processRow(ResultSet rs) throws SQLException {
-	       		    	
-	       		    	 while(rs.next()) {
-	       		    		 result.add(rs.getString(1));
-	       		    	 }
-	       		      }
-	       		   });
-	        	
-			} catch (ParseException e) {
-				LOGGER.warn(e.toString(), e);
-			}
-			return result;
+			final String startTime = TransStringUtil.getDate(date)+":12:00:00AM";
+			final String endTime = TransStringUtil.getDate(date)+":11:59:59PM";
+
+			final StringBuffer strBuf = new StringBuffer(GET_TEAM_CHNAGES);
+			PreparedStatementCreator creator = new PreparedStatementCreator() {
+				public PreparedStatement createPreparedStatement(
+						Connection connection) throws SQLException {
+					PreparedStatement ps = connection.prepareStatement(strBuf.toString());
+						ps.setString(1, startTime);
+						ps.setString(2, endTime);
+						ps.setString(3, type);
+						ps.setString(4, field);
+					return ps;
+				}
+			};
+			jdbcTemplate.query(creator, new RowCallbackHandler() {
+				public void processRow(ResultSet rs) throws SQLException {
+					do {
+						result.add(rs.getString(1));
+					} while (rs.next());
+				}
+			});
+
+		} catch (ParseException e) {
+			LOGGER.warn(e.toString(), e);
+		}
+		return result;
 	}
-	
 		
 	
 	public Date getHTOutScanTimeForRoute(final String routeId) throws DataAccessException {
