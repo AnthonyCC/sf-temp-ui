@@ -50,6 +50,7 @@ import com.freshdirect.fdstore.FDZoneNotFoundException;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.promotion.PromotionHelper;
+import com.freshdirect.fdstore.util.TimeslotContext;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -71,6 +72,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	private boolean deliveryInfo = false;
 	
 	private boolean containsAdvanceOrderItem = false;
+	private TimeslotContext timeSlotContext = null;
 	
 	public void setAddress(ErpAddressModel address) {
 		this.address = address;
@@ -78,6 +80,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 	public void setDeliveryInfo(boolean deliveryInfo) {
 		this.deliveryInfo = deliveryInfo;
+	}	
+
+	public void setTimeSlotContext(TimeslotContext timeSlotContext) {
+		this.timeSlotContext = timeSlotContext;
 	}
 
 	private DateRange getBaseRange() {
@@ -173,7 +179,19 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			retainTimeslotIds.add(tsId);
 		}
 		
-		List geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
+		List geographicRestrictions = null;
+		if(null != timeSlotContext){
+			if(timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS) || timeSlotContext.equals(TimeslotContext.RESERVE_TIMESLOTS_CRM)){
+				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForReservation(address);
+			}else if(!timeSlotContext.equals(TimeslotContext.CHECKOUT_TIMESLOTS)){
+				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictionsForAvailable(address);
+			}else{
+				geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
+			}
+		}else{
+			geographicRestrictions = FDDeliveryManager.getInstance().getGeographicDlvRestrictions(address);
+		}
+		
 		if(address != null) {
 			LOGGER.debug("GeoRestriction Address :"+address);
 			LOGGER.debug("GeoRestriction Restrictions :"+geographicRestrictions);

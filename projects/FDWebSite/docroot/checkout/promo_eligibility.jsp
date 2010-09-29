@@ -19,6 +19,7 @@
 boolean isByAddress = false;
 boolean isByTimeSlot = false;
 boolean isByPayment = false;
+boolean isByMaxRedemptions = false;
 boolean result = true;
 boolean hasDiscountedTimeslots = "true".equals((String)request.getParameter("hasDiscountedTimeslots"));
 FDUserI user = (FDUserI)session.getAttribute( SessionName.USER );
@@ -33,6 +34,9 @@ if ( "true".equals((String)request.getParameter("isByTimeSlot")) ) {
 }
 if ( "true".equals((String)request.getParameter("isByPayment")) ) {
 	isByPayment = true;
+}
+if ( "true".equals((String)request.getParameter("isByMaxRedemptions")) ) {
+	isByMaxRedemptions = true;
 }
 Promotion promotion = (Promotion)user.getRedeemedPromotion();
 if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getPromotionCode())){
@@ -83,6 +87,9 @@ if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getP
 			}
 			result = PromotionHelper.checkPromoEligibilityForPayment(user,paymentMethod);			
 		}		
+	}
+	else if(isByMaxRedemptions){
+		result = PromotionHelper.checkPromoEligibilityForMaxRedemptions(user);
 	}
 }
 if(!result){

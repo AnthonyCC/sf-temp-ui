@@ -6,7 +6,7 @@ double zonePromoAmount=AddressFinder.getZonePromoAmount(user, address, timeSlotC
 String zonePromoString=null;
 %>
 
-<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>">
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" deliveryInfo="<%=true%>" timeSlotContext="<%=timeSlotCtx %>">
 	<%
 	List timeslotList = DeliveryTimeSlotResult.getTimeslots();
 	Map zones = DeliveryTimeSlotResult.getZones();

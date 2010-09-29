@@ -141,10 +141,7 @@ public class FDPromotionVisitor {
          Collection promotions = PromotionFactory.getInstance().getAllAutomaticPromotions(); 
          for (Iterator i = promotions.iterator(); i.hasNext();) {
                PromotionI autopromotion  = (PromotionI) i.next(); 
-               String promoCode = autopromotion.getPromotionCode();
-               if(promoCode.equals("CD_1278620655837")){
-            	   System.out.println();
-               }
+               String promoCode = autopromotion.getPromotionCode();               
                boolean e = autopromotion.evaluate(context);
                eligibilities.setEligibility(promoCode, e);
                if(e && autopromotion.isFavoritesOnly()) eligibilities.addRecommendedPromo(promoCode); 
@@ -269,7 +266,8 @@ public class FDPromotionVisitor {
         for (Iterator i = eligibilities.getEligiblePromotionCodes().iterator(); i.hasNext();) {
               String promoCode = (String) i.next();
               PromotionI promo = PromotionFactory.getInstance().getPromotion(promoCode);
-              if(!promo.isDollarValueDiscount() || (!promo.isRedemption() && !promo.isCombineOffer())) {
+              if(!promo.isRedemption())
+              if(!promo.isDollarValueDiscount() || (!promo.isCombineOffer())) {
             	  	
                     boolean applied = promo.apply(context);
                     if (applied) {

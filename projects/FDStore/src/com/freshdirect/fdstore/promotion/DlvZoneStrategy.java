@@ -111,7 +111,7 @@ public class DlvZoneStrategy implements PromotionStrategyI {
 			TimeOfDay promoDlvSlotStartTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeStart());									
 			TimeOfDay promoDlvSlotEndTime = new TimeOfDay(promoDlvTimeSlot.getDlvTimeEnd());
 			if((dlvStartTimeOfDay.equals(promoDlvSlotStartTime) || dlvStartTimeOfDay.after(promoDlvSlotStartTime)) && 
-					dlvEndTimeOfDay.before(promoDlvSlotEndTime) || (dlvEndTimeOfDay.equals(promoDlvSlotEndTime))){
+					(dlvEndTimeOfDay.before(promoDlvSlotEndTime) || dlvEndTimeOfDay.equals(promoDlvSlotEndTime))){
 				isOK = true;
 			}
 		}

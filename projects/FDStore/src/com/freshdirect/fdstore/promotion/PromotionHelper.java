@@ -174,4 +174,33 @@ public class PromotionHelper {
 			}
 			return isEligible;
 		}
+		
+		public static boolean checkPromoEligibilityForMaxRedemptions(FDUserI user)throws FDResourceException{
+			//This block is executed only if current eligibility is true. So default is set to true.
+			boolean isEligible = true;
+			Promotion promotion = (Promotion)user.getRedeemedPromotion();
+			if(null != promotion){
+				/*int errorCode = user.getPromoErrorCode(promotion.getPromotionCode());
+				if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
+					isEligible = false;
+				}*/
+				PromotionContextI promotionContext = new PromotionContextAdapter(user);
+				for (Iterator<PromotionStrategyI> i = promotion.getStrategies().iterator(); i.hasNext();) {
+					PromotionStrategyI strategy = i.next();
+					if (strategy instanceof MaxRedemptionStrategy) {
+						MaxRedemptionStrategy maxRedemptionStrategy = (MaxRedemptionStrategy) strategy;							
+						maxRedemptionStrategy.reEvaluate(promotion.getPromotionCode(), promotionContext);
+						int errorCode = user.getPromoErrorCode(promotion.getPromotionCode());
+						if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
+							isEligible = false;
+							if(null != user.getAllAppliedPromos() && user.getAllAppliedPromos().contains(promotion.getPromotionCode())){
+								user.getAllAppliedPromos().remove(promotion.getPromotionCode());
+							}
+						}
+						break;
+					}
+				}
+			}
+			return isEligible;
+		}
 }

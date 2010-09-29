@@ -4,6 +4,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <%@ page import='com.freshdirect.common.customer.*' %>
+<%@ page import='com.freshdirect.fdstore.*' %>
 
 <tmpl:insert template='/common/sitelayout.jsp'>
 <script language="Javascript">
@@ -426,6 +427,23 @@ return true;
                  </td>
                  <td>
                   &nbsp;<form:errors path="serviceType" />
+                </td>
+               </tr>
+               
+               <tr>
+                  <td>View Type</td>
+                  <td>
+                  	<form:select path="viewType">
+                        <form:option value="null" label="--All Views --"/>                       
+                    	<form:option value="<%= EnumRestrictionViewType.RESERVATION.getName() %>" label="<%= EnumRestrictionViewType.RESERVATION.getDescription() %>"/>
+                    	<form:option value="<%= EnumRestrictionViewType.CHECKOUT.getName() %>" label="<%= EnumRestrictionViewType.CHECKOUT.getDescription() %>"/> 
+                    	<form:option value="<%= EnumRestrictionViewType.AVAILABLE.getName() %>" label="<%= EnumRestrictionViewType.AVAILABLE.getDescription() %>"/>
+                        
+                    	
+                   </form:select>
+                 </td>
+                 <td>
+                  &nbsp;<form:errors path="viewType" />
                 </td>
                </tr>
                

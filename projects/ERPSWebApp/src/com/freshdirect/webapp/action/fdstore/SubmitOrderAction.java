@@ -508,16 +508,20 @@ public class SubmitOrderAction extends WebActionSupport {
 		user.updateUserState();		
 		//Check if current applied promotions are still available to the user. The max redemption count 
 		// has not been reached.
-		boolean ignorePromoErrors = request.getParameter("ignorePromoErrors") != null ? true : false;
+		//No need to have the following check, as we are showing a popup message in this scenario.
+		/*boolean ignorePromoErrors = request.getParameter("ignorePromoErrors") != null ? true : false;
 		if(!ignorePromoErrors) {
 			for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
-				int errorCode = user.getPromoErrorCode(it.next());
-				if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
-					this.addError("redemption_exceeded", SystemMessageList.MSG_REDEMPTION_EXCEEDED);
-					return ERROR;	
+				String promoCode = it.next();
+				if(!promoCode.equals((null!=user.getRedeemedPromotion()?user.getRedeemedPromotion().getPromotionCode():""))){
+					int errorCode = user.getPromoErrorCode(promoCode);
+					if(errorCode == PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode()){
+						this.addError("redemption_exceeded", SystemMessageList.MSG_REDEMPTION_EXCEEDED);
+						return ERROR;	
+					}
 				}
 			}
-		}
+		}*/
 		// recalculate credit since promotion is reapplied order amonuts might have changed
 		
 		FDCustomerCreditUtil.applyCustomerCredit(cart,user.getIdentity());

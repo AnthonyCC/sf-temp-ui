@@ -84,6 +84,7 @@
               <ec:column property="comments" title="Comments"/>
               <ec:column property="showMessage" title="Show Message"/>
               <ec:column property="serviceType" title="Service Type"/>
+              <ec:column property="viewTypeDesc" title="View Type"/>
             </ec:row>
           </ec:table>
        </form>  

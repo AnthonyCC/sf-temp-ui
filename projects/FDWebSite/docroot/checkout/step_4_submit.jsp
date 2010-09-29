@@ -11,6 +11,12 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+
+<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
+	<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>	
+	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
+	<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%!
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 %>
@@ -50,23 +56,57 @@ java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
 <%@ include file="/includes/i_modifyorder.jspf" %>
 
-<form method="post" name="order_submit" id="order_submit">
+<form method="post" name="order_submit" id="order_submit" onSubmit="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');">
+	<div class="gcResendBox" style="display:none"><!--  -->
+		<table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;" class="gcResendBoxContent" id="gcResendBox">
+			<tr>
+				<td colspan="2"><img src="/media_stat/images/layout/top_left_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+				<td rowspan="2" style="background-color: #8A6637; color: #fff; font-size: 14px; line-height: 14px; font-weight: bold; padding: 3px;">IMPORTANT MESSAGE &nbsp;&nbsp;<a href="#" onclick="Modalbox.hide(); return false;" style="text-decoration: none;border: 1px solid #5A3815; background-color: #BE973A; font-size: 10px;	"><img src="/media_stat/images/layout/clear.gif" width="10" height="10" border="0" alt="" /></a></td>
+				<td colspan="2"><img src="/media_stat/images/layout/top_right_curve_8A6637_filled.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+				<td colspan="2" style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="15" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td><div style="height: auto; width: 200px; text-align: center; font-weight: bold;">
+					<%-- all your content goes in this div, it controls the height/width --%>
+					The promotion code you entered <div id="promoCode"></div> has been redeemed by the maximum number of customers and is no longer available. <a href="#" onclick="javascript:$('more_info').toggle()">More Info</a><br /><br />
+					<div id="more_info" style="display:none">This is the more info hidden div.<br /><br /></div>					
+					<a href="#" onclick="javascript:document.forms['order_submit'].submit();"><b>CONTINUE</b></a><br />
+					(promotion code will be removed)
+				</div></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="5" height="1" alt="" /></td>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+			<tr>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_left_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+				<td><img src="/media_stat/images/layout/clear.gif" width="1" height="5" alt="" /></td>
+				<td rowspan="2" colspan="2" style="background-color: #8A6637"><img src="/media_stat/images/layout/bottom_right_curve_8A6637.gif" width="6" height="6" alt="" /></td>
+			</tr>
+			<tr>
+				<td style="background-color: #8A6637;"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
+			</tr>
+		</table>
+	</div>
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
 	<tr VALIGN="TOP">
 	<td CLASS="text11" width="415" VALIGN="bottom">
 		<FONT CLASS="title18">Review &amp; Submit Order (Final Step)</FONT><BR>
 		<FONT CLASS="text12">Please confirm all of your order details. After submitting your order you will immediately receive an e-mail confirmation.</font></td>
 	<td width="245" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
-		<FONT CLASS="space2pix"><BR></FONT><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topText"><% } %><BR>
+		<FONT CLASS="space2pix"><BR></FONT><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topText"><% } %><BR>
 </td>
 <td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topArrow"><% } %></td>
+BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Top');" id="checkout_submit_order_topArrow"><% } %></td>
 	</tr>
 	</table>
 
 	<IMG src="/media_stat/images/layout/clear.gif" width="1" height="8" BORDER="0"><BR>
-	<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="693" height="39" border="0" alt="Continue Checkout" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br><% } %>
+	<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/template/checkout/order_not_placed.gif" width="693" height="39" border="0" alt="Continue Checkout" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Banner');" id="checkout_submit_order_banner"><br><IMG src="/media_stat/images/layout/clear.gif" width="1" height="14" BORDER="0"><br><% } %>
     <%-- error system messages happen here --%>
    <% StringBuffer sbErrorMsg= new StringBuffer(); %>
     
@@ -150,11 +190,11 @@ if (user.isPromoConflictResolutionApplied()) {
 <table width="693" CELLPADDING="0" CELLSPACING="0" BORDER="0">
 	<tr VALIGN="TOP">
 		<td width="658" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold"><FONT CLASS="space2pix"><BR></FONT>
-<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleText"><% } %><BR>
+<% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleText"><% } %><BR>
 		</td>
 		<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif"
-BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleArrow"><% } %></td>
+BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Middle');" id="checkout_submit_order_middleArrow"><% } %></td>
 	</tr>
 </table>
 <BR>
@@ -186,11 +226,11 @@ BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(docu
 		<td width="375"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&amp;ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" width="92" height="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR>
 			<IMG src="/media_stat/images/layout/clear.gif" width="340" height="1" BORDER="0">
 		</td>
-		<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><BR>
+		<td width="265" ALIGN="RIGHT" VALIGN="MIDDLE"><% if (!orderAmountFraud && !doubleSubmit) { %><input type="image" name="checkout_submit_order" src="/media_stat/images/buttons/submit_order_type.gif" width="113" height="34" alt="Your order will not be placed until you click SUBMIT ORDER" VSPACE="2" border="0" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomText"><% } %><BR>
 		</td>
 		<td width="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
 <% if (!orderAmountFraud && !doubleSubmit ) {
-%>			<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif" BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
+%>			<input type="image" name="form_action_name" src="/media_stat/images/buttons/checkout_arrow.gif" BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onclick="return checkPromoEligibilityByMaxRedemptions('<%= null==user.getRedeemedPromotion()?"null":"not null" %>');return ntptSubmitTag(document.order_submit, 'ev=button_event&ni_btn=submit_order&ni_btnpos=Bottom');" id="checkout_submit_order_bottomArrow">
 <% } %>
 		</td>
 	</tr>

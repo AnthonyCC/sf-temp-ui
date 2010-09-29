@@ -28,6 +28,19 @@ public class MaxRedemptionStrategy implements PromotionStrategyI {
 		return DENY;
 	}
 	
+	public int reEvaluate(String promotionCode, PromotionContextI context) {
+		if(context.isAlreadyRedeemedPromotion(promotionCode)){
+			//allow if modifying that order. 
+			return ALLOW;
+		} else {
+			Integer redeemCount = PromotionFactory.getInstance().getRedemptions(promotionCode);
+			if(redeemCount != null && redeemCount.intValue() < this.maxRedemptions)
+				return ALLOW;
+		}
+		context.getUser().addPromoErrorCode(promotionCode, PromotionErrorType.ERROR_REDEMPTION_EXCEEDED.getErrorCode());
+		return DENY;
+	}
+	
 	public int getMaxRedemptions() {
 		return this.maxRedemptions;
 	}

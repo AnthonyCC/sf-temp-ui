@@ -157,6 +157,34 @@ public class FDDeliveryManager {
 			throw new FDResourceException(e, "Cannot talk to the SessionBean");
 		}
 	}
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(AddressModel address) throws FDResourceException {		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+
+			return sb.getGeographicDlvRestrictionsForReservation(address);
+
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Cannot create SessionBean");
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to the SessionBean");
+		}
+	}
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address) throws FDResourceException {		
+		try {
+			DlvManagerSB sb = getDlvManagerHome().create();
+
+			return sb.getGeographicDlvRestrictionsForAvailable(address);
+
+		} catch (CreateException e) {
+			throw new FDResourceException(e, "Cannot create SessionBean");
+		} catch (DlvResourceException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to the SessionBean");
+		}
+	}
 
 	public List<SiteAnnouncement> getSiteAnnouncement() throws FDResourceException {
 		this.refreshSiteAnnouncementsCache();

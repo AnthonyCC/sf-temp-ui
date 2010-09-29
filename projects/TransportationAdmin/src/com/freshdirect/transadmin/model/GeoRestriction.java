@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.freshdirect.fdstore.EnumRestrictionViewType;
 import com.freshdirect.routing.model.IGeographicLocation;
 
 /**
@@ -27,6 +28,7 @@ public class GeoRestriction implements java.io.Serializable {
 	private String comments;
 	private String showMessage;
 	private String serviceType;
+	private String viewType;
 
 	private Set geoRestrictionDays = new HashSet(0);
 
@@ -193,5 +195,17 @@ public class GeoRestriction implements java.io.Serializable {
 
 	public void setServiceType(String serviceType) {
 		this.serviceType = serviceType;
+	}
+
+	public String getViewType() {
+		return viewType;
+	}
+
+	public void setViewType(String viewType) {
+		this.viewType = viewType;
+	}
+	
+	public String getViewTypeDesc(){
+		return (null !=EnumRestrictionViewType.getEnum(getViewType()))?EnumRestrictionViewType.getEnum(getViewType()).getDescription():null;
 	}
 }

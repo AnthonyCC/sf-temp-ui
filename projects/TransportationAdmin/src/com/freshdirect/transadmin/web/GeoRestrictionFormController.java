@@ -95,6 +95,9 @@ public class GeoRestrictionFormController extends AbstractFormController {
 		if(TransStringUtil.isEmpty(model.getServiceType())) {
 			model.setServiceType(null);
 		}
+		if(TransStringUtil.isEmpty(model.getViewType())) {
+			model.setViewType(null);
+		}
 		String restDtlSizeStr = request.getParameter("restrictionListSize");
 		String restrictionId = request.getParameter("restrictionId");
 		String restrictionLinkStr = request.getParameter("restrictionLinkStr");

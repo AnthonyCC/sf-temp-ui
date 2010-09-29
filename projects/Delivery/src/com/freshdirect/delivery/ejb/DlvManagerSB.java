@@ -183,4 +183,6 @@ public interface DlvManagerSB extends EJBObject {
 	void setReservationMetricsDetails(String reservationId, long noOfCartons, long noOfCases, long noOfFreezers, EnumRoutingUpdateStatus status
 												, EnumOrderMetricsSource source)  throws RemoteException;
 	
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(AddressModel address)throws DlvResourceException, RemoteException;
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address)throws DlvResourceException, RemoteException;
 }   

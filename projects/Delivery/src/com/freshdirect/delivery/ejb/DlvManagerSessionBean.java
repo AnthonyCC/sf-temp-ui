@@ -628,7 +628,7 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 
 			try {
 				if(routingTimeslots != null) {
-					List<GeographyRestriction> geographicRestrictions = this.getGeographicDlvRestrictions( address);
+					List<GeographyRestriction> geographicRestrictions = this.getGeographicDlvRestrictionsForReservation( address);
 
 					if(geographicRestrictions != null && geographicRestrictions.size() > 0) {
 						for(Iterator<FDTimeslot> i = routingTimeslots.iterator(); i.hasNext();) {
@@ -2495,6 +2495,48 @@ public class DlvManagerSessionBean extends SessionBeanSupport {
 				}
 			} catch (SQLException e) {
 				LOGGER.warn("SQLException while closing conn in cleanup", e);
+			}
+		}
+	}
+	
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(AddressModel address) throws DlvResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return DlvRestrictionDAO.getGeographicDlvRestrictionsForReservation(conn, address);
+
+		} catch (SQLException e) {
+			//this.getSessionContext().setRollbackOnly();
+			throw new DlvResourceException(e);
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException se) {
+				LOGGER.warn("DlvManagerSB getDlvRestriction: Exception while cleaning: " + se);
+			}
+		}
+	}
+	
+	public List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(AddressModel address)throws DlvResourceException{
+		{
+			Connection conn = null;
+			try {
+				conn = getConnection();
+				return DlvRestrictionDAO.getGeographicDlvRestrictionsForAvailable(conn, address);
+
+			} catch (SQLException e) {
+				//this.getSessionContext().setRollbackOnly();
+				throw new DlvResourceException(e);
+			} finally {
+				try {
+					if (conn != null) {
+						conn.close();
+					}
+				} catch (SQLException se) {
+					LOGGER.warn("DlvManagerSB getDlvRestriction: Exception while cleaning: " + se);
+				}
 			}
 		}
 	}

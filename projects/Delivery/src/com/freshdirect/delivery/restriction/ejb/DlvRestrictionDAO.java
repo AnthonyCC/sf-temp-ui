@@ -101,7 +101,7 @@ public class DlvRestrictionDAO {
 			"and mdsys.sdo_relate(gb.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?,?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'";
 //	select * from dlv.GEO_RESTRICTION_BOUNDARY gr where mdsys.sdo_relate(gr.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(-73.952006,40.59712,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE'
 	//1910 AVE V  	11229  	40.59712  	-73.952006
-	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
+	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address,String query) throws SQLException {
 		
 		if ((address.getLatitude() == 0.0) || (address.getLongitude() == 0.0)) {
 			try {
@@ -112,7 +112,7 @@ public class DlvRestrictionDAO {
 				e.printStackTrace();
 			}
 		}
-		PreparedStatement ps = conn.prepareStatement(GEOGRAPHY_RESTRICTION);
+		PreparedStatement ps = conn.prepareStatement(query);
 		ps.setString(1, address.getServiceType().getName());
 		ps.setDouble(2, address.getLongitude());
 		ps.setDouble(3, address.getLatitude());
@@ -161,6 +161,24 @@ public class DlvRestrictionDAO {
 		ps.close();
 
 		return restrictions;
+	}
+	
+	public static List<GeographyRestriction> getGeographicDlvRestrictionsForReservation(Connection conn, AddressModel address) throws SQLException {
+		String query = GEOGRAPHY_RESTRICTION;
+		query = query+ " and (gr.view_type is null or gr.view_type = 'RSV')";
+		return getGeographicDlvRestrictions(conn, address, query);
+	}
+	
+	public static List<GeographyRestriction> getGeographicDlvRestrictionsForAvailable(Connection conn, AddressModel address) throws SQLException {
+		String query = GEOGRAPHY_RESTRICTION;
+		query = query+ " and (gr.view_type is null or gr.view_type = 'AVL')";
+		return getGeographicDlvRestrictions(conn, address, query);
+	}
+	
+	public static List<GeographyRestriction> getGeographicDlvRestrictions(Connection conn, AddressModel address) throws SQLException {
+		String query = GEOGRAPHY_RESTRICTION;
+		query = query+ " and (gr.view_type is null or gr.view_type = 'CHK')";
+		return getGeographicDlvRestrictions(conn, address, query);
 	}
 
 }

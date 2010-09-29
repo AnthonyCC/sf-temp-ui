@@ -174,3 +174,49 @@ function checkPromoPaymentPopup(JSONstring) {
 
 }
 			
+
+function checkPromoEligibilityByMaxRedemptions(promotion){
+	if("not null"==promotion){	
+		new Ajax.Request('/checkout/promo_eligibility.jsp', {
+			parameters: {
+				isByMaxRedemptions: true						
+			},
+			onComplete: function(transport) {
+				checkPromoMaxRedemptionsPopup(transport.responseText);
+			}
+		});	
+			
+	    return false;
+	}else{
+		return true;
+	}
+}
+
+function checkPromoMaxRedemptionsPopup(JSONstring) {
+	
+	var params = JSONstring.evalJSON(true);		
+	
+	if (params.status != "ok") {
+		//stick values into overlay html		
+		$('promoCode').innerHTML = params.promoCode;
+		$('more_info').innerHTML = params.promoTerms;
+
+		Modalbox.show($('gcResendBox'), {
+			loadingString: 'Loading Preview...',
+			title: '',
+			overlayOpacity: .85,
+			overlayClose: false,
+			width: 225,
+			transitions: false,
+			autoFocusing: false,
+			centered: true,
+			afterLoad: function() { $('MB_frame').style.border = 'none'; window.scrollTo(0,0); },
+			afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+		})
+
+	}
+	else{
+		document.forms['order_submit'].submit();
+	}
+
+}
