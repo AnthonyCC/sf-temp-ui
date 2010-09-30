@@ -42,7 +42,7 @@
 }
 
 .fourmm .intro .separator {
-	background: url('/media_stat/images/4mm/dotted_bg_vert.gif') repeat-y
+	background: url('/media/4mm/dotted_bg_vert.gif') repeat-y
 		center top;
 	min-width: 2px;
 }
@@ -60,7 +60,7 @@
 .fourmm .restaurants h2 {
 	width: 278px;
 	padding-top: 26px;
-	background: url('/media_stat/images/4mm/restaurants_title.png');
+	background: url('/media/4mm/restaurants_title.png');
 }
 
 .fourmm .restaurant {
@@ -79,7 +79,7 @@
 }
 
 .fourmm .separator {
-	background: url('/media_stat/images/4mm/dotted_bg.gif') repeat-x center
+	background: url('/media/4mm/dotted_bg.gif') repeat-x center
 		left;
 	min-height: 2px;
 }
@@ -198,7 +198,8 @@
 .fourmm .sortselector {
 	text-align:right;
 	color:#CCC;
-	margin:5px 0px;
+	overflow:hidden;
+	margin:5px 0px 10px 0px;
 }
 
 .fourmm .sortselector label {
@@ -240,66 +241,80 @@
 
 .fourmm .filter.brands {
 	background:
-		url('/media_stat/images/4mm/filterheader_brand.gif')
+		url('/media/4mm/filterheader_brand.gif')
 		no-repeat left top;
 }
 
 .fourmm .filter.ingredient {
 	background:
-		url('/media_stat/images/4mm/filterheader_ingredient.gif')
+		url('/media/4mm/filterheader_ingredient.gif')
 		no-repeat left top;
 }
 
 .fourmm .filter.nutrition {
 	background:
-		url('/media_stat/images/4mm/filterheader_nutrition.gif')
+		url('/media/4mm/filterheader_nutrition.gif')
 		no-repeat left top;
 }
 
 .fourmm .filter.prices {
-	background: url('/media_stat/images/4mm/filterheader_price.gif')
+	background: url('/media/4mm/filterheader_price.gif')
 		no-repeat left top;
 }
 
 .fourmm.aboutpage .filter.brands {
 	background:
-		url('/media_stat/images/4mm/filterheader_brand_about.gif')
+		url('/media/4mm/filterheader_brand_about.gif')
 		no-repeat left top;
 }
 
 .fourmm.aboutpage .filter.ingredient {
 	background:
-		url('/media_stat/images/4mm/filterheader_ingredient_about.gif')
+		url('/media/4mm/filterheader_ingredient_about.gif')
 		no-repeat left top;
 }
 
 .fourmm.aboutpage .filter.nutrition {
 	background:
-		url('/media_stat/images/4mm/filterheader_nutrition_about.gif')
+		url('/media/4mm/filterheader_nutrition_about.gif')
 		no-repeat left top;
 }
 
 .fourmm.aboutpage .filter.prices {
-	background: url('/media_stat/images/4mm/filterheader_price_about.gif')
+	background: url('/media/4mm/filterheader_price_about.gif')
 		no-repeat left top;
 }
 
 
 .fourmm.landingpage .filter.ingredient {
 	background:
-		url('/media_stat/images/4mm/filterheader_dptpage_ingredient.gif')
+		url('/media/4mm/filterheader_dptpage_ingredient.gif')
 		no-repeat left top;
 }
 
 .fourmm.landingpage .filter.nutrition {
 	background:
-		url('/media_stat/images/4mm/filterheader_dptpage_nutrition.gif')
+		url('/media/4mm/filterheader_dptpage_nutrition.gif')
 		no-repeat left top;
 }
 
 .fourmm.landingpage .filter.prices {
-	background: url('/media_stat/images/4mm/filterheader_dptpage_price.gif')
+	background: url('/media/4mm/filterheader_dptpage_price.gif')
 		no-repeat left top;
+}
+
+.fourmm.landingpage .filter li {
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+.fourmm.filterpage .filter {
+	font-size:10px;
+}
+
+.fourmm.filterpage .filter li {
+	margin-top:1px;
+	margin-bottom:1px;
 }
 
 .fourmm .selected {

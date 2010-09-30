@@ -50,7 +50,8 @@ sessionCounter = <%= sessionCounter %>
 -->
 
 <div class="fourmm landingpage">
-	<img src="/media_stat/images/4mm/4mm_non_dpt_page_header.gif" style="margin-top:20px;" />
+	<div style="margin-top:20px;"></div>
+	<%@ include file="/includes/layouts/4mm/title.jspf"%>
 	
 	<% if ( returning ) { %>
 		<% if( middleMedia!=null && middleMedia.size()>=2) {  %>
@@ -63,10 +64,12 @@ sessionCounter = <%= sessionCounter %>
 			<%@ include file="/includes/layouts/4mm/most_popular.jspf"%>
 		<% } %> 
 		
+		<div style="margin-bottom:25px">
 		<%@ include file="/includes/layouts/4mm/see_all_button.jspf"%>
+		</div>
 		<% boolean fourColumnLayout = false; boolean needToFilter = false; boolean enableAllItem=true; %>
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>
-		<img src="/media_stat/images/4mm/dpt_4mm_hdr_brands_cuisines_return.gif" />
+		<img src="/media/4mm/dpt_4mm_hdr_brands_cuisines_return.gif" />
 		<%@ include file="/includes/layouts/4mm/restaurants.jspf"%>
 			
 	<% } else { %>
@@ -77,14 +80,14 @@ sessionCounter = <%= sessionCounter %>
 		<div class="separator" style="margin-bottom:20px;"></div>
 		
 		<%@ include file="/includes/layouts/4mm/restaurants.jspf"%>
+		<div style="margin-bottom:25px">
 		<%@ include file="/includes/layouts/4mm/see_all_button.jspf"%>	
+		</div>
 		<% boolean fourColumnLayout = false; boolean needToFilter = false; boolean enableAllItem=true; %>
 		<%@ include file="/includes/layouts/4mm/filter_widget.jspf"%>					
 	<% } %>
 	
-	
-	<%@ include file="/includes/layouts/4mm/meal_of_the_week.jspf"%>
-	
+	<%@ include file="/includes/layouts/4mm/meal_of_the_week.jspf"%>	
 	<div style="clear:both"></div>
 	
 	<% if ( !mostPopularShown ) { %>
@@ -93,16 +96,17 @@ sessionCounter = <%= sessionCounter %>
 	
 	<%@ include file="/includes/layouts/4mm/editorial.jspf"%>
 	
-	<div id="ads">
+	<div style="margin:25px 0px;"><div id="ads">
 		<script type="text/javascript">
 			OAS_AD('4mmAd1');
 		</script>
 		<script type="text/javascript">
 			OAS_AD('4mmAd2');
 		</script>
-	</div>
+	</div></div>
 	
-	<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/dpt_4mm_viewall.gif" border="0"  alt="View all 4-Minute Meals"/></a>
+	
+	<%@ include file="/includes/layouts/4mm/view_all.jspf"%>
 	<%@ include file="/includes/layouts/4mm/see_all_button.jspf"%>
 </div>
 

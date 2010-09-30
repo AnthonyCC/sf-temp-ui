@@ -43,7 +43,8 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	
 	@Override
 	protected void doStart() {
-		println("<li style=\"width:"+((width-20)/numItems)+"px;height:"+height+"px\">");
+//		println("<li style=\"width:"+((width-20)/numItems)+"px;height:"+height+"px\">");
+		println("<li style=\"width:"+((width-20)/numItems)+"px\">");
 	}
 	
 	@Override

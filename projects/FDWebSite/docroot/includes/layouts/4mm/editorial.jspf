@@ -31,7 +31,7 @@ if ( category != null ) {
 		<display:UniqueFilter in="<%= categoryProducts %>" out="products" groupId="4mm-default">
 		<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)products ); %>
 		<div class="carousel-box">
-			<div class="separator"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"  class="carousel-box-title"/></div>
+			<div class="separator" style="margin-bottom:15px"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"/></div>
 			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= products %>" id="cat2_carousel" trackingCode="edt-4mm" maxItems="12">
 				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
 				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>

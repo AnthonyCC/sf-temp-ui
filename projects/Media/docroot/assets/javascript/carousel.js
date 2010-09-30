@@ -10,7 +10,23 @@ var fd_carousel=function(id,numItems) {
 
 fd_carousel.start=function(container,numItems) {
 	YAHOO.util.Event.onContentReady(container,function() {
-		var carousel= new YAHOO.widget.Carousel(container,{numVisible:numItems,animation:{speed: 0.5}});
+		var carousel,
+			lineItems,
+			i,l,maxHeight=0,
+			region;
+		lineItems = YAHOO.util.Dom.getElementsBy(Object.prototype.valueOf,'li',container);
+		l=lineItems.length;
+		for(i=0;i<l;i++) {
+			region=YAHOO.util.Dom.getRegion(lineItems[i]);
+			if(maxHeight<region.height) {
+				maxHeight=region.height;
+			}
+		}
+		for(i=0;i<l;i++) {
+			YAHOO.util.Dom.setStyle(lineItems[i],'height',(maxHeight+5)+'px');
+		}
+		
+		carousel = new YAHOO.widget.Carousel(container,{numVisible:numItems,animation:{speed: 0.5}});
 		carousel.CONFIG.MAX_PAGER_BUTTONS=8;
 		carousel.CONFIG.HORZ_MIN_WIDTH=100;
 		carousel.render();

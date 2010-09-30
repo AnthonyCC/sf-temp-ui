@@ -176,15 +176,16 @@
 				<fd:IncludeMedia name="<%= ((Html) bottomHtml).getPath() %>"></fd:IncludeMedia>
 				</logic:iterate>				
 <% } %>
-	<img src="/media_stat/images/4mm/brandpage_header_morebrands.gif"  alt="More Brands and Cuisines"/>
+	<img src="/media/4mm/brandpage_header_morebrands.gif"  alt="More Brands and Cuisines" />
 	
 	<% 
 		List<CategoryModel> restaurants = new ArrayList<CategoryModel>(FourMinuteMealsHelper.getRestaurants());
 		restaurants.remove( restaurant ); 
 	%>
+	<div  style="margin-top:15px;margin-bottom:25px">
 	<%@ include file="/includes/layouts/4mm/restaurants.jspf"%>
-	
-	<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="text-decoration:none"><img src="/media_stat/images/4mm/dpt_4mm_viewall.gif"  alt="View all 4-Minute Meals" border="0" /></a>	
+	</div>
+	<%@ include file="/includes/layouts/4mm/view_all.jspf"%>
 	<%@ include file="/includes/layouts/4mm/see_all_button.jspf"%>
 	
 </div>

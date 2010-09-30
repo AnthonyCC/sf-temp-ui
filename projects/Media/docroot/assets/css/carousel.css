@@ -88,18 +88,23 @@
 		zoom:1;
 	}
 	
-	.fd-carousel .yui-carousel-element .yui-carousel-item-selected {
+	.fd-carousel .yui-carousel .yui-carousel-item-selected {
 		border:none;
 	}
 
 	.fd-carousel .productImage {
 		height:90px !important;
+		line-height: 90px;
 	}
+		.fd-carousel .productImage a img {
+			vertical-align:bottom;
+		}
+
 		.fd-carousel .productImage a {
 			vertical-align:bottom;
 		}
 
-	.fd-carousel .productname {
+.fd-carousel .productname {
 		font-size:10px;
 		height:36px;
 		line-height:12px;

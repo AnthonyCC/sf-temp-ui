@@ -84,6 +84,7 @@
 		</div>
 		<% } %>
 <div class="sortselector">
+		<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="float:left"><img src="/media/4mm/filter_clearall.gif" border="0" /></a>
 		<%-- SORT SELECTOR --%>	
 		<%
 			String selectedSortInfo = (pageContext.getRequest().getParameter(FourMinuteMealsHelper.sortParam)!=null) ? 

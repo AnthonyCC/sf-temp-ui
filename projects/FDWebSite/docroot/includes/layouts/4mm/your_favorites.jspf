@@ -28,8 +28,8 @@
 		hideBursts.add( EnumBurstType.YOUR_FAVE );
 		yourFavoritesShown = true;
 		%>
-		<div class="carousel-box">
-			<div class="separator"><img src="/media_stat/images/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
+		<div class="carousel-box" style="margin-top:0px;">
+			<div class="separator" style="margin-bottom:15px"><img src="/media/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
 			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= YFProds %>" id="your_favourites_carousel" trackingCode="yf-4mm" maxItems="12">
 				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage"  enableQuickBuy="true" customer="<%= user %>"/>
 				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>

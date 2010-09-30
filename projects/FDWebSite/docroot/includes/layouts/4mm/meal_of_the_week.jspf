@@ -33,12 +33,12 @@
 		}
 		
 		%>
-		<div class="mow">
-			<img src="/media_stat/images/4mm/dpt_4mm_meal_of_week.gif" alt="Meal of the Week"/>
+		<div class="mow" style="margin-top:30px;margin-bottom:25px">
+			<img src="/media/4mm/dpt_4mm_meal_of_week.gif" alt="Meal of the Week"/>
 			<div class="mow-desc">
 				<display:ProductImage product="<%= mealOfTheWeek %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="mow-image" enableQuickBuy="true" customer="<%= user %>"/>
 				<% if(brandImage!=null) { %>		
-					<img src="<%= brandImage.getPath() %>" /><br/>
+					<img src="<%= brandImage.getPath() %>"  style="margin-top:15px;" /><br/>
 				<% } %>
 				<display:ProductRating product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" /> 
 				<display:ProductName product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" showBrandName="true" noBreak="true"/> 
