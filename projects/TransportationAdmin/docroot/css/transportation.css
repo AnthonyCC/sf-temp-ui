@@ -1160,3 +1160,43 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	font-weight:bold;
 	text-align:center;
 }
+
+.dispatchsummary {
+ 	height:475px;
+ 	overflow-y:auto;
+ 	background-color:#F2F2F2;
+ 	border:1px solid #000;
+ 	margin:5px"
+}
+
+.dispatchSummaryContent {
+ 	width: 200px;
+   	font-size: 12px;
+    height: 142px;
+    overflow-y: scroll;
+    border: 1px solid #383; 
+    margin: 5px;
+    background-color:#F2F5F2;
+    padding-left: 3px;
+}
+
+.dispatchStatistices {
+   	font-size: 12px;
+    height: 142px;
+    overflow-y: scroll;
+    border: 1px solid #383; 
+    margin: 5px;
+    background-color:#F2F5F2;
+    padding-left: 3px;
+}
+
+.dispatchReadyRoutes {
+	width: 400px;
+	font-size: 12px;
+	height: 142px;
+	overflow-y: scroll;
+	border: 1px solid #383; 
+	margin: 5px;
+	background-color:#F2F5F2;
+	padding-left: 3px;
+}
