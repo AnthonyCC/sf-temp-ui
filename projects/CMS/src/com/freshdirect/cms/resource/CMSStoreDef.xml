@@ -989,6 +989,9 @@
 			<RelationshipDef name="FEATURED_PRODUCTS" label="Featured Products" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Product" />
 			</RelationshipDef>
+			<RelationshipDef name="FEATURED_CATEGORIES" label="Featured Categories" cardinality="Many" inheritable="false">
+				<DestinationDef contentType="Category" />
+			</RelationshipDef>
 			<!-- images -->
 			<RelationshipDef name="BRAND_LOGO" label="Large Brand Logo">
 				<DestinationDef contentType="Image" />

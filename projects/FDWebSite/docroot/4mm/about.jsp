@@ -56,7 +56,9 @@
 		String chefBlurb=null;
 		Image chefPhoto=null;
 		Image brandLogo=null;
-		String brandId=null;		
+		String brandId=null;
+		List<CategoryModel> brandCats = null;
+		CategoryModel brandCat = null;
 %>
 <img src="/media_stat/images/4mm/chefs_header.gif" />
 <div class="chef-row">
@@ -68,6 +70,8 @@
 	chefBlurb = brand.getChefBlurb();
 	chefPhoto = brand.getChefImage();
 	brandId = brand.getContentName();
+	brandCats = brand.getFeaturedCategories();
+	brandCat = brandCats.isEmpty() ? null : brandCats.get(0);
 %>
 <div class="chef">
 	<% if ( chefPhoto != null ) { %>
@@ -78,11 +82,13 @@
 		<% if ( brandId != null ) { %>
 			<p class="chef-bio"><%= chefBlurb %> <a href="javascript:pop('/brandpop.jsp?brandId=<%=brandId%>',400,585)">Learn&nbsp;More</a></p>
 		<% } %>
-		<div style="line-height:100%">
+		<div>
 			<% if ( brandLogo != null ) { %>
-				<img src="<%= brandLogo.getPath() %>" style="vertical-align:bottom" />
-			<% } %> 
-			<!--a href="" style="font-weight:bold;">See&nbsp;Meals</a-->
+				<img src="<%= brandLogo.getPath() %>" style="vertical-align: middle;" />&nbsp;
+			<% } %>
+			<% if ( brandCat != null) { %> 
+			<span class="text12" style="display: inline-block; vertical-align: middle;"><a href="/category.jsp?catId=<%= brandCat.getContentName() %>" style="font-weight:bold;">See&nbsp;Meals</a></span>
+			<% } %>
 		</div>
 	</div>
 </div>

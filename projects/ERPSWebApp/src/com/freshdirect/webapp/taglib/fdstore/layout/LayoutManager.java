@@ -383,14 +383,7 @@ public class LayoutManager extends BodyTagSupport {
 			s.setReturnHiddenFolders(false);
 		} else if (layoutType == EnumLayoutType.FOURMM_CATEGORY.getId()) {
 			s.setLayoutFileName("/includes/layouts/4mm/restaurant_page_layout.jsp");
-			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
-			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
-			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
-			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
-			s.setReturnSecondaryFolders( true );
-			s.setReturnHiddenFolders( false );	
-			s.setFilterDiscontinued( true );
-			s.setIncludeUnavailable( false );
+			s.setGrabberDepth(-1);
 			
 		} else {
 			// default to the generic layout using the default settings for the ItemGrabber

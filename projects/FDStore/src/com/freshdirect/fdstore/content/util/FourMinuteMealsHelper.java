@@ -679,44 +679,6 @@ public class FourMinuteMealsHelper {
 		LOGGER.info( "4mm helper cache reloaded. Took " + (endTime-startTime)/1000.0f + " seconds." );
 	}
 
-
-	/**
-	 * Separates a mixed list of categories and products into multiple lists by subcategory.
-	 * Used by 4mm restaurant page.
-	 * 
-	 * @param list				list from ItemGrabber
-	 * @param currentFolder		current category
-	 * @param products			array of product lists by subcategory
-	 * @param subCategories		array of the subcategories
-	 * @return number of sections
-	 */
-	public static int separateCategoryListBySubcategories( List<ContentNodeModel> list, CategoryModel currentFolder, List<ContentNodeModel> products[], CategoryModel subCategories[] ) {
-		int sections = 0;	
-		if ( list.size() > 0 && list.get(0) instanceof CategoryModel ) {
-			// multiple categories, split them 
-			int i = -1;
-			for ( ContentNodeModel node : list ) {
-				if ( i > 2 ) {
-					break;
-				} else if ( node instanceof CategoryModel ) {
-					i++;
-					sections++;
-					subCategories[i] = (CategoryModel)node;
-					products[i] = new ArrayList<ContentNodeModel>();
-				} else if ( node instanceof ProductModel && i > -1 ) {
-					products[i].add( node );
-				}
-			}
-		} else {
-			// just products, they are the meals, no sides or entrees
-			products[0] = list;
-			subCategories[0] = currentFolder;
-			sections = 1;
-		}	
-		
-		return sections;
-	}
-	
 	/**
 	 * 	Filters 4mm products according to the url parameters contained in the pagecontext.
 	 *  Parses the url parameters, filters the items and creates FilterInfos for the filter page.

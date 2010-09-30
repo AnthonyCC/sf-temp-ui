@@ -12,6 +12,8 @@ public class BrandModel extends ContentNodeModelImpl {
 
 	List<ProductModel> featuredProducts = new ArrayList<ProductModel>();
 
+	List<CategoryModel> featuredCategories = new ArrayList<CategoryModel>();
+	
 	/** Creates new BrandModel */
 	public BrandModel(ContentKey cKey) {
 		super(cKey);
@@ -37,6 +39,11 @@ public class BrandModel extends ContentNodeModelImpl {
         return value instanceof ContentKey ? (ProducerModel) ContentFactory.getInstance().getContentNodeByKey((ContentKey) value) : null;
     }
         
+	public List<CategoryModel> getFeaturedCategories() {
+        ContentNodeModelUtil.refreshModels(this, "FEATURED_CATEGORIES", featuredCategories, false);
+
+        return new ArrayList<CategoryModel>(featuredCategories);
+	}
 	
 	public List<ProductModel> getFeaturedProducts() {
         ContentNodeModelUtil.refreshModels(this, "FEATURED_PRODUCTS", featuredProducts, false);

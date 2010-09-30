@@ -9,7 +9,7 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 
 <%--
-  most_popular.jspf
+  meal_of_the_week.jspf
 	requires:
 		DepartmentModel dept
 		FDUserI user;		

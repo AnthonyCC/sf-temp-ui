@@ -18,19 +18,39 @@
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%@ taglib uri='logic' prefix='logic' %>
 
-<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+
+<%@page import="com.freshdirect.fdstore.content.util.SortStrategyElement"%><fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
 
 <display:InitLayout/>
 
 <%
  	CategoryModel restaurant = currentFolder instanceof CategoryModel ? (CategoryModel) currentFolder : null;
  	if (restaurant == null) {
- 		throw new Exception("currentFolder should be a category!");
+ 		throw new JspException("currentFolder should be a category!");
+ 	}
+ 	
+ 	List<CategoryModel> subcategories = restaurant.getSubcategories();
+ 	CategoryModel meals = null;
+ 	CategoryModel sides = null;
+ 	CategoryModel entrees = null;
+ 	if (subcategories.size() > 0) {
+ 		meals = subcategories.get(0);
+ 		if (!meals.getShowSelf())
+ 			meals = null;
+ 	} else {
+ 		meals = restaurant;
+ 	}
+ 	if (subcategories.size() > 1) {
+ 		sides = subcategories.get(1);
+ 		if (!sides.getShowSelf())
+ 			sides = null;
+ 	}
+ 	if (subcategories.size() > 2) {
+ 		entrees = subcategories.get(2);
+ 		if (!entrees.getShowSelf())
+ 			entrees = null;
  	}
 
-	List<ContentNodeModel> products[]  = new ArrayList[3];
-	CategoryModel subCategories[] = new CategoryModel[3];	
-	int sections = FourMinuteMealsHelper.separateCategoryListBySubcategories( sortedCollection, (CategoryModel)currentFolder, products, subCategories );
 	// the catDetail is the big picture
 	Image catDetail = restaurant.getCategoryDetailImage();
 	int leftPadding=0;
@@ -57,12 +77,24 @@
 		detailPath=catDetail.getPath();
 		topPadding=catDetail.getHeight();
 		leftPadding=catDetail.getWidth()-sidebarWidth;
-	}	
+	}
+	
+	List<ContentNodeModel> products = null;
+	List<SortStrategyElement> sortStrategy = new ArrayList<SortStrategyElement>();
+	sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, false));
+	sortStrategy.add(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, SortStrategyElement.SORTNAME_FULL, false));	
+	
 %>
 
 <div class="fourmm restaurantpage">
 	<div class="meals" style="background:url('<%= detailPath %>') left top no-repeat;margin-left:-<%= leftPadding %>px;padding-left:<%= leftPadding %>px">
-		
+
+		<% if (meals != null) { %>
+		<display:ItemGrabber id="prods" category="<%= meals %>" depth="0" filterDiscontinued="true" returnSkus="false"
+				ignoreDuplicateProducts="true" ignoreShowChildren="false" returnHiddenFolders="false" returnSecondaryFolders="false">
+		<% products = prods; %>
+		</display:ItemGrabber>
+		<display:ItemSorter nodes="<%= products %>" strategy="<%= sortStrategy %>"/>		
 		<div style="">
 			<% if(editorial!=null){ %>
 				<div class="meals-sidebar" style="width:<%= blurbWidth %>px;padding-top:<%= topPadding %>px">
@@ -74,7 +106,7 @@
 					<%	if(blurb!=null) { %><fd:IncludeMedia name="<%= blurb.getPath() %>" /><% } %>
 					<% // show first section top media only for Sides In A Snap   
 					if ( FourMinuteMealsHelper.isSidesInASnapCategory( currentFolder ) ) {	
-						topMediaList = subCategories[0].getTopMedia();
+						topMediaList = meals.getTopMedia();
 						if ( topMediaList != null ) { %>
 							<logic:iterate id="topHtml" collection="<%= topMediaList %>">
 							<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
@@ -86,47 +118,63 @@
 			<% }  %>
 		</div>
 		
-		<display:ContentNodeIterator itemsToShow="<%=products[0] %>" id="meals" showProducts="true" showCategories="false" trackingCode="<%= trackingCode %>"><span class="meal">
+		<display:ContentNodeIterator itemsToShow="<%= products %>" id="meals1" showProducts="true" showCategories="false" trackingCode="<%= trackingCode %>"><span class="meal">
 			<display:ProductImage product="<%= (ProductModel) currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" customer="<%= user %>"/>
 			<display:ProductRating product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>"/>
 			<display:ProductName product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
 			<display:ProductPrice impression="<%= new ProductImpression((ProductModel) currentItem) %>" showDescription="false"/>
 		</span></display:ContentNodeIterator>
+		
+		<% } %>
 	</div>
 
-	<% if ( sections > 1 ) { %>
+	<% if ( sides != null ) { %>
+		<display:ItemGrabber id="prods" category="<%= sides %>" depth="0" filterDiscontinued="true" returnSkus="false"
+				ignoreDuplicateProducts="true" ignoreShowChildren="false" returnHiddenFolders="false" returnSecondaryFolders="false">
+		<% products = prods; %>
+		</display:ItemGrabber>
+		<display:ItemSorter nodes="<%= products %>" strategy="<%= sortStrategy %>"/>
+		<% if (!products.isEmpty()) { %>		
 		<div class="meals">
-			<% 	topMediaList=subCategories[1].getTopMedia();
+			<% 	topMediaList=sides.getTopMedia();
 			if(topMediaList!=null) { %>
 				<logic:iterate id="topHtml" collection="<%= topMediaList %>">
 				<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
 				</logic:iterate>				
 				<% topMediaList=null;
 			} %>
-			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products[1] %>" id="sides" showCategories="false"><span class="meal">
+			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sides1" showCategories="false"><span class="meal">
 				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage"  enableQuickBuy="true" customer="<%= user %>"/>
 				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 				<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
 				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
 			</span></display:ContentNodeIterator>
 		</div>
+		<% } %>
 	<% } %>
-	<% if ( sections > 2 ) { %>
+	<% if ( entrees != null ) { %>
+		<display:ItemGrabber id="prods" category="<%= entrees %>" depth="0" filterDiscontinued="true" returnSkus="false"
+				ignoreDuplicateProducts="true" ignoreShowChildren="false" returnHiddenFolders="false" returnSecondaryFolders="false">
+		<% products = prods; %>
+		</display:ItemGrabber>
+		<display:ItemSorter nodes="<%= products %>" strategy="<%= sortStrategy %>"/>
+		<% if (!products.isEmpty()) { %>		
 		<div class="meals">
-			<% 	topMediaList=subCategories[2].getTopMedia();
+			<% 	topMediaList=entrees.getTopMedia();
 			if(topMediaList!=null) { %>
 				<logic:iterate id="topHtml" collection="<%= topMediaList %>">
 				<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
 				</logic:iterate>				
 				<% topMediaList=null;
 			} %>
-			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products[2] %>" id="entrees" showCategories="false"><span class="meal">
+			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entrees1" showCategories="false"><span class="meal">
 				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" customer="<%= user %>"/>
 				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
 				<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
 				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
 			</span></display:ContentNodeIterator>
 		</div>
+		<% } %>
 	<% } %>
 
 <%	if(bottomMediaList!=null) {%>

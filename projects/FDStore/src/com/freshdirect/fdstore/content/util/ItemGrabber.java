@@ -93,6 +93,11 @@ public class ItemGrabber {
 
 	
 	public List<ContentNodeModel> grabTheItems() throws FDSkuNotFoundException, FDResourceException {
+		// we do not grab things if depth is set to negative
+		// in this case we let the layout manager decided what to grab
+		if (depth < 0)
+			return workSet;
+
 		if (rootNode == null) {
 			return workSet;
 		}
