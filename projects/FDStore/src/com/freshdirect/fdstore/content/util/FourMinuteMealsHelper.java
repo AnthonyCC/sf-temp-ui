@@ -519,16 +519,22 @@ public class FourMinuteMealsHelper {
 								if ( currentCategory.equals( newCache.sideVeggieCategory ) ) {
 									newCache.siasVegetableSides.add( prod );
 									List<Html> media = currentCategory.getTopMedia();
-									if ( media != null && !media.isEmpty() ) { 
-										newCache.siasVegetableMedia = media.get( 0 );
+									if ( media != null && !media.isEmpty() ) {
+										if (media.size() > 1)
+											newCache.siasVegetableMedia = media.get( 1 );
+										else
+											newCache.siasVegetableMedia = media.get( 0 );											
 									} else {
 										newCache.siasVegetableMedia = null;
 									}
 								} else if ( currentCategory.equals( newCache.sideStarchCategory ) ) {
 									newCache.siasStarchSides.add( prod );
 									List<Html> media = currentCategory.getTopMedia();
-									if ( media != null && !media.isEmpty() ) { 
-										newCache.siasStarchMedia = media.get( 0 );
+									if ( media != null && !media.isEmpty() ) {
+										if (media.size() > 1)
+											newCache.siasStarchMedia = media.get( 1 );
+										else
+											newCache.siasStarchMedia = media.get( 0 );
 									} else {
 										newCache.siasStarchMedia = null;
 									}

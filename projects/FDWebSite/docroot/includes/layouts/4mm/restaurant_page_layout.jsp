@@ -107,11 +107,9 @@
 					<% // show first section top media only for Sides In A Snap   
 					if ( FourMinuteMealsHelper.isSidesInASnapCategory( currentFolder ) ) {	
 						topMediaList = meals.getTopMedia();
-						if ( topMediaList != null ) { %>
-							<logic:iterate id="topHtml" collection="<%= topMediaList %>">
-							<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
-							</logic:iterate>				
-							<% topMediaList=null;
+						if ( topMediaList != null && !topMediaList.isEmpty() ) { %>
+							<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
+						<% topMediaList=null;
 						}
 					} %>
 				</div>
@@ -137,10 +135,8 @@
 		<% if (!products.isEmpty()) { %>		
 		<div class="meals">
 			<% 	topMediaList=sides.getTopMedia();
-			if(topMediaList!=null) { %>
-				<logic:iterate id="topHtml" collection="<%= topMediaList %>">
-				<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
-				</logic:iterate>				
+			if(topMediaList!=null && !topMediaList.isEmpty()) { %>
+				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
 				<% topMediaList=null;
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sides1" showCategories="false"><span class="meal">
@@ -161,10 +157,8 @@
 		<% if (!products.isEmpty()) { %>		
 		<div class="meals">
 			<% 	topMediaList=entrees.getTopMedia();
-			if(topMediaList!=null) { %>
-				<logic:iterate id="topHtml" collection="<%= topMediaList %>">
-				<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
-				</logic:iterate>				
+			if(topMediaList!=null && !topMediaList.isEmpty()) { %>
+				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
 				<% topMediaList=null;
 			} %>
 			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entrees1" showCategories="false"><span class="meal">

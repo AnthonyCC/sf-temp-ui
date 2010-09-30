@@ -3,6 +3,8 @@
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
 <%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
 
 <%@ taglib uri="/WEB-INF/shared/tld/freshdirect.tld" prefix='fd'%>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
@@ -18,23 +20,29 @@
 		landing_page_layout.jsp	
 --%>
 
-
-<fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="4mm_dept_pop" currentNode="<%= dept %>" id="deptPopular">
-	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="mostPopularProds" groupId="4mm-default">
 	<%
-	if ( mostPopularProds.size() > 0 ) { %>
-		<div class="carousel-box">
-			<div class="separator"><img src="/media_stat/images/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
-			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= mostPopularProds %>" id="popular_carousel" trackingCode="mpop-4mm" maxItems="12">
-				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
-				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				<div class="productname">
-					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
-				</div>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
-			</display:Carousel>
-		</div>
-	<% } %>
-	</display:UniqueFilter>
-</fd:ProductGroupRecommender>
+	{
+		CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", "4mm_popular");
+		if (cat != null) {
+	%>
+		<display:ItemGrabber id="mostPopularProds" category="<%= cat %>" depth="0">
+		<%
+		if ( mostPopularProds.size() > 0 ) { %>
+			<div class="carousel-box">
+				<div class="separator"><img src="/media_stat/images/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
+				<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= mostPopularProds %>" id="popular_carousel" trackingCode="mpop-4mm" maxItems="12">
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<div class="productname">
+						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+				</display:Carousel>
+			</div>
+		<% } %>
+		</display:ItemGrabber>
+	<%
+		}
+	}
+	%>
 

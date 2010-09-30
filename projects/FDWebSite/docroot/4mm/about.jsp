@@ -42,11 +42,9 @@
 	<div class="fourmm aboutpage">
 	<%@ include file="/includes/layouts/4mm/title.jspf"%>		
 <%
-	if(topMedia!=null) {
+	if(topMedia!=null && !topMedia.isEmpty()) {
 %>
-<logic:iterate id="topHtml" collection="<%= topMedia %>">
-<fd:IncludeMedia name="<%= ((Html) topHtml).getPath() %>"></fd:IncludeMedia>
-</logic:iterate>
+<fd:IncludeMedia name="<%= topMedia.get(0).getPath() %>"></fd:IncludeMedia>
 <%		
 	}
 %>
