@@ -1,7 +1,6 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +13,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.cache.ExternalSharedCache;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
-import com.freshdirect.framework.cache.MemcacheConfiguration;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.ProgressReporter;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -103,9 +101,7 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
                     
                     for (int i = 0; i < size; i++) {
                         FDSku sku = changedSkus.get((offset + i) % size);
-                        if (!lastVersions.containsKey(sku.getSkuCode()) || lastVersions.get(sku.getSkuCode()) < sku.getVersion()) {
-                            lastVersions.put(sku.getSkuCode(), sku.getVersion());
-                        }
+
                         // check the external cache
                         FDProduct externalItem = getFromExternalCache(sku);
                         try {
@@ -113,14 +109,19 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
                                 externalItem = getProductInternal(sku);
                                 putToExternalCache(sku, externalItem);
                             }
+
+                            if (!lastVersions.containsKey(sku.getSkuCode()) || lastVersions.get(sku.getSkuCode()) < sku.getVersion()) {
+                                lastVersions.put(sku.getSkuCode(), sku.getVersion());
+                            }
+
                             data.put(sku, externalItem);
                         } catch (FDSkuNotFoundException e) {
-                            LOGGER.error("changed sku which is not found (contradictory and critical):"+sku, e);
+                            LOGGER.error("changed sku which is not found (contradictory and critical):" + sku, e);
                         } catch (FDResourceException e) {
-                            LOGGER.error("Error loading sku:"+sku, e);
+                            LOGGER.error("Error loading sku:" + sku, e);
                         }
                         if (p.shouldLogMessage(i)) {
-                            LOGGER.info("already loaded " + i + " from " + size);
+                            LOGGER.info("loaded so far " + i + " of " + size);
                         }
                     }
                 }
