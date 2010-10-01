@@ -24,6 +24,7 @@ import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.service.LogManagerI;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class ActivityLogAdvisor implements MethodBeforeAdvice
 {
@@ -153,20 +154,39 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 					{
 						logManager.log(newDispatch.getUserId(),4,updates.get(i));
 					}
+					
+					Set newResourcesCopy=new HashSet();
+					newResourcesCopy.addAll(newDispatch.getDispatchResources());
+					if(newResourcesCopy!=null)
+					{
+						Iterator iterator=newResourcesCopy.iterator();
+						while(iterator.hasNext())
+						{
+							DispatchResource newPlanResource=(DispatchResource)iterator.next();
+
+							Collection dispatchInfos = dispatchManagerDao
+									.getDispatchForResource(TransStringUtil.getServerDate(newDispatch.getDispatchDate()),
+																									newPlanResource.getId().getResourceId());
+							for (Iterator<Dispatch> itr = dispatchInfos.iterator(); itr.hasNext();) {
+								Dispatch _resDispatch =  itr.next();
+								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
+									((DispatchComparator) c).compareResource(oldDispatch.getDispatchResources(),newDispatch.getDispatchResources());
+								}
+							}						
+						}
+						
+						updates=c.getUpdateFields();
+						if(updates!=null)
+						for(int i=0,n=updates.size();i<n;i++)
+						{
+							logManager.log(newDispatch.getUserId(),5,updates.get(i));
+						}
+					}			
 				}
 			}
 		}
 		
-		}
-	
-	
-	
-	
-
-
-	
-
-	
+	}
 }
 
 abstract class LogComparator implements Comparator

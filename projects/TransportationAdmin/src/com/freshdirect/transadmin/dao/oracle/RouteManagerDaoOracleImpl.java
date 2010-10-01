@@ -27,6 +27,7 @@ import org.springframework.jdbc.object.BatchSqlUpdate;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
+import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.RouteMappingId;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
@@ -150,12 +151,9 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			final String scanStartTime = TransStringUtil.getDate(routeDate)+ ":12:00:00AM";
 			final String scanEndTime = TransStringUtil.getDate(routeDate)+ ":11:59:59PM";
 			final StringBuffer strBuf = new StringBuffer();
-			strBuf
-					.append("SELECT asset, MIN(SCANDATE) FROM transp.assettracking");
-			strBuf
-					.append(" WHERE scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')");
-			strBuf
-					.append(" AND asset LIKE 'HT%' AND assetstatus='OUT'  GROUP BY asset ");
+			strBuf.append("SELECT asset, MAX(SCANDATE) as SCAN_DATE FROM transp.assettracking");
+			strBuf.append(" WHERE scandate BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')");
+			strBuf.append(" AND asset LIKE 'HT%' AND assetstatus='OUT'  GROUP BY asset");
 			PreparedStatementCreator creator = new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(
 						Connection connection) throws SQLException {
@@ -168,8 +166,10 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			};
 			jdbcTemplate.query(creator, new RowCallbackHandler() {
 				public void processRow(ResultSet rs) throws SQLException {
+					HTOutScanAsset scanAsset;
 					do {
-						result.add(rs.getString(1));// , rs.getString(2));
+						scanAsset = new HTOutScanAsset(rs.getString(1),new Date(rs.getTimestamp(2).getTime()));
+						result.add(scanAsset);
 					} while (rs.next());
 				}
 			});
@@ -222,7 +222,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		return result;
 	}
 	
-	private static String GET_TEAM_CHNAGES = "select distinct AL.NEW_VALUE from TRANSP.ACTIVITY_LOG al"
+	private static String GET_TEAM_CHANGES = "select distinct AL.NEW_VALUE from TRANSP.ACTIVITY_LOG al"
 										+" where AL.LOG_DATE BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')"
 										+" and type = ? and FIELD_NAME = ? and al.new_value is NOT NULL";
 
@@ -232,7 +232,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 			final String startTime = TransStringUtil.getDate(date)+":12:00:00AM";
 			final String endTime = TransStringUtil.getDate(date)+":11:59:59PM";
 
-			final StringBuffer strBuf = new StringBuffer(GET_TEAM_CHNAGES);
+			final StringBuffer strBuf = new StringBuffer(GET_TEAM_CHANGES);
 			PreparedStatementCreator creator = new PreparedStatementCreator() {
 				public PreparedStatement createPreparedStatement(
 						Connection connection) throws SQLException {
@@ -257,7 +257,6 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		}
 		return result;
 	}
-		
 	
 	public Date getHTOutScanTimeForRoute(final String routeId) throws DataAccessException {
 		

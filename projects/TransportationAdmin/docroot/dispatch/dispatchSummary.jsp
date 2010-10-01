@@ -138,11 +138,11 @@
                                                            <br/>         
                                                             Routes Actual: <b><%=amStats.getDispatchAmRoute()%></b>
                                                            <br/>
-                                                            Employees worked 6 consecutive days: <b><%=amStats.getEmpAmWorkedSixdays()%></b>
+                                                            Employees worked six consecutive days:<b><%=amStats.getEmpAmWorkedSixdays()%></b>
                                                            <br/>
                                                             Dispatch Team Changes: <b><%=amStats.getAMTeamChange()%></b>
                                                            <br/>
-                                                            Dispatch Team Changes out of region:
+                                                            Dispatch Team Changes out of region:<b><%=amStats.getAMTeamChangeRegionOut()%></b>
                                                            <br/>
                                                             Fire Trucks/MOT: <b><%=amStats.getAMfireTruckorMOT()%> </b>
 														   <br/>
@@ -161,11 +161,11 @@
                                                            <br/>         
                                                            Routes Actual: <b><%=pmStats.getDispatchPmRoute()%></b>
                                                            <br/>
-                                                           Employees worked six consecutive days: <b><%=pmStats.getEmpPmWorkedSixdays()%></b>
+                                                           Employees worked six consecutive days:<b><%=pmStats.getEmpPmWorkedSixdays()%></b>
                                                            <br/>
                                                            Dispatch Team Changes: <b><%=pmStats.getPMTeamChange()%></b>
                                                            <br/>
-                                                           Dispatch Team Changes out of region:
+                                                           Dispatch Team Changes out of region:<b><%=pmStats.getPMTeamChangeRegionOut()%></b>
                                                            <br/>
                                                            Fire Trucks/MOT: <b><%=pmStats.getPMfireTruckorMOT()%></b>
                                                            <br/>

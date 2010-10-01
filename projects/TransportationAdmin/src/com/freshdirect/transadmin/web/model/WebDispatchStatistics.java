@@ -36,7 +36,21 @@ public class WebDispatchStatistics  implements Serializable
 	private int pMfireTruckorMOT;
 	private int aMTeamChange;
 	private int pMTeamChange;
+	private int aMTeamChangeRegionOut;
+	private int pMTeamChangeRegionOut;
 	
+	public int getAMTeamChangeRegionOut() {
+		return aMTeamChangeRegionOut;
+	}
+	public void setAMTeamChangeRegionOut(int teamChangeRegionOut) {
+		aMTeamChangeRegionOut = teamChangeRegionOut;
+	}
+	public int getPMTeamChangeRegionOut() {
+		return pMTeamChangeRegionOut;
+	}
+	public void setPMTeamChangeRegionOut(int teamChangeRegionOut) {
+		pMTeamChangeRegionOut = teamChangeRegionOut;
+	}
 	public int getAMTeamChange() {
 		return aMTeamChange;
 	}
@@ -222,7 +236,7 @@ public class WebDispatchStatistics  implements Serializable
 	public void calculateResourceworkedSixdays(List resourceList,
 			DispatchManagerI dispatchManagerService,
 			DomainManagerI domainManagerService,
-			EmployeeManagerI employeeManagerService, boolean isTeamChange) throws ParseException	
+			EmployeeManagerI employeeManagerService, boolean isTeamChange, boolean isRegionOut) throws ParseException	
 	{
 		int amCount=0;
 		int pmCount=0;
@@ -247,8 +261,13 @@ public class WebDispatchStatistics  implements Serializable
 			}			
 		}
 		if(isTeamChange){
-			aMTeamChange = amCount;
-			pMTeamChange= pmCount;
+			if(isRegionOut){
+				aMTeamChangeRegionOut = amCount;
+				pMTeamChangeRegionOut = pmCount;
+			}else{
+				aMTeamChange = amCount;
+				pMTeamChange= pmCount;
+			}
 		}else{
 			empAmWorkedSixdays = amCount;
 			empPmWorkedSixdays = pmCount;
@@ -261,9 +280,20 @@ public class WebDispatchStatistics  implements Serializable
 			DomainManagerI domainManagerService,
 			EmployeeManagerI employeeManagerService, boolean isTeamChange) throws ParseException	
 	{
-		calculateResourceworkedSixdays(resourceList,dispatchManagerService, domainManagerService, employeeManagerService,isTeamChange);
+		calculateResourceworkedSixdays(resourceList,dispatchManagerService, domainManagerService, employeeManagerService,isTeamChange, false);
 															
-	}		
+	}
+	
+	public void calculateDispatchTeamChangeOutOfRegion(List resourceList,
+			DispatchManagerI dispatchManagerService,
+			DomainManagerI domainManagerService,
+			EmployeeManagerI employeeManagerService, boolean isTeamChange) throws ParseException	
+	{
+		calculateResourceworkedSixdays(resourceList,dispatchManagerService, domainManagerService, employeeManagerService,isTeamChange,true);
+															
+	}
+	
+	
     
 }
 	

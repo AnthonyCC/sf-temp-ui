@@ -61,6 +61,7 @@ import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
 import com.freshdirect.transadmin.model.FDRouteMasterInfo;
+import com.freshdirect.transadmin.model.HTOutScanAsset;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.model.RouteMapping;
@@ -766,6 +767,12 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 
+	/**
+	 * Custom handler for welcome
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @return a ModelAndView to render the response
+	 */
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
@@ -877,7 +884,7 @@ public class DispatchController extends AbstractMultiActionController {
 
 		for (WebEmployeeInfo wb : tempList) {
 			if (wb.getLastName() != null)
-				StrBfr.append(wb.getLastName()).append(",").append(
+				StrBfr.append(wb.getLastName()).append(", ").append(
 						wb.getNameWithFirstInitial()).append(
 						" (" + (wb.getJobTypeWithFirstInitial()) + ")").append(
 						" - ").append(wb.getShiftType()).append("<br />");		
@@ -898,7 +905,7 @@ public class DispatchController extends AbstractMultiActionController {
         	if(_dispReadyRoute.getDrivers().size()>0)
         		str.append(", ").append(_dispReadyRoute.getDrivers());
         	if(_dispReadyRoute.getHelpers().size()>0)
-        		str.append(", ").append(_dispReadyRoute.getHelpers());
+        		str.append(",").append(_dispReadyRoute.getHelpers());
         	
         	str.append("<br />");			
 		}
@@ -907,47 +914,26 @@ public class DispatchController extends AbstractMultiActionController {
 		
 	
 	private void getDispatchHandTruckInventoryForLastScanOut(HttpServletRequest request, HttpServletResponse response) throws ServletException, ParseException, DateFilterException
-	{				
+	{
 		List htOutList  = dispatchManagerService.getHTOutScanAsset(TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate()));
 		
 		Collections.sort(htOutList, new HandTruckComparator()); 
 		StringBuffer htOBfr = new StringBuffer(100);
-		for (Iterator<String> iterator = htOutList.iterator(); iterator.hasNext();) {
-			String object = iterator.next();
-			htOBfr.append(object+" OUT ").append("<br />");					 	
+		for (Iterator<HTOutScanAsset> iterator = htOutList.iterator(); iterator.hasNext();) {
+			HTOutScanAsset asset = iterator.next();
+			htOBfr.append(asset.getAssetIdentifier()+", "+TransStringUtil.getTime(asset.getAssetDate())).append("<br />");					 	
 		}
 		request.setAttribute("handTruckInvList",htOBfr.toString());		
 	}
 	
     
-    public static class HandTruckComparator implements Comparator<String> {
-
-		@Override
-		public int compare(String o1, String o2) {
-
-			if (o1.equals(o2)) {
-				return 0;
-			}
-			String s1 = o1.replaceAll("HT", "");
-			String s2 = o2.replaceAll("HT", "");
-
-			if ("".equals(s1) || "".equals(s2) || s1 == null || s2 == null) {
-				return 0;
-			}
-
-			Integer i1 = Integer.parseInt(s1);
-			Integer i2 = Integer.parseInt(s2);
-			if ((i1 == null) && (i2 == null)) {
-				return 0;
-			} else if (i1 == null) {
-				return -1;
-			} else if (i2 == null) {
-				return 1;
-			}
-
-			return i1.compareTo(i2);
-		}
-	}
+    public static class HandTruckComparator implements Comparator<HTOutScanAsset>
+    {    	
+    	@Override
+    	public int compare(HTOutScanAsset o1, HTOutScanAsset o2) {
+    			return(o2.getAssetDate().compareTo(o1.getAssetDate()));
+    	}    	
+    }
 
 	
 	private void getUnAssignedEmployees(HttpServletRequest request, HttpServletResponse response, Collection unAssignedEmps) throws ServletException 
@@ -961,7 +947,7 @@ public class DispatchController extends AbstractMultiActionController {
 		Collections.sort(tempUnAssignedEmps);
 
 		for (WebEmployeeInfo wb : tempUnAssignedEmps) {
-			strBfr.append(wb.getLastName()).append(",").append(
+			strBfr.append(wb.getLastName()).append(", ").append(
 					wb.getNameWithFirstInitial()).append(
 					" (" + (wb.getJobTypeWithFirstInitial()) + ")").append(
 					"<br />");
@@ -979,7 +965,7 @@ public class DispatchController extends AbstractMultiActionController {
 		Collections.sort((List)unAssignedRoutes);
 		
 		for (ErpRouteMasterInfo _routeInfo : unAssignedRoutes) {
-			routesStr.append(_routeInfo.getRouteNumber()).append(",").append(
+			routesStr.append(_routeInfo.getRouteNumber()).append(", ").append(
 					_routeInfo.getFirstDlvTime()).append("<br/> ").append("\n");			
 		}		
 		request.setAttribute("unAvailableRoutes", routesStr.toString());        	
@@ -987,8 +973,7 @@ public class DispatchController extends AbstractMultiActionController {
 	
 	private void getDispatchStatistics(HttpServletRequest request,
 			HttpServletResponse response, Collection dispatchList,
-			Collection unAssignedActiveEmp) throws ServletException,
-			ParseException {
+			Collection unAssignedActiveEmp) throws ServletException,ParseException {
 		
 		try {
 			
@@ -996,17 +981,19 @@ public class DispatchController extends AbstractMultiActionController {
 			Collection unAvalEmpList = employeeManagerService.getUnAvailableEmployees(planList, TransStringUtil.getCurrentServerDate());
 			Date date = TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate());
 			List resourceList = dispatchManagerService.getResourcesWorkedForSixConsecutiveDays(date);
-			List resTeamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"4","RESOURCE_ID");
-
+			List teamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"4","RESOURCE_ID");
+			List teamChangedRegionList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"5","RESOURCE_ID");
+			
 			WebDispatchStatistics webStats = new WebDispatchStatistics();
 			
 			webStats.calculatePlanRoute(planList);
 			webStats.calculateDispatchRoute(dispatchList);
-			webStats.calculateResourceworkedSixdays(resourceList, dispatchManagerService, domainManagerService, employeeManagerService, false);
+			webStats.calculateResourceworkedSixdays(resourceList, dispatchManagerService, domainManagerService, employeeManagerService, false, false);
 			webStats.calculateUnassigned(unAssignedActiveEmp);			
 			webStats.calculatePaycode(unAvalEmpList);
 			webStats.calculateFireTruckorMOT(dispatchList);
-			webStats.calculateDispatchTeamChange(resTeamChangedList, dispatchManagerService, domainManagerService, employeeManagerService, true);			
+			webStats.calculateDispatchTeamChange(teamChangedList, dispatchManagerService, domainManagerService, employeeManagerService, true);
+			webStats.calculateDispatchTeamChangeOutOfRegion(teamChangedRegionList, dispatchManagerService, domainManagerService, employeeManagerService, true);
 			
 			request.setAttribute("statistics", webStats);
 			
@@ -1102,6 +1089,7 @@ public class DispatchController extends AbstractMultiActionController {
 	}
 
 	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo,boolean needsAirClick){
+
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
 		try {
