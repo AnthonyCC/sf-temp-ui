@@ -504,7 +504,7 @@ if(showDoorman){
 	</tr>
 
 	</table>
-	<table border="0" cellspacing="1" cellpadding="0" width="675">
+	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="MIDDLE">
 		<td></td>
 		<td><img src="/media_stat/images/layout/clear.gif" width="105" height="1" border="0"></td>
@@ -534,7 +534,7 @@ if(showAltDelivery){
 		</td>
 	</tr>
 	</table>
-	<table border="0" cellspacing="1" cellpadding="0" width="675">
+	<table border="0" cellspacing="1" cellpadding="0" width="675" <%= (udConfirm) ? "style=\"display: none;\"" : "" %>>
 	<tr valign="top">
 	<td width="675" colspan="2" class="bodyCopySmall">
 
