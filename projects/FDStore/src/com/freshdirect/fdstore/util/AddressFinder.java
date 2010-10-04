@@ -36,27 +36,29 @@ public class AddressFinder {
 				return address;
 			}else{
 				if(user!=null&&!timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM))
-					shipToAddresses=FDCustomerManager.getShipToAddresses(user.getIdentity());
-				if(shipToAddresses.size() > 1){
-					if(addressId==null){
-						addressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity()); // default address
+					shipToAddresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
+					if(shipToAddresses.size()>0){
+						if(shipToAddresses.size() > 1){
+							if(addressId==null){
+								addressId = FDCustomerManager.getDefaultShipToAddressPK(user.getIdentity()); // default address
+							}
+							for (Iterator i=shipToAddresses.iterator(); i.hasNext(); ) {
+								ErpAddressModel a = (ErpAddressModel)i.next();
+								if ( a.getPK().getId().equals(addressId) ) {
+									address = a;
+									break;
+								} 
+							}
+						}else{
+							if(user.getShoppingCart()!=null) {
+								address=user.getShoppingCart().getDeliveryAddress();
+								user.getShoppingCart().setDeliveryAddress(null);
+							}					
+						}
+						if(address==null) {
+							address = (ErpAddressModel)shipToAddresses.iterator().next();
+						}
 					}
-					for (Iterator i=shipToAddresses.iterator(); i.hasNext(); ) {
-						ErpAddressModel a = (ErpAddressModel)i.next();
-						if ( a.getPK().getId().equals(addressId) ) {
-							address = a;
-							break;
-						} 
-					}
-				}else{
-					if(user.getShoppingCart()!=null) {
-						address=user.getShoppingCart().getDeliveryAddress();
-						user.getShoppingCart().setDeliveryAddress(null);
-					}					
-				}
-				if(address==null) {
-					address = (ErpAddressModel)shipToAddresses.iterator().next();
-				}
 			}
 		
 		
