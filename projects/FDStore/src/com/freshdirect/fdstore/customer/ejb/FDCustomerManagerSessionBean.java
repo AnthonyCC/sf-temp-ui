@@ -5963,6 +5963,26 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		}
 		return value;
 	}
+	public void sendSettlementFailedEmail(String saleID) throws FDResourceException {
+		try {
+			FDOrderI order = this.getOrder(saleID);
+			FDCustomerEB fdCustomer = getFdCustomerHome().findByErpCustomerId(
+					order.getCustomerId());
+			FDIdentity identity = new FDIdentity(order.getCustomerId(),
+					fdCustomer.getPK().getId());
+			FDCustomerInfo custInfo = this.getCustomerInfo(identity);
+			Calendar cal = calculateCutOffTime(order);
+			this.doEmail(FDEmailFactory.getInstance()
+					.createSettlementFailedEmail(custInfo, saleID,
+							order.getDeliveryReservation().getStartTime(),
+							order.getDeliveryReservation().getEndTime(),
+							cal.getTime()));
+		} catch (FinderException e) {
+			throw new FDResourceException(e);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e);
+		}
+	}
 
 }
 

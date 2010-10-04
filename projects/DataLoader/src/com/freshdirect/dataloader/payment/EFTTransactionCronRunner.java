@@ -7,9 +7,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.mail.MessagingException;
 import javax.naming.Context;
@@ -23,10 +25,10 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.customer.EnumCardType;
 import com.freshdirect.customer.EnumPaymentResponse;
 import com.freshdirect.customer.EnumTransactionSource;
-import com.freshdirect.customer.ErpAbstractSettlementModel;
 import com.freshdirect.customer.ErpSettlementModel;
 import com.freshdirect.customer.ejb.ErpSaleEB;
 import com.freshdirect.customer.ejb.ErpSaleHome;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -107,6 +109,7 @@ public class EFTTransactionCronRunner {
 	static private void processBadTransactions(List txnList, ReconciliationSB reconciliationSB,ErpSaleHome saleHome) {
 
 		EFTTransaction paymentTransaction = new EFTTransaction(); 
+		Set<String> orders=new HashSet<String>();
 		if (txnList != null && txnList.size() > 0) {
 			Iterator iter = txnList.iterator();
 			while (iter.hasNext()) {
@@ -129,6 +132,7 @@ public class EFTTransactionCronRunner {
 													aff, 
 													false);
 					reconciliationSB.processECPReturn(saleId, aff, accountNumber, amount, sequenceNumber, paymentResponse, description, usageCode);
+					FDCustomerManager.sendSettlementFailedEmail(saleId);
 				} catch (Exception e) {
 					LOGGER.error("EFTTransactionCronRunner.processFailedTransactions: Account Number = " + StringUtil.maskCreditCard(paymentTransaction.getBankAccountNumber()) + "-"+ e.getMessage());						
 				}

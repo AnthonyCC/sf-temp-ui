@@ -3637,4 +3637,17 @@ public class FDCustomerManager {
 		}				
 			
 	}
+	public static void sendSettlementFailedEmail(String saleId) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			sb.sendSettlementFailedEmail(saleId);
+		} catch (RemoteException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		} catch (CreateException e) {
+			invalidateManagerHome();
+			throw new FDResourceException(e, "Error creating session bean");
+		}
+	}
 }

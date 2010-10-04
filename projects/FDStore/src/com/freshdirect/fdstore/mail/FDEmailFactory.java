@@ -974,5 +974,41 @@ public class FDEmailFactory {
 
 		return email;
 	}
+	public XMLEmailI createSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime){
+		FDSettlementFailedEmail email = new FDSettlementFailedEmail(customer, orderNumber, startTime, endTime, cutoffTime);
+		email.setXslPath("h_settlement_failure.xsl", "x_settlement_failure.xsl");
+		email.setFromAddress(new EmailAddress(GENERAL_LABEL, getFromAddress(customer.getDepotCode())));
+		email.setSubject("e-Check Settlement Failure");
+		
+
+		return email; 
+	}
+	static class FDSettlementFailedEmail extends FDInfoEmail {
+
+		private String orderNumber;
+		private Date deliveryStartTime;
+		private Date deliveryEndTime;
+		private Date cutoffTime;
+
+		public FDSettlementFailedEmail(FDCustomerInfo customer, String orderNumber, Date startTime, Date endTime, Date cutoffTime) {
+			super(customer);
+			this.orderNumber = orderNumber;
+			this.deliveryStartTime = startTime;
+			this.deliveryEndTime = endTime;
+			this.cutoffTime = cutoffTime;
+		}
+
+		/**
+		 * @see com.freshdirect.fdstore.mail.FDInfoEmail#decorateMap(java.util.Map)
+		 */
+		protected void decorateMap(Map map) {
+			super.decorateMap(map);
+			map.put("orderNumber", this.orderNumber);
+			map.put("deliveryStartTime", DT_FORMATTER.format(this.deliveryStartTime));
+			map.put("deliveryEndTime", DT_FORMATTER.format(this.deliveryEndTime));
+			map.put("cutoffTime", DT_FORMATTER.format(this.cutoffTime));
+		}
+
+	}
 	
 }
