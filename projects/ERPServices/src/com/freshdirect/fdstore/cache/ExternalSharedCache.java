@@ -12,6 +12,7 @@ import com.freshdirect.framework.cache.CacheI;
 import com.freshdirect.framework.cache.CacheStatisticsProvider;
 import com.freshdirect.framework.cache.ExternalMemCache;
 import com.freshdirect.framework.cache.StatRecorderCache;
+import com.freshdirect.framework.cache.StatRecorderCacheMBean;
 import com.freshdirect.framework.util.ProgressReporter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -47,6 +48,16 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
     
     protected String getStringKey(K key) {
         return (String) key;
+    }
+    
+    @Override
+    protected void startRefresher() {
+        long time = System.currentTimeMillis();
+        super.startRefresher();
+        long elapsed = System.currentTimeMillis() - time;
+        final StatRecorderCacheMBean stats = (StatRecorderCacheMBean) this.memCache;
+        LOG.info("cache:" + this.getName() + " initialized in " + elapsed + " sec, memcache hits:" + stats.getCacheHit() + ", memcache cache misses:"
+                + stats.getCacheMiss() + ", cache puts:" + stats.getCachePut());
     }
     
     
