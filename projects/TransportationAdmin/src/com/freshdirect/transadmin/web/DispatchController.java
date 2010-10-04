@@ -815,7 +815,7 @@ public class DispatchController extends AbstractMultiActionController {
 		List<WebPlanResource> unempList= new ArrayList<WebPlanResource>();
 		
 		tempPlans =(List<Plan>)dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);		
-		unempList =(List<WebPlanResource>)this.getEmployeeManagerService().getUnAvailableEmployees(tempPlans, TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()));
+		unempList =(List<WebPlanResource>)this.getEmployeeManagerService().getUnAvailableEmployees(tempPlans, TransStringUtil.getCurrentServerDate());
 		
 		Collections.sort(unempList);						
 
