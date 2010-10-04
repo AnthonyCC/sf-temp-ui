@@ -138,7 +138,7 @@
 										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);"/>             
 									</c:when>
 									<c:otherwise> 
-										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);" onChange="firstDeliveryTimeChanged()"/>
+										<form:input maxlength="50" size="24" path="firstDeliveryTime" onblur="this.value=time(this.value);firstDeliveryTimeChanged();"/>
 									</c:otherwise>
 								</c:choose>
 							</td>

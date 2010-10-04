@@ -335,7 +335,7 @@
 								</c:if>
 								<c:choose>                    
 									<c:when test='${!hasDispatch}'>   
-										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" onChange="firstDeliveryTimeChanged()";/>									
+										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);firstDeliveryTimeChanged();"/>									
 									</c:when>									
 									<c:when test='${status.value == "false"}'> 
 										<form:input maxlength="50" size="8" path="firstDeliveryTime" onblur="this.value=time(this.value);" />									
