@@ -28,7 +28,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 
 	private final static Image IMAGE_BLANK = new Image("/media_stat/images/layout/clear.gif", 1, 1);
 
-	private List characteristics;
+	private List<String> characteristics;
 
 	private List optionalProds = new ArrayList();
 	
@@ -58,7 +58,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	/** 
 	 * @return List of String (ERP characteristic names)
 	 */
-	public List getCharacteristicNames() {
+	public List<String> getCharacteristicNames() {
 		if (this.characteristics == null) {
 			try {
 				FDProduct fdp = getHeaderSku().getProduct();
@@ -66,7 +66,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 
 				final List<ContentKey> attribErpChars = (List<ContentKey>) getCmsAttributeValue("CHARACTERISTICS");
 				final List<ContentKey> erpChars = attribErpChars != null ? attribErpChars : Collections.EMPTY_LIST;
-				characteristics = new ArrayList();
+				characteristics = new ArrayList<String>();
 				for (Iterator itr = erpChars.iterator(); itr.hasNext();) {
 					String erpCharacteristic = ((ContentKey) itr.next()).getId();
 					String erpCharName = getErpCharacteristicName(erpCharacteristic);
@@ -109,7 +109,7 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	/**
 	 * @return Map of String (characteristic option name) -> FDVariationOption[]
 	 */
-	public Map getVariationOptions() throws FDResourceException {
+	public Map<String,FDVariationOption[]> getVariationOptions() throws FDResourceException {
 		return getVariationOptions(null);
 	}
 
@@ -126,30 +126,36 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 	 * 
 	 * @return Map of String (ERP characteristic name) -> FDVariationOption[]
 	 */
-	public Map getVariationOptions(FDConfigurableI configuration) throws FDResourceException {
-		Map rtnVariation = new HashMap();
-		List erpChars = getCharacteristicNames();
+	public Map<String,FDVariationOption[]> getVariationOptions(FDConfigurableI configuration) throws FDResourceException {
+		Map<String,FDVariationOption[]> rtnVariation = new HashMap<String,FDVariationOption[]>();
+		List<String> erpChars = getCharacteristicNames();
 		ProductModel p = (ProductModel) this.getParentNode();
 		try {
 			FDProduct fdp = getHeaderSku().getProduct();
 			FDVariation[] fdvs = fdp.getVariations();
-			for (Iterator itr = erpChars.iterator(); itr.hasNext();) {
-				String erpCharName = (String) itr.next();
+			for (Iterator<String> itr = erpChars.iterator(); itr.hasNext();) {
+				String erpCharName = itr.next();
 
+				int counter = 0;
 				for (int i = 0; i < fdvs.length; i++) {
 					FDVariation var = fdvs[i];
 					if (var.getName().equalsIgnoreCase(erpCharName)) {
-						int counter = 0;
 						FDVariationOption[] varOpts = var.getVariationOptions();
-						String selectedOption = configuration == null ? null : (String) configuration.getOptions().get(var.getName());
-						for (int voIdx = 0; voIdx < varOpts.length; voIdx++) {
-							if (configuration != null && selectedOption != null && !selectedOption.equals(varOpts[voIdx].getName())) {
+						String selectedOption = configuration==null ? null : (String)configuration.getOptions().get(var.getName());
+						for (FDVariationOption varOpt : varOpts) {
+							if (selectedOption!=null && !selectedOption.equals(varOpt.getName())) {
+								continue;
+							}
+							
+							String optSkuCode = varOpt.getSkuCode();
+							if (optSkuCode == null) {
+								counter ++;
 								continue;
 							}
 
-							SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(varOpts[voIdx].getSkuCode());
+							SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(optSkuCode);
 							if (sku != null && !sku.isUnavailable()) {
-								counter++;
+                                                            counter ++;
 							}
 						}
 
@@ -158,13 +164,16 @@ public class ComponentGroupModel extends ContentNodeModelImpl {
 						} else {
 							rtnVariation.put(erpCharName, null);
 						}
-						break;
 					}
 				}
 			}
 		} catch (FDSkuNotFoundException snfe) {
-			LOGGER.warn("ComponentGroupModel: catching FDSkuNotFoundException for default sku for prod: " + p + " ,SkuCode: "
-					+ p.getDefaultSku() + " and Continuing:\nException message:= " + snfe.getMessage());
+			LOGGER.warn("ComponentGroupModel: catching FDSkuNotFoundException for default sku for prod: "
+				+ p
+				+ " ,SkuCode: "
+				+ p.getDefaultSku()
+				+ " and Continuing:\nException message:= "
+				+ snfe.getMessage());
 		}
 
 		return rtnVariation;
