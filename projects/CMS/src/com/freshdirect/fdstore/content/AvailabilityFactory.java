@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
@@ -16,9 +17,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
+import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class AvailabilityFactory {
 
+    private final static Logger LOG = LoggerFactory.getInstance(AvailabilityFactory.class); 
+    
 	private final static EnumDlvRestrictionReason[] DAY_REASONS = {
 		EnumDlvRestrictionReason.BLOCK_SUNDAY,
 		EnumDlvRestrictionReason.BLOCK_MONDAY,
@@ -69,7 +73,7 @@ public class AvailabilityFactory {
 		return s;
 	}
 
-	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo) throws FDResourceException {
+	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo) {
 
 		FDAvailabilityI av = NullAvailability.AVAILABLE;
 		
@@ -80,11 +84,15 @@ public class AvailabilityFactory {
 		ErpInventoryModel inventory = fdProductInfo.getInventory();
 		if (inventory != null) {
 			ProductModel productModel = skuModel.getProductModel();
-			av = new FDStockAvailability(
-				inventory,
-				productModel.getQuantityMinimum(),
-				productModel.getQuantityMinimum(),
-				productModel.getQuantityIncrement());
+			if (productModel != null) {
+			    return new FDStockAvailability(
+			            inventory,
+			            productModel.getQuantityMinimum(),
+			            productModel.getQuantityMinimum(),
+			            productModel.getQuantityIncrement());
+			} else {
+			    LOG.error("Product model for " + skuModel.getSkuCode() + " not found, however product info is available :" + fdProductInfo);
+			}
 		}
 		
 		/*
