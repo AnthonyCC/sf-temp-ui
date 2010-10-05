@@ -11,11 +11,14 @@
       var supervisorDataTable;
       var editSupervisorPanel; 
       var _currentZoneId;
+      var errColor = "#FF0000";
+	  var msgColor = "#00FF00";
           
       var jsonrpcClient = new JSONRpcClient("dispatchprovider.ax");
            
       function showZoneSupervisorTable(inputVal) {
-      	 _currentZoneId = inputVal;	
+      	 _currentZoneId = inputVal;
+      	 addSysMessage("", false);	
          editSupervisorPanel = new YAHOO.widget.Panel("panelSupervisor", {       
                           width: "600px", 
                           height: "375px",
@@ -112,14 +115,27 @@
              return;
          }
          if(result){
-        	 alert('Supervisor to Zone added successfully');
+        	 addSysMessage("Default Zone Supervisor added successfully", false);
         	 editSupervisorPanel.hide();	
          }else{
-        	 alert('Supervisor to Zone failed.');
+        	 addSysMessage("Default Zone Supervisor failed to add", true);
         	 editSupervisorPanel.show();
          }
                                               
-     }   
+     }
+
+    function addSysMessage(msg, isError) {
+   		var errContObj = YAHOO.util.Dom.get("errContainer");
+		    if(isError) {
+		    	errContObj.style.color = errColor;
+	      	} else {
+	      		errContObj.style.color = msgColor;
+	      	}
+	      	errContObj.style.fontWeight="bold";
+   		YAHOO.util.Dom.get("errContainer").innerHTML = msg;
+   }
+   
+   
  </script>
        
    <div style='display:none;height:0px;width:0px;'> 

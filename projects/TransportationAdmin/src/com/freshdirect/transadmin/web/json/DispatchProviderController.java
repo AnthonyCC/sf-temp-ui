@@ -662,7 +662,7 @@ public class DispatchProviderController extends JsonRpcController implements
 	
 	public Collection getDefaultZoneSupervisors(String zoneId){
 		Collection tempLst = Collections.EMPTY_LIST;
-		Collection zoneLst = new ArrayList();
+		List zoneLst = new ArrayList();
 		if(zoneId!=null){
 			tempLst = locationManagerService.getDefaultZoneSupervisors(zoneId);
 			for (Iterator iterator = tempLst.iterator(); iterator.hasNext();) {
@@ -673,7 +673,8 @@ public class DispatchProviderController extends JsonRpcController implements
 				_zoneSupervisor.setSupervisorId(emp.getEmpInfo().getEmployeeId());
 				zoneLst.add(new ZoneSupervisorCommand(_zoneSupervisor));							
 			}
-		}		
+		}
+		Collections.sort(zoneLst);
 		return zoneLst;	
 	}
 	

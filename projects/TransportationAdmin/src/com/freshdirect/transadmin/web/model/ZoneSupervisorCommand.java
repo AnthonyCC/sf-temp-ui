@@ -4,7 +4,7 @@ import java.text.ParseException;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.util.TransStringUtil;
 
-public class ZoneSupervisorCommand implements java.io.Serializable{	
+public class ZoneSupervisorCommand implements java.io.Serializable, Comparable<ZoneSupervisorCommand>{	
 		
 	private String dayPart;
 	private String supervisorId;
@@ -50,6 +50,12 @@ public class ZoneSupervisorCommand implements java.io.Serializable{
 	}
 	public void setEffectiveDate(String effectiveDate) {
 		this.effectiveDate = effectiveDate;
+	}
+
+	public int compareTo(ZoneSupervisorCommand o) {
+	
+		int var = this.getEffectiveDate().compareTo(o.getEffectiveDate());
+		return (var == 0) ? this.getDayPart().compareTo(o.getDayPart()):var;
 	}
 	
 }
