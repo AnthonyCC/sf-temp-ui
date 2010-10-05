@@ -6,15 +6,12 @@ var fd_carousel=function(id,numItems) {
 	})} else {
 		fd_carousel.start(id,numItems);
 	}
-}
+};
 
 fd_carousel.start=function(container,numItems) {
 	YAHOO.util.Event.onContentReady(container,function() {
-		var carousel,
-			lineItems,
-			i,l,maxHeight=0,
-			region;
-		lineItems = YAHOO.util.Dom.getElementsBy(Object.prototype.valueOf,'li',container);
+		var carousel, lineItems, i,l,maxHeight=0, region;
+		lineItems = YAHOO.util.Dom.getElementsBy(function(){return true;},'li',container);
 		l=lineItems.length;
 		for(i=0;i<l;i++) {
 			region=YAHOO.util.Dom.getRegion(lineItems[i]);
@@ -32,4 +29,4 @@ fd_carousel.start=function(container,numItems) {
 		carousel.render();
 		carousel.show();
 	});
-}
+};
