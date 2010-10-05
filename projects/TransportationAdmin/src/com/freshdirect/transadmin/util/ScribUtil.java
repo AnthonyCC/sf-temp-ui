@@ -39,12 +39,14 @@ public class ScribUtil
 		return result;
 	}
 	
-	public static Scrib reconstructWebPlanInfo(Scrib scribInfo,Zone zone,EmployeeManagerI employeeManagerService) {		
+	public static Scrib reconstructWebPlanInfo(Scrib scribInfo,Zone zone,String isfirstDlvTimeModified,EmployeeManagerI employeeManagerService) {		
 		
-		if(zone!=null && scribInfo.getFirstDlvTime()!=null){
+		if(zone!=null && scribInfo.getFirstDlvTime()!=null 
+				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(scribInfo.getZoneModified()))){
 			try {
 				String shift = getShiftForPlan(scribInfo);
-				scribInfo.setSupervisorCode(null);
+				if("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(scribInfo.getZoneModified()))
+					scribInfo.setSupervisorCode(null);
 				if("AM".equals(shift)){
 					for (Iterator<ZoneSupervisor> itr = zone.getAmZoneSupervisors().iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();					

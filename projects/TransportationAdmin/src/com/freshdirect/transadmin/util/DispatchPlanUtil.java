@@ -308,13 +308,15 @@ public class DispatchPlanUtil {
 		if(zone!=null && isZoneModified) {
 			planInfo.setZoneName(zone.getName());
 			planInfo.setRegionCode(zone.getRegion().getCode());
-			planInfo.setRegionName(zone.getRegion().getName());
-			planInfo.setSupervisorCode(null);			
+			planInfo.setRegionName(zone.getRegion().getName());						
 		}
-		if(zone!=null && "true".equals(isfirstDlvTimeModified)) {
+		if(zone!=null && planInfo.getFirstDeliveryTime()!=null 
+				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(planInfo.getZoneModified()))) {
 			
 			try {
-				String shift = getShiftForPlan(planInfo,dispatchDate);					
+				String shift = getShiftForPlan(planInfo,dispatchDate);
+				if("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(planInfo.getZoneModified()))
+					planInfo.setSupervisorCode(null);
 				Date _currentDate = null;
 				if(dispatchDate!=null && planInfo.getPlanDate()==null)
 					_currentDate = TransStringUtil.getServerDateString1(dispatchDate);

@@ -106,7 +106,7 @@ public class ScribFormController extends AbstractDomainFormController {
 			model.setZone(zone);
 			model.setRegion(zone.getRegion());
 		}
-		model= ScribUtil.reconstructWebPlanInfo(model,zone,employeeManagerService);		
+		model= ScribUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),employeeManagerService);		
 	}
 
 	
