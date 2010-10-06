@@ -13,12 +13,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -69,16 +65,7 @@ class FDFactory {
 		}
 		try {
 			FDFactorySB sb = factoryHome.create();
-
-            if (!FDStoreProperties.getPreviewMode()) {
-				return sb.getProductInfo(sku);
-            } else {
-            	try {
-            		return getPreviewProductInfo( sb.getProductInfo(sku) );
-            	} catch (FDSkuNotFoundException ex) {
-            		return getPreviewProductInfo(sku);	
-            	}
-            }
+			return sb.getProductInfo(sku);
            
 		} catch (CreateException ce) {
 			factoryHome=null;
@@ -177,55 +164,6 @@ class FDFactory {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
-	
-	
-	/**
-	 * Get current product information object for multiple SKUs.
-	 *
-	 * @param skus array of SKU codes
-	 *
-	 * @return a list of FDProductInfo objects found
-	 *
-	 * @throws FDResourceException if an error occured using remote resources
-	 */
-	public static Collection getProductInfos(String[] skus) throws FDResourceException {
-		if (factoryHome==null) {
-			lookupFactoryHome();
-		}
-		try {
-			FDFactorySB sb = factoryHome.create();
-			Collection pinfos = sb.getProductInfos(skus);
-
-            if (FDStoreProperties.getPreviewMode()) {
-            	
-            	Set foundSkus = new HashSet();
-                LinkedList newPinfos = new LinkedList();
-                for (Iterator piIter = pinfos.iterator(); piIter.hasNext(); ) {
-                	FDProductInfo pi = getPreviewProductInfo( (FDProductInfo) piIter.next() );
-                    newPinfos.add( pi );
-                    foundSkus.add( pi.getSkuCode() );
-                }
-                if (foundSkus.size()!=skus.length) {
-                	// some skus were not found, fake'em
-                	for (int i=skus.length; --i>=0; ) {
-                		if (!foundSkus.contains(skus[i])) {
-							newPinfos.add( getPreviewProductInfo( skus[i] ) );
-						}
-	            	}
-	            }
-                pinfos = newPinfos;
-            }
-            
-            return pinfos;
-
-		} catch (CreateException ce) {
-			factoryHome=null;
-			throw new FDResourceException(ce, "Error creating session bean");
-		} catch (RemoteException re) {
-			factoryHome=null;
-			throw new FDResourceException(re, "Error talking to session bean");
-		}
-	}
 
 	public static Collection getNewSkuCodes(int days) throws FDResourceException {
 		if (factoryHome==null) {
@@ -296,35 +234,6 @@ class FDFactory {
 		}
 		
 	}
-
-	/**
-	 * Utility method: nothing is ever discontinued, out of season, or indefinitely unavailable in preview mode
-	 */
-	private static FDProductInfo getPreviewProductInfo(FDProductInfo pinfo) {
-		return new FDProductInfo(
-			pinfo.getSkuCode(),
-			pinfo.getVersion(),
-			null,
-			EnumATPRule.JIT,
-			EnumAvailabilityStatus.AVAILABLE,
-			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getDefaultPriceUnit(), pinfo.getZonePriceInfoList());
-	}
-	
-	/**
-	 * Utility method: create a temporarily unavailable fake FDProductInfo
-	 */
-	private static FDProductInfo getPreviewProductInfo(String skuCode) {
-		return new FDProductInfo(
-			skuCode,
-			0,
-			null,
-			EnumATPRule.JIT,
-			EnumAvailabilityStatus.TEMP_UNAV,
-			new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
-			null,"",null,"LB",ZonePriceInfoListing.getDummy());
-	}
-
 
 	/**
 	 * Get product with specified version. 

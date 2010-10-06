@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.fdstore.cache.ExternalSharedCache;
 import com.freshdirect.framework.cache.ActiveCacheModul;
 import com.freshdirect.framework.cache.CacheI;
@@ -100,6 +101,29 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
         } catch (FDResourceException e) {
             throw new FDRuntimeException(e);
         }
+    }
+
+    @Override
+    public FDProductInfo get(String key) {
+        FDProductInfo p = super.get(key);
+        if (p != null && FDStoreProperties.getPreviewMode()) {
+            return getPreviewProductInfo(p);
+        }
+        return p;
+    }
+    
+    /**
+     * Utility method: nothing is ever discontinued, out of season, or indefinitely unavailable in preview mode
+     */
+    private static FDProductInfo getPreviewProductInfo(FDProductInfo pinfo) {
+            return new FDProductInfo(
+                    pinfo.getSkuCode(),
+                    pinfo.getVersion(),
+                    null,
+                    EnumATPRule.JIT,
+                    EnumAvailabilityStatus.AVAILABLE,
+                    new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
+                    null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getDefaultPriceUnit(), pinfo.getZonePriceInfoList());
     }
 
 }
