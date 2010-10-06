@@ -38,10 +38,16 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
     
     @Override
     public void remove(K key) {
-        MemcachedClient client = MemcacheConfiguration.getClient();
-        if (client != null && MemcacheConfiguration.isEnabled()) {
-            client.set(prefix + toStringKey(key), 10, NULL);
+        try {
+            MemcachedClient client = MemcacheConfiguration.getClient();
+            if (client != null && MemcacheConfiguration.isEnabled()) {
+                client.set(prefix + toStringKey(key), 10, NULL);
+            }
+        } catch (RuntimeException e) {
+            LOG.error("runtime exception for remove(" + key + "):" + e.getMessage());
+            MemcacheConfiguration.timeoutError();
         }
+        
     }
 
     @Override
@@ -63,7 +69,11 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
             LOG.error("error with key :"+key + "->\""+stringKey+"\" memcache error:"+e.getMessage(), e);
             return null;
         } catch (OperationTimeoutException e) {
-            LOG.error("timeout for get:"+e.getMessage());
+            LOG.error("runtime exception for get(" + key + "):" + e.getMessage());
+            MemcacheConfiguration.timeoutError();
+            return null;
+        } catch (RuntimeException e) {
+            LOG.error("runtime exception for get(" + key + "):" + e.getMessage());
             MemcacheConfiguration.timeoutError();
             return null;
         }
@@ -86,6 +96,10 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
             LOG.error("timeout for set:"+e.getMessage());
             MemcacheConfiguration.timeoutError();
             return;
+        } catch (RuntimeException e) {
+            LOG.error("runtime exception for put(" + key + ',' + object + "):" + e.getMessage());
+            MemcacheConfiguration.timeoutError();
+            return;
         }
     }
     
@@ -101,14 +115,18 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
     @Override
     public int size() {
         int count = 0;
-        MemcachedClient client = MemcacheConfiguration.getClient();
-        if (client != null) {
-            for (Map<String, String> values : client.getStats().values()) {
-                String string = values.get("curr_items");
-                if (string != null) {
-                    count += Integer.valueOf(string);
+        try {
+            MemcachedClient client = MemcacheConfiguration.getClient();
+            if (client != null) {
+                for (Map<String, String> values : client.getStats().values()) {
+                    String string = values.get("curr_items");
+                    if (string != null) {
+                        count += Integer.valueOf(string);
+                    }
                 }
             }
+        } catch (RuntimeException e) {
+            LOG.error("runtime exception for size:" + e.getMessage());
         }
         return count;
     }

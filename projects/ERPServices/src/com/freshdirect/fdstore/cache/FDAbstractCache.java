@@ -50,6 +50,7 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
 		refresher = new RefreshThread(this.getClass().getName());
 	}
 
+
     /**
      * 
      */
@@ -104,6 +105,8 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
 				        LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
                                     } catch (FDRuntimeException e) {
                                         LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
+				    } catch (RuntimeException e) {
+				        LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
 				    }
                                     
                                     
