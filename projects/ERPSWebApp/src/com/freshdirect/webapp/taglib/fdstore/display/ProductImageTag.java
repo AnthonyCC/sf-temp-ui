@@ -188,8 +188,6 @@ public class ProductImageTag extends BodyTagSupport {
 		final boolean shouldGenerateAction = !this.disabled && this.action != null && !this.isInCart;
 		final boolean displayBurst = savingsPercentage > 0 || pl.isDisplayAny();
 
-		
-
 		String imageStyle = "border: 0; ";
 		
 		if (opacity < 1) {
@@ -355,8 +353,7 @@ public class ProductImageTag extends BodyTagSupport {
 			deal = product.getHighestDealPercentage();
 		}
 
-
-		buf.append("<div style=\"position: absolute; top: 0px; left: 0px\">\n");
+		buf.append("<div class=\"productImageBurst\" style=\"position: absolute; top: 0px; left: 0px\">\n");
 		if (shouldGenerateAction) {
 			buf.append("<a href=\"");
 			buf.append(action);

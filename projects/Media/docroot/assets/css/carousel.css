@@ -104,6 +104,14 @@
 			vertical-align:bottom;
 		}
 
+		.fd-carousel .productImageBurst a img {
+			vertical-align:top;
+		}
+
+		.fd-carousel .productImageBurst a {
+			vertical-align:top;
+		}
+
 .fd-carousel .productname {
 		font-size:10px;
 		height:36px;

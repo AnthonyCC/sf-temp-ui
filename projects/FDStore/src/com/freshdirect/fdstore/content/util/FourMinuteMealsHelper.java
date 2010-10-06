@@ -482,6 +482,7 @@ public class FourMinuteMealsHelper {
 				prodsGrabber.setRootNode( restaurant );
 				prodsGrabber.setReturnInvisibleProducts( false );
 				prodsGrabber.setFilterDiscontinued( true );
+				prodsGrabber.setReturnHiddenFolders( true );
 				
 				List <ContentNodeModel> nodes = null;
 				try {
@@ -494,10 +495,13 @@ public class FourMinuteMealsHelper {
 				List<ProductModel> prods = new ArrayList<ProductModel>();
 				CategoryModel currentCategory = null;
 				int catCounter = 0;
+				boolean isCatHidden = false;
 				if ( nodes != null ) {
 					for ( ContentNodeModel node : nodes ) {
 						// only first two subcategories are counted, not the entrees
 						if ( node instanceof ProductModel && catCounter <= 2 ) {
+							if ( isCatHidden )
+								continue;
 							
 							// get the real product node without pricing context if it has one
 							ProductModel prod = 
@@ -554,6 +558,7 @@ public class FourMinuteMealsHelper {
 							catCounter++;
 							currentCategory = (CategoryModel)node;
 							
+							isCatHidden = !currentCategory.getShowSelf();
 							// fetch sides in a snap subcategories
 							if ( isSidesInASnap ) {
 								if ( catCounter == 1 ) {

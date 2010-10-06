@@ -25,7 +25,8 @@
 		CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode("Category", "4mm_popular");
 		if (cat != null) {
 	%>
-		<display:ItemGrabber id="mostPopularProds" category="<%= cat %>" depth="0">
+		<display:ItemGrabber id="categoryProducts" category="<%= cat %>" depth="0">
+		<display:UniqueFilter in="<%= categoryProducts %>" out="mostPopularProds" groupId="4mm-default">
 		<%
 		if ( mostPopularProds.size() > 0 ) { %>
 			<div class="carousel-box">
@@ -40,6 +41,7 @@
 				</display:Carousel>
 			</div>
 		<% } %>
+		</display:UniqueFilter>
 		</display:ItemGrabber>
 	<%
 		}
