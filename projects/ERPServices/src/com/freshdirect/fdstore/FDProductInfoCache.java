@@ -16,17 +16,31 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.ProgressReporter;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
+/**
+ * Product Info cache
+ * @author zsombor
+ *
+ */
 public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDProductInfo> {
     
     private final static Logger LOGGER = LoggerFactory.getInstance(FDProductInfoCache.class);
 
     private static CacheI<String, FDProductInfo> instance;
     
+    /**
+     * This class is used for testing.
+     * @author zsombor
+     *
+     */
     static class FDProductInfoBuilder implements ObjectAccessor<String, FDProductInfo> {
         @Override
         public FDProductInfo get(String sku) {
             try {
-                return FDFactory.getProductInfo(sku);
+                FDProductInfo p = FDFactory.getProductInfo(sku);
+                if (p != null && FDStoreProperties.getPreviewMode()) {
+                    return getPreviewProductInfo(p);
+                }
+                return p;                
             } catch (FDResourceException e) {
                 throw new FDRuntimeException(e);
             } catch (FDSkuNotFoundException e) {
