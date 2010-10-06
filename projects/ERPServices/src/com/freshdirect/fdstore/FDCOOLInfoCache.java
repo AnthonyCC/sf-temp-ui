@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.ejb.EJBException;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.erp.ErpCOOLInfo;
@@ -18,11 +18,16 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDCOOLInfoCache extends FDAbstractCache<String, Date, ErpCOOLInfo> {
 
-	private static Category LOGGER = LoggerFactory.getInstance( FDCOOLInfoCache.class );
+	private final static Logger LOGGER = LoggerFactory.getInstance( FDCOOLInfoCache.class );
 	private static FDCOOLInfoCache instance;
 
 	private FDCOOLInfoCache() {
-		super(DateUtil.MINUTE * FDStoreProperties.getCOOLInfoRefreshPeriod());
+		super();
+	}
+	
+	@Override
+	public long getRefreshDelay() {
+	    return DateUtil.MINUTE * FDStoreProperties.getCOOLInfoRefreshPeriod();
 	}
 
 	public synchronized static FDCOOLInfoCache getInstance(){
@@ -55,6 +60,11 @@ public class FDCOOLInfoCache extends FDAbstractCache<String, Date, ErpCOOLInfo> 
         }
         ErpCOOLInfo info = this.getCachedItem(sapMatID);
         return info != null ? info.getCountryInfo() : null;
+    }
+    
+    @Override
+    protected Logger getLog() {
+        return LOGGER;
     }
 
 }

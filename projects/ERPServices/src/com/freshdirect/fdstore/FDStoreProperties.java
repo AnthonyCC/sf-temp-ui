@@ -259,6 +259,11 @@ public class FDStoreProperties {
 	//refresh delay in minutes for FDNutritionCache
 	private final static String PROP_NUTRITION_REFRESH_PERIOD = "fdstore.refresh.nutrition";
 
+        //refresh delay in minutes for FDProductCache
+        private static final String PRODUCT_REFRESH = "fdstore.refresh.product";
+        private static final String PRODUCT_INFO_REFRESH = "fdstore.refresh.productinfo";
+	
+	
 	//Refresh delay in seconds for Runtime Promotion cache.
 	private final static String PROP_PROMOTION_RT_REFRESH_PERIOD = "promotion.rt.refresh.period";
 
@@ -448,6 +453,7 @@ public class FDStoreProperties {
         private static final String MEMCACHED_TTL_PRODUCT = "memcached.ttl.product";
         private static final String MEMCACHED_TTL_PRODUCTINFO = "memcached.ttl.productInfo";
 
+        
 	// APPDEV-1091
 	private static final String PROMO_PUBLISH_URL_KEY = "promo.publish.url";
 	//   valid values can be 'master' or 'replica'
@@ -811,6 +817,11 @@ public class FDStoreProperties {
                 defaults.put(MEMCACHED_PORT, "11211");
                 defaults.put(MEMCACHED_TTL_PRODUCT, "0");
                 defaults.put(MEMCACHED_TTL_PRODUCTINFO, "0");
+                
+                // cache refresh periods
+                defaults.put(PRODUCT_REFRESH, "5");
+                defaults.put(PRODUCT_INFO_REFRESH, "5");
+                
 
 		// APPDEV-1091 Promo Publish URL
 		defaults.put(PROMO_PUBLISH_URL_KEY, "/promo_publish");
@@ -1923,6 +1934,14 @@ public class FDStoreProperties {
 	public static int getUnassignedProcessingLimit() {
 		return Integer.parseInt(get(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT));
 	}
+        
+        public static int getProductRefreshPeriond() {
+            return Integer.parseInt(get(PRODUCT_REFRESH));
+        }
+
+        public static int getProductInfoRefreshPeriond() {
+            return Integer.parseInt(get(PRODUCT_INFO_REFRESH));
+        }
 
 	public static void forceRefresh() {
 		refresh(true);

@@ -52,7 +52,7 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
         
 
     public FDProductCache(int ttl) {
-        super(5 * DateUtil.MINUTE, "pr/", ttl);
+        super("pr/", ttl);
     }
     
     public FDProductCache(boolean mock) {
@@ -136,6 +136,15 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
         protected String getStringKey(FDSku key) {
             return key.getSkuCode() + ':' + key.getVersion();
         }
-        
+
+        @Override
+        public long getRefreshDelay() {
+            return FDStoreProperties.getProductRefreshPeriond() * DateUtil.MINUTE;
+        }
+
+        @Override
+        protected Logger getLog() {
+            return LOGGER;
+        }
         
 }

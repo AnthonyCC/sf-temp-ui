@@ -9,4 +9,6 @@ public interface FDAbstractCacheMBean {
     public void resetHitCount();
     
     public int refreshCache();
+    
+    long getRefreshDelay();
 }

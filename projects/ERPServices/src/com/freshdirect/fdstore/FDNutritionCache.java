@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
@@ -15,11 +15,16 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDNutritionCache extends FDAbstractCache<String, Date, ErpNutritionModel> {
 	
-	private static Category LOGGER = LoggerFactory.getInstance( FDNutritionCache.class );
+	private final static Logger LOGGER = LoggerFactory.getInstance( FDNutritionCache.class );
 	private static FDNutritionCache instance;
 	
 	private FDNutritionCache() {
-		super(DateUtil.MINUTE * FDStoreProperties.getNutritionRefreshPeriod());
+		super();
+	}
+	
+	@Override
+	public long getRefreshDelay() {
+	    return DateUtil.MINUTE * FDStoreProperties.getNutritionRefreshPeriod();
 	}
 	
 	public synchronized static FDNutritionCache getInstance(){
@@ -52,5 +57,10 @@ public class FDNutritionCache extends FDAbstractCache<String, Date, ErpNutrition
 			model.setSkuCode(skuCode);
 		}
 		return model;
+	}
+	
+	@Override
+	protected Logger getLog() {
+	    return LOGGER;
 	}
 }

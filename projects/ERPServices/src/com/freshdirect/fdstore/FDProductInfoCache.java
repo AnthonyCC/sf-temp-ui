@@ -70,7 +70,7 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
 
 
     public FDProductInfoCache(int ttl) {
-        super(5 * DateUtil.MINUTE, "i/", ttl);
+        super("i/", ttl);
     }
 
     public FDProductInfoCache(boolean mock) {
@@ -139,5 +139,16 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
                     new java.util.GregorianCalendar(3000, java.util.Calendar.JANUARY, 1).getTime(),
                     null,pinfo.getRating(),pinfo.getFreshness(), pinfo.getDefaultPriceUnit(), pinfo.getZonePriceInfoList());
     }
+    
+    @Override
+    public long getRefreshDelay() {
+        return FDStoreProperties.getProductInfoRefreshPeriond() * DateUtil.MINUTE;
+    }
+    
+    @Override
+    protected Logger getLog() {
+        return LOGGER;
+    }
+    
 
 }

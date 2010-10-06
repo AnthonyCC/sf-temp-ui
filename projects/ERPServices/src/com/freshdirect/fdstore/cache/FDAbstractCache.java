@@ -30,9 +30,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public abstract class FDAbstractCache<K extends Serializable, T extends Comparable<T>, V extends FDVersion<T>> implements FDAbstractCacheMBean, CacheI<K, V>, CacheStatisticsProvider {
     
     
-    final static Logger LOG = LoggerFactory.getInstance(FDAbstractCache.class);
     
-	private final long refreshDelay;
 	private final Thread refresher;
 
 	private final ConcurrentHashMap<K, V> cache = new ConcurrentHashMap<K, V>();
@@ -40,9 +38,9 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
 	int hitCount = 0;
 	boolean running = true;
 	boolean registerMBean = true;
+	boolean mock = false;
 
-	public FDAbstractCache(long refreshDelay) {
-		this.refreshDelay = refreshDelay;
+	public FDAbstractCache() {
 		ERPServiceLocator.getInstance();
 		if (registerMBean) {
 		    registerSelf();
@@ -60,7 +58,7 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
     }
 
 	public FDAbstractCache(boolean mock) {
-		this.refreshDelay = Long.MAX_VALUE;
+	    this.mock = mock;
 		refresher = null;
 	}
 
@@ -102,15 +100,16 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
 				    try {
 					refresh();
 				    } catch (EJBException e) {
-				        LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
+				        getLog().error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
                                     } catch (FDRuntimeException e) {
-                                        LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
+                                        getLog().error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
 				    } catch (RuntimeException e) {
-				        LOG.error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
+				        getLog().error("Error during refreshing "+this.getClass().getName()+" : "+e.getMessage(), e);
 				    }
                                     
-                                    
-					Thread.sleep(refreshDelay);
+				    long time = getRefreshDelay();
+				    getLog().info("sleep " + time / 1000 + " sec till the next refresh");
+				    Thread.sleep(time);
 				}
 
 			} catch (InterruptedException ex) {
@@ -186,7 +185,16 @@ public abstract class FDAbstractCache<K extends Serializable, T extends Comparab
             result.put("internal.hitcount", String.valueOf(hitCount));
             result.put("internal.size", String.valueOf(getSize()));
             result.put("internal.lastVersion", lastVersion != null ? lastVersion.toString() : "[null]");
+            result.put("internal.refreshDelay", String.valueOf(getRefreshDelay()));
             return result;
         }
+        
+        protected abstract Logger getLog();
+
+
+        /**
+         * @return
+         */
+        public abstract long getRefreshDelay();
 
 }

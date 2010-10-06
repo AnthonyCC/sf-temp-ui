@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
-
 import com.freshdirect.fdstore.FDVersion;
 import com.freshdirect.framework.cache.CacheI;
 import com.freshdirect.framework.cache.CacheStatisticsProvider;
@@ -14,12 +12,9 @@ import com.freshdirect.framework.cache.ExternalMemCache;
 import com.freshdirect.framework.cache.StatRecorderCache;
 import com.freshdirect.framework.cache.StatRecorderCacheMBean;
 import com.freshdirect.framework.util.ProgressReporter;
-import com.freshdirect.framework.util.log.LoggerFactory;
 
 public abstract class ExternalSharedCache<K extends Serializable, T extends Comparable<T>, V extends FDVersion<T>> extends FDAbstractCache<K, T, V> implements CacheStatisticsProvider, ExternalSharedCacheMBean {
 
-    final static Logger LOG = LoggerFactory.getInstance(ExternalSharedCache.class);
-    
     CacheI<String, V> memCache;
 
     public ExternalSharedCache(boolean mock) {
@@ -27,9 +22,9 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
         memCache = null;
     }
 
-    public ExternalSharedCache(long refreshPeriod, String prefix, int ttl) {
-        super(refreshPeriod);
-        LOG.info("configuring " + this.getClass().getSimpleName() + " with memcached, refresh period : " + refreshPeriod + ", ttl : "
+    public ExternalSharedCache(String prefix, int ttl) {
+        super();
+        getLog().info("configuring with memcached, refresh period : " + getRefreshDelay() + " ms, ttl : "
                 + (ttl <= 0 ? "unlimited" : " " + ttl + " sec"));
         memCache = StatRecorderCache.wrap(new ExternalMemCache<String, V>(this.getClass().getSimpleName() + "-memcache", prefix, ttl));
     }
@@ -56,7 +51,7 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
         super.startRefresher();
         long elapsed = System.currentTimeMillis() - time;
         final StatRecorderCacheMBean stats = (StatRecorderCacheMBean) this.memCache;
-        LOG.info("cache:" + this.getName() + " initialized in " + elapsed + " sec, memcache hits:" + stats.getCacheHit() + ", memcache cache misses:"
+        getLog().info("cache initialized in " + elapsed + " sec, memcache hits:" + stats.getCacheHit() + ", memcache cache misses:"
                 + stats.getCacheMiss() + ", cache puts:" + stats.getCachePut());
     }
     
@@ -106,7 +101,7 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
                 }
                 i++;
                 if (p.shouldLogMessage(i)) {
-                    LOG.info("puting datas from " + getName() + ", at " + i + ", stored :" + count);
+                    getLog().info("puting datas from " + getName() + ", at " + i + ", stored :" + count);
                 }
             }
             return count;
@@ -128,7 +123,7 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
                 }
                 i++;
                 if (p.shouldLogMessage(i)) {
-                    LOG.info("calculating for " + getName() + ", at " + i + ", already found:" + count);
+                    getLog().info("calculating for " + getName() + ", at " + i + ", already found:" + count);
                 }
             }
             return count;

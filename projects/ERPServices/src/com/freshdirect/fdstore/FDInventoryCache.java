@@ -4,7 +4,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Map;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.erp.ejb.ErpInfoSB;
@@ -14,12 +14,17 @@ import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 public class FDInventoryCache extends FDAbstractCache<String, Date, ErpInventoryModel> {
-	private static Category LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
+	private final static Logger LOGGER = LoggerFactory.getInstance(FDInventoryCache.class);
 
 	private static FDInventoryCache instance;
 
 	private FDInventoryCache() {
-		super(DateUtil.MINUTE * FDStoreProperties.getInventoryRefreshPeriod());
+		super();
+	}
+	
+	@Override
+	public long getRefreshDelay() {
+	    return DateUtil.MINUTE * FDStoreProperties.getInventoryRefreshPeriod();
 	}
 
         public synchronized static FDInventoryCache getInstance() {
@@ -45,5 +50,10 @@ public class FDInventoryCache extends FDAbstractCache<String, Date, ErpInventory
 
 	public ErpInventoryModel getInventory(String materialId) {
 		return (ErpInventoryModel) this.getCachedItem(materialId);
+	}
+	
+	@Override
+	protected Logger getLog() {
+	    return LOGGER;
 	}
 }

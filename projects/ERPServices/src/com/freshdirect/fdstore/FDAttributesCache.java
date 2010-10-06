@@ -45,10 +45,15 @@ public class FDAttributesCache extends FDAbstractCache<ErpsAttributesKey, Date, 
     }
 
 	private FDAttributesCache() {
-		super(DateUtil.MINUTE * FDStoreProperties.getAttributesRefreshPeriod());
+		super();
 		put(NULL_KEY, NULL_VALUE);
 	}
 
+	@Override
+	public long getRefreshDelay() {
+	    return DateUtil.MINUTE * FDStoreProperties.getAttributesRefreshPeriod();
+	}
+	
 	private FDAttributesCache(boolean mock) {
 		super(mock);
 		put(NULL_KEY, NULL_VALUE);
@@ -97,4 +102,10 @@ public class FDAttributesCache extends FDAbstractCache<ErpsAttributesKey, Date, 
 			throw new FDRuntimeException(e);
 		}
 	}
+	
+	@Override
+	protected Logger getLog() {
+	    return LOGGER;
+	}
+	
 }
