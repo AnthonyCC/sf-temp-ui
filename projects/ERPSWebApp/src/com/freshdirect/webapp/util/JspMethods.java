@@ -1006,6 +1006,6 @@ public class JspMethods {
 	public static String formatSellingPrice(FDProductInfo productInfo, PricingContext pricingContext) {
 		if (pricingContext == null)
 			pricingContext = PricingContext.DEFAULT;
-		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getDefaultPrice());
+		return currencyFormatter.get().format(productInfo.getZonePriceInfo(pricingContext.getZoneId()).getSellingPrice());
 	}
 }
