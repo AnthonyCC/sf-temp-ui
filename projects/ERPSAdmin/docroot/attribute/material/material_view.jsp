@@ -152,7 +152,7 @@
                                 <td><%= charValue.getName() %></td>
                                 <td><%= charValue.getDescription() %></td>
                                 <td><% out.print(dformat.format(charValuePrice.getPrice())); if (0.0 != charValuePrice.getPrice()) out.print(" per " + (!"".equals(charValuePrice.getPricingUnit())?charValuePrice.getPricingUnit():"each")); %></td>
-                                <td><%= chValAttr.getDescription() %></td>
+                                <td><%= charValue.getAttributeDescription() %></td>
                                 <td align=center><%= chValAttr.isSelected()?"X":"" %></td>
                                 <td align=center><%= chValAttr.isLabelValue()?"X":"" %></td>
                                 <td align=center><% int p = chValAttr.getPriority(); if (p != 0) out.print(p); %></td>
