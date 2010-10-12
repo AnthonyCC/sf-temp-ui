@@ -49,11 +49,15 @@ public class FDCachedFactory {
 	private final static StatRecorderCache<String, ErpZoneMasterInfo> zoneCache = StatRecorderCache.wrap( 
 	    new LazyTimedCache<String, ErpZoneMasterInfo> ("zoneCache", FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000));
 
-        /**
-         * Thread that reloads expired productInfos, every 10 seconds.
-         */
-        private static Thread piRefreshThread;
-	
+
+	static {
+	    FDStoreProperties.addConfigLoadedListener(new FDStoreProperties.ConfigLoadedListener() {
+                @Override
+                public void configLoaded() {
+                    FDCachedFactory.setupMemcached();
+                }
+            });
+	}
 	
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
@@ -214,7 +218,7 @@ public class FDCachedFactory {
 	
 	
 	public static void setupMemcached() {
-            MemcacheConfiguration.configureClient(FDStoreProperties.getMemCachedHost(), FDStoreProperties.getMemCachedPort());
+            MemcacheConfiguration.configureClient(FDStoreProperties.getMemCachedHost(), FDStoreProperties.getMemCachedPort(), FDStoreProperties.getMemCachedTimeout());
 	}
 	
 	/**

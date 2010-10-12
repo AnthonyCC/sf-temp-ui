@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.cache.ExternalSharedCache;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
+import com.freshdirect.framework.cache.CacheStatisticsProvider;
+import com.freshdirect.framework.cache.MemcacheConfiguration;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.ProgressReporter;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -121,7 +123,7 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
                             LOGGER.error("Error loading sku:" + sku, e);
                         }
                         if (p.shouldLogMessage(i)) {
-                            LOGGER.info("loaded so far " + i + " of " + size);
+                            displayInfo(size, i);
                         }
                     }
                 }

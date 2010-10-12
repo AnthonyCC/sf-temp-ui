@@ -28,6 +28,7 @@ public class MemcacheConfiguration {
     private static boolean enabled = true;
     private static int errorCount = 0;
     private static long disabledTimeStamp = 0;
+    private static long timeout = 25;
     
     public static MemcachedClient getClient() {
         return client;
@@ -41,7 +42,11 @@ public class MemcacheConfiguration {
     /**
      * 
      */
-    public synchronized static void configureClient(String newHost, int newPort) {
+    public synchronized static void configureClient(String newHost, int newPort, long newTimeout) {
+        if (newTimeout > 0) {
+            timeout = newTimeout;
+            LOG.info("memcache timeout set to "+timeout);
+        }
         if (StringUtils.equals(host, newHost) && port == newPort) {
             return;
         }
@@ -109,6 +114,10 @@ public class MemcacheConfiguration {
             LOG.error("Timeout counter reached " + errorCount + " disable external cache");
             setEnabled(false);
         }
+    }
+    
+    public static long getTimeout() {
+        return timeout;
     }
     
 

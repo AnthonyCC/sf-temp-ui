@@ -139,7 +139,9 @@ public class StatRecorderCache<K extends Serializable, V> implements CacheI<K, V
         result.put("stats.get.callCount", String.valueOf(this.getHitCounter.getCallCount()));
         result.put("stats.get.allTime", String.valueOf(this.getHitCounter.getAllTime()));
         result.put("stats.get.averageTime", String.valueOf(this.getHitCounter.getAverageTime()));
-        result.put("stats.get.missedCount", String.valueOf(this.getMissCounter.getCallCount()));
+        result.put("stats.miss.callCount", String.valueOf(this.getMissCounter.getCallCount()));
+        result.put("stats.miss.allTime", String.valueOf(this.getMissCounter.getAllTime()));
+        result.put("stats.miss.averageTime", String.valueOf(this.getMissCounter.getAverageTime()));
         result.put("stats.put.callCount", String.valueOf(this.putCounter.getCallCount()));
         result.put("stats.put.allTime", String.valueOf(this.putCounter.getAllTime()));
         result.put("stats.put.averageTime", String.valueOf(this.putCounter.getAverageTime()));

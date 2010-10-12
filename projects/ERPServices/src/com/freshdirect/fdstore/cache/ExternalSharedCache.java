@@ -9,13 +9,14 @@ import com.freshdirect.fdstore.FDVersion;
 import com.freshdirect.framework.cache.CacheI;
 import com.freshdirect.framework.cache.CacheStatisticsProvider;
 import com.freshdirect.framework.cache.ExternalMemCache;
+import com.freshdirect.framework.cache.MemcacheConfiguration;
 import com.freshdirect.framework.cache.StatRecorderCache;
 import com.freshdirect.framework.cache.StatRecorderCacheMBean;
 import com.freshdirect.framework.util.ProgressReporter;
 
 public abstract class ExternalSharedCache<K extends Serializable, T extends Comparable<T>, V extends FDVersion<T>> extends FDAbstractCache<K, T, V> implements CacheStatisticsProvider, ExternalSharedCacheMBean {
 
-    CacheI<String, V> memCache;
+    protected CacheI<String, V> memCache;
 
     public ExternalSharedCache(boolean mock) {
         super(mock);
@@ -132,5 +133,14 @@ public abstract class ExternalSharedCache<K extends Serializable, T extends Comp
         }
     }
 
+    /**
+     * @param size
+     * @param i
+     */
+    protected void displayInfo(final int size, int i) {
+        getLog().info("loaded so far " + i + " of " + size + ", stats : [" + (MemcacheConfiguration.isEnabled() ? 
+                (memCache instanceof CacheStatisticsProvider ? ((CacheStatisticsProvider) memCache).getStats().toString() : "") : "memcached disabled") + "]");
+    }
+    
 
 }

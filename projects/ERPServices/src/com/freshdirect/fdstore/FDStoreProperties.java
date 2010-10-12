@@ -28,6 +28,12 @@ public class FDStoreProperties {
 
 	private static final Category LOGGER = LoggerFactory.getInstance( FDStoreProperties.class );
 
+        public static interface ConfigLoadedListener {
+            void configLoaded();
+        }
+    
+        private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
+
 	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
 
 	private final static String PROP_PROVIDER_URL		= "fdstore.providerURL";
@@ -449,6 +455,7 @@ public class FDStoreProperties {
 	// APPDEV-1191
         private static final String MEMCACHED_HOST = "memcached.host";
         private static final String MEMCACHED_PORT = "memcached.port";
+        private static final String MEMCACHED_TIMEOUT = "memcached.timeout";
 
         private static final String MEMCACHED_TTL_PRODUCT = "memcached.ttl.product";
         private static final String MEMCACHED_TTL_PRODUCTINFO = "memcached.ttl.productInfo";
@@ -817,6 +824,7 @@ public class FDStoreProperties {
                 defaults.put(MEMCACHED_PORT, "11211");
                 defaults.put(MEMCACHED_TTL_PRODUCT, "0");
                 defaults.put(MEMCACHED_TTL_PRODUCTINFO, "0");
+                defaults.put(MEMCACHED_TIMEOUT, "50");
                 
                 // cache refresh periods
                 defaults.put(PRODUCT_REFRESH, "5");
@@ -858,6 +866,7 @@ public class FDStoreProperties {
 			config = ConfigHelper.getPropertiesFromClassLoader("fdstore.properties", defaults);
 			lastRefresh = t;
 			LOGGER.info("Loaded configuration from fdstore.properties: " + config);
+			fireEvent();
 		}
 	}
 
@@ -1853,6 +1862,10 @@ public class FDStoreProperties {
 	public static int getMemCachedPort() {
 	    return Integer.parseInt(get(MEMCACHED_PORT));
 	}
+	
+	public static long getMemCachedTimeout() {
+	    return Long.parseLong(get(MEMCACHED_TIMEOUT));
+	}
 
         public static int getMemcachedProductTTL() {
             return Integer.parseInt(get(MEMCACHED_TTL_PRODUCT));
@@ -1947,4 +1960,20 @@ public class FDStoreProperties {
 		refresh(true);
 	}
 
+	
+	public static void addConfigLoadedListener(ConfigLoadedListener listener) {
+	    synchronized (listeners) {
+	        listeners.add(listener);
+	    }
+	}
+	
+	private static void fireEvent() {
+            synchronized (listeners) {
+                for (ConfigLoadedListener listener : listeners) {
+                    listener.configLoaded();
+                }
+            }
+	    
+	}
+	
 }

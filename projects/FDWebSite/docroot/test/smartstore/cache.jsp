@@ -38,7 +38,8 @@
 	    try {
 		    String host = request.getParameter("host");
 		    int port = Integer.parseInt(request.getParameter("port"));
-		    MemcacheConfiguration.configureClient(host, port);
+		    long timeout = Long.parseLong(request.getParameter("timeout"));
+		    MemcacheConfiguration.configureClient(host, port, timeout);
 	    } catch (Exception e) {
 	    }
 	}
@@ -130,7 +131,11 @@
 					<td class="even"><input type="text" name="port" value="<%= MemcacheConfiguration.getPort() %>"/></td>
 				</tr>
 				<tr>
-					<td  class="odd" colspan="2">
+					<td class="odd">Timeout:</td>
+					<td class="odd"><input type="text" name="timeout" value="<%= MemcacheConfiguration.getTimeout() %>"/></td>
+				</tr>
+				<tr>
+					<td  class="even" colspan="2">
 						<input type="submit" name="command" value="Change">
 					</td>
 				</tr>

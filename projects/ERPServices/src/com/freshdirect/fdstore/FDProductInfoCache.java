@@ -103,7 +103,7 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
 						}
 						data.put(sku.getSkuCode(), externalItem);
 						if (p.shouldLogMessage(i)) {
-						    LOGGER.info("loaded so far " + i + " of " + size);
+			                            displayInfo(size, i);
 						}
 					} catch (FDSkuNotFoundException e) {
 			            LOGGER.error("changed sku which is not found (contradictory and critical)", e);
@@ -116,6 +116,7 @@ public class FDProductInfoCache extends ExternalSharedCache<String, Integer, FDP
             throw new FDRuntimeException(e);
         }
     }
+
 
     @Override
     public FDProductInfo get(String key) {

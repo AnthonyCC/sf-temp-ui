@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import net.spy.memcached.MemcachedClient;
 import net.spy.memcached.OperationTimeoutException;
@@ -56,7 +59,7 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
         try {
             MemcachedClient client = MemcacheConfiguration.getClient();
             if (client != null && MemcacheConfiguration.isEnabled()) {
-                Object value = client.get(stringKey);
+                Object value = client.asyncGet(stringKey).get(MemcacheConfiguration.getTimeout(), TimeUnit.MILLISECONDS);
                 if (NULL.equals(value)) {
                     return null;
                 }
@@ -72,9 +75,19 @@ public class ExternalMemCache<K extends Serializable,V> implements CacheI<K, V>,
             LOG.error("runtime exception for get(" + key + "):" + e.getMessage());
             MemcacheConfiguration.timeoutError();
             return null;
+        } catch (TimeoutException e) {
+            LOG.error("timeout exception for get(" + key + "):" + e.getMessage());
+            MemcacheConfiguration.timeoutError();
+            return null;
         } catch (RuntimeException e) {
             LOG.error("runtime exception for get(" + key + "):" + e.getMessage());
             MemcacheConfiguration.timeoutError();
+            return null;
+        } catch (InterruptedException e) {
+            LOG.error("error with key :"+key + "->\""+stringKey+"\" memcache error:"+e.getMessage(), e);
+            return null;
+        } catch (ExecutionException e) {
+            LOG.error("error with key :"+key + "->\""+stringKey+"\" memcache error:"+e.getMessage(), e);
             return null;
         }
     }
