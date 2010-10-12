@@ -8,8 +8,8 @@
  */
 package com.freshdirect.fdstore;
 
-import com.freshdirect.erp.ErpModelSupport;
-import com.freshdirect.erp.model.ErpSalesUnitModel;
+import com.freshdirect.content.attributes.AttributesI;
+import com.freshdirect.content.attributes.EnumAttributeName;
 
 /**
  * Sales unit class - equivalent of ErpSalesUnit.
@@ -17,8 +17,7 @@ import com.freshdirect.erp.model.ErpSalesUnitModel;
  * @version $Revision$
  * @author $Author$
  */
-public class FDSalesUnit extends FDAttributesProxy {
-	private static final long serialVersionUID = 6006350893549341570L;
+public class FDSalesUnit extends FDAttributeProxy {
 
 	/** Name (alternative unit of measure) */
 	private String name;
@@ -32,40 +31,21 @@ public class FDSalesUnit extends FDAttributesProxy {
 	
 	private String baseUnit;
 	
-	public FDSalesUnit(ErpSalesUnitModel model) {
-		super(model);
-		name = model.getAlternativeUnit();
-		description = model.getDescription();
-		numerator = model.getNumerator();
-		denominator = model.getDenominator();
-		baseUnit = model.getBaseUnit();
-	}
-	
-	/**
-	 * Just for testing !
-	 * @param name
-	 * @param description
-	 */
-	public FDSalesUnit(String name, String description) {
-            this(name, description, 0, 0, null);
-	}
-	
-	
-        /**
-         * Just for testing !
-         * @param name
-         * @param description
-         */
-	public FDSalesUnit(String name, String description, int numerator, int denominator, String baseUnit) {
-            super();
-            this.name = name;
-            this.description = description;
-            this.numerator = numerator;
-            this.denominator = denominator;
-            this.baseUnit = baseUnit;
-        }
 
-    /**
+	/**
+	 * Constructor with all properties.
+	 *
+	 * @param attributes Attributes
+	 * @param name Name (alternative unit of measure)
+	 * @param description Sales unit description
+	 */
+	public FDSalesUnit(AttributesI attributes, String name, String description) {
+		super(attributes);
+		this.name = name;
+		this.description = description;
+	}
+
+	/**
 	 * Get name (alternative unit of measure).
 	 * This is the machine readable / SAP name of the sales unit.
 	 *
@@ -82,7 +62,7 @@ public class FDSalesUnit extends FDAttributesProxy {
 	 * @return description
 	 */
 	public String getDescription() {
-		return getAttributes().getDescription(description);
+		return this.getAttribute(EnumAttributeName.DESCRIPTION.getName(), this.description);
 	}
 
 	public boolean equals(Object o) {
@@ -132,6 +112,16 @@ public class FDSalesUnit extends FDAttributesProxy {
 
 	public String toString() {
 		return "FDSalesUnit[" + this.name + "," + this.description + "," + this.getDescription() + "]";
+	}
+
+	public FDSalesUnit(AttributesI attributes, String name, String description,
+			int numerator, int denominator, String baseUnit) {
+		super(attributes);
+		this.name = name;
+		this.description = description;
+		this.numerator = numerator;
+		this.denominator = denominator;
+		this.baseUnit = baseUnit;
 	}
 
 	public int getNumerator() {

@@ -9,12 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.freshdirect.fdstore.FDNutrition;
-import com.freshdirect.fdstore.FDVersion;
 import com.freshdirect.framework.core.ModelSupport;
 
-public class ErpNutritionModel extends ModelSupport implements FDVersion<Date> {
-
+public class ErpNutritionModel extends ModelSupport {
+	
 	private static final long serialVersionUID = 165757752576184510L;
 
 	/** String skuCode to which this nutrition model belongs to */
@@ -30,8 +28,6 @@ public class ErpNutritionModel extends ModelSupport implements FDVersion<Date> {
 	
 	private Date lastModifiedDate;
 
-	private transient List<FDNutrition> nutritionList;
-	
 	/**
 	 * Constructor to create a new object.
 	 */
@@ -524,22 +520,5 @@ public class ErpNutritionModel extends ModelSupport implements FDVersion<Date> {
 	
 	public boolean hasNutritionInfo(ErpNutritionInfoType type) {
 		return this.info.get(type) != null;
-	}
-	
-        public synchronized List<FDNutrition> getNutritionList() {
-            if (nutritionList == null) {
-                nutritionList = new ArrayList<FDNutrition>();
-                for (Iterator<String> nIter = this.getKeyIterator(); nIter.hasNext();) {
-                    String key = nIter.next();
-                    FDNutrition fdn = new FDNutrition(ErpNutritionType.getType(key).getDisplayName(), this.getValueFor(key), this.getUomFor(key));
-                    nutritionList.add(fdn);
-                }
-            }
-            return nutritionList;
-        }
-	
-	@Override
-	public Date getVersion() {
-		return lastModifiedDate;
 	}
 }

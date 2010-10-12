@@ -8,8 +8,8 @@
  */
 package com.freshdirect.fdstore;
 
-import com.freshdirect.erp.model.ErpCharacteristicValueModel;
-
+import com.freshdirect.content.attributes.AttributesI;
+import com.freshdirect.content.attributes.EnumAttributeName;
 
 /**
  * Variation Option - equivalent of ErpCharacteristicValue.
@@ -17,8 +17,7 @@ import com.freshdirect.erp.model.ErpCharacteristicValueModel;
  * @version $Revision$
  * @author $Author$
  */
-public class FDVariationOption extends FDAttributesProxy {
-	private static final long serialVersionUID = 4970965586298269545L;
+public class FDVariationOption extends FDAttributeProxy {
 
 	/** SAP characteristic value name */
 	private String name;
@@ -26,15 +25,10 @@ public class FDVariationOption extends FDAttributesProxy {
 	/** Chararcteristic value description */
 	private String description;
 
-	public FDVariationOption(ErpCharacteristicValueModel model) {
-		super(model);
-		this.name=model.getName();
-		this.description = model.getDescription();
-	}
-	
-	public FDVariationOption(String name, String description) {
-	    this.name = name;
-	    this.description = description;
+	public FDVariationOption(AttributesI attributes, String name, String description) {
+		super(attributes);
+		this.name=name;
+		this.description = description;
 	}
 
 	/**
@@ -53,23 +47,30 @@ public class FDVariationOption extends FDAttributesProxy {
 	 * @return description
 	 */
 	public String getDescription() {
-		return getAttributes().getDescription(description);
+		return this.getAttribute(EnumAttributeName.DESCRIPTION.getName(), this.description);
 	}
 
 	/**
 	 * @deprecated Use isSelected() instead
 	 */
-	@Deprecated
 	public boolean isDefault() {
 		return this.isSelected();
 	}
 	
+	/**
+	 *
+	 *
+	 */
 	public boolean isSelected() {
-		return getAttributes().isSelected();
+		return this.getAttributeBoolean( EnumAttributeName.SELECTED );
 	}
 
+	/**
+	 *
+	 *
+	 */
 	public boolean isLabelValue() {
-		return getAttributes().isLabelValue();
+		return this.getAttributeBoolean( EnumAttributeName.LABEL_VALUE );
 	}
 
 	public boolean equals(Object o) {

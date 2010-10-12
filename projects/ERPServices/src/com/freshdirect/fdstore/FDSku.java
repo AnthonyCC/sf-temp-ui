@@ -16,14 +16,13 @@ import java.io.Serializable;
  * @version $Revision$
  * @author $Author$
  */
-public class FDSku implements Serializable, FDVersion<Integer> {
-	private static final long serialVersionUID = 8643436115597269242L;
+public class FDSku implements Serializable {
 
 	/** SKU code */
 	private final String skuCode;
 	
 	/** Business object version */
-	private final Integer version;
+	private final int version;
     
     
     public FDSku(FDSku sku) {
@@ -49,7 +48,7 @@ public class FDSku implements Serializable, FDVersion<Integer> {
 	 *
 	 * @return version number
 	 */
-	public Integer getVersion() {
+	public int getVersion() {
 		return this.version;
 	}
 	
@@ -66,4 +65,5 @@ public class FDSku implements Serializable, FDVersion<Integer> {
 		FDSku sku = (FDSku)o;
 		return this.skuCode.equals(sku.skuCode) && (this.version==sku.version);
 	}
+
 }

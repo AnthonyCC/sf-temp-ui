@@ -4,23 +4,21 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-import com.freshdirect.fdstore.FDVersion;
-
-public class ErpCOOLInfo implements Serializable, FDVersion<Date> {
-
+public class ErpCOOLInfo implements Serializable {	
+	
 	private static final long	serialVersionUID	= -1120548872587933250L;
-
+	
 	private String sapID;
 	private String sapDesc;
 	private List<String> countryInfo;
 	private Date lastModifiedDate;
-
+	
 	public ErpCOOLInfo(String sapID,String sapDesc, List<String> countryInfo) {
 		this.sapID=sapID;
 		this.sapDesc=sapDesc;
 		this.countryInfo=countryInfo;
 	}
-
+	
 	public ErpCOOLInfo(String sapID,String sapDesc, List<String> countryInfo,Date lastModifiedDate) {
 		this.sapID=sapID;
 		this.sapDesc=sapDesc;
@@ -55,8 +53,4 @@ public class ErpCOOLInfo implements Serializable, FDVersion<Date> {
 			.append("]").toString();
 	}
 
-	@Override
-	public Date getVersion() {
-		return lastModifiedDate;
-	}
 }

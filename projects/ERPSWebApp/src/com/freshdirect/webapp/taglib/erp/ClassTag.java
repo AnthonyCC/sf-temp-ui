@@ -119,18 +119,10 @@ public class ClassTag extends com.freshdirect.framework.webapp.BodyTagSupport {
         Iterator iter = erpCls.getCharacteristics().iterator();
         while (iter.hasNext()) {
             ErpCharacteristicModel ch = (ErpCharacteristicModel) iter.next();
-        	ErpsAttributes attributes = ch.getAttributes().clone();
             // priority
             String priority = request.getParameter(FormElementNameHelper.getFormElementName(ch, EnumAttributeName.PRIORITY.getName()));
-            int priorityValue = 0;
-            try {
-            	if (priority != null)
-            		priorityValue = Integer.parseInt(priority.trim());
-            } catch (NumberFormatException e) {
-            }
-            attributes.setPriority(priorityValue);
-
-            ch.setChangedAttributes(attributes);
+            if ((priority != null) && !"".equals(priority.trim()))
+                ch.getAttributes().setAttribute(EnumAttributeName.PRIORITY.getName(), Integer.parseInt(priority));
         }
     }
     

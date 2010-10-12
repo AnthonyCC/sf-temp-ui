@@ -490,10 +490,10 @@ if ( skuSize == 0 ) {
             				
             				<%
                 			// space between multiple optional pulldowns
-                			if ( variation.getUnderLabel() == null) {
+                			if ( !variation.hasAttribute( EnumAttributeName.UNDER_LABEL.getName() ) ) {
                     			%><font class="space4pix"><br/></font><%
                 			} else {
-                    			%><br/><font class="text9"><i><%= variation.getUnderLabel() %></i></font><br/><font class="space4pix"><br/></font><%
+                    			%><br/><font class="text9"><i><%= variation.getAttribute(EnumAttributeName.UNDER_LABEL) %></i></font><br/><font class="space4pix"><br/></font><%
                 			}
             
         				} else {
@@ -539,9 +539,9 @@ if ( skuSize == 0 ) {
 		       				%><font class="text13"><%
 		       				
                 			if (theFileExists) {
-			                    %><a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getDescription("") %></a><%
+			                    %><a href="javascript:pop('<%=fddefPop%>?charName=<%=charName%>&tmpl=<%=spop%>&title=<%=title%>',<%=smallPopup.getHeight()%>,<%=smallPopup.getWidth()%>)"><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %></a><%
 			                } else {
-            			        %><%= variation.getDescription("") %><%
+            			        %><%= variation.getAttribute(EnumAttributeName.DESCRIPTION) %><%
                 			} %>
                 			
                 			&nbsp;</font>

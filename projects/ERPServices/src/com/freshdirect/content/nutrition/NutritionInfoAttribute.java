@@ -6,20 +6,18 @@
 
 package com.freshdirect.content.nutrition;
 
-import java.io.Serializable;
-
 /**
  *
  * @author  mrose
  * @version 
  */
-public class NutritionInfoAttribute implements Serializable {
+public class NutritionInfoAttribute implements java.io.Serializable {
 
     private ErpNutritionInfoType type;
     private int priority;
     private Object value;
     
-    public NutritionInfoAttribute(ErpNutritionInfoType type, Serializable value) {
+    public NutritionInfoAttribute(ErpNutritionInfoType type, Object value) {
         this.type=type;
         this.value=value;
         this.priority=-1;

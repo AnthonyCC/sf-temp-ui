@@ -155,7 +155,7 @@ public class ErpClassModel extends ErpModelSupport implements DurableModelI, Ent
             }
 		}
 		ErpClassModel filteredClass = new ErpClassModel(this.getSapId(), list);
-                filteredClass.setAttributesKey(this.getAttributesKey());
+		filteredClass.setAttributes( this.getAttributes() );
 		return filteredClass;
 	}
 

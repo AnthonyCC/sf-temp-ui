@@ -22,13 +22,11 @@ import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.fdstore.FDAttributesCache;
+import com.freshdirect.fdstore.FDAttributeCache;
 import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDInventoryCache;
 import com.freshdirect.fdstore.FDNutritionCache;
-import com.freshdirect.fdstore.FDProductCache;
 import com.freshdirect.fdstore.FDProductInfo;
-import com.freshdirect.fdstore.FDProductInfoCache;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDStoreProperties;
@@ -52,7 +50,7 @@ public class Warmup {
 
 	private static Category LOGGER = LoggerFactory.getInstance(Warmup.class);
 
-	protected Set<String> skuCodes;
+	protected Set skuCodes;
 	protected ContentFactory contentFactory;
 
 	public Warmup() {
@@ -82,12 +80,9 @@ public class Warmup {
 		// Get instance loads up the inventory
 		FDInventoryCache.getInstance();
 		//Get instance loads up the Attributes
-		FDAttributesCache.getInstance();
+		FDAttributeCache.getInstance();
 		//Get instance loads up the Nutrition
 		FDNutritionCache.getInstance();
-		
-		FDProductInfoCache.getInstance();
-		FDProductCache.getInstance();
 		
 		if (FDStoreProperties.isPreloadAutocompletions()) {
 			ContentSearch.getInstance().getAutocompletions("qwertyuqwerty");
@@ -151,7 +146,7 @@ public class Warmup {
 	private void warmupProducts() throws FDResourceException {
 		LOGGER.info("Loading lightweight product data");
 
-		final List<FDProductInfo> prodInfos = FDCachedFactory.getProductInfos(this.skuCodes);
+		final List prodInfos = new ArrayList(FDCachedFactory.getProductInfos((String[]) this.skuCodes.toArray(new String[0])));
 		//Filter discontinued Products
 		filterDiscontinuedProducts(prodInfos);
 		LOGGER.info("Lightweight product data loaded");
@@ -164,7 +159,7 @@ public class Warmup {
 				public void run() {
 					LOGGER.info("started " + Thread.currentThread().getName());
 					while (true) {
-						Collection<FDSku> skus;
+						FDSku[] skus;
 						synchronized (prodInfos) {
 							int pSize = prodInfos.size();
 							if (pSize == 0) {
@@ -173,7 +168,7 @@ public class Warmup {
 							}
 							// grab some items, and remove from prodInfos list
 							List subList = prodInfos.subList(0, Math.min(pSize, GRAB_SIZE));
-							skus = new ArrayList(subList);
+							skus = (FDSku[]) subList.toArray(DUMMY_ARRAY);
 							subList.clear();
 							LOGGER.debug(pSize + " items left to load");
 						}
@@ -191,8 +186,8 @@ public class Warmup {
 		}
 	}
 	
-	private void filterDiscontinuedProducts(List<FDProductInfo> prodInfos) {
-		for(Iterator<FDProductInfo> it=prodInfos.iterator(); it.hasNext();){
+	private void filterDiscontinuedProducts(List prodInfos) {
+		for(Iterator it=prodInfos.iterator(); it.hasNext();){
 			FDProductInfo prodInfo = (FDProductInfo) it.next();
 			if(prodInfo.isDiscontinued()){
 				it.remove();

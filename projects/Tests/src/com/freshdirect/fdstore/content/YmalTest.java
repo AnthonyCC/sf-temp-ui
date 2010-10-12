@@ -6,8 +6,12 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
+
 import javax.naming.Context;
 
+import org.mockejb.interceptor.Aspect;
+import org.mockejb.interceptor.InvocationContext;
+import org.mockejb.interceptor.Pointcut;
 import org.mockejb.jndi.MockContextFactory;
 
 import com.freshdirect.cms.application.CmsManager;
@@ -17,6 +21,7 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.common.pricing.Pricing;
+import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
@@ -32,7 +37,7 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.aspects.FDProductAspect;
+import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 
 /**
@@ -595,8 +600,17 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		return ContentFactory.getInstance().getContentNode(id);
 	}
 
-	private static class FDFactoryProductInfoAspect extends com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect {
+	public static class FDFactoryProductInfoAspect implements Aspect {
 
+		public Pointcut getPointcut() {
+			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
+		}
+
+		public void intercept(InvocationContext ctx) throws Exception {
+			String sku = (String) ctx.getParamVals()[0];
+			ctx.setReturnObject(getProductInfo(sku));
+		}
+	    
 		/**
 		 * Get current product information object for sku.
 		 *
@@ -607,7 +621,6 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 	 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 * @throws FDResourceException if an error occured using remote resources
 		 */
-	    @Override
 		public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException {			
 			Date now = new Date();
 			String[] materials = {"000000000123"};
@@ -622,9 +635,9 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 				erpEntries.add(new ErpInventoryEntryModel(now, 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 				
 			} else {
 				// fallback: return all other items as available
@@ -632,9 +645,9 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 				erpEntries.add(new ErpInventoryEntryModel(now, 1000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, erpEntries));
 				ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+				ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 				dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+				productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 				
 			}
 
@@ -642,7 +655,17 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		}
 	}
 
-	private static class FDFactoryProductAspect extends FDProductAspect {
+	public static class FDFactoryProductAspect implements Aspect {
+
+		public Pointcut getPointcut() {
+			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProduct\\(java.lang.String,int\\)");
+		}
+
+		public void intercept(InvocationContext ctx) throws Exception {
+			String sku = (String) ctx.getParamVals()[0];
+			Integer i = (Integer) ctx.getParamVals()[1];
+			ctx.setReturnObject(getProduct(sku, i.intValue()));
+		}
 	
 		/**
 		 * Get product with specified version. 
@@ -654,13 +677,12 @@ public class YmalTest extends FDCustomerManagerTestSupport {
 		 *
 		 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 */
-	    @Override
 	    public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException {
 	    	
 	    	Date          now            = new Date();
 	    	FDMaterial    material       = null;
 			FDVariation[] variations     = new FDVariation[1];
-			variations[0] = new FDVariation(
+			variations[0] = new FDVariation(new AttributeCollection(),
 					                        "variation",
 					                        null);
 			FDSalesUnit[] salesUnits     = null;

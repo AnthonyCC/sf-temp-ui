@@ -8,8 +8,6 @@
  */
 package com.freshdirect.framework.util;
 
-import java.io.Serializable;
-
 
 /**
  * LRU cache with expiration of entries.
@@ -19,7 +17,7 @@ import java.io.Serializable;
  * @version $Revision$
  * @author $Author$
  */
-public class TimedLruCache<K extends Serializable,V> extends LruCache<K,V> {
+public class TimedLruCache<K,V> extends LruCache<K,V> {
 	protected final long expire;
 
 	/**

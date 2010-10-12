@@ -46,9 +46,9 @@ public class SkuModelAvailabilityTest extends TestCase {
 		availability   = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-        productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+        productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -84,9 +84,9 @@ public class SkuModelAvailabilityTest extends TestCase {
 		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, today,inventoryCache,"",null,"ea",dummyList);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, today,inventoryCache,"",null,dummyList);
 
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 
@@ -127,9 +127,9 @@ public class SkuModelAvailabilityTest extends TestCase {
 		availability     = new FDStockAvailability(inventoryModel, 1, 1, 1);
 		
 		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, today,inventoryCache,"",null,"ea",dummyList);
+		productInfo = new FDProductInfo("SKU123456",1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, today,inventoryCache,"",null,dummyList);
 		
 		adapter = new SkuModel.AvailabilityAdapter(productInfo, availability);
 

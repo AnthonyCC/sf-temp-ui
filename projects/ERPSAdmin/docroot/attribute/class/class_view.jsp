@@ -52,15 +52,10 @@
                         <td><%= charac.getName() %></td>
                         <td><select name="<%= FormElementNameHelper.getFormElementName(charac, EnumAttributeName.PRIORITY.getName()) %>">
                             <option>
-                            <% 
-                            int _pr = charac.getAttributes().getPriority();
-                            
-                            for (int i=1;i<erpClass.numberOfCharacteristics()+1;i++) {
+                            <% for (int i=1;i<erpClass.numberOfCharacteristics()+1;i++) {
                                 out.print("<option");
-                                if (i == _pr) {
-                                    out.print(" SELECTED");
-                                }
-                                out.println(">" + i);
+                                if (i == charac.getAttributeInt(EnumAttributeName.PRIORITY)) out.print(" SELECTED");
+                                    out.println(">" + i);
                             } %>
                         </select></td>
                         <td><a href="characteristic_view.jsp?characteristic=<%= charac.getName() %>">View/Edit</a></td>

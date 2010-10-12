@@ -2,16 +2,15 @@ package com.freshdirect.framework.cache;
 
 import java.io.Serializable;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Basic {@link com.freshdirect.framework.cache.CacheI} implementation
  * using a synchronized HashMap. Objects never automatically expire.
  */
-public class SimpleCache<K extends Serializable, V> implements CacheI<K, V> {
+public class SimpleCache<K extends Serializable,V> implements CacheI<K,V> {
 
-	private Map<K,V> map;
+	private ConcurrentHashMap<K,V> map;
 	private String name;
 
 	
@@ -19,12 +18,6 @@ public class SimpleCache<K extends Serializable, V> implements CacheI<K, V> {
 		super();
 		map = new ConcurrentHashMap<K,V>();
 	}
-
-        protected SimpleCache(Map<K, V> map, String name) {
-            super();
-            this.map = map;
-            this.name = name;
-        }
 	
 	public V get(K key) {
 		return map.get(key);

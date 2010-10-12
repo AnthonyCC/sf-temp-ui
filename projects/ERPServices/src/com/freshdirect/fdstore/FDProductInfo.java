@@ -4,11 +4,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import com.freshdirect.content.attributes.ErpsAttributesKey;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.model.ErpInventoryModel;
-import com.freshdirect.framework.util.StringUtil;
+import com.freshdirect.framework.util.StringUtil;;
 
 /**
  * Lightweight information about a product, that is necessary for display on a category page.
@@ -16,8 +15,8 @@ import com.freshdirect.framework.util.StringUtil;
  */
 
 public class FDProductInfo extends FDSku  {
-
-	private static final long serialVersionUID = 308857606199221581L;
+	
+	private static final long	serialVersionUID	= 308857606199221581L;
 
 	private final String[] materialNumbers;
     
@@ -43,11 +42,9 @@ public class FDProductInfo extends FDSku  {
     //Zone Price Info Listing. 
     private final ZonePriceInfoListing zonePriceInfoList;
     
-    private final String defaultPriceUnit;
-    
     public FDProductInfo(String skuCode, int version, 
     		String[] materialNumbers, EnumATPRule atpRule, EnumAvailabilityStatus availStatus, Date availDate, 
-    		 FDInventoryCacheI inventory, String rating, String freshness, String defaultPriceUnit,
+    		 FDInventoryCacheI inventory, String rating, String freshness,
     		 ZonePriceInfoListing zonePriceInfoList) {
 
 		super(skuCode, version);
@@ -60,7 +57,6 @@ public class FDProductInfo extends FDSku  {
         this.inventory = inventory;
         this.rating=rating;
         this.zonePriceInfoList = zonePriceInfoList;
-        this.defaultPriceUnit = defaultPriceUnit;
 
         this.freshness=freshness;
 	}
@@ -127,7 +123,7 @@ public class FDProductInfo extends FDSku  {
 	 * @return unit of measure
 	 */
 	public String getDefaultPriceUnit() {
-		return defaultPriceUnit;
+		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDefaultPriceUnit();
 	}
 	
 	/**
@@ -136,7 +132,8 @@ public class FDProductInfo extends FDSku  {
 	 * @return pricing unit attribute if one, else return the default Price unit
 	 */
 	public String getDisplayableDefaultPriceUnit() {
-		return FDAttributesCache.getInstance().getAttributes(new ErpsAttributesKey(getSkuCode(), null, null)).getPricingUnitDescription(defaultPriceUnit);
+		
+		return this.zonePriceInfoList.getZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE).getDisplayableDefaultPriceUnit();
 	}
 
     public String getFreshness() {
@@ -168,13 +165,17 @@ public class FDProductInfo extends FDSku  {
     	return null;
     }
     
-    public String toString() {
-        return "FDProductInfo[" + this.getSkuCode() + " v" + this.getVersion() + "\n\tmaterialNumbers:" 
-                + this.materialNumbers + "\n\t" + this.availStatus.getShortDescription() 
-                + "\n\tavailDate:" + this.availDate + "\n\trating:" + this.rating + "\n\tatpRule:" + this.atpRule 
-                + "\n\tfreshness:" + this.freshness + "\n\tdefaultPriceUnit:" + this.defaultPriceUnit + "\n\tavailDate:"+this.availDate 
-                + "\n\t" + this.zonePriceInfoList + "\n]";
-    }
+	public String toString() {
+		StringBuffer buf=new StringBuffer("FDProductInfo[");
+		buf.append(this.getSkuCode()).append(" v").append(this.getVersion());
+		buf.append("\n\t").append(this.materialNumbers);
+        buf.append("\n\t").append(this.availStatus.getShortDescription());
+        buf.append("\n\t").append(this.availDate);
+        buf.append("\n\t").append(this.rating);
+        buf.append("\n\t").append(this.rating);
+        buf.append("\n]");
+		return buf.toString();
+	}
 
 	public List<String> getCountryOfOrigin() {
 		if(materialNumbers==null) 

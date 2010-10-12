@@ -17,9 +17,9 @@ import java.util.*;
  * @author $Author:Mike Rose$
  */
 public class EnumClaimValue implements NutritionValueEnum {
-
+	
 	private static final long	serialVersionUID	= -4887294112082084899L;
-
+	
 	public final static EnumClaimValue OAN_ORGANIC = new EnumClaimValue("OAN",       "Approved O&AN Store", 1);
 	public final static EnumClaimValue KOSHER_FOR_PASSOVER = new EnumClaimValue("KOS_PAS", "Kosher for Passover", 1);
 

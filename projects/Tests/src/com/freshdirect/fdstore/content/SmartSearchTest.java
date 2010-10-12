@@ -25,10 +25,8 @@ import com.freshdirect.cms.application.service.xml.FlexContentHandler;
 import com.freshdirect.cms.application.service.xml.XmlContentService;
 import com.freshdirect.cms.application.service.xml.XmlTypeService;
 import com.freshdirect.cms.search.AttributeIndex;
-import com.freshdirect.cms.search.AutoComplete;
 import com.freshdirect.cms.search.LuceneSearchService;
 import com.freshdirect.cms.search.LuceneSearchServiceTest;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryZoneInfoAspect;
 import com.freshdirect.fdstore.aspects.ProductStatisticUserProviderAspect;
@@ -60,9 +58,7 @@ public class SmartSearchTest extends TestCase {
     SmartSearchTag         sst;
 
     public void setUp() throws Exception {
-        FDCachedFactory.mockInstances();
-        AutoComplete.setDisableAutocompleter(true);
-
+        ContentSearch.getInstance().setDisableAutocompleter(true);
 
         Context context = TestUtils.createContext();
         

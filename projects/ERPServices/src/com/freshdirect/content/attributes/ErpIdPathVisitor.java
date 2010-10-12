@@ -10,9 +10,9 @@ import com.freshdirect.erp.ErpVisitorI;
 /**
  * ErpVisitorI that tracks ID paths in a model tree, and calls visit() template methods.
  */
-public class ErpIdPathVisitor implements ErpVisitorI {
+abstract class ErpIdPathVisitor implements ErpVisitorI {
 
-	private final Stack<String[]> idPathStack = new Stack<String[]>();
+	private final Stack idPathStack = new Stack();
 
 	public final void pushModel(ErpModelSupport model) {
 		if (!(model instanceof DurableModelI)) {
@@ -29,7 +29,7 @@ public class ErpIdPathVisitor implements ErpVisitorI {
 			idPath = new String[] { id };
 		} else {
 			// child node, append current id to parent path
-			String[] prevPath = idPathStack.peek();			
+			String[] prevPath = (String[]) idPathStack.peek();			
 
 			idPath = new String[ prevPath.length+1 ];
 			System.arraycopy(prevPath, 0, idPath, 0, prevPath.length);
@@ -40,12 +40,7 @@ public class ErpIdPathVisitor implements ErpVisitorI {
 		this.visit(model, idPath);
 	}
 
-	protected void visit(ErpModelSupport model, String[] idPath) {
-		String rootId = idPath.length > 0 ? idPath[0] : null;
-		String childId = idPath.length > 1 ? idPath[1] : null;
-		String grandChildId = idPath.length > 2 ? idPath[2] : null;
-		model.setAttributesKey(new ErpsAttributesKey(rootId, childId, grandChildId));
-	}
+	protected abstract void visit(ErpModelSupport model, String[] idPath);
 
 	public final void popModel() {
 		if (!this.idPathStack.isEmpty()) {

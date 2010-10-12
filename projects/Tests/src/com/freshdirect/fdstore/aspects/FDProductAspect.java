@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.aspects;
 
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,8 +7,6 @@ import org.apache.log4j.Logger;
 import org.mockejb.interceptor.InvocationContext;
 
 import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 
 public class FDProductAspect extends BaseAspect {
@@ -24,20 +21,21 @@ public class FDProductAspect extends BaseAspect {
 
 
     @Override
-    public final void intercept(InvocationContext ctx) throws Exception {
+    public void intercept(InvocationContext ctx) throws Exception {
         String sku = (String) ctx.getParamVals()[0];
-        int version = (Integer) ctx.getParamVals()[1];
         LOG.info("getProduct for "+sku);
 
-        ctx.setReturnObject(getProduct(sku, version));
+        ctx.setReturnObject(getFDProduct(sku));
     }
 
     public void addProduct(FDProduct product) {
         products.put(product.getSkuCode(), product);
     }
 
-    protected FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException {
+    protected FDProduct getFDProduct(String sku) {
         return products.get(sku);
     }
     
+    
+
 }

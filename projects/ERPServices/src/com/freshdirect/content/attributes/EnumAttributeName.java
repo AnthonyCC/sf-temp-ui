@@ -8,74 +8,68 @@
  */
 package com.freshdirect.content.attributes;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Type-safe enumeration for attribute names.
  *
  * @version $Revision$
  * @author $Author$
  */
-public enum EnumAttributeName {
+public class EnumAttributeName {
 
-	DESCRIPTION               ("description", EnumAttributeType.STRING),
-	OPTIONAL                  ("optional", EnumAttributeType.BOOLEAN),
-	PRIORITY                  ("priority", EnumAttributeType.INTEGER),
-    DISPLAY_FORMAT            ("display_format", EnumAttributeType.STRING),
-	LABEL_VALUE               ("label_value", EnumAttributeType.BOOLEAN),
-	DEFAULT                   ("default", EnumAttributeType.BOOLEAN),
-    UNDER_LABEL               ("under_label", EnumAttributeType.STRING),
-    SELECTED                  ("selected", EnumAttributeType.BOOLEAN),
-    PRODUCT_CODE              ("product_code", EnumAttributeType.STRING),
-    DISPLAY_GROUP             ("display_group", EnumAttributeType.STRING),
-    TAXABLE                   ("taxable", EnumAttributeType.BOOLEAN),
-    CUST_PROMO                ("cust_promo", EnumAttributeType.BOOLEAN),
-    SKUCODE                   ("skucode", EnumAttributeType.STRING),
-    LABEL_NAME                ("label_name", EnumAttributeType.STRING),
-    PRICING_UNIT_DESCRIPTION  ("pricing_unit_description", EnumAttributeType.STRING),
-    DEPOSIT_AMOUNT            ("deposit_amount", EnumAttributeType.INTEGER),
-    KOSHER_PRODUCTION         ("kosher_production", EnumAttributeType.BOOLEAN),
-    RESTRICTIONS              ("restrictions", EnumAttributeType.STRING),
-    SPECIALPRODUCT            ("specialproduct", EnumAttributeType.STRING),
-    ADVANCE_ORDER_FLAG        ("advance_order_flag",EnumAttributeType.BOOLEAN),
-    NEW_PRODUCT_DATE          ("new_prod_date", EnumAttributeType.STRING),
-    BACK_IN_STOCK_DATE        ("back_in_stock", EnumAttributeType.STRING),
-    RESET_TO_DEFAULT          ("reset_to_default", EnumAttributeType.STRING);
+	public final static EnumAttributeName DESCRIPTION               = new EnumAttributeName("description", EnumAttributeType.STRING, "");
+	public final static EnumAttributeName OPTIONAL                  = new EnumAttributeName("optional", EnumAttributeType.BOOLEAN, new Boolean(false));
+	public final static EnumAttributeName PRIORITY                  = new EnumAttributeName("priority", EnumAttributeType.INTEGER, new Integer(0));
+    public final static EnumAttributeName DISPLAY_FORMAT            = new EnumAttributeName("display_format", EnumAttributeType.STRING, "dropdown");
+	public final static EnumAttributeName LABEL_VALUE               = new EnumAttributeName("label_value", EnumAttributeType.BOOLEAN, new Boolean(false));
+	public final static EnumAttributeName DEFAULT                   = new EnumAttributeName("default", EnumAttributeType.BOOLEAN, new Boolean(false));
+    public final static EnumAttributeName UNDER_LABEL               = new EnumAttributeName("under_label", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName SELECTED                  = new EnumAttributeName("selected", EnumAttributeType.BOOLEAN, new Boolean(false));
+    public final static EnumAttributeName PRODUCT_CODE              = new EnumAttributeName("product_code", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName DISPLAY_GROUP             = new EnumAttributeName("display_group", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName TAXABLE                   = new EnumAttributeName("taxable", EnumAttributeType.BOOLEAN, new Boolean(false));
+    public final static EnumAttributeName CUST_PROMO                = new EnumAttributeName("cust_promo", EnumAttributeType.BOOLEAN, new Boolean(false));
+    public final static EnumAttributeName SKUCODE                   = new EnumAttributeName("skucode", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName LABEL_NAME                = new EnumAttributeName("label_name", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName PRICING_UNIT_DESCRIPTION  = new EnumAttributeName("pricing_unit_description", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName DEPOSIT_AMOUNT            = new EnumAttributeName("deposit_amount", EnumAttributeType.INTEGER, new Integer(0));
+    public final static EnumAttributeName KOSHER_PRODUCTION         = new EnumAttributeName("kosher_production", EnumAttributeType.BOOLEAN, new Boolean(false));
+    public final static EnumAttributeName RESTRICTIONS				= new EnumAttributeName("restrictions", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName SPECIALPRODUCT			= new EnumAttributeName("specialproduct", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName ADVANCE_ORDER_FLAG		= new EnumAttributeName("advance_order_flag",EnumAttributeType.BOOLEAN,new Boolean(false));
+    public final static EnumAttributeName NEW_PRODUCT_DATE			= new EnumAttributeName("new_prod_date", EnumAttributeType.STRING, "");
+    public final static EnumAttributeName BACK_IN_STOCK_DATE		= new EnumAttributeName("back_in_stock", EnumAttributeType.STRING, "");
 
     private final String name;
     private final EnumAttributeType type;
+    private final Object defaultValue;
 
-    
-    
-    private EnumAttributeName(String name, EnumAttributeType type) {
-    	if (name == null)
-    		throw new IllegalArgumentException();
-        this.name = name;
+	private EnumAttributeName(String name, EnumAttributeType type, Object defaultValue) {
+		this.name = name;
         this.type = type;
-    }
+        this.defaultValue = defaultValue;
+	}
 
-    public String getName() {
-        return this.name;
-    }
-
+	public String getName() {
+		return this.name;
+	}
+    
     public EnumAttributeType getType() {
         return this.type;
     }
-
-    public String toString() {
-        return this.name;
-    }
-
     
-    private final static Map<String, EnumAttributeName> byName = new HashMap<String, EnumAttributeName>();
-    static {
-        for (EnumAttributeName value : EnumAttributeName.values()) {
-            byName.put(value.getName(), value);
-        }
+    public Object getDefaultValue() {
+    	return this.defaultValue;
     }
+	
+	public String toString() {
+		return this.name;
+	}
 
-    public static EnumAttributeName getByName(String name) {
-        return byName.get(name);
-    }
+	public boolean equals(Object o) {
+		if (o instanceof EnumAttributeName) {
+			return this.getName().equals(((EnumAttributeName)o).getName());
+		}
+		return false;
+	}
+
 }

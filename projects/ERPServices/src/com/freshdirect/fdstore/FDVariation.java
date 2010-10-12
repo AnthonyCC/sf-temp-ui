@@ -8,7 +8,8 @@
  */
 package com.freshdirect.fdstore;
 
-import com.freshdirect.erp.model.ErpCharacteristicModel;
+import com.freshdirect.content.attributes.AttributesI;
+import com.freshdirect.content.attributes.EnumAttributeName;
 
 /**
  * Variaton - equivalent of ErpCharacteristic.
@@ -16,8 +17,7 @@ import com.freshdirect.erp.model.ErpCharacteristicModel;
  * @version $Revision$
  * @author $Author$
  */
-public class FDVariation extends FDAttributesProxy {
-	private static final long serialVersionUID = -1771593842781044141L;
+public class FDVariation extends FDAttributeProxy {
 
 	/** SAP characteristic name */
 	private String name;
@@ -27,16 +27,10 @@ public class FDVariation extends FDAttributesProxy {
 	 */
 	private FDVariationOption[] variationOptions;
 
-	public FDVariation(ErpCharacteristicModel model, FDVariationOption[] variationOptions) {
-		super(model);
-		name = model.getName();
+	public FDVariation(AttributesI attributes, String name, FDVariationOption[] variationOptions) {
+		super(attributes);
+		this.name = name;
 		this.variationOptions = variationOptions;
-	}
-	
-	public FDVariation(String name, FDVariationOption[] variationOptions) {
-	    super();
-	    this.name = name;
-	    this.variationOptions = variationOptions;
 	}
 
 	/**
@@ -74,7 +68,7 @@ public class FDVariation extends FDAttributesProxy {
 	 * @return description
 	 */
 	public String getDescription() {
-		return getAttributes().getDescription(name);
+		return this.getAttribute(EnumAttributeName.DESCRIPTION.getName(), this.name);
 	}
 
 	/**
@@ -84,7 +78,7 @@ public class FDVariation extends FDAttributesProxy {
 	 * @return display format string
 	 */
 	public String getDisplayFormat() {
-		return getAttributes().getDisplayFormat();
+		return this.getAttribute(EnumAttributeName.DISPLAY_FORMAT);
 	}
 
 	/**
@@ -94,7 +88,7 @@ public class FDVariation extends FDAttributesProxy {
 	 * @return true if this variation is optional
 	 */
 	public boolean isOptional() {
-		return getAttributes().isOptional();
+		return this.getAttributeBoolean(EnumAttributeName.OPTIONAL);
 	}
 
 	public boolean equals(Object o) {

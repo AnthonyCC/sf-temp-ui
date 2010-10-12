@@ -24,8 +24,8 @@
                 <jndi-name>freshdirect.erp.CharacteristicValuePrice</jndi-name>
             </ejb-reference-description>
             <ejb-reference-description>
-                <ejb-ref-name>ejb/Attributes</ejb-ref-name>
-                <jndi-name>freshdirect.content.Attributes</jndi-name>
+                <ejb-ref-name>ejb/AttributeFacade</ejb-ref-name>
+                <jndi-name>freshdirect.content.AttributeFacade</jndi-name>
             </ejb-reference-description>
             <ejb-reference-description>
                 <ejb-ref-name>ejb/ErpInfo</ejb-ref-name>
@@ -288,7 +288,7 @@
     </weblogic-enterprise-bean>
 
     <weblogic-enterprise-bean>
-        <ejb-name>Attributes</ejb-name>
+        <ejb-name>AttributeFacade</ejb-name>
         <stateless-session-descriptor>
             <pool>
                 <max-beans-in-free-pool>50</max-beans-in-free-pool>
@@ -305,7 +305,7 @@
                 <jndi-name>fddatasource</jndi-name>
             </resource-description>
         </reference-descriptor>
-        <jndi-name>freshdirect.content.Attributes</jndi-name>
+        <jndi-name>freshdirect.content.AttributeFacade</jndi-name>
     </weblogic-enterprise-bean>
     
     <weblogic-enterprise-bean>
@@ -1182,7 +1182,7 @@
     <transaction-isolation>
         <isolation-level>TRANSACTION_READ_COMMITTED</isolation-level>
         <method>
-            <ejb-name>Attributes</ejb-name>
+            <ejb-name>AttributeFacade</ejb-name>
             <method-intf>Remote</method-intf>
             <method-name>storeAttributes</method-name>
         </method>

@@ -3,7 +3,9 @@ package com.freshdirect.fdstore;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ZonePriceListing implements Serializable {
 	public static final String MASTER_DEFAULT_ZONE = "0000100000";
@@ -15,6 +17,11 @@ public class ZonePriceListing implements Serializable {
 	 
 	public ZonePriceListing() {
 		
+	}
+
+	public void reloadZonePrices(Map zonePriceMap) {
+		this.zonePriceMap.clear();
+		this.zonePriceMap.putAll(zonePriceMap);
 	}
 	
 	public void addZonePrice(String zoneId, ZonePriceModel zonePrice){

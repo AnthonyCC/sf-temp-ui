@@ -21,8 +21,14 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
+import com.freshdirect.content.attributes.AttributeCollection;
 import com.freshdirect.content.attributes.AttributeException;
-import com.freshdirect.content.attributes.ErpIdPathVisitor;
+import com.freshdirect.content.attributes.FlatAttributeCollection;
+import com.freshdirect.content.attributes.GetAttributesErpVisitor;
+import com.freshdirect.content.attributes.GetRootNodesErpVisitor;
+import com.freshdirect.content.attributes.SetAttributesErpVisitor;
+import com.freshdirect.content.attributes.ejb.AttributeFacadeHome;
+import com.freshdirect.content.attributes.ejb.AttributeFacadeSB;
 import com.freshdirect.content.nutrition.ErpNutritionModel;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
@@ -272,7 +278,7 @@ public class ErpFactory {
 		try {
 			ErpMaterialEB matlEB = materialHome.findBySapId(sapId);
 			ErpMaterialModel materialModel = (ErpMaterialModel) matlEB.getModel();
-			materialModel.accept(new ErpIdPathVisitor());
+			applyAttributes(materialModel);
 			return materialModel;
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe);
@@ -354,10 +360,11 @@ public class ErpFactory {
 			try {
 				ErpProductEB prodEB = productHome.findBySkuCode(skuCode);
 				productModel = (ErpProductModel) prodEB.getModel();
-				productModel.accept(new ErpIdPathVisitor());
+				applyAttributes(productModel);
 			} catch (ObjectNotFoundException onfe) {
 				// no such product for this sku, just return an empty product object
 				productModel = new ErpProductModel();
+				productModel.setAttributes(new AttributeCollection());
 			}
 			return productModel;
 		} catch (FinderException fe) {
@@ -437,7 +444,7 @@ public class ErpFactory {
 		try {
 			ErpClassEB classEB = classHome.findBySapId(sapId);
 			ErpClassModel classModel = (ErpClassModel) classEB.getModel();
-			classModel.accept(new ErpIdPathVisitor());
+			applyAttributes(classModel);
 			return classModel;
 		} catch (FinderException fe) {
 			throw new FDResourceException(fe);
@@ -480,6 +487,85 @@ public class ErpFactory {
 		}
 	}
 
+	private AttributeFacadeHome attributeHome = null;
+
+	public void applyAttributes(ErpModelSupport erpModel) throws FDResourceException {
+		if (attributeHome == null) {
+			lookupAttributesHome();
+		}
+		try {
+			//
+			// get the attributes for this erpmodel and its children
+			//
+			AttributeFacadeSB atrSB = attributeHome.create();
+			GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
+			erpModel.accept(idVisitor);
+			String[] rootIds = idVisitor.getRootIds();
+			FlatAttributeCollection attrs = atrSB.getAttributes(rootIds);
+			//
+			// apply attributes to the erpmodel and its children
+			//
+			erpModel.accept(new SetAttributesErpVisitor(attrs));
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (AttributeException ae) {
+			throw new FDResourceException(ae);
+		}
+	}
+
+	public void saveAttributes(ErpModelSupport erpModel) throws FDResourceException {
+		if (attributeHome == null) {
+			lookupAttributesHome();
+		}
+		//
+		// get all the attributes from the erpObject
+		//
+		GetAttributesErpVisitor atrGetVisitor = new GetAttributesErpVisitor();
+		erpModel.accept(atrGetVisitor);
+		FlatAttributeCollection attrs = atrGetVisitor.getAttributes();
+
+		AttributeFacadeSB atrSB = null;
+		try {
+			//
+			// find the attributes session bean
+			//
+			atrSB = attributeHome.create();
+			//
+			// ask it to save the attributes
+			//
+			atrSB.storeAttributes(attrs);
+		} catch (RemoteException re) {
+			throw new FDResourceException(re);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce);
+		} catch (AttributeException ae) {
+			throw new FDResourceException(ae);
+		} finally {
+			if (atrSB != null) {
+				try {
+					//
+					// read them back again to make sure eveything worked
+					//
+					GetRootNodesErpVisitor idVisitor = new GetRootNodesErpVisitor();
+					erpModel.accept(idVisitor);
+					String[] rootIds = idVisitor.getRootIds();
+					attrs = atrSB.getAttributes(rootIds);
+					//
+					// and re-apply attributes to the erpObject and its characteristics
+					//
+					erpModel.accept(new SetAttributesErpVisitor(attrs));
+
+				} catch (AttributeException ae) {
+					throw new FDResourceException(ae);
+				} catch (RemoteException re) {
+					throw new FDResourceException(re);
+				}
+			}
+		}
+	}
+
 	public List generateNutritionReport() throws FDResourceException {
 		this.refreshNutritionReportCache();
 		return this.nutritionReport;
@@ -515,6 +601,21 @@ public class ErpFactory {
 				throw new FDResourceException(ce);
 			} catch (RemoteException re) {
 				throw new FDResourceException(re);
+			}
+		}
+	}
+
+	private void lookupAttributesHome() throws FDResourceException {
+		Context ctx = null;
+		try {
+			ctx = ErpServicesProperties.getInitialContext();
+			attributeHome = (AttributeFacadeHome) ctx.lookup(ErpServicesProperties.getAttributesHome());
+		} catch (NamingException ne) {
+			throw new FDResourceException(ne);
+		} finally {
+			try {
+				ctx.close();
+			} catch (NamingException e) {
 			}
 		}
 	}

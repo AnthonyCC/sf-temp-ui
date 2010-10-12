@@ -8,11 +8,8 @@
  */
 package com.freshdirect.framework.util;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.freshdirect.framework.cache.CacheI;
 
 /**
  * "Least-recently-used" cache.
@@ -20,7 +17,7 @@ import com.freshdirect.framework.cache.CacheI;
  * @version $Revision$
  * @author $Author$
  */
-public class LruCache<K extends Serializable,V> implements CacheI<K,V> {
+public class LruCache<K,V> {
 
 	private final static boolean ASSERTIONS = false;
 
@@ -82,7 +79,7 @@ public class LruCache<K extends Serializable,V> implements CacheI<K,V> {
 		return e==null ? null : e.value;
 	}
 
-	public synchronized void remove(K key) {
+	public synchronized void remove(Object key) {
 		removeEntry(getEntry(key));
 	}
 
@@ -172,11 +169,6 @@ public class LruCache<K extends Serializable,V> implements CacheI<K,V> {
 
 	public synchronized int size() {
 		return size;
-	}
-	
-	@Override
-	public String getName() {
-	    return toString();
 	}
 
 }

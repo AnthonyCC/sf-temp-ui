@@ -76,7 +76,7 @@ public class AvailabilityFactory {
 	public static FDAvailabilityI createAvailability(SkuModel skuModel, FDProductInfo fdProductInfo) {
 
 		FDAvailabilityI av = NullAvailability.AVAILABLE;
-		
+
 		if (EnumATPRule.JIT.equals(fdProductInfo.getATPRule())) {
 			return av;
 		}

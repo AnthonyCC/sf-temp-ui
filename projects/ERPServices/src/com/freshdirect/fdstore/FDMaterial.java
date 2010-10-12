@@ -1,8 +1,8 @@
 package com.freshdirect.fdstore;
 
+import com.freshdirect.content.attributes.AttributesI;
 import com.freshdirect.erp.EnumATPRule;
 import com.freshdirect.erp.EnumAlcoholicContent;
-import com.freshdirect.erp.model.ErpMaterialModel;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
@@ -11,7 +11,8 @@ import com.freshdirect.framework.util.DayOfWeekSet;
  * @version $Revision$
  * @author $Author$
  */
-public class FDMaterial extends FDAttributesProxy {
+public class FDMaterial extends FDAttributeProxy {
+
 	private static final long	serialVersionUID	= -3900022254504839075L;
 	
 	private final String materialNumber;
@@ -24,48 +25,30 @@ public class FDMaterial extends FDAttributesProxy {
 	private final boolean platter;
 	private final DayOfWeekSet blockedDays;
 
-	public FDMaterial(ErpMaterialModel model) {
-		super(model);
-		this.materialNumber = model.getSapId();
-		this.atpRule = model.getATPRule();
-		this.salesUnitCharacteristic = model.getSalesUnitCharacteristic();
-		this.quantityCharacteristic = model.getQuantityCharacteristic();
-		this.alcoholicContent = model.getAlcoholicContent();
-		this.taxable = model.isTaxable();
-		this.kosherProduction = model.isTaxable();
-		this.platter = model.isPlatter();
-		this.blockedDays = model.getBlockedDays();
+	public FDMaterial(
+		AttributesI attributes,
+		String materialNumber,
+		EnumATPRule atpRule,
+		String salesUnitCharacteristic,
+		String quantityCharacteristic,
+		EnumAlcoholicContent alcoholicContent,
+		boolean taxable,
+		boolean kosherProduction,
+		boolean platter,
+		DayOfWeekSet blockedDays) {
+		super(attributes);
+		this.materialNumber = materialNumber;
+		this.atpRule = atpRule;
+		this.salesUnitCharacteristic = salesUnitCharacteristic;
+		this.quantityCharacteristic = quantityCharacteristic;
+		this.alcoholicContent = alcoholicContent;
+		this.taxable = taxable;
+		this.kosherProduction = kosherProduction;
+		this.platter = platter;
+		this.blockedDays = blockedDays;
 	}
 
-	/**
-	 * Just for testing purposes
-	 * @param materialNumber
-	 * @param atpRule
-	 * @param salesUnitCharacteristic
-	 * @param quantityCharacteristic
-	 * @param alcoholicContent
-	 * @param taxable
-	 * @param kosherProduction
-	 * @param platter
-	 * @param blockedDays
-	 */
-	public FDMaterial(String materialNumber, EnumATPRule atpRule, String salesUnitCharacteristic, String quantityCharacteristic,
-            EnumAlcoholicContent alcoholicContent, boolean taxable, boolean kosherProduction, boolean platter, DayOfWeekSet blockedDays) {
-            super();
-            this.materialNumber = materialNumber;
-            this.atpRule = atpRule;
-            this.salesUnitCharacteristic = salesUnitCharacteristic;
-            this.quantityCharacteristic = quantityCharacteristic;
-            this.alcoholicContent = alcoholicContent;
-            this.taxable = taxable;
-            this.kosherProduction = kosherProduction;
-            this.platter = platter;
-            this.blockedDays = blockedDays;
-        }
-
-
-
-    public String getMaterialNumber() {
+	public String getMaterialNumber() {
 		return this.materialNumber;
 	}
 
@@ -110,18 +93,5 @@ public class FDMaterial extends FDAttributesProxy {
 	public DayOfWeekSet getBlockedDays() {
 		return this.blockedDays == null ? DayOfWeekSet.EMPTY : this.blockedDays;
 	}
-	
-	public String getRestrictions() {
-		return getAttributes().getRestrictions();
-	}
-	
-	@Override
-	public String toString() {
-	    return "FDMaterial[materialNumber:'" + materialNumber + "' atpRule:'" + atpRule 
-	        + "' salesUnitCharacteristic:'" + salesUnitCharacteristic
-                + "' quantityCharacteristic:'" + quantityCharacteristic 
-                + "' alcoholicContent:'" + alcoholicContent 
-                + "' taxable:'" + taxable + "' kosherProduction:'" + kosherProduction 
-                + "' platter:'" + platter + "' blockedDays:'" + blockedDays;
-	}
+
 }

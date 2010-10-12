@@ -18,14 +18,12 @@ import java.util.List;
  * @version $Revision$
  * @author $Author$
  */
-public class LazyTimedCache<K extends Serializable,V> extends TimedLruCache<K,V> {
+public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 
-        String name;
 	private List<K> expiredKeys;
 
-	public LazyTimedCache(String name, int capacity, long expire) {
+	public LazyTimedCache(int capacity, long expire) {
 		super(capacity, expire);
-		this.name = name;
 		this.expiredKeys = new ArrayList<K>();
 	}
 
@@ -51,25 +49,20 @@ public class LazyTimedCache<K extends Serializable,V> extends TimedLruCache<K,V>
 		this.expiredKeys = new ArrayList<K>();
 		return temp;
 	}
-	
-	@Override
-	public String getName() {
-	    return name;
-	}
 
 
-	public abstract static class RefreshThread<K extends Serializable,V> extends Thread {
+	public abstract static class RefreshThread<K,V> extends Thread {
 
 		protected final LazyTimedCache<K,V> cache;
 		private final long maxDelay;
 		private final long refreshFrequency;
 		
-		public RefreshThread(LazyTimedCache<K,V> cache, long refreshFrequency) {
-			this(cache, refreshFrequency, refreshFrequency/10);
+		public RefreshThread(LazyTimedCache<K,V> cache, String threadName, long refreshFrequency) {
+			this(cache, threadName, refreshFrequency, refreshFrequency/10);
 		}
 
-		public RefreshThread(LazyTimedCache<K,V> cache, long refreshFrequency, long maxDelay) {
-			super(cache.getName()+"-refresh");
+		public RefreshThread(LazyTimedCache<K,V> cache, String threadName, long refreshFrequency, long maxDelay) {
+			super(threadName);
 			this.setDaemon(true);
 			this.cache = cache;
 			this.maxDelay = maxDelay;

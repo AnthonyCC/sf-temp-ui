@@ -107,12 +107,6 @@
  		<p>
 		<span class="bull">&bull;</span> <a href="../search/category_scoring.jsp"><span>Search Category Scoring</span></a>
 		</p>
-		<p>
-		<span class="bull">&bull;</span> <a href="cache.jsp"><span>Cache Statistics</span></a>
-		</p>
-		<p>
-		<span class="bull">&bull;</span> <a href="cache_content.jsp"><span>Cache Content Viewer</span></a>
-		</p>
     	
     </div>
 </body>

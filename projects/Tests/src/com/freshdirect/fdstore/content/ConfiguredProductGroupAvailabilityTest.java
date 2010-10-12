@@ -35,7 +35,6 @@ import com.freshdirect.fdstore.FDVariation;
 import com.freshdirect.fdstore.ZonePriceInfoListing;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
 import com.freshdirect.fdstore.ZonePriceListing;
-import com.freshdirect.fdstore.aspects.FDProductAspect;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
 import com.freshdirect.fdstore.customer.FDCustomerManagerTestSupport;
 import com.freshdirect.framework.util.DateUtil;
@@ -230,8 +229,17 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 		return ContentFactory.getInstance().getContentNode(id);
 	}
 
-	private static class FDFactoryProductInfoAspect extends com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect {
+	public static class FDFactoryProductInfoAspect implements Aspect {
 
+		public Pointcut getPointcut() {
+			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProductInfo\\(java.lang.String\\)");
+		}
+
+		public void intercept(InvocationContext ctx) throws Exception {
+			String sku = (String) ctx.getParamVals()[0];
+			ctx.setReturnObject(getProductInfo(sku));
+		}
+	    
 		/**
 		 * Get current product information object for sku.
 		 *
@@ -242,7 +250,6 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 	 	 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 * @throws FDResourceException if an error occured using remote resources
 		 */
-	    @Override
 		public FDProductInfo getProductInfo(String sku) throws RemoteException, FDSkuNotFoundException, FDResourceException {			
 			Date now = new Date();
 			String[] materials = {"000000000000123"};
@@ -257,9 +264,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea", dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
 
 			} else if ("MEA0004562".equals(sku)) {
@@ -269,9 +276,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
 			} else if ("MEA0004563".equals(sku)) {
 				// return this item as available by tomorrow, but not today
@@ -281,9 +288,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(tomorrow), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, "ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null, dummyList);
 				
 			} else if ("MEA0004564".equals(sku)) {
 				// return this item as available the day after tomorrow
@@ -293,9 +300,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(afterTomorrow), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 
 			} else if ("MEA0004565".equals(sku)) {
 				// return this item as available the day after tomorrow
@@ -305,9 +312,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(inThreeDays), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.AVAILABLE, now,inventoryCache,"",null,dummyList);
 				
 			} else if ("MEA0004566".equals(sku)) {
 				// return a discontinued item
@@ -316,9 +323,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
 
 			} else if ("MEA0004567".equals(sku)) {
 				// return a temporarily unavailable item
@@ -327,9 +334,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,dummyList);
 				
 			} else if ("MEA0004568".equals(sku)) {
 				// return an item available after the horizon only
@@ -339,9 +346,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(afterHorizon), 10000));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.TEMP_UNAV, now,inventoryCache,"",null,dummyList);
 
 			} else {
 				// fallback: return any unknown item as unavailable
@@ -349,9 +356,9 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 				inventoryEntries.add(new ErpInventoryEntryModel(DateUtil.truncate(now), 0));
 				inventoryCache.addInventory(materials[0], new ErpInventoryModel("SAP12345", now, inventoryEntries));
 	    		ZonePriceInfoListing dummyList = new ZonePriceInfoListing();
-	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
+	    		ZonePriceInfoModel dummy = new ZonePriceInfoModel(1.0, 1.0, "ea", null, false, 0, 0, ZonePriceListing.MASTER_DEFAULT_ZONE);
 	    		dummyList.addZonePriceInfo(ZonePriceListing.MASTER_DEFAULT_ZONE, dummy);
-	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,"ea",dummyList);
+	            productInfo = new FDProductInfo(sku,1, materials,EnumATPRule.MATERIAL, EnumAvailabilityStatus.DISCONTINUED, now,inventoryCache,"",null,dummyList);
 
 			}
 
@@ -361,8 +368,17 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 	}
 	
 	
-	private static class FDFactoryProductAspect extends FDProductAspect {
+	public static class FDFactoryProductAspect implements Aspect {
 
+		public Pointcut getPointcut() {
+			return new DebugMethodPatternPointCut("FDFactorySessionBean\\.getProduct\\(java.lang.String,int\\)");
+		}
+
+		public void intercept(InvocationContext ctx) throws Exception {
+			String sku = (String) ctx.getParamVals()[0];
+			Integer i = (Integer) ctx.getParamVals()[1];
+			ctx.setReturnObject(getProduct(sku, i.intValue()));
+		}
 		/**
 		 * Get product with specified version. 
 		 *
@@ -373,7 +389,6 @@ public class ConfiguredProductGroupAvailabilityTest extends FDCustomerManagerTes
 		 *
 		 * @throws FDSkuNotFoundException if the SKU was not found in ERP services
 		 */
-	    @Override
 	    public FDProduct getProduct(String sku, int version) throws RemoteException, FDSkuNotFoundException, FDResourceException {
 	    	
 	    	Date          now            = new Date();

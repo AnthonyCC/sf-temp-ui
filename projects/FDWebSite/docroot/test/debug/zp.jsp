@@ -80,7 +80,7 @@
          <td width='100'>&nbsp;&nbsp;&nbsp;&nbsp;</td> 
          <td> ZONE ID :<%=model.getSapZoneId()%></td>
          <td> PRICE :<%=model.getDefaultPrice()%></td>
-         <td> DAFAULT UNIT  :<%=prodInfo.getDefaultPriceUnit()%></td>         
+         <td> DAFAULT UNIT  :<%=model.getDefaultPriceUnit()%></td>         
          <td> DEAL PERCENTAGE  :<%=model.getDealPercentage()%></td>
          
          

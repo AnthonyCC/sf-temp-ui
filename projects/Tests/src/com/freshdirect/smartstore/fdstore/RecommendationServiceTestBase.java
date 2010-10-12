@@ -23,7 +23,6 @@ import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.event.RecommendationEventLogger;
 import com.freshdirect.event.RecommendationEventsAggregate;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.aspects.DlvManagerMunicipalityAspect;
 import com.freshdirect.fdstore.aspects.DlvManagerStateCountyLookupAspect;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
@@ -58,7 +57,6 @@ public abstract class RecommendationServiceTestBase extends TestCase {
         
         MockContainer mockContainer = TestUtils.createMockContainer(context);
 
-        FDCachedFactory.mockInstances();
         aspectSystem = TestUtils.createAspectSystem();
 
         initAspects(aspectSystem);

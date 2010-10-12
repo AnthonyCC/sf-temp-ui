@@ -92,26 +92,21 @@ public class ErpProductTag extends com.freshdirect.framework.webapp.BodyTagSuppo
         //
         // label name
         //
-    	ErpsAttributes attributes = prod.getAttributes().clone();
         String pricing_unit_descr = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName()));
-        if (pricing_unit_descr != null)
-        	pricing_unit_descr = pricing_unit_descr.trim();
-        
-        attributes.setPricingUnitDescription(pricing_unit_descr);
+        if (pricing_unit_descr != null) {
+            prod.getAttributes().setAttribute(EnumAttributeName.PRICING_UNIT_DESCRIPTION.getName(), pricing_unit_descr);
+        }
 
         String new_product_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.NEW_PRODUCT_DATE.getName()));
-        if (new_product_date != null)
-        	new_product_date = new_product_date.trim();
-        
-        attributes.setNewProdDate(new_product_date);
+        if (new_product_date != null) {
+            prod.getAttributes().setAttribute(EnumAttributeName.NEW_PRODUCT_DATE.getName(), new_product_date);
+        }
 
         String back_in_stock_date = request.getParameter(FormElementNameHelper.getFormElementName(prod, EnumAttributeName.BACK_IN_STOCK_DATE.getName()));
-        if (back_in_stock_date != null)
-        	back_in_stock_date = back_in_stock_date.trim();
+        if (back_in_stock_date != null) {
+            prod.getAttributes().setAttribute(EnumAttributeName.BACK_IN_STOCK_DATE.getName(), back_in_stock_date);
+        }
         
-        attributes.setBackInStock(back_in_stock_date);
-        
-        prod.setChangedAttributes(attributes);
     }
     
     

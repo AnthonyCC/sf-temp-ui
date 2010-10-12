@@ -27,7 +27,7 @@ SAP Material#		Record Identifier		Data
         ProductModel pm = ContentFactory.getInstance().getProduct(productInfo.getSkuCode());
     	FDProductInfo fdinfo = FDCachedFactory.getProductInfo(productInfo.getSkuCode());
     	FDProduct fdp = FDCachedFactory.getProduct(fdinfo);
-    	label = fdp.getLabelName();
+    	label = fdp.getAttribute("label_name", "");
     	if( label.trim().equals("") )
 	        fullName = pm.getFullName();
 	    else

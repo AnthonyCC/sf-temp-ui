@@ -79,10 +79,6 @@
 	<category name="httpclient">
 		<priority value="info" />
 	</category>
-
-	<category name="com.scarabresearch">
-		<priority value="error" />
-	</category>
 	
 	<root>
 		<priority value="debug"/>

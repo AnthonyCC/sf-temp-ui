@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -37,7 +36,6 @@ import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.erp.model.ErpMaterialInfoModel;
 import com.freshdirect.erp.model.ErpProductInfoModel;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.core.VersionedPrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -1424,56 +1422,14 @@ public class ErpInfoSessionBean extends SessionBeanSupport {
 			LOGGER.error("Unable to update materialized views (NEW_PRODUCTS and BACK_IN_STOCK_PRODUCTS)", sqle);
 			throw new EJBException(sqle);
 		} finally {
-                    close(ps);
-                    close(conn);
-		}
-	}
-	
-	public List<FDSku> getChangedSkus(Integer lastVersion) {
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		List<FDSku> skus = new ArrayList<FDSku>();
-		try {
-			conn = getConnection();
-			ps = conn.prepareStatement("SELECT sku_code, version FROM erps.product WHERE version > ?");
-			ps.setInt(1, lastVersion);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				skus.add(new FDSku(rs.getString(1), rs.getInt(2)));
+			try {
+				if (ps != null)
+					ps.close();
+				if (conn != null)
+					conn.close();
+			} catch (SQLException sqle) {
+				LOGGER.warn("Unable to close db resources", sqle);
 			}
-			return skus;
-		} catch (SQLException e) {
-			LOGGER.error("Unable to fetch the list of changed skus since last version " + lastVersion, e);
-			throw new EJBException(e);
-		} finally {
-		    close(rs);
-		    close(ps);
-		    close(conn);
 		}
 	}
-	
-        public List<FDSku> getLatestSkus() {
-            Connection conn = null;
-            PreparedStatement ps = null;
-            ResultSet rs = null;
-            List<FDSku> skus = new ArrayList<FDSku>();
-            try {
-                conn = getConnection();
-                ps = conn.prepareStatement("SELECT sku_code, max(version) FROM erps.product GROUP BY sku_code");
-                rs = ps.executeQuery();
-                while (rs.next()) {
-                    skus.add(new FDSku(rs.getString(1), rs.getInt(2)));
-                }
-                return skus;
-            } catch (SQLException e) {
-                LOGGER.error("Unable to fetch the list of latest skus " + e.getMessage(), e);
-                throw new EJBException(e);
-            } finally {
-                close(rs);
-                close(ps);
-                close(conn);
-            }
-        }
-
 }

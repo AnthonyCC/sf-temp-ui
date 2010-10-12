@@ -18,7 +18,6 @@ import com.freshdirect.common.pricing.MaterialPrice;
 import com.freshdirect.common.pricing.Pricing;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.common.pricing.SalesUnitRatio;
-import com.freshdirect.fdstore.FDCachedFactory;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
@@ -27,6 +26,7 @@ import com.freshdirect.fdstore.ZonePriceModel;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
 import com.freshdirect.fdstore.aspects.FDProductAspect;
 import com.freshdirect.fdstore.aspects.ZoneConfigurationAspect;
+import com.freshdirect.fdstore.content.AbstractProductModelImpl;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -39,7 +39,6 @@ public class ZonePricingTest extends TestCase {
     
     protected void setUp() throws Exception {
         Context context = TestUtils.createContext();
-        FDCachedFactory.mockInstances();
 
         service = TestUtils.initCmsManagerFromXmls("classpath:/com/freshdirect/cms/fdstore/content/FeaturedProducts.xml");
         TestUtils.createTransaction(context);
@@ -75,7 +74,7 @@ public class ZonePricingTest extends TestCase {
         FDProductAspect fpr = new FDProductAspect();
         
         FDSalesUnit[] salesUnits =  {
-                new FDSalesUnit("salesUnit", "salesUnit desc", 2, 3, "foot")
+                new FDSalesUnit(null, "salesUnit", "salesUnit desc", 2, 3, "foot")
         };
         
         fpr.addProduct(new FDProduct("PAS0062425", 1, new Date(), null, null, salesUnits,
@@ -86,7 +85,7 @@ public class ZonePricingTest extends TestCase {
                         new CharacteristicValuePrice[0],
                         new SalesUnitRatio[0]
                 ) 
-        , salesUnits));
+        , null, salesUnits));
         aspectSystem.add(fpr);
         
     }
@@ -258,15 +257,15 @@ public class ZonePricingTest extends TestCase {
     
     
     static ZonePriceInfoModel create(double sellingPrice, String sapZoneId) {
-        return new ZonePriceInfoModel(sellingPrice, sellingPrice, false, 0, 0, sapZoneId);        
+        return new ZonePriceInfoModel(sellingPrice, sellingPrice, "ea", null, false, 0, 0, sapZoneId);        
     }
     
     static ZonePriceInfoModel create(double sellingPrice, double promoPrice, String sapZoneId) {
-        return new ZonePriceInfoModel(sellingPrice, promoPrice, true, 0, 0, sapZoneId);        
+        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, 0, 0, sapZoneId);        
     }
 
     static ZonePriceInfoModel create(double sellingPrice, double promoPrice, String sapZoneId, int dealPercentage, int tieredDealPercentage) {
-        return new ZonePriceInfoModel(sellingPrice, promoPrice, true, dealPercentage, tieredDealPercentage, sapZoneId);        
+        return new ZonePriceInfoModel(sellingPrice, promoPrice, "ea", null, true, dealPercentage, tieredDealPercentage, sapZoneId);        
     }
 
 }
