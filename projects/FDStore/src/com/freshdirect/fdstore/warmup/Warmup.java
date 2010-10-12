@@ -151,7 +151,7 @@ public class Warmup {
 	private void warmupProducts() throws FDResourceException {
 		LOGGER.info("Loading lightweight product data");
 
-		final List prodInfos = FDCachedFactory.getProductInfos(this.skuCodes);
+		final List<FDProductInfo> prodInfos = FDCachedFactory.getProductInfos(this.skuCodes);
 		//Filter discontinued Products
 		filterDiscontinuedProducts(prodInfos);
 		LOGGER.info("Lightweight product data loaded");
@@ -191,8 +191,8 @@ public class Warmup {
 		}
 	}
 	
-	private void filterDiscontinuedProducts(List prodInfos) {
-		for(Iterator it=prodInfos.iterator(); it.hasNext();){
+	private void filterDiscontinuedProducts(List<FDProductInfo> prodInfos) {
+		for(Iterator<FDProductInfo> it=prodInfos.iterator(); it.hasNext();){
 			FDProductInfo prodInfo = (FDProductInfo) it.next();
 			if(prodInfo.isDiscontinued()){
 				it.remove();

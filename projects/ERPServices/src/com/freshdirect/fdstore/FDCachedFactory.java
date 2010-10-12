@@ -280,7 +280,7 @@ public class FDCachedFactory {
             final FDProductCache cache = FDProductCache.getInstance();
             for (FDSku sku : skus) {
                 try {
-                    FDProduct p = cache.get(sku);
+                    FDProduct p = cache.getFDProduct(sku);
                     if (p != null) {
                         foundProducts.add(p);
                     }
@@ -288,6 +288,8 @@ public class FDCachedFactory {
                     if (e.getNestedException() instanceof FDResourceException) {
                         throw (FDResourceException) e.getNestedException();
                     }
+                } catch (FDSkuNotFoundException e) {
+                    // ignore 
                 }
             }
             return foundProducts;

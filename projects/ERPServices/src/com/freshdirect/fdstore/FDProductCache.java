@@ -13,8 +13,6 @@ import org.apache.log4j.Logger;
 import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.fdstore.cache.ExternalSharedCache;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
-import com.freshdirect.framework.cache.CacheStatisticsProvider;
-import com.freshdirect.framework.cache.MemcacheConfiguration;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.ProgressReporter;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -24,6 +22,7 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
 
 	private static FDProductCache instance;
         private Map<String, Integer> lastVersions = new ConcurrentHashMap<String, Integer>();
+        static boolean onlyLoadedNonDiscontinued = true;
 
 
         public synchronized static FDProductCache getInstance() {
@@ -73,8 +72,14 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
         return lastVersions.get(skuCode);
     }
     
+    @Override
+    public FDProduct get(FDSku key) {
+        LOGGER.info("get(" + key + ") called, which doesn't check the db.");
+        return super.get(key);
+    }
+    
     public FDProduct getFDProduct(FDSku key) throws FDSkuNotFoundException, FDResourceException {
-        FDProduct p = get(key);
+        FDProduct p = getCachedItem(key);
         if (p == null) {
             p = getProductInternal(key);
             if (p == null) {
@@ -95,43 +100,65 @@ public class FDProductCache extends ExternalSharedCache<FDSku, Integer, FDProduc
                 final int size = changedSkus.size();
                 LOGGER.info("skus changed :" + size + " since " + (lastVersion != null ? lastVersion : "epoch"));
                 Map<FDSku, FDProduct> data = new HashMap<FDSku, FDProduct>(size * 3 / 2);
+                int skipped = 0;
                 if (size > 0) {
                     int offset = (int) (Math.random() * size);
                     ProgressReporter p = new ProgressReporter();
                     p.setShowAtEvery(1000);
                     p.setElapsedMillis(10000);
-                    
+                    int loaded = 0;
                     for (int i = 0; i < size; i++) {
                         FDSku sku = changedSkus.get((offset + i) % size);
 
-                        // check the external cache
-                        FDProduct externalItem = getFromExternalCache(sku);
-                        try {
-                            if (externalItem == null) {
-                                externalItem = getProductInternal(sku);
-                                putToExternalCache(sku, externalItem);
-                            }
-
-                            if (!lastVersions.containsKey(sku.getSkuCode()) || lastVersions.get(sku.getSkuCode()) < sku.getVersion()) {
-                                lastVersions.put(sku.getSkuCode(), sku.getVersion());
-                            }
-
-                            data.put(sku, externalItem);
-                        } catch (FDSkuNotFoundException e) {
-                            LOGGER.error("changed sku which is not found (contradictory and critical):" + sku, e);
-                        } catch (FDResourceException e) {
-                            LOGGER.error("Error loading sku:" + sku, e);
+                        if (loadSku(data, sku)) {
+                            loaded ++;
+                        } else {
+                            skipped ++;
                         }
                         if (p.shouldLogMessage(i)) {
                             displayInfo(size, i);
                         }
                     }
                 }
-                LOGGER.info("FDProduct loaded [" + data.size() + ']');
+                LOGGER.info("FDProduct loaded [" + data.size() + ", skipped:" + skipped + ']');
                 return data;
             } catch (FDResourceException e) {
                 throw new FDRuntimeException(e);
             }
+        }
+
+        /**
+         * @param data
+         * @param sku
+         */
+        protected boolean loadSku(Map<FDSku, FDProduct> data, FDSku sku) {
+            if (onlyLoadedNonDiscontinued) {
+                FDProductInfo productInfo = FDProductInfoCache.getInstance().get(sku.getSkuCode());
+                if (productInfo == null || productInfo.isDiscontinued()) {
+                    return false;
+                }
+            }
+
+            // check the external cache
+            FDProduct externalItem = getFromExternalCache(sku);
+            try {
+                if (externalItem == null) {
+                    externalItem = getProductInternal(sku);
+                    putToExternalCache(sku, externalItem);
+                }
+
+                if (!lastVersions.containsKey(sku.getSkuCode()) || lastVersions.get(sku.getSkuCode()) < sku.getVersion()) {
+                    lastVersions.put(sku.getSkuCode(), sku.getVersion());
+                }
+
+                data.put(sku, externalItem);
+                return true;
+            } catch (FDSkuNotFoundException e) {
+                LOGGER.error("changed sku which is not found (contradictory and critical):" + sku, e);
+            } catch (FDResourceException e) {
+                LOGGER.error("Error loading sku:" + sku, e);
+            }
+            return false;
         }
         
         @Override
