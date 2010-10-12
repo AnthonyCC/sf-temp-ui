@@ -150,4 +150,5 @@ public class AttributeCollection implements AttributesI {
 		return this.getAttributeInt( attributeName.getName(), ((Integer)attributeName.getDefaultValue()).intValue() );
 	}
 
+        
 }

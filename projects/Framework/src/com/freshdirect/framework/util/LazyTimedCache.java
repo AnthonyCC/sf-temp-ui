@@ -21,9 +21,11 @@ import java.util.List;
 public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 
 	private List<K> expiredKeys;
+	String name;
 
-	public LazyTimedCache(int capacity, long expire) {
+	public LazyTimedCache(String name, int capacity, long expire) {
 		super(capacity, expire);
+		this.name = name;
 		this.expiredKeys = new ArrayList<K>();
 	}
 
@@ -57,12 +59,12 @@ public class LazyTimedCache<K,V> extends TimedLruCache<K,V> {
 		private final long maxDelay;
 		private final long refreshFrequency;
 		
-		public RefreshThread(LazyTimedCache<K,V> cache, String threadName, long refreshFrequency) {
-			this(cache, threadName, refreshFrequency, refreshFrequency/10);
+		public RefreshThread(LazyTimedCache<K,V> cache, long refreshFrequency) {
+			this(cache, refreshFrequency, refreshFrequency/10);
 		}
 
-		public RefreshThread(LazyTimedCache<K,V> cache, String threadName, long refreshFrequency, long maxDelay) {
-			super(threadName);
+		public RefreshThread(LazyTimedCache<K,V> cache, long refreshFrequency, long maxDelay) {
+		        super(cache.name + "Refresh");
 			this.setDaemon(true);
 			this.cache = cache;
 			this.maxDelay = maxDelay;

@@ -37,24 +37,24 @@ public class FDCachedFactory {
 	 * FDProductInfo instances hashed by SKU strings.
 	 */
 	private final static LazyTimedCache productInfoCache =
-		new LazyTimedCache(FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
+		new LazyTimedCache("FDProductInfo", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProductInfo() * 1000);
 
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
-	private final static LazyTimedCache productCache = new LazyTimedCache(FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	private final static LazyTimedCache productCache = new LazyTimedCache("FDProduct", FDStoreProperties.getProductCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 	
 	
 	/**
 	 * FDProduct instances hashed by FDSku instances.
 	 */
-	private final static LazyTimedCache zoneCache = new LazyTimedCache(FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
+	private final static LazyTimedCache zoneCache = new LazyTimedCache("FDZoneInfo", FDStoreProperties.getZoneCacheSize(), FDStoreProperties.getRefreshSecsProduct() * 1000);
 
 	
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
-	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, "FDZoneInfoRefresh", 10000) {
+	private final static Thread zRefreshThread = new LazyTimedCache.RefreshThread(zoneCache, 10000) {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDZoneRefresh reloading "+expiredKeys.size()+" zoneInfos");
@@ -78,7 +78,7 @@ public class FDCachedFactory {
 	/**
 	 * Thread that reloads expired productInfos, every 10 seconds.
 	 */
-	private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread(productInfoCache, "FDProductInfoRefresh", 10000) {
+	private final static Thread piRefreshThread = new LazyTimedCache.RefreshThread(productInfoCache, 10000) {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductInfoRefresh reloading "+expiredKeys.size()+" productInfos");
@@ -100,7 +100,7 @@ public class FDCachedFactory {
 	/**
 	 * Thread that reloads expired products, every 5 minutes.
 	 */
-	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, "FDProductRefresh", 5*60*1000) {
+	private final static Thread prodRefreshThread = new LazyTimedCache.RefreshThread(productCache, 5*60*1000) {
 		protected void refresh(List expiredKeys) {
 			try {
 				LOGGER.debug("FDProductRefresh reloading "+expiredKeys.size()+" products");

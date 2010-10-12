@@ -85,6 +85,6 @@ public class FDVariationOption extends FDAttributeProxy {
 	}
 
 	public String getSkuCode() {
-		return getAttributes().getSkucode();
+		return getAttribute(EnumAttributeName.SKUCODE);
 	}
 }

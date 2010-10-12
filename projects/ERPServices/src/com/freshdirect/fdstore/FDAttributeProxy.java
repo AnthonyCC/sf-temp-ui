@@ -24,7 +24,7 @@ public class FDAttributeProxy implements AttributesI {
 	public FDAttributeProxy(AttributesI attributes) {
 		this.attributes = attributes;
 	}
-
+	
 	/**
 	 * Check for the presence of an attribute.
 	 *
@@ -101,4 +101,41 @@ public class FDAttributeProxy implements AttributesI {
 		return this.attributes.getAttributeInt( attributeName );
 	}
 
+        public String getSkuCode() {
+            return getAttribute(EnumAttributeName.SKUCODE);
+        }
+
+        public String getUnderLabel() {
+            return getAttribute(EnumAttributeName.UNDER_LABEL);
+        }
+    
+        public int getPriority() {
+            return getAttributeInt(EnumAttributeName.PRIORITY);
+        }
+    
+        public int getPriority(int defValue) {
+            return getAttributeInt(EnumAttributeName.PRIORITY.getName(), defValue);
+        }
+    
+        public String getDescription(String defValue) {
+            return getAttribute(EnumAttributeName.DESCRIPTION.getName(), defValue);
+        }
+
+        public boolean isSelected() {
+            return getAttributeBoolean(EnumAttributeName.SELECTED);
+        }
+
+        public boolean isLabelValue() {
+            return getAttributeBoolean(EnumAttributeName.LABEL_VALUE);
+        }
+        
+        
+        public String getAttributeDescription() {
+            return getAttribute(EnumAttributeName.DESCRIPTION);
+        }
+        
+        public String getRestrictions() {
+            return getAttribute(EnumAttributeName.RESTRICTIONS);
+        }
+	
 }

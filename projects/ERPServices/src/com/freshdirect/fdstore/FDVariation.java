@@ -108,20 +108,4 @@ public class FDVariation extends FDAttributeProxy {
 		return buf.toString();
 	}
 	
-	public String getUnderLabel() {
-		return getAttributes().getUnderLabel();
-	}
-	
-        public int getPriority() {
-            return getAttributes().getPriority();
-        }
-
-        public int getPriority(int defValue) {
-            return getAttributes().getPriority(defValue);
-        }
-
-        public String getDescription(String defValue) {
-            return getAttributes().getDescription(defValue);
-        }
-        
 }

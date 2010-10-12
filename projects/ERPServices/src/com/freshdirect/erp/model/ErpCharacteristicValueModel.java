@@ -104,31 +104,6 @@ public class ErpCharacteristicValueModel extends ErpModelSupport implements Dura
 	public void visitChildren(ErpVisitorI visitor) {
 		// no children
 	}
-    
-	
-        public boolean isSelected() {
-            return getAttributes().isSelected();
-        }
-
-        public boolean isLabelValue() {
-            return getAttributes().isLabelValue();
-        }
-        
-        public String getSkuCode() {
-            return getAttributes().getSkucode();
-        }
-
-        public String getUnderLabel() {
-            return getAttributes().getUnderLabel();
-        }
-        
-        public int getPriority() {
-            return getAttributes().getPriority();
-        }
-        
-        public String getAttributeDescription() {
-            return getAttributes().getDescription();
-        }
         
         
         

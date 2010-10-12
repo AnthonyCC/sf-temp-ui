@@ -325,6 +325,10 @@ public class FDProduct extends FDSku implements AttributesI {
 		return new FDKosherInfo(kSym, kTyp, kPrd, kPri);
 	}
 
+	    public boolean isKosherProduction() {
+	        return material.isKosherProduction();
+	    }
+	
 	public List<FDNutrition> getNutrition() {
 		return this.nutrition;
 	}
@@ -500,6 +504,7 @@ public class FDProduct extends FDSku implements AttributesI {
 	public void setDisplaySalesUnits(FDSalesUnit[] displaySalesUnits) {
 		this.displaySalesUnits = displaySalesUnits;
 	}
+
 
 
 }

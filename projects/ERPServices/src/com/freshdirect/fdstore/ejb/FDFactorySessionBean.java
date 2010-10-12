@@ -23,9 +23,9 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.freshdirect.common.ERPServiceLocator;
 import com.freshdirect.customer.ErpZoneMasterInfo;
 import com.freshdirect.erp.SkuAvailabilityHistory;
-import com.freshdirect.erp.ejb.ErpInfoHome;
 import com.freshdirect.erp.ejb.ErpInfoSB;
 import com.freshdirect.erp.ejb.ErpProductEB;
 import com.freshdirect.erp.ejb.ErpProductHome;
@@ -36,6 +36,7 @@ import com.freshdirect.erp.model.ErpProductModel;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -179,17 +180,6 @@ public class FDFactorySessionBean extends SessionBeanSupport {
 			throw new FDResourceException(re);
 		}
     }
-
-	public Collection<FDSku> getChangedSkus(int lastVersion) throws FDResourceException {
-		try {
-			ErpInfoSB infoSB = this.getErpInfoSB();
-
-			return infoSB.getChangedSkus(lastVersion);
-
-		} catch (RemoteException re) {
-			throw new FDResourceException(re);
-		}
-	}
 
     public Collection getNewSkuCodes(int days) throws FDResourceException {
 		try {

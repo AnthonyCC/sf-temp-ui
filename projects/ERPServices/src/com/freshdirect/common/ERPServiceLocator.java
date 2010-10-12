@@ -8,8 +8,6 @@ import javax.naming.Context;
 import javax.naming.NamingException;
 
 import com.freshdirect.ErpServicesProperties;
-import com.freshdirect.content.attributes.ejb.AttributesHome;
-import com.freshdirect.content.attributes.ejb.AttributesSB;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionHome;
 import com.freshdirect.content.nutrition.ejb.ErpNutritionSB;
 import com.freshdirect.customer.ejb.ErpCustomerHome;
@@ -24,7 +22,6 @@ import com.freshdirect.fdstore.ejb.FDFactoryHome;
 import com.freshdirect.fdstore.ejb.FDFactorySB;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.mail.ejb.MailerGatewayHome;
-import com.freshdirect.security.ticket.TicketServiceHome;
 
 public class ERPServiceLocator extends ServiceLocator {
 
@@ -77,24 +74,6 @@ public class ERPServiceLocator extends ServiceLocator {
         try {
             return (ErpCustomerHome) getRemoteHome("freshdirect.erp.Customer");
         } catch (NamingException e) {
-            throw new EJBException(e);
-        }
-    }
-
-    public AttributesHome getAttributesHome() {
-        try {
-            return (AttributesHome) getRemoteHome("freshdirect.content.Attributes");
-        } catch (NamingException ne) {
-            throw new EJBException(ne);
-        }
-    }
-
-    public AttributesSB getAttributesSessionBean() {
-        try {
-            return getAttributesHome().create();
-        } catch (RemoteException e) {
-            throw new EJBException(e);
-        } catch (CreateException e) {
             throw new EJBException(e);
         }
     }
