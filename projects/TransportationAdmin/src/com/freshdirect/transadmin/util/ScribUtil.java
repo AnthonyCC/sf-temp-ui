@@ -12,6 +12,7 @@ import com.freshdirect.transadmin.model.ScribEmployee;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 
 public class ScribUtil 
@@ -39,7 +40,8 @@ public class ScribUtil
 		return result;
 	}
 	
-	public static Scrib reconstructWebPlanInfo(Scrib scribInfo,Zone zone,String isfirstDlvTimeModified,EmployeeManagerI employeeManagerService) {		
+	public static Scrib reconstructWebPlanInfo(Scrib scribInfo,Zone zone,String isfirstDlvTimeModified,
+			EmployeeManagerI employeeManagerService, ZoneManagerI zoneManagerService) {		
 		
 		if(zone!=null && scribInfo.getFirstDlvTime()!=null 
 				&& ("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(scribInfo.getZoneModified()))){
@@ -47,27 +49,27 @@ public class ScribUtil
 				String shift = getShiftForPlan(scribInfo);
 				if("true".equalsIgnoreCase(isfirstDlvTimeModified)|| "true".equalsIgnoreCase(scribInfo.getZoneModified()))
 					scribInfo.setSupervisorCode(null);
+				Collection supervisorLst = new ArrayList();
 				if("AM".equals(shift)){
-					for (Iterator<ZoneSupervisor> itr = zone.getAmZoneSupervisors().iterator(); itr.hasNext();) {
+					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(scribInfo.getZoneS(), shift, TransStringUtil.getDate(scribInfo.getScribDate()));
+					for (Iterator<ZoneSupervisor> itr = supervisorLst.iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();					
-						if(_supervisor.getEffectiveDate().equals(scribInfo.getScribDate())){
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
 							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 								scribInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
 							}							
-							scribInfo.setSupervisorCode(_supervisor.getSupervisorId());
-						}
+							scribInfo.setSupervisorCode(_supervisor.getSupervisorId());						
 					}
 				}else if("PM".equals(shift)){
-					for (Iterator<ZoneSupervisor> itr = zone.getPmZoneSupervisors().iterator(); itr.hasNext();) {
+					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(scribInfo.getZoneS(), shift, TransStringUtil.getDate(scribInfo.getScribDate()));
+					for (Iterator<ZoneSupervisor> itr = supervisorLst.iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();						
-						if(_supervisor.getEffectiveDate().equals(scribInfo.getScribDate())){
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
 							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 								scribInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
 							}
 							scribInfo.setSupervisorCode(_supervisor.getSupervisorId());
-						}
+						
 					}
 				}
 			} catch (ParseException e) {				

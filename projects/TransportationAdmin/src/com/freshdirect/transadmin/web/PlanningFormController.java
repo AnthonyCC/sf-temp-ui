@@ -226,7 +226,7 @@ public class PlanningFormController extends AbstractFormController {
 		if(!TransStringUtil.isEmpty(model.getZoneCode())) {
 			zone=domainManagerService.getZone(model.getZoneCode());
 		}
-		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),null,employeeManagerService);
+		model= DispatchPlanUtil.reconstructWebPlanInfo(model,zone,model.getFirstDeliveryTimeModified(),null,employeeManagerService,zoneManagerService);
 
 		//set userId to command object
 		model.setUserId(getUserId(request));

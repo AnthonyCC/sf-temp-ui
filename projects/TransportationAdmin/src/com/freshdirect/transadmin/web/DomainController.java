@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -48,6 +49,7 @@ import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
+import com.freshdirect.transadmin.web.model.ResourceList;
 import com.freshdirect.transadmin.web.model.WebEmployeeInfo;
 import com.freshdirect.transadmin.web.model.WebTeamSchedule;
 
@@ -392,18 +394,36 @@ public class DomainController extends AbstractMultiActionController {
 	}
 
 	private void setResourceInfo(Zone _tmpZone) {
-		WebEmployeeInfo webEmpInfo = null;		
-		for (Iterator<ZoneSupervisor> iterator = _tmpZone.getZoneSupervisors().iterator(); iterator.hasNext();) {
-			ZoneSupervisor _zoneSupervisor = iterator.next();
-			try {
-				if(_zoneSupervisor.getEffectiveDate().equals(TransStringUtil.getDate(TransStringUtil.getCurrentDate()))){
+		List amZoneSupervisors = new ResourceList();
+		List pmZoneSupervisors = new ResourceList();
+		Collection supervisorLst = new ArrayList();
+		WebEmployeeInfo webEmpInfo = null;
+		try {
+			supervisorLst = zoneManagerService.getDefaultZoneSupervisor(_tmpZone.getZoneCode(), "AM", TransStringUtil.getCurrentDate());
+			for (Iterator<ZoneSupervisor> iterator = supervisorLst.iterator(); iterator.hasNext();) {		
+				ZoneSupervisor _zoneSupervisor = iterator.next();
+				if("AM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
 					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
 					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
 					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+					amZoneSupervisors.add(_zoneSupervisor);
 				}
-			} catch (Exception e) {				
-				e.printStackTrace();
 			}
+			supervisorLst = zoneManagerService.getDefaultZoneSupervisor(_tmpZone.getZoneCode(), "PM", TransStringUtil.getCurrentDate());
+			for (Iterator<ZoneSupervisor> iterator = supervisorLst.iterator(); iterator.hasNext();) {		
+				ZoneSupervisor _zoneSupervisor = iterator.next();
+				if("PM".equalsIgnoreCase(_zoneSupervisor.getDayPart())){
+					webEmpInfo = employeeManagerService.getEmployee(_zoneSupervisor.getSupervisorId());
+					_zoneSupervisor.setSupervisorFirstName(webEmpInfo.getEmpInfo().getFirstName());
+					_zoneSupervisor.setSupervisorLastName(webEmpInfo.getEmpInfo().getLastName());
+					pmZoneSupervisors.add(_zoneSupervisor);
+				}
+			}
+			_tmpZone.setAmZoneSupervisors(amZoneSupervisors);
+			_tmpZone.setPmZoneSupervisors(pmZoneSupervisors);
+			
+		} catch (Exception e) {				
+			e.printStackTrace();
 		}
 	}
 

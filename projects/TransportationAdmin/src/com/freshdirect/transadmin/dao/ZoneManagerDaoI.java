@@ -14,4 +14,5 @@ public interface ZoneManagerDaoI {
 	Collection getActiveZoneCodes() throws DataAccessException;
 	Collection getActiveZoneCodes(String date) throws DataAccessException;
 	Map<String, List<TimeRange>> getWindowSteeringDiscounts(Date deliveryDate) throws DataAccessException;
+	Collection getDefaultZoneSupervisor(String zoneCode, String dayPart, String date)throws DataAccessException;
 }

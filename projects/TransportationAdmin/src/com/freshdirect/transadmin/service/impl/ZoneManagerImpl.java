@@ -39,4 +39,8 @@ public class ZoneManagerImpl extends BaseManagerImpl implements ZoneManagerI {
 	public Map<String, List<TimeRange>> getWindowSteeringDiscounts(Date deliveryDate) {
 		return getZoneManagerDAO().getWindowSteeringDiscounts(deliveryDate);
 	}
+	
+	public Collection getDefaultZoneSupervisor(String zoneCode, String dayPart,String date){
+		return getZoneManagerDAO().getDefaultZoneSupervisor(zoneCode, dayPart,date);
+	}
 }

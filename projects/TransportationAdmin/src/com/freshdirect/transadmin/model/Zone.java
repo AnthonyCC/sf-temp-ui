@@ -47,13 +47,13 @@ public class Zone implements java.io.Serializable {
 	}
 
 	public List getAmZoneSupervisors() {
-		if(getZoneSupervisors()==null)return null;
+		/*if(getZoneSupervisors()==null)return null;
 		for (Iterator<ZoneSupervisor> iterator = getZoneSupervisors().iterator(); iterator.hasNext();) {
 			ZoneSupervisor _amSupervisor = iterator.next();
 			if("AM".equals(_amSupervisor.getDayPart())&&!amZoneSupervisors.contains(_amSupervisor)){
 				amZoneSupervisors.add(_amSupervisor);
 			}
-		}
+		}*/
 		return amZoneSupervisors;
 	}
 
@@ -62,13 +62,13 @@ public class Zone implements java.io.Serializable {
 	}
 
 	public List getPmZoneSupervisors() {
-		if(getZoneSupervisors()==null)return null;
+		/*if(getZoneSupervisors()==null)return null;
 		for (Iterator<ZoneSupervisor> iterator = getZoneSupervisors().iterator(); iterator.hasNext();) {
 			ZoneSupervisor _pmSupervisor = iterator.next();
 			if("PM".equals(_pmSupervisor.getDayPart())&&!pmZoneSupervisors.contains(_pmSupervisor)){
 				pmZoneSupervisors.add(_pmSupervisor);
 			}
-		}
+		}*/
 		return pmZoneSupervisors;
 	}
 

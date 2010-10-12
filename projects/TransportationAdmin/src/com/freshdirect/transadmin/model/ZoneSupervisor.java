@@ -9,10 +9,28 @@ public class ZoneSupervisor {
 	private Date effectiveDate;	
 	private Zone zone;
 	
+	private String zoneId;
+
 	private String supervisorFirstName;
 	private String supervisorLastName;
 	private String supervisorName;
 	
+	public ZoneSupervisor(String dayPart, String supervisorId, Date effectiveDate,
+			String zoneCode) {
+		this.dayPart=dayPart;
+		this.supervisorId=supervisorId;
+		this.effectiveDate=effectiveDate;
+		this.zoneId=zoneCode;
+	}
+
+	
+	public String getZoneId() {
+		return zoneId;
+	}
+
+	public void setZoneId(String zoneId) {
+		this.zoneId = zoneId;
+	}
 	public String getSupervisorName() {
 		return supervisorName;
 	}
@@ -24,6 +42,11 @@ public class ZoneSupervisor {
 	public String getSupervisorFirstName() {
 		return supervisorFirstName;
 	}
+
+	public ZoneSupervisor() {
+		super();
+	}
+
 
 	public void setSupervisorFirstName(String supervisorFirstName) {
 		this.supervisorFirstName = supervisorFirstName;

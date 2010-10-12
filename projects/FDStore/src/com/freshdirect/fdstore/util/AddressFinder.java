@@ -35,7 +35,7 @@ public class AddressFinder {
 				address = FDCustomerManager.getShipToAddress(user.getIdentity(), addressId);
 				return address;
 			}else{
-				if(user!=null&&!timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM))
+				if(user!=null&&!timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)&&!timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)&& !timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS))
 					shipToAddresses = FDCustomerManager.getShipToAddresses(user.getIdentity());
 					if(shipToAddresses.size()>0){
 						if(shipToAddresses.size() > 1){
@@ -62,7 +62,8 @@ public class AddressFinder {
 			}
 		
 		
-		if(timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS)||timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)){
+		if(timeslotCtx.equals(TimeslotContext.CHECKOUT_TIMESLOTS)|| timeslotCtx.equals(TimeslotContext.CHECK_AVAIL_SLOTS_NO_USER)
+										|| timeslotCtx.equals(TimeslotContext.CHECK_SLOTS_FOR_ADDRESS_CRM)){
 			if(user.getShoppingCart()!=null){
 				address=user.getShoppingCart().getDeliveryAddress();
 			}

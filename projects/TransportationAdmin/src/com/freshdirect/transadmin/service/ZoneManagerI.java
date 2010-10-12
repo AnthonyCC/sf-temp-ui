@@ -12,4 +12,5 @@ public interface ZoneManagerI extends BaseManagerI {
 	Collection getActiveZoneCodes();
 	Collection getActiveZoneCodes(String date);
 	Map<String, List<TimeRange>> getWindowSteeringDiscounts(Date deliveryDate);
+	Collection getDefaultZoneSupervisor(String zoneCode, String dayPart, String date);
 }

@@ -26,6 +26,7 @@ import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.model.ZonetypeResource;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
+import com.freshdirect.transadmin.service.ZoneManagerI;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.ResourceReq;
@@ -299,7 +300,8 @@ public class DispatchPlanUtil {
 
 	}
 
-	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String isfirstDlvTimeModified,String dispatchDate,EmployeeManagerI employeeManagerService) {
+	public static WebPlanInfo reconstructWebPlanInfo(WebPlanInfo planInfo,Zone zone,String isfirstDlvTimeModified,
+			String dispatchDate,EmployeeManagerI employeeManagerService,ZoneManagerI zoneManagerService) {
 
 		setResourceReq(planInfo,zone);
 		boolean isZoneModified=false;
@@ -322,27 +324,26 @@ public class DispatchPlanUtil {
 					_currentDate = TransStringUtil.getServerDateString1(dispatchDate);
 				else						
 					_currentDate = planInfo.getPlanDate();
+				Collection supervisorLst = new ArrayList();
 				if("AM".equals(shift)){
-					for (Iterator<ZoneSupervisor> itr = zone.getAmZoneSupervisors().iterator(); itr.hasNext();) {
+					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(planInfo.getZoneCode(), shift, TransStringUtil.getDate(_currentDate));
+					for (Iterator<ZoneSupervisor> itr = supervisorLst.iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();					
-						if(_supervisor.getEffectiveDate().equals(_currentDate)){
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
 							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 								planInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
 							}							
 							planInfo.setSupervisorCode(_supervisor.getSupervisorId());
-						}
 					}
 				}else if("PM".equals(shift)){
-					for (Iterator<ZoneSupervisor> itr = zone.getPmZoneSupervisors().iterator(); itr.hasNext();) {
+					supervisorLst = zoneManagerService.getDefaultZoneSupervisor(planInfo.getZoneCode(), shift,TransStringUtil.getDate(_currentDate));
+					for (Iterator<ZoneSupervisor> itr = supervisorLst.iterator(); itr.hasNext();) {
 						ZoneSupervisor _supervisor = itr.next();						
-						if(_supervisor.getEffectiveDate().equals(_currentDate)){
 							WebEmployeeInfo webEmp=employeeManagerService.getEmployee(_supervisor.getSupervisorId());
 							if(webEmp!=null && webEmp.getEmpInfo()!=null) {
 								planInfo.setSupervisorName(webEmp.getEmpInfo().getSupervisorInfo());
 							}
 							planInfo.setSupervisorCode(_supervisor.getSupervisorId());
-						}
 					}
 				}
 			} catch (ParseException e) {				

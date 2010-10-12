@@ -23,6 +23,8 @@ import org.springframework.jdbc.core.RowCallbackHandler;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.transadmin.dao.ZoneManagerDaoI;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
+import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.web.model.CustomTimeOfDay;
 import com.freshdirect.transadmin.web.model.TimeRange;
 
@@ -170,6 +172,37 @@ public class ZoneManagerDaoOracleImpl implements ZoneManagerDaoI {
        		   });
         
         return result;
-	}	
+	}
+	
+	private static final String GET_DEFAULT_ZONE_SUPERVISOR =
+		"select day_part,supervisor_id,effective_date,zone_code from transp.zone_supervisor where effective_date=(select max(EFFECTIVE_DATE)as EFFECTIVE_DATE "+
+		"from transp.zone_supervisor where zone_code = ? and day_part=? and EFFECTIVE_DATE <= TO_DATE(?, 'mm/dd/yyyy')) and zone_code=? and day_part=?";
+	
+	public Collection getDefaultZoneSupervisor(final String zoneCode, final String dayPart, final String date) throws DataAccessException {
+		final List result = new ArrayList();		
+        PreparedStatementCreator creator=new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+                PreparedStatement ps =
+                    connection.prepareStatement(GET_DEFAULT_ZONE_SUPERVISOR);
+                ps.setString(1,zoneCode);
+                if(dayPart!=null)ps.setString(2,dayPart);
+                ps.setString(3,date);
+                ps.setString(4,zoneCode);
+                if(dayPart!=null)ps.setString(5,dayPart);
+                return ps;
+            }  
+        };
+        jdbcTemplate.query(creator, 
+       		  new RowCallbackHandler() { 
+       		      public void processRow(ResultSet rs) throws SQLException {
+       		    	ZoneSupervisor zs;
+       		    	do {       		 
+       		    		zs = new ZoneSupervisor(rs.getString("day_part"),rs.getString("supervisor_id"),rs.getDate("effective_date"),rs.getString("zone_code"));
+       		    		result.add(zs);
+       		    	}  while(rs.next());
+       		      }
+       		   });
+        return result;
+	}
 
 }
