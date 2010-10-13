@@ -180,9 +180,9 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 	public void assignStandingOrderToOrder(PrimaryKey salePK, PrimaryKey standingOrderPK) throws FDResourceException {		
 
 		LOGGER.debug( "assigning SO["+standingOrderPK+"] to SALE["+salePK+"]" );
-		
+		Connection conn=null;
 		try {
-			Connection conn = getConnection();
+			 conn = getConnection();
 			
 			FDStandingOrderDAO dao = new FDStandingOrderDAO();
 			dao.assignToSale(conn, standingOrderPK.getId(), salePK.getId());
@@ -191,6 +191,8 @@ public class FDStandingOrdersSessionBean extends FDSessionBeanSupport {
 			LOGGER.error( "SQL ERROR in assignStandingOrderToOrder() : " + e.getMessage(), e );
 			e.printStackTrace();
 			throw new FDResourceException(e);
+		}finally {
+			close(conn);
 		}
 	}
 
