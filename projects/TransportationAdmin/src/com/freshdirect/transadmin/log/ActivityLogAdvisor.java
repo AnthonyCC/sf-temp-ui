@@ -163,12 +163,13 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 						while(iterator.hasNext())
 						{
 							DispatchResource newPlanResource=(DispatchResource)iterator.next();
-
-							Collection dispatchInfos = dispatchManagerDao
+							Collection dispatchInfos = new ArrayList();
+							dispatchInfos = dispatchManagerDao
 									.getDispatchForResource(TransStringUtil.getServerDate(newDispatch.getDispatchDate()),
 																									newPlanResource.getId().getResourceId());
 							for (Iterator<Dispatch> itr = dispatchInfos.iterator(); itr.hasNext();) {
 								Dispatch _resDispatch =  itr.next();
+								dispatchManagerDao.evictDispatch(_resDispatch);
 								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
 									((DispatchComparator) c).compareResource(oldDispatch.getDispatchResources(),newDispatch.getDispatchResources());
 								}
