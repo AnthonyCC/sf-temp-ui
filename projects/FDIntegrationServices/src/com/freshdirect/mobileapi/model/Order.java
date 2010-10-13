@@ -16,6 +16,8 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.DepartmentModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
@@ -219,6 +221,34 @@ public class Order {
             result.add(productConfiguration);
         }
 
+        return result;
+    }
+    
+    /**
+     * 
+     * @param orderId
+     * @return
+     * @throws FDException 
+     * @throws ModelException 
+     */
+    public List<Department> getDeptForQuickshopEveryItem(String orderId, SessionUser user) throws FDException, ModelException {
+        List<Department> result = new ArrayList<Department>();
+
+        QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(user);
+
+        ResultBundle resultBundle = wrapper.getQuickCartFromOrder(orderId);
+        QuickCart qCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
+
+        List<DepartmentModel> storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
+               
+   		for (DepartmentModel thisDept : storeDepartments) {
+   			if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
+   				//if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
+   				if (!thisDept.isHidden() && !thisDept.isHidddenInQuickshop()) {
+   					result.add(Department.wrap(thisDept));
+   				}
+   			}
+   		}
         return result;
     }
       

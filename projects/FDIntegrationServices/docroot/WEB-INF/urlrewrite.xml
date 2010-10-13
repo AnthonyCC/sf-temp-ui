@@ -304,8 +304,13 @@
 	
 	<!-- QuickShop from Previous Order By Dept -->
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/dept/id/(.*)/quickshopeveryitem/</from>
-		<to last="true">/order.do?orderId=every&amp;qsDeptId=$3&amp;action=quickshopeveryitem&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/(.*)/quickshop/dept/id/(.*)/geteveryitemfordept/</from>
+		<to last="true">/order.do?orderId=every&amp;qsDeptId=$3&amp;action=geteveryitemfordept&amp;ver=$1</to>
+	</rule>
+	
+	<rule>
+		<from>^/v/([0-9]+)/(.*)/quickshop/getdeptsforeveryitem/</from>
+		<to last="true">/order.do?orderId=every&amp;action=getdeptsforeveryitem&amp;ver=$1</to>
 	</rule>
 
 	<!-- List Shopping lists -->

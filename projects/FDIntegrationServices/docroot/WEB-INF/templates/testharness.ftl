@@ -15,7 +15,7 @@ $(document).ready(function(){
   }
   
   // Setup the ajax indicator
-	$("body").append('<div id="ajaxBusy"><p><img src="../images/loading_color.gif"></p></div>');
+	$("body").append('<div id="ajaxBusy"><p><img src="../images/loading.gif"></p></div>');
 	$('#ajaxBusy').css({
 		display:"none",
 		margin:"0px",
@@ -271,8 +271,12 @@ function loadStuff() {
   	$("#url").val("/saptest12@freshdirect.com/shoppinglist/id/2153098981/quickshop/");
   	$("#payload").val("");
   	$("#result").val("");
+  } else if (loaddata == "QuickShopEveryItemOrderedDept") {
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/getdeptsforeveryitem/");
+  	$("#payload").val("");
+  	$("#result").val("");
   } else if (loaddata == "QuickShopEveryItemOrdered") {
-  	$("#url").val("/saptest12@freshdirect.com//dept/id/gro/quickshopeveryitem/");
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/dept/id/gro/geteveryitemfordept/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "RemoveMultipleItems") {
@@ -433,7 +437,7 @@ function doStuff() {
 </head>
 <body>
 <form name="f1">
-  <p><b>URL:</b> <input id="url" name="url" type="text" size="70" /> <b>Ver:</b> <input id="version" name="version" type="text" size="3" />
+  <p><b>URL:</b> <input id="url" name="url" type="text" size="65" /> <b>Ver:</b> <input id="version" name="version" type="text" size="2" />
   <b>- or -</b>
   <select name="loaddata" id="loaddata" onchange='JavaScript:loadStuff()'>
   <option value="">========== LOGIN ==========</option>
@@ -487,6 +491,7 @@ function doStuff() {
   <option value="QuickShopOrder">QUICKSHOP - Shop from Order</option>
   <option value="ShoppingLists">QUICKSHOP - Shopping Lists</option>
   <option value="QuickShopLists">QUICKSHOP - Shop from Shopping List</option>
+  <option value="QuickShopEveryItemOrderedDept">QUICKSHOP - Department Everything You've Ever Ordered!</option>
   <option value="QuickShopEveryItemOrdered">QUICKSHOP - Everything You've Ever Ordered!</option>
   <option value=""> ========== WHATS GOOD ========== </option>
   <option value="WGDCategories">WHATS GOOD - Categories</option>

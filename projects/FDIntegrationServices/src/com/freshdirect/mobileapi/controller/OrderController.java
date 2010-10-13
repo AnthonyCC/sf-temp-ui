@@ -1,6 +1,9 @@
 package com.freshdirect.mobileapi.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.fdstore.FDException;
@@ -18,18 +23,20 @@ import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.request.SearchQuery;
 import com.freshdirect.mobileapi.controller.data.request.SimpleRequest;
 import com.freshdirect.mobileapi.controller.data.response.CartDetail;
+import com.freshdirect.mobileapi.controller.data.response.FilterOption;
 import com.freshdirect.mobileapi.controller.data.response.ModifiedOrder;
 import com.freshdirect.mobileapi.controller.data.response.QuickShop;
 import com.freshdirect.mobileapi.controller.data.response.QuickShopLists;
 import com.freshdirect.mobileapi.exception.JsonException;
 import com.freshdirect.mobileapi.exception.ModelException;
 import com.freshdirect.mobileapi.model.Cart;
-import com.freshdirect.mobileapi.model.CustomerCreatedList;
+import com.freshdirect.mobileapi.model.Department;
 import com.freshdirect.mobileapi.model.Order;
 import com.freshdirect.mobileapi.model.OrderHistory;
 import com.freshdirect.mobileapi.model.OrderInfo;
 import com.freshdirect.mobileapi.model.ResultBundle;
 import com.freshdirect.mobileapi.model.SessionUser;
+import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ListPaginator;
 import com.freshdirect.mobileapi.util.MobileApiProperties;
@@ -55,7 +62,10 @@ public class OrderController extends BaseController {
 
     private static final String ACTION_QUICK_SHOP = "quickshop";
     
-    private static final String ACTION_QUICK_SHOP_EVERYITEM = "quickshopeveryitem";
+    private static final String ACTION_GET_QUICK_SHOP_EVERYITEM = "geteveryitemfordept";
+    
+    private static final String ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT = "getdeptsforeveryitem";
+    
     
     /* (non-Javadoc)
      * @see com.freshdirect.mobileapi.controller.BaseController#processRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, org.springframework.web.servlet.ModelAndView, java.lang.String, com.freshdirect.mobileapi.model.SessionUser)
@@ -91,10 +101,13 @@ public class OrderController extends BaseController {
             model = getProductsFromOrder(model, user, orderId);
         } else if (ACTION_CANCEL_ORDER_MODIFY.equals(action)) {
             model = cancelOrderModify(model, user, request);
-        } else if (ACTION_QUICK_SHOP_EVERYITEM.equals(action)) {  
+        } else if (ACTION_GET_QUICK_SHOP_EVERYITEM.equals(action)) {  
         	String orderId = request.getParameter("orderId");
         	String deptId = request.getParameter("qsDeptId");
             model = getProductsFromOrderDept(model, user, orderId, (deptId != null && deptId.trim().length() > 0) ? deptId : null);
+        } else if (ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT.equals(action)) {
+        	String orderId = request.getParameter("orderId");
+        	model = getDeptForQuickshopEveryItem(model, user, orderId);
         }
 
         return model;
@@ -251,7 +264,7 @@ public class OrderController extends BaseController {
     
     private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user, String orderId, String deptId) throws FDException, JsonException {
         Order order = new Order();
-
+        
         List<ProductConfiguration> products;
         try {
             products = order.getOrderProducts(orderId, deptId, user);
@@ -263,6 +276,47 @@ public class OrderController extends BaseController {
         setResponseMessage(model, quickShop, user);
         return model;
     }
+    
+    private ModelAndView getDeptForQuickshopEveryItem(ModelAndView model, SessionUser user, String orderId) throws FDException, JsonException {
+    	Order order = new Order();
 
+    	List<Department> departments;
+    	    	
+    	List<FilterOption> qCartDepartments = new ArrayList<FilterOption>();
+    	
+    	FilterOption allDepartmentFilter =  new FilterOption();
+    	allDepartmentFilter.setId("all");
+    	allDepartmentFilter.setLabel("ALL DEPARTMENTS");
+        qCartDepartments.add(allDepartmentFilter);
+        
+        List<FilterOption> departmentList = new ArrayList<FilterOption>();
+    	try {
+    		departments = order.getDeptForQuickshopEveryItem(orderId, user);
+
+    		if(departments != null) {
+    			
+	    		FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
+	 		
+	    		Iterator<Department> dit = departments.iterator();
+	    		while (dit.hasNext()) {
+	    			Department department = dit.next();
+	    			FilterOption option = new FilterOption();
+	    			option.setId(department.getId());
+	    			option.setLabel(department.getName());
+	    			departmentList.add(option);
+	    		}
+	
+	    		Collections.sort(departmentList, filterComparator); 
+	    		qCartDepartments.addAll(departmentList);
+    		}
+    	} catch (ModelException e) {
+    		throw new FDException(e);
+    	}
+
+    	QuickShop quickShop = new QuickShop();
+    	quickShop.setDepartments(qCartDepartments);
+    	setResponseMessage(model, quickShop, user);
+    	return model;
+    }
 
 }
