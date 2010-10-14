@@ -698,3 +698,5 @@ img.COSSurvey_spacer01 { width: 140px; height: 8px; }
 img.COSSurvey_spacer02 { width: 180px; height: 8px; }
 img.COSSurvey_spacer03 { width: 80px; height: 8px; }
 img.COSSurvey_spacer04 { width: 140px; height: 8px; }
+
+#prod_container { word-wrap: break-word; }
