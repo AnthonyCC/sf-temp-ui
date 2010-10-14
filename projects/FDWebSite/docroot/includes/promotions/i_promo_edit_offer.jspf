@@ -34,9 +34,9 @@
 							<tr>
 								<td><input type="radio" id="header_discount_type_perc" name="header_discount_type" value="perc" <%= (EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType()) && !"".equals(promotion.getPercentOff()))?"checked":"" %> onclick="checkOffer();" /></td>
 								<% if(EnumPromotionType.HEADER.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
-								<td><input type="text" id="hd_perc" name="hd_perc" class="w30px" value="<%= promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
+								<td><input type="text" id="hd_perc" name="hd_perc" maxlength="3" class="w30px" value="<%= NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
 								<% } else { %>
-								<td><input type="text" id="hd_perc" name="hd_perc" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
+								<td><input type="text" id="hd_perc" name="hd_perc" maxlength="3" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
 								<% } %>
 							</tr>
 							
@@ -121,9 +121,9 @@
 				<tr>
 					<td class="promo_edit_offer_label">Discount:</td>
 					<% if(EnumPromotionType.LINE_ITEM.getName().equalsIgnoreCase(promotion.getPromotionType())){ %>
-					<td class="alignL vTop padL8R16"><input type="text" id="li_discount" name="li_discount" class="w30px" value="<%= promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
+					<td class="alignL vTop padL8R16"><input type="text" maxlength="5" id="li_discount" name="li_discount" class="w30px" value="<%= promotion.getPercentOff()%>" /><span class="gray"> % (0-100)</span></td>
 					<% } else {%>
-					<td class="alignL vTop padL8R16"><input type="text" id="li_discount" name="li_discount" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
+					<td class="alignL vTop padL8R16"><input type="text" maxlength="5" id="li_discount" name="li_discount" class="w30px" value=" " /><span class="gray"> % (0-100)</span></td>
 					<% } %>
 				</tr>
 				<tr>

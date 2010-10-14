@@ -73,7 +73,7 @@
 									( promotion.getPercentOff() != null && !"".equals(promotion.getPercentOff()) ) ||
 									( promotion.getMaxAmount() != null && !"".equals(promotion.getMaxAmount()) )
 								) { %>
-								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?promotion.getPercentOff()+" %":"$ "+promotion.getMaxAmount()%></td>
+								<td class="alignL"><%= (!"".equals(promotion.getPercentOff()))?(NumberUtil.isDouble(promotion.getPercentOff())?Double.valueOf(promotion.getPercentOff()).intValue():promotion.getPercentOff())+" %":"$ "+promotion.getMaxAmount()%></td>
 							<% } %>
 							<% if ( promotion.getWaiveChargeType() != null && !"".equals(promotion.getWaiveChargeType()) ) { %>
 								<td class="alignL">Free Delivery <span class="grayIta8pt"> (incl. fuel surcharge)</span></td>

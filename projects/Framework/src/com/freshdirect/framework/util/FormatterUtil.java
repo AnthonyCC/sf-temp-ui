@@ -14,4 +14,19 @@ public class FormatterUtil {
 	public static String formatToGrouping(double number) {
 		return DECIMALFORMAT.format(number);
 	}
+	
+	public static double formatDecimal(double number) {
+		DecimalFormat decimalFormat = new DecimalFormat("0.##");
+		String strNumber = decimalFormat.format(number);
+		strNumber = strNumber.replaceAll(",", ".");
+		Double numberDouble = new Double(strNumber);
+		return numberDouble.doubleValue();
+	}
+	public static double formatFourDecimal(double number) {
+		DecimalFormat decimalFormat = new DecimalFormat("0.####");
+		String strNumber = decimalFormat.format(number);
+		strNumber = strNumber.replaceAll(",", ".");
+		Double numberDouble = new Double(strNumber);
+		return numberDouble.doubleValue();
+	}
 }

@@ -223,7 +223,7 @@ nextDayVal.add(Calendar.DATE, 1);
 	 } 	 
 }
  request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
- if(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable)){
+ if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))){
  %>
 <input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
 <% } else { %>

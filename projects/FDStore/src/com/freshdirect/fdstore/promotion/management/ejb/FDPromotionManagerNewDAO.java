@@ -179,7 +179,7 @@ public class FDPromotionManagerNewDAO {
 		}
 		double percentOff = rs.getDouble("PERCENT_OFF") * 100;
 		if (!rs.wasNull()) {
-			promotion.setPercentOff(String.valueOf((int) percentOff));
+			promotion.setPercentOff(String.valueOf(FormatterUtil.formatDecimal(percentOff)));
 		} else {
 			promotion.setPercentOff("");
 		}
@@ -2025,7 +2025,7 @@ public class FDPromotionManagerNewDAO {
 		ps.setString(i++, promotion.isFavoritesOnly()?"Y":"N");
 		if (!"".equals(promotion.getPercentOff())) {
 			ps.setDouble(i++,
-					Double.parseDouble(promotion.getPercentOff()) / 100);
+					FormatterUtil.formatFourDecimal(Double.parseDouble(promotion.getPercentOff()) / 100));
 		} else {
 			ps.setNull(i++, Types.DOUBLE);
 		}
