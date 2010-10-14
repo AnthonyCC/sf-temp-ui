@@ -150,5 +150,14 @@ public class DeliveryAddress {
         
         return timeSlotCalculationResult;
     }
+    
+    public TimeSlotCalculationResult getDeliveryTimeslot(SessionUser user, boolean preReservationMode, boolean isAuthenticated) throws FDException {
+        DeliveryTimeSlotTagWrapper wrapper = new DeliveryTimeSlotTagWrapper(user);
+        Result result = wrapper.getDeliveryTimeSlotResult(this.address,isAuthenticated);
+        TimeSlotCalculationResult timeSlotCalculationResult = new TimeSlotCalculationResult(result, user.isChefsTable(), preReservationMode);
+        user.setReservationAndPreselectedTimeslotIds(result.getTimeslots(), timeSlotCalculationResult);
+        
+        return timeSlotCalculationResult;
+    }
 
 }

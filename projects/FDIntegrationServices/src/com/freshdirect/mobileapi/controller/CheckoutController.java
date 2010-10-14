@@ -275,7 +275,7 @@ public class CheckoutController extends BaseController {
         Message responseMessage = null;
         if (result.isSuccess()) {
             DeliveryAddress deliveryAddress = DeliveryAddress.wrap(user.getShoppingCart().getDeliveryAddress());
-            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false);
+            TimeSlotCalculationResult timeSlotResult = deliveryAddress.getDeliveryTimeslot(user, false,isCheckoutAuthenticated(request));
 
             com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots slotResponse = new com.freshdirect.mobileapi.controller.data.response.DeliveryTimeslots(
                     timeSlotResult);
