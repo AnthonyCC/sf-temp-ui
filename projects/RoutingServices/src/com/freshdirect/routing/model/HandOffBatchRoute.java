@@ -114,12 +114,12 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	@Override
 	public String getServiceTimeInfo() {
 		
-		return RoutingStringUtil.calcHM((int)getServiceTime());
+		return RoutingStringUtil.calcHMSFlat((int)getServiceTime());
 	}
 
 	@Override
 	public String getTravelTimeInfo() {
-		return RoutingStringUtil.calcHM((int)getTravelTime());
+		return RoutingStringUtil.calcHMSFlat((int)getTravelTime());
 	}
 		
 }
