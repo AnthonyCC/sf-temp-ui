@@ -307,7 +307,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
 			Dispatch currentDispatch = this.getDispatch(dispatch.getDispatchId());
 			if(referenceDispatch != null && currentDispatch != null) {
-				Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
+				/*Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
 																		currentDispatch.getStartTime(), 
 																		true);
 				Dispatch bullPen = bullPen = new Dispatch();
@@ -317,30 +317,42 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				bullPen.setRegion(currentDispatch.getRegion());
 				bullPen.setStartTime(currentDispatch.getStartTime());
 				bullPen.setFirstDlvTime(currentDispatch.getFirstDlvTime());
-				bullPen.setBullPen(true);
+				bullPen.setBullPen(true); */
+				if(referenceDispatch.getDispatchResources() != null) {
+					referenceDispatch.getDispatchResources().clear();
+				} else {
+					referenceDispatch.setDispatchResources(new HashSet(0));
+				}
 				for (Iterator i = currentDispatch.getDispatchResources().iterator(); i.hasNext();) {
 					DispatchResource _oldResource = (DispatchResource)i.next();
 					DispatchResource dispatchResource = new DispatchResource();
 					ResourceId resource = new ResourceId();
-					resource.setResourceId(_oldResource.getId().getResourceId());	
+					resource.setResourceId(_oldResource.getId().getResourceId());
+					resource.setContextId(referenceDispatch.getDispatchId());
 					resource.setAdjustmentTime(_oldResource.getId().getAdjustmentTime());
+					
 					dispatchResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
 					dispatchResource.setId(resource);
 					dispatchResource.setNextTelNo(_oldResource.getNextTelNo());
-					dispatchResource.setDispatch(bullPen);
-					bullPen.getDispatchResources().add(dispatchResource);
+					dispatchResource.setDispatch(referenceDispatch);
+					referenceDispatch.getDispatchResources().add(dispatchResource);
 				}
-				this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
-				getDispatchManagerDao().saveDispatch(bullPen);
+				//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+				getDispatchManagerDao().saveDispatch(referenceDispatch);
 			}
 		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
 			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
-			this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+			//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+			if(referenceDispatch.getDispatchResources() != null) {
+				referenceDispatch.getDispatchResources().clear();
+			} else {
+				referenceDispatch.setDispatchResources(new HashSet(0));
+			}
 			/*if(referenceDispatch.getDispatchResources() != null) {
 				referenceDispatch.getDispatchResources().clear();	
 				referenceDispatch.setConfirmed(false);
-			}
-			this.getDispatchManagerDao().saveDispatch(referenceDispatch);*/
+			}*/
+			this.getDispatchManagerDao().saveDispatch(referenceDispatch);
 		}
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
@@ -398,7 +410,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			Plan referencePlan = this.getPlan(referencePlanId);
 			Plan currentPlan = this.getPlan(plan.getPlanId());
 			if(referencePlan != null && currentPlan != null) {
-				Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
+				/*Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
 																		currentPlan.getStartTime(), 
 																		true);
 				Plan bullPen = bullPen = new Plan();
@@ -408,23 +420,35 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				bullPen.setRegion(currentPlan.getRegion());
 				bullPen.setStartTime(currentPlan.getStartTime());
 				bullPen.setFirstDeliveryTime(currentPlan.getFirstDeliveryTime());
-				bullPen.setIsBullpen("Y");
+				bullPen.setIsBullpen("Y");*/
+				if(referencePlan.getPlanResources() != null) {
+					referencePlan.getPlanResources().clear();
+				} else {
+					referencePlan.setPlanResources(new HashSet(0));
+				}
 				for (Iterator i = currentPlan.getPlanResources().iterator(); i.hasNext();) {
 					PlanResource _oldResource = (PlanResource)i.next();
 					PlanResource planResource = new PlanResource();
 					ResourceId resource = new ResourceId();
-					resource.setResourceId(_oldResource.getId().getResourceId());						
+					resource.setResourceId(_oldResource.getId().getResourceId());
+					resource.setContextId(referencePlan.getPlanId());
 					planResource.setEmployeeRoleType(_oldResource.getEmployeeRoleType());
 					planResource.setId(resource);
-					bullPen.getPlanResources().add(planResource);
+					
+					referencePlan.getPlanResources().add(planResource);
 				}
 				
-				this.getDispatchManagerDao().removeEntityEx(referencePlan);
-				getDispatchManagerDao().savePlan(bullPen);
+				this.getDispatchManagerDao().savePlan(referencePlan);
+				//getDispatchManagerDao().savePlan(bullPen);
 			}
 		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
 			Plan referencePlan = this.getPlan(referencePlanId);
-			this.getDispatchManagerDao().removeEntityEx(referencePlan);
+			if(referencePlan.getPlanResources() != null) {
+				referencePlan.getPlanResources().clear();
+			} else {
+				referencePlan.setPlanResources(new HashSet(0));
+			}
+			this.getDispatchManagerDao().savePlan(referencePlan);
 			/*if(referencePlan.getPlanResources() != null) {
 				referencePlan.getPlanResources().clear();
 				referencePlan.setOpen("Y");
