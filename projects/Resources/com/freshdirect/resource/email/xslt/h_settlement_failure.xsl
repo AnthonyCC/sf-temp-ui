@@ -40,7 +40,7 @@
 						 Please contact customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.</p>
 						<p>within the next 24 hours so that we may help you resolve the payment discrepancy. Often times, these issues are caused by an input error.
 						   Pursuant to your agreement with us, should we not hear from you within 24 hours, we will attempt to settle payment using the other payments methods listed within your account.
-Thank you,</b>.
+Thank you,</p>.
 						If you need further assistance, we're here:</p>
 					</td>
 					<td width="200px" valign="top" style="border: 1px solid #666; background-color: #eee; padding: 5px;">
