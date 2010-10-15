@@ -155,6 +155,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 						logManager.log(newDispatch.getUserId(),4,updates.get(i));
 					}
 					
+					LogComparator c1=new DispatchComparator();
 					Set newResourcesCopy=new HashSet();
 					newResourcesCopy.addAll(newDispatch.getDispatchResources());
 					if(newResourcesCopy!=null)
@@ -171,12 +172,12 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 								Dispatch _resDispatch =  itr.next();
 								dispatchManagerDao.evictDispatch(_resDispatch);
 								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
-									((DispatchComparator) c).compareResource(oldDispatch.getDispatchResources(),newDispatch.getDispatchResources());
+									((DispatchComparator) c1).compareResource(oldDispatch.getDispatchResources(),newDispatch.getDispatchResources());
 								}
 							}						
 						}
 						
-						updates=c.getUpdateFields();
+						updates=c1.getUpdateFields();
 						if(updates!=null)
 						for(int i=0,n=updates.size();i<n;i++)
 						{

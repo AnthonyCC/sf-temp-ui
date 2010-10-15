@@ -96,12 +96,12 @@
                   </td>  
                  <td>
                      <input type = "button" value="Configure DashBoard" onclick="javascript:showForm()" />
-                  </td>
+                  </td><!--
                  <td>
                      <input type = "button" value="&nbsp;Open DashBoard&nbsp;" onclick="javascript:OpenPage(1)" />
                   </td>
                  
-                 <td>
+                 --><td>
                      <input type = "button" value="Ready View" onclick="javascript:OpenViewPage(1)" />
                   </td>
                   <td>

@@ -894,7 +894,8 @@ public class DispatchController extends AbstractMultiActionController {
 		
 	public void getTopTenDispatchReadyRoutes(HttpServletRequest request, HttpServletResponse response, Collection dispatchInfoList) throws ServletException
 	{
-		Collection<DispatchCommand> dispReadyRoutes = DispatchPlanUtil.getsortedDispatchView(dispatchInfoList, 1);
+		DispatchPlanUtil.setDispatchStatus(dispatchInfoList,true);
+		Collection<DispatchCommand> dispReadyRoutes = DispatchPlanUtil.getsortedDispatchView(dispatchInfoList,1);
 	    StringBuffer str=new StringBuffer(100);
       
         for (DispatchCommand _dispReadyRoute : dispReadyRoutes) {

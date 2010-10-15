@@ -545,8 +545,8 @@ public class DispatchPlanUtil {
 				while(unsortedIterator.hasNext())	{
 					DispatchCommand command = (DispatchCommand)unsortedIterator.next();
 					dispatchCategory = categorizeDispatch(command);					
-					if(dispatchCategory == -1&&(command.getStartTime()!=null&&checkReady(command.getStartTime())))
-						// added comment issue 808	&&command.getDispatchStatus()==EnumStatus.EmpReady	) 
+					if(dispatchCategory == -1&&(command.getStartTime()!=null&&checkReady(command.getStartTime()))
+						&&command.getDispatchStatus()==EnumStatus.EmpReady) 
 					{
 						ready.add(command);
 					}									
