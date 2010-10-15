@@ -784,16 +784,19 @@ public class DispatchController extends AbstractMultiActionController {
 		Collection unAssinedRoutes = dispatchManagerService.getUnusedDispatchRoutes(getServerDate(TransStringUtil.getDispatchCurrentDate()));
 			
 		Collection unAssignedEmps =	this.getDispatchManagerService().getUnassignedActiveEmployees();
+		
+		List<Plan> plans= new ArrayList<Plan>();		
+		plans =(List<Plan>)dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);		
 			
 
 		try {
-			getDispatchUnAssignedEmployees(request,response);
+			getDispatchUnAssignedEmployees(request,response,plans);
 			
 			getDispatchHandTruckInventoryForLastScanOut(request,response);
 		
 			getTopTenDispatchReadyRoutes(request,response,dispatchList);
 				
-			getDispatchStatistics(request,response,dispatchList,unAssignedEmps);
+			getDispatchStatistics(request,response,dispatchList,plans);
 		
 			getUnAssignedEmployees(request,response,unAssignedEmps);
 			
@@ -809,14 +812,10 @@ public class DispatchController extends AbstractMultiActionController {
 		return mav;
 	}
 	
-	private void getDispatchUnAssignedEmployees(HttpServletRequest request, HttpServletResponse response) throws Exception 
+	private void getDispatchUnAssignedEmployees(HttpServletRequest request, HttpServletResponse response, List<Plan> tempPlans) throws Exception 
 	{
-		List<Plan> tempPlans= new ArrayList<Plan>();
 		List<WebPlanResource> unempList= new ArrayList<WebPlanResource>();
-		
-		tempPlans =(List<Plan>)dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);		
 		unempList =(List<WebPlanResource>)this.getEmployeeManagerService().getUnAvailableEmployees(tempPlans, TransStringUtil.getCurrentServerDate());
-		
 		Collections.sort(unempList);						
 
 		request.setAttribute("unAvailableEmpList",getUnAvailableEmployeeInfo(tempPlans,unempList));				
@@ -973,12 +972,10 @@ public class DispatchController extends AbstractMultiActionController {
 	
 	private void getDispatchStatistics(HttpServletRequest request,
 			HttpServletResponse response, Collection dispatchList,
-			Collection unAssignedActiveEmp) throws ServletException,ParseException {
+			Collection planList) throws ServletException,ParseException {
 		
-		try {
-			
-			Collection planList = dispatchManagerService.getPlan(TransStringUtil.formatDateSearch(TransStringUtil.getCurrentDate()), null);
-			Collection unAvalEmpList = employeeManagerService.getUnAvailableEmployees(planList, TransStringUtil.getCurrentServerDate());
+		try {			
+			//Collection unAvalEmpList = employeeManagerService.getUnAvailableEmployees(planList, TransStringUtil.getCurrentServerDate());
 			Date date = TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate());
 			List resourceList = dispatchManagerService.getResourcesWorkedForSixConsecutiveDays(date);
 			List teamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"4","RESOURCE_ID");
@@ -997,7 +994,7 @@ public class DispatchController extends AbstractMultiActionController {
 			
 			request.setAttribute("statistics", webStats);
 			
-		} catch (DateFilterException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
