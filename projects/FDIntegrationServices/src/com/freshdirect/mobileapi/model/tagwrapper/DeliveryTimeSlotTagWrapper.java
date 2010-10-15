@@ -19,7 +19,11 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
     public Result getDeliveryTimeSlotResult(ErpAddressModel address) throws FDException {
         ((DeliveryTimeSlotTag)wrapTarget).setAddress(address);
         ((DeliveryTimeSlotTag)wrapTarget).setDeliveryInfo(true);
-        ((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.RESERVE_TIMESLOTS);
+        if(null !=getUser() && getUser().isEligibleForPreReservation()){
+    		((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.RESERVE_TIMESLOTS);
+    	}else{
+    		((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS);
+    	}
         return (Result) getResult();
     }
     
@@ -29,7 +33,11 @@ public class DeliveryTimeSlotTagWrapper extends GetterTagWrapper {
         if(isAuthenticated){
         	((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.CHECKOUT_TIMESLOTS);
         }else{
-        	((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.RESERVE_TIMESLOTS);
+        	if(null !=getUser() && getUser().isEligibleForPreReservation()){
+        		((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.RESERVE_TIMESLOTS);
+        	}else{
+        		((DeliveryTimeSlotTag)wrapTarget).setTimeSlotContext(TimeslotContext.CHECK_AVAILABLE_TIMESLOTS);
+        	}
         }        
         return (Result) getResult();
     }
