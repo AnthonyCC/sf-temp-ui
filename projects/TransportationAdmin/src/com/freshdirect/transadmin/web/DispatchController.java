@@ -989,8 +989,8 @@ public class DispatchController extends AbstractMultiActionController {
 			webStats.calculatePlanRoute(planList);
 			webStats.calculateDispatchRoute(dispatchList);
 			webStats.calculateResourceworkedSixdays(resourceList, dispatchManagerService, domainManagerService, employeeManagerService, false, false);
-			webStats.calculateUnassigned(unAssignedActiveEmp);			
-			webStats.calculatePaycode(unAvalEmpList);
+			//webStats.calculateUnassigned(unAssignedActiveEmp);
+			//webStats.calculatePaycode(unAvalEmpList);
 			webStats.calculateFireTruckorMOT(dispatchList);
 			webStats.calculateDispatchTeamChange(teamChangedList, dispatchManagerService, domainManagerService, employeeManagerService, true);
 			webStats.calculateDispatchTeamChangeOutOfRegion(teamChangedRegionList, dispatchManagerService, domainManagerService, employeeManagerService, true);
