@@ -63,7 +63,8 @@ public class SurveyHelper {
 		for(int j=0;j<answers.length;j++) {
 			if(answers[j]==null||"".equals(answers[j]))
 				continue;
-			if(contains(quest.getAnswers(),quest.getAnswerGroups(),answers[j]))
+			
+			if((quest!=null)&&contains(quest.getAnswers(),quest.getAnswerGroups(),answers[j]))
 				_answer.add(answers[j]);
 		}
 		String[] answer=new String[_answer.size()];
