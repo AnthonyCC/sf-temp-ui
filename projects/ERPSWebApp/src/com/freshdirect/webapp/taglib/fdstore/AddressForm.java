@@ -127,9 +127,8 @@ public class AddressForm implements WebFormI { //, AddressName
         	if (unattendedDeliveryStr != null) {
         		if (unattendedDeliveryStr.equals("OPT_IN")) unattendedDeliveryFLag = EnumUnattendedDeliveryFlag.OPT_IN;
         	
-        		unattendedDeliveryInstructions = 
-        			NVL.apply(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()).replaceAll(
-        					FDStoreProperties.getDlvInstructionsSpecialChar(), " "), "");
+        		unattendedDeliveryInstructions = NVL.apply(request.getParameter(EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()), "");
+        		unattendedDeliveryInstructions = unattendedDeliveryInstructions.replaceAll(FDStoreProperties.getDlvInstructionsSpecialChar(), " ");
         	}
         }
         

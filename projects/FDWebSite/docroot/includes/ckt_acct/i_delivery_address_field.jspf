@@ -101,7 +101,6 @@ String[] checkErrorType = {"technical_difficulty", EnumUserInfoName.DLV_NOT_IN_Z
              fldDlvInstructions = thisAddress.getInstructions();
              fldCompanyName = thisAddress.getCompanyName();
              fldServiceType = thisAddress.getServiceType();
-
              if (EnumUnattendedDeliveryFlag.OPT_OUT.equals(thisAddress.getUnattendedDeliveryFlag())) unattendedOptIn = false;
              fldUnattendedDeliveryInstructions = thisAddress.getUnattendedDeliveryInstructions();
 
@@ -362,11 +361,15 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 	<script type="text/javascript">
 	function resetUnattendedDeliveryInstructions() {
 		var inputElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>');
-		if (!document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>').checked) {
+		var optInOutElem = document.getElementById('optInOutElem');
+		var optInOutHiddenElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>');
+		if (optInOutElem.checked) {
 			inputElem.value = '';
 			inputElem.disabled = true;
+			optInOutHiddenElem.value = 'OPT_OUT';
 		} else {
 			inputElem.disabled = false;
+			optInOutHiddenElem.value = 'OPT_IN';
 		}
 	}
 	</script>
@@ -402,11 +405,11 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 				</tr>
 				<tr>
 					<td colspan="2"><span style="color: #900; font-weight: bold; font-size: 12px;">IMPORTANT:</span><br />
-						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea onkeyup="return maxLen(this, 255);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>"><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
+						<span style="font-weight: bold; font-size: 12px;">Please designate your preferred Unattended Delivery drop location at your home.</span><br /><textarea onkeyup="return maxLen(this, 255);" style="font-size: 12px;" rows="5" cols="70" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>" <%= unattendedOptIn ? "" : " disabled" %>><%= unattendedOptIn ? fldUnattendedDeliveryInstructions : "" %></textarea>
 					<fd:ErrorHandler result='<%=result%>' name='<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>' id='errorMsg'><span class="text11rbold"><%=errorMsg%></span><br/></fd:ErrorHandler><br /><br /></td>
 				</tr>
 				<tr>
-					<td valign="top"><input type="checkbox" class="checkbox" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" value="OPT_IN"  onclick="resetUnattendedDeliveryInstructions()" <%= unattendedOptIn ? "checked" : "" %> /></td>
+					<td valign="top"><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/><input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" id="<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>" value="<%= unattendedOptIn ? "OPT_IN" : "OPT_OUT" %>"/><input type="checkbox" class="checkbox" name="optInOutElem" id="optInOutElem" value="OPT_IN"  onclick="resetUnattendedDeliveryInstructions()" <%= unattendedOptIn ? "" : "checked" %> /></td>
 					<td style="font-size: 12px;"><strong>I do not want this service.</strong><br />
 						(Select this if you do not authorize FreshDirect to deliver your order if you are not home.)</td>
 				</tr>
@@ -570,7 +573,7 @@ if(showAltDelivery){
 		<td></td>
 	</tr>
 	<tr>
-		<td width="15" ROWSPAN="5"><img src="/media_stat/images/layout/clear.gif" width="13" height="1" border="0"></td>
+		<td width="15" rowspan="5"><img src="/media_stat/images/layout/clear.gif" width="13" height="1" border="0"></td>
 		<td width="115" align="right" class="text12">
 			<fd:ErrorHandler result="<%=result%>" name="<%=EnumUserInfoName.DLV_ALT_FIRSTNAME.getCode()%>"><span class="text11rbold"></fd:ErrorHandler>
 			*First Name&nbsp;&nbsp;
