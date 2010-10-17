@@ -1,6 +1,6 @@
 <%@ page 
 		contentType="image/jpg" 
-		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL,com.freshdirect.fdstore.FDStoreProperties'
+		import='java.net.URL, java.awt.*, java.awt.event.*, java.awt.image.*, java.io.*, javax.imageio.*, com.sun.image.codec.jpeg.*, com.freshdirect.fdstore.content.ProductModel, com.freshdirect.fdstore.content.*, com.freshdirect.webapp.util.*, com.freshdirect.framework.util.log.LoggerFactory, org.apache.log4j.Category, com.freshdirect.fdstore.content.ContentFactory, com.freshdirect.cms.ContentKey, com.freshdirect.framework.util.NVL, com.freshdirect.fdstore.FDStoreProperties, com.freshdirect.webapp.util.JspMethods';
 %><% 
 
 /* Make sure there's no wayward returns or spaces outside of code brackets, or the image could be corrupted. */
@@ -44,6 +44,7 @@ log(myDebug, "Starting generateImage (test)...");
 
 BufferedImage prodImage = null;
 BufferedImage overlay = null;
+BufferedImage rating = null;
 BufferedImage background = null;
 
 //get the media path
@@ -60,6 +61,7 @@ if (!"".equals(mediaStaticPath) && "/".equals(mediaStaticPath.charAt(mediaStatic
 	mediaStaticPath = mediaStaticPath.substring(0, mediaStaticPath.lastIndexOf("/"));
 }
 
+URL ratingUrl = null;
 URL overlayUrl = null;
 URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //default, including if pSize is unavailable
 
@@ -104,6 +106,34 @@ URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //defau
 		String bOyTemp = NVL.apply(request.getParameter("bOy"), "0");
 		bOy = Integer.valueOf(bOyTemp).intValue();
 
+	
+	String rType = NVL.apply(request.getParameter("rType"), "add");
+	String rVal = "-1";
+	int rValTemp = 0;
+	boolean ratingOnly = false;
+		//check for passed rVal
+		if (request.getParameter("rVal") != null && request.getParameter("rVal") != "") { rVal = request.getParameter("rVal"); }
+
+	int ratingWidth = 0;
+	int ratingHeight = 0;
+
+	boolean rCent = "on".equals(NVL.apply(request.getParameter("rCent"), "false"));
+
+
+	//check for a passed rOx
+		int rOx = 0;
+		String rOxTemp = NVL.apply(request.getParameter("rOx"), "NaN");
+		if (!"NaN".equals(rOxTemp)) {
+			rOx = Integer.valueOf(rOxTemp).intValue();
+		}
+
+	//check for a passed rOy
+		int rOy = 0;
+		String rOyTemp = NVL.apply(request.getParameter("rOy"), "NaN");
+		if (!"NaN".equals(rOyTemp)) {
+			rOy = Integer.valueOf(rOyTemp).intValue();
+		}
+
 	//check for a passed retImageWidth
 		int retImageWidth = 0;
 		String retImageWidthTemp = NVL.apply(request.getParameter("iW"), "0");
@@ -146,8 +176,25 @@ URL prodImgUrl = new URL(mediaPath+"/media/images/temp/soon_80x80.gif"); //defau
 
 	}
 
+	
+//check if we only want a rating
+if ("exc".equalsIgnoreCase(rType)) {
+	ratingOnly = true;
+	//we only want a rating, so we need to move some things around
+	//change "product" image to the clear image
+	prodImgUrl = new URL(mediaPath+"/media/images/layout/clear.gif");
+	//since we're only doing a rating, set it up
+	if ("1,2,3,4,5,6,7,8,9,10,01,02,03,04,05,06,07,08,09".indexOf(rVal) > -1) {
+		if (rVal.length() == 1) {
+			rVal = "0"+rVal; //add leading zero
+		}
+		ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+	}
+}
 
-if ( !"".equals(id) ) {
+
+if ( !"".equals(id) && !ratingOnly) {
+
 	
 	//hard-coding as a product here
 	id = "Product:"+request.getParameter("pId");
@@ -164,25 +211,7 @@ if ( !"".equals(id) ) {
 				pSize = pSizeTemp;
 			}
 		}
-/*
-		log(myDebug, "pSize : "+pSize);
-		log(myDebug, "mediaPath+product.getAlternateImage().getPath() : "+mediaPath+product.getAlternateImage().getPath());
-		log(myDebug, "pSize2 : "+pSize);
-		log(myDebug, "mediaPath+product.getProdImage().getPath() : "+mediaPath+product.getProdImage().getPath());
-		log(myDebug, "pSize3 : "+pSize);
-		log(myDebug, "mediaPath+product.getCategoryImage().getPath() : "+mediaPath+product.getCategoryImage().getPath());
-		log(myDebug, "pSize4 : "+pSize);
-		log(myDebug, "mediaPath+product.getConfirmImage().getPath() : "+mediaPath+product.getConfirmImage().getPath());
-		log(myDebug, "pSize5 : "+pSize);
-		log(myDebug, "mediaPath+product.getDetailImage().getPath() : "+mediaPath+product.getDetailImage().getPath());
-		log(myDebug, "pSize6 : "+pSize);
-		log(myDebug, "mediaPath+product.getThumbnailImage().getPath() : "+mediaPath+product.getThumbnailImage().getPath());
-		log(myDebug, "pSize7 : "+pSize);
-		log(myDebug, "mediaPath+product.getZoomImage().getPath() : "+mediaPath+product.getZoomImage().getPath());
-		log(myDebug, "pSize8 : "+pSize);
-		log(myDebug, "mediaPath+product.getRolloverImage().getPath() : "+mediaPath+product.getRolloverImage().getPath());
-		log(myDebug, "pSize9 : "+pSize);
-*/
+
 		//check that we have a product image and path
 		if ("a".equals(pSize)) {
 			if (product.getAlternateImage() != null && product.getAlternateImage().getPath() != "") {
@@ -253,6 +282,10 @@ if ( !"".equals(id) ) {
 				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_fave.gif");
 			}else if ( "new".equalsIgnoreCase(request.getParameter("bType")) ) {
 				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_new.gif");
+			}else if ( "bis".equalsIgnoreCase(request.getParameter("bType")) ) {
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_bis.gif");
+			}else if ( "sale".equalsIgnoreCase(request.getParameter("bType")) ) {
+				overlayUrl = new URL(mediaStaticPath+"/media_stat/images/bursts/brst_"+bSize+"_sale.gif");
 			}else if( "X".equalsIgnoreCase(request.getParameter("bType")) ) {
 				//force no burst
 				overlayUrl = null;
@@ -290,6 +323,16 @@ if ( !"".equals(id) ) {
 			//type == deal, no value
 			("deal".equalsIgnoreCase(request.getParameter("bType")) && ("-1".equals(bVal) && bValTemp <= 0))
 		) { overlayUrl = null; }
+		
+		//check for a rating, unless we already have a forced value
+		if ("-1".equals(rVal)) {
+			rVal = product.getProductRating();
+			if (rVal.length() == 1) {
+				rVal = "0"+rVal; //add leading zero
+			}
+		}
+		//setup rating
+		ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
 
 	}
 
@@ -299,8 +342,45 @@ if ( !"".equals(id) ) {
 try {
 	prodImage = ImageIO.read(prodImgUrl);
 	
-	prodWidth = prodImage.getWidth(null);
-	prodHeight = prodImage.getHeight(null);
+	//adjust for rating only
+	if (ratingOnly && ratingUrl != null) {
+		
+		/* if we're reading a URL, don't use new File() */
+		rating = ImageIO.read(ratingUrl);
+
+		ratingWidth = rating.getWidth(null);
+		ratingHeight = rating.getHeight(null);
+
+		prodWidth = ratingWidth;
+		prodHeight = ratingHeight;
+	}else{
+		//adjust for rating
+		if (ratingUrl != null) {
+			/* if we're reading a URL, don't use new File() */
+			rating = ImageIO.read(ratingUrl);
+
+			ratingWidth = rating.getWidth(null);
+			ratingHeight = rating.getHeight(null);
+
+			prodWidth = prodImage.getWidth(null);
+			prodHeight = prodImage.getHeight(null);
+
+			//set x/y
+			if (!"NaN".equals(rOxTemp)) {
+				rOx = Integer.valueOf(rOxTemp).intValue();
+			}
+			if (!"NaN".equals(rOyTemp)) {
+				rOy = Integer.valueOf(rOyTemp).intValue();
+			}else{
+				rOy = prodHeight;
+			}
+
+			prodHeight = prodHeight + ratingHeight; //add rating height
+		}else{
+			prodWidth = prodImage.getWidth(null);
+			prodHeight = prodImage.getHeight(null);
+		}
+	}
 
 	//check to see if we're making a larger image than we have images for
 	//if (retImageWidth > 0 || retImageHeight > 0) {
@@ -335,6 +415,19 @@ try {
 		Graphics2D g = (Graphics2D)background.createGraphics();
 		g.drawImage(overlay, bOx, bOy, null);
 	}
+
+	
+	if (ratingUrl != null) {
+		Graphics2D g = (Graphics2D)background.createGraphics();
+		
+		//before we draw, check if we need the rating centered
+		if (rCent) {
+			//we do, calc new offset
+			rOx = (retImageWidth/2)-(ratingWidth/2);
+		}
+
+		g.drawImage(rating, rOx, rOy, null);
+	}
 }catch(Exception e){
 	log(myDebug, "Got an Exception: " + e.getMessage());
 }
@@ -344,7 +437,7 @@ if (background != null) {
 //and the actual output
 	JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(response.getOutputStream());
 	JPEGEncodeParam jep = encoder.getDefaultJPEGEncodeParam(background);
-	jep.setQuality(iQ, (boolean)true);
+	jep.setQuality(iQ, (boolean)true); //change here to allow baseline as optional
 	encoder.encode(background, jep);
 }
 	response.getOutputStream().close();
@@ -378,6 +471,19 @@ if (background != null) {
 		log(myDebug, "bValTemp : "+bValTemp);
 		log(myDebug, "bOx : "+bOx);
 		log(myDebug, "bOy : "+bOy);
+
+	log(myDebug, "ratingUrl : "+ratingUrl);
+		log(myDebug, "ratingWidth : "+ratingWidth);
+		log(myDebug, "ratingHeight : "+ratingHeight);
+
+		log(myDebug, "ratingOnly : "+ratingOnly);
+
+		log(myDebug, "rType : "+rType);
+		log(myDebug, "rVal : "+rVal);
+		log(myDebug, "rValTemp : "+rValTemp);
+		log(myDebug, "rOx : "+rOx);
+		log(myDebug, "rOy : "+rOy);
+		log(myDebug, "rCent : "+rCent);
 
 log(myDebug, "Ending generateImage (test)...");
 

@@ -68,7 +68,6 @@
 <tmpl:put name='content' direct='true'>
 
 	<script type="text/javascript">
-	<!--
 		function $(e){
 			return document.getElementById(e);
 		}
@@ -186,6 +185,7 @@
 			while (!helper_changer(showFromId+'_help', 'overDiv'));
 			showContent('overDiv');
 		}
+
 		function helper_changer(from, to){
 			if (typeof(from) == 'String') {
 				$(to).innerHTML = from;
@@ -208,7 +208,6 @@
 			return true;
 		}
 		
-	//-->
 	</script>
 	<style>
 		.f11px { font-size: 11px; }
