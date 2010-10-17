@@ -193,7 +193,7 @@ if ("exc".equalsIgnoreCase(rType)) {
 }
 
 
-if ( !"".equals(id) && !ratingOnly) {
+if ( !"".equals(id)) {
 
 	
 	//hard-coding as a product here
@@ -330,9 +330,17 @@ if ( !"".equals(id) && !ratingOnly) {
 			if (rVal.length() == 1) {
 				rVal = "0"+rVal; //add leading zero
 			}
+			//setup rating
+			ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+		}else{
+			//get from passed val
+			if ("1,2,3,4,5,6,7,8,9,10,01,02,03,04,05,06,07,08,09".indexOf(rVal) > -1) {
+				if (rVal.length() == 1) {
+					rVal = "0"+rVal; //add leading zero
+				}
+				ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+			}
 		}
-		//setup rating
-		ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
 
 	}
 
