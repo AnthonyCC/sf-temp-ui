@@ -363,13 +363,32 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 		var inputElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_INSTRUCTIONS.getCode()%>');
 		var optInOutElem = document.getElementById('optInOutElem');
 		var optInOutHiddenElem = document.getElementById('<%=EnumUserInfoName.DLV_UNATTENDED_DELIVERY_OPT.getCode()%>');
-		if (optInOutElem.checked) {
-			inputElem.value = '';
-			inputElem.disabled = true;
-			optInOutHiddenElem.value = 'OPT_OUT';
-		} else {
-			inputElem.disabled = false;
-			optInOutHiddenElem.value = 'OPT_IN';
+		var reverseCheckbox = true;
+		if (optInOutElem == null) {
+			optInOutElem = document.getElementById('unattendedDeliveryOpt');
+			inputElem = document.getElementById('unattendedDeliveryInstr');
+			reverseCheckbox = false;
+		}
+		if (optInOutElem != null) {
+			if (reverseCheckbox) {
+				if (optInOutElem.checked) {
+					inputElem.value = '';
+					inputElem.disabled = true;
+					if (optInOutHiddenElem != null) { optInOutHiddenElem.value = 'OPT_OUT'; }
+				} else {
+					inputElem.disabled = false;
+					if (optInOutHiddenElem != null) { optInOutHiddenElem.value = 'OPT_IN'; }
+				}
+			}else{
+				if (optInOutElem.checked) {
+					inputElem.disabled = false;
+					if (optInOutHiddenElem != null) { optInOutHiddenElem.value = 'OPT_IN'; }
+				} else {
+					inputElem.value = '';
+					inputElem.disabled = true;
+					if (optInOutHiddenElem != null) { optInOutHiddenElem.value = 'OPT_OUT'; }
+				}
+			}
 		}
 	}
 	</script>
