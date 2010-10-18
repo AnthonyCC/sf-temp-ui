@@ -37,6 +37,7 @@ import com.freshdirect.routing.model.GeographicLocation;
 import com.freshdirect.routing.model.HandOffBatch;
 import com.freshdirect.routing.model.HandOffBatchAction;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.HandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchSession;
 import com.freshdirect.routing.model.HandOffBatchStop;
@@ -47,6 +48,7 @@ import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchAction;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
@@ -142,7 +144,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_DATERANGE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO, b.CUTOFF_DATETIME" +
 			", B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID, " +
+			" (select count(1) from transp.HANDOFF_BATCHSTOP xS where xS.BATCH_ID = B.BATCH_ID) STOPCOUNT " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.DELIVERY_DATE > (sysdate - ?) and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+) " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -150,7 +153,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_DELIVERYDATE = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO" +
 			", b.CUTOFF_DATETIME, B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID , " +
+			" (select count(1) from transp.HANDOFF_BATCHSTOP xS where xS.BATCH_ID = B.BATCH_ID) STOPCOUNT " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.DELIVERY_DATE = ? and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+)  " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -158,7 +162,8 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	private static final String GET_HANDOFFBATCH_BYID = "SELECT b.BATCH_ID, b.DELIVERY_DATE, b.SCENARIO, b.CUTOFF_DATETIME" +
 			", B.BATCH_STATUS, B.SYS_MESSAGE, B.IS_COMMIT_ELIGIBLE " +
 			", BA.ACTION_BY, BA.ACTION_DATETIME, BA.ACTION_TYPE , BS.SESSION_NAME, BS.REGION," +
-			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID " +
+			" BD.AREA DEPOT_AREA, BD.DEPOTARRIVALTIME, BD.TRUCKDEPARTURETIME, BD.ORIGIN_ID, " +
+			" (select count(1) from transp.HANDOFF_BATCHSTOP xS where xS.BATCH_ID = B.BATCH_ID) STOPCOUNT " +
 			" from transp.HANDOFF_BATCH b, transp.HANDOFF_BATCHACTION ba, transp.HANDOFF_BATCHSESSION bs, transp.HANDOFF_BATCHDEPOTSCHEDULE bd  " +
 			" where B.BATCH_ID = ? and B.BATCH_ID = BA.BATCH_ID  and B.BATCH_ID = BS.BATCH_ID(+) and B.BATCH_ID = BD.BATCH_ID(+)  " +
 			" order by b.BATCH_ID, b.DELIVERY_DATE, BA.ACTION_DATETIME";
@@ -231,6 +236,15 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 	
 	private static final String UPDATE_HANDOFFBATCH_STOP_ERPNO = "UPDATE TRANSP.HANDOFF_BATCHSTOP X set X.ERPORDER_ID = ? " +
 				"WHERE X.BATCH_ID = ? and X.WEBORDER_ID = ?";
+	
+	private static final String INSERT_HANDOFFBATCH_DEPOTSCHEDULE_EX = "INSERT INTO TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX ( DAY_OF_WEEK, CUTOFF_DATETIME, "+
+				"AREA , DEPOTARRIVALTIME, TRUCKDEPARTURETIME, ORIGIN_ID ) VALUES (?,?,?,?,?,?)";
+	
+	private static final String CLEAR_HANDOFFBATCH_DEPOTSCHEDULE_EX = "DELETE FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
+
+	private static final String GET_HANDOFFBATCH_DEPOTSCHEDULE_EX = "SELECT * FROM TRANSP.HANDOFF_BATCHDEPOTSCHEDULE_EX X WHERE X.DAY_OF_WEEK = ? and CUTOFF_DATETIME = ?";
+
+
 	
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(final String batchId) throws SQLException {
 
@@ -491,6 +505,17 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
+	public void clearHandOffBatchDepotScheduleEx(String dayOfWeek, Date cutOffTime) throws SQLException {
+		
+		Connection connection = null;		
+		try {			
+			this.jdbcTemplate.update(CLEAR_HANDOFFBATCH_DEPOTSCHEDULE_EX, new Object[] {dayOfWeek, cutOffTime});			
+			connection=this.jdbcTemplate.getDataSource().getConnection();	
+			
+		} finally {
+			if(connection!=null) connection.close();
+		}
+	}
 	
 
 	public void updateHandOffBatchStopRoute(List<IHandOffBatchStop> dataList) throws SQLException {
@@ -734,6 +759,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		String _sessionName = rs.getString("SESSION_NAME");
 		String _actionBy = rs.getString("ACTION_BY");
 		String _depotArea = rs.getString("DEPOT_AREA");
+		int noOfOrders = rs.getInt("STOPCOUNT");
 				
 		if(!batchMapping.containsKey(_batchId)) {
 			
@@ -745,6 +771,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			_batch.setStatus(EnumHandOffBatchStatus.getEnum(rs.getString("BATCH_STATUS")));
 			_batch.setSystemMessage(rs.getString("SYS_MESSAGE"));
 			_batch.setEligibleForCommit("X".equalsIgnoreCase(rs.getString("IS_COMMIT_ELIGIBLE")));
+			_batch.setNoOfOrders(noOfOrders);
 			
 			_batch.setAction(new TreeSet<IHandOffBatchAction>());
 			_batch.setSession(new TreeSet<IHandOffBatchSession>());
@@ -848,6 +875,39 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				
 				for(IHandOffBatchDepotSchedule model : dataList) {
 					batchUpdater.update(new Object[]{ model.getBatchId()
+												, model.getArea()
+												, model.getDepotArrivalTime()
+												, model.getTruckDepartureTime()
+												, model.getOriginId()
+										});
+				}			
+				batchUpdater.flush();
+			}finally{
+				if(connection!=null) connection.close();
+			}
+		}
+	}
+	
+	public void addNewHandOffBatchDepotSchedulesEx(Set<IHandOffBatchDepotScheduleEx> dataList) throws SQLException {
+		Connection connection = null;
+		if(dataList != null && dataList.size() > 0) {
+			try{
+				BatchSqlUpdate batchUpdater=new BatchSqlUpdate(this.jdbcTemplate.getDataSource(),INSERT_HANDOFFBATCH_DEPOTSCHEDULE_EX);
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.TIMESTAMP));
+				batchUpdater.declareParameter(new SqlParameter(Types.VARCHAR));
+				
+				batchUpdater.compile();
+	
+				
+				connection = this.jdbcTemplate.getDataSource().getConnection();
+				
+				for(IHandOffBatchDepotScheduleEx model : dataList) {
+					batchUpdater.update(new Object[]{ model.getDayOfWeek()
+												, model.getCutOffDateTime()
 												, model.getArea()
 												, model.getDepotArrivalTime()
 												, model.getTruckDepartureTime()
@@ -1108,5 +1168,38 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		}
 	}
 	
-	
+	public Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(final String dayOfWeek, final Date cutOffTime) throws SQLException {
+
+		final Set<IHandOffBatchDepotScheduleEx> result = new HashSet<IHandOffBatchDepotScheduleEx>();
+		PreparedStatementCreator creator = new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {		            	 
+				PreparedStatement ps = null;
+				ps = connection.prepareStatement(GET_HANDOFFBATCH_DEPOTSCHEDULE_EX);
+				ps.setString(1, dayOfWeek);
+				ps.setDate(2, new java.sql.Date(cutOffTime.getTime()));
+								
+				return ps;
+			}  
+		};
+
+		jdbcTemplate.query(creator, 
+				new RowCallbackHandler() { 
+				public void processRow(ResultSet rs) throws SQLException {				    	
+					do { 
+						IHandOffBatchDepotScheduleEx depotSchedule = new HandOffBatchDepotScheduleEx();
+						depotSchedule.setDayOfWeek(rs.getString("DAY_OF_WEEK"));
+						depotSchedule.setCutOffDateTime(rs.getTimestamp("CUTOFF_DATETIME"));
+						depotSchedule.setArea(rs.getString("AREA"));
+						depotSchedule.setDepotArrivalTime(rs.getTimestamp("DEPOTARRIVALTIME"));
+						depotSchedule.setTruckDepartureTime(rs.getTimestamp("TRUCKDEPARTURETIME"));
+						depotSchedule.setOriginId(rs.getString("ORIGIN_ID"));
+						result.add(depotSchedule);
+					} while(rs.next());		        		    	
+				}
+		}
+		);
+		
+		return result;
+	}
+		
 }

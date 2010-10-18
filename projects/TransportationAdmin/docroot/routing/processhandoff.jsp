@@ -165,7 +165,7 @@
 		  var sColumns =  [ 
 			    {key:"batchId", label:"Batch ID",sortable:false, width: 50, className:"forms1"}, 
 			    {key:"deliveryDate", label:"Delivery Date",sortable:false, width: 80,className:"forms1"},			    
-			    {key:"creationInfo", label:"Created At",sortable:false, width: 140,className:"forms1"},
+			    {key:"creationInfo", label:"Process Audit Details",sortable:false, width: 140,className:"forms1"},
 			    {key:"status", label:"Status",sortable:false, width: 40,className:"forms1"},
 			    {key:"sessionInfo", label:"Session",sortable:false, width: 305,className:"forms1"},
 			    {key:"systemMessage", label:"System Message", width: 200,sortable:false,className:"forms1"},

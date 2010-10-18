@@ -47,4 +47,8 @@ public interface IHandOffBatch {
 	
 	boolean isEligibleForCommit();
 	void setEligibleForCommit(boolean isEligibleForCommit);
+	
+	int getNoOfOrders();
+	void setNoOfOrders(int noOfOrders);
+
 }

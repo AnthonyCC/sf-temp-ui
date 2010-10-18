@@ -11,6 +11,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 
@@ -61,4 +62,8 @@ public interface IHandOffDAO {
 	void updateHandOffStopException(String handOffBatchId, List<String> exceptionOrderIds) throws SQLException;
 	
 	void clearHandOffStopException(String handOffBatchId) throws SQLException;
+	
+	void clearHandOffBatchDepotScheduleEx(String dayOfWeek, Date cutOffTime) throws SQLException;
+	void addNewHandOffBatchDepotSchedulesEx(Set<IHandOffBatchDepotScheduleEx> dataList) throws SQLException;
+	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws SQLException;
 }

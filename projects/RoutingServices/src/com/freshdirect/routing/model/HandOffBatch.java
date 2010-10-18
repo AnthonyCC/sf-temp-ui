@@ -29,6 +29,8 @@ public class HandOffBatch extends BaseModel implements IHandOffBatch  {
 	
 	private List<IHandOffBatchStop> routes;
 	
+	private int noOfOrders;
+	
 	public String getBatchId() {
 		return batchId;
 	}
@@ -137,6 +139,15 @@ public class HandOffBatch extends BaseModel implements IHandOffBatch  {
 
 	public void setEligibleForCommit(boolean isEligibleForCommit) {
 		this.isEligibleForCommit = isEligibleForCommit;
+	}
+	
+		
+	public int getNoOfOrders() {
+		return noOfOrders;
+	}
+
+	public void setNoOfOrders(int noOfOrders) {
+		this.noOfOrders = noOfOrders;
 	}
 
 	@Override

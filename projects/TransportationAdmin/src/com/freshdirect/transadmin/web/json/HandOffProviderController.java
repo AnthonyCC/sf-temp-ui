@@ -19,8 +19,10 @@ import com.freshdirect.routing.handoff.action.HandOffRoutingInAction;
 import com.freshdirect.routing.handoff.action.HandOffRoutingOutAction;
 import com.freshdirect.routing.handoff.action.HandOffStopAction;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.HandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
@@ -35,9 +37,31 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 				
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
 		try {
-			return new HandOffBatchInfo(proxy.getHandOffBatchById(batchId));
+			IHandOffBatch batch = proxy.getHandOffBatchById(batchId);
+			if(batch.getDepotSchedule() == null || batch.getDepotSchedule().size() == 0) {
+				String dayOfWeek = TransStringUtil.getServerDay(batch.getDeliveryDate());
+				
+				Set<IHandOffBatchDepotScheduleEx> tmpDepotScheduleEx = proxy.getHandOffBatchDepotSchedulesEx(dayOfWeek
+																											, batch.getCutOffDateTime());
+				Set<IHandOffBatchDepotSchedule> depotSchInfo = new TreeSet<IHandOffBatchDepotSchedule>();
+				
+				
+				
+				for(IHandOffBatchDepotScheduleEx tmpDptSchEx : tmpDepotScheduleEx) {
+					HandOffBatchDepotSchedule tmpDptSchedule = new HandOffBatchDepotSchedule(batch.getBatchId(), tmpDptSchEx.getArea()
+					           				                                          , tmpDptSchEx.getDepotArrivalTime()
+					           				                                          , tmpDptSchEx.getTruckDepartureTime()
+					           				                                          , tmpDptSchEx.getOriginId());
+					depotSchInfo.add(tmpDptSchedule);					
+				}
+				batch.setDepotSchedule(depotSchInfo);
+			}
+			return new HandOffBatchInfo(batch);
 			
 		} catch (RoutingServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
@@ -83,15 +107,26 @@ public class HandOffProviderController extends BaseJsonRpcController  implements
 			
 			batch = proxy.getHandOffBatchById(handOffBatchId);
 			Set<IHandOffBatchDepotSchedule> depotSchInfo = new TreeSet<IHandOffBatchDepotSchedule>();
+			Set<IHandOffBatchDepotScheduleEx> depotSchInfoEx = new TreeSet<IHandOffBatchDepotScheduleEx>();
+			
 			String deliveryDate = TransStringUtil.getDate(batch.getDeliveryDate());
+			String dayOfWeek = TransStringUtil.getServerDay(batch.getDeliveryDate());
+			
 			for(int intCount =0; intCount < schedule.length; intCount++) {
-				depotSchInfo.add(new HandOffBatchDepotSchedule(batch.getBatchId(), schedule[intCount][0]
-				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][1])
-				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][2])
-				                                          , schedule[intCount][3]));				
+				HandOffBatchDepotSchedule tmpDptSchedule = new HandOffBatchDepotSchedule(batch.getBatchId(), schedule[intCount][0]
+				           				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][1])
+				           				                                          , TransStringUtil.getDatewithTime(deliveryDate+" "+schedule[intCount][2])
+				           				                                          , schedule[intCount][3]);
+				depotSchInfo.add(tmpDptSchedule);	
+				depotSchInfoEx.add(new HandOffBatchDepotScheduleEx(dayOfWeek
+																	, batch.getCutOffDateTime()
+																	, tmpDptSchedule.getArea()
+																	, tmpDptSchedule.getDepotArrivalTime()
+																	, tmpDptSchedule.getTruckDepartureTime()
+																	, tmpDptSchedule.getOriginId()));
 			}
 			batch.setDepotSchedule(depotSchInfo);
-			HandOffRoutingOutAction process = new HandOffRoutingOutAction(batch, userId);
+			HandOffRoutingOutAction process = new HandOffRoutingOutAction(batch, userId, dayOfWeek, depotSchInfoEx);
 			process.execute();
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block

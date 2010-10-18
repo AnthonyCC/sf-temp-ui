@@ -34,10 +34,11 @@ public class HandOffBatchInfo implements java.io.Serializable {
 	public String getDeliveryDate() {
 		StringBuffer strBuf = new StringBuffer();
 		try {
-			strBuf.append(TransStringUtil.getDate(batch.getDeliveryDate())).append("\n");
+			strBuf.append(TransStringUtil.getDate(batch.getDeliveryDate())).append("<br/>");
 			if(batch.getCutOffDateTime() != null) {
-				strBuf.append(TransStringUtil.getServerTime(batch.getCutOffDateTime()));
+				strBuf.append(TransStringUtil.getServerTime(batch.getCutOffDateTime())).append("<br/>");
 			}
+			strBuf.append("<b>").append(batch.getServiceTimeScenario()).append("</b>");
 		} catch (ParseException e) {
 			return null;
 		}
@@ -51,8 +52,10 @@ public class HandOffBatchInfo implements java.io.Serializable {
 			IHandOffBatchAction action = batch.getFirstAction();
 			if(action != null) {
 				strBuf.append(TransStringUtil.getDatewithTime(action.getActionDateTime()));
-				strBuf.append("\n");
-				strBuf.append(action.getActionBy());			
+				strBuf.append("<br/>");
+				strBuf.append(action.getActionBy());
+				strBuf.append("<br/>");
+				strBuf.append("<b>No Of Orders: ").append(batch.getNoOfOrders()).append("</b>");
 			}
 		} catch (ParseException e) {
 			return null;
@@ -67,8 +70,10 @@ public class HandOffBatchInfo implements java.io.Serializable {
 			IHandOffBatchAction action = batch.getLastAction();
 			if(action != null) {
 				strBuf.append(TransStringUtil.getDatewithTime(action.getActionDateTime()));
-				strBuf.append("\n");
-				strBuf.append(action.getActionBy());			
+				strBuf.append("<br/>");
+				strBuf.append(action.getActionBy());	
+				strBuf.append("<br/>");
+				strBuf.append("<b>No Of Orders: ").append(batch.getNoOfOrders()).append("</b>");
 			}
 		} catch (ParseException e) {
 			return null;
@@ -82,7 +87,7 @@ public class HandOffBatchInfo implements java.io.Serializable {
 		
 		for(IHandOffBatchSession session : batch.getSession()) {
 			if(strBuf.toString().length() > 0) {
-				strBuf.append("\n");				
+				strBuf.append("<br/>");				
 			} 
 			strBuf.append(session.getRegion()).append("[").append(session.getSessionName()).append("]");
 		}

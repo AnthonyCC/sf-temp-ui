@@ -10,6 +10,7 @@ import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.TriggerHandOffResult;
@@ -23,8 +24,8 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		return RoutingServiceLocator.getInstance().getHandOffService();
 	}
 	
-	public TriggerHandOffResult createNewHandOffBatch(Date deliveryDate, String userId, String scenario, Date cutOffDateTime) throws RoutingServiceException {
-		return getService().createNewHandOffBatch(deliveryDate, userId, scenario, cutOffDateTime);
+	public TriggerHandOffResult createNewHandOffBatch(Date deliveryDate, String userId, String scenario, Date cutOffDateTime, boolean isStandByMode) throws RoutingServiceException {
+		return getService().createNewHandOffBatch(deliveryDate, userId, scenario, cutOffDateTime, isStandByMode);
 	}
 	
 	public List<IHandOffBatchStop> getOrderByCutoff(final Date deliveryDate, final Date cutOff) throws RoutingServiceException {
@@ -107,5 +108,13 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 	
 	public void updateHandOffBatchStopErpNo(List<IHandOffBatchStop> dataList) throws RoutingServiceException {
 		getService().updateHandOffBatchStopErpNo(dataList);
+	}
+	
+	public void addNewHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime, Set<IHandOffBatchDepotScheduleEx> dataList) throws RoutingServiceException {
+		getService().addNewHandOffBatchDepotSchedulesEx(dayOfWeek, cutOffTime, dataList);
+	}
+	
+	public Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws RoutingServiceException {
+		return getService().getHandOffBatchDepotSchedulesEx(dayOfWeek, cutOffTime);
 	}
 }

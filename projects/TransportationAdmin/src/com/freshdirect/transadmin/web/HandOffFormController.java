@@ -117,14 +117,15 @@ public class HandOffFormController extends BaseFormController {
 				if(batch != null && !(batch.getStatus().equals(EnumHandOffBatchStatus.CANCELLED)
 										|| batch.getStatus().equals(EnumHandOffBatchStatus.COMPLETED))) {
 					hasRunningbatch = true;
-					saveErrorMessage(request, "There is already a batch running please complete or cancel the existing batch");
+					saveErrorMessage(request, "There is already a batch running please complete or cancel the existing batch\n");
 					break;
 				}
 			}
-			if(!hasRunningbatch) {
+			//if(!hasRunningbatch) {
 				TriggerHandOffResult triggerResult = proxy.createNewHandOffBatch(bean.getDeliveryDate()
 																		, userId, bean.getServiceTimeScenario()
-																		, cutOff.getCutOffTime().getAsDate());
+																		, cutOff.getCutOffTime().getAsDate()
+																		, hasRunningbatch);
 				
 				if(triggerResult.getHandOffBatchId() != null) {
 					IHandOffBatch batch = proxy.getHandOffBatchById(triggerResult.getHandOffBatchId());
@@ -133,7 +134,7 @@ public class HandOffFormController extends BaseFormController {
 					routeInManager.execute();
 				}
 				saveErrorMessage(request, formatMessages(triggerResult.getMessages()));
-			}
+			//}
 		} catch (RoutingServiceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

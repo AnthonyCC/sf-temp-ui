@@ -15,6 +15,7 @@ import com.freshdirect.routing.dao.IHandOffDAO;
 import com.freshdirect.routing.manager.IProcessMessage;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.TriggerHandOffResult;
@@ -38,13 +39,13 @@ public class HandOffService extends BaseService implements IHandOffService {
 	}
 	
 	public TriggerHandOffResult createNewHandOffBatch(Date deliveryDate, String userId, String scenario
-															, Date cutOffDateTime) throws RoutingServiceException {
+															, Date cutOffDateTime
+															, boolean isStandByMode) throws RoutingServiceException {
 		TriggerHandOffResult result = new TriggerHandOffResult();
 		
 		String handOffBatchId = null;
 		try {
 			
-			boolean isStandByMode = false;
 			Map<EnumSaleStatus, Integer> orderStats = getHandOffDAOImpl().getOrderStatsByCutoff(deliveryDate, cutOffDateTime);
 			List<String> messages = new ArrayList<String>();
 						
@@ -132,6 +133,16 @@ public class HandOffService extends BaseService implements IHandOffService {
 		try {
 			getHandOffDAOImpl().clearHandOffBatchDepotSchedule(handOffBatchId);
 			getHandOffDAOImpl().addNewHandOffBatchDepotSchedules(dataList);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public void addNewHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime,
+													Set<IHandOffBatchDepotScheduleEx> dataList) throws RoutingServiceException {
+		try {
+			getHandOffDAOImpl().clearHandOffBatchDepotScheduleEx(dayOfWeek, cutOffTime);
+			getHandOffDAOImpl().addNewHandOffBatchDepotSchedulesEx(dataList);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
@@ -265,6 +276,14 @@ public class HandOffService extends BaseService implements IHandOffService {
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
-	}	
+	}
+	
+	public Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDepotSchedulesEx(dayOfWeek, cutOffTime);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
 	
 }

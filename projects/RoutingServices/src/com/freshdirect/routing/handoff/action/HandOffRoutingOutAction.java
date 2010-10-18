@@ -24,6 +24,7 @@ import com.freshdirect.routing.model.HandOffBatchStop;
 import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
+import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchSession;
 import com.freshdirect.routing.model.IHandOffBatchStop;
@@ -42,9 +43,14 @@ import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
-		
-	public HandOffRoutingOutAction(IHandOffBatch batch, String userId) {
+	private Set<IHandOffBatchDepotScheduleEx> masterDepotSchedule;
+	private String dayOfWeek;
+	
+	public HandOffRoutingOutAction(IHandOffBatch batch, String userId, String dayOfWeek,
+										Set<IHandOffBatchDepotScheduleEx> masterDepotSchedule) {
 		super(batch, userId);
+		this.masterDepotSchedule = masterDepotSchedule;
+		this.dayOfWeek = dayOfWeek;
 	}
 
 	public Object doExecute() throws Exception {
@@ -61,7 +67,10 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		IHandOffBatchStop s_stop = null;
 		IHandOffBatchRoute s_route = null;
 		
+				
 		proxy.addNewHandOffBatchDepotSchedules(this.getBatch().getBatchId(), this.getBatch().getDepotSchedule());
+		proxy.addNewHandOffBatchDepotSchedulesEx(dayOfWeek,this.getBatch().getCutOffDateTime(), masterDepotSchedule);
+		
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.PROCESSING);
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 												, EnumHandOffBatchActionType.ROUTEOUT, this.getUserId());
