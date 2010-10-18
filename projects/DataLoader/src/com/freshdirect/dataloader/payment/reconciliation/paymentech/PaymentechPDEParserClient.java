@@ -14,6 +14,8 @@ import com.freshdirect.customer.ErpSettlementInfo;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementBuilderI;
 import com.freshdirect.dataloader.payment.reconciliation.SettlementParserClient;
+import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.payment.ejb.ReconciliationSB;
 
@@ -101,7 +103,11 @@ public class PaymentechPDEParserClient extends SettlementParserClient {
 				
 				return;
 			}
-			
+			try {
+				FDCustomerManager.sendSettlementFailedEmail(saleId);
+			} catch (FDResourceException e) {
+				e.printStackTrace();
+			}
 			this.builder.addFailedSettlement(info, amount, EnumCardType.ECP);
 		}
 		

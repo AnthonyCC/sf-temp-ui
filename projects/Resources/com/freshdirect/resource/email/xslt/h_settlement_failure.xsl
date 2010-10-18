@@ -37,11 +37,10 @@
 					<td valign="top">
 						<p>We are unable to process the e-Check payment for your order <b>(#<xsl:value-of select="orderNumber"/>)</b>
 						, which was delivered on <b><xsl:call-template name="format-delivery-date"><xsl:with-param name="dateTime" select="deliveryStartTime"/></xsl:call-template>.</b>
-						 Please contact customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>.</p>
-						<p>within the next 24 hours so that we may help you resolve the payment discrepancy. Often times, these issues are caused by an input error.
+						 Please contact customer service at <xsl:choose><xsl:when test="customer/chefsTable = 'true'">1-866-511-1240</xsl:when><xsl:otherwise>1-212-796-8002</xsl:otherwise></xsl:choose>,
+						within the next 24 hours so that we may help you resolve the payment discrepancy. Often times, these issues are caused by an input error.
 						   Pursuant to your agreement with us, should we not hear from you within 24 hours, we will attempt to settle payment using the other payments methods listed within your account.
-Thank you,</p>.
-						If you need further assistance, we're here:</p>
+If you need further assistance, we're here:</p>
 					</td>
 					<td width="200px" valign="top" style="border: 1px solid #666; background-color: #eee; padding: 5px;">
 						<table align="center" cellspacing="0" width="200px">
