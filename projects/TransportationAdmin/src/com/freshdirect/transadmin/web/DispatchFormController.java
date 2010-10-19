@@ -13,11 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
@@ -232,7 +230,22 @@ public class DispatchFormController extends AbstractFormController {
 		//set userId to command object
 		model.setUserId(getUserId(request));
 	}
+	protected boolean isFormChangeRequest(HttpServletRequest request, Object command) {
 
+		DispatchCommand _command=(DispatchCommand)command;
+		if("true".equalsIgnoreCase(_command.getFirstDeliveryTimeModified())) {
+			return true;
+		}
+		else
+			return isFormChangeRequest(request);
+	}
+
+	protected void onFormChange(HttpServletRequest request, HttpServletResponse response, Object command)
+	throws Exception {
+
+		DispatchCommand _command=(DispatchCommand)command;		
+		_command.setFirstDeliveryTimeModified("false");
+	}
 
 
 	protected String getIdFromRequest(HttpServletRequest request)
