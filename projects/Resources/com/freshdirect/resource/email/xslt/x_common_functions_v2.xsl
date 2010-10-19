@@ -7,7 +7,7 @@
 	
 		<xsl:param name="dateTime" />
 		
-		<xsl:variable name="format" select="'%A, %B %d'"/>
+		<xsl:variable name="format" select="'%A, %B %d, %Y'"/>
 		
 		<xsl:call-template name="dt:format-date-time">
 			<xsl:with-param name="year" select="substring($dateTime,1,4)"/>
