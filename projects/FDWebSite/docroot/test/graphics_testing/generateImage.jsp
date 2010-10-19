@@ -196,11 +196,29 @@ if ("exc".equalsIgnoreCase(rType)) {
 if ( !"".equals(id)) {
 
 	
-	//hard-coding as a product here
+	//start as a product here
 	id = "Product:"+request.getParameter("pId");
 
 	//get product model
 	ProductModel product = (ProductModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+
+	//if not a product, check for a SKU instead
+	if (product == null) {
+		id = "Sku:"+request.getParameter("pId");
+		//get sku model
+		SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+
+		if (sku != null) {
+			//found a valid SKU
+			log(myDebug, "Using sku : "+sku);
+			if ("-1".equals(rVal)) {
+				rVal = sku.getProductInfo().getRating();
+				//no need to add leading zero to rating here, we'll do it further down
+			}
+			product = sku.getProductModel();
+		}
+
+	}
 
 	//check if product model is null
 	if (product != null) {
@@ -324,23 +342,30 @@ if ( !"".equals(id)) {
 			("deal".equalsIgnoreCase(request.getParameter("bType")) && ("-1".equals(bVal) && bValTemp <= 0))
 		) { overlayUrl = null; }
 		
+		log(myDebug, "rVal to here : "+rVal);
 		//check for a rating, unless we already have a forced value
 		if ("-1".equals(rVal)) {
+			//no rating yet, get from the product
 			rVal = product.getProductRating();
 			if (rVal.length() == 1) {
 				rVal = "0"+rVal; //add leading zero
+			} else if (rVal.length() == 3) { //from SKU
+				rVal = rVal.substring(1);
 			}
 			//setup rating
 			ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
 		}else{
-			//get from passed val
-			if ("1,2,3,4,5,6,7,8,9,10,01,02,03,04,05,06,07,08,09".indexOf(rVal) > -1) {
+			//get from passed val/SKU-set val
+			if ("1,2,3,4,5,6,7,8,9,10,01,02,03,04,05,06,07,08,09,001,002,003,004,005,006,007,008,009".indexOf(rVal) > -1) {
 				if (rVal.length() == 1) {
 					rVal = "0"+rVal; //add leading zero
+				} else if (rVal.length() == 3) { //from SKU
+					rVal = rVal.substring(1);
 				}
 				ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
 			}
 		}
+		log(myDebug, "rVal to here2 : "+rVal);
 
 	}
 

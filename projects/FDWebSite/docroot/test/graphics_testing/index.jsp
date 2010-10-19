@@ -251,11 +251,13 @@
 	</div>
 
 	<div class="help" id="dyn_pId_help">
-		<div>A PRODUCT_ID to get the prodcut info for.</div>
+		<div>A PRODUCT_ID or SKU_CODE to get the info for.</div>
 		<div>DEFAULT: nothing</div>
 		<div class="ind">
 			If this is not passed (or an invalid ID is used), <br />
-			the "photo coming soon" image is returned.
+			the "photo coming soon" image is returned.<br />
+			</br /><br />
+			When using a SKU, only the RATING comes from the SKU.
 		</div>
 	</div>
 
