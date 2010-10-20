@@ -104,7 +104,18 @@ public class OrderController extends BaseController {
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM.equals(action)) {  
         	String orderId = request.getParameter("orderId");
         	String deptId = request.getParameter("qsDeptId");
-            model = getProductsFromOrderDept(model, user, orderId, (deptId != null && deptId.trim().length() > 0) ? deptId : null);
+        	String noOfOrderDays = request.getParameter("qsNoOfFilterDays");
+        	Integer noOfOrderFilterDays = null;
+        	if(noOfOrderDays != null && noOfOrderDays.trim().length() > 0 
+        			&& !"none".equalsIgnoreCase(noOfOrderDays)) {
+        		noOfOrderFilterDays =  new Integer(noOfOrderDays);
+        	}
+        	String sortBy = request.getParameter("qsSortBy");
+        	
+            model = getProductsFromOrderDept(model, user, orderId
+            										, (deptId != null && deptId.trim().length() > 0) ? deptId : null
+            												, noOfOrderFilterDays
+            												, sortBy);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT.equals(action)) {
         	String orderId = request.getParameter("orderId");
         	model = getDeptForQuickshopEveryItem(model, user, orderId);
@@ -252,7 +263,7 @@ public class OrderController extends BaseController {
 
         List<ProductConfiguration> products;
         try {
-            products = order.getOrderProducts(orderId, null, user);
+            products = order.getOrderProducts(orderId, user);
         } catch (ModelException e) {
             throw new FDException(e);
         }
@@ -262,12 +273,14 @@ public class OrderController extends BaseController {
         return model;
     }
     
-    private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user, String orderId, String deptId) throws FDException, JsonException {
+    private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user
+    													, String orderId, String deptId
+    													, Integer filterOrderDays, String sortBy) throws FDException, JsonException {
         Order order = new Order();
         
         List<ProductConfiguration> products;
         try {
-            products = order.getOrderProducts(orderId, deptId, user);
+            products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);
         } catch (ModelException e) {
             throw new FDException(e);
         }

@@ -1,6 +1,9 @@
 package com.freshdirect.mobileapi.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
+import com.freshdirect.fdstore.customer.SaleStatisticsI;
+import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
 import com.freshdirect.mobileapi.controller.data.response.CreditCard;
@@ -159,67 +164,118 @@ public class Order {
      * @throws FDException 
      * @throws ModelException 
      */
-    public List<ProductConfiguration> getOrderProducts(String orderId, String deptId, SessionUser user) throws FDException, ModelException {
-        List<ProductConfiguration> result = new ArrayList<ProductConfiguration>();
+    public List<ProductConfiguration> getOrderProducts(String orderId, SessionUser user) throws FDException, ModelException {
+        
 
         QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(user);
 
         ResultBundle resultBundle = wrapper.getQuickCartFromOrder(orderId);
         QuickCart quickCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
 
-        Iterator<FDProductSelectionI> products = null;
-        if(deptId != null) {
-        	products = quickCart.getProducts(deptId).iterator();
-        } else {
-        	products = quickCart.getProducts().iterator();
+        return  getProductConfigurations(quickCart.getProducts(), user);
+    }
+    
+    /**
+     * 
+     * @param orderId
+     * @return
+     * @throws FDException 
+     * @throws ModelException 
+     */
+    public List<ProductConfiguration> getOrderProductsForDept(String orderId, String deptId
+    														, Integer filterOrderDays, String sortBy, SessionUser user) 
+    																					throws FDException, ModelException {
+        
+
+        QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(user);
+
+        ResultBundle resultBundle = wrapper.getQuickCartFromOrder(orderId);
+        QuickCart quickCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
+        
+        Comparator comparator = FDProductSelectionI.NAME_COMPARATOR;
+        if ("recency".equals(sortBy)) {
+        	comparator = FDProductSelectionI.LAST_PURCHASE_COMPARATOR;
+        } else if ("frequency".equals(sortBy)) {
+        	comparator = FDProductSelectionI.STATS_FREQUENCY_COMPARATOR;
         }
-
-        List<FDCartLineI> cartLines = user.getShoppingCart().getOrderLines();
-
-        while (products.hasNext()) {
-            FDProductSelectionI product = products.next();
-
-            ProductConfiguration productConfiguration = new ProductConfiguration();
-            try {
-                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), user.getFDSessionUser().getUser());
-                Sku sku = productData.getSkyByCode(product.getSkuCode());
-
-                if (productData.hasTerms()) {
-                    productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
-                }
-                
-                if (sku == null) {
-                    //LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
-                    if (product.getSkuCode() != null) {
-                        //LOG.debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
-                        productConfiguration.populateProductWithModel(productData, product.getSkuCode());
-                    } else {
-                        LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
-                    }
-                } else {
-                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
-                }
-            } catch (ModelException e) {
-                throw new FDResourceException(e);
-            }
-            //            try {
-            //                productConfiguration.populateProductWithModel(Product.wrap(product.getProductRef().lookupProduct(), user.getFDSessionUser()
-            //                        .getUser()));
-            //            } catch (ModelException e) {
-            //                throw new FDResourceException(e);
-            //            }
-            productConfiguration.setFromProductSelection(ProductSelection.wrap(product));
-
-            Iterator<FDCartLineI> cartProducts = cartLines.iterator();
-            while (cartProducts.hasNext()) {
-                FDCartLineI cartProduct = cartProducts.next();
-                if (OrderLineUtil.isSameConfiguration(cartProduct, product)) {
-                    productConfiguration.getProduct().setInCart(true);
-                }
-            }
-
-            result.add(productConfiguration);
+        
+        List<FDProductSelectionI> items = quickCart.getProducts(deptId);
+        List<FDProductSelectionI> modifiableItems = new ArrayList<FDProductSelectionI>();
+        modifiableItems.addAll(items);
+        if(modifiableItems != null && filterOrderDays != null) {
+        	Date currentDate = DateUtil.truncate(new Date());
+        	Iterator<FDProductSelectionI> _itemItr = modifiableItems.iterator();
+        	FDProductSelectionI _tmpItem = null;
+        	while(_itemItr.hasNext()) {
+        		_tmpItem = _itemItr.next();
+        		
+        		if(_tmpItem.getStatistics() != null 
+        				&& _tmpItem.getStatistics().getLastPurchase() != null 
+        				&& DateUtil.getDiffInDays(currentDate, _tmpItem.getStatistics().getLastPurchase()) > filterOrderDays) {
+        			_itemItr.remove();
+        		}
+        	}
         }
+        Collections.sort(modifiableItems, comparator);
+        return  getProductConfigurations(modifiableItems, user);
+    }
+    
+    private List<ProductConfiguration> getProductConfigurations(List<FDProductSelectionI> qProducts
+    																, SessionUser user)  throws FDException, ModelException {
+    	
+    	List<ProductConfiguration> result = new ArrayList<ProductConfiguration>();
+    	
+    	if(qProducts != null) {
+	    	Iterator<FDProductSelectionI> products = qProducts.iterator();
+	
+	        List<FDCartLineI> cartLines = user.getShoppingCart().getOrderLines();
+	
+	        while (products.hasNext()) {
+	            FDProductSelectionI product = products.next();
+	
+	            ProductConfiguration productConfiguration = new ProductConfiguration();
+	            try {
+	                Product productData = Product.wrap(product.getProductRef().lookupProductModel(), user.getFDSessionUser().getUser());
+	                Sku sku = productData.getSkyByCode(product.getSkuCode());
+	
+	                if (productData.hasTerms()) {
+	                    productConfiguration.addPassbackParam(RequestParamName.REQ_PARAM_AGREE_TO_TERMS, "yes");
+	                }
+	                
+	                if (sku == null) {
+	                    LOG.warn("sku=" + product.getSkuCode() + "::product desc=" + product.getDescription() + " was null");
+	                    if (product.getSkuCode() != null) {
+	                        LOG
+	                                .debug("cartLine.getSkuCode() was not null. setting skucode only at config level and not prod. letting product default.");
+	                        productConfiguration.populateProductWithModel(productData, product.getSkuCode());
+	                    } else {
+	                        LOG.debug("cartLine.getSkuCode() was null. should we skip this one?");
+	                    }
+	                } else {
+	                    productConfiguration.populateProductWithModel(productData, com.freshdirect.mobileapi.controller.data.Sku.wrap(sku));
+	                }
+	            } catch (ModelException e) {
+	                throw new FDResourceException(e);
+	            }
+	            //            try {
+	            //                productConfiguration.populateProductWithModel(Product.wrap(product.getProductRef().lookupProduct(), user.getFDSessionUser()
+	            //                        .getUser()));
+	            //            } catch (ModelException e) {
+	            //                throw new FDResourceException(e);
+	            //            }
+	            productConfiguration.setFromProductSelection(ProductSelection.wrap(product));
+	
+	            Iterator<FDCartLineI> cartProducts = cartLines.iterator();
+	            while (cartProducts.hasNext()) {
+	                FDCartLineI cartProduct = cartProducts.next();
+	                if (OrderLineUtil.isSameConfiguration(cartProduct, product)) {
+	                    productConfiguration.getProduct().setInCart(true);
+	                }
+	            }
+	
+	            result.add(productConfiguration);
+	        }
+    	}
 
         return result;
     }
@@ -251,5 +307,4 @@ public class Order {
    		}
         return result;
     }
-      
 }

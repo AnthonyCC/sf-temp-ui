@@ -276,7 +276,7 @@ function loadStuff() {
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "QuickShopEveryItemOrdered") {
-  	$("#url").val("/saptest12@freshdirect.com/quickshop/dept/id/gro/geteveryitemfordept/");
+  	$("#url").val("/saptest12@freshdirect.com/quickshop/dept/id/gro/filterdays/none/sortby/name/geteveryitemfordept/");
   	$("#payload").val("");
   	$("#result").val("");
   } else if (loaddata == "RemoveMultipleItems") {

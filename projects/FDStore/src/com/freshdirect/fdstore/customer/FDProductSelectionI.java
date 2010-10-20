@@ -60,6 +60,27 @@ public interface FDProductSelectionI extends FDConfigurableI {
 			return retValue;
 		}
 	};
+	
+	public final static Comparator<FDProductSelectionI> NAME_COMPARATOR = new Comparator<FDProductSelectionI>() {
+
+		public int compare(FDProductSelectionI h1, FDProductSelectionI h2) {
+			return h1.getProductName().compareTo(h2.getProductName());
+		}
+	};
+	
+	public final static Comparator<FDProductSelectionI> STATS_FREQUENCY_COMPARATOR = new Comparator<FDProductSelectionI>() {
+		public int compare(FDProductSelectionI h1, FDProductSelectionI h2) {
+			
+			return h2.getStatistics().getFrequency() - h1.getStatistics().getFrequency();
+		}
+	};
+
+	public final static Comparator<FDProductSelectionI> LAST_PURCHASE_COMPARATOR = new Comparator<FDProductSelectionI>() {
+		public int compare(FDProductSelectionI h1, FDProductSelectionI h2) {
+			
+			return h2.getStatistics().getLastPurchase().compareTo(h1.getStatistics().getLastPurchase());
+		}
+	};
 
 	public FDSku getSku();
 
