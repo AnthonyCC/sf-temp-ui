@@ -1,0 +1,3 @@
+alter table transp.dispatch add(MOTKIT_NO VARCHAR2(50 BYTE), ADDITIONAL_NEXTELS VARCHAR2(50 BYTE));
+
+,
