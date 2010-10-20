@@ -271,6 +271,10 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
         /*
          * Get already issued credits for each order lines
          */
+        if(orderLineQty==null) {
+        	result.addError(new ActionError("general_error_msg", "Please try processing this credit from the Department view."));
+        	return;
+        }
         for (int i = 0; i < orderLineQty.length; i++) {
             final double previousAmount = this.getPreviousComplaintAmount(order.getComplaints(), this.orderLineId[i]);
             
