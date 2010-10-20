@@ -476,8 +476,8 @@ public class DispatchProviderController extends JsonRpcController implements
 			while(itr.hasNext()) {
 				Dispatch dispatch = (Dispatch)itr.next();
 				if((dispatchId == null || !dispatchId.equalsIgnoreCase(dispatch.getDispatchId()))
-						&& DispatchPlanUtil.getShift(deliveryDate, firstDeliveryTime).equalsIgnoreCase(
-										DispatchPlanUtil.getShift(dispatch.getDispatchDate(), dispatch.getFirstDlvTime()))) {
+						//&& DispatchPlanUtil.getShift(deliveryDate, firstDeliveryTime).equalsIgnoreCase(DispatchPlanUtil.getShift(dispatch.getDispatchDate(), dispatch.getFirstDlvTime()))
+						&& dispatch.getCheckedInTime() == null) {
 					return true;
 				}
 			}
