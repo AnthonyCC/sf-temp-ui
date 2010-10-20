@@ -39,6 +39,9 @@ public class Dispatch implements java.io.Serializable{
 	private DispatchReason overrideReason;
 	private String overrideUser;
 	
+	private String motKitNumber;
+	private String additionalNextels;
+	
 	public Dispatch() {
 	}
 
@@ -288,4 +291,20 @@ public class Dispatch implements java.io.Serializable{
 		this.isTeamOverride = isTeamOverride;
 	}
 
+	public String getMotKitNumber() {
+		return motKitNumber;
+	}
+
+	public String getAdditionalNextels() {
+		return additionalNextels;
+	}
+
+	public void setMotKitNumber(String motKitNumber) {
+		this.motKitNumber = motKitNumber;
+	}
+
+	public void setAdditionalNextels(String additionalNextels) {
+		this.additionalNextels = additionalNextels;
+	}
+	
 }

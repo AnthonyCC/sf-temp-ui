@@ -20,6 +20,7 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import com.freshdirect.transadmin.exception.TransAdminApplicationException;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -40,6 +41,17 @@ public class DispatchFormController extends AbstractFormController {
 
 	private ZoneManagerI zoneManagerService;
 	
+	private AssetManagerI assetManagerService;
+	
+		
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
+	}
+
 	public DispatchManagerI getDispatchManagerService() {
 		return dispatchManagerService;
 	}
@@ -94,6 +106,10 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put("zones", zones);
 		refData.put("regions", domainManagerService.getRegions());
 		refData.put("reasons", dispatchManagerService.getDispatchReasons(true));
+		
+		refData.put("gpsunits", assetManagerService.getActiveAssets("GPS"));
+		refData.put("ezpassunits", assetManagerService.getActiveAssets("EZPASS"));
+		refData.put("motkitunits", assetManagerService.getActiveAssets("MOTKIT"));
 		return refData;
 	}
 

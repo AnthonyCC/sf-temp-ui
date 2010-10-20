@@ -131,7 +131,7 @@
       function handleResoureChangeEvent(target, src) {			
 			resoureChangeEvent(src, 'D', document.getElementById('dispatchDate'), document.getElementById('dispatchId'));	
 	  }
-
+      
       function  firstDeliveryTimeChanged() {
 			document.getElementById("firstDeliveryTimeModified").value = "true";			
 			dispatchForm.submit();
@@ -587,19 +587,45 @@
 							 </spring:bind>                   
 						</td>
 					</tr> 
+					
 					<tr>
 						<td>GPS No</td>
-						<td colspan="2"> 
-							<form:input maxlength="50" size="8" path="gpsNumber" />
+						<td colspan="2">       
+							<form:select path="gpsNumber" onchange="return assetChangeEvent(this);">
+										<form:option value="" label="Select GPS"/>
+										<form:options items="${gpsunits}" itemLabel="assetNo" itemValue="assetId" />
+									</form:select>
 						</td>
-					</tr>
+                        <td>
+                          &nbsp;<form:errors path="gpsNumber" />
+                        </td>  
+					</tr>   					
 					<tr>
 						<td>EzPass No</td>
-						<td colspan="2"> 
-							<form:input maxlength="50" size="8" path="ezpassNumber" />
+						<td colspan="2">       
+							<form:select path="ezpassNumber" onchange="return assetChangeEvent(this);">
+										<form:option value="" label="Select EZPass"/>
+										<form:options items="${ezpassunits}" itemLabel="assetNo" itemValue="assetId" />
+									</form:select>
 						</td>
+                        <td>
+                          &nbsp;<form:errors path="ezpassNumber" />
+                        </td>  
 					</tr>
 					
+					<tr>
+						<td>MotKit No</td>
+						<td colspan="2">       
+							<form:select path="motKitNumber" onchange="return assetChangeEvent(this);">
+										<form:option value="" label="Select MotKit"/>
+										<form:options items="${motkitunits}" itemLabel="assetNo" itemValue="assetId" />
+									</form:select>
+						</td>
+                        <td>
+                          &nbsp;<form:errors path="motKitNumber" />
+                        </td>  
+					</tr>  
+										
 					<c:if test="${dispatchForm.today == true}">
 					<c:if test="${dispatchForm.isBullpen == false}">
 					<c:if test='${dispatchForm.dispatched == false}'>
@@ -675,6 +701,16 @@
 					</tr>
 					</c:if>					
 					</c:if>
+					
+					<tr>					
+						<td>Additional Nextels</td>
+						<td>                  
+							<form:textarea path="additionalNextels" rows="5" cols="45" cssClass="large" />
+						</td>
+						<td>
+							<form:errors path="additionalNextels" />&nbsp;
+						</td>
+					</tr>   
 					
 					<tr>					
 						<td>Comments</td>

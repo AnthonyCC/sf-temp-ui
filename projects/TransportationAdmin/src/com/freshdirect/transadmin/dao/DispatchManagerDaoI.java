@@ -65,4 +65,10 @@ public interface DispatchManagerDaoI extends BaseManagerDaoI {
 	ScribLabel getScribLabelByDate(String date);
 	
 	Collection getDatesByScribLabel(String slabel);
+	
+	Collection getDispatchForGPS(Date dispatchDate, String assetId) throws DataAccessException;
+	
+	Collection getDispatchForEZPass(Date dispatchDate, String assetId) throws DataAccessException;
+	
+	Collection getDispatchForMotKit(Date dispatchDate, String assetId) throws DataAccessException;
 }

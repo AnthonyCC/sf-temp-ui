@@ -39,18 +39,17 @@ import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.DlvScenarioDay;
 import com.freshdirect.transadmin.model.DlvScenarioZones;
 import com.freshdirect.transadmin.model.DlvServiceTimeScenario;
-import com.freshdirect.transadmin.model.EmployeeInfo;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.ScenarioZonesId;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.ScribLabel;
-import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.model.TrnAdHocRoute;
 import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.UserPref;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.ZoneSupervisor;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -467,6 +466,65 @@ public class DispatchProviderController extends JsonRpcController implements
 			}
 		}
 		return resultDispatch;
+	}
+	
+	private boolean getDispatchForAsset(Date deliveryDate, String dispatchId
+														, Date firstDeliveryTime, Collection dispatches) throws ParseException {
+		
+		if(dispatches != null) {
+			Iterator itr = dispatches.iterator();
+			while(itr.hasNext()) {
+				Dispatch dispatch = (Dispatch)itr.next();
+				if((dispatchId == null || !dispatchId.equalsIgnoreCase(dispatch.getDispatchId()))
+						&& DispatchPlanUtil.getShift(deliveryDate, firstDeliveryTime).equalsIgnoreCase(
+										DispatchPlanUtil.getShift(dispatch.getDispatchDate(), dispatch.getFirstDlvTime()))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	public boolean hasDispatchForGPS(String dispatchDate, String dispatchId
+														, String firstDeliveryTime, String assetId) {
+		
+		try {
+			Date _deliveryDate = TransStringUtil.getDate(dispatchDate);
+			Date _firstDeliveryTime = TransStringUtil.getServerTime(firstDeliveryTime);
+			return getDispatchForAsset(_deliveryDate, dispatchId, _firstDeliveryTime,
+											this.getDispatchManagerService().getDispatchForGPS(_deliveryDate, assetId));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return false;
+	}
+	
+	public boolean hasDispatchForEZPass(String dispatchDate, String dispatchId
+													, String firstDeliveryTime, String assetId) {
+		try {
+			Date _deliveryDate = TransStringUtil.getDate(dispatchDate);
+			Date _firstDeliveryTime = TransStringUtil.getServerTime(firstDeliveryTime);
+			return getDispatchForAsset(_deliveryDate, dispatchId, _firstDeliveryTime,
+											this.getDispatchManagerService().getDispatchForEZPass(_deliveryDate, assetId));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return false;
+	}
+	
+	public boolean hasDispatchForMotKit(String dispatchDate, String dispatchId
+														, String firstDeliveryTime, String assetId) {
+		try {
+			Date _deliveryDate = TransStringUtil.getDate(dispatchDate);
+			Date _firstDeliveryTime = TransStringUtil.getServerTime(firstDeliveryTime);
+			return getDispatchForAsset(_deliveryDate, dispatchId, _firstDeliveryTime,
+											this.getDispatchManagerService().getDispatchForMotKit(_deliveryDate, assetId));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return false;
 	}
 	
 	public int addScenarioDayMapping(String sCode, String sDay, String sDate) {

@@ -186,6 +186,7 @@
         <property name="dispatchManagerService" ref="dispatchManager"/>
         <property name="employeeManagerService" ref="employeeManager"/>
         <property name="domainManagerService" ref="domainManager"/>
+        <property name="assetManagerService" ref="assetManagerService"/>
 	</bean>
 	
 	<bean id="locationController" class="com.freshdirect.transadmin.web.LocationController">
@@ -373,6 +374,7 @@
 		<property name="dispatchManagerService" ref="dispatchManager"/>
 		<property name="employeeManagerService" ref="employeeManager"/>
 		<property name="zoneManagerService" ref="zoneManager"/>
+		<property name="assetManagerService" ref="assetManagerService"/>
 		<property name="sessionForm" value="true"/>
         <property name="commandName" value="dispatchForm"/>
         <property name="commandClass" value="com.freshdirect.transadmin.web.model.DispatchCommand"/>

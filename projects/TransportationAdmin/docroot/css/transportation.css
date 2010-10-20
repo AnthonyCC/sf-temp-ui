@@ -1200,3 +1200,20 @@ div.eXor_Active, div.eXor_AdHoc { margin-left: 10px; width: 98%; }
 	background-color:#F2F5F2;
 	padding-left: 3px;
 }
+
+.asset_gps 
+{
+	background-color: #B1CFA8;
+}
+.asset_ezpass 
+{
+	background-color: #4FCF26;
+}
+.asset_motkit 
+{
+	background-color: #2A7F0F;
+}
+.asset_additionalnextels 
+{
+	background-color: #677F5F;
+}

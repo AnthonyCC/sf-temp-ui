@@ -68,6 +68,7 @@ import com.freshdirect.transadmin.model.RouteMapping;
 import com.freshdirect.transadmin.model.Scrib;
 import com.freshdirect.transadmin.model.Zone;
 import com.freshdirect.transadmin.security.SecurityManager;
+import com.freshdirect.transadmin.service.AssetManagerI;
 import com.freshdirect.transadmin.service.DispatchManagerI;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.service.EmployeeManagerI;
@@ -92,7 +93,7 @@ public class DispatchController extends AbstractMultiActionController {
 	private DispatchManagerI dispatchManagerService;
 	private EmployeeManagerI employeeManagerService;
 	private DomainManagerI domainManagerService;
-	
+	private AssetManagerI assetManagerService;
 	
 
 	private short rownum;
@@ -148,6 +149,15 @@ public class DispatchController extends AbstractMultiActionController {
 
 	public void setDomainManagerService(DomainManagerI domainManagerService) {
 		this.domainManagerService = domainManagerService;
+	}
+	
+	
+	public AssetManagerI getAssetManagerService() {
+		return assetManagerService;
+	}
+
+	public void setAssetManagerService(AssetManagerI assetManagerService) {
+		this.assetManagerService = assetManagerService;
 	}
 
 	/**
@@ -397,7 +407,7 @@ public class DispatchController extends AbstractMultiActionController {
 							//Set scheduled emp date
 							getKronosEmployeeDate(p, r, s);
 							
-							s.setShiftType(getShiftForPlan(p));
+							s.setShiftType(DispatchPlanUtil.getShift(p.getPlanDate(), p.getFirstDeliveryTime()));
 							//set Employee Time	
 							setKronosEmployeeTime(p, r, s,plansForDateMap);							
 							//set shift duration
@@ -479,7 +489,7 @@ public class DispatchController extends AbstractMultiActionController {
 			List<Plan> resPlans=new ArrayList<Plan>();
 			for (Iterator<Plan> iterator = depotPlans.iterator(); iterator.hasNext();) {
 				Plan _depotPlan = iterator.next();
-					String shiftType = getShiftForPlan(_depotPlan);
+					String shiftType = DispatchPlanUtil.getShift(_depotPlan.getPlanDate(), _depotPlan.getFirstDeliveryTime());
 					if(shiftType.equalsIgnoreCase(s.getShiftType())){
 						Set _depotPlanRsr = _depotPlan.getPlanResources();
 						for (Iterator<PlanResource> itr = _depotPlanRsr.iterator(); itr.hasNext();) {
@@ -521,23 +531,14 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		
 	}
-	private String getShiftForPlan(Plan p) throws ParseException {		
-		int day = TransStringUtil.getDayOfWeek(p.getPlanDate());
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(p.getFirstDeliveryTime()));
-		if (hourOfDay < 12 && day != 7) {
-			return "AM";
-		} else if (hourOfDay < 10 && day == 7) {
-			return "AM";
-		} else
-			return "PM";		
-	}
+	
 
 	private List<Plan> getResourcePlansForShift(Date planDate,PlanResource r, Scrib s,Collection<Plan> plans) throws ParseException {
 		
 		List<Plan> resPlans=new ArrayList<Plan>();
 		for (Iterator<Plan> iterator = plans.iterator(); iterator.hasNext();) {
 			Plan _rPlan = iterator.next();
-			String shiftType=getShiftForPlan(_rPlan);
+			String shiftType = DispatchPlanUtil.getShift(_rPlan.getPlanDate(), _rPlan.getFirstDeliveryTime());
 			if(shiftType.equalsIgnoreCase(s.getShiftType())){
 				Set<PlanResource> _rPlanRsr = _rPlan.getPlanResources();
 				for (Iterator<PlanResource> itr = _rPlanRsr.iterator(); itr.hasNext();) {
@@ -764,6 +765,11 @@ public class DispatchController extends AbstractMultiActionController {
 		}
 		mav.getModel().put("zones", domainManagerService.getZones());
 		mav.getModel().put("regions", domainManagerService.getRegions());
+		
+		mav.getModel().put("gpsunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("GPS")));
+		mav.getModel().put("ezpassunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("EZPASS")));
+		mav.getModel().put("motkitunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("MOTKIT")));
+		
 		return mav;
 	}
 
@@ -841,7 +847,7 @@ public class DispatchController extends AbstractMultiActionController {
 						WebEmployeeInfo empInfo = employeeManagerService.getEmployeeEx(r.getId().getResourceId());
 							
 						wp.setEmp(empInfo);
-						wp.setShiftType(getShiftForPlan(p));
+						wp.setShiftType(DispatchPlanUtil.getShift(p.getPlanDate(), p.getFirstDeliveryTime()));
 						resMap.put(r.getId().getResourceId(), wp);						
 					}			
 				}

@@ -99,4 +99,10 @@ public interface DispatchManagerI extends BaseManagerI {
 	
 	Collection getDatesByScribLabel(String slabel);
 	
+	Collection getDispatchForGPS(Date dispatchDate, String assetId);
+	
+	Collection getDispatchForEZPass(Date dispatchDate, String assetId);
+	
+	Collection getDispatchForMotKit(Date dispatchDate, String assetId);
+	
 }

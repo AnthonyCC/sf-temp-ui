@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.framework.util.DateUtil;
+import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.DispatchReason;
 import com.freshdirect.transadmin.model.EmployeeInfo;
@@ -185,6 +186,10 @@ public class DispatchPlanUtil {
 		if(dispatch.getOverrideReason()!=null)command.setOverrideReasonCode(dispatch.getOverrideReason().getCode());
 		command.setOverrideUser(dispatch.getOverrideUser());
 		command.setIsTeamOverride(dispatch.getIsTeamOverride() != null &&  dispatch.getIsTeamOverride() ? true : false);
+		
+		command.setAdditionalNextels(dispatch.getAdditionalNextels());
+		command.setMotKitNumber(dispatch.getMotKitNumber());	
+		
 		return command;
 	}
 
@@ -289,6 +294,10 @@ public class DispatchPlanUtil {
 		}
 		
 		dispatch.setIsTeamOverride(command.getIsTeamOverride());
+		
+		dispatch.setAdditionalNextels(command.getAdditionalNextels());
+		dispatch.setMotKitNumber(command.getMotKitNumber());	
+		
 		return dispatch;
 
 	}
@@ -1101,5 +1110,31 @@ public class DispatchPlanUtil {
 			}
 		}
 		return false;
-	}	
+	}
+	
+	public static Map<String, Asset> getAssetMapping(Collection assets) {
+		
+		Map<String, Asset> assetMapping = new HashMap<String, Asset>();
+		if(assets != null) {
+			Iterator itr = assets.iterator();
+			Asset asset = null;
+			while(itr.hasNext()) {
+				asset = (Asset)itr.next();
+				assetMapping.put(asset.getAssetId(), asset);
+			}
+		}
+		return assetMapping;
+	}
+	
+	public static String getShift(Date deliveryDate, Date firstDeliveryTime) throws ParseException {		
+		int day = TransStringUtil.getDayOfWeek(deliveryDate);
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(deliveryDate));
+		if (hourOfDay < 12 && day != 7) {
+			return "AM";
+		} else if (hourOfDay < 10 && day == 7) {
+			return "AM";
+		} else {
+			return "PM";
+		}
+	}
 }

@@ -11,7 +11,6 @@ import com.freshdirect.transadmin.util.TransStringUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchResourceInfo;
 import com.freshdirect.transadmin.web.model.ResourceList;
-import com.freshdirect.transadmin.web.model.ResourceReq;
 
 public class FDDispatchResourceCell extends FDBaseCell  {
 	

@@ -45,6 +45,11 @@ public class AssetManagerImpl
 		return getAssetManagerDao().getAssets(assetType);
 	}
 	
+	public Collection getActiveAssets(String assetType) {
+
+		return getAssetManagerDao().getActiveAssets(assetType);
+	}
+	
 	public Asset getAsset(String assetId) {
 
 		return getAssetManagerDao().getAsset(assetId);

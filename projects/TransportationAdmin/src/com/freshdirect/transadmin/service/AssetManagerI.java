@@ -10,6 +10,7 @@ public interface AssetManagerI extends BaseManagerI {
 	Collection getAssetTypes();
 	Collection getAssetAttributeTypes();
 	Collection getAssets(String assetType);
+	Collection getActiveAssets(String assetType);
 	Asset getAsset(String assetId);
 	void saveAsset(Asset asset);
 }

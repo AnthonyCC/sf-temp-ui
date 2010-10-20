@@ -30,4 +30,8 @@ public interface IDispatchProvider {
 	String getTotalNoTrucksByDate(String date);
 	Collection getDefaultZoneSupervisors(String zoneId);
 	boolean doZoneDefaultSupervisor(String id, String[][] zone);
+	
+	boolean hasDispatchForGPS(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
+	boolean hasDispatchForEZPass(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
+	boolean hasDispatchForMotKit(String dispatchDate, String dispatchId, String firstDeliveryTime, String assetId);
 }

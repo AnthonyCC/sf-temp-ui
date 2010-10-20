@@ -20,7 +20,7 @@
   <tmpl:put name='content' direct='true'>
     <br/> 
     <div align="center">
-      <form:form commandName = "assetForm" method="post">
+      <form:form commandName="assetForm" method="post">
            
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
           <tr>
@@ -39,7 +39,7 @@
                <tr>
                   <td>Asset No</td>
                   <td>                  
-                    <form:input maxlength="40" size="40" path="assetNo" />
+                    <form:input maxlength="15" size="15" path="assetNo" />
                 </td>
                 <td>
                   &nbsp;<form:errors path="assetNo" />
@@ -168,17 +168,27 @@
       	  		_data[i][1] = records[i].getData('attributeValue');      	  		
       	  	}
       	  }
-      	  try {  
-     	 	var result = jsonrpcClient.AsyncAssetProvider.saveAsset(document.getElementById('assetId').value
-     													, document.getElementById('assetType.code').value
-     													, document.getElementById('assetNo').value
-     													, document.getElementById('assetDescription').value
-     													, document.getElementById('assetStatus').value
-     	     	 										, _data);
-     	 	document.getElementById('assetId').value = result;
-     	 	if(result != null) {
-     	 		alert("Asset saved successfully");
-     	 	}
+      	  try { 
+          	if(document.getElementById('assetNo').value == null || document.getElementById('assetNo').value.length == 0) {
+              	alert("Asset no is a required field");
+          	} else if(document.getElementById('assetNo').value == null || document.getElementById('assetDescription').value.length == 0) {
+          		alert("Asset Description is a required field");
+          	} else if(document.getElementById('assetStatus').value == null 
+                  	|| document.getElementById('assetStatus').value.length == 0
+                  		|| document.getElementById('assetStatus').value == 'null') {
+          		alert("Asset Status is a required field");
+          	}  else { 
+	     	 	var result = jsonrpcClient.AsyncAssetProvider.saveAsset(document.getElementById('assetId').value
+	     													, document.getElementById('assetType.code').value
+	     													, document.getElementById('assetNo').value
+	     													, document.getElementById('assetDescription').value
+	     													, document.getElementById('assetStatus').value
+	     	     	 										, _data);
+	     	 	document.getElementById('assetId').value = result;
+	     	 	if(result != null) {
+	     	 		alert("Asset saved successfully");
+	     	 	}
+          	}
       	  }  catch(rpcException) {
 				alert("There was a problem in communication to the server. Please try to refresh the browser window!");
 		  }
@@ -187,7 +197,7 @@
      }
  </script>
     <br/>   
-   <div style='background-color:#F2F2F2;border:1px solid #000;width: 65%; margin:0 auto;'>  
+   <div style='display:none;background-color:#F2F2F2;border:1px solid #000;width: 65%; margin:0 auto;'>  
        <div class="bd">
       	 	<table cellpadding="1" cellspacing="0">
 		    	<tr>

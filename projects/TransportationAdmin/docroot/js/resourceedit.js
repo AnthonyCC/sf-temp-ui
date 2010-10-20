@@ -47,3 +47,33 @@ function resoureChangeEvent(src, view, actionDate, srcId) {
 		}
 	}
 }
+	
+	function assetChangeEvent(src) {
+	
+		var result = false;
+		if("gpsNumber" == src.id) {
+			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForGPS(document.getElementById('dispatchDate').value
+																				, document.getElementById('dispatchId').value
+																				, document.getElementById('firstDeliveryTime').value
+																				, src.value);
+		} else if("ezpassNumber" == src.id) {
+			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForEZPass(document.getElementById('dispatchDate').value
+																				, document.getElementById('dispatchId').value
+																				, document.getElementById('firstDeliveryTime').value
+																				, src.value);
+		} else if("motKitNumber" == src.id) {
+			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForMotKit(document.getElementById('dispatchDate').value
+																				, document.getElementById('dispatchId').value
+																				, document.getElementById('firstDeliveryTime').value
+																				, src.value);
+		}
+		if(result) {
+			var hasConfirmed = confirm ("This Asset has been used in the same shift already.  Would you like to still assign to the dispatch?  Please Confirm")
+			if (hasConfirmed) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}

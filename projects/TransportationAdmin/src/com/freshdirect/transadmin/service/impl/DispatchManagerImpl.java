@@ -686,4 +686,15 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		return getDispatchManagerDao().getDatesByScribLabel(slabel);
 	}
 	
+	public Collection getDispatchForGPS(Date dispatchDate, String assetId) {
+		return getDispatchManagerDao().getDispatchForGPS(dispatchDate, assetId);
+	}
+	
+	public Collection getDispatchForEZPass(Date dispatchDate, String assetId) {
+		return getDispatchManagerDao().getDispatchForEZPass(dispatchDate, assetId);
+	}
+	
+	public Collection getDispatchForMotKit(Date dispatchDate, String assetId) {
+		return getDispatchManagerDao().getDispatchForMotKit(dispatchDate, assetId);
+	}
 }

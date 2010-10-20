@@ -48,6 +48,7 @@ public class DispatchCommand extends WebPlanInfo {
 	private String noOfStops;
 	private String gpsNumber;
     private String ezpassNumber;
+    
     private String location;
     private String dispatchTime;
     private String checkedInTime;
@@ -60,6 +61,9 @@ public class DispatchCommand extends WebPlanInfo {
     private Date htoutDate;
     private UPSRouteInfo upsRouteInfo;
     
+    private String motKitNumber;
+	private String additionalNextels;
+	
     public int getResourceSize(List resources)
 	{
 		int result=0;
@@ -432,12 +436,7 @@ public class DispatchCommand extends WebPlanInfo {
 		if(getRegionName()==null) return zone;
 		return (getRegionName()==null?"":getRegionName())+"-"+zone;
 	}
-	public String getExtras()
-	{
-		if(getGpsNumber()==null&&getEzpassNumber()==null) return "";
-		if(getGpsNumber()==null) return getEzpassNumber();
-		return (getGpsNumber()==null?"":getGpsNumber())+(getEzpassNumber()==null?",":","+getEzpassNumber());
-	}
+		
 	public Date getHtinDate() {
 		return htinDate;
 	}
@@ -524,4 +523,18 @@ public class DispatchCommand extends WebPlanInfo {
 		
 		return null;
 	}
+	public String getMotKitNumber() {
+		return motKitNumber;
+	}
+	public String getAdditionalNextels() {
+		return additionalNextels;
+	}
+	public void setMotKitNumber(String motKitNumber) {
+		this.motKitNumber = motKitNumber;
+	}
+	public void setAdditionalNextels(String additionalNextels) {
+		this.additionalNextels = additionalNextels;
+	}
+	
+	
 }

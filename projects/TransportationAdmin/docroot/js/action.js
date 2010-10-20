@@ -31,7 +31,12 @@ function getParamList(tableId, url) {
 }
 
 function doAddNew(tableId, url) {
-  	location.href = url+"?filter="+getFilterTestValue();  	
+	if(url.indexOf('?') == -1) {
+		location.href = url+"?filter="+getFilterTestValue();
+	} else {
+		location.href = url+"&filter="+getFilterTestValue();
+	}
+  	  	
 }
 
 function doDelete(tableId, url) {

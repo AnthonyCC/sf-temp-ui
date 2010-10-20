@@ -55,6 +55,7 @@ public class DispatchValidator extends AbstractValidator {
 		if(errors.getErrorCount() > 0 && model.isConfirmed()){
 			model.setConfirmed(false);
 		}
+		validateLength("additionalNextels", model.getAdditionalNextels(), 40, errors);
 	}	
 
 private void checkForDuplicateResourceAllocation(WebPlanInfo model, Errors errors) {

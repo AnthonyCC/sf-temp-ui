@@ -177,6 +177,44 @@ public class DispatchManagerDaoHibernateImpl extends
 
 	}
 	
+	public Collection getDispatchForGPS(Date dispatchDate, String assetId)
+		throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Dispatch p where p.dispatchDate = ? and p.gpsNumber = ? ");
+		
+		strBuf.append(" order by p.dispatchDate, p.zone.zoneCode, p.startTime");
+		
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),
+				new Object[] { dispatchDate, assetId });
+	}
+	
+	public Collection getDispatchForEZPass(Date dispatchDate, String assetId)
+	throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Dispatch p where p.dispatchDate = ? and p.ezpassNumber = ? ");
+
+		strBuf.append(" order by p.dispatchDate, p.zone.zoneCode, p.startTime");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),
+				new Object[] { dispatchDate, assetId });
+	}
+
+	public Collection getDispatchForMotKit(Date dispatchDate, String assetId)
+	throws DataAccessException {
+
+		StringBuffer strBuf = new StringBuffer();
+		strBuf.append("from Dispatch p where p.dispatchDate = ? and p.motKitNumber = ? ");
+
+		strBuf.append(" order by p.dispatchDate, p.zone.zoneCode, p.startTime");
+
+		return (Collection) getHibernateTemplate().find(strBuf.toString(),
+				new Object[] { dispatchDate, assetId });
+	}
+	
+	
+	
 	public Collection getDispatch(Date dispatchDate, Date startTime, boolean isBullPen)
 			throws DataAccessException {
 

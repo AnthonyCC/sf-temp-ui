@@ -28,6 +28,11 @@ public class AssetManagerDaoHibernateImpl
 		return getDataList("Asset where ASSET_TYPE = '"+assetType+"' Order By ASSET_NO");
 	}
 	
+	public Collection getActiveAssets(String assetType) throws DataAccessException {
+
+		return getDataList("Asset where ASSET_TYPE = '"+assetType+"' and ASSET_STATUS = 'ACT' Order By ASSET_NO");
+	}
+	
 	public Asset getAsset(String assetId) throws DataAccessException {
 
 		return (Asset)getEntityById("Asset", "assetId", assetId);
