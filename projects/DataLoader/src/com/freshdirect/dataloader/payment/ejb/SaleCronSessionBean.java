@@ -97,7 +97,20 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			+ "or(sa.action_type='GCD' "
 			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=?))";
 
-
+	private final static String QUERY_SALE_IN_CPG_STATUS_NO_BIND =
+		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'CPG' "
+			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) " 
+			+ "or(sa.action_type='GCD' "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";
+	
+	private final static String QUERY_SALE_IN_POG_STATUS_NO_BIND =
+		"select distinct s.id from cust.sale s, cust.salesaction sa where s.status = 'POG' "
+			+ "and sa.sale_id=s.id and (sa.action_type='RET' or(sa.action_type='DLC' "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='DLC' and za.sale_id = s.id))*24 >=4) " 
+			+ "or(sa.action_type='GCD' "
+			+ "and (sysdate-(select max(action_date) from cust.salesaction za where za.action_type='GCD' and za.sale_id = s.id))*24 >=4))";
+	
 	private final static String QUERY_SALE_IN_RPG_STATUS =
 			"select s.id, sa.sub_total from cust.sale s, cust.salesaction sa where sa.customer_id = s.customer_id and" +
 			" sa.sale_id = s.id and s.type = 'GCD' and s.status = 'RPG' and sa.action_type = 'CRO'";
@@ -487,6 +500,17 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 		ps.close();
 		return saleIds;
 	}
+	private List<String> querySalesInStatusCPG(Connection conn, String query) throws SQLException {
+		List<String> saleIds = new ArrayList<String>();
+		PreparedStatement ps = conn.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		while (rs.next()) {
+			saleIds.add(rs.getString(1));
+		}
+		rs.close();
+		ps.close();
+		return saleIds;
+	}
 
 
 	private Map<String, Double> querySalesInStatusRPG(Connection conn) throws SQLException {
@@ -633,7 +657,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx.begin();
 			con = this.getConnection();
 
-			saleIds = this.querySalesInStatusCPG(con, EnumSaleStatus.CAPTURE_PENDING);
+			//saleIds = this.querySalesInStatusCPG(con, EnumSaleStatus.CAPTURE_PENDING);
+			saleIds = this.querySalesInStatusCPG(con, QUERY_SALE_IN_CPG_STATUS_NO_BIND);
 
 			utx.commit();
 		} catch (Exception e) {
@@ -718,7 +743,8 @@ public class SaleCronSessionBean extends SessionBeanSupport {
 			utx.begin();
 			con = this.getConnection();
 
-			saleIds = this.querySalesInStatusCPG(con, EnumSaleStatus.POST_AUTH_PENDING);
+			//saleIds = this.querySalesInStatusCPG(con, EnumSaleStatus.POST_AUTH_PENDING);
+			saleIds = this.querySalesInStatusCPG(con, QUERY_SALE_IN_POG_STATUS_NO_BIND);
 
 			utx.commit();
 		} catch (Exception e) {
