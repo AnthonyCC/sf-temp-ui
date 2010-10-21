@@ -39,7 +39,7 @@ if ( "true".equals((String)request.getParameter("isByMaxRedemptions")) ) {
 	isByMaxRedemptions = true;
 }
 Promotion promotion = (Promotion)user.getRedeemedPromotion();
-if(null != promotion && user.getPromotionEligibility().isEligible(promotion.getPromotionCode())){
+if(null != promotion ){//&& user.getPromotionEligibility().isEligible(promotion.getPromotionCode())
 	if(isByAddress){
 		String addressOrLocation = request.getParameter( "selectAddressList" );
 		if ( addressOrLocation != null && addressOrLocation.startsWith( "field_" ) ) {
