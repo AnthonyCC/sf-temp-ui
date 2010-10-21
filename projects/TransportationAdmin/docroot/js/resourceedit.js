@@ -49,31 +49,38 @@ function resoureChangeEvent(src, view, actionDate, srcId) {
 }
 	
 	function assetChangeEvent(src) {
-	
+		
 		var result = false;
+		var destinationId;
 		if("gpsNumber" == src.id) {
 			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForGPS(document.getElementById('dispatchDate').value
 																				, document.getElementById('dispatchId').value
 																				, document.getElementById('firstDeliveryTime').value
 																				, src.value);
+			destinationId = "curr_gpsNumber";																	
 		} else if("ezpassNumber" == src.id) {
 			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForEZPass(document.getElementById('dispatchDate').value
 																				, document.getElementById('dispatchId').value
 																				, document.getElementById('firstDeliveryTime').value
 																				, src.value);
+			destinationId = "curr_ezpassNumber";																				
 		} else if("motKitNumber" == src.id) {
 			result = jsonrpcRptClient.AsyncDispatchProvider.hasDispatchForMotKit(document.getElementById('dispatchDate').value
 																				, document.getElementById('dispatchId').value
 																				, document.getElementById('firstDeliveryTime').value
 																				, src.value);
+			destinationId = "curr_motKitNumber";																	
 		}
 		if(result) {
-			var hasConfirmed = confirm ("This Asset has been used in the same shift already.  Would you like to still assign to the dispatch?  Please Confirm")
+			var hasConfirmed = confirm ("This Asset is already used in a active dispatch.  Would you like to still assign to the dispatch?  Please Confirm")
 			if (hasConfirmed) {
+				document.getElementById(destinationId).value = src.value;
 				return true;
 			} else {
+				src.value = document.getElementById(destinationId).value;
 				return false;
 			}
 		}
+		document.getElementById(destinationId).value = src.value;
 		return true;
 	}

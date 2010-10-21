@@ -136,6 +136,12 @@
 			document.getElementById("firstDeliveryTimeModified").value = "true";			
 			dispatchForm.submit();
 	  }
+
+      function  initAssets() {
+    	  document.getElementById("curr_gpsNumber").value = document.getElementById("gpsNumber").value;
+    	  document.getElementById("curr_ezpassNumber").value = document.getElementById("ezpassNumber").value;
+    	  document.getElementById("curr_motKitNumber").value = document.getElementById("motKitNumber").value;
+	  }
       
       </script>
       <style>
@@ -158,7 +164,11 @@
       <input type=hidden name="dispDate" value="<%=dispDate %>" />
 	  <form:hidden path="overrideUser" />
 	  <form:hidden path="firstDeliveryTimeModified"/>
-    
+      
+      <input type=hidden id="curr_gpsNumber" value="" />
+      <input type=hidden id="curr_ezpassNumber" value="" />
+      <input type=hidden id="curr_motKitNumber" value="" />
+      
       <table width="100%" cellpadding="0" cellspacing="0" border="0">
 		<tr>
 			<td class="screentitle">Add/Edit Dispatch</td>
@@ -741,6 +751,6 @@
      
   </tmpl:put>
 </tmpl:insert>
-<script>checkRouteInfo();</script>
+<script>checkRouteInfo();initAssets();</script>
 <form name="dispatch" action="dispatch.do" method="post">  </form>
 
