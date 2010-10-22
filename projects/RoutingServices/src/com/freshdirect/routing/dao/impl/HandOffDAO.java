@@ -1176,7 +1176,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 				PreparedStatement ps = null;
 				ps = connection.prepareStatement(GET_HANDOFFBATCH_DEPOTSCHEDULE_EX);
 				ps.setString(1, dayOfWeek);
-				ps.setDate(2, new java.sql.Date(cutOffTime.getTime()));
+				ps.setTimestamp(2, new java.sql.Timestamp(cutOffTime.getTime()));
 								
 				return ps;
 			}  
