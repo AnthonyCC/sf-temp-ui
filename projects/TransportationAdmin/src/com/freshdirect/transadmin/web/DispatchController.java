@@ -799,10 +799,10 @@ public class DispatchController extends AbstractMultiActionController {
 			getDispatchUnAssignedEmployees(request,response,plans);
 			
 			getDispatchHandTruckInventoryForLastScanOut(request,response);
-		
-			getTopTenDispatchReadyRoutes(request,response,dispatchList);
-				
+			
 			getDispatchStatistics(request,response,dispatchList,plans);
+			
+			getTopTenDispatchReadyRoutes(request,response,dispatchList);			
 		
 			getUnAssignedEmployees(request,response,unAssignedEmps);
 			
