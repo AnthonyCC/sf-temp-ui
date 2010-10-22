@@ -57,7 +57,8 @@ public class HandOffRoutingInAction extends AbstractHandOffAction {
 		    	
 		    	proxy.clearHandOffBatch(HandOffRoutingInAction.this.getBatch().getBatchId());
 		    	proxy.updateHandOffBatchCommitEligibility(HandOffRoutingInAction.this.getBatch().getBatchId()
-		    												, !RoutingServicesProperties.getRoutingCutOffStandByEnabled());
+		    												, (!RoutingServicesProperties.getRoutingCutOffStandByEnabled() 
+		    																	&& HandOffRoutingInAction.this.getBatch().isEligibleForCommit()));
 		    	proxy.updateHandOffBatchStatus(HandOffRoutingInAction.this.getBatch().getBatchId(), EnumHandOffBatchStatus.PROCESSING);
 				proxy.addNewHandOffBatchAction(HandOffRoutingInAction.this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 						, EnumHandOffBatchActionType.ROUTEIN, HandOffRoutingInAction.this.getUserId());

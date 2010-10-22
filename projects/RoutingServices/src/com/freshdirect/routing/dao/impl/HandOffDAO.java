@@ -1089,6 +1089,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 		String handOffBatchId = null;
 		try {
 			handOffBatchId = this.getNewHandOffBatchId();
+			String isCommitEligible = (isStandByMode ? null : "X");
 			this.jdbcTemplate.update(INSERT_HANDOFFBATCH
 											, new Object[] {handOffBatchId
 											, deliveryDate
@@ -1096,7 +1097,7 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 											, "New Batch Created"
 											, scenario
 											, new Timestamp(cutOffDateTime.getTime())
-											, isStandByMode ? null : "X"});
+											, isCommitEligible});
 			
 			connection=this.jdbcTemplate.getDataSource().getConnection();	
 			
