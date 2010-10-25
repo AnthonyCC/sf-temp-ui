@@ -31,7 +31,7 @@ public class FDStoreProperties {
         public static interface ConfigLoadedListener {
             void configLoaded();
         }
-    
+
         private static List<ConfigLoadedListener> listeners = new ArrayList<ConfigLoadedListener>();
 
 	private static final SimpleDateFormat SF = new SimpleDateFormat("yyyy-MM-dd");
@@ -97,9 +97,9 @@ public class FDStoreProperties {
 	private final static String PROP_REFRESHSECS_PRODUCT  = "fdstore.refreshSecs.product";
 	private final static String PROP_REFRESHSECS_ZONE  = "fdstore.refreshSecs.zone";
 	private final static String PROP_PRODUCT_CACHE_SIZE	= "fdstore.product.cache.size";
-	
+
 	private final static String PROP_ZONE_CACHE_SIZE	= "fdstore.zone.cache.size";
-		
+
 	private final static String PROP_CMS_MOSTLY_READONLY = "fdstore.cms.readonly.optimization";
 
 	private final static String PROP_PRELOAD_STORE = "fdstore.preLoad";
@@ -172,19 +172,19 @@ public class FDStoreProperties {
 	public final static String SMARTSTORE_CACHE_ONLINE_FACTORS = "fdstore.smartstore.cacheOnlineFactors";
 
 	public final static String SMARTSTORE_CMS_RECOMM_REFRESH_RATE = "fdstore.smartstore.cmsRecommenderRefreshRate";
-	
+
 	// maximum number of entries (users) in smartstore personalized scores cache, default 500
 	private final static String SMARTSTORE_PERSONAL_SCORES_CACHE_ENTRIES = "fdstore.smartstore.personalScores.cache.entries";
-	
+
 	// timeout of a cache entry in seconds, default 30*60
 	private final static String SMARTSTORE_PERSONAL_SCORES_CAHCE_TIMEOUT = "fdstore.smartstore.personalScores.cache.timeout";
 
 	private final static String SMARTSTORE_OFFLINE_REC_RECENT_DAYS = "fdstore.smartstore.offlineRecommender.noOfRecentDays";
 
 	private final static String SMARTSTORE_OFFLINE_REC_MAX_AGE = "fdstore.smartstore.offlineRecommender.maxRecommendationAge";
-	
+
 	private final static String SMARTSTORE_OFFLINE_REC_SITE_FEATURES = "fdstore.smartstore.offlineRecommender.siteFeatures";
-	
+
 	private final static String SMARTSTORE_OFFLINE_REC_THREAD_COUNT = "fdstore.smartstore.offlineRecommender.threadCount";
 
 	private final static String SMARTSTORE_OFFLINE_REC_WINDOW_LENGTH = "fdstore.smartstore.offlineRecommender.windowLength";
@@ -208,9 +208,8 @@ public class FDStoreProperties {
 
 	private static final String CUT_OFF_TIME_SAT="fdstore.cut_off_day_7";
 
-	
 	// customer service hours properties
-	
+
 	private static final String CLICK_TO_CALL="fdstore.click_to_call";
 
 	private static final String CUST_SERV_HOURS_SUN="fdstore.cust_serv_day_1";
@@ -227,8 +226,8 @@ public class FDStoreProperties {
 
 	private static final String CUST_SERV_HOURS_SAT="fdstore.cust_serv_day_7";
 
-	
-	
+
+
 	private final static String SKU_AVAILABILITY_REFRESH_PERIOD = "fdstore.sku.availability.refresh";
 
 	private static long lastRefresh = 0;
