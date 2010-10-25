@@ -98,19 +98,19 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	
 	// new wine store related changes
 	
-	private final List<DomainValue> wineNewTypes=new ArrayList();
+	private final List<DomainValue> wineNewTypes = new ArrayList<DomainValue>();
 	
-	private final List wineVintages=new ArrayList();
+	private final List<DomainValue> wineVintages = new ArrayList<DomainValue>();
 	
-	private final List<DomainValue> wineRegions=new ArrayList<DomainValue>();
+	private final List<DomainValue> wineRegions = new ArrayList<DomainValue>();
 	
-	private final List wineRatings1=new ArrayList();
+	private final List<DomainValue> wineRatings1 = new ArrayList<DomainValue>();
 	
-	private final List wineRatings2=new ArrayList();
+	private final List<DomainValue> wineRatings2 = new ArrayList<DomainValue>();
 	
-	private final List wineRatings3=new ArrayList();
+	private final List<DomainValue> wineRatings3 = new ArrayList<DomainValue>();
 	
-	private final List<DomainValue> wineVarietals=new ArrayList<DomainValue>();
+	private final List<DomainValue> wineVarietals = new ArrayList<DomainValue>();
 	
 	/**
 	 *  The list of YMAL products related to this recipe.
@@ -138,6 +138,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 			start = start.getParentNode();
 		}
 		return (DepartmentModel) start;
+	}
+
+
+	@Override
+	public CategoryModel getCategory() {
+		return (CategoryModel) this.getParentNode();
 	}
 
 
@@ -1356,9 +1362,9 @@ inner:
 		return new ArrayList<DomainValue>(wineNewTypes);		
 	}
 
-	public List getWineVintage() {
+	public List<DomainValue> getWineVintage() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_VINTAGE", wineVintages, false);
-		return new ArrayList(wineVintages);		
+		return new ArrayList<DomainValue>(wineVintages);		
 	}
 	
 	
@@ -1372,19 +1378,42 @@ inner:
 		return new ArrayList<DomainValue>(wineRegions);		
 	}
 
-	public List getWineRating1() {
+	public List<DomainValue> getWineRating1() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING1", wineRatings1, false);
-		return new ArrayList(wineRatings1);	
+		return new ArrayList<DomainValue>(wineRatings1);	
 	}
 
-	public List getWineRating2() {
+	public List<DomainValue> getWineRating2() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING2", wineRatings2, false);
-		return new ArrayList(wineRatings2);	
+		return new ArrayList<DomainValue>(wineRatings2);	
 	}
 
-	public List getWineRating3() {
+	public List<DomainValue> getWineRating3() {
 		ContentNodeModelUtil.refreshModels(this, "WINE_RATING3", wineRatings3, false);
-		return new ArrayList(wineRatings3);		
+		return new ArrayList<DomainValue>(wineRatings3);		
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue1() {
+		List<DomainValue> values = getWineRating1();
+		return values.size() > 0 ? values.get(0) : null;
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue2() {
+		List<DomainValue> values = getWineRating2();
+		return values.size() > 0 ? values.get(0) : null;
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue3() {
+		List<DomainValue> values = getWineRating3();
+		return values.size() > 0 ? values.get(0) : null;
+	}
+	
+	@Override
+	public boolean hasWineOtherRatings() {
+		return getWineRating1().size() > 0 || getWineRating2().size() > 0 || getWineRating3().size() > 0;
 	}
 
 	public Html getWineReview1() {

@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.framework.core.ServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -74,11 +75,9 @@ final public class VariantRegistry {
 		return siteFeatureMap.get(siteFeature);
 	}
 
-	private SmartStoreServiceConfigurationHome getServiceConfigurationHome()
+	private SmartStoreServiceConfigurationSB getServiceConfiguration()
 			throws NamingException {
-		return (SmartStoreServiceConfigurationHome) new ServiceLocator(
-				FDStoreProperties.getInitialContext()).getRemoteHome(
-				"freshdirect.smartstore.SmartStoreServiceConfiguration");
+	    return FDServiceLocator.getInstance().getSmartStoreServiceConfiguration();
 	}
 
 	private void load() {
@@ -87,7 +86,7 @@ final public class VariantRegistry {
 			EnumSiteFeature.refresh();
 			SmartStoreServiceConfigurationSB sb;
 
-			sb = getServiceConfigurationHome().create();
+			sb = getServiceConfiguration();
 			Collection<Variant> variants = new ArrayList<Variant>();
 			for (EnumSiteFeature feature : EnumSiteFeature.getSmartStoreEnumList())
 				variants.addAll(sb.getVariants(feature));

@@ -16,6 +16,7 @@ import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
+import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.application.ContentTypeServiceI;
 import com.freshdirect.cms.meta.ContentTypeDef;
 import com.freshdirect.cms.reverse.BidirectionalReferenceHandler;
@@ -35,20 +36,20 @@ public abstract class AbstractTypeService implements ContentTypeServiceI {
             for (AttributeDefI a : e.getValue().getSelfAttributeDefs()) {
                 if (a instanceof BidirectionalRelationshipDefI) {
                     BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) a;
-                    if (b.isWritableSide()) {
-                        ContentTypeDef targetDef = (ContentTypeDef) types.get(b.getOtherSide().getType());
+                    for (RelationshipDefI r : b.getOtherSide()) {
+                        ContentTypeDef targetDef = (ContentTypeDef) types.get(r.getSourceType());
                         if (targetDef == null) {
-                            throw new CmsRuntimeException("Unknown destination type : " + b.getOtherSide().getType() + " for " + b.getType() + "."
+                            throw new CmsRuntimeException("Unknown destination type : " + r.getSourceType() + " for " + b.getSourceType() + "."
                                     + b.getName());
                         }
-                        if (targetDef.getSelfAttributeDef(b.getOtherSide().getName()) != null) {
-                            throw new CmsRuntimeException("Attribute " + b.getOtherSide().getName() + " is already defined for " + b.getOtherSide().getType()
-                                    + ", so creating back reference for " + b.getType() + '.' + b.getName() + " is not possible!");
+                        if (targetDef.getSelfAttributeDef(r.getName()) != null) {
+                            throw new CmsRuntimeException("Attribute " + r.getName() + " is already defined for " + r.getSourceType()
+                                    + ", so creating back reference for " + b.getSourceType() + '.' + b.getName() + " is not possible!");
                         }
-                        targetDef.addAttributeDef(b.getOtherSide());
+                        targetDef.addAttributeDef(r);
                         
-                        createReferenceHandler(e.getKey(), a.getName(), b);
                     }
+                    createReferenceHandler(e.getKey(), a.getName(), b);
                 }
             }
         }

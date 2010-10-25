@@ -75,10 +75,12 @@
 							<CmsField><attribute>DEPARTMENT_MIDDLE_MEDIA</attribute></CmsField>
 							<CmsField><attribute>BOTTOM_RIGHT_DISPLAY</attribute></CmsField>
 							<CmsField><attribute>DEPARTMENT_BOTTOM</attribute></CmsField>
+							<CmsField><attribute>DEPARTMENT_TEMPLATE_PATH</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR_NONAME</attribute></CmsField>
 							<CmsField><attribute>DEPT_MGR_BIO</attribute></CmsField>
 							<CmsField><attribute>DEPT_STORAGE_GUIDE_MEDIA</attribute></CmsField>
+							<CmsField><attribute>tile_list</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>
@@ -318,6 +320,8 @@
 							<CmsField><attribute>WINE_FILTER</attribute></CmsField>
                             <CmsField><attribute>SIDE_NAV_SECTIONS</attribute></CmsField>
                             <CmsField><attribute>SIDE_NAV_FULL_LIST</attribute></CmsField>
+							<CmsField><attribute>WINE_FILTER_VALUE</attribute></CmsField>
+							<CmsField><attribute>HIDE_WINE_RATING</attribute></CmsField>
 						</fields>
 					</CmsSection>
 				</sections>

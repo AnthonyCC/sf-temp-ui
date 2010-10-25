@@ -20,8 +20,10 @@ import com.freshdirect.webapp.taglib.AbstractGetterTag;
  * @version $Revision$
  * @author $Author$
  */
-public class ProductGroupTag extends AbstractGetterTag {
-	
+public class ProductGroupTag extends AbstractGetterTag<ProductModel> {
+	private static final long serialVersionUID = 1L;
+
+
 	private String categoryId;
 	private String productId;
 	
@@ -33,7 +35,7 @@ public class ProductGroupTag extends AbstractGetterTag {
 		this.productId = pid;
 	}
 	
-	protected Object getResult() throws FDResourceException {
+	protected ProductModel getResult() throws FDResourceException {
 		ProductModel pm = ContentFactory.getInstance().getProductByName( this.categoryId, this.productId );
 		//Convert to Product Pricing Adapter for Zone Pricing.
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
@@ -44,11 +46,8 @@ public class ProductGroupTag extends AbstractGetterTag {
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {
-
 		protected String getResultType() {
 			return "com.freshdirect.fdstore.content.ProductModel";
 		}
-
 	}
-
 }

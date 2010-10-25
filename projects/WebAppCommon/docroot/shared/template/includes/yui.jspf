@@ -18,6 +18,11 @@
 	<link rel="stylesheet" type="text/css" href="/assets/yui/autocomplete/assets/skins/sam/autocomplete.css">
 	<%
 				}
+			if (request.getAttribute("__yui_load_carousel__") != null) {
+				%>
+				<link rel="stylesheet" type="text/css" href="/assets/yui/carousel/assets/carousel-core.css">
+				<%
+							}
 		if (FDStoreProperties.isCclAjaxDebugClient()) {
 			/*
 			 * Debug libs
@@ -59,6 +64,11 @@
 			if (request.getAttribute("__yui_load_autocomplete__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_load_carousel__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/carousel/carousel.js"></script>
 <%
 			}
 			if (request.getAttribute("__yui_animation__") != null) {
@@ -107,6 +117,11 @@
 			if (request.getAttribute("__yui_load_autocomplete__") != null) {
 				/* Include YUI Autocomplete API */
 %><script type="text/javascript" src="/assets/yui/autocomplete/autocomplete-min.js"></script>
+<%
+			}
+			if (request.getAttribute("__yui_load_carousel__") != null) {
+				/* Include YUI Autocomplete API */
+%><script type="text/javascript" src="/assets/yui/carousel/carousel-min.js"></script>
 <%
 			}
 			if (request.getAttribute("__yui_animation__") != null) {

@@ -8,7 +8,7 @@
 %><%@ taglib uri='template' prefix='tmpl'
 %><%@ taglib uri='bean' prefix='bean'
 %><%@ taglib uri='logic' prefix='logic'
-%><%@ taglib uri='freshdirect' prefix='fd' %><%!
+%><%@ taglib uri='freshdirect' prefix='fd' %><fd:CheckLoginStatus/><%!
 
 java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
 java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");

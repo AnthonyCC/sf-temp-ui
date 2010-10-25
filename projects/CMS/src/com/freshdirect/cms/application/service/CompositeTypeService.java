@@ -70,7 +70,7 @@ public class CompositeTypeService implements ContentTypeServiceI {
 				if (found.getSelfAttributeDef(attr.getName()) != null) {
 					LOGGER.warn("Found duplicate attribute name: " + attr.getName() + " in type: " + type.toString());
 				} else {
-					found.addAttributeDef((AttributeDef) attr);
+					found.addAttributeDef(attr);
 				}
 			}
 		}

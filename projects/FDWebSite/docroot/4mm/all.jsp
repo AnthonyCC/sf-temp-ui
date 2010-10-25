@@ -83,7 +83,7 @@
 			
 		</div>
 		<% } %>
-<div class="sortselector">
+<div class="sortselector" style="margin-top: 15px;">
 		<a href="<%= FourMinuteMealsHelper.allPageBaseUrl %>" style="float:left"><img src="/media/4mm/filter_clearall.gif" border="0" /></a>
 		<%-- SORT SELECTOR --%>	
 		<%
@@ -127,15 +127,17 @@
 				sectionCounter++;
 				if ( sectionList != null && !sectionList.isEmpty() ) {
 					%>
-					<div class="separator">
+					<div class="separator" style="padding-top: 15px;">
 						<fd:IncludeMedia media="<%= sectionMedia %>" name="HEADER"/>
 					</div>
 					<div class="meals" style="text-align:left">
 						<display:ContentNodeIterator trackingCode="4mm-filter" itemsToShow="<%= sectionList %>" id="productIterator" showCategories="false"><span class="meal">
-							<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" customer="<%= user %>"/>
-							<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="<%= showBrand %>"/>
-							<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+							<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+								<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>"/>
+								<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+								<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="<%= showBrand %>"/>
+								<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+							</display:GetContentNodeWebId>
 						</span></display:ContentNodeIterator>
 					</div><% 
 				}				

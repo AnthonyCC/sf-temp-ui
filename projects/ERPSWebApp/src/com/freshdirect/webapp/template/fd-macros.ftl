@@ -67,5 +67,8 @@
 </#macro>
 
 
-
-
+<#macro quickbuylink deptId, catId, prodId>
+	<#assign node=getProduct(catId, prodId) />
+	<#assign wid=getWebId(node) />
+	<a id="${wid}" href="#" onclick="FD_QuickBuy.showPopup('${wid}', '${deptId}', '${catId}', '${prodId}')(); return false;">${node.fullName?html}</a>
+</#macro>

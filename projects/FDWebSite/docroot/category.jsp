@@ -26,6 +26,9 @@
 	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 	if (categoryModel != null) {
 	     deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
+	 	if ("usq".equals(deptId)) {
+			request.setAttribute("__yui_load_carousel__", Boolean.TRUE);
+		}
 	}
 	
 	
@@ -350,11 +353,7 @@
 				<br/><% 
 			}
 			
-			if ( EnumTemplateType.WINE.equals( EnumTemplateType.getTemplateType(templateType) ) ) { 
-				%><%@ include file="/includes/wine/i_wine_category.jspf" %><%    
-			} else {  
-				%><%@ include file="/common/template/includes/catLayoutManager.jspf" %><%      
-			}     
+			%><%@ include file="/common/template/includes/catLayoutManager.jspf" %><%      
 		} // else AlternateContent
 		
 		/* Layout may have put a request attribute called brandsList, of type set...get it into the brands var */

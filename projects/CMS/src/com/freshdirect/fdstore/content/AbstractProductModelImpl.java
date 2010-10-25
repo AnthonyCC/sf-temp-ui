@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -410,5 +413,24 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 	@Override
 	public boolean isHideIphone() {
 	    return getAttribute("HIDE_IPHONE", false);
+	}
+	
+	@Override
+	public Set<DomainValue> getWineDomainValues() {
+		Set<DomainValue> values = new HashSet<DomainValue>();
+		values.add(getWineCountry());
+		values.addAll(getNewWineRegion());
+		values.addAll(getNewWineType());
+		values.addAll(getWineVarietal());
+		return values;
+	}
+
+	@Override
+	public boolean isHideWineRatingPricing() {
+		CategoryModel home = getPrimaryHome();
+		if (home != null)
+			return home.isHideWineRatingPricing();
+
+		return false;
 	}
 }

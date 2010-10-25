@@ -15,7 +15,16 @@
 %><%@page import="com.freshdirect.webapp.util.json.EnumStandingOrderFrequencyJSONSerializer"
 %><%@page import="com.freshdirect.webapp.taglib.fdstore.SessionName"
 %><%@page import="com.freshdirect.fdstore.customer.FDActionInfo"
-%><%@page import="com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil"%><%
+%><%@page import="com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil"
+%><%@ taglib uri="freshdirect" prefix="fd"
+%><%
+	FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
+	if (user == null) {
+		response.setStatus(500);
+		%>Your session was expired. Please reload the page.<%
+		return;			
+	}
+
 	// serve only AJAX requests!
 	if (request.getHeader("X-Requested-With") != null) {
 		// Prevent caching AJAX responses on browser-side
@@ -62,8 +71,6 @@
 				
 				if (freqOrd != null && !"".equals(freqOrd)) {
 					int ord = Integer.parseInt(freqOrd);
-
-					FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 					
 					user.getCurrentStandingOrder().setFrequency(ord);
 				}
@@ -100,7 +107,7 @@
 			}
 		} catch (Exception exc) {
 			response.setStatus(500);
-			%><div class="error">Internal error occurred.</div><%
+			%>Internal error occurred.<%
 		}
 	}
 %>

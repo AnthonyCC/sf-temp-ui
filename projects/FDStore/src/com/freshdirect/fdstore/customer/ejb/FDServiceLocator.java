@@ -29,6 +29,7 @@ import com.freshdirect.monitor.ejb.ErpMonitorHome;
 import com.freshdirect.payment.ejb.PaymentManagerHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderHome;
 import com.freshdirect.smartstore.ejb.OfflineRecommenderSB;
+import com.freshdirect.smartstore.ejb.ScoreFactorHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationHome;
 import com.freshdirect.smartstore.ejb.SmartStoreServiceConfigurationSB;
 import com.freshdirect.smartstore.ejb.VariantSelectionHome;
@@ -297,6 +298,9 @@ public class FDServiceLocator extends ERPServiceLocator {
         }
     }
     
+    public ScoreFactorHome getScoreFactorHome() throws NamingException {
+        return (ScoreFactorHome) getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
+    }
     
 
 }

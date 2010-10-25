@@ -757,3 +757,31 @@ function maxLen(elem, len) {
 
 	//wait for page load
 	if (window.Prototype && window.Modalbox) { document.observe("dom:loaded", function() { sa_OL(); }); }
+
+	
+
+/**
+ * Function to adjust iframe size.
+ * Call from just before iframe body tag end.
+ * 
+ * @param frameId DOM ID of your iframe
+ * @param offset Number to extend height (optional)
+ */
+function setFrameHeight(frameId, offset) {
+	var f = window.parent.document.getElementById(frameId);
+
+	var hgt = getFrameHeight(frameId);
+	
+	if (offset == undefined)
+		offset = 0;
+	
+	f.style.height = (hgt+offset)+"px";
+}
+
+
+function getFrameHeight(frameId) {
+	var f = window.parent.document.getElementById(frameId);
+	var innerDoc = (f.contentDocument) ? f.contentDocument : f.contentWindow.document;
+
+	return innerDoc.body.parentNode.scrollHeight;
+}

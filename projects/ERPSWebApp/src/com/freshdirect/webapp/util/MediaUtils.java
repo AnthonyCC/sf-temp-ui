@@ -20,11 +20,13 @@ public class MediaUtils {
 
 	public static URL resolve(String rootPath, String childPath)
 			throws IOException {
-		URL url = new URL(rootPath);
+		// remove absolute path mark
 		if (childPath.startsWith("/")) {
 			childPath = childPath.substring(1, childPath.length());
 		}
-		url = new URL(url, childPath);
+		
+		
+		final URL url = new URL( new URL(rootPath) , childPath.replace(" ", "%20"));
 	
 		if (!url.toString().startsWith(rootPath)) {
 			throw new IOException("Child path not under root");

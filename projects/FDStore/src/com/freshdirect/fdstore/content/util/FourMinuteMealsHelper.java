@@ -250,13 +250,15 @@ public class FourMinuteMealsHelper {
             double price2 = model2.getDefaultPriceValue();
 
             int result = Double.compare(price1, price2);
+            if (result == 0)
+            	result = model1.getFullName().compareTo(model2.getFullName());
             return inverse ? -result : result;
         }
     }
 	
 	// Price comparator instances 
-    private final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_ASC = new PriceComparator(false);
-    private final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_DESC = new PriceComparator(true);
+    public final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_ASC = new PriceComparator(false);
+    public final static Comparator<ProductModelPricingAdapter> PRICE_COMPARATOR_DESC = new PriceComparator(true);
 
 	
 	/**

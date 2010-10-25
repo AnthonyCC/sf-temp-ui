@@ -1,178 +1,200 @@
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.layout.LayoutManager.Settings,com.freshdirect.fdstore.content.util.SortStrategyElement' %>
-<%@ page import='com.freshdirect.fdstore.content.CategoryModel' %>
-<%@ page import='com.freshdirect.fdstore.attributes.*' %>
-<%@ page import='java.util.Collections' %>
-
-    <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
- 
-	<fd:IncludeMedia name="/media/editorial/win_usq/home_top.html"/>
- 
-<!-- //
-
-Fixed menu, things of note:
-the container div needs an id.
-the menu subitem needs a matching id with "_menu"
-so container: id="a"
-and menu: id="a_menu"
-mouse over/out go in container div
-each level's class is required
-menu items;
-no link = in span
-link = class in a tag instead, no span needed
-  // -->
-
-<%! 
-    private String getFormattedChildElements(List subCategories, int index) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<div id=\"popup");
-        sb.append(index);
-        sb.append("_menu\" class=\"nav_sub\">");
-        for(Iterator iter = subCategories.iterator(); iter.hasNext();){
-            CategoryModel scm = (CategoryModel) iter.next();
-            sb.append("<div><a class=\"navFP_item\" href=\"/category.jsp?catId=");     
-            sb.append(scm.getContentKey().getId());
-            sb.append("&trk=dpage\">");
-            sb.append(scm.getFullName());
-            sb.append("</a></div>");
-        }
-        sb.append("</div>");
-        return sb.toString();
-    }
-%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import='java.util.Collections' %>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collection"%>
+<%@page import="com.freshdirect.fdstore.content.util.WineSorter"%>
+<%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
+<%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModel"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWinePrice"%>
+<%@page import="com.freshdirect.fdstore.content.WineFilter"%>
+<%@page import="java.net.URLEncoder"%>
+<%@taglib uri="template" prefix="tmpl"%>
+<%@taglib uri="logic" prefix="logic"%>
+<%@taglib uri="freshdirect" prefix="fd"%>
+<%@taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <%
-String trkCode= "";
-boolean isDept = (currentFolder instanceof DepartmentModel);
-boolean isCat = (currentFolder instanceof CategoryModel);
-Collection sortedColl=null; 
-boolean onlyOneProduct =false;
-ProductModel theOnlyProduct =  null;
-
-//** pass the code that should be used as the tracking code **/
-if (isDept) {
-	trkCode = "dpage";
-	request.setAttribute("trk","dpage");
-} else if(isCat) {
-	trkCode = "cpage";
-    request.setAttribute("trk","cpage");
-}
-boolean sortDescending = "true".equalsIgnoreCase(request.getParameter("sortDescending"));
-String sortNameAttrib = ((ProductContainer)currentFolder).getListAs();
-if (!sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_GLANCE) && !sortNameAttrib.equalsIgnoreCase(SortStrategyElement.SORTNAME_NAV))
-    sortNameAttrib = SortStrategyElement.SORTNAME_FULL;
-    
-Settings layoutSettings = new Settings();
-layoutSettings.setGrabberDepth(0);
-//This setReturnHiddenFolders is temprorarily set to true. Will be removed when go live.
-//layoutSettings.setReturnHiddenFolders(true);
-layoutSettings.setIgnoreShowChildren(true);
-layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_AVAILABILITY));
-layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.GROUP_BY_CATEGORY_PRIORITY, sortDescending));
-layoutSettings.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+	if (!user.isHealthWarningAcknowledged()) {
+		String redirectURL1 = "/health_warning.jsp?successPage=/department.jsp" + URLEncoder.encode("?" + request.getQueryString(), "utf-8");
+		response.sendRedirect(response.encodeRedirectURL(redirectURL1));
+		return;
+	}
 %>
-<fd:ItemGrabber category='<%=currentFolder %>' id='rtnColl'  
-        depth='<%=layoutSettings.getGrabberDepth()%>' ignoreShowChildren='<%=layoutSettings.isIgnoreShowChildren()%>' 
-        filterDiscontinued='<%= layoutSettings.isFilterDiscontinued() %>'
-        returnHiddenFolders='<%=layoutSettings.isReturnHiddenFolders()%>'
-        ignoreDuplicateProducts='<%=layoutSettings.isIgnoreDuplicateProducts()%>'
-        returnSecondaryFolders='<%=layoutSettings.isReturnSecondaryFolders()%>' returnSkus='<%=layoutSettings.isReturnSkus()%>'>
+<div style="width: 572px; text-align: center; margin: 0px auto;">
 <%
-        sortedColl = rtnColl;
-        
-        request.setAttribute("itemGrabberResult",sortedColl); //** expose result of item grabber to the layout **
+	boolean useAlternateImage = true;
+	String trk = "dpage";
+	EnumWinePrice dfltPrice = EnumWinePrice.TWO;
+	DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode(FDContentTypes.DEPARTMENT, request.getParameter("deptId"));
+	if (dept.getEditorial() != null) {
 %>
-    </fd:ItemGrabber> 
- 
-    <fd:ItemSorter nodes='<%=(List)sortedColl%>' strategy='<%=layoutSettings.getSortStrategy()%>'/>
-	<div class="spacer"></div>
-
-	<table class="nav">
-		<tr>
-            <% int count = 0 ;%>
-            <logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="index">
-            <%
-                if(contentNode instanceof CategoryModel) {
-                    CategoryModel cm = (CategoryModel) contentNode;
-                    if(cm.isFeatured()) {
-            %>
-                        <% if (count == 0) { %>
-                            <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide_w(this.id);\"><a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
-                            </td>                                
-                        <% } else {%>
-                                <td class="nav_spacer">|</td>
-                                <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_t(this.id);\" onmouseout=\"hide_w(this.id);\"><a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
-                                </td>                                
-                        <% } %>                
-            <%
-                   count++; 
-                    }
-                }
-            %>
-            </logic:iterate>
-		</tr>
-	</table>
-
-	<div class="spacer"></div>
-
-	<fd:IncludeMedia name="/media/editorial/win_usq/home_bottom.html"/>
-    
-	<div class="spacer"></div>
-
-		<table class="nav">
-		<tr>
-            <% count = 0 ;%>
-            <logic:iterate id="contentNode" collection="<%= sortedColl %>" type="java.lang.Object" indexId="index">
-            <%
-                if(contentNode instanceof CategoryModel) {
-                    CategoryModel cm = (CategoryModel) contentNode;
-                    if(!cm.isFeatured()) {
-            %>
-
-
-                        <% if (count == 0) { %>
-                            <td>
-                                <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_b(this.id);\" onmouseout=\"hide_w(this.id);\"><a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
-                            </td>                                
-                        <% } else {%>
-                                <td class="nav_spacer">|</td>
-                                <td>
-                               <%= EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren()) ? "<div id=\"popup"+index+"\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_b(this.id);\" onmouseout=\"hide_w(this.id);\"><a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\" onclick=\"return false;\">"+cm.getFullName()+"</a>"+getFormattedChildElements(cm.getSubcategories(), index.intValue())+"</div>" : "<a href=\"/category.jsp?catId="+ cm.getContentKey().getId() +"&trk=dpage\" class=\"nav_item\">"+cm.getFullName()+"</a>" %> 
-                                </td>                                
-                        <% } %>                
-            <%
-                   count++; 
-                    }
-                }
-            %>
-            </logic:iterate>
-		</tr>
-	</table>
-
-	<div class="spacer"></div>
-<%-- Rendering Wine Department Bottom Media   --%>
+<script type="text/javascript">
+YAHOO.util.Event.onDOMReady(FreshDirect.WineNav.onLoad);
+</script>
+<fd:IncludeHtml html="<%= dept.getEditorial() %>"/>
 <%
-List deptBottom = ((DepartmentModel)department).getDepartmentBottom();
-if (deptBottom ==null) {
-    deptBottom = Collections.EMPTY_LIST;
-}
+	}
+	{ // TOP rated multitab carousel
 %>
-	<table class="content_row_bottom">
-    <%
-    if (deptBottom.size() > 0 ) {
-        for(Iterator deptBotItr = deptBottom.iterator(); deptBotItr.hasNext();) {
-            String deptBotItm = ((Html)deptBotItr.next()).getPath();
-     %> 
-  		<tr>
-			<td>
-					<fd:IncludeMedia name="<%= deptBotItm %>"/>
-			</td>
-		</tr>
+<script type="text/javascript">
+<%for (EnumWinePrice price : EnumWinePrice.values()) {%>
+FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLowerCase()%>");
+<%}%>
+</script>
+<div class="usq" style="padding-top: 15px;">
+<table width="572" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td class="usq-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_xprt_filled.png" width="7" height="7"></td>
+		<td class="usq-xprt-bg usq-lightbrown" align="left">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td align="left" nowrap="nowrap"><div class="title19 wine-narrow" style="padding: 0.4em 5px 0.25em;">Our Expert's Top Rated Wines</div></td>
+					<td align="right" nowrap="nowrap" class="text15" style="vertical-align: middle; text-decoration: underline; padding-right: 5px;">
+						<span style="cursor: pointer;" onclick="return FreshDirect.Wine.showExpertRatingPopup();">How USQ Expert Ratings work...</span>
+					</td>
+				</tr>
+			</table>
+		</td>
+		<td class="usq-xprt-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_xprt_filled.png" width="7" height="7"></td>
+	</tr>
+</table>
+<div class="usq-brown-border" style="border-width: 0px 0px 1px; font-size: 0px;"></div>
+<table class="usq-xprt" width="572" height="27" cellspacing="0" cellpadding="0" border="0" style="text-align: center; line-height: 19px;">
+	<tr>
+	<% 
+	{ EnumWinePrice[] values = EnumWinePrice.values();
+		for (int i = 0; i < values.length; i++) {
+			EnumWinePrice price = values[i];
+			String clazz = "carousel-tab-label";
+			if (price == dfltPrice)
+				clazz += "-selected";
+			if (i > 0 && values[i - 1] != dfltPrice)
+				clazz += " carousel-tab-left-label";
+			if (i < values.length - 1 && values[i + 1] != dfltPrice)
+				clazz += " carousel-tab-right-label";
+	%>
+		<td width="<%= 100 / EnumWinePrice.values().length %>%" id="<%="tab_price_" + price.name().toLowerCase() + "_label"%>"
+				class="<%= clazz %> text14 wine-narrow">
+			<div onclick="return FreshDirect.Wine.showTab(&quot;top-rated&quot;, &quot;<%= "tab_price_" + price.name().toLowerCase() %>&quot;);">
+				<span>-<% for (int j = 0; j < price.getDollarCount(); j++) { %>$<% } %>-</span>
+			</div>
+		</td>
+	<%
+		}
+	}
+	%>
+	</tr>
+</table>
+<div class="usq">
+	<div class="usq-brown-border usq-top-rated">
+		<%
+			for (EnumWinePrice price : EnumWinePrice.values()) {
+		%>
+			<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="12" useAlternateImage="true" imageHeightId="imgHeight">
+				<%
+					String carouselId = "price_" + price.name().toLowerCase();
+					String tabId = dfltPrice != price ? "tab_price_" + price.name().toLowerCase() : null;
+				%>
+				<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
+					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12"
+							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>"><%
+						ProductModel product = (ProductModel) currentItem;
+					%>
+						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+							<div><display:WineRating product="<%= product %>" action="<%= actionUrl %>"/></div>
+							<div style="padding-bottom: 10px;"><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
+							<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
+									useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+							<div class="productname">
+								<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+							</div>
+							<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+						</display:GetContentNodeWebId>
+					</display:Carousel>
+				</div>
+			</fd:WineTopRatedFeed>
+		<%
+			}
+		%>
+	</div>
+</div>
+</div>
+<%
+	}
+%>
 
-    <%
-        }
-    }    
-    %>
-	</table>
 
+<%
+	ContentNodeModel usqRegion = ContentFactory.getInstance().getContentNode(FDContentTypes.CATEGORY, "usq_region");
+	if (usqRegion != null) {
+%>
+<div style="padding-top: 20px; text-align: left;">
+<table width="572" cellpadding="0" cellspacing="0" border="0">
+	<tr>
+		<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_left_usq_brown_filled.png" width="7" height="7"></td>
+		<td class="wine-pop-brown-bg" width="560" align="left"><div class="title17 wine-narrow usq-lightbrown" style="padding: 0.35em 5px 0.2em;">Most Popular</div></td>
+		<td class="wine-pop-brown-bg" width="6" valign="top"><img src="/media_stat/images/wine/top_right_usq_brown_filled.png" width="7" height="7"></td>
+	</tr>
+</table>
+<div class="usq-lightbrown usq-brown-border usq usq-popular" style="padding: 20px 0px 10px;">
+<fd:ProductGroupRecommender itemCount="24" siteFeature="PROD_GRP_POPULAR" facility="usq_dept_pop" currentNode="<%= usqRegion %>" id="deptPopular">
+	<display:UniqueFilter in="<%= deptPopular.getProducts() %>" out="prods" groupId="usq_popular">
+		<%
+			int imgHeight = 0;
+		%><display:ContentNodeIterator trackingCode="" itemsToShow="<%= prods %>" id="iterator1"><%
+			ProductModel prod = (ProductModel) currentItem;
+							Image img = useAlternateImage ? prod.getAlternateImage() : prod.getProdImage();
+							if (img == null)
+								img = prod.getProdImage();
+							if (imgHeight < img.getHeight())
+								imgHeight = img.getHeight();
+		%></display:ContentNodeIterator>
+		<display:Carousel id="carouselTag" carouselId="usq-popular" itemsToShow="<%= prods %>" maxItems="16"
+				width="460" trackingCode="<%= trk %>" numItems="4"><%
+			ProductModel product = (ProductModel) currentItem;
+		%>
+			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+				<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
+						useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>
+				<div><display:WinePrice product="<%= product %>" action="<%= actionUrl %>"/></div>
+				<div class="rating-small"><display:WineRating product="<%= product %>" small="true" action="<%= actionUrl %>"/></div>
+				<div class="productname">
+					<display:ProductName product="<%= product %>" action="<%= actionUrl %>" showBrandName="true" />
+				</div>
+				<display:ProductPrice impression="<%= new ProductImpression(product) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+			</display:GetContentNodeWebId>
+		</display:Carousel>
+	</display:UniqueFilter>
+</fd:ProductGroupRecommender>
+</div>
+</div>
+<%
+	}
+%>
 
+<% if (dept.getTemplatePath() != null && dept.getTemplatePath().trim().length() > 0) {
+	Map<String, String> params = new HashMap<String, String>();
+	params.put("baseUrl", "");
+%>
+<div style="padding-top: 15px;">
+<fd:IncludeMedia name="<%= dept.getTemplatePath().trim() %>" parameters="<%= params %>" />
+<div style="clear: both; font-size: 0px;"></div>
+</div>
+<% } %>
+
+<div style="padding: 20px 0px 5px;">
+<%@ include file="/shared/includes/usq_bottom_links.jspf" %>
+</div>
+<div style="padding: 5px 0px 10px;">
+<%@ include file="/shared/includes/usq_copyright.jspf" %>
+</div>
+</div>

@@ -14,15 +14,15 @@ package com.freshdirect.framework.util;
  * @version $Revision: 1$
  * @author $Author: Viktor Szathmary$
  */
-public class NVL {
+public class NVL<X> {
 
-	private Object defaultObj;
+	private X defaultObj;
 
-	public NVL(Object defaultObj) {
+	public NVL(X defaultObj) {
 		this.defaultObj = defaultObj;
 	}
 	
-	public Object apply(Object obj) {
+	public X apply(X obj) {
 		return obj == null ? this.defaultObj : obj;
 	}
 
@@ -30,7 +30,7 @@ public class NVL {
 		return (a==null && b==null) || (a!=null && a.equals(b));
 	}
 
-	public static Object apply(Object obj, Object defaultObj) {
+	public static <X> X apply(X obj, X defaultObj) {
 		return obj==null ? defaultObj : obj;
 	}
 	

@@ -9,8 +9,8 @@
 package com.freshdirect.common.pricing;
 
 import java.io.Serializable;
-import java.text.NumberFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Locale;
 
 import com.freshdirect.common.pricing.util.DealsHelper;
@@ -22,6 +22,7 @@ import com.freshdirect.common.pricing.util.DealsHelper;
  * @author $Author$
  */
 public class MaterialPrice implements Serializable {
+	private static final long serialVersionUID = -9077724635601047403L;
 
 	private final static NumberFormat FORMAT_CURRENCY = NumberFormat.getCurrencyInstance(Locale.US);
 	private final static DecimalFormat FORMAT_QUANTITY = new java.text.DecimalFormat("0.##");
@@ -43,7 +44,7 @@ public class MaterialPrice implements Serializable {
 
 	private double promoPrice;
 	
-	public MaterialPrice(double price, String pricingUnit,double promoPrice) {
+	public MaterialPrice(double price, String pricingUnit, double promoPrice) {
 		this(price, pricingUnit, 0.0, Double.POSITIVE_INFINITY, "", promoPrice);
 	}
 	
@@ -95,27 +96,7 @@ public class MaterialPrice implements Serializable {
 
 
 	public String getScaleDisplay() {
-		StringBuffer buf = new StringBuffer();
-		if ( this.getPricingUnit().equals("EA") ) {
-
-			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
-			buf.append( " for " );
-			buf.append( FORMAT_CURRENCY.format( this.getPrice() * this.getScaleLowerBound() ) );
-
-		} else {
-
-			buf.append( FORMAT_CURRENCY.format( this.getPrice() ) );
-			buf.append( '/' );
-			buf.append( this.getPricingUnit().toLowerCase() );
-
-			buf.append( " for " );
-
-			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
-			buf.append( this.getScaleUnit().toLowerCase() );
-			
-			buf.append( " or more" );
-		}
-		return buf.toString();
+		return getScaleDisplay(0);
 	}
 	
 	public int getScalePercentage(double basePrice) {
@@ -123,7 +104,7 @@ public class MaterialPrice implements Serializable {
 	}
 	
 	public String getScaleDisplay(double savingsPercentage) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		if ( this.getPricingUnit().equals("EA") ) {
 
 			buf.append( FORMAT_QUANTITY.format( this.getScaleLowerBound() ) );
@@ -145,6 +126,8 @@ public class MaterialPrice implements Serializable {
 		}
 		return buf.toString();
 	}
+
+
 	public double getScaledPrice() {
 		if ("EA".equalsIgnoreCase(getPricingUnit())) {
 			return getPrice()*getScaleLowerBound();
@@ -155,7 +138,7 @@ public class MaterialPrice implements Serializable {
 	
 	
 	public String getWineScaleDisplay(boolean isBreakRequired) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		if ( this.getPricingUnit().equals("EA") ) {
 			buf.append(" Just " );
 			buf.append( FORMAT_CURRENCY.format( this.getPrice()));

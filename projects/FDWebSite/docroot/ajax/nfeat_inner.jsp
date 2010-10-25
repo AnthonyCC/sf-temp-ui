@@ -14,7 +14,7 @@
 %><%@ page import="com.freshdirect.webapp.util.JspMethods"
 %><%@ taglib uri="freshdirect" prefix="fd"
 %><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'
-%><%--
+%><fd:CheckLoginStatus noRedirect="true"/><%--
 
 	@author segabor
 
@@ -28,7 +28,7 @@
 		response.setHeader("Cache-Control", "no-cache");
 		response.setHeader("Pragma", "no-cache");
 		
-		final String frameId = request.getParameter("frameId");
+		final String frameId = request.getParameter("element");
 		final boolean testOnly = request.getParameter("test") != null;
 
 		final FDUserI u = (FDUserI) session.getAttribute(SessionName.USER);
@@ -56,7 +56,7 @@
 		//
 		// <div ... class="nfeat">
 %>		<div class="title16 boxTitle">NEW FEATURE ALERT!</div>
-		<div class="text13gr">Quick Buy appears only in our 4-Minute Meals department.</div>
+		<div class="text13gr">As of now, Quick Buy is offered only in a few select departments.</div>
 		<div class="bframe"><img src="/media_stat/images/quickbuy/quickbuy_button_alrt_dont.gif" onclick="FD_QuickBuy.closeNewFeatBox('<%= frameId %>_nfeat');"></div>
 <%
 		// </div>

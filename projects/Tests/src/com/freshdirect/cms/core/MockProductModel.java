@@ -12,12 +12,13 @@ import java.util.Set;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.content.nutrition.ErpNutritionInfoType;
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentNodeModel;
@@ -28,8 +29,8 @@ import com.freshdirect.fdstore.content.EnumProductLayout;
 import com.freshdirect.fdstore.content.EnumTemplateType;
 import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.Image;
-import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.MediaI;
+import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
@@ -42,13 +43,12 @@ import com.freshdirect.framework.util.DayOfWeekSet;
 public class MockProductModel extends MockContentNodeModel implements ProductModel, Cloneable {
 
     private List<SkuModel> skuModels;
-    private List<BrandModel> brands = new ArrayList();
+    private List<BrandModel> brands = new ArrayList<BrandModel>();
 
     /**
      * 
      */
     public MockProductModel() {
-        // TODO Auto-generated constructor stub
     }
 
     /**
@@ -56,7 +56,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     public MockProductModel(ContentKey key) {
         super(key);
-        // TODO Auto-generated constructor stub
     }
     
     public MockProductModel(String catId, String productId) {
@@ -71,7 +70,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     public MockProductModel(ContentType type, String id) throws InvalidContentKeyException {
         super(type, id);
-        // TODO Auto-generated constructor stub
     }
 
     /* (non-Javadoc)
@@ -79,7 +77,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean enforceQuantityMax() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -88,7 +85,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getAboutPriceFormatted(double savingsPercentage) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -97,7 +93,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public YmalSet getActiveYmalSet() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -106,7 +101,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getAka() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -115,7 +109,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public ProductModel getAlsoSoldAs(int idx) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -123,8 +116,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getAlsoSoldAs()
      */
     @Override
-    public List getAlsoSoldAs() {
-        // TODO Auto-generated method stub
+    public List<ProductModel> getAlsoSoldAs() {
         return null;
     }
 
@@ -133,7 +125,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getAlsoSoldAsName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -142,7 +133,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getAlsoSoldAsRefs() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -151,7 +141,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getAlternateImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -160,7 +149,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public FDConfigurableI getAutoconfiguration() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -169,7 +157,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public DayOfWeekSet getBlockedDays() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -186,7 +173,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getCategoryImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -195,7 +181,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -204,7 +189,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getComponentGroups() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -213,7 +197,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getConfirmImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -222,7 +205,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Double getContainerWeightHalfPint() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -231,7 +213,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Double getContainerWeightPint() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -240,7 +221,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Double getContainerWeightQuart() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -249,7 +229,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getCountryOfOrigin() throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -258,7 +237,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getDealPercentage() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -267,7 +245,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getDealPercentage(String skuCode) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -276,7 +253,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getDefaultPrice() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -285,7 +261,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public SkuModel getDefaultSku() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -294,7 +269,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public DepartmentModel getDepartment() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -303,7 +277,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getDescriptiveImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -312,7 +285,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getDetailImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -321,7 +293,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getDisplayableBrands() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -330,7 +301,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getDisplayableBrands(int numberOfBrands) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -339,7 +309,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List<Html> getDonenessGuide() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -348,7 +317,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getExpertWeight() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -357,7 +325,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getFddefFrenching() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -366,7 +333,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getFddefGrade() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -375,7 +341,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getFddefRipeness() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -384,7 +349,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getFeatureImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -393,7 +357,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getFreshTips() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -402,7 +365,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getHighestDealPercentage() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -411,7 +373,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getHighestDealPercentage(String skuCode) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -420,7 +381,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getHowtoCookitFolders() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -429,7 +389,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getKosherPriority() throws FDResourceException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -438,7 +397,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getKosherSymbol() throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -447,7 +405,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getKosherType() throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -456,7 +413,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public EnumLayoutType getLayout() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -465,7 +421,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getNewWineRegion() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -474,7 +429,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getNewWineType() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -483,7 +437,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getPackageDescription() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -492,7 +445,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getPartallyFrozen() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -501,7 +453,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public CategoryModel getPerfectPair() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -510,7 +461,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public SkuModel getPreferredSku() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -519,7 +469,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public double getPrice(double savingsPercentage) {
-    	// TODO Auto-generated method stub
     	return 0.;
     }
 
@@ -528,7 +477,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getPriceFormatted(double savingsPercentage, String skuCode) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -537,7 +485,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getPrimaryBrandName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -546,7 +493,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getPrimaryBrandName(String productName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -555,7 +501,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public CategoryModel getPrimaryHome() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -564,7 +509,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getProdImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -573,7 +517,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getProdPageRatings() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -582,7 +525,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getProdPageTextRatings() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -591,7 +533,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductAbout() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -600,7 +541,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductBottomMedia() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -609,7 +549,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getProductBundle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -618,7 +557,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductDescription() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -627,7 +565,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductDescriptionNote() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -636,13 +573,11 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public EnumProductLayout getProductLayout() {
-        // TODO Auto-generated method stub
         return null;
     }
     
     @Override
     public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
-        // TODO Auto-generated method stub
         return null;
     }
     
@@ -652,7 +587,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductQualityNote() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -661,14 +595,12 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getProductRating() throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
     
     @Override
     public EnumOrderLineRating getProductRatingEnum()
     		throws FDResourceException {
-    	// TODO Auto-generated method stub
     	return null;
     }
 
@@ -678,7 +610,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductTerms() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -687,7 +618,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getProductTermsMedia() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -696,7 +626,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public float getQuantityIncrement() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -705,7 +634,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public float getQuantityMaximum() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -714,7 +642,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public float getQuantityMinimum() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -723,7 +650,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getQuantityText() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -732,7 +658,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getQuantityTextSecondary() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -741,7 +666,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getRating() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -750,7 +674,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getRatingProdName() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -759,7 +682,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getRatingRelatedImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -768,7 +690,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getRecommendTable() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -777,7 +698,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List<ContentNodeModel> getRecommendedAlternatives() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -786,7 +706,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getRedirectUrl() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -795,7 +714,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getRelatedRecipes() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -804,7 +722,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getRolloverImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -813,7 +730,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getSalesUnitDescription() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -822,7 +738,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSalesUnitLabel() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -831,7 +746,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSeafoodOrigin() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -840,7 +754,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSeasonText() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -849,7 +762,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSellBySalesunit() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -858,7 +770,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getServingSuggestion() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -867,7 +778,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSizeDescription() throws FDResourceException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -917,7 +827,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public ProductModel getSourceProduct() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -926,7 +835,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getSubtitle() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -935,7 +843,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public EnumTemplateType getTemplateType() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -944,7 +851,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getThumbnailImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -953,7 +859,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getTieredDealPercentage() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -962,7 +867,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public int getTieredDealPercentage(String skuCode) {
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -971,7 +875,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getTieredPrice(double savingsPercentage) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -980,7 +883,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public DomainValue getUnitOfMeasure() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -989,7 +891,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getUsageList() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -998,7 +899,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getVariationMatrix() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1007,7 +907,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getVariationOptions() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1016,7 +915,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWasPriceFormatted(double savingsPercentage) {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1025,7 +923,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getWeRecommendImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1034,7 +931,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getWeRecommendText() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1043,7 +939,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineAging() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1052,7 +947,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineAlchoholContent() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1061,7 +955,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineCity() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1070,7 +963,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineClassification() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1079,7 +971,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getWineClassifications() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1088,7 +979,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public DomainValue getWineCountry() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1097,7 +987,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineFyi() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1106,7 +995,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineImporter() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1114,8 +1002,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getWineRating1()
      */
     @Override
-    public List getWineRating1() {
-        // TODO Auto-generated method stub
+    public List<DomainValue> getWineRating1() {
         return null;
     }
 
@@ -1123,8 +1010,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getWineRating2()
      */
     @Override
-    public List getWineRating2() {
-        // TODO Auto-generated method stub
+    public List<DomainValue> getWineRating2() {
         return null;
     }
 
@@ -1132,9 +1018,28 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getWineRating3()
      */
     @Override
-    public List getWineRating3() {
-        // TODO Auto-generated method stub
+    public List<DomainValue> getWineRating3() {
         return null;
+    }
+
+    @Override
+    public DomainValue getWineRatingValue1() {
+    	return null;
+    }
+
+    @Override
+    public DomainValue getWineRatingValue2() {
+    	return null;
+    }
+
+    @Override
+    public DomainValue getWineRatingValue3() {
+    	return null;
+    }
+
+    @Override
+    public boolean hasWineOtherRatings() {
+    	return false;
     }
 
     /* (non-Javadoc)
@@ -1142,7 +1047,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineRegion() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1151,7 +1055,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getWineReview1() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1160,7 +1063,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getWineReview2() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1169,7 +1071,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Html getWineReview3() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1178,7 +1079,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getWineType() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1187,7 +1087,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getWineVarietal() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1195,8 +1094,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getWineVintage()
      */
     @Override
-    public List getWineVintage() {
-        // TODO Auto-generated method stub
+    public List<DomainValue> getWineVintage() {
         return null;
     }
 
@@ -1205,7 +1103,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getYmalCategories() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1214,7 +1111,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getYmalProducts() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1222,8 +1118,7 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      * @see com.freshdirect.fdstore.content.ProductModel#getYmalProducts(java.util.Set)
      */
     @Override
-    public List getYmalProducts(Set removeSkus) {
-        // TODO Auto-generated method stub
+    public List<ProductModel> getYmalProducts(Set<FDSku> removeSkus) {
         return null;
     }
 
@@ -1232,7 +1127,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getYmalRecipes() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1241,7 +1135,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getYmals() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1250,7 +1143,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Image getZoomImage() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1259,7 +1151,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean hasComponentGroups() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1268,7 +1159,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean hasTerms() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1277,7 +1167,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isAutoconfigurable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1286,7 +1175,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isCharacteristicsComponentsAvailable(FDConfigurableI config) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1295,7 +1183,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isDisplayableBasedOnCms() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1304,7 +1191,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isExcludedRecommendation() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1313,7 +1199,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isFrozen() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1322,7 +1207,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isGrocery() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1331,7 +1215,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isIncrementMaxEnforce() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1340,7 +1223,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isInvisible() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1349,7 +1231,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isKosherProductionItem() throws FDResourceException {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1358,7 +1239,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isNew() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1367,7 +1247,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	 */
 	@Override
 	public double getBackInStockAge() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -1376,7 +1255,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	 */
 	@Override
 	public Date getBackInStockDate() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1385,13 +1263,11 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	 */
 	@Override
 	public double getNewAge() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
 	@Override
 	public double getAge(){
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -1400,7 +1276,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	 */
 	@Override
 	public Date getNewDate() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1409,7 +1284,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
 	 */
 	@Override
 	public boolean isBackInStock() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -1418,7 +1292,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isNotSearchable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1427,7 +1300,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isNutritionMultiple() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1436,7 +1308,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isPerishable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1445,7 +1316,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isPlatter() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1454,7 +1324,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isPreconfigured() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1463,7 +1332,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isQualifiedForPromotions() throws FDResourceException {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1472,7 +1340,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isShowSalesUnitImage() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1481,7 +1348,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isShowTopTenImage() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1490,7 +1356,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isSoldBySalesUnits() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1499,7 +1364,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public Date getEarliestAvailability() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1508,7 +1372,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isAvailableWithin(int days) {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1517,7 +1380,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isDiscontinued() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1526,7 +1388,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isOutOfSeason() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1535,7 +1396,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isTempUnavailable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1544,7 +1404,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public boolean isUnavailable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -1553,7 +1412,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public List getRelatedProducts() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1562,7 +1420,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public String getYmalHeader() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1571,7 +1428,6 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
      */
     @Override
     public void resetActiveYmalSetSession() {
-        // TODO Auto-generated method stub
 
     }
 
@@ -1632,13 +1488,11 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     
     @Override
     public boolean isHasSalesUnitDescription() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public Html getFddefSource() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -1679,17 +1533,14 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
     
 	@Override
 	public String getFreshnessGuaranteed() throws FDResourceException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public String getPriceFormatted(double savingsPercentage) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	public String getProductRating(String skuCode) throws FDResourceException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -1736,5 +1587,18 @@ public class MockProductModel extends MockContentNodeModel implements ProductMod
         return isFullyAvailable();
     }
     
-    
+    @Override
+    public Set<DomainValue> getWineDomainValues() {
+    	return Collections.emptySet();
+    }
+
+    @Override
+    public boolean isHideWineRatingPricing() {
+    	return false;
+    }
+
+		@Override
+		public CategoryModel getCategory() {
+			return null;
+		}
 }

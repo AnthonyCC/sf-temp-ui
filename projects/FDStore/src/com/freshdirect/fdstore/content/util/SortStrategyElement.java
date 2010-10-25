@@ -18,6 +18,8 @@ public class SortStrategyElement {
 	public final static int GROUP_BY_CATEGORY_PRIORITY = 201;
 	public final static int GROUP_BY_AVAILABILITY = 202;
 	
+	public final static int NO_SORT = 99999;
+	
 	public final static String SORTNAME_GLANCE = "glance";
 	public final static String SORTNAME_NAV    = "nav";
 	public final static String SORTNAME_FULL   = "full";

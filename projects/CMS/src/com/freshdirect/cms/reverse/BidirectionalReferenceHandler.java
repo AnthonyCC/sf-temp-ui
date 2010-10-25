@@ -1,11 +1,13 @@
 package com.freshdirect.cms.reverse;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentType;
+import com.freshdirect.cms.RelationshipDefI;
 
 public class BidirectionalReferenceHandler {
 
@@ -52,11 +54,11 @@ public class BidirectionalReferenceHandler {
     }
     
     public ContentType getSourceType() {
-        return relation.getType();
+        return relation.getSourceType();
     }
     
-    public ContentType getDestinationType() {
-        return relation.getOtherSide().getType();
+    public Collection<RelationshipDefI> getDestinationTypes() {
+        return relation.getOtherSide();
     }
     
     
@@ -64,8 +66,8 @@ public class BidirectionalReferenceHandler {
         return relation;
     }
     
-    public BidirectionalRelationshipDefI getInverseRelation() {
-        return relation.getOtherSide();
+    public RelationshipDefI getInverseRelation(ContentType type) {
+        return relation.getOtherSide(type);
     }
     
     @Override

@@ -6,12 +6,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.log4j.Category;
@@ -72,6 +74,43 @@ public class ContentFactory {
 	private LruCache<String,ContentKey> skuProduct;
 	
 	private ThreadLocal<PricingContext> currentPricingContext;
+	
+	private class WineIndex {
+		// all wine products
+		private Set<ContentKey> all;
+
+		// the maind domain value - product index
+		private Map<DomainValue,Set<ContentKey>> index;
+		
+		// category - domain value mappings
+		private Map<ContentKey,DomainValue> categories;
+		
+		// domain - category value mappings
+		private Map<DomainValue, ContentKey> catReverse;
+		
+		// category - domain values mappings (for TLCs: usq_region, usq_type and usq_more)
+		private Map<ContentKey, Collection<WineFilterValue>> categoryDomains;
+		
+		// category - sub domain values mapping
+		private Map<ContentKey, Set<DomainValue>> subDomains;
+		
+		// domain value - domain encoded mappings
+		private Map<DomainValue,String> encodedDomains;
+		
+		public WineIndex() {
+			all = new HashSet<ContentKey>(1000);
+			index = new HashMap<DomainValue, Set<ContentKey>>(1000);
+			categories = new HashMap<ContentKey, DomainValue>(100);
+			catReverse = new HashMap<DomainValue, ContentKey>(100);
+			categoryDomains = new HashMap<ContentKey, Collection<WineFilterValue>>();
+			encodedDomains = new HashMap<DomainValue, String>(1000);
+			subDomains = new HashMap<ContentKey, Set<DomainValue>>(100);
+		}
+	}
+	
+	private WineIndex wineIndex;
+	
+	private Object wineIndexLock = new Object();
 
 	public static ContentFactory getInstance() {
 		return instance;
@@ -266,6 +305,7 @@ public class ContentFactory {
 		return prod;
 	}
 
+	@Deprecated
 	public ProductModel getProduct(String catId, String prodId) {
 		return getProductByName(catId, prodId);
 	}
@@ -273,7 +313,10 @@ public class ContentFactory {
 	public ProductModel getProductByName(String catName, String prodName) {
 		this.getStore(); // ensure Store is loaded
 
-		CategoryModel category = (CategoryModel) this.getContentNode(catName);
+		if (catName == null || prodName == null)
+			return null;
+
+		CategoryModel category = (CategoryModel) this.getContentNode(FDContentTypes.CATEGORY, catName);
 		if (category == null) {
 			// no such category
 			return null;
@@ -549,13 +592,18 @@ public class ContentFactory {
 					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
 					for (Map.Entry<String, Date> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
-						if (sku != null && !sku.isUnavailable()) {
-							ProductModel p = this.filterProduct(sku.getContentName());
-							if (p != null) {
-								Date prev = newCache.get(p);
-								if (prev == null || entry.getValue().after(prev))
-									newCache.put(p, entry.getValue());
+						// !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
+						try {
+							if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
+								ProductModel p = this.filterProduct(sku.getContentName());
+								if (p != null) {
+									Date prev = newCache.get(p);
+									if (prev == null || entry.getValue().after(prev))
+										newCache.put(p, entry.getValue());
+								}
 							}
+						} catch (Exception e) {
+							LOGGER.warn("skipping sku " + sku.getContentName() + " due to data discrepancy", e);
 						}
 					}
 					newProducts = newCache;
@@ -635,13 +683,18 @@ public class ContentFactory {
 					Map<ProductModel, Date> newCache = new HashMap<ProductModel, Date>(skus.size());
 					for (Map.Entry<String, Date> entry : skus.entrySet()) {
 						SkuModel sku = (SkuModel) getContentNodeByKey(new ContentKey(FDContentTypes.SKU, entry.getKey()));
-						if (sku != null && !sku.isUnavailable()) {
-							ProductModel p = this.filterProduct(sku.getContentName());
-							if (p != null) {
-								Date prev = newCache.get(p);
-								if (prev == null || entry.getValue().after(prev))
-									newCache.put(p, entry.getValue());
+						// !!! I'm very paranoid and I don't really trust in these developer clusters !!! (by cssomogyi, on 15 Oct 2010)
+						try {
+							if (sku != null && sku.getProductModel() != null && sku.getProductInfo() != null && !sku.isUnavailable()) {
+								ProductModel p = this.filterProduct(sku.getContentName());
+								if (p != null) {
+									Date prev = newCache.get(p);
+									if (prev == null || entry.getValue().after(prev))
+										newCache.put(p, entry.getValue());
+								}
 							}
+						} catch (Exception e) {
+							LOGGER.warn("skipping sku " + sku.getContentName() + " due to data discrepancy", e);
 						}
 					}
 					backInStockProducts = newCache;
@@ -709,5 +762,238 @@ public class ContentFactory {
 			backInStockProductsLastUpdated = Integer.MIN_VALUE;
 			getBackInStockProducts();
 		}
+	}
+	
+	private void buildWineIndex() {
+		Set<Domain> wineDomains = new HashSet<Domain>(100);
+		
+		WineIndex newIndex = new WineIndex();
+		// fetch wine domains
+		LOGGER.info("WINE INDEX: collecting domains...");
+		FDFolder domains = (FDFolder) getContentNodeByKey(new ContentKey(FDContentTypes.FDFOLDER, "domains"));
+		for (ContentNodeModel node : domains.getChildren()) {
+			if (!node.getContentKey().getType().equals(FDContentTypes.DOMAIN))
+				continue;
+			
+			if (node.getContentKey().getId().startsWith("wine_"))
+					wineDomains.add((Domain) node);
+		}
+		LOGGER.info("WINE INDEX: collected " + wineDomains.size() + " domains.");
+
+		LOGGER.info("WINE INDEX: collecting all wine products...");
+		CategoryModel byRegion = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_region"));
+		if (byRegion != null)
+			newIndex.all.addAll(byRegion.getAllChildProductKeys());
+		CategoryModel byType = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_type"));
+		if (byType != null)
+			newIndex.all.addAll(byType.getAllChildProductKeys());
+		LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
+
+		Set<DomainValue> regions = new HashSet<DomainValue>(1000);
+		LOGGER.info("WINE INDEX: collecting domain value - product pairs...");
+		for (Domain d : wineDomains) {
+			if (d.getContentKey().getId().startsWith("wine_region_"))
+				regions.addAll(d.getDomainValues());
+			for (DomainValue dv : d.getDomainValues()) {
+				if (dv.getDomain().getContentKey().getId().startsWith("wine_region_")) {
+					newIndex.encodedDomains.put(dv, "_Domain:wine_region");
+				}
+				for (ContentKey key : newIndex.all) {
+					ProductModel p = (ProductModel) getContentNodeByKey(key);
+					if (p.getWineDomainValues().contains(dv)) {
+						if (!newIndex.index.containsKey(dv))
+							newIndex.index.put(dv, new HashSet<ContentKey>());
+						newIndex.index.get(dv).add(key);
+					}
+				}
+			}
+		}
+		LOGGER.info("WINE INDEX: collected domain value - product pairs for " + newIndex.index.size() + " domain values");
+
+		
+		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (By Region)...");
+		if (byRegion != null) {
+			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
+			Domain domain = (Domain) ContentFactory.getInstance().getContentNode(FDContentTypes.DOMAIN, "wine_country_usq");
+			if (domain != null)
+				domainValues.addAll(domain.getDomainValues());
+			else
+				LOGGER.warn("WINE INDEX: -- wine country domain values cannot be resolved");
+			newIndex.categoryDomains.put(byRegion.getContentKey(), domainValues);
+			for (CategoryModel c : byRegion.getSubcategories()) {
+				Set<DomainValue> subDomains = new HashSet<DomainValue>();
+				Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
+				for (ContentKey key : c.getAllChildProductKeys()) {
+					ProductModel p = (ProductModel) getContentNodeByKey(key);
+					DomainValue country = p.getWineCountry();
+					if (!counters.containsKey(country))
+						counters.put(country, 0);
+					counters.put(country, counters.get(country) + 1);
+					for (DomainValue region : p.getNewWineRegion())
+						subDomains.add(region);
+				}
+				List<Map.Entry<DomainValue, Integer>> values = new ArrayList<Map.Entry<DomainValue,Integer>>(counters.entrySet());
+				Collections.sort(values, new Comparator<Map.Entry<DomainValue, Integer>>() {
+					@Override
+					public int compare(Entry<DomainValue, Integer> v1, Entry<DomainValue, Integer> v2) {
+						// in descending order
+						return v2.getValue() - v1.getValue();
+					}
+				});
+				newIndex.subDomains.put(c.getContentKey(), subDomains);
+				if (values.size() > 0) {
+					newIndex.categories.put(c.getContentKey(), values.get(0).getKey());
+					newIndex.catReverse.put(values.get(0).getKey(), c.getContentKey());
+					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + values.get(0).getKey().getLabel());
+				} else
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+			}
+		}
+		LOGGER.info("WINE INDEX: resolved " + newIndex.categories.size() + " TLC - domain value pairs (By Region).");
+
+		int soFar = newIndex.categories.size();
+		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (By Type)...");
+		if (byType != null) {
+			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
+			newIndex.categoryDomains.put(byType.getContentKey(), domainValues);
+			for (CategoryModel c : byType.getSubcategories()) {
+				Set<DomainValue> subDomains = new HashSet<DomainValue>();
+				Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
+				for (ContentKey key : c.getAllChildProductKeys()) {
+					ProductModel p = (ProductModel) getContentNodeByKey(key);
+					List<DomainValue> types = p.getNewWineType();
+					for (DomainValue type : types) {
+						if (!counters.containsKey(type))
+							counters.put(type, 0);
+						counters.put(type, counters.get(type) + 1);
+					}
+					for (DomainValue varietal : p.getWineVarietal())
+						subDomains.add(varietal);
+				}
+				List<Map.Entry<DomainValue, Integer>> values = new ArrayList<Map.Entry<DomainValue,Integer>>(counters.entrySet());
+				Collections.sort(values, new Comparator<Map.Entry<DomainValue, Integer>>() {
+					@Override
+					public int compare(Entry<DomainValue, Integer> v1, Entry<DomainValue, Integer> v2) {
+						// in descending order
+						return v2.getValue() - v1.getValue();
+					}
+				});
+				newIndex.subDomains.put(c.getContentKey(), subDomains);
+				DomainValue overridden = c.getWineFilterValue();
+				if (overridden != null) {
+					newIndex.categories.put(c.getContentKey(), overridden);
+					newIndex.catReverse.put(overridden, c.getContentKey());
+					newIndex.encodedDomains.put(overridden, "_Domain:usq_type");
+					domainValues.add(overridden);
+					LOGGER.info("WINE INDEX: -- overridden domain value found for category " + c.getFullName() + ": " + overridden.getLabel());
+				} else if (values.size() > 0) {
+					DomainValue dv = values.get(0).getKey();
+					newIndex.categories.put(c.getContentKey(), overridden != null ? overridden : dv);
+					newIndex.catReverse.put(overridden != null ? overridden : dv, c.getContentKey());
+					newIndex.encodedDomains.put(dv, "_Domain:usq_type");
+					domainValues.add(dv);
+					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + dv.getLabel());
+				} else
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+			}
+		}
+		LOGGER.info("WINE INDEX: resolved " + (newIndex.categories.size() - soFar) + " TLC - domain value pairs (By Type).");
+
+		soFar = newIndex.categories.size();
+		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (More...)...");
+		CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_more"));
+		if (more != null) {
+			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
+			newIndex.categoryDomains.put(more.getContentKey(), domainValues);
+			for (CategoryModel c : more.getSubcategories()) {
+				Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
+				for (ContentKey key : c.getAllChildProductKeys()) {
+					ProductModel p = (ProductModel) getContentNodeByKey(key);
+					List<DomainValue> types = p.getNewWineType();
+					for (DomainValue type : types) {
+						if (!counters.containsKey(type))
+							counters.put(type, 0);
+						counters.put(type, counters.get(type) + 1);
+					}
+				}
+				List<Map.Entry<DomainValue, Integer>> values = new ArrayList<Map.Entry<DomainValue,Integer>>(counters.entrySet());
+				Collections.sort(values, new Comparator<Map.Entry<DomainValue, Integer>>() {
+					@Override
+					public int compare(Entry<DomainValue, Integer> v1, Entry<DomainValue, Integer> v2) {
+						// in descending order
+						return v2.getValue() - v1.getValue();
+					}
+				});
+				DomainValue overridden = c.getWineFilterValue();
+				if (overridden != null) {
+					newIndex.categories.put(c.getContentKey(), overridden);
+					newIndex.catReverse.put(overridden, c.getContentKey());
+					newIndex.encodedDomains.put(overridden, "_Domain:usq_more");
+					domainValues.add(overridden);
+					LOGGER.info("WINE INDEX: -- overridden domain value found for category " + c.getFullName() + ": " + overridden.getLabel());
+				} else if (values.size() > 0) {
+					DomainValue dv = values.get(0).getKey();
+					newIndex.categories.put(c.getContentKey(), dv);
+					newIndex.catReverse.put(dv, c.getContentKey());
+					newIndex.encodedDomains.put(dv, "_Domain:usq_more");
+					domainValues.add(dv);
+					LOGGER.info("WINE INDEX: -- matching domain value found for category " + c.getFullName() + ": " + dv.getLabel());
+				} else
+					LOGGER.warn("WINE INDEX: -- no matching domain value found for category " + c.getFullName());
+			}
+		}
+		LOGGER.info("WINE INDEX: resolved " + (newIndex.categories.size() - soFar) + " TLC - domain value pairs (More...).");
+		wineIndex = newIndex;
+	}
+	
+	public void refreshWineIndex(boolean force) {
+		synchronized (wineIndexLock) {
+			if (force || wineIndex == null)
+				buildWineIndex();
+		}
+	}
+	
+	public Collection<ContentKey> getWineProductKeysByDomainValue(DomainValue value) {
+		refreshWineIndex(false);
+		Set<ContentKey> v = wineIndex.index.get(value);
+		return v != null ? Collections.unmodifiableCollection(v) : Collections.<ContentKey>emptyList();
+	}
+	
+	public Collection<ContentKey> getAllWineProductKeys() {
+		refreshWineIndex(false);
+		return Collections.unmodifiableCollection(wineIndex.all);
+	}
+	
+	public DomainValue getDomainValueForWineCategory(CategoryModel category) {
+		refreshWineIndex(false);
+		return wineIndex.categories.get(category.getContentKey());
+	}
+	
+	public CategoryModel getCategoryForWineDomainValue(DomainValue dv) {
+		refreshWineIndex(false);
+		ContentKey key = wineIndex.catReverse.get(dv);
+		if (key == null) {
+			return null;
+		}
+		return (CategoryModel) getContentNodeByKey(key);
+	}
+	
+	public String getDomainEncodedForWineDomainValue(DomainValue value) {
+		refreshWineIndex(false);
+		return wineIndex.encodedDomains.get(value);
+	}
+
+	public Collection<WineFilterValue> getDomainValuesForWineDomainCategory(CategoryModel category) {
+		refreshWineIndex(false);
+		return wineIndex.categoryDomains.get(category.getContentKey());
+	}
+	
+	public Collection<DomainValue> getSubDomainValuesForWineDomainValue(DomainValue domainValue) {
+		refreshWineIndex(false);
+		CategoryModel domainCat = getCategoryForWineDomainValue(domainValue);
+		if (domainCat != null)
+			return wineIndex.subDomains.get(domainCat.getContentKey());
+		else
+			return null;
 	}
 }

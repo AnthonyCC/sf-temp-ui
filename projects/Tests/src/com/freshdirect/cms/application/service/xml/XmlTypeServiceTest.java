@@ -22,11 +22,12 @@ public class XmlTypeServiceTest extends TestCase {
 
 		ContentType fooType = ContentType.get("Foo");
                 ContentType barType = ContentType.get("Bar");
-		assertEquals(TestUtils.toSet(new ContentType[] { fooType , barType }), typeService
+                ContentType multiType = ContentType.get("Multi");
+		assertEquals(TestUtils.toSet(new ContentType[] { fooType , barType, multiType }), typeService
 				.getContentTypes());
 
 		ContentTypeDefI def = typeService.getContentTypeDefinition(fooType);
-		assertEquals(TestUtils.toSet(new String[] { "label", "date", "enum", "children", "bar" }),
+		assertEquals(TestUtils.toSet(new String[] { "label", "date", "enum", "children", "bar", "fooBackReference" }),
 				def.getAttributeNames());
 
 		AttributeDefI attrDef = def.getAttributeDef("label");
@@ -51,7 +52,7 @@ public class XmlTypeServiceTest extends TestCase {
 		
 		
                 ContentTypeDefI barDef = typeService.getContentTypeDefinition(barType);
-                assertEquals(TestUtils.toSet(new String[] { "foo" }),
+                assertEquals(TestUtils.toSet(new String[] { "foo", "barBackReference" }),
                         barDef.getAttributeNames());
 		
 	}

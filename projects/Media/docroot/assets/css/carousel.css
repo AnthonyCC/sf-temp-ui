@@ -54,7 +54,8 @@
 			width:22px;
 			top:50%;
 			height:22px;
-			margin-top:-11px;			
+			margin-top:-11px;
+			cursor: pointer;			
 		}
 
 		.fd-carousel .yui-carousel-first-button {
@@ -63,6 +64,7 @@
 		}
 		
 		.fd-carousel .yui-carousel-first-button-disabled {
+			cursor: default;			
 			background: url('/media_stat/carousel/prev_button_disabled.gif') no-repeat;
 		}
 		
@@ -72,6 +74,7 @@
 		}
 		
 		.fd-carousel .yui-carousel-button-disabled {
+			cursor: default;			
 			background: url('/media_stat/carousel/next_button_disabled.gif') no-repeat;
 		}
 
@@ -90,12 +93,9 @@
 	
 	.fd-carousel .yui-carousel .yui-carousel-item-selected {
 		border:none;
+		outline: none;
 	}
 
-	.fd-carousel .productImage {
-		height:90px !important;
-		line-height: 90px;
-	}
 		.fd-carousel .productImage a img {
 			vertical-align:bottom;
 		}
@@ -125,11 +125,13 @@
 		height:16px;
 		overflow:hidden;
 	}
+	
+	.fd-carousel .fd-carousel-bottom-header {
+		display: none;
+	}
 
 	
 .fd-carousel.nopager .yui-carousel-nav ul {
 	display:none;
 	visibility:hidden !important;
 }
-
-	

@@ -17,58 +17,42 @@
 <%@ page import="com.freshdirect.fdstore.content.SkuModel"%>
 <%@ page import="com.freshdirect.fdstore.content.RecipeCategory"%>
 <%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.common.pricing.PricingContext"%>
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <% try{ %>
 <div align="right"><tmpl:get name='banner'/></div>
 <%@ include file="/includes/i_promotion_counter.jspf" %>
-<fd:GetCart id='rsnCart'>
+<fd:Parameters id="params">
 <%
-String requestURI = request.getRequestURI().toLowerCase();
-ContentFactory contentFactory = ContentFactory.getInstance();
-ContentNodeModel cnm = contentFactory.getContentNode(request.getParameter("catId"));
-String requestProdId = request.getParameter("productId")==null?"":request.getParameter("productId");
-if (cnm==null) {
-     cnm = ContentFactory.getInstance().getContentNode(request.getParameter("deptId"));
-}
-if (cnm!=null) {
-boolean rsnIsOnProductPage = requestURI.indexOf("product.jsp")!=-1?true:false;
-
-Image bannerImg=null;
-String bannerURL = null;
-ContentNodeModel bannerSubject = null;
-String contentLink = null;
-
-List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : Collections.<ProductModel>emptyList());
-List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : Collections.<ProductModel>emptyList());
-
+if (FDStoreProperties.isAdvertisingTileEnabled() &&
+		( (params.getDepartment() != null && "usq".equals(params.getDepartment().getContentKey().getId()))
+		  || request.getRequestURI().startsWith("/wine") )) {
 %>
-<%-- promotional item (image) goes here --%>
-<%
-boolean hasPromotions = false;
-FDUserI nav_promo_user = (FDUserI) session.getAttribute(SessionName.USER);
-if (nav_promo_user!=null) {
-	hasPromotions = (nav_promo_user.getMaxSignupPromotion() > 0);
-}
-
-%>
+<%@ include file="/common/template/includes/i_right_side_tile.jspf" %>
+<%  } else { %>
     <table border="0" cellspacing="0" cellpadding="0" width="155">
        <tr>
             <td align="right">
                 <% if (FDStoreProperties.isAdServerEnabled()) { %>
                     <script type="text/javascript">
-                    <!--
-                    OAS_AD('LittleRandy');
-                    //-->
+                    OAS_AD("LittleRandy");
                     </script>                    
-                <% } else if(bannerURL !=null){%>                
-                <a href="<%= bannerURL %>"><img src="<%= bannerImg.getPath() %>" width="<%= bannerImg.getWidth() %>" height="<%= bannerImg.getHeight() %>" border="0" alt=""></a>
                 <%}%>
             </td>
         </tr>
     </table>
 	<br>
 <%
+}
+
+ContentNodeModel cnm = params.getContentNode();
+if (cnm != null) {
+	boolean hasPromotions = params.getUser() != null && params.getUser().getMaxSignupPromotion() > 0;
+	List<ProductModel> weRecommendTextProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendText() : Collections.<ProductModel>emptyList());
+	List<ProductModel> weRecommendImgProds = (cnm instanceof ProductModel ? ((ProductModel)cnm).getWeRecommendImage() : Collections.<ProductModel>emptyList());
     if ( (!hasPromotions) && (weRecommendImgProds.size()>0  || weRecommendTextProds.size()>0) ){
 %>
     <table border="0" cellspacing="0" cellpadding="0" width="140">
@@ -146,7 +130,7 @@ if(weRecommendImgProds.size() > 0) {
             String weRecPrice = null;
             if (weRecSku==null) continue;
             
-            weRecPrice = JspMethods.formatPrice(weRecSku.getProductInfo(), nav_promo_user.getPricingContext());
+            weRecPrice = JspMethods.formatPrice(weRecSku.getProductInfo(), params.getUser() != null ? params.getUser().getPricingContext() : PricingContext.DEFAULT);
 %>						
         <tr valign="top"><td width="12"><br></td>
             <td width="35"><A HREF="<%=prdURL%>"><img src="<%=prdImgPath%>" <%=prdImgDim%> border="0" alt="<%=prdMdl.getGlanceName()%>"></A><br><font class="space4pix"><br></font></td>
@@ -199,15 +183,13 @@ if(weRecommendImgProds.size() > 0) {
 	<a href="javascript:pop('/request_product.jsp?department=<%= deptName %>', 400, 585);">Click here.</a>
 </div>
 
-</fd:GetCart>
 	 <% if (FDStoreProperties.isAdServerEnabled()) { %>
 		<script type="text/javascript">
-                <!--
-                OAS_AD('SideCartBottom');
-                //-->
+                OAS_AD("SideCartBottom");
       	</script>
       	<br><br>
 	 <% } %>
+</fd:Parameters>
 <%
 }catch(Throwable t){
 	t.printStackTrace();

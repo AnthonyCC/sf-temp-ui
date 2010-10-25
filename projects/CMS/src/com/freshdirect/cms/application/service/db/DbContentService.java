@@ -100,19 +100,21 @@ public class DbContentService extends AbstractContentService implements ContentS
         Connection conn = null;
         try {
             conn = getConnection();
-            PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.cms_contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
-            ps.setString(1, handler.getSourceType().getName());
-            ps.setString(2, handler.getDestinationType().getName());
-            ps.setString(3, handler.getRelationName());
-            ResultSet resultSet = ps.executeQuery();
-            
-            while(resultSet.next()) {
-                ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
-                ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
-                handler.addRelation(sourceKey, destKey);
+            for (RelationshipDefI destinationType : handler.getDestinationTypes()) {
+                PreparedStatement ps = conn.prepareStatement("select parent_contentnode_id, child_contentnode_id from cms.relationship where parent_contentnode_id in (select id from cms.cms_contentnode where contenttype_id = ?) and def_contenttype=? and def_name=?");
+                ps.setString(1, handler.getSourceType().getName());
+                ps.setString(2, destinationType.getName());
+                ps.setString(3, handler.getRelationName());
+                ResultSet resultSet = ps.executeQuery();
+                
+                while(resultSet.next()) {
+                    ContentKey sourceKey = ContentKey.decode(resultSet.getString("parent_contentnode_id"));
+                    ContentKey destKey = ContentKey.decode(resultSet.getString("child_contentnode_id"));
+                    handler.addRelation(sourceKey, destKey);
+                }
+                resultSet.close();
+                ps.close();
             }
-            resultSet.close();
-            ps.close();
         } catch (SQLException e) {
             throw new CmsRuntimeException(e);
         } finally {
@@ -324,7 +326,7 @@ public class DbContentService extends AbstractContentService implements ContentS
                             }
                             AttributeDefI def = node.getDefinition().getAttributeDef(name);
                             if (def instanceof RelationshipDefI) {
-                                if (def instanceof BidirectionalRelationshipDefI && !((BidirectionalRelationshipDefI) def).isWritableSide()) {
+                                if (((RelationshipDefI) def).isCalculated()) {
                                     continue;
                                 }
                                 if (EnumCardinality.ONE.equals(def.getCardinality())) {

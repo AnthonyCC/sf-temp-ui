@@ -1,10 +1,37 @@
-<%!
+<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Locale"%>
+<%@page import="java.util.ListIterator"%>
+<%@page import="java.util.Map"%>
+<%@page import="java.util.HashMap"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="java.util.GregorianCalendar"%>
+<%@page import="java.util.Calendar"%>
+<%@page import="java.util.Date"%>
+<%@page import="com.freshdirect.fdstore.content.EnumProductLayout"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@page import="com.freshdirect.fdstore.content.Html"%>
+<%@page import="com.freshdirect.fdstore.content.BrandModel"%>
+<%@page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@page import="com.freshdirect.fdstore.content.TitledMedia"%>
+<%@page import="com.freshdirect.fdstore.content.EnumPopupType"%>
+<%@page import="com.freshdirect.fdstore.content.SkuModel"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.ErpServicesProperties"%>
+<%@page import="com.freshdirect.framework.util.DateUtil"%>
+<%@page import="com.freshdirect.framework.util.QuickDateFormat"%>
+<%@page import="com.freshdirect.fdstore.FDVariation"%>
+<%--
+	Required variables:
+
+	@param productNode Instance of ProductModel
+ --%><%!
+    java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
 
-    Comparator domainValueComp = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            DomainValue dv1 = (DomainValue) obj1;
-            DomainValue dv2 = (DomainValue) obj2;
+    Comparator<DomainValue> domainValueComp = new Comparator<DomainValue>() {
+        public int compare(DomainValue dv1, DomainValue dv2) {
             int diff = dv1.getPriority() - dv2.getPriority();
             if (diff == 0) {
             	return dv1.toString().compareTo(dv2.toString()) ;
@@ -13,17 +40,17 @@
         }
     };
 
-    Comparator skuDomainValueComp = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
+    Comparator<SkuModel> skuDomainValueComp = new Comparator<SkuModel>() {
+        public int compare(SkuModel obj1, SkuModel obj2) {
             List<DomainValue> atr1= null;
             List<DomainValue> atr2 =null;
             DomainValue dv1=null;
             DomainValue dv2=null;
 
-			atr1 = ((SkuModel) obj1).getVariationMatrix();
-			atr2 = ((SkuModel) obj2).getVariationMatrix();
-			dv1 = ((DomainValue) atr1.get(0));
-			dv2 = ((DomainValue) atr2.get(0));
+			atr1 = obj1.getVariationMatrix();
+			atr2 = obj2.getVariationMatrix();
+			dv1 = atr1.get(0);
+			dv2 = atr2.get(0);
 			int diff = dv1.getPriority() - dv2.getPriority();
 					// sort by secondary domain
 			if (diff==0 && (atr1.size() > 1) && (atr2.size() > 1)) {
@@ -40,10 +67,10 @@
         }
     };
 
-    Comparator skuSecDomainValueComp = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            DomainValue dv1 = (DomainValue) ((SkuModel)obj1).getVariationMatrix().get(1);
-            DomainValue dv2 = (DomainValue) ((SkuModel)obj2).getVariationMatrix().get(1);
+    Comparator<SkuModel> skuSecDomainValueComp = new Comparator<SkuModel>() {
+        public int compare(SkuModel obj1, SkuModel obj2) {
+            DomainValue dv1 = obj1.getVariationMatrix().get(1);
+            DomainValue dv2 = obj2.getVariationMatrix().get(1);
 			if (dv1.getPriority() > dv2.getPriority()) {
 				return 1;
 			} else {
@@ -52,10 +79,8 @@
         }
     };
 
-    Comparator variationComparator = new Comparator() {
-        public int compare(Object obj1, Object obj2) {
-            FDVariation var1 = (FDVariation) obj1;
-            FDVariation var2 = (FDVariation) obj2;
+    Comparator<FDVariation> variationComparator = new Comparator<FDVariation>() {
+        public int compare(FDVariation var1, FDVariation var2) {
             // required before optional
             if (var1.isOptional() && !var2.isOptional()) {
                 return 1;
@@ -101,11 +126,11 @@
 	int MAX_BRANDS_TO_SHOW = isWineLayout ? 1 : 2;
 	
 	// get the brand logo, if any.
-	List prodBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
-	List brandLogos = new ArrayList();
-	List brandPopupLinks = new ArrayList();
+	List<BrandModel> prodBrands = productNode.getDisplayableBrands(MAX_BRANDS_TO_SHOW);
+	List<Image> brandLogos = new ArrayList<Image>();
+	List<String> brandPopupLinks = new ArrayList<String>();
 	
-	Iterator itr = prodBrands.iterator();
+	Iterator<BrandModel> itr = prodBrands.iterator();
 	while ( itr.hasNext() ) {
 	    BrandModel bm = (BrandModel)itr.next();
 	    brandName= bm.getFullName();
@@ -124,12 +149,12 @@
 	   brandPopupLinks.add(brandPopupLink);
 	}
 	
-	List skus = productNode.getSkus();
-	Map shortTermUnavailable = new HashMap();
+	List<SkuModel> skus = productNode.getSkus();
+	Map<String,Date> shortTermUnavailable = new HashMap<String,Date>();
 	// VSZ - is this "sku filtering" neccessary?
 	// MR - Yes, this is necessary.  For products with multiple skus, the default sku is the lowest priced sku.
 	// If the lowest priced sku is discontinued, this causes errors.  Please leave this turned on.
-	ListIterator li = skus.listIterator(); 
+	ListIterator<SkuModel> li = skus.listIterator(); 
 	while ( li.hasNext() ) {
 	    SkuModel sku = (SkuModel)li.next();
 	    if ( sku.isUnavailable() ) {
@@ -143,10 +168,10 @@
 	            earliestDate = DateUtil.addDays( DateUtil.truncate(new Date()), ErpServicesProperties.getHorizonDays() );
 	        }
 	        if(QuickDateFormat.SHORT_DATE_FORMATTER.format(testDate.getTime()).compareTo(QuickDateFormat.SHORT_DATE_FORMATTER.format(earliestDate)) < 0){
-	            List domains = sku.getVariationMatrix();
+	            List<DomainValue> domains = sku.getVariationMatrix();
 	            StringBuffer key = new StringBuffer();
 	            key.append("*");
-	            for(Iterator i = domains.iterator(); i.hasNext(); ){
+	            for(Iterator<DomainValue> i = domains.iterator(); i.hasNext(); ){
 	                DomainValue domainValue = (DomainValue)i.next();
 	                key.append(domainValue.getLabel());
 	                key.append(", ");

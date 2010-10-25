@@ -32,6 +32,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 	private boolean returnHiddenFolders = false;
 	private boolean returnSecondaryFolders = false;
 	private boolean filterDiscontinued = true;
+	private boolean filterUnavailable = false;
     private boolean ignoreDuplicateProducts=false;
     private boolean returnSkus=false;
 	private boolean returnInvisibleProducts = false;  // return prods that are flagged as invisible
@@ -73,7 +74,14 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 		this.filterDiscontinued = filterDiscontinued;
 	}
 	
-	
+	public boolean isFilterUnavailable() {
+		return filterUnavailable;
+	}
+
+	public void setFilterUnavailable(boolean filterUnavailable) {
+		this.filterUnavailable = filterUnavailable;
+	}
+
 	public int doStartTag() throws JspException {
 		if (rootNode == null || id == null) {
 			throw new JspException("Attribute for ItemGrabberTag was null!");
@@ -88,6 +96,7 @@ public class ItemGrabberTag extends com.freshdirect.framework.webapp.BodyTagSupp
 			grabber.setReturnHiddenFolders( returnHiddenFolders );
 			grabber.setReturnSecondaryFolders( returnSecondaryFolders );
 			grabber.setFilterDiscontinued( filterDiscontinued );
+			grabber.setFilterUnavailable( filterUnavailable );
 			grabber.setIgnoreDuplicateProducts( ignoreDuplicateProducts );
 			grabber.setReturnSkus( returnSkus );
 			grabber.setReturnInvisibleProducts( returnInvisibleProducts );

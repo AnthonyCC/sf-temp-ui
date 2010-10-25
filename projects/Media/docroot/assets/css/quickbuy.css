@@ -1,3 +1,8 @@
+.qbBody {
+	margin: 0;
+	width: 410px;
+}
+
 .qbLaunchButton {
 	border: 0;
 	width: 103px;
@@ -7,10 +12,34 @@
 	bottom: 0px;
 	left: 50%;
 	margin-left: -51px;
+	cursor: pointer;
 	
 	opacity: 0;
 	filter: alpha(opacity=0);
 }
+
+.qbButton {
+	border: 0;
+	width: 103px;
+	height: 22px;
+	
+	cursor: pointer;
+	
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
+.qbButtonLarge {
+	border: 0;
+	width: 137px;
+	height: 43px;
+	
+	cursor: pointer;
+	
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
+
 
 .qbTxControl {
 	overflow: hidden;
@@ -59,7 +88,6 @@
 }
 
 .yui-panel-container.quickbuy-dialog .yui-panel .hd {
-	background: #ff9933 url('/media_stat/images/quickbuy/quickbuy_hdr_ovrlay.gif') no-repeat 10px center;
 	line-height: 21px;
 	border:2px solid #7f7f7f;
 	border-bottom:none;
@@ -68,6 +96,16 @@
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 }
+
+.hd_bg_normal {
+	background: #ff9933 url('/media_stat/images/quickbuy/quickbuy_hdr_ovrlay.gif') no-repeat 10px center !important;
+}
+
+.hd_bg_wine {
+	background: #635245 url('/media_stat/images/quickbuy/quickbuy_wine_hdr.gif') no-repeat 10px center !important;
+}
+
+
 
 .yui-panel-container.quickbuy-dialog .yui-panel .bd {
 	border:2px solid #7f7f7f;
@@ -85,7 +123,6 @@
 }
 
 .yui-panel-container.quickbuy-dialog .yui-panel .container-close {
-	background:#ff9933 url('/media_stat/images/quickbuy/quickbuy_close.gif') no-repeat center center;
 	width:18px;
 	height:17px;
 	top:8px;
@@ -93,7 +130,25 @@
 	border:none;	
 }
 
+.container-close_normal {
+	background:#ff9933 url('/media_stat/images/quickbuy/quickbuy_close.gif') no-repeat center center !important;
+}
+
+.container-close_wine {
+	background:#635245 url('/media_stat/images/quickbuy/quickbuy_wine_close.gif') no-repeat center center !important;
+}
+
+
+
 .yui-panel-container.quickbuy-dialog .left {
+	float:left;
+	margin:10px;
+	_margin:5px;
+	width:180px;
+	text-align: right;
+}
+
+.qbBody .left {
 	float:left;
 	margin:10px;
 	_margin:5px;
@@ -114,10 +169,26 @@
 	width:190px;
 }
 
+.qbBody .right {
+	float:right;
+	margin:10px;
+	_margin:5px;
+	width:190px;
+}
+
+
 .yui-panel-container.quickbuy-dialog .info {
 	color:#ff9933;
 	font-weight:bold;
 	margin-bottom:1em;
+}
+
+.yui-panel-container.quickbuy-dialog .prodframe {
+	width: 410px;
+	/* height: 420px; */
+	border: 0;
+	padding: 0;
+	overflow: hidden;
 }
 
 .yui-panel-container.quickbuy-dialog .close {
@@ -133,6 +204,7 @@
 
 
 .yui-panel-container.quickbuy-dialog .overbox {
+	width: 410px;
 	bottom: 100%;
 	left: 0px;
 	position: absolute;

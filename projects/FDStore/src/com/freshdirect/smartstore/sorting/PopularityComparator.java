@@ -1,8 +1,8 @@
 package com.freshdirect.smartstore.sorting;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -18,23 +18,22 @@ public class PopularityComparator implements Comparator<ContentNodeModel> {
     final Set<ContentKey>     displayable;
     final ScriptedContentNodeComparator globalComparator;
 
-    public PopularityComparator(boolean inverse, List<ProductModel> products, PricingContext pricingContext) {
+    public PopularityComparator(boolean inverse, Collection<ProductModel> products, PricingContext pricingContext) {
         this(inverse, false, products, pricingContext);
     }
     
-    public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext) {
+    public PopularityComparator(boolean inverse, boolean hideUnavailable, Collection<ProductModel> products, PricingContext pricingContext) {
         this(inverse, hideUnavailable, products, pricingContext, ScriptedContentNodeComparator.createComparator(null, pricingContext, true));
     }
 
-    public PopularityComparator(boolean inverse, boolean hideUnavailable, List<ProductModel> products, PricingContext pricingContext,
+    public PopularityComparator(boolean inverse, boolean hideUnavailable, Collection<ProductModel> products, PricingContext pricingContext,
             ScriptedContentNodeComparator globalComparator) {
         this.inverse = inverse;
         this.hideUnavailable = hideUnavailable;
         this.displayable = new HashSet<ContentKey>();
         this.globalComparator = globalComparator;
         if (products != null) {
-            for (int i = 0; i < products.size(); i++) {
-                ProductModel c = products.get(i);
+            for (ProductModel c : products) {
                 if (c.isFullyAvailable()) {
                     displayable.add(c.getContentKey());
                 }

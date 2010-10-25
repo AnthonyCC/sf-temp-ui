@@ -34,6 +34,8 @@ import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentSearch;
+import com.freshdirect.fdstore.content.WineFilterPriceIndex;
+import com.freshdirect.fdstore.content.WineFilterRatingIndex;
 import com.freshdirect.fdstore.zone.FDZoneInfoManager;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.service.CmsRecommenderRegistry;
@@ -96,6 +98,10 @@ public class Warmup {
 					warmupZones();
 					warmupProducts();
 					warmupProductNewness();
+					
+					contentFactory.refreshWineIndex(true);
+					WineFilterPriceIndex.getInstance();
+					WineFilterRatingIndex.getInstance();
 					
 					if (FDStoreProperties.isPreloadSmartStore()) {
 						LOGGER.info("preloading Smart Store");

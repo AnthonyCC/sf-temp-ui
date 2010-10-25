@@ -12,6 +12,9 @@
 	<link rel="stylesheet" href="/assets/css/pngfix_ie6.css" type="text/css">
 	<![endif]--> 
 	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
+	<!--[if lte IE 7]>
+	<link rel="stylesheet" href="/assets/css/wine-ie.css" type="text/css">
+	<![endif]-->
 	<link href="/assets/css/4mm.css" rel="stylesheet" type="text/css" />
 	<link href="/assets/css/quickbuy.css" rel="stylesheet" type="text/css" />
 	<%-- Keep the media include last, so it can always override any css auto-loaded --%>

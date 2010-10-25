@@ -55,10 +55,10 @@ import com.freshdirect.cms.ContentTypeDefI;
 import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumCardinality;
 import com.freshdirect.cms.EnumDefI;
+import com.freshdirect.cms.RelationshipDefI;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.application.MediaServiceI;
-import com.freshdirect.cms.meta.RelationshipDef;
 import com.freshdirect.cms.ui.model.bulkload.BulkLoadReverseRelationship;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadCell;
 import com.freshdirect.cms.ui.model.bulkload.GwtBulkLoadHeader;
@@ -388,7 +388,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								} else if (attrDef.getAttributeType() != EnumAttributeType.RELATIONSHIP) {
 									status.setStateWithMessage(ERROR_COLUMN, "'" + attributePart + "' not a relationship");
 								} else {
-									RelationshipDef relDef = (RelationshipDef) attrDef;
+									RelationshipDefI relDef = (RelationshipDefI) attrDef;
 									if (relDef.getCardinality() != EnumCardinality.MANY) {
 										status.setStateWithMessage(ERROR_COLUMN, "'" + attributePart + "' not a MANY relationship");
 									} else if (relDef.isReadOnly()) {
@@ -662,7 +662,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 								}
 							} else if (attributeType == EnumAttributeType.RELATIONSHIP) {
 								GwtBulkLoadPreviewStatus[] nodeStatuses = parseRelationshipValue(type, stringValue);
-								RelationshipDef relationshipDef = (RelationshipDef) attributeDef;
+								RelationshipDefI relationshipDef = (RelationshipDefI) attributeDef;
 								postCheckRelationshipValue(nodeStatuses, relationshipDef, status);
 								if (!status.getState().isError()) {
 									parsedValue = handleRelationshipValue(attributeName, relationshipDef, nodeStatuses, status,
@@ -802,7 +802,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 		return parsedValue;
 	}
 
-	private Object handleRelationshipValue(String attributeName, RelationshipDef relationshipDef,
+	private Object handleRelationshipValue(String attributeName, RelationshipDefI relationshipDef,
 			GwtBulkLoadPreviewStatus[] nodeStatuses, GwtBulkLoadPreviewStatus status, GwtBulkLoadPreviewStatus rowStatus) {
 		Object parsedValue;
 		List<String> keyNames = new ArrayList<String>(nodeStatuses.length);
@@ -967,7 +967,7 @@ public class BulkLoaderXlsUploadServlet extends FileUploadServlet {
 	 * @param relationshipDef
 	 * @param status
 	 */
-	private void postCheckRelationshipValue(GwtBulkLoadPreviewStatus[] nodeStatuses, RelationshipDef relationshipDef,
+	private void postCheckRelationshipValue(GwtBulkLoadPreviewStatus[] nodeStatuses, RelationshipDefI relationshipDef,
 			GwtBulkLoadPreviewStatus status) {
 		EnumCardinality cardinality = relationshipDef.getCardinality();
 		if (cardinality == EnumCardinality.ONE) {

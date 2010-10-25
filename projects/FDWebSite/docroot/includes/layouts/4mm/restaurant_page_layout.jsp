@@ -116,11 +116,13 @@
 			<% }  %>
 		</div>
 		
-		<display:ContentNodeIterator itemsToShow="<%= products %>" id="meals1" showProducts="true" showCategories="false" trackingCode="<%= trackingCode %>"><span class="meal">
-			<display:ProductImage product="<%= (ProductModel) currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" customer="<%= user %>"/>
-			<display:ProductRating product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>"/>
-			<display:ProductName product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-			<display:ProductPrice impression="<%= new ProductImpression((ProductModel) currentItem) %>" showDescription="false"/>
+		<display:ContentNodeIterator itemsToShow="<%=products %>" id="mealsIt" showProducts="true" showCategories="false" trackingCode="<%= trackingCode %>"><span class="meal">
+			<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+				<display:ProductImage product="<%= (ProductModel) currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>"/>
+				<display:ProductRating product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>"/>
+				<display:ProductName product="<%= (ProductModel) currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
+				<display:ProductPrice impression="<%= new ProductImpression((ProductModel) currentItem) %>" showDescription="false"/>
+			</display:GetContentNodeWebId>
 		</span></display:ContentNodeIterator>
 		
 		<% } %>
@@ -139,11 +141,13 @@
 				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
 				<% topMediaList=null;
 			} %>
-			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sides1" showCategories="false"><span class="meal">
-				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage"  enableQuickBuy="true" customer="<%= user %>"/>
-				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="sidesIt" showCategories="false"><span class="meal">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage"  enableQuickBuy="true" webId="<%= webId %>"/>
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+				</display:GetContentNodeWebId>
 			</span></display:ContentNodeIterator>
 		</div>
 		<% } %>
@@ -161,11 +165,13 @@
 				<fd:IncludeMedia name="<%= topMediaList.get(0).getPath() %>"></fd:IncludeMedia>
 				<% topMediaList=null;
 			} %>
-			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entrees1" showCategories="false"><span class="meal">
-				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" customer="<%= user %>"/>
-				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+			<display:ContentNodeIterator trackingCode="<%= trackingCode %>" itemsToShow="<%= products %>" id="entreesIt" showCategories="false"><span class="meal">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productimage" enableQuickBuy="true" webId="<%= webId %>"/>
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="false"/>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+				</display:GetContentNodeWebId>
 			</span></display:ContentNodeIterator>
 		</div>
 		<% } %>

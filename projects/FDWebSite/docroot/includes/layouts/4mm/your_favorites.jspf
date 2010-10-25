@@ -30,13 +30,16 @@
 		%>
 		<div class="carousel-box" style="margin-top:0px;">
 			<div class="separator" style="margin-bottom:15px"><img src="/media/4mm/dpt_4mm_hdr_your_fave_return.gif" /></div>
-			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= YFProds %>" id="your_favourites_carousel" trackingCode="yf-4mm" maxItems="12">
-				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage"  enableQuickBuy="true" customer="<%= user %>"/>
-				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				<div class="productname">
-					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				</div>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+			<display:Carousel id="your_favourites_carousel" carouselId="your_favourites_carousel" width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= YFProds %>" trackingCode="yf-4mm" maxItems="12">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>"
+							useAlternateImage="true" hideBursts="<%= hideBursts %>" className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<div class="productname">
+						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+				</display:GetContentNodeWebId>
 			</display:Carousel>
 		</div>
 	<% } %>

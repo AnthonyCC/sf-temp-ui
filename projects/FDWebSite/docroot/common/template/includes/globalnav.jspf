@@ -6,14 +6,6 @@
 %><%@ page import='com.freshdirect.fdstore.*'
 %><%@ page import='java.net.*'
 %><%@ taglib uri='oscache' prefix='oscache' %>
-
-     <% if ( (request.getRequestURI().indexOf("/your_account/giftcards.jsp")>-1) || (request.getRequestURI().indexOf("/your_account/gc_order_details.jsp")>-1) ) {
-		//do nothing
-	} else {
-		//USQ wine related js %>
-		<script type="text/javascript" src="/assets/javascript/wine_popup.js"></script>
-	<% } %>
-
 <%@ include file="/common/template/includes/globalnav_top.jspf" %><%!
 public ContentNodeModel findDepartment (String deptId) throws FDResourceException {
 		return ContentFactory.getInstance().getContentNode(deptId);

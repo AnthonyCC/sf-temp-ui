@@ -1,5 +1,9 @@
 <%@ page import='com.freshdirect.fdstore.*';%>
-<%@ page import='com.freshdirect.webapp.util.*';%>
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 <%
     DomainValue domainValue = null;
     if ( domains.size() != 0 ) {
@@ -12,7 +16,30 @@
 	<fd:FDProduct id="product" productInfo="<%= productInfo %>">
                                         
 		<%
-            if ( domainValue != null ) {
+			final ZonePriceInfoModel _uZoneId = productInfo.getZonePriceInfo(user.getPricingContext().getZoneId());
+			final String _defPrice = currencyFormatter.format(_uZoneId.getDefaultPrice());
+			final boolean _isOnSale = _uZoneId.isItemOnSale();
+		
+		
+			String _z = null;
+        	if ( hasSingleSalesUnit && !hasVariationMatrix ) {
+            	String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
+            	if ( !"nm".equalsIgnoreCase(salesUnitDescr) && !"ea".equalsIgnoreCase(salesUnitDescr) && !"".equalsIgnoreCase(salesUnitDescr) ) {
+            		_z = salesUnitDescr;
+				}
+        	}
+
+        	final DepartmentModel __dept = ((ProductModel) productNode).getDepartment(); 
+			if ( isQuickBuy && __dept != null && "usq".equalsIgnoreCase(__dept.getContentKey().getId())) {
+				// [APPDEV-1283] special format for wines in QuickBuy panel
+%>				<div class="text13bold">
+					<span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="normal-price" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%= _z != null ? _z : productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
+					<% if ( _isOnSale ) { %>
+                        <div class="text11nb" style="padding-bottom: 1em">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</div>
+					<% } %>
+                </div>
+<%
+			} else if ( domainValue != null ) {
                 Html _fdDefGrade = productNode.getFddefGrade();
                 Html _fdDefSource = productNode.getFddefSource();
                 
@@ -20,61 +47,46 @@
                     TitledMedia tm = (TitledMedia)_fdDefSource;
                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                     String path = popup + "&attrib=FDDEF_SOURCE" + "&tmpl=" + tm.getPopupSize();
-                    %><font class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></font><%
+                    %><span class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></span><%
                 } else if ( _fdDefGrade != null ) {
                     TitledMedia tm = (TitledMedia)_fdDefGrade;
                     EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
                     String path = popup + "&attrib=FDDEF_GRADE" + "&tmpl=" + tm.getPopupSize();
-                    %><font class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></font><%
+                    %><span class="text11bold"><a href="javascript:popup('<%=path%>','<%=tm.getPopupSize()%>')"><%= domainValue.getLabel().toUpperCase() %></a></span><%
                 } else {
-                    %><font class="text11bold"><%= domainValue.getLabel().toUpperCase() %></font><%
+                    %><span class="text11bold"><%= domainValue.getLabel().toUpperCase() %></span><%
                 }
                 if (domains.size() > 1) {
                     DomainValue secDomainValue = ((DomainValue) defaultSku.getVariationMatrix().get(1));
                     %>(<%= secDomainValue.getLabel() %>)<%
                 }
-                %>
-				<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
-	                <font class="productPageSecondaryVarPrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
-	                <font class="productPageSecondaryVarPriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>				
+
+                if ( _isOnSale ) { %>
+	                <span class="productPageSecondaryVarPrice" style="color: #C94747"><%= _defPrice %></span>
+	                <span class="productPageSecondaryVarPriceUnit" style="color: #C94747">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></span>				
                     <br/>
-                    <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
+                    <span class="text11nb">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</span>
 				<% } else { %>
-	                <font class="productPageSecondaryVarPrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
-	                <font class="productPageSecondaryVarPriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
-				<% } %> 
+	                <span class="productPageSecondaryVarPrice"><%= _defPrice %></span>
+	                <span class="productPageSecondaryVarPriceUnit">/<%= productInfo.getDisplayableDefaultPriceUnit().toLowerCase()%></span>
+				<% } %>
                 <br/>
 				
                 
                 <%
             } else {
                 %>
-                <font class="text13bold">
-	                <% 
-	                	if ( hasSingleSalesUnit && !hasVariationMatrix ) {
-	                    	String salesUnitDescr = defaultProduct.getSalesUnits()[0].getDescription();
-	                    	if ( !"nm".equalsIgnoreCase(salesUnitDescr) && !"ea".equalsIgnoreCase(salesUnitDescr) && !"".equalsIgnoreCase(salesUnitDescr) ) { %>
-	                    		<%= salesUnitDescr %> -<%  
-	                    	}
-	                  	} 
-	                %>
-	                
-	                
-					<% if ( productInfo.getZonePriceInfo(user.getPricingContext().getZoneId()).isItemOnSale() ) { %>
-	                	<font class="productPageSinglePrice" color="#C94747"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
-	                	<font class="productPageSinglePriceUnit" color="#C94747">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
-                        <br/>
-                        <font class="text11nb">(was <%= JspMethods.formatSellingPrice(productInfo, user.getPricingContext()) %>)</font>
-                        <br/>
-					<% } else { %>
-	                	<font class="productPageSinglePrice"><%= JspMethods.formatDefaultPrice(productInfo, user.getPricingContext()) %></font>
-	                	<font class="productPageSinglePriceUnit">/<%= JspMethods.formatPricingUnit(productInfo) %></font>
-					<% } %> 
-
-	                
-                </font><br/>
-
-                
+                <div class="text13bold">
+<% 
+                	if ( _z != null ) {
+                		%><%= _z %> -<%
+	              	}
+%>
+	                	<span class="productPageSinglePrice" style="<%= _isOnSale ? "color: #C94747" : "" %>"><%= _defPrice %></span><span class="productPageSinglePriceUnit" style="<%= _isOnSale ? "color: #C94747" : "" %>">/<%=productInfo.getDisplayableDefaultPriceUnit().toLowerCase() %></span>
+					<% if ( _isOnSale ) { %>
+                        <div class="text11nb" style="padding-bottom: 1em">(was <%= currencyFormatter.format(_uZoneId.getSellingPrice()) %>)</div>
+					<% } %>
+                </div>
                 <%
             }
 		%>
@@ -83,8 +95,9 @@
 
 	    <%@ include file="/shared/includes/product/i_product_display_about.jspf" %>
 		
+		<% if (!isWineLayout) { %>
 		<%@include file="/shared/includes/product/i_product_skus_rating.jspf" %>
-			
+		<% } %>
 		<input type="hidden" name="skuCode" value="<%= defaultSku.getSkuCode() %>">
 		
 	</fd:FDProduct>

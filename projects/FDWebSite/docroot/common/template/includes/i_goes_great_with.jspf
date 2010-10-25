@@ -1,0 +1,62 @@
+<%@ page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+	<table border="0" cellspacing="0" cellpadding="0" width="155">
+       <tr>
+            <td align="left">
+            	<div>
+				<table width="140" cellpadding="0" cellspacing="0" style="text-align: center; margin: 0px auto;">
+					<tr>
+						<td width="5" valign="top"><img	src="/media_stat/images/wine/ggf/grey-corner-top-left.png" width="6" height="6"></td>
+						<td class="ggw-grey-border" align="left" style="border-width: 1px 0px 0px;">&nbsp;</td>
+						<td width="5" valign="top"><img src="/media_stat/images/wine/ggf/grey-corner-top-right.png" width="6" height="6"></td>
+					</tr>
+					<tr>
+						<td width="5" valign="top" class="ggw-grey-border" style="border-width: 0px 0px 0px 1px;">&nbsp;</td>
+						<td>
+		            		<div class="ggw">
+			            		<div class="ggw-title">
+					            	<img src="/media_stat/images/wine/ggf/ggf-title.png" width="126" height="10">
+			            		</div>
+		            			<display:ProductUrl id="actionUrl" product="<%= tileProduct %>" trackingCode="ggw">
+								<display:GetContentNodeWebId id="webId" product="<%= tileProduct %>" clientSafe="<%= true %>">
+									<div class="productimage">
+										<display:ProductImage product="<%= tileProduct %>" showRolloverImage="true" action="<%= actionUrl %>"
+												useAlternateImage="true"/>
+									</div>
+									<div class="quickbuy">
+										<img id="ggw_<%= webId %>" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif"
+												width="103" height="22" border="0">
+										<script type="text/javascript">
+											FD_QuickBuy.decorate('?', 'ggw_<%= webId %>', {
+													departmentId: '<%= tileProduct.getDepartment().getContentName() %>',
+													categoryId: '<%=  tileProduct.getParentNode().getContentName() %>',
+													productId: '<%= tileProduct.getContentName() %>'
+											});
+										</script>
+									</div>
+									<div class="productname">
+										<display:ProductName product="<%= tileProduct %>" action="<%= actionUrl %>" showBrandName="true" />
+									</div>
+									<div class="productprice">
+										<display:ProductPrice impression="<%= new ProductImpression(tileProduct) %>" showDescription="false"/>
+									</div>
+								</display:GetContentNodeWebId>
+								</display:ProductUrl>
+		            		</div>
+						</td>
+						<td width="5" valign="top" class="ggw-grey-border" style="border-width: 0px 1px 0px 0px;">&nbsp;</td>
+					</tr>
+					<tr>
+						<td width="5" valign="top"><img src="/media_stat/images/wine/ggf/grey-corner-bottom-left.png" width="6" height="6"></td>
+						<td class="ggw-grey-border" align="left" style="border-width: 0px 0px 1px;">&nbsp;</td>
+						<td width="5" valign="top"><img src="/media_stat/images/wine/ggf/grey-corner-bottom-right.png" width="6" height="6"></td>
+					</tr>
+				</table>
+            	</div>
+            </td>
+        </tr>
+    </table>
+	<br>

@@ -14,18 +14,19 @@ import java.util.List;
 public class WebProductRating {
 	
 	private String ratingLabel;
-	private List ratings;
-        private List textRatings;
+	private List<ProductRating> ratings;
+	private List<ProductRating> textRatings;
 	private String compareByLabel;
 	private String linkParams;
 	
-	public WebProductRating(String ratingLabel, List ratings, List textRatings, String compareByLabel, String linkParams){
-                this.ratingLabel = ratingLabel;
+	public WebProductRating(String ratingLabel, List<ProductRating> ratings, List<ProductRating> textRatings, String compareByLabel, String linkParams){
+		this.ratingLabel = ratingLabel;
 		this.ratings = ratings;
-                this.textRatings = textRatings;
+		this.textRatings = textRatings;
 		this.compareByLabel = compareByLabel;
 		this.linkParams = linkParams;
-        }	
+	}
+
 	public String getRatingLabel(){
 		return this.ratingLabel;
 	}
@@ -34,21 +35,21 @@ public class WebProductRating {
 		this.ratingLabel = ratingLabel;
 	}
 	
-	public List getRatings(){
+	public List<ProductRating> getRatings(){
 		return this.ratings;
 	}
 	
-	public void setRatings(List ratings){
+	public void setRatings(List<ProductRating> ratings){
 		this.ratings = ratings;
 	}
 	
-        public List getTextRatings() {
-            return this.textRatings;
-        }
+	public List<ProductRating> getTextRatings() {
+	    return this.textRatings;
+	}
         
-        public void setTextRatings(List textRatings) {
-            this.textRatings=textRatings;
-        }
+    public void setTextRatings(List<ProductRating> textRatings) {
+        this.textRatings=textRatings;
+    }
         
 	public String getCompareByLabel(){
 		return this.compareByLabel;

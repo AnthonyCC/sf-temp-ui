@@ -35,6 +35,7 @@ public class ItemGrabber {
 	private boolean returnHiddenFolders = false;
 	private boolean returnSecondaryFolders = false;
 	private boolean filterDiscontinued = true;
+	private boolean filterUnavailable = true;
     private boolean ignoreDuplicateProducts=false;
     private boolean returnSkus=false;
 	private boolean returnInvisibleProducts = false;  // return prods that are flagged as invisible
@@ -85,13 +86,15 @@ public class ItemGrabber {
 	public void setFilterDiscontinued(boolean filterDiscontinued) {
 		this.filterDiscontinued = filterDiscontinued;
 	}
-	
+
+	public void setFilterUnavailable(boolean filterUnavailable) {
+		this.filterUnavailable = filterUnavailable;
+	}
+
 	public void setPricingCtx( PricingContext pricingCtx ) {
 		this.pricingCtx = pricingCtx;
 	}
 
-
-	
 	public List<ContentNodeModel> grabTheItems() throws FDSkuNotFoundException, FDResourceException {
 		// we do not grab things if depth is set to negative
 		// in this case we let the layout manager decided what to grab
@@ -137,7 +140,7 @@ public class ItemGrabber {
 					continue;  
 				}
 				
-				if (filterDiscontinued) {
+				if (filterDiscontinued || filterUnavailable) {
 					this.skuList.addAll( product.getSkuCodes() );
 				}
 				if (this.returnSkus) {
@@ -204,21 +207,29 @@ public class ItemGrabber {
 		return rtnValue;
 	}
 	
-	private void filterDiscItems() throws FDResourceException {
-		
-		if (this.filterDiscontinued && this.skuList.size()>0) {
-			// make sure FDProductInfos are cached
-			FDCachedFactory.getProductInfos( (String[])this.skuList.toArray( new String[0] ) );
 
-			// remove discontinued products from workSet
-			for (ListIterator<ContentNodeModel> i=this.workSet.listIterator(); i.hasNext(); ) {
-				ContentNodeModel node = i.next();
-				if (node instanceof ProductModel && ((ProductModel)node).isDiscontinued() ) {
-					i.remove();
-				}
-			}			
-		}		
-	}
+        private void filterDiscItems() throws FDResourceException {
 
+            if ((this.filterDiscontinued || this.filterUnavailable) && this.skuList.size() > 0) {
+		// make sure FDProductInfos are cached
+		FDCachedFactory.getProductInfos( (String[])this.skuList.toArray( new String[0] ) );
+
+                // remove discontinued products from workSet
+                for (ListIterator<ContentNodeModel> i = this.workSet.listIterator(); i.hasNext();) {
+                    ContentNodeModel node = i.next();
+                    if (node instanceof ProductModel) {
+                    	ProductModel product = (ProductModel) node;
+                    	if (filterDiscontinued && product.isDiscontinued()) {
+                    		i.remove();
+                    		continue;
+                    	}
+                    	if (filterUnavailable && product.isUnavailable()) {
+                    		i.remove();
+                    		continue;
+                    	}
+                    }
+                }
+            }
+        }
 
 }

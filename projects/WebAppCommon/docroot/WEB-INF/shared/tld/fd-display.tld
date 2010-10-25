@@ -5,7 +5,7 @@
  <tlibversion>1.0</tlibversion>
  <jspversion>1.1</jspversion>
  <shortname>fd-display</shortname>
- <info>Freshdirect display and layout tag library.</info>
+ <info>FreshDirect display and layout tag library.</info>
  <!-- ============ Product and category display tags ============ -->
  <tag>
   <name>ProductImage</name>
@@ -74,9 +74,43 @@
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
-   <name>customer</name>
+   <name>webId</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
+  <attribute>
+   <name>height</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+	<name>ProductBurst</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.ProductBurstTag</tagclass>
+	<bodycontent>empty</bodycontent>
+	<attribute>
+		<name>product</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>large</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>className</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>style</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+ 	<attribute>
+ 		<name>excludeCaseDeals</name>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
  </tag>
  <tag>
   <name>CategoryImage</name>
@@ -225,11 +259,50 @@
    <name>grcyProd</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
+ 	<attribute>
+ 		<name>excludeCaseDeals</name>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ </tag>
+ <tag>
+ 	<name>WineProductPrice</name>
+ 	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.WineProductPriceTag</tagclass>
+ 	<bodycontent>empty</bodycontent>
+ 	<attribute>
+ 		<name>product</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ 	<attribute>
+ 		<name>excludeCaseDeals</name>
+ 		<required>false</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ </tag>
+ <tag>
+ 	<name>ProductDefaultPrice</name>
+ 	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.ProductDefaultPriceTag</tagclass>
+ 	<bodycontent>empty</bodycontent>
+ 	<attribute>
+ 		<name>product</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
+ </tag>
+ <tag>
+ 	<name>ProductWasPrice</name>
+ 	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.ProductWasPriceTag</tagclass>
+ 	<bodycontent>empty</bodycontent>
+ 	<attribute>
+ 		<name>product</name>
+ 		<required>true</required>
+ 		<rtexprvalue>true</rtexprvalue>
+ 	</attribute>
  </tag>
  <tag>
   <name>ProductRating</name>
   <tagclass>com.freshdirect.webapp.taglib.fdstore.display.ProductRatingTag</tagclass>
-  <teiclass>com.freshdirect.webapp.taglib.fdstore.display.ProductRatingTag$TagEI</teiclass>
   <bodycontent>empty</bodycontent>
   <attribute>
    <name>product</name>
@@ -246,6 +319,38 @@
   </attribute>
   <attribute>
    <name>leftAlign</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>WineRating</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.WineRatingTag</tagclass>
+  <bodycontent>empty</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>action</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>small</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>WinePrice</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.WinePriceTag</tagclass>
+  <bodycontent>empty</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>action</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>
@@ -346,6 +451,10 @@
   </attribute>
   <attribute>
    <name>filterDiscontinued</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>filterUnavailable</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
@@ -585,6 +694,12 @@
 	<attribute>
 		<name>id</name>
 		<required>true</required>
+		<rtexprvalue>false</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>carouselId</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
 	</attribute>
 	<attribute>
 		<name>itemsToShow</name>
@@ -618,11 +733,31 @@
 	</attribute>
 	<attribute>
 		<name>height</name>
-		<required>true</required>
+		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
 	<attribute>
 		<name>maxItems</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>hideContainer</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>bottomHeader</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>bottomHeaderClass</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>appendWineParams</name>
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
@@ -668,6 +803,37 @@
 	</attribute>
 	<attribute>
 		<name>filterUnav</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>appendWineParams</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+ </tag>
+ <tag>
+ 	<name>ProductUrl</name>
+	<tagclass>com.freshdirect.webapp.taglib.fdstore.display.ProductUrlTag</tagclass>
+	<teiclass>com.freshdirect.webapp.taglib.fdstore.display.ProductUrlTag$TagEI</teiclass>
+ 	<bodycontent>JSP</bodycontent>
+	<attribute>
+		<name>id</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>product</name>
+		<required>true</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>trackingCode</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>appendWineParams</name>
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
@@ -754,6 +920,110 @@
   <attribute>
    <name>customer</name>
    <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>GetContentNodeWebId</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag</tagclass>
+  <teiclass>com.freshdirect.webapp.taglib.fdstore.display.GetContentNodeWebIdTag$TagEI</teiclass>
+  <bodycontent>JSP</bodycontent>
+  <attribute>
+   <name>id</name>
+   <required>true</required>
+  </attribute>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>clientSafe</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>prefix</name>
+   <rtexprvalue>false</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>AnnotatedProductName</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.AnnotatedProductNameTag</tagclass>
+  <teiclass>com.freshdirect.webapp.taglib.fdstore.display.AnnotatedProductNameTag$TagEI</teiclass>
+  <bodycontent>empty</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>type</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>cssClass</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>wineLayout</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>quickBuy</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>annotated</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>WineRegionLabel</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.WineRegionLabelTag</tagclass>
+  <bodycontent>empty</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>separator</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>excludeCountry</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>excludeVintage</name>
+   <required>false</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+ </tag>
+ <tag>
+  <name>WineProductBackToLink</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.WineProductBackToLinkTag</tagclass>
+  <bodycontent>empty</bodycontent>
+ </tag>
+ <tag>
+  <name>WineShowRatings</name>
+  <tagclass>com.freshdirect.webapp.taglib.fdstore.display.WineShowRatingsTag</tagclass>
+  <bodycontent>JSP</bodycontent>
+  <attribute>
+   <name>product</name>
+   <required>true</required>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
+   <name>hideOnly</name>
+   <required>false</required>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>

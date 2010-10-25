@@ -16,6 +16,7 @@ public class BackReferenceTest extends TestCase {
     XmlContentService service;
     ContentType fooType = ContentType.get("Foo");
     ContentType barType = ContentType.get("Bar");
+    ContentType multiType = ContentType.get("Multi");
 
     @Override
     protected void setUp() throws Exception {
@@ -28,7 +29,7 @@ public class BackReferenceTest extends TestCase {
     public void testLink() throws InvalidContentKeyException {
         service = new XmlContentService(typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
 
-        assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType }), typeService.getContentTypes());
+        assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType, multiType }), typeService.getContentTypes());
 
         ContentKey barKey = ContentKey.create(barType, "barNode");
         ContentNodeI barNode = service.getContentNode(barKey);
@@ -65,7 +66,7 @@ public class BackReferenceTest extends TestCase {
         
         service = new ClassGeneratorContentService("backRefs", typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
         
-        assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType }), typeService.getContentTypes());
+        assertEquals(TestUtils.toSet(new ContentType[] { fooType, barType, multiType }), typeService.getContentTypes());
 
         ContentKey barKey = ContentKey.create(barType, "barNode");
         ContentNodeI barNode = service.getContentNode(barKey);
@@ -104,15 +105,12 @@ public class BackReferenceTest extends TestCase {
         ContentKey fooKey = ContentKey.create(fooType, "fooNode1");
         
         assertEquals("barNode.foo = fooNode1", fooKey, barNode.getAttributeValue("foo"));
-
         
         ContentNodeI barNodeCopiedInstance = barNode.copy();
 
         assertEquals("copied barNode.foo = fooNode1", fooKey, barNodeCopiedInstance.getAttributeValue("foo"));
-
         
         barNode.setAttributeValue("foo", null);
-        
         
         assertNull("barNode.foo is null now", barNode.getAttributeValue("foo"));
         
@@ -143,6 +141,42 @@ public class BackReferenceTest extends TestCase {
         assertEquals("barNode3.foo now correctly set to foo3", foo3, barNode3.getAttributeValue("foo"));
         assertNull("barNode2.foo is set to null", barNode2.getAttributeValue("foo"));
         
+    }
+    
+    public void testMultiType() throws InvalidContentKeyException {
+        service = new ClassGeneratorContentService("multi", typeService, new FlexContentHandler(), "classpath:/com/freshdirect/cms/application/service/xml/References.xml");
+        ContentNodeI m1 = service.getContentNode(ContentKey.create(multiType, "m1"));
+        ContentNodeI m2 = service.getContentNode(ContentKey.create(multiType, "m2"));
+        
+        assertNotNull("m1", m1);
+        assertNotNull("m2", m2);
+        
+        assertNotNull("m1.switcher", m1.getAttributeValue("switcher"));
+        assertNotNull("m2.switcher", m2.getAttributeValue("switcher"));
+        
+        ContentKey m1switcher = (ContentKey) m1.getAttributeValue("switcher");
+        ContentKey m2switcher = (ContentKey) m2.getAttributeValue("switcher");
+        
+        ContentNodeI fooNode3 = service.getContentNode(m1switcher);
+        ContentNodeI barNode2 = service.getContentNode(m2switcher);
+
+        assertNotNull("fooNode3", fooNode3);
+        assertNotNull("barNode2", barNode2);
+        
+        assertNotNull("fooNode3.fooBackReference", fooNode3.getAttributeValue("fooBackReference"));
+        assertNotNull("barNode2.barBackReference", barNode2.getAttributeValue("barBackReference"));
+        
+        assertEquals("fooNode3.fooBackReference", m1.getKey(), fooNode3.getAttributeValue("fooBackReference"));
+        assertEquals("barNode2.barBackReference", m2.getKey(), barNode2.getAttributeValue("barBackReference"));
+        
+        ContentKey barNode3Key = ContentKey.create(barType, "barNode3");
+        
+        m1.setAttributeValue("switcher", barNode3Key);
+        
+        assertEquals("m1.setAttributeValue correct", barNode3Key, m1.getAttributeValue("switcher"));
+
+        assertNull("fooNode3.fooBackReference", fooNode3.getAttributeValue("fooBackReference"));
+
     }
     
 }

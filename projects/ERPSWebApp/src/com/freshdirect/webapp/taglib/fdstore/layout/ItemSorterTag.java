@@ -39,7 +39,8 @@ public class ItemSorterTag extends TagSupport {
 
 		LOGGER.info(">>>Sorting " + nodes.size() + " items by " + strategy.size() + " attributes");
 //		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-		Collections.sort(nodes, new ContentNodeComparator(strategy));
+		if (strategy.isEmpty() || strategy.get(0).getSortType() != SortStrategyElement.NO_SORT)
+			Collections.sort(nodes, new ContentNodeComparator(strategy));
 
 		LOGGER.info(">>>Sort complete");
 		String debug = pageContext.getRequest().getParameter("debug");

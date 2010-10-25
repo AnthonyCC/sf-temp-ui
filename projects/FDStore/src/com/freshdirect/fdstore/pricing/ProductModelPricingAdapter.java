@@ -325,6 +325,11 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
+	public CategoryModel getCategory() {
+		return prodModel.getCategory();
+	}
+	
+	@Override
 	public Image getDescriptiveImage() {
 		return this.prodModel.getDescriptiveImage();
 	}
@@ -771,18 +776,38 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getWineRating1() {
+	public List<DomainValue> getWineRating1() {
 		return this.prodModel.getWineRating1();
 	}
 
 	@Override
-	public List getWineRating2() {
+	public List<DomainValue> getWineRating2() {
 		return this.prodModel.getWineRating2();
 	}
 
 	@Override
-	public List getWineRating3() {
+	public List<DomainValue> getWineRating3() {
 		return this.prodModel.getWineRating3();
+	}
+
+	@Override
+	public DomainValue getWineRatingValue1() {
+		return this.prodModel.getWineRatingValue1();
+	}
+
+	@Override
+	public DomainValue getWineRatingValue2() {
+		return this.prodModel.getWineRatingValue2();
+	}
+
+	@Override
+	public DomainValue getWineRatingValue3() {
+		return this.prodModel.getWineRatingValue3();
+	}
+	
+	@Override
+	public boolean hasWineOtherRatings() {
+		return this.prodModel.hasWineOtherRatings();
 	}
 
 	@Override
@@ -816,7 +841,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public List getWineVintage() {
+	public List<DomainValue> getWineVintage() {
 		return this.prodModel.getWineVintage();
 	}
 
@@ -1200,4 +1225,14 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
     public ProductModel getRealProduct() {
     	return prodModel;
     }
+    
+    @Override
+    public Set<DomainValue> getWineDomainValues() {
+    	return prodModel.getWineDomainValues();
+    }
+
+    @Override
+	public boolean isHideWineRatingPricing() {
+		return prodModel.isHideWineRatingPricing();
+	}
 }

@@ -62,7 +62,7 @@ public class ContentChangeTrackerService extends ProxyContentService {
                             AttributeDefI attributeDef = definition.getAttributeDef(name);
                             if (attributeDef instanceof BidirectionalRelationshipDefI) {
                                 BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
-                                if (b.isWritableSide()) {
+                                //if (b.isWritableSide()) {
                                     // get the new referant 
                                     ContentKey refs = (ContentKey) node.getAttributeValue(name);
                                     // get the old refering node
@@ -77,7 +77,7 @@ public class ContentChangeTrackerService extends ProxyContentService {
                                         
                                         extraChanges.add(nodeChange);
                                     }
-                                }
+                                //}
                             }
 			}
 		}

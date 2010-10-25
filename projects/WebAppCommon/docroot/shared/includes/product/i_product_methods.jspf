@@ -1,68 +1,89 @@
-<%!
+<%@ page import="com.freshdirect.fdstore.content.view.ProductRating"%>
+<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.List"%>
+<%@ page import="com.freshdirect.fdstore.util.RatingUtil"%>
+<%@ page import="com.freshdirect.fdstore.content.view.WebProductRating"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@ page import="com.freshdirect.fdstore.FDResourceException"%>
+<%@ page import="com.freshdirect.fdstore.content.DepartmentModel"%><%!
 //**** Methods used on the product pages.  **** 
 
-public DepartmentModel findDepartment (String deptId) throws FDResourceException {
-		return (DepartmentModel)ContentFactory.getInstance().getContentNode(deptId);
+public DepartmentModel findDepartment(String deptId)
+		throws FDResourceException {
+	return (DepartmentModel) ContentFactory.getInstance().getContentNode(
+			deptId);
 }
 
-public String findParentOfCategory (String catId) throws FDResourceException {
-		CategoryModel categoryNode = (CategoryModel)ContentFactory.getInstance().getContentNode(catId);
-		DepartmentModel dept = categoryNode.getDepartment();
-		return dept.getContentName();
-}
-public String getProdPageRatings(ProductModel _productNode, HttpServletResponse _response)  throws FDResourceException {
-  WebProductRating webProductRating = RatingUtil.getRatings(_productNode);
-  StringBuffer rtnString = new StringBuffer(200);
-
-    if (webProductRating!=null) {
-        StringBuffer ratingLines  = new StringBuffer();
-        String ratingLabel = "<br><b>"+webProductRating.getRatingLabel()+"</b>";
-        List ratings = webProductRating.getRatings();
-        List textRatings = webProductRating.getTextRatings();
-
-        // add rating heading and rating lines
-        if (ratings.size() > 0 ) {
-            if (webProductRating.getRatingLabel()!=null) {
-                rtnString.append("<br><b>");
-                rtnString.append(webProductRating.getRatingLabel());
-                rtnString.append("</b>");
-            }
-
-            for (Iterator itrRatings = ratings.iterator();itrRatings.hasNext();) {
-               ProductRating prodRating = (ProductRating)itrRatings.next();
-               rtnString.append("<br><img width=\"63\" height=\"8\" src=\"/media_stat/images/template/rating3_05_0");
-               rtnString.append(prodRating.getRating());
-               rtnString.append(".gif\" alt=\"");
-               rtnString.append(prodRating.getRating());
-               rtnString.append(" (out of 5)\">&nbsp;<font class=\"text9\">");
-               rtnString.append(prodRating.getRatingName().toUpperCase());
-               rtnString.append("</font>");
-            }
-        }
-        //add the Compare by link and Laabel
-        if (webProductRating.getCompareByLabel()!=null && webProductRating.getLinkParams()!=null) {
-            rtnString.append("<br><a href=\"");
-            rtnString.append(_response.encodeURL("/rating_ranking.jsp?"+webProductRating.getLinkParams()) );
-            rtnString.append("\">");
-            // get the label for this comparison folder.
-            rtnString.append(webProductRating.getCompareByLabel());
-            rtnString.append("</a><br>");
-        }
-
-        //add the text ratings
-        if (textRatings.size() > 0 ) {
-            rtnString.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\"200\" height=\"1\">");
-            for (Iterator itrRatings = textRatings.iterator();itrRatings.hasNext();) {
-               ProductRating prodRating = (ProductRating)itrRatings.next();
-               rtnString.append("<br><b>");
-               rtnString.append(prodRating.getRatingName());
-               rtnString.append(":</b>&nbsp;");
-               rtnString.append(prodRating.getRating());
-            }
-            rtnString.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\"200\" height=\"1\"><br>");
-        }
-    }
-    return rtnString.toString();
+public String findParentOfCategory(String catId) throws FDResourceException {
+	CategoryModel categoryNode = (CategoryModel) ContentFactory
+			.getInstance().getContentNode(catId);
+	DepartmentModel dept = categoryNode.getDepartment();
+	return dept.getContentName();
 }
 
-%>
+public String getProdPageRatings(ProductModel _productNode,
+		HttpServletResponse _response) throws FDResourceException {
+	WebProductRating webProductRating = RatingUtil.getRatings(_productNode);
+	StringBuilder rtnString = new StringBuilder(200);
+
+	if (webProductRating != null) {
+		StringBuilder ratingLines = new StringBuilder();
+		String ratingLabel = "<br><b>" + webProductRating.getRatingLabel()
+				+ "</b>";
+		List<ProductRating> ratings = webProductRating.getRatings();
+		List<ProductRating> textRatings = webProductRating.getTextRatings();
+
+		// add rating heading and rating lines
+		if (ratings.size() > 0) {
+			if (webProductRating.getRatingLabel() != null) {
+				rtnString.append("<br><b>");
+				rtnString.append(webProductRating.getRatingLabel());
+				rtnString.append("</b>");
+			}
+
+			for (Iterator<ProductRating> itrRatings = ratings.iterator(); itrRatings
+					.hasNext();) {
+				ProductRating prodRating = itrRatings.next();
+				rtnString
+						.append("<br><img width=\"63\" height=\"8\" src=\"/media_stat/images/template/rating3_05_0");
+				rtnString.append(prodRating.getRating());
+				rtnString.append(".gif\" alt=\"");
+				rtnString.append(prodRating.getRating());
+				rtnString
+						.append(" (out of 5)\">&nbsp;<font class=\"text9\">");
+				rtnString.append(prodRating.getRatingName().toUpperCase());
+				rtnString.append("</font>");
+			}
+		}
+		//add the Compare by link and Laabel
+		if (webProductRating.getCompareByLabel() != null
+				&& webProductRating.getLinkParams() != null) {
+			rtnString.append("<br><a href=\"");
+			rtnString.append(_response.encodeURL("/rating_ranking.jsp?"
+					+ webProductRating.getLinkParams()));
+			rtnString.append("\">");
+			// get the label for this comparison folder.
+			rtnString.append(webProductRating.getCompareByLabel());
+			rtnString.append("</a><br>");
+		}
+
+		//add the text ratings
+		if (textRatings.size() > 0) {
+			rtnString
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\"200\" height=\"1\">");
+			for (Iterator<ProductRating> itrRatings = textRatings
+					.iterator(); itrRatings.hasNext();) {
+				ProductRating prodRating = itrRatings.next();
+				rtnString.append("<br><b>");
+				rtnString.append(prodRating.getRatingName());
+				rtnString.append(":</b>&nbsp;");
+				rtnString.append(prodRating.getRating());
+			}
+			rtnString
+					.append("<br><img src=\"/media_stat/images/layout/cccccc.gif\" vspace=\"6\" width=\"200\" height=\"1\"><br>");
+		}
+	}
+	return rtnString.toString();
+}%>

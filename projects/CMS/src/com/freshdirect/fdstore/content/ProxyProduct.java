@@ -575,7 +575,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getNewWineType();
 	}
 	
-	public List getWineVintage(){
+	public List<DomainValue> getWineVintage(){
 		return getProduct().getWineVintage();
 	}
 	
@@ -587,16 +587,36 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getWineVarietal();
 	}
 	
-	public List getWineRating1(){
+	public List<DomainValue> getWineRating1(){
 		return getProduct().getWineRating1();
 	}
 	
-	public List getWineRating2(){
+	public List<DomainValue> getWineRating2(){
 		return getProduct().getWineRating2();
 	}
 	
-	public List getWineRating3(){
+	public List<DomainValue> getWineRating3(){
 		return getProduct().getWineRating3();
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue1() {
+		return getProduct().getWineRatingValue1();
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue2() {
+		return getProduct().getWineRatingValue2();
+	}
+	
+	@Override
+	public DomainValue getWineRatingValue3() {
+		return getProduct().getWineRatingValue3();
+	}
+	
+	@Override
+	public boolean hasWineOtherRatings() {
+		return getProduct().hasWineOtherRatings();
 	}
 	
 	public Html getWineReview1(){

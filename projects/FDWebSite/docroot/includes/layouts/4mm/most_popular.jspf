@@ -31,13 +31,16 @@
 		if ( mostPopularProds.size() > 0 ) { %>
 			<div class="carousel-box">
 				<div class="separator"><img src="/media/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
-				<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= mostPopularProds %>" id="popular_carousel" trackingCode="mpop-4mm" maxItems="12">
-					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
-					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-					<div class="productname">
-						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
-					</div>
-					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+				<display:Carousel  id="popular_carousel" carouselId="popular_carousel" width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= mostPopularProds %>" trackingCode="mpop-4mm" maxItems="12">
+					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+						<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" 
+							useAlternateImage="true" className="productImage" height="90" enableQuickBuy="true"/>
+						<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+						<div class="productname">
+							<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+						</div>
+						<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+					</display:GetContentNodeWebId>
 				</display:Carousel>
 			</div>
 		<% } %>

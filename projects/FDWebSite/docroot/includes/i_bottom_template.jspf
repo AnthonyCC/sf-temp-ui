@@ -66,11 +66,6 @@ if (!isGroceryProdPage) {
 		List catBottomMedias =  cm_ForBottom.getBottomMedia();
 			if (catBottomMedias.size()>0 || catBottomMedias.size() == 0) {
 				if(EnumTemplateType.WINE.equals(EnumTemplateType.getTemplateType(bot_templateType))) { %>
-					<logic:iterate id='mediaRef' indexId='indexNo' collection="<%=catBottomMedias%>" type="com.freshdirect.fdstore.content.MediaModel">
-					<% if (((Html)mediaRef).getPath()!=null) { %>
-							<fd:IncludeMedia name='<%= ((Html)mediaRef).getPath() %>' />
-					<% } %>
-					</logic:iterate>
 				<% } else { %>
 					
 					<%

@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BackReferenceDefI;
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -546,10 +547,8 @@ public class ContentNodeGenerator implements NodeGeneratorI {
 
     private boolean isSpecialCopyNeeded(ContentTypeDefI def) {
         for (AttributeDefI a : def.getSelfAttributeDefs()) {
-            if (a instanceof BidirectionalRelationshipDefI) {
-//                if (((BidirectionalRelationshipDefI)a).isWritableSide()) {
-                    return true;
-//                }
+            if (a instanceof BidirectionalRelationshipDefI || a instanceof BackReferenceDefI) {
+               return true;
             }
         }
         return false;
@@ -779,12 +778,14 @@ public class ContentNodeGenerator implements NodeGeneratorI {
     }
     
     private String getSetStatement(AttributeDefI attributeDef, String fieldName, CtClass fieldType) throws NotFoundException {
+        if (attributeDef instanceof RelationshipDefI) {
+            if (((RelationshipDefI)attributeDef).isCalculated()) {
+                return "";
+            }
+        }
         if (attributeDef instanceof BidirectionalRelationshipDefI) {
             BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
-            if (b.isWritableSide()) {
-                return "if (__copy) { \n" + fieldName+ " = " + getSetStatement(fieldType)+";\n } else {\n __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").addRelation(key, (com.freshdirect.cms.ContentKey) value); }";
-            }
-            return "";
+            return "if (__copy) { \n" + fieldName+ " = " + getSetStatement(fieldType)+";\n } else {\n __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").addRelation(key, (com.freshdirect.cms.ContentKey) value); }";
         } else {
             return fieldName+ " = "+getSetStatement(fieldType)+';';
         }
@@ -878,13 +879,13 @@ public class ContentNodeGenerator implements NodeGeneratorI {
     }
     
     private String getReturnsAsObject(AttributeDefI attributeDef) {
+        if (attributeDef instanceof BackReferenceDefI) {
+            BackReferenceDefI b = (BackReferenceDefI) attributeDef;
+            return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(com.freshdirect.cms.ContentType.get(\""+b.getMainRelationship().getSourceType().getName()+"\"), \"" + b.getMainRelationship().getName() + "\").getInverseReference(key);";
+        }
         if (attributeDef instanceof BidirectionalRelationshipDefI) {
             BidirectionalRelationshipDefI b = (BidirectionalRelationshipDefI) attributeDef;
-            if (b.isWritableSide()) {
-                return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").getReference(key);";
-            } else {
-                return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(com.freshdirect.cms.ContentType.get(\""+b.getOtherSide().getType().getName()+"\"), \"" + b.getOtherSide().getName() + "\").getInverseReference(key);";
-            }
+            return "__copy ? "+ getFieldName(attributeDef) +" : __nodeGenerator.getReferenceHandler(key.getType(), \"" + attributeDef.getName() + "\").getReference(key);";
         }
         return getFieldName(attributeDef)+";";
     }

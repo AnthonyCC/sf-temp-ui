@@ -3,7 +3,7 @@ java.util.Iterator,com.freshdirect.smartstore.RecommendationService,com.freshdir
 com.freshdirect.fdstore.customer.FDUserI,com.freshdirect.smartstore.fdstore.SmartStoreUtil,com.freshdirect.fdstore.util.EnumSiteFeature,
 com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Variant"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
-
+<fd:CheckLoginStatus noRedirect="true"/>
 <%--
 	AJAX refresh page
 	called from i_generic_recommendations.jspf
@@ -34,9 +34,11 @@ com.freshdirect.webapp.taglib.fdstore.SessionName,com.freshdirect.smartstore.Var
 		ActionResult result = new ActionResult();
 		request.setAttribute("actionResult", result);
 		
-
-		// TODO: maybe null (??)
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+		if (user == null) {
+			response.setStatus(500);
+			return;			
+		}
 		
 		Variant v = SmartStoreUtil.getVariant(request.getParameter("siteFeature"), request.getParameter("variant"));
 		String impId = request.getParameter("impId");

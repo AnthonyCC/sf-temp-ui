@@ -2,6 +2,7 @@ package com.freshdirect.cms.ui.client.views;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -74,7 +75,15 @@ public class AdministrationView extends LayoutContainer {
                 admin.rebuildIndexes(new AdminProcStatusCallback());
                 refresh.scheduleRepeating(5000);
             }
-        }));
+        }), new Margins(0, 10, 0, 10));
+
+        actionBar.addButton(new Button("Rebuild Wine Index", new SelectionListener<ButtonEvent>() {
+            @Override
+            public void componentSelected(ButtonEvent ce) {
+                admin.rebuildWineIndexes(new AdminProcStatusCallback());
+                refresh.scheduleRepeating(5000);
+            }
+        }), new Margins(0, 10, 0, 10));
         
         detailPanel.add(actionBar);
         add(detailPanel);

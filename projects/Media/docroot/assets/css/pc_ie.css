@@ -106,6 +106,7 @@ A.list		    { line-height: 12px; }
 .title13 		 { font-size: 12px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title13g2		 { font-size: 13px;  line-height: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
+.text14			 { font-size: 13px; font-weight: normal; font-family: Verdana, Arial, sans-serif; }
 .title14		 { font-size: 13px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .titleor14		 { font-size: 13px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
@@ -119,6 +120,9 @@ A.list		    { line-height: 12px; }
 .title18 	     { font-size: 17px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .title18or	     { font-size: 18px; color: #FF9933; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 .text18gr 		 { font-size: 17px; color: #666666; font-family: Verdana, Arial, sans-serif; }
+
+.title19 	     { font-size: 18px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
+.title20 	     { font-size: 19px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
 .title24 	     { font-size: 24px; font-weight: bold; font-family: Verdana, Arial, sans-serif; }
 
@@ -699,4 +703,13 @@ img.COSSurvey_spacer02 { width: 180px; height: 8px; }
 img.COSSurvey_spacer03 { width: 80px; height: 8px; }
 img.COSSurvey_spacer04 { width: 140px; height: 8px; }
 
+/** Product Page / QuickBuy panel **/
+.prdsep {
+	background-color: #333333;
+	line-height: 1px;
+	height: 1px;
+	margin: 10px 0 10px 0;
+}
+
 #prod_container { word-wrap: break-word; }
+

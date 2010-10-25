@@ -11,6 +11,17 @@
 	</info>
 
 	<tag>
+		<name>Parameters</name>
+		<tagclass>com.freshdirect.webapp.taglib.ParametersTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.ParametersTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>IncludeMedia</name>
 		<tagclass>com.freshdirect.webapp.taglib.IncludeMediaTag</tagclass>
 		<bodycontent>JSP</bodycontent>
@@ -32,6 +43,50 @@
 		</attribute>
 		<attribute>
 			<name>media</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>IncludeHtml</name>
+		<tagclass>com.freshdirect.webapp.taglib.IncludeHtmlTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>html</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>parameters</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>withErrorReport</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+
+	<tag>
+		<name>IncludeImage</name>
+		<tagclass>com.freshdirect.webapp.taglib.IncludeImageTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>image</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -3072,29 +3127,274 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>WineFilterClearCache</name>
+		<tagclass>com.freshdirect.webapp.taglib.content.WineFilterClearCacheTag</tagclass>
+		<bodycontent>empty</bodycontent>
+	</tag>
+	<tag>
 		<name>WineFilter</name>
 		<tagclass>com.freshdirect.webapp.taglib.content.WineFilterTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.content.WineFilterTag$TagEI</teiclass>
 		<bodycontent>JSP</bodycontent>
 		<info></info>
 		<attribute>
-			<name>domainName</name>
+			<name>filterId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>domainValue</name>
+			<name>lastClickedId</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>queryId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>useItemGrabber</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>TrackingQueryParams</name>
+		<tagclass>com.freshdirect.webapp.taglib.TrackingQueryParamsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.TrackingQueryParamsTag$TagEI</teiclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
 		<attribute>
 			<name>id</name>
 			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
+			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>displayList</name>
+			<name>source</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineSorter</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineSorterTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.WineSorterTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>sorterId</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>viewId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>sortById</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>defaultSortById</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineViewLink</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineViewLinkTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>view</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineSortByLink</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineSortByLinkTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.WineSortByLinkTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>sortBy</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selectedId</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WinePager</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WinePagerTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.WinePagerTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>pagedProductsId</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>productCountId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pageCountId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pageSizeId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>pageNoId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>hasOtherRatingsId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WinePageSizeLink</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WinePageSizeLinkTag</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>pageSize</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WinePageNoLink</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WinePageNoLinkTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>pageNo</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>className</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>style</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineOtherRatings</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineOtherRatingsTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.WineOtherRatingsTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>product</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>small</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineTopRatedFeed</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineTopRatedFeedTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.WineTopRatedFeedTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>price</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>maxItems</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>useAlternateImage</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>imageHeightId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>refreshPeriod</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>WineHomenav</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.WineHomenavTag</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info></info>
+		<attribute>
+			<name>refreshPeriod</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -3900,7 +4200,28 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
-	</tag>        
+	</tag>
+	<tag>
+		<name>Tile</name>
+		<tagclass>com.freshdirect.webapp.taglib.fdstore.TileTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.fdstore.TileTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>	
+		<attribute>
+			<name>productId</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>	
+		<attribute>
+			<name>trkdId</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+		</attribute>	
+	</tag>
     <tag>
 		<name>CreateNewGCUser</name>
 		<tagclass>com.freshdirect.webapp.taglib.giftcard.CreateNewGCUserTag</tagclass>

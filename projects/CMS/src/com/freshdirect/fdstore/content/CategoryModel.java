@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -106,6 +107,10 @@ public class CategoryModel extends ProductContainer {
 	private Map<String, RecommendedProductsRef> recommendedProductsRefMap = new HashMap<String, RecommendedProductsRef>();
 	
 	private Object recommendedProductsSync = new Object();
+	
+	private int smartCategoryVersion;
+	
+	private static int globalSmartCategoryVersion = 1;
 
 	private List<CategoryModel> subcategoriesModels = new ArrayList<CategoryModel>();
 
@@ -139,6 +144,7 @@ public class CategoryModel extends ProductContainer {
 	public CategoryModel(com.freshdirect.cms.ContentKey cKey) {
 		super(cKey);
 		categoryAlias = null;
+		this.smartCategoryVersion = globalSmartCategoryVersion;
 	}
 
 	public DepartmentModel getDepartment() {
@@ -293,6 +299,10 @@ public class CategoryModel extends ProductContainer {
 		return new ArrayList(wineFilterCriteriaList);		
 	}
 
+	public DomainValue getWineFilterValue() {
+        return FDAttributeFactory.lookup(this, "WINE_FILTER_VALUE", (DomainValue) null);
+	}
+	
 	public List<DomainValue> getWineSideNavSections() {
 		ContentNodeModelUtil.refreshModels(this, "SIDE_NAV_SECTIONS", wineSideNavSectionsList, false);
 		return new ArrayList(wineSideNavSectionsList);		
@@ -339,6 +349,15 @@ public class CategoryModel extends ProductContainer {
         	
             String zoneId = ContentFactory.getInstance().getCurrentPricingContext().getZoneId();
             LOGGER.info("Category[id=\"" + this.getContentKey().getId() + "\"].getSmartProducts(\"" + zoneId + "\")");
+            synchronized (CategoryModel.class) {
+                if (globalSmartCategoryVersion > smartCategoryVersion) {
+                    LOGGER.info("forced smart category recalculation : " + smartCategoryVersion + " -> " + globalSmartCategoryVersion + " for category : "
+                            + this.getContentKey().getId());
+                    smartCategoryVersion = globalSmartCategoryVersion;
+                    recommendedProductsRefMap.clear();
+                }
+            }
+            
             synchronized (recommendedProductsSync) {
                 if ( recommenderChanged || recommendedProductsRefMap.get(zoneId) == null )
                     recommendedProductsRefMap.put(zoneId, new RecommendedProductsRef(threadPool, zoneId));
@@ -673,4 +692,31 @@ public class CategoryModel extends ProductContainer {
         return FDAttributeFactory.constructHtml(this, "CAT_STORAGE_GUIDE_MEDIA");
     }
     
+    public Set<ContentKey> getAllChildProductKeys() {
+    	Set<ContentKey> keys = new HashSet<ContentKey>();
+    	for (ProductModel p : getPrivateProducts())
+    		keys.add(p.getContentKey());
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getPrivateProducts())
+    			keys.add(p.getContentKey());
+    	return keys;
+    }
+
+    public Set<ProductModel> getAllChildProducts() {
+    	Set<ProductModel> products = new HashSet<ProductModel>();
+    	for (ProductModel p : getProducts())
+    		products.add(p);
+    	for (CategoryModel c : getSubcategories())
+    		for (ProductModel p : c.getProducts())
+    			products.add(p);
+    	return products;
+    }
+    
+	public boolean isHideWineRatingPricing() {
+		return getAttribute("HIDE_WINE_RATING", false);
+	}
+	
+	public static synchronized void forceSmartCategoryRecalculation() {
+	    globalSmartCategoryVersion ++;
+	}
 }

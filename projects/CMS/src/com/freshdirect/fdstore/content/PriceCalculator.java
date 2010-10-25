@@ -8,6 +8,7 @@ import com.freshdirect.fdstore.FDKosherInfo;
 import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDSalesUnit;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.ZonePriceInfoModel;
@@ -175,7 +176,13 @@ public class PriceCalculator {
         return 0;
     }
 
+
     public String getTieredPrice(double savingsPercentage) {
+    	return getTieredPrice(savingsPercentage, null);
+    }
+
+
+    public String getTieredPrice(double savingsPercentage, double exclusion[]) {
 
         if (skuModel != null) {
             try {
@@ -184,9 +191,9 @@ public class PriceCalculator {
                     String[] tieredPricing = null;
 
                     if (savingsPercentage > 0) {
-                        tieredPricing = product.getPricing().getZonePrice(ctx.getZoneId()).getScaleDisplay(savingsPercentage);
+                        tieredPricing = product.getPricing().getZonePrice(ctx.getZoneId()).getScaleDisplay(savingsPercentage, exclusion);
                     } else {
-                        tieredPricing = product.getPricing().getZonePrice(ctx.getZoneId()).getScaleDisplay();
+                        tieredPricing = product.getPricing().getZonePrice(ctx.getZoneId()).getScaleDisplay(exclusion);
                     }
 
                     if (tieredPricing.length > 0) {
@@ -429,4 +436,23 @@ public class PriceCalculator {
         return skuModel;
     }
     
+	public boolean isOnSale() {
+		try {
+			return getProductInfo().getZonePriceInfo(ctx.getZoneId()).isItemOnSale();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
+	
+	public double getWasPrice() {
+		try {
+			return getProductInfo().getZonePriceInfo(ctx.getZoneId()).getSellingPrice();
+		} catch (FDResourceException e) {
+			throw new FDRuntimeException(e);
+		} catch (FDSkuNotFoundException e) {
+			throw new FDRuntimeException(e);
+		}
+	}
 }

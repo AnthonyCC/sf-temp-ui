@@ -745,7 +745,7 @@ public class JspMethods {
 	}
 	
 
-	private final static String ALLOWED_CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+	private final static String ALLOWED_CHARS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 
     public static String safeJavaScriptVariable(String s) {
         StringBuilder buf = new StringBuilder();

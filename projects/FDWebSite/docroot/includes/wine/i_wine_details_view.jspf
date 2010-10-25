@@ -1,0 +1,118 @@
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWineRating"%>
+<%@page import="com.freshdirect.fdstore.content.Image"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%--
+
+	@param group A collection of {@link:ProductRatingGroup} items
+	@param category Parent category, instance of {@link CategoryModel}
+	@param useProductCategory Wine rating is determined from product's own
+	  parent category instead of page  
+
+--%>
+<div style="font-size: 0px; padding-top: 16px;">&nbsp;</div>
+<table width="425" cellpadding="2" cellspacing="0" border="0">
+<%
+	for (ProductRatingGroup group : groups) {
+%>
+<%
+	boolean isFirst = true;
+	for (ProductModel product : group.getProducts()) {
+		final CategoryModel __c = ( ((boolean) useProductCategory) ? product.getCategory() : (CategoryModel) category );
+%><display:GetContentNodeWebId id="webId" product="<%= product %>" clientSafe="<%= true %>">
+<%
+		if (isFirst) {
+			isFirst = false;
+		} else {
+%>
+<tr>
+	<td colspan="3" style="padding: 6px 0px 12px;"><div style="border-top: 1px solid #ccc; font-size: 0px;">&nbsp;</div></td>
+</tr>
+<%
+		}
+
+
+
+%><display:ProductUrl id="actionUrl" product="<%= product %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
+<tr>
+<td align="left" valign="top"><%-- text --%>
+	<div class="title14"><a href="<%=actionUrl%>"><%=product.getFullName()%></a></div>
+	<div class="usq_region" style="padding-top: 8px;"><display:WineRegionLabel product="<%= product %>" excludeCountry="true"/></div>
+	<div class="text11" style="padding-top:4px;">
+	<fd:IncludeHtml html="<%= product.getProductAbout() %>"/><% if (product.getProductAbout() != null) { %> <nobr><a href="<%= actionUrl %>">More &raquo;</a></nobr><% } %>
+	</div>
+	<display:WineShowRatings product="<%= product %>">
+	<div style="padding-top: 4px;">
+	<table cellspacing="0" cellpadding="0" border="0">
+		<tr>
+			<% if (EnumWineRating.getEnumByRating(product.getProductRatingEnum()) != EnumWineRating.NOT_RATED) { %>
+			<td style="padding-right: 5px; vertical-align: bottom;"><display:WineRating product="<%= product %>"/></td>
+			<% } %>
+			<td style="vertical-align: bottom;"><display:WinePrice product="<%= product %>"/></td>
+		</tr>
+	</table>
+	</div>
+	</display:WineShowRatings>
+	<fd:WineOtherRatings product="<%= product %>" id="wineOtherRatings" small="true">
+	<div style="padding-top: 6px;">
+	<% for (String imagePath : wineOtherRatings) { %>
+	<span style="display: inline-block; padding-right: 2px;"><%= imagePath %></span>
+	<% } %>
+	</div>
+	</fd:WineOtherRatings>
+	<div class="largePrice" style="padding-top: 5px;">
+	<display:WineProductPrice product="<%= product %>"/>
+	</div>
+</td>
+<td valign="top"><%-- bottle and image --%>
+<%
+	final Image img1 = product.getCategoryImage();
+	final Image img2 = product.getDescriptiveImage();
+
+	if (img1 == null && img2 == null)
+		throw new JspException("Product " + product.getContentName() + " is badly configured" );
+
+	final int dw =	(img1 != null ? img1.getWidth() : 0) +
+									(img2 != null ? img2.getWidth() : 0);
+	final int dh = Math.max(
+									(img1 != null ? img1.getHeight() : 0) ,
+									(img2 != null ? img2.getHeight() : 0)
+								);
+	// Quick Buy button position
+	final int qbw = (dw-103)/2;
+	final int qbh = 55 /* (dh-22)/2 */;
+
+	final String img1id = "img1-"+webId;
+	final String img2id = "img1-"+webId;
+%>
+	<div id="hotspot-<%= webId %>" style="position: relative; width: <%= dw %>px; height: <%= dh %>px;">
+		<fd:IncludeImage image="<%= img1 %>" className="no-outline" style="vertical-align: top;"/><fd:IncludeImage image="<%= img2 %>" className="no-outline" style="vertical-align: top;"/>
+		<display:ProductBurst product="<%= product %>" large="true" className="no-outline" style="display: inline-block; position: absolute; left: 20px; top: 20px;" excludeCaseDeals="<%= true %>"/>
+		
+		<%-- QUICK BUY SECTION START --%>
+		<img id="qbButton-<%= webId %>" class="qbButton" style="display: inline-block; position: absolute; left: <%= qbw %>px; top: <%= qbh %>px;" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif">
+		<script>
+			$E.onDOMReady(function() {
+				FD_QuickBuy.decorate('hotspot-<%= webId %>', ['qbButton-<%= webId %>', 'hotspot-<%= webId %>'], {
+						departmentId: '<%= product.getDepartment().getContentName() %>',
+						categoryId: '<%= __c.getContentName() %>',
+						productId: '<%= product.getContentName() %>'
+				}, '<%= webId %>');
+			});
+		</script>
+		<%-- QUICK BUY SECTION END --%>
+	</div>
+</td>
+</tr>
+</display:ProductUrl>
+</display:GetContentNodeWebId>
+<%
+	} // for products in a group
+%>
+<%
+	} // for pagedProducts product group
+%>
+</table>

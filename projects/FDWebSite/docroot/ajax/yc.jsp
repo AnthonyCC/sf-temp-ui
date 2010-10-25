@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.fdstore.util.EnumSiteFeature"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName"%>
 <%@ taglib uri="freshdirect" prefix="fd"%>
+<fd:CheckLoginStatus noRedirect="true"/>
 <%--
 	API file that refreshes Your Cart
 

@@ -29,6 +29,9 @@ public class ContentNodeIteratorTag extends BodyTagSupport {
 	protected int									maxItems 		= 0;	// 0 means no limit
 	protected boolean								filterUnav		= true;
 	
+	protected boolean								appendWineParams = false;
+
+	
 	private int 								itemsToShowIndex = 0;
 	private int									currentItemIndex = 0;
 
@@ -95,6 +98,9 @@ public class ContentNodeIteratorTag extends BodyTagSupport {
 		this.filterUnav = filterUnav;
 	}
 
+	public void setAppendWineParams(boolean appendWineParams) {
+		this.appendWineParams = appendWineParams;
+	}
 	
 	@Override
 	public int doStartTag() throws JspException {
@@ -138,6 +144,10 @@ public class ContentNodeIteratorTag extends BodyTagSupport {
 	
 	@Override
 	public int doEndTag() {
+
+		if ( itemsToShow == null || itemsToShow.size() < 1 ) {
+			return SKIP_BODY;
+		} 
 		
 		doEnd();
 		doLast();
@@ -213,11 +223,14 @@ public class ContentNodeIteratorTag extends BodyTagSupport {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected String getActionUrl( ContentNodeModel node ) {
 		if ( node instanceof CategoryModel ) {
-			return FDURLUtil.getCategoryURI( (CategoryModel)node, trackingCode );			
+			String uri = FDURLUtil.getCategoryURI( (CategoryModel)node, trackingCode );
+			return appendWineParams ? (String) FDURLUtil.appendWineParamsToURI(uri, pageContext.getRequest().getParameterMap()) : uri;			
 		} else if ( node instanceof ProductModel ) {
-			return FDURLUtil.getProductURI( (ProductModel)node, trackingCode );			
+			String uri = FDURLUtil.getProductURI( (ProductModel)node, trackingCode );
+			return appendWineParams ? (String) FDURLUtil.appendWineParamsToURI(uri, pageContext.getRequest().getParameterMap()) : uri;			
 		} else {
 			return "#";
 		}

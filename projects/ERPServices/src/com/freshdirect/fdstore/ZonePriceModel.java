@@ -1,11 +1,14 @@
 package com.freshdirect.fdstore;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.freshdirect.common.pricing.MaterialPrice;
-import com.freshdirect.common.pricing.util.DealsHelper;
 
 public class ZonePriceModel implements Serializable {
+	private static final long serialVersionUID = 3299833903663122981L;
+
 	private MaterialPrice[] materialPrices;
 	private String sapZoneId;
 
@@ -93,19 +96,50 @@ public class ZonePriceModel implements Serializable {
 	}
 
 	public String[] getScaleDisplay() {
-		String[] scales = new String[ this.materialPrices.length-1 ];
-		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getScaleDisplay();
-		}
-		return scales;
+		return getScaleDisplay(0, null);
 	}
 	
 	public String[] getScaleDisplay(double savingsPercentage) {
-		String[] scales = new String[ this.materialPrices.length-1 ];
+		return getScaleDisplay(savingsPercentage, null);
+	}
+
+	public String[] getScaleDisplay(double exc[]) {
+		return getScaleDisplay(0, exc);
+	}
+
+	public static final double[] EMPTY_TIER_EXCLUSION_LIST = new double[0];
+	
+	/**
+	 * Returns display of tiered pricing (scales)
+	 * 
+	 * @param savingsPercentage
+	 * @param exc Exclude some scales from display
+	 * @return
+	 */
+	public String[] getScaleDisplay(double savingsPercentage, double exc[]) {
+		final String[] scales = new String[ this.materialPrices.length-1 ];
+		
+		List<String> scList = new ArrayList<String>(this.materialPrices.length-1);
+		
+		if (exc == null)
+			exc = EMPTY_TIER_EXCLUSION_LIST;
+
 		for (int i=0; i<scales.length; i++) {
-			scales[i] = this.materialPrices[i+1].getScaleDisplay(savingsPercentage);
+			final MaterialPrice materialPrice = this.materialPrices[i+1];
+			
+			boolean skip = false;
+			for (double lowerBound : exc) {
+				if (lowerBound == materialPrice.getScaleLowerBound()) {
+					// filter material price with matching lower bound
+					skip = true;
+					break;
+				}
+			}
+			if (!skip) {
+				scList.add( materialPrice.getScaleDisplay(savingsPercentage) );
+			}
 		}
-		return scales;
+		return scList.toArray(new String[0]);
 	}
 
 	public int[] getScalePercentage(double basePrice) {

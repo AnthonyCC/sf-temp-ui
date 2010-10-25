@@ -53,6 +53,7 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.ZonePriceListing;
+import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.adapter.FDOrderInfoAdapter;
 import com.freshdirect.fdstore.customer.adapter.PromotionContextAdapter;
@@ -83,6 +84,7 @@ import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.giftcard.ErpGCDlvInformationHolder;
 import com.freshdirect.smartstore.fdstore.CohortSelector;
+import com.freshdirect.smartstore.fdstore.DatabaseScoreFactorProvider;
 
 public class FDUser extends ModelSupport implements FDUserI {
 	private final static Category LOGGER = LoggerFactory.getInstance(FDUser.class);
@@ -150,6 +152,8 @@ public class FDUser extends ModelSupport implements FDUserI {
 	private FDUserDlvPassInfo dlvPassInfo;
 
 	private Map assignedCustomerParams;
+
+       private EnumWinePrice preferredWinePrice = null;
 
 	/*
 	 * This attribute caches the list of product keys that are already
@@ -1870,5 +1874,21 @@ public class FDUser extends ModelSupport implements FDUserI {
 	public String getMasqueradeAgent() {
 		return masqueradeAgent;
 	}
+	
+	@Override
+        public EnumWinePrice getPreferredWinePrice() {
+	    if (identity == null) {
+	        return EnumWinePrice.ONE;
+	    }
+            if (preferredWinePrice == null) {
+                preferredWinePrice = DatabaseScoreFactorProvider.getInstance().getPreferredWinePrice(identity.getErpCustomerPK());
+                if (preferredWinePrice == null) {
+                    preferredWinePrice = EnumWinePrice.ONE;
+                }
+            }
+            return preferredWinePrice;
+        }
 }
+
+
 

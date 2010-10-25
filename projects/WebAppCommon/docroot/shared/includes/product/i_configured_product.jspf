@@ -17,7 +17,8 @@ This include expects the following:
 <%@ page import="com.freshdirect.delivery.restriction.EnumDlvRestrictionReason" %>
 <%@ page import='com.freshdirect.framework.util.DayOfWeekSet' %>
 <%@ taglib uri="logic" prefix="logic" %>
-<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri='/WEB-INF/shared/tld/freshdirect.tld' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%!
     java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
@@ -141,7 +142,8 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         request.getRequestURI() + "?" + request.getQueryString();
 
     %>
-    <form method='post' name="productForm" action="<%= formAction %>">
+    
+<%@page import="com.freshdirect.webapp.taglib.fdstore.display.AnnotatedProductNameTag"%><form method='post' name="productForm" action="<%= formAction %>">
 
         <% if (cartMode.equals(CartName.MODIFY_CART)) { %>
             <input type="hidden" name="cartLine" value="<%= templateLine.getRandomId() %>">
@@ -209,30 +211,12 @@ if (skus.size() != 0 && ! productNode.isUnavailable() ) {
         }
         %><br><br><%
     }
-    String productTitle = productNode.getFullName().toUpperCase(); 
-    String productTitle2 = null;
-    if (isWineLayout) {
-        String thisProdBrandLabel = productNode.getPrimaryBrandName();
-        StringBuffer tmpName = new StringBuffer();
-        if (thisProdBrandLabel.length()>0) {
-            tmpName.append(thisProdBrandLabel.toUpperCase());
-            tmpName.append("<br>");
-            tmpName.append("<FONT CLASS=\"title14\">");
-            tmpName.append(productNode.getFullName().substring(thisProdBrandLabel.length()).trim().toUpperCase());
-            tmpName.append("</font>");
-            productTitle = tmpName.toString();
-        }
-    }
+    
+	// PRODUCT NAME
+    %><display:AnnotatedProductName product="<%= productNode %>" type="<%= AnnotatedProductNameTag.LayoutType.CONFIGURED %>" wineLayout="<%= isWineLayout %>"/>
+    <%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"<span class=\"title13\">":""%><%=productNode.getSubtitle()%><%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"</span><br>":""%>
 
-    %><font class="title18"><%
-    //
-    // annotation mode
-    //
-    if (FDStoreProperties.isAnnotationMode()) {
-        %><%@ include file="/shared/includes/product/i_annotated_title.jspf" %><%
-    } else {
-        // no annotation, just display title
-        %><%= productTitle %><br><% } %></font><%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"<span class=\"title13\">":""%><%=productNode.getSubtitle()%><%=!"".equals(productNode.getSubtitle()) && productNode.getSubtitle() !=null?"</span><br>":""%><%
+<%
     if (productNode.isHasPartiallyFrozen() && productNode.getDepartment().getFullName().equalsIgnoreCase("BAKERY")) {
         %><br><img src="/media_stat/images/template/bakery/parbaked_frozen_prod.gif" width="147" height="16" alt="" border="0"><br><%
     }

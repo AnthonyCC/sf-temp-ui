@@ -597,6 +597,8 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 
 	public DepartmentModel getDepartment();
 
+	public CategoryModel getCategory();
+	
 	public Image getCategoryImage();
 
 	public Image getThumbnailImage();
@@ -681,19 +683,27 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	
 	public String getWineType();
 	
-	public List getNewWineType();
+	public List<DomainValue> getNewWineType();
 	
 	public List<DomainValue> getWineVarietal();
 	
-	public List getWineVintage();
+	public List<DomainValue> getWineVintage();
 	
 	public List<DomainValue> getNewWineRegion();
 	
-	public List getWineRating1();
+	public List<DomainValue> getWineRating1();
 	
-	public List getWineRating2();
+	public List<DomainValue> getWineRating2();
 	
-	public List getWineRating3();
+	public List<DomainValue> getWineRating3();
+
+	public DomainValue getWineRatingValue1();
+	
+	public DomainValue getWineRatingValue2();
+	
+	public DomainValue getWineRatingValue3();
+	
+	public boolean hasWineOtherRatings();
 	
 	public Html getWineReview1();
 	
@@ -792,4 +802,7 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	 */
 	public MediaI getMedia( String name );
 
+	public Set<DomainValue> getWineDomainValues();
+
+	public boolean isHideWineRatingPricing();
 }

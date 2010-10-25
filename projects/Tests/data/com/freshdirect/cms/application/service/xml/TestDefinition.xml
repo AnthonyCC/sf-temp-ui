@@ -26,4 +26,15 @@
 		</cms:RelationshipDefs>
 	
 	</cms:ContentTypeDef>
+	
+	
+	
+	<cms:ContentTypeDef name="Multi">
+		<cms:RelationshipDefs>
+			<cms:RelationshipDef name="switcher" cardinality="One">
+				<cms:DestinationDef contentType="Foo" reverseAttributeName="fooBackReference"/>
+				<cms:DestinationDef contentType="Bar" reverseAttributeName="barBackReference"/>
+			</cms:RelationshipDef>
+		</cms:RelationshipDefs>
+	</cms:ContentTypeDef>
 </cms:CMSDef>

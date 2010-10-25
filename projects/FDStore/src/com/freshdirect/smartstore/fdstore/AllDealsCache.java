@@ -64,6 +64,7 @@ public class AllDealsCache {
 
 					Collection<ContentKey> products = CmsManager.getInstance().getContentKeysByType(ContentType.get("Product"));
 					LOGGER_LOADER.info("found " + products.size() + " product candidates for deals cache reload");
+					int i = 0;
 					for (ContentKey product : products) {
 						double[][] value = deals.get(product);
 						if (value == null) {
@@ -86,6 +87,9 @@ public class AllDealsCache {
 								value[1][zoneEntry.getValue()] = pc.getTieredDealPercentage();
 							}
 						}
+						i++;
+						if (i % 1000 == 0)
+							LOGGER_LOADER.info("processed " + i + " products so far");
 					}
 				} catch (FDResourceException e) {
 					LOGGER_LOADER.error("failed to reload / initialize all deals cache", e);
@@ -147,17 +151,24 @@ public class AllDealsCache {
 		long now = System.currentTimeMillis();
 
 		if (now > (lastRefresh + HOUR_IN_MILLIS)) {
-			if (initialized) {
-				// reload cach asynchronously
-				LOGGER.info("reloading deals cache asynchronously");
-				cacheThreadPool.execute(new Loader());
-			} else {
-				initialized = true;
-				// reload cache synchronously
-				LOGGER.info("reloading deals cache synchronously");
-				new Loader().run();
-			}
+			forceReload();
 			lastRefresh = now;
 		}
 	}
+
+    /**
+     * 
+     */
+    public void forceReload() {
+        if (initialized) {
+        	// reload cach asynchronously
+        	LOGGER.info("reloading deals cache asynchronously");
+        	cacheThreadPool.execute(new Loader());
+        } else {
+        	initialized = true;
+        	// reload cache synchronously
+        	LOGGER.info("reloading deals cache synchronously");
+        	new Loader().run();
+        }
+    }
 }

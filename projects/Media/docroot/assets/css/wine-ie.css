@@ -1,0 +1,28 @@
+#wineNavMoreOptions {
+	z-index: 20;	
+}
+
+.wine-left-side-nav-closed .domain-menu {
+	left: 100px;
+}
+
+#wineNavMoreOptionsContent {
+	width: expression(this.clientWidth < 350 ? '350px' : this.clientWidth);
+	position: absolute;
+	top: 3px;
+	left: 3px;
+}
+
+.wineNavMoreOptionsOpen {
+	height: expression(document.getElementById('wineNavMoreOptionsContent').clientHeight + 'px');
+}
+
+.wine-filter-value-all .nav-filter-value {
+	font-size: 11px;
+	line-height: 14px;
+}
+
+.nav-filter-value {
+	font-size: 11px;
+	line-height: 14px;
+}

@@ -198,8 +198,15 @@ public class DbTypeService extends AbstractTypeService implements ContentTypeSer
                     String reverseAttributeLabel = rs.getString("reverse_attribute_label");
                     String name = rs.getString("name"); 
                     if (reverseAttributeName != null) {
+                        // this will only work when all destination type has reverse attribute name, or none of them.
                         RelationshipDef attributeDef = (RelationshipDef) typeDef.removeSelfAttributeDef(name);
-                        BidirectionalReferenceDef br = new BidirectionalReferenceDef (attributeDef, rDest, reverseAttributeName, reverseAttributeLabel); 
+                        BidirectionalReferenceDef br = null;
+                        if (attributeDef instanceof BidirectionalReferenceDef) {
+                            br =  (BidirectionalReferenceDef) attributeDef;
+                        } else {
+                            br = new BidirectionalReferenceDef (attributeDef);
+                        }
+                        br.addOtherSide(rDest, reverseAttributeName, reverseAttributeLabel);
                         typeDef.addAttributeDef(br);
                     } else {
                         RelationshipDef rDef = (RelationshipDef) typeDef.getSelfAttributeDef(name);

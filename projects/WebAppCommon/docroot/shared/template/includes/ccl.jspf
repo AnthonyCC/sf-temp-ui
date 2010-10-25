@@ -202,6 +202,7 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 <script type="text/javascript" src="/assets/javascript/fcu.js"></script>
 <script type="text/javascript" src="/assets/javascript/quickbuy.js"></script>
 <script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+<script type="text/javascript" src="/assets/javascript/wine.js"></script>
 <%
 		} else {
 %>
@@ -212,9 +213,11 @@ if (request.getAttribute("__fd_load_clicode_edit__") != null && fdUser.isEligibl
 <script type="text/javascript" src="/assets/javascript/fcu-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/quickbuy-min.js"></script>
 <script type="text/javascript" src="/assets/javascript/pricing.js"></script>
+<script type="text/javascript" src="/assets/javascript/wine.js"></script>
 <%
 		}
 %>
+<script type="text/javascript" src="/assets/javascript/wine-nav.js"></script>
 <link rel="stylesheet" href="/assets/css/ccl.css" type="text/css">
 
 <!--[if IE]>

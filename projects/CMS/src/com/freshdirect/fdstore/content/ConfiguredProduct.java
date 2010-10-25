@@ -12,7 +12,6 @@ import java.util.Set;
 import com.freshdirect.cms.CmsRuntimeException;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.common.pricing.PricingContext;
-import com.freshdirect.content.attributes.EnumAttributeName;
 import com.freshdirect.customer.ejb.ErpOrderLineUtil;
 import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
@@ -28,11 +27,12 @@ import com.freshdirect.framework.util.DateUtil;
 
 public class ConfiguredProduct extends ProxyProduct {
 
-	private final List alsoSoldAs = new ArrayList();
+	private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 
-	private final List relatedProducts = new ArrayList();
+	private final List<ProductModel> relatedProducts = new ArrayList<ProductModel>();
 	
-	private final List recommendedAlternatives = new ArrayList();
+	// List of ProductModel or SkuModel type objects
+	private final List<ContentNodeModel> recommendedAlternatives = new ArrayList<ContentNodeModel>();
 
 	public ConfiguredProduct(ContentKey key) {
 		super(key);
@@ -44,6 +44,11 @@ public class ConfiguredProduct extends ProxyProduct {
 			start = start.getParentNode();
 		}
 		return (DepartmentModel) start;
+	}
+
+	@Override
+	public CategoryModel getCategory() {
+		return this.getProduct().getCategory();
 	}
 
 	public boolean isRequired() {
@@ -155,12 +160,13 @@ public class ConfiguredProduct extends ProxyProduct {
 	    return FDAttributeFactory.constructImage(this, "DESCRIPTIVE_IMAGE");
 	}
 
-	public List getAlsoSoldAs() {
+	public List<ProductModel> getAlsoSoldAs() {
 		ContentNodeModelUtil.refreshModels(this, "ALSO_SOLD_AS", alsoSoldAs, false);
 		return Collections.unmodifiableList(alsoSoldAs);
 	}
 
-	public List getRelatedProducts() {
+	@Override
+	public List<ProductModel> getRelatedProducts() {
 		ContentNodeModelUtil.refreshModels(this, "RELATED_PRODUCTS", relatedProducts, false);
 		return Collections.unmodifiableList(relatedProducts);
 	}
@@ -168,7 +174,7 @@ public class ConfiguredProduct extends ProxyProduct {
 	/** Get the list of recommended alternatives.
 	 * @return list of recommended alternatives
 	 */
-	public List getRecommendedAlternatives() {
+	public List<ContentNodeModel> getRecommendedAlternatives() {
 		ContentNodeModelUtil.refreshModels(this, "RECOMMENDED_ALTERNATIVES", recommendedAlternatives, false);
 		return Collections.unmodifiableList(recommendedAlternatives);
 	}

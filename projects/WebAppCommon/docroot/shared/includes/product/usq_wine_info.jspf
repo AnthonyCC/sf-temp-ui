@@ -1,118 +1,151 @@
+<%--
+	WINE PRODUCT INFO
+	
+	@param ProductModel productNode
 
-<% 
-		CategoryModel perfectPair =productNode.getPerfectPair();
-		List perfPairProds=new ArrayList(); 
-		List perfPairProdNames=new ArrayList();
-		List perfPaitProdPaths=new ArrayList();
-        boolean isPerfPairAvailable=true;
-		String pairedBy="";
-		Image perfPairThumbNail=null;
-		if(perfectPair!=null) {
-			perfPairProds=perfectPair.getProducts();
-		}	
-		if(perfPairProds!=null && perfPairProds.size()>0) {
-            for(int i=0;i<perfPairProds.size();i++) {
-               ProductModel prodModel=(ProductModel)perfPairProds.get(i);
-               if(prodModel.isDiscontinued()||prodModel.isTempUnavailable()||prodModel.isOutOfSeason()||prodModel.isUnavailable()) {
-                    isPerfPairAvailable=false;
-                    break;
-               }
-            }
-			pairedBy=perfectPair.getBlurb();
-			ProductModel perfPairProd = null;
-            if(isPerfPairAvailable) {
-    			for(int i=0;i<perfPairProds.size();i++) {
-	    			perfPairProd=(ProductModel)perfPairProds.get(i);
-		    		if(!perfPairProd.getFullName().equals(productNode.getFullName())) {
-			    		perfPairProdNames.add(perfPairProd.getFullName());
-				    	perfPaitProdPaths.add("/category.jsp?catId="+perfectPair.getContentName()+"&trk=prod");
-					    if(perfPairThumbNail==null) {
-					        try {
-					    	    perfPairThumbNail=perfPairProd.getProdImage();
-					        } catch(Exception e) {
-					        }
-					    
-					    }
-                    } 		
-			    }
-   
-   %>
+--%><%@ page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.fdstore.content.Image"%>
+<%@ page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import="com.freshdirect.fdstore.content.MediaI"%>
+<%@ page import="com.freshdirect.fdstore.content.Html"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%@ taglib uri='oscache' prefix='oscache' %>
+<%
+		final ProductModel _wprd = (ProductModel) productNode;
+
+
+
+		// Start of perfect pair ---->
+		CategoryModel perfectPair =_wprd.getPerfectPair();
+		List<ProductModel> perfPairProds=new ArrayList<ProductModel>(); 
+		boolean isPerfPairAvailable=true;
+
+
+		if (perfectPair != null) {
+			perfPairProds = perfectPair.getProducts();
+		}
+
+		if (perfPairProds != null && perfPairProds.size() > 0) {
+			for (ProductModel prodModel : perfPairProds) {
+				if(prodModel.isDiscontinued()||prodModel.isTempUnavailable()||prodModel.isOutOfSeason()||prodModel.isUnavailable()) {
+					isPerfPairAvailable=false;
+					break;
+				}
+			}
+
+
+      if (isPerfPairAvailable) {
+				List<String> perfPairProdNames=new ArrayList<String>();
+				List<String> perfPaitProdPaths=new ArrayList<String>();
+				Image perfPairThumbNail=null;
+
+				for (ProductModel perfPairProd : perfPairProds) {
+					if (!perfPairProd.getFullName().equals(_wprd.getFullName())) {
+						perfPairProdNames.add(perfPairProd.getFullName());
+						perfPaitProdPaths.add("/category.jsp?catId="+perfectPair.getContentName()+"&trk=prod");
+						
+						if (perfPairThumbNail == null) {
+							try {
+								perfPairThumbNail = perfPairProd.getProdImage();
+							} catch(Exception e) {}
+						}
+					} 		
+				}
+%>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr><td style="border-top:solid 1px #CCCCCC;" colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 <tr>
     <td width="5%">
-		<img src="<%=perfPairThumbNail.getPath()%>" border="0" alt="test image" title="" />
+		<img src="<%= perfPairThumbNail.getPath() %>" border="0" alt="test image" title="" />
     </td>    
     <td width="95%" style="padding-left:8px;">   
-				<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" style="padding-bottom:2px;" /><br>
-				<b>Try it with <a href="<%=perfPaitProdPaths.get(0)%>"><%=perfPairProdNames.get(0)%></a></b>
-				<div style="padding-top:4px; font-style:italic;"><%=pairedBy%></div>
+		<img src="/media/editorial/win_usq/perfect_pairings.gif" width="192" height="15" alt="" style="padding-bottom:2px;" /><br>
+		<b>Try it with <a href="<%=perfPaitProdPaths.get(0)%>"><%= perfPairProdNames.get(0) %></a></b>
+		<div style="padding-top:4px; font-style:italic;"><%= perfectPair.getBlurb() %></div>
      </td>   
 </tr>
 <tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
 </table>
-<%       }
-       } %>
+<%
+			}
+		}
+		// <--- End of perfect pair
+		
+		
 
-<% 
 		String wineCountry="";
 		String wineRegionLabel="";
 		String wineRegionName="";
 		
-		String wineCity=productNode.getWineCity();
-		String grape=productNode.getWineType();
-		String classification=productNode.getWineClassification();
-		String importer=productNode.getWineImporter();
-		String alcohol=productNode.getWineAlchoholContent();
-		String aging=productNode.getWineAging();
+		String wineCity=_wprd.getWineCity();
+		String grape=_wprd.getWineType();
+		String classification=_wprd.getWineClassification();
+		String importer=_wprd.getWineImporter();
+		String alcohol=_wprd.getWineAlchoholContent();
+		String aging=_wprd.getWineAging();
 		
-		DomainValue _wineCountry=productNode.getWineCountry();
+		DomainValue _wineCountry=_wprd.getWineCountry();
 		if(_wineCountry!=null) {
 			wineCountry=_wineCountry.getLabel();
 		}
-		
-		List wineRegionList=productNode.getNewWineRegion();
+
+		List<DomainValue> wineRegionList=_wprd.getNewWineRegion();
 		DomainValue _wineRegion=null;
-		if(wineRegionList!=null && wineRegionList.size()>0) {
-			_wineRegion=(DomainValue)wineRegionList.get(0);
-			if(_wineRegion!=null) {
+		if (wineRegionList != null && wineRegionList.size()>0) {
+			_wineRegion = wineRegionList.get(0);
+			if (_wineRegion!=null) {
 				wineRegionLabel=_wineRegion.getLabel();
 				wineRegionName="/media/editorial/win_usq/maps/"+_wineRegion.getContentName()+".html";
 			}
 		}
 
-		boolean hasRegionImage = false;
-		if(wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0) hasRegionImage = true;
+
+		final boolean hasRegionImage = (wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0);
 %>
 
+<%-- THE TABLE --%>
+<div class="prdsep" style="background-color: #cccccc">&nbsp;</div>
+<div style="width: 430px">
+	<div style="float: left; margin-right: 2em; x-margin-bottom: 2em; text-align: left; width: 150px;">
+			<%-- REGION IMAGE --%>
+			<% if (wineRegionName != null) { %>
+			<fd:IncludeMedia name="<%= wineRegionName %>" />
+			<% } %>
 
-<table width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr>
-	<td <%= hasRegionImage ? "colspan=\"2\"":""%> style="border-top: 1px solid #CCCCCC;"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
-</tr>
-<tr valign="top">
-	<% if(hasRegionImage) { %>
-		<td class="center_region_left" width="5%" style="padding-right:8px;">
-			<fd:IncludeMedia name="<%=wineRegionName%>" />
-		</td>
-		
-	<%}%>	
-	<td class="center_region_right" <%= hasRegionImage ? "width=\"95%\"":"" %>>
-            <% if(wineCountry!=null && !"".equals(wineCountry)) {%>
+			<%-- RATINGS --%>
+			<div style="margin: 1em 0 1em 0">
+				<%@ include file="/shared/includes/product/i_wine_rating_review.jspf"%>			
+			</div>
+
+			<%-- ETC --%>
+      <% if (wineCountry!=null && !"".equals(wineCountry)) { %>
 			<div class="center_prod_descrip">
-				<!-- 7.2.3 Region --><span class="ucase bolder">REGION:</span> <span><%=wineCountry%>
-                
+				<span class="ucase bolder">COUNTRY:</span> <%=wineCountry%>
+			</div>
+       <% }
+            
+       if ( (wineRegionLabel!=null && !"".equals(wineRegionLabel)) || (wineCity!=null && !"".equals(wineCity)) ) {
+      %>
+      <div class="center_prod_descrip">
+				<span class="ucase bolder">REGION:</span> <span>
                 <%if (wineRegionLabel!=null && !"".equals(wineRegionLabel)) {%>
-                       <%=" &rsaquo; "+wineRegionLabel%>
-                <%}%>       
+                       <%= wineRegionLabel %>
+                <%}%>
                        
                 <%if (wineCity!=null && !"".equals(wineCity)) {%>
                        <%=" &rsaquo; "+wineCity%>
-                <%}%>       
-
+                <%}%>
+         </span>
 			</div>
-			<%}%>
-            <%if(brandLogos!=null) {%>
+			<%
+            }
+            
+            if (brandLogos!=null) {%>
                      <% for (int bIdx = 0; bIdx < brandLogos.size();bIdx++) {
                           brandLogo = (MediaI) brandLogos.get(bIdx);
                           brandPopupLink = (String)brandPopupLinks.get(bIdx);
@@ -130,11 +163,9 @@
                         <%}
                      }
                     
-                 }%>
-     			
-				
-			
-            <% if(grape!=null && !"".equals(grape) ) { %>
+            }
+
+            if(grape!=null && !"".equals(grape) ) { %>
                 <div class="center_prod_descrip">
                     <!-- 7.2.5 Grape --><b>GRAPE:</b> <%=grape%>
                 </div>
@@ -160,15 +191,26 @@
 				<!-- 7.2.8 Aging --><b>AGING:</b> <%=aging%>
 			</div>
             <%}%>
-	</td>
-</tr>
-<tr>
-	<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="10"></td>
-</tr>
-</table>
+	</div>
+	<div style="float: left; width: 260px">
+			<%-- DESC --%>
+   		<% if ( FDStoreProperties.useOscache() ) { %> 
+	        <oscache:cache time="300">
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+			</oscache:cache>
+   		<% } else { %>			        
+				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
+   		<% } %>
+   	</div>
+</div>
+<%--
 
-<% Html bottomMedia=productNode.getProductBottomMedia(); 
-   if(bottomMedia!=null && (bottomMedia.getPath()!=null && !"".equals(bottomMedia.getPath()))) {
+	BOTTOM MEDIA
+
+--%>
+<%
+	final Html bottomMedia = _wprd.getProductBottomMedia(); 
+	if ( bottomMedia != null && bottomMedia.getPath() != null && !"".equals(bottomMedia.getPath()) ) {
  %>
 <table width="100%" cellpadding="0" cellspacing="0" border="0"> <!-- About the Winery -->
 <tr>
@@ -180,13 +222,8 @@
 	</td>
 </tr>
 <tr>
-	<td>
-		<div class="center_region_left">
-		
+	<td class="center_region_left">
 		<fd:IncludeMedia name="<%= bottomMedia.getPath() %>" />
-		
-		</div>
-		
 	</td>
 </tr>
 </table>	

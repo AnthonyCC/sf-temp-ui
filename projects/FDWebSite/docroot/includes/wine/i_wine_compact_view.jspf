@@ -1,0 +1,75 @@
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.fdstore.content.ProductRatingGroup"%>
+<%@page import="com.freshdirect.webapp.util.ProductImpression"%>
+<%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<%--
+
+	@param rawGroups ...
+	@param group A collection of {@link:ProductRatingGroup} items
+	@param category Parent category, instance of {@link CategoryModel}
+	@param useProductCategory Wine rating is determined from product's own
+	  parent category instead of page  
+
+--%>
+<% for (ProductRatingGroup prg : groups) { %>
+
+<% if (rawGroups.size() != 1) {%>
+<div style="text-align: left; padding-top: 15px;">
+	<img src="/media_stat/images/wine/rating_header_<%= prg.getRating().getStarCount() %>.gif" 
+			width="424" height="16" border="0" alt="RATING &ndash; <%= prg.getRating().getStarCount() %> STAR">
+</div>
+<% } %>
+<% for (int i = 0; i < prg.getProducts().size(); i += 4) { int width = Math.min(4, prg.getProducts().size() - i); %>
+<div style="padding-top: 25px; text-align: center;">
+<table width="<%= 105 * width %>" cellpadding="3" cellspacing="0" border="0" align="center">
+	<tr>
+	<% for (int j = 0; j < width; j++) {
+		ProductModel p = prg.getProducts().get(i + j);
+		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
+	%>
+		<td align="center" width="105" valign="bottom">
+			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
+				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
+					<display:ProductImage product="<%= p %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" webId="<%= webId %>" enableQuickBuy="true"/>
+				</display:GetContentNodeWebId>
+			</display:ProductUrl>
+		</td>
+	<% } %>
+	</tr>
+	<tr>
+	<% for (int j = 0; j < width; j++) {
+		ProductModel p = prg.getProducts().get(i + j);
+		CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
+	%>
+		<td align="center" width="105" valign="baseline" style="padding-bottom: 0px; padding-top: 0px;">
+			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
+				<display:WineShowRatings product="<%= p %>"><display:WineRating product="<%= p %>" small="true" action="<%= actionUrl %>"/></display:WineShowRatings>
+			</display:ProductUrl>
+		</td>
+	<% } %>
+	</tr>
+	<tr>
+	<% for (int j = 0; j < width; j++) {
+			ProductModel p = prg.getProducts().get(i + j);
+			CategoryModel __c = (CategoryModel) ( ((boolean) useProductCategory) ? p.getParentNode() : category );
+	%>
+		<td align="center" width="105" valign="top" style="padding-top: 0px;">
+			<display:ProductUrl id="actionUrl" product="<%= p %>" trackingCode="<%= trk %>" appendWineParams="<%= true %>">
+				<display:GetContentNodeWebId id="webId" product="<%= p %>" clientSafe="<%= true %>">
+					<display:WineShowRatings product="<%= p %>"><display:WinePrice product="<%= p %>" action="<%= actionUrl %>"/></display:WineShowRatings>
+					<div class="productname">
+						<display:ProductName product="<%= p %>" action="<%= actionUrl %>" showBrandName="true" />
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression(p) %>" showDescription="false" excludeCaseDeals="<%= true %>"/>
+				</display:GetContentNodeWebId>
+			</display:ProductUrl>
+		</td>
+	<% } %>
+	</tr>
+</table>
+</div>
+<% } // for products iterator %>
+<% } // for pagedProducts product groups %>

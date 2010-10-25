@@ -64,6 +64,9 @@ public class FDContentTypes {
         public final static ContentType PRODUCER = ContentType.get("Producer");
         public final static ContentType PRODUCER_TYPE = ContentType.get("ProducerType");
 
+        public final static ContentType TILE = ContentType.get("Tile");
+        public final static ContentType TILE_LIST = ContentType.get("TileList");
+        
 	private FDContentTypes() {
 	}
 

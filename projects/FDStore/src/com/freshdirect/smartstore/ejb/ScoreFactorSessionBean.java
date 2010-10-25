@@ -20,6 +20,7 @@ import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.fdstore.FDRuntimeException;
+import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.framework.core.SessionBeanSupport;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -352,5 +353,30 @@ public class ScoreFactorSessionBean extends SessionBeanSupport {
             }
         }
 
+        public EnumWinePrice getPreferredWinePrice(String erpCustomerId) throws RemoteException {
+            Connection conn = null;
+            PreparedStatement ps = null;
+            ResultSet rs = null;            
+            try {
+                conn = getConnection();
+                
+                ps = conn.prepareStatement("SELECT WINE_PRICE_CAT FROM CUST.SS_CUSTOMER_WINE_CAT WHERE CUSTOMER_ID = ?");
+                ps.setString(1, erpCustomerId);
+                
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    int priceCat = rs.getInt("WINE_PRICE_CAT");
+                    return EnumWinePrice.getByDollarCount(priceCat);
+                }
+                return null;
+            } catch (SQLException e) {
+                LOGGER.warn("Could not retrieve preferred wine price  for " + erpCustomerId, e);
+                throw new FDRuntimeException(e);
+            } finally {
+                close(rs);
+                close(ps);
+                close(conn);
+            }
+        }
 
 }

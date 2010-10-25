@@ -3,14 +3,12 @@ package com.freshdirect.webapp.util;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspWriter;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDConfigurableI;
@@ -21,6 +19,7 @@ import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeVariant;
+import com.freshdirect.fdstore.content.util.QueryParameter;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.QuickCart;
 import com.freshdirect.fdstore.lists.CclUtils;
@@ -77,8 +76,10 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
+		appendProduct(uri, productNode);
+
 		// product page with category ID
-		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 		
 		// tracking code 
 		if (trackingCode != null) {
@@ -86,7 +87,7 @@ public class FDURLUtil {
 		}
 		
 		// append product ID
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// append variant ID (optional)
 		if (variantId != null) {
@@ -113,19 +114,19 @@ public class FDURLUtil {
 		return getProductURI(productNode, variant.getId(), variant.getSiteFeature().getName().toLowerCase(), trackingCodeEx, rank);
 	}
 
-        /**
-         * Generate product page URL
-         * (called from Featured Items pages)
-         * 
-         * @param productNode {@link ProductModel} product instance
-         * @param variantId {@link String} variant identifier
-         * @param trackingCode {@link String} Tracking code (dyf, cpage, ...)
-         * @param trackingCodeEx {@link String} Tracking code (fave, ...)
-         * @return URI that points to the page of product
-         */
-        public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
-            return getProductURI(productNode, variantId, trackingCode,trackingCodeEx,rank, null);
-        }
+	/**
+	 * Generate product page URL
+	 * (called from Featured Items pages)
+	 * 
+	 * @param productNode {@link ProductModel} product instance
+	 * @param variantId {@link String} variant identifier
+	 * @param trackingCode {@link String} Tracking code (dyf, cpage, ...)
+	 * @param trackingCodeEx {@link String} Tracking code (fave, ...)
+	 * @return URI that points to the page of product
+	 */
+	public static String getProductURI(ProductModel productNode, String variantId, String trackingCode, String trackingCodeEx, int rank) {
+	    return getProductURI(productNode, variantId, trackingCode,trackingCodeEx,rank, null);
+	}
         
     /**
 	 * Generate product page URL
@@ -159,11 +160,13 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
+		appendProduct(uri, productNode);
+
 		// product page with category ID
-		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 
 		// append product ID
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// append variant ID (optional)
 		if (variantId != null) {
@@ -218,8 +221,10 @@ public class FDURLUtil {
 		
 		StringBuilder uri = new StringBuilder();
 		
+		appendProduct(uri, productNode);
+		
 		// product page with category ID
-		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
 		
 		// tracking code 
 		if (trackingCode == null) {
@@ -228,7 +233,7 @@ public class FDURLUtil {
 		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		
 		// append product ID
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+		// uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
 		
 		// tracking code "<%= request.getRequestURI()%>?catId=<%=catIdParam%>&recipeId=<%=recipe.getContentName()+subCatIdParam%>&variantId=<%= variant.getContentName() %>"
 		if (trackingCodeEx != null) {
@@ -241,24 +246,45 @@ public class FDURLUtil {
 		return uri.toString();
 	}
 
+
+	/**
+	 * Appends product and its parent category ID to URI
+	 * 
+	 * @param uri
+	 * @param productNode
+	 * @return
+	 */
+	private static StringBuilder appendProduct(StringBuilder uri, ProductModel productNode) {
+		// product page with category ID
+		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + ProductDisplayUtil.getRealParent(productNode).getContentName());
+
+		// append product ID
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + ProductDisplayUtil.getRealProduct(productNode).getContentName());
+
+		return uri;
+	}
+
+
 	// get uri of configured product
 	//   see in i_configured_product.jspf
 	public static String getConfiguredProductURI(ConfiguredProduct productNode, String trackingCode, FDConfigurableI config) {
-		ProductModel actProd = productNode.getProduct();
+		final ProductModel actProd = productNode.getProduct();
 		Map<String,String> cfgOptions = config.getOptions();
 		
 		StringBuilder uri = new StringBuilder();
 		
+		appendProduct(uri, actProd);
+
 		// product page with category ID
-		uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
+		// uri.append(ProductDisplayUtil.PRODUCT_PAGE_BASE + "?catId=" + actProd.getParentNode().getContentName());
 
 		// tracking code 
 		if (trackingCode != null) {
 			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "trk=" + trackingCode);
 		}
-		
+
 		// append product ID
-		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + actProd.getContentName());
+		// uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + actProd.getContentName());
 		
 		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "skuCode="+productNode.getSkuCode());
 
@@ -379,7 +405,7 @@ public class FDURLUtil {
 
 		for ( Map.Entry<String,String> e : _p.entrySet() ) {
 			try {
-				buf.append("&"+e.getKey()+"=" + e.getValue());
+				buf.append(ProductDisplayUtil.URL_PARAM_SEP + ""+e.getKey()+"=" + e.getValue());
 			} catch (IOException e1) {}
 		}
 	}
@@ -430,8 +456,8 @@ public class FDURLUtil {
 		
 		// product page with category ID
 		uri.append(ProductDisplayUtil.CATEGORY_PAGE_BASE + "?catId=" + catId);
-		uri.append("&prodCatId=" + catId);
-		uri.append("&productId=" + productNode.getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "prodCatId=" + catId);
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + productNode.getContentName());
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -461,7 +487,7 @@ public class FDURLUtil {
 		// "/cart_confirm.jsp?catId="+productNode.getParentNode().getContentName()+"&productId="+productNode.getContentName()+"&trk="+ptrk;		
 		
 		uri.append(ProductDisplayUtil.CART_CONFIRM_PAGE_BASE + "?catId=" + productNode.getParentNode().getContentName());
-		uri.append("&productId=" + productNode.getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=" + productNode.getContentName());
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -479,7 +505,7 @@ public class FDURLUtil {
 		/// String catId	= request.getParameter("catId");
 
 		uri.append(ProductDisplayUtil.GR_CART_CONFIRM_PAGE_BASE + "?catId=" + catId);
-		uri.append("&recipeId=" + recipeId);
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "recipeId=" + recipeId);
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -495,14 +521,14 @@ public class FDURLUtil {
 
 		/// String catId = request.getParameter("catId");
 
-		uri.append( (crm ? RECIPE_PAGE_BASE_CRM : RECIPE_PAGE_BASE ) + "?catId=" + catId + "&recipeId=" + recipe.getContentName());
+		uri.append( (crm ? RECIPE_PAGE_BASE_CRM : RECIPE_PAGE_BASE ) + "?catId=" + catId + ProductDisplayUtil.URL_PARAM_SEP + "recipeId=" + recipe.getContentName());
 
 		String subCatId = request.getParameter("subCatId");
 		if (subCatId !=null && !"".equals(subCatId.trim()) ) {
-			uri.append("&subCatId=" + subCatId.trim());
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "subCatId=" + subCatId.trim());
 		}
 
-		uri.append("&variantId=" + variant.getContentName());
+		uri.append(ProductDisplayUtil.URL_PARAM_SEP + "variantId=" + variant.getContentName());
 
 		appendCommonParameters(uri, request.getParameterMap());
 
@@ -555,7 +581,7 @@ public class FDURLUtil {
 		uri.append(STANDING_ORDER_DETAIL_PAGE);
 		uri.append("?ccListId=" + so.getCustomerListId());
 		if (action != null) {
-			uri.append("&action="+action);
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP + "action="+action);
 		}
 		return uri.toString();
 	}
@@ -606,37 +632,122 @@ public class FDURLUtil {
 		}
 
 		qsLink.append("?skuCode=").append( orderLine.getSkuCode() );
-		qsLink.append("&catId=").append( productNode.getParentNode() );
-		qsLink.append("&productId=").append( productNode );
+		qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "catId=").append( productNode.getParentNode() );
+		qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "productId=").append( productNode );
 
 		// specify action - needed for FDShoppingCartController
 		if (isCCLorSO) {
-			qsLink.append("&action=CCL:ItemManipulate");
-			qsLink.append("&qcType="+cartType);
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "action=CCL:ItemManipulate");
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "qcType="+cartType);
 		}
 			
 		if (orderId!=null)
-			qsLink.append("&orderId=").append( orderId );
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "orderId=").append( orderId );
 		
 		if (ccListIdStr != null)
-			qsLink.append('&').append(CclUtils.CC_LIST_ID).append('=').append(ccListIdStr);
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP).append(CclUtils.CC_LIST_ID).append('=').append(ccListIdStr);
 
 		if (hasDeptId)
-			qsLink.append("&qsDeptId=" + qsDeptId);
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "qsDeptId=" + qsDeptId);
 
 		// list configuration
 		for (Iterator<Map.Entry<String,String>> i=orderLine.getOptions().entrySet().iterator(); i.hasNext(); ) {
 			Map.Entry<String,String> entry = i.next();
-			qsLink.append("&").append( entry.getKey() ).append("=").append( entry.getValue() );
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP).append( entry.getKey() ).append("=").append( entry.getValue() );
 		}
 
 		if (orderLine.getRecipeSourceId() != null)
-			qsLink.append("&recipeId=").append( orderLine.getRecipeSourceId() );
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "recipeId=").append( orderLine.getRecipeSourceId() );
 
 		if (isCCLorSO)
-			qsLink.append("&lineId=").append(orderLine.getCustomerListLineId());
+			qsLink.append(ProductDisplayUtil.URL_PARAM_SEP + "lineId=").append(orderLine.getCustomerListLineId());
 
 		
 		return qsLink.toString();
+	}
+	
+	
+	
+	public static final String WINE_PARAMS[] = {"domainName", "domainValue",
+		QueryParameter.WINE_FILTER, QueryParameter.WINE_FILTER_CLICKED,
+		QueryParameter.WINE_SORT_BY, QueryParameter.WINE_VIEW, QueryParameter.WINE_PAGE_SIZE, QueryParameter.WINE_PAGE_NO};
+
+	public static String getWineProductURI(ProductModel productNode, String trackingCode, Map<String,String[]> params) {
+		
+		StringBuilder uri = new StringBuilder();
+		
+		appendProduct(uri, productNode);
+
+		/* append wine params */
+
+	    if (trackingCode != null) {
+			uri.append(ProductDisplayUtil.URL_PARAM_SEP).append("trk=").append(trackingCode);
+	    }
+
+		appendWineParamsToURI(uri, params);
+	    
+		return uri.toString();
+	}
+
+
+	public static CharSequence appendWineParamsToURI(CharSequence uri, Map<String,String[]> params) {
+		if (uri == null || params == null)
+			return uri;
+
+		final boolean isAppendable = uri instanceof Appendable;
+		
+		Appendable buf = isAppendable ? (Appendable) uri : new StringBuilder(uri);
+		
+	    final String _trk = params.get("trk") != null ? params.get("trk")[0] : null;
+	    if (_trk != null) {
+	    	try {
+				buf.append(ProductDisplayUtil.URL_PARAM_SEP).append("_trk=").append(_trk);
+			} catch (IOException e) {
+			}
+	    }
+	    final String _catId = params.get("catId") != null ? params.get("catId")[0] : null;
+	    if (_catId != null) {
+	    	try {
+				buf.append(ProductDisplayUtil.URL_PARAM_SEP).append("_catId=").append(_catId);
+			} catch (IOException e) {
+			}
+	    }
+	    final String _deptId = params.get("deptId") != null ? params.get("deptId")[0] : null;
+	    if (_deptId != null) {
+	    	try {
+				buf.append(ProductDisplayUtil.URL_PARAM_SEP).append("_deptId=").append(_deptId);
+			} catch (IOException e) {
+			}
+	    }
+
+	    // append wine params
+	    for (String p : WINE_PARAMS) {
+	    	if (params.get(p) != null && params.get(p).length > 0) {
+	    		try {
+					buf.append(ProductDisplayUtil.URL_PARAM_SEP).append(p).append("=").append(params.get(p)[0]);
+				} catch (IOException e) {
+				}
+	    	}
+	    }
+
+	    return isAppendable ? uri : buf.toString();
+	}
+
+
+	
+	/**
+	 * Use &amps; in HTML links not directly like sendRedirect on server side, etc.
+	 * This simple utility methods helps you by converting and-amp-semicolon entities to single amps.
+	 * 
+	 * For more info see http://htmlhelp.com/tools/validator/problems.html#amp
+	 *  
+	 * @param urlContainingEscapedAmpersands URL full of &amp; separators
+	 * @return Converted string now good to use on server side.
+	 */
+	public static String toDirectURL(String urlContainingEscapedAmpersands) {
+		if (urlContainingEscapedAmpersands != null && urlContainingEscapedAmpersands.length() > 0) {
+			return urlContainingEscapedAmpersands.replace("&amp;", "&");
+		}
+		return urlContainingEscapedAmpersands;
 	}
 }

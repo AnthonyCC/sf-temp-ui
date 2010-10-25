@@ -471,6 +471,13 @@ public class FDStoreProperties {
 	//Brand media replacement (APPDEV-1308)
 	private final static String PROP_BRAND_MEDIA_IDS = "fdstore.brand.media.ids";
 
+	// [APPDEV-1283] Wine Revamp
+	private final static String WINE_SHOW_RATINGS_KEY = "fdstore.wine.newPricingRatingEnabled";
+	
+	private final static String WINE_PRICE_BUCKET_BOUND_PREFIX = "fdstore.wine.priceBucketBound";
+	
+	private final static String ADVERTISING_TILE_ENABLED = "fdstore.advertisingTile.enabled";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -678,8 +685,8 @@ public class FDStoreProperties {
 		// produce rating enabled
 		defaults.put(PRODUCE_RATING_ENABLED, "true");
 		//produce rating sku prefixes
-		defaults.put(PRODUCE_RATING_PREFIXES, "FRU,VEG,YEL");
-		
+		defaults.put(PRODUCE_RATING_PREFIXES, "FRU,VEG,YEL,WIN");
+
 		// freshness guaranteed on/off switch
 		defaults.put(FRESHNESS_GUARANTEED_ENABLED, "true");
 		// freshness guaranteed on/off sku prefix specific
@@ -823,6 +830,12 @@ public class FDStoreProperties {
 
 		//Brand media replacement (APPDEV-1308)
 		defaults.put(PROP_BRAND_MEDIA_IDS, "none");
+
+		
+		// [APPDEV-1283] Wine Revamp
+		defaults.put(WINE_SHOW_RATINGS_KEY, Boolean.toString(true));
+		
+		defaults.put(ADVERTISING_TILE_ENABLED, Boolean.toString(false));
 
 		refresh();
 	}
@@ -1905,20 +1918,49 @@ public class FDStoreProperties {
 		refresh(true);
 	}
 
-	
+	/**
+	 * Global switch to turn on/off wine ratings display. Defaulted to on.
+	 * @return
+	 */
+	public static boolean isWineShowRatings() {
+		return Boolean.toString(true).equalsIgnoreCase( get(WINE_SHOW_RATINGS_KEY) );
+	}
+
+	public static boolean isAdvertisingTileEnabled() {
+		return Boolean.parseBoolean( get(ADVERTISING_TILE_ENABLED) );
+	}
+
 	public static void addConfigLoadedListener(ConfigLoadedListener listener) {
 	    synchronized (listeners) {
 	        listeners.add(listener);
 	    }
 	}
-	
+
 	private static void fireEvent() {
             synchronized (listeners) {
                 for (ConfigLoadedListener listener : listeners) {
                     listener.configLoaded();
                 }
             }
-	    
 	}
-	
+
+	public static double getWinePriceBucketBound(int index) {
+		String value = get(WINE_PRICE_BUCKET_BOUND_PREFIX + index);
+		try {
+			return Double.parseDouble(value);
+		} catch (Exception e) {
+			double defaultValue;
+			if (index == 0)
+				defaultValue = 0.0;
+			else if (index == 1)
+				defaultValue = 10.0;
+			else if (index == 2)
+				defaultValue = 20.0;
+			else
+				defaultValue = 40.0;
+			LOGGER.warn("cannot parse " + WINE_PRICE_BUCKET_BOUND_PREFIX + index +
+					", using default value " + defaultValue, e);
+			return defaultValue;
+		}
+	}
 }

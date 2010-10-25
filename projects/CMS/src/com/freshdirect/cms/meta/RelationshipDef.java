@@ -35,14 +35,17 @@ public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 		if (navigable && inheritable) throw new IllegalArgumentException("Relationship "+ name + " cannot be both navigable and inheritable");
 	}
 
+        @Override
 	public boolean isNavigable() {
 		return navigable;
 	}
 	
+	@Override
 	public ContentType getSourceType() {
             return sourceType;
         }
 
+        @Override
 	public Set<ContentType> getContentTypes() {
 		return this.contentTypes;
 	}
@@ -53,6 +56,11 @@ public class RelationshipDef extends AttributeDef implements RelationshipDefI {
 
 	public void removeContentType(ContentType cTypeRef) {
 		contentTypes.remove(cTypeRef);
+	}
+	
+	@Override
+	public boolean isCalculated() {
+	    return false;
 	}
 
 }

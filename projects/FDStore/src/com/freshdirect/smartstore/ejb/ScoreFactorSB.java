@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.ejb.EJBObject;
 
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.fdstore.content.EnumWinePrice;
 
 
 /**
@@ -97,4 +98,8 @@ public interface ScoreFactorSB extends EJBObject {
 	 * @throws RemoteException
 	 */
 	public List<ContentKey> getPersonalRecommendations(String recommender, String erpCustomerId) throws RemoteException;
+
+
+	public EnumWinePrice getPreferredWinePrice(String customerId) throws RemoteException;
+	
 }

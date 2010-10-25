@@ -23,6 +23,7 @@ import com.freshdirect.cms.ui.model.AdminProcStatus;
 import com.freshdirect.cms.ui.service.AdminService;
 import com.freshdirect.cms.validation.ContentValidationDelegate;
 import com.freshdirect.cms.validation.ContentValidatorI;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -71,6 +72,34 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         return status;
     }
 
+    @Override
+    public AdminProcStatus rebuildWineIndexes() {
+        
+        synchronized (AdminServiceImpl.class) {
+            LOG.info("rebuild index called ("+status.isRunning()+")");
+            if (!status.isRunning()) {
+                status.setRunning(true);
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            LOG.info("starting wine indexing");
+                            rebuildWineIndexImpl();
+                            LOG.info("indexing wine finished");
+                        } catch (Exception e) {
+                            LOG.error("indexing wine failed:"+e.getMessage(), e);
+                            setStatus("Failed : " + e.getMessage());
+                        } finally {
+                            status.setRunning(false);
+                        }
+                    }
+                });
+            }
+
+        }
+        return status;
+    }
+    
     private void setStatus(String msg) {
         status.setCurrent(msg);
         LOG.info("status:"+msg);
@@ -101,6 +130,16 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         long elapsed = System.currentTimeMillis() - time;
         setStatus("finished in " + (elapsed / 1000) + " sec");
         status.setLastReindexResult("indexed " + nodes.values().size() + " nodes in " + (elapsed / 1000) + " sec");
+    }
+
+    private void rebuildWineIndexImpl() {
+        long time = System.currentTimeMillis();
+        status.setStarted(time);
+        setStatus("starting wine index rebuild");
+        ContentFactory.getInstance().refreshWineIndex(true);
+        long elapsed = System.currentTimeMillis() - time;
+        setStatus("completed wine index rebuild");
+        status.setLastReindexResult("indexed " + ContentFactory.getInstance().getAllWineProductKeys().size() + " wine products in " + (elapsed / 1000) + " sec");
     }
 
     @Override

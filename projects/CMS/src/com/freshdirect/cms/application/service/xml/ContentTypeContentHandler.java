@@ -61,11 +61,8 @@ public class ContentTypeContentHandler extends DefaultHandler {
 	private final ContentTypeServiceI typeService;
 
 	private static class ContentReference {
-	    private ContentType sourceType;
-	    private String sourceAttributeName;
 	    private ContentType destinationType;
 	    private String reverseAttributeName;
-	    private BidirectionalReferenceDef relation;
 	    private String reverseAttributeLabel;
 
 	    public ContentReference(ContentType type, String reverseAttributeName, String reverseAttributeLabel) {
@@ -74,20 +71,6 @@ public class ContentTypeContentHandler extends DefaultHandler {
                 this.reverseAttributeLabel = reverseAttributeLabel;
             }
 
-            /**
-             * @return the sourceType
-             */
-            public ContentType getSourceType() {
-                return sourceType;
-            }
-    
-            /**
-             * @return the sourceAttributeName
-             */
-            public String getSourceAttributeName() {
-                return sourceAttributeName;
-            }
-    
             /**
              * @return the destinationType
              */
@@ -108,35 +91,14 @@ public class ContentTypeContentHandler extends DefaultHandler {
             public String getReverseAttributeLabel() {
                 return reverseAttributeLabel;
             }
-
-            /**
-             * @param sourceType the sourceType to set
-             */
-            public void setSourceType(ContentType sourceType) {
-                this.sourceType = sourceType;
-            }
-
-            /**
-             * @param sourceAttributeName the sourceAttributeName to set
-             */
-            public void setSourceAttributeName(String sourceAttributeName) {
-                this.sourceAttributeName = sourceAttributeName;
-            }
-
-            public BidirectionalReferenceDef getRelation() {
-                return relation;
-            }
             
-            public void setRelation(BidirectionalReferenceDef relation) {
-                this.relation = relation;
-            }
 	}
 	
 	
 	/** Map of ContentType -> ContentTypeDef */
 	private Map<ContentType,ContentTypeDefI> types = new HashMap<ContentType,ContentTypeDefI>();
 	
-	private Collection<ContentReference> bidirectional = new HashSet<ContentReference>();
+	// private Collection<ContentReference> bidirectional = new HashSet<ContentReference>();
 
 	@SuppressWarnings("unchecked")
 	private Stack stack = new Stack();
@@ -245,13 +207,19 @@ public class ContentTypeContentHandler extends DefaultHandler {
 			if (dest.getReverseAttributeName() != null) {
 			    // remove the RelationshipDef
 			    RelationshipDef rel = (RelationshipDef) stack.pop();
-			    ContentTypeDef ctd = (ContentTypeDef) stack.peek();
-			    BidirectionalReferenceDef brel = new BidirectionalReferenceDef(ctd.getType(), rel.getName(), rel.getLabel(), rel.isReadOnly(), true, dest.getDestinationType(), dest.getReverseAttributeName(), dest.getReverseAttributeLabel());
+			    BidirectionalReferenceDef brel = null;
+			    if (rel instanceof BidirectionalReferenceDef) {
+			        brel = (BidirectionalReferenceDef) rel;
+			    } else {
+			        brel = new BidirectionalReferenceDef(rel);
+			    }
+			    brel.addOtherSide(dest.getDestinationType(), dest.getReverseAttributeName(), dest.getReverseAttributeLabel());
 			    stack.push(brel);
-			    dest.setSourceAttributeName(rel.getName());
-			    dest.setRelation(brel);
-			    dest.setSourceType(ctd.getType());
-			    bidirectional.add(dest);
+			    
+//			    dest.setSourceAttributeName(rel.getName());
+//			    dest.setRelation(brel);
+//			    dest.setSourceType(ctd.getType());
+			    // bidirectional.add(dest);
 			} else {
 			    RelationshipDef rel = (RelationshipDef) stack.peek();
 			    rel.addContentType(dest.destinationType);

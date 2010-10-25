@@ -40,6 +40,9 @@ if (request.getHeader("User-Agent").indexOf("Mac") > -1) {
 }
 %>
 	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css">
+	<!--[if lte IE 7]>
+	<link href="/assets/css/wine-ie.css" rel="stylesheet" type="text/css" />
+	<![endif]-->
 </head>
 <body>
 <%

@@ -25,7 +25,7 @@ public abstract class BalkingExpiringReference<X> extends ExpiringReference<X> {
 				LOGGER.debug("task is finished.");
 			} catch (Exception e) {
 				loaded(referent);
-				LOGGER.debug("task failed.");
+				LOGGER.debug("task failed.", e);
 			}
 		}	
 	}

@@ -1,0 +1,32 @@
+<%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
+<fd:WineFilter filterId="wineFilter" lastClickedId="wineLastClicked" queryId="query">
+<fd:Tile id="tile" productId="tileProduct" trkdId="trkd">
+<% if (tile.isGoesGreatWith() && tileProduct != null) { %>
+<%@ include file="/common/template/includes/i_goes_great_with.jspf" %>
+<% } else if (tile.getMedia() != null) { %>
+<% if (tileProduct != null) { %>
+<display:GetContentNodeWebId id="webId" product="<%= tileProduct %>" clientSafe="<%= true %>">
+<div id="tile_<%= webId %>" style="position: relative; width: 140px; height: 140px; overflow: hidden; text-align: center; margin: 0px auto;">
+<fd:IncludeMedia name="tileMedia" media="<%= tile.getMedia() %>"></fd:IncludeMedia>
+<img id="tileButton_<%= webId %>" src="/media_stat/images/quickbuy/quickbuy_button_hover.gif"
+		width="103" height="22" border="0" class="qbButton"
+		style="display: inline-block; position: absolute; left: 18px; top: 59px;">
+</div>
+<script type="text/javascript">
+	FD_QuickBuy.decorate('tile_<%= webId %>', 'tileButton_<%= webId %>', {
+			departmentId: '<%= tileProduct.getDepartment().getContentName() %>',
+			categoryId: '<%=  tileProduct.getParentNode().getContentName() %>',
+			productId: '<%= tileProduct.getContentName() %>'
+	});
+</script>
+</display:GetContentNodeWebId>
+<% } else { // tileProduct == null %>
+<div style="width: 140px; height: 140px; overflow: hidden; text-align: center; margin: 0px auto;">
+<fd:IncludeMedia name="tileMedia" media="<%= tile.getMedia() %>"></fd:IncludeMedia>
+</div>
+<% } %>
+<br>
+<% } %>
+</fd:Tile>
+</fd:WineFilter>

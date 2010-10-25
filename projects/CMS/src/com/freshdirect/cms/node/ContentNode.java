@@ -12,6 +12,7 @@ import java.util.Set;
 
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
+import com.freshdirect.cms.BackReferenceDefI;
 import com.freshdirect.cms.BidirectionalRelationshipDefI;
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentNodeI;
@@ -66,9 +67,11 @@ public class ContentNode implements ContentNodeI {
 			if (atrDef instanceof RelationshipDefI) {
 			    if (atrDef instanceof BidirectionalRelationshipDefI) {
 			        BidirectionalRelationshipDefI br = (BidirectionalRelationshipDefI) atrDef;
-			        BidirectionalRelationshipDefI writable = br.isWritableSide() ? br : br.getOtherSide();
-			        BidirectionalReferenceHandler handler = typeService.getReferenceHandler(writable.getType(), writable.getName());
-			        atr = br.isWritableSide() ? new BidirectionalReference(this, handler) : new BackReference(this, handler);
+			        BidirectionalReferenceHandler handler = typeService.getReferenceHandler(br.getSourceType(), br.getName());
+			        atr = new BidirectionalReference(this, handler);
+			    } else if (atrDef instanceof BackReferenceDefI){
+			        final RelationshipDefI mainRelationship = ((BackReferenceDefI) atrDef).getMainRelationship();
+                                atr = new BackReference(this, typeService.getReferenceHandler(mainRelationship.getSourceType(), mainRelationship.getName()));
 			    } else {
 				atr = new Relationship(this, (RelationshipDefI) atrDef);
 			    }

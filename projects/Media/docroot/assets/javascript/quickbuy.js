@@ -1,29 +1,27 @@
-if (typeof FD_QuickBuy == "undefined" || !FD_QuickBuy) {
+if (typeof window.FD_QuickBuy == "undefined") {
 	FD_QuickBuy = {};
 }
 
 
 
-
+/*** ANIMATION ***/
 FD_QuickBuy.DELAY = 250; // milliseconds
 FD_QuickBuy.ANIM_PERIOD = 0.3; // seconds
-FD_QuickBuy.animFadeIn = function(frame) {
-	var _self = this;
-	return new YAHOO.util.Anim(frame,
+FD_QuickBuy.animFadeIn = function(button) {
+	return new YAHOO.util.Anim(button,
 		{
 		    opacity: { to: 1 } 
 		},
-		_self.ANIM_PERIOD,
+		FD_QuickBuy.ANIM_PERIOD,
 		YAHOO.util.Easing.easeIn
 	);
 };
-FD_QuickBuy.animFadeOut = function(frame) {
-	var _self = this;
-	return new YAHOO.util.Anim(frame,
+FD_QuickBuy.animFadeOut = function(button) {
+	return new YAHOO.util.Anim(button,
 		{
 		    opacity: { to: 0 } 
 		},
-		_self.ANIM_PERIOD,
+		FD_QuickBuy.ANIM_PERIOD,
 		YAHOO.util.Easing.easeOut
 	);	
 };
@@ -31,91 +29,106 @@ FD_QuickBuy.animFadeOut = function(frame) {
 
 
 
-FD_QuickBuy.postForm = function(formObject, frameId) {
-	YAHOO.util.Connect.setForm(formObject);
-	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/qb.jsp', {
-		success: function(resp) {
-			$(frameId+'_inner').innerHTML = resp.responseText;
-			$(frameId+'_errors').style.display = "none";
-
-			updateYourCartPanel();
-		},
-		failure:function(resp) {
-			var i;
-			var ea=YAHOO.lang.JSON.parse(resp.responseText);
-			var	l=ea.length,alertBox=$(frameId+'_errors'),errorDiv;
-			
-			alertBox.innerHTML = '<div class="title16 boxTitle">ERROR!</div>';
-			for(i=0;i<l;i++) {
-				errorDiv=document.createElement('div');
-				errorDiv.innerHTML=ea[i].errorDesc;
-				alertBox.appendChild(errorDiv);
-				YAHOO.util.Dom.addClass(errorDiv, 'text13gr');
-			}
-
-			alertBox.style.display = "block";
-		}
-		
-	});
-
-	return cObj;
+// util
+FD_QuickBuy._nextSibling = function(n) {
+	x=n.nextSibling;
+	while (x.nodeType != 1) {x=x.nextSibling;}
+	return x;
 };
 
+// util
+FD_QuickBuy._chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+FD_QuickBuy._randomId = function(length) {
+    var chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'.split('');
+    
+    if (! length) {
+        length = Math.floor(Math.random() * this._chars.length);
+    }
+    
+    var str = '';
+    for (var i = 0; i < length; i++) {
+        str += chars[Math.floor(Math.random() * this._chars.length)];
+    }
+    return str;
+}
 
 
-FD_QuickBuy.showPopup = function(frameId, namespace, catId, prdId, img, imgW, imgH) {
+
+/**
+ * Display Quick Buy panel
+ * 
+ * 
+ * @param {Object} deptId Department ID of product
+ * @param {Object} catId Parent category ID of product
+ * @param {Object} prdId Product ID
+ */
+FD_QuickBuy.showPanel = function(deptId, catId, prdId) {
 	return function() {
-		var elementId='d_'+frameId;
+		var elementId= prdId+'_'+FD_QuickBuy._randomId(16);
 		var ctPanel = new YAHOO.widget.Panel(elementId, {
-			fixedcenter: false, 
+			fixedcenter: true, 
 			constraintoviewport: true, 
 			underlay: "matte", 
 			close: true, 
-			visible: false,
+			visible: true,
 			modal: true,
 			draggable: false}
 		);
+		var isWineDept = ("usq" == deptId);
 		
-		var contentFrame = $(frameId+'_ctnt');
 		ctPanel.setHeader( "&nbsp;" );
-		ctPanel.setBody( '<form name='+frameId+'>' + contentFrame.innerHTML + '</form>');
 
+		var winTitle = document.title.substring(14);
+
+		var content = "";
+		content += '<div id="'+elementId+'_ctnt">\n';
+		content += '  <div id="'+elementId+'_overbox" class="overbox">\n';
+		content += '    <div id="'+elementId+'_nfeat" class="nfeat roundedbox"></div>\n';
+		content += '    <div id="'+elementId+'_errors" class="alerts roundedbox"></div>\n';
+		content += '  </div>\n';
+		content += '  <iframe id="'+elementId+'_frame" frameborder="0" src="/quickbuy/product.jsp?catId='+catId+'&amp;productId='+prdId+'&amp;fdsc.source=quickbuy&amp;refTitle='+escape(winTitle)+'&amp;referer='+escape(window.location.href)+'&amp;uid='+elementId+'" class="prodframe"></iframe>';
+		content += '</div>\n';
+		
+		ctPanel.setBody( content );
+		
 		ctPanel.render(document.body);
 		
 		// override .yui-panel hidden setting
 		$(elementId).style.overflow = "visible";
 
-		ctPanel.body.setAttribute("id", "bod_"+frameId);
-		ctPanel.body.style.width = "410px";
-		ctPanel.body.style.height = "300px";
-		
-		eval(namespace+".updateTotal();");
-		
-		ctPanel.show();
-		ctPanel.center();
+
 		YAHOO.util.Dom.addClass(elementId+'_c','quickbuy-dialog');
 		
+		if (isWineDept) {
+			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_wine');
+			YAHOO.util.Dom.addClass( FD_QuickBuy._nextSibling(ctPanel.body), 'container-close_wine' );
+		} else {
+			YAHOO.util.Dom.addClass(ctPanel.header, 'hd_bg_normal');
+			YAHOO.util.Dom.addClass( FD_QuickBuy._nextSibling(ctPanel.body), 'container-close_normal' );
+		}
 		
 		ctPanel.hideEvent.subscribe(function(e){
-			$(frameId+'_overbox').style.visibility = "hidden";
+			$(elementId+'_overbox').style.visibility = "hidden";
 		});
 		
 		document.quickbuyPanel = ctPanel;
 
+		// show panel
+		ctPanel.center();
+		ctPanel.show();
+
 		// Load New Feature popup content
-		FD_QuickBuy.loadNewFeatureInner(frameId, true);
+		FD_QuickBuy.loadNewFeatureInner(elementId);
 	};
 };
 
 
-FD_QuickBuy.loadNewFeatureInner = function(frameId, decr) {
-	var attrs = "frameId="+frameId;
-	if (false == decr)
-		attrs += "&test=1";
+FD_QuickBuy.loadNewFeatureInner = function(panelId) {
+	var attrs = "element="+panelId;
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat_inner.jsp', {
 		success: function(resp) {
 			if (resp.status == 200) {
-				var obj = $(frameId+"_nfeat");
+				var obj = $(panelId+"_nfeat");
 				obj.innerHTML = resp.responseText;
 				
 				obj.style.display = "block";
@@ -130,92 +143,94 @@ FD_QuickBuy.closeNewFeatBox = function(nfeatId) {
 	var cObj = YAHOO.util.Connect.asyncRequest('POST', '/ajax/nfeat.jsp', {
 		success: function(resp) {
 			$(nfeatId).style.display = "none";
+			document.quickbuyPanel.center();
 		}
 	});
 };
 
 
-/**
- * 
- * @param {Object} frameId
- * @param {Object} catId
- * @param {Object} prdId
- * @param {Object} img
- * @param {Object} imgW
- * @param {Object} imgH
- */
-FD_QuickBuy.attach = function(frameId, namespace, catId, prdId, img, imgW, imgH) {
-	var _self = this;
-
-	var frame = $(frameId);
-	var btn = $('qb_'+frameId);
-	var prodImgBtn = $('prdImgAncr_'+frameId);
-
-	frame.animFadeIn = this.animFadeIn(btn);
-	frame.animFadeOut = this.animFadeOut(btn);
-	frame.showPopup = FD_QuickBuy.showPopup(frameId, namespace, catId, prdId, img, imgW, imgH);
-	frame.canClick = false;
-
-
-	if (FD_QuickBuy.DELAY == 0) {
+FD_QuickBuy._attachHotspot = function(hotspot, btn, multiple) {
+	if (btn.animFadeIn == undefined)
+		btn.animFadeIn = FD_QuickBuy.animFadeIn(btn);
+	if (btn.animFadeOut == undefined)
+		btn.animFadeOut = FD_QuickBuy.animFadeOut(btn);
 	
-		$E.on(frame, "mouseenter", function(e){
-			this.canClick = true;
-			this.animFadeIn.animate();
+	if (FD_QuickBuy.DELAY == 0) {
+		// WITHOUT DELAY
+		//
+		$E.on(hotspot, "mouseenter", function(e) {
+			btn.animFadeIn.animate();
 		});
-		
-		$E.on(frame, "mouseleave", function(e){
-			this.animFadeOut.animate();
-			this.canClick = true;
+	
+		$E.on(hotspot, "mouseleave", function(e) {
+			btn.animFadeOut.animate();
 		});
 	} else {
-		frame.animFadeIn.onComplete.subscribe(function() {
-			this.canClick = true;
-		});
-		
-		$E.on(frame, "mouseenter", function(e) {
-			if (frame.later != undefined && frame.later != null) {
-				frame.later.cancel();
-				frame.later = null;
+		// WITH DELAY
+		//
+		$E.on(hotspot, "mouseenter", function(e) {
+			if (hotspot.later != undefined && hotspot.later != null) {
+				hotspot.later.cancel();
+				hotspot.later = null;
 			}
 	
-			frame.later = YAHOO.lang.later(FD_QuickBuy.DELAY, frame, function() {
-				frame.later = null;
-	
-				this.canClick = true;
-				this.animFadeIn.animate();
+			hotspot.later = YAHOO.lang.later(FD_QuickBuy.DELAY, hotspot, function() {
+				hotspot.later = null;
+
+				btn.animFadeIn.animate();
 			}, null, false );
 		});
 
-		$E.on(frame, "mouseleave", function(e) {
-			if (frame.later != undefined && frame.later != null) {
-				frame.later.cancel();
-				frame.later = null;
+		$E.on(hotspot, "mouseleave", function(e) {
+			if (hotspot.later != undefined && hotspot.later != null) {
+				hotspot.later.cancel();
+				hotspot.later = null;
 			}
-	
-			this.animFadeOut.animate();
-			this.canClick = false;
+
+			btn.animFadeOut.animate();
 		});
+	}
+}
+
+
+/**
+ * Refined version of attach function
+ * 
+ * @param {Object} hotspot Hotspot area where mouse is detected
+ * @param {Object} btn Quick Buy button
+ * @param {Object} prd Product object with three attributes: departmentId, categoryId and productId
+ * 
+ */
+FD_QuickBuy.decorate = function(hotspot, btn, prd) {
+	var __btns = YAHOO.lang.isArray(btn) ? btn : [btn];
+	var __btn = $(__btns[0]); // default button
+
+
+	// HOTSPOT(s)
+	//	
+	if (hotspot) {
+		if (YAHOO.lang.isArray(hotspot)) {
+			for (k in hotspot) {
+				this._attachHotspot($(hotspot[k]), __btn, true);
+			}
+		} else {
+			this._attachHotspot($(hotspot), __btn, false);
+		}
 	}
 
 
-	// click event on button		
-	$E.on(btn, "click", function(e){
-		if (frame.canClick == true) {
-			frame.showPopup();
-			
-			return false;
-		}
-		
-		return true;
-	});
-	
-	// click event on product image
-	$E.on(prodImgBtn, "click", function(e){
-		$E.preventDefault(e);
+	// BUTTONS / click receivers
+	//
+	var __panel = FD_QuickBuy.showPanel(prd.departmentId, prd.categoryId, prd.productId);
 
-		frame.showPopup();
-			
-		return false;
-	});
+	for (k in __btns) {
+		__btn = $(__btns[k]);
+		if (null != __btn) {
+			__btn.showPanel = __panel;
+			$E.on(__btn, "click", function(e) {
+				$E.stopEvent(e);
+				this.showPanel();
+			});
+		}
+	}
 };

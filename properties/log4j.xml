@@ -76,6 +76,9 @@
 	<category name="com.irongrid">
 		<priority value="error" />
 	</category>
+	<category name="com.scarabresearch">
+		<priority value="warn" />
+	</category>
 	<category name="httpclient">
 		<priority value="info" />
 	</category>

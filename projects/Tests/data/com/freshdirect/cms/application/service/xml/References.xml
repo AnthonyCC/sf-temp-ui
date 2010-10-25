@@ -31,5 +31,16 @@
 	<Bar id="barNode3">
 	</Bar>
 	
+	<Multi id="m1">
+		<switcher>
+			<Foo ref="fooNode3"/>		
+		</switcher>
+	</Multi>
+	
+	<Multi id="m2">
+		<switcher>
+			<Bar ref="barNode2"/>		
+		</switcher>
+	</Multi>
 	
 </Content>

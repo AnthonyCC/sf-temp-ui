@@ -1,8 +1,12 @@
 package com.freshdirect.fdstore.content;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
@@ -16,6 +20,9 @@ public class DepartmentModel extends ProductContainer {
 	private final List<CategoryModel> deptNav = new ArrayList<CategoryModel>();
 	
 	private final List<CategoryModel> featuredCategories = new ArrayList<CategoryModel> ();
+
+        private final List<TileList> tileList = new ArrayList<TileList> ();
+	
 	
 	public DepartmentModel(ContentKey cKey) {
 		super(cKey);
@@ -131,4 +138,19 @@ public class DepartmentModel extends ProductContainer {
 		}
 	};
 
+    public Set<ContentKey> getAllChildProductKeys() {
+    	Set<ContentKey> keys = new HashSet<ContentKey>();
+    	for (CategoryModel c : getCategories())
+    		keys.addAll(c.getAllChildProductKeys());
+    	return keys;
+    }
+
+	public String getTemplatePath() {
+		return getAttribute("DEPARTMENT_TEMPLATE_PATH", "");
+	}
+
+	public List<TileList> getTileList() {
+		ContentNodeModelUtil.refreshModels(this, "tile_list", tileList, false);
+		return Collections.unmodifiableList(tileList);
+	}
 }

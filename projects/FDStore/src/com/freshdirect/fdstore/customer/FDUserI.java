@@ -20,6 +20,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
@@ -442,4 +443,6 @@ public interface FDUserI extends java.io.Serializable {
 	public void setMasqueradeAgent(String agent);
 	
 	public String getMasqueradeAgent();
+	
+	public EnumWinePrice getPreferredWinePrice();
 }

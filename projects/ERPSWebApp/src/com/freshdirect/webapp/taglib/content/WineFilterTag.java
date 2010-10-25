@@ -1,90 +1,136 @@
 package com.freshdirect.webapp.taglib.content;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.cms.fdstore.FDContentTypes;
+import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.DomainValue;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.WineFilter;
+import com.freshdirect.fdstore.content.WineFilterValue;
+import com.freshdirect.fdstore.content.util.QueryParameter;
+import com.freshdirect.fdstore.content.util.QueryParameterCollection;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.webapp.BodyTagSupportEx;
+import com.freshdirect.webapp.taglib.ParametersTag;
+import com.freshdirect.webapp.taglib.QueryParserTag;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 
-public class WineFilterTag extends com.freshdirect.framework.webapp.BodyTagSupport {
-       
-    private String id;
-    private List displayList;
-    private String domainName;
-    private String domainValue;
-    
-    public String getDomainName() {
-		return domainName;
+public class WineFilterTag extends BodyTagSupportEx implements QueryParserTag {
+	private static final long serialVersionUID = 3421165079629313555L;
+
+	private String filterId;
+
+	private String lastClickedId;
+
+	private String queryId;
+	
+	private boolean useItemGrabber;
+
+	@Override
+	public int doStartTag() throws JspException {
+		ParametersTag parent = (ParametersTag) findAncestorWithClass(this, ParametersTag.class);
+		if (parent == null)
+			throw new JspException("WineFilter tag must be nested in a Parameters tag");
+		QueryParameterCollection qpc = parent.getQueryParameterCollection();
+		if (qpc == null)
+			throw new JspException("there is something wrong with the parent Parameters tag");
+		ContentNodeModel contentNode = parent.getContentNode();
+		WineFilter wineFilter = null;
+		WineFilterValue lastClicked = null;
+
+		String wineFilterParameter = request.getParameter(QueryParameter.WINE_FILTER);
+		String wineFilterClickedParameter = request.getParameter(QueryParameter.WINE_FILTER_CLICKED);
+		if (!useItemGrabber && wineFilterParameter != null) {
+			FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+			PricingContext pricingContext = user.getPricingContext();
+			qpc.addParameter(new QueryParameter(QueryParameter.WINE_FILTER, wineFilterParameter));
+			wineFilter = WineFilter.decode(pricingContext, wineFilterParameter);
+
+			if (wineFilterClickedParameter != null) {
+				qpc.addParameter(new QueryParameter(QueryParameter.WINE_FILTER_CLICKED, wineFilterClickedParameter));
+				lastClicked = WineFilter.decodeFilterValue(wineFilterClickedParameter);
+			}
+		}
+
+		pageContext.setAttribute(queryId, qpc);
+
+		pageContext.setAttribute(lastClickedId, lastClicked);
+
+		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
+		PricingContext pricingContext = user.getPricingContext();
+		WineFilter filter;
+		if (wineFilter != null)
+			filter = wineFilter;
+		else {
+			filter = new WineFilter(pricingContext);
+			if (contentNode != null) {
+				DomainValue dv = null;
+				if (FDContentTypes.CATEGORY.equals(contentNode.getContentKey().getType())) {
+					dv = (DomainValue) ContentFactory.getInstance().getDomainValueForWineCategory((CategoryModel) contentNode);
+				} else if (FDContentTypes.PRODUCT.equals(contentNode.getContentKey().getType())) {
+					ProductModel product = (ProductModel) contentNode;
+					CategoryModel parentCategory;
+					if (FDContentTypes.CATEGORY.equals(product.getParentNode().getContentKey().getType()))
+						parentCategory = (CategoryModel) product.getParentNode();
+					else
+						parentCategory = product.getPrimaryHome();
+					dv = (DomainValue) ContentFactory.getInstance().getDomainValueForWineCategory(parentCategory);
+				}
+				if (dv != null)
+					filter.addFilterValue(dv);
+			}
+		}
+
+		pageContext.setAttribute(filterId, filter);
+		return EVAL_BODY_INCLUDE;
 	}
-	public void setDomainName(String domainName) {
-		this.domainName = domainName;
+
+	public String getFilterId() {
+		return filterId;
 	}
-	public String getDomainValue() {
-		return domainValue;
+
+	public void setFilterId(String filterId) {
+		this.filterId = filterId;
 	}
-	public void setDomainValue(String domainValue) {
-		this.domainValue = domainValue;
+
+	public String getLastClickedId() {
+		return lastClickedId;
 	}
-	public String getId() {
-        return (this.id);
-    }
-    public void setId(String id) {
-        this.id = id;
-    }
-   
-    public List getDisplayList() {
-        return (this.displayList);
-    }
-    public void setDisplayList(List dispList) {
-        this.displayList = dispList;
-    }
-    
-    public int doStartTag() throws JspException {
-    	if(domainName == null || domainName.length() == 0 ||  domainValue == null || domainValue.length() == 0 || domainValue.equals("ALL")){
-			 return SKIP_BODY;
-    	}
-    	List filteredList =  new ArrayList();
-    	for(Iterator iter = displayList.iterator(); iter.hasNext();){
-    		ContentNodeModel contentNode = (ContentNodeModel) iter.next();
-    		if (contentNode.getContentType().equals(ContentNodeModel.TYPE_PRODUCT)){
-    			ProductModel product = (ProductModel) contentNode;
-    			List domainValues = product.getWineClassifications();
-    			for(Iterator domainIter = domainValues.iterator(); domainIter.hasNext();){
-    				DomainValue domainValueObj =  (DomainValue) domainIter.next();
-    				if(domainValueObj == null || domainValueObj.getDomain() == null)
-    					////The Domain value is null or its Parent domain is null. Ignore it.
-    					continue;
-    				String prodDomainName = domainValueObj.getDomain().getName();
-    				String prodDomainValue = domainValueObj.getContentName();
-    				if(domainName.equals(prodDomainName) && domainValue.equals(prodDomainValue)){
-    					//This product has domain name and value we are looking for. so add to the filtered list.
-    					filteredList.add(product);
-    				}
-    			}
-    		}
-    	}
-        pageContext.setAttribute(id, filteredList);
-        return (EVAL_BODY_BUFFERED);
-    }
-   
+
+	public void setLastClickedId(String lastClickedId) {
+		this.lastClickedId = lastClickedId;
+	}
+
+	public String getQueryId() {
+		return queryId;
+	}
+
+	public void setQueryId(String queryId) {
+		this.queryId = queryId;
+	}
+
+	public boolean isUseItemGrabber() {
+		return useItemGrabber;
+	}
+
+	public void setUseItemGrabber(boolean useItemGrabber) {
+		this.useItemGrabber = useItemGrabber;
+	}
+
 	public static class TagEI extends TagExtraInfo {
+		@Override
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {
-				new VariableInfo(
-					data.getAttributeString("id"),
-					"java.util.List",
-					true,
-					VariableInfo.NESTED )
-					
-			};
+					declareVariableInfo(data.getAttributeString("filterId"), WineFilter.class, VariableInfo.AT_BEGIN),
+					declareVariableInfo(data.getAttributeString("lastClickedId"), WineFilterValue.class, VariableInfo.AT_BEGIN),
+					declareVariableInfo(data.getAttributeString("queryId"), QueryParameterCollection.class, VariableInfo.AT_BEGIN) };
 		}
 	}
 }
-

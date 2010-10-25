@@ -15,6 +15,7 @@ public class BackReference implements RelationshipI {
 
     ContentNodeI node;
     BidirectionalReferenceHandler refs;
+    AttributeDefI reverse;
 
     public BackReference(ContentNodeI node, BidirectionalReferenceHandler refs) {
         assert node != null : "Node is null!";
@@ -36,7 +37,10 @@ public class BackReference implements RelationshipI {
      */
     @Override
     public AttributeDefI getDefinition() {
-        return refs.getInverseRelation();
+        if (reverse == null) { 
+            reverse = refs.getInverseRelation(node.getKey().getType());
+        }
+        return reverse;
     }
 
     /* (non-Javadoc)
@@ -44,7 +48,7 @@ public class BackReference implements RelationshipI {
      */
     @Override
     public String getName() {
-        return refs.getInverseRelation().getName();
+        return getDefinition().getName();
     }
 
     /* (non-Javadoc)
@@ -62,5 +66,7 @@ public class BackReference implements RelationshipI {
     public void setValue(Object o) {
 
     }
+    
+    
 
 }

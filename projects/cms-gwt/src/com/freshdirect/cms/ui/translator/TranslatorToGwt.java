@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import com.freshdirect.cms.AttributeDefI;
 import com.freshdirect.cms.AttributeI;
 import com.freshdirect.cms.ContentKey;
+import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.ContentNodeI;
 import com.freshdirect.cms.ContentType;
 import com.freshdirect.cms.ContentTypeDefI;
@@ -26,7 +27,6 @@ import com.freshdirect.cms.EnumAttributeType;
 import com.freshdirect.cms.EnumDefI;
 import com.freshdirect.cms.ITable;
 import com.freshdirect.cms.RelationshipDefI;
-import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.cms.application.CmsManager;
 import com.freshdirect.cms.changecontrol.ChangeDetail;
 import com.freshdirect.cms.changecontrol.ChangeSet;
@@ -37,7 +37,6 @@ import com.freshdirect.cms.context.ContextualContentNodeI;
 import com.freshdirect.cms.fdstore.ConfiguredProductValidator;
 import com.freshdirect.cms.fdstore.PreviewLinkProvider;
 import com.freshdirect.cms.meta.EnumDef;
-import com.freshdirect.cms.meta.RelationshipDef;
 import com.freshdirect.cms.node.ContentNodeUtil;
 import com.freshdirect.cms.publish.Publish;
 import com.freshdirect.cms.publish.PublishMessage;
@@ -56,9 +55,9 @@ import com.freshdirect.cms.ui.model.attributes.ModifiableAttributeI;
 import com.freshdirect.cms.ui.model.attributes.OneToManyAttribute;
 import com.freshdirect.cms.ui.model.attributes.OneToOneAttribute;
 import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute;
+import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.attributes.SimpleAttribute;
 import com.freshdirect.cms.ui.model.attributes.TableAttribute;
-import com.freshdirect.cms.ui.model.attributes.ProductConfigAttribute.ProductConfigParams;
 import com.freshdirect.cms.ui.model.changeset.ChangeSetQuery;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeDetail;
 import com.freshdirect.cms.ui.model.changeset.GwtChangeSet;
@@ -321,7 +320,7 @@ public class TranslatorToGwt {
         	
 		} else if ( type == EnumAttributeType.RELATIONSHIP ) {
         	
-            RelationshipDef relD = (RelationshipDef) definition;
+            RelationshipDefI relD = (RelationshipDefI) definition;
             HashSet<String> cTypes = new HashSet<String>();
 
             for (Object k : relD.getContentTypes()) {

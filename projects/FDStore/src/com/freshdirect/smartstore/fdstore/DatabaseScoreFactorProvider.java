@@ -13,10 +13,9 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.fdstore.FDRuntimeException;
-import com.freshdirect.fdstore.FDStoreProperties;
-import com.freshdirect.framework.core.ServiceLocator;
+import com.freshdirect.fdstore.content.EnumWinePrice;
+import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.framework.util.log.LoggerFactory;
-import com.freshdirect.smartstore.ejb.ScoreFactorHome;
 import com.freshdirect.smartstore.ejb.ScoreFactorSB;
 
 public class DatabaseScoreFactorProvider {
@@ -24,8 +23,6 @@ public class DatabaseScoreFactorProvider {
     private static Logger                      LOGGER         = LoggerFactory.getInstance(DatabaseScoreFactorProvider.class);
 
     private static DatabaseScoreFactorProvider instance       = null;
-
-    private ServiceLocator                     serviceLocator = null;
 
     private ScoreFactorSB                      scoreFactorSB  = null;
 
@@ -141,17 +138,21 @@ public class DatabaseScoreFactorProvider {
     }
 
     private DatabaseScoreFactorProvider() throws NamingException, RemoteException, CreateException {
-        serviceLocator = new ServiceLocator(FDStoreProperties.getInitialContext());
-        scoreFactorSB = getScoreFactorHome().create();
+        scoreFactorSB = FDServiceLocator.getInstance().getScoreFactorHome().create();
     }
 
-    // get service configuration home bean
-    private ScoreFactorHome getScoreFactorHome() throws NamingException {
-        return (ScoreFactorHome) serviceLocator.getRemoteHome("freshdirect.smartstore.ScoreFactorHome");
-
-    }
 
     private final ScoreFactorSB getSessionBean() {
         return scoreFactorSB;
     }
+    
+    public EnumWinePrice getPreferredWinePrice(String erpCustomerId) {
+        try {
+            return scoreFactorSB.getPreferredWinePrice(erpCustomerId);
+        } catch (RemoteException e) {
+            LOGGER.warn(e);
+            throw new FDRuntimeException(e);
+        }
+    }
+    
 }

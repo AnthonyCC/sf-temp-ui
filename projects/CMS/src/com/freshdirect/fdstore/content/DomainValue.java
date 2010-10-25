@@ -3,7 +3,7 @@ package com.freshdirect.fdstore.content;
 import com.freshdirect.cms.ContentKey;
 
 
-public class DomainValue extends ContentNodeModelImpl {
+public class DomainValue extends ContentNodeModelImpl implements WineFilterValue {
 
 	public DomainValue(ContentKey cKey) {
 		super(cKey);
@@ -51,4 +51,24 @@ public class DomainValue extends ContentNodeModelImpl {
 		return false;
 	}
 
+	@Override
+	public String getEncoded() {
+		return getContentKey().getEncoded();
+	}
+	
+	@Override
+	public String getDomainEncoded() {
+		String cachedValue = ContentFactory.getInstance().getDomainEncodedForWineDomainValue(this);
+		return cachedValue != null ? cachedValue : getDomain().getContentKey().getEncoded();
+	}
+	
+	@Override
+	public EnumWineFilterValueType getWineFilterValueType() {
+		return EnumWineFilterValueType.CMS;
+	}
+	
+	@Override
+	public String getFilterRepresentation() {
+		return getLabel();
+	}
 }

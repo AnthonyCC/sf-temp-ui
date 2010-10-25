@@ -51,6 +51,8 @@
 	if (isCallCenterApp) {
 		//tack on the product id and cat ID
 		successPage = "/order/product.jsp?"+request.getQueryString()+"&catId="+productNode.getParentNode()+"&productId="+productNode;
+	} else if (request.getParameter("returnPage") != null) {
+		successPage = request.getParameter("returnPage");
 	} else {
 		successPage = "/view_cart.jsp";
 	}

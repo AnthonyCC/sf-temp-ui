@@ -1,250 +1,734 @@
-<!-- Left side nav -->
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
-	<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
+<%@ taglib uri='template' prefix='tmpl' %>
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
-<%! 
-    private String getFormattedChildElements(List subCategories, int index) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("<div id=\"sideNavPopup");
-        sb.append(index);
-        sb.append("_menu\" class=\"nav_sub\">");
-        for(Iterator iter = subCategories.iterator(); iter.hasNext();){
-            CategoryModel scm = (CategoryModel) iter.next();
-            sb.append("<div><a class=\"navFP_item\" href=\"/category.jsp?catId=");     
-            sb.append(scm.getContentKey().getId());
-            sb.append("&trk=snav\">");
-            sb.append(scm.getFullName());
-            sb.append("</a></div>");
-        }
-        sb.append("</div>");
-        return sb.toString();
-    }
-%>
+<%@page import="com.freshdirect.fdstore.content.WineFilter"%>
+<%@page import="com.freshdirect.fdstore.content.ProductModel"%>
+<%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWinePrice"%>
+<%@page import="com.freshdirect.fdstore.content.ContentFactory"%>
+<%@page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@page import="com.freshdirect.cms.ContentKey"%>
+<%@page import="com.freshdirect.cms.node.ContentNode"%>
+<%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
+<%@page import="java.util.List"%>
+<%@page import="com.freshdirect.fdstore.content.WineFilterValue"%>
+<%@page import="com.freshdirect.webapp.taglib.content.WineFilterTag"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWineFilterDomain"%>
+<%@page import="java.util.Set"%>
+<%@page import="java.util.Iterator"%>
+<%@page import="java.util.Collection"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
+<%@page import="com.freshdirect.fdstore.content.EnumWineFilterValueType"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.TreeSet"%>
+<%@page import="java.util.Comparator"%>
+<%@page import="com.freshdirect.fdstore.content.Domain"%>
+<%@page import="org.json.JSONArray"%>
+<%@page import="java.util.LinkedHashMap"%>
+<%@page import="java.util.Map"%>
 
-<%!
+<fd:Parameters id="params">
+<fd:WineFilter filterId="wineFilter" lastClickedId="lastClicked" queryId="wineQuery">
+<fd:WineSorter sorterId="wineSorter">
 
-	/** @return number of displayed rows */
-	private static int appendElement(StringBuffer buf, List breakDepths, NavigationElement nl, boolean isUnavailable, boolean showPopup, int index, boolean isSelectedCat, String childElements, boolean showChildren) {
-		int displayedRows = 0;
-		displayedRows++;
-		String divClass="";
-		switch(nl.getDepth()) {
-		    case 0: if(isSelectedCat) {
-                        divClass= showChildren ? "left_nav_item_hoverfake" : "";
-                    } else if(!showPopup) {
-                        divClass="nav_item";
-                    } else {
-                        divClass="left_nav_item";
-                    }
-                    break;				        
-		    case 1: divClass="left_nav_subitem";
-                    break;				        
-		    default: divClass="left_nav_subsubitem";
-                    break;				        
+<%
+
+DepartmentModel dept = (DepartmentModel) ContentFactory.getInstance().getContentNode("Department", "usq");
+String catId = request.getParameter("catId");
+CategoryModel selected = catId != null ? (CategoryModel) ContentFactory.getInstance().getContentNode("Category", catId) : null;
+WineFilterValue lastDomain = null;
+String lastDomainId = null;
+String lastDomainName = null;
+
+int zIndex = 0;
+String trk = "snav";
+
+/**
+ * No category selected or there's at least one filterValue - we must create the detailed sidenav
+ */
+if (selected == null || wineFilter.isFiltering()) {		
+	for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
+		boolean isOnlyOneFilter = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() == 1 && domain.getSubcategoryLabel() != null;
+		boolean isOpened = lastClicked !=null && domain.getDomainEncoded().equals(lastClicked.getDomainEncoded()) && !isOnlyOneFilter;
+		Set<WineFilterValue> selectedFilters = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded());
+		boolean hasSubList = domain.getSubcategoryLabel() != null && selectedFilters.size() > 0;
+		String carrot = isOpened ? "-open" : "";
+		String displayAll = isOpened ? "block" : "none";
+		String displaySelected = !isOpened && selectedFilters.size() > 0 ? "block" : "none";
 		
-		}
-        int depth=0;
-        if(breakDepths!=null && breakDepths.size()>0) {
-            depth=((Integer)breakDepths.get(0)).intValue();
-            if((nl.getDepth()==0) && depth!=0 ) {
-                if(showPopup) 
-                    buf.append(
-                    "<tr><td><div class='left_nav_divider'><!-- --></div>")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
-                    else
-                    buf.append("<tr><td ><div class='left_nav_divider'><!-- --></div><div class=\""+divClass+"\">");
-            } else {
-                if(showPopup) 
-                    buf.append(
-                    "<tr><td >")
-                    .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
-                    else
-                    buf.append("<tr><td ><div class=\""+divClass+"\">");
-            }
-            
-        } else {
-            if(showPopup) 
-                buf.append(
-                "<tr><td>")
-                .append("<div id=\"sideNavPopup").append(index).append("\" class=\"nav_item\" onclick=\"click_c(this.id);\" onmouseover=\"show_lnav(this.id);\" onmouseout=\"hide_w(this.id);\">");
-            else
-                buf.append("<tr><td ><div class=\""+divClass+"\">");
-
-        }
-        breakDepths.clear();
-        breakDepths.add(new Integer(nl.getDepth()));
-
-		if (nl.isBold()) buf.append("<b>");
-       
-		if (nl.showLink() && !showPopup && (!isSelectedCat || !showChildren)) {
-			buf.append("<a href=\"");
-			buf.append(nl.getURL());
-			buf.append("\"");
-            if(nl.getDepth() == 0)
-                buf.append(isSelectedCat ? " class=\"left_nav_item_hoverfake\"" : " class=\"snav_nav_item\"");
-			if (isUnavailable) {
-				buf.append(" style=\"color:#999999\"");
+		WineFilterValue selectedSingle = null;
+		
+		
+		// Storing groups
+		LinkedHashMap<String, List<DomainValue> > sortedSubDomains = new LinkedHashMap<String, List<DomainValue> >();
+		int applicableSubFilterCount = 0;
+		if (hasSubList) {	
+			if (!domain.isSubcategoryGrouped()) {
+				sortedSubDomains.put(null, new ArrayList<DomainValue>());
 			}
-			buf.append(">");
+							
+			// Grouping subdomains
+			for (WineFilterValue filter : selectedFilters) {
+				if (filter.getWineFilterValueType() == EnumWineFilterValueType.CMS) {
+					DomainValue subDomain = (DomainValue) filter;
+					CategoryModel subCategory = ContentFactory.getInstance().getCategoryForWineDomainValue(subDomain);
+					if (subCategory != null && subCategory.getWineSideNavSections() != null) {
+						
+						// Selecting applicable subdomains
+						for (DomainValue dv : subCategory.getWineSideNavSections()) {
+							WineFilter applicableFilter = wineFilter; 						
+							if (wineFilter.hasDomainForValue(dv)) {
+								applicableFilter = wineFilter.clone();
+								applicableFilter.removeDomainForValue(dv);				
+							}
+							
+							if (applicableFilter.isFilterValueApplicable(dv)) {																		
+								if (domain.isSubcategoryGrouped()) {
+									if (sortedSubDomains.get(subDomain.getFilterRepresentation()) == null) {
+										sortedSubDomains.put(subDomain.getFilterRepresentation(), new ArrayList<DomainValue>());
+									}
+									sortedSubDomains.get(subDomain.getFilterRepresentation()).add(dv);
+								} else {
+									sortedSubDomains.get(null).add(dv);
+								}
+	
+								applicableSubFilterCount++;
+							}
+						}
+					}
+				}
+			}
 		}
-        
-        if(showPopup) {
-            buf.append("<a href=\"#\" class=\"snav_nav_item\" onclick=\"return false;\">");
-            buf.append(nl.getDisplayString());
-            buf.append("</a>");
-            buf.append(childElements);
-        }else {
-            buf.append(nl.getDisplayString());
-        }
-        
-        
-            
-          
-		if (nl.showLink() && !showPopup && (!isSelectedCat || !showChildren)) buf.append("</a>");
-		if (nl.isBold()) buf.append("</b>");
-		if(nl.getDepth()==0) {
-            buf.append("</div><div class='left_nav_divider'><!-- --></div></td></tr>\n");
-		}else {
-			buf.append("</div></td></tr>\n");
+		
+		
+		ArrayList<WineFilterValue> applicableValues = new ArrayList<WineFilterValue>();
+		
+		for (WineFilterValue filterValue : domain.getFilterValues()) {
+			WineFilter applicableFilter = wineFilter; 
+			
+			if (wineFilter.hasDomainForValue(filterValue)) {
+				applicableFilter = wineFilter.clone();
+				applicableFilter.removeDomainForValue(filterValue);				
+			}
+			
+			if (applicableFilter.isFilterValueApplicable(filterValue)) {
+				applicableValues.add(filterValue);
+			}
 		}
-		return displayedRows;
-	}
-    
-    /* Get top level parent category node */
-    private ContentNodeModel getTopParentCategory(ContentNodeModel topCategory) {
-        while ( topCategory!=null && topCategory.getParentNode() instanceof CategoryModel) {
-            topCategory = topCategory.getParentNode();
-        }
-        return topCategory;
-    }
+		
+		if (applicableValues.size() == 0) {
+			continue;
+		}
+		
+		if (domain.isSingleSelect()) {					
+			Iterator<WineFilterValue> it = selectedFilters.iterator();
+			if (it.hasNext()) {
+				selectedSingle = it.next();	
+			}	
+		}
+		
+		if (isOpened) {
+			lastDomainName = domain.name();
+			lastDomainId = domain.getFilterValues().iterator().next().getEncoded();
+		}	
+	%>
+		<div class="nav-filter-name nav-filter-name-<%=domain.name() %> title16 wine-narrow <%=applicableSubFilterCount > 0 ? "nav-filter-name-has-sublist" : "" %>">
+		
+		<div onclick="FreshDirect.WineNav.toggleDomain('<%=domain.name() %>', '<%=domain.getFilterValues().iterator().next().getEncoded() %>');" class="nav-filter-clickable">
+			<span class="nav-filter-carrot nav-filter-carrot-<%=domain.name() %><%=carrot %>" id="<%=domain.name() %>-carrot">&nbsp;</span><span class="nav-filter-category"><%= domain.name().toUpperCase() %></span>
+		</div>
+		
+		<div id="<%=domain.name() %>-all" style="display: <%=displayAll %>" class="wine-filter-value-all">
+	<%
+		/**
+		 * Get all subdomains
+		 */
+		 
+		 
+		Collections.sort(applicableValues, domain.getComparator());		
+		
+		/**
+		 * Clear all link
+		 */
+		WineFilter clearfFilter = wineFilter.clone();		
+		clearfFilter.removeDomain(domain);		
+		ArrayList<WineFilterValue> clearValues = new ArrayList<WineFilterValue>();
+		clearValues.addAll(domain.getFilterValues());
+	%>
+		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear all</a></div>
+	<%		
+	
+		for (WineFilterValue filterValue : applicableValues) {
+			WineFilter f = wineFilter.clone();
+			String label = filterValue.getFilterRepresentation();					
+			
+			String selectedClass = "";
+		
+			if (domain.isSingleSelect()) {					
+				Iterator<WineFilterValue> it = selectedFilters.iterator();
+				if (it.hasNext()) {			
+					f.removeFilterValue(it.next());
+				}	
+			}
+			
+			if (selectedFilters.contains(filterValue)) {
+				selectedClass = "-select";
+				if (!domain.isSingleSelect()) {
+					f.removeFilterValue(filterValue);
+				}
+			} else {
+				f.addFilterValue(filterValue);
+			}					
+			
+	%>
+			<div class="nav-filter-value nav-filter-value-<%=domain.name() %>">
+			<a href="/wine/filter.jsp?wineFilterClicked=<%=filterValue.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.name() %><%=selectedClass %>"></a>		
+			<a href="/wine/filter.jsp?wineFilterClicked=<%=filterValue.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=label %></a>
+			</div>
+	<%
+		}
+	%>
+		</div>
+		<div id="<%=domain.name() %>-selected" style="display: <%=displaySelected %>" class="wine-filter-value-selected">
+	<%
+		/**
+		 * Selected subdomains
+		 */
+		WineFilterValue lastSelected = null; 
+	
+		TreeSet<WineFilterValue> sortedSelectedDomains = new TreeSet<WineFilterValue>(domain.getComparator());
+		sortedSelectedDomains.addAll(wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()));
+		
+		/**
+		 * Subdomains clear all link
+		 */
+		if (wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() > 0) {
+			WineFilter f = wineFilter.clone();
+			f.removeDomain(domain);			
+			ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
+			v.addAll(domain.getFilterValues());
+	%>
+		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear all</a></div>
+	<%		
+		}
+	
+		for (WineFilterValue filterValue : sortedSelectedDomains) {
+			WineFilter f = wineFilter.clone();
+			String label = filterValue.getFilterRepresentation();
+					
+			
+			String selectedClass = "";
+		
+			if (selectedSingle != null) {
+				f.removeFilterValue(selectedSingle);
+			}		
+			
+			if (selectedFilters.contains(filterValue)) {
+				selectedClass = "-select";
+				if (!domain.isSingleSelect()) {
+					f.removeFilterValue(filterValue);
+				}
+			} else {
+				f.addFilterValue(filterValue);
+			}
+						
+	%>
+			<div class="nav-filter-value nav-filter-value-<%=domain.name() %>">
+			<a href="/wine/filter.jsp?wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.name() %><%=selectedClass %> nav-filter-selected-checkbox"></a>		
+			<a href="/wine/filter.jsp?wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label nav-filter-value-label"><%=label %></a>
+			</div>
+	<%		
+		}
+		if (selectedFilters.size() > 0) {			
+	%>
+	
+			<div class="nav-filter-change nav-filter-change-<%=domain.name() %>"><span class="nav-filter-clickable" onclick="FreshDirect.WineNav.toggleDomain('<%=domain.name() %>', '<%=selectedFilters.iterator().next().getDomainEncoded() %>')">Add / Change</span></div>
+	
+	<%
+		}
+	%>
+		</div>	
+		</div>
+	<%
+		/**
+		 * Varietal, Country
+		 */
+		if (hasSubList) {		
+			
+				ArrayList<DomainValue> subDomains = new ArrayList<DomainValue>();
+				
+				for (WineFilterValue filter : selectedFilters) {
+					if (filter.getWineFilterValueType() == EnumWineFilterValueType.CMS) {
+						DomainValue subDomain = (DomainValue) filter;
+						CategoryModel subCategory = ContentFactory.getInstance().getCategoryForWineDomainValue(subDomain);
+						
+						if (subCategory != null && subCategory.getWineSideNavSections() != null) {					
+							subDomains.addAll(subCategory.getWineSideNavSections());
+						}
+					}
+				}				
+			
+				// Varietal/Country must be displayed
+				if (applicableSubFilterCount > 0) {
+					
+					Set<WineFilterValue> selectedSubFilters = new HashSet<WineFilterValue>();					
+					boolean isSubOpened = lastClicked !=null && subDomains.contains(lastClicked);
+					boolean isSubContainsOnlyOne = lastClicked != null && lastClicked.getDomainEncoded().equals(domain.getDomainEncoded()) && wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() == 1;
+					String subCarrot = isSubOpened ? "-open" : "";
+					String subDisplayAll = isSubOpened ? "block" : "none";
+					String subDisplaySelected = !isSubOpened && selectedFilters.size() > 0 ? "block" : "none";
+					Collections.sort(subDomains, EnumWineFilterDomain.TYPE.getComparator());					
+					if (isSubOpened || isSubContainsOnlyOne) {
+						lastDomainName = domain.getSubcategoryLabel();
+						lastDomainId = subDomains.get(0).getEncoded();
+					}									
 %>
-<oscache:cache key='<%= "sideNav_"+request.getQueryString() %>' time='300'>
-<% 
-boolean showMore=false;
-String _moreOptions=request.getParameter("moreOptions");
-if(_moreOptions!=null && "true".equalsIgnoreCase(_moreOptions)) {
-    showMore=true;
-}
-try { %>
-
-<fd:WineSideNav catId='<%= request.getParameter("catId") %>' topCategory="topCategory" navList="leftNavItemsList" unavailableList="unavailableNavItems" startFromDept="true" childCatMap="popupMap"  showMoreOptions="displayMore" sortByPriority="true" moreOptions="<%=showMore%>" >
-
+					<div class="nav-filter-name nav-filter-name-<%=domain.getSubcategoryLabel() %> title14 wine-narrow">
+					<div class="nav-filter-clickable nav-filter-sublist" onclick="FreshDirect.WineNav.toggleDomain('<%=domain.getSubcategoryLabel() %>', '<%=subDomains.get(0).getEncoded() %>');">
+						<span class="nav-filter-carrot nav-filter-carrot-<%=domain.getSubcategoryLabel() %> <%=subCarrot %>" id="<%=domain.getSubcategoryLabel() %>-carrot">&nbsp;</span><span class="nav-filter-category"><%= domain.getSubcategoryLabel() %></span>
+					</div>
+					<div id="<%=domain.getSubcategoryLabel() %>-all" style="display: <%=subDisplayAll %>; position: relative">
+<%					
+					//Clear all link
+					WineFilter clearFilter = wineFilter.clone();
+					for (WineFilterValue filter : selectedFilters) {
+						clearFilter.removeDomainForValue(filter);							
+					}
+					for (WineFilterValue filter : selectedFilters) {
+						clearFilter.addFilterValue(filter);
+					}
+					
+					ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
+					v.addAll(selectedFilters);						
+%>	
+					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
 <%
-int displayedRows = 1;
-StringBuffer buf = new StringBuffer(10000);
-ContentNodeModel aliasNode=null;
+					ArrayList<DomainValue> selectedSubValues = new ArrayList<DomainValue>();
 
-ContentNodeModel currCat = ContentFactory.getInstance().getContentNode(request.getParameter("catId"));
-String topParent= getTopParentCategory(currCat).getContentName();
-String topCatLink="/category.jsp?catId="+currCat;	
-	//displayedRows++;
+					int groupCount = 0;
 
-
-
-// !!! implement grocery
-
-boolean showAnAllFldrLink = currCat instanceof CategoryModel ? ((CategoryModel)currCat).getFakeAllFolders() : false;
-
-List breakDepths = new LinkedList();
-NavigationElement navElem=null;
-boolean showPopup=false;
-boolean isDomainNavElement=false;
-boolean wasDomainNavElement=false;
-int index=0;
-int prevDepth = 0;
-int currDepth = 0;
-String spacer = "/media_stat/images/layout/clear.gif";
-
-for (Iterator i = leftNavItemsList.iterator(); i.hasNext(); ) {
-
-	navElem=(NavigationElement) i.next();
-    if(navElem instanceof DomainNavigationElement) {
-        isDomainNavElement=true;
-    }
-    if(displayMore.booleanValue()==true && !isDomainNavElement && wasDomainNavElement) {
-	    buf.append("<tr><td ><div style=\"margin-left:");
-	    buf.append(((navElem.getDepth()+1) * 4) + 8);
-	    buf.append("px; text-indent: 0px; font-style: italic;\">");
-	    buf.append("<a href=\"");
-	    buf.append(response.encodeURL(topCatLink+"&moreOptions=true&trk=snav"));
-	    buf.append("\">");
-	    buf.append("More Options..");
-	    buf.append("</a>");
-	    buf.append("</div></td></tr>");
-	    buf.append("\n");
-	    displayedRows++;
-        wasDomainNavElement=false;
-    
-    }    
-    String childElements = "";
-    if(popupMap.containsKey(navElem.getContentName())) {
-        showPopup=true;
-        childElements = getFormattedChildElements((List)popupMap.get(navElem.getContentName()), index);
-%>  
-<%    
-    }
-    boolean isSelectedCat = false;
-    boolean showChildren = false;
-    ContentNodeModel navCat = ContentFactory.getInstance().getContentNode(navElem.getContentName());
-    if(navCat != null && navCat instanceof CategoryModel && navElem.getDepth() == 0) {
-        CategoryModel cm = (CategoryModel) navCat;
-        showChildren = EnumShowChildrenType.ALWAYS.equals(cm.getShowChildren());
-        isSelectedCat = navCat.getContentName().equals(topParent);
-    }
-    
-    prevDepth = currDepth;
-    currDepth =  navElem.getDepth();
-    if(currDepth <= 1 && (currDepth > prevDepth || currDepth < prevDepth)) {
-        buf.append("</td></tr><tr><td><img src=\""+spacer+"\" height=\"5\"></td></tr>\n");
-    }
-	displayedRows += appendElement(buf, breakDepths, navElem, false, showPopup, index,isSelectedCat,childElements, showChildren);
-	if(showAnAllFldrLink && navElem.getDisplayString().equals(currCat.getFullName())) {
-	    buf.append("<tr><td ><div style=\"margin-left:");
-	    buf.append(((navElem.getDepth()+1) * 4) + 8);
-	    buf.append("px; text-indent: 0px;\">");
-	    buf.append("<a href=\"");
-        buf.append(response.encodeURL(topCatLink+"&moreOptions="+showMore+"&trk=snav"));
-	    buf.append("\">");
-	    buf.append("All");
-	    buf.append("</a>");
-	    buf.append("</div></td></tr>");
-	    buf.append("\n");
-	    displayedRows++;
-	}
-    if(showPopup) {index++; }
-    showPopup=false;
-    if(isDomainNavElement) {
-        wasDomainNavElement=true;
-        isDomainNavElement=false;
-    }
-    
-}
-buf.append("<tr><td>");
-if(currDepth!=0)buf.append("<br><div class='left_nav_divider'><!-- --></div>");
-buf.append("<div class=\"nav_item\"><b><a href=\"javascript:pop('/request_wine.jsp?department=wine',400,585);\" class=\"snav_nav_item\">Request A Wine</a></b></div>\n")
-   .append("<div class='left_nav_divider'><!-- --></div></td></tr>\n");
-	    displayedRows++;
-
-if (displayedRows > 0) {
+					for (Map.Entry<String, List<DomainValue> > group : sortedSubDomains.entrySet()) {
+						String groupHash = group.getKey() == null ? "side-nav-nogroup" : String.valueOf(group.getKey().hashCode());
+						String openClass = groupCount == 0 || applicableSubFilterCount <= 12 ? "-selected" : "";						
+						String groupAllClass = groupCount == 0 || applicableSubFilterCount <= 12 ? "-selected" : "-hidden";
+						String groupSelectedClass = groupCount == 0 || applicableSubFilterCount <= 12 ? "-hidden" : "-selected";
+						if (groupCount == 0) {
 %>
-<table border="0" cellspacing="0" cellpadding="0" align="center" width="130">
-<%= buf.toString() %>
-<tr><td><img src="/media/layout/images/clear.gif" width="130" height="1"></td></tr>
-</table><br>
-<%-- spacer 130x20 --%>
+						<script>FreshDirect.WineNav.initGroup('<%=groupHash %>')</script>
+<%
+						}
+						if (group.getKey() != null) {
+%>
+							<div id="nav-group-<%=groupHash %>" class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>-group nav-group<%=openClass %>" <%if (applicableSubFilterCount > 12) {%>onclick="FreshDirect.WineNav.toggleGroup('<%=groupHash %>')"<%}%>">
+							<span class="nav-filter-value-<%=domain.getSubcategoryLabel() %>-group-carrot"></span>
+							<span><%=group.getKey() %></span>
+							</div>
+<%
+						}
+						Collections.sort(group.getValue(), domain.getComparator());
+						
+						// All subdomains						
+						
+%>
+						<div id="nav-group-<%=groupHash %>-all" class="nav-group<%=groupAllClass %>">
+<%
+						ArrayList<DomainValue> selectedGroups = new ArrayList<DomainValue>();
+						for (DomainValue dv : group.getValue()) {
+							String selectedClass = "";
+							WineFilter f = wineFilter.clone();
+							
+							if (wineFilter.getFilterValues().contains(dv)) {
+								selectedClass = "-select";
+								selectedSubValues.add(dv);
+								selectedGroups.add(dv);
+								f.removeFilterValue(dv);
+								selectedSubFilters.add(dv);
+							} else {
+								f.addFilterValue(dv);
+							}
+%>
+							<div class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %> nav-filter-value-group">
+							<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.getSubcategoryLabel() %><%=selectedClass %>"></a>		
+							<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=dv.getFilterRepresentation() %></a>
+							</div>							
+<%							
+						}
+%>
+						</div>
+						<div id="nav-group-<%=groupHash %>-selected" class="nav-group<%=groupSelectedClass %>">
+						
+<%												
+						if (selectedGroups.size() > 0) {
+							//Clear all link
+							clearFilter = wineFilter.clone();
+							for (WineFilterValue filter : selectedFilters) {
+								clearFilter.removeDomainForValue(filter);							
+							}
+							for (WineFilterValue filter : selectedFilters) {
+								clearFilter.addFilterValue(filter);
+							}
 
+%>
+							<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=selectedGroups.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
+<%							
+						}
+						//Selected subdomains
+						for (DomainValue dv : selectedGroups) {
+							String selectedClass = "-select";
+							WineFilter f = wineFilter.clone();							
+							f.removeFilterValue(dv);							
+%>
+						<div style="border: 5px solid red" class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %> nav-filter-value-group">
+						<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.getSubcategoryLabel() %><%=selectedClass %>"></a>		
+						<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=dv.getFilterRepresentation() %></a>
+						</div>
+<%
+						}
+%>
+						</div>
+<%
+						groupCount++;
+					}
+
+					/**
+					 * More options
+					 */				
+					List<Domain> moreOptions = new ArrayList<Domain>();
+					
+					for (WineFilterValue fv : selectedFilters) {
+						if (fv.getWineFilterValueType() == EnumWineFilterValueType.CMS) {							
+							moreOptions.addAll(ContentFactory.getInstance().getCategoryForWineDomainValue((DomainValue)fv).getWineSideNavFullList());
+						}
+					}									
+					
+					if (moreOptions.size() > 0) {
+						ArrayList<DomainValue> moreDomainValues = new ArrayList<DomainValue>();
+						JSONArray selectedDomainsJSON = new JSONArray();
+						
+						List<DomainValue> sortedMoreDomains = moreOptions.get(0).getDomainValues();
+						Collections.sort(sortedMoreDomains, domain.getComparator());
+						
+						for (int i = 0; i < sortedMoreDomains.size(); ++i) {
+							DomainValue d = moreOptions.get(0).getDomainValues().get(i);
+							WineFilter applicableMoreFilter = wineFilter;
+							
+							if (wineFilter.hasDomainForValue(d)) {
+								applicableMoreFilter = wineFilter.clone();
+								applicableMoreFilter.removeDomainForValue(d);				
+							}
+							
+							if (applicableMoreFilter.isFilterValueApplicable(d)) {
+								moreDomainValues.add(d);
+							}
+							
+							if (wineFilter.getFilterValues().contains(d)) {
+								selectedDomainsJSON.put(d.getEncoded());
+								if (!selectedSubValues.contains(d)) {
+									selectedSubValues.add(d);
+								}
+							}
+						}	
+						
+						if (moreDomainValues.size() > 0) {														
+					%>
+							<script>FreshDirect.WineNav.initMoreOptions(<%=selectedDomainsJSON.toString() %>);</script>
+							<div class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %> nav-filter-more-link">
+							<a href="javascript: FreshDirect.WineNav.showMoreOptions()">More Options...</a>
+							</div>
+					<%
+							for (DomainValue d : selectedSubValues) {
+								
+								WineFilter f = wineFilter.clone();
+								String label = d.getFilterRepresentation();					
+								
+								String selectedClass = "-select";																																
+								f.removeFilterValue(d);	
+								if (!selectedSubFilters.contains(d)) {
+					%>
+									<div class="nav-filter-value <%=domain.getSubcategoryLabel() %>-more-option nav-filter-value-<%=domain.name() %> nav-filter-value-group">
+									<a href="/wine/filter.jsp?wineFilterClicked=<%=d.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.getSubcategoryLabel() %><%=selectedClass %>"></a>		
+									<a href="/wine/filter.jsp?wineFilterClicked=<%=d.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=label %></a>
+									</div>									
+					<%
+								}
+							}
+					%>
+					</div>
+						<div id="wineNavMoreOptions" style="display: none;">
+							<div id="wineNavMoreOptionsContent">							
+								<table class="wineNavMoreOptions-table" id="wineNavMoreOptionsTable">
+								<tr>							
+					<%
+							StringBuffer markupBuff = new StringBuffer();
+							Collections.sort(moreDomainValues, domain.getComparator());
+							for (int i = 0; i < moreDomainValues.size(); ++i) {
+								markupBuff.append("<div class=\"nav-filter-value nav-filter-value-" + domain.getSubcategoryLabel() +"\">");
+								markupBuff.append("<a id=\"" + moreDomainValues.get(i).getEncoded() + "\" onclick=\"FreshDirect.WineNav.toggleMoreOption('" + moreDomainValues.get(i).getEncoded() + "');\" name=\"" + moreDomainValues.get(i).getEncoded() + "\" class=\"nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-" + domain.getSubcategoryLabel() + "\"></a>");		
+								markupBuff.append("<span class=\"nav-filter-value-inner nav-filter-clickable\" onclick=\"FreshDirect.WineNav.toggleMoreOption('" + moreDomainValues.get(i).getEncoded() + "');\" style=\"padding-left: 5px;\">" + moreDomainValues.get(i).getFilterRepresentation() + "</span>");								
+								markupBuff.append("</div>");
+					
+								if (i % 13 == 12) {
+							%>
+									<td style="vertical-align: top"><%=markupBuff.toString()%></td>																						
+							<%
+									markupBuff = new StringBuffer();
+								}
+								
+							}
+							WineFilter f = wineFilter.clone();
+							f.removeDomainForValue(moreDomainValues.get(0));
+						
+					%>
+									<td><%=markupBuff.toString()%></td>	
+								</tr></table>
+								<div style="text-align: right; padding: 10px">
+									<span class="more-options-footer" onclick="FreshDirect.WineNav.clearAllMoreOption()">Clear all</span>
+									<span class="more-options-footer" style="text-decoration: none; cursor: default">|</span>
+									<span class="more-options-footer" onclick="FreshDirect.WineNav.hideMoreOptions()">Close window</span>
+									<img class="more-options-footer" onclick="FreshDirect.WineNav.submitMoreOptions('/wine/filter.jsp?wineFilterClicked=<%=moreDomainValues.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>')" src="/media_stat/images/wine/selectbutton_type.gif">
+								</div>
+							</div>
+							<div style="clear:both;height: 100%;width: 1px;"></div>							
+												
+					<%
+						}
+					}											
+				%>								
+					</div>	
+					<div id="<%=domain.getSubcategoryLabel() %>-selected" style="display: <%=subDisplaySelected %>">					
+				<%
+					/**
+					 * Selected subdomains
+					 */
+				
+					// Clear all link
+					if (selectedSubValues.size() > 0) {												
+				%>
+						<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=selectedSubValues.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
+				<%
+					}				
+					Collections.sort(selectedSubValues, EnumWineFilterDomain.TYPE.getComparator());
+					
+					for (DomainValue dv : selectedSubValues) {					
+						WineFilter f = wineFilter.clone();						
+						String selectedClass = "-select";				
+						f.removeFilterValue(dv);						
+				%>
+						<div class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>">
+						<a href="/wine/filter.jsp?wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.getSubcategoryLabel() %><%=selectedClass %>"></a>		
+						<a href="/wine/filter.jsp?wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=dv.getFilterRepresentation() %></a>
+						</div>
+				<%								
+					}
+				
+					if (selectedSubValues.size() > 0) {
+				%>
+						<div class="nav-filter-change nav-filter-value-<%=domain.getSubcategoryLabel() %>"><span class="nav-filter-clickable" onclick="FreshDirect.WineNav.toggleDomain('<%=domain.getSubcategoryLabel() %>', '<%=selectedSubValues.get(0).getDomainEncoded() %>')">Add / Change</span></div>
+				<%
+					}
+				%>
+					</div>					
+					
+					</div>
+				<%
+				
+				}
+	
+		}
+	}
+	%>
+	
 <%
 }
+/**
+ * A category is selected - we must create a closed sidenav
+ */
+else {
 %>
-</fd:WineSideNav>
+	<div id="wine-left-side-nav-closed" class="wine-left-side-nav-closed"
+			onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-domain-menu')"
+			onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-domain-menu')">
+		BROWSE ALL WINES
+		<div class="domain-menu" id="sidenav-domain-menu"
+				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-domain-menu')"
+				onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-domain-menu')" style="display:none">
+		
+		<%
+		for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
+		%>
+		<div id="wine-left-side-nav-closed-<%= domain.name() %>" class="nav-filter-name nav-filter-name-<%=domain.name() %> title16 wine-narrow"
+				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-domain-submenu-<%=domain.name() %>')"
+				onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-domain-submenu-<%=domain.name() %>')">
+			<span class="nav-filter-carrot nav-filter-carrot-<%=domain.name() %>"></span><span class="nav-filter-category"><%= domain.name().toUpperCase() %></span>
+			<div class="domain-submenu" style="display: none" id="sidenav-domain-submenu-<%=domain.name() %>">			
+		<%
+			TreeSet<WineFilterValue> sortedDomains = new TreeSet<WineFilterValue>(domain.getComparator());
+			sortedDomains.addAll(domain.getFilterValues());
+			for (WineFilterValue filterValue : sortedDomains) {
+				WineFilter applicableFilter = wineFilter; 
+				
+				if (wineFilter.hasDomainForValue(filterValue)) {
+					applicableFilter = wineFilter.clone();
+					applicableFilter.removeDomainForValue(filterValue);				
+				}
+				
+				if (applicableFilter.isFilterValueApplicable(filterValue)) {
+					
+					WineFilter f = wineFilter.clone();
+					String label = filterValue.getFilterRepresentation();
+					f.addFilterValue(filterValue);
+			%>					
+					<div class="nav-filter-value nav-filter-value-<%=domain.name() %>">			
+						<a href="/wine/filter.jsp?wineFilterClicked=<%=filterValue.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="domain-submenu-link">&nbsp;<span class="inner"><%=filterValue.getFilterRepresentation() %></span></a>
+					</div>				
+			<%
+				}
+			}
+		%>
+			</div>
+		</div>		
+		<%			
+		}
+		%>		
+		</div>
+	</div>
+<%
+}
 
-<% } catch (Exception ex) {
-		ex.printStackTrace();
+/**
+ * Category links
+ */
+
+// Sorting Categories by priority and full name
+Comparator<CategoryModel> sideNavComparator = new Comparator<CategoryModel>() {
+	public int compare(CategoryModel o1, CategoryModel o2) {		
+		if (o1.getSideNavPriority() < o2.getSideNavPriority()) {
+			return 1;
+		}
+		if (o1.getSideNavPriority() > o2.getSideNavPriority()) {
+			return 0;
+		}
+		
+		return o1.getFullName().compareTo(o2.getFullName());		
+	}
+};
+List<CategoryModel> deptCategories  = dept.getCategories();
+Collections.sort(deptCategories, sideNavComparator);
+ 
+for (CategoryModel cat : deptCategories) {
+	boolean isCatSelected = cat.equals(selected);
+	if (selected != null) { 
+		isCatSelected = isCatSelected || cat.equals(selected.getParentNode())
+			|| (selected.getParentNode().getParentNode() != null && cat.equals(selected.getParentNode().getParentNode()));
+	}
+	if (cat.getShowSelf() && cat.getSideNavShowSelf()) {
+		boolean isLink = cat.getSideNavLink() && cat.getShowChildren().getId() == 0; 
+		if (isLink || isCatSelected) {
+		
 %>
-	<oscache:usecached />
-<% } %>
-</oscache:cache>
-
-<!-- END YOUR STORE table -->
-
+		<div id="wine-sidenav-cat-<%= cat.getContentName() %>" style="z-index: <%= zIndex %>;"
+				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %> wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-<%= cat.getContentName() %> <%= isLink ? "" : "over" %>">
+			<%if (isLink) { %><a href="/category.jsp?catId=<%= cat.getContentName() %>&trk=<%= trk %>"><% } %>
+			<%= cat.getFullName() %>
+			<%if (isLink) { %></a><% } %>
+		</div>
+<%
+		} else {
+%>
+		<div id="wine-sidenav-cat-<%= cat.getContentName() %>"
+				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-over <%= cat.getContentName() %>"
+				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-category-menu-<%= cat.getContentName() %>')"
+				onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-category-menu-<%= cat.getContentName() %>')"
+				style="z-index: <%= zIndex %>;">
+			<span><%= cat.getFullName() %></span>
+			<div class="sidenav-category-menu" id="sidenav-category-menu-<%= cat.getContentName() %>" style="display: none">
+<%
+			List<CategoryModel> subcats = cat.getSubcategories();
+			Collections.sort(subcats, sideNavComparator);
+			for (CategoryModel subcat : subcats) {
+				if (subcat.getShowSelf() && subcat.getSideNavShowSelf()) {
+%>
+				<div class="domain-submenu-item">
+					<a href="/category.jsp?catId=<%= subcat.getContentName() %>&trk=<%= trk %>"><span class="inner"><%=subcat.getFullName() %></span></a>
+				</div>
+<%
+				}
+			}
+%>
+			</div>
+			<script>FreshDirect.WineNav.addSideNavMenu('wine-sidenav-cat-<%= cat.getContentName() %>', 'sidenav-category-menu-<%=  cat.getContentName() %>')</script>
+		</div>
+<%		
+		}
+		if (isCatSelected && cat.getSideNavShowChildren().getId() < 2) {
+			List<CategoryModel> subcats = cat.getSubcategories();
+			Collections.sort(subcats, sideNavComparator);
+			for (CategoryModel subcat : subcats) {
+				if (subcat.getShowSelf() && subcat.getSideNavShowSelf()) {
+					isCatSelected = subcat.equals(selected);
+%>
+<div class="text12 wine-narrow wine-sidenav-subcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">
+		<% if (subcat.getSideNavLink()) { %><a href="/category.jsp?catId=<%= subcat.getContentName() %>&trk=<%= trk %>"><% } %>
+		<%= subcat.getFullName() %>
+		<% if (subcat.getSideNavLink()) { %></a><% } %>
+</div>
+<%
+					isCatSelected |= subcat.equals(selected.getParentNode());
+					if (isCatSelected) {
+						List<CategoryModel> subsubcats = subcat.getSubcategories();
+						Collections.sort(subsubcats, sideNavComparator);
+						for (CategoryModel subsubcat : subsubcats) {
+							if (subsubcat.getShowSelf() && subsubcat.getSideNavShowSelf()) {
+								isCatSelected = subsubcat.equals(selected);
+%>
+<div class="text11 wine-narrow wine-sidenav-subsubcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">
+		<% if (subsubcat.getSideNavLink()) { %><a href="/category.jsp?catId=<%= subsubcat.getContentName() %>&trk=<%= trk %>"><% } %>
+		<%= subsubcat.getFullName() %>
+		<% if (subsubcat.getSideNavLink()) { %></a><% } %>
+</div>
+<%
+							}
+						}
+					}
+				}
+			}
+		}
+		if (isCatSelected && cat.getSideNavShowChildren().getId() < 2) {
+			List<ProductModel> prods = cat.getProducts();
+			Collections.sort(prods, new Comparator<ProductModel>() {
+				public int compare(ProductModel o1, ProductModel o2) {
+					return o1.getFullName().compareTo(o2.getFullName());
+				}
+			});
+			for (ProductModel prod : prods) {
+				if (prod.isDiscontinued() || prod.isUnavailable())
+					continue;
+				boolean isProdSelected = prod.getContentName().equals(request.getParameter("productId"));
+%>
+<div class="text12 wine-narrow wine-sidenav-subcategory" style="z-index: <%= zIndex %>;<%= isProdSelected ? " font-weight: bold;" : "" %>">
+		<a href="/product.jsp?productId=<%= prod.getContentName() %>&catId=<%= prod.getCategory().getContentName() %>&trk=<%= trk %>">
+		<%= prod.getFullName() %>
+		</a>
+</div>
+<%
+			}
+		}
+	}
+}
+%>
+<script>
+<% if (lastDomainName != null) {%> FreshDirect.WineNav.toggleDomain('<%=lastDomainName %>', '<%=lastDomainId %>');<%}%>
+FreshDirect.WineNav.initSideNavMenus();
+</script>
+<div style="z-index: <%= zIndex %>;" class="title16 wine-narrow wine-sidenav-category">
+	<a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);">Request a Wine</a>
+</div>
+</fd:WineSorter>
+</fd:WineFilter>
+</fd:Parameters>

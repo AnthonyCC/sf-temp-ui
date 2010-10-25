@@ -31,14 +31,17 @@ if ( category != null ) {
 		<display:UniqueFilter in="<%= categoryProducts %>" out="products" groupId="4mm-default">
 		<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)products ); %>
 		<div class="carousel-box">
-			<div class="separator" style="margin-bottom:15px"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"/></div>
-			<display:Carousel width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= products %>" id="cat2_carousel" trackingCode="edt-4mm" maxItems="12">
-				<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true" className="productImage" enableQuickBuy="true" customer="<%= user %>"/>
-				<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
-				<div class="productname">
-					<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
-				</div>
-				<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>	
+			<div class="separator" style="margin-bottom:15px"><img src="<%= catTitlePath %>" alt="<%= category.getFullName() %>"  class="carousel-box-title"/></div>
+			<display:Carousel id="cat2_carousel" carouselId="cat2_carousel" width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= products %>" trackingCode="edt-4mm" maxItems="12">
+				<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
+					<display:ProductImage product="<%= (ProductModel)currentItem %>" showRolloverImage="true" action="<%= actionUrl %>" useAlternateImage="true"
+							className="productImage" height="90" enableQuickBuy="true" webId="<%= webId %>"/>
+					<display:ProductRating product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>"/>
+					<div class="productname">
+						<display:ProductName product="<%= (ProductModel)currentItem %>" action="<%= actionUrl %>" showBrandName="true" />
+					</div>
+					<display:ProductPrice impression="<%= new ProductImpression((ProductModel)currentItem) %>" showDescription="false"/>
+				</display:GetContentNodeWebId>
 			</display:Carousel>
 		</div>
 		</display:UniqueFilter>

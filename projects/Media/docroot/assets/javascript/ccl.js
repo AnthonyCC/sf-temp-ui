@@ -1440,7 +1440,7 @@ CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, conte
 	                failure: function(resp) {
 			            var ptr = resp.argument.ptr;
 			            ptr.makeBody(
-			                ptr.createText("ServiceError"),
+							resp.responseText ? ptr.createText(resp.responseText, "text11rbold") : ptr.createText("ServiceError"),
 			                ptr.createLink("errorClose")
 			            );
 			            ptr.currentState = "error";
@@ -1529,7 +1529,7 @@ CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, conte
                 failure: function(resp) {
 		            var ptr = resp.argument.ptr;
 		            ptr.makeBody(
-		                ptr.createText("ServiceError"),
+		                resp.responseText ? ptr.createText(resp.responseText, "text11rbold") : ptr.createText("ServiceError"),
 		                ptr.createLink("errorClose")
 		            );
 		            ptr.currentState = "error";
@@ -1629,7 +1629,7 @@ CCLClass.prototype.delete_so = function(soId, scope) {
 		                failure: function(resp) {
 				            var ptr = resp.argument.ptr;
 				            ptr.makeBody(
-				                ptr.createText("ServiceError"),
+				                resp.responseText ? ptr.createText(resp.responseText, "text11rbold") : ptr.createText("ServiceError"),
 				                ptr.createLink("errorClose")
 				            );
 				            ptr.currentState = "error";
@@ -1732,7 +1732,7 @@ CCLClass.prototype.shift_so_delivery = function(soId, dlv, scope) {
 		                failure: function(resp) {
 				            var ptr = resp.argument.ptr;
 				            ptr.makeBody(
-				                ptr.createText("ServiceError"),
+				                resp.responseText ? ptr.createText(resp.responseText, "text11rbold") : ptr.createText("ServiceError"),
 				                ptr.createLink("errorClose")
 				            );
 				            ptr.currentState = "error";

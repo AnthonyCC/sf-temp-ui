@@ -14,7 +14,7 @@
 %><%@ page import="com.freshdirect.webapp.util.JspMethods"
 %><%@ taglib uri="freshdirect" prefix="fd"
 %><%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'
-%><%--
+%><fd:CheckLoginStatus noRedirect="true"/><%--
 
 	@author segabor
 

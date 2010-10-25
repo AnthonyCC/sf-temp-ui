@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionBindingEvent;
 import javax.servlet.http.HttpSessionBindingListener;
 
-import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.customer.EnumServiceType;
@@ -31,6 +31,7 @@ import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.content.EnumWinePrice;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.DCPDPromoProductCache;
 import com.freshdirect.fdstore.customer.FDActionInfo;
@@ -62,7 +63,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	
 	private static final long serialVersionUID = 587469031501334715L;
 
-	private static Category LOGGER = LoggerFactory.getInstance( FDSessionUser.class );
+	private static Logger LOGGER = LoggerFactory.getInstance( FDSessionUser.class );
 
     private final FDUser user;
 
@@ -111,7 +112,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	private FDStandingOrder currentStandingOrder;
 
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
-	
 	
 	
 	
@@ -1157,7 +1157,11 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	public void setMasqueradeAgent(String agent) {
 		user.setMasqueradeAgent(agent);
 	}
-	
+
+	public EnumWinePrice getPreferredWinePrice() {
+            return user.getPreferredWinePrice();
+        }
+
 	public void updateSurcharges() {
 		user.updateSurcharges();
 	}

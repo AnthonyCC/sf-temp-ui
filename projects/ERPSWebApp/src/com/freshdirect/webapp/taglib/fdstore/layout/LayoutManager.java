@@ -11,6 +11,8 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
 import com.freshdirect.content.nutrition.ErpNutritionType;
+import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ContentNodeModelUtil;
 import com.freshdirect.fdstore.content.EnumLayoutType;
@@ -411,6 +413,10 @@ public class LayoutManager extends BodyTagSupport {
 		}
         // new wine store layouts
 		if (layoutType == EnumLayoutType.WINE_CATEGORY.getId()) {
+			if (currentNode instanceof CategoryModel && ContentFactory.getInstance().getDomainValueForWineCategory((CategoryModel) currentNode) != null) {
+				s.setGrabberDepth(-1);
+			}
+			s.setFilterUnavailable(true);
 			// [APPREQ-77]
 			s.setLayoutFileName("/includes/layouts/wine_cat_details.jsp");
 			//s.setGrabberDepth(1);
@@ -423,8 +429,24 @@ public class LayoutManager extends BodyTagSupport {
 			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_PRIORITY, sortDescending));
 			//s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
 			// TODO: what more I need to do here?
-		}		
-		if (layoutType == EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()) {				
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.PRODUCTS_BY_NAME, sortNameAttrib, false));
+		} else if (layoutType == EnumLayoutType.WINE_DEALS.getId()) {
+			s.setGrabberDepth(0);
+			s.setFilterUnavailable(true);
+			s.setLayoutFileName("/includes/layouts/wine_deals.jsp");
+			s.setReturnHiddenFolders(false);
+			s.setIgnoreShowChildren(true);
+			s.setIncludeUnavailable(false);
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.NO_SORT));
+		} else if (layoutType == EnumLayoutType.WINE_EXPERTS_FAVS.getId()) {
+			s.setGrabberDepth(0);
+			s.setFilterUnavailable(true);
+			s.setLayoutFileName("/includes/layouts/wine_experts_favs.jsp");
+			s.setReturnHiddenFolders(false);
+			s.setIgnoreShowChildren(true);
+			s.setIncludeUnavailable(false);
+			s.addSortStrategyElement(new SortStrategyElement(SortStrategyElement.NO_SORT));
+		} else if (layoutType == EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId()) {				
 				s.setLayoutFileName("/includes/layouts/trans_multi_paired_items.jsp");
 				s.setGrabberDepth(1);
 				s.setReturnHiddenFolders(true);
@@ -450,6 +472,7 @@ public class LayoutManager extends BodyTagSupport {
 		
 		private int grabberDepth = 99;
 		private boolean filterDiscontinued = true;
+		private boolean filterUnavailable = false;
 		private boolean ignoreShowChildren = false;
 		private boolean returnHiddenFolders = false;
 		private boolean returnSecondaryFolders = false;
@@ -461,6 +484,10 @@ public class LayoutManager extends BodyTagSupport {
 
 		public boolean isFilterDiscontinued() {
 			return filterDiscontinued;
+		}
+
+		public boolean isFilterUnavailable() {
+			return filterUnavailable;
 		}
 
 		public int getGrabberDepth() {
@@ -505,6 +532,8 @@ public class LayoutManager extends BodyTagSupport {
 					+ grabberDepth
 					+ "\n FilterDiscontinued ="
 					+ filterDiscontinued
+					+ "\n FilterUnavailable ="
+					+ filterUnavailable
 					+ "\n IgnoreShowChildren ="
 					+ ignoreShowChildren
 					+ "\n ReturnHiddenFolders ="
@@ -523,6 +552,10 @@ public class LayoutManager extends BodyTagSupport {
 		
 		public void setFilterDiscontinued(boolean b) {
 			filterDiscontinued = b;
+		}
+
+		public void setFilterUnavailable(boolean filterUnavailable) {
+			this.filterUnavailable = filterUnavailable;
 		}
 
 		public void setGrabberDepth(int i) {

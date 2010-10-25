@@ -14,8 +14,10 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ContentFactory;
+import com.freshdirect.fdstore.content.WineFilter;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDUser;
 import com.freshdirect.framework.core.PrimaryKey;
@@ -180,10 +182,13 @@ public class CheckLoginStatusTag extends com.freshdirect.framework.webapp.TagSup
             pageContext.setAttribute(this.id, user);
         }
         
-        if (user != null)
+        if (user != null) {
         	ContentFactory.getInstance().setCurrentPricingContext(user.getPricingContext());
-        else
+        	WineFilter.clearAvailabilityCache(user.getPricingContext() != null ? user.getPricingContext() : PricingContext.DEFAULT);
+        } else {
         	LOGGER.warn("cannot set pricing context");
+        	WineFilter.clearAvailabilityCache(PricingContext.DEFAULT);
+        }
         
         // Set/clear masquerade agent for activity logging
         if (user != null)

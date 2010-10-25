@@ -69,7 +69,7 @@ if (redir !=null && !"".equals(redir) && !"nm".equalsIgnoreCase(redir)) {
 // [redirection] if it is a grocery product, then jump to the grocery_product layout within the category page
 // get the category layout type
 if (productNode.getLayout().isGroceryLayout()) {
-    response.sendRedirect( FDURLUtil.getCategoryURI(request, productNode) );
+    response.sendRedirect( FDURLUtil.toDirectURL( FDURLUtil.getCategoryURI(request, productNode) ) );
     out.close();
     return;
 }

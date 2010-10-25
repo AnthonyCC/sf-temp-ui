@@ -10,6 +10,9 @@
 <head>
     <title><tmpl:get name='title'/></title>
 	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
+<!--[if lte IE 7]>
+	<link href="/assets/css/wine-ie.css" rel="stylesheet" type="text/css" />
+<![endif]-->
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
@@ -55,7 +58,7 @@
   </tr>
 <tr valign="top">
 	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#FBF1D3"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="130" height="109" border="0"></a><br>
+	<td colspan="2" bgcolor="#e2dfcc" style="z-index: 0;"><a href="/department.jsp?deptId=usq&trk=snav"><img src="/media/editorial/win_usq/usq_logo_sidenav_bottom.gif" width="130" height="109" border="0"></a><br>
 	<% try { %><%@ include file="/common/template/includes/left_side_nav_usq.jspf" %>
                 <% } catch (Exception ex) {ex.printStackTrace();} %></td>
 	<td style="padding-left:10px;padding-right:5px;" align="center">   
@@ -68,14 +71,25 @@
 </tr>
 <tr valign="top">
 	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td colspan="2" bgcolor="#FBF1D3"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
-	<td style="padding-top:10px;padding-bottom:10px;" align="center"><%@ include file="/shared/includes/usq_copyright.jspf" %></td>
+	<td colspan="2" bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td style="padding-top:20px;padding-bottom:5px;" align="center">
+		<%@ include file="/shared/includes/usq_bottom_links.jspf" %>
+	</td>
+    <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
+</tr>
+<tr valign="top">
+	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td colspan="2" bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
+	<td style="padding-top:5px;padding-bottom:10px;" align="center">
+		<%@ include file="/shared/includes/usq_copyright.jspf" %>
+	</td>
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 	<td bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
 </tr>
 <tr valign="bottom">
 	<td colspan="2" rowspan="2"><img src="/media_stat/images/layout/bottom_left_curve_nav_usq.gif" width="6" height="6" border="0"></td>
-	<td bgcolor="#FBF1D3"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
+	<td bgcolor="#e2dfcc"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 	<td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="5" border="0"></td>
 	<td colspan="2" rowspan="2" align="right"><img src="/media_stat/images/layout/bottom_right_curve.gif" width="6" height="6" border="0"></td>
 </tr>
@@ -83,7 +97,6 @@
 <td colspan="3" bgcolor="#999966"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0"></td>
 </tr>
 </table>
-
 <%@ include file="/common/template/includes/footer.jspf" %>
 </center>
 

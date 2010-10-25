@@ -67,9 +67,6 @@ public class WineSideNav extends BaseSideNav {
         } else {
             this.fillFolderInfo(true, 0, topCategory, folder);
         }
-
-        // Collections.sort(this.navList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
-        // Collections.sort(this.unavailableList, (sortByPriority ? NAV_PRIORITY_COMPARATOR : NAV_NAME_COMPARATOR) );
     }	
 	
     /**
@@ -91,7 +88,7 @@ public class WineSideNav extends BaseSideNav {
             } else if (ContentNodeModel.TYPE_DEPARTMENT.equalsIgnoreCase(currentFolder.getParentNode().getParentNode().getContentType())) {
                 childCatMap.remove(currentFolder.getParentNode().getContentName());
             }
-            List sideNavDomainVals = new ArrayList();
+            List<DomainValue> sideNavDomainVals = new ArrayList<DomainValue>();
             List<DomainValue> sideNavUsableDomainVals = new ArrayList<DomainValue>();
             List<DomainNavigationElement> domainNavElem = new ArrayList<DomainNavigationElement>();
             sideNavDomainVals = getSideNavDomainValues((CategoryModel) currentFolder);
@@ -152,19 +149,6 @@ public class WineSideNav extends BaseSideNav {
     }
 
     private List<DomainValue> getSideNavDomainValues(CategoryModel model) {
-    	
-    	/*List domainValues=new ArrayList();
-    	domainValues=model.getWineSideNavSections();
-    	if(domainValues!=null && domainValues.size()==0) {
-    		
-        	domainValues=model.getWineSideNavFullList();
-        	if(domainValues!=null && domainValues.size()>0) {
-        		Domain dName=(Domain)domainValues.get(0);
-        		domainValues=dName.getDomainValues();
-        	}
-    	}
-		return domainValues;
-		*/
         List<DomainValue> domainValues = new ArrayList<DomainValue>();
         if (moreOptions) {
             List<Domain> domains = model.getWineSideNavFullList();
@@ -235,28 +219,25 @@ public class WineSideNav extends BaseSideNav {
 	     * Return information about the scripting variables to be created.
 	     *
 	     */
-	    public VariableInfo[] getVariableInfo(TagData data) {
+		public VariableInfo[] getVariableInfo(TagData data) {
 
-	        return new VariableInfo[] {
+			return new VariableInfo[] {
+					new VariableInfo(data.getAttributeString("navList"),
+							"java.util.List<com.freshdirect.webapp.taglib.fdstore.NavigationElement>", true, VariableInfo.NESTED),
+					new VariableInfo(data.getAttributeString("childCatMap"),
+							"java.util.Map<String, List<com.freshdirect.fdstore.content.CategoryModel>>", true, VariableInfo.NESTED),
+					new VariableInfo(
+							data.getAttributeString("showMoreOptions"),
+							"java.lang.Boolean", true, VariableInfo.NESTED),
+					new VariableInfo(
+							data.getAttributeString("unavailableList"),
+							"java.util.List<com.freshdirect.webapp.taglib.fdstore.NavigationElement>", true, VariableInfo.NESTED),
+					new VariableInfo(data.getAttributeString("topCategory"),
+							"com.freshdirect.fdstore.content.CategoryModel",
+							true, VariableInfo.NESTED)
+			};
 
-	            new VariableInfo(data.getAttributeString("navList"),
-	                "java.util.List", true, VariableInfo.NESTED),
-	                
-	           new VariableInfo(data.getAttributeString("childCatMap"),
-	                        "java.util.Map", true, VariableInfo.NESTED), 
-	                        
-	         	           new VariableInfo(data.getAttributeString("showMoreOptions"),
-	   	                        "java.lang.Boolean", true, VariableInfo.NESTED),	                        
-
-	            new VariableInfo(data.getAttributeString("unavailableList"),
-	                "java.util.List", true, VariableInfo.NESTED),
-	            
-	            new VariableInfo(data.getAttributeString("topCategory"),
-	                "com.freshdirect.fdstore.content.CategoryModel", true, VariableInfo.NESTED)
-
-	        };
-
-	    }
+		}
 	}	    
 
 }

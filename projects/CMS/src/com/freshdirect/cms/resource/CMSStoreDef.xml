@@ -35,6 +35,8 @@
 				<DestinationDef contentType="FAQ"/>
 				<DestinationDef contentType="Producer"/>
 				<DestinationDef contentType="ProducerType"/>
+				<DestinationDef contentType="Tile" />
+				<DestinationDef contentType="TileList" />
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
@@ -124,6 +126,7 @@
 			<AttributeDef type="I" name="PRIORITY"  label="Priority" />
 			<AttributeDef type="B" name="USE_ALTERNATE_IMAGES" label="Use Alternate Images" inheritable="true"/>
 			<AttributeDef type="B" name="HIDE_IN_QUICKSHOP" label="Hide in Quickshop"/>
+            <AttributeDef type="S" name="DEPARTMENT_TEMPLATE_PATH" label="Department Template Path"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="categories" navigable="true" cardinality="Many">
@@ -178,6 +181,11 @@
 			<RelationshipDef name="DEPARTMENT_BOTTOM" cardinality="Many"  label="Dept Bottom" >
 				<DestinationDef contentType="Html" />
 			</RelationshipDef>
+			<RelationshipDef name="tile_list" cardinality="Many"  label="Assigned Tiles" >
+				<DestinationDef contentType="TileList" />
+			</RelationshipDef>
+			
+			
 		</RelationshipDefs>
 	</ContentTypeDef>
 	<!--
@@ -261,6 +269,7 @@
 			<AttributeDef type="I" name="MANUAL_SELECTION_SLOTS" label="Manual Selection Slots" inheritable="false"/>
 			
 			<AttributeDef type="B" name="SHOW_EMPTY_CATEGORY" label="Show Empty Category" inheritable="true"/>
+			<AttributeDef type="B" name="HIDE_WINE_RATING" label="Hide Wine Rating &amp; Pricing (Use Regular Display Instead)" inheritable="true"/>
 		</AttributeDefs>
 		<RelationshipDefs>
 			<RelationshipDef name="ALTERNATE_CONTENT" label="Alternate Content">
@@ -312,6 +321,9 @@
             <!--  UAQ changes -->                        
             <RelationshipDef name="WINE_FILTER"  label="Wine Filter Criteria" cardinality="Many" inheritable="true">
 				<DestinationDef contentType="Domain" />
+			</RelationshipDef>                                    
+            <RelationshipDef name="WINE_FILTER_VALUE"  label="Wine Filter Value" cardinality="One" inheritable="false">
+				<DestinationDef contentType="DomainValue" />
 			</RelationshipDef>                                    
             <RelationshipDef name="SIDE_NAV_FULL_LIST"  label="Side Nav Full List" cardinality="Many">
 				<DestinationDef contentType="Domain" />
@@ -1598,5 +1610,38 @@
 			</RelationshipDef>
 		</RelationshipDefs>
 	</ContentTypeDef>
-	
+
+	<ContentTypeDef name="TileList">
+		<AttributeDefs>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="filter" cardinality="Many" navigable="false" label="Filter">
+				<DestinationDef contentType="Department" />
+				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Product" />
+				<DestinationDef contentType="DomainValue" />
+			</RelationshipDef>
+			<RelationshipDef name="tiles" cardinality="Many" navigable="false" label="Tiles">
+				<DestinationDef contentType="Tile"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>
+
+	<ContentTypeDef name="Tile">
+		<AttributeDefs>
+			<AttributeDef type="B" name="GGF_TYPE" label="Goes Great With"/>
+		</AttributeDefs>
+		<RelationshipDefs>
+			<RelationshipDef name="media" cardinality="One" navigable="false" label="Media">
+				<DestinationDef contentType="Html" />
+				<DestinationDef contentType="Image" />
+			</RelationshipDef>
+			<RelationshipDef name="quick_buy" cardinality="Many" navigable="false" label="Quick Buy">
+				<DestinationDef contentType="Category"/>
+				<DestinationDef contentType="Product"/>
+				<DestinationDef contentType="ConfiguredProduct"/>
+				<DestinationDef contentType="ConfiguredProductGroup"/>
+			</RelationshipDef>
+		</RelationshipDefs>
+	</ContentTypeDef>	
 </CMSDef>

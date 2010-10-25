@@ -2,7 +2,6 @@ package com.freshdirect.webapp.taglib.fdstore.display;
 
 import java.io.IOException;
 
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
@@ -48,6 +47,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	private static final String groceryStyleWas = " style=\"font-weight: normal; color: gray;\"";			// normal, light grey
 	private static final String groceryStyleScale = " style=\"line-height:16px; font-size: 13px; font-weight: bold; color: #C94747; font-family: Verdana, Arial, sans-serif;\"";		// bold, red
 	
+	@SuppressWarnings("unused")
 	private final static Category LOGGER = LoggerFactory.getInstance( ProductPriceTag.class );
 	
 	private ProductImpression impression;
@@ -60,6 +60,12 @@ public class ProductPriceTag extends BodyTagSupport {
 	boolean quickShop = false; // special font for quick shop
 	boolean grcyProd = false; // special font for grocery product
 	String skuCode = null;
+	
+	/**
+	 * [APPDEV-1283] Exclude 6 and 12 wine bottles deals
+	 */
+	private boolean excludeCaseDeals = false;
+
 	
 	public void setGrcyProd(boolean grcyProd) {
 		this.grcyProd = grcyProd;
@@ -101,6 +107,11 @@ public class ProductPriceTag extends BodyTagSupport {
 		this.skuCode = skuCode;
 	}
 
+	private static double excludedTiers[] = new double[]{6, 12 };
+	
+	public void setExcludeCaseDeals(boolean excludeCaseDeals) {
+		this.excludeCaseDeals = excludeCaseDeals;
+	}
 
 	@Override
 	public int doStartTag() {
@@ -111,7 +122,7 @@ public class ProductPriceTag extends BodyTagSupport {
 		buf.append(ProductPriceTag.getHTMLFragment(
 			impression,
 			savingsPercentage, showDescription, showAboutPrice, showRegularPrice, showWasPrice, showScalePricing,
-			quickShop, grcyProd, skuCode
+			quickShop, grcyProd, skuCode, excludeCaseDeals
 		));
 		buf.append("</span>\n");
 
@@ -142,7 +153,7 @@ public class ProductPriceTag extends BodyTagSupport {
 	 * 
 	 * @return HTML piece
 	 */
-	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode) {
+	public static String getHTMLFragment(ProductImpression impression, double savingsPercentage, boolean showDescription, boolean showAboutPrice, boolean showRegularPrice, boolean showWasPrice, boolean showScalePricing, boolean quickShop, boolean grcyProd, String skuCode, boolean excludeCaseDeals) {
 		StringBuffer buf = new StringBuffer();
 
 		String confDescription = null;
@@ -172,7 +183,7 @@ public class ProductPriceTag extends BodyTagSupport {
 		
 		if ( productInfo != null ) {	
 			String priceString = impression.getProductModel().getPriceCalculator(skuCode).getPriceFormatted(savingsPercentage);
-			String scaleString = priceCalculator.getTieredPrice(savingsPercentage);
+			String scaleString = priceCalculator.getTieredPrice(savingsPercentage, excludeCaseDeals ? excludedTiers : null);
 			String wasString = priceCalculator.getWasPriceFormatted(savingsPercentage);
 			
 			if (wasString != null)
