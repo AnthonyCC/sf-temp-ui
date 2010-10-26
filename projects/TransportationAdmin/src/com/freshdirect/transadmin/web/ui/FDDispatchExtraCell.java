@@ -8,6 +8,7 @@ import org.extremecomponents.table.view.html.ColumnBuilder;
 import org.extremecomponents.util.HtmlBuilder;
 
 import com.freshdirect.transadmin.model.Asset;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransportationAdminProperties;
 import com.freshdirect.transadmin.web.model.DispatchCommand;
 
@@ -19,20 +20,20 @@ public class FDDispatchExtraCell extends FDBaseCell  {
 		
 		StringBuffer strBuf = new StringBuffer();
 		if(dispatch.getGpsNumber() != null) {
-			strBuf.append(getAssetIdentifier(model,"gpsunits", dispatch.getGpsNumber()));
+			strBuf.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_GPS, dispatch.getGpsNumber()));
 		}
 		if(dispatch.getEzpassNumber() != null) {
 			if(strBuf.length() > 0) {
 				strBuf.append(TransportationAdminProperties.getCellDataSeperator());
 			}
-			strBuf.append(getAssetIdentifier(model,"ezpassunits", dispatch.getEzpassNumber()));
+			strBuf.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_EZPASS, dispatch.getEzpassNumber()));
 		}
 		
 		if(dispatch.getMotKitNumber() != null) {
 			if(strBuf.length() > 0) {
 				strBuf.append(TransportationAdminProperties.getCellDataSeperator());
 			}
-			strBuf.append(getAssetIdentifier(model,"motkitunits",dispatch.getMotKitNumber()));
+			strBuf.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_MOTKIT,dispatch.getMotKitNumber()));
 		}
 		
 		if(dispatch.getAdditionalNextels() != null) {
@@ -61,7 +62,7 @@ public class FDDispatchExtraCell extends FDBaseCell  {
 			HtmlBuilder td = html.td(0); 
 			td.styleClass("asset_gps");
 			td.close();
-			td.append(getAssetIdentifier(model,"gpsunits", dispatch.getGpsNumber()));
+			td.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_GPS, dispatch.getGpsNumber()));
 			html.tdEnd();
 			html.trEnd(index);
 			index++;
@@ -72,7 +73,7 @@ public class FDDispatchExtraCell extends FDBaseCell  {
 			HtmlBuilder td = html.td(0); 
 			td.styleClass("asset_ezpass");
 			td.close();
-			td.append(getAssetIdentifier(model,"ezpassunits", dispatch.getEzpassNumber()));
+			td.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_EZPASS, dispatch.getEzpassNumber()));
 			html.tdEnd();
 			html.trEnd(index);
 			index++;			
@@ -83,7 +84,7 @@ public class FDDispatchExtraCell extends FDBaseCell  {
 			HtmlBuilder td = html.td(0); 
 			td.styleClass("asset_motkit");
 			td.close(); 
-			td.append(getAssetIdentifier(model,"motkitunits",dispatch.getMotKitNumber()));
+			td.append(getAssetIdentifier(model,DispatchPlanUtil.ASSETTYPE_MOTKIT,dispatch.getMotKitNumber()));
 			html.tdEnd();
 			html.trEnd(index);
 			index++;			

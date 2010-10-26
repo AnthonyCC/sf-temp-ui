@@ -68,7 +68,7 @@
 							  <ec:column title=" " width="5px" 
 									filterable="false" sortable="false" cell="selectcol"
 									property="assetId" />
-							 <ec:column alias="assetIdEx" property="assetId" title="Asset Id"/>                    
+							           
 							  <ec:column property="assetNo" title="Asset No"/>
 							  <ec:column property="assetDescription" title="Description"/>	
 							  <ec:column property="assetType.code" title="Type"/>				  							  

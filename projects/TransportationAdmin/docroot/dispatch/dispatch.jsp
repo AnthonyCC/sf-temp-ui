@@ -310,7 +310,7 @@
               <ec:column property="drivers"  cell="dispatchResCell" title="Driver"  filterable="true" alias="drivers"/>
               <ec:column property="helpers"  cell="dispatchResCell" title="Helper"  filterable="true" alias="helpers"/>
               <ec:column property="runners"  cell="dispatchResCell" title="Runner"  filterable="true" alias="runners"/>
-               <ec:column alias="trnTruckGpsNumber" cell="dispatchExtCell" property="additionalNextels" width="10"  title="Extras"/>
+               <ec:column cell="dispatchExtCell" property="extras" width="10"  title="Extras"/>
               <ec:column  alias="dispatchTime"  property="dispatchTimeEx" title="Dispatch Time"  cell="date" format="hh:mm aaa"/>
               <ec:column property="override"  title="Override Dispatch"/>
                <ec:column alias="trnComments" filterable="false" property="comments"  title="Comments"/> 

@@ -107,9 +107,9 @@ public class DispatchFormController extends AbstractFormController {
 		refData.put("regions", domainManagerService.getRegions());
 		refData.put("reasons", dispatchManagerService.getDispatchReasons(true));
 		
-		refData.put("gpsunits", assetManagerService.getActiveAssets("GPS"));
-		refData.put("ezpassunits", assetManagerService.getActiveAssets("EZPASS"));
-		refData.put("motkitunits", assetManagerService.getActiveAssets("MOTKIT"));
+		refData.put(DispatchPlanUtil.ASSETTYPE_GPS, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_GPS));
+		refData.put(DispatchPlanUtil.ASSETTYPE_EZPASS, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_EZPASS));
+		refData.put(DispatchPlanUtil.ASSETTYPE_MOTKIT, assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT));
 		return refData;
 	}
 

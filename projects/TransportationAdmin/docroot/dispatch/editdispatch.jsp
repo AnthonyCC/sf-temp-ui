@@ -603,7 +603,7 @@
 						<td colspan="2">       
 							<form:select path="gpsNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select GPS"/>
-										<form:options items="${gpsunits}" itemLabel="assetNo" itemValue="assetId" />
+										<form:options items="${GPS}" itemLabel="assetNo" itemValue="assetId" />
 									</form:select>
 						</td>
                         <td>
@@ -615,7 +615,7 @@
 						<td colspan="2">       
 							<form:select path="ezpassNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select EZPass"/>
-										<form:options items="${ezpassunits}" itemLabel="assetNo" itemValue="assetId" />
+										<form:options items="${EZPASS}" itemLabel="assetNo" itemValue="assetId" />
 									</form:select>
 						</td>
                         <td>
@@ -628,7 +628,7 @@
 						<td colspan="2">       
 							<form:select path="motKitNumber" onchange="return assetChangeEvent(this);">
 										<form:option value="" label="Select MotKit"/>
-										<form:options items="${motkitunits}" itemLabel="assetNo" itemValue="assetId" />
+										<form:options items="${MOTKIT}" itemLabel="assetNo" itemValue="assetId" />
 									</form:select>
 						</td>
                         <td>

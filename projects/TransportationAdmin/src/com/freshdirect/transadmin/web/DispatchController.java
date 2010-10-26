@@ -38,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.extremecomponents.table.core.TableModel;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
@@ -57,6 +58,7 @@ import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.transadmin.datamanager.report.DrivingDirectionsReport;
 import com.freshdirect.transadmin.datamanager.report.ReportGenerationException;
+import com.freshdirect.transadmin.model.Asset;
 import com.freshdirect.transadmin.model.Dispatch;
 import com.freshdirect.transadmin.model.EmployeeRole;
 import com.freshdirect.transadmin.model.EmployeeSubRoleType;
@@ -750,25 +752,34 @@ public class DispatchController extends AbstractMultiActionController {
 		String zone = request.getParameter("zone");
 		String region = request.getParameter("region");
 		ModelAndView mav = new ModelAndView("dispatchView");
+		
+		mav.getModel().put("zones", domainManagerService.getZones());
+		mav.getModel().put("regions", domainManagerService.getRegions());
+		
+		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_GPS, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_GPS)));
+		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_EZPASS, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_EZPASS)));
+		mav.getModel().put(DispatchPlanUtil.ASSETTYPE_MOTKIT, DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets(DispatchPlanUtil.ASSETTYPE_MOTKIT)));
+		
 		if(!TransStringUtil.isEmpty(dispDate)) {			
 			//boolean punchInfo=getServerDate(dispDate).equals(TransStringUtil.getCurrentServerDate())?true:false;			
-			Collection c=getDispatchInfos(getServerDate(dispDate), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c = getDispatchInfos(getServerDate(dispDate), zone, region
+												, false, TransWebUtil.isPunch(request, dispatchManagerService)
+												, TransWebUtil.isAirClick(request, dispatchManagerService)
+												, mav.getModel());
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			mav.getModel().put("dispatchInfos",c );
 			mav.getModel().put("dispDate", dispDate);
 		} else {
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), zone, region, false,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), zone, region
+																	, false,TransWebUtil.isPunch(request, dispatchManagerService)
+																	, TransWebUtil.isAirClick(request, dispatchManagerService)
+																	, mav.getModel());
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			mav.getModel().put("dispatchInfos",c);
 			mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
 		}
-		mav.getModel().put("zones", domainManagerService.getZones());
-		mav.getModel().put("regions", domainManagerService.getRegions());
 		
-		mav.getModel().put("gpsunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("GPS")));
-		mav.getModel().put("ezpassunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("EZPASS")));
-		mav.getModel().put("motkitunits", DispatchPlanUtil.getAssetMapping(assetManagerService.getActiveAssets("MOTKIT")));
 		
 		return mav;
 	}
@@ -782,7 +793,10 @@ public class DispatchController extends AbstractMultiActionController {
 	public ModelAndView dispatchSummaryHandler(HttpServletRequest request, HttpServletResponse response) throws ServletException, DateFilterException {
 
 		ModelAndView mav = new ModelAndView("dispatchSummaryView");
-		Collection dispatchList = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+		Collection dispatchList = getDispatchInfos(getServerDate(TransStringUtil.getDispatchCurrentDate()), null, null
+															, true,TransWebUtil.isPunch(request, dispatchManagerService)
+															, TransWebUtil.isAirClick(request, dispatchManagerService)
+															, null);
 
 		DispatchPlanUtil.setDispatchStatus(dispatchList,false);
 		mav.getModel().put("dispDate", TransStringUtil.getCurrentDate());
@@ -1031,7 +1045,10 @@ public class DispatchController extends AbstractMultiActionController {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
 			} catch (ParseException e1) {}
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c=getDispatchInfos(getServerDate(dispDate), null, null
+														, true, TransWebUtil.isPunch(request, dispatchManagerService)
+														, TransWebUtil.isAirClick(request, dispatchManagerService)
+														, null);
 			if(mode==3)
 			DispatchPlanUtil.setDispatchStatus(c,false);
 			else DispatchPlanUtil.setDispatchStatus(c,true);
@@ -1077,7 +1094,10 @@ public class DispatchController extends AbstractMultiActionController {
 				request.setAttribute("lastTime", TransStringUtil.getServerTime(new Date()));
 			} catch (ParseException e1) {}
 			//By default get the today's dispatches.
-			Collection c=getDispatchInfos(getServerDate(dispDate), null, null, true,TransWebUtil.isPunch(request, dispatchManagerService),TransWebUtil.isAirClick(request, dispatchManagerService));
+			Collection c=getDispatchInfos(getServerDate(dispDate), null, null
+												, true, TransWebUtil.isPunch(request, dispatchManagerService)
+												, TransWebUtil.isAirClick(request, dispatchManagerService)
+												, null);
 			DispatchPlanUtil.setDispatchStatus(c,true);
 						
 			
@@ -1092,7 +1112,11 @@ public class DispatchController extends AbstractMultiActionController {
 		return new ModelAndView("dispatchDashboardView");
 	}
 
-	private Collection getDispatchInfos(String dispDate, String zoneStr, String region, boolean isSummary, boolean needsPunchInfo,boolean needsAirClick){
+	private Collection getDispatchInfos(String dispDate, String zoneStr
+											, String region, boolean isSummary
+													, boolean needsPunchInfo
+																, boolean needsAirClick
+																	, Map modelMap){
 
 		Collection dispatchInfos = new ArrayList();
 		List termintedEmployees = getTermintedEmployeeIds();
@@ -1134,6 +1158,24 @@ public class DispatchController extends AbstractMultiActionController {
 					
 					command.setLocation(truckInfo.getLocation());
 				}
+				
+				StringBuffer strBuf = new StringBuffer();
+				if(command.getGpsNumber() != null) {
+					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_GPS, command.getGpsNumber())).append(" ");
+				}
+				if(command.getEzpassNumber() != null) {					
+					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_EZPASS, command.getEzpassNumber())).append(" ");
+				}
+				
+				if(command.getMotKitNumber() != null) {					
+					strBuf.append(getAssetIdentifier(modelMap,DispatchPlanUtil.ASSETTYPE_MOTKIT,command.getMotKitNumber())).append(" ");
+				}
+				
+				if(command.getAdditionalNextels() != null) {					
+					strBuf.append(command.getAdditionalNextels());
+				}
+				command.setExtras(strBuf.toString());
+				
 				dispatchInfos.add(command);
 			}
 		}catch(Exception ex){
@@ -1144,7 +1186,17 @@ public class DispatchController extends AbstractMultiActionController {
 		Collections.sort((List)dispatchInfos, DISPATCH_COMPARATOR);
 		return dispatchInfos;
 	}
-
+	
+	 private String getAssetIdentifier(Map model,String assetLookup, String id) {
+		 if(model != null) {
+	    	Map<String, Asset> assetMapping = (Map<String, Asset>)model.get(assetLookup);
+	    	if(assetMapping != null && id != null && id.trim().length() > 0 && assetMapping.containsKey(id)) {
+	    		return assetMapping.get(id).getAssetNo();
+	    	}
+		 }	 
+		 return "";
+	 } 
+	 
 	/**
 	 * Custom handler for welcome
 	 * @param request current HTTP request

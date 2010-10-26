@@ -64,6 +64,8 @@ public class DispatchCommand extends WebPlanInfo {
     private String motKitNumber;
 	private String additionalNextels;
 	
+	private String extras;
+	
     public int getResourceSize(List resources)
 	{
 		int result=0;
@@ -535,6 +537,13 @@ public class DispatchCommand extends WebPlanInfo {
 	public void setAdditionalNextels(String additionalNextels) {
 		this.additionalNextels = additionalNextels;
 	}
+	public String getExtras() {
+		return extras;
+	}
+	public void setExtras(String extras) {
+		this.extras = extras;
+	}
+	
 	
 	
 }

@@ -36,7 +36,11 @@ import com.freshdirect.transadmin.web.model.WebPlanInfo;
 
 public class DispatchPlanUtil {
 
-	private static EmployeeComparator EMPLOYEE_COMPARATOR=new EmployeeComparator();
+	private static EmployeeComparator EMPLOYEE_COMPARATOR = new EmployeeComparator();
+	
+	public static final String ASSETTYPE_GPS = "GPS";
+	public static final String ASSETTYPE_EZPASS = "EZPASS";
+	public static final String ASSETTYPE_MOTKIT = "MOTKIT";
 
 	private static class EmployeeComparator implements Comparator{
 

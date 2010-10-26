@@ -15,7 +15,7 @@
 </tmpl:put>	
 
 <tmpl:put name='yui-skin'>yui-skin-sam</tmpl:put>
-    <tmpl:put name='title' direct='true'> Admin : Asset : Add/Edit Asset</tmpl:put>
+    <tmpl:put name='title' direct='true'> Admin : Asset : Add/Edit Asset (<%= request.getParameter("pAssetType") %>)</tmpl:put>
   
   <tmpl:put name='content' direct='true'>
     <br/> 
@@ -33,8 +33,18 @@
           <tr>
             <td class="screencontent">
               <form:hidden path="assetId"/>
-              <form:hidden path="assetType.code"/>		
+              	
               <table class="forms1">  
+               
+                <tr>
+                  <td>Asset Type</td>
+                  <td>                  
+                    <form:input readOnly="true" maxlength="15" size="15" path="assetType.code" />
+                </td>
+                <td>
+                  &nbsp;<form:errors path="assetNo" />
+                </td>
+               </tr>
                      
                <tr>
                   <td>Asset No</td>
