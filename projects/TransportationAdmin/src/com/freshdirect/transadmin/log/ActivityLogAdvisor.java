@@ -154,8 +154,11 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 					{
 						logManager.log(newDispatch.getUserId(),4,updates.get(i));
 					}
-					
+					//Resource changes log
 					LogComparator c1=new DispatchComparator();
+					c1.compare(oldDispatch, newDispatch);
+					LogComparator c2=new DispatchComparator();
+					c2.compare(oldDispatch, newDispatch);
 					Set newResourcesCopy=new HashSet();
 					newResourcesCopy.addAll(newDispatch.getDispatchResources());
 					if(newResourcesCopy!=null)
@@ -163,7 +166,7 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 						Iterator iterator=newResourcesCopy.iterator();
 						while(iterator.hasNext())
 						{
-							DispatchResource newPlanResource=(DispatchResource)iterator.next();
+							DispatchResource newPlanResource =(DispatchResource)iterator.next();
 							Collection dispatchInfos = new ArrayList();
 							dispatchInfos = dispatchManagerDao
 									.getDispatchForResource(TransStringUtil.getServerDate(newDispatch.getDispatchDate()),
@@ -172,8 +175,10 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 								Dispatch _resDispatch =  itr.next();
 								dispatchManagerDao.evictDispatch(_resDispatch);
 								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
-									((DispatchComparator) c1).compareResource(oldDispatch.getDispatchResources(),newDispatch.getDispatchResources());
+									((DispatchComparator) c1).compareResource1(newPlanResource);
 								}
+								if(!newDispatch.getDispatchId().equals(_resDispatch.getDispatchId()))
+									((DispatchComparator) c2).compareResource1(newPlanResource);			
 							}						
 						}
 						
@@ -183,7 +188,14 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 						{
 							logManager.log(newDispatch.getUserId(),5,updates.get(i));
 						}
-					}			
+						
+						updates=c2.getUpdateFields();
+						if(updates!=null)
+						for(int i=0,n=updates.size();i<n;i++)
+						{
+							logManager.log(newDispatch.getUserId(),6,updates.get(i));
+						}
+					}					
 				}
 			}
 		}
@@ -473,6 +485,12 @@ class DispatchComparator extends LogComparator
 			
 		}
 		return "";
+	}
+	
+	public int compareResource1(DispatchResource newDispatchResource)
+	{
+		updates.add(new Object[]{id,"RESOURCE_ID","",newDispatchResource.getId().getResourceId()});
+		return result;
 	}
 	
 	public int compareResource(Set oldResources,Set newResources)

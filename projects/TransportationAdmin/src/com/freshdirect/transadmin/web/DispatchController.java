@@ -999,7 +999,7 @@ public class DispatchController extends AbstractMultiActionController {
 			//Collection unAvalEmpList = employeeManagerService.getUnAvailableEmployees(planList, TransStringUtil.getCurrentServerDate());
 			Date date = TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate());
 			List resourceList = dispatchManagerService.getResourcesWorkedForSixConsecutiveDays(date);
-			List teamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"4","RESOURCE_ID");
+			List teamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"6","RESOURCE_ID");
 			List teamChangedRegionList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"5","RESOURCE_ID");
 			
 			WebDispatchStatistics webStats = new WebDispatchStatistics();
