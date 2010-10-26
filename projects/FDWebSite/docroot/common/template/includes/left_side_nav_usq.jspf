@@ -138,11 +138,10 @@ if (selected == null || wineFilter.isFiltering()) {
 			lastDomainId = domain.getFilterValues().iterator().next().getEncoded();
 		}	
 	%>
-		<div class="nav-filter-name nav-filter-name-<%=domain.name() %> title16 wine-narrow <%=applicableSubFilterCount > 0 ? "nav-filter-name-has-sublist" : "" %>">
-		
-		<div onclick="FreshDirect.WineNav.toggleDomain('<%=domain.name() %>', '<%=domain.getFilterValues().iterator().next().getEncoded() %>');" class="nav-filter-clickable">
-			<span class="nav-filter-carrot nav-filter-carrot-<%=domain.name() %><%=carrot %>" id="<%=domain.name() %>-carrot">&nbsp;</span><span class="nav-filter-category"><%= domain.name().toUpperCase() %></span>
-		</div>
+		<div class="nav-filter-name nav-filter-name-<%=domain.name() %> title16 wine-narrow <%=applicableSubFilterCount > 0 ? "nav-filter-name-has-sublist" : "" %>">		
+			<div onclick="FreshDirect.WineNav.toggleDomain('<%=domain.name() %>', '<%=domain.getFilterValues().iterator().next().getEncoded() %>');" class="nav-filter-clickable">
+				<span class="nav-filter-carrot nav-filter-carrot-<%=domain.name() %><%=carrot %>" id="<%=domain.name() %>-carrot">&nbsp;</span><span class="nav-filter-category"><%= domain.name().toUpperCase() %></span>
+			</div>
 		
 		<div id="<%=domain.name() %>-all" style="display: <%=displayAll %>" class="wine-filter-value-all">
 	<%
@@ -384,7 +383,7 @@ if (selected == null || wineFilter.isFiltering()) {
 							WineFilter f = wineFilter.clone();							
 							f.removeFilterValue(dv);							
 %>
-						<div style="border: 5px solid red" class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %> nav-filter-value-group">
+						<div class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %> nav-filter-value-group">
 						<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-checkbox nav-filter-checkbox-<%=domain.getSubcategoryLabel() %><%=selectedClass %>"></a>		
 						<a href="/wine/filter.jsp?wineFilterClicked=<%=dv.getEncoded() %>&wineFilter=<%= f.getEncoded() %>" class="nav-filter-value-inner nav-filter-clickable nav-filter-value-label"><%=dv.getFilterRepresentation() %></a>
 						</div>
@@ -491,7 +490,7 @@ if (selected == null || wineFilter.isFiltering()) {
 									<span class="more-options-footer" onclick="FreshDirect.WineNav.clearAllMoreOption()">Clear all</span>
 									<span class="more-options-footer" style="text-decoration: none; cursor: default">|</span>
 									<span class="more-options-footer" onclick="FreshDirect.WineNav.hideMoreOptions()">Close window</span>
-									<img class="more-options-footer" onclick="FreshDirect.WineNav.submitMoreOptions('/wine/filter.jsp?wineFilterClicked=<%=moreDomainValues.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>')" src="/media_stat/images/wine/selectbutton_type.gif">
+									<img class="more-options-footer" onclick="FreshDirect.WineNav.submitMoreOptions('/wine/filter.jsp?wineFilterClicked=<%=subDomains.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>')" src="/media_stat/images/wine/selectbutton_type.gif">
 								</div>
 							</div>
 							<div style="clear:both;height: 100%;width: 1px;"></div>							
