@@ -6,6 +6,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.util.DYFUtil;
@@ -43,7 +44,9 @@ public class ProductBurstTag extends BodyTagSupportEx {
 		
 		FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
 		StringBuilder buf = new StringBuilder();
-		final int highestDeal = product.getHighestDealPercentage();
+		int highestDeal = product.getHighestDealPercentage();
+		if (highestDeal < FDStoreProperties.getBurstsLowerLimit() || highestDeal > FDStoreProperties.getBurstUpperLimit())
+			highestDeal = 0;
 
 		BrowserInfo browser = new BrowserInfo(request);
 		boolean supportsPng = !browser.isInternetExplorer();

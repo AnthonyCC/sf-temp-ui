@@ -9,6 +9,7 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
 
+import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.content.EnumBurstType;
 import com.freshdirect.fdstore.content.Image;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -339,6 +340,10 @@ public class ProductImageTag extends BodyTagSupport {
 		} else if (pl.isDisplayDeal()) {
 			deal = product.getHighestDealPercentage();
 		}
+
+		if (deal < FDStoreProperties.getBurstsLowerLimit() || deal > FDStoreProperties.getBurstUpperLimit())
+			deal = 0;
+		
 
 		buf.append("<div class=\"productImageBurst\" style=\"position: absolute; top: 0px; left: 0px\">\n");
 		if (shouldGenerateAction) {

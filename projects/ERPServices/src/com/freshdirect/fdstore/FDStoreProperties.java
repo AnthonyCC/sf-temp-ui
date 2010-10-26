@@ -1479,10 +1479,18 @@ public class FDStoreProperties {
 	}
 
 	public static int getBurstsLowerLimit(){
-		return Integer.parseInt(get(BURST_LOWER_LIMIT));
+		try {
+			return Integer.parseInt(get(BURST_LOWER_LIMIT));
+		} catch (NumberFormatException e) {
+			return 10;
+		}
 	}
 	public static int getBurstUpperLimit(){
-		return Integer.parseInt(get(BURST_UPPER_LIMIT));
+		try {
+			return Integer.parseInt(get(BURST_UPPER_LIMIT));
+		} catch (NumberFormatException e) {
+			return 75;
+		}
 	}
 
 
