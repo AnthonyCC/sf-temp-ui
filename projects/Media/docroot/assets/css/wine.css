@@ -813,7 +813,7 @@ input.clicode_quantity {
 }
 
 .usq-xprt .fd-carousel .yui-carousel-first-button-disabled {
-    background: url('/media_stat/images/wine/carousel/xprt_favs_left_disabled.gif') no-repeat;
+	background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_lf.gif') no-repeat;    
 }
 
 .usq-xprt .fd-carousel .yui-carousel-next-button {
@@ -821,7 +821,7 @@ input.clicode_quantity {
 }
 
 .usq-xprt .fd-carousel .yui-carousel-button-disabled {
-    background: url('/media_stat/images/wine/carousel/xprt_favs_right_disabled.gif') no-repeat;
+    background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_rt.gif') no-repeat;    
 }
 
 .usq-deals .fd-carousel .yui-carousel-first-button {
@@ -845,7 +845,7 @@ input.clicode_quantity {
 }
 
 .usq-top-rated .fd-carousel .yui-carousel-first-button-disabled {
-    background: url('/media_stat/images/wine/carousel/top_rated_left_disabled.gif') no-repeat;
+    background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_lf.gif') no-repeat;
 }
 
 .usq-top-rated .fd-carousel .yui-carousel-next-button {
@@ -853,15 +853,15 @@ input.clicode_quantity {
 }
 
 .usq-top-rated .fd-carousel .yui-carousel-button-disabled {
-    background: url('/media_stat/images/wine/carousel/top_rated_right_disabled.gif') no-repeat;
+    background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_rt.gif') no-repeat;
 }
 
 .usq-popular .fd-carousel .yui-carousel-first-button {
     background: url('/media_stat/images/wine/carousel/popular_left.gif') no-repeat;
 }
 
-.usq-popular .fd-carousel .yui-carousel-first-button-disabled {
-    background: url('/media_stat/images/wine/carousel/popular_left_disabled.gif') no-repeat;
+.usq-popular .fd-carousel .yui-carousel-first-button-disabled {	
+    background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_lf.gif') no-repeat;
 }
 
 .usq-popular .fd-carousel .yui-carousel-next-button {
@@ -869,7 +869,7 @@ input.clicode_quantity {
 }
 
 .usq-popular .fd-carousel .yui-carousel-button-disabled {
-    background: url('/media_stat/images/wine/carousel/popular_right_disabled.gif') no-repeat;
+    background: url('/media_stat/images/wine/carousel/home_crsl_arw_dis_rt.gif') no-repeat;
 }
 
 .usq .fd-carousel .yui-carousel-element li {
