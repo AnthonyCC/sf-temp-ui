@@ -113,8 +113,8 @@
 <div style="width: 430px">
 	<div style="float: left; margin-right: 2em; x-margin-bottom: 2em; text-align: left; width: 150px;">
 			<%-- REGION IMAGE --%>
-			<% if (wineRegionName != null) { %>
-			<fd:IncludeMedia name="<%= wineRegionName %>" />
+			<% if (wineRegionName != null && wineRegionName.trim().length() != 0) { %>
+			<fd:IncludeMedia name="<%= wineRegionName.trim() %>" />
 			<% } %>
 
 			<%-- RATINGS --%>
