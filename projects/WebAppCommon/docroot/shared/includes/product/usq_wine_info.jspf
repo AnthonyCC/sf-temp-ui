@@ -76,60 +76,113 @@
 		}
 		// <--- End of perfect pair
 		
-		
 
-		String wineCountry="";
-		String wineRegionLabel="";
-		String wineRegionName="";
-		
 		String wineCity=_wprd.getWineCity();
-		String grape=_wprd.getWineType();
-		String classification=_wprd.getWineClassification();
-		String importer=_wprd.getWineImporter();
-		String alcohol=_wprd.getWineAlchoholContent();
-		String aging=_wprd.getWineAging();
-		
-		DomainValue _wineCountry=_wprd.getWineCountry();
-		if(_wineCountry!=null) {
-			wineCountry=_wineCountry.getLabel();
+		if (wineCity != null) {
+			wineCity = wineCity.trim();
+			if (wineCity.length() == 0)
+				wineCity = null;
 		}
-
-		List<DomainValue> wineRegionList=_wprd.getNewWineRegion();
-		DomainValue _wineRegion=null;
-		if (wineRegionList != null && wineRegionList.size()>0) {
-			_wineRegion = wineRegionList.get(0);
-			if (_wineRegion!=null) {
-				wineRegionLabel=_wineRegion.getLabel();
-				wineRegionName="/media/editorial/win_usq/maps/"+_wineRegion.getContentName()+".html";
+		String grape=_wprd.getWineType();
+		if (grape != null) {
+			grape = grape.trim();
+			if (grape.length() == 0)
+				grape = null;
+		}
+		String classification=_wprd.getWineClassification();
+		if (classification != null) {
+			classification = classification.trim();
+			if (classification.length() == 0)
+				classification = null;
+		}
+		String importer=_wprd.getWineImporter();
+		if (importer != null) {
+			importer = importer.trim();
+			if (importer.length() == 0)
+				importer = null;
+		}
+		String alcohol=_wprd.getWineAlchoholContent();
+		if (alcohol != null) {
+			alcohol = alcohol.trim();
+			if (alcohol.length() == 0)
+				alcohol = null;
+		}
+		String aging=_wprd.getWineAging();
+		if (aging != null) {
+			aging = aging.trim();
+			if (aging.length() == 0)
+				aging = null;
+		}
+		
+		String wineCountry=null;
+		{
+			DomainValue _wineCountry=_wprd.getWineCountry();
+			if(_wineCountry!=null) {
+				wineCountry=_wineCountry.getLabel();
+			}
+			if (wineCountry!=null) {
+				wineCountry = wineCountry.trim();
+				if (wineCountry.length() == 0)
+					wineCountry = null;
 			}
 		}
 
+		String wineRegionLabel=null;
+		String wineRegionName=null;
+		{
+			List<DomainValue> wineRegionList=_wprd.getNewWineRegion();
+			DomainValue _wineRegion=null;
+			if (wineRegionList != null && wineRegionList.size()>0) {
+				_wineRegion = wineRegionList.get(0);
+				if (_wineRegion!=null) {
+					wineRegionLabel=_wineRegion.getLabel();
+					wineRegionName="/media/editorial/win_usq/maps/"+_wineRegion.getContentName()+".html";
+				}
+				if (wineRegionLabel != null) {
+					wineRegionLabel = wineRegionLabel.trim();
+					if (wineRegionLabel.length() == 0)
+						wineRegionLabel = null;
+				}
+				if (wineRegionName != null) {
+					wineRegionName = wineRegionName.trim();
+					if (wineRegionName.length() == 0)
+						wineRegionName = null;
+				}
+			}
+		}
+		
+		final boolean hasRatingReview = !_wprd.getNewWineType().isEmpty() || _wprd.hasWineOtherRatings()
+				|| !_wprd.getRating().isEmpty();
 
-		final boolean hasRegionImage = (wineRegionName != null && !"".equals(wineRegionName) && wineRegionName.trim().length() > 0);
+		final boolean hasLeftColumn = wineCountry != null || wineRegionName != null || hasRatingReview
+				|| wineRegionLabel != null || wineCity != null || (brandLogos != null && !brandLogos.isEmpty())
+				|| grape != null || classification != null || importer != null
+				|| alcohol != null || aging != null;
 %>
 
 <%-- THE TABLE --%>
 <div class="prdsep" style="background-color: #cccccc">&nbsp;</div>
 <div style="width: 430px">
+	<% if (hasLeftColumn) { %>
 	<div style="float: left; margin-right: 2em; x-margin-bottom: 2em; text-align: left; width: 150px;">
 			<%-- REGION IMAGE --%>
-			<% if (wineRegionName != null && wineRegionName.trim().length() != 0) { %>
-			<fd:IncludeMedia name="<%= wineRegionName.trim() %>" />
+			<% if (wineRegionName != null) { %>
+			<fd:IncludeMedia name="<%= wineRegionName %>" />
 			<% } %>
 
 			<%-- RATINGS --%>
-			<div style="margin: 1em 0 1em 0">
+			<div style="margin: 1em 0px 1em 0px;">
 				<%@ include file="/shared/includes/product/i_wine_rating_review.jspf"%>			
 			</div>
 
 			<%-- ETC --%>
-      <% if (wineCountry!=null && !"".equals(wineCountry)) { %>
+      <% if (wineCountry!=null) { %>
 			<div class="center_prod_descrip">
 				<span class="ucase bolder">COUNTRY:</span> <%=wineCountry%>
 			</div>
        <% }
             
-       if ( (wineRegionLabel!=null && !"".equals(wineRegionLabel)) || (wineCity!=null && !"".equals(wineCity)) ) {
+       if ( wineRegionLabel != null || wineCity != null ) {
       %>
       <div class="center_prod_descrip">
 				<span class="ucase bolder">REGION:</span> <span>
@@ -165,34 +218,35 @@
                     
             }
 
-            if(grape!=null && !"".equals(grape) ) { %>
+            if(grape!=null) { %>
                 <div class="center_prod_descrip">
                     <!-- 7.2.5 Grape --><b>GRAPE:</b> <%=grape%>
                 </div>
             <%}%>
-            <% if(classification!=null && !"".equals(classification) ) { %>
+            <% if(classification!=null) { %>
                 <div class="center_prod_descrip">
                     <!-- 7.2.6 Classification --><b>CLASSIFICATION:</b> <%=classification%>
                 </div>
             <%}%>    
             
-            <% if(importer!=null && !"".equals(importer) ) { %>
+            <% if(importer!=null) { %>
 			<div class="center_prod_descrip">
 				<!-- 7.2.7 Importer --><b>IMPORTER:</b> <%=importer%>
 			</div>
             <% }%>
-            <% if(alcohol!=null && !"".equals(alcohol) ) { %>
+            <% if(alcohol!=null) { %>
 			<div class="center_prod_descrip">
 				<!-- 7.1.13 Alcoholic Content --><b>ALCOHOL:</b> <%=alcohol%>
 			</div>
             <%}%>
-            <% if(aging!=null && !"".equals(aging) ) { %>
+            <% if(aging!=null) { %>
 			<div class="center_prod_descrip">
 				<!-- 7.2.8 Aging --><b>AGING:</b> <%=aging%>
 			</div>
             <%}%>
 	</div>
-	<div style="float: left; width: 260px">
+	<% } %>
+	<div style="<%= hasLeftColumn ? "float: left; width: 260px" : "" %>">
 			<%-- DESC --%>
    		<% if ( FDStoreProperties.useOscache() ) { %> 
 	        <oscache:cache time="300">
