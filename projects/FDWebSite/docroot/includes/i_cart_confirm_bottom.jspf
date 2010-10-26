@@ -68,7 +68,7 @@
 				if (EnumLayoutType.TRANSAC_MULTI_PAIRED_ITEMS.getId() == layouttype
 						|| EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layouttype) {
 					//Then get the Top level parent.
-					pc = pc.getTopCategory();
+					// pc = pc.getTopCategory();
 				}
 				continueShoppingLink = response
 						.encodeURL("/category.jsp?catId="
