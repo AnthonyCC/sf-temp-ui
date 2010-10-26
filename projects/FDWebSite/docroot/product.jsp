@@ -98,7 +98,7 @@ if ("true".equals(request.getParameter("ccl"))) {
 
 
 //** values for the shopping cart controller
-String sPage = FDURLUtil.getCartConfirmPageURI(request, productNode);
+String sPage = FDURLUtil.toDirectURL(FDURLUtil.getCartConfirmPageURI(request, productNode));
 
 String jspTemplate;
 if (EnumTemplateType.WINE.equals( productNode.getTemplateType() )) {
