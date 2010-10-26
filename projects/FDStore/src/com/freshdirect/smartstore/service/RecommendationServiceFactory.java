@@ -879,6 +879,7 @@ public class RecommendationServiceFactory {
 		config.set(CKEY_SHOW_TEMP_UNAVAILABLE, Boolean.toString(strat.isShowTemporaryUnavailable()));
 		config.set(CKEY_GENERATOR, strat.getGenerator());
 		config.set(CKEY_SCORING, strat.getScoring());
+		config.set(CKEY_USE_ALTS, Boolean.FALSE.toString());
 		return config;
 	}
 }
