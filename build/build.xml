@@ -501,6 +501,8 @@
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/jsonrpc.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/jsonrpc-min.js"/>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/rounded_corners.inc.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/rounded_corners-min.js"/>
 		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/quickbuy.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/quickbuy-min.js"/>
+		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/pricing.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/pricing-min.js"/>
+		<JSMin file="${basedir}/${projects.dir}/Media/docroot/assets/javascript/wine.js" tofile="${basedir}/${projects.dir}/Media/docroot/assets/javascript/wine-min.js"/>
 	</target>
 
 	<target name="test" depends="tests_compile" description="Run unit tests">
