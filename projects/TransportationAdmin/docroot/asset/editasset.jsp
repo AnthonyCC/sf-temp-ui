@@ -190,7 +190,13 @@
 	     	 	}
           	}
       	  }  catch(rpcException) {
+          	  
+          	  if(rpcException != null && rpcException.name != null 
+                  	  && rpcException.name == ("org.springframework.dao.DataIntegrityViolationException")) {
+          	     alert("Unable to save asset. Asset with same no already exists.");
+          	  } else {
 				alert("There was a problem in communication to the server. Please try to refresh the browser window!");
+          	  }
 		  }
 	  
 			      	  

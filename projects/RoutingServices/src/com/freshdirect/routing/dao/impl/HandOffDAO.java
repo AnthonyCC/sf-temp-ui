@@ -202,10 +202,10 @@ public class HandOffDAO extends BaseDAO implements IHandOffDAO   {
 			"b.SCRUBBED_STREET bSCRUBBED_STREET ,b.ZIP bzip ,b.COUNTRY  bCOUNTRY,b.CITY bCITY, b.STATE bSTATE, " +
 			"b.LONGITUDE  BLONG,b.LATITUDE BLAT, l.APARTMENT LOCAPART " +
 			"from transp.HANDOFF_BATCH hb , transp.HANDOFF_BATCHSTOP s , DLV.DELIVERY_LOCATION l , dlv.delivery_building b" +
-			", DLV.DELIVERY_BUILDING_DETAIL dd, TRANSP.TRN_AREA ta, (select xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs " +
+			", DLV.DELIVERY_BUILDING_DETAIL dd, TRANSP.TRN_AREA ta, (select distinct xbo.* from transp.HANDOFF_BATCH xhb , transp.HANDOFF_BATCHSTOP xs " +
 			", DLV.DELIVERY_LOCATION xl , dlv.delivery_building xb  , DLV.DELIVERY_BUILDING_DETAIL xdd, DLV.DELIVERY_BUILDING_DETAIL_OPS xbo  " +
 			"where xhb.BATCH_ID = ? and xHB.BATCH_ID = xS.BATCH_ID and xS.LOCATION_ID = xL.ID and xL.BUILDINGID = xB.ID " +
-			"and xB.ID = xDD.DELIVERY_BUILDING_ID and xB.ID = xDD.DELIVERY_BUILDING_ID  " +
+			"and xB.ID = xDD.DELIVERY_BUILDING_ID and xB.ID = xBO.DELIVERY_BUILDING_ID  " +
 			"and to_char(xHB.DELIVERY_DATE ,'D')  = xBO.DAY_OF_WEEK) bo  " +
 			"where hb.BATCH_ID = ? and HB.BATCH_ID = S.BATCH_ID and S.LOCATION_ID = L.ID and L.BUILDINGID = B.ID " +
 			"and B.ID = DD.DELIVERY_BUILDING_ID(+) and B.ID = bo.DELIVERY_BUILDING_ID(+) and s.area = ta.code(+)"; 
