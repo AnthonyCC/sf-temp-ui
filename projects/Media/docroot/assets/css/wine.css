@@ -1669,7 +1669,7 @@ div.nav-filter-more-link a {
 	height: 10px;
 }
 
-.nav-group {
+.nav-group, .nav-filter-value-Region-group {
 	color: #827A6E;
 }
 
