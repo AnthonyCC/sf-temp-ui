@@ -309,8 +309,8 @@
 	</rule>
 	
 	<rule>
-		<from>^/v/([0-9]+)/(.*)/quickshop/getdeptsforeveryitem/</from>
-		<to last="true">/order.do?orderId=every&amp;action=getdeptsforeveryitem&amp;ver=$1</to>
+		<from>^/v/([0-9]+)/(.*)/quickshop/filterdays/(.*)/getdeptsforeveryitem/</from>
+		<to last="true">/order.do?orderId=every&amp;qsNoOfFilterDays=$3&amp;action=getdeptsforeveryitem&amp;ver=$1</to>
 	</rule>
 
 	<!-- List Shopping lists -->

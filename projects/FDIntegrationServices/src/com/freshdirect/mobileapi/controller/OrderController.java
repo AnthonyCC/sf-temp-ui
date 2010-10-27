@@ -113,12 +113,19 @@ public class OrderController extends BaseController {
         	String sortBy = request.getParameter("qsSortBy");
         	
             model = getProductsFromOrderDept(model, user, orderId
-            										, (deptId != null && deptId.trim().length() > 0) ? deptId : null
+            										, (deptId != null && deptId.trim().length() > 0 
+            												&& !"all".equalsIgnoreCase(deptId)) ? deptId : null
             												, noOfOrderFilterDays
             												, sortBy);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT.equals(action)) {
         	String orderId = request.getParameter("orderId");
-        	model = getDeptForQuickshopEveryItem(model, user, orderId);
+        	String noOfOrderDays = request.getParameter("qsNoOfFilterDays");
+        	Integer noOfOrderFilterDays = null;
+        	if(noOfOrderDays != null && noOfOrderDays.trim().length() > 0 
+        			&& !"none".equalsIgnoreCase(noOfOrderDays)) {
+        		noOfOrderFilterDays =  new Integer(noOfOrderDays);
+        	}
+        	model = getDeptForQuickshopEveryItem(model, user, orderId, noOfOrderFilterDays);
         }
 
         return model;
@@ -290,24 +297,27 @@ public class OrderController extends BaseController {
         return model;
     }
     
-    private ModelAndView getDeptForQuickshopEveryItem(ModelAndView model, SessionUser user, String orderId) throws FDException, JsonException {
+    private ModelAndView getDeptForQuickshopEveryItem(ModelAndView model, SessionUser user, String orderId, Integer filterOrderDays) throws FDException, JsonException {
     	Order order = new Order();
 
     	List<Department> departments;
     	    	
     	List<FilterOption> qCartDepartments = new ArrayList<FilterOption>();
     	
-    	FilterOption allDepartmentFilter =  new FilterOption();
-    	allDepartmentFilter.setId("all");
-    	allDepartmentFilter.setLabel("ALL DEPARTMENTS");
-        qCartDepartments.add(allDepartmentFilter);
+    	
         
         List<FilterOption> departmentList = new ArrayList<FilterOption>();
     	try {
-    		departments = order.getDeptForQuickshopEveryItem(orderId, user);
+    		departments = order.getDeptForQuickshopEveryItem(orderId,filterOrderDays, user);
 
     		if(departments != null) {
-    			
+    			if(departments.size() > 1) {
+	    			FilterOption allDepartmentFilter =  new FilterOption();
+	    	    	allDepartmentFilter.setId("all");
+	    	    	allDepartmentFilter.setLabel("ALL DEPARTMENTS");
+	    	        qCartDepartments.add(allDepartmentFilter);
+    			}
+    	        
 	    		FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 	 		
 	    		Iterator<Department> dit = departments.iterator();

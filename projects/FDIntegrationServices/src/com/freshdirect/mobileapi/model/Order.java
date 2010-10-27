@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Category;
 
@@ -21,12 +23,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.DepartmentModel;
+import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDProductSelectionI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.QuickCart;
-import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.controller.data.ProductConfiguration;
@@ -199,7 +201,12 @@ public class Order {
         	comparator = FDProductSelectionI.STATS_FREQUENCY_COMPARATOR;
         }
         
-        List<FDProductSelectionI> items = quickCart.getProducts(deptId);
+        List<FDProductSelectionI> items = null;
+        if(deptId == null) {
+        	items = quickCart.getProducts();
+        } else {
+        	items = quickCart.getProducts(deptId);
+        }
         List<FDProductSelectionI> modifiableItems = new ArrayList<FDProductSelectionI>();
         modifiableItems.addAll(items);
         if(modifiableItems != null && filterOrderDays != null) {
@@ -287,18 +294,44 @@ public class Order {
      * @throws FDException 
      * @throws ModelException 
      */
-    public List<Department> getDeptForQuickshopEveryItem(String orderId, SessionUser user) throws FDException, ModelException {
+    public List<Department> getDeptForQuickshopEveryItem(String orderId, Integer filterOrderDays, SessionUser user) throws FDException, ModelException {
         List<Department> result = new ArrayList<Department>();
 
         QuickShopControllerTagWrapper wrapper = new QuickShopControllerTagWrapper(user);
 
         ResultBundle resultBundle = wrapper.getQuickCartFromOrder(orderId);
         QuickCart qCart = (QuickCart) resultBundle.getExtraData(QuickShopControllerTagWrapper.QUICK_CART_ID);
-
+      
+        
+        List<FDProductSelectionI> items = qCart.getProducts();
+        List<FDProductSelectionI> modifiableItems = new ArrayList<FDProductSelectionI>();
+        modifiableItems.addAll(items);
+        Set<String> deptIds = new HashSet<String>();
+        
+        if(modifiableItems != null) {
+        	Date currentDate = DateUtil.truncate(new Date());
+        	Iterator<FDProductSelectionI> _itemItr = modifiableItems.iterator();
+        	FDProductSelectionI _tmpItem = null;
+        	while(_itemItr.hasNext()) {
+        		_tmpItem = _itemItr.next();
+        		
+        		if(filterOrderDays != null && _tmpItem.getStatistics() != null 
+        				&& _tmpItem.getStatistics().getLastPurchase() != null 
+        				&& DateUtil.getDiffInDays(currentDate, _tmpItem.getStatistics().getLastPurchase()) > filterOrderDays) {
+        			// Do nothing for now
+        		} else {
+        			ProductModel product = _tmpItem.lookupProduct();
+        			if (product != null && product.getDepartment() != null) {
+        				deptIds.add(product.getDepartment().getContentName());
+        			}
+        			
+        		}
+        	}
+        }
+        
         List<DepartmentModel> storeDepartments = ContentFactory.getInstance().getStore().getDepartments();
-               
    		for (DepartmentModel thisDept : storeDepartments) {
-   			if( !qCart.getProducts(thisDept.getContentName()).isEmpty()) {
+   			if( deptIds.contains(thisDept.getContentName())) {
    				//if (!thisDept.isHidden() && "[big], [test_picks], [our_picks], [about], [spe], [mkt], [kosher_temp], [tea], [pas], [cmty]".indexOf("["+thisDept.getContentName().toLowerCase()+"]")== -1 ) {
    				if (!thisDept.isHidden() && !thisDept.isHidddenInQuickshop()) {
    					result.add(Department.wrap(thisDept));
