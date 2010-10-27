@@ -24,8 +24,19 @@ import com.freshdirect.transadmin.model.DispatchResource;
 import com.freshdirect.transadmin.model.Plan;
 import com.freshdirect.transadmin.model.PlanResource;
 import com.freshdirect.transadmin.service.LogManagerI;
+import com.freshdirect.transadmin.util.DispatchPlanUtil;
 import com.freshdirect.transadmin.util.TransStringUtil;
-
+/**
+ * type '1'  Plan delete
+ * type '2'  Plan Resource Change
+ * type '3'  Dispatch delete
+ * type '4'  Any Dispatch Resource change
+ * 
+ * type '5'  AM Dispath Resource Change 
+ * type '6'  PM Dispath Resource Change 
+ * type '7'  AM Dispath Resource Change Out of Region
+ * type '8'  PM Dispath Resource Change Out of Region 
+ */
 public class ActivityLogAdvisor implements MethodBeforeAdvice
 {
 	private LogManagerI logManager;
@@ -159,6 +170,10 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 					c1.compare(oldDispatch, newDispatch);
 					LogComparator c2=new DispatchComparator();
 					c2.compare(oldDispatch, newDispatch);
+					LogComparator c3=new DispatchComparator();
+					c3.compare(oldDispatch, newDispatch);
+					LogComparator c4=new DispatchComparator();
+					c4.compare(oldDispatch, newDispatch);
 					Set newResourcesCopy=new HashSet();
 					newResourcesCopy.addAll(newDispatch.getDispatchResources());
 					if(newResourcesCopy!=null)
@@ -175,25 +190,46 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 								Dispatch _resDispatch =  itr.next();
 								dispatchManagerDao.evictDispatch(_resDispatch);
 								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
-									((DispatchComparator) c1).compareResource1(newPlanResource);
+									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
+										((DispatchComparator) c1).compareResource1(newPlanResource);
+									}else {
+										((DispatchComparator) c2).compareResource1(newPlanResource);
+									}
 								}
 								if(!newDispatch.getDispatchId().equals(_resDispatch.getDispatchId()))
-									((DispatchComparator) c2).compareResource1(newPlanResource);			
+									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
+										((DispatchComparator) c3).compareResource1(newPlanResource);
+									}else {
+										((DispatchComparator) c4).compareResource1(newPlanResource);
+									}
 							}						
 						}
 						
-						updates=c1.getUpdateFields();
-						if(updates!=null)
-						for(int i=0,n=updates.size();i<n;i++)
+						List updates1 = c1.getUpdateFields();
+						if(updates1!=null)
+						for(int i=0,n=updates1.size();i<n;i++)
 						{
-							logManager.log(newDispatch.getUserId(),5,updates.get(i));
+							logManager.log(newDispatch.getUserId(),7,updates1.get(i));
 						}
 						
-						updates=c2.getUpdateFields();
-						if(updates!=null)
-						for(int i=0,n=updates.size();i<n;i++)
+						List updates2 = c2.getUpdateFields();
+						if(updates2!=null)
+						for(int i=0,n=updates2.size();i<n;i++)
 						{
-							logManager.log(newDispatch.getUserId(),6,updates.get(i));
+							logManager.log(newDispatch.getUserId(),8,updates2.get(i));
+						}
+						List updates3 = c3.getUpdateFields();
+						if(updates3!=null)
+						for(int i=0,n=updates3.size();i<n;i++)
+						{
+							logManager.log(newDispatch.getUserId(),5,updates3.get(i));
+						}
+						
+						List updates4 = c4.getUpdateFields();
+						if(updates4!=null)
+						for(int i=0,n=updates4.size();i<n;i++)
+						{
+							logManager.log(newDispatch.getUserId(),6,updates4.get(i));
 						}
 					}					
 				}

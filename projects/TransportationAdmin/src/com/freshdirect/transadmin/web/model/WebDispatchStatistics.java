@@ -275,26 +275,38 @@ public class WebDispatchStatistics  implements Serializable
 															
 	}
 	
-	public void calculateDispatchTeamChange(List resourceList,
-			DispatchManagerI dispatchManagerService,
-			DomainManagerI domainManagerService,
-			EmployeeManagerI employeeManagerService, boolean isTeamChange) throws ParseException	
+	public void calculateAmDispatchTeamChange(List resourceList)	
 	{
-		calculateResourceworkedSixdays(resourceList,dispatchManagerService, domainManagerService, employeeManagerService,isTeamChange, false);
+		if(resourceList!=null)			
+			aMTeamChange = resourceList.size();
+		else
+			aMTeamChange = 0;
 															
 	}
-	
-	public void calculateDispatchTeamChangeOutOfRegion(List resourceList,
-			DispatchManagerI dispatchManagerService,
-			DomainManagerI domainManagerService,
-			EmployeeManagerI employeeManagerService, boolean isTeamChange) throws ParseException	
+	public void calculatePmDispatchTeamChange(List resourceList)	
 	{
-		calculateResourceworkedSixdays(resourceList,dispatchManagerService, domainManagerService, employeeManagerService,isTeamChange,true);
-															
+		if(resourceList!=null)			
+			pMTeamChange = resourceList.size();	
+		else
+			pMTeamChange = 0;	
 	}
 	
-	
-    
+	public void calculateAmDispatchTeamChangeOutOfRegion(List resourceList)	
+	{
+		if(resourceList!=null)			
+			aMTeamChangeRegionOut = resourceList.size();	
+		else
+			aMTeamChangeRegionOut = 0;	
+															
+	}
+	public void calculatePmDispatchTeamChangeOutOfRegion(List resourceList)	
+	{
+		if(resourceList!=null)			
+			pMTeamChangeRegionOut = resourceList.size();	
+		else
+			pMTeamChangeRegionOut = 0;	
+															
+	}    
 }
 	
 

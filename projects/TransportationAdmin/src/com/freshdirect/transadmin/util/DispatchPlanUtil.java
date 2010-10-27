@@ -1132,7 +1132,7 @@ public class DispatchPlanUtil {
 	
 	public static String getShift(Date deliveryDate, Date firstDeliveryTime) throws ParseException {		
 		int day = TransStringUtil.getDayOfWeek(deliveryDate);
-		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(deliveryDate));
+		double hourOfDay = Double.parseDouble(TransStringUtil.formatTimeFromDate(firstDeliveryTime));
 		if (hourOfDay < 12 && day != 7) {
 			return "AM";
 		} else if (hourOfDay < 10 && day == 7) {

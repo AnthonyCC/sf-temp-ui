@@ -999,8 +999,10 @@ public class DispatchController extends AbstractMultiActionController {
 			//Collection unAvalEmpList = employeeManagerService.getUnAvailableEmployees(planList, TransStringUtil.getCurrentServerDate());
 			Date date = TransStringUtil.getServerDateString1(TransStringUtil.getCurrentDate());
 			List resourceList = dispatchManagerService.getResourcesWorkedForSixConsecutiveDays(date);
-			List teamChangedList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"6","RESOURCE_ID");
-			List teamChangedRegionList = dispatchManagerService.getDispatchTeamResourcesChanged(date,"5","RESOURCE_ID");
+			List amResChanged = dispatchManagerService.getDispatchTeamResourcesChanged(date,"5","RESOURCE_ID");
+			List pmResChanged = dispatchManagerService.getDispatchTeamResourcesChanged(date,"6","RESOURCE_ID");
+			List amResChangedOut = dispatchManagerService.getDispatchTeamResourcesChanged(date,"7","RESOURCE_ID");
+			List pmResChangedOut = dispatchManagerService.getDispatchTeamResourcesChanged(date,"8","RESOURCE_ID");
 			
 			WebDispatchStatistics webStats = new WebDispatchStatistics();
 			
@@ -1010,9 +1012,10 @@ public class DispatchController extends AbstractMultiActionController {
 			//webStats.calculateUnassigned(unAssignedActiveEmp);
 			//webStats.calculatePaycode(unAvalEmpList);
 			webStats.calculateFireTruckorMOT(dispatchList);
-			webStats.calculateDispatchTeamChange(teamChangedList, dispatchManagerService, domainManagerService, employeeManagerService, true);
-			webStats.calculateDispatchTeamChangeOutOfRegion(teamChangedRegionList, dispatchManagerService, domainManagerService, employeeManagerService, true);
-			
+			webStats.calculateAmDispatchTeamChange(amResChanged);
+			webStats.calculatePmDispatchTeamChange(pmResChanged);
+			webStats.calculateAmDispatchTeamChangeOutOfRegion(amResChangedOut);
+			webStats.calculatePmDispatchTeamChangeOutOfRegion(pmResChangedOut);
 			request.setAttribute("statistics", webStats);
 			
 		} catch (Exception e) {
