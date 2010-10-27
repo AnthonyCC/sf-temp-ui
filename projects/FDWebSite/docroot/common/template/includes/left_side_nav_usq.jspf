@@ -213,7 +213,7 @@ if (selected == null || wineFilter.isFiltering()) {
 			ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
 			v.addAll(domain.getFilterValues());
 	%>
-		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear all</a></div>
+		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear all</a></div>
 	<%		
 		}
 	
@@ -631,19 +631,25 @@ for (CategoryModel cat : deptCategories) {
 		if (isLink || isCatSelected) {
 		
 %>
+		<a <%if (isLink) { %> href="/category.jsp?catId=<%= cat.getContentName() %>&trk=<%= trk %>"<% } %> id="wine-sidenav-cat-<%= cat.getContentName() %>" style="z-index: <%= zIndex %>;"
+				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %> wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-<%= cat.getContentName() %> <%= isLink ? "" : "over" %>">			
+			<span><%= cat.getFullName() %></span>			
+		</a>
+<!-- 
 		<div id="wine-sidenav-cat-<%= cat.getContentName() %>" style="z-index: <%= zIndex %>;"
 				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %> wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-<%= cat.getContentName() %> <%= isLink ? "" : "over" %>">
 			<%if (isLink) { %><a href="/category.jsp?catId=<%= cat.getContentName() %>&trk=<%= trk %>"><% } %>
 			<%= cat.getFullName() %>
 			<%if (isLink) { %></a><% } %>
 		</div>
+ -->		
 <%
 		} else {
 %>
 		<div id="wine-sidenav-cat-<%= cat.getContentName() %>"
 				class="title16 wine-narrow wine-sidenav-category<%= isCatSelected ? "-selected" : "" %>-over <%= cat.getContentName() %>"
-				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-category-menu-<%= cat.getContentName() %>')"
-				onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-category-menu-<%= cat.getContentName() %>')"
+				onmouseover="FreshDirect.WineNav.catMenuIn('sidenav-category-menu-<%= cat.getContentName() %>', 'sidenav-category-menu-over')"
+				onmouseout="FreshDirect.WineNav.catMenuOut('sidenav-category-menu-<%= cat.getContentName() %>', 'sidenav-category-menu-over')"
 				style="z-index: <%= zIndex %>;">
 			<span><%= cat.getFullName() %></span>
 			<div class="sidenav-category-menu" id="sidenav-category-menu-<%= cat.getContentName() %>" style="display: none">
@@ -686,11 +692,11 @@ for (CategoryModel cat : deptCategories) {
 							if (subsubcat.getShowSelf() && subsubcat.getSideNavShowSelf()) {
 								isCatSelected = subsubcat.equals(selected);
 %>
-<div class="text11 wine-narrow wine-sidenav-subsubcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">
-		<% if (subsubcat.getSideNavLink()) { %><a href="/category.jsp?catId=<%= subsubcat.getContentName() %>&trk=<%= trk %>"><% } %>
-		<%= subsubcat.getFullName() %>
-		<% if (subsubcat.getSideNavLink()) { %></a><% } %>
-</div>
+
+<a <% if (subsubcat.getSideNavLink()) { %>href="/category.jsp?catId=<%= subsubcat.getContentName() %>&trk=<%= trk %>"<% } %> class="text11 wine-narrow wine-sidenav-subsubcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">		
+		<span><%= subsubcat.getFullName() %></span>		
+</a>
+
 <%
 							}
 						}
@@ -725,9 +731,9 @@ for (CategoryModel cat : deptCategories) {
 <% if (lastDomainName != null) {%> FreshDirect.WineNav.toggleDomain('<%=lastDomainName %>', '<%=lastDomainId %>');<%}%>
 FreshDirect.WineNav.initSideNavMenus();
 </script>
-<div style="z-index: <%= zIndex %>;" class="title16 wine-narrow wine-sidenav-category">
-	<a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);">Request a Wine</a>
-</div>
+<a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);" style="z-index: <%= zIndex %>;" class="title16 wine-narrow wine-sidenav-category">
+	<span>Request a Wine</span>
+</a>
 </fd:WineSorter>
 </fd:WineFilter>
 </fd:Parameters>

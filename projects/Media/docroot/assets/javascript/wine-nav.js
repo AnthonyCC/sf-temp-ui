@@ -52,24 +52,32 @@ if (!FreshDirect || !FreshDirect) {
 		WineNav.selectedMoreOptions = domainArray;
 	};
 
-	WineNav.showMenu = function(menu_id) {
+	WineNav.showMenu = function(menu_id, overStyle) {
 		var menu = menus[menu_id];
 		menu.node.style.zIndex = 501;
 		if (menu.popup)
 			menu.popup.style.display = 'block';
+		if (overStyle && menu.node) {
+			YAHOO.util.Dom.addClass(menu.node, overStyle);
+		}
 	};
 	
-	WineNav.hideMenu = function(menu_id) {
+	WineNav.hideMenu = function(menu_id, overStyle) {
 		var menu = menus[menu_id];
-		menu.node.style.zIndex = 0;
+		menu.node.style.zIndex = 0;		
 		if (menu.popup)
 			menu.popup.style.display = 'none';
+		if (overStyle && menu.node) {
+			YAHOO.util.Dom.removeClass(menu.node, overStyle);
+		}
 	};
 
-	var setMyTimeout = function(menu_id) {
-		var menu = menus[menu_id];
+	var setMyTimeout = function(menu_id, overStyle) {
+		var menu = menus[menu_id];		
 		if (!menu.timeout)
-			menu.timeout = setTimeout("FreshDirect.WineNav.hideMenu('" + menu_id + "');", 50);
+			menu.timeout = setTimeout("FreshDirect.WineNav.hideMenu('" + menu_id + "' " 
+										+ (overStyle ? ",'" + overStyle + "'" : "")  
+										+ ");", 50);
 	};
 
 	var resetMyTimeout = function(menu_id) {
@@ -84,32 +92,23 @@ if (!FreshDirect || !FreshDirect) {
 		resetMyTimeout(menu_id);
 	};
 	
-	WineNav.popupOut = function(menu_id) {
-		setMyTimeout(menu_id);
+	WineNav.popupOut = function(menu_id, overStyle) {
+		setMyTimeout(menu_id, overStyle);
 	};
 	
-	WineNav.catMenuIn = function(menu_id) {
+	WineNav.catMenuIn = function(menu_id, overStyle) {		
 		resetMyTimeout(menu_id);
-		WineNav.showMenu(menu_id);
+		WineNav.showMenu(menu_id, overStyle);
 	};
 	
-	WineNav.catMenuOut = function(menu_id) {
-		setMyTimeout(menu_id);
+	WineNav.catMenuOut = function(menu_id, overStyle) {
+		setMyTimeout(menu_id, overStyle);
 	};
 
 	WineNav.filterMenuIn = function(e, menu_id) {
 		resetMyTimeout(menu_id);
 		var menu = menus[menu_id];
-/*		if (menu.popup && menu.popup.style.display != 'block') {
-			var x = YAHOO.util.Event.getPageX(e);
-			var y = YAHOO.util.Event.getPageY(e);
-			var r = YAHOO.util.Region.getRegion(menu.node);
-			x = x - r.left;
-			y = menu.node.clientHeight - y + r.top;
-			menu.popup.style.bottom = (y - 10) + "px";
-			menu.popup.style.left = (x - 10) + "px";
-		}
-*/		WineNav.showMenu(menu_id);
+		WineNav.showMenu(menu_id);
 	};
 	
 	WineNav.filterMenuOut = function(e, menu_id) {
@@ -118,8 +117,8 @@ if (!FreshDirect || !FreshDirect) {
 	
 	var renderCatMenuPopup = function(menu) {
 		var s =	'<div class="wine-homenav-cat-popup" ' +
-				'onmouseover="FreshDirect.WineNav.popupIn(\'' + menu.id + '\');" ' +
-				'onmouseout="FreshDirect.WineNav.popupOut(\'' + menu.id + '\');">';
+				'onmouseover="FreshDirect.WineNav.popupIn(\'' + menu.id + '\', \'wine-homenav-cat-menu-over\');" ' +
+				'onmouseout="FreshDirect.WineNav.popupOut(\'' + menu.id + '\', \'wine-homenav-cat-menu-over\');">';
 		var item;
 		for (var i = 0; i < menu.items.length; i++) {
 			item = menu.items[i];
@@ -159,8 +158,8 @@ if (!FreshDirect || !FreshDirect) {
 		var s;
 		if (menu.items.length) {
 			s = '<div class="wine-main-item" ' +
-					'onmouseover="FreshDirect.WineNav.catMenuIn(\'' + menu.id + '\');" ' +
-					'onmouseout="FreshDirect.WineNav.catMenuOut(\'' + menu.id + '\');">' +
+					'onmouseover="FreshDirect.WineNav.catMenuIn(\'' + menu.id + '\', \'wine-homenav-cat-menu-over\');" ' +
+					'onmouseout="FreshDirect.WineNav.catMenuOut(\'' + menu.id + '\', \'wine-homenav-cat-menu-over\');">' +
 					'<a href="JavaScript:return false;" class="wine-main-item">' +
 					menu.node.innerHTML + "</a>" +
 					renderCatMenuPopup(menu) +

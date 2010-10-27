@@ -26,3 +26,7 @@
 	font-size: 11px;
 	line-height: 14px;
 }
+
+.wine-sidenav-category span, .wine-sidenav-category-selected span {
+	padding-left: 23px;
+}

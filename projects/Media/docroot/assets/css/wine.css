@@ -1026,9 +1026,9 @@ input.clicode_quantity {
 	position: relative;
 }
 
-.wine-homenav-cat-menu a.wine-main-item:hover {
+.wine-homenav-cat-menu a.wine-main-item:hover, .wine-homenav-cat-menu-over a.wine-main-item {
 	background: #605448 none;
-	color: #b5b093;
+	color: #E0DDC1;
 }
 
 .wine-homenav-cat-popup {
@@ -1188,42 +1188,48 @@ a.wine-sortby {
 		;
 }
 
-.wine-sidenav-category {
-	padding: 3px;
-	padding-left: 13px;
+.wine-sidenav-category {	
 	text-indent: -10px;
 	color: #605448;
 	background: #E2DFCD none;
 	position: relative;
-}
 
-.wine-sidenav-category a {
 	color: #605448;
 	text-decoration: none;
 	text-indent: 0px;
+	display: inline-block;	
+	width: 100%;
 }
 
-.wine-sidenav-category a:active,.wine-sidenav-category a:visited {
+.wine-sidenav-category:active, .wine-sidenav-category:visited, .wine-sidenav-category:link {
 	color: #605448;
 }
 
-.wine-sidenav-category-selected {
-	padding: 3px;
-	padding-left: 13px;
-	text-indent: -10px;
+.wine-sidenav-category:hover, .sidenav-category-menu-over {
+	color: #E2DFCC ! important;
+    background-color: #786F5E ! important;
+}
+
+.wine-sidenav-category-selected {	
 	color: #e2dfcc;
 	background: #665544 none;
 	position: relative;
-}
-
-.wine-sidenav-category-selected a {
 	color: #e2dfcc;
 	text-decoration: none;
 	text-indent: 0px;
+	display: inline-block;
+	width: 100%;
 }
 
-.wine-sidenav-category-selected a:active,.wine-sidenav-category-selected a:visited
-	{
+.wine-sidenav-category span, .wine-sidenav-category-selected span {
+	display: inline-block;
+	padding: 3px;
+	padding-left: 13px;
+	text-indent: -10px;
+	cursor: pointer;
+}
+
+.wine-sidenav-category-selected:active, .wine-sidenav-category-selected:visited,.wine-sidenav-category-selected:link {
 	color: #e2dfcc;
 }
 
@@ -1260,10 +1266,7 @@ a.wine-sortby {
 /**
  * Deals style
  */
-.wine-sidenav-category-selected-usq_deals {
-	padding: 3px;
-	padding-left: 13px;
-	text-indent: -10px;
+.wine-sidenav-category-selected-usq_deals {	
 	color: #e2dfcc;
 	background: #C65D5D none;
 }
@@ -1431,7 +1434,11 @@ a.nav-filter-value-inner {
 .domain-submenu .nav-filter-value {
 	font-size: 14px;
 	line-height: 14px;
-	padding: 0px;
+	padding: 0px;	
+}
+
+#wine-left-side-nav-closed-MORE {
+	border-bottom: 0px;
 }
 
 .wine-left-side-nav-closed .domain-menu .domain-submenu,.sidenav-category-menu
@@ -1460,7 +1467,7 @@ a.nav-filter-value-inner {
 	{
 	text-decoration: none;
 	display: block;
-	padding: 0px 10px 0px 6px;
+	padding: 2px 10px 2px 6px;
 	text-indent: 0px;
 }
 
@@ -1671,6 +1678,7 @@ div.nav-filter-more-link a {
 
 .nav-group, .nav-filter-value-Region-group {
 	color: #827A6E;
+	font-size: 12px;
 }
 
 .nav-group-hidden {
@@ -1678,8 +1686,7 @@ div.nav-filter-more-link a {
 }
 
 .nav-group-selected {
-	display: block;
-	font-size: 12px;
+	display: block;	
 	color: #827A6E;
 }
 
