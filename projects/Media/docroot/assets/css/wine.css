@@ -180,7 +180,7 @@ table.main {
 	padding: 7px;
 }
 
-.left_nav_item a {
+.left_nav_item a, .left_nav_item a:link, .left_nav_item a:visited, .left_nav_item a:active {
 	color: #665544;
 	text-decoration: none;
 }
@@ -1327,6 +1327,7 @@ a.nav-filter-checkbox {
 	margin: 3px;
 	width: 13px;
 	padding: 3px;
+	background-position: center center;
 }
 
 .nav-filter-category {
@@ -1394,7 +1395,12 @@ a.nav-filter-value-inner {
 	color: black;
 	font-style: italic;
 	font-size: 11px ! important;
-	font-weight: normal ! important;
+	font-weight: normal ! important;	
+}
+
+.nav-list-wrapper {
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 .wine-left-side-nav-closed {
@@ -1515,7 +1521,18 @@ a.nav-filter-value-inner {
 	background-color: #889982;
 }
 
-.nav-filter-name-TYPE .nav-filter-value-label,.nav-filter-name-TYPE .nav-clear-all-link a,.nav-filter-change-TYPE,.nav-filter-value-Varietal a
+.nav-filter-name-TYPE .nav-filter-value-label, 
+.nav-filter-name-TYPE .nav-filter-value-label:active,
+.nav-filter-name-TYPE .nav-filter-value-label:link,
+.nav-filter-name-TYPE .nav-filter-value-label:visited,
+.nav-filter-name-TYPE .nav-clear-all-link a:active,
+.nav-filter-name-TYPE .nav-clear-all-link a:link,
+.nav-filter-name-TYPE .nav-clear-all-link a:visited,
+.nav-filter-change-TYPE,
+.nav-filter-value-Varietal a,
+.nav-filter-value-Varietal a:active,
+.nav-filter-value-Varietal a:visited,
+.nav-filter-value-Varietal a:link
 	{
 	color: #313A2E;
 }
@@ -1530,7 +1547,7 @@ a.nav-filter-value-inner {
 	background-color: #BACCB4;
 }
 
-#Varietal-all .nav-filter-value-Varietal,#Varietal-all .nav-filter-change-Varietal,.Varietal-more-option,#TYPE-all .nav-filter-value-TYPE,#TYPE-all .nav-filter-change-TYPE
+#Varietal-all .nav-filter-value-Varietal,#Varietal-all .nav-filter-change-Varietal,.Varietal-more-option,#TYPE-all .nav-filter-value-TYPE,#TYPE-all .nav-filter-change-TYPE, #TYPE-all .nav-list-wrapper, #Varietal-all .nav-list-wrapper
 	{
 	background-color: #D3DBCE;
 }
@@ -1569,7 +1586,7 @@ div.nav-filter-more-link {
 	color: #4B5B46;
 }
 
-div.nav-filter-more-link a {
+div.nav-filter-more-link a, div.nav-filter-more-link a:active, div.nav-filter-more-link a:link, div.nav-filter-more-link a:visited {
 	color: #4B5B46;
 	font-style: italic;
 }
@@ -1636,17 +1653,39 @@ div.nav-filter-more-link a {
 	background-color: #D1C8BF;
 }
 
-#Region-all .nav-filter-value-Region,#Region-all .nav-filter-change-Region,.nav-filter-value-Region-group,#COUNTRY-all .nav-filter-value-COUNTRY,#COUNTRY-all .nav-filter-change-COUNTRY
+#Region-all .nav-filter-value-Region,#Region-all .nav-filter-change-Region,.nav-filter-value-Region-group,#COUNTRY-all .nav-filter-value-COUNTRY,#COUNTRY-all .nav-filter-change-COUNTRY, #COUNTRY-all .nav-list-wrapper, #Region-all .nav-list-wrapper
 	{
 	background-color: #E2DED9;
 }
 
-.nav-filter-name-Region .nav-filter-value-label,.nav-filter-name-Region .nav-clear-all-link a
+.nav-filter-name-Region .nav-filter-value-label,
+.nav-filter-name-Region .nav-filter-value-label:active,
+.nav-filter-name-Region .nav-filter-value-label:link,
+.nav-filter-name-Region .nav-filter-value-label:visited,
+.nav-filter-name-Region .nav-clear-all-link a,
+.nav-filter-name-Region .nav-clear-all-link a:active,
+.nav-filter-name-Region .nav-clear-all-link a:link,
+.nav-filter-name-Region .nav-clear-all-link a:visited
 	{
 	color: #827A6E;
 }
 
-.nav-filter-name-COUNTRY .nav-filter-value-label,.nav-filter-name-COUNTRY .nav-clear-all-link a,#Region-selected .nav-filter-value-label,#Region-selected .nav-clear-all-link a
+.nav-filter-name-COUNTRY .nav-filter-value-label,
+.nav-filter-name-COUNTRY .nav-filter-value-label:active,
+.nav-filter-name-COUNTRY .nav-filter-value-label:link,
+.nav-filter-name-COUNTRY .nav-filter-value-label:visited,
+.nav-filter-name-COUNTRY .nav-clear-all-link a,
+.nav-filter-name-COUNTRY .nav-clear-all-link a:active,
+.nav-filter-name-COUNTRY .nav-clear-all-link a:link,
+.nav-filter-name-COUNTRY .nav-clear-all-link a:visited,
+#Region-selected .nav-filter-value-label,
+#Region-selected .nav-filter-value-label:link,
+#Region-selected .nav-filter-value-label:active,
+#Region-selected .nav-filter-value-label:visited,
+#Region-selected .nav-clear-all-link a,
+#Region-selected .nav-clear-all-link a:link,
+#Region-selected .nav-clear-all-link a:active,
+#Region-selected .nav-clear-all-link a:visited
 	{
 	color: #3D3933;
 }
@@ -1720,7 +1759,14 @@ div.nav-filter-more-link a {
 	background-color: #828299;
 }
 
-.nav-filter-name-PRICE .nav-filter-value-label,.nav-filter-name-PRICE .nav-clear-all-link a
+.nav-filter-name-PRICE .nav-filter-value-label,
+.nav-filter-name-PRICE .nav-filter-value-label:active,
+.nav-filter-name-PRICE .nav-filter-value-label:link,
+.nav-filter-name-PRICE .nav-filter-value-label:visited,
+.nav-filter-name-PRICE .nav-clear-all-link a,
+.nav-filter-name-PRICE .nav-clear-all-link a:active,
+.nav-filter-name-PRICE .nav-clear-all-link a:link,
+.nav-filter-name-PRICE .nav-clear-all-link a:visited
 	{
 	color: #656575;
 }
@@ -1729,7 +1775,7 @@ div.nav-filter-more-link a {
 	background-color: #C9C9D6;
 }
 
-#PRICE-all .nav-filter-value-PRICE,#PRICE-all.nav-filter-change-PRICE {
+#PRICE-all .nav-filter-value-PRICE,#PRICE-all.nav-filter-change-PRICE, #PRICE-all .nav-list-wrapper {
 	background-color: #D1D1D8;
 }
 
@@ -1757,7 +1803,14 @@ div.nav-filter-more-link a {
 	background-color: #A3767C;
 }
 
-.nav-filter-name-RATING .nav-filter-value-label,.nav-filter-name-RATING .nav-clear-all-link a
+.nav-filter-name-RATING .nav-filter-value-label,
+.nav-filter-name-RATING .nav-filter-value-label:active,
+.nav-filter-name-RATING .nav-filter-value-label:link,
+.nav-filter-name-RATING .nav-filter-value-label:visited,
+.nav-filter-name-RATING .nav-clear-all-link a,
+.nav-filter-name-RATING .nav-clear-all-link a:active,
+.nav-filter-name-RATING .nav-clear-all-link a:link,
+.nav-filter-name-RATING .nav-clear-all-link a:visited
 	{
 	color: #77545D;
 }
@@ -1766,7 +1819,7 @@ div.nav-filter-more-link a {
 	background-color: #D8C7CC;
 }
 
-#RATING-all .nav-filter-value-RATING,#RATING-all .nav-filter-change-RATING
+#RATING-all .nav-filter-value-RATING,#RATING-all .nav-filter-change-RATING, #RATING-all .nav-list-wrapper
 	{
 	background-color: #EDE4E5;
 }
@@ -1799,16 +1852,26 @@ div.nav-filter-more-link a {
 	background-color: #D8CDC5;
 }
 
-#MORE-all .nav-filter-value-MORE,#MORE-all .nav-filter-change-MORE {
+#MORE-all .nav-filter-value-MORE,#MORE-all .nav-filter-change-MORE, #MORE-all .nav-list-wrapper {
 	background-color: #EDE6E2;
 }
 
-.nav-filter-name-MORE .nav-filter-value-label,.nav-filter-name-MORE .nav-clear-all-link a
+.nav-filter-name-MORE .nav-filter-value-label,
+.nav-filter-name-MORE .nav-filter-value-label:active,
+.nav-filter-name-MORE .nav-filter-value-label:link,
+.nav-filter-name-MORE .nav-filter-value-label:visited,
+.nav-filter-name-MORE .nav-clear-all-link a,
+.nav-filter-name-MORE .nav-clear-all-link a:active,
+.nav-filter-name-MORE .nav-clear-all-link a:link,
+.nav-filter-name-MORE .nav-clear-all-link a:visited
 	{
 	color: #474747;
 }
 
-#MORE-all .nav-filter-name-MORE .nav-filter-value-label {
+#MORE-all .nav-filter-name-MORE .nav-filter-value-label,
+#MORE-all .nav-filter-name-MORE .nav-filter-value-label:link,
+#MORE-all .nav-filter-name-MORE .nav-filter-value-label:active,
+#MORE-all .nav-filter-name-MORE .nav-filter-value-label:visited {
 	color: #756154;
 }
 
@@ -1842,7 +1905,7 @@ div.nav-filter-more-link a {
 	background-color: #D3DBCE;
 }
 
-.domain-submenu .nav-filter-value-TYPE a {
+.domain-submenu .nav-filter-value-TYPE a,.domain-submenu .nav-filter-value-TYPE a:link, .domain-submenu .nav-filter-value-TYPE a:visited, .domain-submenu .nav-filter-value-TYPE a:active {
 	color: #313A2E;
 }
 
@@ -1859,7 +1922,7 @@ div.nav-filter-more-link a {
 	background-color: #E2DED9;
 }
 
-.domain-submenu .nav-filter-value-COUNTRY a {
+.domain-submenu .nav-filter-value-COUNTRY a,.domain-submenu .nav-filter-value-COUNTRY a:link, .domain-submenu .nav-filter-value-COUNTRY a:visited, .domain-submenu .nav-filter-value-COUNTRY a:active {
 	color: #827A6E;
 }
 
@@ -1876,7 +1939,7 @@ div.nav-filter-more-link a {
 	background-color: #D1D1D8;
 }
 
-.domain-submenu .nav-filter-value-PRICE a {
+.domain-submenu .nav-filter-value-PRICE a, .domain-submenu .nav-filter-value-PRICE a:link, .domain-submenu .nav-filter-value-PRICE a:visited,.domain-submenu .nav-filter-value-PRICE a:active {
 	color: #656575;
 }
 
@@ -1893,7 +1956,7 @@ div.nav-filter-more-link a {
 	background-color: #EDE4E5;
 }
 
-.domain-submenu .nav-filter-value-RATING a {
+.domain-submenu .nav-filter-value-RATING a, .domain-submenu .nav-filter-value-RATING a:visited, .domain-submenu .nav-filter-value-RATING a:link, .domain-submenu .nav-filter-value-RATING a:active {
 	color: #77545D;
 }
 
@@ -1910,7 +1973,7 @@ div.nav-filter-more-link a {
 	background-color: #EDE6E2;
 }
 
-.domain-submenu .nav-filter-value-MORE a {
+.domain-submenu .nav-filter-value-MORE a,.domain-submenu .nav-filter-value-MORE a:visited, .domain-submenu .nav-filter-value-MORE a:link, .domain-submenu .nav-filter-value-MORE a:active {
 	color: #756154;
 }
 

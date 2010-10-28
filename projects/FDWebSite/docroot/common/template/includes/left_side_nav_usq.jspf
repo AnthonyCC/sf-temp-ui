@@ -161,6 +161,7 @@ if (selected == null || wineFilter.isFiltering()) {
 		clearValues.addAll(domain.getFilterValues());
 	%>
 		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear all</a></div>
+		<div class="nav-list-wrapper nav-list-wrapper-<%=domain.name() %>">		
 	<%		
 	
 		for (WineFilterValue filterValue : applicableValues) {
@@ -194,6 +195,7 @@ if (selected == null || wineFilter.isFiltering()) {
 		}
 	%>
 		</div>
+		</div>
 		<div id="<%=domain.name() %>-selected" style="display: <%=displaySelected %>" class="wine-filter-value-selected">
 	<%
 		/**
@@ -216,7 +218,7 @@ if (selected == null || wineFilter.isFiltering()) {
 		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear all</a></div>
 	<%		
 		}
-	
+		
 		for (WineFilterValue filterValue : sortedSelectedDomains) {
 			WineFilter f = wineFilter.clone();
 			String label = filterValue.getFilterRepresentation();
@@ -307,6 +309,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					v.addAll(selectedFilters);						
 %>	
 					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
+					<div class="nav-list-wrapper">
 <%
 					ArrayList<DomainValue> selectedSubValues = new ArrayList<DomainValue>();
 
@@ -359,6 +362,7 @@ if (selected == null || wineFilter.isFiltering()) {
 <%							
 						}
 %>
+						</div>
 						</div>
 						<div id="nav-group-<%=groupHash %>-selected" class="nav-group<%=groupSelectedClass %>">
 						

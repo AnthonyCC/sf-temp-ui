@@ -30,3 +30,7 @@
 .wine-sidenav-category span, .wine-sidenav-category-selected span {
 	padding-left: 23px;
 }
+
+.nav-filter-value-label {
+	padding-left: 13px;
+}
