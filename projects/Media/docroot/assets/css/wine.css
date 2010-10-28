@@ -934,6 +934,11 @@ input.clicode_quantity {
 	color: #845555;
 }
 
+.usq .usq-deals .carousel-tab-label div {
+	border-left: 1px solid #ead4d0;
+	border-right: 1px solid #ead4d0;
+}
+
 .usq .usq-deals .carousel-tab-left-label div {
 	border-left: 1px solid #845555;
 }
@@ -946,6 +951,11 @@ input.clicode_quantity {
 	text-transform: uppercase;
 	background: #cc6666 none;
 	color: #f4f1e4;
+}
+
+.usq .usq-deals .carousel-tab-label-selected div {
+	border-left: 1px solid #cc6666;
+	border-right: 1px solid #cc6666;
 }
 
 .usq .usq-xprt .carousel-tab-label {
@@ -1313,6 +1323,7 @@ a.nav-filter-checkbox {
 	width: 14px ! important;
 	height: 13px ! important;
 	background-repeat: no-repeat;
+	background-position: center center;
 }
 
 .nav-filter-name .nav-filter-value {
@@ -1375,7 +1386,6 @@ img.nav-filter-value-inner {
 }
 
 a.nav-filter-value-inner {
-	width: 90px;
 	margin-left: 1px;
 }
 
@@ -1434,7 +1444,7 @@ a.nav-filter-value-inner {
 
 .wine-left-side-nav-closed .domain-menu .nav-filter-name {
 	position: relative;
-	padding-right: 40px ! important;
+	width: 150px;
 }
 
 .domain-submenu .nav-filter-value {
@@ -2020,15 +2030,12 @@ div.nav-filter-more-link a, div.nav-filter-more-link a:active, div.nav-filter-mo
 	font-size: 0px;
 	width: 18px;
 	height: 15px;
-	background-image: url('/media_stat/images/wine/wine_rating_star_lg.png')
-		;
+	background-image: url('/media_stat/images/wine/wine_rating_star_lg.png');
 }
 
 * html .usq-rating-lg {
 	background-image: none;
-	filter: progid : DXImageTransform.Microsoft.AlphaImageLoader ( enabled =
-		true, src =/ media_stat/ images/ wine/ wine_rating_star_lg.png,
-		sizingMethod = 'scale' );
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=/media_stat/images/wine/wine_rating_star_lg.png, sizingMethod='scale');
 }
 
 .usq-rating-sm {
@@ -2036,15 +2043,12 @@ div.nav-filter-more-link a, div.nav-filter-more-link a:active, div.nav-filter-mo
 	font-size: 0px;
 	width: 15px;
 	height: 12px;
-	background-image: url('/media_stat/images/wine/wine_rating_star_sm.png')
-		;
+	background-image: url('/media_stat/images/wine/wine_rating_star_sm.png');
 }
 
 * html .usq-rating-sm {
 	background-image: none;
-	filter: progid : DXImageTransform.Microsoft.AlphaImageLoader ( enabled =
-		true, src =/ media_stat/ images/ wine/ wine_rating_star_sm.png,
-		sizingMethod = 'scale' );
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=/media_stat/images/wine/wine_rating_star_sm.png, sizingMethod='scale');
 }
 
 .usq-rating-half-lg {
@@ -2052,15 +2056,12 @@ div.nav-filter-more-link a, div.nav-filter-more-link a:active, div.nav-filter-mo
 	font-size: 0px;
 	width: 9px;
 	height: 15px;
-	background-image:
-		url('/media_stat/images/wine/wine_rating_star_half_lg.png');
+	background-image: url('/media_stat/images/wine/wine_rating_star_half_lg.png');
 }
 
 * html .usq-rating-half-lg {
 	background-image: none;
-	filter: progid : DXImageTransform.Microsoft.AlphaImageLoader ( enabled =
-		true, src =/ media_stat/ images/ wine/ wine_rating_star_half_lg.png,
-		sizingMethod = 'scale' );
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=/media_stat/images/wine/wine_rating_star_half_lg.png, sizingMethod='scale');
 }
 
 .usq-rating-half-sm {
@@ -2068,19 +2069,15 @@ div.nav-filter-more-link a, div.nav-filter-more-link a:active, div.nav-filter-mo
 	font-size: 0px;
 	width: 8px;
 	height: 12px;
-	background-image:
-		url('/media_stat/images/wine/wine_rating_star_half_sm.png');
+	background-image: url('/media_stat/images/wine/wine_rating_star_half_sm.png');
 }
 
 * html .usq-rating-half-sm {
 	background-image: none;
-	filter: progid : DXImageTransform.Microsoft.AlphaImageLoader ( enabled =
-		true, src =/ media_stat/ images/ wine/ wine_rating_star_half_sm.png,
-		sizingMethod = 'scale' );
+	filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled=true, src=/media_stat/images/wine/wine_rating_star_half_sm.png, sizingMethod='scale');
 }
 
-a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg
-	{
+a .usq-rating-sm,a .usq-rating-lg,a .usq-rating-half-sm,a .usq-rating-half-lg {
 	cursor: pointer;
 }
 

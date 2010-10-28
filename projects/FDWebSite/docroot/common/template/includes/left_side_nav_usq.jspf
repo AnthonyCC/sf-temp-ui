@@ -697,9 +697,11 @@ for (CategoryModel cat : deptCategories) {
 								isCatSelected = subsubcat.equals(selected);
 %>
 
-<a <% if (subsubcat.getSideNavLink()) { %>href="/category.jsp?catId=<%= subsubcat.getContentName() %>&trk=<%= trk %>"<% } %> class="text11 wine-narrow wine-sidenav-subsubcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">		
-		<span><%= subsubcat.getFullName() %></span>		
-</a>
+<div class="text11 wine-narrow wine-sidenav-subsubcategory" style="z-index: <%= zIndex %>;<%= isCatSelected ? " font-weight: bold;" : "" %>">
+	<% if (subsubcat.getSideNavLink()) { %><a href="/category.jsp?catId=<%= subsubcat.getContentName() %>&trk=<%= trk %>"><% } %> 
+		<%= subsubcat.getFullName() %>
+	<% if (subsubcat.getSideNavLink()) { %></a><% } %>
+</div>
 
 <%
 							}
