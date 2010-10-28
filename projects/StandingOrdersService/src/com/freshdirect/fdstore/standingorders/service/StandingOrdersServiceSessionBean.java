@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.mail.MessagingException;
@@ -30,6 +31,7 @@ import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
+import com.freshdirect.delivery.restriction.FDRestrictedAvailabilityInfo;
 import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -37,6 +39,10 @@ import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
+import com.freshdirect.fdstore.atp.FDCompositeAvailabilityInfo;
+import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
+import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
@@ -306,6 +312,32 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 	
+	
+
+
+	/**
+	 * Processes a Standing Order.
+	 * 
+	 * The following steps are taken
+	 * 1. Checks basic info (customer)
+	 * 2. Validates
+	 *    a. Delivery address
+	 *    b. Payment method
+	 *    c. Delivery date and
+	 *    d. Reserved timeslot
+	 *    e. Extra validations (zone info)
+	 * 3. Builds cart from ordered items
+	 * 4. Checks alcoholic content
+	 * 5. ATP Check
+	 * 6. Place order
+	 * 
+	 * 
+	 * @param so Standing order to process
+	 * @return
+	 * 
+	 * @throws FDResourceException
+	 * 
+	 */
 	private StandingOrdersServiceResult.Result process( FDStandingOrder so ) throws FDResourceException {
 		
 		LOGGER.info( "Processing Standing Order : " + so );		
@@ -377,9 +409,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 
 		
-		// ==========================
-		//   Delivery address ...
-		// ==========================
+		// =============================
+		//   Validate delivery address
+		// =============================
 		
 		String deliveryAddressId = so.getAddressId();
 		AddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
@@ -414,29 +446,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		LOGGER.info( "Delivery address is valid: " + deliveryAddressModel );
 		
-		// These are already handled by the DeliveryAddressValidator :
-		
-//		DlvServiceSelectionResult checkAddressResult = null;
-//		try {
-//			checkAddressResult = FDDeliveryManager.getInstance().checkAddress( deliveryAddressModel );
-//		} catch ( FDInvalidAddressException e1 ) {
-//			so.setLastError( "Address is invalid : " + e1.getMessage() );
-//			return Status.FAILURE;
-//		}
-//		
-//		if ( checkAddressResult.isServiceRestricted() ) {
-//			so.setLastError( "Address is restricted : " + checkAddressResult.getRestrictionReason().getDescription() );
-//			return Status.FAILURE;			
-//		}
-//	
-//		EnumDeliveryStatus deliveryStatus = checkAddressResult.getServiceStatus( deliveryAddressModel.getServiceType() );
-//		// what to do with this result??
 		
 		
-		
-		// ==========================
-		//   Payment method ...
-		// ==========================
+		// ============================
+		//   Validate payment methods
+		// ============================
 		
 		String paymentMethodID = so.getPaymentMethodId();
 		
@@ -474,30 +488,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		LOGGER.info( "Payment method is valid: " + paymentMethod );
 
 
-
-//		paymentMethod.setBillingRef( billingRef );
-//		paymentMethod.setPaymentType( makeGoodOrder ? EnumPaymentType.MAKE_GOOD : EnumPaymentType.REGULAR );
-//		paymentMethod.setReferencedOrder( referencedOrder );
-
-//		if ( user.isDepotUser() ) {
-//			if ( user.isEligibleForSignupPromotion() ) {
-//				if ( FDCustomerManager.checkBillToAddressFraud( info, paymentMethod ) ) {
-//
-//					session.setAttribute( SessionName.SIGNUP_WARNING, MessageFormat.format( SystemMessageList.MSG_NOT_UNIQUE_INFO, new Object[] { user.getCustomerServiceContact() } ) );
-//
-//				}
-//			}
-//		}
-		
-//		FDCustomerCreditUtil.applyCustomerCredit( cart, identity );
-		
-//		UserValidationUtil.validateOrderMinimum(); ???
-		
 		
 			
-		// ==========================
-		//    Delivery date ...
-		// ==========================
+		// ============================
+		//    Validate delivery date
+		// ============================
 		
 		
 		DeliveryInterval deliveryTimes;		
@@ -516,9 +511,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 
 		
-		// ==========================
-		//   Timeslot reservation
-		// ==========================
+		// ==================================
+		//   Validate Timeslot reservation
+		// ==================================
 		
 		
 		// WARNING: getAllTimeslotsForDateRange-s select will ignore houre:minute in start/end dates!
@@ -586,8 +581,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		FDStandingOrderList soList = so.getCustomerList();
-		
-		// build a cart
+
+
+
+		// ==========================
+		//         Build cart
+		// ==========================
 		FDCartModel cart = new FDTransientCartModel();
 		boolean hasInvalidItems = false;
 
@@ -632,7 +631,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			// return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
 		}
 
-		// check for alcohol
+
+
+		// ==========================
+		//    Check for alcohol
+		// ==========================
 		if ( cart.containsAlcohol() ) {
 			if ( so.isAlcoholAgreement() ) {
 				cart.setAgeVerified( true );				
@@ -641,8 +644,22 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				return new Result( ErrorCode.ALCOHOL, customerInfo, customerUser );
 			}
 		}
-		
-		// verify order minimum
+
+
+		// ==========================
+		//    Check availability
+		//       (ATP Check)
+		// ==========================
+		if (doATPCheck(customer, cart)) {
+			hasInvalidItems = true;
+		}
+		LOGGER.info( "ATP check passed." );
+
+
+
+		// ==========================
+		//    Verify order minimum
+		// ==========================
 		double cartPrice = cart.getSubTotal();
 		double minimumOrder = customerUser.getMinimumOrderAmount();
 		if ( cartPrice < minimumOrder ) {
@@ -652,9 +669,10 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		LOGGER.info( "Cart contents are valid." );
-	
 
-		
+
+
+
 		// ==========================
 		//    Placing the order
 		// ==========================
@@ -703,7 +721,140 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return new Result( ErrorCode.PAYMENT_ADDRESS, customerInfo, customerUser );
 		}
 	}
-	
+
+
+
+	/**
+	 * Perform ATP check on cart items
+	 * ===============================
+	 * 
+	 * It runs an availability check then remove troubled items
+	 * except when less than (but not zero) amount
+	 * is available of a certain cart line item than wanted.
+	 * In that case quantity will be adjusted.
+	 * 
+	 * Note: code is extracted from step_2_check.jsp and
+	 * step_2_unavail.jsp files.
+	 * 
+	 * @param customer
+	 * @param cart
+	 * @return
+	 * @throws FDResourceException
+	 */
+	public boolean doATPCheck(FDIdentity customer, FDCartModel cart)
+			throws FDResourceException {
+		// Cart ATP check ...
+		//
+		cart = FDCustomerManager.checkAvailability( customer, cart, 30000 );
+		Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
+		
+		
+		// Iterate through troubled items by their cartLineID
+		for (String key : invsInfoMap.keySet()) {
+			FDAvailabilityInfo info = (FDAvailabilityInfo)invsInfoMap.get(key);
+			final Integer randomId = new Integer(key);
+			FDCartLineI cartLine = cart.getOrderLineById(randomId);
+
+			if (info instanceof FDRestrictedAvailabilityInfo) {
+				/**
+				 * Cause:  restriction problem
+				 * Effect: remove cartLine item
+				 */
+				LOGGER.debug("[ATP CHECK/1] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has restriction: " + ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason());
+				
+				/*** EnumDlvRestrictionReason rsn = ((FDRestrictedAvailabilityInfo)info).getRestriction().getReason();
+				if (EnumDlvRestrictionReason.KOSHER.equals(rsn)) {
+					// Kosher production item</a> - not available Fri, Sat, Sun AM, and holidays
+					LOGGER.debug("Item " + cartLine.getProductName() + "/" + cartLine.getCartlineId() + " is Kosher product");
+				} else {
+					// Restriction message: ((FDRestrictedAvailabilityInfo)info).getRestriction().getMessage()
+				} ***/
+
+				cart.removeOrderLineById(randomId);
+			} else if (info instanceof FDStockAvailabilityInfo) {
+				/**
+				 * Cause:  less or zero amount is available
+				 * Effect: remove cartLine item if qty == 0
+				 *    otherwise adjust item to available qty
+				 */
+
+				// Limited quantity zero or less than desired amount available
+				double availQty = ((FDStockAvailabilityInfo)info).getQuantity();
+				LOGGER.debug("[ATP CHECK/2] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has only " + availQty + " items available.");
+				if (availQty > 0) {
+					// adjust quantity to amount of available
+					cart.getOrderLineById(randomId).setQuantity(availQty);
+				} else {
+					cart.removeOrderLineById(randomId);
+				}
+			} else if (info instanceof FDCompositeAvailabilityInfo) {
+				/**
+				 * Cause:  some options are unavailable
+				 * Effect: remove cartLine item
+				 */
+				LOGGER.debug("[ATP CHECK/3] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' has problem with its options.");
+
+				// The following options are unavailable: ...
+				//
+				/**** Map<String,FDAvailabilityInfo> componentInfos = ((FDCompositeAvailabilityInfo)info).getComponentInfo();
+				boolean singleOptionIsOut= false;
+				for (Iterator<Entry<String, FDAvailabilityInfo>> i = componentInfos.entrySet().iterator(); i.hasNext(); ) {
+					Map.Entry<String, FDAvailabilityInfo> e = i.next();
+					String componentKey = (String)e.getKey();
+					if (componentKey != null) {
+						FDAvailabilityInfo componentInfo = (FDAvailabilityInfo)e.getValue();
+
+						FDProduct fdp = cartLine.lookupFDProduct();
+						String matNo = StringUtils.right(componentKey, 9);
+						FDVariationOption option = fdp.getVariationOption(matNo);
+						if (option != null) {
+							/// Print missing option.getDescription()
+
+							// Check to see if this option is the only option for the variation
+							FDVariation[] vars = fdp.getVariations();
+							for (int vi=0; vi <vars.length;vi++){
+								FDVariation aVar = vars[vi];
+								if (vars[vi].getVariationOption(matNo)!=null && vars[vi].getVariationOptions().length>0) {
+								    singleOptionIsOut = true;
+								}
+							}
+							
+						}
+					}
+				}
+				
+				if (!singleOptionIsOut) {
+					// JSP: go to modify other options...
+				} ****/
+
+
+				cart.removeOrderLineById(randomId);
+			} else if (info instanceof FDMuniAvailabilityInfo) {
+				/**
+				 * Cause:  'FreshDirect does not deliver alcohol outside NY'
+				 * Effect: remove cartLine item
+				 */
+				LOGGER.debug("[ATP CHECK/4] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' -- 'FreshDirect does not deliver alcohol outside NY'");
+
+				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
+				//
+				cart.removeOrderLineById(randomId);
+			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
+				/**
+				 * Cause:  OUT OF STOCK
+				 * Effect: remove cartLine item
+				 */
+				LOGGER.debug("[ATP CHECK/5] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' OUT OF STOCK");
+
+				cart.removeOrderLineById(randomId);
+			}
+		}
+
+		return invsInfoMap.size() > 0;
+	}
+
+
+
 	private void sendNotification( FDStandingOrder so ) throws FDResourceException {		
 		try {
 			List<FDOrderInfoI> orders = so.getAllOrders();
