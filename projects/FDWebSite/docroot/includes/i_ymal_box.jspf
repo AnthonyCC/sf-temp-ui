@@ -135,7 +135,8 @@
 
 
 %>
-	<div id="ymal-table" style="border: 2px solid #996699; width: 400px; margin-left: 15px; margin-top: 15px">
+	<div style="clear: both; font-size: 0px;"></div>
+	<div id="ymal-table" style="border: 2px solid #996699; width: 400px; margin-left: 0px; margin-top: 15px">
 		<div style="color: white; background: #996699; font-size: 12px; font-weight: bold; padding-top: 0; padding-bottom: 4px; margin-top: 0;">YOU MIGHT ALSO LIKE</div>
 		<div style="margin-top: 10px; margin-left: 10px; margin-right: 10px;">
 <%
@@ -173,7 +174,7 @@
 					<input type="hidden" name="recs_cached_id" value="<%= recmnd.getRequestId() %>"><% } %>
 
 					<!-- start of ymal products external table -->
-					<table class="ymal" cellspacing="0" cellpadding="0">
+					<table class="ymal" cellspacing="0" cellpadding="0" style="width: 348px;">
 <%
 		int rank = 1;
 		int txProdCount = 0;
@@ -185,7 +186,7 @@
 <fd:PIPRow id="pi" impressionRow="<%= piRow %>" isBlankCell="isBlankCell" shouldRenderBlankCells="<%= impressions.size() > 3 %>">
 <%
 		if (isBlankCell.booleanValue()) {
-%>							<td style="width: <%= Math.round(100.0/rsize) %>%;">&nbsp;</td>
+%>							<td style="width: <%= 348/rsize %>px;">&nbsp;</td>
 <%
 		} else {
 			// product cell
@@ -202,7 +203,7 @@
 					recmnd != null ? recmnd.getImpressionId(product) : null, 
 					ym_aset != null ? ym_aset.getContentKey().getId() : null, 
 					ym_product != null ? ym_product.getContentName() : null );			
-%>							<td class="ymal_product" style="width: <%= Math.round(100.0/rsize) %>%; text-align: center; vertical-align: top;">
+%>							<td class="ymal_product" style="width: <%= 348/rsize %>px; text-align: center; vertical-align: top;">
 
 								<!-- start of ymal products internal table -->								
 								<table align="center" style="border-collapse: collapse; border-spacing: 0px">

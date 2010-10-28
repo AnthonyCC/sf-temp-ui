@@ -13,9 +13,9 @@
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US);%>
 <%! java.text.DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##"); %>
 
-<!-- ISTVAN 14/03/2007
+<%-- ISTVAN 14/03/2007
      Check if cart has been emptied the item added in the meantime (obviously by someone manipulating it from another window)
--->
+--%>
 
 <fd:FDShoppingCart id='cart' result='result'>
 <%
