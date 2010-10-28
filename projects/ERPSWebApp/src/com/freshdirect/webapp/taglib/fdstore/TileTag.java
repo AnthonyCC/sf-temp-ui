@@ -233,7 +233,7 @@ public class TileTag extends BodyTagSupportEx {
 	public static class TagEI extends TagExtraInfo {
 		public VariableInfo[] getVariableInfo(TagData data) {
 			return new VariableInfo[] {
-					declareVariableInfo(data.getAttributeString("id"), Tile.class, VariableInfo.NESTED),
+					declareVariableInfo(data.getAttributeString("id"), Tile.class, VariableInfo.AT_BEGIN),
 					declareVariableInfo(data.getAttributeString("productId"), ProductModel.class, VariableInfo.NESTED),
 					declareVariableInfo(NVL.apply(data.getAttributeString("trkdId"), TRKD_ID_DEFAULT), String.class, VariableInfo.NESTED)
 				};

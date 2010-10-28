@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.fdstore.FDStoreProperties' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display'%>
 <fd:WineFilter filterId="wineFilter" lastClickedId="wineLastClicked" queryId="query">
@@ -29,4 +30,19 @@
 <br>
 <% } %>
 </fd:Tile>
+<% if (tile == null) { %>
+	<!-- advertising tile is null -->
+    <table border="0" cellspacing="0" cellpadding="0" width="155">
+       <tr>
+            <td align="right">
+                <% if (FDStoreProperties.isAdServerEnabled()) { %>
+                    <script type="text/javascript">
+                    OAS_AD("LittleRandy");
+                    </script>                    
+                <%}%>
+            </td>
+        </tr>
+    </table>
+	<br>
+<% } %>
 </fd:WineFilter>
