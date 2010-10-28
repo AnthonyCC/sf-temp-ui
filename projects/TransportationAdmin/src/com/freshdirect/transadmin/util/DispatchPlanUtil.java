@@ -513,7 +513,7 @@ public class DispatchPlanUtil {
 			return false;
 		} else if(TransStringUtil.isEmpty(model.getZoneName())) {
 		    return true;
-		} else if(model.getZoneName().equals(zone.getName())) {
+		} else if(zone != null && model.getZoneName().equals(zone.getName())) {
 			return false;
 	    }
 		return true;

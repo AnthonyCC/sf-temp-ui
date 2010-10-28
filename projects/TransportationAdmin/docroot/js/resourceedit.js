@@ -4,12 +4,15 @@ function resoureChangeEvent(src, view, actionDate, srcId) {
 	if(src != null && src.id != null && (src.id.indexOf("drivers") != -1 || src.id.indexOf("helpers") != -1)) {	
 			
 		var result;
+		var resultList;
+		
 		if("P" == view) {
-			result = jsonrpcRptClient.AsyncDispatchProvider.getPlanForResource(actionDate.value , src.value, srcId.value);
+			resultList = jsonrpcRptClient.AsyncDispatchProvider.getPlanForResource(actionDate.value , src.value, srcId.value);
 		} else {
-			result = jsonrpcRptClient.AsyncDispatchProvider.getDispatchForResource(actionDate.value , src.value, srcId.value);
+			resultList = jsonrpcRptClient.AsyncDispatchProvider.getDispatchForResource(actionDate.value , src.value, srcId.value);
 		}
-		if(result != null) {
+		if(resultList != null) {
+			result = resultList.list[0];			
 			var hasConfirmed = confirm ("This employee is part of a team.  Would you like to assign their teammate(s) to the route?  Please Confirm")
 			if (hasConfirmed) {
 				for (var _driver in result.drivers.list) {
@@ -32,11 +35,25 @@ function resoureChangeEvent(src, view, actionDate, srcId) {
 				}*/
 				var refContext = document.getElementById("referenceContextId");				
 				if(refContext != null) {	
-					if("P" == view) {				
-						refContext.value = result.planId;
-					} else {				
-						refContext.value = result.dispatchId;
-					}
+					if("P" == view) {
+						var _planId = "";
+						for (var _plan in resultList.list) {
+							if(_planId != "") {
+								_planId = _planId + ",";
+							}
+							_planId = _planId + resultList.list[_plan].planId;							
+						}														
+						refContext.value = _planId;
+					} else {
+						var _dispatchId = "";
+						for (var _dispatch in resultList.list) {
+							if(_dispatchId != "") {
+								_dispatchId = _dispatchId + ",";
+							}
+							_dispatchId = _dispatchId + resultList.list[_dispatch].dispatchId;							
+						}						
+						refContext.value = _dispatchId;
+					}					
 				}
 			} else {
 				var refTeamOverride = document.getElementById("isTeamOverride");				

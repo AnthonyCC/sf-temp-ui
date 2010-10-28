@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.customer.ErpRouteMasterInfo;
+import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.transadmin.dao.BaseManagerDaoI;
 import com.freshdirect.transadmin.dao.DispatchManagerDaoI;
 import com.freshdirect.transadmin.dao.RouteManagerDaoI;
@@ -304,10 +305,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 		validateDispatchRoute(dispatch);
 		if (!TransStringUtil.isEmpty(dispatch.getDispatchId())) {
 			
-			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
+			/*Dispatch referenceDispatch = this.getDispatch(referenceContextId);
 			Dispatch currentDispatch = this.getDispatch(dispatch.getDispatchId());
 			if(referenceDispatch != null && currentDispatch != null) {
-				/*Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
+				Collection bullpens = this.getDispatchManagerDao().getDispatch(currentDispatch.getDispatchDate(), 
 																		currentDispatch.getStartTime(), 
 																		true);
 				Dispatch bullPen = bullPen = new Dispatch();
@@ -317,7 +318,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				bullPen.setRegion(currentDispatch.getRegion());
 				bullPen.setStartTime(currentDispatch.getStartTime());
 				bullPen.setFirstDlvTime(currentDispatch.getFirstDlvTime());
-				bullPen.setBullPen(true); */
+				bullPen.setBullPen(true); 
 				if(referenceDispatch.getDispatchResources() != null) {
 					referenceDispatch.getDispatchResources().clear();
 				} else {
@@ -339,20 +340,27 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				}
 				//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
 				getDispatchManagerDao().saveDispatch(referenceDispatch);
-			}
-		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
-			Dispatch referenceDispatch = this.getDispatch(referenceContextId);
-			//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
-			if(referenceDispatch.getDispatchResources() != null) {
-				referenceDispatch.getDispatchResources().clear();
-			} else {
-				referenceDispatch.setDispatchResources(new HashSet(0));
-			}
-			/*if(referenceDispatch.getDispatchResources() != null) {
-				referenceDispatch.getDispatchResources().clear();	
-				referenceDispatch.setConfirmed(false);
 			}*/
-			this.getDispatchManagerDao().saveDispatch(referenceDispatch);
+		} else if(!TransStringUtil.isEmpty(referenceContextId)) {
+			String[] referenceDispatchIds = StringUtil.decodeStrings(referenceContextId);
+			if(referenceDispatchIds != null) {
+				for(String tmpDispatchId : referenceDispatchIds) {
+					Dispatch referenceDispatch = this.getDispatch(tmpDispatchId);
+					//this.getDispatchManagerDao().removeEntityEx(referenceDispatch);
+					if(referenceDispatch.getDispatchResources() != null) {
+						referenceDispatch.getDispatchResources().clear();
+					} else {
+						referenceDispatch.setDispatchResources(new HashSet(0));
+					}
+					/*if(referenceDispatch.getDispatchResources() != null) {
+						referenceDispatch.getDispatchResources().clear();	
+						referenceDispatch.setConfirmed(false);
+					}*/
+					referenceDispatch.setConfirmed(false);
+					this.getDispatchManagerDao().saveDispatch(referenceDispatch);
+				}
+			}
+			
 		}
 		getDispatchManagerDao().saveDispatch(dispatch);
 	}
@@ -407,10 +415,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 	public void savePlan(Plan plan, String referencePlanId) {
 		if (!TransStringUtil.isEmpty(plan.getPlanId())) {
 			
-			Plan referencePlan = this.getPlan(referencePlanId);
+			/*Plan referencePlan = this.getPlan(referencePlanId);
 			Plan currentPlan = this.getPlan(plan.getPlanId());
 			if(referencePlan != null && currentPlan != null) {
-				/*Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
+				Collection bullpens = this.getDispatchManagerDao().getPlan(currentPlan.getPlanDate(), 
 																		currentPlan.getStartTime(), 
 																		true);
 				Plan bullPen = bullPen = new Plan();
@@ -420,7 +428,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				bullPen.setRegion(currentPlan.getRegion());
 				bullPen.setStartTime(currentPlan.getStartTime());
 				bullPen.setFirstDeliveryTime(currentPlan.getFirstDeliveryTime());
-				bullPen.setIsBullpen("Y");*/
+				bullPen.setIsBullpen("Y");
 				if(referencePlan.getPlanResources() != null) {
 					referencePlan.getPlanResources().clear();
 				} else {
@@ -440,15 +448,21 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 				
 				this.getDispatchManagerDao().savePlan(referencePlan);
 				//getDispatchManagerDao().savePlan(bullPen);
-			}
+			}*/
 		} else if(!TransStringUtil.isEmpty(referencePlanId)) {
-			Plan referencePlan = this.getPlan(referencePlanId);
-			if(referencePlan.getPlanResources() != null) {
-				referencePlan.getPlanResources().clear();
-			} else {
-				referencePlan.setPlanResources(new HashSet(0));
+			String[] referencePlanIds = StringUtil.decodeStrings(referencePlanId);
+			if(referencePlanIds != null) {
+				for(String tmpPlanId : referencePlanIds) {
+					Plan referencePlan = this.getPlan(tmpPlanId);
+					if(referencePlan.getPlanResources() != null) {
+						referencePlan.getPlanResources().clear();
+					} else {
+						referencePlan.setPlanResources(new HashSet(0));
+					}
+					referencePlan.setOpen("Y");
+					this.getDispatchManagerDao().savePlan(referencePlan);
+				}
 			}
-			this.getDispatchManagerDao().savePlan(referencePlan);
 			/*if(referencePlan.getPlanResources() != null) {
 				referencePlan.getPlanResources().clear();
 				referencePlan.setOpen("Y");

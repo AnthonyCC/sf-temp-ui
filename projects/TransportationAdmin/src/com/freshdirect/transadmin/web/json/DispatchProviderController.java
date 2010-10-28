@@ -402,8 +402,10 @@ public class DispatchProviderController extends JsonRpcController implements
 		}
 	}
 	
-	public WebPlanInfo getPlanForResource(String date, String resourceId, String planId) {
+	public List<WebPlanInfo> getPlanForResource(String date, String resourceId, String planId) {
+		
 		List planInfos = new ArrayList();
+		List<WebPlanInfo> result = null; new ArrayList<WebPlanInfo>();
 		try {
 			Collection plans = dispatchManagerService.getPlanForResource(TransStringUtil.getServerDate(date), resourceId);
 						
@@ -423,20 +425,26 @@ public class DispatchProviderController extends JsonRpcController implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		WebPlanInfo resultPlan = null;
+		
 		Iterator _itr = planInfos.iterator();
 		while(_itr.hasNext()) {
 			WebPlanInfo _tmpPlan = (WebPlanInfo)_itr.next();
 			if(!_tmpPlan.getPlanId().equalsIgnoreCase(planId) || planId == null) {
-				resultPlan = _tmpPlan;
-				break;
+				
+				if(result == null) {
+					result = new ArrayList<WebPlanInfo>();					
+				}
+				result.add(_tmpPlan);
 			}
 		}
-		return resultPlan;
+		return result;
 	}
 	
-	public DispatchCommand getDispatchForResource(String date, String resourceId, String dispatchId) {
+	public List<DispatchCommand> getDispatchForResource(String date, String resourceId, String dispatchId) {
+		
 		List dispatchInfos = new ArrayList();
+		List<DispatchCommand> result = null; new ArrayList<DispatchCommand>();
+		
 		try {
 			Collection dispatches = dispatchManagerService.getDispatchForResource(TransStringUtil.getServerDate(date), resourceId);
 						
@@ -456,16 +464,18 @@ public class DispatchProviderController extends JsonRpcController implements
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		DispatchCommand resultDispatch = null;
+		
 		Iterator _itr = dispatchInfos.iterator();
 		while(_itr.hasNext()) {
 			DispatchCommand _tmpDispatch = (DispatchCommand)_itr.next();
 			if(!_tmpDispatch.getDispatchId().equalsIgnoreCase(dispatchId) || dispatchId == null) {
-				resultDispatch = _tmpDispatch;
-				break;
+				if(result == null) {
+					result = new ArrayList<DispatchCommand>();					
+				}
+				result.add(_tmpDispatch);
 			}
 		}
-		return resultDispatch;
+		return result;
 	}
 	
 	private boolean getDispatchForAsset(Date deliveryDate, String dispatchId

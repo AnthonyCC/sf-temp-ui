@@ -18,8 +18,8 @@ public interface IDispatchProvider {
 	Collection getReasonCode(boolean active);
 	int addReasonCode(String reason);
 	int setReasonCode(String code,String reason, boolean enable);
-	WebPlanInfo getPlanForResource(String date, String resourceId, String planId);
-	DispatchCommand getDispatchForResource(String date, String resourceId, String dispatchId);
+	List<WebPlanInfo> getPlanForResource(String date, String resourceId, String planId);
+	List<DispatchCommand> getDispatchForResource(String date, String resourceId, String dispatchId);
 	int addScenarioDayMapping(String sCode, String sDay, String sDate);
 	boolean deleteServiceTimeScenario(String sCode);
 	Collection getScenarioZones(String scenarioId);
