@@ -49,14 +49,14 @@
     String alignment="align=\"left\"";
     String prodPageRatingStuff = getProdPageRatings(productNode,response); // get and format the product page ratings
 %>
-<table id="new_wine_prod_table" border="0" cellspacing="0" cellpadding="0" width="430" align="center">
+<table id="new_wine_prod_table" border="0" cellspacing="0" cellpadding="0" align="center" style="width: 430px;">
 	<tr>
-		<td style="width: 255px;">&nbsp;</td>
+		<td style="width: 265px;">&nbsp;</td>
 		<td style="width: 165px;">&nbsp;</td>
 	</tr>
 	<tr valign="top">
-		<td class="text12" style="padding-left: 10px">
-		<% if (!_isModifyCart) { %><div style="padding-bottom: 20px;">
+		<td class="text12" style="padding-left: 10px; width: 265px;">
+		<% if (!_isModifyCart) { %><div style="padding-bottom: 20px; width: 265px;">
 			<display:WineProductBackToLink/>
 		</div><% } %>
 		
@@ -72,20 +72,20 @@
 			<br>
 		<%}%>
 		</td>
-		<td align="center" class="text11" style="padding-top:3px;">
+		<td align="center" class="text11" style="padding-top:3px; width: 165px;">
 				<!-- Product transactional area include start -->
 				<%@ include file="/shared/includes/product/i_also_sold_as.jspf" %>
 				<%@ include file="/shared/includes/product/i_product_image.jspf" %>
 		</td>
 	</tr>
 	<tr>
-		<td colspan="2" style="padding: 0 5px 0 10px;">
+		<td colspan="2" style="padding: 0px;">
 			<%@ include file="/shared/includes/product/usq_wine_info.jspf" %>
 		</td>
 	</tr>
 	<%-- RATINGS LEGEND --%>
 	<tr>
-		<td colspan="2" style="padding-left:10px;padding-right:5px;">
+		<td colspan="2" style="padding-left:3px;padding-right:2px;">
 			<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 		</td>
 	</tr>
@@ -93,7 +93,7 @@
 <%
 	if (productNode.hasWineOtherRatings()) {
 %>	<tr>
-		<td colspan="2" style="padding-left:10px;padding-right:5px;">
+		<td colspan="2" style="padding-left:3px;padding-right:2px;">
 			<fd:IncludeMedia name="/media/editorial/win_usq/other_ratings_key.html"/>
 		</td>
 		<td>&nbsp;</td>

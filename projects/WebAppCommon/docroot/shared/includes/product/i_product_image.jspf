@@ -32,7 +32,7 @@
 					</div>
 		<% } %>
 		
-		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)">
+		<a href="javascript:pop('/shared/prodpop.jsp?productId=<%= __pi_prd %>&catId=<%= __pi_prd.getParentNode() %>',335,375)" style="display: inline-block; font-size: 0px; padding: 0px; margin: 0px; width: <%= productImage.getWidth() %>px;">
 			<img border="0" src="<%= productImage.getPath() %>" width="<%= productImage.getWidth() %>" height="<%= productImage.getHeight() %>">
 		</a><br/>
 				

@@ -256,6 +256,7 @@
 				<%@ include file="/shared/includes/product/i_product_descriptions.jspf" %>
    		<% } %>
    	</div>
+   	<% if (hasLeftColumn) { %><div style="clear: both; font-size: 0px;"></div><% } %>
 </div>
 <%--
 

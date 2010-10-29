@@ -327,7 +327,7 @@ if (selected == null || wineFilter.isFiltering()) {
 						}
 						if (group.getKey() != null) {
 %>
-							<div id="nav-group-<%=groupHash %>" class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>-group nav-group<%=openClass %>" <%if (applicableSubFilterCount > 12) {%>onclick="FreshDirect.WineNav.toggleGroup('<%=groupHash %>')"<%}%>">
+							<div id="nav-group-<%=groupHash %>" class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>-group nav-group<%=openClass %>"<% if (applicableSubFilterCount > 12) { %> onclick="FreshDirect.WineNav.toggleGroup('<%=groupHash %>');"<% } %>>
 							<span class="nav-filter-value-<%=domain.getSubcategoryLabel() %>-group-carrot"></span>
 							<span><%=group.getKey() %></span>
 							</div>
