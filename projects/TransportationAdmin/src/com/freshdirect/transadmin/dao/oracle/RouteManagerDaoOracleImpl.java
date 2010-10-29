@@ -222,7 +222,7 @@ public class RouteManagerDaoOracleImpl implements RouteManagerDaoI  {
 		return result;
 	}
 	
-	private static String GET_TEAM_CHANGES = "select distinct AL.NEW_VALUE from TRANSP.ACTIVITY_LOG al"
+	private static String GET_TEAM_CHANGES = "select AL.NEW_VALUE from TRANSP.ACTIVITY_LOG al"
 										+" where AL.LOG_DATE BETWEEN TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam') AND TO_DATE(?, 'mm/dd/yyyy:hh:mi:ssam')"
 										+" and type = ? and FIELD_NAME = ? and al.new_value is NOT NULL";
 

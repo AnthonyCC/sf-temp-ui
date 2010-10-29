@@ -32,10 +32,10 @@ import com.freshdirect.transadmin.util.TransStringUtil;
  * type '3'  Dispatch delete
  * type '4'  Any Dispatch Resource change
  * 
- * type '5'  AM Dispath Resource Change 
- * type '6'  PM Dispath Resource Change 
- * type '7'  AM Dispath Resource Change Out of Region
- * type '8'  PM Dispath Resource Change Out of Region 
+ * type '5'  AM Dispatch Resource Change 
+ * type '6'  PM Dispatch Resource Change 
+ * type '7'  AM Dispatch Resource Change Out of Region
+ * type '8'  PM Dispatch Resource Change Out of Region 
  */
 public class ActivityLogAdvisor implements MethodBeforeAdvice
 {
@@ -141,13 +141,23 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 						logManager.log(newPlan.getUserId(),2,updates.get(i));
 					}
 				}
-			}else if(arg2[0] instanceof Dispatch)
+			} else if(arg2[0] instanceof Dispatch)
 			{
-				Dispatch newDispatch=(Dispatch)arg2[0];
-				Dispatch oldDispatch=dispatchManagerDao.getDispatch(newDispatch.getDispatchId());
+				Dispatch newDispatch = (Dispatch)arg2[0];
+				Dispatch oldDispatch = dispatchManagerDao.getDispatch(newDispatch.getDispatchId());
 				dispatchManagerDao.evictDispatch(oldDispatch);
-				if(oldDispatch!=null)
-				{
+				
+				Set<String> inRegionAMResourceChanges = new HashSet<String>();
+				Set<String> inRegionPMResourceChanges = new HashSet<String>();
+				
+				Set<String> resourceAMChanges = new HashSet<String>();
+				Set<String> resourcePMChanges = new HashSet<String>();
+				
+				Set newResourcesCopy=new HashSet();
+				newResourcesCopy.addAll(newDispatch.getDispatchResources());
+				
+				if(oldDispatch!=null) {
+					
 					int type=1;
 					LogComparator c=new DispatchComparator();
 					c.compare(oldDispatch, newDispatch);
@@ -164,78 +174,58 @@ public class ActivityLogAdvisor implements MethodBeforeAdvice
 					for(int i=0,n=updates.size();i<n;i++)
 					{
 						logManager.log(newDispatch.getUserId(),4,updates.get(i));
-					}
-					//Resource changes log
-					LogComparator c1=new DispatchComparator();
-					c1.compare(oldDispatch, newDispatch);
-					LogComparator c2=new DispatchComparator();
-					c2.compare(oldDispatch, newDispatch);
-					LogComparator c3=new DispatchComparator();
-					c3.compare(oldDispatch, newDispatch);
-					LogComparator c4=new DispatchComparator();
-					c4.compare(oldDispatch, newDispatch);
-					Set newResourcesCopy=new HashSet();
-					newResourcesCopy.addAll(newDispatch.getDispatchResources());
-					if(newResourcesCopy!=null)
-					{
-						Iterator iterator=newResourcesCopy.iterator();
-						while(iterator.hasNext())
-						{
-							DispatchResource newPlanResource =(DispatchResource)iterator.next();
-							Collection dispatchInfos = new ArrayList();
-							dispatchInfos = dispatchManagerDao
-									.getDispatchForResource(TransStringUtil.getServerDate(newDispatch.getDispatchDate()),
-																									newPlanResource.getId().getResourceId());
+					}				
+				}
+				
+				if(newResourcesCopy != null && newResourcesCopy.size() > 0)	{
+					Iterator iterator=newResourcesCopy.iterator();
+					while(iterator.hasNext()) {
+						DispatchResource newPlanResource =(DispatchResource)iterator.next();
+						Collection dispatchInfos = new ArrayList();
+						dispatchInfos = dispatchManagerDao
+								.getDispatchForResource(TransStringUtil.getServerDate(newDispatch.getDispatchDate()),
+																								newPlanResource.getId().getResourceId());
+						if(dispatchInfos != null) {
 							for (Iterator<Dispatch> itr = dispatchInfos.iterator(); itr.hasNext();) {
 								Dispatch _resDispatch =  itr.next();
 								dispatchManagerDao.evictDispatch(_resDispatch);
-								if(!_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())){
+								if(_resDispatch.getRegion() != null && newDispatch.getRegion() != null
+												&& !_resDispatch.getRegion().getCode().equalsIgnoreCase(newDispatch.getRegion().getCode())) {
 									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
-										((DispatchComparator) c1).compareResource1(newPlanResource);
+										inRegionAMResourceChanges.add(newPlanResource.getId().getResourceId());
 									}else {
-										((DispatchComparator) c2).compareResource1(newPlanResource);
+										inRegionPMResourceChanges.add(newPlanResource.getId().getResourceId());
 									}
 								}
-								if(!newDispatch.getDispatchId().equals(_resDispatch.getDispatchId()))
+								if(newDispatch.getDispatchId() == null 
+										|| !newDispatch.getDispatchId().equals(_resDispatch.getDispatchId())) {
 									if("AM".equals(DispatchPlanUtil.getShift(newDispatch.getDispatchDate(), newDispatch.getFirstDlvTime()))){
-										((DispatchComparator) c3).compareResource1(newPlanResource);
+										resourceAMChanges.add(newPlanResource.getId().getResourceId());
 									}else {
-										((DispatchComparator) c4).compareResource1(newPlanResource);
+										resourcePMChanges.add(newPlanResource.getId().getResourceId());
 									}
-							}						
+								}
+							}	
 						}
-						
-						List updates1 = c1.getUpdateFields();
-						if(updates1!=null)
-						for(int i=0,n=updates1.size();i<n;i++)
-						{
-							logManager.log(newDispatch.getUserId(),7,updates1.get(i));
-						}
-						
-						List updates2 = c2.getUpdateFields();
-						if(updates2!=null)
-						for(int i=0,n=updates2.size();i<n;i++)
-						{
-							logManager.log(newDispatch.getUserId(),8,updates2.get(i));
-						}
-						List updates3 = c3.getUpdateFields();
-						if(updates3!=null)
-						for(int i=0,n=updates3.size();i<n;i++)
-						{
-							logManager.log(newDispatch.getUserId(),5,updates3.get(i));
-						}
-						
-						List updates4 = c4.getUpdateFields();
-						if(updates4!=null)
-						for(int i=0,n=updates4.size();i<n;i++)
-						{
-							logManager.log(newDispatch.getUserId(),6,updates4.get(i));
-						}
-					}					
+					}
+					
+					this.logTeamChanges(newDispatch.getUserId(), 5, newDispatch.getDispatchId(), resourceAMChanges);
+					this.logTeamChanges(newDispatch.getUserId(), 6, newDispatch.getDispatchId(), resourcePMChanges);
+					this.logTeamChanges(newDispatch.getUserId(), 7, newDispatch.getDispatchId(), inRegionAMResourceChanges);
+					this.logTeamChanges(newDispatch.getUserId(), 8, newDispatch.getDispatchId(), inRegionPMResourceChanges);
+					
 				}
+		}		
+	}
+}
+
+	private void logTeamChanges(String userId, int type, String dispatchId, Set<String> resources) {
+		
+		if(resources != null) {
+			for(String resource : resources) {
+				logManager.log(userId, type, new Object[]{dispatchId == null ? "T"+resource : dispatchId, "RESOURCE_ID", "", resource});
 			}
 		}
-		
 	}
 }
 
@@ -523,11 +513,6 @@ class DispatchComparator extends LogComparator
 		return "";
 	}
 	
-	public int compareResource1(DispatchResource newDispatchResource)
-	{
-		updates.add(new Object[]{id,"RESOURCE_ID","",newDispatchResource.getId().getResourceId()});
-		return result;
-	}
 	
 	public int compareResource(Set oldResources,Set newResources)
 	{

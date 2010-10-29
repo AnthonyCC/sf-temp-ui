@@ -303,7 +303,10 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 
 	public void saveDispatch(Dispatch dispatch, String referenceContextId) throws TransAdminApplicationException  {
 		validateDispatchRoute(dispatch);
-		if (!TransStringUtil.isEmpty(dispatch.getDispatchId())) {
+		boolean isNew = TransStringUtil.isEmpty(dispatch.getDispatchId());
+		getDispatchManagerDao().saveDispatch(dispatch);
+		
+		if (!isNew) {
 			
 			/*Dispatch referenceDispatch = this.getDispatch(referenceContextId);
 			Dispatch currentDispatch = this.getDispatch(dispatch.getDispatchId());
@@ -362,7 +365,7 @@ public class DispatchManagerImpl extends BaseManagerImpl implements DispatchMana
 			}
 			
 		}
-		getDispatchManagerDao().saveDispatch(dispatch);
+		
 	}
 	
 	public Collection getAssignedTrucks(String date) {
