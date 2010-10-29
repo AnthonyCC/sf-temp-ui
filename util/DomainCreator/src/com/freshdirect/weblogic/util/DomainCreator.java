@@ -230,7 +230,7 @@ public class DomainCreator {
 		cd("Servers/AdminServer");
 		set("Name", serverHost);
 		set("ListenAddress","");
-		set("ListenPort", serverPort);
+		setInt("ListenPort", serverPort);
 		cd("/");
 		System.out.println("set host name");
 
@@ -283,6 +283,10 @@ public class DomainCreator {
 
 	private void set(String path, Object value) {
 		exec("set(\"" + path + "\", \"" + value + "\")");
+	}
+
+	private void setInt(String path, int value) {
+		exec("set(\"" + path + "\", int(" + value + "))");
 	}
 
 	private void cmo_setPassword(String password) {
