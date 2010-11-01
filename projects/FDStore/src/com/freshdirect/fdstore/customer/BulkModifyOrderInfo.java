@@ -23,7 +23,7 @@ import com.freshdirect.delivery.EnumReservationType;
  * @version $Revision$
  * @author $Author$
  */
-public class FDCustomerOrderInfo implements Serializable {
+public class BulkModifyOrderInfo extends FDCustomerOrderInfo {
 
 	private String saleId;
 	private Date deliveryDate;
@@ -50,7 +50,10 @@ public class FDCustomerOrderInfo implements Serializable {
 	private Date endTime;
 	private EnumReservationType rsvType;
 	private String emailType;
-
+	//add bulk modification status
+	private String modStatus;
+	private String errorDesc;
+	
 	public String getEmailType() {
 		return emailType;
 	}
@@ -379,5 +382,20 @@ public class FDCustomerOrderInfo implements Serializable {
 
 	}
 
+	public String getModStatus() {
+		return modStatus;
+	}
+
+	public void setModStatus(String modStatus) {
+		this.modStatus = modStatus;
+	}
+
+	public String getErrorDesc() {
+		return errorDesc;
+	}
+
+	public void setErrorDesc(String errorDesc) {
+		this.errorDesc = errorDesc;
+	}
 
 }

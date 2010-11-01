@@ -72,6 +72,7 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerRequest;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -742,5 +743,24 @@ public interface FDCustomerManagerSB extends EJBObject {
 	public void updateCounter( String customerId, String counterId, int newValue ) throws FDResourceException, RemoteException;
 	public Integer getCounter( String customerId, String counterId ) throws FDResourceException, RemoteException;
 	public void sendSettlementFailedEmail(String saleID) throws FDResourceException, RemoteException;
+	
+	public void bulkModifyOrder(
+			String saleId,
+			FDIdentity identity,			
+			FDActionInfo info,
+			ErpModifyOrderModel order,
+			String oldReservationId,
+			Set<String> appliedPromos,
+			CrmAgentRole agentRole,
+			boolean sendEmail)
+			throws FDResourceException, 
+			ErpTransactionException, 
+			ErpFraudException, 
+			ErpAuthorizationException, 
+			DeliveryPassException, 
+			ErpAddressVerificationException,
+			InvalidCardException,
+			FDPaymentInadequateException,
+			RemoteException;
 }
 

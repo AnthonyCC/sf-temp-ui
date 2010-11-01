@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1617,6 +1618,105 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 					conn.close();
 				} catch (SQLException e) {
 					LOGGER.warn("Trouble closing connection after searchCustomerReservations", e);
+				}
+			}
+		}
+	}
+
+	private static final String DELETE_FROM_MODIFY_ORDERS = "DELETE FROM CUST.MODIFY_ORDERS";
+	
+	private static final String INSERT_INTO_MODIFY_ORDERS = "INSERT INTO CUST.MODIFY_ORDERS (SALE_ID, ERP_CUSTOMER_ID, " +
+			"FIRST_NAME, LAST_NAME, EMAIL, HOME_PHONE, ALT_PHONE, " +
+			"REQUESTED_DATE, SALE_STATUS, STATUS, CREATE_DATE) VALUES ( ?,?,?,?,?,?,?,?,?,?,SYSDATE )";
+	
+	private void saveModifyOrders(Connection conn, List<FDCustomerOrderInfo> searchResults) throws SQLException{
+		PreparedStatement ps =  null;
+		try {
+			//Truncate all exiting rows
+			ps = conn.prepareStatement(DELETE_FROM_MODIFY_ORDERS);
+			ps.execute();
+			ps.close();
+			ps = conn.prepareStatement(INSERT_INTO_MODIFY_ORDERS);
+			for (Iterator<FDCustomerOrderInfo> iterator = searchResults.iterator(); iterator.hasNext();) {
+				FDCustomerOrderInfo orderInfo = (FDCustomerOrderInfo) iterator.next();
+				ps.setString(1, orderInfo.getSaleId());
+				ps.setString(2, orderInfo.getIdentity().getErpCustomerPK());
+				ps.setString(3, orderInfo.getFirstName());
+				ps.setString(4, orderInfo.getLastName());
+				if(orderInfo.getEmail()!=null) {
+					ps.setString(5,orderInfo.getEmail());
+				} else {
+					ps.setNull(5, Types.VARCHAR);
+				}	
+				ps.setString(6, orderInfo.getPhone());
+				if(orderInfo.getAltPhone()!=null) {
+					ps.setString(7,orderInfo.getAltPhone());
+				} else {
+					ps.setNull(7, Types.VARCHAR);
+				}	
+				ps.setDate(8, new java.sql.Date(orderInfo.getDeliveryDate().getTime()));
+				
+				ps.setString(9, orderInfo.getOrderStatus().getStatusCode());
+				ps.setString(10, "Pending");
+				ps.addBatch();
+			}
+			int[] result = ps.executeBatch();			
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw sqle;
+		} finally {
+			if (ps != null) {
+				try {
+					ps.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
+				}
+			}
+		}
+	}
+	
+	public void createSnapShotForModifyOrders(GenericSearchCriteria criteria) throws FDResourceException{
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			List<FDCustomerOrderInfo> searchResults =  GenericSearchDAO.genericSearch(conn, criteria);
+			saveModifyOrders(conn, searchResults);
+		} catch (SQLException e) {
+			throw new FDResourceException(e, "Could not creating snapshot for modifying orders.");
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+					LOGGER.warn("Trouble closing connection after createSnapShotForModifyOrders", e);
+				}
+			}
+		}
+		
+	}
+
+	private static final String UPDATE_ORDER_MODIFIED_STATUS = "UPDATE CUST.MODIFY_ORDERS SET STATUS = ?, ERROR_DESC = ? WHERE SALE_ID = ?";
+
+	public void updateOrderModifiedStatus(String saleId, String status, String errorDesc) throws FDResourceException{
+		Connection conn = null;
+		
+		try {
+			conn = getConnection();
+			//Truncate all exiting rows
+			PreparedStatement ps = conn.prepareStatement(UPDATE_ORDER_MODIFIED_STATUS);
+			ps.setString(1,status);
+			ps.setString(2,errorDesc);
+			ps.setString(3, saleId);
+			ps.executeUpdate();			
+		} catch (SQLException sqle) {
+			LOGGER.error(sqle.getMessage());
+			throw new FDResourceException(sqle, "Could not update Order modified status.");
+		}finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException sqle) {
+					LOGGER.debug("Error while cleaning:", sqle);
 				}
 			}
 		}

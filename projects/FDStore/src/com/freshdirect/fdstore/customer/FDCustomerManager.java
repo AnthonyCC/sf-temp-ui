@@ -3650,4 +3650,39 @@ public class FDCustomerManager {
 			throw new FDResourceException(e, "Error creating session bean");
 		}
 	}
+	
+	public static void bulkModifyOrder(
+			FDIdentity identity,
+			FDActionInfo info,
+			FDModifyCartModel cart,
+			Set<String> appliedPromos,
+			boolean sendEmail)
+			throws FDResourceException, 
+			ErpTransactionException, 
+			ErpFraudException, 
+			ErpAuthorizationException,
+			DeliveryPassException,
+			ErpAddressVerificationException,
+			FDPaymentInadequateException, InvalidCardException
+			{
+			try{
+				lookupManagerHome();
+				String saleId = cart.getOriginalOrder().getErpSalesId();
+				ErpModifyOrderModel order = FDOrderTranslator.getErpModifyOrderModel(cart);
+				order.setTransactionSource(info.getSource());
+				order.setTransactionInitiator(info.getAgent() == null ? null : info.getAgent().getUserId());
+				String oldReservationId = cart.getOriginalReservationId();
+				FDCustomerManagerSB sb = managerHome.create();
+				sb.bulkModifyOrder(saleId, identity, info, order, oldReservationId, appliedPromos, 
+						info.getAgent() == null ? null : info.getAgent().getRole(), sendEmail);
+			}catch (CreateException ce) {
+				invalidateManagerHome();
+				throw new FDResourceException(ce, "Error creating bean");
+			} catch (RemoteException re) {
+				invalidateManagerHome();
+				throw new FDResourceException(re, "Error talking to bean");
+			}				
+				
+
+		}
 }

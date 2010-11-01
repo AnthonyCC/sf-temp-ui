@@ -10,6 +10,7 @@ package com.freshdirect.fdstore.customer.ejb;
 
 import javax.ejb.EJBObject;
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.util.*;
 
 import com.freshdirect.fdstore.FDResourceException;
@@ -113,6 +114,10 @@ public interface CallCenterManagerSB extends EJBObject {
 	public void saveClick2CallInfo(CrmClick2CallModel click2CallModel) throws FDResourceException, RemoteException;
 	
 	public void saveClick2CallStatus(String id, String userId, boolean status) throws FDResourceException, RemoteException;
+	
+	public void createSnapShotForModifyOrders(GenericSearchCriteria criteria) throws FDResourceException, RemoteException;
+	
+	public void updateOrderModifiedStatus(String saleId, String status, String errorDesc) throws FDResourceException, RemoteException;
 	
 //	public CrmClick2CallModel getClick2CallInfo() throws FDResourceException, RemoteException;
 	

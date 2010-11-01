@@ -4,10 +4,17 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -19,9 +26,18 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.ErpAddressVerificationException;
+import com.freshdirect.customer.ErpAuthorizationException;
+import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpFraudException;
+import com.freshdirect.customer.ErpModifyOrderModel;
+import com.freshdirect.customer.ErpPaymentMethodI;
+import com.freshdirect.customer.ErpPaymentMethodModel;
+import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvAddressVerificationResponse;
 import com.freshdirect.delivery.DlvRestrictionManager;
+import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumAddressVerificationResult;
 import com.freshdirect.delivery.EnumRestrictedAddressReason;
 import com.freshdirect.delivery.model.RestrictedAddressModel;
@@ -32,25 +48,58 @@ import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
+import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.CallCenterServices;
+import com.freshdirect.fdstore.EnumCheckoutMode;
+import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
+import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDProductInfo;
+import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDSku;
+import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.customer.FDCartLineModel;
+import com.freshdirect.fdstore.customer.FDCartModel;
+import com.freshdirect.fdstore.customer.FDCustomerCreditUtil;
+import com.freshdirect.fdstore.customer.FDCustomerFactory;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
+import com.freshdirect.fdstore.customer.FDOrderTranslator;
+import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
+import com.freshdirect.fdstore.customer.adapter.FDOrderAdapter;
+import com.freshdirect.fdstore.promotion.EnumOfferType;
+import com.freshdirect.fdstore.promotion.ExtendDeliveryPassApplicator;
+import com.freshdirect.fdstore.promotion.Promotion;
+import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.promotion.RedemptionCodeStrategy;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.GenericSearchCriteria;
+import com.freshdirect.framework.util.NVL;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
+import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.AccountActivityUtil;
+import com.freshdirect.webapp.taglib.fdstore.AddressUtil;
 import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
+import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
+import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
 
 public class AdminToolsControllerTag extends AbstractControllerTag {
@@ -109,6 +158,25 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				//Submit n orders at a time. Default is 100.
 				List returnOrders = buildCustomerOrdersFromRequest(request, prcLimit);
 				doReturnOrders(request, returnOrders, actionResult);
+			}else if(actionName != null && actionName.equals("createSnapShot")){
+				//Take the snapshot of the orders
+				GenericSearchCriteria criteria = (GenericSearchCriteria)session.getAttribute("ORDER_SEARCH_BY_SKUS");
+				if(criteria == null){
+					LOGGER.error("The search criteria is not available in the Session.");
+					actionResult.addError(true, "actionfailure", SystemMessageList.MSG_TECHNICAL_ERROR);
+					return true;
+				}
+				CallCenterServices.createSnapShotForModifyOrders(criteria);
+				actionResult.addWarning(new ActionWarning("createSnapSuccess", "SnapShot Successfully Created."));
+
+			}else if(actionName != null && actionName.equals("modifyOrders")){
+				if(!validateSkuCodes(request, actionResult)){
+					return true;
+				}
+				//Submit n orders at a time. Default is 100.
+				List<FDCustomerOrderInfo> modifyOrders = buildCustomerOrdersFromRequest(request, prcLimit);
+				doBulkModifyOrders(request, modifyOrders, actionResult);
+				
 			}else if(actionName != null && actionName.equals("fixSettlemnentBatch")){
 				String batch_id = request.getParameter("batch_id");
 				int updateCount = CallCenterServices.fixSettlemnentBatch(batch_id);
@@ -656,6 +724,32 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				" Order(s) Failed."));
 
 	}
+	private void doBulkModifyOrders(HttpServletRequest request, List<FDCustomerOrderInfo> modifyOrders, ActionResult actionResult) throws FDResourceException {
+		HttpSession session = pageContext.getSession();
+		Set<String> skuCodes = getSet(request.getParameter("skuCodes"));
+		String value = request.getParameter("sendEmail");
+		value = value != null ? value.trim() : "";
+		boolean sendEmail =  false;
+		if(value != null && value.equalsIgnoreCase("true")){
+			sendEmail =  true;
+		}
+		for(Iterator<FDCustomerOrderInfo> it = modifyOrders.iterator(); it.hasNext();){
+			FDCustomerOrderInfo custOrderinfo = it.next();
+			bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
+		}
+	}
+	
+	private Set<String> getSet(String values){
+		StringTokenizer tokenizer = new StringTokenizer(values, ",");
+		Set<String> s =  new HashSet<String>();
+		while(tokenizer.hasMoreTokens()){
+			String token = tokenizer.nextToken();
+			s.add(token);
+		}
+		return s;
+	}
+	
+	
 	private void doReturnOrders(HttpServletRequest request, List returnOrders, ActionResult actionResult) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
 		String notes = request.getParameter("notes");
@@ -670,8 +764,8 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		
 	}
 	
-	private List buildCustomerOrdersFromRequest(HttpServletRequest request, int limit){
-		List custOrders = new ArrayList();
+	private List<FDCustomerOrderInfo> buildCustomerOrdersFromRequest(HttpServletRequest request, int limit){
+		List<FDCustomerOrderInfo> custOrders = new ArrayList<FDCustomerOrderInfo>();
 		String[] saleIds = request.getParameterValues("saleIds");
 		String[] custIds = request.getParameterValues("custIds");
 		String[] fdCustIds = request.getParameterValues("fdCustIds");
@@ -679,16 +773,163 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		if(saleIds.length < limit){
 			limit = saleIds.length;
 		}
-		for(int i =0; i< limit; i++){
-			FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
-			FDIdentity identity = new FDIdentity(custIds[i], fdCustIds[i]);
-			orderInfo.setIdentity(identity);
-			orderInfo.setSaleId(saleIds[i]);
-			custOrders.add(orderInfo);
+		if(fdCustIds != null && fdCustIds.length > 0) {
+			for(int i =0; i< limit; i++){
+				FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
+				FDIdentity identity = new FDIdentity(custIds[i], fdCustIds[i]);
+				orderInfo.setIdentity(identity);
+				orderInfo.setSaleId(saleIds[i]);
+				custOrders.add(orderInfo);
+			}
+		} else {
+			for(int i =0; i< limit; i++){
+				FDCustomerOrderInfo orderInfo = new FDCustomerOrderInfo();
+				FDIdentity identity = new FDIdentity(custIds[i]);
+				orderInfo.setIdentity(identity);
+				orderInfo.setSaleId(saleIds[i]);
+				custOrders.add(orderInfo);
+			}
 		}
 		return custOrders;
 	}
-	
+
+	protected void bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
+		HttpSession session = request.getSession();
+			try {
+				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
+
+				//
+				// Get ModifyCart model
+				//
+				FDModifyCartModel modCart = new FDModifyCartModel(originalOrder);
+				//remove old sku and add new sku.
+				boolean modified = false;
+				List<FDCartLineI> orderLines = modCart.getOrderLines();
+				for(int index=0; index<orderLines.size();index++){
+					FDCartLineI oldCartLine = orderLines.get(index);
+					String skuCode = oldCartLine.getSkuCode();
+					if(skuCodes.contains(skuCode)) {
+						try {
+							//it.remove();
+							modCart.removeOrderLineById(oldCartLine.getRandomId());	
+							FDProductInfo pInfo = FDCachedFactory.getProductInfo(skuCode);
+							FDSku newSkuVersion = new FDSku(pInfo.getSkuCode(), pInfo.getVersion());
+							FDCartLineI newCartLine = new FDCartLineModel(newSkuVersion, oldCartLine.getProductRef().lookupProductModel(),
+									oldCartLine.getConfiguration(), oldCartLine.getVariantId(), 
+									oldCartLine.getPricingContext().getZoneId());
+							modCart.addOrderLine(newCartLine);
+							modified = true;
+						}catch(FDSkuNotFoundException se){
+							LOGGER.error("Sku Not Found : "+skuCode);
+						}
+						
+					}
+				}
+				if(modified) {
+					modCart.refreshAll();
+					modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
+		        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+		        	Set<String> appliedPromos = originalOrder.getUsedPromotionCodes();
+		        	modCart.setDiscounts(originalOrder.getDiscounts());
+		        	modCart.setSelectedGiftCards(originalOrder.getGiftcardPaymentMethods());
+		        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
+		        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());
+		        	for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
+		        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(it.next());
+		        		if(promotion.isWaiveCharge()){
+		        			modCart.setDlvPromotionApplied(true);
+		        			break;
+		        		}
+		        	}
+		        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+		        	info.setIdentity(identity);
+					FDCustomerManager.bulkModifyOrder(identity, info, modCart, appliedPromos, sendEmail);
+					try {
+						CallCenterServices.updateOrderModifiedStatus(orderId, "Completed", "");
+					}catch(FDResourceException fe){
+						//ignore
+					}
+				}
+			} catch (ErpFraudException ex) {
+				LOGGER.warn("Possible fraud occured", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+
+			} catch (ErpAuthorizationException ex) {
+				LOGGER.warn("Authorization failed", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+				
+		
+			} catch (FDPaymentInadequateException ex) {
+				LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+
+
+			} catch (ErpTransactionException ex) {
+				LOGGER.error("Current sale status incompatible with requested action", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+
+
+			} catch (FDInvalidConfigurationException ex) {
+				LOGGER.error("FDInvalidConfigurationException occured in doNewAuthorization.", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+				
+			} catch (FDResourceException ex) {
+				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+
+			} catch(DeliveryPassException ex) {
+				LOGGER.error("Error performing a Delivery pass operation. ", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+
+			}
+			catch(ErpAddressVerificationException ex){
+				LOGGER.error("Error performing a modify order operation. ", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+						
+			}catch(InvalidCardException ex){
+				LOGGER.error("Error performing a modify order operation. ", ex);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
+				}catch(FDResourceException fe){
+					//ignore
+				}
+						
+			}
+			
+	}
+
 //	private void addToResultsList(HttpSession session, Map subResults){
 //		Map results = (Map)session.getAttribute("EXPORT_RESULTS");
 //		if(results == null){
@@ -714,7 +955,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 //		session.setAttribute("EXPORT_RESULTS", results);
 // 	}
 
-	
+	private boolean validateSkuCodes(HttpServletRequest request, ActionResult actionResult) throws ParseException {
+		String skuCodes = NVL.apply(request.getParameter("skuCodes"), "").trim();
+		if(skuCodes == null || skuCodes.length() == 0){
+			actionResult.addError(true, "inputerror", "Enter at least one valid Sku Code.");
+			return false;
+		}
+		return true;
+	}
 	
 	public static class TagEI extends AbstractControllerTag.TagEI {
 		   public VariableInfo[] getVariableInfo(TagData data) {

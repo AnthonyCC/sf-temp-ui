@@ -51,6 +51,7 @@ import com.freshdirect.customer.EnumDeliverySetting;
 import com.freshdirect.customer.EnumDeliveryType;
 import com.freshdirect.customer.EnumFraudReason;
 import com.freshdirect.customer.EnumPaymentResponse;
+import com.freshdirect.customer.EnumPaymentType;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.customer.EnumSaleType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -137,6 +138,7 @@ import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerRequest;
 import com.freshdirect.fdstore.customer.FDCustomerSearchCriteria;
 import com.freshdirect.fdstore.customer.FDIdentity;
+import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderI;
 import com.freshdirect.fdstore.customer.FDOrderSearchCriteria;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -432,185 +434,192 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 		FDUserDlvPassInfo dlvPassInfo = null;
 		try {
 			FDIdentity identity = user.getIdentity();
-			if (identity != null) {
-				String customerPk = identity.getErpCustomerPK();
-				DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
-				Map<Comparable,Serializable> statusMap = sb.getAllStatusMap(customerPk);
-				EnumDlvPassStatus dlvPassStatus = EnumDlvPassStatus.NONE;
-
-				if (statusMap != null && statusMap.size() > 0) {
-					if (statusMap.get(EnumDlvPassStatus.ACTIVE) != null) {
-						// User has a active delivery pass.
-						dlvPassStatus = EnumDlvPassStatus.ACTIVE;
-					} else if (statusMap.get(EnumDlvPassStatus.READY_TO_USE) != null) {
-						dlvPassStatus = EnumDlvPassStatus.READY_TO_USE;
-					}// -added for DP1.1
-					else if (statusMap.get(EnumDlvPassStatus.EXPIRED_PENDING) != null) {
-						// User has a expired pending delivery pass.
-						dlvPassStatus = EnumDlvPassStatus.EXPIRED_PENDING;
-					}// --placed this if check before PENDING check.
-					else if (statusMap.get(EnumDlvPassStatus.PENDING) != null) {
-						// User has a pending delivery pass.
-						dlvPassStatus = EnumDlvPassStatus.PENDING;
-					} else if (statusMap
-							.get(EnumDlvPassStatus.SETTLEMENT_FAILED) != null) {
-						// User's delivery pass got cancelled because settlement
-						// failed.
-						dlvPassStatus = EnumDlvPassStatus.SETTLEMENT_FAILED;
-					} else if (statusMap.get(EnumDlvPassStatus.EXPIRED) != null) {
-						// User has a expired delivery pass.
-						dlvPassStatus = EnumDlvPassStatus.EXPIRED;
-					} else if (statusMap.get(EnumDlvPassStatus.SHORT_SHIPPED) != null) {
-						// User's delivery pass was short shipped.
-						dlvPassStatus = EnumDlvPassStatus.SHORT_SHIPPED;
-					} else if (statusMap.get(EnumDlvPassStatus.CANCELLED) != null) {
-						// User's delivery pass was cancelled.
-						dlvPassStatus = EnumDlvPassStatus.CANCELLED;
-					} else if (statusMap.get(EnumDlvPassStatus.ORDER_CANCELLED) != null) {
-						// User's delivery pass was cancelled.
-						dlvPassStatus = EnumDlvPassStatus.ORDER_CANCELLED;
-					} else if (statusMap.get(EnumDlvPassStatus.PASS_RETURNED) != null) {
-						// User's delivery pass was cancelled.
-						dlvPassStatus = EnumDlvPassStatus.PASS_RETURNED;
-					}
-					/*
-					 * If none of the above conditions are satisfied then the
-					 * user either no delivery pass in which case the
-					 * dlvPassStatus is defaulted to NONE. In other words he is
-					 * eligible for buying a new Pass.
-					 */
-
-				}
-
-				DeliveryPassType type = null;
-				Date expDate = null;
-				String originalOrderId = null;
-				int remDlvs = 0;
-				int usedDlvs = 0;
-				DeliveryPassModel model = null;
-				if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)) {
-					String recentDPId = (String) statusMap.get(dlvPassStatus);
-
-					model = sb.getDeliveryPassInfo(recentDPId);
-					if (model == null) {
-						throw new FDResourceException(
-								"Unable to locate the delivery pass for this user's account.");
-					}
-
-					if (DeliveryPassUtil.isReadyToUse(dlvPassStatus)) {
-						if (model.getType().isUnlimited()
-								&& statusMap.get(EnumDlvPassStatus.EXPIRED) != null) {
-							String oldDPId = (String) statusMap
-									.get(EnumDlvPassStatus.EXPIRED);
-							DeliveryPassModel oldPass = sb
-									.getDeliveryPassInfo(oldDPId);
-							if (oldPass.getType().isUnlimited()) {
-								if (model.getPurchaseDate().before(
-										oldPass.getExpirationDate())) {
-									model.setExpirationDate(DateUtil.addDays(
-											oldPass.getExpirationDate(), model
-													.getType().getDuration()));
-									model.setOrgExpirationDate(model
-											.getExpirationDate());
-
-								}
-							} else {
-								Calendar cal = Calendar.getInstance(Locale.US);
-								// Add duration to today's date to calculate
-								// expiration date.
-								cal.set(Calendar.HOUR, 11);
-								cal.set(Calendar.MINUTE, 59);
-								cal.set(Calendar.SECOND, 59);
-								cal.set(Calendar.AM_PM, Calendar.PM);
-
-								model.setExpirationDate(DateUtil.addDays(cal
-										.getTime(), model.getType()
-										.getDuration()));
-								model.setOrgExpirationDate(model
-										.getExpirationDate());
-							}
-						} else if (model.getType().isUnlimited()
-								&& statusMap.get(EnumDlvPassStatus.CANCELLED) != null) {
-							String oldDPId = (String) statusMap
-									.get(EnumDlvPassStatus.CANCELLED);
-							DeliveryPassModel oldPass = sb
-									.getDeliveryPassInfo(oldDPId);
-							if (oldPass.getType().isUnlimited()) {
-								if (model.getPurchaseDate().before(
-										oldPass.getExpirationDate())) {
-
-									Calendar cal = Calendar
-											.getInstance(Locale.US);
-									cal.setTime(oldPass.getExpirationDate());
-									cal.set(Calendar.HOUR, 11);
-									cal.set(Calendar.MINUTE, 59);
-									cal.set(Calendar.SECOND, 59);
-									cal.set(Calendar.AM_PM, Calendar.PM);
-									model.setExpirationDate(DateUtil.addDays(
-											cal.getTime(), model.getType()
-													.getDuration()));
-									model.setOrgExpirationDate(model
-											.getExpirationDate());
-								}
-							}
-						}
-
-						// Activate the Ready To Use pass.
-						sb.activateReadyToUsePass(model);
-						dlvPassStatus = EnumDlvPassStatus.ACTIVE;
-					}// -added for DP1.1
-					// Get the pass type and expiration date if unlimited.
-					type = model.getType();
-					if (type.isUnlimited()) {
-						expDate = model.getExpirationDate();
-					}
-					originalOrderId = model.getPurchaseOrderId();
-					remDlvs = model.getRemainingDlvs();
-					usedDlvs = model.getUsageCount();
-				}
-				// Create FDUserDlvPassInfo object.
-				int usablePassCount = Integer.parseInt(statusMap.get(
-						DlvPassConstants.USABLE_PASS_COUNT).toString());
-				int autoRenewUsablePassCount = Integer.parseInt(statusMap.get(
-						DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT)
-						.toString());
-				boolean isFreeTrialRestricted = ((Boolean) statusMap
-						.get(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED))
-						.booleanValue();
-				Double autoRenewDPPrice = (Double) statusMap
-						.get(DlvPassConstants.AUTORENEW_DP_PRICE);
-				DeliveryPassType autoRenewDPType = null;
-				if (statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE) != null) {
-					autoRenewDPType = (DeliveryPassType) statusMap
-							.get(DlvPassConstants.AUTORENEW_DP_TYPE);
-				}
-				dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type,
-						expDate, originalOrderId, remDlvs, usedDlvs,
-						usablePassCount, isFreeTrialRestricted,
-						autoRenewUsablePassCount, autoRenewDPType,
-						autoRenewDPPrice.doubleValue());
-				if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
-						&& (type.isUnlimited())
-						&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus) || EnumDlvPassStatus.EXPIRED
-								.equals(dlvPassStatus))) {
-					dlvPassInfo.setDaysSinceDPExpiry(sb
-							.getDaysSinceDPExpiry(customerPk));
-				} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
-						&& type.isUnlimited()) {
-					dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(
-							customerPk, model.getId()));
-				}
-
-			} else {
-				// Identity will be null when he/she is a anonymous user. Create
-				// a default info object.
-				dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE,
-						null, null, null, 0, 0, 0, false, 0, null, 0);
-			}
+			dlvPassInfo = getDlvPassInfo(identity);
 		} catch (RemoteException re) {
 			throw new FDResourceException(re);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce);
+		}
+		return dlvPassInfo;
+	}
+
+	private FDUserDlvPassInfo getDlvPassInfo(FDIdentity identity)
+			throws CreateException, RemoteException, FDResourceException {
+		FDUserDlvPassInfo dlvPassInfo;
+		if (identity != null) {
+			String customerPk = identity.getErpCustomerPK();
+			DlvPassManagerSB sb = this.getDlvPassManagerHome().create();
+			Map<Comparable,Serializable> statusMap = sb.getAllStatusMap(customerPk);
+			EnumDlvPassStatus dlvPassStatus = EnumDlvPassStatus.NONE;
+
+			if (statusMap != null && statusMap.size() > 0) {
+				if (statusMap.get(EnumDlvPassStatus.ACTIVE) != null) {
+					// User has a active delivery pass.
+					dlvPassStatus = EnumDlvPassStatus.ACTIVE;
+				} else if (statusMap.get(EnumDlvPassStatus.READY_TO_USE) != null) {
+					dlvPassStatus = EnumDlvPassStatus.READY_TO_USE;
+				}// -added for DP1.1
+				else if (statusMap.get(EnumDlvPassStatus.EXPIRED_PENDING) != null) {
+					// User has a expired pending delivery pass.
+					dlvPassStatus = EnumDlvPassStatus.EXPIRED_PENDING;
+				}// --placed this if check before PENDING check.
+				else if (statusMap.get(EnumDlvPassStatus.PENDING) != null) {
+					// User has a pending delivery pass.
+					dlvPassStatus = EnumDlvPassStatus.PENDING;
+				} else if (statusMap
+						.get(EnumDlvPassStatus.SETTLEMENT_FAILED) != null) {
+					// User's delivery pass got cancelled because settlement
+					// failed.
+					dlvPassStatus = EnumDlvPassStatus.SETTLEMENT_FAILED;
+				} else if (statusMap.get(EnumDlvPassStatus.EXPIRED) != null) {
+					// User has a expired delivery pass.
+					dlvPassStatus = EnumDlvPassStatus.EXPIRED;
+				} else if (statusMap.get(EnumDlvPassStatus.SHORT_SHIPPED) != null) {
+					// User's delivery pass was short shipped.
+					dlvPassStatus = EnumDlvPassStatus.SHORT_SHIPPED;
+				} else if (statusMap.get(EnumDlvPassStatus.CANCELLED) != null) {
+					// User's delivery pass was cancelled.
+					dlvPassStatus = EnumDlvPassStatus.CANCELLED;
+				} else if (statusMap.get(EnumDlvPassStatus.ORDER_CANCELLED) != null) {
+					// User's delivery pass was cancelled.
+					dlvPassStatus = EnumDlvPassStatus.ORDER_CANCELLED;
+				} else if (statusMap.get(EnumDlvPassStatus.PASS_RETURNED) != null) {
+					// User's delivery pass was cancelled.
+					dlvPassStatus = EnumDlvPassStatus.PASS_RETURNED;
+				}
+				/*
+				 * If none of the above conditions are satisfied then the
+				 * user either no delivery pass in which case the
+				 * dlvPassStatus is defaulted to NONE. In other words he is
+				 * eligible for buying a new Pass.
+				 */
+
+			}
+
+			DeliveryPassType type = null;
+			Date expDate = null;
+			String originalOrderId = null;
+			int remDlvs = 0;
+			int usedDlvs = 0;
+			DeliveryPassModel model = null;
+			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)) {
+				String recentDPId = (String) statusMap.get(dlvPassStatus);
+
+				model = sb.getDeliveryPassInfo(recentDPId);
+				if (model == null) {
+					throw new FDResourceException(
+							"Unable to locate the delivery pass for this user's account.");
+				}
+
+				if (DeliveryPassUtil.isReadyToUse(dlvPassStatus)) {
+					if (model.getType().isUnlimited()
+							&& statusMap.get(EnumDlvPassStatus.EXPIRED) != null) {
+						String oldDPId = (String) statusMap
+								.get(EnumDlvPassStatus.EXPIRED);
+						DeliveryPassModel oldPass = sb
+								.getDeliveryPassInfo(oldDPId);
+						if (oldPass.getType().isUnlimited()) {
+							if (model.getPurchaseDate().before(
+									oldPass.getExpirationDate())) {
+								model.setExpirationDate(DateUtil.addDays(
+										oldPass.getExpirationDate(), model
+												.getType().getDuration()));
+								model.setOrgExpirationDate(model
+										.getExpirationDate());
+
+							}
+						} else {
+							Calendar cal = Calendar.getInstance(Locale.US);
+							// Add duration to today's date to calculate
+							// expiration date.
+							cal.set(Calendar.HOUR, 11);
+							cal.set(Calendar.MINUTE, 59);
+							cal.set(Calendar.SECOND, 59);
+							cal.set(Calendar.AM_PM, Calendar.PM);
+
+							model.setExpirationDate(DateUtil.addDays(cal
+									.getTime(), model.getType()
+									.getDuration()));
+							model.setOrgExpirationDate(model
+									.getExpirationDate());
+						}
+					} else if (model.getType().isUnlimited()
+							&& statusMap.get(EnumDlvPassStatus.CANCELLED) != null) {
+						String oldDPId = (String) statusMap
+								.get(EnumDlvPassStatus.CANCELLED);
+						DeliveryPassModel oldPass = sb
+								.getDeliveryPassInfo(oldDPId);
+						if (oldPass.getType().isUnlimited()) {
+							if (model.getPurchaseDate().before(
+									oldPass.getExpirationDate())) {
+
+								Calendar cal = Calendar
+										.getInstance(Locale.US);
+								cal.setTime(oldPass.getExpirationDate());
+								cal.set(Calendar.HOUR, 11);
+								cal.set(Calendar.MINUTE, 59);
+								cal.set(Calendar.SECOND, 59);
+								cal.set(Calendar.AM_PM, Calendar.PM);
+								model.setExpirationDate(DateUtil.addDays(
+										cal.getTime(), model.getType()
+												.getDuration()));
+								model.setOrgExpirationDate(model
+										.getExpirationDate());
+							}
+						}
+					}
+
+					// Activate the Ready To Use pass.
+					sb.activateReadyToUsePass(model);
+					dlvPassStatus = EnumDlvPassStatus.ACTIVE;
+				}// -added for DP1.1
+				// Get the pass type and expiration date if unlimited.
+				type = model.getType();
+				if (type.isUnlimited()) {
+					expDate = model.getExpirationDate();
+				}
+				originalOrderId = model.getPurchaseOrderId();
+				remDlvs = model.getRemainingDlvs();
+				usedDlvs = model.getUsageCount();
+			}
+			// Create FDUserDlvPassInfo object.
+			int usablePassCount = Integer.parseInt(statusMap.get(
+					DlvPassConstants.USABLE_PASS_COUNT).toString());
+			int autoRenewUsablePassCount = Integer.parseInt(statusMap.get(
+					DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT)
+					.toString());
+			boolean isFreeTrialRestricted = ((Boolean) statusMap
+					.get(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED))
+					.booleanValue();
+			Double autoRenewDPPrice = (Double) statusMap
+					.get(DlvPassConstants.AUTORENEW_DP_PRICE);
+			DeliveryPassType autoRenewDPType = null;
+			if (statusMap.get(DlvPassConstants.AUTORENEW_DP_TYPE) != null) {
+				autoRenewDPType = (DeliveryPassType) statusMap
+						.get(DlvPassConstants.AUTORENEW_DP_TYPE);
+			}
+			dlvPassInfo = new FDUserDlvPassInfo(dlvPassStatus, type,
+					expDate, originalOrderId, remDlvs, usedDlvs,
+					usablePassCount, isFreeTrialRestricted,
+					autoRenewUsablePassCount, autoRenewDPType,
+					autoRenewDPPrice.doubleValue());
+			if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
+					&& (type.isUnlimited())
+					&& (EnumDlvPassStatus.CANCELLED.equals(dlvPassStatus) || EnumDlvPassStatus.EXPIRED
+							.equals(dlvPassStatus))) {
+				dlvPassInfo.setDaysSinceDPExpiry(sb
+						.getDaysSinceDPExpiry(customerPk));
+			} else if (!EnumDlvPassStatus.NONE.equals(dlvPassStatus)
+					&& type.isUnlimited()) {
+				dlvPassInfo.setDaysToDPExpiry(sb.getDaysToDPExpiry(
+						customerPk, model.getId()));
+			}
+
+		} else {
+			// Identity will be null when he/she is a anonymous user. Create
+			// a default info object.
+			dlvPassInfo = new FDUserDlvPassInfo(EnumDlvPassStatus.NONE,
+					null, null, null, 0, 0, 0, false, 0, null, 0);
 		}
 		return dlvPassInfo;
 	}
@@ -5983,6 +5992,49 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			throw new FDResourceException(e);
 		}
 	}
+	public void bulkModifyOrder(
+			String saleId,
+			FDIdentity identity,			
+			FDActionInfo info,
+			ErpModifyOrderModel order,
+			String oldReservationId,
+			Set<String> appliedPromos,
+			CrmAgentRole agentRole,
+			boolean sendEmail)
+			throws FDResourceException, 
+			ErpTransactionException, 
+			ErpFraudException, 
+			ErpAuthorizationException, 
+			DeliveryPassException, 
+			ErpAddressVerificationException,
+			InvalidCardException,
+			FDPaymentInadequateException {
+			try {
+				EnumDlvPassStatus status = getDlvPassInfo(identity).getStatus();
+				FDCustomerModel fdCustomer = FDCustomerFactory.getFDCustomerFromErpId(identity.getErpCustomerPK());
+				int orderCount = getValidOrderCount(identity);
+				orderCount--;
+				ErpAddressModel address = order.getDeliveryInfo().getDeliveryAddress();
+				boolean isCorporateUser = false;
+				if (null != address) {
+					isCorporateUser = EnumServiceType.CORPORATE.equals(address.getServiceType());
+				}
+				CustomerRatingAdaptor cra = new CustomerRatingAdaptor(fdCustomer.getProfile(),isCorporateUser,orderCount);
+				EnumPaymentType pt = order.getPaymentMethod().getPaymentType();
+				if (EnumPaymentType.REGULAR.equals(pt) && cra.isOnFDAccount()) {
+					order.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
+				}
+
+				modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status);
+				
+			}catch (RemoteException re) {
+				throw new FDResourceException(re);
+			} catch (CreateException ce) {
+				throw new FDResourceException(ce);
+			}
+		}
+	
+	
 
 }
 

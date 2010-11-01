@@ -108,6 +108,15 @@ public class GenericLocatorTag extends AbstractControllerTag {
 				GenericSearchCriteria criteria = new GenericSearchCriteria(EnumSearchType.SETTLEMENT_BATCH_SEARCH);
 				searchResults = CallCenterServices.doGenericSearch(criteria);
 
+			}else if(EnumSearchType.ORDER_SEARCH_BY_SKUS.equals(searchType)){
+				if(!validateSkuCodes(request, actionResult)){
+					return true;
+				}
+			    searchResults = performSearch(request);
+			    request.setAttribute("RESULT","success");
+			}else if(EnumSearchType.GET_ORDERS_TO_MODIFY.equals(searchType)){
+			    searchResults = performSearch(request);
+			    request.setAttribute("RESULT","success");
 			}
 			pageContext.setAttribute(this.id, searchResults != null ? searchResults : Collections.EMPTY_LIST);
 		} catch(FDResourceException e){
@@ -140,6 +149,10 @@ public class GenericLocatorTag extends AbstractControllerTag {
 		if(EnumSearchType.RETURN_ORDER_SEARCH.equals(criteria.getSearchType())){
 			//Cache the search criteria in session.
 			session.setAttribute("RETURN_ORDERS_CRITERIA", criteria);
+		}
+		if(EnumSearchType.ORDER_SEARCH_BY_SKUS.equals(criteria.getSearchType())){
+			//Cache the search criteria in session.
+			session.setAttribute("ORDER_SEARCH_BY_SKUS", criteria);
 		}
 		
 
@@ -234,20 +247,25 @@ private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest 
 	}
 
 	private GenericSearchCriteria buildCriteria(HttpServletRequest request) throws FDResourceException{
-		GenericSearchCriteria criteria = null;
+		GenericSearchCriteria criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
 		try{
 				String deliveryDate = NVL.apply(request.getParameter("deliveryDate"),"").trim();
-				Date dlvDate  = dateFormat.parse(deliveryDate);
+				if(deliveryDate != null && deliveryDate.length() > 0){
+					Date dlvDate  = dateFormat.parse(deliveryDate);
+					criteria.setCriteriaMap("baseDate", dlvDate);
+				}
 			    
 				String fromTimeSlot = NVL.apply(request.getParameter("fromTimeSlot"), "").trim();
 				String toTimeSlot = NVL.apply(request.getParameter("toTimeSlot"), "").trim();
 				
 				String zones = NVL.apply(request.getParameter("zone"), "");
-				
-				criteria = new GenericSearchCriteria(EnumSearchType.getEnum(searchParam));
-				criteria.setCriteriaMap("baseDate", dlvDate);
+				String skuCodes = NVL.apply(request.getParameter("skuCodes"), "");
+
 				if(zones.length() > 0){
-					criteria.setCriteriaMap("zoneArray", getZoneArray(zones));	
+					criteria.setCriteriaMap("zoneArray", getArray(zones));	
+				}
+				if(skuCodes.length() > 0){
+					criteria.setCriteriaMap("skuArray", getArray(skuCodes));	
 				}
 				if(fromTimeSlot.length() > 0){
 					String fromTimePeriod = request.getParameter("fromTimePeriod");
@@ -342,7 +360,15 @@ private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest 
 
 		    }
 	}
-
+	private boolean validateSkuCodes(HttpServletRequest request, ActionResult actionResult) throws ParseException {
+		String skuCodes = NVL.apply(request.getParameter("skuCodes"), "").trim();
+		if(skuCodes == null || skuCodes.length() == 0){
+			actionResult.addError(true, "inputerror", "Enter at least one valid Sku Code.");
+			return false;
+		}
+		return true;
+	}
+	
 	private boolean validate(HttpServletRequest request, ActionResult actionResult) throws ParseException {
 		String deliveryDate = NVL.apply(request.getParameter("deliveryDate"),"").trim();
 	    if(!validateDateField(deliveryDate, actionResult, "Delivery Date")){
@@ -440,16 +466,16 @@ private GenericSearchCriteria buildRestrictedAddressCriteria(HttpServletRequest 
         }
 	    return true;
 	}
-	private String[] getZoneArray(String zones){
-		StringTokenizer tokenizer = new StringTokenizer(zones, ",");
-		String[] zoneArray = new String[tokenizer.countTokens()];
+	private String[] getArray(String values){
+		StringTokenizer tokenizer = new StringTokenizer(values, ",");
+		String[] valueArray = new String[tokenizer.countTokens()];
 		int index = 0;
 		while(tokenizer.hasMoreTokens()){
 			String token = tokenizer.nextToken();
-			zoneArray[index] = token.trim();
+			valueArray[index] = token.trim();
 			index++;
 		}
-		return zoneArray;
+		return valueArray;
 	}
 	
 	public static List filterOrdersByResvType(List completeList, String filterType) {

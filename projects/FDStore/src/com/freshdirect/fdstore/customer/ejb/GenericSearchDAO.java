@@ -26,6 +26,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
+import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDBrokenAccountInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
@@ -44,10 +45,10 @@ public class GenericSearchDAO {
 	//.put(EnumSearchType.COMPANY_SEARCH.getName(), CUSTOMER_QUERY);
 	private static Category LOGGER = LoggerFactory.getInstance(GenericSearchDAO.class);
 	
-	public static List genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
-		List searchResults = null;
+	public static List<FDCustomerOrderInfo> genericSearch(Connection conn, GenericSearchCriteria criteria) throws SQLException {
+		List<FDCustomerOrderInfo> searchResults = null;
 		if(criteria == null || criteria.isBlank()){
-			return Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		} else if(EnumSearchType.COMPANY_SEARCH.equals(criteria.getSearchType())){
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			searchResults = findCustomersByCriteria(conn, criteria, builder);
@@ -81,6 +82,14 @@ public class GenericSearchDAO {
 			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
 			searchResults = processAddressRestriction(conn, criteria, builder);
 		}
+		else if(EnumSearchType.ORDER_SEARCH_BY_SKUS.equals(criteria.getSearchType())){
+			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
+			searchResults = findOrderForSkusByCriteria(conn, criteria, builder);
+		}
+		else if(EnumSearchType.GET_ORDERS_TO_MODIFY.equals(criteria.getSearchType())){
+			searchResults =getOrdersToModify(conn);
+		}
+		
 		return searchResults;
 		
 	}
@@ -104,10 +113,21 @@ public class GenericSearchDAO {
 			else if(EnumSearchType.ADDR_RESTRICTION_SEARCH.equals(criteria.getSearchType())){
 				buildAddressRestrictionCriteria(criteria, builder);
 			}
+			else if(EnumSearchType.ORDER_SEARCH_BY_SKUS.equals(criteria.getSearchType())){
+				buildOrderSearchBySkus(criteria, builder);
+			}
 		}
 		return builder;
 	}
 
+	private static CriteriaBuilder buildOrderSearchBySkus(GenericSearchCriteria criteria, CriteriaBuilder builder) {
+		Object skuArray = criteria.getCriteriaMap().get("skuArray");
+		if(skuArray != null){
+			builder.addInString("OL.SKU_CODE", (String[])skuArray);	
+		}
+		return builder;
+	}
+		
 	private static void buildReservationSearch(GenericSearchCriteria criteria, CriteriaBuilder builder) {
 		java.util.Date baseDate = (java.util.Date) criteria.getCriteriaMap().get("baseDate");
 		builder.addSql("ts.base_date = ?", 
@@ -526,6 +546,94 @@ public class GenericSearchDAO {
 			oInfo.setWaveNum(rs.getString("WAVE_NUMBER"));
 			oInfo.setRouteNum(rs.getString("TRUCK_NUMBER"));
 			
+			lst.add(oInfo);
+		}
+		return lst;
+	}
+
+	private static String ORDER_SEARCH_BY_SKUS = 
+		"SELECT distinct s.id, S.CUSTOMER_ID, CI.FIRST_NAME, CI.LAST_NAME,CI.EMAIL, CI.HOME_PHONE, "
+		+ "CI.BUSINESS_PHONE,CI.CELL_PHONE, SA.REQUESTED_DATE, S.STATUS from cust.orderline ol, "
+		+ "cust.salesaction sa, cust.sale s ,cust.customerinfo ci where "
+		+ "S.ID = SA.SALE_ID and "
+		+ "S.CUSTOMER_ID = SA.CUSTOMER_ID and "
+		+ "OL.SALESACTION_ID = SA.ID and "
+		+ "CI.CUSTOMER_ID = S.CUSTOMER_ID "
+		+ "and SA.ACTION_TYPE in ('MOD','CRO') "
+		+ "and SA.ACTION_DATE = S.CROMOD_DATE "
+		+ "and S.STATUS IN ('SUB','AUT','AUF','AVS') "
+		+ "and SA.REQUESTED_DATE > trunc(sysdate + 1) ";
+	
+	public static  List<FDCustomerOrderInfo> findOrderForSkusByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
+		String query = ORDER_SEARCH_BY_SKUS + " and " + builder.getCriteria();
+		PreparedStatement ps = conn.prepareStatement(query);
+		Object[] obj = builder.getParams();
+		for(int i = 0; i < obj.length; i++) {
+			ps.setObject(i+1, obj[i]);
+		}
+		ResultSet rs = ps.executeQuery();
+		List<FDCustomerOrderInfo> lst = processOrderBySkusResultSet(rs);
+		rs.close();
+		ps.close();
+		return lst;
+	}
+	
+	private static List<FDCustomerOrderInfo> processOrderBySkusResultSet(ResultSet rs) throws SQLException {
+		List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
+		while (rs.next()) {
+			FDCustomerOrderInfo oInfo = new FDCustomerOrderInfo();
+			oInfo.setIdentity(new FDIdentity(rs.getString("CUSTOMER_ID")));
+			oInfo.setFirstName(rs.getString("FIRST_NAME"));
+			oInfo.setLastName(rs.getString("LAST_NAME"));
+			oInfo.setEmail(rs.getString("EMAIL"));
+			oInfo.setPhone(new PhoneNumber(rs.getString("HOME_PHONE")).getPhone());
+			String bizPhone = new PhoneNumber(rs.getString("BUSINESS_PHONE")).getPhone();
+			String cellPhone = new PhoneNumber(rs.getString("CELL_PHONE")).getPhone();
+			
+			oInfo.setAltPhone(NVL.apply(cellPhone, ""));
+			if("".equals(cellPhone)) {
+				oInfo.setAltPhone(NVL.apply(bizPhone, ""));
+			}
+			oInfo.setSaleId(rs.getString("ID"));
+			oInfo.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+			oInfo.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("STATUS")));
+			lst.add(oInfo);
+		}
+		return lst;
+	}
+
+	private static String GET_ORDERS_TO_MODIFY = 
+		"SELECT M.SALE_ID, M.ERP_CUSTOMER_ID, M.FIRST_NAME, " 
+		+"M.LAST_NAME, M.EMAIL, M.HOME_PHONE,  "  
+		+"M.ALT_PHONE, M.REQUESTED_DATE, M.SALE_STATUS, M.CREATE_DATE, STATUS, ERROR_DESC "
+		+"FROM CUST.MODIFY_ORDERS M WHERE M.STATUS IN ('Pending', 'Failed')";
+	
+	public static  List<FDCustomerOrderInfo> getOrdersToModify(Connection conn) throws SQLException {
+		PreparedStatement ps = conn.prepareStatement(GET_ORDERS_TO_MODIFY);
+		ResultSet rs = ps.executeQuery();
+		List<FDCustomerOrderInfo> lst = processOrdersToModifyResultSet(rs);
+		rs.close();
+		ps.close();
+		return lst;
+	}
+	
+	private static List<FDCustomerOrderInfo> processOrdersToModifyResultSet(ResultSet rs) throws SQLException {
+		List<FDCustomerOrderInfo> lst = new ArrayList<FDCustomerOrderInfo>();
+		while (rs.next()) {
+			BulkModifyOrderInfo oInfo = new BulkModifyOrderInfo();
+			oInfo.setIdentity(new FDIdentity(rs.getString("ERP_CUSTOMER_ID")));
+			oInfo.setFirstName(rs.getString("FIRST_NAME"));
+			oInfo.setLastName(rs.getString("LAST_NAME"));
+			oInfo.setEmail(rs.getString("EMAIL"));
+			oInfo.setPhone(new PhoneNumber(rs.getString("HOME_PHONE")).getPhone());
+			String altPhone = new PhoneNumber(rs.getString("ALT_PHONE")).getPhone();
+			oInfo.setAltPhone(NVL.apply(altPhone, ""));
+			oInfo.setSaleId(rs.getString("SALE_ID"));
+			oInfo.setDeliveryDate(rs.getDate("REQUESTED_DATE"));
+			oInfo.setOrderStatus(EnumSaleStatus.getSaleStatus(rs.getString("SALE_STATUS")));
+			oInfo.setModStatus(rs.getString("STATUS"));
+			oInfo.setErrorDesc(rs.getString("ERROR_DESC"));
+			oInfo.setLastCroModDate(rs.getDate("CREATE_DATE"));
 			lst.add(oInfo);
 		}
 		return lst;

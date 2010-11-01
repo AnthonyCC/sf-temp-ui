@@ -1,0 +1,12 @@
+<table class="home_search_module_field" border="0" cellpadding="2" cellspacing="2" width="100%">
+
+	<tr>
+		<% 
+			String skuCodes = NVL.apply(request.getParameter("skuCodes"), "");
+		%>
+		<td>Enter Skus (to Search/Modify): </td>
+		<td align ="left">
+			<TEXTAREA NAME="skuCodes" COLS=40 ROWS=6><%= skuCodes %></TEXTAREA>
+		</td>
+	</tr>		
+</table>

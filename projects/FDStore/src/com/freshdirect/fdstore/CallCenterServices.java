@@ -9,6 +9,7 @@
 package com.freshdirect.fdstore;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -689,6 +690,37 @@ public class CallCenterServices {
 		}
 	}
 	
+	public static void createSnapShotForModifyOrders(GenericSearchCriteria criteria) throws FDResourceException {
+		if(callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.createSnapShotForModifyOrders(criteria);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
+	
+	public static void updateOrderModifiedStatus(String saleId, String status, String errorDesc) throws FDResourceException {
+		if(callCenterHome == null) {
+			lookupManagerHome();
+		}
+		try {
+			CallCenterManagerSB sb = callCenterHome.create();
+			sb.updateOrderModifiedStatus(saleId, status, errorDesc);
+		} catch (CreateException ce) {
+			callCenterHome = null;
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			callCenterHome = null;
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 	public static int cancelReservations(GenericSearchCriteria resvCriteria, String initiator, String notes) throws FDResourceException {
 		if(callCenterHome == null) {
 			lookupManagerHome();
