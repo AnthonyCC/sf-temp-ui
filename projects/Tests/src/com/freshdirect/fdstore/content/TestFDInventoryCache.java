@@ -8,10 +8,10 @@ import com.freshdirect.fdstore.FDInventoryCacheI;
 
 public class TestFDInventoryCache implements FDInventoryCacheI {
 	
-	private Map cache;
+	private Map<String,ErpInventoryModel> cache;
 	
 	public TestFDInventoryCache (){
-		this.cache = new HashMap();
+		this.cache = new HashMap<String,ErpInventoryModel>();
 	}
 
 	public ErpInventoryModel getInventory(String materialId) {
@@ -21,5 +21,4 @@ public class TestFDInventoryCache implements FDInventoryCacheI {
 	public void addInventory(String materialId, ErpInventoryModel inventory) {
 		this.cache.put(materialId, inventory);
 	}
-
 }

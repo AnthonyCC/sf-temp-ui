@@ -78,6 +78,9 @@ import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerNewSessionBean;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSB;
 import com.freshdirect.fdstore.promotion.management.ejb.FDPromotionManagerSessionBean;
+import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceHome;
+import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSB;
+import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSessionBean;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoHome;
 import com.freshdirect.fdstore.zone.ejb.FDZoneInfoSB;
@@ -225,6 +228,13 @@ public class TestUtils {
         container.deploy(new SessionBeanDescriptor(OfflineRecommenderHome.JNDI_HOME, OfflineRecommenderHome.class, OfflineRecommenderSB.class,
                 OfflineRecommenderSessionBean.class));
 
+        container.deploy(
+        	new SessionBeanDescriptor(
+    			StandingOrdersServiceHome.JNDI_HOME, StandingOrdersServiceHome.class, StandingOrdersServiceSB.class,
+    			StandingOrdersServiceSessionBean.class
+        	)
+        );
+
         return container;
     }
 
@@ -292,7 +302,8 @@ public class TestUtils {
         return (nodes.get(pos)).getContentKey().getId();
     }
 
-    public static Set toSet(Object[] arr) {
+    @SuppressWarnings("unchecked")
+	public static Set toSet(Object[] arr) {
         return new HashSet(Arrays.asList(arr));
     }
 

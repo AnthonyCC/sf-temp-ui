@@ -61,7 +61,8 @@ import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.OrderLineUtil;
 import com.freshdirect.fdstore.customer.adapter.CustomerRatingAdaptor;
 import com.freshdirect.fdstore.customer.ejb.FDCustomerHome;
-import com.freshdirect.fdstore.lists.FDStandingOrderList;
+import com.freshdirect.fdstore.lists.FDCustomerList;
+import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -319,6 +320,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * Processes a Standing Order.
 	 * 
 	 * The following steps are taken
+	 * 
 	 * 1. Checks basic info (customer)
 	 * 2. Validates
 	 *    a. Delivery address
@@ -329,7 +331,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * 3. Builds cart from ordered items
 	 * 4. Checks alcoholic content
 	 * 5. ATP Check
-	 * 6. Place order
+	 * 6. Verify order minimum
+	 * 7. Place order
 	 * 
 	 * 
 	 * @param so Standing order to process
@@ -580,56 +583,10 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return new Result( ErrorCode.ADDRESS, customerInfo, customerUser );			
 		}
 		
-		FDStandingOrderList soList = so.getCustomerList();
-
-
-
-		// ==========================
-		//         Build cart
-		// ==========================
-		FDCartModel cart = new FDTransientCartModel();
-		boolean hasInvalidItems = false;
-
-		if ( ! OrderLineUtil.isValidCustomerList( soList.getLineItems() ) ) {
-			LOGGER.info( "Shopping list contains some unavailable/invalid items." );
-			hasInvalidItems = true;
-			// This is not an error
-			//return new Result( ErrorCode.CART, "Shopping list contains some unavailable/invalid items.", customerInfo );
-		}
-		
-		// set cart parameters		
-		cart.setPaymentMethod( paymentMethod );
-		
-		ErpAddressModel erpDeliveryAddress;
-		if ( deliveryAddressModel instanceof ErpAddressModel ) {
-			erpDeliveryAddress = (ErpAddressModel)deliveryAddressModel;
-		} else {
-			erpDeliveryAddress = new ErpAddressModel( deliveryAddressModel );
-		}
-		
-		cart.setDeliveryAddress( erpDeliveryAddress );		
-		cart.setDeliveryReservation( reservation );
-        cart.setZoneInfo( zoneInfo );
-        
-        // fill the cart with items
-		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( soList.getLineItems() );
-		
-		try {
-			for ( FDProductSelectionI ps : productSelectionList ) {
-				FDCartLineI cartLine = new FDCartLineModel( ps );
-				if ( !cartLine.isInvalidConfig() ) {
-					cart.addOrderLine( cartLine );
-				} else {
-					hasInvalidItems = true;
-				}
-			}
-			cart.refreshAll();			
-		} catch ( FDInvalidConfigurationException e ) {
-			LOGGER.info( "Shopping list contains some items with invalid configuration." );
-			hasInvalidItems = true;
-			// This is not an error
-			// return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
-		}
+		// FDCartModel cart = new FDTransientCartModel();
+		ProcessActionResult vr = new ProcessActionResult();
+		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
+		boolean hasInvalidItems = vr.hasInvalidItems();
 
 
 
@@ -650,11 +607,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		//    Check availability
 		//       (ATP Check)
 		// ==========================
-		if (doATPCheck(customer, cart)) {
+		vr = new ProcessActionResult();
+		doATPCheck(customer, cart, vr);
+		if (vr.hasInvalidItems()) {
 			hasInvalidItems = true;
 		}
 		LOGGER.info( "ATP check passed." );
-
 
 
 		// ==========================
@@ -723,6 +681,71 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	}
 
 
+	
+	
+	
+	protected boolean isValidCustomerList(List<FDCustomerListItem> lineItems) throws FDResourceException {
+		return OrderLineUtil.isValidCustomerList( lineItems );
+	}
+	
+	protected FDCartModel checkAvailability(FDIdentity identity, FDCartModel cart, long timeout) throws FDResourceException {
+		return FDCustomerManager.checkAvailability( identity, cart, timeout );
+	}
+
+	public List<FDProductSelectionI> getValidProductSelectionsFromCCLItems(List<FDCustomerListItem> cclItems) throws FDResourceException {
+		return OrderLineUtil.getValidProductSelectionsFromCCLItems( cclItems );
+	}
+
+
+
+	protected FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, DlvZoneInfoModel zoneInfo, FDReservation reservation, ProcessActionResult vr) throws FDResourceException {
+		FDCartModel cart = new FDTransientCartModel();
+		
+		if ( ! isValidCustomerList( soList.getLineItems() ) ) {
+			LOGGER.info( "Shopping list contains some unavailable/invalid items." );
+			vr.increment();
+			// This is not an error
+			//return new Result( ErrorCode.CART, "Shopping list contains some unavailable/invalid items.", customerInfo );
+		}
+		
+		// set cart parameters		
+		cart.setPaymentMethod( paymentMethod );
+		
+		ErpAddressModel erpDeliveryAddress;
+		if ( deliveryAddressModel instanceof ErpAddressModel ) {
+			erpDeliveryAddress = (ErpAddressModel)deliveryAddressModel;
+		} else {
+			erpDeliveryAddress = new ErpAddressModel( deliveryAddressModel );
+		}
+		
+		cart.setDeliveryAddress( erpDeliveryAddress );		
+		cart.setDeliveryReservation( reservation );
+        cart.setZoneInfo( zoneInfo );
+        
+        // fill the cart with items
+		List<FDProductSelectionI> productSelectionList = OrderLineUtil.getValidProductSelectionsFromCCLItems( soList.getLineItems() );
+		
+		try {
+			for ( FDProductSelectionI ps : productSelectionList ) {
+				FDCartLineI cartLine = new FDCartLineModel( ps );
+				if ( !cartLine.isInvalidConfig() ) {
+					cart.addOrderLine( cartLine );
+				} else {
+					vr.increment();
+				}
+			}
+			cart.refreshAll();			
+		} catch ( FDInvalidConfigurationException e ) {
+			LOGGER.info( "Shopping list contains some items with invalid configuration." );
+			vr.increment();
+			// This is not an error
+			// return new Result( ErrorCode.CART, "Shopping list contains some items with invalid configuration.", customerInfo );
+		}
+		
+		
+		return cart;
+	}
+	
 
 	/**
 	 * Perform ATP check on cart items
@@ -741,11 +764,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 * @return
 	 * @throws FDResourceException
 	 */
-	public boolean doATPCheck(FDIdentity customer, FDCartModel cart)
+	protected boolean doATPCheck(FDIdentity customer, FDCartModel cart, ProcessActionResult vr)
 			throws FDResourceException {
 		// Cart ATP check ...
 		//
-		cart = FDCustomerManager.checkAvailability( customer, cart, 30000 );
+		cart = checkAvailability( customer, cart, 30000 );
 		Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 		
 		
@@ -770,6 +793,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					// Restriction message: ((FDRestrictedAvailabilityInfo)info).getRestriction().getMessage()
 				} ***/
 
+				vr.increment();
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDStockAvailabilityInfo) {
 				/**
@@ -785,6 +809,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 					// adjust quantity to amount of available
 					cart.getOrderLineById(randomId).setQuantity(availQty);
 				} else {
+					vr.increment();
 					cart.removeOrderLineById(randomId);
 				}
 			} else if (info instanceof FDCompositeAvailabilityInfo) {
@@ -828,6 +853,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				} ****/
 
 
+				vr.increment();
 				cart.removeOrderLineById(randomId);
 			} else if (info instanceof FDMuniAvailabilityInfo) {
 				/**
@@ -838,6 +864,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 				/// final MunicipalityInfo muni = ((FDMuniAvailabilityInfo)info).getMunicipalityInfo();
 				//
+				vr.increment();
 				cart.removeOrderLineById(randomId);
 			} else { /* info.isa? {@link FDStatusAvailabilityInfo} */
 				/**
@@ -846,11 +873,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 				 */
 				LOGGER.debug("[ATP CHECK/5] Item " + cartLine.getRandomId() + " / '" + cartLine.getProductName() + "' OUT OF STOCK");
 
+				vr.increment();
 				cart.removeOrderLineById(randomId);
 			}
 		}
 
-		return invsInfoMap.size() > 0;
+		return vr.hasInvalidItems();
 	}
 
 
@@ -897,4 +925,24 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		return false;
 	}
 	
+
+	
+
+
+	public static class ProcessActionResult {
+		private int counter = 0;
+		
+		public void increment() {
+			counter++;
+		}
+	
+		public boolean hasInvalidItems() {
+			return counter > 0;
+		}
+		
+		@Override
+		public String toString() {
+			return "Bad items: " + counter + " -> " + hasInvalidItems();
+		}
+	}
 }
