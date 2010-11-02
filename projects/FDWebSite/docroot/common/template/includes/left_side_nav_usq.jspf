@@ -293,7 +293,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					<div class="nav-filter-name nav-filter-name-<%=domain.getSubcategoryLabel() %> title14 wine-narrow">
 					<div class="nav-filter-clickable nav-filter-sublist" onclick="FreshDirect.WineNav.toggleDomain('<%=domain.getSubcategoryLabel() %>', '<%=subDomains.get(0).getEncoded() %>');">
 						<span class="nav-filter-carrot nav-filter-carrot-<%=domain.getSubcategoryLabel() %> <%=subCarrot %>" id="<%=domain.getSubcategoryLabel() %>-carrot">&nbsp;</span><span class="nav-filter-category"><%= domain.getSubcategoryLabel() %></span>
-					</div>
+					</div>					
 					<div id="<%=domain.getSubcategoryLabel() %>-all" style="display: <%=subDisplayAll %>; position: relative">
 <%					
 					//Clear all link
@@ -362,8 +362,7 @@ if (selected == null || wineFilter.isFiltering()) {
 <%							
 						}
 %>
-						</div>
-						</div>
+						</div>						
 						<div id="nav-group-<%=groupHash %>-selected" class="nav-group<%=groupSelectedClass %>">
 						
 <%												
@@ -376,10 +375,7 @@ if (selected == null || wineFilter.isFiltering()) {
 							for (WineFilterValue filter : selectedFilters) {
 								clearFilter.addFilterValue(filter);
 							}
-
-%>
-							<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=selectedGroups.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
-<%							
+							
 						}
 						//Selected subdomains
 						for (DomainValue dv : selectedGroups) {
@@ -397,6 +393,10 @@ if (selected == null || wineFilter.isFiltering()) {
 						</div>
 <%
 						groupCount++;
+					}
+					
+					if (groupCount > 1) {
+						%></div><%
 					}
 
 					/**
@@ -463,6 +463,7 @@ if (selected == null || wineFilter.isFiltering()) {
 							}
 					%>
 					</div>
+					</div>
 						<div id="wineNavMoreOptions" style="display: none;">
 							<div id="wineNavMoreOptionsContent">							
 								<table class="wineNavMoreOptions-table" id="wineNavMoreOptionsTable">
@@ -500,10 +501,12 @@ if (selected == null || wineFilter.isFiltering()) {
 							<div style="clear:both;height: 100%;width: 1px;"></div>							
 												
 					<%
-						}
-					}											
-				%>								
+						}					
+					}	
+					
+				%>												
 					</div>	
+					
 					<div id="<%=domain.getSubcategoryLabel() %>-selected" style="display: <%=subDisplaySelected %>">					
 				<%
 					/**
@@ -520,7 +523,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					
 					for (DomainValue dv : selectedSubValues) {					
 						WineFilter f = wineFilter.clone();						
-						String selectedClass = "-select";				
+						String selectedClass = "-select";
 						f.removeFilterValue(dv);						
 				%>
 						<div class="nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>">
@@ -537,7 +540,6 @@ if (selected == null || wineFilter.isFiltering()) {
 					}
 				%>
 					</div>					
-					
 					</div>
 				<%
 				
