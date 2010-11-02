@@ -87,7 +87,8 @@ public class GenericSearchDAO {
 			searchResults = findOrderForSkusByCriteria(conn, criteria, builder);
 		}
 		else if(EnumSearchType.GET_ORDERS_TO_MODIFY.equals(criteria.getSearchType())){
-			searchResults =getOrdersToModify(conn);
+			CriteriaBuilder builder = buildSQLFromCriteria(criteria);
+			searchResults =getOrdersToModify(conn, criteria, builder);
 		}
 		
 		return searchResults;
@@ -116,6 +117,9 @@ public class GenericSearchDAO {
 			else if(EnumSearchType.ORDER_SEARCH_BY_SKUS.equals(criteria.getSearchType())){
 				buildOrderSearchBySkus(criteria, builder);
 			}
+			else if(EnumSearchType.GET_ORDERS_TO_MODIFY.equals(criteria.getSearchType())){
+				buildStatuses(criteria, builder);
+			}			
 		}
 		return builder;
 	}
@@ -127,7 +131,15 @@ public class GenericSearchDAO {
 		}
 		return builder;
 	}
-		
+
+	private static CriteriaBuilder buildStatuses(GenericSearchCriteria criteria, CriteriaBuilder builder) {
+		Object statuses = criteria.getCriteriaMap().get("statuses");
+		if(statuses != null){
+			builder.addInString("M.STATUS", (String[])statuses);	
+		}
+		return builder;
+	}
+	
 	private static void buildReservationSearch(GenericSearchCriteria criteria, CriteriaBuilder builder) {
 		java.util.Date baseDate = (java.util.Date) criteria.getCriteriaMap().get("baseDate");
 		builder.addSql("ts.base_date = ?", 
@@ -606,10 +618,15 @@ public class GenericSearchDAO {
 		"SELECT M.SALE_ID, M.ERP_CUSTOMER_ID, M.FIRST_NAME, " 
 		+"M.LAST_NAME, M.EMAIL, M.HOME_PHONE,  "  
 		+"M.ALT_PHONE, M.REQUESTED_DATE, M.SALE_STATUS, M.CREATE_DATE, STATUS, ERROR_DESC "
-		+"FROM CUST.MODIFY_ORDERS M WHERE M.STATUS IN ('Pending', 'Failed')";
+		+"FROM CUST.MODIFY_ORDERS M WHERE ";
 	
-	public static  List<FDCustomerOrderInfo> getOrdersToModify(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement(GET_ORDERS_TO_MODIFY);
+	public static  List<FDCustomerOrderInfo> getOrdersToModify(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
+		String query = GET_ORDERS_TO_MODIFY + builder.getCriteria();
+		PreparedStatement ps = conn.prepareStatement(query);
+		Object[] obj = builder.getParams();
+		for(int i = 0; i < obj.length; i++) {
+			ps.setObject(i+1, obj[i]);
+		}
 		ResultSet rs = ps.executeQuery();
 		List<FDCustomerOrderInfo> lst = processOrdersToModifyResultSet(rs);
 		rs.close();

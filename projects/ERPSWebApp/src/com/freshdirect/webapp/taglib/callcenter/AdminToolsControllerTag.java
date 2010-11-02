@@ -26,6 +26,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCustomerModel;
@@ -733,9 +734,17 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		if(value != null && value.equalsIgnoreCase("true")){
 			sendEmail =  true;
 		}
+		int failedCount = 0;
 		for(Iterator<FDCustomerOrderInfo> it = modifyOrders.iterator(); it.hasNext();){
 			FDCustomerOrderInfo custOrderinfo = it.next();
-			bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
+			boolean success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
+			if(!success) failedCount++;
+		}
+		if(failedCount > 0){
+			actionResult.addWarning(new ActionWarning("modifysuccess", "All Order(s) were processed in the batch. There were few failures. Click" 
+					+" on Export Failed Orders Button to view them."));
+		}else {
+			actionResult.addWarning(new ActionWarning("modifysuccess", "All Order(s) were processed in the batch. There were no failures. "));
 		}
 	}
 	
@@ -793,7 +802,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		return custOrders;
 	}
 
-	protected void bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
+	protected boolean bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
 		HttpSession session = request.getSession();
 			try {
 				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
@@ -843,6 +852,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		        	}
 		        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
 		        	info.setIdentity(identity);
+		        	info.setSource(EnumTransactionSource.SYSTEM);
 					FDCustomerManager.bulkModifyOrder(identity, info, modCart, appliedPromos, sendEmail);
 					try {
 						CallCenterServices.updateOrderModifiedStatus(orderId, "Completed", "");
@@ -857,7 +867,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-
+				return false;
 			} catch (ErpAuthorizationException ex) {
 				LOGGER.warn("Authorization failed", ex);
 				try {
@@ -865,7 +875,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				
+				return false;				
 		
 			} catch (FDPaymentInadequateException ex) {
 				LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
@@ -875,7 +885,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					//ignore
 				}
 
-
+				return false;
 			} catch (ErpTransactionException ex) {
 				LOGGER.error("Current sale status incompatible with requested action", ex);
 				try {
@@ -884,7 +894,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					//ignore
 				}
 
-
+				return false;
 			} catch (FDInvalidConfigurationException ex) {
 				LOGGER.error("FDInvalidConfigurationException occured in doNewAuthorization.", ex);
 				try {
@@ -900,7 +910,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-
+				return false;
 			} catch(DeliveryPassException ex) {
 				LOGGER.error("Error performing a Delivery pass operation. ", ex);
 				try {
@@ -908,7 +918,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-
+				return false;
 			}
 			catch(ErpAddressVerificationException ex){
 				LOGGER.error("Error performing a modify order operation. ", ex);
@@ -917,7 +927,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-						
+				return false;						
 			}catch(InvalidCardException ex){
 				LOGGER.error("Error performing a modify order operation. ", ex);
 				try {
@@ -925,9 +935,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-						
+				return false;						
 			}
-			
+			return true;		
 	}
 
 //	private void addToResultsList(HttpSession session, Map subResults){

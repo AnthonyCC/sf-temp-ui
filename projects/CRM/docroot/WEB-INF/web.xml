@@ -59,6 +59,7 @@
         <description>This filter creates availability horizon and today's date as threadlocal</description>
         <filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
 	</filter>
+	<!-- 
 	<filter-mapping>
         <filter-name>CrmMonitor</filter-name>
         <url-pattern>/*</url-pattern>
@@ -71,7 +72,7 @@
         <filter-name>CrmLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+     -->
     <filter-mapping>
         <filter-name>OncePerRequestDateFilter</filter-name>
         <url-pattern>/order/*</url-pattern>
@@ -113,6 +114,19 @@
      	<servlet-name>ReturnsSPExportServlet</servlet-name>
         <servlet-class>com.freshdirect.webapp.util.ReturnsSPExportServlet</servlet-class>
     </servlet>
+   <servlet>
+	<servlet-name>OrdersModifiedReport</servlet-name>
+	    <servlet-class>com.freshdirect.webapp.util.OrdersModifiedReportServlet</servlet-class>
+    </servlet>
+   <servlet>    
+	<servlet-name>OrdersModifiedFailedReport</servlet-name>
+	    <servlet-class>com.freshdirect.webapp.util.OrdersModifiedFailedReportServlet</servlet-class>
+    </servlet>
+   <servlet>    
+	<servlet-name>OrdersModifiedCompletedReport</servlet-name>
+	    <servlet-class>com.freshdirect.webapp.util.OrdersModifiedCompletedReportServlet</servlet-class>
+    </servlet>
+    
     <servlet>
         <servlet-name>PromoPublishServlet</servlet-name>
         <servlet-class>com.freshdirect.fdstore.promotion.pxp.PromoPublishServlet</servlet-class>
@@ -154,6 +168,18 @@
         <servlet-name>ReturnsSPExportServlet</servlet-name>
      	<url-pattern>/reports/returnsSPExport</url-pattern>
     </servlet-mapping> 
+     <servlet-mapping>
+	    <servlet-name>OrdersModifiedReport</servlet-name>
+	    <url-pattern>/reports/orders_to_modify_report.xls</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+	    <servlet-name>OrdersModifiedFailedReport</servlet-name>
+	    <url-pattern>/reports/orders_modified_failed_report.xls</url-pattern>
+     </servlet-mapping>
+     <servlet-mapping>
+	    <servlet-name>OrdersModifiedCompletedReport</servlet-name>
+	    <url-pattern>/reports/orders_modified_completed_report.xls</url-pattern>
+     </servlet-mapping>              
     <servlet-mapping>
         <servlet-name>PromoPublishServlet</servlet-name>
         <url-pattern>/promo_publish</url-pattern>

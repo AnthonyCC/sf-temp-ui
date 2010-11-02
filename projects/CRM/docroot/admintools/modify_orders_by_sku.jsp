@@ -23,8 +23,8 @@
 <script language="javascript">
 	function doAction(actionName) {
 		if(actionName == 'modifyOrders'){
-			var doCancel = confirm ("Click OK to Continue");
-			if(doCancel == false){
+			var doModify = confirm ("Click OK to Continue Or Cancel to Abort");
+			if(doModify == false){
 				return;
 			}            
 			if(document.getElementById("sendEmail").checked == true){
@@ -53,6 +53,9 @@
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>
+	<fd:ErrorHandler result='<%= result %>' name='modifysuccess' id='errorMsg'>
+	   <%@ include file="/includes/i_error_messages.jspf" %>   
+	</fd:ErrorHandler>	
 <crm:GenericLocator id="Orders" searchParam='GET_ORDERS_TO_MODIFY' result="result">
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
@@ -96,7 +99,7 @@
 		if(Orders ==  null || Orders.size() == 0) {
 	%>
 		<input type="submit" value="MODIFY ORDERS" class="submit" disabled>
-		<input name="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>
+		<input name="exportButton" type="button" value="EXPORT PENDING ORDERS" class="submit" disabled>
 	<%
 		} else {
 	%>	
@@ -116,10 +119,12 @@
 
 
 			&nbsp;&nbsp;
-			<input name="exportButton" type="button" value="EXPORT ORDERS" class="submit" onclick="javascript:openURL('/reports/final_cancel_report.xls');">
+			<input name="exportButton" type="button" value="EXPORT PENDING ORDERS" class="submit" onclick="javascript:openURL('/reports/orders_to_modify_report.xls');">
 	<%
 		}
 	%>			
+	<input name="expFailedButton" type="button" value="EXPORT FAILED ORDERS" class="submit" onclick="javascript:openURL('/reports/orders_modified_failed_report.xls');">
+	<input name="expCompleteButton" type="button" value="EXPORT COMPLETED ORDERS" class="submit" onclick="javascript:openURL('/reports/orders_modified_completed_report.xls');">
 	</td>
 	</tr>
 </table>

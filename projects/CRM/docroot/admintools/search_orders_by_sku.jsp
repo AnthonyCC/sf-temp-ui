@@ -23,8 +23,8 @@
 <script language="javascript">
 	function doAction(actionName) {
 		if(actionName == 'createSnapShot'){
-			var doCancel = confirm ("Click OK to Continue Or Cancel to Abort");
-			if(doCancel == false){
+			var doCreate = confirm ("Click OK to Continue Or Cancel to Abort");
+			if(doCreate == false){
 				return;
 			}            
 			document.getElementById("actionName").value = actionName;
@@ -33,6 +33,7 @@
 	}
 
 </script>
+
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Admin Tools > Remove Skus from Order</tmpl:put>

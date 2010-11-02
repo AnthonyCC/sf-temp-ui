@@ -115,7 +115,9 @@ public class GenericLocatorTag extends AbstractControllerTag {
 			    searchResults = performSearch(request);
 			    request.setAttribute("RESULT","success");
 			}else if(EnumSearchType.GET_ORDERS_TO_MODIFY.equals(searchType)){
-			    searchResults = performSearch(request);
+				GenericSearchCriteria criteria = new GenericSearchCriteria(searchType);
+				criteria.setCriteriaMap("statuses", new String[]{"Pending", "Failed"});
+			    searchResults = CallCenterServices.doGenericSearch(criteria);
 			    request.setAttribute("RESULT","success");
 			}
 			pageContext.setAttribute(this.id, searchResults != null ? searchResults : Collections.EMPTY_LIST);
