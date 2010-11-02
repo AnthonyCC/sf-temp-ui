@@ -15,6 +15,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionCriterion;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.FDRestrictedAvailability;
 import com.freshdirect.delivery.restriction.RecurringRestriction;
+import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.framework.util.DateRange;
@@ -30,7 +31,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 
 	public void testUnavailable() throws ParseException {
 		// setup		
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-23"), 0));
 
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
@@ -44,7 +45,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 
 	public void testPartial() throws ParseException {
 		// setup		
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-23"), 0));
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-25"), 99999999));
 
@@ -59,7 +60,7 @@ public class FDAvailabilityHelperTestCase extends TestCase {
 	}
 
 	public void testRestricted() throws ParseException {
-		List res = new ArrayList();
+		List<RestrictionI> res = new ArrayList<RestrictionI>();
 		res.add(new RecurringRestriction("343345232",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,

@@ -9,7 +9,10 @@ import java.util.Map.Entry;
 import com.freshdirect.framework.util.DateRange;
 
 public class FDCompositeAvailability implements FDAvailabilityI {
-
+	/**
+	 * Map of FDAvailabilityI values indexed by either Integers or Strings
+	 * Should be fixed.
+	 */
 	private final Map availabilities;
 	private final boolean needAllAvailable;
 

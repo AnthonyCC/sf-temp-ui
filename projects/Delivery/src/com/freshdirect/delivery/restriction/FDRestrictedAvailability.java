@@ -20,7 +20,7 @@ public class FDRestrictedAvailability extends AbstractAvailability {
 	}
 
 	public FDAvailabilityInfo availableSomeTime(DateRange requestedRange) {
-		List lst = this.restrictions.getRestrictionsContaining(requestedRange);
+		List<RestrictionI> lst = this.restrictions.getRestrictionsContaining(requestedRange);
 
 		if (lst.isEmpty()) {
 			return this.availability.availableSomeTime(requestedRange);

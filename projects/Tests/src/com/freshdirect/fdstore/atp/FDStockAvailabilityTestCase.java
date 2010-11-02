@@ -22,7 +22,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
 
 	public void testAvailable() throws ParseException {
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 10));
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-08"), 10));
@@ -46,7 +46,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	}
 
 	public void testStuff() throws ParseException {
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-01"), 0));
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-04"), 900000));
@@ -60,7 +60,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	}
 
 	public void testFutureExpansion() throws ParseException {
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 0));
 
@@ -77,7 +77,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	public void testPastExpansionAlwaysUnavailable() throws ParseException {
 
 		// unavailable on first day
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 0));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
@@ -86,7 +86,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 		assertFalse(fdInv.availableCompletely(range("2003-01-01", "2003-01-10")).isAvailable());
 
 		// available on first day
-		erpEntries = new ArrayList();
+		erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 1000));
 		erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
@@ -96,7 +96,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	}
 
 	public void testEmptyInventoryAlwaysAvailable() throws ParseException {
-		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), new ArrayList());
+		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), new ArrayList<ErpInventoryEntryModel>());
 
 		FDStockAvailability fdInv = new FDStockAvailability(erpInv, 30, 1, 1);
 
@@ -104,7 +104,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	}
 
 	public void testRoundToZeroBelowMinimumQuantity() throws ParseException {
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 3.2));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
@@ -114,7 +114,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	}
 
 	public void testRoundToIncrement() throws ParseException {
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 3.2));
 		ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
 
@@ -125,7 +125,7 @@ public class FDStockAvailabilityTestCase extends TestCase {
 	
 	public void testFirstAvailableDate() throws ParseException {
 		
-		List erpEntries = new ArrayList();
+		List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
 
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-05"), 0));
 		erpEntries.add(new ErpInventoryEntryModel(DF.parse("2003-01-08"), 10));

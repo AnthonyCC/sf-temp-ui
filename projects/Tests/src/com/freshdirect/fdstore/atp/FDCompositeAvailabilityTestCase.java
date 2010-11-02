@@ -24,6 +24,10 @@ public class FDCompositeAvailabilityTestCase extends TestCase {
 
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd");
 
+	/**
+	 * Map of String,FDAvailabilityI pairs
+	 * FIXME: String keys should be Integers
+	 */
 	private Map availabilities = new HashMap();
 
 	public FDCompositeAvailabilityTestCase(String arg0) {

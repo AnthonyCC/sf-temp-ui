@@ -21,20 +21,4 @@ public class FDCompositeAvailabilityInfo extends FDAvailabilityInfo {
 	public Map<String,FDAvailabilityInfo> getComponentInfo() {
 		return this.componentInfo;
 	}
-	
-	/*public String getComponentDesc() {
-		if(this.componentInfo.isEmpty()){
-			return "";
-		}else{
-			String desc = "Some of the options you selected are not available: ";
-			for(Iterator i = this.componentInfo.values().iterator(); i.hasNext(); ){
-				String d = (String) i.next();
-				if(desc.indexOf(d) < 0){
-					desc += d +", ";
-				}
-			}
-			desc = desc.substring(0, desc.lastIndexOf(","));
-			return desc;
-		}
-	}*/
 }
