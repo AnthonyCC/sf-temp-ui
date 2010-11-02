@@ -153,15 +153,19 @@ public class AnnotatedProductNameTag extends BodyTagSupport {
 
 		    	FDProductInfo fdProdInfo = null;
 		    	FDProduct fdProd = null;
-		    	try {
-		    		fdProdInfo = FDCachedFactory.getProductInfo( skuModel.getSkuCode() );
-		    		fdProd = FDCachedFactory.getProduct( fdProdInfo );
-		    	} catch (FDSkuNotFoundException ex) {
-		    		throw new JspException(ex);
-		    	} catch (FDResourceException e) {
+	    		try {
+					fdProdInfo = FDCachedFactory.getProductInfo( skuModel.getSkuCode() );
+			    	try {
+			    		fdProd = FDCachedFactory.getProduct( fdProdInfo );
+			    	} catch (FDSkuNotFoundException ex) {
+			    	} catch (FDResourceException e) {
+			    		throw new JspException(e);
+					}
+	    		} catch (FDResourceException e) {
+		    		throw new JspException(e);
+				} catch (FDSkuNotFoundException e) {
 		    		throw new JspException(e);
 				}
-
 				
 				buf.append("  ann = '&nbsp;';\n");
 				
