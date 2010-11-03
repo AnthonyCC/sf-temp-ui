@@ -22,6 +22,7 @@ import com.freshdirect.framework.core.ModelSupport;
  * @stereotype fd-model
  */
 public class ErpInventoryEntryModel extends ModelSupport implements Comparable {
+	private static final long serialVersionUID = 3557841522645345674L;
 
 	/** Inventory entry start date */
 	private Date startDate;

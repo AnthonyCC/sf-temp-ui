@@ -24,6 +24,7 @@ import com.freshdirect.framework.util.DateRange;
  * @author $Author$
  */
 public class FDStockAvailability implements Serializable, FDAvailabilityI {
+	private static final long serialVersionUID = -3637574047051551989L;
 
 	private final ErpInventoryModel inventory;
 
@@ -50,14 +51,13 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 	}
 	
 	public Date getFirstAvailableDate(DateRange requestedRange) {
-		List entries = this.inventory.getEntries();
+		List<ErpInventoryEntryModel> entries = this.inventory.getEntries();
 		if (entries.isEmpty()) {
 			return null;
 		}
 
 		double avQty = 0;
-		for (Iterator i = entries.iterator(); i.hasNext();) {
-			ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
+		for (ErpInventoryEntryModel e : entries) {
 			if (!e.getStartDate().before(requestedRange.getEndDate())) {
 				break;
 			}
@@ -73,14 +73,13 @@ public class FDStockAvailability implements Serializable, FDAvailabilityI {
 
 	private FDAvailabilityInfo checkAvailability(boolean always, DateRange requestedRange) {
 
-		List entries = this.inventory.getEntries();
+		List<ErpInventoryEntryModel> entries = this.inventory.getEntries();
 		if (entries.isEmpty()) {
 			return FDAvailabilityInfo.AVAILABLE;
 		}
 
 		double avQty = 0;
-		for (Iterator i = entries.iterator(); i.hasNext();) {
-			ErpInventoryEntryModel e = (ErpInventoryEntryModel) i.next();
+		for (ErpInventoryEntryModel e : entries) {
 			if (always ? e.getStartDate().after(requestedRange.getStartDate()) : !e.getStartDate().before(
 				requestedRange.getEndDate())) {
 				break;
