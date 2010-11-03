@@ -525,6 +525,7 @@
 		            <fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
 		            <fileset dir="${work.dir}" includes="Resources.jar" />
 		            <fileset dir="${work.dir}" includes="RoutingServices.jar" />
+                            <fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
 		        </copy>
 
 				<junit fork="yes">
@@ -542,12 +543,12 @@
 		                <path refid="j2ee.classpath"/>
 		                <path refid="oracle.classpath"/>
 		                <path refid="common.classpath"/>
-						<path refid="testing.classpath" />
+				<path refid="testing.classpath" />
 
 		                <pathelement location="${thirdparty.home}/lcc.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
-						<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
+				<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
 
 		                <pathelement location="${work.dir}/Framework-emma.jar"/>
 		                <pathelement location="${work.dir}/ERPServices-emma.jar"/>
@@ -558,7 +559,8 @@
 		                <pathelement location="${work.dir}/ERPSWebApp-emma.jar"/>
 		                <pathelement location="${work.dir}/listadmin-emma.jar"/>
 		                <pathelement location="${work.dir}/Resources.jar"/>
-		                <pathelement location="${work.dir}/RoutingServices.jar"/>
+		                <pathelement location="${work.dir}/RoutingServices-emma.jar"/>
+				<pathelement location="${work.dir}/StandingOrdersService-emma.jar"/>
 		            </classpath>
 		            <!-- emma -->
 		            <jvmarg value="-Demma.coverage.out.file=${work.dir}/logs/coverage.emma" />
@@ -586,7 +588,7 @@
 		   				<path refid="common.classpath"/>
 		   				<path refid="testing.classpath"/>
 
-		                <pathelement location="${thirdparty.home}/lcc.jar"/>
+		                		<pathelement location="${thirdparty.home}/lcc.jar"/>
 						<pathelement location="${thirdparty.home}/lucene-core-${lucene.version}.jar"/>
 						<pathelement location="${thirdparty.home}/lucene-queries-${lucene.version}.jar"/>
 						<pathelement location="${thirdparty.home}/lucene-spellchecker-${lucene.version}.jar"/>
@@ -601,6 +603,7 @@
 		   				<pathelement location="${work.dir}/listadmin.jar"/>
 		   				<pathelement location="${work.dir}/Resources.jar"/>
 		   				<pathelement location="${work.dir}/RoutingServices.jar"/>
+						<pathelement location="${work.dir}/StandingOrdersService.jar"/>
 		   			</classpath>
 				</junit>
 				
