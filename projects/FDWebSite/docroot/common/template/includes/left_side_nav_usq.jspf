@@ -394,10 +394,6 @@ if (selected == null || wineFilter.isFiltering()) {
 <%
 						groupCount++;
 					}
-					
-					if (groupCount > 1) {
-						%></div><%
-					}
 
 					/**
 					 * More options
@@ -408,7 +404,11 @@ if (selected == null || wineFilter.isFiltering()) {
 						if (fv.getWineFilterValueType() == EnumWineFilterValueType.CMS) {							
 							moreOptions.addAll(ContentFactory.getInstance().getCategoryForWineDomainValue((DomainValue)fv).getWineSideNavFullList());
 						}
-					}									
+					}
+					
+					if (groupCount > 0 && moreOptions.size() == 0) {
+						%></div><%
+					}
 					
 					if (moreOptions.size() > 0) {
 						ArrayList<DomainValue> moreDomainValues = new ArrayList<DomainValue>();
