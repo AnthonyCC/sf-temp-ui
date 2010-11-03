@@ -57,7 +57,7 @@
 	<fd:ErrorHandler result='<%= result %>' name='searchfailure' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>	
-<form name="modifyorders" method='POST'>
+<form id="modifyorders" name="modifyorders" method='POST'>
 <input type="hidden" name="actionName" id="actionName" value="">
 <%@ include file="/includes/admintools/i_search_order_for_skus.jspf"%>
 <%
@@ -97,11 +97,11 @@
 	<%
 		if(Orders ==  null || Orders.size() == 0) {
 	%>
-		<input type="submit" value="CREATE SNAPSHOT" class="submit" disabled>
+		<input type="button" value="CREATE SNAPSHOT" class="submit" disabled>
 	<%
 		} else {
 	%>	
-				<input type="submit"  value="CREATE SNAPSHOT" class="submit" onClick="javascript:doAction('createSnapShot');">
+				<input type="button"  value="CREATE SNAPSHOT" class="submit" onClick="javascript:doAction('createSnapShot');">
 		<%
 			}
 		%>	

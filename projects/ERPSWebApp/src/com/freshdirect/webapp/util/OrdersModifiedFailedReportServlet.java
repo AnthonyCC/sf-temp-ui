@@ -15,6 +15,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerReservationInfo;
 import com.freshdirect.fdstore.customer.LateDlvReportLine;
@@ -44,6 +45,7 @@ public class OrdersModifiedFailedReportServlet extends AbstractExcelReportServle
 		cols.add("ALT. PHONE");
 		cols.add("DELIVERY DATE");
 		cols.add("ORDER STATUS");
+		cols.add("ERROR DESCRIPTION");
 		return cols;
 	}
 
@@ -74,7 +76,7 @@ public class OrdersModifiedFailedReportServlet extends AbstractExcelReportServle
 		}
 		List ordersReport = new ArrayList(); 
 		for (Iterator iter=orders.iterator(); iter.hasNext();) {
-			FDCustomerOrderInfo order = (FDCustomerOrderInfo) iter.next();
+			BulkModifyOrderInfo order = (BulkModifyOrderInfo) iter.next();
 			Map orderLine = createReportLine(order);
 			ordersReport.add(orderLine);
 		}
@@ -108,7 +110,7 @@ public class OrdersModifiedFailedReportServlet extends AbstractExcelReportServle
 //		return ordersReport;
 //	}
 
-	private Map createReportLine(FDCustomerOrderInfo order) {
+	private Map createReportLine(BulkModifyOrderInfo order) {
 		Map orderLine = new HashMap();
 		orderLine.put("ORDER #",order.getSaleId());
 		orderLine.put("CUSTOMER ID",order.getIdentity().getErpCustomerPK());
@@ -119,6 +121,7 @@ public class OrdersModifiedFailedReportServlet extends AbstractExcelReportServle
 		orderLine.put("ALT. PHONE", order.getAltPhone());
 		orderLine.put("DELIVERY DATE", CCFormatter.defaultFormatDate(order.getDeliveryDate()));
 		orderLine.put("ORDER STATUS", order.getOrderStatus().getDisplayName());
+		orderLine.put("ERROR DESCRIPTION", order.getErrorDesc());
 		return orderLine;
 	}
 

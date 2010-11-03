@@ -821,9 +821,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 						try {
 							//it.remove();
 							modCart.removeOrderLineById(oldCartLine.getRandomId());	
+							FDSku oldSku = oldCartLine.getSku();
 							FDProductInfo pInfo = FDCachedFactory.getProductInfo(skuCode);
-							FDSku newSkuVersion = new FDSku(pInfo.getSkuCode(), pInfo.getVersion());
-							FDCartLineI newCartLine = new FDCartLineModel(newSkuVersion, oldCartLine.getProductRef().lookupProductModel(),
+							if(oldSku.getVersion() == pInfo.getVersion()){
+								//versions are still same. need to call second time if the cache is not refreshed yet.
+								pInfo = FDCachedFactory.getProductInfo(skuCode);
+							}
+							FDSku newSku = new FDSku(pInfo.getSkuCode(), pInfo.getVersion());
+							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(),
 									oldCartLine.getConfiguration(), oldCartLine.getVariantId(), 
 									oldCartLine.getPricingContext().getZoneId());
 							modCart.addOrderLine(newCartLine);

@@ -98,7 +98,7 @@
 	<%
 		if(Orders ==  null || Orders.size() == 0) {
 	%>
-		<input type="submit" value="MODIFY ORDERS" class="submit" disabled>
+		<input type="button" value="MODIFY ORDERS" class="submit" disabled>
 		<input name="exportButton" type="button" value="EXPORT PENDING ORDERS" class="submit" disabled>
 	<%
 		} else {

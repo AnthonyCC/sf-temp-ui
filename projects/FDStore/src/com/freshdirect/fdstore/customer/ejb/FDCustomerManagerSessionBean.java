@@ -6025,7 +6025,7 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 					order.getPaymentMethod().setPaymentType(EnumPaymentType.ON_FD_ACCOUNT);
 				}
 
-				modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status);
+				this.modifyOrder(info, saleId, order, appliedPromos, oldReservationId, sendEmail, cra, agentRole, status);
 				
 			}catch (RemoteException re) {
 				throw new FDResourceException(re);

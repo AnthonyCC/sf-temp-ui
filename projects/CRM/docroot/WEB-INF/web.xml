@@ -59,7 +59,6 @@
         <description>This filter creates availability horizon and today's date as threadlocal</description>
         <filter-class>com.freshdirect.webapp.filters.OncePerRequestDateFilter</filter-class>
 	</filter>
-	<!-- 
 	<filter-mapping>
         <filter-name>CrmMonitor</filter-name>
         <url-pattern>/*</url-pattern>
@@ -72,7 +71,6 @@
         <filter-name>CrmLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-     -->
     <filter-mapping>
         <filter-name>OncePerRequestDateFilter</filter-name>
         <url-pattern>/order/*</url-pattern>
