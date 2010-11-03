@@ -515,18 +515,18 @@
 		        <property name="lib_coverage" value="${work.dir}/lib_coverage"/>
 		        <mkdir dir="${lib_coverage}" />
 
-		        <copy todir="${lib_coverage}">
-		            <fileset dir="${dest.dir}" includes="Framework.jar" />
-		            <fileset dir="${work.dir}" includes="ERPServices.jar" />
-		            <fileset dir="${work.dir}" includes="Delivery.jar" />
-		            <fileset dir="${work.dir}" includes="CMS.jar" />
-		            <fileset dir="${work.dir}" includes="FDStore.jar" />
-		            <fileset dir="${work.dir}" includes="DataLoader.jar" />
-		            <fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
-		            <fileset dir="${work.dir}" includes="Resources.jar" />
-		            <fileset dir="${work.dir}" includes="RoutingServices.jar" />
-                            <fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
-		        </copy>
+				<copy todir="${lib_coverage}">
+					<fileset dir="${dest.dir}" includes="Framework.jar" />
+					<fileset dir="${work.dir}" includes="ERPServices.jar" />
+					<fileset dir="${work.dir}" includes="Delivery.jar" />
+					<fileset dir="${work.dir}" includes="CMS.jar" />
+					<fileset dir="${work.dir}" includes="FDStore.jar" />
+					<fileset dir="${work.dir}" includes="DataLoader.jar" />
+					<fileset dir="${dest.dir}" includes="ERPSWebApp.jar" />
+					<fileset dir="${work.dir}" includes="Resources.jar" />
+					<fileset dir="${work.dir}" includes="RoutingServices.jar" />
+					<fileset dir="${work.dir}" includes="StandingOrdersService.jar" />
+				</copy>
 
 				<junit fork="yes">
 					<sysproperty key="log4j.configuration" value="log4j.xml"/>
@@ -2122,6 +2122,7 @@
 						<pathelement path="${work.dir}/DataLoaderEJB-WL.jar"/>
 						<pathelement path="${work.dir}/ERPSWebApp.jar"/>
 						<pathelement path="${work.dir}/listadmin.jar"/>
+						<pathelement path="${work.dir}/StandingOrdersService.jar"/>
 					</classpath>
 				</javac>
 				<record name="${work.dir}/logs/log.txt" action="stop"/>
