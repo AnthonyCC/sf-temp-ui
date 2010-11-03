@@ -119,12 +119,12 @@ public class FDUrlUtilTest extends TestCase {
 		
 		final String SEP = "&amp;"; //FDURLUtil.URL_PARAM_SEP;
 		
-		assertEquals("url generating error", u1,  "/product.jsp?catId="+categoryId+SEP+	"trk="+trackingCode+SEP+	"productId="+productId );		
-		assertEquals("url generating error", u2,  "/product.jsp?catId="+categoryId+SEP+	"trk="+trackingCode+SEP+	"productId="+productId+SEP+	"variant="+variantId+SEP+	"fdsc.source=SS" );
-		assertEquals("url generating error", u3a, "/product.jsp?catId="+categoryId+SEP+	"trk="+trackingCode+SEP+	"productId="+productId+SEP+	"trkd="+trackingCodeEx+SEP+	"rank="+rank );
-		assertEquals("url generating error", u3b, "/product.jsp?catId="+categoryId+SEP+	"trk=srch"+SEP+				"productId="+productId+SEP+	"rank="+rank );
+		assertEquals("url generating error", u1,  "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"trk="+trackingCode );		
+		assertEquals("url generating error", u2,  "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"trk="+trackingCode +SEP+	"variant="+variantId+SEP+	"fdsc.source=SS" );
+		assertEquals("url generating error", u3a, "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"trk="+trackingCode +SEP+	"trkd="+trackingCodeEx+SEP+	"rank="+rank );
+		assertEquals("url generating error", u3b, "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"trk=srch"+SEP+	"rank="+rank );
 		assertEquals("url generating error", u4,  "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"variant="+variantId+SEP+	"trk="+trackingCode+SEP+	"trkd="+trackingCodeEx+SEP+	"rank="+rank );		
-		assertEquals("url generating error", u5,  "/product.jsp?catId="+categoryId+SEP+	"trk="+trackingCode+SEP+	"productId="+productId+SEP+	"variant="+variantId+SEP+	"fdsc.source=SS" );
+		assertEquals("url generating error", u5,  "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"trk="+trackingCode +SEP+	"variant="+variantId+SEP+	"fdsc.source=SS" );
 		assertEquals("url generating error", u6,  "/product.jsp?catId="+categoryId+SEP+	"productId="+productId+SEP+	"variant="+variantId+SEP+	"trk="+trackingCode+SEP+	"trkd="+trackingCodeEx+SEP+	"rank="+rank );		
 		
 		assertEquals("url generating error", u7,  "/category.jsp?catId="+categoryId+SEP+"trk="+trackingCode );	
