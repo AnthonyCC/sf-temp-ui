@@ -4,19 +4,20 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import com.freshdirect.framework.util.DateRange;
 
 public class FDCompositeAvailability implements FDAvailabilityI {
+	private static final long serialVersionUID = -8919371677626219573L;
+
 	/**
 	 * Map of FDAvailabilityI values indexed by either Integers or Strings
 	 * Should be fixed.
 	 */
-	private final Map availabilities;
+	private final Map<String, FDAvailabilityI> availabilities;
 	private final boolean needAllAvailable;
 
-	public FDCompositeAvailability(Map availabilities) {
+	public FDCompositeAvailability(Map<String, FDAvailabilityI> availabilities) {
 		this(availabilities, true);
 	}
 
@@ -26,7 +27,7 @@ public class FDCompositeAvailability implements FDAvailabilityI {
 	 * 		if true, return availability if ALL components are available
 	 * 		if false, return available if ANY of the components are available
 	 */
-	public FDCompositeAvailability(Map availabilities, boolean needAllAvailable) {
+	public FDCompositeAvailability(Map<String, FDAvailabilityI> availabilities, boolean needAllAvailable) {
 		this.availabilities = availabilities;
 		this.needAllAvailable = needAllAvailable;
 	}
@@ -41,8 +42,8 @@ public class FDCompositeAvailability implements FDAvailabilityI {
 
 	public Date getFirstAvailableDate(DateRange requestedRange) {
 		Date firstAv = null;
-		for (Iterator i = this.availabilities.values().iterator(); i.hasNext();) {
-			FDAvailabilityI av = (FDAvailabilityI) i.next();
+		for (Iterator<FDAvailabilityI> i = this.availabilities.values().iterator(); i.hasNext();) {
+			FDAvailabilityI av = i.next();
 			Date date = av.getFirstAvailableDate(requestedRange);
 			if (date == null) {
 				return null;
@@ -56,9 +57,9 @@ public class FDCompositeAvailability implements FDAvailabilityI {
 	}
 	
 	private FDAvailabilityInfo checkAvailability(boolean completely, DateRange requestedRange) {
-		Map unav = new HashMap();
-		for (Iterator i = this.availabilities.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Entry) i.next();
+		Map<String,FDAvailabilityInfo> unav = new HashMap<String,FDAvailabilityInfo>();
+		for (Iterator<Map.Entry<String, FDAvailabilityI>> i = this.availabilities.entrySet().iterator(); i.hasNext();) {
+			Map.Entry<String, FDAvailabilityI> entry = i.next();
 			FDAvailabilityI inv = (FDAvailabilityI) entry.getValue();
 			FDAvailabilityInfo info = completely ? inv.availableCompletely(requestedRange) : inv.availableSomeTime(requestedRange);
 			if (!info.isAvailable()) {

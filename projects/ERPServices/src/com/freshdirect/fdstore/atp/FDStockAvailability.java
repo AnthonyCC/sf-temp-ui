@@ -10,7 +10,6 @@ package com.freshdirect.fdstore.atp;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.freshdirect.erp.model.ErpInventoryEntryModel;

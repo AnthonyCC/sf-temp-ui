@@ -1760,19 +1760,19 @@ public class FDCustomerManager {
 			Map<String, FDAvailabilityI> fdInvMap = sb.checkAvailability(identity, createOrder, timeout);
 			timer = System.currentTimeMillis() - timer;
 
-			Map<Integer,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines);
+			Map<String,FDAvailabilityI> invs = FDAvailabilityMapper.mapInventory(cart, createOrder, fdInvMap, skipModifyLines);
 			cart.setAvailability(new FDCompositeAvailability(invs));
 
 			if (LOGGER.isInfoEnabled()) {
 				int unavCount = 0;
-				for ( Integer key : invs.keySet() ) {
+				for ( String key : invs.keySet() ) {
 					FDAvailabilityI inv = (FDAvailabilityI) invs.get(key);
 					FDReservation deliveryReservation = cart.getDeliveryReservation();
 					DateRange requestedRange = new DateRange(deliveryReservation.getStartTime(), deliveryReservation.getEndTime());
 					FDAvailabilityInfo info = inv.availableCompletely(requestedRange);
 					if (!info.isAvailable()) {
 						unavCount++;
-						FDCartLineI cartLine = cart.getOrderLineById(key.intValue());
+						FDCartLineI cartLine = cart.getOrderLineById(new Integer(key));
 						LOGGER.info(
 							"User "
 								+ identity

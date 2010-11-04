@@ -41,8 +41,8 @@ class FDAvailabilityMapper {
 	 * @param fdInvs Map of orderLineNumber -> FDInventoryI
 	 * @return Map of cartLineId -> FDInventoryI
 	 */
-	public static Map<Integer, FDAvailabilityI> mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map<String,FDAvailabilityI> fdInvs, boolean skipModifyLines) throws FDResourceException {
-		Map<Integer, FDAvailabilityI> cartInvMap = new HashMap<Integer, FDAvailabilityI>();
+	public static Map<String, FDAvailabilityI> mapInventory(FDCartModel cart, ErpCreateOrderModel order, Map<String,FDAvailabilityI> fdInvs, boolean skipModifyLines) throws FDResourceException {
+		Map<String, FDAvailabilityI> cartInvMap = new HashMap<String, FDAvailabilityI>();
 
 		DlvRestrictionsList allRestrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
 		MunicipalityInfoWrapper muni = FDDeliveryManager.getInstance().getMunicipalityInfos();
@@ -120,7 +120,7 @@ class FDAvailabilityMapper {
 				}
 			}
 
-			cartInvMap.put(new Integer(cartline.getRandomId()), inv);
+			cartInvMap.put(Integer.toString(cartline.getRandomId()), inv);
 
 			if (skipModifyLines && cartline instanceof FDModifyCartLineI) {
 				// orderlines that came from the original order were skipped
