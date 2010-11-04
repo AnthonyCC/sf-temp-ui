@@ -10,6 +10,7 @@ import com.freshdirect.framework.util.DateRange;
  * Restricted availability that checks against restrictions in requestedRange.
  */
 public class FDRestrictedAvailability extends AbstractAvailability {
+	private static final long serialVersionUID = 1762949850169722695L;
 
 	private final FDAvailabilityI availability;
 	private final DlvRestrictionsList restrictions;
@@ -30,7 +31,7 @@ public class FDRestrictedAvailability extends AbstractAvailability {
 	}
 
 	public FDAvailabilityInfo availableCompletely(DateRange requestedRange) {
-		List lst = this.restrictions.getRestrictions(requestedRange);
+		List<RestrictionI> lst = this.restrictions.getRestrictions(requestedRange);
 
 		if (lst.isEmpty()) {
 			return this.availability.availableCompletely(requestedRange);

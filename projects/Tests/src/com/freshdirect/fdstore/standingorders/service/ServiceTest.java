@@ -178,6 +178,7 @@ public class ServiceTest extends TestCase {
 
 	public void testATPCheck() throws FDResourceException, ParseException {
 		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
+		final Calendar cal = Calendar.getInstance();
 		
 		
 		/**
@@ -212,17 +213,34 @@ public class ServiceTest extends TestCase {
 
 			DlvRestrictionsList restrictionList = new DlvRestrictionsList(res);
 
-			List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
-			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19 00:00:00.0"), 0));
-			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-21 00:00:00.0"), 900000));
-
-			
 			FDRestrictedAvailability ri = new FDRestrictedAvailability(NullAvailability.AVAILABLE, restrictionList);
 			
 			assertFalse( doATPCheck(identity, createCartLinesSimple(), ri));
-			// FIXME: test incomplete! Needs a positive case too
 		}
+		{
+			// KOSHER products are not available today...
+			List<RestrictionI> res = new ArrayList<RestrictionI>();
+			res.add(new RecurringRestriction("res1",
+							EnumDlvRestrictionCriterion.DELIVERY,
+							EnumDlvRestrictionReason.KOSHER,
+							"Kosher Day",
+							"Today",
+							cal.get(Calendar.DAY_OF_WEEK), // current day
+							TimeOfDay.MIDNIGHT,
+							TimeOfDay.NEXT_MIDNIGHT));
+			
+			Collection<FDCartLineI> ols = createCartLinesSimple(1);
+			SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();
+			cl.setKosher(true); // KOSHER PRODUCT
 
+			assertTrue(
+				doATPCheck(
+					identity, ols,
+					new FDRestrictedAvailability(NullAvailability.AVAILABLE, new DlvRestrictionsList(res))
+				)
+			);
+		}
+		
 
 		/**
 		 * [2] stock availability
@@ -413,6 +431,12 @@ class SimpleCartLine implements FDCartLineI {
 	private FDConfigurableI configuration = new FDConfiguration(1.0, "ea");
 	private FDSku sku = new FDSku("SKU"+RND.nextInt(1000), 1);
 	private String productName;
+
+	// restrictions
+	
+	private boolean alcohol;
+	private boolean kosher;
+
 
 	@Override
 	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber)
@@ -798,9 +822,13 @@ class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public boolean isAlcohol() {
-		return false;
+		return this.alcohol;
 	}
 
+	public void setAlcohol(boolean alcohol) {
+		this.alcohol = alcohol;
+	}
+	
 	@Override
 	public boolean isInvalidConfig() {
 		return false;
@@ -808,9 +836,13 @@ class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public boolean isKosher() {
-		return false;
+		return this.kosher;
 	}
 
+	public void setKosher(boolean kosher) {
+		this.kosher = kosher;
+	}
+	
 	@Override
 	public boolean isPerishable() {
 		return false;
