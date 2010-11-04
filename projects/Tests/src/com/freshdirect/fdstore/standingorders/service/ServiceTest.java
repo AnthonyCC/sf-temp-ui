@@ -54,6 +54,7 @@ import com.freshdirect.fdstore.aspects.BaseAspect;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
 import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStatusAvailability;
+import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
@@ -81,6 +82,8 @@ public class ServiceTest extends TestCase {
 	AddressModel address;
 	ErpPaymentMethodI paymentMethod;
 	DlvZoneInfoModel zoneInfo;
+	
+	Date	expiration;
 	
 	@Override
 	protected void setUp() throws Exception {
@@ -115,8 +118,14 @@ public class ServiceTest extends TestCase {
 		
 		zoneInfo = new DlvZoneInfoModel("CODE1", "ZONE1", "REGION1", EnumZipCheckResponses.DELIVER, true, true);
 		
+		expiration = new Date(System.currentTimeMillis() + 1000);
+		
 	}
 
+	private Date getExpiration() {
+		return expiration;
+	}
+	
 
 	static class OrderLineUtilAspect extends BaseAspect {
 		public OrderLineUtilAspect() {
@@ -154,7 +163,7 @@ public class ServiceTest extends TestCase {
 	
 
 	private FDReservation getFDReservation(String customerID, String addressID) {
-		Date expirationDT = new Date(System.currentTimeMillis() + 1000);
+		Date expirationDT = getExpiration();
 		FDTimeslot timeSlot = getFDTimeSlot();
 		FDReservation reservation = new FDReservation(
 			new PrimaryKey("1"), timeSlot, expirationDT,
@@ -171,7 +180,9 @@ public class ServiceTest extends TestCase {
 		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
 		
 		
-		/* RESTRICTIONS TEST */
+		/**
+		 * [1] restrictions
+		 */
 		{
 			List<RestrictionI> res = new ArrayList<RestrictionI>();
 			res.add(new RecurringRestriction("12234342",
@@ -205,77 +216,130 @@ public class ServiceTest extends TestCase {
 			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19 00:00:00.0"), 0));
 			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-21 00:00:00.0"), 900000));
 
-			/** ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
-			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 30, 1, 1); **/
 			
-			FDAvailabilityI inventory = NullAvailability.AVAILABLE;
-
-			FDRestrictedAvailability ri = new FDRestrictedAvailability(inventory, restrictionList);
+			FDRestrictedAvailability ri = new FDRestrictedAvailability(NullAvailability.AVAILABLE, restrictionList);
 			
-			assertFalse( doATPCheck(identity, ri));
+			assertFalse( doATPCheck(identity, createCartLinesSimple(), ri));
+			// FIXME: test incomplete! Needs a positive case too
 		}
-		
-		// Unavailable by status
-		assertTrue( doATPCheckWithStatus(identity, EnumAvailabilityStatus.DISCONTINUED) );
-		assertTrue( doATPCheckWithStatus(identity, EnumAvailabilityStatus.OUT_OF_SEASON) );
-		assertTrue( doATPCheckWithStatus(identity, EnumAvailabilityStatus.TEMP_UNAV) );
-		assertFalse( doATPCheckWithStatus(identity, EnumAvailabilityStatus.AVAILABLE) );
+
+
+		/**
+		 * [2] stock availability
+		 */
+		{
+			// Want to buy 5 pcs but only 1 item available -> modify quantity to one.
+			Collection<FDCartLineI> ols = createCartLinesSimple(5.0);
+			
+			List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
+			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19 00:00:00.0"), 0));
+			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2010-01-01 00:00:00.0"), 1));
+
+			ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
+			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1);
+
+			assertFalse( doATPCheck(identity, ols, inventory));
+		}
+		{
+			// SKU not available although 5 wanted to buy -> no chance
+			Collection<FDCartLineI> ols = createCartLinesSimple(5.0);
+			
+			List<ErpInventoryEntryModel> erpEntries = new ArrayList<ErpInventoryEntryModel>();
+			erpEntries.add(new ErpInventoryEntryModel(DF.parse("2004-01-19 00:00:00.0"), 0));
+
+			ErpInventoryModel erpInv = new ErpInventoryModel("000000000100200300", new Date(), erpEntries);
+			FDAvailabilityI inventory = new FDStockAvailability(erpInv, 1, 1, 1);
+
+			assertTrue( doATPCheck(identity, ols, inventory));
+		}
+
+
+		/**
+		 * [3] Composite case
+		 */
+		{
+			Collection<FDCartLineI> ols = createCartLinesSimple();
+			final FDCartLineI item = ols.iterator().next();
+			final String key = Integer.toString(item.getRandomId());
+
+			FDAvailabilityI availability = NullAvailability.AVAILABLE;
+			
+			Map<String, FDAvailabilityI> map1 = new HashMap<String, FDAvailabilityI>();
+			map1.put(
+					key,
+					availability );
+
+			assertFalse( doATPCheck(identity, ols, new FDCompositeAvailability(map1)) );
+		}
+		{
+			Collection<FDCartLineI> ols = createCartLinesSimple();
+			final FDCartLineI item = ols.iterator().next();
+			final String key = Integer.toString(item.getRandomId());
+
+			FDAvailabilityI availability = NullAvailability.UNAVAILABLE;
+			
+			Map<String, FDAvailabilityI> map1 = new HashMap<String, FDAvailabilityI>();
+			map1.put(
+					key,
+					availability );
+
+			assertTrue( doATPCheck(identity, ols, new FDCompositeAvailability(map1)) );
+		}
+
+
+		/**
+		 * [4] (Un)available by status
+		 */
+		assertTrue( doATPCheckWithStatus(identity, createCartLinesSimple(), EnumAvailabilityStatus.DISCONTINUED) );
+		assertTrue( doATPCheckWithStatus(identity, createCartLinesSimple(), EnumAvailabilityStatus.OUT_OF_SEASON) );
+		assertTrue( doATPCheckWithStatus(identity, createCartLinesSimple(), EnumAvailabilityStatus.TEMP_UNAV) );
+		assertFalse( doATPCheckWithStatus(identity, createCartLinesSimple(), EnumAvailabilityStatus.AVAILABLE) );
 	}
 
 
 
 	/**
+	 * Setup a simple cartline list having only one item.
+	 * 
+	 * @return
+	 */
+	private Collection<FDCartLineI> createCartLinesSimple(double quantity) {
+		Collection<FDCartLineI> basicCL = new ArrayList<FDCartLineI>();
+
+		SimpleCartLine orderLine = new SimpleCartLine();
+		orderLine.setProductName("prd1");
+		orderLine.setQuantity(quantity >= 1 ? quantity : 1.0);
+		basicCL.add(orderLine);
+
+		return basicCL;
+	}
+
+	private Collection<FDCartLineI> createCartLinesSimple() {
+		return createCartLinesSimple(1.0);
+	}
+
+	/**
 	 * @param identity
 	 * @throws FDResourceException
 	 */
-	private boolean doATPCheckWithStatus(final FDIdentity identity, EnumAvailabilityStatus status)
+	private boolean doATPCheckWithStatus(final FDIdentity identity, Collection<FDCartLineI> cartlines, EnumAvailabilityStatus status)
 			throws FDResourceException {
-		// PREPARE CART
-		/*** FDCartModel cart = new FDTransientCartModel();
-		cart.setDeliveryReservation(getFDReservation(identity.getErpCustomerPK(), address.getId()));
-		
-		Collection<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();		
-		SimpleCartLine orderLine = null;
-
-		orderLine = new SimpleCartLine();
-		orderLine.setProductName("prd1");
-		cartlines.add(orderLine);
-
-		cart.addOrderLines(cartlines);
-		
-		Map<Object,FDAvailabilityI> map1 = new HashMap<Object, FDAvailabilityI>();
-		map1.put(
-				Integer.toString(orderLine.getRandomId()),
-				new FDStatusAvailability( status, NullAvailability.AVAILABLE )
-		);
-		cart.setAvailability(new FDCompositeAvailability(map1));
-
-		ProcessActionResult vr = new ProcessActionResult();
-		bean.doATPCheck(identity, cart, vr);
-
-		return vr.hasInvalidItems(); **/
-		return doATPCheck(identity, new FDStatusAvailability( status, NullAvailability.AVAILABLE ));
+		return doATPCheck(identity, cartlines, new FDStatusAvailability( status, NullAvailability.AVAILABLE ));
 	}
 
 
-	private boolean doATPCheck(final FDIdentity identity,
+	private boolean doATPCheck(final FDIdentity identity, Collection<FDCartLineI> cartlines,
 			FDAvailabilityI availability) throws FDResourceException {
 		// PREPARE CART
 		FDCartModel cart = new FDTransientCartModel();
 		cart.setDeliveryReservation(getFDReservation(identity
 				.getErpCustomerPK(), address.getId()));
 
-		Collection<FDCartLineI> cartlines = new ArrayList<FDCartLineI>();
-		SimpleCartLine orderLine = null;
-
-		orderLine = new SimpleCartLine();
-		orderLine.setProductName("prd1");
-		cartlines.add(orderLine);
-
 		cart.addOrderLines(cartlines);
 
-		Map<Object, FDAvailabilityI> map1 = new HashMap<Object, FDAvailabilityI>();
-		map1.put(Integer.toString(orderLine.getRandomId()),
+		Map<String, FDAvailabilityI> map1 = new HashMap<String, FDAvailabilityI>();
+		map1.put(
+				Integer.toString(cartlines.iterator().next().getRandomId()),
 				availability );
 		cart.setAvailability(new FDCompositeAvailability(map1));
 
@@ -332,7 +396,12 @@ class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessio
 
 
 
-
+/**
+ * Mock cartline class
+ * 
+ * @author segabor
+ *
+ */
 class SimpleCartLine implements FDCartLineI {
 	private static final long serialVersionUID = 1L;
 
@@ -831,7 +900,7 @@ class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public void setQuantity(double quantity) {
-
+		this.configuration = new FDConfiguration(quantity, this.configuration.getSalesUnit());
 	}
 
 	@Override
