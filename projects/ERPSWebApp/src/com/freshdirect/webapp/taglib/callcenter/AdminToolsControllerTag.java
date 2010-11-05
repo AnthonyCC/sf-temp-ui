@@ -764,7 +764,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		Set<String> s =  new HashSet<String>();
 		while(tokenizer.hasMoreTokens()){
 			String token = tokenizer.nextToken();
-			s.add(token);
+			if(token != null){
+				s.add(token.trim());
+			}
 		}
 		return s;
 	}
