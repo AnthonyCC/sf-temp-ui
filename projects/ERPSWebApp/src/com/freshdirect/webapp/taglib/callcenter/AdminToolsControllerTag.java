@@ -727,7 +727,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	}
 	private void doBulkModifyOrders(HttpServletRequest request, List<FDCustomerOrderInfo> modifyOrders, ActionResult actionResult) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
-		Set<String> skuCodes = getSet(request.getParameter("skuCodes"));
+		Set<String> skuCodes = getSet(request.getParameter("skuCodes").trim());
 		String value = request.getParameter("sendEmail");
 		value = value != null ? value.trim() : "";
 		boolean sendEmail =  false;
@@ -735,16 +735,27 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			sendEmail =  true;
 		}
 		int failedCount = 0;
+		int successCount = 0;
+		int noMatchCount = 0;
 		for(Iterator<FDCustomerOrderInfo> it = modifyOrders.iterator(); it.hasNext();){
 			FDCustomerOrderInfo custOrderinfo = it.next();
-			boolean success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
-			if(!success) failedCount++;
+			int success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
+			switch(success) {
+				case 1 : successCount++;
+						break;
+				case -1 : failedCount++;
+						 break;
+				default:  noMatchCount++;
+			}
 		}
-		if(failedCount > 0){
-			actionResult.addWarning(new ActionWarning("modifysuccess", "All Order(s) were processed in the batch. There were few failures. Click" 
-					+" on Export Failed Orders Button to view them."));
-		}else {
+		if(noMatchCount == modifyOrders.size()){
+			actionResult.addWarning(new ActionWarning("modifysuccess", "Zero Orders found in the batch with matching SkuCode. Please Check the SkuCode."));
+			return;
+		}
+		if(successCount > 0 && failedCount == 0){
 			actionResult.addWarning(new ActionWarning("modifysuccess", "All Order(s) were processed in the batch. There were no failures. "));
+		} else {
+			actionResult.addWarning(new ActionWarning("modifysuccess", "All Order(s) were processed in the batch. Click on Export Failed Orders Button to view them."));
 		}
 	}
 	
@@ -802,7 +813,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		return custOrders;
 	}
 
-	protected boolean bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
+	protected int bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
 		HttpSession session = request.getSession();
 			try {
 				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
@@ -864,6 +875,14 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					}catch(FDResourceException fe){
 						//ignore
 					}
+					return 1;
+				}else {
+					try {
+						CallCenterServices.updateOrderModifiedStatus(orderId, "Sku Not Found", "");
+					}catch(FDResourceException fe){
+						//ignore
+					}
+					return 0;
 				}
 			} catch (ErpFraudException ex) {
 				LOGGER.warn("Possible fraud occured", ex);
@@ -872,7 +891,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;
+				return -1;
 			} catch (ErpAuthorizationException ex) {
 				LOGGER.warn("Authorization failed", ex);
 				try {
@@ -880,7 +899,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;				
+				return -1;				
 		
 			} catch (FDPaymentInadequateException ex) {
 				LOGGER.error("Payment Inadequate to process the ReAuthorization", ex);
@@ -890,7 +909,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					//ignore
 				}
 
-				return false;
+				return -1;
 			} catch (ErpTransactionException ex) {
 				LOGGER.error("Current sale status incompatible with requested action", ex);
 				try {
@@ -899,7 +918,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 					//ignore
 				}
 
-				return false;
+				return -1;
 			} catch (FDInvalidConfigurationException ex) {
 				LOGGER.error("FDInvalidConfigurationException occured in doNewAuthorization.", ex);
 				try {
@@ -915,7 +934,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;
+				return -1;
 			} catch(DeliveryPassException ex) {
 				LOGGER.error("Error performing a Delivery pass operation. ", ex);
 				try {
@@ -923,7 +942,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;
+				return -1;
 			}
 			catch(ErpAddressVerificationException ex){
 				LOGGER.error("Error performing a modify order operation. ", ex);
@@ -932,7 +951,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;						
+				return -1;						
 			}catch(InvalidCardException ex){
 				LOGGER.error("Error performing a modify order operation. ", ex);
 				try {
@@ -940,9 +959,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}catch(FDResourceException fe){
 					//ignore
 				}
-				return false;						
+				return -1;						
 			}
-			return true;		
+			return -1;		
 	}
 
 //	private void addToResultsList(HttpSession session, Map subResults){
