@@ -6,15 +6,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
-import org.python.util.InteractiveInterpreter;
 
 import weblogic.management.scripting.utils.WLSTInterpreter;
+
+import com.bea.plateng.domain.script.jython.WLSTException;
 
 public class DomainCreator {
 	private static final String WEBLOGIC_HOME = "weblogic.home";
@@ -69,7 +71,6 @@ public class DomainCreator {
 	
 	private int serverPort;
 
-	private InteractiveInterpreter interpreter;
 
 	public DomainCreator() throws IOException {
 		properties = new Properties();
@@ -202,7 +203,9 @@ public class DomainCreator {
 		}
 	}
 
-	private void create() throws CreateDomainException {
+
+
+	private void create() throws CreateDomainException, IOException {
 		if (domainFile.exists()) {
 			System.out.println("deleting previous domain directory...");
 			try {
@@ -213,95 +216,217 @@ public class DomainCreator {
 			System.out.println("deleted previous domain directory");
 		}
 
+
+		createStageOne();
+		
+		String cmd = domainFile.getAbsolutePath()+"/startWebLogic.sh" ;
+		final Runtime run = Runtime.getRuntime();
+		Process pr = null;
+		try {
+			pr = run.exec(cmd) ;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+
+		BufferedReader buf = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
+
+		String line ;
+		while ( ( line = buf.readLine() ) != null ) {
+			// wait for STARTED message
+			if (line.contains("<BEA-000360>")) {
+				break;
+			} else {
+				System.out.println(line);
+			}
+		}
+		
+		
+		try {
+			createStageTwo();
+		} catch(Exception exc) {
+			System.err.println("!!! Script crashed !!!" + exc);
+		}
+
+		if (pr != null) {
+			pr.destroy();
+			try {
+				pr.waitFor();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+
+	/**
+	 * STAGE I.
+	 * Create empty domain
+	 */
+	private void createStageOne() {
 		System.out.println("starting interpreter");
-		interpreter = new WLSTInterpreter();
+
+		Cmd _cmd = new Cmd();
+		
 		System.out.println("started interpreter");
 
 		System.out.println("loading template (wls.jar)");
-		readTemplate(weblogicHome + DOMAIN_TEMPLATE_FILE);
+		_cmd.readTemplate(weblogicHome + DOMAIN_TEMPLATE_FILE);
 		System.out.println("loaded template (wls.jar)");
 
 		System.out.println("setting domain name");
-		set("Name", domainName);
+		_cmd.set("Name", domainName);
 		System.out.println("set domain name");
-		
-		System.out.println("setting host name");
-		set("AdminServerName", serverHost);
-		cd("Servers/AdminServer");
-		set("Name", serverHost);
-		set("ListenAddress","");
-		setInt("ListenPort", serverPort);
-		cd("/");
-		System.out.println("set host name");
 
-		cd("/");
-		cd("Security/" + domainName + "/User/weblogic");
-		cmo_setPassword("weblogic");
+
+		System.out.println("setting host name");
+		_cmd.set("AdminServerName", serverHost);
+		_cmd.cd("Servers/AdminServer");
+		_cmd.set("Name", serverHost);
+		_cmd.set("ListenAddress","");
+		_cmd.setInt("ListenPort", serverPort);
+		_cmd.cd("/");
+
+		System.out.println("set host name");
+		_cmd.cd("/");
+		_cmd.cd("Security/" + domainName + "/User/weblogic");
+		_cmd.cmo_setPassword("weblogic");
 		
 		System.out.println("writing domain to disk");
-		setOption("OverwriteDomain", "true");
-		writeDomain(domainFile.getAbsolutePath());
-		dumpStack();
-		closeTemplate();
+		_cmd.setOption("OverwriteDomain", "true");
+		_cmd.writeDomain(domainFile.getAbsolutePath());
+		_cmd.dumpStack();
+		_cmd.closeTemplate();
+
 		System.out.println("written domain to disk");
 	}
+
+
+	private void createStageTwo() throws WLSTException {
+		InputStream is = ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py");
+		
+		final String sep2 = System.getProperty("line.separator");
+		try {
+			StringBuilder sb = new StringBuilder();
+
+			// connect
+			sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(sep2);
+			// set params
+			sb.append("domainName='" + serverHost + "'").append(sep2);
+			
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+			String nextLine = "";
+			while ((nextLine = br.readLine()) != null) {
+	   			sb.append(nextLine);
+     			sb.append(sep2);
+   			}
+			
+			// Trail commands
+			sb.append("disconnect()").append(sep2);
+			
+			Cmd _cmd = new Cmd();
+			
+			_cmd.unsafeExec(sb.toString());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
-	private void exec(String expression) {
-		StringBuilder buf = new StringBuilder();
-		buf.append("try:\r\n");
-		buf.append("\t");
-		buf.append(expression);
-		buf.append("\r\n");
-		buf.append("except:");
-		buf.append("\t");
-		buf.append("print \"error\"");
-		buf.append("\r\n");
-		interpreter.exec(buf.toString());
-	}
-
-	private void readTemplate(String templatePath) {
-		exec("readTemplate(\"" + templatePath + "\")");
-	}
-
-	private void dumpStack() {
-		exec("dumpStack()");
-	}
-
-	@SuppressWarnings("unused")
-	private void ls() {
-		exec("ls()");
-	}
 	
-	@SuppressWarnings("unused")
-	private void ls(String path) {
-		exec("ls(\"" + path + "\")");
-	}
+	class Cmd {
+		final String _sep = System.getProperty("line.separator");
 
-	private void cd(String path) {
-		exec("cd(\"" + path + "\")");
-	}
+		WLSTInterpreter _intr;
+		
+		public Cmd() {
+			_intr = new WLSTInterpreter();
+			_intr.setOut(System.out);
+			_intr.setErr(System.err);
+		}
+		
+		public Cmd(WLSTInterpreter intr) {
+			_intr = intr;
+		}
 
-	private void set(String path, Object value) {
-		exec("set(\"" + path + "\", \"" + value + "\")");
-	}
 
-	private void setInt(String path, int value) {
-		exec("set(\"" + path + "\", int(" + value + "))");
-	}
 
-	private void cmo_setPassword(String password) {
-		exec("cmo.setPassword(\"" + password + "\")");
-	}
+		/**
+		 * Execute a line of Python code in safe way
+		 * @param expression Python code line
+		 */
+		protected void exec(String expression) {
+			StringBuilder buf = new StringBuilder();
+			buf.append("try:").append(_sep);
+			buf.append("\t");
+			buf.append(expression);
+			buf.append(_sep);
+			buf.append("except:");
+			buf.append("\t");
+			buf.append("print \"error:\", sys.exc_info()[0]");
+			buf.append(_sep);
+			
+			final String pyline = buf.toString();
+			// System.err.println(" -> " + pyline);
+			
+			_intr.exec(pyline);
+		}
 
-	private void setOption(String key, Object value) {
-		exec("setOption(\"" + key + "\", \"" + value + "\")");
-	}
+		public void unsafeExec(String pysrc) {
+			try {
+				_intr.exec(pysrc);
+			} catch (Exception exc) {
+				System.err.println("Exception raised during exec; exc="+exc);
+				_intr.exec("dumpStack()");
+			}
+		}
 
-	private void writeDomain(String path) {
-		exec("writeDomain(\"" + path + "\")");
-	}
 
-	private void closeTemplate() {
-		exec("closeTemplate()");
+		public void readTemplate(String templatePath) {
+			exec("readTemplate(\"" + templatePath + "\")");
+		}
+
+		public void dumpStack() {
+			exec("dumpStack()");
+		}
+
+		public void ls() {
+			exec("ls()");
+		}
+		
+		public void ls(String path) {
+			exec("ls(\"" + path + "\")");
+		}
+
+		public void cd(String path) {
+			exec("cd(\"" + path + "\")");
+		}
+
+		public void set(String path, Object value) {
+			exec("set(\"" + path + "\", \"" + value + "\")");
+		}
+
+		public void setInt(String path, int value) {
+			exec("set(\"" + path + "\", int(" + value + "))");
+		}
+
+		public void cmo_setPassword(String password) {
+			exec("cmo.setPassword(\"" + password + "\")");
+		}
+
+		public void setOption(String key, Object value) {
+			exec("setOption(\"" + key + "\", \"" + value + "\")");
+		}
+
+		public void writeDomain(String path) {
+			exec("writeDomain(\"" + path + "\")");
+		}
+
+		public void closeTemplate() {
+			exec("closeTemplate()");
+		}
 	}
 }
