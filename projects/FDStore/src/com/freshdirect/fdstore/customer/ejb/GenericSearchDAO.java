@@ -574,7 +574,7 @@ public class GenericSearchDAO {
 		+ "and SA.ACTION_TYPE in ('MOD','CRO') "
 		+ "and SA.ACTION_DATE = S.CROMOD_DATE "
 		+ "and S.STATUS IN ('SUB','AUT','AUF','AVS') "
-		+ "and SA.REQUESTED_DATE > trunc(sysdate + 1) ";
+		+ "and SA.REQUESTED_DATE >= trunc(sysdate + 1) ";
 	
 	public static  List<FDCustomerOrderInfo> findOrderForSkusByCriteria(Connection conn, GenericSearchCriteria criteria, CriteriaBuilder builder) throws SQLException {
 		String query = ORDER_SEARCH_BY_SKUS + " and " + builder.getCriteria();

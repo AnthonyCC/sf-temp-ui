@@ -73,6 +73,7 @@ import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
+import com.freshdirect.fdstore.customer.FDModifyCartLineI;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDOrderTranslator;
 import com.freshdirect.fdstore.customer.FDPaymentInadequateException;
@@ -739,7 +740,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		int noMatchCount = 0;
 		for(Iterator<FDCustomerOrderInfo> it = modifyOrders.iterator(); it.hasNext();){
 			FDCustomerOrderInfo custOrderinfo = it.next();
-			int success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
+			int success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail, custOrderinfo.getLastCroModDate());
 			switch(success) {
 				case 1 : successCount++;
 						break;
@@ -749,7 +750,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			}
 		}
 		if(noMatchCount == modifyOrders.size()){
-			actionResult.addWarning(new ActionWarning("modifysuccess", "Zero Orders found in the batch with matching SkuCode. Please Check the SkuCode."));
+			actionResult.addWarning(new ActionWarning("modifysuccess", "Zero Orders found in the batch with matching SkuCode. Please Check the SkuCodes."));
 			return;
 		}
 		if(successCount > 0 && failedCount == 0){
@@ -815,31 +816,52 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		return custOrders;
 	}
 
-	protected int bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
+	protected int bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail, Date snapShotCreateTime) {
 		HttpSession session = request.getSession();
 			try {
 				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
-
+				if(snapShotCreateTime != null && originalOrder.getLastModifiedDate().after(snapShotCreateTime)) {
+					//Customer modified the order after snapshot was created. Do not attempt to modify the order.
+					try {
+						CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", "Customer modified the order " +
+																								"after SnapShot was Created.");
+					}catch(FDResourceException fe){
+						//ignore
+					}
+					return -1;
+				}
 				//
 				// Get ModifyCart model
 				//
 				FDModifyCartModel modCart = new FDModifyCartModel(originalOrder);
 				//remove old sku and add new sku.
 				boolean modified = false;
+				String failureMessage = null;
 				List<FDCartLineI> orderLines = modCart.getOrderLines();
 				for(int index=0; index<orderLines.size();index++){
 					FDCartLineI oldCartLine = orderLines.get(index);
 					String skuCode = oldCartLine.getSkuCode();
-					if(skuCodes.contains(skuCode)) {
+					if(oldCartLine instanceof FDModifyCartLineI && skuCodes.contains(skuCode)) {
 						try {
 							//it.remove();
-							modCart.removeOrderLineById(oldCartLine.getRandomId());	
 							FDSku oldSku = oldCartLine.getSku();
 							FDProductInfo pInfo = FDCachedFactory.getProductInfo(skuCode);
 							if(oldSku.getVersion() == pInfo.getVersion()){
 								//versions are still same. need to call second time if the cache is not refreshed yet.
 								pInfo = FDCachedFactory.getProductInfo(skuCode);
 							}
+							if(oldSku.getVersion() == pInfo.getVersion()){
+								//Not yet refreshed. Log it as a failure and retry later.
+								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
+								break;
+							}
+							if(pInfo.isDiscontinued() || pInfo.isTempUnavailable() || pInfo.isOutOfSeason()){
+								//SKu is Unavailable. Log it as a failure.
+								failureMessage = skuCode+" : "+"SKU is Unavailable to process. Please check with SAP.";
+								break;
+								
+							}
+							modCart.removeOrderLineById(oldCartLine.getRandomId());
 							FDSku newSku = new FDSku(pInfo.getSkuCode(), pInfo.getVersion());
 							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(),
 									oldCartLine.getConfiguration(), oldCartLine.getVariantId(), 
@@ -852,40 +874,47 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 						
 					}
 				}
-				if(modified) {
-					modCart.refreshAll();
-					modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
-		        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
-		        	Set<String> appliedPromos = originalOrder.getUsedPromotionCodes();
-		        	modCart.setDiscounts(originalOrder.getDiscounts());
-		        	modCart.setSelectedGiftCards(originalOrder.getGiftcardPaymentMethods());
-		        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
-		        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());
-		        	for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
-		        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(it.next());
-		        		if(promotion.isWaiveCharge()){
-		        			modCart.setDlvPromotionApplied(true);
-		        			break;
-		        		}
-		        	}
-		        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
-		        	info.setIdentity(identity);
-		        	info.setSource(EnumTransactionSource.SYSTEM);
-					FDCustomerManager.bulkModifyOrder(identity, info, modCart, appliedPromos, sendEmail);
+				if(failureMessage != null && failureMessage.length() > 0){
 					try {
-						CallCenterServices.updateOrderModifiedStatus(orderId, "Completed", "");
+						CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", failureMessage);
 					}catch(FDResourceException fe){
 						//ignore
 					}
-					return 1;
-				}else {
+					return -1;
+				}
+				if(!modified){
 					try {
-						CallCenterServices.updateOrderModifiedStatus(orderId, "Sku Not Found", "");
+						CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", skuCodes.toString() + ": No Matching Sku Found in the Order");
 					}catch(FDResourceException fe){
 						//ignore
 					}
 					return 0;
 				}
+				modCart.refreshAll();
+				modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
+	        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
+	        	Set<String> appliedPromos = originalOrder.getUsedPromotionCodes();
+	        	modCart.setDiscounts(originalOrder.getDiscounts());
+	        	modCart.setSelectedGiftCards(originalOrder.getGiftcardPaymentMethods());
+	        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
+	        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());
+	        	for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
+	        		PromotionI promotion = PromotionFactory.getInstance().getPromotion(it.next());
+	        		if(promotion.isWaiveCharge()){
+	        			modCart.setDlvPromotionApplied(true);
+	        			break;
+	        		}
+	        	}
+	        	FDActionInfo info = AccountActivityUtil.getActionInfo(session);
+	        	info.setIdentity(identity);
+	        	info.setSource(EnumTransactionSource.SYSTEM);
+				FDCustomerManager.bulkModifyOrder(identity, info, modCart, appliedPromos, sendEmail);
+				try {
+					CallCenterServices.updateOrderModifiedStatus(orderId, "Completed", "");
+				}catch(FDResourceException fe){
+					//ignore
+				}
+				return 1;
 			} catch (ErpFraudException ex) {
 				LOGGER.warn("Possible fraud occured", ex);
 				try {
