@@ -1,12 +1,15 @@
 package com.freshdirect.weblogic.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -36,6 +39,10 @@ public class DomainCreator {
 	
 	private static final String DOMAIN_TEMPLATE_FILE = "/common/templates/domains/wls.jar";
 
+	
+	static final String LINE_SEP = System.getProperty("line.separator");
+
+	
 	private static void initDefaultDomainConfig(Properties p) {
 		p.put(DOMAIN_NAME, "domain");
 		p.put(SERVER_HOST, "<hostname>");
@@ -91,6 +98,54 @@ public class DomainCreator {
 		}
 	}
 
+
+	final static String MAC_OS = "Mac OS X";
+	private void patchStartWebLogicScript() {
+		if (MAC_OS.equals(System.getProperty("os.name")) ) {
+			File file = null;
+			for (File aFile : domainFile.listFiles()) {
+				if ("startWebLogic.sh".equals(aFile.getName()) ) {
+					file = aFile;
+					break;
+				}
+			}
+			// startWebLogic file not found, bye ...
+			if (file == null)
+				return;
+
+	        try
+	        {
+	            StringBuilder buf = new StringBuilder();
+	            BufferedReader reader = new BufferedReader(new FileReader(file));
+	            String line = null;
+	            while( (line = reader.readLine()) != null) {
+	            	buf.append(line);
+	            	buf.append(LINE_SEP);
+	            	
+	            	// Mac OS X needs more resources!s
+	            	if (line.startsWith("DOMAIN_HOME=")) {
+	            		buf.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
+	            		buf.append(LINE_SEP);
+	            	}
+	            }
+	            
+	            // write file back
+	            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+	            BufferedReader reader2 = new BufferedReader( new StringReader(buf.toString()) );
+	            while( (line = reader2.readLine()) != null) {
+	            	writer.append(line);
+            		writer.append(LINE_SEP);
+	            }
+	            writer.flush();
+	            writer.close();
+	        } catch (IOException e)
+	        {
+	            e.printStackTrace();
+	        }
+			
+		}
+	}
+	
 	private void validateConfig() throws InvalidDomainConfigurationException {
 		// Domain HOME and PATH
 		domainName = properties.getProperty(DOMAIN_NAME);
@@ -217,8 +272,11 @@ public class DomainCreator {
 		}
 
 
+		// STAGE ONE
 		createStageOne();
-		
+		patchStartWebLogicScript();
+
+
 		String cmd = domainFile.getAbsolutePath()+"/startWebLogic.sh" ;
 		final Runtime run = Runtime.getRuntime();
 		Process pr = null;
@@ -231,7 +289,7 @@ public class DomainCreator {
 
 		BufferedReader buf = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
 
-		String line ;
+		String line;
 		while ( ( line = buf.readLine() ) != null ) {
 			// wait for STARTED message
 			if (line.contains("<BEA-000360>")) {
@@ -242,6 +300,7 @@ public class DomainCreator {
 		}
 		
 		
+		// STAGE 2
 		try {
 			createStageTwo();
 		} catch(Exception exc) {
@@ -306,25 +365,35 @@ public class DomainCreator {
 	private void createStageTwo() throws WLSTException {
 		InputStream is = ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py");
 		
-		final String sep2 = System.getProperty("line.separator");
 		try {
 			StringBuilder sb = new StringBuilder();
 
 			// connect
-			sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(sep2);
-			// set params
-			sb.append("domainName='" + serverHost + "'").append(sep2);
-			
+			sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(LINE_SEP);
+
+			// bind parameters
+			sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
+			sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
+			sb.append("vHostPort=" + 7007).append(LINE_SEP);
+
+
+
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
 			String nextLine = "";
 			while ((nextLine = br.readLine()) != null) {
 	   			sb.append(nextLine);
-     			sb.append(sep2);
+     			sb.append(LINE_SEP);
    			}
 			
 			// Trail commands
-			sb.append("disconnect()").append(sep2);
+			sb.append("disconnect()").append(LINE_SEP);
+			
+			/*** DEBUG
+			System.err.println("=== STAGE2 SCRIPT ===");
+			System.err.println(sb.toString());
+			System.err.println("=== ============= ===");
+			***/
 			
 			Cmd _cmd = new Cmd();
 			

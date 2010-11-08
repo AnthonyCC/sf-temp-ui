@@ -1,5 +1,9 @@
+# @param serverName
+# @param vHostName
+# @param vHostPort
+#
 # Define target
-targ=jarray.array([ObjectName('com.bea:Name='+domainName+',Type=Server')], ObjectName)
+targ=jarray.array([ObjectName('com.bea:Name='+serverName+',Type=Server')], ObjectName)
 
 edit()
 startEdit()
@@ -137,3 +141,38 @@ for ds in sources:
     set('Targets',targ)
     
     activate()
+
+
+# Create HTTP Channel for Virtual Host
+startEdit()
+
+cd('/Servers/'+serverName)
+cmo.createNetworkAccessPoint('crm_channel')
+
+cd('/Servers/'+serverName+'/NetworkAccessPoints/crm_channel')
+cmo.setProtocol('http')
+cmo.setListenPort(vHostPort)
+cmo.setEnabled(true)
+cmo.setHttpEnabledForThisProtocol(true)
+cmo.setTunnelingEnabled(false)
+cmo.setOutboundEnabled(false)
+cmo.setTwoWaySSLEnabled(false)
+cmo.setClientCertificateEnforced(false)
+
+activate()
+
+# Create Virtual Host Entry
+startEdit()
+
+cd('/')
+cmo.createVirtualHost(vHostName)
+
+activate()
+
+startEdit()
+
+cd('/VirtualHosts/'+vHostName)
+cmo.setNetworkAccessPoint('crm_channel')
+set('VirtualHostNames',jarray.array([String(vHostName)], String))
+
+activate()
