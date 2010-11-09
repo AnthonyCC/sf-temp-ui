@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -359,46 +360,57 @@ public class DomainCreator {
 
 
 	private void createStageTwo() throws WLSTException {
-		InputStream is = ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py");
-		
+		// run stage2 script
+		runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py"), true);
+
+		// add users and roles
+		runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/realm.py"), true);
+	}
+
+
+	private void runScript(InputStream is, boolean debug) {
+		StringBuilder sb = new StringBuilder();
+
+		// connect
+		// sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(LINE_SEP);
+
+		// bind parameters
+		sb.append("wl_user='weblogic'").append(LINE_SEP);
+		sb.append("wl_pwd='weblogic'").append(LINE_SEP);
+		sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
+
+		sb.append("domainName='" + domainName + "'").append(LINE_SEP);
+		sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
+		sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
+		sb.append("vHostPort=" + 7007).append(LINE_SEP);
+
+		if (loadScript(sb, new InputStreamReader(is))) {
+			if (debug) {
+				System.err.println("=== STAGE2 SCRIPT ===");
+				System.err.println(sb.toString());
+				System.err.println("=== ============= ===");
+				
+			}
+
+			new Cmd().unsafeExec(sb.toString());
+		}
+	}
+
+
+	private boolean loadScript(Appendable out, Reader scriptReader) {
 		try {
-			StringBuilder sb = new StringBuilder();
-
-			// connect
-			sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(LINE_SEP);
-
-			// bind parameters
-			sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
-			sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
-			sb.append("vHostPort=" + 7007).append(LINE_SEP);
-
-
-
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
+			BufferedReader br = new BufferedReader(scriptReader);
+	
 			String nextLine = "";
 			while ((nextLine = br.readLine()) != null) {
-	   			sb.append(nextLine);
-     			sb.append(LINE_SEP);
-   			}
-			
-			// Trail commands
-			sb.append("disconnect()").append(LINE_SEP);
-			
-			/*** DEBUG
-			System.err.println("=== STAGE2 SCRIPT ===");
-			System.err.println(sb.toString());
-			System.err.println("=== ============= ===");
-			***/
-			
-			Cmd _cmd = new Cmd();
-			
-			_cmd.unsafeExec(sb.toString());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+				out.append(nextLine);
+				out.append(LINE_SEP);
+			}
+		} catch(IOException exc) {
+			System.err.println("Failed to load script; exc=" + exc);
+			return false;
 		}
+		return true;
 	}
 	
 	

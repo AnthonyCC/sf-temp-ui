@@ -1,8 +1,14 @@
+#
+# STAGE 2 Script
+#
+# @param domainName Domain name
 # @param serverName
 # @param vHostName
 # @param vHostPort
 #
 # Define target
+connect(wl_user, wl_pwd, wl_url)
+
 targ=jarray.array([ObjectName('com.bea:Name='+serverName+',Type=Server')], ObjectName)
 
 edit()
@@ -89,8 +95,9 @@ for qname in queues:
     
     activate()
 
-# DataSources
-#
+##
+## DataSources
+##
 sources = [
       {"name": "fddatasource",
        "url": "jdbc:oracle:thin:@zetor:1521:DBEU01",
@@ -143,6 +150,9 @@ for ds in sources:
     activate()
 
 
+##
+## Virtual Host for CRM App
+##
 # Create HTTP Channel for Virtual Host
 startEdit()
 
@@ -176,3 +186,6 @@ cmo.setNetworkAccessPoint('crm_channel')
 set('VirtualHostNames',jarray.array([String(vHostName)], String))
 
 activate()
+
+save()
+disconnect()
