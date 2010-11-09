@@ -30,6 +30,7 @@ import com.freshdirect.customer.EnumTransactionSource;
 import com.freshdirect.customer.ErpAddressVerificationException;
 import com.freshdirect.customer.ErpAuthorizationException;
 import com.freshdirect.customer.ErpCustomerModel;
+import com.freshdirect.customer.ErpDiscountLineModel;
 import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpModifyOrderModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
@@ -94,6 +95,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
+import com.freshdirect.giftcard.ErpGiftCardModel;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -740,7 +742,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		int noMatchCount = 0;
 		for(Iterator<FDCustomerOrderInfo> it = modifyOrders.iterator(); it.hasNext();){
 			FDCustomerOrderInfo custOrderinfo = it.next();
-			int success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail, custOrderinfo.getLastCroModDate());
+			int success = bulkModifyOrder(request, custOrderinfo.getIdentity(), custOrderinfo.getSaleId(), skuCodes, sendEmail);
 			switch(success) {
 				case 1 : successCount++;
 						break;
@@ -816,8 +818,9 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 		return custOrders;
 	}
 
-	protected int bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail, Date snapShotCreateTime) {
+	protected int bulkModifyOrder(HttpServletRequest request, FDIdentity identity, String orderId, Set<String> skuCodes, boolean sendEmail) {
 		HttpSession session = request.getSession();
+		Date snapShotCreateTime = (Date) session.getAttribute("SnapShotCreateTime");
 			try {
 				FDOrderAdapter originalOrder = (FDOrderAdapter) FDCustomerManager.getOrder(orderId );
 				if(snapShotCreateTime != null && originalOrder.getLastModifiedDate().after(snapShotCreateTime)) {
@@ -850,11 +853,13 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 								//versions are still same. need to call second time if the cache is not refreshed yet.
 								pInfo = FDCachedFactory.getProductInfo(skuCode);
 							}
+
 							if(oldSku.getVersion() == pInfo.getVersion()){
 								//Not yet refreshed. Log it as a failure and retry later.
 								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
 								break;
 							}
+
 							if(pInfo.isDiscontinued() || pInfo.isTempUnavailable() || pInfo.isOutOfSeason()){
 								//SKu is Unavailable. Log it as a failure.
 								failureMessage = skuCode+" : "+"SKU is Unavailable to process. Please check with SAP.";
@@ -894,7 +899,11 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				modCart.recalculateTaxAndBottleDeposit(modCart.getDeliveryAddress().getZipCode());
 	        	//CustomerRatingAdaptor cra = new CustomerRatingAdaptor(user.getFDCustomer().getProfile(),user.isCorporateUser(),user.getAdjustedValidOrderCount());
 	        	Set<String> appliedPromos = originalOrder.getUsedPromotionCodes();
-	        	modCart.setDiscounts(originalOrder.getDiscounts());
+	        	for(Iterator<ErpDiscountLineModel> it = originalOrder.getDiscounts().iterator();it.hasNext();){
+	        		ErpDiscountLineModel model = it.next();
+	        		ErpDiscountLineModel newModel = new ErpDiscountLineModel(model);
+	        		modCart.addDiscount(newModel);
+	        	}
 	        	modCart.setSelectedGiftCards(originalOrder.getGiftcardPaymentMethods());
 	        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
 	        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());

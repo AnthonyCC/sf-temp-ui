@@ -24,6 +24,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.EnumDlvRestrictionType;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.customer.BulkModifyOrderInfo;
 import com.freshdirect.fdstore.customer.FDCustomerOrderInfo;
 import com.freshdirect.fdstore.customer.ejb.AdminToolsDAO;
 
@@ -118,6 +119,13 @@ public class GenericLocatorTag extends AbstractControllerTag {
 				GenericSearchCriteria criteria = new GenericSearchCriteria(searchType);
 				criteria.setCriteriaMap("statuses", new String[]{"Pending", "Failed"});
 			    searchResults = CallCenterServices.doGenericSearch(criteria);
+			    if(searchResults != null && searchResults.size() > 0){
+			    	BulkModifyOrderInfo info = (BulkModifyOrderInfo)searchResults.get(0);
+			    	if(info != null){
+			    		Date snapShotCreateTime = info.getCreateDate();
+			    		session.setAttribute("SnapShotCreateTime", snapShotCreateTime);
+			    	}
+			    }
 			    request.setAttribute("RESULT","success");
 			}
 			pageContext.setAttribute(this.id, searchResults != null ? searchResults : Collections.EMPTY_LIST);
