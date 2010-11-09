@@ -99,50 +99,46 @@ public class DomainCreator {
 	}
 
 
-	final static String MAC_OS = "Mac OS X";
 	private void patchStartWebLogicScript() {
-		if (MAC_OS.equals(System.getProperty("os.name")) ) {
-			File file = null;
-			for (File aFile : domainFile.listFiles()) {
-				if ("startWebLogic.sh".equals(aFile.getName()) ) {
-					file = aFile;
-					break;
+		File file = null;
+		for (File aFile : domainFile.listFiles()) {
+			if ("startWebLogic.sh".equals(aFile.getName())) {
+				file = aFile;
+				break;
+			}
+		}
+		// startWebLogic file not found, bye ...
+		if (file == null)
+			return;
+
+		try {
+			StringBuilder buf = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new FileReader(file));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				buf.append(line);
+				buf.append(LINE_SEP);
+
+				// Fix memory settings
+				if (line.startsWith("DOMAIN_HOME=")) {
+					buf
+							.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
+					buf.append(LINE_SEP);
 				}
 			}
-			// startWebLogic file not found, bye ...
-			if (file == null)
-				return;
 
-	        try
-	        {
-	            StringBuilder buf = new StringBuilder();
-	            BufferedReader reader = new BufferedReader(new FileReader(file));
-	            String line = null;
-	            while( (line = reader.readLine()) != null) {
-	            	buf.append(line);
-	            	buf.append(LINE_SEP);
-	            	
-	            	// Mac OS X needs more resources!s
-	            	if (line.startsWith("DOMAIN_HOME=")) {
-	            		buf.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
-	            		buf.append(LINE_SEP);
-	            	}
-	            }
-	            
-	            // write file back
-	            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-	            BufferedReader reader2 = new BufferedReader( new StringReader(buf.toString()) );
-	            while( (line = reader2.readLine()) != null) {
-	            	writer.append(line);
-            		writer.append(LINE_SEP);
-	            }
-	            writer.flush();
-	            writer.close();
-	        } catch (IOException e)
-	        {
-	            e.printStackTrace();
-	        }
-			
+			// write file back
+			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			BufferedReader reader2 = new BufferedReader(new StringReader(buf
+					.toString()));
+			while ((line = reader2.readLine()) != null) {
+				writer.append(line);
+				writer.append(LINE_SEP);
+			}
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	
