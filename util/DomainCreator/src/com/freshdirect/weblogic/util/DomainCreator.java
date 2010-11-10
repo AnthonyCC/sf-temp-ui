@@ -14,13 +14,12 @@ import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 
 import weblogic.management.scripting.utils.WLSTInterpreter;
-
-import com.bea.plateng.domain.script.jython.WLSTException;
 
 public class DomainCreator {
 	private static final String WEBLOGIC_HOME = "weblogic.home";
@@ -56,6 +55,7 @@ public class DomainCreator {
 			creator = new DomainCreator();
 			creator.validateConfig();
 			creator.create();
+			// creator.runStageThree();
 		} catch (IOException e) {
 			System.err.println("Error when loading properties: " + e.getMessage());
 		} catch (InvalidDomainConfigurationException e) {
@@ -100,7 +100,12 @@ public class DomainCreator {
 	}
 
 
-	private void patchStartWebLogicScript() {
+	/**
+	 * Patch startWebLogic.sh
+	 *  
+	 * @param ptchr patcher function
+	 */
+	private void patchStartWebLogicScript(WLPatcher ptchr) {
 		File file = null;
 		for (File aFile : domainFile.listFiles()) {
 			if ("startWebLogic.sh".equals(aFile.getName())) {
@@ -117,15 +122,14 @@ public class DomainCreator {
 			BufferedReader reader = new BufferedReader(new FileReader(file));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				buf.append(line);
-				buf.append(LINE_SEP);
-
-				// Fix memory settings
-				if (line.startsWith("DOMAIN_HOME=")) {
-					buf
-							.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
+				ptchr.appendBefore(line, buf);
+				
+				if (!ptchr.skipLine(line)) {
+					buf.append(line);
 					buf.append(LINE_SEP);
 				}
+				
+				ptchr.appendAfter(line, buf);
 			}
 
 			// write file back
@@ -139,7 +143,6 @@ public class DomainCreator {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 	
@@ -163,8 +166,10 @@ public class DomainCreator {
 			validateFreshDirectSourceRepository(domainHomeFile);
 		domainFile = new File(domainHomeFile, domainName);
 		if (!properties.containsKey(DOMAIN_OVERWRITE)) {
-			if (domainFile.exists())
-				throw new InvalidDomainConfigurationException(DOMAIN_NAME + " exists under " + DOMAIN_HOME);
+			if (domainFile.exists()) {
+				// FIXME:
+				// throw new InvalidDomainConfigurationException(DOMAIN_NAME + " exists under " + DOMAIN_HOME);
+			}
 		}
 		System.out.println(DOMAIN_HOME + ": " + domainHome);
 
@@ -270,10 +275,40 @@ public class DomainCreator {
 
 
 		// STAGE ONE
-		createStageOne();
-		patchStartWebLogicScript();
+		runStageOne();
+		patchStartWebLogicScript(new WLPatcher<String>(null) {
+			@Override
+			public void appendAfter(String line, Appendable out) {
+				if (line.startsWith("DOMAIN_HOME=")) {
+					try {
+						out.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
+						out.append(LINE_SEP);
+					} catch (IOException e) {}
+				}
+			}
+
+			@Override
+			public void appendBefore(String line, Appendable out) {}
+
+			@Override
+			public boolean skipLine(String line) {
+				return false;
+			}
+		});
 
 
+
+		
+		// STAGE 2
+		runStageTwo();
+
+		// STAGE 3
+		runStageThree();
+	}
+
+
+	
+	private Process startWebLogic() {
 		String cmd = domainFile.getAbsolutePath()+"/startWebLogic.sh" ;
 		final Runtime run = Runtime.getRuntime();
 		Process pr = null;
@@ -281,46 +316,57 @@ public class DomainCreator {
 			pr = run.exec(cmd) ;
 		} catch (IOException e) {
 			e.printStackTrace();
-			return;
+			return null;
 		}
 
-		BufferedReader buf = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
-
-		String line;
-		while ( ( line = buf.readLine() ) != null ) {
-			// wait for STARTED message
-			if (line.contains("<BEA-000360>")) {
-				break;
-			} else {
-				System.out.println(line);
-			}
-		}
-		
-		
-		// STAGE 2
+		// Wait for coming up
 		try {
-			createStageTwo();
-		} catch(Exception exc) {
-			System.err.println("!!! Script crashed !!!" + exc);
+			BufferedReader buf = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
+			String line;
+			while ( ( line = buf.readLine() ) != null ) {
+				// wait for STARTED message
+				if (line.contains("<BEA-000360>")) {
+					break;
+				}
+			}
+		} catch(IOException exc) {
+			exc.printStackTrace();
 		}
+		return pr;
+	}
 
+
+	private void stopWebLogic(Process pr) {
+		StringBuilder buf = new StringBuilder();
+		
+		bindParameters(buf);
+
+		buf.append("connect(wl_user,wl_pwd,wl_url)").append(LINE_SEP);
+		buf.append("shutdown()").append(LINE_SEP);
+
+		Cmd cmd = new Cmd(new WLSTInterpreter());
+		cmd.unsafeExec(buf.toString());
+		
 		if (pr != null) {
-			pr.destroy();
+			// Wait for coming up
 			try {
-				pr.waitFor();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				BufferedReader reader = new BufferedReader( new InputStreamReader( pr.getInputStream() ) ) ;
+				String line;
+				while ( ( line = reader.readLine() ) != null ) {
+					// do nothing but read all lines until it breaks
+				}
+			} catch(IOException exc) {
+				exc.printStackTrace();
 			}
 		}
 	}
-
 
 
 	/**
 	 * STAGE I.
 	 * Create empty domain
 	 */
-	private void createStageOne() {
+	private void runStageOne() {
 		System.out.println("starting interpreter");
 
 		Cmd _cmd = new Cmd();
@@ -359,30 +405,98 @@ public class DomainCreator {
 	}
 
 
-	private void createStageTwo() throws WLSTException {
-		// run stage2 script
-		runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py"), true);
+	/**
+	 * STAGE II.
+	 * Configure WebLogic domain
+	 */
+	private void runStageTwo() {
+		Process pr = startWebLogic();
 
-		// add users and roles
-		runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/realm.py"), true);
+		try {
+			// run stage2 script
+			runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py"), false);
+	
+			// add users and roles
+			runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/realm.py"), false);
+		} catch(Exception exc) {
+			System.err.println("!!! Stage 2 crashed !!!" + exc);
+		} 
+		
+		stopWebLogic(pr);
 	}
 
+	/**
+	 * STAGE III
+	 * 
+	 * Populate applications
+	 */
+	private void runStageThree() {
+		// Projects to import
+		// final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
 
+		final String PSEP = System.getProperty("file.separator");
+		File projectsDir = new File(domainHome + PSEP + "projects");
+		
+		// Extract dependendent libs from classpaths
+		List<String> libs = LibUtil.collectLibs(projectsDir);
+		
+		/* for (String lib : libs) {
+			System.out.println(lib);
+		} */
+
+		patchStartWebLogicScript(new WLPatcher<List<String>>(libs) {
+			@Override
+			public void appendAfter(String line, Appendable out) {
+				if (line.startsWith("DOMAIN_HOME=")) {
+					try {
+						out.append("FD_BASE=\""+domainHome+"\"").append(LINE_SEP);
+						out.append("FD_LIBS=\"$FD_BASE/lib\"").append(LINE_SEP);
+						out.append(LINE_SEP);
+
+						out.append("EXT_PRE_CLASSPATH=$FD_BASE/properties:\\");
+						out.append(LINE_SEP);
+						for (String lib : param) {
+							out.append("$"+lib+":\\");
+							out.append(LINE_SEP);
+						}
+						
+						
+						final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
+
+						// append active project bin folders
+						for (String prj : projects.split(",")) {
+							out.append("$FD_BASE/projects/"+prj+"/bin:\\");
+							out.append(LINE_SEP);
+						}
+						
+						// finally append Resources
+						out.append("$FD_BASE/projects/Resources");
+						out.append(LINE_SEP);
+						
+						out.append("export EXT_PRE_CLASSPATH");
+						out.append(LINE_SEP);
+						out.append(LINE_SEP);
+					} catch (IOException e) {}
+				}
+			}
+
+			@Override
+			public void appendBefore(String line, Appendable out) {
+			}
+
+			@Override
+			public boolean skipLine(String line) {
+				return false;
+			}
+		});
+	}
+	
+	
 	private void runScript(InputStream is, boolean debug) {
 		StringBuilder sb = new StringBuilder();
 
-		// connect
-		// sb.append("connect('weblogic','weblogic','t3://"+serverHost+":"+serverPort+"')").append(LINE_SEP);
-
 		// bind parameters
-		sb.append("wl_user='weblogic'").append(LINE_SEP);
-		sb.append("wl_pwd='weblogic'").append(LINE_SEP);
-		sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
-
-		sb.append("domainName='" + domainName + "'").append(LINE_SEP);
-		sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
-		sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
-		sb.append("vHostPort=" + 7007).append(LINE_SEP);
+		bindParameters(sb);
 
 		if (loadScript(sb, new InputStreamReader(is))) {
 			if (debug) {
@@ -393,6 +507,23 @@ public class DomainCreator {
 			}
 
 			new Cmd().unsafeExec(sb.toString());
+		}
+	}
+
+	
+	private void bindParameters(Appendable sb) {
+		// bind parameters
+		try {
+			sb.append("wl_user='weblogic'").append(LINE_SEP);
+			sb.append("wl_pwd='weblogic'").append(LINE_SEP);
+			sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
+	
+			sb.append("domainName='" + domainName + "'").append(LINE_SEP);
+			sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
+			sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
+			sb.append("vHostPort=" + 7007).append(LINE_SEP);
+		} catch(IOException exc) {
+			// don't bother with it
 		}
 	}
 
@@ -506,4 +637,18 @@ public class DomainCreator {
 			exec("closeTemplate()");
 		}
 	}
+}
+
+abstract class WLPatcher<T> {
+	public static final String LINE_SEP = System.getProperty("line.separator");
+
+	T param;
+	
+	public WLPatcher(T param) {
+		this.param = param;
+	}
+
+	abstract public void appendBefore(String line, Appendable out);
+	abstract public void appendAfter(String line, Appendable out);
+	abstract public boolean skipLine(String line);
 }
