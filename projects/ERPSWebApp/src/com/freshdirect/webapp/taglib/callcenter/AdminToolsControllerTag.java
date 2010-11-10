@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
+import javax.swing.text.html.Option;
 
 import org.apache.log4j.Category;
 
@@ -54,16 +56,20 @@ import com.freshdirect.deliverypass.DeliveryPassException;
 import com.freshdirect.fdstore.CallCenterServices;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDCachedFactory;
+import com.freshdirect.fdstore.FDConfigurableI;
 import com.freshdirect.fdstore.FDConfiguration;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDInvalidAddressException;
+import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.FDVariation;
+import com.freshdirect.fdstore.FDVariationOption;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
@@ -853,13 +859,13 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 								//versions are still same. need to call second time if the cache is not refreshed yet.
 								pInfo = FDCachedFactory.getProductInfo(skuCode);
 							}
-
+/*
 							if(oldSku.getVersion() == pInfo.getVersion()){
 								//Not yet refreshed. Log it as a failure and retry later.
 								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
 								break;
 							}
-
+*/
 							if(pInfo.isDiscontinued() || pInfo.isTempUnavailable() || pInfo.isOutOfSeason()){
 								//SKu is Unavailable. Log it as a failure.
 								failureMessage = skuCode+" : "+"SKU is Unavailable to process. Please check with SAP.";
@@ -868,8 +874,12 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 							}
 							modCart.removeOrderLineById(oldCartLine.getRandomId());
 							FDSku newSku = new FDSku(pInfo.getSkuCode(), pInfo.getVersion());
-							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(),
-									oldCartLine.getConfiguration(), oldCartLine.getVariantId(), 
+							FDConfigurableI oldConfig = oldCartLine.getConfiguration();
+							FDProduct product = FDCachedFactory.getProduct(newSku);
+							Map<String, String> newOptions = getNewOptions(oldConfig.getOptions(), product);
+							FDConfigurableI newConfig = new FDConfiguration(oldCartLine.getQuantity(), oldCartLine.getSalesUnit(), newOptions);
+							FDCartLineI newCartLine = new FDCartLineModel(newSku, oldCartLine.getProductRef().lookupProductModel(), newConfig
+									, oldCartLine.getVariantId(), 
 									oldCartLine.getPricingContext().getZoneId());
 							modCart.addOrderLine(newCartLine);
 							modified = true;
@@ -960,7 +970,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 
 				return -1;
 			} catch (FDInvalidConfigurationException ex) {
-				LOGGER.error("FDInvalidConfigurationException occured in doNewAuthorization.", ex);
+				LOGGER.error("FDInvalidConfigurationException occured in bulkModifyOrder.", ex);
 				try {
 					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
 				}catch(FDResourceException fe){
@@ -968,7 +978,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 				}
 				
 			} catch (FDResourceException ex) {
-				LOGGER.error("FDResourceException while attempting to perform reauthorization.", ex);
+				LOGGER.error("FDResourceException while attempting to perform bulkModifyOrder.", ex);
 				try {
 					CallCenterServices.updateOrderModifiedStatus(orderId, "Failed", ex.getMessage());
 				}catch(FDResourceException fe){
@@ -1003,7 +1013,45 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			}
 			return -1;		
 	}
+	private Map<String, String> getNewOptions(Map<String,String> oldOptions, FDProduct product) throws FDInvalidConfigurationException{
+		Map<String, String> newOptions = new HashMap<String, String>();
 
+		FDVariation[] variations = product.getVariations();
+		for (int i = 0; i < variations.length; i++) {
+			FDVariation variation = variations[i];
+			String userOption = null;
+			if(oldOptions != null && ! oldOptions.isEmpty())
+				userOption = oldOptions.get(variation.getName());
+			if(userOption != null){
+				newOptions.put(variation.getName(), userOption);
+			} else {
+				//New options added during new SAP export. 
+				FDVariationOption[] options = variation.getVariationOptions();
+				if (options.length == 1) {
+					//
+					// there's only a single option, pick that
+					//
+					newOptions.put(variation.getName(), options[0].getName());
+
+				}else if (variation.isOptional()) {
+					//
+					// More than one option. pick the SELECTED option for them.
+					//
+					String selected = null;
+					for (int j = 0; j < options.length; j++) {
+						if (options[j].isSelected())
+							selected = options[j].getName();
+					}
+					newOptions.put(variation.getName(), selected);
+				}else{
+					//It needs user input.
+					throw new FDInvalidConfigurationException("SKU configuration for : "+product.getSkuCode()+" has changed which needs user intervention.");
+				}
+			}
+			
+		}
+		return newOptions;
+	}
 //	private void addToResultsList(HttpSession session, Map subResults){
 //		Map results = (Map)session.getAttribute("EXPORT_RESULTS");
 //		if(results == null){
