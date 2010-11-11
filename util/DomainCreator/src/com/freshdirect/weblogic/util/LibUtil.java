@@ -15,7 +15,13 @@ import java.util.regex.Pattern;
 public class LibUtil {
 	static final String PSEP = System.getProperty("file.separator");
 
-	final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
+	static final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
+
+	
+	static final String[] excLibs = {
+			"javaee-api",
+			"jakarta-slide-webdavlib",
+			"wsdl4j","wstx-asl","xercesImpl","xml-apis","XmlSchema"};
 
 	/**
 	 * Utility method to collect dependency libs from Eclipse projects
@@ -53,9 +59,24 @@ public class LibUtil {
 						Matcher m = p.matcher(line);
 						if (m.matches()) {
 							String libPath = m.group(1);
-							// throw WL libs out
-							if (libPath.startsWith("FD_LIBS"))
-								libs.add(new Lib(libPath) );
+
+							// non-fdlibs -> skip
+							if (!libPath.startsWith("FD_LIBS")) {
+								continue;
+							}
+							
+							final Lib aLib = new Lib(libPath);
+							boolean go = false;
+							// filter excluded libs
+							for (String exc : excLibs) {
+								if (exc.contains(aLib.getName())) {
+									go = true; break;
+								}
+							}
+
+
+							if (!go)
+								libs.add(aLib );
 						}
 					}
 				} catch (FileNotFoundException e) {
@@ -204,11 +225,15 @@ public class LibUtil {
 			
 			String[] x = v.split("\\.");
 			digits = new int[x.length];
-			for(int k=0; k<x.length;k++) {
-				digits[k] = Integer.parseInt(x[k]);
+			if (x.length > 0) {
+				for(int k=0; k<x.length;k++) {
+					digits[k] = Integer.parseInt(x[k]);
+				}
+			} else {
+				digits = new int[]{0};
 			}
 		}
-		
+
 		public int[] getDigits() {
 			return digits;
 		}

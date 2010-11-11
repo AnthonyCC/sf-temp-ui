@@ -276,7 +276,7 @@ public class DomainCreator {
 
 		// STAGE ONE
 		runStageOne();
-		patchStartWebLogicScript(new WLPatcher<String>(null) {
+		patchStartWebLogicScript(new WLPatcher() {
 			@Override
 			public void appendAfter(String line, Appendable out) {
 				if (line.startsWith("DOMAIN_HOME=")) {
@@ -434,6 +434,7 @@ public class DomainCreator {
 		// Projects to import
 		// final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
 
+		
 		final String PSEP = System.getProperty("file.separator");
 		File projectsDir = new File(domainHome + PSEP + "projects");
 		
@@ -444,7 +445,7 @@ public class DomainCreator {
 			System.out.println(lib);
 		} */
 
-		patchStartWebLogicScript(new WLPatcher<List<String>>(libs) {
+		patchStartWebLogicScript(new WLPatcher(libs, projectsDir) {
 			@Override
 			public void appendAfter(String line, Appendable out) {
 				if (line.startsWith("DOMAIN_HOME=")) {
@@ -455,7 +456,7 @@ public class DomainCreator {
 
 						out.append("EXT_PRE_CLASSPATH=$FD_BASE/properties:\\");
 						out.append(LINE_SEP);
-						for (String lib : param) {
+						for (String lib : (List<String>) param1) {
 							out.append("$"+lib+":\\");
 							out.append(LINE_SEP);
 						}
@@ -463,12 +464,31 @@ public class DomainCreator {
 						
 						final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
 
+						File pDir = (File) param2;
+
+						// check for binary dirs
+						for (File prj : pDir.listFiles() ) {
+							if (!prj.isDirectory())
+								continue;
+
+							// FIXME: check project settings to find out where bin is
+							File binDir = new File(prj.getAbsolutePath() + PSEP + "bin");
+							if (!binDir.isDirectory())
+								continue;
+
+							// ok, add to classpaths
+							out.append("$FD_BASE/projects/"+prj.getName()+"/bin:\\");
+							out.append(LINE_SEP);
+						}
+						
+						
 						// append active project bin folders
+						/*
 						for (String prj : projects.split(",")) {
 							out.append("$FD_BASE/projects/"+prj+"/bin:\\");
 							out.append(LINE_SEP);
 						}
-						
+						*/
 						// finally append Resources
 						out.append("$FD_BASE/projects/Resources");
 						out.append(LINE_SEP);
@@ -639,14 +659,25 @@ public class DomainCreator {
 	}
 }
 
-abstract class WLPatcher<T> {
+abstract class WLPatcher {
 	public static final String LINE_SEP = System.getProperty("line.separator");
 
-	T param;
+	Object param1 = null;
+	Object param2 = null;
 	
-	public WLPatcher(T param) {
-		this.param = param;
+	public WLPatcher() {
+		this(null, null);
 	}
+
+	public WLPatcher(Object param1) {
+		this(param1, null);
+	}
+
+	public WLPatcher(Object param1, Object param2) {
+		this.param1 = param1;
+		this.param2 = param2;
+	}
+
 
 	abstract public void appendBefore(String line, Appendable out);
 	abstract public void appendAfter(String line, Appendable out);
