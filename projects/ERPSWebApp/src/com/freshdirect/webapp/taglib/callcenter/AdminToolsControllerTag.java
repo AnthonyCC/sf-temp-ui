@@ -860,13 +860,13 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 								//versions are still same. need to call second time if the cache is not refreshed yet.
 								pInfo = FDCachedFactory.getProductInfo(skuCode);
 							}
-/*
+
 							if(oldSku.getVersion() == pInfo.getVersion()){
 								//Not yet refreshed. Log it as a failure and retry later.
 								failureMessage = skuCode+" : "+"No Version Change. Possible Cause: ProductInfo Cache is still holding the old version. Please try again.";
 								break;
 							}
-*/
+
 							if(pInfo.isDiscontinued() || pInfo.isTempUnavailable() || pInfo.isOutOfSeason()){
 								//SKu is Unavailable. Log it as a failure.
 								failureMessage = skuCode+" : "+"SKU is Unavailable to process. Please check with SAP.";
