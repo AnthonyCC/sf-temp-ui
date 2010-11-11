@@ -102,6 +102,7 @@ import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.framework.webapp.ActionWarning;
 import com.freshdirect.giftcard.ErpGiftCardModel;
+import com.freshdirect.giftcard.ErpGiftCardUtil;
 import com.freshdirect.giftcard.InvalidCardException;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
@@ -914,7 +915,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	        		ErpDiscountLineModel newModel = new ErpDiscountLineModel(model);
 	        		modCart.addDiscount(newModel);
 	        	}
-	        	modCart.setSelectedGiftCards(originalOrder.getGiftcardPaymentMethods());
+	        	modCart.setSelectedGiftCards(ErpGiftCardUtil.getGiftcardPaymentMethods(originalOrder.getAppliedGiftCards()));
 	        	FDCustomerCreditUtil.applyCustomerCredit(modCart,identity);
 	        	modCart.setDlvPassApplied(originalOrder.isDlvPassApplied());
 	        	for(Iterator<String> it = appliedPromos.iterator(); it.hasNext();){
