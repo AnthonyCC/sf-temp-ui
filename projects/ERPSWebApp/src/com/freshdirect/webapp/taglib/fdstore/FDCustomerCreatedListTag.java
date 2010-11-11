@@ -9,7 +9,7 @@ import com.freshdirect.fdstore.lists.FDCustomerListInfo;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
 
 
-public class FDCustomerCreatedListTag extends AbstractGetterTag implements SessionName {
+public class FDCustomerCreatedListTag extends AbstractGetterTag<List<FDCustomerListInfo>> implements SessionName {
 	
 	private static final long serialVersionUID = 5421728015240957952L;
 	
@@ -21,7 +21,7 @@ public class FDCustomerCreatedListTag extends AbstractGetterTag implements Sessi
 
 	// loadLists, loadListFrames
 	@Override
-	public Object getResult() throws Exception {
+	public List<FDCustomerListInfo> getResult() throws Exception {
 		   
 	   HttpSession session = pageContext.getSession();
 	   HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();

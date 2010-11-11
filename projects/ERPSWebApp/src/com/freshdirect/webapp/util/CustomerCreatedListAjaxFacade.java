@@ -124,6 +124,8 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	    if (lists == null) {
 	    	throw new FDResourceException("Could not retrieve lists");
 	    }
+	    lists = new ArrayList<FDCustomerListInfo>( lists );
+	    
 	    appendStandingOrderInfos(user, lists);
 	    
 	    TreeSet<FDCustomerListInfo> sorted = new TreeSet<FDCustomerListInfo>(new Comparator<FDCustomerListInfo>() {
@@ -141,8 +143,7 @@ public class CustomerCreatedListAjaxFacade implements Serializable {
 	 * @param user Current customer
 	 * @param lists An already populated list of FDCustomerListInfo instances
 	 */
-	private void appendStandingOrderInfos(FDUserI user,
-			List<FDCustomerListInfo> lists) {
+	private void appendStandingOrderInfos(FDUserI user, List<FDCustomerListInfo> lists) {
 		// append standing order lists
 	    final List<FDCustomerListInfo> standingOrderListInfos = user.getStandingOrderListInfos();
 
