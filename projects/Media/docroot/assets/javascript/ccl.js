@@ -614,6 +614,7 @@ CCLPanel.prototype.createTextInput = function(id) {
 
 // Create dropdown list
 CCLPanel.prototype.createDropdownList = function(id, style, labels, values) {
+
     if (typeof(labels) == "undefined") {
         labels = [];
     }
@@ -1497,9 +1498,9 @@ CCLClass.prototype.change_so_frequency = function(soId, freq, nextDlvDate, conte
 
 					var vals = [];
 					var texts = [];
-					for (n in enumList) {
-						vals.push(enumList[n]["_ord"]);
-						texts.push(enumList[n].title);
+					for ( i = 0; i < enumList.length; i++ ) {
+						vals.push(enumList[i]["_ord"]);
+						texts.push(enumList[i].title);
 					}
 					
 			        self.makeBody(
@@ -1797,6 +1798,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
        var paramArray = {};
        paramArray = params.split('&');
        var parmDef = {};
+       
        for(i = 0; i< paramArray.length; ++i) {
            paramDef = paramArray[i].split('=');
            if (paramDef.length != 2) continue;
@@ -1918,9 +1920,7 @@ CCLClass.prototype._create_list_panel = function(id, titleImg, context) {
 
             if (result.mostRecentList) {              
                 self.sources.dropdown.value = result.mostRecentList;
-            }
-				
-			
+            }			
 
             self.currentState = "shown_list";
         } // if event_type == "json"
