@@ -114,7 +114,7 @@ public class LibUtil {
 			System.err.println(">> " + aLib);
 			libs.add( aLib );
 		}
-		// libs.add( new Lib("FD_LIBS/thirdparty/gwt/spring-2.5.jar") );
+		libs.add( new Lib("FD_LIBS/thirdparty/urlrewrite-2.6.0.jar") );
 		
 
 		List<LibUtil.Lib> sortedLibs = new ArrayList<LibUtil.Lib>(libs);
