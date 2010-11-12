@@ -14,6 +14,8 @@ import java.io.StringReader;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -273,37 +275,30 @@ public class DomainCreator {
 			System.out.println("deleted previous domain directory");
 		}
 
-
-		// STAGE ONE
-		runStageOne();
-		patchStartWebLogicScript(new WLPatcher() {
-			@Override
-			public void appendAfter(String line, Appendable out) {
-				if (line.startsWith("DOMAIN_HOME=")) {
-					try {
-						out.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
-						out.append(LINE_SEP);
-					} catch (IOException e) {}
-				}
-			}
-
-			@Override
-			public void appendBefore(String line, Appendable out) {}
-
-			@Override
-			public boolean skipLine(String line) {
-				return false;
-			}
-		});
-
-
-
 		
+		// STAGE 1
+		{
+			long start = System.currentTimeMillis();
+			runStageOne();
+			long finish = System.currentTimeMillis();
+			System.out.println("\n## STAGE 1 TOOK "+( (finish-start)/1000 )+" seconds ##\n\n");
+		}
+
 		// STAGE 2
-		runStageTwo();
+		{
+			long start = System.currentTimeMillis();
+			runStageTwo();
+			long finish = System.currentTimeMillis();
+			System.out.println("\n## STAGE 2 TOOK "+( (finish-start)/1000 )+" seconds ##\n\n");
+		}
 
 		// STAGE 3
-		runStageThree();
+		{
+			long start = System.currentTimeMillis();
+			runStageThree();
+			long finish = System.currentTimeMillis();
+			System.out.println("\n## STAGE 3 TOOK "+( (finish-start)/1000 )+" seconds ##\n\n");
+		}
 	}
 
 
@@ -410,8 +405,30 @@ public class DomainCreator {
 	 * Configure WebLogic domain
 	 */
 	private void runStageTwo() {
-		Process pr = startWebLogic();
+		// Add more memory
+		//
+		patchStartWebLogicScript(new WLPatcher() {
+			@Override
+			public void appendAfter(String line, Appendable out) {
+				if (line.startsWith("DOMAIN_HOME=")) {
+					try {
+						out.append("export USER_MEM_ARGS=\"-Xms512m -Xmx1526m -XX:MaxPermSize=256m\"");
+						out.append(LINE_SEP);
+					} catch (IOException e) {}
+				}
+			}
 
+			@Override
+			public void appendBefore(String line, Appendable out) {}
+
+			@Override
+			public boolean skipLine(String line) {
+				return false;
+			}
+		});
+		
+		
+		Process pr = startWebLogic();
 		try {
 			// run stage2 script
 			runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage2.py"), false);
@@ -509,6 +526,17 @@ public class DomainCreator {
 				return false;
 			}
 		});
+
+	
+		Process pr = startWebLogic();
+		try {
+			// run stage3 script
+			runScript(ClassLoader.getSystemResourceAsStream("com/freshdirect/resources/stage3.py"), false);
+		} catch(Exception exc) {
+			System.err.println("!!! Stage 3 crashed !!!" + exc);
+		} 
+		
+		stopWebLogic(pr);
 	}
 	
 	

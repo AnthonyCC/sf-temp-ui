@@ -17,11 +17,18 @@ public class LibUtil {
 
 	static final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
 
-	
+
+	/**
+	 * These libs will be excluded from the final classpath list.
+	 */
 	static final String[] excLibs = {
-			"javaee-api",
-			"jakarta-slide-webdavlib",
-			"wsdl4j","wstx-asl","xercesImpl","xml-apis","XmlSchema"};
+		"javaee-api",
+		"jakarta-slide-webdavlib",
+		"wsdl4j","wstx-asl","xercesImpl","xml-apis","XmlSchema",
+		"gwt-dev-oophm", "gwt-maps", "gwt-user", "gxt",
+		"xxxxxspring", "Zql"
+	};
+
 
 	/**
 	 * Utility method to collect dependency libs from Eclipse projects
@@ -66,17 +73,21 @@ public class LibUtil {
 							}
 							
 							final Lib aLib = new Lib(libPath);
-							boolean go = false;
+							boolean doExcludeLib = false;
 							// filter excluded libs
 							for (String exc : excLibs) {
-								if (exc.contains(aLib.getName())) {
-									go = true; break;
+								if ( aLib.getName().equals(exc) ) {
+									System.err.println("-- " + aLib);
+									doExcludeLib = true;
+									break;
 								}
 							}
 
 
-							if (!go)
+							if (!doExcludeLib) {
+								System.err.println("++ " + aLib);
 								libs.add(aLib );
+							}
 						}
 					}
 				} catch (FileNotFoundException e) {
@@ -87,7 +98,23 @@ public class LibUtil {
 				}
 			}
 		}
-			
+
+
+		// append gwt-servlet
+		//
+		boolean shallIncludeLib = true;
+		for (LibUtil.Lib aLib : libs) {
+			if ( aLib.getName().equals("gwt-servlet" ) ) {
+				shallIncludeLib = false;
+				break;
+			}
+		}
+		if (shallIncludeLib) {
+			final Lib aLib = new Lib("FD_LIBS/thirdparty/gwt/gwt-servlet.jar");
+			System.err.println(">> " + aLib);
+			libs.add( aLib );
+		}
+		// libs.add( new Lib("FD_LIBS/thirdparty/gwt/spring-2.5.jar") );
 		
 
 		List<LibUtil.Lib> sortedLibs = new ArrayList<LibUtil.Lib>(libs);
@@ -160,15 +187,15 @@ public class LibUtil {
 			
 			// System.out.println(base);
 			
-			Pattern p = Pattern.compile("([a-z\\-]+)\\-(\\d(\\.\\d(\\.\\d)?)?).+");
+			Pattern p = Pattern.compile("([\\w\\-]+)\\-(\\d(\\.\\d(\\.\\d)?)?).+");
 			Matcher m = p.matcher(base);
 			if (m.matches()) {
+				// new name = file name - version - extension
 				this.name = m.group(1);
 				this.version = new Version(m.group(2));
-				// System.out.println("Name: " +m.group(1) + " Ver: " + m.group(2));
 			} else {
-				// System.out.println("Name: " + base);
-				this.name = base;
+				// new name = file name - extension
+				this.name = base.substring(0, base.indexOf("."));
 				this.version = Version.NONE;
 			}
 		}
