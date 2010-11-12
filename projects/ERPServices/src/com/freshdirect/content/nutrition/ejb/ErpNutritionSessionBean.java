@@ -1,8 +1,10 @@
 package com.freshdirect.content.nutrition.ejb;
 
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -171,6 +173,13 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     		ps = conn.prepareStatement(LOAD_NUTRITION_INFO);
     		ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
     		rs = ps.executeQuery();
+    		ResultSetMetaData rsmd = rs.getMetaData();
+    		String[] columnTypes = new String[rsmd.getColumnCount()];
+    		for (int col = 0; col < rsmd.getColumnCount(); col++) {
+    			columnTypes[col] = rsmd.getColumnTypeName(col + 1);
+    		}
+    		
+
     		 while (rs.next()) {
     			 String skuCode = rs.getString("SKUCODE").intern();
     			 Timestamp t = rs.getTimestamp("DATE_MODIFIED");
@@ -183,7 +192,32 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     			 }
                  String type = rs.getString("TYPE").intern();
                  int priority = rs.getInt("PRIORITY");
-                 String info = rs.getString("INFO");
+                 
+                 String info = "";
+                 
+                 //determine how to get the value based on a property
+                 if (columnTypes != null && columnTypes.length >=4 && columnTypes[4] == "CLOB") {
+                	//works if type is CLOB but not if VARCHAR2
+                	 try {
+                		 Clob infoClob = rs.getClob("INFO");
+
+    	                 if (infoClob != null) {
+    	                	 try {
+    	                		 info = infoClob.getSubString(1, (int) (infoClob.length()));
+    	                	 }catch (Exception ex) {
+    	                		 LOGGER.warn("An error occured while reading CLOB: "+ex.getMessage());
+    	                	 }
+    	                 }
+	                 } catch (SQLException sqle) {
+	                     LOGGER.error("An error occured while reading CLOB, check if column is CLOB type. "+sqle.getMessage());
+	                     throw sqle;
+	                 }
+                	 
+                 }else {
+                	//works if column type is VARCHAR2
+                	 rs.getString("INFO");
+                 }
+                                  
                  ErpNutritionInfoType infoType = ErpNutritionInfoType.getInfoType(type);
                  if (infoType == null) {
                 	 continue;
