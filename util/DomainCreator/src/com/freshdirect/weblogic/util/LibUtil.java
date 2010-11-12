@@ -25,8 +25,8 @@ public class LibUtil {
 		"javaee-api",
 		"jakarta-slide-webdavlib",
 		"wsdl4j","wstx-asl","xercesImpl","xml-apis","XmlSchema",
-		"gwt-dev-oophm", "gwt-maps", "gwt-user", "gxt",
-		"xxxxxspring", "Zql"
+		"gwt-dev-oophm", "gwt-maps", "gwt-user",
+		"Zql"
 	};
 
 
