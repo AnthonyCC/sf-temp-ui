@@ -151,11 +151,11 @@ if ( skuSize == 0 ) {
 
 	final boolean alignRight = isQuickBuy || !isWineLayout;
 	
-	final String CSSTableStyle = (alignRight ? "text-align: right; " : "");
+	final String CSSTableStyle = (alignRight ? "text-align: right;" : "");
 
 %>	<input type="hidden" name="productId" value='<%= __tempLine.getProductName() %>'>
 	<input type="hidden" name="catId" value='<%= __tempLine.getCategoryName() %>'>
-		<table width="100%" cellpadding="0" cellspacing="0" border="0" style="<%= CSSTableStyle %>">
+		<table width="100%" cellpadding="0" cellspacing="0" border="0" <% if (alignRight) { %>align="right"<% } %>>
 			<tr><td style="<%= CSSTableStyle %>">
 			
         		
@@ -321,7 +321,7 @@ if ( skuSize == 0 ) {
 				%>
 				<br/>
     
-<%-- ==================================================== SKUS BOX ============================================================================= --%>
+<!-- ==================================================== SKUS BOX ============================================================================= -->
 				<%
 					List<Domain> domains = __prd.getVariationMatrix();
 					
@@ -332,7 +332,7 @@ if ( skuSize == 0 ) {
 					}
 				%>
 				
-<%-- ==================================================== SALES UNIT ============================================================================= --%>
+<!-- ==================================================== SALES UNIT ============================================================================= -->
 				<% if ( salesUnitFirst ) { %>
         			<br/><span class="text11bold">Please Choose</span>
         			<br/><span class="space2pix"><br/></span>
