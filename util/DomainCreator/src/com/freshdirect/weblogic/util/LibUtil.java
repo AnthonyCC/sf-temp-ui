@@ -77,7 +77,7 @@ public class LibUtil {
 							// filter excluded libs
 							for (String exc : excLibs) {
 								if ( aLib.getName().equals(exc) ) {
-									System.err.println("-- " + aLib);
+									// debug System.err.println("-- " + aLib);
 									doExcludeLib = true;
 									break;
 								}
@@ -85,7 +85,7 @@ public class LibUtil {
 
 
 							if (!doExcludeLib) {
-								System.err.println("++ " + aLib);
+								// debug System.err.println("++ " + aLib);
 								libs.add(aLib );
 							}
 						}
@@ -111,7 +111,7 @@ public class LibUtil {
 		}
 		if (shallIncludeLib) {
 			final Lib aLib = new Lib("FD_LIBS/thirdparty/gwt/gwt-servlet.jar");
-			System.err.println(">> " + aLib);
+			// debug System.err.println(">> " + aLib);
 			libs.add( aLib );
 		}
 		libs.add( new Lib("FD_LIBS/thirdparty/urlrewrite-2.6.0.jar") );

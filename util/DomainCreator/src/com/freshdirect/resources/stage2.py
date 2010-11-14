@@ -6,6 +6,14 @@
 # @param vHostName
 # @param vHostPort
 #
+
+# Constants
+JMS_NAME='jmsServer'
+MODULE_NAME='jmsModule'
+SUBDEPL_NAME='subdepl'
+QFTY_NAME='queueFactory'
+FSTORE_NAME='fileStore'
+
 # Define target
 connect(wl_user, wl_pwd, wl_url)
 
@@ -14,9 +22,9 @@ targ=jarray.array([ObjectName('com.bea:Name='+serverName+',Type=Server')], Objec
 edit()
 startEdit()
 cd('/')
-cmo.createFileStore('fileStore')
+cmo.createFileStore(FSTORE_NAME)
 
-cd('/FileStores/fileStore')
+cd('/FileStores/'+FSTORE_NAME)
 set('Targets',targ)
 
 activate()
@@ -25,10 +33,10 @@ activate()
 startEdit()
 
 cd('/')
-cmo.createJMSServer('jmsServer')
+cmo.createJMSServer(JMS_NAME)
 
-cd('/Deployments/jmsServer')
-cmo.setPersistentStore(getMBean('/FileStores/fileStore'))
+cd('/Deployments/'+JMS_NAME)
+cmo.setPersistentStore(getMBean('/FileStores/'+FSTORE_NAME))
 set('Targets',targ)
 
 activate()
@@ -37,18 +45,18 @@ activate()
 startEdit()
 
 cd('/')
-cmo.createJMSSystemResource('jmsModule')
+cmo.createJMSSystemResource(MODULE_NAME)
 
-cd('/SystemResources/jmsModule')
+cd('/SystemResources/'+MODULE_NAME)
 set('Targets',targ)
 
 activate()
 
 
 startEdit()
-cmo.createSubDeployment('subdepl')
+cmo.createSubDeployment(SUBDEPL_NAME)
 
-cd('/SystemResources/jmsModule/SubDeployments/subdepl')
+cd('/SystemResources/'+MODULE_NAME+'/SubDeployments/'+SUBDEPL_NAME)
 set('Targets',jarray.array([], ObjectName))
 
 activate()
@@ -56,21 +64,27 @@ activate()
 
 startEdit()
 
-cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule')
-cmo.createConnectionFactory('jmsConnectionFactory')
+cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME)
+cmo.createConnectionFactory(QFTY_NAME)
 
-cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule/ConnectionFactories/jmsConnectionFactory/SecurityParams/jmsConnectionFactory')
+cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/ConnectionFactories/'+QFTY_NAME+'/SecurityParams/'+QFTY_NAME)
 cmo.setAttachJMSXUserId(false)
 
-cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule/ConnectionFactories/jmsConnectionFactory')
+cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/ConnectionFactories/'+QFTY_NAME)
+cmo.setJNDIName('queueFactory')
 cmo.setDefaultTargetingEnabled(true)
+
+# MAKE TRANSACTIONAL
+cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/ConnectionFactories/'+QFTY_NAME+'/TransactionParams/'+QFTY_NAME)
+cmo.setTransactionTimeout(3600)
+cmo.setXAConnectionFactoryEnabled(true)
 
 activate()
 
 
 startEdit()
 
-cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule')
+cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME)
 cmo.createTemplate('template')
 
 activate()
@@ -82,16 +96,18 @@ queues = ['captureQueue', 'mailQueue', 'oasQueue', 'registerQueue', 'releaseQueu
 for qname in queues:
     startEdit()
 
-    cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule')
+    cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME)
     cmo.createQueue(qname)
+    cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/Queues/'+qname)
+    cmo.setJNDIName(qname)
+
     
+    cd('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/Queues/'+qname)
+    cmo.setTemplate(getMBean('/JMSSystemResources/'+MODULE_NAME+'/JMSResource/'+MODULE_NAME+'/Templates/template'))
+    cmo.setSubDeploymentName(SUBDEPL_NAME)
     
-    cd('/JMSSystemResources/jmsModule/JMSResource/jmsModule/Queues/'+qname)
-    cmo.setTemplate(getMBean('/JMSSystemResources/jmsModule/JMSResource/jmsModule/Templates/template'))
-    cmo.setSubDeploymentName('subdepl')
-    
-    cd('/SystemResources/jmsModule/SubDeployments/subdepl')
-    set('Targets',jarray.array([ObjectName('com.bea:Name=jmsServer,Type=JMSServer')], ObjectName))
+    cd('/SystemResources/'+MODULE_NAME+'/SubDeployments/'+SUBDEPL_NAME)
+    set('Targets',jarray.array([ObjectName('com.bea:Name='+JMS_NAME+',Type=JMSServer')], ObjectName))
     
     activate()
 

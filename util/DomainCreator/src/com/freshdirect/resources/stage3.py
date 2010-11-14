@@ -8,8 +8,15 @@ connect(wl_user, wl_pwd, wl_url)
 ##
 ## Users and Roles
 ##
-domainConfig()
-
+edit()
+startEdit()
 # Deploy goes here ...
+cd('Servers')
+print "FD_HOME="+FD_HOME
+print "target="+serverName+',crm@'+vHostName
+deploy('DevServer',FD_HOME+'/projects/DevServer',targets=serverName+',crm@'+vHostName)
+
+save()
+activate()
 
 disconnect()

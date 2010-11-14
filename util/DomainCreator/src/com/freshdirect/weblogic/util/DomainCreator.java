@@ -446,20 +446,12 @@ public class DomainCreator {
 	 * Populate applications
 	 */
 	private void runStageThree() {
-		// Projects to import
-		// final String projects = "CMS,CRM,DataLoader,Delivery,DlvAdmin,DlvConfirm,ERPSAdmin,ERPSWebApp,ERPServices,FDIntegrationServices,FDStore,FDWebSite,Framework,Media,OCF,RefAdmin,Resources,RoutingServices,RulesAdmin,StandingOrdersService,Tests,Tools,TransportationAdmin,WebAppCommon,cms-gwt,listadmin,ocf-adm";
-
-		
 		final String PSEP = System.getProperty("file.separator");
 		File projectsDir = new File(domainHome + PSEP + "projects");
 		
 		// Extract dependendent libs from classpaths
 		List<String> libs = LibUtil.collectLibs(projectsDir);
 		
-		/* for (String lib : libs) {
-			System.out.println(lib);
-		} */
-
 		patchStartWebLogicScript(new WLPatcher(libs, projectsDir) {
 			@Override
 			public void appendAfter(String line, Appendable out) {
@@ -497,13 +489,6 @@ public class DomainCreator {
 						}
 						
 						
-						// append active project bin folders
-						/*
-						for (String prj : projects.split(",")) {
-							out.append("$FD_BASE/projects/"+prj+"/bin:\\");
-							out.append(LINE_SEP);
-						}
-						*/
 						// finally append Resources
 						out.append("$FD_BASE/projects/Resources");
 						out.append(LINE_SEP);
@@ -546,9 +531,9 @@ public class DomainCreator {
 
 		if (loadScript(sb, new InputStreamReader(is))) {
 			if (debug) {
-				System.err.println("=== STAGE2 SCRIPT ===");
+				System.err.println("<=== SCRIPT ===>");
 				System.err.println(sb.toString());
-				System.err.println("=== ============= ===");
+				System.err.println("<=== ====== ===>");
 				
 			}
 
@@ -565,6 +550,7 @@ public class DomainCreator {
 			sb.append("wl_url='t3://" + serverHost + ":" + serverPort + "'").append(LINE_SEP);
 	
 			sb.append("domainName='" + domainName + "'").append(LINE_SEP);
+			sb.append("FD_HOME='" + domainHome + "'").append(LINE_SEP);
 			sb.append("serverName='" + serverHost + "'").append(LINE_SEP);
 			sb.append("vHostName='" + ("crm"+serverHost) + "'").append(LINE_SEP);
 			sb.append("vHostPort=" + 7007).append(LINE_SEP);
