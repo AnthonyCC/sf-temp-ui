@@ -1,8 +1,18 @@
 .fd-carousel {
 	padding:0px 25px 10px 25px;
 	zoom:1;
+	position:absolute;
+	top:-50000px;
+	left:-50000px;
+	z-index:-200px;
 }
 
+.fd-carousel.yui-carousel {
+	position:relative;
+	top:auto;
+	left:auto;
+	z-index:0;
+}
 
 .fd-carousel .yui-carousel-nav {
 	overflow:visible;
