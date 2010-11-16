@@ -8,6 +8,7 @@
 	%><link rel="stylesheet" href="/assets/css/pc_ie.css" type="text/css" /><%
 	}
 	%>
+	<link href="/assets/css/carousel.css" rel="stylesheet" type="text/css" />	
 	<!--[if lte IE 6]>
 	<link rel="stylesheet" href="/assets/css/pngfix_ie6.css" type="text/css">
 	<![endif]--> 
