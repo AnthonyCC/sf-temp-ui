@@ -330,11 +330,11 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 *    d. Reserved timeslot
 	 *    e. Extra validations (zone info)
 	 * 3. Builds cart from ordered items
-	 * 4. Updates tax and bottle deposits
+	 * 4. Checks alcoholic content
+	 * 5. ATP Check (availability check)
+	 * 6. Verify order minimum
+	 * 7. Updates tax and bottle deposits
 	 *      and delivery fees
-	 * 5. Checks alcoholic content
-	 * 6. ATP Check (availability check)
-	 * 7. Verify order minimum
 	 * 8. Place order
 	 * 
 	 * 
@@ -412,10 +412,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		LOGGER.info( "Customer information is valid." );
-		
-		// FIXME: comment here the effect...
-		//   
-		// customerUser.updateUserState();
 
 
 
@@ -603,14 +599,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 
 
 		// ==========================
-		//    Update Tax and Bottle deposits
-		//    Update Delivery Fees
-		// ==========================
-		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
-		cart.updateSurcharges(new FDRulesContextImpl(customerUser));
-
-
-		// ==========================
 		//    Check for alcohol
 		// ==========================
 		if ( cart.containsAlcohol() ) {
@@ -649,7 +637,10 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		LOGGER.info( "Cart contents are valid." );
 
 
-		// Update (2)
+		// ==========================
+		//    Update Tax and Bottle deposits
+		//    Update Delivery Fees
+		// ==========================
 		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
 		cart.updateSurcharges(new FDRulesContextImpl(customerUser));
 
