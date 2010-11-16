@@ -64,6 +64,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerHome;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
@@ -329,10 +330,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 	 *    d. Reserved timeslot
 	 *    e. Extra validations (zone info)
 	 * 3. Builds cart from ordered items
-	 * 4. Checks alcoholic content
-	 * 5. ATP Check
-	 * 6. Verify order minimum
-	 * 7. Place order
+	 * 4. Updates tax and bottle deposits
+	 *      and delivery fees
+	 * 5. Checks alcoholic content
+	 * 6. ATP Check (availability check)
+	 * 7. Verify order minimum
+	 * 8. Place order
 	 * 
 	 * 
 	 * @param so Standing order to process
@@ -410,8 +413,12 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		LOGGER.info( "Customer information is valid." );
 		
+		// FIXME: comment here the effect...
+		//   
+		// customerUser.updateUserState();
 
-		
+
+
 		// =============================
 		//   Validate delivery address
 		// =============================
@@ -582,12 +589,25 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			LOGGER.info( "Missing zone info." );
 			return new Result( ErrorCode.ADDRESS, customerInfo, customerUser );			
 		}
+
+
+
+		// ==========================
+		//    Build Cart
+		// ==========================
 		
-		// FDCartModel cart = new FDTransientCartModel();
 		ProcessActionResult vr = new ProcessActionResult();
 		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
 		boolean hasInvalidItems = vr.hasInvalidItems();
 
+
+
+		// ==========================
+		//    Update Tax and Bottle deposits
+		//    Update Delivery Fees
+		// ==========================
+		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
+		cart.updateSurcharges(new FDRulesContextImpl(customerUser));
 
 
 		// ==========================
@@ -629,6 +649,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		LOGGER.info( "Cart contents are valid." );
 
 
+		// Update (2)
+		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
+		cart.updateSurcharges(new FDRulesContextImpl(customerUser));
 
 
 		// ==========================

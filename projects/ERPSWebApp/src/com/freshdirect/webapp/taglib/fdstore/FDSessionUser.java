@@ -1159,11 +1159,7 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 	}
 
 	public EnumWinePrice getPreferredWinePrice() {
-            return user.getPreferredWinePrice();
-        }
-
-	public void updateSurcharges() {
-		user.updateSurcharges();
+		return user.getPreferredWinePrice();
 	}
 }
 

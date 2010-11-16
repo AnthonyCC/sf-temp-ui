@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -55,8 +54,8 @@ import com.freshdirect.fdstore.customer.ejb.EnumCustomerListType;
 import com.freshdirect.fdstore.lists.FDCustomerRecipeList;
 import com.freshdirect.fdstore.lists.FDCustomerShoppingList;
 import com.freshdirect.fdstore.lists.FDListManager;
-import com.freshdirect.fdstore.promotion.PromotionErrorType;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
+import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
 import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.util.CTDeliveryCapacityLogic;
@@ -671,7 +670,8 @@ public class SubmitOrderAction extends WebActionSupport {
 				// Clear the cart from the session by replacing it with a new cart
 				user.setShoppingCart( new FDCartModel() );
 				user.getShoppingCart().setDeliveryAddress(cart.getDeliveryAddress());
-				user.updateSurcharges();
+				// user.updateSurcharges();
+				user.getShoppingCart().updateSurcharges(new FDRulesContextImpl(user));
 
 			}
 			if(user.getRedeemedPromotion() != null){

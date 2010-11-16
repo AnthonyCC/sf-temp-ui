@@ -359,7 +359,7 @@ public class FDUser extends ModelSupport implements FDUserI {
     public void updateUserState(){
 		try {
 			this.getShoppingCart().recalculateTaxAndBottleDeposit(getZipCode());
-			this.updateSurcharges();
+	    	this.getShoppingCart().updateSurcharges(new FDRulesContextImpl(this));
 			this.applyPromotions();
 		} catch (FDResourceException e) {
 			throw new FDRuntimeException(e.getMessage());
@@ -386,45 +386,6 @@ public class FDUser extends ModelSupport implements FDUserI {
 		this.allAppliedPromos.addAll(promotionEligibility.getAppliedPromotionCodes());
     }
 
-
-    public void updateSurcharges() {
-		this.getShoppingCart().clearCharge(EnumChargeType.DELIVERY);
-		this.getShoppingCart().clearCharge(EnumChargeType.MISCELLANEOUS);
-
-		AddressModel address = this.shoppingCart.getDeliveryAddress();
-		
-		if (address != null) {
-			// DLV
-			FeeCalculator calc = new FeeCalculator("DLV");
-			double dlvFee = calc.calculateFee(new FDRulesContextImpl(this));
-			this.shoppingCart.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
-
-			// MISC
-			calc = new FeeCalculator("MISC");
-			double miscFee = calc.calculateFee(new FDRulesContextImpl(this));
-			this.shoppingCart.setChargeAmount(EnumChargeType.MISCELLANEOUS, miscFee);
-
-		}
-
-		// DLV & MISC tax
-		double taxRate = 0.0;
-		for (Iterator i = this.shoppingCart.getOrderLines().iterator(); i.hasNext();) {
-			FDCartLineI cartLine = (FDCartLineI) i.next();
-			if (cartLine.hasTax()) {
-				taxRate = cartLine.getTaxRate();
-				break;
-			}
-		}
-		ErpChargeLineModel c = this.shoppingCart.getCharge(EnumChargeType.DELIVERY);
-		if (c != null) {
-			c.setTaxRate(taxRate);
-		}
-		c = this.shoppingCart.getCharge(EnumChargeType.MISCELLANEOUS);
-		if (c != null) {
-			c.setTaxRate(taxRate);
-		}
-
-	}
 
     public String getFirstName() throws FDResourceException {
     	ErpCustomerInfoModel info = getCustomerInfoModel();

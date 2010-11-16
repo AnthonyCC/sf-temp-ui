@@ -50,6 +50,8 @@ import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.RecipeSource;
 import com.freshdirect.fdstore.promotion.PromotionFactory;
 import com.freshdirect.fdstore.promotion.PromotionI;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
+import com.freshdirect.fdstore.rules.FeeCalculator;
 import com.freshdirect.framework.core.ModelSupport;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.FormatterUtil;
@@ -1380,5 +1382,48 @@ public class FDCartModel extends ModelSupport implements FDCartI {
 				return promo;
 		}
 		return null;
+	}
+
+
+
+
+    public void updateSurcharges(FDRuleContextI ctx) {
+		this.clearCharge(EnumChargeType.DELIVERY);
+		this.clearCharge(EnumChargeType.MISCELLANEOUS);
+
+		AddressModel address = this.getDeliveryAddress();
+		
+		// final FDRulesContextImpl ctx = new FDRulesContextImpl(user);
+		if (address != null) {
+			// DLV
+			FeeCalculator calc = new FeeCalculator("DLV");
+			double dlvFee = calc.calculateFee(ctx);
+			this.setChargeAmount(EnumChargeType.DELIVERY, dlvFee);
+
+			// MISC
+			calc = new FeeCalculator("MISC");
+			double miscFee = calc.calculateFee(ctx);
+			this.setChargeAmount(EnumChargeType.MISCELLANEOUS, miscFee);
+
+		}
+
+		// DLV & MISC tax
+		double taxRate = 0.0;
+		for (Iterator<FDCartLineI> i = this.getOrderLines().iterator(); i.hasNext();) {
+			FDCartLineI cartLine = i.next();
+			if (cartLine.hasTax()) {
+				taxRate = cartLine.getTaxRate();
+				break;
+			}
+		}
+		ErpChargeLineModel c = this.getCharge(EnumChargeType.DELIVERY);
+		if (c != null) {
+			c.setTaxRate(taxRate);
+		}
+		c = this.getCharge(EnumChargeType.MISCELLANEOUS);
+		if (c != null) {
+			c.setTaxRate(taxRate);
+		}
+
 	}
 }
