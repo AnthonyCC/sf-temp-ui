@@ -17,7 +17,7 @@ import com.scarabresearch.recommendation.api.Query.Feature;
 
 public class ScarabCartRecommender extends AbstractScarabExternalRecommender {
 	public ScarabCartRecommender(ScarabService service) {
-		super(service);
+		super(service);		
 	}
 
 	@Override

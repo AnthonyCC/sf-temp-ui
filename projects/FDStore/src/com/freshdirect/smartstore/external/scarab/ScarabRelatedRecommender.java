@@ -15,8 +15,14 @@ import com.scarabresearch.recommendation.api.TrackedItem;
 import com.scarabresearch.recommendation.api.Query.Feature;
 
 public class ScarabRelatedRecommender extends AbstractScarabExternalRecommender {
-	public ScarabRelatedRecommender(ScarabService service) {
+	private Feature feature;
+	
+	public ScarabRelatedRecommender(ScarabService service, Feature feature) {		
 		super(service);
+		if (feature == Feature.CART || feature == Feature.PERSONAL) {
+			throw new IllegalArgumentException("Unsupported feature for ScarabRelatedRecommender");
+		}
+		this.feature = feature;
 	}
 
 	@Override
@@ -31,7 +37,7 @@ public class ScarabRelatedRecommender extends AbstractScarabExternalRecommender 
 			    items.add(new TrackedItem(r.getId(), r.getTrackId()));
 			}
 			context.setViewedItems(items);
-			Query query = new Query(Feature.RELATED, 0, ScarabProperties.getScarabQueryItemCount());
+			Query query = new Query(feature, 0, ScarabProperties.getScarabQueryItemCount());
 			service.invoke(context, query);
 			items = query.getRecommendations();
 			if (items == null)
