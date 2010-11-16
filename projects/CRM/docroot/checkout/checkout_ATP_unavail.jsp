@@ -26,7 +26,7 @@ FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 FDCartModel cart = user.getShoppingCart();
 
 // get map of cartLineId -> unav FDAvailabilityInfos
-Map invsInfoMap = cart.getUnavailabilityMap();
+Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 Date day = null;
 if(invsInfoMap.size() > 0 ){
 %>
@@ -68,11 +68,8 @@ Map groupingMap = new HashMap();
 List regularItems = new ArrayList();
 List groupingKeyList = new ArrayList();
 
-%>
-
-<logic:iterate collection="<%=invsInfoMap.keySet()%>" id="key" type="java.lang.Integer">
-<%
-	FDCartLineI cartLine = cart.getOrderLineById(key.intValue());
+for (String key : invsInfoMap.keySet()) {
+	FDCartLineI cartLine = cart.getOrderLineById( Integer.parseInt(key) );
 	String rcpSrcId= cartLine.getRecipeSourceId();
 	if (rcpSrcId!=null) {
 	 	String deptDecs=cartLine.getDepartmentDesc();
@@ -86,10 +83,8 @@ List groupingKeyList = new ArrayList();
 	} else {
 		regularItems.add(key);
 	}
-		
-%>
-</logic:iterate>
-<% 
+}
+
 if (regularItems.size()>0) {
   groupingKeyList.add("nonRecipeItems");
   groupingMap.put("nonRecipeItems",regularItems);
