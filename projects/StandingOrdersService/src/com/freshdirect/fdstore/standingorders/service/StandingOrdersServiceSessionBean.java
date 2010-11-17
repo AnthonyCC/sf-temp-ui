@@ -597,8 +597,10 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		ProcessActionResult vr = new ProcessActionResult();
 		FDCartModel cart = buildCart(so.getCustomerList(), paymentMethod, deliveryAddressModel, timeslots, zoneInfo, reservation, vr);
 		boolean hasInvalidItems = vr.hasInvalidItems();
-
-
+		
+		// set users shopping cart, needed for delivery fee rules later
+		customerUser.setShoppingCart( cart );
+		
 
 		// ==========================
 		//    Check for alcohol
