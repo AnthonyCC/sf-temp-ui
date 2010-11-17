@@ -6,15 +6,16 @@ import java.util.Map;
 import java.util.Set;
 
 public class RuleRuntime implements RuleRuntimeI {
+	private static final long serialVersionUID = 7334316148936198977L;
 
-	private final Map rules;
-	private final Map evaluations;
-	private final Set evalStack;
+	private final Map<String,Rule> rules;
+	private final Map<String,Boolean> evaluations;
+	private final Set<String> evalStack;
 
-	public RuleRuntime(Map rules) {
+	public RuleRuntime(Map<String,Rule> rules) {
 		this.rules = rules;
-		this.evaluations = new HashMap();
-		this.evalStack = new HashSet();
+		this.evaluations = new HashMap<String,Boolean>();
+		this.evalStack = new HashSet<String>();
 	}
 
 	public boolean evaluateRule(Object target, Rule r) {
@@ -22,7 +23,7 @@ public class RuleRuntime implements RuleRuntimeI {
 			throw new RulesRuntimeException("Circular Reference to Rule.id: " + r.getId());
 		}
 
-		Boolean result = (Boolean) evaluations.get(r.getId());
+		Boolean result = evaluations.get(r.getId());
 		if (result == null) {
 			evalStack.add(r.getId());
 			result = new Boolean(r.evaluate(target, this));
@@ -34,11 +35,11 @@ public class RuleRuntime implements RuleRuntimeI {
 	}
 
 	public Boolean getEvaluationResults(String id) {
-		return (Boolean) this.evaluations.get(id);
+		return this.evaluations.get(id);
 	}
 
 	public Rule getRule(String id) {
-		return (Rule) this.rules.get(id);
+		return this.rules.get(id);
 	}
 
 }

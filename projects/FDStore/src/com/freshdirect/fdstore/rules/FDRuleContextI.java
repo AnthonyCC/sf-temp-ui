@@ -11,7 +11,7 @@ public interface FDRuleContextI {
 	public boolean isVip();
 	public double getOrderTotal();
 	
-	public boolean hasProfileAttribute(String attributName, String attributeVale);
+	public boolean hasProfileAttribute(String attributeName, String attributeValue);
 	public String getDepotCode ();
 	
 	public FDUserI getUser();

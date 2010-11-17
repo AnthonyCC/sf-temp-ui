@@ -13,12 +13,11 @@ public class RulesEngineImpl extends RulesStoreProxy implements RulesEngineI {
 		super(store);
 	}
 
-	public Map evaluateRules(Object target) {
-		Map firedRules = new HashMap();
-		Map rules = getRules();
+	public Map<String,Rule> evaluateRules(Object target) {
+		Map<String,Rule> firedRules = new HashMap<String,Rule>();
+		Map<String,Rule> rules = (Map<String,Rule>) getRules();
 		RuleRuntimeI rt = new RuleRuntime(rules);
-		for (Iterator i = rules.values().iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
+		for (Rule r : rules.values()) {
 			boolean res = rt.evaluateRule(target, r);
 			if (res) {
 				firedRules.put(r.getId(), r);
@@ -27,13 +26,11 @@ public class RulesEngineImpl extends RulesStoreProxy implements RulesEngineI {
 		return firedRules;
 	}
 
-	public Collection getDependentRules(String ruleId) {
-		List l = new ArrayList();
-		Map rules = getRules();
-		for (Iterator i = rules.values().iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
-			for (Iterator j = r.getConditions().iterator(); j.hasNext();) {
-				Object o = j.next();
+	public Collection<Rule> getDependentRules(String ruleId) {
+		List<Rule> l = new ArrayList<Rule>();
+		Map<String,Rule> rules = (Map<String,Rule>) getRules();
+		for (Rule r : rules.values()) {
+			for (ConditionI o : r.getConditions()) {
 				if (o instanceof RuleRef) {
 					RuleRef rr = (RuleRef) o;
 					if (rr.getId().equals(ruleId)) {

@@ -13,18 +13,19 @@ import java.util.List;
 import com.freshdirect.framework.util.DateRange;
 
 public class Rule implements ConditionI {
+	private static final long serialVersionUID = -3251442872254483789L;
 
 	private String id;
 	private String name;
 	private Date startDate;
 	private Date endDate;
 	private int priority;
-	private List conditions;
+	private List<ConditionI> conditions;
 	private Object outcome;
 	private String subsystem;
 
 	public Rule() {
-		this.conditions = new ArrayList();
+		this.conditions = new ArrayList<ConditionI>();
 	}
 
 	public Rule(String id, String name, int priority, ConditionI condition) {
@@ -40,7 +41,7 @@ public class Rule implements ConditionI {
 		this.outcome = outcome;
 	}
 
-	public Rule(String id, String name, int priority, List conditions, Object outcome) {
+	public Rule(String id, String name, int priority, List<ConditionI> conditions, Object outcome) {
 		this.id = id;
 		this.name = name;
 		this.priority = priority;
@@ -56,9 +57,7 @@ public class Rule implements ConditionI {
 			return false;
 		}
 		boolean r = true;
-		for (Iterator i = this.conditions.iterator(); i.hasNext();) {
-			ConditionI c = (ConditionI) i.next();
-			
+		for (ConditionI c : this.conditions) {
 			r &= c.evaluate(target, ctx);
 			if (!r) {
 				break;
@@ -99,11 +98,11 @@ public class Rule implements ConditionI {
 		this.outcome = outcome;
 	}
 
-	public List getConditions() {
+	public List<ConditionI> getConditions() {
 		return this.conditions;
 	}
 
-	public void setConditions(List conditions) {
+	public void setConditions(List<ConditionI> conditions) {
 		this.conditions = conditions;
 	}
 
@@ -141,7 +140,7 @@ public class Rule implements ConditionI {
 
 	public boolean validate() {
 		boolean valid = true;
-		for (Iterator i = this.conditions.iterator(); i.hasNext();) {
+		for (Iterator<ConditionI> i = this.conditions.iterator(); i.hasNext();) {
 			ConditionI c = (ConditionI) i.next();
 			valid &= c.validate();
 		}

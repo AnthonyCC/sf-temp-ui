@@ -3,7 +3,6 @@ package com.freshdirect.fdstore.rules;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +15,7 @@ import com.freshdirect.rules.RulesRegistry;
  * Generic rule-based fee calculator that operates with a single base price and adjustments.
  */
 public class FeeCalculator implements Serializable {
+	private static final long serialVersionUID = 6083766851608087582L;
 
 	private String subsystem;
 
@@ -23,15 +23,13 @@ public class FeeCalculator implements Serializable {
 		this.subsystem = subsystem;
 	}
 
-	private static Set resolveConflicts(Collection rules) {
+	private static Set<Rule> resolveConflicts(Collection<Rule> rules) {
 
-		Set applicableRules = filterBasePriceRulesWithLowPriority(rules);
-
-		Set finalRules = new HashSet();
+		Set<Rule> applicableRules = filterBasePriceRulesWithLowPriority(rules);
+		Set<Rule> finalRules = new HashSet<Rule>();
 
 		Rule baseRule = null;
-		for (Iterator i = applicableRules.iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
+		for (Rule r : applicableRules) {
 			if (r.getOutcome() == null) {
 				continue;
 			}
@@ -52,12 +50,11 @@ public class FeeCalculator implements Serializable {
 		return finalRules;
 	}
 
-	private static Set filterBasePriceRulesWithLowPriority(Collection rules) {
-		Set filteredRules = new HashSet();
+	private static Set<Rule> filterBasePriceRulesWithLowPriority(Collection<Rule> rules) {
+		Set<Rule> filteredRules = new HashSet<Rule>();
 		int hPriority = Integer.MIN_VALUE;
 
-		for (Iterator i = rules.iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
+		for (Rule r : rules) {
 			if (r.getOutcome() == null) {
 				continue;
 			}
@@ -69,8 +66,7 @@ public class FeeCalculator implements Serializable {
 			}
 		}
 
-		for (Iterator i = rules.iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
+		for (Rule r : rules) {
 			if (r.getOutcome() == null) {
 				continue;
 			}
@@ -91,17 +87,16 @@ public class FeeCalculator implements Serializable {
 	}
 
 	public double calculateFee(FDRuleContextI ctx) {
-		Map firedRules = getRulesEngine().evaluateRules(ctx);
+		Map<?,Rule> firedRules = (Map<?,Rule>)getRulesEngine().evaluateRules(ctx);
 
 		//System.out.println("FIRED RULES: " + firedRules);
 
-		Set rules = resolveConflicts(firedRules.values());
+		Set<Rule> rules = resolveConflicts(firedRules.values());
 
 		//System.out.println("AFTER RESOLVE CONFLICT: " + rules);
 
 		double value = 0.0;
-		for (Iterator i = rules.iterator(); i.hasNext();) {
-			Rule r = (Rule) i.next();
+		for (Rule r : rules) {
 			Object outcome = r.getOutcome();
 			if (outcome instanceof BasePrice) {
 				value += ((BasePrice) r.getOutcome()).getPrice();
@@ -112,5 +107,4 @@ public class FeeCalculator implements Serializable {
 
 		return value < 0 ? 0 : MathUtil.roundDecimal(value);
 	}
-
 }
