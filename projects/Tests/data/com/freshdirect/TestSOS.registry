@@ -1,0 +1,8 @@
+# classpath:/com/freshdirect/TestSOS.xml
+classpath:/com/freshdirect/rules/hivemodule.xml
+classpath:/com/freshdirect/fdstore/rules/dlv/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/misc/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/echeck/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/referrer/hivemodule-prd.xml
+classpath:/com/freshdirect/fdstore/rules/promotion/hivemodule-prd.xml
+classpath:/com/freshdirect/ocf/hivemodule.xml

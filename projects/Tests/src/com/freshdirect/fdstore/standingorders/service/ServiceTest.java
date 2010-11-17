@@ -21,8 +21,11 @@ import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.common.pricing.Discount;
 import com.freshdirect.common.pricing.PricingContext;
+import com.freshdirect.customer.EnumChargeType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.customer.ErpClientCode;
 import com.freshdirect.customer.ErpInvoiceLineI;
 import com.freshdirect.customer.ErpOrderLineModel;
@@ -59,27 +62,37 @@ import com.freshdirect.fdstore.atp.NullAvailability;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
+import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.fdstore.customer.ProfileModel;
 import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSessionBean.ProcessActionResult;
+import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 
 public class ServiceTest extends TestCase {
+	public ServiceTest(String name) {
+		super(name);
+	}
+
+
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
 	StandingOrdersServiceHome sosHome;
 	StandingOrdersServiceSessionBeanMockup bean;
 
-	AddressModel address;
+	// AddressModel address;
 	ErpPaymentMethodI paymentMethod;
 	DlvZoneInfoModel zoneInfo;
 	
@@ -87,7 +100,9 @@ public class ServiceTest extends TestCase {
 	
 	@Override
 	protected void setUp() throws Exception {
-        // final Context context = TestUtils.createContext();
+		// super.setUp();
+
+		// final Context context = TestUtils.createContext();
         
         // TestUtils.createMockContainer(context);
         // TestUtils.createTransaction(context);
@@ -100,7 +115,28 @@ public class ServiceTest extends TestCase {
         // AspectSystem aspectSystem = TestUtils.createAspectSystem();
         // aspectSystem.add(new OrderLineUtilAspect());
 
-		address = new AddressModel();
+		// address = getCorporateAddress();
+		
+		
+		paymentMethod = new ErpGiftCardModel();
+		
+		
+		zoneInfo = new DlvZoneInfoModel("CODE1", "ZONE1", "REGION1", EnumZipCheckResponses.DELIVER, true, true);
+		
+		expiration = new Date(System.currentTimeMillis() + 1000);
+
+		// configure rules engine
+		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/TestSOS.registry");
+		FDRegistry.addConfiguration("classpath:/com/freshdirect/TestSOS.xml");
+	}
+
+
+
+	/**
+	 * Creates a corporate addess
+	 */
+	private AddressModel getCorporateAddress() {
+		AddressModel address = new AddressModel();
 		address.setId("addr1");
 		address.setAddress1("900 Main ST");
 		address.setCity("New York");
@@ -110,20 +146,25 @@ public class ServiceTest extends TestCase {
 		info.setAddressType(EnumAddressType.FIRM);
 		info.setScrubbedStreet("900 MAIN ST");
 		address.setAddressInfo(info);
-		
-		
-		
-		paymentMethod = new ErpGiftCardModel();
-		
-		
-		zoneInfo = new DlvZoneInfoModel("CODE1", "ZONE1", "REGION1", EnumZipCheckResponses.DELIVER, true, true);
-		
-		expiration = new Date(System.currentTimeMillis() + 1000);
-		
+		address.setServiceType(EnumServiceType.CORPORATE);
+
+		return address;
 	}
 
-	private Date getExpiration() {
-		return expiration;
+	private AddressModel getPrivateAddress() {
+		AddressModel address = new AddressModel();
+		address.setId("addr2");
+		address.setAddress1("13911 86TH RD");
+		address.setCity("Jamaica");
+		address.setState("NY");
+		address.setZipCode("11435");
+		AddressInfo info = new AddressInfo();
+		info.setAddressType(EnumAddressType.STREET);
+		info.setScrubbedStreet("13911 86TH RD");
+		address.setAddressInfo(info);
+		address.setServiceType(EnumServiceType.HOME);
+
+		return address;
 	}
 	
 
@@ -161,6 +202,10 @@ public class ServiceTest extends TestCase {
 	}
 
 	
+
+	private Date getExpiration() {
+		return expiration;
+	}
 
 	private FDReservation getFDReservation(String customerID, String addressID) {
 		Date expirationDT = getExpiration();
@@ -316,6 +361,61 @@ public class ServiceTest extends TestCase {
 
 
 
+	public void testUpdateDeliverySurchages() {
+		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
+
+		{
+			final AddressModel address = getCorporateAddress();
+
+			FDCartModel cart = new FDTransientCartModel();
+			{
+				Collection<FDCartLineI> ols = createCartLinesSimple(1);
+				SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();
+		
+				cart.setDeliveryReservation(getFDReservation(identity
+						.getErpCustomerPK(), address.getId()));
+				cart.addOrderLines(ols);
+			}
+			cart.setDeliveryAddress(new ErpAddressModel(address));
+			
+			ProfileModel pm = new ProfileModel();
+			MockRuleContext ctx = new MockRuleContext(cart, pm);
+			ctx.setSelectedServiceType(EnumServiceType.CORPORATE);
+			
+			bean.updateDeliverySurcharges(cart, ctx);
+
+			assertEquals(14.95, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
+			// assertEquals(0.97, cart.getChargeAmount(EnumChargeType.MISCELLANEOUS), 0);
+			
+		}
+		{
+			final AddressModel address = getPrivateAddress();
+	
+			FDCartModel cart = new FDTransientCartModel();
+			{
+				Collection<FDCartLineI> ols = createCartLinesSimple(1);
+				SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();
+		
+				cart.setDeliveryReservation(getFDReservation(identity
+						.getErpCustomerPK(), address.getId()));
+				cart.addOrderLines(ols);
+			}
+			cart.setDeliveryAddress(new ErpAddressModel(address));
+			
+			ProfileModel pm = new ProfileModel();
+			MockRuleContext ctx = new MockRuleContext(cart, pm);
+			ctx.setSelectedServiceType(EnumServiceType.CORPORATE);
+			
+			bean.updateDeliverySurcharges(cart, ctx);
+
+			assertEquals(4.95, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
+			// assertEquals(0.97, cart.getChargeAmount(EnumChargeType.MISCELLANEOUS), 0);
+		}
+	}
+
+
+
+
 	/**
 	 * Setup a simple cartline list having only one item.
 	 * 
@@ -349,6 +449,7 @@ public class ServiceTest extends TestCase {
 	private boolean doATPCheck(final FDIdentity identity, Collection<FDCartLineI> cartlines,
 			FDAvailabilityI availability) throws FDResourceException {
 		// PREPARE CART
+		final AddressModel address = getCorporateAddress();
 		FDCartModel cart = new FDTransientCartModel();
 		cart.setDeliveryReservation(getFDReservation(identity
 				.getErpCustomerPK(), address.getId()));
@@ -384,19 +485,10 @@ class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessio
 	@Override
 	protected FDCartModel checkAvailability(FDIdentity identity,
 			FDCartModel cart, long timeout) throws FDResourceException {
-		
-		/**
-		Map<String,FDAvailabilityInfo> map1 = new HashMap<String, FDAvailabilityInfo>();
-		
-		FDCompositeAvailability a = new FDCompositeAvailability(map1);
-		cart.setAvailability(a);
-		
-		FDCartLineI ol = new SimpleCartLine();
-		cart.addOrderLine(ol);
-		**/
 		return cart;
 	}
-	
+
+
 	@Override
 	public FDCartModel buildCart(FDCustomerList soList,
 			ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel,
@@ -436,6 +528,8 @@ class SimpleCartLine implements FDCartLineI {
 	
 	private boolean alcohol;
 	private boolean kosher;
+
+	private double price = 10.0;
 
 
 	@Override
@@ -527,9 +621,13 @@ class SimpleCartLine implements FDCartLineI {
 
 	@Override
 	public double getPrice() {
-		return 0;
+		return this.price;
 	}
 
+	public void setPrice(double price) {
+		this.price = price;
+	}
+	
 	@Override
 	public PricingContext getPricingContext() {
 		return null;
@@ -977,5 +1075,96 @@ class SimpleCartLine implements FDCartLineI {
 	@Override
 	public String getSalesUnit() {
 		return configuration.getSalesUnit();
+	}
+}
+
+
+
+class MockRuleContext implements FDRuleContextI {
+	// FDUserI	user;
+	FDCartI cart;
+	ProfileModel pm;
+	EnumServiceType selectedServiceType = null;
+
+	boolean isChefsTable = false;
+	
+	
+
+	public MockRuleContext(FDCartI cart, ProfileModel pm) {
+		this.cart = cart;
+		this.pm = pm;
+	}
+
+
+
+
+
+	@Override
+	public String getCounty() {
+		return "US";
+	}
+
+	@Override
+	public String getDepotCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getOrderTotal() {
+		// return this.user.getShoppingCart().getSubTotal();
+		return cart.getSubTotal();
+	}
+
+	@Override
+	public EnumServiceType getServiceType() {
+		AddressModel address = this.cart.getDeliveryAddress();
+		return address != null  ? address.getServiceType() : this.selectedServiceType ;
+	}
+
+	@Override
+	public FDUserI getUser() {
+		return null;
+	}
+
+	@Override
+	public boolean hasProfileAttribute(String attributeName, String attributeValue) {
+		// This piece of code is dupped from FDRulesContextImpl
+		if (pm == null)
+			return false;
+
+		String attribValue = pm.getAttribute(attributeName);
+		if (attributeValue == null)
+			return attribValue != null;
+		return (attributeValue.equalsIgnoreCase(attribValue));
+	}
+
+	@Override
+	public boolean isChefsTable() {
+		return this.isChefsTable;
+	}
+
+	public void setChefsTable(boolean isChefsTable) {
+		this.isChefsTable = isChefsTable;
+	}
+	
+	
+	@Override
+	public boolean isVip() {
+		return this.hasProfileAttribute("VIPCustomer", "true");
+	}
+	
+	
+	public void setProfile(ProfileModel pm) {
+		this.pm = pm;
+	}
+
+
+	public void setSelectedServiceType(EnumServiceType selectedServiceType) {
+		this.selectedServiceType = selectedServiceType;
+	}
+	
+	public EnumServiceType getSelectedServiceType() {
+		return selectedServiceType;
 	}
 }

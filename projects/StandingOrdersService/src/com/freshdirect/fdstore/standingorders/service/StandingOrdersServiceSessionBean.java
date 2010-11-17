@@ -45,6 +45,7 @@ import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
+import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -64,6 +65,7 @@ import com.freshdirect.fdstore.customer.ejb.FDCustomerHome;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
+import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
@@ -642,7 +644,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		//    Update Delivery Fees
 		// ==========================
 		cart.recalculateTaxAndBottleDeposit(deliveryAddressModel.getZipCode());
-		cart.updateSurcharges(new FDRulesContextImpl(customerUser));
+		updateDeliverySurcharges(cart, new FDRulesContextImpl(customerUser));
 
 
 		// ==========================
@@ -710,6 +712,16 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		return OrderLineUtil.getValidProductSelectionsFromCCLItems( cclItems );
 	}
 
+
+	/**
+	 * Update delivery surcharges
+	 * 
+	 * @param cart
+	 * @param ctx This is typically result of new FDRulesContextImpl(FDUserI user)
+	 */
+	public void updateDeliverySurcharges(FDCartModel cart, FDRuleContextI ctx) {
+		cart.updateSurcharges(ctx);
+	}
 
 
 	protected FDCartModel buildCart(FDCustomerList soList, ErpPaymentMethodI paymentMethod, AddressModel deliveryAddressModel, List<FDTimeslot> timeslots, DlvZoneInfoModel zoneInfo, FDReservation reservation, ProcessActionResult vr) throws FDResourceException {

@@ -1,0 +1,291 @@
+<rules>
+  <rule>
+    <id>118545012</id>
+    <name>Default Fee</name>
+    <startDate>2005-04-14 00:00:00.0 EDT</startDate>
+    <endDate>2017-04-30 00:00:00.0 EDT</endDate>
+    <priority>-1</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>true</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>4.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>118545021</id>
+    <name>Corporate Fee</name>
+    <startDate>2005-04-14 00:00:00.0 EDT</startDate>
+    <endDate>2017-10-31 00:00:00.0 EST</endDate>
+    <priority>25</priority>
+    <conditions>
+      <serviceType>
+        <type>CORPORATE</type>
+      </serviceType>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>14.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>118545022</id>
+    <name>Pickup Fee</name>
+    <startDate>2005-04-14 00:00:00.0 EDT</startDate>
+    <endDate>2017-08-31 00:00:00.0 EDT</endDate>
+    <priority>25</priority>
+    <conditions>
+      <serviceType>
+        <type>PICKUP</type>
+      </serviceType>
+      <OgnlCondition>
+        <expression>(user.shoppingCart.deliveryAddress instanceof com.freshdirect.customer.ErpDepotAddressModel)&#x0D; and&#x0D;(user.shoppingCart.deliveryAddress.zoneCode in {&apos;921&apos;,&apos;922&apos;})</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>144970281</id>
+    <name>Hamptons Tier 1</name>
+    <startDate>2005-05-02 00:00:00.0 EDT</startDate>
+    <endDate>2006-05-02 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <OrderAmount>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+      </OrderAmount>
+      <OgnlCondition>
+        <expression>county==&apos;SUFFOLK&apos; || ((user.shoppingCart.deliveryAddress instanceof com.freshdirect.customer.ErpDepotAddressModel) and user.shoppingCart.deliveryAddress.zoneCode in {&apos;815&apos;,&apos;835&apos;,&apos;845&apos;,&apos;865&apos;,&apos;875&apos;})</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>12.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>144970284</id>
+    <name>Hamptons Tier 2</name>
+    <startDate>2005-05-02 00:00:00.0 EDT</startDate>
+    <endDate>2006-05-02 00:00:00.0 EDT</endDate>
+    <priority>50</priority>
+    <conditions>
+      <OrderAmount>
+        <minimum>100.0</minimum>
+        <maximum>2000.0</maximum>
+      </OrderAmount>
+      <OgnlCondition>
+        <expression>county==&apos;SUFFOLK&apos; || ((user.shoppingCart.deliveryAddress instanceof com.freshdirect.customer.ErpDepotAddressModel) and (user.shoppingCart.deliveryAddress.zoneCode in {&apos;815&apos;,&apos;835&apos;,&apos;845&apos;,&apos;865&apos;,&apos;875&apos;}))</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>9.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015286</id>
+    <name>Bronx</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-04 00:00:00.0 EDT</endDate>
+    <priority>50</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>county==&apos;BRONX&apos; </expression>
+      </OgnlCondition>
+    </conditions>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015287</id>
+    <name>Bronx Tier 1</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-04 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <rule-ref>
+        <id>145015286</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>6.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015288</id>
+    <name>Bronx Tier 2</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-04 00:00:00.0 EDT</endDate>
+    <priority>50</priority>
+    <conditions>
+      <rule-ref>
+        <id>145015286</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>100.0</minimum>
+        <maximum>2000.0</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>4.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015289</id>
+    <name>Hudson County</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-12 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>county==&apos;HUDSON&apos;</expression>
+      </OgnlCondition>
+    </conditions>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015290</id>
+    <name>Hudson Tier 1</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-12 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <rule-ref>
+        <id>145015289</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>0.0</minimum>
+        <maximum>100.0</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>6.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145015291</id>
+    <name>Hudson Tier 2</name>
+    <startDate>2005-06-03 00:00:00.0 EDT</startDate>
+    <endDate>2006-06-13 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <rule-ref>
+        <id>145015289</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>100.0</minimum>
+        <maximum>2000.0</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>4.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145082278</id>
+    <name>FD Employee Depot</name>
+    <startDate>2005-08-08 00:00:00.0 EDT</startDate>
+    <endDate>2007-08-31 00:00:00.0 EDT</endDate>
+    <priority>25</priority>
+    <conditions>
+      <serviceType>
+        <type>DEPOT</type>
+      </serviceType>
+      <OgnlCondition>
+        <expression>(user.shoppingCart.deliveryAddress instanceof com.freshdirect.customer.ErpDepotAddressModel) and (user.shoppingCart.deliveryAddress.zoneCode == &apos;921&apos;)</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145159595</id>
+    <name>Westchester County</name>
+    <startDate>2005-09-26 00:00:00.0 EDT</startDate>
+    <endDate>2007-09-26 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>county==&apos;WESTCHESTER&apos; </expression>
+      </OgnlCondition>
+    </conditions>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145159599</id>
+    <name>Westchester Tier 1</name>
+    <startDate>2005-09-26 00:00:00.0 EDT</startDate>
+    <endDate>2007-09-26 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <OrderAmount>
+        <minimum>0.0</minimum>
+        <maximum>74.99</maximum>
+      </OrderAmount>
+      <rule-ref>
+        <id>145159595</id>
+      </rule-ref>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>9.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145159605</id>
+    <name>Westchester Tier 2</name>
+    <startDate>2005-09-26 00:00:00.0 EDT</startDate>
+    <endDate>2007-09-26 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <rule-ref>
+        <id>145159595</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>75.0</minimum>
+        <maximum>99.99</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>7.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+  <rule>
+    <id>145160287</id>
+    <name>Westchester Tier 3</name>
+    <startDate>2005-09-26 00:00:00.0 EDT</startDate>
+    <endDate>2007-09-26 00:00:00.0 EDT</endDate>
+    <priority>40</priority>
+    <conditions>
+      <rule-ref>
+        <id>145159595</id>
+      </rule-ref>
+      <OrderAmount>
+        <minimum>100.0</minimum>
+        <maximum>2000.0</maximum>
+      </OrderAmount>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>5.95</price>
+    </outcome>
+    <subsystem>DLV</subsystem>
+  </rule>
+</rules>

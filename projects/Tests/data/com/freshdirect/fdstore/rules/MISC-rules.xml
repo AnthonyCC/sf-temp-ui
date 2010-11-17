@@ -1,0 +1,50 @@
+<rules>
+  <rule>
+    <id>145195632</id>
+    <name>Default Fee</name>
+    <startDate>2005-10-12 00:00:00.0 EDT</startDate>
+    <endDate>2015-10-12 00:00:00.0 EDT</endDate>
+    <priority>-1</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>true</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.97</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145212716</id>
+    <name>Pickup Zero</name>
+    <startDate>2005-10-13 00:00:00.0 EDT</startDate>
+    <endDate>2015-10-13 00:00:00.0 EDT</endDate>
+    <priority>10</priority>
+    <conditions>
+      <serviceType>
+        <type>PICKUP</type>
+      </serviceType>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145212717</id>
+    <name>Westchester Zero</name>
+    <startDate>2005-10-13 00:00:00.0 EDT</startDate>
+    <endDate>2015-10-13 00:00:00.0 EDT</endDate>
+    <priority>10</priority>
+    <conditions>
+      <County>
+        <county>WESTCHESTER</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+</rules>

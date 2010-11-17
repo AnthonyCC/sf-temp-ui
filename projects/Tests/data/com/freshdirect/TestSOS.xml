@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<module id="com.freshdirect.test" version="1.0.0">
+	<contribution configuration-id="hivemind.SymbolSources">
+		<source name="PropertiesSymbolSource"
+			class="org.apache.hivemind.impl.SystemPropertiesSymbolSource"
+			before="hivemind.ApplicationDefaults"/>
+        </contribution>
+
+	<contribution configuration-id="hivemind.ApplicationDefaults">
+		<default symbol="com.freshdirect.fdstore.rules.dlv.location" value="classpath:/com/freshdirect/fdstore/rules/DLV-rules.xml" /> 
+		<default symbol="com.freshdirect.fdstore.rules.misc.location" value="classpath:/com/freshdirect/fdstore/rules/MISC-rules.xml" /> 
+	</contribution>
+</module>
