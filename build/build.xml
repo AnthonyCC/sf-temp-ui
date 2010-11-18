@@ -104,6 +104,7 @@
 		<pathelement location="${testing.home}/jmock-2.5.1/jmock-2.5.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/jmock-junit3-2.5.1.jar"/>
 		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-core-1.1.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
 	</path>
 
