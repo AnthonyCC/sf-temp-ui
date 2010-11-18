@@ -18,11 +18,14 @@
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/xerces.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/mockrunner.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/jsonrpc-1.0.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server.jar"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/selenium-java-client-driver.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-core-3.0.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jsp-api-2.0.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/thirdparty/lucene-spellchecker-3.0.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/StandingOrdersService"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/OCF"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-2.5.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-junit3-2.5.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/hamcrest-core-1.1.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server-2.0a7.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

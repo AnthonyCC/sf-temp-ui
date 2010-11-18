@@ -98,11 +98,13 @@
 		<pathelement location="${testing.home}/mockrunner.jar"/>
 		<pathelement location="${testing.home}/hsqldb.jar"/>
 		<pathelement location="${testing.home}/jdom.jar"/>
-		<pathelement location="${testing.home}/selenium-server.jar"/>
-		<pathelement location="${testing.home}/selenium-java-client-driver.jar"/>
 		<pathelement location="${testing.home}/emma.jar"/>
 		<pathelement location="${testing.home}/emma_ant.jar"/>
 		<pathelement location="${testing.home}/jsp-api-2.0.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/jmock-2.5.1.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/jmock-junit3-2.5.1.jar"/>
+		<pathelement location="${testing.home}/jmock-2.5.1/hamcrest-core-1.1.jar"/>
+		<pathelement location="${testing.home}/selenium-server-2.0a7.jar"/>
 	</path>
 
 	<!--  EMMA  -->
