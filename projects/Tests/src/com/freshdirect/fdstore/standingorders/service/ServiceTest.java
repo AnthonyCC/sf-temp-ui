@@ -10,27 +10,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
 
-import junit.framework.TestCase;
-
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit3.MockObjectTestCase;
 import org.mockejb.interceptor.InvocationContext;
 
-import com.freshdirect.affiliate.ErpAffiliate;
 import com.freshdirect.common.address.AddressInfo;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
-import com.freshdirect.common.pricing.Discount;
-import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.customer.EnumChargeType;
 import com.freshdirect.customer.ErpAddressModel;
-import com.freshdirect.customer.ErpClientCode;
-import com.freshdirect.customer.ErpInvoiceLineI;
-import com.freshdirect.customer.ErpOrderLineModel;
 import com.freshdirect.customer.ErpPaymentMethodI;
-import com.freshdirect.customer.ErpReturnLineI;
 import com.freshdirect.delivery.DlvZoneInfoModel;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.EnumZipCheckResponses;
@@ -44,14 +36,8 @@ import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.erp.model.ErpInventoryEntryModel;
 import com.freshdirect.erp.model.ErpInventoryModel;
 import com.freshdirect.fdstore.EnumAvailabilityStatus;
-import com.freshdirect.fdstore.EnumOrderLineRating;
-import com.freshdirect.fdstore.FDConfigurableI;
-import com.freshdirect.fdstore.FDConfiguration;
-import com.freshdirect.fdstore.FDProduct;
-import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
-import com.freshdirect.fdstore.FDSku;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.fdstore.aspects.BaseAspect;
 import com.freshdirect.fdstore.atp.FDAvailabilityI;
@@ -59,37 +45,25 @@ import com.freshdirect.fdstore.atp.FDCompositeAvailability;
 import com.freshdirect.fdstore.atp.FDStatusAvailability;
 import com.freshdirect.fdstore.atp.FDStockAvailability;
 import com.freshdirect.fdstore.atp.NullAvailability;
-import com.freshdirect.fdstore.content.ProductModel;
-import com.freshdirect.fdstore.content.ProductReference;
 import com.freshdirect.fdstore.customer.DebugMethodPatternPointCut;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
-import com.freshdirect.fdstore.customer.FDInvalidConfigurationException;
 import com.freshdirect.fdstore.customer.FDTransientCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.customer.ProfileModel;
-import com.freshdirect.fdstore.customer.SaleStatisticsI;
 import com.freshdirect.fdstore.lists.FDCustomerList;
 import com.freshdirect.fdstore.lists.FDCustomerListItem;
 import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceSessionBean.ProcessActionResult;
 import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.core.PrimaryKey;
-import com.freshdirect.framework.event.EnumEventSource;
 import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.giftcard.ErpGiftCardModel;
 
-public class ServiceTest extends TestCase {
-	public ServiceTest(String name) {
-		super(name);
-	}
-
-
+public class ServiceTest extends MockObjectTestCase {
 	private final static DateFormat DF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
-	StandingOrdersServiceHome sosHome;
 	StandingOrdersServiceSessionBeanMockup bean;
 
 	// AddressModel address;
@@ -98,25 +72,13 @@ public class ServiceTest extends TestCase {
 	
 	Date	expiration;
 	
+	Mockery context;
+	
 	@Override
 	protected void setUp() throws Exception {
-		// super.setUp();
+		super.setUp();
 
-		// final Context context = TestUtils.createContext();
-        
-        // TestUtils.createMockContainer(context);
-        // TestUtils.createTransaction(context);
-
-
-		// sosHome =  (StandingOrdersServiceHome)context.lookup( StandingOrdersServiceHome.JNDI_HOME );
-		// bean = sosHome.create();
         bean = new StandingOrdersServiceSessionBeanMockup();
-
-        // AspectSystem aspectSystem = TestUtils.createAspectSystem();
-        // aspectSystem.add(new OrderLineUtilAspect());
-
-		// address = getCorporateAddress();
-		
 		
 		paymentMethod = new ErpGiftCardModel();
 		
@@ -125,9 +87,11 @@ public class ServiceTest extends TestCase {
 		
 		expiration = new Date(System.currentTimeMillis() + 1000);
 
-		// configure rules engine
+		// test surcharge updates - configure rules engine
 		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/TestSOS.registry");
 		FDRegistry.addConfiguration("classpath:/com/freshdirect/TestSOS.xml");
+		
+		context = new Mockery();
 	}
 
 
@@ -145,9 +109,11 @@ public class ServiceTest extends TestCase {
 		AddressInfo info = new AddressInfo();
 		info.setAddressType(EnumAddressType.FIRM);
 		info.setScrubbedStreet("900 MAIN ST");
+		info.setZoneCode("");
 		address.setAddressInfo(info);
 		address.setServiceType(EnumServiceType.CORPORATE);
 
+		
 		return address;
 	}
 
@@ -161,6 +127,7 @@ public class ServiceTest extends TestCase {
 		AddressInfo info = new AddressInfo();
 		info.setAddressType(EnumAddressType.STREET);
 		info.setScrubbedStreet("13911 86TH RD");
+		info.setZoneCode("");
 		address.setAddressInfo(info);
 		address.setServiceType(EnumServiceType.HOME);
 
@@ -221,6 +188,13 @@ public class ServiceTest extends TestCase {
 
 
 
+	/**
+	 * Test ATP check
+	 * 
+	 * 
+	 * @throws FDResourceException
+	 * @throws ParseException
+	 */
 	public void testATPCheck() throws FDResourceException, ParseException {
 		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
 		final Calendar cal = Calendar.getInstance();
@@ -361,58 +335,71 @@ public class ServiceTest extends TestCase {
 
 
 
-	public void testUpdateDeliverySurchages() {
+	public void testUpdateDeliverySurchagesCorporate() {
 		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
 
-		{
-			final AddressModel address = getCorporateAddress();
+		final AddressModel address = getCorporateAddress();
 
-			FDCartModel cart = new FDTransientCartModel();
-			{
-				Collection<FDCartLineI> ols = createCartLinesSimple(1);
-				SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();
-		
-				cart.setDeliveryReservation(getFDReservation(identity
-						.getErpCustomerPK(), address.getId()));
-				cart.addOrderLines(ols);
-			}
-			cart.setDeliveryAddress(new ErpAddressModel(address));
-			
-			ProfileModel pm = new ProfileModel();
-			MockRuleContext ctx = new MockRuleContext(cart, pm);
-			ctx.setSelectedServiceType(EnumServiceType.CORPORATE);
-			
-			bean.updateDeliverySurcharges(cart, ctx);
-
-			assertEquals(14.95, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
-			// assertEquals(0.97, cart.getChargeAmount(EnumChargeType.MISCELLANEOUS), 0);
-			
-		}
+		final FDCartModel cart = new FDTransientCartModel();
 		{
-			final AddressModel address = getPrivateAddress();
+			Collection<FDCartLineI> ols = createCartLinesSimple(1);
 	
-			FDCartModel cart = new FDTransientCartModel();
-			{
-				Collection<FDCartLineI> ols = createCartLinesSimple(1);
-				SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();
-		
-				cart.setDeliveryReservation(getFDReservation(identity
-						.getErpCustomerPK(), address.getId()));
-				cart.addOrderLines(ols);
-			}
-			cart.setDeliveryAddress(new ErpAddressModel(address));
-			
-			ProfileModel pm = new ProfileModel();
-			MockRuleContext ctx = new MockRuleContext(cart, pm);
-			ctx.setSelectedServiceType(EnumServiceType.CORPORATE);
-			
-			bean.updateDeliverySurcharges(cart, ctx);
-
-			assertEquals(4.95, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
-			// assertEquals(0.97, cart.getChargeAmount(EnumChargeType.MISCELLANEOUS), 0);
+			cart.setDeliveryReservation(getFDReservation(identity
+					.getErpCustomerPK(), address.getId()));
+			cart.addOrderLines(ols);
 		}
+		cart.setDeliveryAddress(new ErpAddressModel(address));
+		
+		final FDUserI user = context.mock(FDUserI.class);
+		context.checking(new Expectations() {{
+			allowing(user).getShoppingCart(); will(returnValue(cart));
+		}});
+
+		
+		ProfileModel pm = new ProfileModel();
+		MockRuleContext ctx = new MockRuleContext(user, pm);
+		ctx.setSelectedServiceType(EnumServiceType.CORPORATE);
+
+		
+		
+		bean.updateDeliverySurcharges(cart, ctx);
+
+		Calendar cal = Calendar.getInstance();
+		int dno = cal.get(Calendar.DAY_OF_WEEK);
+		assertEquals(dno == Calendar.MONDAY ? 14.99 : 9.99, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
 	}
 
+
+
+	public void testUpdateDeliverySurchagesHome() {
+		final FDIdentity identity = new FDIdentity("erp1", "fdu1");
+
+		final AddressModel address = getPrivateAddress();
+
+		final FDCartModel cart = new FDTransientCartModel();
+		{
+			Collection<FDCartLineI> ols = createCartLinesSimple(1);
+	
+			cart.setDeliveryReservation(getFDReservation(identity
+					.getErpCustomerPK(), address.getId()));
+			cart.addOrderLines(ols);
+		}
+		cart.setDeliveryAddress(new ErpAddressModel(address));
+		
+		final FDUserI user = context.mock(FDUserI.class);
+		context.checking(new Expectations() {{
+			allowing(user).getShoppingCart(); will(returnValue(cart));
+		}});
+
+		ProfileModel pm = new ProfileModel();
+		MockRuleContext ctx = new MockRuleContext(user, pm);
+		ctx.setSelectedServiceType(EnumServiceType.HOME);
+		
+		bean.updateDeliverySurcharges(cart, ctx);
+
+		// Expected rule is "Default Fee"
+		assertEquals(5.79, cart.getChargeAmount(EnumChargeType.DELIVERY), 0);
+	}
 
 
 
@@ -506,583 +493,9 @@ class StandingOrdersServiceSessionBeanMockup extends StandingOrdersServiceSessio
 
 
 
-/**
- * Mock cartline class
- * 
- * @author segabor
- *
- */
-class SimpleCartLine implements FDCartLineI {
-	private static final long serialVersionUID = 1L;
-
-	private static Random RND = new Random();
-
-	
-	private int randomId = RND.nextInt(1000);
-	private String cartLineId = Integer.toString(RND.nextInt(16));
-	private FDConfigurableI configuration = new FDConfiguration(1.0, "ea");
-	private FDSku sku = new FDSku("SKU"+RND.nextInt(1000), 1);
-	private String productName;
-
-	// restrictions
-	
-	private boolean alcohol;
-	private boolean kosher;
-
-	private double price = 10.0;
-
-
-	@Override
-	public ErpOrderLineModel buildErpOrderLines(int baseLineNumber)
-			throws FDResourceException, FDInvalidConfigurationException {
-		return null;
-	}
-
-	@Override
-	public FDCartLineI createCopy() {
-		return null;
-	}
-
-	@Override
-	public double getActualPrice() {
-
-		return 0;
-	}
-
-	@Override
-	public Set<EnumDlvRestrictionReason> getApplicableRestrictions() {
-
-		return null;
-	}
-
-	@Override
-	public String getCartlineId() {
-		return cartLineId;
-	}
-
-	public void setCartLineId(String cartLineId) {
-		this.cartLineId = cartLineId;
-	}
-
-	@Override
-	public String getCartonNumber() {
-		return null;
-	}
-
-	@Override
-	public String getDeliveredQuantity() {
-		return null;
-	}
-
-	@Override
-	public double getDepositValue() {
-		return 0;
-	}
-
-	@Override
-	public Discount getDiscount() {
-		return null;
-	}
-
-	@Override
-	public double getDiscountAmount() {
-		return 0;
-	}
-
-	@Override
-	public int getErpOrderLineSize() {
-		return 0;
-	}
-
-	@Override
-	public ErpInvoiceLineI getInvoiceLine() {
-		return null;
-	}
-
-	@Override
-	public String getMaterialNumber() {
-		return null;
-	}
-
-	@Override
-	public String getOrderLineId() {
-		return null;
-	}
-
-	@Override
-	public String getOrderLineNumber() {
-		return null;
-	}
-
-	@Override
-	public String getOrderedQuantity() {
-		return null;
-	}
-
-	@Override
-	public double getPrice() {
-		return this.price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-	
-	@Override
-	public PricingContext getPricingContext() {
-		return null;
-	}
-
-	@Override
-	public double getPromotionValue() {
-		return 0;
-	}
-
-	
-	@Override
-	public int getRandomId() {
-		return randomId;
-	}
-
-	public void setRandomId(int randomId) {
-		this.randomId = randomId;
-	}
-	
-	@Override
-	public String getReturnDisplayQuantity() {
-		return null;
-	}
-
-	@Override
-	public ErpReturnLineI getReturnLine() {
-		return null;
-	}
-
-	@Override
-	public String getReturnedQuantity() {
-		return null;
-	}
-
-	@Override
-	public String getSavingsId() {
-		return null;
-	}
-
-	@Override
-	public EnumEventSource getSource() {
-		return null;
-	}
-
-	@Override
-	public double getTaxRate() {
-		return 0;
-	}
-
-	@Override
-	public double getTaxValue() {
-		return 0;
-	}
-
-	@Override
-	public String getUnitsOfMeasure() {
-		return null;
-	}
-
-	@Override
-	public String getVariantId() {
-		return null;
-	}
-
-	@Override
-	public boolean hasAdvanceOrderFlag() {
-		return false;
-	}
-
-	@Override
-	public boolean hasDepositValue() {
-		return false;
-	}
-
-	@Override
-	public boolean hasDiscount(String promoCode) {
-		return false;
-	}
-
-	@Override
-	public boolean hasInvoiceLine() {
-		return false;
-	}
-
-	@Override
-	public boolean hasRestockingFee() {
-		return false;
-	}
-
-	@Override
-	public boolean hasReturnLine() {
-		return false;
-	}
-
-	@Override
-	public boolean hasScaledPricing() {
-		return false;
-	}
-
-	@Override
-	public boolean hasTax() {
-		return false;
-	}
-
-	@Override
-	public boolean isDiscountApplied() {
-		return false;
-	}
-
-	@Override
-	public boolean isDiscountFlag() {
-		return false;
-	}
-
-	@Override
-	public boolean isEstimatedPrice() {
-		return false;
-	}
-
-	@Override
-	public boolean isSample() {
-		return false;
-	}
-
-	@Override
-	public void removeLineItemDiscount() {
-	}
-
-	@Override
-	public void setCartonNumber(String no) {
-	}
-
-	@Override
-	public void setDepositValue(double depositRate) {
-	}
-
-	@Override
-	public void setDiscount(Discount d) {
-	}
-
-	@Override
-	public void setDiscountFlag(boolean b) {
-	}
-
-	@Override
-	public void setOrderLineId(String orderLineId) {
-	}
-
-	@Override
-	public void setSavingsId(String savingsId) {
-	}
-
-	@Override
-	public void setSource(EnumEventSource source) {
-	}
-
-	@Override
-	public void setTaxRate(double taxRate) {
-	}
-
-	@Override
-	public ErpAffiliate getAffiliate() {
-		return null;
-	}
-
-	@Override
-	public String getCategoryName() {
-		return null;
-	}
-
-	@Override
-	public List<ErpClientCode> getClientCodes() {
-		return null;
-	}
-
-	@Override
-	public FDConfigurableI getConfiguration() {
-		return configuration;
-	}
-
-	@Override
-	public String getConfigurationDesc() {
-		return null;
-	}
-
-	@Override
-	public String getCustomerListLineId() {
-		return null;
-	}
-
-	@Override
-	public String getDepartmentDesc() {
-		return null;
-	}
-
-	@Override
-	public String getDescription() {
-		return null;
-	}
-
-	@Override
-	public String getDisplayQuantity() {
-		return null;
-	}
-
-	@Override
-	public double getFixedPrice() {
-		return 0;
-	}
-
-	@Override
-	public String getLabel() {
-		return null;
-	}
-
-	@Override
-	public String getOriginatingProductId() {
-		return null;
-	}
-
-	@Override
-	public EnumOrderLineRating getProduceRating() {
-		return null;
-	}
-
-	@Override
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	@Override
-	public ProductReference getProductRef() {
-		return null;
-	}
-
-	@Override
-	public String getRecipeSourceId() {
-		return null;
-	}
-
-	@Override
-	public String getSalesUnitDescription() {
-		return null;
-	}
-
-	@Override
-	public FDSku getSku() {
-		return this.sku;
-	}
-
-	@Override
-	public String getSkuCode() {
-		return this.sku.getSkuCode();
-	}
-
-	@Override
-	public SaleStatisticsI getStatistics() {
-		return null;
-	}
-
-	@Override
-	public String getUnitPrice() {
-		return null;
-	}
-
-	@Override
-	public int getVersion() {
-		return 0;
-	}
-
-	@Override
-	public String getYmalCategoryId() {
-		return null;
-	}
-
-	@Override
-	public String getYmalSetId() {
-		return null;
-	}
-
-	@Override
-	public boolean hasBrandName(Set<String> brandNames) {
-		return false;
-	}
-
-	@Override
-	public boolean isAlcohol() {
-		return this.alcohol;
-	}
-
-	public void setAlcohol(boolean alcohol) {
-		this.alcohol = alcohol;
-	}
-	
-	@Override
-	public boolean isInvalidConfig() {
-		return false;
-	}
-
-	@Override
-	public boolean isKosher() {
-		return this.kosher;
-	}
-
-	public void setKosher(boolean kosher) {
-		this.kosher = kosher;
-	}
-	
-	@Override
-	public boolean isPerishable() {
-		return false;
-	}
-
-	@Override
-	public boolean isPlatter() {
-		return false;
-	}
-
-	@Override
-	public boolean isPricedByLb() {
-		return false;
-	}
-
-	@Override
-	public boolean isRequestNotification() {
-		return false;
-	}
-
-	@Override
-	public boolean isSoldByLb() {
-		return false;
-	}
-
-	@Override
-	public boolean isSoldBySalesUnits() {
-		return false;
-	}
-
-	@Override
-	public FDProduct lookupFDProduct() {
-		return null;
-	}
-
-	@Override
-	public FDProductInfo lookupFDProductInfo() {
-		return null;
-	}
-
-	@Override
-	public ProductModel lookupProduct() {
-		return null;
-	}
-
-	@Override
-	public void refreshConfiguration() throws FDResourceException,
-			FDInvalidConfigurationException {
-	}
-
-	@Override
-	public void setConfiguration(FDConfigurableI configuration) {
-		this.configuration = configuration;
-	}
-
-	@Override
-	public void setConfigurationDesc(String configDesc) {
-	}
-
-	@Override
-	public void setCustomerListLineId(String id) {
-	}
-
-	@Override
-	public void setDepartmentDesc(String deptDesc) {
-	}
-
-	@Override
-	public void setDescription(String desc) {
-	}
-
-	@Override
-	public void setFixedPrice(double price) {
-	}
-
-	@Override
-	public void setOptions(Map<String, String> options) {
-	}
-
-	@Override
-	public void setOriginatingProductId(String originatingProductId) {
-	}
-
-	@Override
-	public void setPricingContext(PricingContext pCtx) {
-	}
-
-	@Override
-	public void setQuantity(double quantity) {
-		this.configuration = new FDConfiguration(quantity, this.configuration.getSalesUnit());
-	}
-
-	@Override
-	public void setRecipeSourceId(String recipeSourceId) {
-	}
-
-	@Override
-	public void setRequestNotification(boolean requestNotification) {
-	}
-
-	@Override
-	public void setSalesUnit(String salesUnit) {
-	}
-
-	@Override
-	public void setSku(FDSku sku) {
-		this.sku  = sku;
-	}
-
-	@Override
-	public void setStatistics(SaleStatisticsI statistics) {
-	}
-
-	@Override
-	public void setYmalCategoryId(String ymalCategoryId) {
-	}
-
-	@Override
-	public void setYmalSetId(String ymalSetId) {
-	}
-
-	@Override
-	public Map<String, String> getOptions() {
-		return null;
-	}
-
-	@Override
-	public double getQuantity() {
-		return configuration.getQuantity();
-	}
-
-	@Override
-	public String getSalesUnit() {
-		return configuration.getSalesUnit();
-	}
-}
-
-
-
 class MockRuleContext implements FDRuleContextI {
-	// FDUserI	user;
-	FDCartI cart;
+	FDUserI	user;
+	// FDCartI cart;
 	ProfileModel pm;
 	EnumServiceType selectedServiceType = null;
 
@@ -1090,8 +503,9 @@ class MockRuleContext implements FDRuleContextI {
 	
 	
 
-	public MockRuleContext(FDCartI cart, ProfileModel pm) {
-		this.cart = cart;
+	public MockRuleContext(FDUserI	user, ProfileModel pm) {
+		this.user = user;
+		//this.cart = cart;
 		this.pm = pm;
 	}
 
@@ -1112,19 +526,19 @@ class MockRuleContext implements FDRuleContextI {
 
 	@Override
 	public double getOrderTotal() {
-		// return this.user.getShoppingCart().getSubTotal();
-		return cart.getSubTotal();
+		return this.user.getShoppingCart().getSubTotal();
+		// return cart.getSubTotal();
 	}
 
 	@Override
 	public EnumServiceType getServiceType() {
-		AddressModel address = this.cart.getDeliveryAddress();
+		AddressModel address = this.user.getShoppingCart().getDeliveryAddress();
 		return address != null  ? address.getServiceType() : this.selectedServiceType ;
 	}
 
 	@Override
 	public FDUserI getUser() {
-		return null;
+		return this.user;
 	}
 
 	@Override

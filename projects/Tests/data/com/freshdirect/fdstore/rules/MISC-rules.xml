@@ -1,25 +1,9 @@
 <rules>
   <rule>
-    <id>145195632</id>
-    <name>Default Fee</name>
-    <startDate>2005-10-12 00:00:00.0 EDT</startDate>
-    <endDate>2015-10-12 00:00:00.0 EDT</endDate>
-    <priority>-1</priority>
-    <conditions>
-      <OgnlCondition>
-        <expression>true</expression>
-      </OgnlCondition>
-    </conditions>
-    <outcome class="BasePrice">
-      <price>0.97</price>
-    </outcome>
-    <subsystem>MISC</subsystem>
-  </rule>
-  <rule>
     <id>145212716</id>
     <name>Pickup Zero</name>
     <startDate>2005-10-13 00:00:00.0 EDT</startDate>
-    <endDate>2015-10-13 00:00:00.0 EDT</endDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
     <priority>10</priority>
     <conditions>
       <serviceType>
@@ -32,14 +16,142 @@
     <subsystem>MISC</subsystem>
   </rule>
   <rule>
+    <id>145504142</id>
+    <name>Hudson Zero</name>
+    <startDate>2006-04-12 00:00:00.0 EDT</startDate>
+    <endDate>2007-04-12 00:00:00.0 EDT</endDate>
+    <priority>20</priority>
+    <conditions>
+      <County>
+        <county>HUDSON</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>1178218280411</id>
+    <name>Brooklyn Zero</name>
+    <startDate>2007-05-03 00:00:00.0 EDT</startDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
+    <priority>50</priority>
+    <conditions>
+      <County>
+        <county>KINGS</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145497036</id>
+    <name>Bergen Zero</name>
+    <startDate>2006-04-12 00:00:00.0 EDT</startDate>
+    <endDate>2007-04-12 00:00:00.0 EDT</endDate>
+    <priority>30</priority>
+    <conditions>
+      <County>
+        <county>BERGEN</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
     <id>145212717</id>
     <name>Westchester Zero</name>
     <startDate>2005-10-13 00:00:00.0 EDT</startDate>
-    <endDate>2015-10-13 00:00:00.0 EDT</endDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
     <priority>10</priority>
     <conditions>
       <County>
         <county>WESTCHESTER</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>1199811811755</id>
+    <name>COS Fee</name>
+    <startDate>2008-01-08 00:00:00.0 EST</startDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
+    <priority>50</priority>
+    <conditions>
+      <serviceType>
+        <type>CORPORATE</type>
+      </serviceType>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145524779</id>
+    <name>Nassau Zero</name>
+    <startDate>2006-04-26 00:00:00.0 EDT</startDate>
+    <endDate>2007-04-26 00:00:00.0 EDT</endDate>
+    <priority>45</priority>
+    <conditions>
+      <County>
+        <county>NASSAU</county>
+      </County>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145195632</id>
+    <name>Default Fee</name>
+    <startDate>2005-10-12 00:00:00.0 EDT</startDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
+    <priority>-1</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>true</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>145548629</id>
+    <name>Hamptons Zero</name>
+    <startDate>2006-05-08 00:00:00.0 EDT</startDate>
+    <endDate>2009-05-08 00:00:00.0 EDT</endDate>
+    <priority>50</priority>
+    <conditions>
+      <OgnlCondition>
+        <expression>county==&apos;SUFFOLK&apos; || ((user.shoppingCart.deliveryAddress instanceof com.freshdirect.customer.ErpDepotAddressModel) and (user.shoppingCart.deliveryAddress.zoneCode in {&apos;815&apos;,&apos;835&apos;,&apos;845&apos;,&apos;865&apos;,&apos;875&apos;}))</expression>
+      </OgnlCondition>
+    </conditions>
+    <outcome class="BasePrice">
+      <price>0.0</price>
+    </outcome>
+    <subsystem>MISC</subsystem>
+  </rule>
+  <rule>
+    <id>1179158737872</id>
+    <name>Staten Island Zero</name>
+    <startDate>2007-05-14 00:00:00.0 EDT</startDate>
+    <endDate>2010-01-10 00:00:00.0 EST</endDate>
+    <priority>50</priority>
+    <conditions>
+      <County>
+        <county>RICHMOND</county>
       </County>
     </conditions>
     <outcome class="BasePrice">
