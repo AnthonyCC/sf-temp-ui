@@ -136,7 +136,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	+ "from ERPS.NUTRITION "
     	+ "where date_modified > ? "
     	+ "order by sku_code ";
-    private static final String LOAD_NUTRITION_INFO = "select skucode, type, priority, info, date_modified " 
+    private static final String LOAD_NUTRITION_INFO = "select skucode, type, priority, info, date_modified,  DBMS_LOB.SUBSTR (info, DBMS_LOB.GETLENGTH(info))info_clob, DBMS_LOB.GETLENGTH(info) length " 
     	+ "from erps.nutrition_info "
     	+ "where date_modified > ? "
     	+ "order by skucode, type, priority ";
@@ -144,7 +144,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     public Map<String, ErpNutritionModel> loadNutrition(Date lastModified) {
     	Connection conn = null;
     	try{
-    		conn = this.getConnection();
+    		conn = this.getConnection();    		 
+    		long time = System.currentTimeMillis();    		
     		PreparedStatement ps = conn.prepareStatement(LOAD_NUTRITION);
     		ps.setTimestamp(1, new Timestamp(lastModified.getTime()));
     		ResultSet rs = ps.executeQuery();
@@ -196,26 +197,69 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
                  String info = "";
                  
                  //determine how to get the value based on a property
-                 if (columnTypes != null && columnTypes.length >=4 && columnTypes[4] == "CLOB") {
+                 if (columnTypes != null && columnTypes.length >=4 && columnTypes[3] == "CLOB") {
                 	//works if type is CLOB but not if VARCHAR2
                 	 try {
-                		 Clob infoClob = rs.getClob("INFO");
+//                		 Clob infoClob = rs.getClob("INFO");
 
-    	                 if (infoClob != null) {
+    	                 /*if (infoClob != null) {
     	                	 try {
     	                		 info = infoClob.getSubString(1, (int) (infoClob.length()));
     	                	 }catch (Exception ex) {
     	                		 LOGGER.warn("An error occured while reading CLOB: "+ex.getMessage());
     	                	 }
-    	                 }
+    	                 }*/
+                		 /*if(null!=infoClob){
+	                		 java.io.Reader reader0 = infoClob.getCharacterStream();
+	                		 BufferedReader reader = new BufferedReader(reader0);
+	                		 StringBuilder sb = new StringBuilder();
+                		    String line = null;
+                		    while ((line = reader.readLine()) != null) {
+                		      sb.append(line + "\n");
+                		    }
+                		    reader0.close();
+                		    reader.close();
+                		    info = sb.toString();
+                		 }*/
+                		 info = rs.getString("INFO_CLOB");
+                    	 StringBuffer buff = new StringBuffer();
+                    	 int size = rs.getInt("LENGTH");
+                    	 PreparedStatement ps1 = null;
+                    	 ResultSet rs1 = null;
+                    	 if(size>4000){
+                    		 //Retrieving the clob data in chunks of 4000 chars.
+    	                	 for(int i=1; i<=size;i=i+4000){
+    	                		try {
+    								ps1 = conn.prepareStatement("select DBMS_LOB.SUBSTR (info,"+4000 +","+i 
+    								    	+ ") from erps.nutrition_info "
+    								    	+ " where skucode =? and type=? and priority=?");
+//    								ps1.setTimestamp(1, t);//new Timestamp(lastModified.getTime()));
+    								ps1.setString(1, skuCode);
+    								ps1.setString(2, type);
+    								ps1.setInt(3, priority);
+    								rs1 = ps1.executeQuery();
+    								if(rs1.next()) {
+    									buff.append(rs1.getString(1));
+    								}
+    							} finally{
+    								if(ps1!= null){
+    									ps1.close();
+    								}if(rs1!=null){
+    									rs1.close();
+    								}
+    							}
+    	                	 }
+    	                	 info = buff.toString();
+                    	 }
 	                 } catch (SQLException sqle) {
 	                     LOGGER.error("An error occured while reading CLOB, check if column is CLOB type. "+sqle.getMessage());
 	                     throw sqle;
-	                 }
+	                 } 
                 	 
                  }else {
                 	//works if column type is VARCHAR2
-                	 rs.getString("INFO");
+                	 info = rs.getString("INFO");
+                	
                  }
                                   
                  ErpNutritionInfoType infoType = ErpNutritionInfoType.getInfoType(type);
@@ -243,7 +287,8 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
              }
     		 ps.close();
     		 rs.close();
-    		 
+    		 time = (System.currentTimeMillis()-time)/1000;
+    		 LOGGER.info("Time in loadNutrition():"+time+" secs");
     		 return m;
     	}catch(SQLException e){
     		throw new EJBException(e);
