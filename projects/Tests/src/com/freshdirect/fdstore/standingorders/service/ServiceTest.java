@@ -74,6 +74,14 @@ public class ServiceTest extends MockObjectTestCase {
 	
 	Mockery context;
 	
+	static {
+		// test surcharge updates - configure rules engine
+		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/TestSOS.registry");
+		FDRegistry.addConfiguration("classpath:/com/freshdirect/TestSOS.xml");
+	}
+
+
+
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -87,10 +95,6 @@ public class ServiceTest extends MockObjectTestCase {
 		
 		expiration = new Date(System.currentTimeMillis() + 1000);
 
-		// test surcharge updates - configure rules engine
-		FDRegistry.setDefaultRegistry("classpath:/com/freshdirect/TestSOS.registry");
-		FDRegistry.addConfiguration("classpath:/com/freshdirect/TestSOS.xml");
-		
 		context = new Mockery();
 	}
 
@@ -234,7 +238,15 @@ public class ServiceTest extends MockObjectTestCase {
 
 			FDRestrictedAvailability ri = new FDRestrictedAvailability(NullAvailability.AVAILABLE, restrictionList);
 			
-			assertFalse( doATPCheck(identity, createCartLinesSimple(), ri));
+			final boolean atpCheckFailed = doATPCheck(identity, createCartLinesSimple(), ri);
+
+			if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) {
+				// must fail on Friday violating Kosher Friday restriction
+				assertTrue( atpCheckFailed);
+			} else {
+				// must pass
+				assertFalse( atpCheckFailed);
+			}
 		}
 		{
 			// KOSHER products are not available today...
