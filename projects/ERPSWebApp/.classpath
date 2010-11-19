@@ -7,6 +7,5 @@
 	<classpathentry exported="true" kind="var" path="FD_LIBS/thirdparty/oscache-2.4.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/DataLoader"/>
-	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

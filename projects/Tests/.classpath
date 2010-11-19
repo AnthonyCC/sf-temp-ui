@@ -27,5 +27,6 @@
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/jmock-junit3-2.5.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/hamcrest-core-1.1.jar"/>
 	<classpathentry kind="var" path="FD_LIBS/testing/selenium-server-2.0a7.jar"/>
+	<classpathentry kind="var" path="FD_LIBS/testing/jmock-2.5.1/hamcrest-library-1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
