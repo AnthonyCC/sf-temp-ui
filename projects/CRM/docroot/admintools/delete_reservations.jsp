@@ -28,7 +28,7 @@
 <jsp:include page="/includes/admintools_nav.jsp" />
 <div class="home_search_module_content" style="height:100%;">
 
-<form name="searchcriteria" method='POST' onsubmit="javascript:doSearch();">
+<form name="searchcriteria" id="searchcriteria" method='POST' onsubmit="javascript:doSearch();">
 <crm:AdminToolsController result="result">
 	<fd:ErrorHandler result='<%= result %>' name='actionfailure' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
@@ -64,7 +64,7 @@
 		<tr>
 			<td width="35%">	
 				<span class="info_text">Enter notes <span class="error">*</span>:</span>&nbsp;
-				<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"></textarea>
+				<textarea name="notes" id="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"></textarea>
 			</td>
 
 			<td width="65%">
@@ -72,12 +72,12 @@
 			if(reservations ==  null || reservations.size() == 0) {
 		%>
 			<input type="button" value="DELETE RESERVATIONS" class="submit" disabled>&nbsp;&nbsp;
-			<input type="button" name="exportResv" value="EXPORT RESERVATION LIST" class="submit" disabled>
+			<input type="button" name="exportResv" id="exportResv" value="EXPORT RESERVATION LIST" class="submit" disabled>
 		<%
 			} else {
 		%>
 			<input type="button" value="DELETE RESERVATIONS" class="submit" onclick="javascript:doAction('deleteReservations');">&nbsp;&nbsp;
-			<input type="button" name="exportResv" value="EXPORT RESERVATIONS" class="submit" onclick="javascript:openURL('/reports/reservations_report.xls');">
+			<input type="button" name="exportResv" id="exportResv" value="EXPORT RESERVATIONS" class="submit" onclick="javascript:openURL('/reports/reservations_report.xls');">
 		<%
 			String searchFlag = (String)request.getParameter("searchFlag");
 			if(searchFlag != null && searchFlag.equals("true")) {
@@ -126,7 +126,7 @@
 		</td>
 		<td align="right">
 			<span class="info_text"><b>Filter By:<b></span>&nbsp;
-			<select name="filterType" style="width: 125px;" onchange="javascript:doFilter();">
+			<select name="filterType" id="filterType" style="width: 125px;" onchange="javascript:doFilter();">
 				<option value="ALL" <%= filterType.equals("ALL") ? "SELECTED" : "" %>>All</option>
 				<option value="STD" <%= filterType.equals("STD") ? "SELECTED" : "" %>>Standard</option>
 				<option value="PRE" <%= filterType.equals("PRE") ? "SELECTED" : "" %>>Pre-Reservation</option>

@@ -71,7 +71,7 @@
 	</td></tr>
 	<tr>
 		<td>
-			<input type="checkbox" name="sendEmail" value="<%= sendEmail %>">&nbsp;Send E-mail to Customers
+			<input type="checkbox" name="sendEmail" id="sendEmail" value="<%= sendEmail %>">&nbsp;Send E-mail to Customers
 		</td>
 	</tr>
 	<logic:present name="cancelOrders">	
@@ -87,8 +87,8 @@
 	<%
 		if(cancelOrders ==  null || cancelOrders.size() == 0) {
 	%>
-		<input type="submit" value="CANCEL ORDERS" class="submit" disabled>
-		<input name="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>
+		<input name="cancelorders" id="cancelorders" type="submit" value="CANCEL ORDERS" class="submit" disabled>
+		<input name="exportButton" id="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>
 	<%
 		} else {
 	%>	
@@ -96,19 +96,19 @@
 		<%
 			if(cancelOrders.size() <= prcLimit) {
 		%>
-				<input type="button" value="CANCEL ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">
+				<input name="cancelorders" id="cancelorders" type="button" value="CANCEL ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">
 
 		<%
 			} else {
 		%>
-				<input type="button" value="CANCEL FIRST <%= prcLimit %> ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">			
+				<input name="cancelorders" id="cancelorders" type="button" value="CANCEL FIRST <%= prcLimit %> ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">			
 		<%
 			}
 		%>	
 
 
 			&nbsp;&nbsp;
-			<input name="exportButton" type="button" value="EXPORT ORDERS" class="submit" onclick="javascript:openURL('/reports/final_cancel_report.xls');">
+			<input name="exportButton" id="exportButton" type="button" value="EXPORT ORDERS" class="submit" onclick="javascript:openURL('/reports/final_cancel_report.xls');">
 		<%
 			String searchFlag = (String)request.getParameter("searchFlag");
 			if(searchFlag != null && searchFlag.equals("true")) {
@@ -150,7 +150,7 @@
 	</tr>	
 	<tr>
 		<td colspan="2">
-			<textarea name="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"><%= notes %></textarea>
+			<textarea name="notes" id="notes" rows="2" wrap="VIRTUAL" style="width: 330px;"><%= notes %></textarea>
 		</td>
 	</tr>	
 

@@ -17,7 +17,7 @@
 		<td>Delivery Date : </td>
 		<td>
 			<input type="hidden" name="actionName" id="actionName" value="">
-			<input type="hidden" name="searchFlag" value="">
+			<input type="hidden" name="searchFlag" id="searchFlag" value="">
 			<input type="hidden" name="deliveryDate" id="deliveryDate" value="<%=dlvDate%>">
                         <input type="text" name="newDeliveryDate" id="newDeliveryDate" size="10" value="<%=dlvDate%>" disabled="true" onchange="setDate(this);"> &nbsp;<a href="#" id="trigger_dlvDate" style="font-size: 9px;">>></a>
  		        <script language="javascript">
@@ -115,7 +115,7 @@
 	
 		<td>Cutoff Time : </td>
 		<td>
-			<select name="cutoffTime" value="" style="width: 120px;">
+			<select name="cutoffTime" id="cutoffTime" value="" style="width: 120px;">
 				<option value="all">All Cutoff Times</option>
 
 			<%
@@ -141,16 +141,16 @@
 		<td>Time Slot : </td>
 		<td>From(HH:MI)&nbsp;
 		
-			<input type = "text" name="fromTimeSlot" value= "<%= fromTimeSlot %>" style="width: 55px;">&nbsp;
-			<select name="fromTimePeriod" style="width: 45px;">
+			<input type = "text" name="fromTimeSlot" id="fromTimeSlot" value= "<%= fromTimeSlot %>" style="width: 55px;">&nbsp;
+			<select name="fromTimePeriod" id="fromTimePeriod" style="width: 45px;">
 				<option value="AM" <%= fromTimePeriod.equals("AM") ? "SELECTED" : "" %>>AM</option>
 				<option value="PM" <%= fromTimePeriod.equals("PM") ? "SELECTED" : "" %>>PM</option>
 			</select>
 		</td>
 		<td>To(HH:MI)&nbsp;
 		
-			<input type = "text" name="toTimeSlot" value= "<%= toTimeSlot %>" style="width: 55px;">&nbsp;
-			<select name="toTimePeriod" style="width: 45px;">
+			<input type = "text" name="toTimeSlot" id="toTimeSlot" value= "<%= toTimeSlot %>" style="width: 55px;">&nbsp;
+			<select name="toTimePeriod" id="toTimePeriod" style="width: 45px;">
 				<option value="AM" <%= toTimePeriod.equals("AM") ? "SELECTED" : "" %>>AM</option>
 				<option value="PM" <%= toTimePeriod.equals("PM") ? "SELECTED" : "" %>>PM</option>
 			</select>
