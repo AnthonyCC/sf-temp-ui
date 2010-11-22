@@ -432,6 +432,8 @@ class TimeNode extends PlanTreeNode  {
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
+			p.setLastDeliveryTime(s.getEndDlvTime());
+			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
 			p.setSequence(rank++);
@@ -536,6 +538,8 @@ class TimeNode extends PlanTreeNode  {
 					p.setRegion(_currResource.getSchedule().getRegion());
 					p.setStartTime(_currResource.getSchedule().getTime());
 					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
+					p.setLastDeliveryTime(_currResource.getSchedule().getTime());
+					//p.setCutOffTime(s.getCutOffTime());
 					p.setIsBullpen("Y");
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
 						PlanResource planResource = new PlanResource();
@@ -565,6 +569,8 @@ class TimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
+			p.setLastDeliveryTime(s.getSchedule().getTime());
+			//p.setCutOffTime(s.getCutOffTime());
 			p.setIsBullpen("Y");
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();
@@ -640,6 +646,8 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setRegion(s.getRegion());
 			p.setStartTime(s.getStartTime());
 			p.setFirstDeliveryTime(s.getFirstDlvTime());
+			p.setLastDeliveryTime(s.getEndDlvTime());
+			p.setCutOffTime(s.getCutOffTime());
 			p.setSupervisorId(s.getSupervisorCode());
 			p.setMaxTime(s.getMaxTime());
 			p.setSequence(rank++);
@@ -737,6 +745,8 @@ class DepotTimeNode extends PlanTreeNode  {
 					p.setRegion(_currResource.getSchedule().getRegion());
 					p.setStartTime(_currResource.getSchedule().getTime());
 					p.setFirstDeliveryTime(_currResource.getSchedule().getTime());
+					p.setLastDeliveryTime(_currResource.getSchedule().getTime());
+					//p.setCutOffTime(s.getCutOffTime());
 					p.setIsBullpen("Y");
 					for(ScheduleEmployeeDetails ss : _currResource.getMembers()) {						
 						Collection c = ss.getEmpRoles();
@@ -771,6 +781,8 @@ class DepotTimeNode extends PlanTreeNode  {
 			p.setRegion(s.getSchedule().getRegion());
 			p.setStartTime(s.getSchedule().getTime());
 			p.setFirstDeliveryTime(s.getSchedule().getTime());
+			p.setLastDeliveryTime(s.getSchedule().getTime());
+			//p.setCutOffTime(s.getCutOffTime());
 			p.setIsBullpen("Y");
 			for (Iterator i = resources.iterator(); i.hasNext();) {
 				ScheduleEmployeeDetails ss = (ScheduleEmployeeDetails) i.next();

@@ -105,7 +105,8 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 		+ "and mdsys.sdo_relate(z.geoloc, mdsys.sdo_geometry(2001, 8265, mdsys.sdo_point_type(?, ?,NULL), NULL, NULL), 'mask=ANYINTERACT querytype=WINDOW') ='TRUE' "
 		+ "order by z.zone_code";
 	
-	private static final String GET_AREA = "select * from transp.trn_area a ";
+	private static final String GET_AREAS = "select * from transp.trn_area a ";
+	private static final String GET_ZONES = "select * from transp.zone z ";
 	
 	private static final String INSERT_LOCATION_INFORMATION_NOKEY = "INSERT INTO DLV.DELIVERY_LOCATION ( ID,"+
 																		"APARTMENT, BUILDINGID) VALUES ( "+
@@ -837,7 +838,7 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 
 				PreparedStatement ps =
-					connection.prepareStatement(GET_AREA);
+					connection.prepareStatement(GET_AREAS);
 				
 				return ps;
 			}
@@ -856,6 +857,39 @@ public class GeographyDAO extends BaseDAO implements IGeographyDAO  {
 					areaModel.setDeliveryModel(rs.getString("DELIVERYMODEL"));
 					
 					result.put(areaModel.getAreaCode(), areaModel);				    		
+
+				} while(rs.next());
+			}
+		}
+		);
+
+		return result;
+	}
+	
+	public Map<String, IZoneModel> getZoneLookup() throws SQLException {
+		final Map<String, IZoneModel> result = new HashMap<String, IZoneModel>();
+
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+
+				PreparedStatement ps =
+					connection.prepareStatement(GET_ZONES);
+				
+				return ps;
+			}
+		};
+
+		jdbcTemplate.query(creator,
+				new RowCallbackHandler() {
+			public void processRow(ResultSet rs) throws SQLException {
+
+				do {
+					
+					IZoneModel zoneModel = new ZoneModel();
+					zoneModel.setZoneNumber(rs.getString("ZONE_CODE"));
+					zoneModel.setLoadingPriority(rs.getInt("LOADING_PRIORITY"));
+										
+					result.put(zoneModel.getZoneNumber(), zoneModel);				    		
 
 				} while(rs.next());
 			}

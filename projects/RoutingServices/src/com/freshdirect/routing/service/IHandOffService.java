@@ -8,6 +8,7 @@ import java.util.Set;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
@@ -15,6 +16,8 @@ import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 
 
 public interface IHandOffService {
@@ -39,9 +42,10 @@ public interface IHandOffService {
 	
 	void clearHandOffBatch(String handOffBatchId) throws RoutingServiceException;
 	
-	void clearHandOffBatchStopRoute(String handOffBatchId) throws RoutingServiceException;
+	void clearHandOffBatchStopRoute(Date deliveryDate, String handOffBatchId) throws RoutingServiceException;
 	
-	void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException;
+	void updateHandOffBatchDetails(Date deliveryDate, List<IHandOffBatchRoute> routes
+			, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException;
 	
 	List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException;
 	List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException;
@@ -60,4 +64,8 @@ public interface IHandOffService {
 	
 	void addNewHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime, Set<IHandOffBatchDepotScheduleEx> dataList) throws RoutingServiceException;
 	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws RoutingServiceException;
+	
+	List<HandOffDispatchIn> getHandOffBatchDispatches(Date deliveryDate) throws RoutingServiceException;
+	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException;
+	
 }

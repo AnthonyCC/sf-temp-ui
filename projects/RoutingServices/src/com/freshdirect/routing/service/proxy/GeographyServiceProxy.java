@@ -9,6 +9,7 @@ import com.freshdirect.routing.model.IGeocodeResult;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.service.IGeographyService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
@@ -109,6 +110,10 @@ public class GeographyServiceProxy  extends BaseServiceProxy {
 	
 	public Map<String, IAreaModel> getAreaLookup() throws RoutingServiceException {
 		return getService().getAreaLookup();
+	}
+	
+	public Map<String, IZoneModel> getZoneLookup() throws RoutingServiceException {
+		return getService().getZoneLookup();
 	}
 	
 	public ILocationModel locateOrder(IOrderModel orderModel)  throws RoutingServiceException {

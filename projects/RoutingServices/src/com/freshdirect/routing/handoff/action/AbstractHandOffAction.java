@@ -2,13 +2,25 @@ package com.freshdirect.routing.handoff.action;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IHandOffBatch;
+import com.freshdirect.routing.model.IHandOffBatchRoute;
+import com.freshdirect.routing.model.IWaveInstance;
+import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public abstract class AbstractHandOffAction {
 	
@@ -89,6 +101,93 @@ public abstract class AbstractHandOffAction {
 		return formatter.format(input);
 	}
 	
+	protected DispatchCorrelationResult correlateDispatch(List<IHandOffBatchRoute> routes
+															, Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
+		
+		DispatchCorrelationResult result = new DispatchCorrelationResult();
+		RoutingInfoServiceProxy routingInfoProxy = new RoutingInfoServiceProxy();
+		//Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
+		Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
+		List<IHandOffBatchRoute> mismatchRoutes = new ArrayList<IHandOffBatchRoute>();
+		
+		if(routes != null && areaLookup != null && plannedDispatchTree != null) {
+			for(IHandOffBatchRoute routeModel : routes) {
+				boolean foundWave = false;
+				IAreaModel areaModel = areaLookup.get(routeModel.getArea());
+				
+				if(areaModel != null ) {					
+					Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispatchMapping = plannedDispatchTree.get(routeModel.getArea());
+					
+					if(dispatchMapping != null) {
+						for(Map.Entry<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispEntry : dispatchMapping.entrySet()) {
+							List<IWaveInstance> waveInstances = dispEntry.getValue().get(this.getBatch().getCutOffDateTime());
+							if(waveInstances != null) {
+								for(IWaveInstance waveInstance : waveInstances) {
+									if(areaModel.isDepot()) {
+										if(waveInstance.getWaveStartTime() != null 
+												&& waveInstance.getWaveStartTime()
+															.equals(new RoutingTimeOfDay(routeModel.getStartTime()))) {
+											foundWave = true;
+											routeModel.copyWaveProperties(waveInstance);
+										}
+									} else {
+										if(waveInstance.getWaveStartTime() != null 
+												&& waveInstance.getWaveStartTime().equals(new RoutingTimeOfDay(routeModel.getStartTime()))
+												&& waveInstance.getPreferredRunTime() == routeModel.getPreferredRunTime()
+												&& waveInstance.getMaxRunTime() == routeModel.getMaxRunTime()) {
+											foundWave = true;
+											routeModel.copyWaveProperties(waveInstance);
+										}
+									}
+								}
+							}
+						}
+					}					
+				}
+				if(!foundWave) {
+					mismatchRoutes.add(routeModel);
+				}
+			}
+		}
+		
+		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
+		if(plannedDispatchTree != null) {
+			for(Map.Entry<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> areaEntry : plannedDispatchTree.entrySet()) {
+				for(Map.Entry<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispEntry : areaEntry.getValue().entrySet()) {
+					for(Map.Entry<Date, List<IWaveInstance>> cutOffEntry : dispEntry.getValue().entrySet()) {
+						if(!dispatchStatus.containsKey(dispEntry.getKey())) {
+							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.COMPLETE);
+						}
+						if(cutOffEntry.getKey().after(this.getBatch().getCutOffDateTime())) {
+							dispatchStatus.put(dispEntry.getKey(), EnumHandOffDispatchStatus.PENDING);
+						}									
+					}
+				}
+			}
+		}
+		result.setDispatchStatus(dispatchStatus);
+		result.setMismatchRoutes(mismatchRoutes);
+		return result;
+	}
+	
+	protected DispatchCorrelationResult checkRouteMismatch(List<IHandOffBatchRoute> routes, Map<String, IAreaModel> areaLookup) throws RoutingServiceException {
+		
+		DispatchCorrelationResult correlationResult = this.correlateDispatch(routes, areaLookup);
+		if(correlationResult != null && correlationResult.getMismatchRoutes() != null 
+											&& correlationResult.getMismatchRoutes().size() > 0) {
+			StringBuffer errorBuf = new StringBuffer(); 
+			for(IHandOffBatchRoute mismatchRoute : correlationResult.getMismatchRoutes()) {
+				if(errorBuf.length() > 0) {
+					errorBuf.append(",");
+				}
+				errorBuf.append(mismatchRoute.getRouteId()).append(mismatchRoute.getRoutingRouteId());
+			}
+			throw new RoutingServiceException("Plan Mismatch "+ errorBuf.toString() 
+					, null, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+		return correlationResult;
+	}
+	
 	public Object execute() {
 		long startTime = System.currentTimeMillis();
 		try {
@@ -112,6 +211,26 @@ public abstract class AbstractHandOffAction {
 		long endTime = System.currentTimeMillis();
 		System.out.println("HandOffAction "+this.getClass().getName()+" completed in"+ ((endTime - startTime)/60) +" secs");
 		return null;
+	}
+	
+	class DispatchCorrelationResult {
+		
+		List<IHandOffBatchRoute> mismatchRoutes;
+		// DispatchTime vs DispatchStatus
+		Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = null;
+		
+		public List<IHandOffBatchRoute> getMismatchRoutes() {
+			return mismatchRoutes;
+		}
+		public Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> getDispatchStatus() {
+			return dispatchStatus;
+		}
+		public void setMismatchRoutes(List<IHandOffBatchRoute> mismatchRoutes) {
+			this.mismatchRoutes = mismatchRoutes;
+		}
+		public void setDispatchStatus(Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) {
+			this.dispatchStatus = dispatchStatus;
+		}
 	}
 	
 	public abstract Object doExecute() throws Exception;

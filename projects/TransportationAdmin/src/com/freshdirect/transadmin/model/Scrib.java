@@ -30,6 +30,8 @@ public class Scrib
 	private String firstDeliveryTimeModified;
 	private String zoneModified;
 	
+	private Date cutOffTime;
+	
 	public String getZoneModified() {
 		return zoneModified;
 	}
@@ -318,7 +320,36 @@ public class Scrib
 	public void setSupervisorName(String supervisorName) {
 		this.supervisorName = supervisorName;
 	}
+
+	public Date getCutOffTime() {
+		return cutOffTime;
+	}
+
+	public void setCutOffTime(Date cutOffTime) {
+		this.cutOffTime = cutOffTime;
+	}
 	
-	
+	public String getCutOffTimeS() 
+	{
+		try {
+			if(cutOffTime!=null)return TransStringUtil.getServerTime(cutOffTime);
+		} catch (ParseException e) 
+		{
+			
+		}
+		return null;
+		
+	}
+	public void setCutOffTimeS(String cutOffTimeS) 
+	{
+		try 
+		{
+			if(cutOffTimeS!=null&&cutOffTimeS.length()>0)cutOffTime=TransStringUtil.getServerTime(cutOffTimeS);
+			else cutOffTime=null;
+		} catch (ParseException e) 
+		{
+			
+		}
+	}
 	
 }

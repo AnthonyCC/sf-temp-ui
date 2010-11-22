@@ -11,6 +11,7 @@ import java.util.Set;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.dao.IHandOffDAO;
 import com.freshdirect.routing.manager.IProcessMessage;
 import com.freshdirect.routing.model.IHandOffBatch;
@@ -24,7 +25,9 @@ import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 import com.freshdirect.routing.util.RoutingUtil;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 
 public class HandOffService extends BaseService implements IHandOffService {
 	
@@ -195,18 +198,22 @@ public class HandOffService extends BaseService implements IHandOffService {
 		}
 	}
 	
-	public void clearHandOffBatchStopRoute(String handOffBatchId) throws RoutingServiceException {
+	public void clearHandOffBatchStopRoute(Date deliveryDate, String handOffBatchId) throws RoutingServiceException {
 		try {
 			getHandOffDAOImpl().clearHandOffBatchStopsRoute(handOffBatchId);
-			getHandOffDAOImpl().clearHandOffBatchRoutes(handOffBatchId);			
+			getHandOffDAOImpl().clearHandOffBatchRoutes(handOffBatchId);	
+			getHandOffDAOImpl().clearHandOffBatchDispatches(deliveryDate);
+			
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}
 	}
 	
-	public void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException {
+	public void updateHandOffBatchDetails(Date deliveryDate, List<IHandOffBatchRoute> routes
+											, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
 		try {
-			getHandOffDAOImpl().addNewHandOffBatchRoutes(routes);
+			getHandOffDAOImpl().addNewHandOffBatchDispatches(deliveryDate, dispatchStatus);
+			getHandOffDAOImpl().addNewHandOffBatchRoutes(routes);			
 			if(stops != null) {
 				List<List<?>> buckets = RoutingUtil.splitList(stops, RoutingServicesProperties.getJDBCBatchUpdateThreshold());
 				for(List bucket: buckets) {
@@ -230,6 +237,22 @@ public class HandOffService extends BaseService implements IHandOffService {
 	public List<IHandOffBatchRoute> getHandOffBatchRoutes(String batchId) throws RoutingServiceException {
 		try {
 			return getHandOffDAOImpl().getHandOffBatchRoutes(batchId);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public List<HandOffDispatchIn> getHandOffBatchDispatches(Date deliveryDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDispatches(deliveryDate);
+		} catch (SQLException e) {
+			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
+		}
+	}
+	
+	public Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException {
+		try {
+			return getHandOffDAOImpl().getHandOffBatchDispatchCnt(deliveryDate);
 		} catch (SQLException e) {
 			throw new RoutingServiceException(e, IIssue.PROCESS_HANDOFFBATCH_ERROR);
 		}

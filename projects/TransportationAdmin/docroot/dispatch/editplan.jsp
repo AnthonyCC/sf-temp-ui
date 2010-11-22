@@ -145,6 +145,13 @@
 							<td><form:errors path="firstDeliveryTime" />&nbsp;</td>                 
 						</tr>
 						<tr>
+							<td><a id="timeLastDlv_toggler">Last Dlv.&nbsp;Time</a></td>
+							<td>
+								<form:input maxlength="50" size="24" path="lastDeliveryTime" onblur="this.value=time(this.value);"/>
+							</td>
+							<td><form:errors path="lastDeliveryTime" />&nbsp;</td>                 
+						</tr>
+						<tr>
 							<td><a id="maxTime_toggler">Max Time</a></td>
 							<td>     
 								<form:input maxlength="50" size="24" path="maxTime" onblur="this.value=hour(this.value);" />             
@@ -230,7 +237,14 @@
 							<td>
 								<form:errors path="sequence" />&nbsp;
 							</td>
-						</tr>                                           
+						</tr>  
+						<tr>
+							<td>CutOff&nbsp;Time</td>
+							<td>
+								<form:input maxlength="50" size="24" path="cutOffTime" onblur="this.value=time(this.value);"/>
+							</td>
+							<td><form:errors path="cutOffTime" />&nbsp;</td>                 
+						</tr>                                         
 						<tr>
 						<% if(hasErrors) { %>
 							<td colspan="3" align="center">

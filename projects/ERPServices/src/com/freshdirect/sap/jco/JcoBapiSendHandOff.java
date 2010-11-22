@@ -10,9 +10,11 @@ package com.freshdirect.sap.jco;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.framework.util.QuickDateFormat;
 import com.freshdirect.sap.bapi.BapiSendHandOff;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 import com.sap.mw.jco.JCO;
 
 /**
@@ -26,6 +28,8 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 	private JCO.Table stops;
 	
 	private JCO.Table routes;
+	
+	private JCO.Table dispatches;
 
 	public JcoBapiSendHandOff() {
 		super("ZBAPI_ROUTEINFO_UPLOAD_TO_SAP");
@@ -43,7 +47,8 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			routes.setValue(route.getDistance(), "ZTRUCK_MILES"); 
 			routes.setValue(route.getTravelTimeInfo(), "ZTRUCK_DRIVETIME");
 			routes.setValue(route.getServiceTimeInfo(), "ZTRUCK_SRV_TIME");
-			routes.setValue(formatTime(route.getDispatchTime()), "ZTRUCK_DISP_TIME");
+			routes.setValue(formatTime(route.getRouteDispatchTime()), "ZTRUCK_DISP_TIME");
+			routes.setValue(route.getDispatchSequence(), "ZTRUCK_DISPA_SEQ");			
 			routes.setValue(formatTime(route.getDepartTime()), "ZTRUCK_DEPA_TIME");
 			routes.setValue(formatTime(route.getFirstStopTime()), "ZTRUCK_FRT_STOP");
 			routes.setValue(formatTime(route.getLastStopCompletionTime()), "ZTRUCK_RTN_TIME");
@@ -63,7 +68,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			stops.setValue(stop.getStopNo(), "ZZSTOPSEQ"); // Stop Sequence
 			stops.setValue(formatTime(stop.getStopArrivalTime()), "ZZDROPTIME"); // Stop Arrival Time
 			stops.setValue(stop.getBuildingType(), "BUILDING_TYPE"); // Building Type
-			stops.setValue(stop.getServiceType(), "DEL_TYPE"); // Delivery Time
+			stops.setValue(stop.getServiceType(), "DEL_TYPE"); // Delivery Type
 			stops.setValue(stop.getCrossStreet(), "CROSS_STREET"); // SVC Cross Street
 			stops.setValue(stop.getCrossStreet2(), "CROSS_STREET2"); // Cross Street 2
 			stops.setValue(stop.getServiceEntrance(), "SVC_ENTER_ADD"); // SVC Enter Address
@@ -78,6 +83,23 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 			stops.nextRow();
 		}
 	}
+	
+	@Override
+	public void setHandOffDispatchStatus(List<HandOffDispatchIn> _dispatches) {
+		dispatches = this.function.getTableParameterList().getTable("T_DISPATCH");
+		if(_dispatches != null) {
+			for(HandOffDispatchIn dispatch : _dispatches) {
+				dispatches.insertRow(1);
+				dispatches.setValue(formatTime(dispatch.getDispatchTime()), "ZDISPATCH_TIME"); // Dispatch Time
+				dispatches.setValue(dispatch.isComplete() ? "X" : " ", "ZDISPATCH_STATUS"); // Dispatch Sequence
+													
+				dispatches.nextRow();
+			}
+		}
+		
+	}
+
+	
 
 	@Override
 	public void setParameters(String plantCode, Date deliveryDate,
@@ -85,7 +107,7 @@ class JcoBapiSendHandOff extends JcoBapiFunction implements BapiSendHandOff {
 		this.function.getImportParameterList().setValue(plantCode, "I_WERKS");
 		this.function.getImportParameterList().setValue(deliveryDate, "I_VDATU");
 		this.function.getImportParameterList().setValue(waveRunNo, "I_WAVE_RUN");
-		this.function.getImportParameterList().setValue(dropNow ? "X" : "", "I_DROP_IMMEDIATE");
+		//this.function.getImportParameterList().setValue(dropNow ? "X" : "", "I_DROP_IMMEDIATE");
 	}
 		
 	private String formatTime(Date input) {

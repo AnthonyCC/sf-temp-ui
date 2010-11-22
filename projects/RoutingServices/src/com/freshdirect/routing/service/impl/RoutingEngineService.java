@@ -396,6 +396,7 @@ public class RoutingEngineService extends BaseService implements IRoutingEngineS
 		
 	}
 	
+		
 	private String encodeString(String strRoot) {
 		return strRoot != null ? strRoot.toUpperCase() : strRoot;
 	}

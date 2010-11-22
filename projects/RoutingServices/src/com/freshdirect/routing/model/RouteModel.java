@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.routing.util.RoutingTimeOfDay;
+
 public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private String routeId;
@@ -25,6 +27,50 @@ public class RouteModel extends BaseModel implements IRouteModel {
 	
 	private String originId;
 	
+	private int preferredRunTime;
+	private int maxRunTime;
+		
+	private RoutingTimeOfDay dispatchTime;	
+	private int dispatchSequence;
+			
+	public void copyWaveProperties(IWaveInstance waveInstance) {
+		this.setMaxRunTime(waveInstance.getMaxRunTime());
+		this.setPreferredRunTime(waveInstance.getPreferredRunTime());
+		this.setDispatchTime(waveInstance.getDispatchTime());
+	}
+	
+	public int getPreferredRunTime() {
+		return preferredRunTime;
+	}
+
+	public int getMaxRunTime() {
+		return maxRunTime;
+	}
+
+	public RoutingTimeOfDay getDispatchTime() {
+		return dispatchTime;
+	}
+
+	public int getDispatchSequence() {
+		return dispatchSequence;
+	}
+
+	public void setPreferredRunTime(int preferredRunTime) {
+		this.preferredRunTime = preferredRunTime;
+	}
+
+	public void setMaxRunTime(int maxRunTime) {
+		this.maxRunTime = maxRunTime;
+	}
+
+	public void setDispatchTime(RoutingTimeOfDay dispatchTime) {
+		this.dispatchTime = dispatchTime;
+	}
+
+	public void setDispatchSequence(int dispatchSequence) {
+		this.dispatchSequence = dispatchSequence;
+	}
+
 	public List<String> getRoutingRouteId() {
 		return routingRouteId;
 	}

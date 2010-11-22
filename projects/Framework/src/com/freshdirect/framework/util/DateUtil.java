@@ -159,6 +159,10 @@ public class DateUtil {
 		return MIN_AMPM_FORMATTER.format(dateValue);
 	}
 	
+	public static Date parseTimeAMPM(String dateValue)  throws ParseException {
+		return MIN_AMPM_FORMATTER.parse(dateValue);
+	}
+	
 	public static String formatDay(Date dateValue) {
 		return DAY_INWEEK_FORMATTER.format(dateValue);
 	}

@@ -70,6 +70,11 @@ public class RoutingServiceLocator {
 		return (IRoutingEngineService)factory.getBean("routingEngineService");
 	}
 	
+	public ICapacityEngineService getCapacityEngineService() {
+		return (ICapacityEngineService)factory.getBean("capacityEngineService");
+	}
+	
+	
 	public IHandOffService getHandOffService() {
 		return (IHandOffService)factory.getBean("handOffService");
 	}

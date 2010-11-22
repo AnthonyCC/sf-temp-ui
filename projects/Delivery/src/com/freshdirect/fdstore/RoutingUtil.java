@@ -23,7 +23,6 @@ import com.freshdirect.delivery.model.DlvReservationModel;
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewayHome;
 import com.freshdirect.delivery.routing.ejb.RoutingGatewaySB;
-import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.routing.model.BuildingModel;
 import com.freshdirect.routing.model.DeliveryModel;
@@ -50,6 +49,7 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.PlantServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
+import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 
 public class RoutingUtil {
@@ -631,7 +631,7 @@ public class RoutingUtil {
 		deliverySlot.setSchedulerId(identity);
 		deliverySlot.setStartTime(timeSlot.getStartTimeAsDate());
 		deliverySlot.setStopTime(timeSlot.getEndTimeAsDate());
-		deliverySlot.setWaveCode(getHourAMPM(timeSlot.getCutoffTimeAsDate()));
+		deliverySlot.setWaveCode(RoutingDateUtil.getWaveCode(timeSlot.getCutoffTimeAsDate()));
 		return deliverySlot;
 	}
 
@@ -653,10 +653,7 @@ public class RoutingUtil {
 		return dlvInfo;
 	}
 
-	private static String getHourAMPM(Date date) {
-		return  DateUtil.formatTimeAMPM(date);
-	}
-
+	
 	private  RoutingGatewayHome getRoutingGatewayHome() throws FDResourceException {
 			lookupRoutingGatewayHome();
 			return home;

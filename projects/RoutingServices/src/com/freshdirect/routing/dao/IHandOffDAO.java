@@ -9,11 +9,14 @@ import java.util.Set;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
 import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 
 
 public interface IHandOffDAO {
@@ -66,4 +69,9 @@ public interface IHandOffDAO {
 	void clearHandOffBatchDepotScheduleEx(String dayOfWeek, Date cutOffTime) throws SQLException;
 	void addNewHandOffBatchDepotSchedulesEx(Set<IHandOffBatchDepotScheduleEx> dataList) throws SQLException;
 	Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws SQLException;
+	
+	void clearHandOffBatchDispatches(Date deliveryDate) throws SQLException;
+	void addNewHandOffBatchDispatches(Date deliveryDate, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws SQLException;
+	List<HandOffDispatchIn> getHandOffBatchDispatches(final Date deliveryDate) throws SQLException;
+	Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(final Date deliveryDate) throws SQLException;
 }

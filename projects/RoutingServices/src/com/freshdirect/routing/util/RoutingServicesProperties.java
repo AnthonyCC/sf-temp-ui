@@ -118,6 +118,8 @@ public class RoutingServicesProperties {
 	
 	private final static String PROP_DEFAULT_SERVICETIME		= "routingservices.default.servicetime";
 	
+	private final static String PROP_HANDOFF_DISPATCHCORRELATIONENABLED		= "routingservices.handoff.dispatchcorrelationenabled";
+	
 	private static final Category LOGGER = LoggerFactory.getInstance( RoutingServicesProperties.class );
 	
 	static {
@@ -181,6 +183,8 @@ public class RoutingServicesProperties {
 		
 		defaults.put(PROP_DEFAULT_ORDERSIZE, "5");
 		defaults.put(PROP_DEFAULT_SERVICETIME, "180");
+		
+		defaults.put(PROP_HANDOFF_DISPATCHCORRELATIONENABLED, true);
 		
 		refresh();		
 	}
@@ -395,6 +399,10 @@ public class RoutingServicesProperties {
 	public static boolean getRoutingCutOffStandByEnabled() {
         return (new Boolean(get(PROP_CUTOFFSIMSTANDBY_ENABLED))).booleanValue();
     }
+	
+	public static boolean getHandOffDispatchCorrelationEnabled() {
+		return (new Boolean(get(PROP_HANDOFF_DISPATCHCORRELATIONENABLED))).booleanValue();
+	}
 	
 	public static int getRoadnetSessionSizeThreshold() {
 		return getIntVal(get(PROP_ROADNETSESSIONSIZE_THRESHOLD));

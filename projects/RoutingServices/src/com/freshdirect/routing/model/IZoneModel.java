@@ -30,4 +30,7 @@ package com.freshdirect.routing.model;
      IServiceTimeTypeModel getServiceTimeType();
      
      void setServiceTimeType(IServiceTimeTypeModel serviceTimeType);
+     
+ 	 int getLoadingPriority();
+ 	 void setLoadingPriority(int loadingPriority);
 }

@@ -7,10 +7,12 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	
@@ -36,6 +38,10 @@ public class RoutingInfoServiceProxy  extends BaseServiceProxy  {
 	
 	public int flagReRouteReservation(Date deliveryDate, List<String> zones) throws RoutingServiceException {
 		return getService().flagReRouteReservation(deliveryDate, zones);
+	}
+	
+	public Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(Date deliveryDate)  throws RoutingServiceException {
+		return getService().getPlannedDispatchTree(deliveryDate);
 	}
 		
 	public IRoutingInfoService getService() {

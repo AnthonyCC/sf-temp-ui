@@ -18,6 +18,8 @@ import java.util.TreeSet;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
+import com.freshdirect.routing.handoff.action.AbstractHandOffAction.DispatchCorrelationResult;
 import com.freshdirect.routing.model.HandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.HandOffBatchRoute;
 import com.freshdirect.routing.model.HandOffBatchStop;
@@ -31,6 +33,7 @@ import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.service.exception.IIssue;
@@ -40,6 +43,7 @@ import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class HandOffRoutingOutAction extends AbstractHandOffAction {
 	
@@ -75,13 +79,15 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 		proxy.addNewHandOffBatchAction(this.getBatch().getBatchId(), RoutingDateUtil.getCurrentDateTime()
 												, EnumHandOffBatchActionType.ROUTEOUT, this.getUserId());
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTPROGRESS);
+		Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
+		Map<String, IZoneModel> zoneLookup = geoProxy.getZoneLookup();
+		
 		if(this.getBatch() != null && this.getBatch().getBatchId() != null) {
 			
 			if(this.getBatch() != null) {
-				proxy.clearHandOffBatchStopRoute(this.getBatch().getBatchId());
+				proxy.clearHandOffBatchStopRoute(this.getBatch().getDeliveryDate(), this.getBatch().getBatchId());
 				Map<String, Integer> routeCnts = proxy.getHandOffBatchRouteCnt(this.getBatch().getDeliveryDate());
-				Map<String, IAreaModel> areaLookup = geoProxy.getAreaLookup();
-				
+								
 				Set<IHandOffBatchSession> sessions = this.getBatch().getSession();
 				if(sessions != null) {
 					for(IHandOffBatchSession session : sessions) {
@@ -156,13 +162,62 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			}
 		}
 		
+		
 		//processResult(this.getBatch().getBatchId(), sessionMapping);
-				
-		proxy.updateHandOffBatchDetails(s_routes, s_stops);
+		DispatchCorrelationResult correlationResult = null;
+		if(RoutingServicesProperties.getHandOffDispatchCorrelationEnabled()) {
+			correlationResult = checkRouteMismatch(s_routes, areaLookup);	
+			assignDispatchSequence(s_routes, zoneLookup, proxy.getHandOffBatchDispatchCnt(this.getBatch().getDeliveryDate()));		
+		} else {
+			// This is the rollback strategy for Dispatch Time Correlation.
+			correlationResult = new DispatchCorrelationResult();
+			Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus = new TreeMap<RoutingTimeOfDay, EnumHandOffDispatchStatus>();
+			if(s_routes != null) {
+				for(IHandOffBatchRoute _routeModel : s_routes) {
+					_routeModel.setDispatchTime(_routeModel.getStartTime() != null 
+							? new RoutingTimeOfDay(RoutingDateUtil.addMinutes(_routeModel.getStartTime(), -25)) : null);
+					_routeModel.setDispatchSequence(0);
+					dispatchStatus.put(_routeModel.getDispatchTime(), EnumHandOffDispatchStatus.COMPLETE);
+				}
+			}
+		}
+		proxy.updateHandOffBatchDetails(this.getBatch().getDeliveryDate(), s_routes, s_stops, correlationResult.getDispatchStatus());
+		
 		checkStopExceptions();
+				
 		proxy.updateHandOffBatchStatus(this.getBatch().getBatchId(), EnumHandOffBatchStatus.ROUTEGENERATED);
 		proxy.updateHandOffBatchMessage(this.getBatch().getBatchId(), INFO_MESSAGE_ROUTINGOUTCOMPLETED);
 		return null;		
+	}
+	
+	private void assignDispatchSequence(List<IHandOffBatchRoute> routes, Map<String, IZoneModel> zoneLookup
+											, Map<RoutingTimeOfDay, Integer> currDispatchSequence) {
+		
+		if(routes != null) {
+			//Group by Dispatch Time to Assign Sequence
+			Map<RoutingTimeOfDay, List<IHandOffBatchRoute>> dispatchRouteMpp = new TreeMap<RoutingTimeOfDay, List<IHandOffBatchRoute>>();
+			for(IHandOffBatchRoute route : routes) {
+				if(!dispatchRouteMpp.containsKey(route.getDispatchTime())) {
+					dispatchRouteMpp.put(route.getDispatchTime(), new ArrayList<IHandOffBatchRoute>());
+				}
+				dispatchRouteMpp.get(route.getDispatchTime()).add(route);
+			}
+			
+			DispatchSequenceComparator seqComparator = new DispatchSequenceComparator(zoneLookup);
+			
+			for(Map.Entry<RoutingTimeOfDay, List<IHandOffBatchRoute>> dispatchRouteEntry : dispatchRouteMpp.entrySet()) {
+				Collections.sort(dispatchRouteEntry.getValue(), seqComparator);
+				for(IHandOffBatchRoute route : dispatchRouteEntry.getValue()) {
+					if(currDispatchSequence.containsKey(dispatchRouteEntry.getKey())) {
+						route.setDispatchSequence(currDispatchSequence.get(dispatchRouteEntry.getKey()) + 1);
+						currDispatchSequence.put(dispatchRouteEntry.getKey(), currDispatchSequence.get(dispatchRouteEntry.getKey()) + 1);
+					} else {
+						route.setDispatchSequence(1);
+						currDispatchSequence.put(dispatchRouteEntry.getKey(), 1);
+					}
+				}
+			}
+		}
 	}
 	
 	// Same Exception check but with a force option will performed during Commit Operation
@@ -342,6 +397,7 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 				newRoute.setRouteId(areaEntry.getKey()+"-"+intRountCount);
 				newRoute.setStartTime(route.getTruckDepartureTime());
 				newRoute.setCompletionTime(route.getDepotArrivalTime());
+				
 				newRoute.setStops(new TreeSet());
 				
 				result.get(areaEntry.getKey()).add(newRoute);
@@ -429,6 +485,31 @@ public class HandOffRoutingOutAction extends AbstractHandOffAction {
 			Date arrivalData1 = ( (IHandOffBatchDepotSchedule) obj1).getDepotArrivalTime();
 			Date arrivalData2 = ( (IHandOffBatchDepotSchedule) obj2).getDepotArrivalTime();			
 			return arrivalData1.compareTo(arrivalData2);
+		}		
+	}
+	
+	private class DispatchSequenceComparator implements Comparator<IHandOffBatchRoute> {		
+		Map<String, IZoneModel> zoneLookup;
+		
+		public DispatchSequenceComparator(Map<String, IZoneModel> zoneLookup) {
+			super();
+			this.zoneLookup = zoneLookup;
+		}
+
+		public int compare(IHandOffBatchRoute routeData1, IHandOffBatchRoute routeData2) {
+						
+			if(zoneLookup != null && routeData1 != null && routeData2 != null) {
+				IZoneModel zoneDate1 = zoneLookup.get(routeData1.getArea());
+				IZoneModel zoneDate2 = zoneLookup.get(routeData2.getArea());
+				if(zoneDate1 != null && zoneDate2 != null) {
+					if(zoneDate1.getLoadingPriority() == zoneDate2.getLoadingPriority()) {
+						return 0;
+					} else if (zoneDate1.getLoadingPriority() > zoneDate2.getLoadingPriority()) {
+						return 1;
+					}
+				}
+			}						
+			return -1;
 		}		
 	}
 	

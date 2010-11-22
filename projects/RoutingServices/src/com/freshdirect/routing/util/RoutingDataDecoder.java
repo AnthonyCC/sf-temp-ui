@@ -32,6 +32,7 @@ import com.freshdirect.routing.model.IRouteModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
 import com.freshdirect.routing.model.IRoutingStopModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneModel;
 import com.freshdirect.routing.model.LocationModel;
 import com.freshdirect.routing.model.OrderModel;
@@ -40,6 +41,7 @@ import com.freshdirect.routing.model.RouteModel;
 import com.freshdirect.routing.model.RoutingNotificationModel;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.model.RoutingStopModel;
+import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneModel;
 import com.freshdirect.routing.proxy.stub.roadnet.DirectionArc;
 import com.freshdirect.routing.proxy.stub.roadnet.DirectionData;
@@ -48,6 +50,7 @@ import com.freshdirect.routing.proxy.stub.transportation.ChangedOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryCost;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
 import com.freshdirect.routing.proxy.stub.transportation.Notification;
 import com.freshdirect.routing.proxy.stub.transportation.ReserveResult;
@@ -130,11 +133,15 @@ public class RoutingDataDecoder {
 			result.setRouteId(route.getRouteID());
 			result.setStartTime(route.getStartTime() != null ? route.getStartTime().getTime() : null);
 			result.setCompletionTime(route.getCompleteTime() != null ? route.getCompleteTime().getTime() : null);
-			
+						
 			result.setDistance(route.getDistance());
 			result.setTravelTime(route.getTravelTime());
 			result.setServiceTime(route.getServiceTime());
-			
+						
+			//result.setCutOffTime(getWaveCutOffTime(route.); UPS Batch System doesnt have wavecode could be a problem for sameday
+			result.setMaxRunTime(route.getMaximumTime()/60);
+			result.setPreferredRunTime(route.getPreferredTime()/60);
+						
 			result.setOriginId(route.getOrigin() != null ? route.getOrigin().getLocationID() : null);
 			
 			result.setStops(new TreeSet());
@@ -404,6 +411,36 @@ public class RoutingDataDecoder {
 		schedulerId.setDeliveryDate(schIdentity.getDeliveryDate());
 		schedulerId.setRegionId(schIdentity.getRegionId());
 		return schedulerId;
+	}
+	
+	public static List<IWaveInstance> decodeWaveInstanceList(DeliveryWaveInstance[] waveInstances) {
+		
+		List<IWaveInstance> result = null;
+		if(waveInstances != null) {
+			result = new ArrayList<IWaveInstance>();
+			
+			for(int intCount=0; intCount < waveInstances.length; intCount++) {
+				result.add(decodeWaveInstance(waveInstances[intCount]));
+			}
+		}
+		return result;
+	}
+	
+	public static IWaveInstance decodeWaveInstance(DeliveryWaveInstance waveInstance) {
+		
+		IWaveInstance result = null;
+		if(waveInstance != null) {
+			result = new WaveInstance();
+			
+			//result.setDispatchTime(dispatchTime);
+			result.setMaxRunTime(waveInstance.getMaximumRuntime());
+			result.setNoOfResources(waveInstance.getNumberOfVehicles());
+			result.setPreferredRunTime(waveInstance.getPreferredRuntime());
+			result.setRoutingWaveInstanceId(waveInstance.getWaveIdentity().getInternalWavePKey());
+			//result.setWaveCode(RoutingDateUtil.getWaveCode(waveInstance.getWaveCode()));
+			//result.setWaveStartTime(waveInstance.getStartTime().getAsCalendar().getTime());
+		}
+		return result;
 	}
 	
 }

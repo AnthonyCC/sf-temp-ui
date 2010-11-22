@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeSet;
 
+import com.freshdirect.routing.util.RoutingTimeOfDay;
+
 public interface IRouteModel {
 	
 	String getRouteId();
@@ -35,6 +37,19 @@ public interface IRouteModel {
 	
 	String getOriginId();
 	void setOriginId(String originId);
+
+	int getPreferredRunTime();
+	int getMaxRunTime();
+	
+	RoutingTimeOfDay getDispatchTime();
+	int getDispatchSequence();
+
+	void setPreferredRunTime(int preferredRunTime);
+	void setMaxRunTime(int maxRunTime);
+
+	void setDispatchTime(RoutingTimeOfDay dispatchTime);
+	void setDispatchSequence(int dispatchSequence);
 	
 	void appendRoutingRoute(String routingRouteId);
+	void copyWaveProperties(IWaveInstance waveInstance);
 }

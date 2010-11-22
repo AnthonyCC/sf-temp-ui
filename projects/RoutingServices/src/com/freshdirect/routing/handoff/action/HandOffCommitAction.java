@@ -18,10 +18,12 @@ import com.freshdirect.routing.model.IHandOffBatchRoute;
 import com.freshdirect.routing.model.IHandOffBatchStop;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.service.proxy.GeographyServiceProxy;
 import com.freshdirect.routing.service.proxy.HandOffServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.routing.util.RoutingServicesProperties;
 import com.freshdirect.sap.bapi.BapiInfo;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffRouteIn;
 import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffStopIn;
 import com.freshdirect.sap.command.SapSendHandOff;
@@ -44,6 +46,7 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 	public Object doExecute() throws Exception {
 		processResponse = null;
 		HandOffServiceProxy proxy = new HandOffServiceProxy();
+		GeographyServiceProxy geoProxy = new GeographyServiceProxy();
 		
 		List<IHandOffBatchStop> handOffStops = proxy.getOrderByCutoff(this.getBatch().getDeliveryDate()
 																, this.getBatch().getCutOffDateTime());
@@ -63,6 +66,8 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 		}
 		List routes = proxy.getHandOffBatchRoutes(this.getBatch().getBatchId());
 		List stops = proxy.getHandOffBatchStops(this.getBatch().getBatchId(), false);
+		List<HandOffDispatchIn> dispatchStatus = proxy.getHandOffBatchDispatches(this.getBatch().getDeliveryDate());
+		
 		List<HandOffStopIn> stopsToCommit = new ArrayList<HandOffStopIn>();
 		List<HandOffRouteIn> routesToCommit = new ArrayList<HandOffRouteIn>(); 
 		
@@ -117,16 +122,21 @@ public class HandOffCommitAction extends AbstractHandOffAction {
 			StringBuffer sapResponse = new StringBuffer();
 			if(this.getBatch().isEligibleForCommit()) {
 				List<IHandOffBatchRoute> rootRoutesIn = (List<IHandOffBatchRoute>)routes; 
+				List<IHandOffBatchRoute> rootRoutes = new ArrayList<IHandOffBatchRoute>(); 
 				for(IHandOffBatchRoute route : rootRoutesIn) {
 					if(route.getStops() != null && route.getStops().size() > 0) {
 						routesToCommit.add(route);
+						rootRoutes.add(route);
 					}
 				}
+				
 	    		SapSendHandOff sapHandOffEngine = new SapSendHandOff(routesToCommit
 																		, stopsToCommit
+																		, dispatchStatus
 																		, RoutingServicesProperties.getDefaultPlantCode()
 																		, this.getBatch().getDeliveryDate()
-																		, this.getBatch().getBatchId(), true);
+																		, this.getBatch().getBatchId()
+																		, true);
 				
 				try {
 					sapHandOffEngine.execute();

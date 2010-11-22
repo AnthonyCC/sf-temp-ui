@@ -42,7 +42,9 @@
         
     <bean id="utilityService" class="com.freshdirect.routing.service.impl.UtilityService"/> 
     
-    <bean id="routingEngineService" class="com.freshdirect.routing.service.impl.RoutingEngineService"/>       
+    <bean id="routingEngineService" class="com.freshdirect.routing.service.impl.RoutingEngineService"/> 
+    
+    <bean id="capacityEngineService" class="com.freshdirect.routing.service.impl.CapacityEngineService"/>      
 	
 	<bean id="geographyService" class="com.freshdirect.routing.service.impl.GeographyService">
            <property name="geographyDAOImpl" ref="geographyDAO"/>    		

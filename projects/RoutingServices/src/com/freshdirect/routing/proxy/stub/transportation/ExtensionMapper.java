@@ -900,6 +900,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyDetails".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyDetails.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "Route".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.Route.Factory.parse(reader);
@@ -1970,6 +1980,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SurveyResponseInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SurveyResponseInfo.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "TimeDistResult".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.TimeDistResult.Factory.parse(reader);
@@ -2633,6 +2653,16 @@
                   "OriginDepartNotification".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.OriginDepartNotification.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "RICRegionsWithPurchaseInfo".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.RICRegionsWithPurchaseInfo.Factory.parse(reader);
                         
 
                   }

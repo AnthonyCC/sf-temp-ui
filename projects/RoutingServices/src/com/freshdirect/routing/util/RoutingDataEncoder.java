@@ -17,6 +17,7 @@ import com.freshdirect.routing.model.ILocationModel;
 import com.freshdirect.routing.model.IOrderModel;
 import com.freshdirect.routing.model.IRoutingNotificationModel;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.RoutingSchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.roadnet.MapPoint;
 import com.freshdirect.routing.proxy.stub.transportation.Address;
@@ -24,6 +25,8 @@ import com.freshdirect.routing.proxy.stub.transportation.CategoryQuantities;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrder;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryAreaOrderRetrieveOptions;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveAttributes;
+import com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstanceIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.DeliveryWindow;
 import com.freshdirect.routing.proxy.stub.transportation.Location;
 import com.freshdirect.routing.proxy.stub.transportation.LocationIdentity;
@@ -44,12 +47,15 @@ import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalanceRoutesO
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerBalancingFactor;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerBulkReserveOrdersOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerCalculateDeliveryWindowMetrics;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWaveInstanceCriteria;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowBase;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerDeliveryWindowMetricsType;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerReserveOrderOptions;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerRetrieveDeliveryWaveInstanceOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerRouteBalancingOptions;
+import com.freshdirect.routing.proxy.stub.transportation.SchedulerSaveDeliveryWaveInstanceOptions;
 import com.freshdirect.routing.proxy.stub.transportation.SchedulerUpdateOrderOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptions;
 import com.freshdirect.routing.proxy.stub.transportation.TimeZoneOptionsType;
@@ -185,11 +191,11 @@ public class RoutingDataEncoder {
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
 		
-		int finalServiceTime = (int)orderModel.getDeliveryInfo().getCalculatedServiceTime();
+		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
 		if(finalServiceTime <= 0) {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
-		order.setServiceTime(finalServiceTime*60);
+		order.setServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(locationType);
@@ -225,12 +231,12 @@ public class RoutingDataEncoder {
 			order.setDeliveryWindowEnd(getTime(orderModel.getDeliveryInfo().getDeliveryEndTime()));
 		}
 		
-		int finalServiceTime = (int)orderModel.getDeliveryInfo().getCalculatedServiceTime();
+		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
 		if(finalServiceTime <= 0) {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
 		
-		order.setServiceTime(finalServiceTime*60);
+		order.setServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -259,12 +265,12 @@ public class RoutingDataEncoder {
 		}		
 		order.setQuantity(finalOrderSize);
 		
-		int finalServiceTime = (int)orderModel.getDeliveryInfo().getCalculatedServiceTime();
+		double finalServiceTime = orderModel.getDeliveryInfo().getCalculatedServiceTime();
 		if(finalServiceTime <= 0) {
 			finalServiceTime = RoutingServicesProperties.getDefaultServiceTime();
 		}
 		
-		order.setServiceTime(finalServiceTime*60);
+		order.setServiceTime((int)(finalServiceTime*60));
 		order.setLocationId(orderModel.getDeliveryInfo().getDeliveryLocation().getLocationId());
 		order.setLocationType(locationType);
 		order.setDescription(orderModel.getOrderNumber());
@@ -688,7 +694,44 @@ public class RoutingDataEncoder {
 		address.setCountry(country);
 		return address;
 	}
+	
+	public static SchedulerDeliveryWaveInstanceCriteria encodeSchedulerDeliveryWaveInstanceCriteria() {
+				
+		SchedulerDeliveryWaveInstanceCriteria criteria = new SchedulerDeliveryWaveInstanceCriteria();		
+		return criteria;		
+	}
+	
+	public static SchedulerRetrieveDeliveryWaveInstanceOptions encodeSchedulerRetrieveDeliveryWaveInstanceOptions() {
 		
+		SchedulerRetrieveDeliveryWaveInstanceOptions options = new SchedulerRetrieveDeliveryWaveInstanceOptions();		
+		return options;		
+	}
+	
+	public static DeliveryWaveInstanceIdentity encodeWaveInstanceIdentity(IWaveInstance waveInstance) {
+		
+		DeliveryWaveInstanceIdentity waveIdentity = new DeliveryWaveInstanceIdentity();
+		waveIdentity.setInternalWavePKey(waveInstance.getRoutingWaveInstanceId());		
+		return waveIdentity;
+	}
+	
+	public static SchedulerSaveDeliveryWaveInstanceOptions encodeSchedulerSaveDeliveryWaveInstanceOptions(boolean force) {
+		
+		SchedulerSaveDeliveryWaveInstanceOptions options = new SchedulerSaveDeliveryWaveInstanceOptions();	
+		options.setForce(force);
+		return options;		
+	}
+	
+	public static DeliveryWaveAttributes encodeDeliveryWaveAttributes(IWaveInstance waveInstance) {
+		
+		DeliveryWaveAttributes attributes = new DeliveryWaveAttributes();
+		attributes.setMaximumRuntime(waveInstance.getMaxRunTime());
+		attributes.setPreferredRuntime(waveInstance.getPreferredRunTime());
+		attributes.setNumberOfVehicles(waveInstance.getNoOfResources());
+		//attributes.setStartTime(getTime(waveInstance.getWaveStartTime()));
+				
+		return attributes;
+	}
+	
 	private static Time getTime(Date date) {
 		
 		try {

@@ -59,6 +59,9 @@
                                     public static final java.lang.String _dqtAssumedFromProjection =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtAssumedFromProjection");
                                 
+                                    public static final java.lang.String _dqtAssumedFromProjectionSparse =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtAssumedFromProjectionSparse");
+                                
                                     public static final java.lang.String _dqtDriverEntered =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("dqtDriverEntered");
                                 
@@ -82,6 +85,9 @@
                             
                                 public static final DataQualityType dqtAssumedFromProjection =
                                     new DataQualityType(_dqtAssumedFromProjection,true);
+                            
+                                public static final DataQualityType dqtAssumedFromProjectionSparse =
+                                    new DataQualityType(_dqtAssumedFromProjectionSparse,true);
                             
                                 public static final DataQualityType dqtDriverEntered =
                                     new DataQualityType(_dqtDriverEntered,true);

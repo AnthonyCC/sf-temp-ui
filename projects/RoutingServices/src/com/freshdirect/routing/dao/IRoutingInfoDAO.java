@@ -8,7 +8,9 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface IRoutingInfoDAO {
 	
@@ -23,4 +25,6 @@ public interface IRoutingInfoDAO {
 	Map<String, IServiceTimeTypeModel> getRoutingServiceTimeTypes()  throws SQLException;
 	
 	int flagReRouteReservation(final Date deliveryDate, final List<String> zones) throws SQLException;
+	
+	Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException;
 }

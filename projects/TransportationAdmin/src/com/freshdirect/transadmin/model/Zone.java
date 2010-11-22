@@ -38,6 +38,8 @@ public class Zone implements java.io.Serializable {
 	
 	private Set zoneSupervisors = new HashSet(0);
 	
+	private BigDecimal loadingPriority;
+	
     public Set getZoneSupervisors() {
 		return zoneSupervisors;
 	}
@@ -227,6 +229,14 @@ public class Zone implements java.io.Serializable {
 
 	public void setMaxstemTime(BigInteger maxstemTime) {
 		this.maxstemTime = maxstemTime;
-	}	
+	}
 
+	public BigDecimal getLoadingPriority() {
+		return loadingPriority;
+	}
+
+	public void setLoadingPriority(BigDecimal loadingPriority) {
+		this.loadingPriority = loadingPriority;
+	}	
+		
 }

@@ -15,6 +15,8 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 	private IAreaModel area;
 	
 	private IServiceTimeTypeModel serviceTimeType;
+	
+	private int loadingPriority;
 
 	public IAreaModel getArea() {
 		return area;
@@ -71,6 +73,14 @@ public class ZoneModel extends BaseModel implements IZoneModel {
 
 	public void setServiceTimeType(IServiceTimeTypeModel serviceTimeType) {
 		this.serviceTimeType = serviceTimeType;
+	}
+
+	public int getLoadingPriority() {
+		return loadingPriority;
+	}
+
+	public void setLoadingPriority(int loadingPriority) {
+		this.loadingPriority = loadingPriority;
 	}
 
 	public String toString() {

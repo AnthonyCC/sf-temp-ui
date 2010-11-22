@@ -54,6 +54,9 @@ public class Issue implements IIssue {
 		messages.put(PROCESS_RETRIEVEORDER_NOTFOUND,"Retrieve Order Failed");
 		messages.put(PROCESS_RETRIEVEORDER_UNSUCCESSFUL,"Retrieve Order Not Found");
 		messages.put(PROCESS_HANDOFFBATCH_ERROR,"Hand Off Batch Processing Error");
+		
+		messages.put(PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL,"Retrieve Wave Instance Failed");
+		messages.put(PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL,"Save Wave Instance Failed");
 	}
 	
 	public static String getMessage(String id) {

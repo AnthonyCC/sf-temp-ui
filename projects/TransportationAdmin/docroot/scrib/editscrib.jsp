@@ -160,6 +160,13 @@
 							<td><form:errors path="supervisorCode" />&nbsp;</td>   
 						</tr>
 						<tr>
+							<td>CutOff Time</td>
+							<td>         
+								<form:input maxlength="50" size="24" path="cutOffTimeS" onblur="this.value=time(this.value);" /> 
+							</td>
+							<td><form:errors path="cutOffTimeS" />&nbsp;</td>                 
+						</tr> 
+						<tr>
 							<td><input type = "submit" value="&nbsp;Save&nbsp;" />  </td>
 							<td>         
 								<input type = "button" value="&nbsp;Cancel&nbsp;" onclick="javascript:location.href ='scrib.do'" />

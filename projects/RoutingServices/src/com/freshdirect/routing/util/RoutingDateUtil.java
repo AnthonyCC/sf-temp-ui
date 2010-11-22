@@ -142,4 +142,11 @@ public class RoutingDateUtil {
 		return Calendar.getInstance().getTime();
 	}
 	
+	public static String getWaveCode(Date date) {
+		return  DateUtil.formatTimeAMPM(date);
+	}
+	
+	public static Date getWaveCutOffTime(String date) throws ParseException {
+		return  DateUtil.parseTimeAMPM(date);
+	}
 }

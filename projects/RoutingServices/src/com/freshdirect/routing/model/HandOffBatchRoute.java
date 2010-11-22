@@ -25,6 +25,8 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 		this.setTravelTime(refModel.getTravelTime());
 		this.setServiceTime(refModel.getServiceTime());
 		this.setRoutingRouteId(refModel.getRoutingRouteId());
+		this.setMaxRunTime(refModel.getMaxRunTime());
+		this.setPreferredRunTime(refModel.getPreferredRunTime());
 	}
 	
 	public HandOffBatchRoute() {
@@ -76,10 +78,10 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	}
 
 	@Override
-	public Date getDispatchTime() {
+	public Date getRouteDispatchTime() {
 		
-		if(this.getStartTime() != null) {
-			return RoutingDateUtil.addMinutes(this.getStartTime(), -25);
+		if(this.getDispatchTime() != null) {
+			return this.getDispatchTime().getAsDate();
 		} else {
 			return null;
 		}
@@ -121,5 +123,7 @@ public class HandOffBatchRoute extends RouteModel implements IHandOffBatchRoute 
 	public String getTravelTimeInfo() {
 		return RoutingStringUtil.calcHMSFlat((int)getTravelTime());
 	}
+
+	
 		
 }

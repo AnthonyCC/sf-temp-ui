@@ -10,6 +10,7 @@ package com.freshdirect.sap.bapi;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -32,7 +33,8 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public double getTravelTime();
 		public double getServiceTime();
 		
-		public Date getDispatchTime();
+		public Date getRouteDispatchTime();
+		public int getDispatchSequence();
 		public Date getDepartTime();
 		public Date getFirstStopTime();
 		public Date getLastStopCompletionTime();
@@ -62,9 +64,17 @@ public interface BapiSendHandOff extends BapiFunctionI {
 		public String getDifficultReason();
 	}
 	
+	public static interface HandOffDispatchIn {
+		
+		public Date getDispatchTime();
+		public boolean isComplete();
+	}
+	
 	void setHandOffRoutes(List<HandOffRouteIn> routesIn);
 	
 	void setHandOffStops(List<HandOffStopIn> stopsIn);
+	
+	void setHandOffDispatchStatus(List<HandOffDispatchIn> dispatches);
 	
 	void setParameters(String plantCode, Date deliveryDate, String waveRunNo, boolean dropNow);
 	

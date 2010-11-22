@@ -532,22 +532,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for retrieveStopSignature method
-            * override this method for handling normal response from retrieveStopSignature operation
-            */
-           public void receiveResultretrieveStopSignature(
-                    javax.activation.DataHandler result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveStopSignature operation
-           */
-            public void receiveErrorretrieveStopSignature(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for calculateTimeDist method
             * override this method for handling normal response from calculateTimeDist operation
             */
@@ -564,6 +548,22 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for retrieveStopSignature method
+            * override this method for handling normal response from retrieveStopSignature operation
+            */
+           public void receiveResultretrieveStopSignature(
+                    javax.activation.DataHandler result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveStopSignature operation
+           */
+            public void receiveErrorretrieveStopSignature(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for schedulerMovableOrders method
             * override this method for handling normal response from schedulerMovableOrders operation
             */
@@ -576,6 +576,22 @@
            * override this method for handling error response from schedulerMovableOrders operation
            */
             public void receiveErrorschedulerMovableOrders(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveRICRegionsByUser method
+            * override this method for handling normal response from retrieveRICRegionsByUser operation
+            */
+           public void receiveResultretrieveRICRegionsByUser(
+                    com.freshdirect.routing.proxy.stub.transportation.RICRegionsWithPurchaseInfo result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveRICRegionsByUser operation
+           */
+            public void receiveErrorretrieveRICRegionsByUser(java.lang.Exception e) {
             }
                 
            /**
@@ -1061,22 +1077,6 @@
             }
                 
            /**
-            * auto generated Axis2 call back method for retrieveEquipmentTypeByIdentity method
-            * override this method for handling normal response from retrieveEquipmentTypeByIdentity operation
-            */
-           public void receiveResultretrieveEquipmentTypeByIdentity(
-                    com.freshdirect.routing.proxy.stub.transportation.EquipmentType result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from retrieveEquipmentTypeByIdentity operation
-           */
-            public void receiveErrorretrieveEquipmentTypeByIdentity(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for schedulerCancelOrder method
             * override this method for handling normal response from schedulerCancelOrder operation
             */
@@ -1089,22 +1089,6 @@
            * override this method for handling error response from schedulerCancelOrder operation
            */
             public void receiveErrorschedulerCancelOrder(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for schedulerRetrieveDeliveryWaveInstancesByCriteria method
-            * override this method for handling normal response from schedulerRetrieveDeliveryWaveInstancesByCriteria operation
-            */
-           public void receiveResultschedulerRetrieveDeliveryWaveInstancesByCriteria(
-                    com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance[] result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from schedulerRetrieveDeliveryWaveInstancesByCriteria operation
-           */
-            public void receiveErrorschedulerRetrieveDeliveryWaveInstancesByCriteria(java.lang.Exception e) {
             }
                 
            /**
@@ -1139,6 +1123,68 @@
             }
                 
            /**
+            * auto generated Axis2 call back method for saveEmployee method
+            * override this method for handling normal response from saveEmployee operation
+            */
+           public void receiveResultsaveEmployee(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from saveEmployee operation
+           */
+            public void receiveErrorsaveEmployee(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveEquipmentTypeByIdentity method
+            * override this method for handling normal response from retrieveEquipmentTypeByIdentity operation
+            */
+           public void receiveResultretrieveEquipmentTypeByIdentity(
+                    com.freshdirect.routing.proxy.stub.transportation.EquipmentType result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveEquipmentTypeByIdentity operation
+           */
+            public void receiveErrorretrieveEquipmentTypeByIdentity(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for schedulerRetrieveDeliveryWaveInstancesByCriteria method
+            * override this method for handling normal response from schedulerRetrieveDeliveryWaveInstancesByCriteria operation
+            */
+           public void receiveResultschedulerRetrieveDeliveryWaveInstancesByCriteria(
+                    com.freshdirect.routing.proxy.stub.transportation.DeliveryWaveInstance[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from schedulerRetrieveDeliveryWaveInstancesByCriteria operation
+           */
+            public void receiveErrorschedulerRetrieveDeliveryWaveInstancesByCriteria(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for surveyResponse method
+            * override this method for handling normal response from surveyResponse operation
+            */
+           public void receiveResultsurveyResponse(
+                    ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from surveyResponse operation
+           */
+            public void receiveErrorsurveyResponse(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for retrieveStopSurveyQuestions method
             * override this method for handling normal response from retrieveStopSurveyQuestions operation
             */
@@ -1152,21 +1198,6 @@
            * override this method for handling error response from retrieveStopSurveyQuestions operation
            */
             public void receiveErrorretrieveStopSurveyQuestions(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for saveEmployee method
-            * override this method for handling normal response from saveEmployee operation
-            */
-           public void receiveResultsaveEmployee(
-                    ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from saveEmployee operation
-           */
-            public void receiveErrorsaveEmployee(java.lang.Exception e) {
             }
                 
            /**
@@ -2058,6 +2089,22 @@
            * override this method for handling error response from schedulerReloadWaveInstances operation
            */
             public void receiveErrorschedulerReloadWaveInstances(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for retrieveSurveyDetails method
+            * override this method for handling normal response from retrieveSurveyDetails operation
+            */
+           public void receiveResultretrieveSurveyDetails(
+                    com.freshdirect.routing.proxy.stub.transportation.SurveyDetails[] result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from retrieveSurveyDetails operation
+           */
+            public void receiveErrorretrieveSurveyDetails(java.lang.Exception e) {
             }
                 
            /**

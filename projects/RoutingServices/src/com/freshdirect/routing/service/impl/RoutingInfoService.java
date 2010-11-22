@@ -9,10 +9,12 @@ import java.util.Map;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.service.IRoutingInfoService;
 import com.freshdirect.routing.service.exception.IIssue;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class RoutingInfoService extends BaseService implements IRoutingInfoService {
 	
@@ -69,6 +71,15 @@ public class RoutingInfoService extends BaseService implements IRoutingInfoServi
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			throw new RoutingServiceException(e, IIssue.PROCESS_SCENARIO_NOTFOUND);
+		}
+	}
+	
+	public Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(Date deliveryDate)  throws RoutingServiceException {
+		try {
+			return routingInfoDAOImpl.getPlannedDispatchTree(deliveryDate);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL);
 		}
 	}
 

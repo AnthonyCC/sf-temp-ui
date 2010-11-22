@@ -39,7 +39,10 @@ public class ScribValidator extends AbstractValidator {
 		{
 			errors.rejectValue("supervisorCode", "app.error.112", new Object[]{"Supervisor"},"required field");
 		}
-		
+		if(model.getCutOffTime()==null)
+		{
+			errors.rejectValue("cutOffTimeS", "app.error.112", new Object[]{"CutOff Time"},"required field");
+		}
 	}
 	
 

@@ -8,6 +8,7 @@ import java.util.Set;
 import com.freshdirect.customer.EnumSaleStatus;
 import com.freshdirect.routing.constants.EnumHandOffBatchActionType;
 import com.freshdirect.routing.constants.EnumHandOffBatchStatus;
+import com.freshdirect.routing.constants.EnumHandOffDispatchStatus;
 import com.freshdirect.routing.model.IHandOffBatch;
 import com.freshdirect.routing.model.IHandOffBatchDepotSchedule;
 import com.freshdirect.routing.model.IHandOffBatchDepotScheduleEx;
@@ -17,6 +18,8 @@ import com.freshdirect.routing.model.TriggerHandOffResult;
 import com.freshdirect.routing.service.IHandOffService;
 import com.freshdirect.routing.service.RoutingServiceLocator;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
+import com.freshdirect.sap.bapi.BapiSendHandOff.HandOffDispatchIn;
 
 public class HandOffServiceProxy  extends BaseServiceProxy  {	
 		
@@ -70,12 +73,13 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 		getService().clearHandOffBatch(handOffBatchId);
 	}
 	
-	public void clearHandOffBatchStopRoute(String handOffBatchId) throws RoutingServiceException {
-		getService().clearHandOffBatchStopRoute(handOffBatchId);
+	public void clearHandOffBatchStopRoute(Date deliveryDate, String handOffBatchId) throws RoutingServiceException {
+		getService().clearHandOffBatchStopRoute(deliveryDate, handOffBatchId);
 	}
 	
-	public void updateHandOffBatchDetails(List<IHandOffBatchRoute> routes, List<IHandOffBatchStop> stops) throws RoutingServiceException {
-		getService().updateHandOffBatchDetails(routes, stops);
+	public void updateHandOffBatchDetails(Date deliveryDate, List<IHandOffBatchRoute> routes
+											, List<IHandOffBatchStop> stops, Map<RoutingTimeOfDay, EnumHandOffDispatchStatus> dispatchStatus) throws RoutingServiceException {
+		getService().updateHandOffBatchDetails(deliveryDate, routes, stops, dispatchStatus);
 	}
 	
 	public List<IHandOffBatchStop> getHandOffBatchStops(String batchId, boolean filterException) throws RoutingServiceException {
@@ -116,5 +120,13 @@ public class HandOffServiceProxy  extends BaseServiceProxy  {
 	
 	public Set<IHandOffBatchDepotScheduleEx> getHandOffBatchDepotSchedulesEx(String dayOfWeek, Date cutOffTime) throws RoutingServiceException {
 		return getService().getHandOffBatchDepotSchedulesEx(dayOfWeek, cutOffTime);
+	}
+	
+	public List<HandOffDispatchIn> getHandOffBatchDispatches(Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatchDispatches(deliveryDate);
+	}
+	
+	public Map<RoutingTimeOfDay, Integer> getHandOffBatchDispatchCnt(Date deliveryDate) throws RoutingServiceException {
+		return getService().getHandOffBatchDispatchCnt(deliveryDate);
 	}
 }

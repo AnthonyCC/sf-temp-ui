@@ -136,6 +136,36 @@
                             
 
                         /**
+                        * field for AllocatedWorkingTime
+                        */
+
+                        
+                                    protected int localAllocatedWorkingTime ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getAllocatedWorkingTime(){
+                               return localAllocatedWorkingTime;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param AllocatedWorkingTime
+                               */
+                               public void setAllocatedWorkingTime(int param){
+                            
+                                            this.localAllocatedWorkingTime=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Confirmed
                         */
 
@@ -408,6 +438,35 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"allocatedWorkingTime", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"allocatedWorkingTime");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("allocatedWorkingTime");
+                                    }
+                                
+                                               if (localAllocatedWorkingTime==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("allocatedWorkingTime cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllocatedWorkingTime));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
                               if (localConfirmedTracker){
                                     if (localConfirmed==null){
 
@@ -651,6 +710,12 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllocatedVehicles));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "allocatedWorkingTime"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localAllocatedWorkingTime));
                              if (localConfirmedTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
                                                                       "confirmed"));
@@ -792,6 +857,25 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setAllocatedVehicles(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","allocatedWorkingTime").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setAllocatedWorkingTime(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();

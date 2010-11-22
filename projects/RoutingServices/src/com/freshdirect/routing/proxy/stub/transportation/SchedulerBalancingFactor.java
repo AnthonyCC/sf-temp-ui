@@ -56,8 +56,8 @@
                                     public static final java.lang.String _sbfNumStops =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("sbfNumStops");
                                 
-                                    public static final java.lang.String _sbfQuantity =
-                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("sbfQuantity");
+                                    public static final java.lang.String _sbfLoad =
+                                        org.apache.axis2.databinding.utils.ConverterUtil.convertToString("sbfLoad");
                                 
                                     public static final java.lang.String _sbfCost =
                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString("sbfCost");
@@ -68,8 +68,8 @@
                                 public static final SchedulerBalancingFactor sbfNumStops =
                                     new SchedulerBalancingFactor(_sbfNumStops,true);
                             
-                                public static final SchedulerBalancingFactor sbfQuantity =
-                                    new SchedulerBalancingFactor(_sbfQuantity,true);
+                                public static final SchedulerBalancingFactor sbfLoad =
+                                    new SchedulerBalancingFactor(_sbfLoad,true);
                             
                                 public static final SchedulerBalancingFactor sbfCost =
                                     new SchedulerBalancingFactor(_sbfCost,true);

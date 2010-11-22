@@ -43,6 +43,12 @@
         <property name="isTeamOverride" type="yes_no">
             <column name="ISTEAMOVERRIDE" length="1" />
         </property>
+        <property name="lastDeliveryTime" type="timestamp">
+            <column name="LAST_DLV_TIME" length="7" not-null="true" />
+        </property>
+        <property name="cutOffTime" type="timestamp">
+            <column name="CUTOFF_DATETIME" length="7" not-null="true" />
+        </property>
         <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>
                 <column name="PLAN_ID" length="10" not-null="true" />

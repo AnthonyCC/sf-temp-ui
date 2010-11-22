@@ -28,7 +28,11 @@ public class PlanValidator extends AbstractValidator {
 		ValidationUtils.rejectIfEmpty(errors, "planDate", "app.error.112", new Object[]{"Plan Date"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "startTime", "app.error.112", new Object[]{"Start Time"},"required field");
 		ValidationUtils.rejectIfEmpty(errors, "firstDeliveryTime", "app.error.112", new Object[]{"First Delivery Time"},"required field");
-		checkDate("startTime",model.getStartTime(),model.getFirstDeliveryTime(),errors);
+		ValidationUtils.rejectIfEmpty(errors, "lastDeliveryTime", "app.error.112", new Object[]{"Last Delivery Time"},"required field");
+		ValidationUtils.rejectIfEmpty(errors, "cutOffTime", "app.error.112", new Object[]{"CutOff Time"},"required field");
+		
+		checkDate("startTime", model.getStartTime(), model.getFirstDeliveryTime(),errors);
+		checkDate("firstDeliveryTime", model.getFirstDeliveryTime(), model.getLastDeliveryTime(),errors);
 		
 		if(model != null && TransStringUtil.isEmpty(model.getZoneCode())&& !DispatchPlanUtil.isBullpen(model.getIsBullpen())) {
 			errors.rejectValue("zoneCode", "app.error.112", new Object[]{"Zone"},"required field");

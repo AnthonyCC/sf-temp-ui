@@ -18,10 +18,14 @@ import com.freshdirect.routing.constants.EnumArithmeticOperator;
 import com.freshdirect.routing.dao.IRoutingInfoDAO;
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.model.ServiceTimeScenario;
 import com.freshdirect.routing.model.ServiceTimeTypeModel;
+import com.freshdirect.routing.model.WaveInstance;
 import com.freshdirect.routing.model.ZoneScenarioModel;
+import com.freshdirect.routing.util.RoutingDateUtil;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 	
@@ -252,6 +256,96 @@ public class RoutingInfoDAO extends BaseDAO implements IRoutingInfoDAO   {
 		}finally{
 			if(connection!=null) connection.close();
 		}
+		return result;
+	}
+	
+	private static final String GET_PLANBYDATE_QRY = "select P.PLAN_DATE DISPATCH_DATE, P.ZONE ZONE, P.CUTOFF_DATETIME CUT_OFF " +
+			", P.START_TIME DISPATCH_TIME, P.FIRST_DLV_TIME, P.LAST_DLV_TIME " +
+			", Z.STEM_TO_TIME TO_ZONETIME, Z.STEM_FROM_TIME FROM_ZONETIME, Z.LOADING_PRIORITY " +
+			"from transp.plan p, transp.zone z where P.PLAN_DATE = ? and P.ZONE = Z.ZONE_CODE and P.ZONE is not null and (P.IS_OPEN = '' or P.IS_OPEN is null) " +
+			"order by P.ZONE, P.CUTOFF_DATETIME, P.FIRST_DLV_TIME";
+	//Result Description -> Map<ZoneCode, Map<DispatchTIme, Map<CutOffTime, IWaveInstance>>>
+	public Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(final Date deliveryDate)  throws SQLException {
+		
+		final Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> result = new HashMap<String
+																							, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>>();
+		PreparedStatementCreator creator=new PreparedStatementCreator() {
+			public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+				
+				PreparedStatement ps =
+					connection.prepareStatement(GET_PLANBYDATE_QRY);
+				ps.setDate(1, new java.sql.Date(deliveryDate.getTime()));
+							
+				return ps;
+			}
+		};
+		
+		jdbcTemplate.query(creator, 
+				  new RowCallbackHandler() { 
+				      public void processRow(ResultSet rs) throws SQLException {				    	
+				    	do {
+				    		Date _firstDeliveryTime = rs.getTimestamp("FIRST_DLV_TIME");
+				    		Date _lastDeliveryTime = rs.getTimestamp("LAST_DLV_TIME");
+				    		Date _startTime = rs.getTimestamp("DISPATCH_TIME");
+				    		Date _cutOffTime = rs.getTimestamp("CUT_OFF");
+				    		
+				    		String _zoneCode = rs.getString("ZONE");
+				    		int toZoneTime = rs.getInt("TO_ZONETIME");
+				    		int fromZoneTime = rs.getInt("FROM_ZONETIME");
+				    		
+				    		if(_firstDeliveryTime != null && _lastDeliveryTime != null 
+				    					&& _startTime != null && _cutOffTime != null && _zoneCode != null) {
+				    			
+					    		RoutingTimeOfDay _dispatchTime = new RoutingTimeOfDay(_startTime);
+					    						    		
+					    		Date startTime = RoutingDateUtil.addMinutes(_firstDeliveryTime
+					    														, (toZoneTime != 0 ? -toZoneTime : -fromZoneTime));
+					    		Date endTime = RoutingDateUtil.addMinutes(_lastDeliveryTime
+					    														, (fromZoneTime != 0 ? fromZoneTime : toZoneTime));
+					    		
+					    		int runTime = RoutingDateUtil.getDiffInMinutes(endTime, startTime);
+					    		
+					    		RoutingTimeOfDay _waveStartTime = new RoutingTimeOfDay(startTime);
+					    		
+					    		IWaveInstance waveInstance = new WaveInstance();
+					    		waveInstance.setCutOffTime(_cutOffTime);
+					    		waveInstance.setDispatchTime(_dispatchTime);
+					    		waveInstance.setWaveStartTime(_waveStartTime);
+					    		waveInstance.setMaxRunTime(runTime);
+					    		waveInstance.setPreferredRunTime(runTime);
+					    		
+					    		if(!result.containsKey(_zoneCode)) {
+					    			result.put(_zoneCode, new HashMap<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>());
+					    		}
+					    		if(!result.get(_zoneCode).containsKey(_dispatchTime)) {
+					    			result.get(_zoneCode).put(_dispatchTime, new HashMap<Date, List<IWaveInstance>>());
+					    		}
+					    		
+					    		if(result.get(_zoneCode).get(_dispatchTime).containsKey(_cutOffTime)) {
+					    			List<IWaveInstance> _tmpWaves = result.get(_zoneCode).get(_dispatchTime).get(_cutOffTime);
+					    			boolean matchFound = false;
+					    			for(IWaveInstance _instance : _tmpWaves) {
+					    				if(_instance.equals(waveInstance)) {
+					    					_instance.setNoOfResources(_instance.getNoOfResources()+1);				    					
+					    					matchFound = true;
+					    					break;
+					    				}
+					    			}
+					    			if(!matchFound) {
+					    				_tmpWaves.add(waveInstance);
+						    			waveInstance.setNoOfResources(1);
+					    			}
+					    		} else {
+					    			List<IWaveInstance> _tmpWaves = new ArrayList<IWaveInstance>();
+					    			_tmpWaves.add(waveInstance);
+					    			waveInstance.setNoOfResources(1);
+					    			result.get(_zoneCode).get(_dispatchTime).put(_cutOffTime, _tmpWaves);
+					    		}
+				    		}
+				    	 } while(rs.next());		        		    	
+				      }
+				  }
+			);
 		return result;
 	}
 }

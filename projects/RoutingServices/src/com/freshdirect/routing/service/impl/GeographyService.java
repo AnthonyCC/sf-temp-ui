@@ -52,6 +52,15 @@ public class GeographyService extends BaseService implements IGeographyService {
 		}
 	}
 	
+	public Map<String, IZoneModel> getZoneLookup() throws RoutingServiceException {
+		try {
+			return geographyDAOImpl.getZoneLookup();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			throw new RoutingServiceException(e, IIssue.PROCESS_LOCATION_SAVEERROR);
+		}
+	}
+	
 	public ILocationModel getLocation(ILocationModel model) throws RoutingServiceException  {
 		try {
 			ILocationModel locModel = geographyDAOImpl.getLocation(model.getBuilding().getStreetAddress1()

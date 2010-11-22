@@ -45,6 +45,9 @@
         <property name="maxstemTime" type="big_integer">
             <column name="STEM_MAX_TIME" precision="5" scale="0"  not-null="true"/>
         </property> 
+        <property name="loadingPriority" type="big_decimal">
+            <column name="LOADING_PRIORITY" precision="22" scale="0"/>
+        </property>
         <many-to-one name="defaultServiceTimeType" class="com.freshdirect.transadmin.model.DlvServiceTimeType" fetch="select" lazy="false">
             <column name="SERVICETIME_TYPE" length="8" />
         </many-to-one>

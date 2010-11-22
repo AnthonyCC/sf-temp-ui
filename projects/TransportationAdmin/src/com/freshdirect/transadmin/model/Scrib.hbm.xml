@@ -43,6 +43,8 @@
         <property name="supervisorCode" type="string">
             <column name="SUPERVISOR_ID" length="50" />
         </property>
-     
+     	<property name="cutOffTime" type="timestamp">
+            <column name="CUTOFF_DATETIME" length="7" />
+        </property>
     </class>
 </hibernate-mapping>

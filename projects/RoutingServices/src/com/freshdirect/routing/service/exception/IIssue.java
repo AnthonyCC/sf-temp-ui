@@ -50,4 +50,8 @@ public interface IIssue {
 	public final static String PROCESS_RETRIEVEORDER_UNSUCCESSFUL = "ISSUE035";
 	
 	public final static String PROCESS_HANDOFFBATCH_ERROR = "ISSUE036";
+	
+	public final static String PROCESS_RETRIEVEWAVEINSTANCE_UNSUCCESSFUL = "ISSUE037";
+	
+	public final static String PROCESS_SAVEWAVEINSTANCE_UNSUCCESSFUL = "ISSUE038";
 }

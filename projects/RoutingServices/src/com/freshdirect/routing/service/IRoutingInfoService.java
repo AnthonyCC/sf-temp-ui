@@ -7,8 +7,10 @@ import java.util.Map;
 
 import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IServiceTimeTypeModel;
+import com.freshdirect.routing.model.IWaveInstance;
 import com.freshdirect.routing.model.IZoneScenarioModel;
 import com.freshdirect.routing.service.exception.RoutingServiceException;
+import com.freshdirect.routing.util.RoutingTimeOfDay;
 
 public interface IRoutingInfoService {		
 	
@@ -23,4 +25,6 @@ public interface IRoutingInfoService {
 	Map<String, IServiceTimeTypeModel> getRoutingServiceTimeTypes()  throws RoutingServiceException;
 	
 	int flagReRouteReservation(Date deliveryDate, List<String> zones) throws RoutingServiceException;
+	
+	Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> getPlannedDispatchTree(Date deliveryDate)  throws RoutingServiceException;
 }

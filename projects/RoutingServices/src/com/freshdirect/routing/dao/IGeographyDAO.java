@@ -8,6 +8,7 @@ import com.freshdirect.routing.model.IAreaModel;
 import com.freshdirect.routing.model.IBuildingModel;
 import com.freshdirect.routing.model.IGeographicLocation;
 import com.freshdirect.routing.model.ILocationModel;
+import com.freshdirect.routing.model.IZoneModel;
 
 public interface IGeographyDAO {
 	
@@ -38,5 +39,7 @@ public interface IGeographyDAO {
 	void insertBuilding(IBuildingModel model) throws SQLException;
 	
 	Map<String, IAreaModel> getAreaLookup() throws SQLException;
+	
+	Map<String, IZoneModel> getZoneLookup() throws SQLException;
 	
 }

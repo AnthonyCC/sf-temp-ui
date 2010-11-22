@@ -28,6 +28,9 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 	private String isOpen;
 	private Boolean isTeamOverride;
 	
+	private Date lastDeliveryTime;
+	private Date cutOffTime;
+	
 	public String getSupervisorId() {
 		return supervisorId;
 	}
@@ -203,5 +206,22 @@ public class Plan implements java.io.Serializable, TrnBaseEntityI  {
 		this.isTeamOverride = isTeamOverride;
 	}
 
+	public Date getLastDeliveryTime() {
+		return lastDeliveryTime;
+	}
+
+	public Date getCutOffTime() {
+		return cutOffTime;
+	}
+
+	public void setLastDeliveryTime(Date lastDeliveryTime) {
+		this.lastDeliveryTime = lastDeliveryTime;
+	}
+
+	public void setCutOffTime(Date cutOffTime) {
+		this.cutOffTime = cutOffTime;
+	}
+	
+	
 
 }

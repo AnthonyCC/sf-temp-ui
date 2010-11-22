@@ -68,6 +68,9 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	private boolean isTeamOverride;
 	private String firstDeliveryTimeModified;
 	
+	private String lastDeliveryTime;
+	private String cutOffTime;
+	
 	public String getFirstDeliveryTimeModified() {
 		return firstDeliveryTimeModified;
 	}
@@ -662,6 +665,22 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 			return null;
 		}
 	}
+	
+	public Date getLastDeliveryTimeEx() {
+		try {
+			return TransStringUtil.getServerTime(getLastDeliveryTime());
+		} catch (ParseException e) {
+			return null;
+		}
+	}
+	
+	public Date getCutOffTimeEx() {
+		try {
+			return TransStringUtil.getServerTime(getCutOffTime());
+		} catch (ParseException e) {
+			return null;
+		}
+	}
 
 	public void setDriverMax(int driverMax) {
 		this.driverMax = driverMax;
@@ -723,6 +742,22 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	}
 	public void setReferenceContextId(String referenceContextId) {
 		this.referenceContextId = referenceContextId;
+	}
+
+	public String getLastDeliveryTime() {
+		return lastDeliveryTime;
+	}
+
+	public String getCutOffTime() {
+		return cutOffTime;
+	}
+
+	public void setLastDeliveryTime(String lastDeliveryTime) {
+		this.lastDeliveryTime = lastDeliveryTime;
+	}
+
+	public void setCutOffTime(String cutOffTime) {
+		this.cutOffTime = cutOffTime;
 	}
 	
 	

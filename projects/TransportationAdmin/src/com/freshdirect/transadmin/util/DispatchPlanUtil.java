@@ -79,6 +79,9 @@ public class DispatchPlanUtil {
 		planInfo.setRegionName(plan.getRegion().getName());
 		try{
 			planInfo.setFirstDeliveryTime(TransStringUtil.getServerTime(plan.getFirstDeliveryTime()));
+			planInfo.setLastDeliveryTime(TransStringUtil.getServerTime(plan.getLastDeliveryTime()));
+			planInfo.setCutOffTime(TransStringUtil.getServerTime(plan.getCutOffTime()));
+			
 			planInfo.setStartTime(TransStringUtil.getServerTime(plan.getStartTime()));
 			planInfo.setMaxTime(TransStringUtil.formatTimeFromDate(plan.getMaxTime()));
 		}catch(ParseException exp){
@@ -217,6 +220,9 @@ public class DispatchPlanUtil {
 		try{
 
 			plan.setFirstDeliveryTime(TransStringUtil.getServerTime(planInfo.getFirstDeliveryTime()));
+			plan.setLastDeliveryTime(TransStringUtil.getServerTime(planInfo.getLastDeliveryTime()));
+			plan.setCutOffTime(TransStringUtil.getServerTime(planInfo.getCutOffTime()));
+			
 			plan.setStartTime(TransStringUtil.getServerTime(planInfo.getStartTime()));
 			plan.setMaxTime(TransStringUtil.formatTimeFromString(planInfo.getMaxTime()));
 		}catch(ParseException exp){
