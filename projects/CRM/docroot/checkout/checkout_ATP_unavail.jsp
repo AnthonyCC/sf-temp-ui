@@ -64,18 +64,18 @@ if(invsInfoMap.size() > 0 ){
 <td WIDTH="320" COLSPAN="2" CLASS="text12bold">Details<br></td>
 </tr>
 <% // start of grouping logic --
-Map groupingMap = new HashMap();
-List regularItems = new ArrayList();
-List groupingKeyList = new ArrayList();
+Map<String,List<String>> groupingMap = new HashMap<String,List<String>>();
+List<String> regularItems = new ArrayList<String>();
+List<String> groupingKeyList = new ArrayList<String>();
 
 for (String key : invsInfoMap.keySet()) {
 	FDCartLineI cartLine = cart.getOrderLineById( Integer.parseInt(key) );
 	String rcpSrcId= cartLine.getRecipeSourceId();
 	if (rcpSrcId!=null) {
 	 	String deptDecs=cartLine.getDepartmentDesc();
-		List rcpItems = (List)groupingMap.get(deptDecs);
+		List<String> rcpItems = (List<String>)groupingMap.get(deptDecs);
 		if (rcpItems==null) {
-		   rcpItems= new ArrayList();
+		   rcpItems= new ArrayList<String>();
 		   groupingMap.put(deptDecs,rcpItems);
 		   groupingKeyList.add(deptDecs);
 		}
@@ -105,8 +105,8 @@ String lastGroupKey="";
         }    
 %>
 
-   <logic:iterate collection="<%=groupingMap.get(groupKey)%>" id="key" type="java.lang.Integer">
-	<%FDCartLineI cartLine = cart.getOrderLineById(key.intValue());
+   <logic:iterate collection="<%=groupingMap.get(groupKey)%>" id="key" type="java.lang.String">
+	<%FDCartLineI cartLine = cart.getOrderLineById(Integer.parseInt(key));
 	  FDAvailabilityInfo info = (FDAvailabilityInfo)invsInfoMap.get(key);
 	%>
 	<tr VALIGN="TOP">
