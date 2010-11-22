@@ -136,7 +136,7 @@ public class ErpNutritionSessionBean extends SessionBeanSupport {
     	+ "from ERPS.NUTRITION "
     	+ "where date_modified > ? "
     	+ "order by sku_code ";
-    private static final String LOAD_NUTRITION_INFO = "select skucode, type, priority, info, date_modified,  DBMS_LOB.SUBSTR (info, DBMS_LOB.GETLENGTH(info))info_clob, DBMS_LOB.GETLENGTH(info) length " 
+    private static final String LOAD_NUTRITION_INFO = "select skucode, type, priority, info, date_modified,  DBMS_LOB.SUBSTR (info, 4000)info_clob, DBMS_LOB.GETLENGTH(info) length " 
     	+ "from erps.nutrition_info "
     	+ "where date_modified > ? "
     	+ "order by skucode, type, priority ";
