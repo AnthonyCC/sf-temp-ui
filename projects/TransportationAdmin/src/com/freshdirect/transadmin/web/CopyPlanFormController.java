@@ -223,6 +223,9 @@ public class CopyPlanFormController extends AbstractFormController {
 			tmpNewPlan = new Plan();
 			
 			tmpNewPlan.setFirstDeliveryTime(tmpPlan.getFirstDeliveryTime());
+			tmpNewPlan.setLastDeliveryTime(tmpPlan.getLastDeliveryTime());
+			tmpNewPlan.setCutOffTime(tmpPlan.getCutOffTime());
+
 			tmpNewPlan.setIsBullpen(tmpPlan.getIsBullpen());
 			tmpNewPlan.setRegion(tmpPlan.getRegion());
 			tmpNewPlan.setSequence(tmpPlan.getSequence());
@@ -248,25 +251,7 @@ public class CopyPlanFormController extends AbstractFormController {
 			tmpNewPlan.setPlanDate(destinationDate);
 			addList.add(tmpNewPlan);
 		}
-		/*TrnDispatchPlan tmpPlan = null;
-		TrnDispatchPlan tmpNewPlan = null;
-		while(iterator.hasNext()) {
-			tmpPlan = (TrnDispatchPlan)iterator.next();
-			tmpNewPlan = new TrnDispatchPlan();
-			tmpNewPlan.setDispatchDay(tmpPlan.getDispatchDay());				
-			tmpNewPlan.setTrnZone(tmpPlan.getTrnZone());
-			tmpNewPlan.setTrnTimeslot(tmpPlan.getTrnTimeslot());
-			tmpNewPlan.setTrnEndTimeslot(tmpPlan.getTrnEndTimeslot());
-			if(includeEmpDetails) {
-				tmpNewPlan.setTrnDriver(tmpPlan.getTrnDriver());
-				tmpNewPlan.setTrnPrimaryHelper(tmpPlan.getTrnPrimaryHelper());
-				tmpNewPlan.setTrnSecondaryHelper(tmpPlan.getTrnSecondaryHelper());
-				tmpNewPlan.setTrnSupervisor(tmpPlan.getTrnSupervisor());
-			}
-			
-			tmpNewPlan.setPlanDate(destinationDate);
-			addList.add(tmpNewPlan);
-		}*/
+		
 		return returnList;
 	}
 	
