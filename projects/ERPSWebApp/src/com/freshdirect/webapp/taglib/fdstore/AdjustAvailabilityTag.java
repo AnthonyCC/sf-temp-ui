@@ -58,10 +58,10 @@ public class AdjustAvailabilityTag extends
 		Map unavMap = cart.getUnavailabilityMap();
 		for (Iterator i = unavMap.entrySet().iterator(); i.hasNext();) {
 			Map.Entry entry = (Map.Entry) i.next();
-			Integer key = (Integer) entry.getKey();
+			String key = (String) entry.getKey();
 			FDAvailabilityInfo info = (FDAvailabilityInfo) entry.getValue();
-			FDCartLineI cartline = cart.getOrderLineById(key.intValue());
-			int cartIndex = cart.getOrderLineIndex(key.intValue());
+			FDCartLineI cartline = cart.getOrderLineById(Integer.parseInt(key));
+			int cartIndex = cart.getOrderLineIndex(Integer.parseInt(key));
 			if (info instanceof FDStockAvailabilityInfo) {
 				FDStockAvailabilityInfo sInfo = (FDStockAvailabilityInfo) info;
 
