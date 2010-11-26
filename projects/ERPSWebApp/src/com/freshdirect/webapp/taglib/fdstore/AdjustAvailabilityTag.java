@@ -11,6 +11,7 @@ package com.freshdirect.webapp.taglib.fdstore;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -55,11 +56,11 @@ public class AdjustAvailabilityTag extends
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		FDCartModel cart = user.getShoppingCart();
 
-		Map unavMap = cart.getUnavailabilityMap();
-		for (Iterator i = unavMap.entrySet().iterator(); i.hasNext();) {
-			Map.Entry entry = (Map.Entry) i.next();
-			String key = (String) entry.getKey();
-			FDAvailabilityInfo info = (FDAvailabilityInfo) entry.getValue();
+		Map<String,FDAvailabilityInfo> unavMap = cart.getUnavailabilityMap();
+		for (Iterator<Entry<String,FDAvailabilityInfo>> i = unavMap.entrySet().iterator(); i.hasNext();) {
+			Entry<String,FDAvailabilityInfo> entry = i.next();
+			String key = entry.getKey();
+			FDAvailabilityInfo info = entry.getValue();
 			FDCartLineI cartline = cart.getOrderLineById(Integer.parseInt(key));
 			int cartIndex = cart.getOrderLineIndex(Integer.parseInt(key));
 			if (info instanceof FDStockAvailabilityInfo) {
@@ -84,10 +85,10 @@ public class AdjustAvailabilityTag extends
 			}
 		}
 		//Remove unavailable delivery passes.
-		List unavailPasses = cart.getUnavailablePasses();
+		List<DlvPassAvailabilityInfo> unavailPasses = cart.getUnavailablePasses();
 		if(unavailPasses != null && unavailPasses.size() > 0){
-			for (Iterator i = unavailPasses.iterator(); i.hasNext();) {
-				DlvPassAvailabilityInfo info = (DlvPassAvailabilityInfo)i.next();
+			for (Iterator<DlvPassAvailabilityInfo> i = unavailPasses.iterator(); i.hasNext();) {
+				DlvPassAvailabilityInfo info = i.next();
 				Integer key = info.getKey();
 				FDCartLineI cartline = cart.getOrderLineById(key.intValue());
 				int cartIndex = cart.getOrderLineIndex(key.intValue());

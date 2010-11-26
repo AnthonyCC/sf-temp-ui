@@ -15,7 +15,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,12 +34,11 @@ import com.freshdirect.deliverypass.EnumDlvPassProfileType;
 import com.freshdirect.deliverypass.EnumDlvPassStatus;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDModifyCartLineI;
-import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionResult;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
@@ -56,10 +54,10 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 	private static final String REASON_MULTIPLE_AUTORENEW_PASSES="You already have a DeliveryPass scheduled to automatically renew.";
 	
 	private static Category LOGGER = LoggerFactory.getInstance(DlvPassAvailabilityControllerTag.class);
-	private final static Comparator PRICE_COMPARATOR = new Comparator() {
-		public int compare(Object o1, Object o2) {
-			Double amt2 = new Double(((FDCartLineI) o2).getPrice());
-			Double amt1 = new Double(((FDCartLineI) o1).getPrice());
+	private final static Comparator<FDCartLineI> PRICE_COMPARATOR = new Comparator<FDCartLineI>() {
+		public int compare(FDCartLineI o1, FDCartLineI o2) {
+			Double amt2 = new Double(o2.getPrice());
+			Double amt1 = new Double(o1.getPrice());
 			return amt2.compareTo(amt1);
 		}
 	};
@@ -81,13 +79,13 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 			if(dlvPassCount == 0){
 				return true;
 			}
-			Map unavMap = cart.getUnavailabilityMap();
+			Map<String,FDAvailabilityInfo> unavMap = cart.getUnavailabilityMap();
 			//addedList - contains list of passes that was added to the cart during this session.
-			List dlvPasses = new ArrayList();
+			List<FDCartLineI> dlvPasses = new ArrayList<FDCartLineI>();
 			boolean lastPurchasedPass = false;
-			for (Iterator i = cart.getOrderLines().iterator(); i.hasNext();) {
+			for (Iterator<FDCartLineI> i = cart.getOrderLines().iterator(); i.hasNext();) {
 				FDCartLineI line = (FDCartLineI) i.next();
-				Integer key = new Integer(line.getRandomId());
+				String key = new Integer(line.getRandomId()).toString();
 				if(line.lookupFDProduct().isDeliveryPass() && !(unavMap.containsKey(key))){
 					dlvPasses.add(line);
 					if(line instanceof FDModifyCartLineI)
@@ -98,7 +96,7 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 				//There is no new delivery passes added to cart during modify order. So return
 				return true;
 			}
-			List unavailableList = new ArrayList();
+			List<DlvPassAvailabilityInfo> unavailableList = new ArrayList<DlvPassAvailabilityInfo>();
 			if(!user.isEligibleForDeliveryPass()){
 				addToUnavailableList(dlvPasses, unavailableList, REASON_NOT_ELIGIBLE);
 			}
@@ -115,8 +113,8 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 				}else {*///--commented for DP1.1
 				
 					//User has eligible status to buy a pass. Pull out the eligible and ineligible passes.
-					List eligibleList = new ArrayList();
-					List ineligibleList = new ArrayList();
+					List<FDCartLineI> eligibleList = new ArrayList<FDCartLineI>();
+					List<FDCartLineI> ineligibleList = new ArrayList<FDCartLineI>();
 					checkForEligiblePasses(user, dlvPasses, eligibleList, ineligibleList,unavailableList,request);
 					//addToUnavailableList(ineligibleList, unavailableList, REASON_NOT_ELIGIBLE);
 					if(eligibleList.size() > 1) {
@@ -125,7 +123,7 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 						 * priced delivery pass in the cart. Push the remaining passes
 						 * into the unavailable list.
 						 */
-						List lowPriceList = retainHighPricedDlvPass(eligibleList);
+						List<FDCartLineI> lowPriceList = retainHighPricedDlvPass(eligibleList);
 						addToUnavailableList(lowPriceList, unavailableList, REASON_TOO_MANY_PASSES);
 					}
 					//}--commented for DP1.1
@@ -139,12 +137,12 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 		return true;
 	}
 
-	private List retainHighPricedDlvPass(List eligibleList) {
+	private List<FDCartLineI> retainHighPricedDlvPass(List<FDCartLineI> eligibleList) {
 		Collections.sort(eligibleList, PRICE_COMPARATOR);
-		Iterator i=eligibleList.iterator();
+		Iterator<FDCartLineI> i=eligibleList.iterator();
 		//Skip the high priced delivery pass(first item) from the list.
 		i.next();
-		List lowPriceList = new ArrayList();
+		List<FDCartLineI> lowPriceList = new ArrayList<FDCartLineI>();
 		while(i.hasNext()){
 			FDCartLineI line = (FDCartLineI)i.next();
 			lowPriceList.add(line);	
@@ -152,9 +150,9 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 		return lowPriceList;
 	}
 	
-	private void checkForEligiblePasses(FDUserI user, List dlvPasses, List eligibleList, List inEligibleList, List unavailableList,HttpServletRequest request) throws FDResourceException{
+	private void checkForEligiblePasses(FDUserI user, List<FDCartLineI> dlvPasses, List<FDCartLineI> eligibleList, List<FDCartLineI> inEligibleList, List<DlvPassAvailabilityInfo> unavailableList,HttpServletRequest request) throws FDResourceException{
 		EnumDlvPassProfileType profileType = user.getEligibleDeliveryPass();
-		Iterator i=dlvPasses.iterator();
+		Iterator<FDCartLineI> i=dlvPasses.iterator();
 		FDCartLineI line=null;
 		DeliveryPassType type=null;
 		int autoRenewPassCount=user.getDlvPassInfo().getAutoRenewUsablePassCount();
@@ -194,7 +192,7 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 		
 	}
 	
-	private void addToUnavailableList(FDCartLineI line, List unavailableList, String reasonCode){
+	private void addToUnavailableList(FDCartLineI line, List<DlvPassAvailabilityInfo> unavailableList, String reasonCode){
 		    if(line!=null) {
 		    	DlvPassAvailabilityInfo info = new DlvPassAvailabilityInfo(new Integer(line.getRandomId()), reasonCode);
 		    	unavailableList.add(info);
@@ -202,10 +200,10 @@ public class DlvPassAvailabilityControllerTag extends AbstractControllerTag {
 		
 	}
 	
-	private void addToUnavailableList(List sourceList, List unavailableList, String reasonCode){
-		Iterator i=sourceList.iterator();
+	private void addToUnavailableList(List<FDCartLineI> sourceList, List<DlvPassAvailabilityInfo> unavailableList, String reasonCode){
+		Iterator<FDCartLineI> i=sourceList.iterator();
 		while(i.hasNext()){
-			FDCartLineI line = (FDCartLineI)i.next();
+			FDCartLineI line = i.next();
 			DlvPassAvailabilityInfo info = new DlvPassAvailabilityInfo(new Integer(line.getRandomId()), reasonCode);
 			unavailableList.add(info);
 		}
