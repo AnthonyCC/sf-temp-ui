@@ -11,6 +11,8 @@ public class QuickShop extends Message {
     List<ProductConfiguration> products;
     
     private List<FilterOption> departments = new ArrayList<FilterOption>();
+    
+    private Integer totalResultCount = 0;
 
     public List<ProductConfiguration> getProducts() {
         return products;
@@ -27,6 +29,17 @@ public class QuickShop extends Message {
 	public void setDepartments(List<FilterOption> departments) {
 		this.departments = departments;
 	}
+
+	public Integer getTotalResultCount() {
+		return totalResultCount;
+	}
+
+	public void setTotalResultCount(Integer totalResultCount) {
+		this.totalResultCount = totalResultCount;
+	}
     
+	public Integer getResultCount() {
+        return products != null ? products.size() : 0;
+    }
     
 }

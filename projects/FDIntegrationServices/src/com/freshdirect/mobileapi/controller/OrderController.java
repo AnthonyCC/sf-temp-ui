@@ -112,11 +112,20 @@ public class OrderController extends BaseController {
         	}
         	String sortBy = request.getParameter("qsSortBy");
         	
+        	// Retrieving any possible payload
+            String postData = getPostData(request, response);
+            
+        	System.out.println("PostData received: [" + postData + "]");
+        	SearchQuery requestMessage = new SearchQuery();
+            if (StringUtils.isNotEmpty(postData)) {
+                requestMessage = parseRequestObject(request, response, SearchQuery.class);
+            }
             model = getProductsFromOrderDept(model, user, orderId
             										, (deptId != null && deptId.trim().length() > 0 
             												&& !"all".equalsIgnoreCase(deptId)) ? deptId : null
             												, noOfOrderFilterDays
-            												, sortBy);
+            												, sortBy
+            												, requestMessage);
         } else if (ACTION_GET_QUICK_SHOP_EVERYITEM_DEPT.equals(action)) {
         	String orderId = request.getParameter("orderId");
         	String noOfOrderDays = request.getParameter("qsNoOfFilterDays");
@@ -282,17 +291,27 @@ public class OrderController extends BaseController {
     
     private ModelAndView getProductsFromOrderDept(ModelAndView model, SessionUser user
     													, String orderId, String deptId
-    													, Integer filterOrderDays, String sortBy) throws FDException, JsonException {
+    													, Integer filterOrderDays, String sortBy
+    													, SearchQuery query) throws FDException, JsonException {
         Order order = new Order();
         
         List<ProductConfiguration> products;
+        List<ProductConfiguration> productPage = null;
+        
         try {
             products = order.getOrderProductsForDept(orderId, deptId, filterOrderDays, sortBy, user);
+            if(products != null) {
+            	int start = (query.getPage() - 1) * query.getMax();
+            	if(start >=0 && start <= products.size()) {
+            		productPage = products.subList(start, Math.min(start + query.getMax(), products.size()));
+            	}
+            }
         } catch (ModelException e) {
             throw new FDException(e);
         }
         QuickShop quickShop = new QuickShop();
-        quickShop.setProducts(products);
+        quickShop.setProducts(productPage);
+        quickShop.setTotalResultCount(products != null ? products.size() : 0);
         setResponseMessage(model, quickShop, user);
         return model;
     }
