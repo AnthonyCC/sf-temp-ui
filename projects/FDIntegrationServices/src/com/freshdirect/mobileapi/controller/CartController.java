@@ -13,6 +13,7 @@ import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDCartLineI;
+import com.freshdirect.fdstore.promotion.PromotionI;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
@@ -349,11 +350,26 @@ public class CartController extends BaseController {
         propogateSetSessionValues(request.getSession(), resultBundle);
 
         Message responseMessage = null;
-        if (result.isSuccess()) {
+        double maxPromotion = user.getMaxSignupPromotion();
+    	PromotionI redemptionPromo = user.getRedeemedPromotion();
+        String promoCode = redemptionPromo != null ? redemptionPromo.getPromotionCode() : "";
+        boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
+        
+        if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) {
+        	Boolean isEligible =(Boolean)request.getAttribute("isEligible");
+    		if(isEligible != null && !isEligible){
+    			responseMessage = getErrorMessage(result, request);
+    		}else{
+    			responseMessage = Message.createSuccessMessage("Promo code has been applied successfully.");
+    		}
+        }else{
+        	responseMessage = Message.createSuccessMessage("Promo code has been applied successfully.");
+        }
+        /*if (result.isSuccess()) {
             responseMessage = Message.createSuccessMessage("Promo code has been applied successfully.");
         } else {
             responseMessage = getErrorMessage(result, request);
-        }
+        }*/
         setResponseMessage(model, responseMessage, user);
         return model;
     }
