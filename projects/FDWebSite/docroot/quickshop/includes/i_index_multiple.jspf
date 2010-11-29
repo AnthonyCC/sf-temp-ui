@@ -5,7 +5,7 @@
 <%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
 <table width="535" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
-		<td width="237" class="text13">
+		<td width="232" class="text13">
 			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
 			<div class="text12bold" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
 			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
@@ -21,10 +21,10 @@
 		<td width="1" bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td>
 		<td width="10"><img src="/media_stat/images/layout/clear.gif" width="10" height="1"></td>
 
-		<td width="247" class="text13">
+		<td width="282" class="text13">
 			<% if ( user.isEligibleForStandingOrders() ) { %>					
 				<!-- STANDING ORDERS SECTION -->
-				<div id="standingorders-section" style="background-color: #e0e3d0; padding:20px 10px;">
+				<div id="standingorders-section" style="width:262px; background-color: #e0e3d0; padding:20px 10px;">
 					<div class="text15" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
 					<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
 					<%@ include file="/quickshop/includes/so_lists.jspf" %>
