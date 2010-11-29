@@ -42,6 +42,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoPaymentStrategyModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoZipRestriction;
 import com.freshdirect.fdstore.promotion.management.FDPromotionAttributeParam;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.ModelI;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.core.SequenceGenerator;
@@ -94,6 +95,87 @@ public class FDPromotionManagerNewDAO {
 			promotion.setAttributeList(loadAttributeList(conn, id));
 		}
 		return promotion;
+	}
+
+	public static FDPromotionNewModel getPromotionByPk(Connection conn,
+			String pk) throws SQLException {
+
+		PreparedStatement ps = conn
+				.prepareStatement("SELECT * FROM CUST.PROMOTION_NEW WHERE ID = ?");
+
+		ps.setString(1, pk);
+		ResultSet rs = ps.executeQuery();
+
+		FDPromotionNewModel promotion = null;
+
+		if (rs.next()) {
+			promotion = loadPromotionResult(rs);
+			List<String> assignedCustomerUserIds = FDPromotionManagerDAO
+					.loadAssignedCustomerUserIds(conn, promotion.getId());
+			if (assignedCustomerUserIds != null
+					&& assignedCustomerUserIds.size() > 0) {
+				promotion.setAssignedCustomerUserIds(StringUtil
+						.encodeString(assignedCustomerUserIds));
+			} else {
+				promotion.setAssignedCustomerUserIds("");
+			}
+		}
+
+		rs.close();
+		ps.close();
+		if (promotion != null) {
+			String id = promotion.getId();
+
+			promotion.setDcpdData(loadAssignedGroups(conn, id));
+			promotion.setZipRestrictions(loadZipRestrictions(conn, id));
+			promotion.setCartStrategies(loadPromoCartStrategies(conn, id));
+			promotion.setCustStrategies(loadPromoCustStrategies(conn, id));
+//			promotion.setPaymentStrategies(loadPromoPaymentStrategies(conn,id));
+			promotion.setDlvZoneStrategies(loadPromoDlvZoneStrategies(conn, id));
+			promotion.setDlvDates(loadPromoDlvDates(conn, id));
+			promotion.setAttributeList(loadAttributeList(conn, id));
+		}
+		return promotion;
+	}
+	private final static String GET_WS_PROMOTION_INFO = 
+		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
+		+ "where p.id = PC.PROMOTION_ID "
+		+ "and P.ID = Z.PROMOTION_ID "
+		+ "and Z.ID = T.PROMO_DLV_ZONE_ID "
+		+ "and p.id = D.PROMOTION_ID "
+		+ "and  (select count(ID) from cust.promo_delivery_dates where PROMOTION_ID = p.id) = 1 "
+		+ "and trunc(D.START_DATE) =  trunc(D.END_DATE) "
+		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
+		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) = 1 "
+		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
+		+ "and P.CAMPAIGN_CODE = 'HEADER'";
+	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn) throws SQLException {
+		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
+		
+		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFO);
+
+		ResultSet rs = ps.executeQuery();
+
+
+		while (rs.next()) {
+			WSPromotionInfo wsPromotionInfo = new WSPromotionInfo();
+			wsPromotionInfo.setPK(new PrimaryKey(rs.getString("ID")));
+			wsPromotionInfo.setPromotionCode(rs.getString("CODE"));
+			wsPromotionInfo.setName(rs.getString("NAME"));
+			wsPromotionInfo.setEffectiveDate(rs.getDate("START_DATE"));
+			wsPromotionInfo.setZoneCode(rs.getString("ZONE_CODE"));
+			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
+			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
+			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
+			infos.add(wsPromotionInfo);
+		}
+
+		rs.close();
+		ps.close();
+		return infos;
 	}
 
 	public static List<FDPromotionNewModel> getPromotions(Connection conn) throws SQLException {

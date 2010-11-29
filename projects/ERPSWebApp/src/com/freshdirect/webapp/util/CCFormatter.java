@@ -7,7 +7,7 @@ import java.util.Date;
 
 import com.freshdirect.framework.util.DurationFormat;
 
-public class CCFormatter {
+public class CCFormatter { 
 
 	private static final DateFormat DATE_FORMATTER = new SimpleDateFormat("MM.dd.yyyy");
 	private static final DateFormat DEFAULT_DATE_FORMATTER = new SimpleDateFormat("MM/dd/yyyy");
@@ -28,12 +28,17 @@ public class CCFormatter {
 	private static final DurationFormat DURATION_FORMATTER = new DurationFormat(false, DurationFormat.MASK_DAY | DurationFormat.MASK_HOUR | DurationFormat.MASK_MINUTE | DurationFormat.MASK_SECOND);
 	private static final DecimalFormat LATLONG_FORMATTER = new java.text.DecimalFormat("0.000000");
 	private static final DecimalFormat PERCENTAGE_FORMATTER = new java.text.DecimalFormat("#.00%");
-	
+	private static final DateFormat DATE_MONTH_FORMATTER = new SimpleDateFormat("EEE, d MMM yyyy");
 	//private static final DurationFormat DURATION_FORMATTER = new DurationFormat(false, DurationFormat.MASK_HOUR | DurationFormat.MASK_MINUTE);
 
 	public static synchronized String formatDate(Date date) {
 		return DATE_FORMATTER.format(date);
 	}
+
+	public static synchronized String formatDateMonth(Date date) {
+		return DATE_MONTH_FORMATTER.format(date);
+	}
+	
 	
 	public static synchronized String defaultFormatDate(Date date) {
 		return DEFAULT_DATE_FORMATTER.format(date);

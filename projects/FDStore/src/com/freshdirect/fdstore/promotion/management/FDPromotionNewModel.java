@@ -22,9 +22,9 @@ import com.freshdirect.framework.core.PrimaryKey;
 public class FDPromotionNewModel extends ModelSupport {
 
 	private Set<String> assignedCustomerUserIds = new HashSet<String>();
-	private TreeMap<Date,FDPromoZipRestriction> zipRestrictions = new TreeMap<Date,FDPromoZipRestriction>();
+	private TreeMap<Date, FDPromoZipRestriction> zipRestrictions = new TreeMap<Date, FDPromoZipRestriction>();
 	private List<FDPromotionAttributeParam> attributeList = new ArrayList<FDPromotionAttributeParam>();
-	private Map<String,AssignedCustomerParam> assignedCustomerParams;
+	private Map<String, AssignedCustomerParam> assignedCustomerParams;
 	// private String id;
 	private String promotionCode;
 	private String name;
@@ -34,7 +34,7 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String startDay;
 	private String startMonth;
 	private String startYear;
-	private Date expirationDate;	
+	private Date expirationDate;
 	private String expirationDay;
 	private String expirationMonth;
 	private String expirationYear;
@@ -45,17 +45,17 @@ public class FDPromotionNewModel extends ModelSupport {
 	private String maxAmount;
 	private String percentOff;
 	private String waiveChargeType;
-	private EnumPromotionStatus status;	
+	private EnumPromotionStatus status;
 	private String offerDesc;
 	private String audienceDesc;
 	private String terms;
 	private Integer redeemCount;
 	private Integer skuQuantity;
-	private boolean perishable;	
+	private boolean perishable;
 	private String tmpAssignedCustomerUserIds;
 	private List<FDPromoContentModel> dcpdData;
 	private List<FDPromoContentModel> cartStrategies;
-	private List<FDPromoCustStrategyModel> custStrategies;//Always one record
+	private List<FDPromoCustStrategyModel> custStrategies;// Always one record
 	private List<FDPromoPaymentStrategyModel> paymentStrategies;
 	private List<FDPromoDlvZoneStrategyModel> dlvZoneStrategies;
 	private List<FDPromoDlvDateModel> dlvDates;
@@ -84,22 +84,22 @@ public class FDPromotionNewModel extends ModelSupport {
 	private Integer maxItemCount;
 	private boolean onHold;
 	private String geoRestrictionType;
-	
+
 	private String dcpdDepts = "";
 	private String dcpdCats = "";
 	private String dcpdRecps = "";
-	private	String dcpdSkus = "";
+	private String dcpdSkus = "";
 	private String dcpdBrands = "";
-	
+
 	private String cartDepts = "";
 	private String cartCats = "";
-	private	String cartSkus = "";
+	private String cartSkus = "";
 	private String cartBrands = "";
 	/*
 	 * Number of successful publishes
 	 */
 	private int publishes = 0;
-	
+
 	public FDPromotionNewModel() {
 		super();
 	}
@@ -319,60 +319,67 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	public String getAssignedCustomerUserIds() {
 		String str = "";
-		if (this.assignedCustomerUserIds != null && !this.assignedCustomerUserIds.isEmpty()) {
+		if (this.assignedCustomerUserIds != null
+				&& !this.assignedCustomerUserIds.isEmpty()) {
 			Iterator<String> iter = this.assignedCustomerUserIds.iterator();
 			while (iter.hasNext()) {
 				if (!"".equals(str)) {
 					str += ",";
 				}
-				str += ((String)iter.next()).trim();
+				str += ((String) iter.next()).trim();
 			}
 		}
 
-		return str; //(!"".equals(str)) ? str : null;
+		return str; // (!"".equals(str)) ? str : null;
 	}
-	
-	public int getAssignedCustomerSize(){
-		if (this.assignedCustomerUserIds != null && !this.assignedCustomerUserIds.isEmpty()) {
+
+	public int getAssignedCustomerSize() {
+		if (this.assignedCustomerUserIds != null
+				&& !this.assignedCustomerUserIds.isEmpty()) {
 			return assignedCustomerUserIds.size();
 		}
 		return 0;
 	}
-	public boolean isCustomerInAssignedList(String userId){
-		if (this.assignedCustomerUserIds != null && !this.assignedCustomerUserIds.isEmpty()) {
+
+	public boolean isCustomerInAssignedList(String userId) {
+		if (this.assignedCustomerUserIds != null
+				&& !this.assignedCustomerUserIds.isEmpty()) {
 			return this.assignedCustomerUserIds.contains(userId);
 		}
 		return false;
 	}
-	
+
 	public void setAssignedCustomerUserIds(String assignedCustomerUserIds) {
 		this.assignedCustomerUserIds.clear();
-		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(assignedCustomerUserIds, ",")));
+		this.assignedCustomerUserIds.addAll(Arrays.asList(StringUtils.split(
+				assignedCustomerUserIds, ",")));
 	}
 
 	public void clearAssignedCustomerUserIds() {
 		this.assignedCustomerUserIds.clear();
 	}
-	
+
 	public void setAssignedCustomerUserIds(Set<String> assignedCustomerUserIds) {
 		this.assignedCustomerUserIds = assignedCustomerUserIds;
 	}
 
-	public TreeMap<Date,FDPromoZipRestriction> getZipRestrictions() {
+	public TreeMap<Date, FDPromoZipRestriction> getZipRestrictions() {
 		return zipRestrictions;
 	}
 
-	public void setZipRestrictions(TreeMap<Date,FDPromoZipRestriction> zipRestrictions) {
+	public void setZipRestrictions(
+			TreeMap<Date, FDPromoZipRestriction> zipRestrictions) {
 		this.zipRestrictions = zipRestrictions;
 	}
 
-	public Map<String,AssignedCustomerParam> getAssignedCustomerParams() {
+	public Map<String, AssignedCustomerParam> getAssignedCustomerParams() {
 		return assignedCustomerParams;
 	}
 
-	public void setAssignedCustomerParams(Map<String,AssignedCustomerParam> assignedCustomerParams) {
+	public void setAssignedCustomerParams(
+			Map<String, AssignedCustomerParam> assignedCustomerParams) {
 		this.assignedCustomerParams = assignedCustomerParams;
-	}	
+	}
 
 	public List<FDPromotionAttributeParam> getAttributeList() {
 		return attributeList;
@@ -393,38 +400,44 @@ public class FDPromotionNewModel extends ModelSupport {
 	public List<FDPromoContentModel> getDcpdData() {
 		return dcpdData;
 	}
-	
-	public void getDcpdDataString(){
-		if(null != dcpdData && !dcpdData.isEmpty()){
+
+	public void getDcpdDataString() {
+		if (null != dcpdData && !dcpdData.isEmpty()) {
 			StringBuffer deptBuffer = new StringBuffer();
 			StringBuffer catBuffer = new StringBuffer();
 			StringBuffer recpBuffer = new StringBuffer();
 			StringBuffer skuBuffer = new StringBuffer();
 			StringBuffer brandBuffer = new StringBuffer();
 			for (Iterator iterator = dcpdData.iterator(); iterator.hasNext();) {
-				FDPromoContentModel contentModel = (FDPromoContentModel) iterator.next();
-				if(EnumDCPDContentType.DEPARTMENT.equals(contentModel.getContentType())){					
-					deptBuffer.append(contentModel.getContentId()+",");
+				FDPromoContentModel contentModel = (FDPromoContentModel) iterator
+						.next();
+				if (EnumDCPDContentType.DEPARTMENT.equals(contentModel
+						.getContentType())) {
+					deptBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.CATEGORY.equals(contentModel.getContentType())){					
-					catBuffer.append(contentModel.getContentId()+",");
+				if (EnumDCPDContentType.CATEGORY.equals(contentModel
+						.getContentType())) {
+					catBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.RECIPE.equals(contentModel.getContentType())){					
-					recpBuffer.append(contentModel.getContentId()+",");
+				if (EnumDCPDContentType.RECIPE.equals(contentModel
+						.getContentType())) {
+					recpBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.SKU.equals(contentModel.getContentType())){
-					if(skuBuffer.length()<=0){
-						if(contentModel.isExcluded())
-							skuBuffer.append("Excluded Skus: ");						
+				if (EnumDCPDContentType.SKU.equals(contentModel
+						.getContentType())) {
+					if (skuBuffer.length() <= 0) {
+						if (contentModel.isExcluded())
+							skuBuffer.append("Excluded Skus: ");
 					}
-					skuBuffer.append(contentModel.getContentId()+",");
+					skuBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.BRAND.equals(contentModel.getContentType())){
-					if(brandBuffer.length()<=0){
-						if(contentModel.isExcluded())
-							brandBuffer.append("Excluded Brands: ");						
+				if (EnumDCPDContentType.BRAND.equals(contentModel
+						.getContentType())) {
+					if (brandBuffer.length() <= 0) {
+						if (contentModel.isExcluded())
+							brandBuffer.append("Excluded Brands: ");
 					}
-					brandBuffer.append(contentModel.getContentId()+",");
+					brandBuffer.append(contentModel.getContentId() + ",");
 				}
 			}
 			dcpdDepts = deptBuffer.toString();
@@ -435,41 +448,48 @@ public class FDPromotionNewModel extends ModelSupport {
 		}
 	}
 
-	public void getCartContentString(){
-		if(null != cartStrategies && !cartStrategies.isEmpty()){
+	public void getCartContentString() {
+		if (null != cartStrategies && !cartStrategies.isEmpty()) {
 			StringBuffer deptBuffer = new StringBuffer();
 			StringBuffer catBuffer = new StringBuffer();
-//			StringBuffer recpBuffer = new StringBuffer();
+			// StringBuffer recpBuffer = new StringBuffer();
 			StringBuffer skuBuffer = new StringBuffer();
 			StringBuffer brandBuffer = new StringBuffer();
-			for (Iterator iterator = cartStrategies.iterator(); iterator.hasNext();) {
-				FDPromoContentModel contentModel = (FDPromoContentModel) iterator.next();
-				if(EnumDCPDContentType.DEPARTMENT.equals(contentModel.getContentType())){					
-					deptBuffer.append(contentModel.getContentId()+",");
+			for (Iterator iterator = cartStrategies.iterator(); iterator
+					.hasNext();) {
+				FDPromoContentModel contentModel = (FDPromoContentModel) iterator
+						.next();
+				if (EnumDCPDContentType.DEPARTMENT.equals(contentModel
+						.getContentType())) {
+					deptBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.CATEGORY.equals(contentModel.getContentType())){					
-					catBuffer.append(contentModel.getContentId()+",");
+				if (EnumDCPDContentType.CATEGORY.equals(contentModel
+						.getContentType())) {
+					catBuffer.append(contentModel.getContentId() + ",");
 				}
-				/*if(EnumDCPDContentType.RECIPE.equals(contentModel.getContentType())){
-					if(recpBuffer.length()<=0){
-						recpBuffer.append("Recipes: ");
-					}
-					recpBuffer.append(contentModel.getContentId()+",");
-				}*/
-				if(EnumDCPDContentType.SKU.equals(contentModel.getContentType())){					
-					skuBuffer.append(contentModel.getContentId()+",");
+				/*
+				 * if(EnumDCPDContentType.RECIPE.equals(contentModel.getContentType
+				 * ())){ if(recpBuffer.length()<=0){
+				 * recpBuffer.append("Recipes: "); }
+				 * recpBuffer.append(contentModel.getContentId()+","); }
+				 */
+				if (EnumDCPDContentType.SKU.equals(contentModel
+						.getContentType())) {
+					skuBuffer.append(contentModel.getContentId() + ",");
 				}
-				if(EnumDCPDContentType.BRAND.equals(contentModel.getContentType())){					
-					brandBuffer.append(contentModel.getContentId()+",");
+				if (EnumDCPDContentType.BRAND.equals(contentModel
+						.getContentType())) {
+					brandBuffer.append(contentModel.getContentId() + ",");
 				}
 			}
 			cartDepts = deptBuffer.toString();
 			cartCats = catBuffer.toString();
-//			cartRecps = recpBuffer.toString();
+			// cartRecps = recpBuffer.toString();
 			cartSkus = skuBuffer.toString();
 			cartBrands = brandBuffer.toString();
 		}
 	}
+
 	public void setDcpdData(List<FDPromoContentModel> dcpdData) {
 		this.dcpdData = dcpdData;
 	}
@@ -494,7 +514,8 @@ public class FDPromotionNewModel extends ModelSupport {
 		return paymentStrategies;
 	}
 
-	public void setPaymentStrategies(List<FDPromoPaymentStrategyModel> paymentStrategies) {
+	public void setPaymentStrategies(
+			List<FDPromoPaymentStrategyModel> paymentStrategies) {
 		this.paymentStrategies = paymentStrategies;
 	}
 
@@ -519,8 +540,7 @@ public class FDPromotionNewModel extends ModelSupport {
 
 		this.auditChanges.add(aChange);
 	}
-	
-	
+
 	public boolean isNeedDryGoods() {
 		return needDryGoods;
 	}
@@ -736,8 +756,6 @@ public class FDPromotionNewModel extends ModelSupport {
 		sb.append(" (").append(this.description).append(")");
 		return sb.toString();
 	}
-	
-
 
 	/**
 	 * Utility method to remove references from freshly imported promotions to
@@ -777,7 +795,8 @@ public class FDPromotionNewModel extends ModelSupport {
 		if (auditChanges != null)
 			for (FDPromoChangeModel model : auditChanges) {
 				if (model.getChangeDetails() != null)
-					for (FDPromoChangeDetailModel model2 : model.getChangeDetails()) {
+					for (FDPromoChangeDetailModel model2 : model
+							.getChangeDetails()) {
 						model2.setPromoChangeId(null);
 					}
 
@@ -787,96 +806,121 @@ public class FDPromotionNewModel extends ModelSupport {
 
 	/**
 	 * Returns the number of successful publish events
+	 * 
 	 * @return
 	 */
 	public int getPublishes() {
 		return publishes;
 	}
-	
+
 	public void setPublishes(int cnt) {
 		this.publishes = cnt;
 	}
-	
-	public boolean isForChef(){
+
+	public boolean isForChef() {
 		boolean isMatched = false;
 		List<FDPromotionAttributeParam> attrList = this.getAttributeList();
 		for (FDPromotionAttributeParam promotionAttributeParam : attrList) {
-			if("ChefsTable".equalsIgnoreCase(promotionAttributeParam.getAttributeName())){
+			if ("ChefsTable".equalsIgnoreCase(promotionAttributeParam
+					.getAttributeName())) {
 				isMatched = true;
 				break;
 			}
 		}
 		return isMatched;
 	}
-	
-	public boolean isForCOS(){
+
+	public boolean isForCOS() {
 		boolean isMatched = false;
-		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		List<FDPromoCustStrategyModel> custStrategies = this
+				.getCustStrategies();
 		if (null != custStrategies) {
-			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
-			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
+			// FIXME: I doubt this piece reflects the original intention of
+			// evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies
+					.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator
+						.next();
 				isMatched = promoCustStrategyModel.isOrderTypeCorporate();
 				break;
 			}
 		}
 		return isMatched;
 	}
-	
-	public boolean isForCOSNew(){
+
+	public boolean isForCOSNew() {
 		boolean isMatched = false;
-		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		List<FDPromoCustStrategyModel> custStrategies = this
+				.getCustStrategies();
 		if (null != custStrategies) {
-			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
-			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
-				isMatched = (promoCustStrategyModel.isOrderTypeCorporate() && (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1));
+			// FIXME: I doubt this piece reflects the original intention of
+			// evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies
+					.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator
+						.next();
+				isMatched = (promoCustStrategyModel.isOrderTypeCorporate()
+						&& (promoCustStrategyModel.getOrderRangeStart() == 1) || (promoCustStrategyModel
+						.getOrderRangeEnd() == 1));
 				break;
 			}
 		}
 		return isMatched;
 	}
-	public boolean isForNew(){
+
+	public boolean isForNew() {
 		boolean isMatched = false;
-		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		List<FDPromoCustStrategyModel> custStrategies = this
+				.getCustStrategies();
 		if (null != custStrategies) {
-			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
-			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
-				isMatched = (promoCustStrategyModel.getOrderRangeStart()==1) || (promoCustStrategyModel.getOrderRangeEnd()==1);
+			// FIXME: I doubt this piece reflects the original intention of
+			// evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies
+					.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator
+						.next();
+				isMatched = (promoCustStrategyModel.getOrderRangeStart() == 1)
+						|| (promoCustStrategyModel.getOrderRangeEnd() == 1);
 				break;
 			}
 		}
 		return isMatched;
 	}
-	
-	public boolean isForDPActiveOrRTU(){
+
+	public boolean isForDPActiveOrRTU() {
 		boolean isMatched = false;
-		List<FDPromoCustStrategyModel> custStrategies = this.getCustStrategies();
+		List<FDPromoCustStrategyModel> custStrategies = this
+				.getCustStrategies();
 		if (null != custStrategies) {
-			// FIXME: I doubt this piece reflects the original intention of evaluating isMatched flag
-			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies.iterator(); iterator.hasNext();) {
-				FDPromoCustStrategyModel promoCustStrategyModel = iterator.next();
-				isMatched = EnumDlvPassStatus.ACTIVE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) || EnumDlvPassStatus.READY_TO_USE.getName().equalsIgnoreCase(promoCustStrategyModel.getDpStatus()) ;
+			// FIXME: I doubt this piece reflects the original intention of
+			// evaluating isMatched flag
+			for (Iterator<FDPromoCustStrategyModel> iterator = custStrategies
+					.iterator(); iterator.hasNext();) {
+				FDPromoCustStrategyModel promoCustStrategyModel = iterator
+						.next();
+				isMatched = EnumDlvPassStatus.ACTIVE.getName()
+						.equalsIgnoreCase(promoCustStrategyModel.getDpStatus())
+						|| EnumDlvPassStatus.READY_TO_USE.getName()
+								.equalsIgnoreCase(
+										promoCustStrategyModel.getDpStatus());
 				break;
 			}
 		}
 		return isMatched;
 	}
-	
-	public boolean isForMarketing(){
+
+	public boolean isForMarketing() {
 		boolean isMatched = false;
 		List<FDPromotionAttributeParam> attrList = this.getAttributeList();
 		for (FDPromotionAttributeParam promotionAttributeParam : attrList) {
-			if("MarketingPromo".equalsIgnoreCase(promotionAttributeParam.getAttributeName())){
+			if ("MarketingPromo".equalsIgnoreCase(promotionAttributeParam
+					.getAttributeName())) {
 				isMatched = true;
 				break;
 			}
 		}
 		return isMatched;
 	}
-	
-
 
 	/**
 	 * Remove certain attributes of a cloned / imported promotion
@@ -957,6 +1001,60 @@ public class FDPromotionNewModel extends ModelSupport {
 	public void setCartBrands(String cartBrands) {
 		this.cartBrands = cartBrands;
 	}
-
 	
+	public String getWSSelectedZone() {
+		 String selectedZone = "";
+		 List<FDPromoDlvZoneStrategyModel> list = getDlvZoneStrategies(); 
+		 String[] selectedZones = null;
+		 if(null != list && !list.isEmpty()){
+			 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);
+			 if(zoneStrgyModel != null) {
+				 selectedZones = zoneStrgyModel.getDlvZones();
+				 if(selectedZones != null && selectedZones.length > 0){
+					 selectedZone = selectedZones[0];
+				 }
+			 }
+		 } 
+		 return selectedZone;
+	}
+	
+	public String getWSSelectedStartTime() {
+		String startTime = "";
+		 List<FDPromoDlvZoneStrategyModel> list = getDlvZoneStrategies(); 
+		 if(null != list && !list.isEmpty()){
+			 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);
+			 if(zoneStrgyModel != null) {
+				 String selectedZoneId = zoneStrgyModel.getId();
+				 List<FDPromoDlvTimeSlotModel> dlvTimeSlots = zoneStrgyModel.getDlvTimeSlots();
+				 if(dlvTimeSlots != null && dlvTimeSlots.size() > 0){
+					 for(Iterator<FDPromoDlvTimeSlotModel> it = dlvTimeSlots.iterator(); it.hasNext();){
+						 FDPromoDlvTimeSlotModel timeSlotModel = it.next();
+						 if(timeSlotModel != null && timeSlotModel.getPromoDlvZoneId().equals(selectedZoneId))
+							 startTime = timeSlotModel.getDlvTimeStart();
+					 }
+				 }
+			 }
+		 } 
+		 return startTime;
+	}
+	
+	public String getWSSelectedEndTime() {
+		String endTime = "";
+		 List<FDPromoDlvZoneStrategyModel> list = getDlvZoneStrategies(); 
+		 if(null != list && !list.isEmpty()){
+			 FDPromoDlvZoneStrategyModel zoneStrgyModel =(FDPromoDlvZoneStrategyModel)list.get(0);
+			 if(zoneStrgyModel != null) {
+				 String selectedZoneId = zoneStrgyModel.getId();
+				 List<FDPromoDlvTimeSlotModel> dlvTimeSlots = zoneStrgyModel.getDlvTimeSlots();
+				 if(dlvTimeSlots != null && dlvTimeSlots.size() > 0){
+					 for(Iterator<FDPromoDlvTimeSlotModel> it = dlvTimeSlots.iterator(); it.hasNext();){
+						 FDPromoDlvTimeSlotModel timeSlotModel = it.next();
+						 if(timeSlotModel != null && timeSlotModel.getPromoDlvZoneId().equals(selectedZoneId))
+							 endTime = timeSlotModel.getDlvTimeEnd();
+					 }
+				 }
+			 }
+		 } 
+		 return endTime;
+	}
 }

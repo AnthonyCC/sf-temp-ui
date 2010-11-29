@@ -9,13 +9,14 @@
 	<title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>
 
 	<meta http-equiv="X-UA-Compatible" content="IE=8">
-
+	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/timepicker/picker.css" >
 	<link rel="stylesheet" type="text/css" href="/assets/css/giftcards.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/crm.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/case.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/jscalendar-1.0/calendar-system.css" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/css/promo.css" />
+	
 	<%-- YUI --%>
 	<!-- Sam Skin CSS -->
 	<link rel="stylesheet" type="text/css" href="/assets/yui/container/assets/skins/sam/container.css">
@@ -39,6 +40,7 @@
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_scroll.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_shadow.js"></script>
 	<script type="text/javascript" language="javascript" src="/ccassets/javascript/overlibmws_draggable.js"></script>
+	<script type="text/javascript" language="javascript" src="/ccassets/javascript/timepicker/picker.js"></script>
 
 <% if ("true".equals(request.getAttribute("needsCCL"))) {%>
     <%@ include file="/shared/template/includes/ccl.jspf"%>

@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -84,7 +85,34 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}
 	}
+
+	public List<WSPromotionInfo> getWSPromotionInfos() throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getWSPromotionInfos(conn);
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}
 	
+	public FDPromotionNewModel getPromotionByPk(String pk) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			FDPromotionNewModel promotion = FDPromotionManagerNewDAO.getPromotionByPk(conn, pk);
+			return promotion;
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+	}
+
 	
 	public PrimaryKey createPromotion(FDPromotionNewModel promotion)
 	throws FDResourceException, FDDuplicatePromoFieldException,
@@ -121,7 +149,7 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
 		try {
 			conn = getConnection();
 
-			FDPromotionManagerNewDAO.storePromotion(conn, promotion);
+			FDPromotionManagerNewDAO.updatePromotion(conn, promotion);
 
 			if (saveLog) {
 				storePromoChangeLog(promotion, conn, promotion.getPK());

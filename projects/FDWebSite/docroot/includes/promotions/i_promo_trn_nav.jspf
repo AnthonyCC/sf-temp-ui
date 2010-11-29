@@ -1,0 +1,69 @@
+<%@ page import="java.util.Arrays"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.TreeMap"%>
+<%@ page import="java.util.Date"%>
+<%@ page import="com.freshdirect.common.customer.EnumCardType" %>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.fdstore.promotion.*" %>
+<%@ page import='com.freshdirect.fdstore.content.*'%>
+<%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
+<%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionStatus"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.fdstore.FDStoreProperties"%>
+<%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus"%>
+<%@ page import="com.freshdirect.delivery.model.DlvZoneModel"%>
+<%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
+<%@ page import="com.freshdirect.framework.util.FormatterUtil"%>
+<%@ page import="com.freshdirect.framework.util.NumberUtil"%>
+<%@ page import="com.freshdirect.framework.util.DateUtil"%>
+<%@ page import="com.freshdirect.crm.CrmAgentModel" %>
+<%@ page import="com.freshdirect.crm.CrmAgentRole" %>
+<%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession" %>
+<%@ taglib uri='logic' prefix='logic' %>
+
+<%-- include calendar setup/callbacks --%>
+
+<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
+<%
+	String snav_pageURI = request.getRequestURI();
+	boolean promo_ws_create = snav_pageURI.indexOf("/promo_ws_create.jsp") > -1;
+	boolean promo_ws_view = snav_pageURI.indexOf("/promo_ws_view.jsp") > -1;
+	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+	//boolean isTRNUser = agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE));
+%>
+
+<div class="promo_nav">
+<% if(FDStoreProperties.isPromoPublishNodeMaster()) { %>
+		<% if (promo_ws_create) { %>
+			<div class="promo_sub_nav_on">
+				Create
+			</div>
+		<% }else{ %>
+			<div class="promo_sub_nav">
+				<a href="/promotion/promo_ws_create.jsp">Create</a>
+			</div>
+		<% } %>
+		<% if (promo_ws_view) { %>
+			<div class="promo_sub_nav_on">
+				View
+			</div>
+		<% }else{ %>
+			<div class="promo_sub_nav">
+				<a href="/promotion/promo_ws_view.jsp">View</a>
+			</div>
+		<% } %>
+
+<% } else {%>
+		<% if (promo_ws_view) { %>
+			<div class="promo_sub_nav_on">
+				View
+			</div>
+		<% }else{ %>
+			<div class="promo_sub_nav">
+				<a href="/promotion/promo_ws_view.jsp">View</a>
+			</div>
+		<% } %>
+<% } %>	
+</div>
+</script>

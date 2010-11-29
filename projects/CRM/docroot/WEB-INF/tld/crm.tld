@@ -1125,6 +1125,18 @@
 	            <rtexprvalue>true</rtexprvalue>
 	        </attribute>	
       	</tag>  
+       <tag>
+      	<name>WSPromoController</name>
+      	<tagclass>com.freshdirect.webapp.taglib.callcenter.WSPromoControllerTag</tagclass>
+      	<teiclass>com.freshdirect.webapp.taglib.callcenter.WSPromoControllerTag$TagEI</teiclass>
+      	<bodycontent>JSP</bodycontent>
+      	<info></info>
+		<attribute>
+            <name>result</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>	
+      	</tag>    
     <tag>
 	<name>CancelDPController</name>
 	<tagclass>com.freshdirect.webapp.taglib.dlvpass.CancelDPControllerTag</tagclass>

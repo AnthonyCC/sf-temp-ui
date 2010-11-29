@@ -20,6 +20,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoChangeModel;
 import com.freshdirect.fdstore.promotion.management.FDPromoCustNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.framework.core.PrimaryKey;
 
 public interface FDPromotionManagerNewSB extends EJBObject {
@@ -29,6 +30,8 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public PrimaryKey createPromotion(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
 	public FDPromotionNewModel getPromotion(String promoId) throws FDResourceException, RemoteException;
+	
+	public FDPromotionNewModel getPromotionByPk(String pk) throws FDResourceException,RemoteException;
 	
 	public void storePromotion(FDPromotionNewModel promotion, boolean saveLog) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
@@ -104,5 +107,7 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 	public boolean lookupPromotion(String promotionCode) throws RemoteException, FDResourceException;
 	
 	public List<FDPromotionNewModel> getModifiedOnlyPromotions(Date lastModified) throws FDResourceException, RemoteException;
+	
+	public List<WSPromotionInfo> getWSPromotionInfos() throws FDResourceException,RemoteException;
 }
 

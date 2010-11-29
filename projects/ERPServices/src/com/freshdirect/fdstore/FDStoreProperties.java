@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -470,7 +472,7 @@ public class FDStoreProperties {
 	
 	//Brand media replacement (APPDEV-1308)
 	private final static String PROP_BRAND_MEDIA_IDS = "fdstore.brand.media.ids";
-
+	private final static String PROP_WS_DISCOUNT_AMOUNT_LIST = "fdstore.ws.discount.list";
 	// [APPDEV-1283] Wine Revamp
 	private final static String WINE_SHOW_RATINGS_KEY = "fdstore.wine.newPricingRatingEnabled";
 	
@@ -830,7 +832,7 @@ public class FDStoreProperties {
 
 		//Brand media replacement (APPDEV-1308)
 		defaults.put(PROP_BRAND_MEDIA_IDS, "none");
-
+		defaults.put(PROP_WS_DISCOUNT_AMOUNT_LIST, "2");
 		
 		// [APPDEV-1283] Wine Revamp
 		defaults.put(WINE_SHOW_RATINGS_KEY, Boolean.toString(true));
@@ -1881,7 +1883,7 @@ public class FDStoreProperties {
 	}
 
 	public static boolean isPromoPublishNodeMaster() {
-		return "master".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE) );
+		return "master".equalsIgnoreCase( get(PROMO_PUBLISH_NODE_TYPE).trim() );
 	}
 
 	public static boolean isPromoPublishNodeReplica() {
@@ -1922,6 +1924,10 @@ public class FDStoreProperties {
 		return Integer.parseInt(get(PROP_ROUTING_UNASSIGNEDPROCESSINGLIMIT));
 	}
 
+	public static String getWSDiscountAmountList() {
+		return get(PROP_WS_DISCOUNT_AMOUNT_LIST);
+ 	}
+	
 	public static void forceRefresh() {
 		refresh(true);
 	}

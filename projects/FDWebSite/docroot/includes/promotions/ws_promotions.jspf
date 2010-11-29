@@ -1,0 +1,100 @@
+<%@ page import="java.text.*, java.util.*" %>
+<%@ page import="com.freshdirect.customer.*" %>
+<%@ page import="com.freshdirect.fdstore.customer.*" %>
+<%@ page import="com.freshdirect.framework.webapp.*" %>
+<%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
+<%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
+<%@ page import="com.freshdirect.webapp.taglib.callcenter.GenericLocatorTag"%>
+
+<%@ taglib uri='logic' prefix='logic' %>
+<%@ taglib uri="crm" prefix="crm" %>
+<link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
+<style type="text/css">
+</style>
+<script>
+function openURL(inLocationURL) {
+
+    self.parent.location.href = inLocationURL;
+
+}
+</script>
+<script language="JavaScript" type="text/javascript">
+	function doCancel(promoId) {
+		var doConfirm = confirm ("Are you sure you want to Cancel the Promotion?");
+		if(doConfirm == false){
+			return;
+		}            
+		document.frmPromoWSView.promoCode.value = promoId;
+		document.frmPromoWSView.actionName.value = "cancel";
+		document.frmPromoWSView.submit();
+	}
+</script>
+
+<%
+	DecimalFormat df = new DecimalFormat("0.00");
+%>
+<logic:present name="promotions">
+<table width="100%" border="0" cellspacing="5" cellpadding="5">
+	<tr>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Promotion ID</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Name</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Effective Date</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" align="center"  class="border_bold"><span class="detail_text"><b>Zone</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Start Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>End Time</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Discount</b></span></td>	
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold"><span class="detail_text"><b>Status</b></span></td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold">&nbsp;</td>
+	<td class="border_bold">&nbsp;</td>
+	<td valign="bottom" class="border_bold">&nbsp;</td>
+	
+	</tr>
+	
+	<%
+		
+		if(promotions == null || promotions.size() == 0) {
+	%>
+	<tr><td><span class="error">No Windows Steering Promotion found.</span></td></tr>
+	
+	<%
+		} else {
+	%>	
+	<logic:iterate id="promotion" collection="<%= promotions %>" type="com.freshdirect.fdstore.promotion.management.WSPromotionInfo" indexId="cnt">
+	<tr>
+	<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;"><%= promotion.getPromotionCode() %></a></b></span></td>	
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= CCFormatter.formatDateMonth(promotion.getEffectiveDate()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getZoneCode() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStartTime() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getEndTime() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text">$<%= df.format(promotion.getDiscount()) %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><%= promotion.getStatus().getName() %></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom"><span class="detail_text"><b><a onclick="javascript:openURL('/promotion/promo_ws_create.jsp?promoId=<%= promotion.getPromotionCode() %>')" href="#" style="color: #008800;font-size: 8pt;">EDIT</a></b></span></td>
+	<td class="border_bottom">&nbsp;</td>
+	<td class="border_bottom">
+		<input name="cancel" type="button" value=" CANCEL " class="submit" onclick="javascript:doCancel('<%= promotion.getPromotionCode() %>');" >
+	</td>
+	</tr>
+	</logic:iterate>
+	<%
+		}
+	%>	
+	
+</table>
+</logic:present>

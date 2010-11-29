@@ -2827,6 +2827,19 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>GetWSPromotions</name>
+		<tagclass>com.freshdirect.webapp.taglib.promotion.GetWSPromotionTag</tagclass>
+		<teiclass>com.freshdirect.webapp.taglib.promotion.GetWSPromotionTag$TagEI</teiclass>
+		<bodycontent>JSP</bodycontent>
+		<info></info>
+		<attribute>
+			<name>id</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	
+	<tag>
 		<name>GeocodeException</name>
 		<tagclass>com.freshdirect.webapp.taglib.callcenter.GeocodeExceptionTag</tagclass>
 		<teiclass>com.freshdirect.webapp.taglib.callcenter.GeocodeExceptionTag$TagEI</teiclass>
