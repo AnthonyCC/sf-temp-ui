@@ -55,10 +55,10 @@
 					<a href="/unsupported.jsp" onclick="FormChangeUtil.checkSignature('qs_cart',false); return CCL.rename_so_list('<%= StringUtil.escapeHTML(StringUtil.escapeJavaScript(so.getCustomerListName()))%>', this);">RENAME</a>
 				</div></div>
 			</div>
-			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
+			<hr style="margin-bottom: 10px; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			<% if ( so.isError() ) { %>
 				<!-- error display -->
-				<div class="text13" style="text-align: center; font-weight: bold; margin-top: 1em; color: #CC3300;">
+				<div class="text13" style="text-align: center; font-weight: bold; color: #CC3300;">
 					IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
 				</div>			
 				<div style="text-align: center;">
