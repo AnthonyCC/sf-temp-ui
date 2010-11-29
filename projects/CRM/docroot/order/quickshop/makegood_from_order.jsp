@@ -72,6 +72,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	String qsDeptId = null;
 	boolean hasDeptId = false;
 	request.setAttribute("crm_source","true");
+	final boolean isStandingOrderPage = false;
 %>
 <%@ include file="/shared/quickshop/includes/i_vieworder.jspf" %>
 </fd:QuickShopController>

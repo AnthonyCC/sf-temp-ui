@@ -37,12 +37,13 @@
 	
 	if (so != null) {
 		ErpAddressModel addr = so.getDeliveryAddress();		
-		final String nextDlvDateText = new SimpleDateFormat("EEEE, MMMM d.").format( so.getNextDeliveryDate() );
+		final String nextDlvDateText = FDStandingOrder.DATE_FORMATTER.format( so.getNextDeliveryDate() );
+		final String nextDlvDateTextShort = FDStandingOrder.DATE_FORMATTER_SHORT.format( so.getNextDeliveryDate() );
 %>
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
-			<img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38">
+			<a href="/quickshop/standing_orders.jsp" ><img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38"></a>
 			<font class="space4pix"><br/></font>
 			<% String selectedSoId = so.getId(); %>
 			<%@ include file="/quickshop/includes/so_list_nav.jspf"%>
@@ -57,8 +58,8 @@
 			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			<% if ( so.isError() ) { %>
 				<!-- error display -->
-				<div style="text-align: center; font-weight: bold; margin-top: 1em; color: #CC3300;">
-					IMPORTANT NOTE: We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
+				<div class="text13" style="text-align: center; font-weight: bold; margin-top: 1em; color: #CC3300;">
+					IMPORTANT NOTE: <br/>We were not able to schedule a delivery for <%= nextDlvDateText %><br/><br/><%=so.getErrorHeader()%><br/>
 				</div>			
 				<div style="text-align: center;">
 					<%=so.getErrorDetail()%><br/><br/>
@@ -72,41 +73,54 @@
 			<% } else { %>
 				<!-- last order -->
 				<div style="text-align: left; font-weight: bold">
-					<%@ include file="/quickshop/includes/so_next_delivery.jspf" %>
+					<%@ include file="/quickshop/includes/so_next_delivery_alt.jspf" %>
 				</div>
 			<% } %>
-			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			
+			<div style="background-color: #996699; color: white; padding: 3px 5px; overflow: hidden; margin-bottom: 15px; margin-top: 15px;">
+				<span class="title18" style="float: left;">EDIT THIS STANDING ORDER</span>
+				<a class="text14" style="float: right; text-align: right; color: white; vertical-align: middle;" href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Help/FAQs</a>
+			</div>	
+						
 			<!-- details -->
-			<table id="so-details" style="border: 0; width: 100%">
-				<tr>
-					<td style="vertical-align: top">
-						<div class="title12">Order Details</div>
-						<div style="margin-left: 1.5em">
-							<div>Delivered <%= so.getFrequencyDescription() %></div>
-							<% if (addr != null) { %>
-								<div><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %></div>
-							<% } %>
-							<div><%= StandingOrderHelper.getDeliveryDate(so,false) %></div>
-						</div>
-					</td>
-					<td style="vertical-align: top">
-						<div class="title12">Need to make changes?</div>
-						<ul style="margin-top: 0; margin-bottom: 0; margin-right 0; list-style: disc;">
-							<li><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>">Change the schedule or options for all future deliveries.</a></li>
-							<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.shift_so_delivery('<%= so.getId() %>', '<%= nextDlvDateText %>', this); return false;">Skip an upcoming delivery ...</a></li><% } %>
-							<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.change_so_frequency('<%= so.getId() %>', <%= so.getFrequency() %>, '<%= nextDlvDateText %>', this); return false;">Change the frequency of deliveries.</a></li><% } %>
-							<li><a href="/unsupported.jsp" onclick="CCL.delete_so('<%= so.getId() %>', this); return false;">Delete this standing order.</a></li>
-						</ul>
-					</td>
-				</tr>
-			</table>
 			
-			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
-			<div class="text16" style="font-weight: bold; color: #996699">
-				You can change the items in <% if ( so.isError() ) { %> future deliveries <% } else { %>all deliveries starting <%= nextDlvDateText %> <% } %>by editing this shopping list. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a>
+			<div class="title18" style="color: #996699; margin-bottom: 5px;">1. DELIVERY FREQUENCY &amp; OPTIONS</div>
+			
+			<div class="title14" style="margin-bottom: 25px;">
+				Make one-time or permanent changes to the delivery of your order.
+				Changes will affect deliveries of this order starting <span style="color: #CC3300;"><%=nextDlvDateTextShort%></span>.
 			</div>
 			
+			<div class="text14" style="margin-bottom: 25px;">
+				<ul style="margin-top: 0; margin-bottom: 0; margin-right 0; list-style: disc; padding-left: 15px;">
+					<li><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>"><b>Resubmit this standing order to make permanent changes</b></a></li>
+					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.shift_so_delivery('<%= so.getId() %>', '<%= nextDlvDateText %>', this); return false;">Skip upcoming delivery</a></li><% } %>
+					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.change_so_frequency('<%= so.getId() %>', <%= so.getFrequency() %>, '<%= nextDlvDateText %>', this); return false;">Adjust delivery frequency</a></li><% } %>
+					<li><a href="/unsupported.jsp" onclick="CCL.delete_so('<%= so.getId() %>', this); return false;">Delete this standing order</a></li>
+				</ul>
+			</div>
+			
+			<div class="text14" style="margin-bottom: 25px;">
+				<div class="title14">Your Current Settings:</div>
+				<table>
+					<tr><td class="text14" style="padding-right: 10px;">Frequency:</td><td class="text14">Delivered <%= so.getFrequencyDescription() %></td></tr>
+					<tr><td class="text14" style="padding-right: 10px;">Delivery Address:</td><td class="text14"><%if(addr!=null){%><%= addr.getScrubbedStreet() %>, <%= addr.getApartment() %><%}%></td></tr>
+					<tr><td class="text14" style="padding-right: 10px;">Delivery Timeslot:</td><td class="text14"><%= StandingOrderHelper.getDeliveryDate(so,false) %></td></tr>
+				</table>	
+			</div>
+			
+			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
+			
+			<div class="title18" style="color: #996699; margin-bottom: 5px;">2. STANDING ORDER CONTENTS</div>
+			
+			<div class="text14" style="margin-bottom: 15px;">
+				<b>To change quantities:</b> Changes to Quantity boxes only take effect if you immediately resubmit your order. Use the &quot;Modify&quot; link instead to make changes for future orders.
+			</div>
+			
+			<div class="text14" style="margin-bottom: 25px;">
+				<b>To add products:</b> Shop as usual and click &quot;Save to Shopping List&quot; on any product page. Then choose the list for this standing order. <br/><a href="/index.jsp">Click here to shop now.</a>
+			</div>
+						
 			<%--LIST OF STANDING ORDER ITEMS --%>
 			<fd:QuickShopController id="quickCart" soListId="<%= so.getCustomerListId() %>" action="<%= actionName %>">
 				<%
@@ -114,9 +128,11 @@
 					final String qsDeptId = null;
 					final boolean hasDeptId = false;
 					final String orderId = null;			
+					final boolean isStandingOrderPage = true;
 				%>
 				<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 			</fd:QuickShopController>
+			
 		</div>
 		</tmpl:put>
 	</tmpl:insert>
@@ -126,7 +142,7 @@
 	<tmpl:insert template='/common/template/quick_shop_nav.jsp'>
 		<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Order</tmpl:put>
 		<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
-			<img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38">
+			<a href="/quickshop/standing_orders.jsp" ><img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38"></a>
 			<font class="space4pix"><br/></font>
 			<% String selectedSoId = ""; %>
 			<%@ include file="/quickshop/includes/so_list_nav.jspf"%>

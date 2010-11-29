@@ -13,13 +13,13 @@
 			<% for (FDStandingOrder so : solst) {
 					FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, so.getCustomerListName()); %>
 				<tr>
-					<td class="text13" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
+					<td class="text15" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
 						<%= so.isError() ? errorMarker : ""%><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= l.getName() %></a>
 					</td>
-					<td class="text11" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%= l.getLineItems().size() %> Item<%=  l.getLineItems().size() > 1 ? "s" : "" %>)</td>
+					<td class="text12" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%= l.getLineItems().size() %> Item<%=  l.getLineItems().size() > 1 ? "s" : "" %>)</td>
 				</tr>
 			<% } %>
 		</table>
 	<% } %>
 </fd:ListStandingOrders>
-<a class="text13" style="font-weight: bold; display: block;" href="/quickshop/standing_orders.jsp">All Standing Orders &raquo;</a>
+<a class="text14" style="font-weight: bold; display: block;" href="/quickshop/standing_orders.jsp">All Standing Orders &raquo;</a>

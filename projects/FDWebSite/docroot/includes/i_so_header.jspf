@@ -69,8 +69,8 @@
 						<div style="color: #996699;">You are making changes to the standing order: <%= __so.getCustomerListName() %><br/>This order will be delivered <%@include file="i_so_chgfrq.jspf" %></div>
 						<% if (__err) { %><div style="margin-top: 1em; color: #CC3300">IMPORTANT NOTE: We were not able to schedule a delivery for <%= __soNextDlvDate %><br/><%= __so.getErrorHeader() %></div><% } %>
 					</div>
-					<div style="margin-top: 1em; font-weight: bold;">Once you're ready, check out to confirm the day and time by scheduling the first updated delivery. <a href="/media/editorial/site_pages/standing_orders/so_help_checkout.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help_checkout.html','large'); return false;">Learn more.</a></div>
-					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here</a> to cancel changes to the standing order, items previously in your cart will be restored.</div>
+					<div style="margin-top: 1em; font-weight: bold;">To set the day and time of the first delivery of this standing order, <a href="/unsupported.jsp" onclick="(function(){var f=document.getElementById('viewcart'); f.action+='?checkout.x=1';f.submit() }()); return false;">check out now</a>.</div>
+					<div><a style="font-weight: bold;" href="/quickshop/cancel_so_checkout.jsp">Click here to cancel changes.</a> (Items already in your cart will remain.)</div>
 <%
 			} else if (isFinalPage) {
 %>					<div style="font-size: 13px; font-weight: bold;">

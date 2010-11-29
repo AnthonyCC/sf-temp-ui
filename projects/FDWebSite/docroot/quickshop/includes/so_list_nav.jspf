@@ -21,7 +21,7 @@
 				 	boolean isSelected = sorder.getId().equals(selectedSoId);
 				%>
 					<tr><td class="text11">					
-						<div style="margin-left: 5px; margin-bottom: 3px; margin-right: 2px; text-indent: -5px;">
+						<div style="margin-left: 0px; margin-bottom: 3px; margin-right: 2px; width: 89px; overflow: hidden;">
 			       			<% if (!isSelected) { %>
 			       				<a href="<%= FDURLUtil.getStandingOrderLandingPage(sorder, null) %>"><b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b></a>
 			       			<% } else { %>

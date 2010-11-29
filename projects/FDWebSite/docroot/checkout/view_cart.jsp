@@ -116,9 +116,9 @@ StringBuffer buffer = new StringBuffer(
 
 %>
 
-<%@ include file="/includes/i_modifyorder.jspf" %>
 
-<form name="viewcart" method="post" style="margin:0px ! important">
+<form name="viewcart" method="post" style="margin:0px ! important" id="viewcart">
+<%@ include file="/includes/i_modifyorder.jspf" %>
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">

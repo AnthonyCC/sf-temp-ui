@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.standingorders.service;
 
+import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.util.Calendar;
 import java.util.Collection;
@@ -45,7 +46,6 @@ import com.freshdirect.fdstore.atp.FDMuniAvailabilityInfo;
 import com.freshdirect.fdstore.atp.FDStockAvailabilityInfo;
 import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDAuthenticationException;
-import com.freshdirect.fdstore.customer.FDCartI;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDCartModel;
@@ -69,8 +69,8 @@ import com.freshdirect.fdstore.rules.FDRuleContextI;
 import com.freshdirect.fdstore.rules.FDRulesContextImpl;
 import com.freshdirect.fdstore.standingorders.DeliveryInterval;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder;
-import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.FDStandingOrder.ErrorCode;
+import com.freshdirect.fdstore.standingorders.FDStandingOrdersManager;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Result;
 import com.freshdirect.fdstore.standingorders.service.StandingOrdersServiceResult.Status;
 import com.freshdirect.framework.core.SessionBeanSupport;
@@ -306,9 +306,32 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			String from = ErpServicesProperties.getStandingOrdersTechnicalErrorFromAddress();
 			String recipient = ErpServicesProperties.getStandingOrdersTechnicalErrorRecipientAddress();
 			String subject = "TECHNICAL ERROR occurred in the Standing Orders background service!";
-			String message = "Standing Orders background process failed." + msg + " Please check the server log for more details...";
 			
-			mailer.sendMail(from, recipient, "", subject, message );
+			StringBuilder message = new StringBuilder(); 
+			message.append( "Standing Orders background process failed!\n" );
+			
+			message.append( "message: " );
+			message.append( msg );
+			message.append( '\n' );
+			
+			message.append( " Please check the server log for more details...\n" );
+			
+			message.append( "timestamp: " );
+			message.append( new Date() );
+			message.append( '\n' );
+			
+			try {
+				message.append( "ip: " );
+				message.append( java.net.InetAddress.getLocalHost().getHostAddress() );
+				message.append( '\n' );
+				message.append( "host: " );
+				message.append( java.net.InetAddress.getLocalHost().getCanonicalHostName() );
+				message.append( '\n' );
+			} catch ( UnknownHostException e ) {
+				message.append( "host is unknown" );				
+			}
+			
+			mailer.sendMail(from, recipient, "", subject, message.toString() );
 			
 		} catch ( MessagingException e ) {
 			LOGGER.error( "Failed to send out technical error report email!" );
@@ -802,7 +825,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		
 		// Iterate through troubled items by their cartLineID
 		for (String key : invsInfoMap.keySet()) {
-			FDAvailabilityInfo info = (FDAvailabilityInfo)invsInfoMap.get(key);
+			FDAvailabilityInfo info = invsInfoMap.get(key);
 			final Integer randomId = new Integer(key);
 			FDCartLineI cartLine = cart.getOrderLineById(randomId);
 

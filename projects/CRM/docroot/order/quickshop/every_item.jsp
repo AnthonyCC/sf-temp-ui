@@ -95,6 +95,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	String orderId = null; 
 	String qsDeptId = null;
 	boolean hasDeptId = false;
+	final boolean isStandingOrderPage = false;
 %>
 	<fd:QuickShopController id="quickCart" orderId="every" action="<%= actionName %>">
 	

@@ -123,6 +123,7 @@
 					String qsPage = "shop_from_list.jsp";
 					String qsDeptId = null;
 					boolean hasDeptId = false;
+					final boolean isStandingOrderPage = false;
 				%>
 
 

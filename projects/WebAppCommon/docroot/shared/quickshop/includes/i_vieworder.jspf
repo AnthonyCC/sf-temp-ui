@@ -34,6 +34,7 @@
 	@param (boolean)	hasDeptId
 	@param (String)		qsDeptId
 	@param (String)		orderId (optional)
+	@param (boolean)	isStandingOrderPage
  --%>
 <%!
 	java.text.DecimalFormat QT_FORMATTER = new java.text.DecimalFormat("0.##");
@@ -206,11 +207,11 @@ String source = ccListIdStr != null && ccListIdStr.length() > 0
 
 <table id="vieworder_table" width="100%" cellpadding="0" cellspacing="0" border="0">
 <form action="<%= formAction %>" method="post" name="qs_cart" id="qs_cart">
-<tr>
-</tr>
-<tr>
-    <td colspan="7" align="right"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART"></td>
-</tr>
+	<% if (!isStandingOrderPage) { %>
+	<tr>
+	    <td colspan="7" align="right"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="8" alt="ADD SELECTED TO CART"></td>
+	</tr>
+<% } %>
 <tr bgcolor="#996699" class="text10wbold" height="18">
     <td colspan="4">&nbsp;Quantity</td>
     <td>Item & Current Price</td>
@@ -703,45 +704,47 @@ if (showRecent && showThis &&  skusAdded!=null && skusAdded.contains("skuCode_"+
     <td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="4" height="1"><input type="text" style="width:60px" name="total" value="" size="6" class="text11bold" onChange="" onFocus="blur()"><span class="text12"><b>*</b></span></td>
 <% } %>
 </tr>
-<tr>
 <% if (QuickCart.PRODUCT_TYPE_STARTER_LIST == cartType) { %>
-  <td colspan="7"> 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0">
-        <tr>
-          <td width="30%" align="left">
-             <a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.adopt_list('qs_cart',this,'<%= user.getFirstName()%>\'s <%=StringUtil.escapeHTML(__qc.getName())%>','action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/images/template/quickshop/adopt_list_btn.gif" border="0"/></a>
-          </td>
-          <td width="70%" align="right"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="10" alt="ADD SELECTED TO CART"></td>
+	<tr>
+	  <td colspan="7"> 
+	  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+	        <tr>
+	          <td width="30%" align="left">
+	             <a id="ccl-add-action" href="/unsupported.jsp" onclick="return CCL.adopt_list('qs_cart',this,'<%= user.getFirstName()%>\'s <%=StringUtil.escapeHTML(__qc.getName())%>','action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/images/template/quickshop/adopt_list_btn.gif" border="0"/></a>
+	          </td>
+	          <td width="70%" align="right"><input type="image" name="addMultipleToCart" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="10" alt="ADD SELECTED TO CART"></td>
+		</tr>
+	  </table>
+	  </td>
 	</tr>
-  </table>
-  </td>
-<% } else { %>
-    <td colspan="7" align="right"><input type="image" name="addMultipleToCart" onclick="FormChangeUtil.checkSignature('qs_cart',false)" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="10" alt="ADD SELECTED TO CART"></td>
+<% } else if ( !isStandingOrderPage	) { %>
+	<tr>
+	    <td colspan="7" align="right"><input type="image" name="addMultipleToCart" onclick="FormChangeUtil.checkSignature('qs_cart',false)" src="/media_stat/images/template/quickshop/qs_add_selected_to_cart.gif" width="145" height="17" border="0" vspace="10" alt="ADD SELECTED TO CART"></td>
+	</tr>
 <% } %>
 <script type="text/javascript">
     updateTotal();
 </script>
-</tr>
-<% if(isCCLorSO) {    %>
-<tr>
-    <td colspan="7" align="right"> 
-        <div class="text11bold" style="margin-top:5px">
-            <a href="/unsupported.jsp" onclick="return CCL.copy_items('qs_cart',this,'action=CCL:copyToList&ccl_copy_type=multiple','source=ccl_actual_selection')">Save selected to another list</a>
-        </div>
-    </td>
-</tr>
-<% } else { %>
-<fd:CCLCheck>
-<tr>
-    <td colspan="7" align="right" class="text11bold">
-        <fd:CCLNew/>
-        <a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
-   		<div style="text-align: right;  margin-bottom: 1ex;">       
-		  <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
-		</div>             
-    </td>
-</tr>
-</fd:CCLCheck>
+<% if(isCCLorSO && !isStandingOrderPage) {    %>
+	<tr>
+	    <td colspan="7" align="right"> 
+	        <div class="text11bold" style="margin-top:5px">
+	            <a href="/unsupported.jsp" onclick="return CCL.copy_items('qs_cart',this,'action=CCL:copyToList&ccl_copy_type=multiple','source=ccl_actual_selection')">Save selected to another list</a>
+	        </div>
+	    </td>
+	</tr>
+<% } else if ( !isStandingOrderPage ) { %>
+	<fd:CCLCheck>
+		<tr>
+		    <td colspan="7" align="right" class="text11bold">
+		        <fd:CCLNew/>
+		        <a href="/unsupported.jsp" onclick="return CCL.save_items('qs_cart',this,'action=CCL:AddMultipleToList&source=ccl_actual_selection','source=ccl_actual_selection')"><img src="/media_stat/ccl/lists_link_selected_dfgs.gif" width="133" height="13" style="border: 0; padding-left: 14px"><img src="/media_stat/ccl/lists_save_icon_lg.gif" width="12" height="14" style="margin: 0 0 1px 5px; border: 0"/></a>
+		   		<div style="text-align: right;  margin-bottom: 1ex;">       
+				  <fd:CCLNew template="/common/template/includes/ccl_moreabout.jspf"/>
+				</div>             
+		    </td>
+		</tr>
+	</fd:CCLCheck>
 <% } %>    
 <tr><td colspan="7" align="center" class="text9" style="padding-top:10px;">* Please note that item prices have been updated to reflect today's current market conditions.</td></tr>
 </form>

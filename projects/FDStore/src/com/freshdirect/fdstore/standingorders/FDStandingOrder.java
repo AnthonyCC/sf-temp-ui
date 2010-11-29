@@ -249,9 +249,14 @@ public class FDStandingOrder extends ModelSupport {
 	
 	
 	public static final DateFormat DATE_FORMATTER =  new SimpleDateFormat("EEEE, MMMM d.");
+	public static final DateFormat DATE_FORMATTER_SHORT =  new SimpleDateFormat("MM/dd/yy");
 	
 	public String getNextDeliveryString() {
 		return DATE_FORMATTER.format( getNextDeliveryDate() );
+	}
+	
+	public String getNextDeliveryStringShort() {
+		return DATE_FORMATTER_SHORT.format( getNextDeliveryDate() );
 	}
 
 	

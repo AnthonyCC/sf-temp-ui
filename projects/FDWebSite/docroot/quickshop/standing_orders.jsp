@@ -29,7 +29,9 @@
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
 	<%-- SIDE NAV --%>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
-		<img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38">
+		<div style="width: 91px;">
+			<img src="/media_stat/images/template/quickshop/standingorders_catnav.gif" border="0" width="80" height="38">		
+		</div>
 		<font class="space4pix"><br/></font>
 		<%-- <a href="/quickshop/every_item.jsp"><img src="/media_stat/images/template/quickshop/qs_every_item_catnav.gif" width="80" height="38" border="0"></a><br/><font class="space4pix"> --%>
 	</tmpl:put>

@@ -127,7 +127,10 @@ window.onload = function() {
 	    <td><b>Add the selected items to your cart</b> by clicking the orange button.<br></td>
 	</tr>
 	</table>
-	<%  String qsPage = "every_item.jsp"; %>
+	<%  
+		String qsPage = "every_item.jsp";
+		final boolean isStandingOrderPage = false;
+	%>
 	<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 	
 <% } else { %><br>

@@ -1,0 +1,46 @@
+<%@page import="com.freshdirect.fdstore.standingorders.FDStandingOrder"%>
+<%@page import="com.freshdirect.fdstore.customer.FDOrderInfoI"%>
+<%@page import="java.util.List"%>
+<%@page import="java.util.Collections"%>
+<%@page import="java.util.Date"%>
+
+<% 
+	FDOrderInfoI lastOrder = so.getLastOrder( user );
+	List<FDOrderInfoI> allOrders = so.getAllOrders( user );
+%>
+
+<% if ( lastOrder != null ) { %>
+	<!-- <%= "Last Order Info : id = " + lastOrder.getErpSalesId() + "; status = " + lastOrder.getOrderStatus().getDisplayName() + "; requested date = " + lastOrder.getRequestedDate() + "; create date = " + lastOrder.getCreateDate() + "; " + (lastOrder.isModifiable() ? "modifiable" : "not modifiable") %> -->
+<% } else { %>
+	<!-- <%= "No last order found." %> -->
+<% } %>
+
+<% 	if ( allOrders != null && allOrders.size() > 0 ) { 
+		Collections.sort( allOrders, FDOrderInfoI.COMPARE_BY_CREATE_DATE ); %>
+		<!--List of all orders related to this standing order :-->
+		<% for ( FDOrderInfoI order : allOrders ) { %>
+			<!-- <%= "Order Info : id = " + order.getErpSalesId() + "; status = " + order.getOrderStatus().getDisplayName() + "; requested date = " + order.getRequestedDate() + "; create date = " + order.getCreateDate() + "; " + (order.isModifiable() ? "modifiable" : "not modifiable") %> --> 
+		<% }
+	} else { %>
+		<!-- <%= "No orders found for this standing order." %> -->
+<% 	} %>
+
+
+
+<% if ( lastOrder != null && lastOrder.getRequestedDate().after( new Date() ) ) { %>
+	
+	<div class="title16" style="overflow: hidden;">
+		<div style="float: left;">Next Delivery of Your Standing Order:&nbsp;<span style="color: #CC3300; "><%= FDStandingOrder.DATE_FORMATTER_SHORT.format( lastOrder.getRequestedDate() ) %></span></div>
+		<div style="text-align: right; float: right;"><a href="/your_account/order_details.jsp?orderId=<%= lastOrder.getErpSalesId() %>"><%= lastOrder.isModifiable() ? "VIEW/MODIFY" : "VIEW" %></a></div>
+	</div>
+	<div class="text12" style="padding-top: 15px; font-weight: normal;">
+		NOTE: Clicking the VIEW/MODIFY link above will take you to our Modify Order process. Changes you make
+		there will affect <b>only</b> your current order. To make permanent changes to your standing order, choose from
+		your options below.
+	</div>
+	
+<% } else { %>
+
+	<div class="title16" style="text-align: left;">Next Delivery of Your Standing Order: <span style="color: #CC3300;"><%= so.getNextDeliveryStringShort() %></span></div>					
+	
+<% } %>

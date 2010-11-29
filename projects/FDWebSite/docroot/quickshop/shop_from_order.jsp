@@ -70,6 +70,7 @@ RequestUtil.appendToAttribute(request,"windowOnBeforeUnload","FormChangeUtil.war
 	String qsPage = "shop_from_order.jsp"; 
 	String qsDeptId = null;
 	boolean hasDeptId = false;
+	final boolean isStandingOrderPage = false;
 %>
 <%@ include file="/shared/quickshop/includes/i_vieworder.jspf" %>
 <br>

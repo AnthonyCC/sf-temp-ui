@@ -118,6 +118,7 @@
 <%
 				if (quickCart.numberOfProducts() > 0) {
 				    request.setAttribute("crm_source","true");
+					final boolean isStandingOrderPage = false;
 				%>
 				<%@ include file="/shared/quickshop/includes/i_vieworder.jspf"%>
 				<br>
