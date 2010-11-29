@@ -91,8 +91,8 @@
 				Changes will affect deliveries of this order starting <span style="color: #CC3300;"><%=nextDlvDateTextShort%></span>.
 			</div>
 			
-			<div class="text14" style="margin-bottom: 25px;">
-				<ul style="margin-top: 0; margin-bottom: 0; margin-right 0; list-style: disc; padding-left: 15px;">
+			<div class="text14" style="margin-bottom: 25px; padding-left: 15px;">
+				<ul style="margin: 0; list-style: disc; padding-left: 0px;">
 					<li><a href="<%= FDURLUtil.getStandingOrderLandingPage(so, "modify") %>"><b>Resubmit this standing order to make permanent changes</b></a></li>
 					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.shift_so_delivery('<%= so.getId() %>', '<%= nextDlvDateText %>', this); return false;">Skip upcoming delivery</a></li><% } %>
 					<% if ( !so.isError() ) { %><li><a href="/unsupported.jsp" onclick="CCL.change_so_frequency('<%= so.getId() %>', <%= so.getFrequency() %>, '<%= nextDlvDateText %>', this); return false;">Adjust delivery frequency</a></li><% } %>
@@ -109,7 +109,7 @@
 				</table>	
 			</div>
 			
-			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
+			<hr style="margin-bottom: 10px; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>	
 			
 			<div class="title18" style="color: #996699; margin-bottom: 5px;">2. STANDING ORDER CONTENTS</div>
 			
