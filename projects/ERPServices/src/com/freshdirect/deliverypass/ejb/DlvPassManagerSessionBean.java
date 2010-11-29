@@ -783,7 +783,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 				for ( DeliveryPassModel model : dlvPasses ) {
 					dlvPassStatus = model.getStatus();
 					dlvPassId = model.getPK().getId();
-					if(model.getType().isUnlimited()){
+					if(model.getType() != null && model.getType().isUnlimited()){
 						expDate = model.getExpirationDate();
 						if(expDate!=null) {
 							//Make sure the pass has not expired.
@@ -791,7 +791,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 							if(today.after(expDate) && EnumDlvPassStatus.ACTIVE.equals(dlvPassStatus)){
 								dlvPassStatus = EnumDlvPassStatus.EXPIRED;
 							}
-							if(model.getType().isFreeTrialRestricted()&& !EnumDlvPassStatus.ORDER_CANCELLED.equals(model.getStatus())) {
+							if(model.getType().isFreeTrialRestricted() && !EnumDlvPassStatus.ORDER_CANCELLED.equals(model.getStatus())) {
 								allStatusMap.put(DlvPassConstants.IS_FREE_TRIAL_RESTRICTED, new Boolean(true));
 							}
 						}
@@ -804,7 +804,7 @@ public class DlvPassManagerSessionBean extends SessionBeanSupport {
 						usablePassCount=Integer.parseInt(allStatusMap.get(DlvPassConstants.USABLE_PASS_COUNT).toString());
 						usablePassCount++;
 						allStatusMap.put(DlvPassConstants.USABLE_PASS_COUNT, String.valueOf(usablePassCount));
-						if(model.getType().isAutoRenewDP()) {
+						if(model.getType() != null && model.getType().isAutoRenewDP()) {
 							autoRenewUsablePassCount=Integer.parseInt(allStatusMap.get(DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT).toString());
 							autoRenewUsablePassCount++;
 							allStatusMap.put(DlvPassConstants.AUTORENEW_USABLE_PASS_COUNT, String.valueOf(autoRenewUsablePassCount));
