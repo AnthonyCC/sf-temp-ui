@@ -11,9 +11,12 @@ import javax.naming.NamingException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.customer.EnumAccountActivityType;
+import com.freshdirect.customer.ErpActivityRecord;
 import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
+import com.freshdirect.fdstore.customer.FDActionInfo;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -135,12 +138,12 @@ public class FDStandingOrdersManager {
 		}
 	}
 
-	public void delete(FDStandingOrder so) throws FDResourceException {
+	public void delete(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			sb.delete(so);
+			sb.delete(info, so);
 		} catch (CreateException ce) {
 			invalidateManagerHome();
 			throw new FDResourceException(ce, "Error creating session bean");
@@ -149,13 +152,17 @@ public class FDStandingOrdersManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}
 	}
+	
+	public String save(FDActionInfo info, FDStandingOrder so) throws FDResourceException {
+		return save(info, so, null);
+	}	
 
-	public String save(FDStandingOrder so) throws FDResourceException {
+	public String save(FDActionInfo info, FDStandingOrder so, String saleId) throws FDResourceException {
 		lookupManagerHome();
 		try {
 			FDStandingOrdersSB sb = soHome.create();
 			
-			return sb.save(so);
+			return sb.save(info, so, saleId);
 			
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -252,69 +259,97 @@ public class FDStandingOrdersManager {
 	 * @return primary key of the standing order created
 	 * @throws FDResourceException
 	 */
-	public String manageStandingOrder( FDCartModel cart, FDStandingOrder standingOrder) throws FDResourceException {
+	public String manageStandingOrder(FDActionInfo info, FDCartModel cart, FDStandingOrder standingOrder, String saleId) throws FDResourceException {
 		
 		LOGGER.debug( "manageStandingOrder() starting." );
 		
-		FDIdentity ident = standingOrder.getCustomerIdentity(); 
+		try {
+			FDIdentity ident = standingOrder.getCustomerIdentity(); 
+				
+			LOGGER.debug( "identity =" + ident );
 			
-		LOGGER.debug( "identity =" + ident );
-		
-		// #1 - Create customer list (if it has not been)
-		if (standingOrder.getCustomerListId() == null) {
-			/**  Create shopping list (if not created yet) */
-			
-			LOGGER.debug( "Creating new shopping list." );
-			FDStandingOrderList l = new FDStandingOrderList();
-			
-			PrimaryKey custPk = new PrimaryKey(ident.getErpCustomerPK());
-			LOGGER.debug( "setting customer pk :" + custPk );
-			l.setCustomerPk( custPk );
-			l.setName(standingOrder.getCustomerListName());
-			
-			LOGGER.debug( "customer list created :" + l );
-			
-			// populate list
-			Collection<FDCartLineI> cl = cart.getOrderLines();
-			LOGGER.debug( "populating customer list : " + cl.size() + "items => "+ cl );
-			for (FDCartLineI s : cl) {
-				LOGGER.debug( "merging cartline : " + s );
-				l.mergeSelection(s, false);
-			}
-	
-			LOGGER.debug( "storing customer list :" + l );
-			String listId = FDListManager.storeCustomerList(l);
-			LOGGER.debug( "FDListManager.storeCustomerList() returned:" + listId );
-			
-			// Standing Order - INIT PHASE #2
-			LOGGER.debug( "original l.getId() = " + l.getId() );
-			l.setId( listId );
-			LOGGER.debug( "new l.getId() = " + l.getId() );
-			
-			LOGGER.debug( "setting customer list id : listId = " + listId );
-			standingOrder.setCustomerListId( listId );
-			
-		} else {
-			
-			/** Just update the content */
-			LOGGER.debug( "Updating content." );
-			
-			FDStandingOrderList l = (FDStandingOrderList) FDListManager.getCustomerList(ident, EnumCustomerListType.SO, standingOrder.getCustomerListName());
+			// #1 - Create customer list (if it has not been)
+			if (standingOrder.getCustomerListId() == null) {
+				/**  Create shopping list (if not created yet) */
+				
+				LOGGER.debug( "Creating new shopping list." );
+				FDStandingOrderList l = new FDStandingOrderList();
+				
+				PrimaryKey custPk = new PrimaryKey(ident.getErpCustomerPK());
+				LOGGER.debug( "setting customer pk :" + custPk );
+				l.setCustomerPk( custPk );
+				l.setName(standingOrder.getCustomerListName());
+				
+				LOGGER.debug( "customer list created :" + l );
+				
+				// populate list
+				Collection<FDCartLineI> cl = cart.getOrderLines();
+				LOGGER.debug( "populating customer list : " + cl.size() + "items => "+ cl );
+				for (FDCartLineI s : cl) {
+					LOGGER.debug( "merging cartline : " + s );
+					l.mergeSelection(s, false);
+				}
 
-			// clean list
-			l.removeAllLineItems();
-			
-			// copy items from cart to list
-			Collection<FDCartLineI> cl = cart.getOrderLines();
-			for (FDCartLineI s : cl) {
-				l.mergeSelection(s, false);
-			}
+				LOGGER.debug( "storing customer list :" + l );
+				String listId = FDListManager.storeCustomerList(l);
+				LOGGER.debug( "FDListManager.storeCustomerList() returned:" + listId );
+				
+				// Standing Order - INIT PHASE #2
+				LOGGER.debug( "original l.getId() = " + l.getId() );
+				l.setId( listId );
+				LOGGER.debug( "new l.getId() = " + l.getId() );
+				
+				LOGGER.debug( "setting customer list id : listId = " + listId );
+				standingOrder.setCustomerListId( listId );
+				
+			} else {
+				
+				/** Just update the content */
+				LOGGER.debug( "Updating content." );
+				
+				FDStandingOrderList l = (FDStandingOrderList) FDListManager.getCustomerList(ident, EnumCustomerListType.SO, standingOrder.getCustomerListName());
 
-			FDListManager.storeCustomerList(l);
+				// clean list
+				l.removeAllLineItems();
+				
+				// copy items from cart to list
+				Collection<FDCartLineI> cl = cart.getOrderLines();
+				for (FDCartLineI s : cl) {
+					l.mergeSelection(s, false);
+				}
+
+				FDListManager.storeCustomerList(l);
+
+				standingOrder.clearLastError();
+			}
+			
+			// #2 Update standing order
+			return save(info, standingOrder, saleId);
+		} catch (FDResourceException e) {
+			ErpActivityRecord rec = info.createActivity(EnumAccountActivityType.STANDINGORDER_SAVE_FAILED);
+			if (standingOrder == null)
+				rec.setNote("Standing Order Create Failed");
+			else
+				rec.setNote("Standing Order Modify Failed");				
+			rec.setChangeOrderId(saleId);
+			rec.setStandingOrderId(standingOrder.getId());
+			this.logActivity(rec);
+			throw e;
 		}
-		
-		// #2 Update standing order
-		return save(standingOrder);
 	}
 
+	private void logActivity(ErpActivityRecord record) throws FDResourceException {
+		lookupManagerHome();
+		try {
+			FDStandingOrdersSB sb = soHome.create();
+			
+			sb.logActivity(record);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 }
