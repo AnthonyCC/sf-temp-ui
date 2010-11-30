@@ -17,6 +17,7 @@ import com.freshdirect.customer.ErpSaleInfo;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.customer.FDActionInfo;
+import com.freshdirect.fdstore.customer.FDAuthenticationException;
 import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
@@ -90,7 +91,7 @@ public class FDStandingOrdersManager {
 		} catch (RemoteException re) {
 			invalidateManagerHome();
 			throw new FDResourceException(re, "Error talking to session bean");
-		}
+		} 
 	}
 
 	public Collection<FDStandingOrder> loadActiveStandingOrders() throws FDResourceException {

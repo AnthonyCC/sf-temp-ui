@@ -87,10 +87,17 @@ public class CrmResubmitOrdersTag extends AbstractControllerTag {
 	 */
 	protected boolean performGetAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		List orderList = null;
+		
 		try {
+			
+			   String date=request.getParameter("deliveryDate");
+			   date=(null==date)?"":("".equals(date.trim()))?"":date.trim();
+			   String cutOff=request.getParameter("cutoffTime");
+			   cutOff=(null==cutOff)?"":("".equals(cutOff.trim()))?"":("all".equalsIgnoreCase(cutOff.trim()))?"":cutOff.trim();
+	  
 				String[] status = {EnumSaleStatus.NOT_SUBMITTED.getStatusCode(), EnumSaleStatus.MODIFIED.getStatusCode(),
 						EnumSaleStatus.MODIFIED_CANCELED.getStatusCode(), EnumSaleStatus.NEW.getStatusCode() };
-				orderList =  CallCenterServices.getNSMOrders();
+				orderList = CallCenterServices.getNSMOrders(date, cutOff);
 			} catch (FDResourceException fdre) {
 				LOGGER.warn("Caught ErpTransactionException in CrmResubmitOrdersTag.performAction() ",fdre);
 				throw new JspException(" Caught FDResoureceException. ",fdre);

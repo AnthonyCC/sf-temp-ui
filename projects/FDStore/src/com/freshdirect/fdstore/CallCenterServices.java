@@ -455,13 +455,13 @@ public class CallCenterServices {
 		}
 	}
 	
-	public static List getNSMOrders() throws FDResourceException {
+	public static List getNSMOrders(String date, String cutOff) throws FDResourceException {
 		if (callCenterHome == null) {
 			lookupManagerHome();
 		}
 		try {
 			CallCenterManagerSB sb = callCenterHome.create();
-			return sb.getNSMOrders();
+			return sb.getNSMOrders(date, cutOff);
 		} catch (CreateException ce) {
 			callCenterHome = null;
 			throw new FDResourceException(ce, "Error creating bean");

@@ -55,7 +55,7 @@ public interface CallCenterManagerSB extends EJBObject {
 	
 	public List getNSMCustomers() throws FDResourceException, RemoteException;
 	
-	public List getNSMOrders() throws FDResourceException, RemoteException; 
+	public List getNSMOrders(String date, String cutOff) throws FDResourceException, RemoteException; 
 	
 	public List getOrdersByStatus(String[] status) throws FDResourceException, RemoteException;
 		

@@ -673,12 +673,44 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 			" where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+
 			" and sa.action_date <= (sysdate - 1/48) AND ((sa.requested_date >= SYSDATE) OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date<=(SYSDATE)))"+
 			" and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date";
-	public List getNSMOrders() throws FDResourceException {
+	
+	private static final String NSM_ORDERS_QUERY_BY_DATE ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+ 
+    "from cust.sale s, cust.salesaction sa,cust.customerinfo ci "+ 
+     "where s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
+     "and sa.action_date <= (sysdate - 1/48) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "+ 
+     "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "+
+     "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
+
+     private static final String NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF ="select s.id as sale_id, s.status, sa.requested_date, sa.amount, sa.action_date, ci.last_name, ci.first_name "+ 
+    "from cust.deliveryinfo di, cust.sale s, cust.salesaction sa,cust.customerinfo ci "+
+     "where "+
+    " sa.id=DI.SALESACTION_ID and to_char( DI.CUTOFFTIME,'HH12:MI AM')=? "+  
+    "and  s.status in ('NSM', 'MOD', 'MOC', 'NEW') and s.id=sa.sale_id and SA.ACTION_TYPE IN ('CRO','MOD') and S.CROMOD_DATE=SA.ACTION_DATE "+ 
+     "and sa.action_date <= (sysdate - 1/48) AND ((sa.requested_date =TO_DATE(?, 'YYYY-MM-DD')) "+ 
+     "OR ( s.TYPE IN ('SUB','GCD','DON') AND sa.requested_date=TO_DATE(?, 'YYYY-MM-DD'))) "+
+     "and S.CUSTOMER_ID=CI.CUSTOMER_ID ORDER BY action_date ";
+     
+	public List getNSMOrders(String date, String cutOff) throws FDResourceException {
 		Connection conn = null;
 		try {
 			conn = this.getConnection();
 			List lst = new ArrayList();
-			PreparedStatement ps = conn.prepareStatement(NSM_ORDERS_QUERY);
+			PreparedStatement ps =null;
+			if((null==date && null==cutOff)||("".equals(date) && "".equals(cutOff))) {
+				ps= conn.prepareStatement(NSM_ORDERS_QUERY);
+			} else if(!"".equals(date) && ("".equals(cutOff)||null==cutOff)) {
+				ps= conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE);
+				ps.setString(1,date);
+				ps.setString(2,date);
+			} else if(!"".equals(date) && !"".equals(cutOff)) {
+				ps= conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF);
+				ps.setString(1,cutOff);
+				ps.setString(2,date);
+				ps.setString(3,date);
+				
+			} else {
+				ps= conn.prepareStatement(NSM_ORDERS_QUERY);
+			}
 			ResultSet rs = ps.executeQuery();
 			while(rs.next()){
 				FDCustomerOrderInfo info = new FDCustomerOrderInfo();

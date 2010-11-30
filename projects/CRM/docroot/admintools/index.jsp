@@ -7,7 +7,8 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
-
+<%@ page import="com.freshdirect.framework.util.NVL" %>
+<%@ page import="com.freshdirect.framework.util.DateUtil" %>
 <%@ page import="com.freshdirect.customer.EnumSaleStatus" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 
@@ -23,6 +24,9 @@
 
 	<crm:CrmResubmitOrders id="nsmOrders" result="result">
 	<form method='POST' name="frmResubmitOrders">
+	
+	
+	
 
 		<% if (!result.isSuccess() ) { %>
 			<div id="result" class="list_content" style="height:70%;">
@@ -38,7 +42,8 @@
 		<% } %>
 		
 		<div class="sub_nav sub_nav_title">
-			Resubmit Orders that are in Non-Submitted Mode
+			
+			<%@ include file="/includes/admintools/i_nsm_search.jspf"%>
 		</div>
 		<div>
 			<% if (!isPost && nsmOrders.size() == 0) { %><strong>There were no Non-Submitted Orders found.</strong><% } %>
