@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.framework.util.DateUtil;
 import com.freshdirect.framework.util.StringUtil;
@@ -118,5 +120,14 @@ public class RoutingUtil {
 
         return splittedList;
     }
+	
+	public static String splitValueByUnderscore(String codedValue) {
+		String[] dataLst = StringUtils.split(codedValue, "_");
+		if(dataLst != null && dataLst.length > 1) {
+			return dataLst[1];
+		} else {
+			return "000";
+		}
+	}
 	
 }

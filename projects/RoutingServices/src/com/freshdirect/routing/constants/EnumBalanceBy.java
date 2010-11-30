@@ -9,7 +9,7 @@ import org.apache.commons.lang.enums.Enum;
 public class EnumBalanceBy extends Enum {
 	
 	public static final EnumBalanceBy NUMSTOPS = new EnumBalanceBy("sbfNumStops", "No Of Stops");
-	public static final EnumBalanceBy QUANTITY = new EnumBalanceBy("sbfQuantity", "Quantity");
+	public static final EnumBalanceBy QUANTITY = new EnumBalanceBy("sbfLoad", "Quantity");
 	public static final EnumBalanceBy COST = new EnumBalanceBy("sbfCost", "Cost");
 	public static final EnumBalanceBy WORKINGTIME = new EnumBalanceBy("sbfWorkingTime", "Working Time");
 	
