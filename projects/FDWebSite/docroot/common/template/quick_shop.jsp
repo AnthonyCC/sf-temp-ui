@@ -25,7 +25,7 @@ request.setAttribute("__yui_load_dispatcher__", Boolean.TRUE);%>
        } // if
     } // local block
 %>
-
+<tmpl:get name='head'/>
 
 </head>
 <BODY BGCOLOR="#FFFFFF" LINK="#336600" VLINK="#336600" ALINK="#FF9900" TEXT="#333333" CLASS="text10" 

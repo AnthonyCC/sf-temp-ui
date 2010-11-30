@@ -12,7 +12,7 @@
 	NumberFormat nav_currencyFormatter = java.text.NumberFormat.getIntegerInstance( Locale.US );
 	String selectedOrder = quickCart.getOrderId();
 	boolean hasSelected = selectedOrder != null && !"".equals(selectedOrder);
-	String style = "text13";
+	String style = "text12";
 	
 	if (orderHistoryInfo != null && orderHistoryInfo.size() > 0) {
 %><table cellpadding="0" cellspacing="0" border="0" class="text13">
@@ -29,10 +29,10 @@
 						if (!orderInfo.isPending()) {
 							++count;
 %>	<tr>
-		<td class="text13">
+		<td class="text12">
 			<a style="margin-left: 1em; font-weight: bold;" href="/quickshop/shop_from_order.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= nav_dateFormatter.format(orderInfo.getRequestedDate()) %>&nbsp;&nbsp;&nbsp;<%= nav_dayFormatter.format(orderInfo.getRequestedDate()) %></a>
 		</td>
-		<td class="text11">&nbsp;&nbsp;(<%
+		<td class="text10">&nbsp;&nbsp;(<%
 		if (orderInfo != null) {
 			%><fd:GetOrder id='qs_order' saleId='<%= orderInfo.getErpSalesId()%>'><%= qs_order != null ? qs_order.numberOfOrderLines() + (qs_order.numberOfOrderLines() == 1 ? " Item, ": " Items, ") : "0 Items, " %>
 		</fd:GetOrder><%
@@ -48,7 +48,7 @@
 					}
 				if (count >= 10 /* && request.getRequestURI().indexOf("/quickshop/previous_orders.jsp") < 0 */) {
 %>	<tr>
-		<td class="text13" <%= !hasSelected ? "colspan=\"2\"" : "" %>>
+		<td class="text12" <%= !hasSelected ? "colspan=\"2\"" : "" %>>
 			<br>
 			<a style="font-weight: bold;" href="/quickshop/previous_orders.jsp">All Orders &raquo;</a>
 		</td>

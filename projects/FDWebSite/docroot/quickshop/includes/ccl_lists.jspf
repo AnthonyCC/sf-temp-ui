@@ -19,19 +19,19 @@
        int n = CCList.getCount();
 %>
 	<tr>
-		<td class="text13" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
+		<td class="text12" style="padding-left: 1em; font-weight: bold; padding-bottom: 7px;">
 			<a href="/quickshop/shop_from_list.jsp?ccListId=<%=CCList.getId()%>"><%= StringUtil.escapeHTML(CCList.getName())%></a>
 		</td>
-		<td class="text11" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</td>
+		<td class="text10" style="padding-left: 1em; padding-bottom: 7px; white-space: nowrap">(<%=n%> <%=(n == 1 ? " Item" : " Items")%>)</td>
 	</tr>
 <%
     } // for
 %>
 </table>
-<div class="text11" style="padding: 1em 0 2em 0">
+<div class="text10" style="padding: 1em 0 2em 0">
 To create a new list <a onclick="return CCL.create_list(true, this);" href="/unsupported.jsp">click here.</a>
 </div>
-<div class="text13" style="padding-bottom: 1em">
+<div class="text12" style="padding-bottom: 1em">
 <% if (sorted.size() > 1) { %>
 	<a style="display: block; font-weight: bold" href="/quickshop/all_lists.jsp">All Lists &amp; Details &raquo;</a>
 <% } else { %>

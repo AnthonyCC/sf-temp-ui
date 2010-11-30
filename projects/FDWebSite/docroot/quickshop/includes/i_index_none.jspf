@@ -6,8 +6,8 @@
 			<% if ( user.isEligibleForStandingOrders() ) { %>					
 				<!-- STANDING ORDERS SECTION -->
 				<div id="standingorders-section" style="width:262px; background-color: #e0e3d0; padding:20px 10px;">
-					<div class="text15" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
-					<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
+					<div class="text14" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
+					<div class="title11" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
 					<%@ include file="/quickshop/includes/so_lists.jspf" %>
 				</div>
 				<div style="height: 15px"></div>
@@ -15,8 +15,8 @@
 				<div style="height: 20px"></div>
 			<% } %>
 			<div>
-				<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span><font class="space2pix"><br><br></font>
-				<font class="text12bold" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
+				<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;<fd:CCLNew/></span><font class="space2pix"><br><br></font>
+				<font class="title11" color="#FF9933">CHANGE OR SHOP FROM YOUR LISTS:</font>
 				<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 			</div>
 		 </td>
@@ -26,13 +26,13 @@
 </fd:CCLCheck>
         <fd:IncludeMedia name="media/editorial/site_pages/lists/quickshop_intro.html" >
         <td width="227" class="text13">
-        <font class="text15"><b>We store your orders here, details and all, so you can reorder fast.</b></font><br>
+        <font class="text14"><b>We store your orders here, details and all, so you can reorder fast.</b></font><br>
 			<br><span class="space2pix"><br></span>   
-        <font class="text15"><b>Once you receive your first order, you can shop from:</b></font><br><br>                     
+        <font class="text14"><b>Once you receive your first order, you can shop from:</b></font><br><br>                     
                         
-        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; PREVIOUS ORDERS</font><br><br>
-        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; YOUR RECIPES</font><br><br>
-        <font class="text12bold" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
+        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; PREVIOUS ORDERS</font><br><br>
+        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; YOUR RECIPES</font><br><br>
+        <font class="title11" color="#FF9933"><img src="/media_stat/images/layout/6x6_orange_dot.gif"> &nbsp; EVERYTHING YOU'VE <br> &nbsp;&nbsp;&nbsp;&nbsp;EVER ORDERED</font><br><br>        
 		</td>
         </fd:IncludeMedia>        
 	</tr>

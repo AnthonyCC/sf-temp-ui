@@ -5,15 +5,15 @@
 <%@ page import="com.freshdirect.fdstore.customer.ejb.EnumCustomerListType"%>
 <table width="535" cellpadding="0" cellspacing="0" border="0">
 	<tr valign="top">
-		<td width="232" class="text13">
-			<font class="text15"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
-			<div class="text12bold" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
+		<td width="232" class="text12">
+			<font class="text14"><b>Shop from Previous Orders</b></font><font class="space2pix"><br><br></font>
+			<div class="title11" style="padding-bottom: 2em; color: #FF9933">CHOOSE AN ORDER:</div>
 			<%@ include file="/quickshop/includes/order_nav_qs_index.jspf" %>
 			
 			<img src="/media_stat/images/layout/clear.gif" width="0" height="25">
 			<fd:GetCustomerRecipeList id="recipes">
-				<div class="text15" style="font-weight: bold;">Your Recipes</div>
-				<div class="text12bold" style="padding-top: 2px; color: #FF9933">REORDER YOUR FAVORITES:</div>
+				<div class="text14" style="font-weight: bold;">Your Recipes</div>
+				<div class="title11" style="padding-top: 2px; color: #FF9933">REORDER YOUR FAVORITES:</div>
 				<div style="font-weight: bold; padding: 1em 0 2em 0"><a href="/quickshop/your_recipes.jsp">Click here to shop from your previous recipes</a></div>
 			</fd:GetCustomerRecipeList>
 		</td>
@@ -25,8 +25,8 @@
 			<% if ( user.isEligibleForStandingOrders() ) { %>					
 				<!-- STANDING ORDERS SECTION -->
 				<div id="standingorders-section" style="width:262px; background-color: #e0e3d0; padding:20px 10px;">
-					<div class="text15" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
-					<div class="text12bold" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
+					<div class="text14" style="font-weight: bold; letter-spacing: 1px;">Your Standing Orders</div>
+					<div class="title11" style="padding-top: 2px; padding-bottom: 2em; color: #FF9933;">AUTOMATIC RECURRING DELIVERIES</div>
 					<%@ include file="/quickshop/includes/so_lists.jspf" %>
 				</div>
 				<div style="height: 15px"></div>
@@ -36,17 +36,17 @@
 			<!-- SHOPPING LISTS SECTION -->
 			<div id="shopping-list-section">
 				<fd:CCLCheck>			
-					<font class="text15"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
+					<font class="text14"><b>Your Shopping Lists</b></font><span style="text-align: right;">&nbsp;&nbsp;&nbsp;</span>
 					<font class="space2pix"><br><br></font>
-					<font class="text12bold" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
+					<font class="title11" color="#FF9933">EDIT OR SHOP FROM YOUR LISTS:</font><br><br>
 					<%@ include file="/quickshop/includes/ccl_lists.jspf" %>
 				</fd:CCLCheck>
 			</div>
 			<div style="height: 25px"></div>
 			<div id="eieo-section">
-				<div class="text15" style="font-weight: bold;">Everything You've<br>Ever Ordered!</div>
+				<div class="text14" style="font-weight: bold;">Everything You've<br>Ever Ordered!</div>
 				<font class="space2pix"><br><br></font>
-				<font class="text12bold" color="#FF9933">CHOOSE DEPARTMENT: </font>
+				<font class="title11" color="#FF9933">CHOOSE DEPARTMENT: </font>
 				<font class="space2pix"><br><br><br></font><br>&nbsp;&nbsp;
 				<SELECT ONCHANGE="location = this.options[this.selectedIndex].value;">
 					<OPTION>Choose Department...

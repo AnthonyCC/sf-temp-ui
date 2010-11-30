@@ -20,8 +20,9 @@
 <fd:SmartSavingsUpdate promoConflictMode="false"/>
 <tmpl:insert template='/common/template/quick_shop.jsp'>
 	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
-		<tmpl:put name='content' direct='true'>
-		
+	<tmpl:put name="head"><link href="/assets/css/fix.css" rel="stylesheet" type="text/css" /></tmpl:put>
+	<tmpl:put name='content' direct='true'>
+					
 <%
 	// first try to figure out FDShoppingCart controller parameters dynamically
 
