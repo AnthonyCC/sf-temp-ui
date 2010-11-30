@@ -503,6 +503,10 @@ public class SessionUser {
     public void setUserPricingContext() {
         ContentFactory.getInstance().setCurrentPricingContext(sessionUser.getPricingContext());
     }
+    
+    public double getMaxSignupPromotion() {
+        return sessionUser.getMaxSignupPromotion();
+    }
 
     
     
