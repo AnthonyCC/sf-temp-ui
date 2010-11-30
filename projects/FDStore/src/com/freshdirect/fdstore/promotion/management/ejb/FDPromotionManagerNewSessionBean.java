@@ -98,6 +98,21 @@ public class FDPromotionManagerNewSessionBean extends FDSessionBeanSupport {
             close(conn);
 		}
 	}
+	public WSPromotionInfo getWSPromotionInfo(String zoneCode, String startTime, 
+					String endTime, Date effectiveDate) throws FDResourceException {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			return FDPromotionManagerNewDAO.getWSPromotionInfo(conn, zoneCode, startTime, endTime, 
+					new java.sql.Date(effectiveDate.getTime()));
+
+		} catch (SQLException sqle) {
+			throw new FDResourceException(sqle);
+		} finally {
+            close(conn);
+		}
+		
+	}
 	
 	public FDPromotionNewModel getPromotionByPk(String pk) throws FDResourceException {
 		Connection conn = null;

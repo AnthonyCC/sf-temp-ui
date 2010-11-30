@@ -26,6 +26,8 @@ import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.VariableInfo;
 import javax.swing.text.html.Option;
 
+import oracle.net.aso.p;
+
 import org.apache.log4j.Category;
 
 import com.freshdirect.common.address.AddressModel;
@@ -114,6 +116,7 @@ import com.freshdirect.fdstore.promotion.management.FDPromoTypeNotFoundException
 import com.freshdirect.fdstore.promotion.management.FDPromotionModel;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewManager;
 import com.freshdirect.fdstore.promotion.management.FDPromotionNewModel;
+import com.freshdirect.fdstore.promotion.management.WSPromotionInfo;
 import com.freshdirect.fdstore.promotion.pxp.PromoPublisher;
 import com.freshdirect.framework.core.PrimaryKey;
 import com.freshdirect.framework.util.DateUtil;
@@ -159,7 +162,24 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 					String endTime = request.getParameter("endTime");
 					String discount = request.getParameter("discount");
 					String promoCode =  NVL.apply(request.getParameter("promoCode"), "").trim();
+					Date startDate = dateFormat.parse(effectiveDate);
 					if(promoCode.length() == 0 ){
+						//Validate if the given effecttive_date/zone/timeslot combination already exists.
+						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
+						if(pInfo != null){
+							StringBuffer buf = new StringBuffer();
+							buf.append("Promotion for zone ");
+							buf.append(zone);
+							buf.append(", timeslot ");
+							buf.append(startTime);
+							buf.append(" to ");
+							buf.append(endTime);
+							buf.append(" and effective date ");
+							buf.append(effectiveDate);
+							buf.append(" already exists.");
+							actionResult.addError(true, "actionfailure", buf.toString());
+							return true;
+						}
 						//Create a new WS Promotion.
 						FDPromotionNewModel promotion = constructPromotion(effectiveDate, zone, startTime, endTime, discount);
 						postValidate(promotion, actionResult);
@@ -185,8 +205,24 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 						if(promotion == null){
 							throw new FDResourceException("Unable to locate Windows Steering Promotion. Please contact AppSupport.");
 						}
-
 						promotion.setAuditChanges(FDPromotionNewManager.loadPromoAuditChanges(promotion.getId()));
+						//Validate if the given effecttive_date/zone/timeslot combination already exists.
+						WSPromotionInfo pInfo = FDPromotionNewManager.getWSPromotionInfo(zone, startTime, endTime, startDate);
+						if(pInfo != null && !pInfo.getPromotionCode().equals(promotion.getPromotionCode())) {
+							StringBuffer buf = new StringBuffer();
+							buf.append("Promotion for zone ");
+							buf.append(zone);
+							buf.append(", timeslot ");
+							buf.append(startTime);
+							buf.append(" to ");
+							buf.append(endTime);
+							buf.append(" and effective date ");
+							buf.append(effectiveDate);
+							buf.append(" already exists.");
+							actionResult.addError(true, "actionfailure", buf.toString());
+							return true;
+						}
+
 						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){

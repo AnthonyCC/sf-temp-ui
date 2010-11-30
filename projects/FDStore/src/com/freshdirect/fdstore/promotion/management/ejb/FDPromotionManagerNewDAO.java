@@ -137,7 +137,7 @@ public class FDPromotionManagerNewDAO {
 		}
 		return promotion;
 	}
-	private final static String GET_WS_PROMOTION_INFO = 
+	private final static String GET_WS_PROMOTION_INFOS = 
 		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
 		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
 		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
@@ -154,7 +154,7 @@ public class FDPromotionManagerNewDAO {
 	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn) throws SQLException {
 		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
 		
-		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFO);
+		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFOS);
 
 		ResultSet rs = ps.executeQuery();
 
@@ -176,6 +176,55 @@ public class FDPromotionManagerNewDAO {
 		rs.close();
 		ps.close();
 		return infos;
+	}
+
+	private final static String GET_WS_PROMOTION_INFO = 
+		"select P.ID, P.CODE, P.NAME, P.START_DATE,  (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE ) x " 
+		+ "where id= z.id) zone_code, T.START_TIME, T.END_TIME, P.MAX_AMOUNT, P.STATUS from cust.promotion_new p, cust.promo_cust_strategy pc, "
+		+ "cust.promo_dlv_zone_strategy z, cust.promo_dlv_timeslot t, cust.promo_delivery_dates d "
+		+ "where p.id = PC.PROMOTION_ID "
+		+ "and P.ID = Z.PROMOTION_ID "
+		+ "and Z.ID = T.PROMO_DLV_ZONE_ID "
+		+ "and p.id = D.PROMOTION_ID "
+		+ "and  (select count(ID) from cust.promo_delivery_dates where PROMOTION_ID = p.id) = 1 "
+		+ "and trunc(D.START_DATE) =  trunc(D.END_DATE) "
+		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
+		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) = 1 "
+		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
+		+ "and P.CAMPAIGN_CODE = 'HEADER' "
+		+ "and (select COLUMN_VALUE from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE"
+		+ ") x where id= z.id) = ? "
+		+ "and T.START_TIME = ? "
+		+ "and T.END_TIME = ? "
+		+ "and P.START_DATE = ? "; 
+
+
+	public static WSPromotionInfo getWSPromotionInfo(Connection conn, String zoneCode, String startTime, String endTime, Date effectiveDate) throws SQLException {
+		WSPromotionInfo wsPromotionInfo = null;
+		PreparedStatement ps = conn.prepareStatement(GET_WS_PROMOTION_INFO);
+		ps.setString(1, zoneCode);
+		ps.setString(2, startTime);
+		ps.setString(3, endTime);
+		ps.setDate(4, effectiveDate);
+		ResultSet rs = ps.executeQuery();
+
+
+		if (rs.next()) {
+			wsPromotionInfo = new WSPromotionInfo();
+			wsPromotionInfo.setPK(new PrimaryKey(rs.getString("ID")));
+			wsPromotionInfo.setPromotionCode(rs.getString("CODE"));
+			wsPromotionInfo.setName(rs.getString("NAME"));
+			wsPromotionInfo.setEffectiveDate(rs.getDate("START_DATE"));
+			wsPromotionInfo.setZoneCode(rs.getString("ZONE_CODE"));
+			wsPromotionInfo.setStartTime(rs.getString("START_TIME"));
+			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
+			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
+			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
+		}
+
+		rs.close();
+		ps.close();
+		return wsPromotionInfo;
 	}
 
 	public static List<FDPromotionNewModel> getPromotions(Connection conn) throws SQLException {
