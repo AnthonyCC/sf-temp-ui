@@ -9,7 +9,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
-	//get un.address string
+	//get an address string
 
 	String allAddresses = (String)NVL.apply(session.getAttribute("allAddresses"), "");
 	Boolean newSession = ((String)NVL.apply(session.getAttribute("newSession"), "true")).equals("true"); 

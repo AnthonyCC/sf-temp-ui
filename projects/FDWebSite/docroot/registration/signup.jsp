@@ -24,7 +24,7 @@ if(userx.isCorporateUser()){
 }
 %>
 
-<fd:RegistrationController actionName='register' successPage='/index.jsp' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
+<fd:RegistrationController actionName='register' successPage='/unattended_redirect.jsp' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>

@@ -4,11 +4,25 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
-<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="true" />
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="/your_account/delivery_information.jsp">
+<%=NVL.apply(session.getAttribute("redirectToIndex"), "true")%>
+<%
+String successPage = "/your_account/delivery_information.jsp";
+
+
+if (((String)NVL.apply(session.getAttribute("redirectToIndex"), "true")).equals("true")) {
+	successPage = "/index.jsp";
+	//un-set attribute, the attribute would only be true if we passed through here the first time
+	session.setAttribute("redirectToIndex", "false");
+} else {
+	successPage = "/your_account/delivery_information.jsp";
+}
+
+%>
+<fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="<%=successPage%>">
 
 <fd:ErrorHandler result='<%=result%>' field='<%=checkErrorType%>' id='errorMsg'>
 	<%@ include file="/includes/i_error_messages.jspf" %>
