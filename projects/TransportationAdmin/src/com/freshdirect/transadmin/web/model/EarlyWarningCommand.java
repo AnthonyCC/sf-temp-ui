@@ -32,6 +32,8 @@ public class EarlyWarningCommand extends BaseCommand {
 	private int closedCount = 0;
 	private int dynamicActiveCount = 0;
 	private int dynamicInActiveCount = 0;
+	
+	private int noOfResources;
 		
 	private boolean isDiscounted;
 		
@@ -156,4 +158,14 @@ public class EarlyWarningCommand extends BaseCommand {
 	public void setPercentageAllocated(String percentageAllocated) {
 		this.percentageAllocated = percentageAllocated;
 	}
+
+	public int getNoOfResources() {
+		return noOfResources;
+	}
+
+	public void setNoOfResources(int noOfResources) {
+		this.noOfResources = noOfResources;
+	}
+	
+	
 }

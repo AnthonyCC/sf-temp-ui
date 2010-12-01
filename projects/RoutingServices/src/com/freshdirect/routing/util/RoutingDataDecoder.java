@@ -222,10 +222,12 @@ public class RoutingDataDecoder {
 		metrics.setDeliveryStartTime(window.getWindow().getStart().getAsCalendar().getTime());
 		metrics.setDeliveryEndTime(window.getWindow().getEnd().getAsCalendar().getTime());
 				
-		metrics.setTotalCapacityTime((RoutingDateUtil.getDiffInSeconds
+		/*metrics.setTotalCapacityTime((RoutingDateUtil.getDiffInSeconds
 										(metrics.getDeliveryEndTime(), metrics.getDeliveryStartTime())
-											* window.getAllocatedVehicles())/60.0);
-		
+											* window.getAllocatedVehicles())/60.0);*/
+		//This change is to compliment UPS changes for wave settings, now we have more accurate data
+		metrics.setTotalCapacityTime(window.getAllocatedWorkingTime()/60.0);
+				
 		metrics.setAllocatedVehicles(window.getAllocatedVehicles());
 		metrics.setVehiclesInUse(window.getVehiclesInUse());
 		

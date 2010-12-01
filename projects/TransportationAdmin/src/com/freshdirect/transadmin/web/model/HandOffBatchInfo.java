@@ -56,6 +56,8 @@ public class HandOffBatchInfo implements java.io.Serializable {
 				strBuf.append(action.getActionBy());
 				strBuf.append("<br/>");
 				strBuf.append("<b>No Of Orders: ").append(batch.getNoOfOrders()).append("</b>");
+				strBuf.append("<br/>");
+				strBuf.append("Commit Eligible: ").append(batch.isEligibleForCommit() ? "YES" : "NO");
 			}
 		} catch (ParseException e) {
 			return null;

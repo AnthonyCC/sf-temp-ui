@@ -1019,8 +1019,9 @@ public class DlvManagerDAO {
 
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUSSOURCE_QUERY);
 		ps.setDouble(1, noOfCartons);
-		ps.setDouble(2, noOfCases);
-		ps.setDouble(3, noOfFreezers);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);
+		
 
 		ps.setString(4, status);
 		ps.setString(5, source.value());
@@ -1040,8 +1041,8 @@ public class DlvManagerDAO {
 		
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSTATUS_QUERY);
 		ps.setDouble(1, noOfCartons);
-		ps.setDouble(2, noOfCases);
-		ps.setDouble(3, noOfFreezers);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);		
 		
 	    ps.setString(4, status);
 	    ps.setString(5, reservationId);
@@ -1061,8 +1062,9 @@ public class DlvManagerDAO {
 
 		PreparedStatement ps = conn.prepareStatement(UPDATE_RESERVATIONSOURCE_QUERY);
 		ps.setDouble(1, noOfCartons);
-		ps.setDouble(2, noOfCases);
-		ps.setDouble(3, noOfFreezers);
+		ps.setDouble(2, noOfFreezers);
+		ps.setDouble(3, noOfCases);
+		
 
 		ps.setString(4, (source != null ? source.value() : null));
 		ps.setString(5, reservationId);

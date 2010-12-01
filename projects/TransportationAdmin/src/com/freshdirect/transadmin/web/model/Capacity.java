@@ -15,7 +15,13 @@ public class Capacity implements java.io.Serializable {
 	int dynamicActiveCount = 0;
 	int dynamicInActiveCount = 0;
 	
+	private int noOfResources;
+	
 	private boolean isDiscounted;
+	
+	private double totalCapacity = 0;
+	private double totalConfirmed = 0;
+	private double totalAllocated = 0;
 	
 	@Override
 	public String toString() {
@@ -94,10 +100,7 @@ public class Capacity implements java.io.Serializable {
 	public void setDeliveryEndTime(Date deliveryEndTime) {
 		this.deliveryEndTime = deliveryEndTime;
 	}
-	private double totalCapacity = 0;
-	private double totalConfirmed = 0;
-	private double totalAllocated = 0;
-	
+		
 	public double getTotalCapacity() {
 		return totalCapacity;
 	}
@@ -116,4 +119,13 @@ public class Capacity implements java.io.Serializable {
 	public void setTotalAllocated(double totalAllocated) {
 		this.totalAllocated = totalAllocated;
 	}
+
+	public int getNoOfResources() {
+		return noOfResources;
+	}
+
+	public void setNoOfResources(int noOfResources) {
+		this.noOfResources = noOfResources;
+	}
+	
 }

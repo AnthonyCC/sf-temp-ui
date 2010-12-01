@@ -193,6 +193,8 @@ public class CapacityController extends AbstractMultiActionController {
 							_capacity.setTotalAllocated(_metrics.getTotalAllocatedOrders());
 							_capacity.setTotalConfirmed(_metrics.getTotalConfirmedOrders());
 							
+							_capacity.setNoOfResources(0);
+							
 							_refSlot = matchSlotToMetrics(refSlotsByZone.get(_zoneCode), _metrics);
 							if(_refSlot != null) {
 								_capacity.setManuallyClosed(_refSlot.isManuallyClosed());
@@ -267,6 +269,7 @@ public class CapacityController extends AbstractMultiActionController {
 															+ _metrics.getReservedTravelTime());
 							_capacity.setTotalConfirmed(_metrics.getConfirmedServiceTime() 
 															+ _metrics.getConfirmedTravelTime());	
+							_capacity.setNoOfResources(_metrics.getAllocatedVehicles());
 							
 							_refSlot = matchSlotToMetrics(_slots, _metrics);
 							if(_refSlot != null) {
@@ -362,6 +365,7 @@ public class CapacityController extends AbstractMultiActionController {
 					_timeslotCommand.setDynamicInActiveCount(_capacity.isDynamicActive() ? 0 : 1);
 					
 					_timeslotCommand.setReferenceId(_capacity.getReferenceId());
+					_timeslotCommand.setNoOfResources(_capacity.getNoOfResources());
 					timeslotDetails.add(_timeslotCommand);
 					_timeslotCommand.setName(RoutingDateUtil.formatDateTime
 							(_capacity.getDeliveryStartTime(), _capacity.getDeliveryEndTime()));

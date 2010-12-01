@@ -107,7 +107,7 @@
                     
                  function showTimeslot(rowDiv, rowX, rowY) {
                  	var tsPanel = new YAHOO.widget.Panel(rowDiv, {       
-					                          width: "530px",					                           
+					                          width: "540px",					                           
 					                          close: true, 
 					                          draggable: true, 
 					                          zindex:4,
@@ -304,9 +304,10 @@
 					
 							<td class="tableHeader" >Allocated</td>
 							<td class="tableHeader" >% Allocated</td>
+							<td class="tableHeader" >#Trucks</td>
 							<td class="tableHeader" >&nbsp;</td>
 							<td class="tableHeader" >&nbsp;</td>
-							<td class="tableHeader" >&nbsp;</td>
+							<td class="tableHeader" >&nbsp;</td>							
 						</tr>
 						</thead>
 						<tbody class="tableBody" >
@@ -323,6 +324,7 @@
 								<td><%=_commandTS.getPercentageConfirmed() %></td>
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
 								<td><%=_commandTS.getPercentageAllocated()%></td>
+								<td><%= ""+_commandTS.getNoOfResources() %></td>
 								<td><input type="button" 
 										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 
 												value="<%= (_commandTS.getClosedCount() > 0 ? "C" : "O") %>" 
@@ -334,7 +336,7 @@
 														onclick="updateDynamicTimeslot(this, '<%= _commandTS.getReferenceId() %>', '0')"
 														<%= (com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request) ?  " " : " disabled=\"disabled\"") %> /></td>
 														
-								<td><%= _commandTS.isDiscounted() ? "<img src=\"images/dollar.gif\" style=\"border:0\"/>" : "&nbsp;" %></td>																				
+								<td><%= _commandTS.isDiscounted() ? "<img src=\"images/dollar.gif\" style=\"border:0\"/>" : "&nbsp;" %></td>																												
 							</tr>
 	    					
 	    			   <%}
