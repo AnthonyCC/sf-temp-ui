@@ -356,13 +356,16 @@ public class CartController extends BaseController {
         boolean isRedemptionApplied = (redemptionPromo != null && user.getPromotionEligibility().isApplied(redemptionPromo.getPromotionCode()));
         
         if ((redemptionPromo == null && maxPromotion <= 0.0) || (redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") == null)) {
-        	Boolean isEligible =(Boolean)request.getAttribute("isEligible");
-    		if(isEligible != null && !isEligible){
+        	/*Boolean isEligible =(Boolean)request.getAttribute("isEligible");
+    		if(isEligible != null && !isEligible){*/
     			responseMessage = getErrorMessage(result, request);
-    		}else{
+    		/*}else{
     			responseMessage = Message.createSuccessMessage("Promo code has been applied successfully.");
-    		}
-        }else{
+    		}*/
+        }
+        if (isRedemptionApplied || 
+        		(redemptionPromo != null && !user.getPromotionEligibility().isEligible(promoCode) && request.getAttribute("promoError") != null)
+        		||(redemptionPromo != null	&& user.getPromotionEligibility().isEligible(promoCode)&&(!user.getPromotionEligibility().isApplied(promoCode)))) {
         	responseMessage = Message.createSuccessMessage("Promo code has been applied successfully.");
         }
         /*if (result.isSuccess()) {
