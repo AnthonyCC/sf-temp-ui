@@ -222,13 +222,12 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 							actionResult.addError(true, "actionfailure", buf.toString());
 							return true;
 						}
-
+						promotion.setModifiedBy(agent.getUserId());
+						promotion.setModifiedDate(new Date());
 						updatePromotion(promotion, effectiveDate, zone, startTime, endTime, discount);
 						postValidate(promotion, actionResult);
 						if(actionResult.isSuccess()){
 							promotion.setStatus(EnumPromotionStatus.APPROVE);
-							promotion.setModifiedBy(agent.getUserId());
-							promotion.setModifiedDate(new Date());
 							FDPromotionNewManager.storePromotion(promotion, true);
 							FDPromotionNewModel promo = FDPromotionNewManager.loadPromotion(promoCode);
 							doPublish(promo, actionResult);
@@ -408,7 +407,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			timeSlotModel.setPromoDlvZoneId(zone);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(startDlvDate);
-			int dayId = cal.get(Calendar.DAY_OF_WEEK) + 1;
+			int dayId = cal.get(Calendar.DAY_OF_WEEK);
 			timeSlotModel.setDayId(dayId);
 			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
 			dlvTimeSlots.add(timeSlotModel);
@@ -458,7 +457,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			timeSlotModel.setPromoDlvZoneId(zone);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(startDlvDate);
-			int dayId = cal.get(Calendar.DAY_OF_WEEK) + 1;
+			int dayId = cal.get(Calendar.DAY_OF_WEEK);
 			timeSlotModel.setDayId(dayId);
 			List<FDPromoDlvTimeSlotModel> dlvTimeSlots = new ArrayList<FDPromoDlvTimeSlotModel>();
 			dlvTimeSlots.add(timeSlotModel);
@@ -514,7 +513,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}*/
 			FDPromoChangeModel changeModel = new FDPromoChangeModel();
 			changeModel.setActionDate(promotion.getModifiedDate());
-			changeModel.setActionType(EnumPromoChangeType.DELIVERY_REQ_INFO);
+			changeModel.setActionType(EnumPromoChangeType.MODIFY_WS);
 			changeModel.setUserId(promotion.getModifiedBy());
 			changeModel.setPromotionId(promotion.getId());
 			changeModel.setChangeDetails(promoChangeDetails);
@@ -534,7 +533,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 
 			if(null != oldPromotion && !promotion.getExpirationDate().equals(oldPromotion.getExpirationDate())){
 				FDPromoChangeDetailModel changeDetailModel = new FDPromoChangeDetailModel();
-				changeDetailModel.setChangeFieldName("Start Date");
+				changeDetailModel.setChangeFieldName("Expiration Date");
 				changeDetailModel.setChangeFieldOldValue(NVL.apply(oldPromotion.getExpirationDateStr(),""));
 				changeDetailModel.setChangeFieldNewValue(NVL.apply(promotion.getExpirationDateStr(),""));
 				changeDetailModel.setChangeSectionId(EnumPromotionSection.BASIC_INFO);

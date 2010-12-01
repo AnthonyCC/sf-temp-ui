@@ -11,6 +11,7 @@ public class EnumPromoChangeType extends Enum {
 
 	public static final EnumPromoChangeType CREATE = new EnumPromoChangeType("CREATE", "Create Promotion");
 	public static final EnumPromoChangeType MODIFY = new EnumPromoChangeType("MODIFY", "Modify Promotion");
+	public static final EnumPromoChangeType MODIFY_WS = new EnumPromoChangeType("MODIFY_WINDOWS_STEERING", "Modify Promotion from Windows Steering UI");
 	public static final EnumPromoChangeType APPROVE = new EnumPromoChangeType("APPROVE", "Change Status - Approved");
 	public static final EnumPromoChangeType CANCEL = new EnumPromoChangeType("CANCEL", "Change Status - Cancelling");
 	public static final EnumPromoChangeType STATUS_PROGRESS = new EnumPromoChangeType("STATUS_PROGRESS", "Change Status - In Progress");
