@@ -23,10 +23,10 @@
 
     <tmpl:put name='extrahead' direct='true'>
         <script language="javascript" src="/assets/javascript/common_javascript.js"></script>
-        <%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
+		<link href="/assets/css/fix.css" rel="stylesheet" type="text/css" />
     </tmpl:put>
 	<%-- PAGE TITLE --%>
-	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop</tmpl:put>
+	<tmpl:put name='title' direct='true'>FreshDirect - Quickshop - Standing Orders</tmpl:put>
 	<%-- SIDE NAV --%>
 	<tmpl:put name='side_nav' direct='true'><font class="space4pix"><br/></font>
 		<div style="width: 91px;">
@@ -37,9 +37,9 @@
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
 		<div id="inner-container" style="width: 100%">
-			<div class="title18" style="padding-top: 1em">Standing Orders</div>			
+			<div class="title17" style="padding-top: 1em">Standing Orders</div>			
 			<hr style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699; color: #996699; line-height: 1px; border: none;"/>			
-			<div class="title14">Hassle-free shopping just got even more, well... hassle-free.</div>
+			<div class="title13">Hassle-free shopping just got even more, well... hassle-free.</div>
 			<div style="margin-bottom: 1em">FreshDirect's standing orders make it even easier to get everything you love without lifting a finger. Simply fill your shopping cart with the items you'd like us to deliver. When you place your first order, you'll let us know the day and time you want to receive future deliveries. A Standing Order is simple to set up and, of course, you can update it, pause it or cancel it at any time. You can even ask us to just skip a week.</div>
 			<div style="margin-bottom: 1em">Each Standing Order uses a Shopping List and a schedule that you can update at any time. We'll automatically place your order 7 days before the next recurring delivery (and send you an email notification when we do). You'll have plenty of time to add or remove items, change that specific order, or cancel it if you don't need it at all. 
 			<a href="/media/editorial/site_pages/standing_orders/so_help.html" target="_blank" onClick="popup('/media/editorial/site_pages/standing_orders/so_help.html','large'); return false;">Click here to learn more.</a></div>
@@ -55,8 +55,8 @@
 		    ErpAddressModel addr = so.getDeliveryAddress();		
 			final String nextDlvDateText = new SimpleDateFormat("EEEE, MMMM d.").format( so.getNextDeliveryDate() );
 			%>			
-			<h2><a class="title16" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
-			<div class="title12" style="margin: 1em 1em 2em 1em">
+			<h2><a class="title15" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>"><%= so.getCustomerListName() %></a></h2>
+			<div class="title11" style="margin: 1em 1em 2em 1em">
 				
 				<% if (so.isError()) { %>				
 					<div style="padding: 1em 0 1em 0">
@@ -75,7 +75,7 @@
 					</div>
 				<% } %>
 								
-				<a class="title13" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">View or Edit Details &raquo;</a>
+				<a class="title12" href="<%= FDURLUtil.getStandingOrderLandingPage(so, null) %>">View or Edit Details &raquo;</a>
 			</div>
 		<% } %>
 	</fd:ManageStandingOrders>
@@ -84,7 +84,7 @@
 	
 	<fd:CreateStandingOrder result="result">
 		<div id="create-so-box" style="padding: 1em 1em">
-			<div class="title12" style="margin-bottom: 0.5em;">Start a new standing order:</div>
+			<div class="title11" style="margin-bottom: 0.5em;">Start a new standing order:</div>
 			<fd:ErrorHandler result='<%= result %>' field='<%= new String[]{"SO_NAME", "SO_FREQ"} %>' id='errorMsg'>
 				<%@ include file="/includes/i_error_messages.jspf" %>
 			</fd:ErrorHandler>
@@ -92,9 +92,9 @@
 				<input type="hidden" name="action" value="create">
 				<table style="width: 100%; border: 0" cellpadding="0" cellspacing="0">
 					<tr>
-						<td class="text10">Name:</td>
+						<td class="text9">Name:</td>
 						<td style="width: 20px">&nbsp;</td>
-						<td class="text10">Deliver my order:</td>
+						<td class="text9">Deliver my order:</td>
 						<td style="width: 20px">&nbsp;</td>
 						<td></td>
 					</tr>
@@ -121,14 +121,14 @@
 <% } else { %>			
 
 	<div id="create-so-box" style="padding: 1em 1em">
-		<div class="title14" style="margin-bottom: 1em;">Creating a Standing Order is easy!</div>
-		<div class="text13" style="margin-bottom: 1em;">1. Tell us how you often want us to deliver. (You can change at any time.)</div>
-		<div class="text13" style="margin-bottom: 1em;">2. Fill your cart with everything you love, just as you normally do.</div>
-		<div class="text13" style="margin-bottom: 1em;">3. Go to Checkout to choose a day and time by placing the first order.</div>
-		<div class="text13" style="margin-bottom: 1em;">4. We'll create a shopping list you can edit at any time and place orders automatically... according to your schedule.</div>
+		<div class="title13" style="margin-bottom: 1em;">Creating a Standing Order is easy!</div>
+		<div class="text12" style="margin-bottom: 1em;">1. Tell us how you often want us to deliver. (You can change at any time.)</div>
+		<div class="text12" style="margin-bottom: 1em;">2. Fill your cart with everything you love, just as you normally do.</div>
+		<div class="text12" style="margin-bottom: 1em;">3. Go to Checkout to choose a day and time by placing the first order.</div>
+		<div class="text12" style="margin-bottom: 1em;">4. We'll create a shopping list you can edit at any time and place orders automatically... according to your schedule.</div>
 	</div>
 	<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
-	<div class="title14" style="margin-left: 1em; margin-right: 1em; color: #996699">Please Note: Come back here to set up a standing order once you've received your first corporate delivery.</div>
+	<div class="title13" style="margin-left: 1em; margin-right: 1em; color: #996699">Please Note: Come back here to set up a standing order once you've received your first corporate delivery.</div>
 	<div style="margin: 1em 0 1em 0; width: 100%; height: 1px; background-color: #996699"></div>
 	
 <% } %>

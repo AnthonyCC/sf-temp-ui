@@ -13,14 +13,14 @@
 <fd:ListStandingOrders id="solst">
 	<% if (!solst.isEmpty()) { %>	
 		<font class="space4pix"><br/><br/></font>		
-		<table cellpadding="0" cellspacing="0" border="0" class="text11" >
+		<table cellpadding="0" cellspacing="0" border="0" class="text10" >
 			<tbody>
 				<%
 				for (FDStandingOrder sorder : solst) {
 					FDStandingOrderList l = (FDStandingOrderList)FDListManager.getCustomerList(user.getIdentity(), EnumCustomerListType.SO, sorder.getCustomerListName());					
 				 	boolean isSelected = sorder.getId().equals(selectedSoId);
 				%>
-					<tr><td class="text11">					
+					<tr><td class="text10">					
 						<div style="margin-left: 0px; margin-bottom: 3px; margin-right: 2px; width: 89px; overflow: hidden;">
 			       			<% if (!isSelected) { %>
 			       				<a href="<%= FDURLUtil.getStandingOrderLandingPage(sorder, null) %>"><b><%= StringUtil.escapeHTML( sorder.getCustomerListName() ) %></b></a>
