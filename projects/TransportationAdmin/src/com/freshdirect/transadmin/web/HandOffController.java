@@ -394,6 +394,9 @@ public class HandOffController extends AbstractMultiActionController  {
 				? _stop.getDeliveryInfo().getDeliveryLocation().getBuilding().getZipCode() : null);
 		result.setStopDepartureTime(_stop.getStopDepartureTime());
 		result.setTripId(_stop.getRoutingRouteId());
+		
+		result.setDispatchTime(_route.getDispatchTime() != null ? _route.getDispatchTime().getAsDate() : null);
+		result.setDispatchSequence(_route.getDispatchSequence());
 		return result;
 	}
 	

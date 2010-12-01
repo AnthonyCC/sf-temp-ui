@@ -530,7 +530,9 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		        hssfCell = row.createCell(cellnum++);		        
 		        hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
 		        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
-		        hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteStartTime(), -25))));
+		        //hssfCell.setCellValue(new HSSFRichTextString(TransStringUtil.formatTime(addMinutes(_summaryData.getRouteStartTime(), -25))));
+		        hssfCell.setCellValue(new HSSFRichTextString(_summaryData.getDispatchTime() != null 
+		        											? TransStringUtil.formatTime(_summaryData.getDispatchTime()) : ""));
 		        
 		        cellnum = (short)(cellnum+3);
 		        
@@ -678,7 +680,9 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 					result.setTotalServiceTime(_model.getTotalServiceTime());
 					result.setTotalTravelTime(_model.getTotalTravelTime());
 					result.setRouteStartTime(_model.getRouteStartTime());
-					result.setFirstDepartureTime(_model.getStopArrivalTime());
+					result.setFirstDepartureTime(_model.getStopArrivalTime());	
+					result.setDispatchTime(_model.getDispatchTime());
+					result.setDispatchSequence(_model.getDispatchSequence());
 				} else if(i == (size-1)) {
 					result.setRouteCompleteTime(_model.getRouteCompleteTime());
 					result.setLastDepartureTime(_model.getStopDepartureTime());
@@ -703,6 +707,8 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		Date firstDepartureTime;
 		Date lastDepartureTime;
 		Date deliveryDate;
+		Date dispatchTime;
+		int dispatchSequence;
 		
 		public Date getDeliveryDate() {
 			return deliveryDate;
@@ -764,6 +770,18 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 		public void setLastDepartureTime(Date lastDepartureTime) {
 			this.lastDepartureTime = lastDepartureTime;
 		}
+		public Date getDispatchTime() {
+			return dispatchTime;
+		}
+		public int getDispatchSequence() {
+			return dispatchSequence;
+		}
+		public void setDispatchTime(Date dispatchTime) {
+			this.dispatchTime = dispatchTime;
+		}
+		public void setDispatchSequence(int dispatchSequence) {
+			this.dispatchSequence = dispatchSequence;
+		}		
 	}
 		
 	private double getFormattedDistance(String distance) {
@@ -833,11 +851,30 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
 	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 	        hssfCell.setCellValue(new HSSFRichTextString("No of Orders"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Time"));
+	        
+	        hssfCell = row.createCell(cellnum++);		        
+	        hssfCell.setCellStyle((HSSFCellStyle) styles.get("boldStyle"));
+	        hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+	        hssfCell.setCellValue(new HSSFRichTextString("Dispatch Sequence"));
 	        	        
 			while (_itr.hasNext()) {
 				String _routeId = (String) _itr.next();
 				List _orders = 	(List)reportData.getSummaryData().get(_routeId);        			        
-		        int totalStops =  _orders != null ? _orders.size():0;      
+		        int totalStops =  0;   
+		        Date dispatchTime = null;
+		        int dispatchSequence = 0;
+		        if(_orders != null) {
+		        	totalStops = _orders.size();
+		        	if(_orders.size() > 0) {
+		        		dispatchTime = ((OrderRouteInfoModel)_orders.get(0)).getDispatchTime();
+		        		dispatchSequence = ((OrderRouteInfoModel)_orders.get(0)).getDispatchSequence();
+		        	}
+		        }
 		        cellnum = 0;
 	        	        	
 	        	row = sheet.createRow(rownum++);
@@ -852,6 +889,18 @@ public class XlsCutOffReport extends BaseXlsReport implements ICutOffReport  {
 			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
 			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
 			    hssfCell.setCellValue(new HSSFRichTextString(totalStops+""));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(dispatchTime != null 
+												? TransStringUtil.formatTime(dispatchTime) : ""));
+			    
+			    hssfCell = row.createCell(cellnum++);		        
+			    hssfCell.setCellStyle((HSSFCellStyle) styles.get("textStyle"));
+			    hssfCell.setCellType(HSSFCell.CELL_TYPE_STRING);
+			    hssfCell.setCellValue(new HSSFRichTextString(dispatchSequence+""));
+			    
 			    totalOrders = totalOrders+totalStops;
 			}
 			createTotalRows(sheet, rownum, totalRoutes, totalOrders, styles);

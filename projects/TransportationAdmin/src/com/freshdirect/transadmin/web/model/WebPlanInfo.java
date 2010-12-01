@@ -676,10 +676,13 @@ public class WebPlanInfo extends BaseCommand implements TrnBaseEntityI  {
 	
 	public Date getCutOffTimeEx() {
 		try {
-			return TransStringUtil.getServerTime(getCutOffTime());
+			if(getCutOffTime() != null && getCutOffTime().length() > 0) {
+				return TransStringUtil.getServerTime(getCutOffTime());
+			}
 		} catch (ParseException e) {
-			return null;
+			// Do Nothing
 		}
+		return null;
 	}
 
 	public void setDriverMax(int driverMax) {

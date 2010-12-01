@@ -39,6 +39,9 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	
 	private boolean isDepot;
 	
+	private Date dispatchTime;
+	private int dispatchSequence;
+	
 	public boolean isDepot() {
 		return isDepot;
 	}
@@ -230,6 +233,18 @@ public class OrderRouteInfoModel  implements IOrderRouteInfo {
 	}
 	public void setTripId(String tripId) {
 		this.tripId = tripId;
+	}
+	public Date getDispatchTime() {
+		return dispatchTime;
+	}
+	public int getDispatchSequence() {
+		return dispatchSequence;
+	}
+	public void setDispatchTime(Date dispatchTime) {
+		this.dispatchTime = dispatchTime;
+	}
+	public void setDispatchSequence(int dispatchSequence) {
+		this.dispatchSequence = dispatchSequence;
 	}
 
 }

@@ -109,7 +109,7 @@ public abstract class AbstractHandOffAction {
 		//Map<ZoneCode, Map<DispatchTime, Map<CutOffTime, IWaveInstance>>>
 		Map<String, Map<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>>> plannedDispatchTree = routingInfoProxy.getPlannedDispatchTree(this.getBatch().getDeliveryDate());
 		List<IHandOffBatchRoute> mismatchRoutes = new ArrayList<IHandOffBatchRoute>();
-		
+				
 		if(routes != null && areaLookup != null && plannedDispatchTree != null) {
 			for(IHandOffBatchRoute routeModel : routes) {
 				boolean foundWave = false;
@@ -121,11 +121,13 @@ public abstract class AbstractHandOffAction {
 					if(dispatchMapping != null) {
 						for(Map.Entry<RoutingTimeOfDay, Map<Date, List<IWaveInstance>>> dispEntry : dispatchMapping.entrySet()) {
 							List<IWaveInstance> waveInstances = dispEntry.getValue().get(this.getBatch().getCutOffDateTime());
+					
 							if(waveInstances != null) {
 								for(IWaveInstance waveInstance : waveInstances) {
 									if(areaModel.isDepot()) {
-										if(waveInstance.getWaveStartTime() != null 
-												&& waveInstance.getWaveStartTime()
+										
+										if(waveInstance.getDispatchTime() != null 
+												&& waveInstance.getDispatchTime()
 															.equals(new RoutingTimeOfDay(routeModel.getStartTime()))) {
 											foundWave = true;
 											routeModel.copyWaveProperties(waveInstance);

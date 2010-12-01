@@ -710,8 +710,7 @@ class DepotTimeNode extends PlanTreeNode  {
 									}
 								}
 							}
-						}
-						p.setOpen(TreeDataUtil.isOpen(p, zoneTypeResources));
+						}						
 					}
 					// Runner[add all the runners available]
 					List runners = getRunners(s.getFirstDlvTime());
@@ -728,9 +727,10 @@ class DepotTimeNode extends PlanTreeNode  {
 							planResource.setId(resource);
 							p.getPlanResources().add(planResource);
 						}
-					}
-				}
+					}					
+				}				
 			}
+			p.setOpen(TreeDataUtil.isOpen(p, zoneTypeResources));
 		}
 		
 		// Create Team Bullpen
@@ -956,6 +956,7 @@ class TreeDataUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		if (drivers < driverMin || helpers < helperMin || runners < runnerMin) {
 			return "Y";
 		}
