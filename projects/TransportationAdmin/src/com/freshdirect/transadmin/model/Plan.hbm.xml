@@ -47,7 +47,7 @@
             <column name="LAST_DLV_TIME" length="7" not-null="true" />
         </property>
         <property name="cutOffTime" type="timestamp">
-            <column name="CUTOFF_DATETIME" length="7" not-null="true" />
+            <column name="CUTOFF_DATETIME" length="7" />
         </property>
         <set name="planResources" inverse="true" lazy="false" cascade="all,delete-orphan">
             <key>

@@ -144,8 +144,12 @@ public class TransStringUtil {
 	public static Date getServerDateString1(String clientDate) throws ParseException {       
         return dateFormat.parse(clientDate);
 	}
-	public static String getServerTime(Date clientDate) throws ParseException {       
-        return serverTimeFormat.format(clientDate);
+	public static String getServerTime(Date clientDate) throws ParseException {
+		if(clientDate != null) {
+			return serverTimeFormat.format(clientDate);
+		} else {
+			return null;
+		}
 	}
 	
 	public static String getServerDay(Date clientDate) throws ParseException {       
