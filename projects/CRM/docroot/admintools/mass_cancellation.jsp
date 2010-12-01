@@ -44,7 +44,7 @@
 	<fd:ErrorHandler result='<%= result %>' name='searchfailure' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   
 	</fd:ErrorHandler>	
-<form name="cancelorders" method='POST' onsubmit="javascript:doSearch();">
+<form name="cancelorders" id="cancelorders" method='POST' onsubmit="javascript:doSearch();">
 <%@ include file="/includes/admintools/i_search.jspf"%>
 <%
 	int prcLimit = FDStoreProperties.getOrderProcessingLimit();
@@ -87,7 +87,7 @@
 	<%
 		if(cancelOrders ==  null || cancelOrders.size() == 0) {
 	%>
-		<input name="cancelorders" id="cancelorders" type="submit" value="CANCEL ORDERS" class="submit" disabled>
+		<input name="cancelorders" id="cancelordersButton" type="submit" value="CANCEL ORDERS" class="submit" disabled>
 		<input name="exportButton" id="exportButton" type="button" value="EXPORT ORDERS" class="submit" disabled>
 	<%
 		} else {
@@ -96,12 +96,12 @@
 		<%
 			if(cancelOrders.size() <= prcLimit) {
 		%>
-				<input name="cancelorders" id="cancelorders" type="button" value="CANCEL ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">
+				<input name="cancelorders" id="cancelordersButton" type="button" value="CANCEL ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">
 
 		<%
 			} else {
 		%>
-				<input name="cancelorders" id="cancelorders" type="button" value="CANCEL FIRST <%= prcLimit %> ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">			
+				<input name="cancelorders" id="cancelordersButton" type="button" value="CANCEL FIRST <%= prcLimit %> ORDERS" class="submit" onclick="javascript:doAction('cancelOrders');">			
 		<%
 			}
 		%>	
