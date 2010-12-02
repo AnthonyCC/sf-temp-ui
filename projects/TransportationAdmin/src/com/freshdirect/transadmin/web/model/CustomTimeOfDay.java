@@ -42,11 +42,8 @@ public class CustomTimeOfDay extends TimeOfDay {
 	/**
 	 * @see java.lang.Object#equals(Object)
 	 */
-	public int hashCode(Object o) {
-		if (o instanceof TimeOfDay) {
-			return this.getNormalDate().hashCode();
-		}
-		return 1;
+	public int hashCode() {
+		return this.getNormalDate().hashCode();
 	}
 	
 	public String getTimeString() {

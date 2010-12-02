@@ -5,10 +5,10 @@ import java.util.Date;
 
 import com.freshdirect.framework.util.TimeOfDay;
 
-public class RoutingTimeOfDay extends TimeOfDay {
+public final class RoutingTimeOfDay extends TimeOfDay {
 	
 	private static SimpleDateFormat	FORMATTER			= new SimpleDateFormat( "hh:mm a" );
-	
+		
 	public RoutingTimeOfDay() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -29,24 +29,17 @@ public class RoutingTimeOfDay extends TimeOfDay {
 		// TODO Auto-generated constructor stub
 	}
 
-	/**
-	 * @see java.lang.Object#equals(Object)
-	 */
-	public boolean equals(Object o) {
-		if (o instanceof TimeOfDay) {
-			return this.getNormalDate().equals(((TimeOfDay) o).getNormalDate());
+	@Override
+	public boolean equals(Object o) {		
+		if (o instanceof RoutingTimeOfDay) {
+			return this.getNormalDate().equals(((RoutingTimeOfDay) o).getNormalDate());
 		}
 		return false;
 	}
 	
-	/**
-	 * @see java.lang.Object#equals(Object)
-	 */
-	public int hashCode(Object o) {
-		if (o instanceof TimeOfDay) {
-			return this.getNormalDate().hashCode();
-		}
-		return 1;
+	@Override
+	public int hashCode() {
+		return this.getNormalDate().hashCode();
 	}
 	
 	public String getTimeString() {
