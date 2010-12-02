@@ -1,6 +1,7 @@
 package com.freshdirect.webapp.taglib.callcenter;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -138,6 +139,8 @@ import com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.taglib.fdstore.SystemMessageList;
+import com.freshdirect.webapp.taglib.fdstore.UserUtil;
+import com.freshdirect.webapp.util.CCFormatter;
 
 public class WSPromoControllerTag extends AbstractControllerTag {
 	
@@ -147,7 +150,16 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	private final static String JUST_BEFORE_MIDNIGHT = "11:59:59 PM";
 	private static  final DateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");	
 	
-	
+	private final static String PROMO_DESCRIPTION = "This offer is good for a $xdiscount on orders received in Zone {0} " +
+													"on {1} during the timeslot window {2} - {3}";
+	private final static String OFFER_DESCRIPTION = "This offer is good for a $xdiscount on orders received in Zone {0} " +
+													"on {1} during the timeslot window {2} - {3}";
+    private final static String AUDIENCE_DESCRIPTION = "This promotion is only good for customers receiving delivery in Zone {0} " +
+    												"on {1} during the timeslot window {2} - {3}";
+    private final static String TERMS = "${0} Discount for orders delivered on {1} in timeslot {2} - {3}. " +
+    						"Addresses eligible for this promotion are limited. Other restrictions may apply. Expires tonight at 11:59pm. " +
+    						"Offers modified after this time will not be eligible. Offer is nontransferable. Void where prohibited.";
+
 	
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
 		String actionName = request.getParameter("actionName");
@@ -365,7 +377,9 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			}
 	}
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String zone, String startTime, 
-			String endTime, String discount) throws FDResourceException{
+			String endTime, String discount) throws FDResourceException {
+		Date startDate = dateFormat.parse(effectiveDate);
+		Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
 		FDPromotionNewModel promotion = new FDPromotionNewModel();
 		promotion.setPromotionCode("WS_"+new Date().getTime());
 		long E4 = Math.round(Math.random()*1000); //Unique counter
@@ -374,10 +388,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 		promotion.setCombineOffer(true);
 		promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
-		promotion.setDescription("test");
-		promotion.setOfferDesc("test");
-		promotion.setAudienceDesc("test");
-		promotion.setTerms("test");
+		promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+		promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+		promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+		promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 		promotion.setMaxUsage("999");
 		List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
 		FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
@@ -388,8 +402,6 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 		promotion.setCustStrategies(custStrategies);
 		promotion.setGeoRestrictionType("ZONE");
 		try {
-			Date startDate = dateFormat.parse(effectiveDate);
-			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
 			promotion.setStartDate(startDate);
 			promotion.setExpirationDate(expDate);
 			//TODO For now set the promotion applicable only for next day delivery.
@@ -432,14 +444,14 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String zone, String startTime, 
 			String endTime, String discount) throws FDResourceException{
 		try {
-			long E4 = Math.round(Math.random()*1000); //Unique counter
-			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
-			promotion.setDescription("test");
-			promotion.setOfferDesc("test");
-			promotion.setAudienceDesc("test");
-			promotion.setTerms("test");
 			Date startDate = dateFormat.parse(effectiveDate);
 			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			long E4 = Math.round(Math.random()*1000); //Unique counter
+			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
+			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setStartDate(startDate);
 			promotion.setExpirationDate(expDate);
 			//TODO For now set the promotion applicable only for next day delivery.
@@ -629,6 +641,30 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				if(FDPromotionNewManager.isRedemptionCodeExists(promotion.getRedemptionCode(),promotion.getId())){
 					result.addError(true, "redemptionCodeDuplicate", " An active promotion exists with the same redemption code, please change the redemption code.");				
 				}
+	}
+
+	private String formatPromoDescription(String pattern, String zoneCode, String effectiveDate, String startTime, String endTime) {
+		return MessageFormat.format(
+			pattern,
+			new Object[] {zoneCode, effectiveDate, startTime, endTime});
+	}
+
+	private String formatAudienceDescription(String pattern, String zoneCode, String effectiveDate, String startTime, String endTime) {
+		return MessageFormat.format(
+			pattern,
+			new Object[] {zoneCode, effectiveDate, startTime, endTime});
+	}
+
+	private String formatOfferDescription(String pattern, String zoneCode, String effectiveDate, String startTime, String endTime) {
+		return MessageFormat.format(
+			pattern,
+			new Object[] {zoneCode, effectiveDate, startTime, endTime});
+	}
+
+	private String formatTerms(String pattern, String discount, String effectiveDate, String startTime, String endTime) {
+		return MessageFormat.format(
+			pattern,
+			new Object[] {discount, effectiveDate, startTime, endTime});
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {
