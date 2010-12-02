@@ -378,30 +378,31 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	}
 	private FDPromotionNewModel constructPromotion(String effectiveDate, String zone, String startTime, 
 			String endTime, String discount) throws FDResourceException {
-		Date startDate = dateFormat.parse(effectiveDate);
-		Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
-		FDPromotionNewModel promotion = new FDPromotionNewModel();
-		promotion.setPromotionCode("WS_"+new Date().getTime());
-		long E4 = Math.round(Math.random()*1000); //Unique counter
-		promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
-		promotion.setPromotionType(EnumPromotionType.HEADER.getName());
-		promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
-		promotion.setCombineOffer(true);
-		promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
-		promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-		promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-		promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-		promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
-		promotion.setMaxUsage("999");
-		List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
-		FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
-		custModel.setOrderTypeHome(true);
-		custModel.setOrderTypeCorporate(true);
-		custModel.setOrderTypePickup(true);
-		custStrategies.add(custModel);
-		promotion.setCustStrategies(custStrategies);
-		promotion.setGeoRestrictionType("ZONE");
 		try {
+			Date startDate = dateFormat.parse(effectiveDate);
+			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
+			FDPromotionNewModel promotion = new FDPromotionNewModel();
+			promotion.setPromotionCode("WS_"+new Date().getTime());
+			long E4 = Math.round(Math.random()*1000); //Unique counter
+			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
+			promotion.setPromotionType(EnumPromotionType.HEADER.getName());
+			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
+			promotion.setCombineOffer(true);
+			promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
+			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setMaxUsage("999");
+			List<FDPromoCustStrategyModel> custStrategies = new ArrayList<FDPromoCustStrategyModel>();
+			FDPromoCustStrategyModel custModel = new FDPromoCustStrategyModel();
+			custModel.setOrderTypeHome(true);
+			custModel.setOrderTypeCorporate(true);
+			custModel.setOrderTypePickup(true);
+			custStrategies.add(custModel);
+			promotion.setCustStrategies(custStrategies);
+			promotion.setGeoRestrictionType("ZONE");
+
 			promotion.setStartDate(startDate);
 			promotion.setExpirationDate(expDate);
 			//TODO For now set the promotion applicable only for next day delivery.
@@ -431,14 +432,13 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			List<FDPromoDlvZoneStrategyModel> dlvZones = new ArrayList<FDPromoDlvZoneStrategyModel>();
 			dlvZones.add(dlvZoneModel);
 			promotion.setDlvZoneStrategies(dlvZones);
+			promotion.setMaxAmount(discount);
+			promotion.setStatus(EnumPromotionStatus.DRAFT);
+			populatePromoChangeModelOnCreate(promotion);
+			return promotion;
 		}catch(ParseException pe){
 			throw new IllegalArgumentException("Invalid Date Format");
 		}
-		promotion.setMaxAmount(discount);
-		promotion.setStatus(EnumPromotionStatus.DRAFT);
-		populatePromoChangeModelOnCreate(promotion);
-		return promotion;
-		
 	}
 
 	private void updatePromotion(FDPromotionNewModel promotion, String effectiveDate, String zone, String startTime, 
