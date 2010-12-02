@@ -311,7 +311,11 @@
 						</tr>
 						</thead>
 						<tbody class="tableBody" >
-	    			<% List<EarlyWarningCommand> timeslotDetails =  _command.getTimeslotDetails();
+	    			<% 
+	    			
+	    			List<EarlyWarningCommand> timeslotDetails =  _command.getTimeslotDetails();
+	    			String rType = request.getParameter("rType");
+	    			
 	    			if(timeslotDetails != null) {
 	    				Iterator<EarlyWarningCommand> _itrTimeslot = timeslotDetails.iterator();
 	    				EarlyWarningCommand _commandTS = null;
@@ -324,7 +328,8 @@
 								<td><%=_commandTS.getPercentageConfirmed() %></td>
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
 								<td><%=_commandTS.getPercentageAllocated()%></td>
-								<td><%= ""+_commandTS.getNoOfResources() %></td>
+								rType
+								<td><%= rType != null && rType.equalsIgnoreCase("O") ? "n/a" : ""+_commandTS.getNoOfResources() %></td>
 								<td><input type="button" 
 										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 
 												value="<%= (_commandTS.getClosedCount() > 0 ? "C" : "O") %>" 
