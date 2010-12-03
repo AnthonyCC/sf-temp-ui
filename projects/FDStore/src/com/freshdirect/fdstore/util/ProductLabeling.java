@@ -124,14 +124,14 @@ public class ProductLabeling {
 		displayFave = false;
 		displayNew = false;
 		displaybackInStock = false;
-                boolean showBurstImage=true;
+		boolean showBurstImage=true;
                 
 		try {
 		    
 			String skuCode = calculator.getSkuModel() != null ? calculator.getSkuModel().getSkuCode() : null;
 			if(skuCode != null) {
 				FDProductInfo info= FDCachedFactory.getProductInfo(skuCode);			
-				ZonePriceInfoModel model=info.getZonePriceInfo(customer.getPricingZoneId());
+				ZonePriceInfoModel model=info.getZonePriceInfo(customer!=null?customer.getPricingZoneId():pricingZoneId);
 				showBurstImage=model.isShowBurstImage();			
 			}
 		} catch (FDResourceException e) {

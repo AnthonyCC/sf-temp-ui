@@ -17,8 +17,6 @@ import com.freshdirect.fdstore.content.FilteredSearchResults.CategoryScoreOracle
 
 public class RelevancyComparator extends PopularityComparator {
     
-    
-    
     final Map<ContentKey,Integer>	termScores = new HashMap<ContentKey,Integer>();
     final String[]                      terms;
     final String                        searchTerm;
@@ -27,8 +25,6 @@ public class RelevancyComparator extends PopularityComparator {
     CategoryNodeTree                    cnt;
     final Map<ContentKey,Integer>       predefinedScores;
 
-    
-//    Map<ContentKey,Integer> categoryScores  = new HashMap();
     
     public RelevancyComparator(boolean inverse, String searchTerm, PricingContext pricingContext,
     		CategoryScoreOracle oracle, CategoryNodeTree cnt, List<ProductModel> products, String originalSearchTerm) {
@@ -46,7 +42,7 @@ public class RelevancyComparator extends PopularityComparator {
     }
     
     public Integer getCategoryScore(ProductModel product) {
-        return predefinedScores != null && product != null ? predefinedScores.get(product.getParentNode().getContentKey()) : null;
+        return ContentSearch.getRelevancyScore( predefinedScores, product );
     }
     
 
@@ -54,7 +50,7 @@ public class RelevancyComparator extends PopularityComparator {
         if (model == null) {
             return 0;
         }
-        Integer score = (Integer) termScores.get(model.getContentKey());
+        Integer score = termScores.get(model.getContentKey());
         int baseScore = 0;
         if (score == null) {
             baseScore = oracle.getScoreOf(model, searchTerm, terms);
@@ -76,8 +72,8 @@ public class RelevancyComparator extends PopularityComparator {
      */
     int compareByPredefinedScores(ContentNodeModel c1, ContentNodeModel c2) {
         if (predefinedScores != null) {
-            Integer s1 = (Integer) predefinedScores.get(c1.getParentNode().getContentKey());
-            Integer s2 = (Integer) predefinedScores.get(c2.getParentNode().getContentKey());
+            Integer s1 = ContentSearch.getRelevancyScore( predefinedScores, c1 );
+            Integer s2 = ContentSearch.getRelevancyScore( predefinedScores, c2 );
             if (s1 != null) {
                 int i1 = s1.intValue();
                 if (s2 != null) {
@@ -87,14 +83,12 @@ public class RelevancyComparator extends PopularityComparator {
                     }
                     // mix the two category with the same score ...
                     return compareInsideCategoryGroup(c1, c2);
-                } else {
-                    return -1;
                 }
-            } else {
-                if (s2 != null) {
-                    return 1;
-                }
+				return -1;
             }
+			if (s2 != null) {
+			    return 1;
+			}
         }
         return 0;
     }
@@ -129,12 +123,8 @@ public class RelevancyComparator extends PopularityComparator {
             }
         }
 
-        int sc = compareContentNodes(c1, c2);
-        if (inverse) {
-            return -sc;
-        } else {
-            return sc;
-        }
+        int sc = compareContentNodes(c1, c2);        
+        return inverse ? -sc : sc;
     }
 
     protected int compareCategory(ContentNodeModel c1, ContentNodeModel c2) {
@@ -182,9 +172,9 @@ public class RelevancyComparator extends PopularityComparator {
         x = compareCategory(c1.getParentNode(), c2.getParentNode());
         if (x != 0) {
             return x;
-        } else {
-            return compareInsideCategoryGroup(c1, c2);
         }
+        
+		return compareInsideCategoryGroup(c1, c2);
     }
 
     protected int compareInsideCategoryGroup(ContentNodeModel c1, ContentNodeModel c2) {

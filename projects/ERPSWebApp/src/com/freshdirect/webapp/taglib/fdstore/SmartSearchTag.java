@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
@@ -23,16 +20,17 @@ import com.freshdirect.fdstore.content.AbstractProductFilter;
 import com.freshdirect.fdstore.content.BrandFilter;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
+import com.freshdirect.fdstore.content.BrandModel;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.pricing.ProductPricingFactory;
 import com.freshdirect.fdstore.util.SearchNavigator;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
@@ -43,20 +41,17 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
  */
 public class SmartSearchTag extends BodyTagSupport {
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 1L;
+	private static final long	serialVersionUID	= 3093054384959548572L;
 
-    public static class FilterChain extends AbstractProductFilter {
-        // List<AbstractProductFilter>
-        List filters;
+	public static class FilterChain extends AbstractProductFilter {
+
+        List<AbstractProductFilter> filters;
 
         public FilterChain() {
-            filters = new ArrayList();
+            filters = new ArrayList<AbstractProductFilter>();
         }
 
-        public FilterChain(List filters) {
+        public FilterChain(List<AbstractProductFilter> filters) {
             this.filters = filters;
         }
 
@@ -64,7 +59,7 @@ public class SmartSearchTag extends BodyTagSupport {
          * Convenience method
          */
         public FilterChain(AbstractProductFilter f1, AbstractProductFilter f2) {
-            this.filters = new ArrayList();
+            this.filters = new ArrayList<AbstractProductFilter>();
             if (f1 != null) {
                 this.filters.add(f1);
             }
@@ -78,8 +73,8 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
         public boolean applyTest(ProductModel prod) throws FDResourceException {
-            for (Iterator it = filters.iterator(); it.hasNext();) {
-                AbstractProductFilter filter = (AbstractProductFilter) it.next();
+            for (Iterator<AbstractProductFilter> it = filters.iterator(); it.hasNext();) {
+                AbstractProductFilter filter = it.next();
                 if (!filter.applyTest(prod)) {
                     return false;
                 }
@@ -96,7 +91,7 @@ public class SmartSearchTag extends BodyTagSupport {
     
 
     public static class UniqueProductFilter implements TreeElementFilter {
-        Set productIds = new HashSet();
+        Set<String> productIds = new HashSet<String>();
         public boolean accept(TreeElement element) {
             if (element.getModel() instanceof ProductModel) {
                 String id = element.getModel().getContentKey().getId();
@@ -192,7 +187,7 @@ public class SmartSearchTag extends BodyTagSupport {
                 view = SearchNavigator.getDefaultViewName();  // "list"; // default view
             }
             int defaultPageSize = 0;
-            SearchNavigator.SearchDefaults defs = (SearchNavigator.SearchDefaults) SearchNavigator.DEFAULTS.get(view);
+            SearchNavigator.SearchDefaults defs = SearchNavigator.DEFAULTS.get(view);
             if (defs != null) {
             	defaultPageSize = defs.normalPageSize;
             }
@@ -203,7 +198,7 @@ public class SmartSearchTag extends BodyTagSupport {
         String categoryId = pageContext.getRequest().getParameter("catId");
 
         List filtered;
-        List convFiltered;
+        List<ProductModel> convFiltered;
         {
             
             if (categoryId != null) {
@@ -215,10 +210,10 @@ public class SmartSearchTag extends BodyTagSupport {
             } else {
                 filtered = fres.getProducts();
             }
-            convFiltered = new ArrayList(filtered.size());
+            convFiltered = new ArrayList<ProductModel>(filtered.size());
             // get brand names - all or just for the selected category
             if (brandSetName != null) {
-                TreeSet brandSet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
+                TreeSet<BrandModel> brandSet = new TreeSet<BrandModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
                 for (int i = 0; i < filtered.size(); i++) {
                     ProductModel prod = (ProductModel) filtered.get(i);
                     //Convert them to ProductModelPricingAdapter for zone pricing.
@@ -262,7 +257,7 @@ public class SmartSearchTag extends BodyTagSupport {
 
         if (categorySetName != null) {
             List products = fres.getProducts();
-            TreeSet categorySet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
+            TreeSet<CategoryModel> categorySet = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
             for (int i = 0; i < products.size(); i++) {
                 ProductModel prod = (ProductModel) products.get(i);
                 categorySet.add(prod.getPrimaryHome());
@@ -276,7 +271,7 @@ public class SmartSearchTag extends BodyTagSupport {
         
         if (selectedCategoriesName != null) {
             // calculate the set of the selected categories, to the root
-            Set selectedCategories = new HashSet();
+            Set<String> selectedCategories = new HashSet<String>();
             if (categoryId != null) {
                 TreeElement treeElement = contentTree.getTreeElement(categoryId);
                 while (treeElement != null) {
@@ -307,7 +302,7 @@ public class SmartSearchTag extends BodyTagSupport {
      * @param multipleHome
      *            (boolean) add products to their multiple home or not.
      */
-    protected CategoryNodeTree putTree(String attrName, List products, boolean multipleHome) {
+    protected CategoryNodeTree putTree(String attrName, List<ProductModel> products, boolean multipleHome) {
         CategoryNodeTree tree = CategoryNodeTree.createTree(products, multipleHome);
         putTree(attrName, tree);
         return tree;

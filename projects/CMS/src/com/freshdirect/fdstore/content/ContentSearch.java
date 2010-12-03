@@ -178,7 +178,7 @@ public class ContentSearch {
             for (Iterator<SearchHit> i = products.iterator(); i.hasNext();) {
                 SearchHit hit = i.next();
                 ContentNodeModel node = hit.getNode();
-                Integer score = relevancyScores.get(node.getParentNode().getContentKey());
+                Integer score = getRelevancyScore( relevancyScores, node );
                 if (score!=null) {
                     if (score.intValue()<=0) {
                         i.remove();
@@ -189,6 +189,34 @@ public class ContentSearch {
     }
 
 
+    /**
+     * Utility method for getting the relevancy score of the nearest parent node which has a valid score.
+     * Returns an Integer. Value is null if no parent has a score set.  
+     * 
+     * @param scores	scores map
+     * @param node		product node
+     * @return			relevancy score
+     */
+    public static Integer getRelevancyScore( Map<ContentKey,Integer> scores, ContentNodeModel node ) {
+    	
+    	if ( node == null || scores == null )
+    		return null;
+    	
+    	Integer score = null;
+    	ContentNodeModel parent = null;    	
+    	
+    	while ( score == null ) {    		
+    		
+        	parent = node.getParentNode();
+        	if ( parent == null )
+        		break;
+        	
+        	score = scores.get( parent.getContentKey() ); 
+        	node = parent;
+    	}    	    	
+    	
+    	return score;
+    }
 
 
     /**

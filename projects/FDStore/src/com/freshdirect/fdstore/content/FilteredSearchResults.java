@@ -1,6 +1,5 @@
 package com.freshdirect.fdstore.content;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,7 +28,7 @@ import com.freshdirect.smartstore.sorting.UserRelevancyComparator;
  * @author zsombor
  * 
  */
-public class FilteredSearchResults extends SearchResults implements Serializable {
+public class FilteredSearchResults extends SearchResults {
 
 	private static final long	serialVersionUID	= -817839545866878596L;
 	

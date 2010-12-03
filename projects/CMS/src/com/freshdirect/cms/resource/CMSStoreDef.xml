@@ -1488,6 +1488,7 @@
 		<RelationshipDefs>
 			<RelationshipDef name="category" cardinality="One" required="true" >
 				<DestinationDef contentType="Category" />
+				<DestinationDef contentType="Department" />
 			</RelationshipDef>
 		</RelationshipDefs>	
 	</ContentTypeDef>
