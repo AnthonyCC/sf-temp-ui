@@ -28,11 +28,11 @@
 
 			    function setDate(field){
 			    document.getElementById("deliveryDate").value=field.value;
-				alert(field.value)
+				
 			    }
 			    function setCutoffTime(field){
 				    document.getElementById("cutoffTime").value=field.value;
-					alert(field.value)
+					
 				    }
 
 			    Calendar.setup(
