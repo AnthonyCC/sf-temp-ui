@@ -120,7 +120,7 @@
 			    function doCompositeLink(url) {
 			    		var param1 = document.getElementById('deliveryDate').value;
 			          var param2 = document.getElementById('cutoffTime').value;
-			          alert(param1);alert(param2);
+			          
 			    	if( param1.trim().length ==0 && param2.trim().length ==0) {
 			    		location.href = url;
 			    	} else if( param1.trim().length ==0 && param2.trim().length !=0) {
