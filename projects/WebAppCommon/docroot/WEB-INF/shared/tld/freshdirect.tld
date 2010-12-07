@@ -1035,6 +1035,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>timeSlotId</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>deliveryInfo</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
