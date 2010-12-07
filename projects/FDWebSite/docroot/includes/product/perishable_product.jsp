@@ -55,7 +55,7 @@
 
 
 
-	<table border="0" cellspacing="0" cellpadding="0" width="0">
+	<table border="0" cellspacing="0" cellpadding="0">
 		<tr valign="top">
 
 		<td width="140" align="right" class="text11">
@@ -98,7 +98,7 @@
 					if(skuSize == 1 || showStackedShelfLife) {
 				%>
 						<img src="/media_stat/images/layout/clear.gif" width="20" height="10" border="0" hspace="0" vspace="0">
-						<table width="0" border="0" cellspacing="0" cellpadding="0">
+						<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 							<tr>
 								<td height="5"><img src="/media_stat/images/layout/top_left_curve.gif" width="6" height="6"></td>
 								<td height="5" style="border-top: solid 1px #999966;"><img src="/media_stat/images/layout/clear.gif" width="173" height="1"></td>

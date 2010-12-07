@@ -37,7 +37,12 @@
 	List<Html> topMedia=aboutPage.getTopMedia();
 	List<Html> middleMedia=aboutPage.getMiddleMedia();
 	List<BrandModel> chefBrands=aboutPage.getFeaturedBrands();
-	
+
+	String curListPos = (request.getAttribute("listPos")==null)?"":request.getAttribute("listPos").toString();
+	//--------OAS Page Variables-----------------------
+	request.setAttribute("sitePage", dept.getPath()+"/about");
+	request.setAttribute("listPos", ("".equals(curListPos))?"SystemMessage,4mmAd1,4mmAd2":curListPos+",SystemMessage,4mmAd1,4mmAd2");
+
 %>
 	<div class="fourmm aboutpage">
 	<%@ include file="/includes/layouts/4mm/title.jspf"%>		

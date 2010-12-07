@@ -719,7 +719,7 @@ if(productCode!=null && prodCatId !=null ) {
 String shelfLife = JspMethods.getFreshnessGuaranteed(productNode);
 if(shelfLife != null && shelfLife.trim().length() > 0) { %>		
 
-	<table width="0" border="0" cellspacing="0" cellpadding="0">
+	<table border="0" cellspacing="0" cellpadding="0" style="clear: both;">
 		<tr>
 		    <td colspan="3"><img src="/media_stat/images/layout/clear.gif" width="140" height="9"></td>
 		</tr>

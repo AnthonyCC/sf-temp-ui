@@ -37,7 +37,7 @@
 
 	//--------OAS Page Variables-----------------------
 	request.setAttribute("sitePage", departmentModel.getPath());
-	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight");
+	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,SideCartBottom,WineTopRight,WineBotLeft,WineBotMiddle,WineBotRight,4mmAd1,4mmAd2");
 
 
 	if (!ContentFactory.getInstance().getPreviewMode()) {
