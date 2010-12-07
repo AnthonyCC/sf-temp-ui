@@ -28,6 +28,7 @@ import com.freshdirect.fdstore.FDProduct;
 import com.freshdirect.fdstore.FDReservation;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
+import com.freshdirect.fdstore.atp.FDAvailabilityInfo;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDCartI;
@@ -352,7 +353,7 @@ public class Cart {
         return result;
     }
 
-    public Map getUnavailabilityMap() {
+    public Map<String,FDAvailabilityInfo> getUnavailabilityMap() {
         return ((FDCartModel) cart).getUnavailabilityMap();
     }
 

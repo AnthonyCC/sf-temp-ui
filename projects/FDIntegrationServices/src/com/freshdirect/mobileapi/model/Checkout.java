@@ -298,14 +298,14 @@ public class Checkout {
          */
         DecimalFormat quantityFormatter = new java.text.DecimalFormat("0.##");
         Cart cart = this.sessionUser.getShoppingCart();
-        Map invsInfoMap = cart.getUnavailabilityMap();
+        Map<String,FDAvailabilityInfo> invsInfoMap = cart.getUnavailabilityMap();
 
         Map<String, List<Integer>> groupingMap = new HashMap<String, List<Integer>>();
         List<Integer> regularItems = new ArrayList<Integer>();
         List<String> groupingKeyList = new ArrayList<String>();
 
-        for (Object item : invsInfoMap.keySet()) {
-            Integer key = (Integer) item;
+        for (String item : invsInfoMap.keySet()) {
+            Integer key =  Integer.parseInt(item);
             FDCartLineI cartLine = cart.getOrderLineById((key).intValue());
             String rcpSrcId = cartLine.getRecipeSourceId();
             if (rcpSrcId != null) {
