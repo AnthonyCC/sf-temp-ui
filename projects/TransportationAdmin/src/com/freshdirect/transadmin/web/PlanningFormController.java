@@ -108,6 +108,7 @@ public class PlanningFormController extends AbstractFormController {
 		refData.put("drivers",drivers);
 		refData.put("helpers", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.HELPER.getName())));
 		refData.put("runners", DispatchPlanUtil.getSortedResources(employeeManagerService.getEmployeesByRole(EnumResourceType.RUNNER.getName())));
+		refData.put("cutoffs", getDomainManagerService().getCutOffs());
 		return refData;
 	}
 

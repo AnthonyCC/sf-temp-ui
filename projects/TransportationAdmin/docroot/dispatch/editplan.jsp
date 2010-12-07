@@ -237,14 +237,17 @@
 							<td>
 								<form:errors path="sequence" />&nbsp;
 							</td>
-						</tr>  
+						</tr> 
 						<tr>
 							<td>CutOff&nbsp;Time</td>
-							<td>
-								<form:input maxlength="50" size="24" path="cutOffTime" onblur="this.value=time(this.value);"/>
+							<td> 
+                				<form:select path="cutOffTime">
+                                	<form:option value="" label="--Please Select CutOff"/>
+                                	<form:options items="${cutoffs}" itemLabel="name" itemValue="cutOffTimeEx" />
+                				</form:select>
 							</td>
-							<td><form:errors path="cutOffTime" />&nbsp;</td>                 
-						</tr>                                         
+							<td><form:errors path="cutOffTime" />&nbsp;</td>
+						</tr>			 						                                        
 						<tr>
 						<% if(hasErrors) { %>
 							<td colspan="3" align="center">

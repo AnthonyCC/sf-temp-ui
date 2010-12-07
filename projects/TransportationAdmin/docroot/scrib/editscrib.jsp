@@ -160,11 +160,14 @@
 							<td><form:errors path="supervisorCode" />&nbsp;</td>   
 						</tr>
 						<tr>
-							<td>CutOff Time</td>
-							<td>         
-								<form:input maxlength="50" size="24" path="cutOffTimeS" onblur="this.value=time(this.value);" /> 
+							<td>CutOff&nbsp;Time</td>
+							<td> 
+	                			<form:select path="cutOffTimeS">
+	                   				<form:option value="" label="--Please Select CutOff"/>
+	                   				<form:options items="${cutoffs}" itemLabel="name" itemValue="cutOffTimeEx" />
+	   							</form:select>
 							</td>
-							<td><form:errors path="cutOffTimeS" />&nbsp;</td>                 
+							<td><form:errors path="cutOffTimeS" />&nbsp;</td>
 						</tr> 
 						<tr>
 							<td><input type = "submit" value="&nbsp;Save&nbsp;" />  </td>

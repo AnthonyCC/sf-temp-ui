@@ -74,6 +74,7 @@ public class ScribFormController extends AbstractDomainFormController {
 		Map refData = new HashMap();
 		refData.put("zones",zones);	
 		refData.put("supervisors", DispatchPlanUtil.getSortedResources(employeeManagerService.getSupervisors()));
+		refData.put("cutoffs", getDomainManagerService().getCutOffs());
 		return refData;
 	}
 

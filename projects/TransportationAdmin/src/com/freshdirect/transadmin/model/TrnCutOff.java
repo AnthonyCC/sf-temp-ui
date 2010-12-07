@@ -1,8 +1,10 @@
 package com.freshdirect.transadmin.model;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 import com.freshdirect.framework.util.TimeOfDay;
+import com.freshdirect.transadmin.util.TransStringUtil;
 
 public class TrnCutOff implements java.io.Serializable, TrnBaseEntityI {
 	
@@ -58,6 +60,16 @@ public class TrnCutOff implements java.io.Serializable, TrnBaseEntityI {
 		this.cutOffTime = cutOffTime;
 	}
 	
-	
-	
+	public String getCutOffTimeEx() {
+		if(getCutOffTime() != null) {
+			try {
+				return TransStringUtil.getServerTime(getCutOffTime().getNormalDate());    
+			} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+			}
+		} 
+		return "null";
+	}
+
 }
