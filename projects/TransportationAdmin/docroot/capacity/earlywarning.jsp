@@ -327,8 +327,7 @@
 								<td><%=_commandTS.getConfirmedCapacity() %></td>
 								<td><%=_commandTS.getPercentageConfirmed() %></td>
 								<td><%=_commandTS.getAllocatedCapacity()%></td>
-								<td><%=_commandTS.getPercentageAllocated()%></td>
-								rType
+								<td><%=_commandTS.getPercentageAllocated()%></td>								
 								<td><%= rType != null && rType.equalsIgnoreCase("O") ? "n/a" : ""+_commandTS.getNoOfResources() %></td>
 								<td><input type="button" 
 										class="<%= _commandTS.getClosedCount() > 0 ? "timeslot_closed" : "timeslot_open" %>" 
