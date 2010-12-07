@@ -407,7 +407,10 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 
 	<% if (zone.isUnattended()) { %>
 
-		<% if (udConfirm) { %>
+		<%
+			/* to make confirm and edit match, take away if here */
+		%>
+		<% if (true /*udConfirm*/) { %>
 		
 			<input type="hidden" name="<%=EnumUserInfoName.DLV_UNATTENDED_CONSENT_SEEN.getCode() %>" value="true"/>
 
@@ -433,6 +436,7 @@ if(request.getParameter(EnumUserInfoName.DLV_ALTERNATE_DELIVERY.getCode()) != nu
 						(Select this if you do not authorize FreshDirect to deliver your order if you are not home.)</td>
 				</tr>
 			</table>
+			<%= (!udConfirm) ? "<br />" : "" %>
 
 		<% }else{ %>
 			<table border="0" cellspacing="1" cellpadding="0" width="675">

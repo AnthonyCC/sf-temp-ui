@@ -8,18 +8,16 @@
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<%=NVL.apply(session.getAttribute("redirectToIndex"), "true")%>
 <%
-String successPage = "/your_account/delivery_information.jsp";
+	String successPage = "/your_account/delivery_information.jsp";
 
-
-if (((String)NVL.apply(session.getAttribute("redirectToIndex"), "true")).equals("true")) {
-	successPage = "/index.jsp";
-	//un-set attribute, the attribute would only be true if we passed through here the first time
-	session.setAttribute("redirectToIndex", "false");
-} else {
-	successPage = "/your_account/delivery_information.jsp";
-}
+	if (session.getAttribute("redirectToIndex") != null) {
+		successPage = "/index.jsp";
+		//un-set attribute but check for null, because submitting passes here a second time before going to successPage
+		session.setAttribute("redirectToIndex", "false");
+	} else {
+		successPage = "/your_account/delivery_information.jsp";
+	}
 
 %>
 <fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="<%=successPage%>">
