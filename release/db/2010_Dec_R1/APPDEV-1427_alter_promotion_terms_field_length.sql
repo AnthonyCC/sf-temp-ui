@@ -1,0 +1,1 @@
+alter table cust.promotion_new modify terms varchar2(1024);
