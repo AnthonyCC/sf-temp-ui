@@ -3,6 +3,7 @@ package com.freshdirect.transadmin.service.impl;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import com.freshdirect.transadmin.model.TrnArea;
 import com.freshdirect.transadmin.model.TrnCutOff;
 import com.freshdirect.transadmin.model.TrnZoneType;
 import com.freshdirect.transadmin.model.Zone;
+import com.freshdirect.transadmin.model.comparator.AlphaNumericComparator;
 import com.freshdirect.transadmin.service.DomainManagerI;
 import com.freshdirect.transadmin.util.EnumCachedDataType;
 import com.freshdirect.transadmin.util.ModelUtil;
@@ -83,8 +85,9 @@ public class DomainManagerImpl
 	}
 	
 	public Collection getAdHocRoutes() {
-		
-		return getDomainManagerDao().getAdHocRoutes();
+		Collection adHocRoutes = getDomainManagerDao().getAdHocRoutes();
+		Collections.sort((List)adHocRoutes, new AlphaNumericComparator());
+		return adHocRoutes; 
 	}
 	
 	public Collection getTrucks() {
