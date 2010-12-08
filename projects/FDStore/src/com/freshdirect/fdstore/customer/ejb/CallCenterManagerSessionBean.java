@@ -704,6 +704,9 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				ps.setString(2,date);
 			} else if(!"".equals(date) && !"".equals(cutOff)) {
 				ps= conn.prepareStatement(NSM_ORDERS_QUERY_BY_DATE_AND_CUTOFF);
+				if(cutOff.length()==7) {
+					cutOff="0"+cutOff;
+				}
 				ps.setString(1,cutOff);
 				ps.setString(2,date);
 				ps.setString(3,date);
