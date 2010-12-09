@@ -1,10 +1,15 @@
 <%@ page import='com.freshdirect.webapp.util.*' %>
 <%@ page import='java.util.List.*' %>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='bean' prefix='bean' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
+<%
+	//stick the current id being edited into the session so we can check it back on delivery info
+	session.setAttribute("lastEditedAddressId", (String)NVL.apply(request.getParameter("addressId"), ""));
+%>
 <tmpl:insert template='/common/template/dnav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Edit Delivery Address</tmpl:put>
 <tmpl:put name='content' direct='true'>

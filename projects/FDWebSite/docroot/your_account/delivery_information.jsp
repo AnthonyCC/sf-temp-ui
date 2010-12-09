@@ -14,6 +14,7 @@
 	String allAddresses = (String)NVL.apply(session.getAttribute("allAddresses"), "");
 	Boolean newSession = ((String)NVL.apply(session.getAttribute("newSession"), "true")).equals("true"); 
 	Integer oldAddressCount = (Integer)NVL.apply(session.getAttribute("addressCount"), 0);
+	String lastEditedAddressId = (String)NVL.apply(session.getAttribute("lastEditedAddressId"), "");
 
 	String newAddressId = "";
 	
@@ -22,8 +23,9 @@
 	Integer addressCount = shippingAddresses.size();
 	ErpAddressModel newAddress = null;
 
-	
 	String redirectURL = "";
+
+	Boolean cont = false;
 
 	if (addressCount > 0 && !newSession) {
 
@@ -34,30 +36,81 @@
 				//this address is new
 				newAddressId = (String)thisAddress.getPK().getId();
 				newAddress = thisAddress;
-				allAddresses += (String)thisAddress.getPK().getId()+",";
+				allAddresses += (String)thisAddress.getPK().getId();
+				%><fd:UnattendedDelivery id="zone" address="<%= thisAddress %>" checkUserOptions="true"><%
+					if (zone.isUnattended()) {
+					allAddresses += ":UnAtt=true,";
+					cont = true;
+				}
+				%></fd:UnattendedDelivery><%
+				if (cont) { cont=false; continue; }
+				allAddresses += ":UnAtt=false,";
 			}
 		}
 	}else{
 		allAddresses = "";
 		for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
 			ErpAddressModel thisAddress = (ErpAddressModel)i.next();
-			allAddresses += (String)thisAddress.getPK().getId()+",";
+			allAddresses += (String)thisAddress.getPK().getId();
+			%><fd:UnattendedDelivery id="zone" address="<%= thisAddress %>" checkUserOptions="true"><%
+				if (zone.isUnattended()) {
+					allAddresses += ":UnAtt=true,";
+					cont = true;
+				}
+			%></fd:UnattendedDelivery><%
+				if (cont) { cont=false; continue; }
+			allAddresses += ":UnAtt=false,";
 		}
 	}
 	
+	/* see if we have more addresses than last time */
 	if ( oldAddressCount != addressCount) {
+		// before we regenerate, check for an address that was NOT unattended and now is
+		if (!"".equals(lastEditedAddressId)) {
+			//we have an id, check it against what it was
+			//was it false before?
+			if (allAddresses.indexOf(lastEditedAddressId+":UnAtt=false") > -1) {
+				//it was
+				//is it now after the edit? find it
+				for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
+					ErpAddressModel thisAddress = (ErpAddressModel)i.next();
+					//matching?
+					if ( ((String)thisAddress.getPK().getId()).equals(lastEditedAddressId) ) {
+						%><fd:UnattendedDelivery id="zone" address="<%= thisAddress %>" checkUserOptions="true"><%
+						if (zone.isUnattended()) {
+							//unattended now, redirect
+							response.sendRedirect(response.encodeRedirectURL("/your_account/edit_delivery_address_unattended.jsp?page=udConfirm&addressId="+lastEditedAddressId));
+						}
+						%></fd:UnattendedDelivery><%
+					}
+				}
+			}else{
+				//it was true before, just clear it
+				session.setAttribute("lastEditedAddressId", "");
+			}
+		}
+
 		//regenerate list
 		allAddresses = "";
 		for(Iterator i = shippingAddresses.iterator(); i.hasNext();) {
 			ErpAddressModel thisAddress = (ErpAddressModel)i.next();
-			allAddresses += (String)thisAddress.getPK().getId()+",";
+			allAddresses += (String)thisAddress.getPK().getId();
+			%><fd:UnattendedDelivery id="zone" address="<%= thisAddress %>" checkUserOptions="true"><%
+				if (zone.isUnattended()) {
+					allAddresses += ":UnAtt=true,";
+					cont = true;
+				}
+			%></fd:UnattendedDelivery><%
+				if (cont) { cont=false; continue; }
+			allAddresses += ":UnAtt=false,";
 		}
 		oldAddressCount = addressCount;
 	}
-		//set in session
-		session.setAttribute("allAddresses", allAddresses);
-		session.setAttribute("newSession", "false");
-		session.setAttribute("oldAddressCount", oldAddressCount);
+
+	//set in session
+	session.setAttribute("allAddresses", allAddresses);
+	session.setAttribute("newSession", "false");
+	session.setAttribute("oldAddressCount", oldAddressCount);
 		
 	if ( newAddress != null ) {
 		//check for unattended
