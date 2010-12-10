@@ -21,6 +21,6 @@ update transp.plan s set S.CUTOFF_DATETIME = (select t.CUTOFF_TIME from dlv.time
         and t.START_TIME = S.FIRST_DLV_TIME );
         
 update transp.plan s set S.LAST_DLV_TIME = (select t.END_WINDOW_TIME from transp.scrib t where t.SCRIB_DATE = S.PLAN_DATE and t.ZONE_ID = s.ZONE and t.START_TIME = S.START_TIME 
-        and t.FIRST_WINDOW_TIME = S.FIRST_DLV_TIME );         
+        and t.FIRST_WINDOW_TIME = S.FIRST_DLV_TIME and rownum = 1 );         
 
 
