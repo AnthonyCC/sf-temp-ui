@@ -33,12 +33,12 @@ public class HandOffBatchInfo implements java.io.Serializable {
 	
 	public String getDeliveryDate() {
 		StringBuffer strBuf = new StringBuffer();
-		try {
+		try {			
 			strBuf.append(TransStringUtil.getDate(batch.getDeliveryDate())).append("<br/>");
 			if(batch.getCutOffDateTime() != null) {
 				strBuf.append(TransStringUtil.getServerTime(batch.getCutOffDateTime())).append("<br/>");
 			}
-			strBuf.append("<b>").append(batch.getServiceTimeScenario()).append("</b>");
+			strBuf.append("<b>").append(batch.getServiceTimeScenario()).append("</b>");			
 		} catch (ParseException e) {
 			return null;
 		}
@@ -53,11 +53,16 @@ public class HandOffBatchInfo implements java.io.Serializable {
 			if(action != null) {
 				strBuf.append(TransStringUtil.getDatewithTime(action.getActionDateTime()));
 				strBuf.append("<br/>");
+				
+				strBuf.append(batch.isEligibleForCommit() ? "<img src=\"./images/greendot.gif\" border=\"0\" />" 
+						: "<img src=\"./images/reddot.gif\" border=\"0\" />");
+				
 				strBuf.append(action.getActionBy());
 				strBuf.append("<br/>");
+				
 				strBuf.append("<b>No Of Orders: ").append(batch.getNoOfOrders()).append("</b>");
 				strBuf.append("<br/>");
-				strBuf.append("Commit Eligible: ").append(batch.isEligibleForCommit() ? "YES" : "NO");
+				//strBuf.append("Commit Eligible: ").append(batch.isEligibleForCommit() ? "YES" : "NO");								
 			}
 		} catch (ParseException e) {
 			return null;
