@@ -24,19 +24,19 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	 */
 	public abstract ProductModel getProduct();
 
-        @Override
-        public Object getCmsAttributeValue(String name) {
-            Object a = super.getCmsAttributeValue(name);
-            if (a != null) {
-                return a;
-            }
-            ProductModel p = getProduct();
-            if (p != null) {
-                return p.getCmsAttributeValue(name);
-            }
-    
-            return null;
-        }
+	@Override
+	public Object getCmsAttributeValue(String name) {
+		Object a = super.getCmsAttributeValue(name);
+		if (a != null) {
+			return a;
+		}
+		ProductModel p = getProduct();
+		if (p != null) {
+			return p.getCmsAttributeValue(name);
+		}
+
+		return null;
+	}
 
 	//
 	// proxy pass-thru methods
@@ -82,7 +82,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().getSku(skuCode);
 	}
 
-	public List getSkus() {
+	public List<SkuModel> getSkus() {
 		return getProduct().getSkus();
 	}
 
@@ -105,7 +105,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public boolean isGrocery() {
 		return getProduct().isGrocery();
 	}
-	
+
 	public boolean isSoldBySalesUnits() {
 		return getProduct().isSoldBySalesUnits();
 	}
@@ -125,13 +125,14 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public SkuModel getDefaultSku() {
 		return getProduct().getDefaultSku();
 	}
-	
+
 	@Override
 	public SkuModel getDefaultSku(PricingContext ctx) {
-	    return getProduct().getDefaultSku(ctx);
+		return getProduct().getDefaultSku(ctx);
 	}
 
-	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
+	public Set getCommonNutritionInfo(ErpNutritionInfoType type)
+			throws FDResourceException {
 		return getProduct().getCommonNutritionInfo(type);
 	}
 
@@ -223,15 +224,14 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 		return getProduct().isOutOfSeason();
 	}
 
-    /**
-     *  Tell if the product is available within the specified number
-     *  of days.
-     *  
-     * @param days the number of days to look at, '1' means today,
-     *        '2' means by tomorrow, etc.
-     * @return if the product is available within the specified number
-     *         of days.
-     */    
+	/**
+	 * Tell if the product is available within the specified number of days.
+	 * 
+	 * @param days
+	 *          the number of days to look at, '1' means today, '2' means by
+	 *          tomorrow, etc.
+	 * @return if the product is available within the specified number of days.
+	 */
 	public boolean isAvailableWithin(int days) {
 		return getProduct().isAvailableWithin(days);
 	}
@@ -251,7 +251,6 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getDisplayableBrands(int numOfBrands) {
 		return getProduct().getDisplayableBrands(numOfBrands);
 	}
-
 
 	public EnumLayoutType getLayout() {
 		return getProduct().getLayout();
@@ -348,54 +347,55 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public YmalSet getActiveYmalSet() {
 		return getProduct().getActiveYmalSet();
 	}
-	
+
 	public void resetActiveYmalSetSession() {
 		getProduct().resetActiveYmalSetSession();
 	}
 
 	/**
-	 *  Return a list of YMAL products.
-	 *  
-	 *  @return a list of ProductModel objects, which are contained in
-	 *          the YMALs for this product.
-	 *  @see #getYmals()
-	 *  @see #getYmalProducts(Set)
+	 * Return a list of YMAL products.
+	 * 
+	 * @return a list of ProductModel objects, which are contained in the YMALs
+	 *         for this product.
+	 * @see #getYmals()
+	 * @see #getYmalProducts(Set)
 	 */
 	public List getYmalProducts() {
 		return getProduct().getYmalProducts();
 	}
-	
+
 	/**
-	 *  Return a list of YMAL products.
-	 *  
-	 *  @param removeSkus a set of FDSku objects, for which correspoding
-	 *         products need to be removed from the final list of YMALs.
-	 *         this might be null, in which case it has no effect. 
-	 *  @return a list of ProductModel objects, which are contained in
-	 *          the YMALs for this product.
-	 *  @see #getYmals()
+	 * Return a list of YMAL products.
+	 * 
+	 * @param removeSkus
+	 *          a set of FDSku objects, for which correspoding products need to be
+	 *          removed from the final list of YMALs. this might be null, in which
+	 *          case it has no effect.
+	 * @return a list of ProductModel objects, which are contained in the YMALs
+	 *         for this product.
+	 * @see #getYmals()
 	 */
 	public List getYmalProducts(Set removeSkus) {
 		return getProduct().getYmalProducts(removeSkus);
 	}
-	
+
 	/**
-	 *  Return a list of YMAL categories.
-	 *  
-	 *  @return a list of CategoryModel objects, which are contained in
-	 *          the YMALs for this product.
-	 *  @see #getYmals()
+	 * Return a list of YMAL categories.
+	 * 
+	 * @return a list of CategoryModel objects, which are contained in the YMALs
+	 *         for this product.
+	 * @see #getYmals()
 	 */
 	public List getYmalCategories() {
 		return getProduct().getYmalCategories();
 	}
-	
+
 	/**
-	 *  Return a list of YMAL recipes.
-	 *  
-	 *  @return a list of Recipe objects, which are contained in
-	 *          the YMALs for this product.
-	 *  @see #getYmals()
+	 * Return a list of YMAL recipes.
+	 * 
+	 * @return a list of Recipe objects, which are contained in the YMALs for this
+	 *         product.
+	 * @see #getYmals()
 	 */
 	public List getYmalRecipes() {
 		return getProduct().getYmalRecipes();
@@ -416,7 +416,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getRelatedRecipes() {
 		return getProduct().getRelatedRecipes();
 	}
-	
+
 	public List getProductBundle() {
 		return getProduct().getProductBundle();
 	}
@@ -436,7 +436,7 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public List getRating() {
 		return getProduct().getRating();
 	}
-	
+
 	public List getUsageList() {
 		return getProduct().getUsageList();
 	}
@@ -456,10 +456,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public DomainValue getWineCountry() {
 		return getProduct().getWineCountry();
 	}
-	
+
 	@Override
 	public ContentKey getWineCountryKey() {
-            return getProduct().getWineCountryKey();
+		return getProduct().getWineCountryKey();
 	}
 
 	public Image getProdImage() {
@@ -529,10 +529,10 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public Html getPartallyFrozen() {
 		return getProduct().getPartallyFrozen();
 	}
-	
+
 	@Override
 	public boolean isHasPartiallyFrozen() {
-	    return getProduct().isHasPartiallyFrozen();
+		return getProduct().isHasPartiallyFrozen();
 	}
 
 	public List getComponentGroups() {
@@ -542,111 +542,110 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public Html getProductTermsMedia() {
 		return getProduct().getProductTermsMedia();
 	}
-	
+
 	// new Wine Store changes
-	
-	public String getWineClassification(){
-	     return getProduct().getWineClassification();
+
+	public String getWineClassification() {
+		return getProduct().getWineClassification();
 	}
-	
-	public String getWineImporter(){
+
+	public String getWineImporter() {
 		return getProduct().getWineImporter();
 	}
-	
-	public String getWineAlchoholContent(){
+
+	public String getWineAlchoholContent() {
 		return getProduct().getWineAlchoholContent();
 	}
-	
-	public String getWineAging(){
-		return getProduct().getWineAging();	
+
+	public String getWineAging() {
+		return getProduct().getWineAging();
 	}
-	
+
 	public String getWineCity() {
 		// TODO Auto-generated method stub
 		return getProduct().getWineCity();
 	}
 
-	
-	public String getWineType(){
+	public String getWineType() {
 		return getProduct().getWineType();
 	}
-	
-	public List getNewWineType(){
+
+	public List getNewWineType() {
 		return getProduct().getNewWineType();
 	}
-	
-	public List<DomainValue> getWineVintage(){
+
+	public List<DomainValue> getWineVintage() {
 		return getProduct().getWineVintage();
 	}
-	
-	public List getNewWineRegion(){
+
+	public List getNewWineRegion() {
 		return getProduct().getNewWineRegion();
 	}
-	
+
 	public List getWineVarietal() {
 		return getProduct().getWineVarietal();
 	}
-	
-	public List<DomainValue> getWineRating1(){
+
+	public List<DomainValue> getWineRating1() {
 		return getProduct().getWineRating1();
 	}
-	
-	public List<DomainValue> getWineRating2(){
+
+	public List<DomainValue> getWineRating2() {
 		return getProduct().getWineRating2();
 	}
-	
-	public List<DomainValue> getWineRating3(){
+
+	public List<DomainValue> getWineRating3() {
 		return getProduct().getWineRating3();
 	}
-	
+
 	@Override
 	public DomainValue getWineRatingValue1() {
 		return getProduct().getWineRatingValue1();
 	}
-	
+
 	@Override
 	public DomainValue getWineRatingValue2() {
 		return getProduct().getWineRatingValue2();
 	}
-	
+
 	@Override
 	public DomainValue getWineRatingValue3() {
 		return getProduct().getWineRatingValue3();
 	}
-	
+
 	@Override
 	public boolean hasWineOtherRatings() {
 		return getProduct().hasWineOtherRatings();
 	}
-	
-	public Html getWineReview1(){
-		return getProduct().getWineReview1();	
+
+	public Html getWineReview1() {
+		return getProduct().getWineReview1();
 	}
-	
-	public Html getWineReview2(){
+
+	public Html getWineReview2() {
 		return getProduct().getWineReview2();
 	}
-	
-	
-	public Html getWineReview3(){
-		return getProduct().getWineReview3();	
+
+	public Html getWineReview3() {
+		return getProduct().getWineReview3();
 	}
-	
-	public Html getProductBottomMedia(){
+
+	public Html getProductBottomMedia() {
 		return getProduct().getProductBottomMedia();
 	}
-	
-	public CategoryModel getPerfectPair(){
-		return getProduct().getPerfectPair();	
-	}		
-	public List getWineClassifications(){
+
+	public CategoryModel getPerfectPair() {
+		return getProduct().getPerfectPair();
+	}
+
+	public List getWineClassifications() {
 		return getProduct().getWineClassifications();
 	}
-	
+
 	public String getProductRating() throws FDResourceException {
 		return getProduct().getProductRating();
 	}
-	
+
 	public String getProductRating(String skuCode) throws FDResourceException {
 		return getProduct().getProductRating(skuCode);
 	}
@@ -654,45 +653,50 @@ public abstract class ProxyProduct extends AbstractProductModelImpl {
 	public EnumOrderLineRating getProductRatingEnum() throws FDResourceException {
 		return getProduct().getProductRatingEnum();
 	}
-	
+
 	public String getFreshnessGuaranteed() throws FDResourceException {
-		if(FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
+		if (FDStoreProperties.IsFreshnessGuaranteedEnabled()) {
 			return getProduct().getFreshnessGuaranteed();
 		}
 		return null;
 	}
-	
+
 	public List getCountryOfOrigin() throws FDResourceException {
 		return getProduct().getCountryOfOrigin();
 	}
-	
-	//Gift Card changes
-	public List getGiftcardType(){
+
+	// Gift Card changes
+	public List getGiftcardType() {
 		return getProduct().getGiftcardType();
 	}
 
-    @Override
-    public MediaI getMedia(String name) {
-        return getProduct().getMedia(name);
-    }
+	@Override
+	public MediaI getMedia(String name) {
+		return getProduct().getMedia(name);
+	}
 
-    @Override
-    public boolean isHasSalesUnitDescription() {
-        return getProduct().isHasSalesUnitDescription();
-    }
-    
-    @Override
-    public Html getFddefSource() {
-        return getProduct().getFddefSource();
-    }
-    
-    @Override
-    public String getDefaultSkuCode() {
-        return getProduct().getDefaultSkuCode();
-    }
+	@Override
+	public boolean isHasSalesUnitDescription() {
+		return getProduct().isHasSalesUnitDescription();
+	}
 
-    @Override
-    public String getPriceFormatted(double savingsPercentage, String skuCode) {
-        return getProduct().getPriceFormatted(savingsPercentage, skuCode);
-    }
+	@Override
+	public Html getFddefSource() {
+		return getProduct().getFddefSource();
+	}
+
+	@Override
+	public String getDefaultSkuCode() {
+		return getProduct().getDefaultSkuCode();
+	}
+
+	@Override
+	public String getPriceFormatted(double savingsPercentage, String skuCode) {
+		return getProduct().getPriceFormatted(savingsPercentage, skuCode);
+	}
+
+	@Override
+	public boolean isShowWineRatings() {
+		return getProduct().isShowWineRatings();
+	}
 }

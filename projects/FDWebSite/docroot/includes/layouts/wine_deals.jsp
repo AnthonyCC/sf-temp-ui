@@ -93,7 +93,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 <div style="clear: both; font-size: 0px;"></div>
 </div>
 <div style="width: 425px;" class="usq">
-	<div class="usq-brown-border usq-deals">
+	<div id="dealsTop" class="usq-brown-border usq-deals">
 		<% for (CategoryModel cat : subcategories) { boolean hideOnly = !cat.isHideWineRatingPricing(); %>
 			<% int imgHeight = 0; String tabId = cat != dftSubcat ? "tab_" + cat.getContentKey().getId() : null; %>
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
@@ -110,7 +110,7 @@ FreshDirect.Wine.addTabItem("deals", "<%= "tab_" + subcategory.getContentKey().g
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
 						width="335" trackingCode="<%= trk %>"
 						hideContainer="<%= tabId %>" numItems="3" bottomHeader="<%= cat.getAltText() %>"
-						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>"><% ProductModel product = (ProductModel) currentItem; %>
+						bottomHeaderClass="title14 usq-sienna" appendWineParams="<%= true %>" parentId="dealsTop" offset="80"><% ProductModel product = (ProductModel) currentItem; %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:ProductImage product="<%= product %>" showRolloverImage="true" action="<%= actionUrl %>"
 								useAlternateImage="<%= useAlternateImage %>" className="productImage" height="<%= imgHeight %>" enableQuickBuy="true" webId="<%= webId %>"/>

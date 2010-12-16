@@ -1551,6 +1551,10 @@ a.nav-filter-value-inner {
 	padding-left: 5px;
 }
 
+.nav-filter-name-CLEARALL {
+		background-color: #7F607D;
+}
+
 /**
  * Type, Varietal styles
  */
@@ -1592,6 +1596,10 @@ a.nav-filter-value-inner {
 #Varietal-all .nav-filter-value-label,#Varietal-all .nav-clear-all-link a
 	{
 	color: #4B5B46;
+}
+
+.nav-filter-carrot-CLEARALL {
+	background-image: url(/media_stat/images/wine/clearall_carrot.gif);
 }
 
 .nav-filter-carrot-TYPE,.nav-filter-carrot-Varietal {

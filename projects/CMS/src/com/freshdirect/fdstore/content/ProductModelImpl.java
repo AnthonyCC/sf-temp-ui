@@ -1661,4 +1661,23 @@ inner:
 	    }
 	    return sb.toString();
 	}
+
+	
+
+	@Override
+	public boolean isShowWineRatings() {
+		// NOT wine
+		if (!"usq".equalsIgnoreCase(getDepartment().getContentName()))
+			return false;
+		
+		// NOT enabled
+		if (!FDStoreProperties.isWineShowRatings())
+			return false;
+		
+		// Rating is HIDDEN
+		if (isHideWineRatingPricing())
+			return false;
+		
+		return true;
+	}
 }

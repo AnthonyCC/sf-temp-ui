@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
+import org.apache.commons.collections.set.ListOrderedSet;
+
 import com.freshdirect.cms.fdstore.FDContentTypes;
 
 public enum EnumWineFilterDomain {
@@ -96,6 +98,23 @@ public enum EnumWineFilterDomain {
 								return o2.getFilterRepresentation().length() - o1.getFilterRepresentation().length();
 							}
 						};
+			case TYPE	:
+			case MORE	: {
+							Collection<WineFilterValue> values = ContentFactory.getInstance().getDomainValuesForWineDomainCategory(getCategory());
+							if (values != null && values instanceof ListOrderedSet) {
+								final ListOrderedSet indexes = (ListOrderedSet) values;
+								return new Comparator<WineFilterValue>() {
+									@Override
+									public int compare(WineFilterValue o1, WineFilterValue o2) {
+										int i1 = indexes.indexOf(o1);
+										int i2 = indexes.indexOf(o2);
+										if (i1 < 0 || i2 < 0)
+											return o1.getFilterRepresentation().compareTo(o2.getFilterRepresentation());
+										return i1 - i2;
+									}
+								};
+							}
+						  }
 			default     : return new Comparator<WineFilterValue>() {
 							public int compare(WineFilterValue o1, WineFilterValue o2) {				
 								return o1.getFilterRepresentation().compareTo(o2.getFilterRepresentation());

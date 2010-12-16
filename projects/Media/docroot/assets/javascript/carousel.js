@@ -1,16 +1,20 @@
-var fd_carousel=function(id,numItems,hideContainer,text,cName) {
-	if(YAHOO.widget.Carousel===undefined) { YAHOO.util.Get.css('/assets/yui/carousel/assets/carousel-core.css');YAHOO.util.Get.script('/assets/yui/carousel/carousel-min.js',{
-		onSuccess:function() {
-			fd_carousel.start(id,numItems,hideContainer,text,cName);
-		}
-	})} else {
-		fd_carousel.start(id,numItems,hideContainer,text,cName);
+var fd_carousel=function(id,numItems,hideContainer,text,cName,parentId,offset) {
+	if(YAHOO.widget.Carousel===undefined) {
+		YAHOO.util.Get.css('/assets/yui/carousel/assets/carousel-core.css');
+		YAHOO.util.Get.script('/assets/yui/carousel/carousel-min.js',{
+			onSuccess:function() {
+				fd_carousel.start(id,numItems,hideContainer,text,cName,parentId,offset);
+			}
+		});
+	} else {
+		fd_carousel.start(id,numItems,hideContainer,text,cName,parentId,offset);
 	}
 };
 
-fd_carousel.start=function(container,numItems,hideContainer,text,cName) {
+fd_carousel.start=function(container,numItems,hideContainer,text,cName,parentId,offset) {
 	YAHOO.util.Event.onContentReady(container,function() {
-		var carousel, lineItems, i,l,maxHeight=0, region;
+		var carousel, lineItems, i,j,l,maxHeight=0, region, reg2;
+		var pContainer, mh;
 		lineItems = YAHOO.util.Dom.getElementsBy(function(){return true;},'li',container);
 		l=lineItems.length;
 		for(i=0;i<l;i++) {
@@ -19,10 +23,17 @@ fd_carousel.start=function(container,numItems,hideContainer,text,cName) {
 				maxHeight=region.height;
 			}
 		}
-		for(i=0;i<l;i++) {
-			YAHOO.util.Dom.setStyle(lineItems[i],'height',(maxHeight+5)+'px');
-		}
 		
+		fd_carousel.fixItemHeights(container, maxHeight);
+		if (parentId) {
+			pContainer = $(parentId);
+			reg2 = $D.getRegion(pContainer);
+			mh = maxHeight + offset;
+			if (reg2.height === undefined || reg2.height < mh)
+				$D.setStyle(pContainer, 'height', mh+'px');
+		}
+
+
 		carousel = new YAHOO.widget.Carousel(container,{numVisible:numItems,animation:{speed: 0.5}});
 		carousel.CONFIG.MAX_PAGER_BUTTONS=8;
 		carousel.CONFIG.HORZ_MIN_WIDTH=100;
@@ -45,3 +56,14 @@ fd_carousel.start=function(container,numItems,hideContainer,text,cName) {
 		}
 	});
 };
+
+
+fd_carousel.fixItemHeights = function(container, maxHeight) {
+	var lineItems, i, l;
+	lineItems = YAHOO.util.Dom.getElementsBy(function(){return true;},'li',container);
+	l=lineItems.length;
+
+	for(i=0;i<l;i++) {
+		YAHOO.util.Dom.setStyle(lineItems[i],'height',(maxHeight+5)+'px');
+	}
+}

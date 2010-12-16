@@ -3,10 +3,13 @@
 <%@ page import='com.freshdirect.fdstore.customer.*'  %>
 <%@ page import='com.freshdirect.fdstore.*' %>
 <%@ page import='com.freshdirect.content.nutrition.*'%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
+<%@ page import="java.util.Iterator"%>
 
-<%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
+<%@ taglib uri="/WEB-INF/shared/tld/fd-display.tld" prefix='display' %>
 
 <%
 String catId = request.getParameter("catId");
@@ -38,7 +41,7 @@ boolean showIngredients = false;
           showIngredients = true;
      }
 
-List skus = new ArrayList(); 
+List<SkuModel> skus = new ArrayList<SkuModel>(); 
 boolean multiple = false;
 boolean sameFirstVar = true;
 boolean sameSecondVar = true;
@@ -48,13 +51,13 @@ if (prod.isNutritionMultiple()) {
     multiple = true;
     skus = prod.getSkus();
 
-    for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-        SkuModel sm = (SkuModel) sIter.next();
+    for (Iterator<SkuModel> sIter = skus.iterator(); sIter.hasNext(); ) {
+        SkuModel sm = sIter.next();
         if (sm.isUnavailable()) {
             sIter.remove();
             continue;
         }
-        List dvals = sm.getVariationMatrix();
+        List<DomainValue> dvals = sm.getVariationMatrix();
         if (dvals != null && dvals.size()>0) {
             DomainValue dv = ((DomainValue) dvals.get(0));
             if (lastFirst == null) {
@@ -83,9 +86,18 @@ if (prod.isNutritionMultiple()) {
           
                <table border="0" cellpadding="0" cellspacing="0" width="330">
                <tr valign="top">
-                    <td width="100" align="center"><img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" border="0" alt="<%= prod.getFullName() %>"></td>
+                    <td width="100" align="center">
+                    	<div style="margin-bottom: 5px">
+                    		<img src="<%=prodImg.getPath()%>" width="<%=prodImg.getWidth()%>" height="<%=prodImg.getHeight()%>" border="0" alt="<%= prod.getFullName() %>">
+                    	</div>
+                    	<div>
+	                    	<display:WineRating product="<%= prod %>"/>
+                    	</div>
+                    </td>
                     <td width="5"><img src="media_stat/images/layout/clear.gif" width="5" height="1"></td>
-                    <td width="225" class="text11"><span class="text12"><b><%=title%></b></span><br><img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="5"><br>
+                    <td width="225" class="text11">
+                    	<div class="text12"><b><%=title%></b></div>
+                    	<img src="media_stat/images/layout/cccccc.gif" width="100%" height="1" vspace="5"><br>
                     <% if ( showAbout ) {%><b>About</b><%} else {%><a href="<%=selfLink%>&show=about">About</a><%}%><% if (fdprd!=null && fdprd.hasNutritionFacts()) {%> | <% if ( showNutrition ) {%><b>Nutrition</b><%} else {%><a href="<%=selfLink%>&show=nutrition">Nutrition</a><%}%><%}%><% if ( fdprd!=null && fdprd.hasIngredients() ) {%> | <% if ( showIngredients ) {%><b>Ingredients</b><%} else {%><a href="<%=selfLink%>&show=ingredients">Ingredients</a><%}%><%}%>
                     <br><img src="/media_stat/images/layout/clear.gif" width="1" height="8"><br>
                     <% if ( showAbout ) {%>
@@ -107,9 +119,8 @@ if (prod.isNutritionMultiple()) {
                                 </script>
                                 <form>
                                 <select name="skuCode" onChange="javascript:viewChoice(this.options[this.selectedIndex].value)">
-                                <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-                                        SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = s.getVariationMatrix();
+                                <%  for (SkuModel s : skus) {
+                                        List<DomainValue> dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
                                         if (s.getSkuCode().equals(skuCode)) {
                                             out.print(" SELECTED");
@@ -145,9 +156,8 @@ if (prod.isNutritionMultiple()) {
                                 </script>
                                 <form>
                                 <select name="skuCode" onChange="javascript:viewChoice(this.options[this.selectedIndex].value)">
-                                <%  for (Iterator sIter = skus.iterator(); sIter.hasNext(); ) {
-                                        SkuModel s = (SkuModel) sIter.next();
-                                        List dvals = s.getVariationMatrix();
+                                <%  for (SkuModel s : skus) {
+                                        List<DomainValue> dvals = s.getVariationMatrix();
                                         out.print("<option value=\"" + s.getSkuCode() + "\"");
                                         if (s.getSkuCode().equals(skuCode)) {
                                             out.print(" SELECTED");

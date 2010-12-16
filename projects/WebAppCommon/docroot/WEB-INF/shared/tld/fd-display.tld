@@ -761,6 +761,16 @@
 		<required>false</required>
 		<rtexprvalue>true</rtexprvalue>
 	</attribute>
+	<attribute>
+		<name>parentId</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
+	<attribute>
+		<name>offset</name>
+		<required>false</required>
+		<rtexprvalue>true</rtexprvalue>
+	</attribute>
  </tag>
  <tag>
  	<name>ContentNodeIterator</name>

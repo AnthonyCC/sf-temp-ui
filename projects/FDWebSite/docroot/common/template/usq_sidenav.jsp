@@ -9,10 +9,6 @@
 <html>
 <head>
     <title><tmpl:get name='title'/></title>
-	<link href="/assets/css/wine.css" rel="stylesheet" type="text/css" />
-<!--[if lte IE 7]>
-	<link href="/assets/css/wine-ie.css" rel="stylesheet" type="text/css" />
-<![endif]-->
 	<%@ include file="/common/template/includes/metatags.jspf" %>
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>

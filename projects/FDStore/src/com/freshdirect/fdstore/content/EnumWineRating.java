@@ -31,6 +31,7 @@ public enum EnumWineRating implements WineFilterValue {
 	public static EnumWineRating getEnumByRating(EnumOrderLineRating productRatingEnum) {
 		switch (productRatingEnum) {
 			case TERRIBLE:
+				return NOT_RATED;
 			case BELOW_AVG:
 			case BELOW_AVG_PLUS:
 				return ONE;

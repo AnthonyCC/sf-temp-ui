@@ -84,11 +84,25 @@
 		</td>
 	</tr>
 	<%-- RATINGS LEGEND --%>
+	<%
+
+
+	EnumWineRating __rating = EnumWineRating.NOT_RATED;
+	try {
+		__rating = EnumWineRating.getEnumByRating( productNode.getProductRatingEnum() );
+	} catch (FDResourceException e) {
+	}
+	
+	if (__rating != EnumWineRating.NOT_RATED) {
+	%>
 	<tr>
 		<td colspan="2" style="padding-left:3px;padding-right:2px;">
 			<%@ include file="/shared/includes/wine/i_wine_expert_ratings_key.jspf" %>
 		</td>
 	</tr>
+	<%
+	}
+	%>
 	<%-- OTHER RATINGS LEGEND --%>
 <%
 	if (productNode.hasWineOtherRatings()) {

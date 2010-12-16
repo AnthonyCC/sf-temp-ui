@@ -103,7 +103,7 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 <div style="clear: both; font-size: 0px;"></div>
 </div>
 <div style="width: 425px;" class="usq" style="background: #fff none;">
-	<div class="usq-brown-border usq-xprt">
+	<div id="jesseRecommends" class="usq-brown-border usq-xprt">
 		<% for (CategoryModel cat : subcategories) { boolean hideOnly = !cat.isHideWineRatingPricing(); %>
 			<% int imgHeight = 0; String tabId = cat != dftSubcat ? "tab_" + cat.getContentKey().getId() : null; %>
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
@@ -118,7 +118,7 @@ FreshDirect.Wine.addTabItem("favs", "<%= "tab_" + subcategory.getContentKey().ge
 		<div id="tab_<%= cat.getContentKey().getId() %>" class="fd-carousel-tab">
 			<display:ItemGrabber id="prods" category="<%= cat %>" depth="0" filterUnavailable="true">
 				<display:Carousel id="carouselTag" carouselId="<%= cat.getContentKey().getId() %>" itemsToShow="<%= prods %>"
-						hideContainer="<%= tabId %>" width="335" trackingCode="<%= trk %>" numItems="3" appendWineParams="<%= true %>"><% ProductModel product = (ProductModel) currentItem; %>
+						hideContainer="<%= tabId %>" width="335" trackingCode="<%= trk %>" numItems="3" appendWineParams="<%= true %>" parentId="jesseRecommends" offset="45"><% ProductModel product = (ProductModel) currentItem; %>
 					<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
 						<display:WineShowRatings product="<%= product %>" hideOnly="<%= hideOnly %>">
 						<div><display:WineRating product="<%= product %>" action="<%= actionUrl %>"/></div>

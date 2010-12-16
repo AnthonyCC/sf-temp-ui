@@ -52,7 +52,19 @@ String trk = "snav";
 /**
  * No category selected or there's at least one filterValue - we must create the detailed sidenav
  */
-if (selected == null || wineFilter.isFiltering()) {		
+if (selected == null || wineFilter.isFiltering()) {
+	if (wineFilter.isFiltering()) {
+%>
+	<div class="nav-filter-name nav-filter-name-CLEARALL title16 wine-narrow">		
+		<div class="nav-filter-clickable">
+			<span class="nav-filter-carrot nav-filter-carrot-CLEARALL" style="vertical-align: top;" id="CLEARALL-carrot">&nbsp;</span>
+			<a class="clear-all-link-value" style="display: inline-block; margin-left: -4px; margin-top: 2px" href="/wine/filter.jsp"><span class="nav-filter-category">SHOW ALL</span><br>
+			<span class="nav-filter-category">Clear All</span>
+			</a>
+		</div>
+	</div>
+<%
+	}
 	for (EnumWineFilterDomain domain : EnumWineFilterDomain.values()) {
 		boolean isOnlyOneFilter = wineFilter.getFilterValuesForDomain(domain.getDomainEncoded()).size() == 1 && domain.getSubcategoryLabel() != null;
 		boolean isOpened = lastClicked !=null && domain.getDomainEncoded().equals(lastClicked.getDomainEncoded()) && !isOnlyOneFilter;
@@ -160,7 +172,9 @@ if (selected == null || wineFilter.isFiltering()) {
 		ArrayList<WineFilterValue> clearValues = new ArrayList<WineFilterValue>();
 		clearValues.addAll(domain.getFilterValues());
 	%>
-		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear all</a></div>
+		<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>">
+			<a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=clearValues.get(0).getEncoded() %>&wineFilter=<%=clearfFilter.getEncoded() %>">Clear</a>
+		</div>
 		<div class="nav-list-wrapper nav-list-wrapper-<%=domain.name() %>">		
 	<%		
 	
@@ -215,7 +229,7 @@ if (selected == null || wineFilter.isFiltering()) {
 			ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
 			v.addAll(domain.getFilterValues());
 	%>
-		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear all</a></div>
+		   <div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.name() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>">Clear</a></div>
 	<%		
 		}
 		
@@ -308,7 +322,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					ArrayList<WineFilterValue> v = new ArrayList<WineFilterValue>();
 					v.addAll(selectedFilters);						
 %>	
-					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
+					<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=v.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear</a></div>
 					<div class="nav-list-wrapper">
 <%
 					ArrayList<DomainValue> selectedSubValues = new ArrayList<DomainValue>();
@@ -492,7 +506,7 @@ if (selected == null || wineFilter.isFiltering()) {
 									<td><%=markupBuff.toString()%></td>	
 								</tr></table>
 								<div style="text-align: right; padding: 10px">
-									<span class="more-options-footer" onclick="FreshDirect.WineNav.clearAllMoreOption()">Clear all</span>
+									<span class="more-options-footer" onclick="FreshDirect.WineNav.clearAllMoreOption()">Clear</span>
 									<span class="more-options-footer" style="text-decoration: none; cursor: default">|</span>
 									<span class="more-options-footer" onclick="FreshDirect.WineNav.hideMoreOptions()">Close window</span>
 									<img class="more-options-footer" onclick="FreshDirect.WineNav.submitMoreOptions('/wine/filter.jsp?wineFilterClicked=<%=subDomains.get(0).getEncoded() %>&wineFilter=<%=f.getEncoded() %>')" src="/media_stat/images/wine/selectbutton_type.gif">
@@ -516,7 +530,7 @@ if (selected == null || wineFilter.isFiltering()) {
 					// Clear all link
 					if (selectedSubValues.size() > 0) {												
 				%>
-						<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=selectedSubValues.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear all</a></div>
+						<div class="nav-clear-all-link nav-filter-value nav-filter-value-<%=domain.getSubcategoryLabel() %>"><a class="clear-all-link-value" href="/wine/filter.jsp?wineFilterClicked=<%=selectedSubValues.get(0).getEncoded() %>&wineFilter=<%=clearFilter.getEncoded() %>">Clear</a></div>
 				<%
 					}				
 					Collections.sort(selectedSubValues, EnumWineFilterDomain.TYPE.getComparator());

@@ -2,6 +2,7 @@
 <%@page import="java.util.HashMap"%>
 <%@page import='java.util.Collections' %>
 <%@page import="java.util.List"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.util.Collection"%>
 <%@page import="com.freshdirect.fdstore.content.util.WineSorter"%>
 <%@page import="com.freshdirect.fdstore.content.util.EnumWineViewType"%>
@@ -14,9 +15,10 @@
 <%@page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
 <%@page import="com.freshdirect.fdstore.content.DepartmentModel"%>
 <%@page import="com.freshdirect.fdstore.content.CategoryModel"%>
-<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
 <%@page import="com.freshdirect.fdstore.content.EnumWinePrice"%>
 <%@page import="com.freshdirect.fdstore.content.WineFilter"%>
+<%@page import="com.freshdirect.webapp.util.FDURLUtil"%>
+<%@page import="com.freshdirect.webapp.util.JSHelper"%>
 <%@page import="java.net.URLEncoder"%>
 <%@taglib uri="template" prefix="tmpl"%>
 <%@taglib uri="logic" prefix="logic"%>
@@ -29,6 +31,7 @@
 		return;
 	}
 %>
+
 <div style="width: 572px; text-align: center; margin: 0px auto;">
 <%
 	boolean useAlternateImage = true;
@@ -95,18 +98,20 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 	</tr>
 </table>
 <div class="usq">
-	<div class="usq-brown-border usq-top-rated">
+	<div id="topRatedContainer" class="usq-brown-border usq-top-rated">
 		<%
+			List<String> ids = new ArrayList<String>();
+			int pcnt = EnumWinePrice.values().length;
 			for (EnumWinePrice price : EnumWinePrice.values()) {
+				String carouselId = "price_" + price.name().toLowerCase();
+				String tabId = dfltPrice != price ? "tab_price_" + price.name().toLowerCase() : null;
+
+				ids.add("tab_price_" + price.name().toLowerCase());
 		%>
 			<fd:WineTopRatedFeed id="prods" price="<%= price %>" maxItems="12" useAlternateImage="true" imageHeightId="imgHeight">
-				<%
-					String carouselId = "price_" + price.name().toLowerCase();
-					String tabId = dfltPrice != price ? "tab_price_" + price.name().toLowerCase() : null;
-				%>
 				<div id="tab_price_<%=price.name().toLowerCase()%>" class="fd-carousel-tab">
 					<display:Carousel id="carouselTag" carouselId="<%= carouselId %>" itemsToShow="<%= prods %>" maxItems="12"
-							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>"><%
+							width="460" trackingCode="<%= trk %>" numItems="4" hideContainer="<%= tabId %>" parentId="topRatedContainer" offset="45"><%
 						ProductModel product = (ProductModel) currentItem;
 					%>
 						<display:GetContentNodeWebId id="webId" product="<%= currentItem %>" clientSafe="<%= true %>">
@@ -125,6 +130,26 @@ FreshDirect.Wine.addTabItem("top-rated", "<%="tab_price_" + price.name().toLower
 		<%
 			}
 		%>
+<script>
+$E.onDOMReady(function() {
+	var tpIdList = <%= JSHelper.listToJSArray(ids) %>;
+	for (c in tpIdList) {
+		window.fd_carousel.postInit(c, mx);
+	}
+	
+	
+	
+	try {
+		var mx = window.fd_carousel.maxHeights['topRated'];
+		alert(mx);
+		for (c in tpIdList) {
+			window.fd_carousel.fixItemHeights(c, mx);
+		}
+	}catch(exc) {
+		alert(exc);
+	}
+});
+</script>
 	</div>
 </div>
 </div>

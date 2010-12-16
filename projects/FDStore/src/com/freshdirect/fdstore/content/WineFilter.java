@@ -262,4 +262,12 @@ public class WineFilter implements Serializable, Cloneable {
 		}
 		return null;
 	}
+
+
+	/**
+	 * "Clear All" function
+	 */
+	public void clearAll() {
+		this.values.clear();
+	}
 }

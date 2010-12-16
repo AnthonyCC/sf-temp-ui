@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.log4j.Category;
 
 import com.freshdirect.cms.ContentKey;
@@ -787,6 +788,9 @@ public class ContentFactory {
 		CategoryModel byType = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_type"));
 		if (byType != null)
 			newIndex.all.addAll(byType.getAllChildProductKeys());
+		CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_more"));
+		if (more != null)
+			newIndex.all.addAll(more.getAllChildProductKeys());
 		LOGGER.info("WINE INDEX: collected all " + newIndex.all.size() + " wine products");
 
 		Set<DomainValue> regions = new HashSet<DomainValue>(1000);
@@ -854,7 +858,8 @@ public class ContentFactory {
 		int soFar = newIndex.categories.size();
 		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (By Type)...");
 		if (byType != null) {
-			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
+			@SuppressWarnings("unchecked")
+			Set<WineFilterValue> domainValues = new ListOrderedSet();
 			newIndex.categoryDomains.put(byType.getContentKey(), domainValues);
 			for (CategoryModel c : byType.getSubcategories()) {
 				Set<DomainValue> subDomains = new HashSet<DomainValue>();
@@ -901,9 +906,9 @@ public class ContentFactory {
 
 		soFar = newIndex.categories.size();
 		LOGGER.info("WINE INDEX: resolving TLC - domain value pairs (More...)...");
-		CategoryModel more = (CategoryModel) getContentNodeByKey(new ContentKey(FDContentTypes.CATEGORY, "usq_more"));
 		if (more != null) {
-			Set<WineFilterValue> domainValues = new HashSet<WineFilterValue>();
+			@SuppressWarnings("unchecked")
+			Set<WineFilterValue> domainValues = new ListOrderedSet();
 			newIndex.categoryDomains.put(more.getContentKey(), domainValues);
 			for (CategoryModel c : more.getSubcategories()) {
 				Map<DomainValue, Integer> counters = new LinkedHashMap<DomainValue, Integer>();
@@ -985,6 +990,8 @@ public class ContentFactory {
 
 	public Collection<WineFilterValue> getDomainValuesForWineDomainCategory(CategoryModel category) {
 		refreshWineIndex(false);
+		if (category == null)
+			return null;
 		return wineIndex.categoryDomains.get(category.getContentKey());
 	}
 	

@@ -37,141 +37,134 @@ import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
-public class ProductModelPricingAdapter implements ProductModel, Serializable, Cloneable, PrioritizedI {
-	
+public class ProductModelPricingAdapter implements ProductModel, Serializable,
+		Cloneable, PrioritizedI {
+
 	private static final long serialVersionUID = -6112229358347075169L;
 
 	private final PricingContext pricingCtx;
 	private final ProductModel prodModel;
 
 	public ProductModelPricingAdapter(ProductModel pModel, PricingContext pCtx) {
-		if ( pModel == null ) {
+		if (pModel == null) {
 			throw new IllegalArgumentException("product model cannot be null");
 		}
 		this.prodModel = pModel;
 		this.pricingCtx = pCtx;
 	}
-	
+
 	@Override
-	public boolean equals( Object obj ) {
-		if ( this == obj ) {
+	public boolean equals(Object obj) {
+		if (this == obj) {
 			return true;
 		}
-		if ( obj instanceof ProductModel ) {
-			return getContentKey().equals( ((ProductModel)obj).getContentKey() );
-		}		
-		return false;		
+		if (obj instanceof ProductModel) {
+			return getContentKey().equals(((ProductModel) obj).getContentKey());
+		}
+		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getContentKey().hashCode();
 	}
-	
+
 	@Override
 	public boolean enforceQuantityMax() {
 		return false;
 	}
 
-   public int getPriority() {
-	   return ((PrioritizedI)prodModel).getPriority();
-   }
-   
-   
-   @Override
-    public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
-       return prodModel.getValidSkuCode(ctx, skuCode);
-    }
-   
-   public PriceCalculator getPriceCalculator() {
-       return new PriceCalculator(pricingCtx, prodModel, prodModel.getDefaultSku(pricingCtx));
-   }
+	public int getPriority() {
+		return ((PrioritizedI) prodModel).getPriority();
+	}
 
-   public PriceCalculator getPriceCalculator(String skuCode) {
-       return new PriceCalculator(pricingCtx, prodModel, prodModel.getValidSkuCode(pricingCtx, skuCode));
-   }
-   
-   
-   /* price calculator calls */
-   
-   public double getDefaultPriceValue() {
-       return getPriceCalculator().getDefaultPriceValue();
-   }
-   
-   public String getDefaultPrice() {
-       return getPriceCalculator().getDefaultPrice();
-   }
-   
-   public String getDefaultPriceOnly() {
-       return getPriceCalculator().getDefaultPriceOnly();
-   }
+	@Override
+	public SkuModel getValidSkuCode(PricingContext ctx, String skuCode) {
+		return prodModel.getValidSkuCode(ctx, skuCode);
+	}
 
-   public String getDefaultUnitOnly() {
-       return getPriceCalculator().getDefaultUnitOnly();
-   }
+	public PriceCalculator getPriceCalculator() {
+		return new PriceCalculator(pricingCtx, prodModel, prodModel
+				.getDefaultSku(pricingCtx));
+	}
 
-   public int getDealPercentage(String skuCode) {
-       return getPriceCalculator(skuCode).getDealPercentage();
-   }
+	public PriceCalculator getPriceCalculator(String skuCode) {
+		return new PriceCalculator(pricingCtx, prodModel, prodModel
+				.getValidSkuCode(pricingCtx, skuCode));
+	}
 
+	/* price calculator calls */
 
-   public int getTieredDealPercentage(String skuCode) {
-       return getPriceCalculator(skuCode).getTieredDealPercentage();
-   }
-   
+	public double getDefaultPriceValue() {
+		return getPriceCalculator().getDefaultPriceValue();
+	}
 
-   public int getHighestDealPercentage(String skuCode) {
-       return getPriceCalculator(skuCode).getHighestDealPercentage();
-   }
+	public String getDefaultPrice() {
+		return getPriceCalculator().getDefaultPrice();
+	}
 
-   public String getTieredPrice(double savingsPercentage) {
-       return getPriceCalculator().getTieredPrice(savingsPercentage);
-   }
+	public String getDefaultPriceOnly() {
+		return getPriceCalculator().getDefaultPriceOnly();
+	}
 
-   public double getPrice(double savingsPercentage) {
-       return getPriceCalculator().getPrice(savingsPercentage);
-   }
+	public String getDefaultUnitOnly() {
+		return getPriceCalculator().getDefaultUnitOnly();
+	}
 
-   
-   public String getPriceFormatted(double savingsPercentage) {
-       return getPriceCalculator().getPriceFormatted(savingsPercentage);
-   }
-   
+	public int getDealPercentage(String skuCode) {
+		return getPriceCalculator(skuCode).getDealPercentage();
+	}
 
-   public String getWasPriceFormatted(double savingsPercentage) {
-       return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
-   }
-   
-   public String getAboutPriceFormatted(double savingsPercentage) {
-       return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
-   }
-   
-   public String getSizeDescription() throws FDResourceException {
-       return getPriceCalculator().getSizeDescription();
-   }
-   
-   public String getKosherSymbol() throws FDResourceException {
-       return getPriceCalculator().getKosherSymbol();
-   }
-   
-   public String getKosherType() throws FDResourceException {
-       return getPriceCalculator().getKosherType();
-   }
+	public int getTieredDealPercentage(String skuCode) {
+		return getPriceCalculator(skuCode).getTieredDealPercentage();
+	}
 
-   
-   public boolean isKosherProductionItem() throws FDResourceException {
-       return getPriceCalculator().isKosherProductionItem();
-   }
+	public int getHighestDealPercentage(String skuCode) {
+		return getPriceCalculator(skuCode).getHighestDealPercentage();
+	}
 
-   public int getKosherPriority() throws FDResourceException {
-       return getPriceCalculator().getKosherPriority();
-   }
-   
-   
-   /* end of the price calculator calls */
-   
-       
-   
+	public String getTieredPrice(double savingsPercentage) {
+		return getPriceCalculator().getTieredPrice(savingsPercentage);
+	}
+
+	public double getPrice(double savingsPercentage) {
+		return getPriceCalculator().getPrice(savingsPercentage);
+	}
+
+	public String getPriceFormatted(double savingsPercentage) {
+		return getPriceCalculator().getPriceFormatted(savingsPercentage);
+	}
+
+	public String getWasPriceFormatted(double savingsPercentage) {
+		return getPriceCalculator().getWasPriceFormatted(savingsPercentage);
+	}
+
+	public String getAboutPriceFormatted(double savingsPercentage) {
+		return getPriceCalculator().getAboutPriceFormatted(savingsPercentage);
+	}
+
+	public String getSizeDescription() throws FDResourceException {
+		return getPriceCalculator().getSizeDescription();
+	}
+
+	public String getKosherSymbol() throws FDResourceException {
+		return getPriceCalculator().getKosherSymbol();
+	}
+
+	public String getKosherType() throws FDResourceException {
+		return getPriceCalculator().getKosherType();
+	}
+
+	public boolean isKosherProductionItem() throws FDResourceException {
+		return getPriceCalculator().isKosherProductionItem();
+	}
+
+	public int getKosherPriority() throws FDResourceException {
+		return getPriceCalculator().getKosherPriority();
+	}
+
+	/* end of the price calculator calls */
+
 	@Override
 	public YmalSet getActiveYmalSet() {
 		return this.prodModel.getActiveYmalSet();
@@ -218,10 +211,10 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	/**
-	 *  Return the auto-configuration for the product, if applicable.
-	 *  
-	 *  @return the configuration describing the auto-configuration of the
-	 *          product, or null if the product can not be auto-configured.
+	 * Return the auto-configuration for the product, if applicable.
+	 * 
+	 * @return the configuration describing the auto-configuration of the product,
+	 *         or null if the product can not be auto-configured.
 	 */
 	public FDConfigurableI getAutoconfiguration() {
 		FDConfigurableI ret = null;
@@ -230,13 +223,15 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 			try {
 				boolean soldBySalesUnits = isSoldBySalesUnits();
 				if (sku.getProduct().isAutoconfigurable(soldBySalesUnits)) {
-					ret = sku.getProduct().getAutoconfiguration(soldBySalesUnits, getQuantityMinimum());
+					ret = sku.getProduct().getAutoconfiguration(soldBySalesUnits,
+							getQuantityMinimum());
 				}
-			} catch(Exception exc) {}
+			} catch (Exception exc) {
+			}
 		}
 		return ret;
 	}
-	
+
 	@Override
 	public DayOfWeekSet getBlockedDays() {
 		return this.prodModel.getBlockedDays();
@@ -258,7 +253,8 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	}
 
 	@Override
-	public Set getCommonNutritionInfo(ErpNutritionInfoType type) throws FDResourceException {
+	public Set getCommonNutritionInfo(ErpNutritionInfoType type)
+			throws FDResourceException {
 		return this.prodModel.getCommonNutritionInfo(type);
 	}
 
@@ -295,29 +291,26 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public int getDealPercentage() {
 		return getDealPercentage(null);
 	}
-	
 
 	/**
 	 * 
-	 *  Returns the preferred SKU for a product if defined.
-	 *  Otherwise returns the minimum price SKU among the available SKUs for
-	 *  the product. If the product only has one available SKU, that will be
-	 *  returned.
-	 *  
-	 *  @return the preferred SKU for the product, or the minimally priced
-	 *          SKU that is available. if no SKUs are available, returns null.
+	 * Returns the preferred SKU for a product if defined. Otherwise returns the
+	 * minimum price SKU among the available SKUs for the product. If the product
+	 * only has one available SKU, that will be returned.
+	 * 
+	 * @return the preferred SKU for the product, or the minimally priced SKU that
+	 *         is available. if no SKUs are available, returns null.
 	 */
 	public SkuModel getDefaultSku() {
-	    SkuModel defaultSku = this.prodModel.getDefaultSku(pricingCtx);
-	    return defaultSku != null ? new SkuModelPricingAdapter(defaultSku, pricingCtx) : null;
+		SkuModel defaultSku = this.prodModel.getDefaultSku(pricingCtx);
+		return defaultSku != null ? new SkuModelPricingAdapter(defaultSku,
+				pricingCtx) : null;
 	}
-	
-	
+
 	@Override
 	public SkuModel getDefaultSku(PricingContext ctx) {
-	    return prodModel.getDefaultSku(ctx);
+		return prodModel.getDefaultSku(ctx);
 	}
-	
 
 	@Override
 	public DepartmentModel getDepartment() {
@@ -328,7 +321,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public CategoryModel getCategory() {
 		return prodModel.getCategory();
 	}
-	
+
 	@Override
 	public Image getDescriptiveImage() {
 		return this.prodModel.getDescriptiveImage();
@@ -408,7 +401,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return getHighestDealPercentage(null);
 	}
 
-
 	@Override
 	public List<CategoryModel> getHowtoCookitFolders() {
 		return this.prodModel.getHowtoCookitFolders();
@@ -418,8 +410,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public String getKeywords() {
 		return this.prodModel.getKeywords();
 	}
-
-
 
 	@Override
 	public EnumLayoutType getLayout() {
@@ -458,10 +448,9 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 
 	@Override
 	public SkuModel getPreferredSku() {
-		return new SkuModelPricingAdapter(this.prodModel.getPreferredSku(), pricingCtx);
+		return new SkuModelPricingAdapter(this.prodModel.getPreferredSku(),
+				pricingCtx);
 	}
-
-
 
 	@Override
 	public String getPrimaryBrandName() {
@@ -643,7 +632,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return this.prodModel.getServingSuggestion();
 	}
 
-
 	@Override
 	public SkuModel getSku(int idx) {
 		return (SkuModel) getSkus().get(idx);
@@ -652,7 +640,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	@Override
 	public SkuModel getSku(String skuCode) {
 		List<SkuModel> skus = getSkus();
-		for ( SkuModel s : skus ) {
+		for (SkuModel s : skus) {
 			if (s.getSkuCode().equalsIgnoreCase(skuCode)) {
 				return s;
 			}
@@ -665,18 +653,20 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return this.prodModel.getSkuCodes();
 	}
 
-	/** Getter for property skus.
+	/**
+	 * Getter for property skus.
+	 * 
 	 * @return Value of property skus.
 	 */
 	public List<SkuModel> getSkus() {
 		List<SkuModel> skuModels = prodModel.getSkus();
 		List<SkuModel> skuAdapters = new ArrayList<SkuModel>(skuModels.size());
-		for(Iterator<SkuModel> it = skuModels.iterator(); it.hasNext();){
+		for (Iterator<SkuModel> it = skuModels.iterator(); it.hasNext();) {
 			SkuModel sku = it.next();
 			skuAdapters.add(new SkuModelPricingAdapter(sku, pricingCtx));
 		}
 		return skuAdapters;
-		
+
 	}
 
 	@Override
@@ -703,7 +693,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return getTieredDealPercentage(null);
 	}
 
-
 	@Override
 	public DomainValue getUnitOfMeasure() {
 		return this.prodModel.getUnitOfMeasure();
@@ -723,7 +712,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public List<Domain> getVariationOptions() {
 		return this.prodModel.getVariationOptions();
 	}
-
 
 	@Override
 	public List<ProductModel> getWeRecommendImage() {
@@ -804,7 +792,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public DomainValue getWineRatingValue3() {
 		return this.prodModel.getWineRatingValue3();
 	}
-	
+
 	@Override
 	public boolean hasWineOtherRatings() {
 		return this.prodModel.hasWineOtherRatings();
@@ -872,7 +860,7 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 
 	@Override
 	public Image getZoomImage() {
-		//Fix for APPDEV-847
+		// Fix for APPDEV-847
 		return this.prodModel.getZoomImage();
 	}
 
@@ -935,32 +923,32 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public boolean isNew() {
 		return this.prodModel.isNew();
 	}
-	
+
 	@Override
 	public double getAge() {
 		return this.prodModel.getAge();
 	}
-	
+
 	@Override
 	public double getNewAge() {
 		return this.prodModel.getNewAge();
 	}
-	
+
 	@Override
 	public Date getNewDate() {
 		return this.prodModel.getNewDate();
 	}
-	
+
 	@Override
 	public boolean isBackInStock() {
 		return this.prodModel.isBackInStock();
 	}
-	
+
 	@Override
 	public double getBackInStockAge() {
 		return this.prodModel.getBackInStockAge();
 	}
-	
+
 	@Override
 	public Date getBackInStockDate() {
 		return this.prodModel.getBackInStockDate();
@@ -1021,7 +1009,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 		return this.prodModel.getEditorialTitle();
 	}
 
-	
 	@Override
 	public Collection<ContentKey> getParentKeys() {
 		return this.prodModel.getParentKeys();
@@ -1066,7 +1053,6 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public ContentNodeModel getParentNode() {
 		return this.prodModel.getParentNode();
 	}
-
 
 	@Override
 	public boolean hasParentWithName(String[] contentNames) {
@@ -1121,118 +1107,141 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable, C
 	public Object clone() {
 		return prodModel.clone();
 	}
-	
+
 	/**
 	 * Very conveniently returns contentName.
 	 */
 	public String toString() {
 		return this.getContentName();
 	}
-	
+
 	public PricingContext getPricingContext() {
 		return this.pricingCtx;
 	}
-	
-    @Override
-    public String getDefaultSkuCode() {
-	    SkuModel sku = getDefaultSku();
-	    return sku != null ? sku.getSkuCode() : null;
-    }
-    
-    @Override
-    public Html getFddefSource() {
-        return prodModel.getFddefSource();
-    }
-    @Override
-    public String getFreshnessGuaranteed() throws FDResourceException {
-        return prodModel.getFreshnessGuaranteed();
-    }
-    @Override
-    public MediaI getMedia(String name) {
-        return prodModel.getMedia(name);
-    }
-    @Override
-    public String getPriceFormatted(double savingsPercentage, String skuCode) {
-        return prodModel.getPriceFormatted(savingsPercentage, skuCode);
-    }
-    @Override
-    public ProductModel getPrimaryProductModel() {
-        return prodModel.getPrimaryProductModel();
-    }
-    @Override
-    public List<SkuModel> getPrimarySkus() {
-        return prodModel.getPrimarySkus();
-    }
-    @Override
-    public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
-        return prodModel.getProductLayout(defValue);
-    }
-    @Override
-    public String getProductRating(String skuCode) throws FDResourceException {
-        return prodModel.getProductRating(skuCode);
-    }
-    @Override
-    public int getTemplateType(int defaultValue) {
-        return prodModel.getTemplateType(defaultValue);
-    }
-    @Override
-    public ContentKey getWineCountryKey() {
-        return prodModel.getWineCountryKey();
-    }
-    @Override
-    public boolean isHasPartiallyFrozen() {
-        return prodModel.isHasPartiallyFrozen();
-    }
-    @Override
-    public boolean isHasSalesUnitDescription() {
-        return prodModel.isHasSalesUnitDescription();
-    }
-    @Override
-    public boolean isInPrimaryHome() {
-        return prodModel.isInPrimaryHome();
-    }
-    @Override
-    public AttributeDefI getAttributeDef(String name) {
-        return prodModel.getAttributeDef(name);
-    }
-    @Override
-    public Object getCmsAttributeValue(String name) {
-        return prodModel.getCmsAttributeValue(name);
-    }
-    @Override
-    public Object getNotInheritedAttributeValue(String name) {
-        return prodModel.getNotInheritedAttributeValue(name);
-    }
-    @Override
-    public String getParentId() {
-        return prodModel.getParentId();
-    }
-    @Override
-    public Image getSideNavImage() {
-        return prodModel.getSideNavImage();
-    }
-    
-    @Override
-    public boolean isFullyAvailable() {
-        return prodModel.isFullyAvailable();
-    }
-    
-    @Override
-    public boolean isTemporaryUnavailableOrAvailable() {
-        return prodModel.isTemporaryUnavailableOrAvailable();
-    }
 
-    public ProductModel getRealProduct() {
-    	return prodModel;
-    }
-    
-    @Override
-    public Set<DomainValue> getWineDomainValues() {
-    	return prodModel.getWineDomainValues();
-    }
+	@Override
+	public String getDefaultSkuCode() {
+		SkuModel sku = getDefaultSku();
+		return sku != null ? sku.getSkuCode() : null;
+	}
 
-    @Override
+	@Override
+	public Html getFddefSource() {
+		return prodModel.getFddefSource();
+	}
+
+	@Override
+	public String getFreshnessGuaranteed() throws FDResourceException {
+		return prodModel.getFreshnessGuaranteed();
+	}
+
+	@Override
+	public MediaI getMedia(String name) {
+		return prodModel.getMedia(name);
+	}
+
+	@Override
+	public String getPriceFormatted(double savingsPercentage, String skuCode) {
+		return prodModel.getPriceFormatted(savingsPercentage, skuCode);
+	}
+
+	@Override
+	public ProductModel getPrimaryProductModel() {
+		return prodModel.getPrimaryProductModel();
+	}
+
+	@Override
+	public List<SkuModel> getPrimarySkus() {
+		return prodModel.getPrimarySkus();
+	}
+
+	@Override
+	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
+		return prodModel.getProductLayout(defValue);
+	}
+
+	@Override
+	public String getProductRating(String skuCode) throws FDResourceException {
+		return prodModel.getProductRating(skuCode);
+	}
+
+	@Override
+	public int getTemplateType(int defaultValue) {
+		return prodModel.getTemplateType(defaultValue);
+	}
+
+	@Override
+	public ContentKey getWineCountryKey() {
+		return prodModel.getWineCountryKey();
+	}
+
+	@Override
+	public boolean isHasPartiallyFrozen() {
+		return prodModel.isHasPartiallyFrozen();
+	}
+
+	@Override
+	public boolean isHasSalesUnitDescription() {
+		return prodModel.isHasSalesUnitDescription();
+	}
+
+	@Override
+	public boolean isInPrimaryHome() {
+		return prodModel.isInPrimaryHome();
+	}
+
+	@Override
+	public AttributeDefI getAttributeDef(String name) {
+		return prodModel.getAttributeDef(name);
+	}
+
+	@Override
+	public Object getCmsAttributeValue(String name) {
+		return prodModel.getCmsAttributeValue(name);
+	}
+
+	@Override
+	public Object getNotInheritedAttributeValue(String name) {
+		return prodModel.getNotInheritedAttributeValue(name);
+	}
+
+	@Override
+	public String getParentId() {
+		return prodModel.getParentId();
+	}
+
+	@Override
+	public Image getSideNavImage() {
+		return prodModel.getSideNavImage();
+	}
+
+	@Override
+	public boolean isFullyAvailable() {
+		return prodModel.isFullyAvailable();
+	}
+
+	@Override
+	public boolean isTemporaryUnavailableOrAvailable() {
+		return prodModel.isTemporaryUnavailableOrAvailable();
+	}
+
+	public ProductModel getRealProduct() {
+		return prodModel;
+	}
+
+	@Override
+	public Set<DomainValue> getWineDomainValues() {
+		return prodModel.getWineDomainValues();
+	}
+
+	@Override
 	public boolean isHideWineRatingPricing() {
 		return prodModel.isHideWineRatingPricing();
+	}
+
+	@Override
+	public boolean isShowWineRatings() {
+		// TODO Auto-generated method stub
+		return prodModel.isShowWineRatings();
 	}
 }

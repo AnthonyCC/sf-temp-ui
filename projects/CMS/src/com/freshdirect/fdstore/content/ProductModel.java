@@ -805,4 +805,10 @@ public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSourc
 	public Set<DomainValue> getWineDomainValues();
 
 	public boolean isHideWineRatingPricing();
+	
+	/**
+	 * Should show wine ratings
+	 * @return
+	 */
+	public boolean isShowWineRatings();
 }

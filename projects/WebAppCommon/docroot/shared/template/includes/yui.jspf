@@ -40,7 +40,7 @@
 <script type="text/javascript" src="/assets/yui/json/json.js"></script>
 <script type="text/javascript" src="/assets/yui/datasource/datasource.js"></script>
 <%
-			if (request.getAttribute("__yui_load_selector__") != null) {
+			if (request.getAttribute("__yui_load_carousel__") != null || request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
 %><script type="text/javascript" src="/assets/yui/selector/selector.js"></script>
 <%
@@ -93,7 +93,7 @@
 <script type="text/javascript" src="/assets/yui/json/json-min.js"></script>
 <script type="text/javascript" src="/assets/yui/datasource/datasource-min.js"></script>
 <%
-			if (request.getAttribute("__yui_load_selector__") != null) {
+			if (request.getAttribute("__yui_load_carousel__") != null || request.getAttribute("__yui_load_selector__") != null) {
 				/* Include YUI Selector API */
 %><script type="text/javascript" src="/assets/yui/selector/selector-min.js"></script>
 <%

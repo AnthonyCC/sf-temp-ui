@@ -21,6 +21,12 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	private String bottomHeaderClass = null;
 	private String hideContainer = null;
 
+	/**
+	 * Parent container to update with max. value
+	 */
+	private String parentId;
+	private int offset = 0;
+	
 	public int getNumItems() {
 		return numItems;
 	}
@@ -52,6 +58,17 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	public void setCarouselId(String carouselId) {
 		this.carouselId = carouselId;
 	}
+
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+	
+	public void setOffset(int offset) {
+		this.offset = offset;
+	}
+
+
 
 	public String getHideContainer() {
 		return hideContainer;
@@ -87,8 +104,6 @@ public class CarouselTag extends ContentNodeIteratorTag {
 		Integer index = (Integer) pageContext.getAttribute(itemIndexVariableName);
 		println("<li style=\"width:" + ((width - 20) / numItems) + "px;" + (height > 0 ? "height:" + height + "px;" : "") + "\"" +
 				((index % numItems) == 0 ? "class=\"fd-carousel-first-item\"" : "") + ">");
-//		println("<li style=\"width:"+((width-20)/numItems)+"px;height:"+height+"px\">");
-//		println("<li style=\"width:"+((width-20)/numItems)+"px\">");
 	}
 
 	@Override
@@ -99,32 +114,66 @@ public class CarouselTag extends ContentNodeIteratorTag {
 	@Override
 	protected void doLast() {
 		println("</ol></div>");
+
+
 		StringBuilder carouselCall = new StringBuilder();
+
+		// param #1 ID
 		carouselCall.append("fd_carousel(\"carousel-");
 		carouselCall.append(carouselId);
 		carouselCall.append("\", ");
+
+		// param #2 numItems
 		carouselCall.append(numItems);
 		carouselCall.append(", \"");
+
+		// param #3 hideContainer
 		carouselCall.append(hideContainer != null && hideContainer.trim().length() > 0 ? hideContainer.trim() : "@");
 		carouselCall.append("\"");
+		
+		// param #4 text
 		if (bottomHeader != null) {
 			carouselCall.append(", \"");
 			carouselCall.append(StringEscapeUtils.escapeJavaScript(bottomHeader));
 			carouselCall.append("\"");
+		} else {
+			carouselCall.append(", null");
 		}
+
+		// param #5 cName
 		if (bottomHeaderClass != null) {
 			if (bottomHeader == null)
 				carouselCall.append(", \"\"");
 			carouselCall.append(", \"");
 			carouselCall.append(StringEscapeUtils.escapeJavaScript(bottomHeaderClass));
 			carouselCall.append("\"");
+		} else {
+			carouselCall.append(", null");
 		}
-		carouselCall.append(");");
-		println("<script>if (window.fd_carousel === undefined) { " +
-				"YAHOO.util.Get.css('/assets/css/carousel.css'); " +
-				"YAHOO.util.Get.script('/assets/javascript/carousel.js', " +
-				"{ onSuccess: function() { " + carouselCall + " } }) }" +
-				" else { " + carouselCall + " }</script>");
+
+		// param #6 parentId
+		carouselCall.append(", \"");
+		carouselCall.append( parentId != null ? StringEscapeUtils.escapeJavaScript(parentId) : "null" );
+		carouselCall.append("\"");
+
+		// param #7 offset in pixels
+		carouselCall.append(", ");
+		carouselCall.append( offset > 0 ? offset : "0" );
+		// carouselCall.append("");
+
+
+		carouselCall.append(");\n");
+		println("<script>\n" + 
+				"if (window.fd_carousel === undefined) {\n" +
+				"  YAHOO.util.Get.css('/assets/css/carousel.css');\n" +
+				"  YAHOO.util.Get.script('/assets/javascript/carousel.js', {\n" +
+				"    onSuccess: function() {\n" +
+				carouselCall +
+				"    }\n" +
+				"  });\n" +
+				"} else {\n" +
+				carouselCall +
+				"}\n</script>\n");
 	}
 
 	public static class TagEI extends TagExtraInfo {

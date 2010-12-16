@@ -12,10 +12,10 @@ public class JSHelper {
 	 * 
 	 * @return "['a', 'b', 'c', ...]"
 	 */
-	public static String listToJSArray(List aList) {
-		StringBuffer buf = new StringBuffer();
+	public static String listToJSArray(List<?> aList) {
+		StringBuilder buf = new StringBuilder();
 		buf.append("[");
-		for (Iterator it=aList.iterator(); it.hasNext();) {
+		for (Iterator<?> it=aList.iterator(); it.hasNext();) {
 			String aString = it.next().toString().replaceAll("'","\\'");
 			buf.append("'"+aString+"'");
 			if (it.hasNext())

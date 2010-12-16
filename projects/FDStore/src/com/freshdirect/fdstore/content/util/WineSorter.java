@@ -168,13 +168,8 @@ public class WineSorter implements Serializable {
 			}
 			switch (type.criterium) {
 				case BY_RATING:
-					if (forceNoGrouping) {
-						comparator = new RatingComparator(new PriceComparator(false));
-						grouping = false;
-					} else {
-						comparator = new PriceComparator(false);
-						grouping = true;
-					}
+					grouping = !forceNoGrouping;
+					comparator = new RatingComparator(new PriceComparator(false));
 					break;
 				case ALPHABETICAL:
 					comparator = ContentNodeModel.FULL_NAME_WITH_ID_COMPARATOR;
@@ -208,6 +203,8 @@ public class WineSorter implements Serializable {
 					throw new FDRuntimeException(e);
 				}
 			}
+			
+			
 			groups.addAll(map.values());
 			Collections.sort(groups);
 			Collections.reverse(groups);
