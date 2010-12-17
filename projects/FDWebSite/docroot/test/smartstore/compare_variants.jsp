@@ -299,7 +299,7 @@ if (useLoggedIn && user != null) {
 	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
 	    	si.setCurrentNode(source);
 	} else if ("recentlyAdded".equals(cartAlgorithm)) {
-		source = YmalUtil.resolveYmalSource(user, null, request);
+		source = YmalUtil.resolveYmalSource(user, request);
 	    if (!EnumSiteFeature.FEATURED_ITEMS.equals(siteFeature) 
 	    		&& !siteFeature.getName().equals("PROD_GRP_POPULAR")
 	    		&& !siteFeature.getName().equals("PROD_GRP_YF"))
