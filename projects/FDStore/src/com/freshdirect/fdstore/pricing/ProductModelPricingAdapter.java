@@ -35,6 +35,7 @@ import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
+import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 public class ProductModelPricingAdapter implements ProductModel, Serializable,
@@ -1104,6 +1105,21 @@ public class ProductModelPricingAdapter implements ProductModel, Serializable,
 		this.prodModel.resetActiveYmalSetSession();
 	}
 
+	@Override
+	public List<YmalSet> getYmalSets() {
+		return this.prodModel.getYmalSets();
+	}
+	
+	@Override
+	public boolean hasActiveYmalSets() {
+		return this.prodModel.hasActiveYmalSets();
+	}
+	
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return this.prodModel.getParentYmalSetSource();
+	}
+	
 	public Object clone() {
 		return prodModel.clone();
 	}

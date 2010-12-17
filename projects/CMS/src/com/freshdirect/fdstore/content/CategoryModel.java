@@ -28,7 +28,7 @@ import com.freshdirect.framework.conf.FDRegistry;
 import com.freshdirect.framework.util.BalkingExpiringReference;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
-public class CategoryModel extends ProductContainer {
+public class CategoryModel extends ProductContainer implements YmalSetSource {
 	
 	private static final long serialVersionUID = 5787890004203680537L;
 
@@ -718,5 +718,32 @@ public class CategoryModel extends ProductContainer {
 	
 	public static synchronized void forceSmartCategoryRecalculation() {
 	    globalSmartCategoryVersion ++;
+	}
+
+
+	/**
+	 *  The list of YmalSet objects related to this recipe.
+	 */
+	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
+
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasActiveYmalSets() {
+		for (YmalSet ymal : getYmalSets()) {
+			if (ymal.isActive())
+				return true;
+		}
+		return false;
+	}
+
+	@Override
+	public List<YmalSet> getYmalSets() {
+		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
+		return Collections.unmodifiableList(ymalSets);
 	}
 }

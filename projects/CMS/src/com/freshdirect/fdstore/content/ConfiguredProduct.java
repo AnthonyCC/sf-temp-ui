@@ -25,7 +25,7 @@ import com.freshdirect.fdstore.ZonePriceListing;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateUtil;
 
-public class ConfiguredProduct extends ProxyProduct {
+public class ConfiguredProduct extends ProxyProduct implements YmalSetSource {
 
 	private final List<ProductModel> alsoSoldAs = new ArrayList<ProductModel>();
 
@@ -411,6 +411,18 @@ public class ConfiguredProduct extends ProxyProduct {
         return true;
     }
 
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return getProduct().getParentYmalSetSource();
+	}
 
+	@Override
+	public List<YmalSet> getYmalSets() {
+		return getProduct().getYmalSets();
+	}
 
+	@Override
+	public boolean hasActiveYmalSets() {
+		return getProduct().hasActiveYmalSets();
+	}
 }

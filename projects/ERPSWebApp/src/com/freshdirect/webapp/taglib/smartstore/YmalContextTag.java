@@ -25,7 +25,7 @@ public class YmalContextTag extends AbstractGetterTag implements SessionName {
 	protected Object getResult() throws Exception {
 		return YmalUtil.resolveYmalSource(
 				(FDUserI) pageContext.getSession().getAttribute(USER),
-				excludedSkus, pageContext.getRequest());
+				pageContext.getRequest());
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

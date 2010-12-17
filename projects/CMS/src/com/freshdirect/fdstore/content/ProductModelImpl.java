@@ -69,6 +69,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	private static void resetActiveYmalSets() {
 		activeYmalSets.get().clear();
 	}
+
 	
 	private List<SkuModel> skuModels = new ArrayList<SkuModel>();
 	
@@ -120,7 +121,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	/**
 	 *  The list of YmalSet objects related to this recipe.
 	 */
-	private final List<ContentNodeModel> ymalSets = new ArrayList<ContentNodeModel>();
+	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
 	
 	/**
 	 * Gift Card changes
@@ -864,11 +865,38 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	 *  
 	 *  @return the list of all YmalSet objects related to this recipe.
 	 */
-	private List<ContentNodeModel> getYmalSets() {
+	@Override
+	public List<YmalSet> getYmalSets() {
 		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
 		return Collections.unmodifiableList(ymalSets);
 	}
 
+	@Override
+	public boolean hasActiveYmalSets() {
+		for (YmalSet ymal : getYmalSets()) {
+			if (ymal.isActive())
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		// DEFAULT BEHAVIOUR
+		ContentNodeModel p = this.getParentNode();
+		while (p instanceof CategoryModel) {
+			CategoryModel aCat = (CategoryModel) p;
+			
+			if (aCat.hasActiveYmalSets())
+				return aCat;
+
+			// climb up
+			p = p.getParentNode();
+		}
+
+		return null;
+	}
+	
 	/**
 	 *  Return the active YmalSet, if any.
 	 *  
@@ -878,20 +906,10 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	public YmalSet getActiveYmalSet() {
 		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
 		if (current == null) {
-			List<ContentNodeModel> ymalSets = getYmalSets();
-			List<YmalSet> activeSets = new ArrayList<YmalSet>(ymalSets.size());
-			for (Iterator<ContentNodeModel> it = ymalSets.iterator(); it.hasNext(); ) {
-				YmalSet     ymalSet = (YmalSet) it.next();
-				
-				if (ymalSet.isActive()) {
-					activeSets.add(ymalSet);
-				}
+			YmalSet newSet = YmalSetSourceUtil.findActiveYmalSet(this);
+			if (newSet != null) {
+				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
 			}
-		
-			if (activeSets.size() == 0)
-				return null;
-			YmalSet newSet = activeSets.get(nextInt(activeSets.size()));
-			setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
 			return newSet;
 		}
 		return current;

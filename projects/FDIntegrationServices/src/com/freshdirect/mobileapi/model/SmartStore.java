@@ -113,7 +113,7 @@ public class SmartStore {
                 final SessionInput input = new SessionInput(user.getFDSessionUser());
                 // FDStoreRecommender.initYmalSource(input, user.getFDSessionUser(), pageContext.getRequest());
                 // input.setCurrentNode(input.getYmalSource());
-                input.setYmalSource(YmalUtil.resolveYmalSource(user.getFDSessionUser(), null, pageContext.getRequest()));
+                input.setYmalSource(YmalUtil.resolveYmalSource(user.getFDSessionUser(), pageContext.getRequest()));
                 FDCartLineModel selectedCartLine = YmalUtil.getSelectedCartLine(user.getFDSessionUser());
                 if (selectedCartLine != null) {
                 	input.setCurrentNode(selectedCartLine.lookupProduct());

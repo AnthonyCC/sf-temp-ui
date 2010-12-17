@@ -8,9 +8,11 @@ import org.mockejb.interceptor.AspectSystem;
 
 import com.freshdirect.TestUtils;
 import com.freshdirect.fdstore.aspects.FDFactoryProductInfoAspect;
+import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ContentNodeModel;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.fdstore.content.YmalSet;
 import com.freshdirect.fdstore.util.EnumSiteFeature;
 import com.freshdirect.smartstore.RecommendationService;
 import com.freshdirect.smartstore.RecommendationServiceConfig;
@@ -60,10 +62,10 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setYmalSource(product);
         
         {        
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 4, nodes.size());
-            Set nodeNames = TestUtils.convertToStringList(nodes);
+            Set<String> nodeNames = TestUtils.convertToStringList(nodes);
             contains(nodeNames, "prod_2");
             contains(nodeNames, "prod_3");
             contains(nodeNames, "prod_4");
@@ -75,7 +77,7 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
             input.setCurrentNode(product);
             input.setYmalSource(product);
 
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 0, nodes.size());
         }
@@ -84,10 +86,10 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
             input.setCurrentNode(product);
             input.setYmalSource(product);
 
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 2, nodes.size());
-            Set nodeNames = TestUtils.convertToStringList(nodes);
+            Set<String> nodeNames = TestUtils.convertToStringList(nodes);
             contains(nodeNames, "prod_4");
             contains(nodeNames, "prod_5");
         }
@@ -98,10 +100,10 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setCurrentNode(product);
         input.setYmalSource(product);
         {        
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 1, nodes.size());
-            Set nodeNames = TestUtils.convertToStringList(nodes);
+            Set<String> nodeNames = TestUtils.convertToStringList(nodes);
             contains(nodeNames, "prod_1");
         }
     }
@@ -130,10 +132,10 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         input.setYmalSource(product);
         
         {        
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
-            Set nodeNames = TestUtils.convertToStringList(nodes);
+            Set<String> nodeNames = TestUtils.convertToStringList(nodes);
             // ymal_4/ymals : <Product ref="prod_3"/>
             contains(nodeNames, "prod_4");
             // script recommender 
@@ -153,11 +155,11 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
         
         // now, test with randomization
         input.setNoShuffle(false);
-        Set firstNames = new HashSet();
-        Set lastNames = new HashSet();
+        Set<String> firstNames = new HashSet<String>();
+        Set<String> lastNames = new HashSet<String>();
         
         for (int i=0;i<10;i++) {
-            List nodes = getSmartYmalService().recommendNodes(input);
+            List<ContentNodeModel> nodes = getSmartYmalService().recommendNodes(input);
             assertNotNull("nodes", nodes);
             assertEquals("node size", 5, nodes.size());
             firstNames.add(getId(nodes, 0));
@@ -168,16 +170,64 @@ public class SmartYMALRecommendationServiceTest extends RecommendationServiceTes
     }
     
     
-    private void contains(Set nodeNames, String name) {
+    private void contains(Set<String> nodeNames, String name) {
         assertTrue("contains "+name + " ("+nodeNames+')', nodeNames.contains(name));
     }
-    private void atPos(List nodes, int pos, String name) {
+    private void atPos(List<ContentNodeModel> nodes, int pos, String name) {
         assertEquals("node at "+pos+" is "+name, name, getId(nodes, pos));
     }
 
-    private String getId(List nodes, int pos) {
+    private String getId(List<ContentNodeModel> nodes, int pos) {
         return ((ContentNodeModel) nodes.get(pos)).getContentKey().getId();
     }
     
     
+    public void testInheritance() {
+    	// Case #1 - no subsequent ymal set source
+    	{
+	    	ProductModel prd = (ProductModel) ContentFactory.getInstance().getContentNode("prodi_1");
+	
+	    	assertNotNull(prd);
+	    	
+	    	assertNotNull(prd.getYmalSets());
+	    	assertEquals(1, prd.getYmalSets().size());
+	    	assertTrue(prd.hasActiveYmalSets());
+	    	
+	    	assertNull(prd.getParentYmalSetSource());
+    	}
+
+
+    	// Case #2 - subsequent ymal set source exists and valid
+    	{
+	    	ProductModel prd = (ProductModel) ContentFactory.getInstance().getContentNode("prodi_2");
+	
+	    	assertNotNull(prd);
+	    	
+	    	assertNotNull(prd.getYmalSets());
+	    	assertEquals(1, prd.getYmalSets().size());
+	    	assertTrue(prd.hasActiveYmalSets());
+	    	
+	    	assertNotNull(prd.getParentYmalSetSource());
+    	}
+
+
+    	// Case #3 - subsequent ymal set exists but expired
+    	{
+	    	ProductModel prd = (ProductModel) ContentFactory.getInstance().getContentNode("prodi_3");
+	
+	    	assertNotNull(prd);
+	    	
+	    	// ymal sets of 'cati_3' won't be returned because they're invalid. See tests below
+	    	assertNull(prd.getParentYmalSetSource());
+	    	
+	    	// test ymal set of 'cati_3' itself
+	    	CategoryModel cat = (CategoryModel) ContentFactory.getInstance().getContentNode("cati_3");
+	    	assertNotNull(cat);
+	    	assertNotNull(cat.getYmalSets());
+
+	    	assertEquals(1, cat.getYmalSets().size());
+	    	assertFalse(cat.hasActiveYmalSets());
+	    	assertFalse(cat.getYmalSets().get(0).isActive());
+    	}
+    }
 }

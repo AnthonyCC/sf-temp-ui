@@ -34,6 +34,7 @@ import com.freshdirect.fdstore.content.PriceCalculator;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
 import com.freshdirect.fdstore.content.YmalSet;
+import com.freshdirect.fdstore.content.YmalSetSource;
 import com.freshdirect.framework.util.DayOfWeekSet;
 
 /**
@@ -1804,7 +1805,7 @@ public class MockProductModel extends MockContentNodeModel implements
 
 	public MockProductModel addSku(SkuModel sku) {
 		if (skuModels == null) {
-			skuModels = new ArrayList();
+			skuModels = new ArrayList<SkuModel>();
 		}
 		skuModels.add(sku);
 		return this;
@@ -1812,7 +1813,7 @@ public class MockProductModel extends MockContentNodeModel implements
 
 	public MockProductModel addBrand(BrandModel brand) {
 		if (brands == null) {
-			brands = new ArrayList();
+			brands = new ArrayList<BrandModel>();
 		}
 		brands.add(brand);
 		return this;
@@ -1952,8 +1953,22 @@ public class MockProductModel extends MockContentNodeModel implements
 	}
 
 	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return null;
+	}
+
+	@Override
+	public List<YmalSet> getYmalSets() {
+		return null;
+	}
+
+	@Override
+	public boolean hasActiveYmalSets() {
+		return false;
+	}
+
+	@Override
 	public boolean isShowWineRatings() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 }

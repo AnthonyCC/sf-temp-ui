@@ -133,7 +133,7 @@ public class YMALRecommendationsTag extends RecommendationsTag implements Sessio
                 inp.setCurrentNode(source);
             }
         } else {
-            inp.setYmalSource(YmalUtil.resolveYmalSource(user, null, request));
+            inp.setYmalSource(YmalUtil.resolveYmalSource(user, request));
         }
 
         if (inp.getCurrentNode() == null) {

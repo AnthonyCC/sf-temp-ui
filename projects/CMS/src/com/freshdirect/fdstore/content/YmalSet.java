@@ -118,8 +118,8 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	 *  Tell if auto-configurable products in this ymal set should be
 	 *  auto-configured and presented as configured products.
 	 *  
-	 *  @return true of auto-confiugrable products should be presented
-	 *          in a transational manner, false otherwise
+	 *  @return true of auto-configurable products should be presented
+	 *          in a transactional manner, false otherwise
 	 */
 	public boolean isTransactional() {
 		return getAttribute("transactional", false);

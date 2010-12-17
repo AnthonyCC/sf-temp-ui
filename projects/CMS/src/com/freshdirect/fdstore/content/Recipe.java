@@ -19,7 +19,7 @@ import com.freshdirect.fdstore.FDStoreProperties;
 import com.freshdirect.fdstore.attributes.FDAttributeFactory;
 import com.freshdirect.framework.util.DateRange;
 
-public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource {
+public class Recipe extends ContentNodeModelImpl implements ContentStatusI, YmalSource, YmalSetSource {
 	
 	private static final long serialVersionUID = 1726859705342564086L;
 
@@ -225,11 +225,26 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	 *  
 	 *  @return the list of all YmalSet objects related to this recipe.
 	 */
-	private List<YmalSet> getYmalSets() {
+	@Override
+	public List<YmalSet> getYmalSets() {
 		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
 		return Collections.unmodifiableList(ymalSets);
 	}
 	
+	@Override
+	public boolean hasActiveYmalSets() {
+		for (YmalSet ymal : getYmalSets()) {
+			if (ymal.isActive())
+				return true;
+		}
+		return false;
+	}
+	
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return null;
+	}
+
 	/**
 	 *  Return the active YmalSet, if any.
 	 *  
@@ -239,19 +254,11 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	public YmalSet getActiveYmalSet() {
 		YmalSet current = getCurrentActiveYmalSet(this.getContentKey().getId());
 		if (current == null) {
-			List<YmalSet> ymalSets = getYmalSets();
-			List<YmalSet> activeSets = new ArrayList<YmalSet>(ymalSets.size());
-			for ( YmalSet ymalSet : ymalSets ) {
-				if (ymalSet.isActive()) {
-					activeSets.add(ymalSet);
-				}
+			YmalSet newSet = YmalSetSourceUtil.findActiveYmalSet(this);
+			if (newSet != null) {
+				setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
 			}
-		
-			if (activeSets.size() == 0)
-				return null;
 			
-			YmalSet newSet = activeSets.get(nextInt(activeSets.size()));
-			setCurrentActiveYmalSet(this.getContentKey().getId(), newSet);
 			return newSet;
 		}
 		return current;

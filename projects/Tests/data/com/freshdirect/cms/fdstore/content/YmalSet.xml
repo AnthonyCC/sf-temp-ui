@@ -11,6 +11,11 @@
 		<categories>
 			<Category ref="cat_1"/>
 			<Category ref="cat_2"/>
+
+			<!-- Categories for ymal set inheritance test -->
+			<Category ref="cati_1"/>
+			<Category ref="cati_2"/>
+			<Category ref="cati_3"/>
 		</categories>
 	</Department>
 
@@ -38,8 +43,66 @@
 		<FULL_NAME>Category 2</FULL_NAME>
 	</Category>
 
-	
-	<!-- category 1  -->
+
+
+	<!-- Categories for ymal set inheritance test -->
+	<Category id="cati_1">
+		<FULL_NAME>Category cati_1</FULL_NAME>
+		<subcategories>
+			<Category ref="cati_11"/>
+		</subcategories>
+	</Category>
+
+
+	<Category id="cati_11">
+		<FULL_NAME>Category cati_11</FULL_NAME>
+		<products>
+			<Product ref="prodi_1"/>
+		</products>
+	</Category>
+
+
+	<Category id="cati_2">
+		<FULL_NAME>Category cati_2</FULL_NAME>
+		<subcategories>
+			<Category ref="cati_21"/>
+		</subcategories>
+		<ymalSets>
+			<YmalSet ref="ymal_2"/>
+		</ymalSets>
+	</Category>
+
+
+	<Category id="cati_21">
+		<FULL_NAME>Category cati_21</FULL_NAME>
+		<products>
+			<Product ref="prodi_2"/>
+		</products>
+	</Category>
+
+
+	<Category id="cati_3">
+		<FULL_NAME>Category cati_3</FULL_NAME>
+		<subcategories>
+			<Category ref="cati_31"/>
+		</subcategories>
+		<ymalSets>
+			<YmalSet ref="ymal_3in"/>
+		</ymalSets>
+	</Category>
+
+
+	<Category id="cati_31">
+		<FULL_NAME>Category cati_31</FULL_NAME>
+		<products>
+			<Product ref="prodi_3"/>
+		</products>
+	</Category>
+
+
+
+
+	<!-- prods of category 1  -->
 	<Product id="prod_1">
 		<skus><Sku ref="sku_1"/></skus>
 		<FULL_NAME>Prod 1</FULL_NAME>
@@ -80,7 +143,7 @@
 		</RELATED_PRODUCTS>
 	</Product>
 	
-	<!--  category 2 -->
+	<!-- prods of category 2 -->
 	<Product id="prod_6">
 		<skus><Sku ref="sku_6"/></skus>
 		<FULL_NAME>Prod 6</FULL_NAME>
@@ -127,6 +190,39 @@
 	</Product>
 	
 	
+	<Product id="prodi_1">
+		<skus><Sku ref="sku_1"/></skus>
+		<FULL_NAME>Prod 1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cati_11"/>
+		</PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_1"/>
+		</ymalSets>
+	</Product>
+
+	<Product id="prodi_2">
+		<skus><Sku ref="sku_1"/></skus>
+		<FULL_NAME>Prod 1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cati_21"/>
+		</PRIMARY_HOME>
+		<ymalSets>
+			<YmalSet ref="ymal_1"/>
+		</ymalSets>
+	</Product>
+
+	<Product id="prodi_3">
+		<skus><Sku ref="sku_1"/></skus>
+		<FULL_NAME>Prod 1</FULL_NAME>
+		<PRIMARY_HOME>
+			<Category ref="cati_31"/>
+		</PRIMARY_HOME>
+		<!-- <ymalSets>
+			<YmalSet ref="ymal_1"/>
+		</ymalSets> -->
+	</Product>
+
 	<!-- ymal sets -->
 
 
@@ -135,6 +231,18 @@
 		<ymals>
 			<Product ref="prod_2"/>
 		</ymals>
+		<recommenders>
+			<Recommender ref="rec_1"/>
+		</recommenders>
+	</YmalSet>
+
+	<YmalSet id="ymal_1in">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_2"/>
+		</ymals>
+		<startDate>1973-01-31</startDate>
+		<endDate>1973-02-02</endDate>
 		<recommenders>
 			<Recommender ref="rec_1"/>
 		</recommenders>
@@ -155,6 +263,19 @@
 		<ymals>
 			<Product ref="prod_3"/>
 		</ymals>
+		<recommenders>
+			<Recommender ref="rec_1"/>
+		</recommenders>
+	</YmalSet>
+
+
+	<YmalSet id="ymal_3in">
+		<workflowStatus>ACTIVE</workflowStatus>
+		<ymals>
+			<Product ref="prod_3"/>
+		</ymals>
+		<startDate>1973-01-31</startDate>
+		<endDate>1973-02-02</endDate>
 		<recommenders>
 			<Recommender ref="rec_1"/>
 		</recommenders>

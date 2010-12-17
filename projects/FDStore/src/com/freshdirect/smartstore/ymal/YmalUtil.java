@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -17,6 +16,7 @@ import com.freshdirect.fdstore.content.ContentFactory;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.Recipe;
 import com.freshdirect.fdstore.content.YmalSource;
+import com.freshdirect.fdstore.customer.FDCartLineI;
 import com.freshdirect.fdstore.customer.FDCartLineModel;
 import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.framework.util.log.LoggerFactory;
@@ -32,11 +32,8 @@ import com.freshdirect.framework.util.log.LoggerFactory;
 public class YmalUtil {
 	private static Category LOGGER = LoggerFactory.getInstance(YmalUtil.class);
 
-	protected static class PriceComparator implements Comparator {
-		public int compare(Object o1, Object o2) {
-			FDCartLineModel c1 = (FDCartLineModel) o1;
-			FDCartLineModel c2 = (FDCartLineModel) o2;
-
+	protected static class PriceComparator implements Comparator<FDCartLineI> {
+		public int compare(FDCartLineI c1, FDCartLineI c2) {
 			return ProductModel.PRODUCT_MODEL_PRICE_COMPARATOR_INVERSE
 					.compare(c1.lookupProduct(), c2.lookupProduct());
 		}
@@ -50,11 +47,9 @@ public class YmalUtil {
 	 * This is currently the most expensive.
 	 * 
 	 * @param user Customer
-	 * @param excludeSkus SKUs to exclude from customer's recently added order lines
-	 * 
 	 * @return The most expensive product as YmalSource
 	 */
-	public static YmalSource resolveYmalSource(FDUserI user, Set excludeSkus, ServletRequest request) {
+	public static YmalSource resolveYmalSource(FDUserI user, ServletRequest request) {
 		YmalSource source = null;
 		if (user != null && user.getShoppingCart() != null
 				&& user.getShoppingCart().getRecentOrderLines() != null) {
@@ -70,7 +65,7 @@ public class YmalUtil {
 							.getContentNode(selected.getRecipeSourceId());
 					if (recipe != null) {
 				        if (isYmalSourceEmpty(recipe)) {
-							LOGGER.info("recipe (" + recipe.getContentKey().getId()
+							LOGGER.info("recipYmalSet newSete (" + recipe.getContentKey().getId()
 									+ ") not eligible, fallback to product");
 							source = selected.lookupProduct();
 						} else {
@@ -120,7 +115,7 @@ public class YmalUtil {
 	 * @return Selected cart line item
 	 */
 	public static FDCartLineModel getSelectedCartLine(FDUserI user) {
-		List orderLines = new ArrayList(user.getShoppingCart().getRecentOrderLines());
+		List<FDCartLineI> orderLines = new ArrayList<FDCartLineI>(user.getShoppingCart().getRecentOrderLines());
 
 		FDCartLineModel selected = null;
 		if (orderLines == null || orderLines.size() == 0)
