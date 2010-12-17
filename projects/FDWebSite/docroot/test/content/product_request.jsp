@@ -175,7 +175,7 @@
 
 	Random isObsolete = new Random();
 	Random isDupe = new Random();
-	int ListsLength = 100;
+	int ListsLength = 500;
 	HashMap finalMap = new HashMap();
 
 	//use real list
@@ -503,13 +503,13 @@
 		out.println("--------- <br />");
 	%>
 	
-	<select id="deptList" onchange="depts.populateCatsList('catList', this.id);"></select>
+	<select id="deptList" onchange="depts.populateCatList('catList', this.id);"></select>
 	<select id="catList" ></select>
 
 	<script type="text/javascript">
 	<!--
-		depts.populateDeptsList("deptList");
-		depts.populateCatsList('catList', 'deptList')
+		depts.populateDeptList("deptList");
+		depts.populateCatList('catList', 'deptList')
 	//-->
 	</script>
 

@@ -353,7 +353,9 @@ if ( !"".equals(id)) {
 				rVal = rVal.substring(1);
 			}
 			//setup rating
-			ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+			if (!"".equals(rVal)) {
+				ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+			}
 		}else{
 			//get from passed val/SKU-set val
 			if ("1,2,3,4,5,6,7,8,9,10,01,02,03,04,05,06,07,08,09,001,002,003,004,005,006,007,008,009".indexOf(rVal) > -1) {
@@ -362,7 +364,9 @@ if ( !"".equals(id)) {
 				} else if (rVal.length() == 3) { //from SKU
 					rVal = rVal.substring(1);
 				}
-				ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+				if (!"".equals(rVal)) {
+					ratingUrl = new URL(mediaStaticPath+"/media_stat/images/ratings/"+rVal+".gif");
+				}
 			}
 		}
 		log(myDebug, "rVal to here2 : "+rVal);
