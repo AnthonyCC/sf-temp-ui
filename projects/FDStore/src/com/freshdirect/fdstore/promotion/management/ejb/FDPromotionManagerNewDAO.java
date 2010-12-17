@@ -150,7 +150,7 @@ public class FDPromotionManagerNewDAO {
 		+ "and (select count(*) from cust.promo_dlv_zone_strategy , table(cust. PROMO_DLV_ZONE_STRATEGY.DLV_ZONE) x where id = z.id) = 1 "
 		+ "and (select count(ID) from cust.promo_dlv_timeslot where PROMO_DLV_ZONE_ID = z.id) = 1 "
 		+ "and P.OFFER_TYPE = 'WINDOW_STEERING' "
-		+ "and P.CAMPAIGN_CODE = 'HEADER'";
+		+ "and P.CAMPAIGN_CODE = 'HEADER' ORDER BY P.START_DATE DESC";
 	public static List<WSPromotionInfo> getWSPromotionInfos(Connection conn) throws SQLException {
 		List<WSPromotionInfo> infos = new ArrayList<WSPromotionInfo>();
 		
@@ -170,6 +170,10 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS")));
+			java.util.Date today = new java.util.Date();
+			if(wsPromotionInfo.getEffectiveDate().before(today) && wsPromotionInfo.getStatus().equals(EnumPromotionStatus.LIVE)){
+				wsPromotionInfo.setStatus(EnumPromotionStatus.EXPIRED);
+			}
 			infos.add(wsPromotionInfo);
 		}
 
