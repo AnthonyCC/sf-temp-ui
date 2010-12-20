@@ -150,8 +150,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	private final static String JUST_BEFORE_MIDNIGHT = "11:59:59 PM";
 	private static  final DateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");	
 	
-	private final static String PROMO_DESCRIPTION = "This offer is good for a ${0} discount on orders received in Zone {1} " +
-													"on {2} during the timeslot window {3} - {4}";
+	private final static String PROMO_DESCRIPTION = "${1} timeslot discount - see delivery page for details";
 	private final static String OFFER_DESCRIPTION = "This offer is good for a ${0} discount on orders received in Zone {1} " +
 													"on {2} during the timeslot window {3} - {4}";
     private final static String AUDIENCE_DESCRIPTION = "This promotion is only good for customers receiving delivery in Zone {0} " +
@@ -389,7 +388,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			promotion.setOfferType(EnumOfferType.WINDOW_STEERING.getName());
 			promotion.setCombineOffer(true);
 			promotion.setMinSubtotal(String.valueOf(FDUserI.MINIMUM_ORDER_AMOUNT));
-			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
 			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
@@ -448,7 +447,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 			Date expDate = endDateFormat.parse(effectiveDate+" "+JUST_BEFORE_MIDNIGHT);
 			long E4 = Math.round(Math.random()*1000); //Unique counter
 			promotion.setName("WS_"+effectiveDate+"_Zone"+zone+"_"+E4+"_$"+discount);
-			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
+			promotion.setDescription(formatPromoDescription(PROMO_DESCRIPTION, discount));
 			promotion.setOfferDesc(formatAudienceDescription(OFFER_DESCRIPTION, discount, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setAudienceDesc(formatOfferDescription(AUDIENCE_DESCRIPTION, zone, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
 			promotion.setTerms(formatTerms(TERMS, discount, CCFormatter.defaultFormatDate(startDate), startTime, endTime));
@@ -643,10 +642,10 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 				}
 	}
 
-	private String formatPromoDescription(String pattern, String discount, String zoneCode, String effectiveDate, String startTime, String endTime) {
+	private String formatPromoDescription(String pattern, String discount) {
 		return MessageFormat.format(
 			pattern,
-			new Object[] {discount, zoneCode, effectiveDate, startTime, endTime});
+			new Object[] {discount});
 	}
 
 	private String formatAudienceDescription(String pattern, String discount, String zoneCode, String effectiveDate, String startTime, String endTime) {
