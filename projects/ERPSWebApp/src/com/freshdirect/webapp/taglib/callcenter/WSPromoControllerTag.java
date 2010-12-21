@@ -150,7 +150,7 @@ public class WSPromoControllerTag extends AbstractControllerTag {
 	private final static String JUST_BEFORE_MIDNIGHT = "11:59:59 PM";
 	private static  final DateFormat endDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss a");	
 	
-	private final static String PROMO_DESCRIPTION = "${1} timeslot discount - see delivery page for details";
+	private final static String PROMO_DESCRIPTION = "${0} timeslot discount - see delivery page for details";
 	private final static String OFFER_DESCRIPTION = "This offer is good for a ${0} discount on orders received in Zone {1} " +
 													"on {2} during the timeslot window {3} - {4}";
     private final static String AUDIENCE_DESCRIPTION = "This promotion is only good for customers receiving delivery in Zone {0} " +
