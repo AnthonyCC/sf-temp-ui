@@ -32,14 +32,14 @@ public class DeliveryInterval {
 			start = Calendar.getInstance();
 			start.setTime( startTime );
 			start.set( Calendar.YEAR, nextDelivery.get( Calendar.YEAR ) );
-			start.set( Calendar.WEEK_OF_YEAR, nextDelivery.get( Calendar.WEEK_OF_YEAR ) );
-			start.set( Calendar.DAY_OF_WEEK, nextDelivery.get( Calendar.DAY_OF_WEEK ) );
+			start.set( Calendar.MONTH, nextDelivery.get( Calendar.MONTH ) );
+			start.set( Calendar.DATE, nextDelivery.get( Calendar.DATE ) );
 			
 			end = Calendar.getInstance();
 			end.setTime( endTime );
 			end.set( Calendar.YEAR, nextDelivery.get( Calendar.YEAR ) );
-			end.set( Calendar.WEEK_OF_YEAR, nextDelivery.get( Calendar.WEEK_OF_YEAR ) );		
-			end.set( Calendar.DAY_OF_WEEK, nextDelivery.get( Calendar.DAY_OF_WEEK ) );
+			end.set( Calendar.MONTH, nextDelivery.get( Calendar.MONTH ) );		
+			end.set( Calendar.DATE, nextDelivery.get( Calendar.DATE ) );
 			
 			dayStart = Calendar.getInstance();
 			dayStart.setTime( nextDeliveryDate );
