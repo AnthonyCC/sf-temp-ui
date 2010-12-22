@@ -170,7 +170,7 @@ public class FDPromotionManagerNewDAO {
 			wsPromotionInfo.setEndTime(rs.getString("END_TIME"));
 			wsPromotionInfo.setDiscount(rs.getDouble("MAX_AMOUNT"));
 			wsPromotionInfo.setStatus(EnumPromotionStatus.getEnum(rs.getString("STATUS"))); 
-			Date expDate = rs.getDate("EXPIRATION_DATE");
+			Timestamp expDate = rs.getTimestamp("EXPIRATION_DATE");
 			java.util.Date today = new java.util.Date();
 			if(expDate.before(today) && wsPromotionInfo.getStatus().equals(EnumPromotionStatus.LIVE)){
 				wsPromotionInfo.setStatus(EnumPromotionStatus.EXPIRED);
