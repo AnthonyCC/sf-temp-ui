@@ -68,7 +68,8 @@ public class CSVFileParser implements FileParser {
 						
 			input = new ByteArrayInputStream(fileUploadBean.getBytes());			
 			//FileReader reader=new FileReader(new InputStreamReader(input));
-			CSVReader reader=new CSVReader(new InputStreamReader(input));
+			//APPDEV-1491 - changed escape char from double-quote to backslash
+			CSVReader reader=new CSVReader(new InputStreamReader(input), ',', '\\');
 			//fs = new POIFSFileSystem(input);
 			modelList=new HashSet();
 			String [] nextLine;
@@ -92,7 +93,7 @@ public class CSVFileParser implements FileParser {
                        if(nextLine[0]==null || nextLine[0].trim().length()<2){                    	  
                     	   continue;
                        }
-	                       
+                       
                        model.setCustomerId(nextLine[0]);                                              
 	                                                                                                                           
                        model.setCustEmailAddress(nextLine[1]);
