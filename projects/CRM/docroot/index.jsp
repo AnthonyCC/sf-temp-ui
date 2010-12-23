@@ -2,6 +2,7 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ page import='com.freshdirect.framework.webapp.*' %>
+<%@ page import="java.util.Calendar" %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
@@ -151,7 +152,7 @@
 			</table><br />
 		</crm:CrmLoginController>
 		</div>
-		<br /><span class="copyright">&copy; 2002 - 2010 FreshDirect. All Rights Reserved.</span><br /><br />
+		<br /><span class="copyright">&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> FreshDirect. All Rights Reserved.</span><br /><br />
 	</div>
 </body>
 </html>

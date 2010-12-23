@@ -1,1 +1,2 @@
-&copy; 2002 - 2010 FreshDirect. All Rights Reserved. 
+<%@ page import="java.util.Calendar" %>
+&copy; 2002 - <%= Calendar.getInstance().get(Calendar.YEAR) %> FreshDirect. All Rights Reserved. 
