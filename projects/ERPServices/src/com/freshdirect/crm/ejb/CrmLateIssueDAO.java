@@ -54,10 +54,14 @@ public class CrmLateIssueDAO {
 			 CrmLateIssueModel lateIssue = new CrmLateIssueModel(pk);
 			 populateModel(rs,lateIssue);
 			 lateIssue.setStopsAndOrders(loadStopsAndOrders(conn,pk.getId()));
+			 rs.close();
+			 ps.close();
 			return lateIssue;
 		} else {
+			ps.close();
 			throw new ObjectNotFoundException("Unable to find Late Issue with Id " + id);
 		}
+		
 	}
 
 	
@@ -241,6 +245,8 @@ public class CrmLateIssueDAO {
 		while (rs.next()) {
 			stopsAndOrders.put(new Integer(rs.getString("stop_number")), rs.getString("sale_id"));
 		}
+		rs.close();
+		ps.close();
 		return stopsAndOrders;
 	}
 	

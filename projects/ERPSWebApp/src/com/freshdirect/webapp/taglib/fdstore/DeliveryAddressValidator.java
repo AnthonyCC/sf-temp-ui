@@ -5,9 +5,9 @@ import org.apache.log4j.Category;
 import com.freshdirect.common.address.AddressModel;
 import com.freshdirect.common.address.EnumAddressType;
 import com.freshdirect.common.customer.EnumServiceType;
+import com.freshdirect.customer.ErpAddressModel;
 import com.freshdirect.delivery.DlvAddressGeocodeResponse;
 import com.freshdirect.delivery.DlvServiceSelectionResult;
-import com.freshdirect.delivery.DlvZipInfoModel;
 import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDInvalidAddressException;
@@ -33,7 +33,7 @@ public class DeliveryAddressValidator {
 	private final boolean strictCheck;
 
 	// scrubbed address
-	private AddressModel scrubbedAddress;
+	private ErpAddressModel scrubbedAddress;
 	private DlvServiceSelectionResult serviceResult;
 
 
@@ -57,7 +57,7 @@ public class DeliveryAddressValidator {
 	public boolean validateAddress(ActionResult actionResult) throws FDResourceException {
 		
 		// [1] normalize (scrub) address
-		scrubbedAddress = doScrubAddress(address, actionResult);
+		scrubbedAddress = (ErpAddressModel)doScrubAddress((ErpAddressModel)address, actionResult);
 		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
 
 		if (actionResult.isFailure()){
@@ -102,7 +102,7 @@ public class DeliveryAddressValidator {
 
 			} else {
 				LOGGER.debug( "geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
-				scrubbedAddress = geocodeResponse.getAddress();
+				scrubbedAddress = (ErpAddressModel)geocodeResponse.getAddress();
 			}			
 			
 		} catch (FDInvalidAddressException iae) {
@@ -138,7 +138,7 @@ public class DeliveryAddressValidator {
 	}
 	
 	
-	protected AddressModel doScrubAddress(AddressModel addr, ActionResult result) throws FDResourceException {
+	protected AddressModel doScrubAddress(ErpAddressModel addr, ActionResult result) throws FDResourceException {
 		return AddressUtil.scrubAddress(addr, result);
 	}
 

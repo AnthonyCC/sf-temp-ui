@@ -17,6 +17,7 @@ import org.apache.log4j.Category;
 
 import com.freshdirect.ErpServicesProperties;
 import com.freshdirect.common.address.AddressModel;
+import com.freshdirect.common.customer.EnumServiceType;
 import com.freshdirect.customer.CustomerRatingI;
 import com.freshdirect.customer.EnumAccountActivityType;
 import com.freshdirect.customer.EnumTransactionSource;
@@ -28,7 +29,9 @@ import com.freshdirect.customer.ErpFraudException;
 import com.freshdirect.customer.ErpPaymentMethodI;
 import com.freshdirect.customer.ErpTransactionException;
 import com.freshdirect.customer.ejb.ErpLogActivityCommand;
+import com.freshdirect.delivery.DlvServiceSelectionResult;
 import com.freshdirect.delivery.DlvZoneInfoModel;
+import com.freshdirect.delivery.EnumDeliveryStatus;
 import com.freshdirect.delivery.EnumReservationType;
 import com.freshdirect.delivery.ReservationException;
 import com.freshdirect.delivery.ReservationUnavailableException;
@@ -445,7 +448,9 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// =============================
 		
 		String deliveryAddressId = so.getAddressId();
-		AddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
+		ErpAddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
+		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
+		 deliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No delivery address found for this ID. ["+deliveryAddressId+"]" );
@@ -468,7 +473,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		// continue with the scrubbed address
-		deliveryAddressModel = addressValidator.getScrubbedAddress();
+		deliveryAddressModel = (ErpAddressModel)addressValidator.getScrubbedAddress();
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No valid delivery address." );
@@ -721,8 +726,6 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 	}
 
-
-	
 	
 	
 	protected boolean isValidCustomerList(List<FDCustomerListItem> lineItems) throws FDResourceException {
@@ -995,5 +998,32 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		public String toString() {
 			return "Bad items: " + counter + " -> " + hasInvalidItems();
 		}
+	}
+	private ErpAddressModel performCosResidentialMerge(ErpAddressModel address)	throws FDResourceException {
+		ErpAddressModel timeslotAddress=address;
+		if(address!=null){
+			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
+				try{
+					DlvServiceSelectionResult serviceResult = FDDeliveryManager.getInstance().checkAddress(address);
+			 		EnumDeliveryStatus status = serviceResult.getServiceStatus(address.getServiceType());
+			 		if(EnumDeliveryStatus.COS_ENABLED.equals(status)){	
+			 			//Clone the address model object
+			 			timeslotAddress=cloneAddress(address);
+			 			timeslotAddress.setServiceType(EnumServiceType.HOME);
+			 		}
+			 		
+				}catch (FDInvalidAddressException iae) {
+					LOGGER
+					.warn("GEOCODE FAILED FOR ADDRESS setRegularDeliveryAddress  FDInvalidAddressException :"
+							+ address + "EXCEPTION :" + iae);
+				}
+			}
+		}
+		return timeslotAddress;
+	}
+	
+	private ErpAddressModel cloneAddress(ErpAddressModel address) {
+		ErpAddressModel model=new ErpAddressModel(address);
+		return model;
 	}
 }
