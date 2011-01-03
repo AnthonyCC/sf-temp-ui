@@ -88,7 +88,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
                     <td>
                         <select name="startYear" required="true" class="pulldown">
                             <option value="">Year</option>
-							<%  for (int i=2001; i<2011; i++) { %>
+							<%  for (int i=2005; i<2016; i++) { %>
 								<option value="<%= i %>" <%= (String.valueOf(i).equals(criteria.getStartYear()))?"selected":"" %>><%= i %></option>
 							<%  } %>
                         </select>
@@ -143,7 +143,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
                     <td>
                         <select name="endYear" required="true" class="pulldown">
                             <option value="">Year</option>
-							<%  for (int i=2001; i<2011; i++) { %>
+							<%  for (int i=2005; i<2016; i++) { %>
 								<option value="<%= i %>" <%= (String.valueOf(i).equals(criteria.getEndYear()))?"selected":"" %>><%= i %></option>
 							<%  } %>
                         </select>

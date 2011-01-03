@@ -165,7 +165,7 @@ criteria.setTransYear(NVL.apply(request.getParameter("transYear"), ""));
                     <td>
                         <select name="transYear" required="true" class="pulldown">
                             <option value="">Year</option>
-                                        <%  for (int i=2001; i<2011; i++) { %>
+                                        <%  for (int i=2005; i<2016; i++) { %>
                             <option value="<%= i %>" <%= (i==year)?"selected":"" %>><%= i %></option>
                                         <%  } %>
                         </select>
