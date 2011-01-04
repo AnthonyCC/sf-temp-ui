@@ -1,6 +1,8 @@
 package com.freshdirect.webapp.taglib.fdstore;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +41,14 @@ public class ProducerListTag extends AbstractGetterTag<List<ProducerModel>> {
             // returning null will results in SKIP_BODY
             return null;
         } else {
+        	// Sort list alphabetically
+        	Collections.sort(result, new Comparator<ProducerModel>() {
+				@Override
+				public int compare(ProducerModel o1, ProducerModel o2) {
+					return o1.getFullName().compareTo(o2.getFullName());
+				}
+        	});
+        	
             return result;
         }
     }
