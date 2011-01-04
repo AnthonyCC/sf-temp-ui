@@ -1,6 +1,6 @@
 
 /**
- * SchedulerMovableOrdersOptions.java
+ * SchedulerRebuildRoutesResponse.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  SchedulerMovableOrdersOptions bean class
+            *  SchedulerRebuildRoutesResponse bean class
             */
         
-        public  class SchedulerMovableOrdersOptions
+        public  class SchedulerRebuildRoutesResponse
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = SchedulerMovableOrdersOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                "SchedulerRebuildRoutesResponse",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -32,65 +33,86 @@
         
 
                         /**
-                        * field for Movable
+                        * field for UnassignedOrders
+                        * This was an Array!
                         */
 
                         
-                                    protected boolean localMovable ;
+                                    protected java.lang.String[] localUnassignedOrders ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localUnassignedOrdersTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return boolean
+                           * @return java.lang.String[]
                            */
-                           public  boolean getMovable(){
-                               return localMovable;
+                           public  java.lang.String[] getUnassignedOrders(){
+                               return localUnassignedOrders;
                            }
 
                            
                         
-                            /**
-                               * Auto generated setter method
-                               * @param param Movable
+
+
+                               
+                              /**
+                               * validate the array for UnassignedOrders
                                */
-                               public void setMovable(boolean param){
+                              protected void validateUnassignedOrders(java.lang.String[] param){
+                             
+                              }
+
+
+                             /**
+                              * Auto generated setter method
+                              * @param param UnassignedOrders
+                              */
+                              public void setUnassignedOrders(java.lang.String[] param){
+                              
+                                   validateUnassignedOrders(param);
+
+                               
+                                          if (param != null){
+                                             //update the setting tracker
+                                             localUnassignedOrdersTracker = true;
+                                          } else {
+                                             localUnassignedOrdersTracker = false;
+                                                 
+                                          }
+                                      
+                                      this.localUnassignedOrders=param;
+                              }
+
+                               
+                             
+                             /**
+                             * Auto generated add method for the array for convenience
+                             * @param param java.lang.String
+                             */
+                             public void addUnassignedOrders(java.lang.String param){
+                                   if (localUnassignedOrders == null){
+                                   localUnassignedOrders = new java.lang.String[]{};
+                                   }
+
                             
-                                            this.localMovable=param;
-                                    
-
-                               }
+                                 //update the setting tracker
+                                localUnassignedOrdersTracker = true;
                             
 
-                        /**
-                        * field for RebuildRoutesFirst
-                        */
+                               java.util.List list =
+                            org.apache.axis2.databinding.utils.ConverterUtil.toList(localUnassignedOrders);
+                               list.add(param);
+                               this.localUnassignedOrders =
+                             (java.lang.String[])list.toArray(
+                            new java.lang.String[list.size()]);
 
-                        
-                                    protected boolean localRebuildRoutesFirst =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
-                                
-
-                           /**
-                           * Auto generated getter method
-                           * @return boolean
-                           */
-                           public  boolean getRebuildRoutesFirst(){
-                               return localRebuildRoutesFirst;
-                           }
-
-                           
-                        
-                            /**
-                               * Auto generated setter method
-                               * @param param RebuildRoutesFirst
-                               */
-                               public void setRebuildRoutesFirst(boolean param){
-                            
-                                            this.localRebuildRoutesFirst=param;
-                                    
-
-                               }
-                            
+                             }
+                             
 
      /**
      * isReaderMTOMAware
@@ -120,15 +142,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerMovableOrdersOptions.this.serialize(parentQName,factory,xmlWriter);
+                       SchedulerRebuildRoutesResponse.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -178,75 +200,60 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerMovableOrdersOptions",
+                           namespacePrefix+":SchedulerRebuildRoutesResponse",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerMovableOrdersOptions",
+                           "SchedulerRebuildRoutesResponse",
                            xmlWriter);
                    }
 
                
                    }
-               
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                if (localUnassignedOrdersTracker){
+                             if (localUnassignedOrders!=null) {
+                                   namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                   boolean emptyNamespace = namespace == null || namespace.length() == 0;
+                                   prefix =  emptyNamespace ? null : xmlWriter.getPrefix(namespace);
+                                   for (int i = 0;i < localUnassignedOrders.length;i++){
+                                        
+                                            if (localUnassignedOrders[i] != null){
+                                        
+                                                if (!emptyNamespace) {
+                                                    if (prefix == null) {
+                                                        java.lang.String prefix2 = generatePrefix(namespace);
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
+                                                        xmlWriter.writeStartElement(prefix2,"unassignedOrders", namespace);
+                                                        xmlWriter.writeNamespace(prefix2, namespace);
+                                                        xmlWriter.setPrefix(prefix2, namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"movable", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
+                                                    } else {
+                                                        xmlWriter.writeStartElement(namespace,"unassignedOrders");
+                                                    }
 
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"movable");
-                                        }
+                                                } else {
+                                                    xmlWriter.writeStartElement("unassignedOrders");
+                                                }
 
-                                    } else {
-                                        xmlWriter.writeStartElement("movable");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("movable cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
-                                               }
+                                            
+                                                        xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUnassignedOrders[i]));
+                                                    
+                                                xmlWriter.writeEndElement();
+                                              
+                                                } else {
+                                                   
+                                                           // we have to do nothing since minOccurs is zero
+                                                       
+                                                }
+
+                                   }
+                             } else {
+                                 
+                                         throw new org.apache.axis2.databinding.ADBException("unassignedOrders cannot be null!!");
                                     
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                             }
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"rebuildRoutesFirst", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
-
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"rebuildRoutesFirst");
-                                        }
-
-                                    } else {
-                                        xmlWriter.writeStartElement("rebuildRoutesFirst");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("rebuildRoutesFirst cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
+                        }
                     xmlWriter.writeEndElement();
                
 
@@ -408,19 +415,30 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "movable"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
-                            
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "rebuildRoutesFirst"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
-                            
+                 if (localUnassignedOrdersTracker){
+                            if (localUnassignedOrders!=null){
+                                  for (int i = 0;i < localUnassignedOrders.length;i++){
+                                      
+                                         if (localUnassignedOrders[i] != null){
+                                          elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                              "unassignedOrders"));
+                                          elementList.add(
+                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUnassignedOrders[i]));
+                                          } else {
+                                             
+                                                    // have to do nothing
+                                                
+                                          }
+                                      
+
+                                  }
+                            } else {
+                              
+                                    throw new org.apache.axis2.databinding.ADBException("unassignedOrders cannot be null!!");
+                                
+                            }
+
+                        }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -445,9 +463,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerMovableOrdersOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerMovableOrdersOptions object =
-                new SchedulerMovableOrdersOptions();
+        public static SchedulerRebuildRoutesResponse parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SchedulerRebuildRoutesResponse object =
+                new SchedulerRebuildRoutesResponse();
 
             int event;
             java.lang.String nillableValue = null;
@@ -471,10 +489,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerMovableOrdersOptions".equals(type)){
+                            if (!"SchedulerRebuildRoutesResponse".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerMovableOrdersOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SchedulerRebuildRoutesResponse)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -496,44 +514,53 @@
                     
                     reader.next();
                 
+                        java.util.ArrayList list1 = new java.util.ArrayList();
+                    
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","movable").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","unassignedOrders").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
                                     
-                                              object.setMovable(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
                                     
+                                    // Process the array and step past its final element's end.
+                                    list1.add(reader.getElementText());
+                                            
+                                            //loop until we find a start element that is not part of this array
+                                            boolean loopDone1 = false;
+                                            while(!loopDone1){
+                                                // Ensure we are at the EndElement
+                                                while (!reader.isEndElement()){
+                                                    reader.next();
+                                                }
+                                                // Step out of this element
+                                                reader.next();
+                                                // Step to next element event.
+                                                while (!reader.isStartElement() && !reader.isEndElement())
+                                                    reader.next();
+                                                if (reader.isEndElement()){
+                                                    //two continuous end elements means we are exiting the xml structure
+                                                    loopDone1 = true;
+                                                } else {
+                                                    if (new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","unassignedOrders").equals(reader.getName())){
+                                                         list1.add(reader.getElementText());
+                                                        
+                                                    }else{
+                                                        loopDone1 = true;
+                                                    }
+                                                }
+                                            }
+                                            // call the converter utility  to convert and set the array
+                                            
+                                                    object.setUnassignedOrders((java.lang.String[])
+                                                        list1.toArray(new java.lang.String[list1.size()]));
+                                                
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
-                                    
-                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
-                                
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","rebuildRoutesFirst").equals(reader.getName())){
-                                
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setRebuildRoutesFirst(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
-                                              
-                                        reader.next();
-                                    
-                              }  // End of if for expected property start element
-                                
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

@@ -1,6 +1,6 @@
 
 /**
- * SchedulerMovableOrdersOptions.java
+ * SchedulerRebuildRoutesEx.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,16 +10,17 @@
             
 
             /**
-            *  SchedulerMovableOrdersOptions bean class
+            *  SchedulerRebuildRoutesEx bean class
             */
         
-        public  class SchedulerMovableOrdersOptions
+        public  class SchedulerRebuildRoutesEx
         implements org.apache.axis2.databinding.ADBBean{
-        /* This type was generated from the piece of schema that had
-                name = SchedulerMovableOrdersOptions
-                Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
-                Namespace Prefix = ns1
-                */
+        
+                public static final javax.xml.namespace.QName MY_QNAME = new javax.xml.namespace.QName(
+                "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                "SchedulerRebuildRoutesEx",
+                "ns1");
+
             
 
         private static java.lang.String generatePrefix(java.lang.String namespace) {
@@ -32,61 +33,88 @@
         
 
                         /**
-                        * field for Movable
+                        * field for SchedulerIdentity
                         */
 
                         
-                                    protected boolean localMovable ;
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity localSchedulerIdentity ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localSchedulerIdentityTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return boolean
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity
                            */
-                           public  boolean getMovable(){
-                               return localMovable;
+                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity getSchedulerIdentity(){
+                               return localSchedulerIdentity;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Movable
+                               * @param param SchedulerIdentity
                                */
-                               public void setMovable(boolean param){
+                               public void setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity param){
                             
-                                            this.localMovable=param;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localSchedulerIdentityTracker = true;
+                                       } else {
+                                          localSchedulerIdentityTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localSchedulerIdentity=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for RebuildRoutesFirst
+                        * field for Options
                         */
 
                         
-                                    protected boolean localRebuildRoutesFirst =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                    protected com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions localOptions ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localOptionsTracker = false ;
+                           
 
                            /**
                            * Auto generated getter method
-                           * @return boolean
+                           * @return com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions
                            */
-                           public  boolean getRebuildRoutesFirst(){
-                               return localRebuildRoutesFirst;
+                           public  com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions getOptions(){
+                               return localOptions;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param RebuildRoutesFirst
+                               * @param param Options
                                */
-                               public void setRebuildRoutesFirst(boolean param){
+                               public void setOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions param){
                             
-                                            this.localRebuildRoutesFirst=param;
+                                       if (param != null){
+                                          //update the setting tracker
+                                          localOptionsTracker = true;
+                                       } else {
+                                          localOptionsTracker = true;
+                                              
+                                       }
+                                   
+                                            this.localOptions=param;
                                     
 
                                }
@@ -120,15 +148,15 @@
 
 
         
-               org.apache.axiom.om.OMDataSource dataSource =
-                       new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
+                org.apache.axiom.om.OMDataSource dataSource =
+                       new org.apache.axis2.databinding.ADBDataSource(this,MY_QNAME){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerMovableOrdersOptions.this.serialize(parentQName,factory,xmlWriter);
+                       SchedulerRebuildRoutesEx.this.serialize(MY_QNAME,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
-               parentQName,factory,dataSource);
+               MY_QNAME,factory,dataSource);
             
        }
 
@@ -178,75 +206,79 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerMovableOrdersOptions",
+                           namespacePrefix+":SchedulerRebuildRoutesEx",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerMovableOrdersOptions",
+                           "SchedulerRebuildRoutesEx",
                            xmlWriter);
                    }
 
                
                    }
-               
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                if (localSchedulerIdentityTracker){
+                                    if (localSchedulerIdentity==null){
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
 
-                                            xmlWriter.writeStartElement(prefix,"movable", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
 
-                                        } else {
-                                            xmlWriter.writeStartElement(namespace,"movable");
-                                        }
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
 
-                                    } else {
-                                        xmlWriter.writeStartElement("movable");
-                                    }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("movable cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
-                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
-                                    if (! namespace.equals("")) {
-                                        prefix = xmlWriter.getPrefix(namespace);
+                                                xmlWriter.writeStartElement(prefix2,"schedulerIdentity", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
 
-                                        if (prefix == null) {
-                                            prefix = generatePrefix(namespace);
-
-                                            xmlWriter.writeStartElement(prefix,"rebuildRoutesFirst", namespace);
-                                            xmlWriter.writeNamespace(prefix, namespace);
-                                            xmlWriter.setPrefix(prefix, namespace);
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"schedulerIdentity");
+                                            }
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"rebuildRoutesFirst");
+                                            xmlWriter.writeStartElement("schedulerIdentity");
                                         }
 
-                                    } else {
-                                        xmlWriter.writeStartElement("rebuildRoutesFirst");
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localSchedulerIdentity.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","schedulerIdentity"),
+                                        factory,xmlWriter);
                                     }
-                                
-                                               if (false) {
-                                           
-                                                         throw new org.apache.axis2.databinding.ADBException("rebuildRoutesFirst cannot be null!!");
-                                                      
-                                               } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
-                                               }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
+                                } if (localOptionsTracker){
+                                    if (localOptions==null){
+
+                                            java.lang.String namespace2 = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+
+                                        if (! namespace2.equals("")) {
+                                            java.lang.String prefix2 = xmlWriter.getPrefix(namespace2);
+
+                                            if (prefix2 == null) {
+                                                prefix2 = generatePrefix(namespace2);
+
+                                                xmlWriter.writeStartElement(prefix2,"options", namespace2);
+                                                xmlWriter.writeNamespace(prefix2, namespace2);
+                                                xmlWriter.setPrefix(prefix2, namespace2);
+
+                                            } else {
+                                                xmlWriter.writeStartElement(namespace2,"options");
+                                            }
+
+                                        } else {
+                                            xmlWriter.writeStartElement("options");
+                                        }
+
+
+                                       // write the nil attribute
+                                      writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                      xmlWriter.writeEndElement();
+                                    }else{
+                                     localOptions.serialize(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","options"),
+                                        factory,xmlWriter);
+                                    }
+                                }
                     xmlWriter.writeEndElement();
                
 
@@ -408,19 +440,21 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "movable"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
+                 if (localSchedulerIdentityTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "schedulerIdentity"));
                             
-                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "rebuildRoutesFirst"));
-                                 
-                                elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
                             
+                                    elementList.add(localSchedulerIdentity==null?null:
+                                    localSchedulerIdentity);
+                                } if (localOptionsTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "options"));
+                            
+                            
+                                    elementList.add(localOptions==null?null:
+                                    localOptions);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -445,9 +479,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerMovableOrdersOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerMovableOrdersOptions object =
-                new SchedulerMovableOrdersOptions();
+        public static SchedulerRebuildRoutesEx parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SchedulerRebuildRoutesEx object =
+                new SchedulerRebuildRoutesEx();
 
             int event;
             java.lang.String nillableValue = null;
@@ -471,10 +505,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerMovableOrdersOptions".equals(type)){
+                            if (!"SchedulerRebuildRoutesEx".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerMovableOrdersOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SchedulerRebuildRoutesEx)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -499,41 +533,51 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","movable").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","schedulerIdentity").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setSchedulerIdentity(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
                                     
-                                              object.setMovable(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                                object.setSchedulerIdentity(com.freshdirect.routing.proxy.stub.transportation.SchedulerIdentity.Factory.parse(reader));
                                               
                                         reader.next();
-                                    
+                                    }
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","rebuildRoutesFirst").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","options").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
+                                      nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                      if ("true".equals(nillableValue) || "1".equals(nillableValue)){
+                                          object.setOptions(null);
+                                          reader.next();
+                                            
+                                            reader.next();
+                                          
+                                      }else{
                                     
-                                              object.setRebuildRoutesFirst(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                                object.setOptions(com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions.Factory.parse(reader));
                                               
                                         reader.next();
-                                    
+                                    }
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             

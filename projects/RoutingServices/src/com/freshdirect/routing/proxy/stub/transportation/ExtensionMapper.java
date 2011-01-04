@@ -210,6 +210,16 @@
               
                   if (
                   "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
+                  "SchedulerRebuildRoutesExOptions".equals(typeName)){
+                   
+                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerRebuildRoutesExOptions.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
                   "ConfigurationItem".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.ConfigurationItem.Factory.parse(reader);
@@ -1533,16 +1543,6 @@
                   "RoutingSourcedOrderCriteria".equals(typeName)){
                    
                             return  com.freshdirect.routing.proxy.stub.transportation.RoutingSourcedOrderCriteria.Factory.parse(reader);
-                        
-
-                  }
-
-              
-                  if (
-                  "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService".equals(namespaceURI) &&
-                  "SchedulerOptimizeOrdersExOptions".equals(typeName)){
-                   
-                            return  com.freshdirect.routing.proxy.stub.transportation.SchedulerOptimizeOrdersExOptions.Factory.parse(reader);
                         
 
                   }

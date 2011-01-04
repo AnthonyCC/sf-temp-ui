@@ -1,6 +1,6 @@
 
 /**
- * SchedulerMovableOrdersOptions.java
+ * SchedulerRebuildRoutesExOptions.java
  *
  * This file was auto-generated from WSDL
  * by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:47 EDT)
@@ -10,13 +10,13 @@
             
 
             /**
-            *  SchedulerMovableOrdersOptions bean class
+            *  SchedulerRebuildRoutesExOptions bean class
             */
         
-        public  class SchedulerMovableOrdersOptions
+        public  class SchedulerRebuildRoutesExOptions
         implements org.apache.axis2.databinding.ADBBean{
         /* This type was generated from the piece of schema that had
-                name = SchedulerMovableOrdersOptions
+                name = SchedulerRebuildRoutesExOptions
                 Namespace URI = http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService
                 Namespace Prefix = ns1
                 */
@@ -32,61 +32,90 @@
         
 
                         /**
-                        * field for Movable
+                        * field for RunInBackground
                         */
 
                         
-                                    protected boolean localMovable ;
+                                    protected boolean localRunInBackground ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return boolean
                            */
-                           public  boolean getMovable(){
-                               return localMovable;
+                           public  boolean getRunInBackground(){
+                               return localRunInBackground;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param Movable
+                               * @param param RunInBackground
                                */
-                               public void setMovable(boolean param){
+                               public void setRunInBackground(boolean param){
                             
-                                            this.localMovable=param;
+                                            this.localRunInBackground=param;
                                     
 
                                }
                             
 
                         /**
-                        * field for RebuildRoutesFirst
+                        * field for UseReseeding
                         */
 
                         
-                                    protected boolean localRebuildRoutesFirst =
-                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean("false");
+                                    protected boolean localUseReseeding ;
                                 
 
                            /**
                            * Auto generated getter method
                            * @return boolean
                            */
-                           public  boolean getRebuildRoutesFirst(){
-                               return localRebuildRoutesFirst;
+                           public  boolean getUseReseeding(){
+                               return localUseReseeding;
                            }
 
                            
                         
                             /**
                                * Auto generated setter method
-                               * @param param RebuildRoutesFirst
+                               * @param param UseReseeding
                                */
-                               public void setRebuildRoutesFirst(boolean param){
+                               public void setUseReseeding(boolean param){
                             
-                                            this.localRebuildRoutesFirst=param;
+                                            this.localUseReseeding=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NumberOfSeedsToConsider
+                        */
+
+                        
+                                    protected int localNumberOfSeedsToConsider ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return int
+                           */
+                           public  int getNumberOfSeedsToConsider(){
+                               return localNumberOfSeedsToConsider;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NumberOfSeedsToConsider
+                               */
+                               public void setNumberOfSeedsToConsider(int param){
+                            
+                                            this.localNumberOfSeedsToConsider=param;
                                     
 
                                }
@@ -124,7 +153,7 @@
                        new org.apache.axis2.databinding.ADBDataSource(this,parentQName){
 
                  public void serialize(org.apache.axis2.databinding.utils.writer.MTOMAwareXMLStreamWriter xmlWriter) throws javax.xml.stream.XMLStreamException {
-                       SchedulerMovableOrdersOptions.this.serialize(parentQName,factory,xmlWriter);
+                       SchedulerRebuildRoutesExOptions.this.serialize(parentQName,factory,xmlWriter);
                  }
                };
                return new org.apache.axiom.om.impl.llom.OMSourcedElementImpl(
@@ -178,11 +207,11 @@
                    java.lang.String namespacePrefix = registerPrefix(xmlWriter,"http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService");
                    if ((namespacePrefix != null) && (namespacePrefix.trim().length() > 0)){
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           namespacePrefix+":SchedulerMovableOrdersOptions",
+                           namespacePrefix+":SchedulerRebuildRoutesExOptions",
                            xmlWriter);
                    } else {
                        writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","type",
-                           "SchedulerMovableOrdersOptions",
+                           "SchedulerRebuildRoutesExOptions",
                            xmlWriter);
                    }
 
@@ -196,24 +225,24 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"movable", namespace);
+                                            xmlWriter.writeStartElement(prefix,"runInBackground", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"movable");
+                                            xmlWriter.writeStartElement(namespace,"runInBackground");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("movable");
+                                        xmlWriter.writeStartElement("runInBackground");
                                     }
                                 
                                                if (false) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("movable cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("runInBackground cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRunInBackground));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -225,24 +254,53 @@
                                         if (prefix == null) {
                                             prefix = generatePrefix(namespace);
 
-                                            xmlWriter.writeStartElement(prefix,"rebuildRoutesFirst", namespace);
+                                            xmlWriter.writeStartElement(prefix,"useReseeding", namespace);
                                             xmlWriter.writeNamespace(prefix, namespace);
                                             xmlWriter.setPrefix(prefix, namespace);
 
                                         } else {
-                                            xmlWriter.writeStartElement(namespace,"rebuildRoutesFirst");
+                                            xmlWriter.writeStartElement(namespace,"useReseeding");
                                         }
 
                                     } else {
-                                        xmlWriter.writeStartElement("rebuildRoutesFirst");
+                                        xmlWriter.writeStartElement("useReseeding");
                                     }
                                 
                                                if (false) {
                                            
-                                                         throw new org.apache.axis2.databinding.ADBException("rebuildRoutesFirst cannot be null!!");
+                                                         throw new org.apache.axis2.databinding.ADBException("useReseeding cannot be null!!");
                                                       
                                                } else {
-                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseReseeding));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService";
+                                    if (! namespace.equals("")) {
+                                        prefix = xmlWriter.getPrefix(namespace);
+
+                                        if (prefix == null) {
+                                            prefix = generatePrefix(namespace);
+
+                                            xmlWriter.writeStartElement(prefix,"numberOfSeedsToConsider", namespace);
+                                            xmlWriter.writeNamespace(prefix, namespace);
+                                            xmlWriter.setPrefix(prefix, namespace);
+
+                                        } else {
+                                            xmlWriter.writeStartElement(namespace,"numberOfSeedsToConsider");
+                                        }
+
+                                    } else {
+                                        xmlWriter.writeStartElement("numberOfSeedsToConsider");
+                                    }
+                                
+                                               if (localNumberOfSeedsToConsider==java.lang.Integer.MIN_VALUE) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("numberOfSeedsToConsider cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumberOfSeedsToConsider));
                                                }
                                     
                                    xmlWriter.writeEndElement();
@@ -410,16 +468,22 @@
 
                 
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "movable"));
+                                                                      "runInBackground"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localMovable));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRunInBackground));
                             
                                       elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
-                                                                      "rebuildRoutesFirst"));
+                                                                      "useReseeding"));
                                  
                                 elementList.add(
-                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localRebuildRoutesFirst));
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUseReseeding));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService",
+                                                                      "numberOfSeedsToConsider"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localNumberOfSeedsToConsider));
                             
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -445,9 +509,9 @@
         * Postcondition: If this object is an element, the reader is positioned at its end element
         *                If this object is a complex type, the reader is positioned at the end element of its outer element
         */
-        public static SchedulerMovableOrdersOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
-            SchedulerMovableOrdersOptions object =
-                new SchedulerMovableOrdersOptions();
+        public static SchedulerRebuildRoutesExOptions parse(javax.xml.stream.XMLStreamReader reader) throws java.lang.Exception{
+            SchedulerRebuildRoutesExOptions object =
+                new SchedulerRebuildRoutesExOptions();
 
             int event;
             java.lang.String nillableValue = null;
@@ -471,10 +535,10 @@
 
                     java.lang.String type = fullTypeName.substring(fullTypeName.indexOf(":")+1);
                     
-                            if (!"SchedulerMovableOrdersOptions".equals(type)){
+                            if (!"SchedulerRebuildRoutesExOptions".equals(type)){
                                 //find namespace for the prefix
                                 java.lang.String nsUri = reader.getNamespaceContext().getNamespaceURI(nsPrefix);
-                                return (SchedulerMovableOrdersOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
+                                return (SchedulerRebuildRoutesExOptions)com.freshdirect.routing.proxy.stub.transportation.ExtensionMapper.getTypeObject(
                                      nsUri,type,reader);
                               }
                         
@@ -499,11 +563,11 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","movable").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","runInBackground").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setMovable(
+                                              object.setRunInBackground(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
                                               
                                         reader.next();
@@ -518,12 +582,31 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
-                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","rebuildRoutesFirst").equals(reader.getName())){
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","useReseeding").equals(reader.getName())){
                                 
                                     java.lang.String content = reader.getElementText();
                                     
-                                              object.setRebuildRoutesFirst(
+                                              object.setUseReseeding(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getLocalName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.upslogisticstech.com/UPSLT/TransportationSuite/TransportationWebService","numberOfSeedsToConsider").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setNumberOfSeedsToConsider(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToInt(content));
                                               
                                         reader.next();
                                     
