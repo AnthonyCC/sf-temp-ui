@@ -43,7 +43,7 @@
 	%>
 
 <%  if (timeslotList.size() > 0) {%>
-<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
+<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
 <%
         List timeslotLst = timeslots.getTimeslotsForDate(day);

@@ -44,6 +44,7 @@
             String name=NVL.apply(request.getParameter("name"), "");
             String criterion=NVL.apply(request.getParameter("criterion"), "");
             String dayOfWeek=NVL.apply(request.getParameter("dayOfWeek"), "");
+            String path=NVL.apply(request.getParameter("path"), "");
             
       
     %>
@@ -62,6 +63,7 @@
 		reason=restriction.getReason().getName();
 		message=restriction.getMessage();
 		criterion=restriction.getCriterion().getName();
+		path=restriction.getPath();
           if(restriction instanceof OneTimeReverseRestriction){
                 OneTimeReverseRestriction otrRestriction=(OneTimeReverseRestriction)restriction;			
                 startDate=CCFormatter.formatDateYear(otrRestriction.getDateRange().getStartDate());
@@ -237,6 +239,13 @@
 		<td>			
 			<input type="text" length="50" size="50" name="message" value="<%=message%>">        
             <fd:ErrorHandler result='<%=result%>' name='message' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>         
+		</td>		
+	</tr>
+	<tr>
+		<td class="case_content_field">MEDIA PATH</td>
+		<td>			
+			<input type="text" length="50" size="50" name="path" value="<%=path%>">        
+            <fd:ErrorHandler result='<%=result%>' name='path' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>         
 		</td>		
 	</tr>    
     <tr>

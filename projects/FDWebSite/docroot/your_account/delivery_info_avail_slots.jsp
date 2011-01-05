@@ -37,30 +37,22 @@ if("true".equals(request.getParameter("chefstable"))) {
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" />
 <%
 boolean isStaticSlot = true;
-boolean hasPreReserved = false;
-boolean hasReservation = false;
-boolean hasWeeklyReservation=false;
 String timeSlotId="";
-String preReserveSlotId="";
 boolean isCheckAddress =false;
-String[] checkErrorType=null;
+FDReservation rsv = null;
+String actionName = null;
 ActionResult result=null;
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-TimeslotContext timeSlotCtx = TimeslotContext.CHECK_AVAILABLE_TIMESLOTS; 
-ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
+TimeslotContext timeSlotCtx = TimeslotContext.CHECK_AVAILABLE_TIMESLOTS;
 
 if (user.isChefsTable()) {
-	//request.setAttribute("chefstable","true");
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
 }
-//will be null.
-FDReservation rsv = user.getReservation();
 
 request.setAttribute("sitePage", "www.freshdirect.com/your_account");
 request.setAttribute("listPos", "SystemMessage,CategoryNote,TimeslotBottom");
 
-String zone = null;
 String addressId = request.getParameter("addressId");
 
 Calendar tomorrow = Calendar.getInstance();
@@ -75,58 +67,6 @@ SimpleDateFormat deliveryDayFormat = new SimpleDateFormat("EEE MM/d");
 				<%//Finds the address%>
 				<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 
-				<%//Delivery timeslot display%>
-				<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
 
-<%// move to Reservation page%>
-<table width="693" cellpadding="0" cellspacing="0" border="0">
-	<tr>
-		<td colspan="7">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="14"><br>
-	<% if(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))) && user.isDlvPassActive()) { %>
-			<div align="center"><br>
-				<a href="/your_account/reserve_timeslot.jsp"><img src="/media_stat/images/template/youraccount/reserve_delivery_time.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4"></a><br>
-				<span class="text12">Reserve a delivery timeslot before you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br>
-					<a href="/your_account/reserve_timeslot.jsp"><b>Click here</b></a>
-				</span><br>
-				<img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43" border="0" vspace="6">
-			</div>
-	<% }else if(!user.isDlvPassActive() && !(user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable"))))) {%>
-			<div align="center"><br>
-				<% if (FDStoreProperties.isAdServerEnabled()) { %>
-					<SCRIPT LANGUAGE=JavaScript>
-						<!--
-						OAS_AD('TimeslotBottom');
-						//-->
-					</SCRIPT><br><br>
-				<% } %>
-			 </div>
-	<% }else if(!user.isDlvPassActive() && user.isEligibleForPreReservation() && (!"true".equals(request.getParameter("chefstable")))) {%>
-			<div align="center">
-				 <table>
-					<tr>
-						<td align="center">
-							<a href="/your_account/reserve_timeslot.jsp">
-								<img src="/media_stat/images/template/youraccount/reserve_delivery_time.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4">
-							</a><br>
-							<span class="text12">Reserve a delivery timeslot before you place your order.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="3"><br><a href="/your_account/reserve_timeslot.jsp"><b>Click here</b></a></span><br>
-						</td>
-						<td align="center">
-							<img src="/media_stat/images/layout/clear.gif" width="1" height="34"><br>
-								<% if (FDStoreProperties.isAdServerEnabled()) { %>
-									<SCRIPT LANGUAGE=JavaScript>
-											<!--
-											OAS_AD('TimeslotBottom');
-											//-->
-									</SCRIPT><br><br>
-								 <% } %>
-						</td>
-					</tr>
-				</table>
-			</div>
-	<%}%>
-		</td>
-	</tr>
-</table>
 </tmpl:put>
 </tmpl:insert>

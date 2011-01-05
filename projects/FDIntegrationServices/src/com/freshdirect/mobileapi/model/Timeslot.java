@@ -28,7 +28,7 @@ public class Timeslot {
     private int normalAvailCapacity = 0;
 
     private boolean chefsTable = false;
-        
+
     public static List<Timeslot> wrap(List<FDTimeslot> slots, boolean chefTableUser) {
         List<Timeslot> result = new ArrayList<Timeslot>();
         for (FDTimeslot slot : slots) {
@@ -148,5 +148,9 @@ public class Timeslot {
 	public double getSteeringDiscount() {
 		return slot.getSteeringDiscount();
 	}
-
+	
+	/* Eco Friendly timeslot*/
+	public boolean isEcoFriendly() {
+		return slot.isEcoFriendly();
+	}
 }

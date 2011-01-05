@@ -4,11 +4,11 @@
 
 boolean isInYourAccount = (request.getRequestURI().indexOf("your_account") > -1);
 
-FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
-FDIdentity identity = user.getIdentity();
+FDUserI yuzer = (FDUserI)session.getAttribute(SessionName.USER);
+FDIdentity identity = yuzer.getIdentity();
 boolean allowSelection = false;
 
-final boolean isNormalCheckout = user.getCheckoutMode() == EnumCheckoutMode.NORMAL;
+final boolean isNormalCheckout = yuzer.getCheckoutMode() == EnumCheckoutMode.NORMAL;
 
 Map<EnumServiceType,Collection<ErpAddressModel>> addresses = new HashMap<EnumServiceType,Collection<ErpAddressModel>>();
 
@@ -30,7 +30,7 @@ for(Iterator<ErpAddressModel> i = FDCustomerManager.getShipToAddresses(identity)
 		hl.add(address);
 	}
 }
-String shipToDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(user.getIdentity() );
+String shipToDepotLocation = FDCustomerManager.getDefaultDepotLocationPK(yuzer.getIdentity() );
 
 String linkURL = null;
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
@@ -49,7 +49,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 <table border="0" cellspacing="0" cellpadding="2" width="675" >
 	<TR VALIGN="TOP">
 		<TD WIDTH="675">
-			<%if(user.isPickupOnly()) {
+			<%if(yuzer.isPickupOnly()) {
 				%>
 				<font class="text12"><b>Unfortunately, we do not currently deliver to your neighborhood.</b></font><br>
 				<img src="/media_stat/images/layout/clear.gif" width="1" height="4"><br>
@@ -59,8 +59,8 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 		</TD>
 	</TR>
 	<%
-	if(!user.isPickupOnly()){
-		if(!isInYourAccount && user.isDepotUser()) {
+	if(!yuzer.isPickupOnly()){
+		if(!isInYourAccount && yuzer.isDepotUser()) {
 			%>
 			<tr>
 				<td class="text11orbold">
@@ -74,7 +74,7 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") == -1) {
 </table><br><br>
 
 <% // BEGINING D E P O T   L O C A T I O N S 
-if(isNormalCheckout && user.isDepotUser()){
+if(isNormalCheckout && yuzer.isDepotUser()){
 	%>
     <%@ include file="/shared/includes/i_depot_locations.jspf" %><br><br>
 	<%
@@ -91,8 +91,8 @@ if(isNormalCheckout && user.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
 			<TR VALIGN="TOP">
 				<TD WIDTH="675" class="text12">
-					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="135" height="9" alt="CORPORATE DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)user.getMinCorpOrderAmount() %>)
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/template/youraccount/hdr_corp_delivery.gif" width="154" height="15" alt="CORPORATE DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinCorpOrderAmount() %>)
+					<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 				</td>
 			</tr>
@@ -118,8 +118,8 @@ if(isNormalCheckout && user.isDepotUser()){
 		<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675" >
 			<TR  VALIGN="TOP">
 				<TD class="text12" WIDTH="675">
-					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="98" height="9" alt="HOME DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)user.getMinimumOrderAmount()%>)
-					<IMG src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+					<img src="/media_stat/images/template/youraccount/hdr_home_delivery.gif" width="110" height="15" alt="HOME DELIVERY">&nbsp;&nbsp;&nbsp;&nbsp;(minimum order $<%=(int)yuzer.getMinimumOrderAmount()%>)
+					<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 					<img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
 					<% if (FDStoreProperties.getHamptons() ) { %>
 					  <fd:IncludeMedia name='/media/editorial/hamptons/hamptons_home_address.html' />
@@ -142,7 +142,7 @@ if(isNormalCheckout && user.isDepotUser()){
 
 <%
 // PICKUP   L O C A T I O N S
-if(isNormalCheckout && user.isPickupUser()){
+if(isNormalCheckout && yuzer.isPickupUser()){
 %>
     <%@ include file="/includes/i_pickup_depot_locations.jspf"%>
 <%

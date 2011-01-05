@@ -26,7 +26,7 @@ public class RecurringRestrictionTestCase extends TestCase {
 			"NY State Sunday block",
 			Calendar.SUNDAY,
 			new TimeOfDay("00:00 AM"),
-			new TimeOfDay("11:59 AM"));
+			new TimeOfDay("11:59 AM"),"");
 
 		assertFalse(s.contains(DF.parse("2003-09-05 00:00:00.0")));
 		assertTrue(s.contains(DF.parse("2003-09-07 00:00:00.0")));
@@ -46,7 +46,7 @@ public class RecurringRestrictionTestCase extends TestCase {
 			"Alcohol",
 			Calendar.SUNDAY,
 			new TimeOfDay("12:00 AM"),
-			new TimeOfDay("12:00 PM"));
+			new TimeOfDay("12:00 PM"),"");
 
 		assertEffect(r, "2003-09-13 23:00:00.0", "2003-09-14 00:00:00.0", false, false);
 		assertEffect(r, "2003-09-14 10:00:00.0", "2003-09-14 12:00:00.0", true, true);
@@ -72,7 +72,7 @@ public class RecurringRestrictionTestCase extends TestCase {
 			"Kosher",
 			Calendar.FRIDAY,
 			new TimeOfDay("12:00 AM"),
-			new TimeOfDay("11:59 PM"));
+			new TimeOfDay("11:59 PM"),"");
 
 		assertFalse(r.overlaps(new DateRange(DF.parse("2003-09-16 15:00:00.0"), DF.parse("2003-09-16 17:00:00.0"))));
 	}
@@ -85,7 +85,7 @@ public class RecurringRestrictionTestCase extends TestCase {
 			"Block Friday",
 			Calendar.FRIDAY,
 			TimeOfDay.MIDNIGHT,
-			TimeOfDay.NEXT_MIDNIGHT);
+			TimeOfDay.NEXT_MIDNIGHT,"");
 
 		assertTrue(r.contains(new DateRange(DF.parse("2004-08-06 00:00:00.0"), DF.parse("2004-08-07 00:00:00.0"))));
 	}

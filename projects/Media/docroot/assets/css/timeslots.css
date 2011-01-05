@@ -1,0 +1,425 @@
+.tsCol {
+	border: 1px solid red;
+	margin-top: 20px;
+	width: 84px;
+	border: 1px solid #ccc;
+}
+#tsRefcol_contracted {
+	width: 84px;
+}
+#tsRefcol_expanded {
+	width: 203px;
+}
+table.tsContainer td {
+	border: 1px solid #ccc;
+}
+
+.tsTable {
+	border-collapse: collapse;
+}
+
+.float_children {
+	border: 0px solid #ccc;
+}
+
+.float_children_noborder{
+	border: 0px solid #ccc;	
+	padding-left: 4px;
+}
+
+.tsHeaderC {
+	height: 56px;
+	width: 84px;
+}
+.tsHeaderE {
+	height: 76px; /* +20 for margin-top */
+	width: 100%;
+}
+
+table.tsHeaderC, .tsHeaderC {
+	border:1px solid #ccc;
+	height:56px;
+	width: 84px;
+	background-color:#FBFBFB;
+	padding-top:0px;
+}
+
+.tsHeaderC td {
+	border:0px solid #ccc;
+	height:56px;
+	width: 84px;
+	background-color:#FBFBFB;
+	padding-top:0px;
+}
+
+table.tsHeaderE, .tsHeaderE {
+	border:0px solid #ccc;
+	height:70px;
+	width:100%;
+	background-color:#78ABDC;
+	padding-top:0px;
+}
+
+.tsFooter table {
+	width: 100%;
+	text-align: center;
+}
+.tsSpacerC {
+	height: 25px;
+	width: 84px;
+}
+.tsContainerC {
+	height: 31px;
+	width: 84px;
+}
+.tsContentC, .tsContentE {
+	height: 100%;
+	width: 100%;
+	line-height: 31px;
+}
+
+a.tsContentC {
+	color:#333333;
+}
+
+.tsContCon table, .tsContExp table {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+	border-collapse: collapse;
+	vertical-align: middle;
+}
+.tsRadioCont {
+	height: 100%;
+	float: left;
+	width: 20px;
+	padding-right: 6px;
+	position: relative;
+	top: 5px;
+}
+.tsDayHeaderC, .tsDayHeaderE {
+	font-family: 'Eagle, Book';
+	font-size: 20px;
+	color: #333;
+	width: 100%;
+}
+.tsDayHeaderC, .tsDayHeaderE {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+.tsDayNameC {
+	font-size:16px;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsDayDateC {
+	font-size:11px;
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsDayNameE {
+	font-size:24px;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsDayDateE {
+	font-size:12px;
+	color:#FFFFFF;
+	font-weight:bold;
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsContentC a, .tsContainerE a {
+	height: 100%;
+	width: 100%;
+	text-decoration: none;
+	color: #333;
+	cursor: default;
+}
+
+.tsCol a.tsContent {
+	display: block;
+	height: 100%;
+	text-decoration: none;
+	color: #333;
+	cursor: pointer;
+}
+.tsCol a.tsContent div {
+	height: 12px;
+	margin-left: 0px;
+}
+
+.tsCol a.tsContent div.tsCont, .tsCol a.tsContent div.msgCont {
+	padding-top: 10px;
+	margin-left: 4px;
+}
+div.tsNoDeliv {
+	width: 100%;
+	text-align: center;
+	margin-left: 0;
+}
+
+.cutoff {
+	background-color: #fff;
+	font-weight: bold;
+	text-align: center;
+	height: 26px;
+}
+.cutoff a,.cutoffDisp a {
+	text-decoration: none;
+	color: #333;
+	cursor: default;
+}
+.cutoff a.cutoffwBorder {
+	border: 1px solid #ccc;
+}
+.fleft {
+	float: left;
+}
+.ts_rb {
+	padding-top:6px;
+	width: 21px;
+}
+
+.tsFooterC {
+	display: none;
+}
+
+/*Steering Discount slot*/
+.tsDiscountE {
+	color:#77A642;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+
+.tsDiscountMoreE {
+	color:#77A642;
+	font-size:9px;
+	text-decoration:none;
+	cursor: pointer;
+	border:0px solid;
+	font-weight:normal;
+	padding-left:0;
+	height: 5px;
+}
+
+.tsDiscountPropE {
+	float:right;
+	line-height:15px;
+	margin:0px 10px 0 0;
+}
+
+a.tsBordDiscountE {
+	border:1px solid #77A642;
+}
+
+.tsCTStar {
+	margin-right:3px;
+}
+
+
+/*Reservation slot*/
+a.tsContentResC {
+	background-color:#E0E0E0;
+}
+a.tsContentResE {
+	background-color:#E0E0E0; /*#6D6968*/
+}
+.tsReservationE {
+	color:#666666;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;	
+}
+
+.tsReservationPropE {
+	float:right;
+	line-height:15px;
+	margin:6px 10px 0 0;
+}
+
+/*Chefstable slot*/
+.tsChefstableE {
+	color:#794E79;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+a.tsChefMoreE {
+	color:#794E79;
+	font-size:8px;
+	text-decoration:underline;
+	cursor: pointer;
+}
+
+.tsChefstablePropE {
+	float:right;
+	line-height:15px;
+	margin:6px 10px 0 0;
+}
+
+.tsBordCTE {
+	border:1px solid #794E79;
+}
+/*SoldOut slot*/
+.tsSoldoutPropE {
+	float:right;
+	line-height:15px;
+	margin:6px 10px 0 0;
+}
+
+.tsSoldoutE {
+	color:#737373;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+
+/*EcoFriendly slot*/
+.tsEcoFriendlyE {
+	color:#DB5F5F;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+a.tsEcoFriendlyMoreE {
+	color:#DB5F5F;
+	font-size:8px;
+	text-decoration:underline;
+	cursor: pointer;
+}
+
+.tsEcoFriendlyPropE {
+	float:right;
+	line-height:15px;
+	margin:6px 10px 0 0;
+}
+
+a.tsBordEcoFriendlyE {
+	border:1px solid #DB5F5F;
+}
+
+.tsDivHide a{
+	color:#78ABDC;
+	text-align:right;
+}
+
+/*Selected slot*/
+.tsContentSelC {
+	background-color:#666666;
+	color:#FFFFFF;
+}
+.tsContentSelE {
+	background-color:#666666; 
+	color:#FFFFFF;
+}
+
+.tsSelectedSlotE {
+	color:#FFFFFF;
+	font-weight:bold;
+	font-size: 10px; 
+	font-family: Verdana, Arial, sans-serif;	
+}
+
+.tsSelectedSlotPropE {
+	float:right;
+	line-height:15px;
+	margin:6px 10px 0 0;
+}
+
+.tsTopModuleHeader {
+	font-size:12px;
+	font-weight:bold;
+	color:#333333;
+}
+
+.tsBottomModuleHeader {
+	font-size:10px;
+	font-weight:bold;
+}
+
+a.tsHiperlink {
+	color:#669933;
+	font-size: 10px;
+	font-family: Verdana, Arial, sans-serif;
+	text-decoration:none;
+}
+
+div.content_fixed td{
+	font-family:Verdana,Arial,sans-serif;
+	font-size:10px;
+}
+
+a.tsCTBenefits {
+	color: #77A642;
+	text-decoration: underline;
+}
+
+a.tsNCBenefits {
+	color: #006400;
+	text-decoration: none;
+}
+
+div.learnMoreTimeslot {
+	display:none;
+	float:left;
+	height:0;
+	visibility:hidden;
+	width:0;
+}
+
+div#learnMoreContent {
+	width:800px;
+}
+
+div#MB_caption {
+	font: bold 12px "Lucida Grande",Arial,sans-serif;
+	padding:0.5em 2em 0.5em 0;
+}
+
+div#MB_content {
+	font: normal 10px "Lucida Grande",Arial,sans-serif;
+}
+
+.tsBordDefault {
+	border:1px solid #F8F8F8;
+}
+
+.tsBordDefaultExp {
+	border:1px solid #FFFFFF;
+}
+
+.tsBordDefaultExp div {
+	margin-top:8px;
+}
+
+a.tsDivHide {
+	color:#78ABDC;
+	float:right;
+}
+
+.tsTable td {
+    border: 1px solid #ccc;
+}
+.tsFooter div {
+    margin: -1px 0 -1px -1px;
+}
+div.tsHeaderE {
+    margin-top: -10px;
+}
+
+.tsTable td div, .tsTable td table td, td.tsFooter, td.cutoff {
+    border: 0 none;
+}
+
+.cutoffDisp {
+   border-right: 1px solid #ccc;
+   text-align:center;
+}
+
+
+
+

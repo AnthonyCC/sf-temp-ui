@@ -21,7 +21,7 @@ public class DateRangeFormatTestCase extends TestCase {
 			"Passover",
 			"Passover",
 			DF.parse("2003-09-06 00:00:00.0"),
-			DF.parse("2003-09-07 00:00:00.0"));
+			DF.parse("2003-09-07 00:00:00.0"),"");
 		assertEquals("September 6, 2003", s.getDisplayDate());
 
 		s = new OneTimeRestriction("435433545",
@@ -30,7 +30,7 @@ public class DateRangeFormatTestCase extends TestCase {
 			"Passover",
 			"Passover",
 			DF.parse("2003-09-06 00:00:00.0"),
-			DF.parse("2003-09-08 00:00:00.0"));
+			DF.parse("2003-09-08 00:00:00.0"),"");
 		assertEquals("September 6-7, 2003", s.getDisplayDate());
 
 		s = new OneTimeRestriction("32325566",
@@ -39,7 +39,7 @@ public class DateRangeFormatTestCase extends TestCase {
 			"Passover",
 			"Passover",
 			DF.parse("2004-07-30 00:00:00.0"),
-			DF.parse("2004-08-05 00:00:00.0"));
+			DF.parse("2004-08-05 00:00:00.0"),"");
 		assertEquals("July 30-August 5, 2004", s.getDisplayDate());
 	}
 

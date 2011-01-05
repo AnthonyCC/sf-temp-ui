@@ -185,6 +185,15 @@
                   &nbsp;<form:errors path="priority" />
                 </td>
                </tr>
+               <tr>
+                  <td>Eco-Friendly</td>
+                  <td>
+                    <form:input maxlength="50" size="30" path="ecoFriendly"/>
+                  </td>
+                <td>
+                  &nbsp;<form:errors path="ecoFriendly" />
+                </td>
+               </tr>
               <tr><td colspan="3">&nbsp;</td></tr>
               <tr>
                   <td colspan="3" align="center">

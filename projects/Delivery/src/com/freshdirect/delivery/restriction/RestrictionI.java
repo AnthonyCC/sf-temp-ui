@@ -21,6 +21,8 @@ public interface RestrictionI extends Serializable {
 
 	public String getMessage();
 
+	public String getPath();
+
 	public String getDisplayDate();
 
 	/** @return true if restriction is in effect on the specified date */

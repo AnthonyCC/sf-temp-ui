@@ -56,7 +56,15 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 	
 	/* Window Steering Discount Value*/
 	private double steeringDiscount;
-	
+
+	public boolean isEcoFriendly() {		
+		if(this.getRoutingSlot() != null && this.getRoutingSlot().getDeliveryCost() != null
+				&& this.getRoutingSlot().getDeliveryCost().getAdditionalDistance() <= this.getRoutingSlot().getEcoFriendly()) {
+			return true;
+		}
+		return false;
+	}
+
 	public double getSteeringDiscount() {
 		return steeringDiscount;
 	}
@@ -297,6 +305,10 @@ public class DlvTimeslotModel extends DlvShiftTimeslotModel {
 		// as cutoff time is always the day before
 		cutoffCal.add(Calendar.DATE, -1);
 		return cutoffCal.getTime();
+	}
+
+	public Date getCutoffTimeAsNormalDate() {
+		return getCutoffTime().getNormalDate();		
 	}
 
 	public boolean isMatching(Date baseDate, Date startTime, Date endTime) {

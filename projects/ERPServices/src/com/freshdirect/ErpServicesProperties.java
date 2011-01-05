@@ -200,7 +200,7 @@ public class ErpServicesProperties {
         defaults.put(PROP_CVPRICE_HOME,	    "freshdirect.erp.CharacteristicValuePrice");
         defaults.put(PROP_COOL_MANAGER_HOME,"freshdirect.erp.COOLManager");
         
-		defaults.put(PROP_HORIZON_DAYS, "8");
+		defaults.put(PROP_HORIZON_DAYS, "7");
        
 		defaults.put(PROP_AUTHORIZE, "true");
 		defaults.put(PROP_CYBERSOURCE_IP, "10.53.5.11");

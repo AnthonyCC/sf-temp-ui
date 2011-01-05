@@ -4,7 +4,6 @@
 <%@ page import="com.freshdirect.delivery.restriction.DlvRestrictionsList"%>
 <%@ page import="com.freshdirect.fdstore.FDDeliveryManager"%>
 <%@ page import="com.freshdirect.customer.ErpAddressModel" %>
-<%@ page import="com.freshdirect.fdstore.FDTimeslotList" %>
 <%@ page import="com.freshdirect.webapp.util.CCFormatter" %>
 <%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
 <%@ page import="com.freshdirect.common.customer.EnumServiceType" %>
@@ -20,14 +19,18 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
+<%@ page import="com.freshdirect.fdstore.deliverypass.DeliveryPassUtil" %>
+<%@ page import="com.freshdirect.fdstore.util.TimeslotContext" %>
+<%@ page import="com.freshdirect.fdstore.util.FDTimeslotUtil" %>
+<%@ page import="com.freshdirect.fdstore.util.AddressFinder" %>
+<%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
 
 <%
     String successPage = "checkout_select_payment.jsp";
     successPage = "checkout_ATP_check.jsp?successPage="+URLEncoder.encode(successPage);
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-    FDCartModel cart = user.getShoppingCart();
-    FDReservation rsv = user.getReservation();
-    ErpAddressModel address = cart.getDeliveryAddress();
+
+    ErpAddressModel address = user!=null ? user.getShoppingCart().getDeliveryAddress():null;
     boolean isStaticSlot = false;
     boolean showAdvanceOrderBand = false;
     boolean forceOrders=false;
@@ -40,68 +43,33 @@
     tomorrow.add(Calendar.DATE, 1);
     tomorrow = DateUtil.truncate(tomorrow);
     DateRange validRange = new DateRange(tomorrow.getTime(),DateUtil.addDays(tomorrow.getTime(),FDStoreProperties.getHolidayLookaheadDays()));
-    boolean advOrdRangeOK = advOrdRange.overlaps(validRange);
-
-
-    String preReserveSlotId = "";
-    boolean hasPreReserved = false;
-    if(rsv != null){
-        preReserveSlotId = rsv.getTimeslotId();
-        hasPreReserved = address.getPK()!=null && address.getPK().getId().equals(rsv.getAddressId());
-    }
-    String timeSlotId = request.getParameter("deliveryTimeslotId");
-    if (timeSlotId == null) {
-        rsv  = cart.getDeliveryReservation();
-        if(rsv != null && (address != null && address.getPK() != null && address.getPK().getId() != null
-				&& address.getPK().getId().equals(rsv.getAddressId()))){
-            timeSlotId = rsv.getTimeslotId();
-        }else{
-            timeSlotId = "";
-        }
-    }
-
-    boolean thxgivingRestriction = false;
-    boolean kosherRestriction = false;
-    boolean alcoholRestriction = false;
-    boolean thxgiving_meal_Restriction=false;
-	boolean easterMealRestriction = false; //easter meals
-
-    for(Iterator i = cart.getApplicableRestrictions().iterator(); i.hasNext(); ){
-        EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
-        if(EnumDlvRestrictionReason.THANKSGIVING.equals(reason)){
-            thxgivingRestriction = true;
-            continue;
-        }
-        if(EnumDlvRestrictionReason.THANKSGIVING_MEALS.equals(reason)){
-           thxgiving_meal_Restriction=true;
-           continue;
-        }
-        if(EnumDlvRestrictionReason.ALCOHOL.equals(reason)){
-            alcoholRestriction = true;
-            continue;
-        }
-        if(EnumDlvRestrictionReason.KOSHER.equals(reason)){
-            kosherRestriction = true;
-            continue;
-        }
-		//easter meals
-        if(EnumDlvRestrictionReason.EASTER_MEALS.equals(reason)){
-           easterMealRestriction=true;
-           continue;
-        }
-    }
-    int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
-    if("true".equals(request.getParameter("chefstable")) || user.isChefsTable()) {
-    	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
-    }
+    boolean advOrdRangeOK = advOrdRange.overlaps(validRange); 
+	boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
+	String timeSlotId = request.getParameter("deliveryTimeslotId");
+   
 %>
-<%
-	//get zone promotion codes
-	DlvZoneInfoModel zInfo = FDDeliveryManager.getInstance().getZoneInfo(address, new java.util.Date());    
-    
-    //get zone promotion amount
-    String zoneId = cart.getDeliveryZone();
-    double zonePromoAmount=PromotionHelper.getDiscount(user,zoneId);
+
+<fd:DeliveryTimeSlot id="DeliveryTimeSlotResult" address="<%=address%>" timeSlotId="<%=timeSlotId%>">
+
+<%	
+	FDDeliveryTimeslotModel deliveryModel = user.getDeliveryTimeslotModel();
+	FDCartModel cart = deliveryModel.getShoppingCart();
+	
+	List<FDTimeslotUtil> timeslotList = deliveryModel.getTimeslotList();
+	Map zones = deliveryModel.getZones();
+	boolean zoneCtActive = deliveryModel.isZoneCtActive();
+	List messages = deliveryModel.getGeoRestrictionmessages();
+	
+	String selectedSlotId = deliveryModel.getTimeSlotId();
+	String preReserveSlotId = deliveryModel.getPreReserveSlotId();
+	boolean hasPreReserved = deliveryModel.isPreReserved();
+	boolean defaultColExp = false;
+	String zoneId = deliveryModel.getZoneId();
+
+	
+	boolean hasCapacity = deliveryModel.hasCapacity();	
+	//get zone promotion amount
+    double zonePromoAmount = deliveryModel.getZonePromoAmount();
     String zonePromoString=null;
 	if(zonePromoAmount > 0)
 	{
@@ -110,13 +78,15 @@
 	}
 %>
 <script>
-var zonePromoString="";
-var zonePromoEnabled=false;
-<%if(zonePromoAmount>0){ %>
-zonePromoString="<%=zonePromoString %>";
-zonePromoEnabled=true;
-<%} %>
+	var zonePromoString=""; 
+	var zonePromoEnabled=false;
+	<%if(zonePromoAmount>0){ %>
+		zonePromoString="<%=zonePromoString %>"; 
+		zonePromoEnabled=true;
+	<%} %>
 </script>
+
+
 <crm:GetCurrentAgent id="currentAgent">
 <tmpl:insert template='/template/top_nav.jsp'>
 
@@ -132,7 +102,7 @@ zonePromoEnabled=true;
 </fd:ErrorHandler>
 
 <TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
-<form name="select_delivery_slot" method="POST" action="">
+<FORM name="select_delivery_slot" method="POST" action="">
 	<TR>
 	<TD WIDTH="75%">
         &nbsp;Step 2 of 4: Select Delivery Time
@@ -153,219 +123,205 @@ zonePromoEnabled=true;
 
 
 <div class="content_scroll" style="height: 72%;">
-<table width="100%" cellpadding="2" cellspacing="0" border="0" class="order">
-	<tr><td colspan="2">
-		<%
-		if(alcoholRestriction){%>
-			<b>Beer note for Sunday Delivery.</b><br>
-			New York state law prohibits the sale of Beer from 3 A.M. until Noon on Sunday. If you select Sunday<br>
-			delivery slot that does not begin after 12 Noon, all Beer items will be removed form your cart.
-		<%}%>
-	</td></tr>
-	<tr><td colspan="2" align="center" class="order_detail">
+<TABLE width="100%" cellpadding="2" cellspacing="0" border="0" class="order">
+	<TR>
+		<TD  align="center" class="order_detail">	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
-<fd:DeliveryTimeSlot id='DeliveryTimeSlotResult' address='<%=address%>'>
-<%
-List timeslotList = DeliveryTimeSlotResult.getTimeslots();
-Map zones = DeliveryTimeSlotResult.getZones();
-boolean zoneCtActive = DeliveryTimeSlotResult.isZoneCtActive();
-List messages = DeliveryTimeSlotResult.getMessages();
-List comments = DeliveryTimeSlotResult.getComments();
-%>
 
-<%
-	DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
-	boolean isKosherSlotAvailable = false;
-	boolean hasCapacity = false;
-	for(Iterator i = timeslotList.iterator(); i.hasNext(); ){
-		FDTimeslotList lst = (FDTimeslotList)i.next();
-		isKosherSlotAvailable = isKosherSlotAvailable || lst.isKosherSlotAvailable(restrictions);
-		hasCapacity = hasCapacity || lst.hasCapacity();
-	}
-%>
+<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <%if(DeliveryTimeSlotResult != null && !DeliveryTimeSlotResult.isSuccess() ){%>
 		<fd:ErrorHandler result='<%=DeliveryTimeSlotResult%>' name='deliveryTime' id='errorMsg'>
-				<%@ include file="/includes/i_error_messages.jspf" %>
+				<%@ include file="/includes/i_timeslot_error_messages.jspf" %>
 		</fd:ErrorHandler>
-	<%}%>
-<%if(kosherRestriction){%>
-<table>
-	<tr valign="top">
-		<td colspan="2" class="text12">
-		<table width="100%"><tr><td><img src="/media_stat/images/template/homepages/truck.gif" width="61" height="43" border="0"></td>
-		<td class="text12"><b><span class="kosher">Kosher Delivery Note:</span></b>
-		The custom-cut kosher items in your cart are not available for delivery on Friday, Saturday, or Sunday morning.<br>
-			<fd:GetDlvRestrictions id="kosherRestrictions" reason="<%=EnumDlvRestrictionReason.KOSHER%>" withinHorizon="true">
-			<% if (kosherRestrictions.size() > 0) { %>They are also unavailable during
-				<logic:iterate indexId='i' collection="<%= kosherRestrictions %>" id="restriction" type="com.freshdirect.delivery.restriction.RestrictionI">
-				<b><%=restriction.getName()%></b>, <%=restriction.getDisplayDate()%><% if (i.intValue() < kosherRestrictions.size() -1) {%>; <% } else { %>.<% } %>
-				</logic:iterate>
-			<% } %>
-			</fd:GetDlvRestrictions>
-            <% if (user.isDepotUser() && isKosherSlotAvailable) { %>
-                <b>Unfortunately there is no time during the next week that custom-cut kosher items can be delivered. If you continue Checkout, these
-                items will be removed from your cart.</b>
-            <% } else { %>
-                Available delivery days for all of your kosher items are marked in blue.
-            <% } %>
-            <a href="javascript:popup('/shared/departments/kosher/delivery_info.jsp','small')">Learn More</a>
-		</td>
-		</tr>
-		<tr><td colspan="2"><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-		</table>
-		</td>
-	</tr>
-</table>
 <%}%>
 
 <!-- LOYALTY -->
 	<%@ include file="/shared/includes/delivery/i_loyalty_banner.jspf" %>
-	<!-- LOYALTY -->
+<!-- LOYALTY -->
 
-<table width="695">
-	<tr><td align="center">
+<!--START MESSAGING SECTION-->
 
-	<%if(timeslot_page_type == TimeslotLogic.PAGE_CHEFSTABLE){ %>
-		<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/prp1x1.gif"> <b>Chef's Table only</b>
-	<%}%>
-	</td>
-    <td>
-	<% if(user.isEligibleForPreReservation()){
-	 		FDReservation userRsv = user.getReservation();
-			if(userRsv != null && address.getPK()!=null && userRsv.getAddressId().equals(address.getPK().getId())){%>
-				<img src="/media_stat/images/layout/ff9933.gif" width="12" height="12">  Your <%= EnumReservationType.RECURRING_RESERVATION.equals(userRsv.getReservationType()) ? "Weekly" : "" %> Reserved Delivery Slot
-		<% }
-	}%>
-	</td>
-	<td align="right">
-	<%if(zonePromoAmount>0){ %>
-	<img align="bottom" style="position: relative; top: 2px;" hspace="4" vspace="0" width="12px" height="12px" src="/media_stat/images/background/green1x1.gif"><b> Save $<%=zonePromoString %> when you choose a <a href="javascript:popup('/checkout/step_2_green_popup.jsp','small')">green timeslot</b></a><br>
-	<%}%>
-	</td></tr>
-	</table>
-
-<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && thxgivingRestriction){%>
-	<table width="100%">
-		<tr>
-			<td class="text12" align="center">
-	<fd:IncludeMedia name='/media/editorial/holiday/advance_order/delivtext_adv.html'/>
-			</td>
-		</tr>
-		<tr><td ><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-	</table>
-<%}%>
-
-<%if(thxgiving_meal_Restriction){%>
-	<table width="100%">
-		<tr>
-			<td class="text12" align="center">
-	                   <fd:IncludeMedia name='/media/editorial/holiday/thanksgiving/thanksgiv_chkout_msg.htm'/>
-			</td>
-		</tr>
-		<tr><td ><img src="/media_stat/images/layout/clear.gif" width="1" height="4"></td></tr>
-	</table>
-<%}%>
-
-<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && easterMealRestriction){%>
-	<table width="100%">
-		<tr valign="top">
-			<td colspan="2" class="text12">
-			<fd:IncludeMedia name='/media/editorial/holiday/advance_order/eastermeals/delivbar_adv_msg.html'/>
-			</td>
-		</tr>
-	</table>
-<%}%>
-
-	<%if(easterMealRestriction){%>
-		<table width="100%">
-			<tr valign="top">
-				<td colspan="2" class="text12">
-				<fd:IncludeMedia name='/media/editorial/holiday/easter/eastermeals_chkout_msg.htm'/>
-				</td>
-			</tr>
-		</table>
-	<%}%>
-
-
-<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.FDTimeslotList" indexId="idx">
-<%    if(idx.intValue() == 1){
-		showAdvanceOrderBand=false;
-
-	%>
-		<span class="text12"><b>Standard Delivery Slots</b></span>
-<%    } else {
-           showAdvanceOrderBand = timeslotList.size()>1 ? true & advOrdRangeOK : false;
-      }
- %>
-<%@ include file="/shared/includes/delivery/i_restriction_band.jspf"%>
-<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
-<%-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-</logic:iterate>
-<!-- Bryan Restriction Message Added -->
+<!-- GEO Restriction Message Added -->
 <% if(messages != null && messages.size() >= 1) { %>
-	<%@ include file="/shared/includes/delivery/i_restriction_message.jspf"%>
+		<%@ include file="/shared/includes/delivery/i_geowarning_message.jspf"%>
 <% } %>
-<!-- Geo Restriction Comment Added -->
-<% if(comments != null && comments.size() >= 1) { %>
-	<%@ include file="/shared/includes/delivery/i_restriction_comment.jspf"%>
-<% } %>
+
+<!-- Alcohol, SpecialItems, holiday, deliveryPass, noCapacity warning Messages -->
+
+<%if(cart.containsAlcohol()){%>
+
+	<%@ include file="/includes/delivery/i_alcohol_warning.jspf"%>	
+		
+<%}%>
+
+<%if(user.getSelectedServiceType() == EnumServiceType.CORPORATE) { %>
+	
+	<%@ include file="/includes/delivery/i_delivery_pass_not_applied.jspf"%>	
+	
+<%}%>
+
+<%if(!hasCapacity){%>
+
+	<%@ include file="/includes/delivery/i_slots_no_capacity.jspf"%>
+	
+<%}%>
+
+<%@ include file="/includes/delivery/i_holiday_warning.jspf"%>
+
+<%if(deliveryModel.isKosherRestriction()){%>
+	
+	<%@ include file="/includes/delivery/i_kosher_restriction_warning.jspf"%>
+		
+<%}%>
+
+<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && deliveryModel.isThxgivingRestriction()){%>
+	
+	<%@ include file="/includes/delivery/i_specialitem_thanksgiving_delivery.jspf"%>
+		
+<%}%>
+
+
+<%if(cart.hasAdvanceOrderItem() && advOrdRangeOK && deliveryModel.isEasterMealRestriction()){%>
+	
+	<%@ include file="/includes/delivery/i_specialitem_easter_delivery.jspf"%>
+		
+<%}%>
+	
+<%if(deliveryModel.isEasterMealRestriction() && !advOrdRangeOK){ %>
+	
+	<%@ include file="/includes/delivery/i_eastermeal.jspf"%>
+		
+<%}%>
+
+<%if(deliveryModel.isThxgiving_meal_Restriction()){%>
+
+	<%@ include file="/includes/delivery/i_thanksgiving_meal.jspf"%>
+		
+<%}%>
+<%if(deliveryModel.isValentineRestriction()){%>
+	
+	<%@ include file="/includes/delivery/i_valentine.jspf"%>
+	
+<%}%>
+<!--END MESSAGING SECTION-->
+
+
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
+<table>
+<logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
+	<tr>
+		<td>
+<%
+	if(timeslotList.size()>1 && idx.intValue()==0){
+%>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+	<span class="text12"><b>SPECIAL DELIVERY</b></span><BR>	
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+<%}%>
+
+
+<%	
+	Boolean isForAdvOrdSlots = false;
+	if(timeslotList.size()>1 && idx.intValue()==0){
+		isForAdvOrdSlots = true;
+	}
+
+	// If there are 2 advance order timeslots then show standard delivery header accordingly
+	if((timeslotList.size()>2 && isAdvOrderGap && idx.intValue()==2) ||
+		(timeslotList.size()==2 && isAdvOrderGap && idx.intValue()==1) ||
+		(!isAdvOrderGap && idx.intValue()==1)){
+	//if(idx.intValue() == 1){
+	
+	showAdvanceOrderBand=false;
+%>
+	<span class="text12"><b>REGULAR DELIVERY</b></span><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
+			
+<%} else { 
+    showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
+ } %>
+
+	<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+
+<!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
+	</td>
+</TR>
+</logic:iterate>
+</table>
 
 <table cellpadding="0" cellspacing="0" width="675">
 	<tr>
-		<td align="left">
-			<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" valign="bottom">
-			= Delivery slot full
+		<td align="right">
+				<table>
+						<tr>
+								<%if(user.isChefsTable()){%>
+									<td>
+										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
+									</td>
+									<td style="color:#77A642;">Chefs Table Delivery Times</td>
+								<%}%>
+								<td>
+									<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
+								</td>
+								<td style="color:#77A642;">Discount Delivery Times</td>
+						</tr>
+				</table>	
 		</td>
-		<td align="right">You must complete checkout for next-day deliveries before the "Order by" time.</td>
+		
 	</tr>
 </table>
+<BR><BR>
+	</TD>
+</TR>
+</TABLE>
 
-<% if (timeslot_page_type != TimeslotLogic.PAGE_CHEFSTABLE) { %>
-
-<%@ include file="/shared/includes/delivery/i_loyalty_button.jspf" %>
-
-<% } %>
-
-</fd:DeliveryTimeSlot>
-<BR>
-<BR>
-	</td></tr>
-
+<TABLE>
 <TR VALIGN="TOP">
-    <TD WIDTH="70%" style="padding-left: 10px;"><b>Delivery Charge:</b> <%
-	String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-	if(cart.isDlvPassApplied()) {
-	%>
-	<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-	<%
-	} else if (cart.isDeliveryChargeWaived()) {
-	%>
-		Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.
-	<%}else {%>
-		<%= dlvCharge %>
-	<%}%><br>(Our delivery personnel are allowed to accept tips if exceptional service is provided).</TD>
-	<TD WIDTH="30%" align="right"><img src="/media_stat/images/template/checkout/unavailable_X.gif" width="9" height="9" border="0" alt="X">= Delivery slot full</TD>
+    <TD WIDTH="70%" style="padding-left: 10px;">
+		<b>Delivery Charge:</b> 
+		<%
+		String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
+		if(cart.isDlvPassApplied()) {
+		%>
+		<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
+		<%
+		} else if (cart.isDeliveryChargeWaived()) {
+		%>
+			Free! We've waived the standard <%= dlvCharge %> delivery charge for this order.
+		<%}else {%>
+			<%= dlvCharge %>
+		<%}%><br>(Our delivery personnel are allowed to accept tips if exceptional service is provided).
+		</TD>
 </TR>
 <%
 	if(user.getSelectedServiceType() == EnumServiceType.CORPORATE && (user.isDlvPassActive() || cart.getDeliveryPassCount() > 0)) {
 %>
 	<TR>
-	<td style="padding-left: 10px;"><font class="text12bold" color="#FF0000"><b>Important note: </b></font>
-	<font class="text12bold"><b>Delivery pass can only be used for Home delivery orders.</b></font></td>
+		<td style="padding-left: 10px;"><font class="text12bold" color="#FF0000"><b>Important note: </b></font>
+		<font class="text12bold"><b>Delivery pass can only be used for Home delivery orders.</b></font></td>
 	</TR>
 <%}%>
 
-</form>
+	</FORM>
 </TABLE>
-<BR>
-<BR>
+<BR><BR>
 </div>
+<% 
+if(!defaultColExp){%>
+	<script>
+		document.observe("dom:loaded", function() {
+			selectTS('tsContainer', 'div_set_0','ts_set_0_ts_0');
+		});
+	</script>
+<%}%>
 </tmpl:put>
-	</fd:CheckoutController>
+</fd:CheckoutController>
 </tmpl:insert>
 </crm:GetCurrentAgent>
-
+</fd:DeliveryTimeSlot>
 
 
 

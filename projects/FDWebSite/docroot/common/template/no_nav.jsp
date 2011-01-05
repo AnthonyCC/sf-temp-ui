@@ -11,7 +11,7 @@
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
 	<link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">
-
+	<link rel="stylesheet" type="text/css" href="/assets/css/timeslots.css"/>
 	<%@ include file="/shared/template/includes/ccl.jspf" %>
 <%		
     {

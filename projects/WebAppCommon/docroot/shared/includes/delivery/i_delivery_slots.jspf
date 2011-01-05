@@ -4,235 +4,420 @@
 <%@ page import="com.freshdirect.webapp.util.TimeslotPageUtil"%>
 <%@ page import="com.freshdirect.framework.util.DateUtil"%>
 <%@ page import="com.freshdirect.fdstore.*" %>
+<%@ page import="com.freshdirect.fdstore.util.ClickToCallUtil" %>
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
-<%@ page import="com.freshdirect.delivery.model.DlvZoneModel" %>
 <%@ page import="com.freshdirect.delivery.DlvZoneInfoModel" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDUserI" %>
 <%@ page import="com.freshdirect.fdstore.util.CTDeliveryCapacityLogic" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.SessionName" %>
+<%@ page import="com.freshdirect.delivery.restriction.RestrictionI" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.util.Calendar" %>
 <%@ page import="com.freshdirect.routing.model.*" %>
-<%!
-private final static String TIMESLOT_BG_EVEN = "e8e8e8";
-private final static String TIMESLOT_BG_ODD = "f7f7f7";
-%>
+
 <%
 boolean isForce =  "true".equalsIgnoreCase(request.getParameter("forceorder")) ;
 boolean isNextDayTimeSlotNotAvailable = false;
 boolean hasDiscountedTimeslots = false;
 Date nextDay = DateUtil.getNextDate();
+boolean colNormal = false;
+
 if (timeslots.size() > 0) { 
-	DlvZoneModel zoneModel = null;
 	Calendar today=Calendar.getInstance();
 	today.add(Calendar.DATE,1);
 	Date tomorrow_NI=today.getTime();
 	
     request.setAttribute("AddressType",address.getServiceType().getName());
-	%>	
+    Collection<Date> days = timeslots.getDays();
+%>
 
+<%
+	StringBuffer finalBuff = new StringBuffer();
+	StringBuffer headerBuff = new StringBuffer();
+	StringBuffer timeslotBuff = new StringBuffer();
+	StringBuffer cutoffBuff = new StringBuffer();
+	StringBuffer footerBuff = new StringBuffer();
+	
+	finalBuff.append("<div class=\""+(timeslots.size()>1 ? "float_children":"float_children_noborder")+"\" id=\"timeslots_grid"+idx.intValue()+"\">");
+	finalBuff.append("<table border=\"0\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">");	
+	int slotIndex = 0;
+%>
 
-<%@page import="com.freshdirect.fdstore.standingorders.DeliveryInterval"%><table border="0" cellspacing="2" cellpadding="0" summary="timeslots">
-	<tr>
-	<logic:iterate id="day" collection="<%=timeslots.getDays()%>" type="java.util.Date">
+<script>
+	var timeslot_info = <%=isStaticSlot%>;
+	var dayIndex =0;
+	var slotIndex=0;
+	document.observe("dom:loaded", function() {
 		<%
-		boolean dayChosen = timeslots.isSelectedTimeslot(day, timeSlotId);
+			int hDayIndex=0;
+			if(isForAdvOrdSlots){
+				hDayIndex = 10;
 		%>
-		<td align="center" valign="top" width="97">
-			<table border="0" cellspacing="0" cellpadding="0" width="97" class="timeslot">
-			  <thead class="<%= dayChosen ? "selected" : "normal" %>">
-				<tr>
-					<td colspan="2" rowspan="2" height="4" width="4"><img src="/media_stat/images/layout/small-corner_upper-left.gif" width="4" height="4" border="0"></td>
-					<td height="1" bgcolor="#222222" width="89"></td>
-					<td colspan="2" rowspan="2" height="4" width="4"><img src="/media_stat/images/layout/small-corner_upper-right.gif" width="4" height="4" border="0"></td>
-				</tr>
-				<tr>
-					<td height="3" width="89"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
-				</tr>
-				<tr valign="top">
-					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
-					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
-					<td align="center" width="89">
-						<div class="day_name"><b><%= TimeslotPageUtil.formatDayName(day) %></b></div>
-						<div class="day_date"><b><%= TimeslotPageUtil.formatDeliveryDate(day) %></b></div>
-					</td>
-					<td width="3"><img src="/media_stat/images/layout/clear.gif" width="3" height="3" border="0" alt=""></td>
-					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
-				</tr>
-			  </thead>
-			  <tbody>
-				<tr>
-					<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
+				window['refAdvData'] = new Array();
+		<%       }else{
+		%>
+				window['refData'] = new Array();
+		<%		hDayIndex = 0;
+			}
+			headerBuff.append("<tr>");
+			for(Date day: days){
+				if(!isForAdvOrdSlots){
+		%>
+				refData[<%=hDayIndex%>] = new Array(new Array(),new Array());
+		<%
+				}else{
+		%>
+				refAdvData[<%=hDayIndex%>] = new Array(new Array(),new Array());
+		<%		}
+			headerBuff.append("<td id=\"ts_d"+hDayIndex+"_ts_header\" colspan=\"3\" valign=\"bottom\">")
+						.append("<div id=\"ts_d"+hDayIndex+"_ts_hC\" class=\"tsHeaderC\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+hDayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+hDayIndex+"_ts"+slotIndex+"\');return false;\">")
+							.append("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">")
+							.append("<tr>")
+								.append("<td align=\"center\" colspan=\"3\">")
+								.append("<div class=\"tsDayNameC\"><b>"+TimeslotPageUtil.formatDayName(day)+"</b></div>")
+								.append("<div class=\"tsDayDateC\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
+								.append("</td>")
+							.append("</tr>")
+							.append("</table>")
+						.append("</div>")
+						.append("<div id=\"ts_d"+hDayIndex+"_ts_hE\" class=\"tsHeaderE\" style=\"display: none;\">")
+							.append("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">")
+							.append("<tr>")
+								.append("<td width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\"></td>")
+								.append("<td width=\"6\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
+							.append("</tr>")
+							.append("<tr>")
+								.append("<td align=\"center\" colspan=\"3\" valign=\"middle\">")
+								.append("<div class=\"tsDayNameE\"><b>"+TimeslotPageUtil.formatDayNameExp(day)+"</b></div>")
+								.append("<div class=\"tsDayDateE\">"+TimeslotPageUtil.formatDeliveryDate(day)+"</div>")
+								.append("</td>")
+							.append("</tr>")
+							.append("</table>")
+						.append("</div>")
+					.append("</td>");
+					
+				 hDayIndex++;
+			}
+			headerBuff.append("</tr>");
+			finalBuff.append(headerBuff);
+		%>
+
+	<logic:iterate id="ref_slot" collection="<%= timeslots.getUniqueSlots() %>" type="com.freshdirect.fdstore.FDTimeslot">
+		<%
+			cutoffBuff.append("<tr id=\""+(isForAdvOrdSlots ? "coAdv_ts"+slotIndex+"_row":"co_ts"+slotIndex+"_row")+"\" style=\"display: none;\">");
+			timeslotBuff.append("<tr>");
+			int dayIndex=0;
+			if(isForAdvOrdSlots){
+				dayIndex = 10;
+		        }else{
+				dayIndex = 0;
+			}
+		%>
+		<%	for(Date day : days) {  
+		%>
+				<%
+					FDTimeslot slot = timeslots.getTimeslotForDayAndTime(day,ref_slot);
+					if(slot!=null){
+				%>
 					<%
-					String bgcolor = TIMESLOT_BG_EVEN;
-					%>
-					<td width="95" colspan="3" bgcolor="#<%= bgcolor %>"><nobr>
-						<%
-						Date cutoffTime = null;
-						boolean firstSlot = true;
-						boolean needsTagging=false;
-						if(day != null && nextDay != null && day.equals(nextDay) && (null == timeslots.getTimeslotsForDate(day) || timeslots.getTimeslotsForDate(day).size()==0)){
-							isNextDayTimeSlotNotAvailable = true;
+						boolean isPreReservedSlotId = slot.getTimeslotId().equals(preReserveSlotId);
+						boolean isSelectedSlotId = slot.getTimeslotId().equals(selectedSlotId);
+						if (!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) {
+							request.setAttribute("shownCTSlot", "TRUE");
 						}
+						boolean soldOut = false;
+						if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || (isPreReservedSlotId && hasPreReserved)) 
+							&& (!isForce || (slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null
+								&& (slot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
+											|| !slot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
+							soldOut = true;
+						}
+					%>
+					<%
+						//insert cutoff data
+						int cutoffSlotIndex = timeslots.getTimeslotIndexForDay(day,slot);
+						if(cutoffSlotIndex==0){
+					
+						cutoffBuff.append("<td class=\"cutoff\" colspan=\"3\">")
+							.append("<a href=\"#\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"return false;\">")
+							.append("<b>Order by "+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+" "+TimeslotPageUtil.getCutoffDay(day)+"</b></a>");
+						cutoffBuff.append("</td>");
+						if(!isForAdvOrdSlots){
+					%>
+						
+							refData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+						
+						<%}else{%>
+							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='refCutoff';
+						<%}%>
+					<%}else{
+						cutoffBuff.append("<td class=\"cutoff\" colspan=\"3\">")
+							.append("<a href=\"#\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"return false;\"")
+							.append(">&nbsp;</a>");
+					
+						cutoffBuff.append("</td>");
+						if(!isForAdvOrdSlots){
+					%>
+						
+							refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+						<%}else{%>
+							refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+					
+					<%}}%>
+						<%if(!isForAdvOrdSlots){%>
+							refData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+						<%}else{%>
+							refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='refTimeslot';
+						<%}%>
+					<%
+							//generate the days/timeslots going across
+							timeslotBuff.append("<td id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" class=\"tsCol tsContainerC\" colspan=\"3\">");
+							
+							timeslotBuff.append("<a href=\"#\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');return false;\" class=\"tsContent ")
+								.append(
+										(
+										soldOut 
+										? ""
+										:(isPreReservedSlotId && hasPreReserved)
+												?"tsContentResE"
+												:(isSelectedSlotId)
+														?"tsContentSelE"
+														:(slot.getSteeringDiscount()>0)
+																?"tsBordDiscountE"
+																:(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity())
+																		? "tsBordCTE"
+																		:(slot.isEcoFriendly())
+																				?"tsBordEcoFriendlyE"
+																				:""
+										)
+								+"\">");
+								
+							timeslotBuff.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">");
 						%>
-						<logic:iterate id="slot" collection="<%= timeslots.getTimeslotsForDate(day) %>" type="com.freshdirect.fdstore.FDTimeslot">
-							<%
-                            
-							if(DateUtil.isSameDay(tomorrow_NI, day)) {
-								needsTagging=true;
-							}
-
-                            boolean selectedSlot = slot.getTimeslotId().equals(timeSlotId);
-							boolean preReservedSlot = slot.getTimeslotId().equals(preReserveSlotId);
-							int startdlvHour = (DateUtil.toCalendar(slot.getBegDateTime())).get(Calendar.HOUR_OF_DAY);
-							int enddlvHour = (DateUtil.toCalendar(slot.getEndDateTime())).get(Calendar.HOUR_OF_DAY);
-							
-							if ((cutoffTime == null) || (cutoffTime.getTime() != slot.getCutoffDateTime().getTime())) {
-								//change color
-								if (cutoffTime != null) {
-									if (TIMESLOT_BG_EVEN.equals(bgcolor)) {
-										bgcolor = TIMESLOT_BG_ODD;
-									} else {
-										bgcolor = TIMESLOT_BG_EVEN;
-									}
-								}
-								cutoffTime = slot.getCutoffDateTime();
-								int cutoffTimeHour = (DateUtil.toCalendar(cutoffTime)).get(Calendar.HOUR_OF_DAY);
+						<%	 
+							if (soldOut) {
+								if (isStaticSlot) { 	
 								
+								} else {
 
-								String cutoffDisp = TimeslotPageUtil.formatCutoffTime(cutoffTime) + (
-									(cutoffTimeHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am"
-								);
-								%>
-								<div class="cutoffTime" style="background: #<%= bgcolor %>;padding:3px;padding-top:4px;"><b>Order by <%= cutoffDisp %></b></div>
-								<%
-							}
-								
-							String am_pm=(startdlvHour >= DateUtil.MORNING_END && startdlvHour <= TimeslotPageUtil.EVENING_END)  ? "pm" : "am";
-							if(needsTagging && "am".equals(am_pm)) {
-								request.setAttribute("amTS", "TRUE");
-							} else if(needsTagging && "pm".equals(am_pm)) {
-								request.setAttribute("pmTS", "TRUE");
-							}
-							
-							boolean highlightPreReserved = preReservedSlot && hasPreReserved;
-
-							zoneModel = (DlvZoneModel) zones.get(slot.getZoneId());
-							Date now = new Date();
-							FDUserI user_ct = (FDUserI)session.getAttribute(SessionName.USER);
-							int timeslot_page_type_ct=timeslot_page_type;
-							boolean isCTCapacity=false;
-							if(CTDeliveryCapacityLogic.isEligible(user_ct,slot)!=null)
-							{
-								timeslot_page_type_ct=TimeslotLogic.PAGE_CHEFSTABLE;
-								isCTCapacity=true;
-							}
-							
-							boolean availCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, timeslot_page_type_ct, zoneModel.getCtReleaseTime());
-							boolean normalAvailCapacity = availCapacity;
-
-							if (TimeslotLogic.PAGE_CHEFSTABLE == timeslot_page_type_ct&&!isCTCapacity) {
-								normalAvailCapacity = TimeslotLogic.getAvailableCapacity(slot.getDlvTimeslot(), now, TimeslotLogic.PAGE_NORMAL, zoneModel.getCtReleaseTime());
-							}
-
-							if (!normalAvailCapacity && availCapacity ) {
-								request.setAttribute("shownCTSlot", "TRUE");
-							}
-							double zonePromoAmountSpec = 0;	
-							if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null)
-								//zonePromoAmountSpec=PromotionHelper.getDiscount(user_ct,slot);
-								zonePromoAmountSpec = slot.getSteeringDiscount();
-								if(zonePromoAmountSpec > 0) {
-									hasDiscountedTimeslots = true;
+								}if(!isNextDayTimeSlotNotAvailable){
+									isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
 								}
-							%>
-							<div class="slotRow" style="background:#<%= zonePromoAmountSpec>0?"8fb16c" :(highlightPreReserved ? "f93" : !normalAvailCapacity && availCapacity ? "996699" : bgcolor) %>;">
-								<div class="control">
-									<% 
-									if (!availCapacity && !(selectedSlot || (preReservedSlot && hasPreReserved)) 
-												&& (!isForce || (slot.getDlvTimeslot() != null && slot.getDlvTimeslot().getRoutingSlot() != null
-																	&& (slot.getDlvTimeslot().getRoutingSlot().isManuallyClosed()
-																	|| !slot.getDlvTimeslot().getRoutingSlot().isDynamicActive())))) {
-										if (isStaticSlot) {
-											%><img src="/media_stat/images/windowsteering/legend_view_full.png" width="10" height="10" alt="Orange = Full"><%
-										} else {
-											%><img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"><%
-										}
-										if(!isNextDayTimeSlotNotAvailable){
-											isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
-										}										
-									} else {
-										if (isStaticSlot){
-											%><img src="/media_stat/images/windowsteering/legend_view_avail.png" width="10" height="10" alt="Green = Available<%= !normalAvailCapacity && availCapacity ? " - Chef's Table Only":"" %>"><%
-										} else {
-											if (!availCapacity && !(selectedSlot || preReservedSlot) && isForce) {
-											%>
-												<img src="/media_stat/images/template/checkout/x_trans.gif" width="10" height="10" border="0" hspace="4" alt="X = Full"> <%
-											}
-											%>
-											<input type="radio"
-												id="deliveryTimeslotId<%= slot.getTimeslotId() %>" name="deliveryTimeslotId"
-												<%= (selectedSlot || (preReservedSlot && "".equals(timeSlotId) && hasPreReserved)) ? "checked" : "" %>
-												value="<%= (isForce && !availCapacity ? ("f_"+ slot.getTimeslotId()) : slot.getTimeslotId()) %>"><%											
-										}
-										//isNextDayTimeSlotNotAvailable = day != null && nextDay != null && day.equals(nextDay);
-									}
-									//int slotEndHour = DateUtil.toCalendar(slot.getBegDateTime()).get(Calendar.HOUR_OF_DAY);
+							} else {
+								if (isStaticSlot){	%>
 									
-									%>		
-								
-								</div><div class="time"><!-- <%= availCapacity %>, <%= normalAvailCapacity %>, <%= timeslot_page_type_ct %> --><%= slot.getDisplayString(firstSlot) %></div>
-							</div>
-							<%
-							firstSlot = false;
-							%>
-						</logic:iterate>
-					</nobr>
-				</td>
-				<td width="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
-			</tr>
-			<tr>
-				<td colspan="2" rowspan="2" height="4" width="4" bgcolor="#<%= bgcolor %>"><IMG src="/media_stat/images/layout/botleft_trans.gif" width="4" height="4" border="0" alt=""></td>
-				<td height="3" width="89" bgcolor="#<%= bgcolor %>"><img src="/media_stat/images/layout/clear.gif" width="1" height="3" border="0" alt=""></td>
-				<td colspan="2" rowspan="2" height="4" width="4" bgcolor="#<%= bgcolor %>"><IMG src="/media_stat/images/layout/botright_trans.gif" width="4" height="4" border="0" alt=""></td>
-			</tr>
-			<tr>
-				<td height="1" bgcolor="#222222"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" border="0" alt=""></td>
-			</tr>
-		  </tbody>
-		</table>
-	</td>   
-	</logic:iterate>
-	</tr>
-</table>
-	<% 
- } 
-Calendar nextDayVal = Calendar.getInstance();
-nextDayVal.add(Calendar.DATE, 1);
- if(address != null) {
- 	try { 
-	  	DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
-	  	if(tmpModel != null) {
-	  		String defZoneCode = tmpModel.getZoneCode();
-	  		if(defZoneCode != null) { %>
-	  			<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>"/>		
-		    <% }
-	  	}	  		 	
-	 } catch(Exception exp) {
-	 	// Don't have to worry about invalid addresses for zone check
-	 } 	 
-}
- request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
- if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))){
- %>
-<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
-<% } else { %>
-<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
-<% } %>
+								<% } else {
+									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { %>
+									
+									<%
+									}
+									%>
+									<%
+										timeslotBuff.append("<input style=\"display: none;\" type=\"radio\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rb\" name=\"deliveryTimeslotId\"") 
+											.append(
+												(
+												isSelectedSlotId || ("".equals(selectedSlotId) && isPreReservedSlotId && hasPreReserved)
+												) 
+												? "checked" : "")
+											.append(
+												"value=\""+
+												(
+												isForce && !slot.hasAvailCTCapacity() ? ("f_"+ slot.getTimeslotId()) : slot.getTimeslotId()
+												)
+												+"\" />");
+									
+									%>
+							<%	}	
+							}
+								timeslotBuff.append("</div>");
+							%>		
+						<%
+								timeslotBuff.append("<div class=\"fleft tsCont\">"+slot.getDisplayString(true)+"</div>");
+									// START Timeslot promotion display 
+									if (soldOut) {
+										timeslotBuff.append("<div class=\"fleft tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<font class=\"tsSoldoutE\">SOLD OUT<br/></font>")
+											.append("</div>");
+									}else if(isPreReservedSlotId && hasPreReserved ){
+										timeslotBuff.append("<div class=\"fleft tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<font class=\"tsReservationE\">RESERVED</font>")
+											.append("</div>");
+									}else if(isSelectedSlotId){
+										timeslotBuff.append("<div class=\" fleft tsSelectedSlotPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<font class=\"tsSelectedSlotE\">SELECTED</font>")
+											.append("</div>");
+									}else if(request.getAttribute("SHOW_WINDOWS_STEERING")!=null && slot.getSteeringDiscount()>0) {
+						%>
+													
+											var promodiscount = "<%= CCFormatter.formatQuantity(slot.getSteeringDiscount()) %>";
+													
+						<%				timeslotBuff.append("<div class=\"fleft tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<font class=\"tsDiscountE\">Save $"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
+											.append("<div onclick=\"javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_discount_timeslot.html&windowSize=small&name=Promotion Discount Information',300,400)\"") 
+											.append("class=\"tsDiscountMoreE\">More Info</div>")
+											.append("</div>");
+									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
+										timeslotBuff.append("<div class=\"fleft tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<img class=\"tsCTStar\" src=\"/media_stat/images/timeslots/star_small.gif\" width=\"11\" height=\"10\" border=\"0\" alt=\"CHEFSTABLE\">")
+											.append("<font class=\"tsChefstableE\">Chefs Table<br/></font>")
+											.append("</div>");
+									}else if(slot.isEcoFriendly()){
+										timeslotBuff.append("<div class=\"fleft tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
+											.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly<br/></font>")
+											.append("</div>");
+									}
+									
+									
+									timeslotBuff.append("</a>");
+									// Check eligibility column to expand on page load
+									 if(isPreReservedSlotId && hasPreReserved && !defaultColExp){
+										defaultColExp = true;
+						%>			
+										dayIndex = <%= dayIndex %>;
+										slotIndex= <%= slotIndex %>;
+						<%							
+									}else if(isSelectedSlotId && !defaultColExp){
+										defaultColExp = true;
+						%>
+										dayIndex = <%= dayIndex %>;
+										slotIndex= <%= slotIndex %>;
+						<%			}
+								timeslotBuff.append("</td>");
+						%>
+				<%}else{
+					cutoffBuff.append("<td class=\"cutoff\" colspan=\"3\">")
+						.append("<a href=\"#\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"return false;\"")
+						.append(">&nbsp;</a>");
+					cutoffBuff.append("</td>");
+					//generate the days/timeslots going across
+					timeslotBuff.append("<td class=\"tsCol tsContainerC\" colspan=\"3\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\">");
+					timeslotBuff.append("<a href=\"#\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');return false;\"")
+						.append(" class=\"tsContent\"><div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div>&nbsp;</div></a>");
+					timeslotBuff.append("</td>");
+				%>
+					<%if(!isForAdvOrdSlots){%>
+						refData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+						refData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+					<%}else{%>
+						refAdvData[<%=dayIndex%>][0][<%=slotIndex%>]='';
+						refAdvData[<%=dayIndex%>][1][<%=slotIndex%>]='';
+					<%}%>
+			<%}
+				dayIndex++;
+			}%>
+			<%
+				timeslotBuff.append("</tr>");
+				cutoffBuff.append("</tr>");
+				finalBuff.append(cutoffBuff).append(timeslotBuff);
+				timeslotBuff.setLength(0);
+				cutoffBuff.setLength(0);
+			%>
+			<%slotIndex++;%>
+		</logic:iterate>
+		<%
+			int fDayIndex=0;
+			if(isForAdvOrdSlots){
+				fDayIndex = 10;
+		        }else{
+				fDayIndex = 0;
+			}
+			footerBuff.append("<tr>");
+			for(Date day : days){
+				footerBuff.append("<td class=\"tsFooter\" id=\"ts_d"+fDayIndex+"_ts_footer\" colspan=\"3\" valign=\"top\">")
+					//div expanded (hidden)
+					.append("<div id=\"ts_d"+fDayIndex+"_ts_fE\" style=\"display: none;\">")
+						.append("<table cellspacing=\"0\" cellpadding=\"0\">")
+							.append("<tr>")
+								.append("<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>")
+								.append("<td width=\"5\" bgcolor=\"#FFFFFF\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\" border=\"0\"></td>")
+								.append("<td bgcolor=\"#FFFFFF\">")
+									.append("<img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"5\" alt=\"\">")
+								.append("</td>")
+								.append("<td width=\"5\"bgcolor=\"#FFFFFF\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"5\" height=\"5\" alt=\"\"></td>")
+								.append("<td width=\"1\"><img src=\"/media_stat/images/layout/cccccc.gif\" width=\"1\" height=\"5\"></td>")
+							.append("</tr>")
+							.append("<tr>")
+								.append("<td colspan=\"2\" rowspan=\"2\" height=\"6\" width=\"6\"><IMG src=\"/media_stat/images/layout/bottom_left.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td height=\"5\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"3\" alt=\"\"></td>")
+								.append("<td colspan=\"2\" rowspan=\"2\" height=\"6\" width=\"6\"><IMG src=\"/media_stat/images/layout/bottom_right.gif\" width=\"6\" height=\"6\" alt=\"\"></td>")
+							.append("</tr>")
+							.append("<tr>")
+								.append("<td height=\"1\" bgcolor=\"#cccccc\"><img src=\"/media_stat/images/layout/clear.gif\" width=\"1\" height=\"1\" border=\"0\" alt=\"\"></td>")
+							.append("</tr>")
+							
+						.append("</table>")
+					.append("</div>")
+				.append("</td>");
+			fDayIndex++;
+			}
+			footerBuff.append("</tr>");
+
+		%>
+defaultColumnExpand(dayIndex,slotIndex);
+});
+</script>
 <%
-	if(hasDiscountedTimeslots) {
+finalBuff.append(footerBuff);
+finalBuff.append("</table>");
+finalBuff.append("<br style=\"clear: left;\" />");
+finalBuff.append("</div>");
+out.write(finalBuff.toString());
 %>
-<input type="hidden" id="hasDiscountedTimeslots" name="hasDiscountedTimeslots" value="true"/>
+
+<!-- These are empty, hidden elements used for ref. This allows a css rule to apply to them, 
+and the Element.Morph effect to use their attributes instead of passing them each time. -->
+<div id="tsRefcol_contracted"><!--  --></div>
+<div id="tsRefcol_expanded"><!--  --></div>
+
+<%}%>
+
 <%
+	Calendar nextDayVal = Calendar.getInstance();
+	nextDayVal.add(Calendar.DATE, 1);
+	 if(address != null) {
+		try { 
+			DlvZoneInfoModel tmpModel = FDDeliveryManager.getInstance().getZoneInfo(address, nextDayVal.getTime());
+			if(tmpModel != null) {
+				String defZoneCode = tmpModel.getZoneCode();
+				if(defZoneCode != null) { %>
+					<img width="1" height="1" border="0" alt="" src="/media_stat/images/template/tracker.gif?datakey=zone_code&dataval=<%= defZoneCode %>&refid=<%= System.currentTimeMillis() %>"/>		
+			    <% }
+			}	  		 	
+		 } catch(Exception exp) {
+			// Don't have to worry about invalid addresses for zone check
+		 } 	 
 	}
-%>
+
+	request.setAttribute("isNextDayTimeSlotNotAvailable", isNextDayTimeSlotNotAvailable);
+	if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,address) &&(!ClickToCallUtil.isNextDayTimeSlotsCheckRequired() ||(ClickToCallUtil.isNextDayTimeSlotsCheckRequired() && isNextDayTimeSlotNotAvailable))){
+ %>
+		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="1"/>
+<% } else { %>
+		<input type="hidden" id="c2cnextdaytimeslot" name="c2cnextdaytimeslot" value="0"/>
+<% } %>
+
+<script language="javascript"> 
+	
+	function checkDeliveryShow() {
+		var contentWidth = '400';
+		if ($('learnMoreContent')) {
+			contentWidth = ($('learnMoreContent').style.width).replace("px","");
+		}
+
+		Modalbox.show($('learnMoreTimeslot'), {
+				loadingString: 'Loading Window...',
+				closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
+				closeString: 'Close Window',
+				title: 'Delivery Information',
+				overlayOpacity: .30,
+				overlayClose: false,
+				width: contentWidth,
+				transitions: false,
+				autoFocusing: false,
+				centered: true,
+				afterLoad: function() { $('MB_content').style.overflow='hidden';window.scrollTo(0,0); },
+				afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+			})
+	}
+</script>

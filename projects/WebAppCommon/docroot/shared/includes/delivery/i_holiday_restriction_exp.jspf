@@ -1,0 +1,27 @@
+<%
+	int rowSpan = 0;
+	Set<Date> uniqueCutoffs = timeslots.getUniqueCutoffs();
+	Set<Date> cutoffs = new HashSet();
+	for(Iterator<Date> itr = uniqueCutoffs.iterator();itr.hasNext();){
+		Date _cutoff = itr.next();
+		if(timeslots.getMaxTimeslotsForWeekCutoff(_cutoff)>0){
+			cutoffs.add(_cutoff);
+			rowSpan = rowSpan + timeslots.getMaxTimeslotsForWeekCutoff(_cutoff);
+		}
+	}
+%>
+
+<table width="203" height="<%=(((cutoffs.size())*25)+(rowSpan*32))%>">
+		<tr>
+			<td class="tsSpacerC tsSpacerBorderRC tsSpacerBorderLC">&nbsp;</td>
+		</tr>
+		<tr>
+			<td class="tsContentE" style="background-color:#FFFFFF;text-align:center;">
+				<%if(closedResExp!=null){
+					String path = closedResExp.getPath()+"/msg_timeslots.html";
+				%>
+					<fd:IncludeMedia name='<%= path %>'/>
+				<%}%>
+			</td>
+		</tr>
+</table>

@@ -31,7 +31,7 @@ public class DlvRestrictionDAO {
 	public static List<RestrictionI> getDlvRestrictions(Connection conn) throws SQLException {
 
 		PreparedStatement ps = conn
-			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason from dlv.restricted_days");
+			.prepareStatement("select id,criterion, type, name, message, day_of_week, start_time, end_time, reason, media_path from dlv.restricted_days");
 		ResultSet rs = ps.executeQuery();
 		List<RestrictionI> restrictions = new ArrayList<RestrictionI>();
 		while (rs.next()) {
@@ -39,6 +39,7 @@ public class DlvRestrictionDAO {
 			String id = rs.getString("ID");
 			String name = rs.getString("NAME");
 			String msg = rs.getString("MESSAGE");
+			String mediaPath = rs.getString("MEDIA_PATH");
 			EnumDlvRestrictionCriterion criterion = EnumDlvRestrictionCriterion.getEnum(rs.getString("CRITERION"));
 			if (criterion == null) {
 				// skip unknown criteria
@@ -68,9 +69,9 @@ public class DlvRestrictionDAO {
 
 				// FIXME one-time reverse restrictions should have a different EnumDlvRestrictionType 
 				if (reason.isSpecialHoliday()) {
-					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate));
+					restrictions.add(new OneTimeReverseRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
 				} else {
-					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate));
+					restrictions.add(new OneTimeRestriction(id,criterion, reason, name, msg, startDate, endDate,mediaPath));
 				}
 
 			} else if (EnumDlvRestrictionType.RECURRING_RESTRICTION.equals(type)) {
@@ -81,7 +82,7 @@ public class DlvRestrictionDAO {
 				if (JUST_BEFORE_MIDNIGHT.equals(endTime)) {
 					endTime = TimeOfDay.NEXT_MIDNIGHT;
 				}
-				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime));
+				restrictions.add(new RecurringRestriction(id,criterion, reason, name, msg, dayOfWeek, startTime, endTime, mediaPath));
 
 			} else {
 				// ignore	

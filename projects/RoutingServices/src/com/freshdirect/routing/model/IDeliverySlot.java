@@ -34,4 +34,7 @@ public interface IDeliverySlot {
 	String getReferenceId();
 	void setReferenceId(String referenceId);
 	
+	int getEcoFriendly();
+	void setEcoFriendly(int ecoFriendly);
+
 }

@@ -48,17 +48,13 @@ if("true".equals(request.getParameter("chefstable"))) {
 }
 
 boolean isStaticSlot = true;
-boolean hasPreReserved = false;
-boolean hasReservation = false;
-boolean hasWeeklyReservation=false;
 String timeSlotId="";
-String preReserveSlotId="";
-String[] checkErrorType=null;
 ActionResult result=null;
+FDReservation rsv = null;
+String actionName = null;
 
 FDUserI user = (FDUserI)session.getAttribute(SessionName.USER);
 ErpCustomerInfoModel customerInfo = FDCustomerFactory.getErpCustomerInfo(user.getIdentity());
-FDReservation rsv = user.getReservation();
 
 if (user.isChefsTable()) {
 	timeslot_page_type = TimeslotLogic.PAGE_CHEFSTABLE;
@@ -97,9 +93,13 @@ if(isCheckAddress){
 			<td class="text12" align="left" width="71%"><img src="/media_stat/images/layout/clear.gif" width="1" height="1" alt="" /></td>
 		</tr>
 		<tr>
-			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:</td>
-		</tr>
-			
+			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
+					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+			</td>
+		</tr>	
+		
+		<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+		
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 		
@@ -132,22 +132,12 @@ if(isCheckAddress){
 	</td>
 </tr>
 <%  }   %>
-
 	
 <tr>
 	<td colspan="3">
 		<img src="/media_stat/images/layout/clear.gif" width="693" height="15">
 	</td>
 </tr>
-
-<tr>
-	<td colspan="3">
-				<%//Delivery timeslot display%>
-				<%@ include file="/shared/includes/delivery/i_delivery_timeslots.jspf"%>
-
-	</td>
-</tr>
-
 
 </table>
 </div>

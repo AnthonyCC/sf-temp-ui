@@ -444,5 +444,14 @@ public interface FDUserI extends java.io.Serializable {
 	
 	public String getMasqueradeAgent();
 	
+	public FDDeliveryTimeslotModel getDeliveryTimeslotModel();
+	
+	public void setDeliveryTimeslotModel(FDDeliveryTimeslotModel deliveryTimeslotModel);
+
 	public EnumWinePrice getPreferredWinePrice();
+
+	public int getTotalCTSlots();
+
+	public void setTotalCTSlots(int slots);
+
 }
