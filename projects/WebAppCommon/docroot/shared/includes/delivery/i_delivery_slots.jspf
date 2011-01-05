@@ -221,7 +221,7 @@ if (timeslots.size() > 0) {
 												) 
 												? "checked" : "")
 											.append(
-												"value=\""+
+												" value=\""+
 												(
 												isForce && !slot.hasAvailCTCapacity() ? ("f_"+ slot.getTimeslotId()) : slot.getTimeslotId()
 												)
