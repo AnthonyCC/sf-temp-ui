@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.jsp.PageContext;
 
@@ -740,9 +742,14 @@ public class FourMinuteMealsHelper {
 		}
 		
 		if ( nutritionFilters != null && nutritionFilters.size() > 0 ) {
+			// 'OR'ing selected sets - form union of filtered sets
+			Set<ProductModel> nutSet = new HashSet<ProductModel>();
 			for ( String fNut : nutritionFilters ) {
-				workSet.retainAll( cache.nutritionProducts.get( fNut ) );
+				nutSet.addAll( cache.nutritionProducts.get( fNut ) );
 			}
+
+			// intersect work set with the union
+			workSet.retainAll(nutSet);
 		}
 
 		if ( ingredientsFilters != null && ingredientsFilters.size() > 0 ) {
