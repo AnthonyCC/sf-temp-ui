@@ -41,6 +41,8 @@
 					<% if(brandImage!=null) { %>		
 						<img src="<%= brandImage.getPath() %>" style="margin-top:15px;"/><br/>
 					<% } %>
+					<!-- separator block between description and right-wing image -->
+					<div style="float: right; width: 80px;">&nbsp;</div>
 					<display:ProductRating product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" /> 
 					<display:ProductName product="<%= mealOfTheWeek %>" action="<%= actionUrl %>" showBrandName="true" noBreak="true"/> 
 					<display:ProductPrice impression="<%= new ProductImpression(mealOfTheWeek) %>" showDescription="false" />
