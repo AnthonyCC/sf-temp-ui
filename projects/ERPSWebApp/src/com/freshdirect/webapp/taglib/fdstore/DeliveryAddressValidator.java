@@ -33,7 +33,7 @@ public class DeliveryAddressValidator {
 	private final boolean strictCheck;
 
 	// scrubbed address
-	private ErpAddressModel scrubbedAddress;
+	private AddressModel scrubbedAddress;
 	private DlvServiceSelectionResult serviceResult;
 
 
@@ -57,7 +57,7 @@ public class DeliveryAddressValidator {
 	public boolean validateAddress(ActionResult actionResult) throws FDResourceException {
 		
 		// [1] normalize (scrub) address
-		scrubbedAddress = (ErpAddressModel)doScrubAddress((ErpAddressModel)address, actionResult);
+		scrubbedAddress = doScrubAddress(address, actionResult);
 		LOGGER.debug("scrubbedAddress after scrub:"+scrubbedAddress);
 
 		if (actionResult.isFailure()){
@@ -138,7 +138,7 @@ public class DeliveryAddressValidator {
 	}
 	
 	
-	protected AddressModel doScrubAddress(ErpAddressModel addr, ActionResult result) throws FDResourceException {
+	protected AddressModel doScrubAddress(AddressModel addr, ActionResult result) throws FDResourceException {
 		return AddressUtil.scrubAddress(addr, result);
 	}
 

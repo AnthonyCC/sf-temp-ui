@@ -448,7 +448,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		// =============================
 		
 		String deliveryAddressId = so.getAddressId();
-		ErpAddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
+		AddressModel deliveryAddressModel = FDCustomerManager.getAddress( customer, deliveryAddressId );
 		//Allowing COS customers to use HOME zone capacity for the configured set of HOME zones
 		 deliveryAddressModel = performCosResidentialMerge(deliveryAddressModel);
 		
@@ -473,7 +473,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		}
 		
 		// continue with the scrubbed address
-		deliveryAddressModel = (ErpAddressModel)addressValidator.getScrubbedAddress();
+		deliveryAddressModel = addressValidator.getScrubbedAddress();
 		
 		if ( deliveryAddressModel == null ) {
 			LOGGER.warn( "No valid delivery address." );
@@ -598,8 +598,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		LOGGER.info( "Selected timeslot = " + selectedTimeslot.toString() );
 		LOGGER.info( "Timesot reservation = " + reservation.toString() );
 		
-	
-				
+		if(EnumServiceType.HOME.equals(deliveryAddressModel.getServiceType()))
+			deliveryAddressModel.setServiceType(EnumServiceType.CORPORATE);	
 		// ==========================
 		//    Extra validations
 		// ==========================
@@ -999,8 +999,8 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 			return "Bad items: " + counter + " -> " + hasInvalidItems();
 		}
 	}
-	private ErpAddressModel performCosResidentialMerge(ErpAddressModel address)	throws FDResourceException {
-		ErpAddressModel timeslotAddress=address;
+	private AddressModel performCosResidentialMerge(AddressModel address)	throws FDResourceException {
+		AddressModel timeslotAddress=address;
 		if(address!=null){
 			if(EnumServiceType.CORPORATE.equals(address.getServiceType())){
 				try{
@@ -1022,7 +1022,7 @@ public class StandingOrdersServiceSessionBean extends SessionBeanSupport {
 		return timeslotAddress;
 	}
 	
-	private ErpAddressModel cloneAddress(ErpAddressModel address) {
+	private AddressModel cloneAddress(AddressModel address) {
 		ErpAddressModel model=new ErpAddressModel(address);
 		return model;
 	}
