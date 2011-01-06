@@ -102,7 +102,7 @@ public class DeliveryAddressValidator {
 
 			} else {
 				LOGGER.debug( "geocodeResponse.getAddress() :" + geocodeResponse.getAddress() );
-				scrubbedAddress = (ErpAddressModel)geocodeResponse.getAddress();
+				scrubbedAddress = geocodeResponse.getAddress();
 			}			
 			
 		} catch (FDInvalidAddressException iae) {
