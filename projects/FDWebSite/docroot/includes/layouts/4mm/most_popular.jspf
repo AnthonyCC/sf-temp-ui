@@ -1,3 +1,4 @@
+<%@page import="com.freshdirect.fdstore.content.ContentNodeModelUtil"%>
 <%@page import="java.util.List"%>
 <%@page import="com.freshdirect.webapp.util.ProductImpression"%>
 <%@page import="com.freshdirect.fdstore.content.ProductModel"%>
@@ -29,6 +30,7 @@
 		<display:UniqueFilter in="<%= categoryProducts %>" out="mostPopularProds" groupId="4mm-default">
 		<%
 		if ( mostPopularProds.size() > 0 ) { %>
+			<% ContentNodeModelUtil.setNearestParentForProducts( null, (List<ProductModel>)(List)mostPopularProds ); %>
 			<div class="carousel-box">
 				<div class="separator"><img src="/media/4mm/dpt_4mm_hdr_most_popular.gif" /></div>
 				<display:Carousel  id="popular_carousel" carouselId="popular_carousel" width="510" height="142" numItems="4" showCategories="false" itemsToShow="<%= mostPopularProds %>" trackingCode="mpop-4mm" maxItems="12">

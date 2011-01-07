@@ -59,7 +59,7 @@ sessionCounter = <%= sessionCounter %>
 		<% } %>
 		<%@ include file="/includes/layouts/4mm/your_favorites.jspf"%>
 		
-		<% if (true || !yourFavoritesShown ) { 
+		<% if ( !yourFavoritesShown ) { 
 			mostPopularShown = true; %>
 			<div class="notopmargin">
 			<%@ include file="/includes/layouts/4mm/most_popular.jspf"%>
