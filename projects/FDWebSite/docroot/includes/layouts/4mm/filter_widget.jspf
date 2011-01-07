@@ -21,7 +21,7 @@
 --%>
 <%	
 	PricingContext pricingContext = user != null ? user.getPricingContext() : PricingContext.DEFAULT;
-	FilterResult result = needToFilter ? FourMinuteMealsHelper.filterItems( pageContext, pricingContext ) : null;
+	FilterResult result = needToFilter ? FourMinuteMealsHelper.filterItems( pageContext, pricingContext, user ) : null;
 	
 	Map<String,List<String>> params = needToFilter ? result.getFilterParams() : FourMinuteMealsHelper.parseUrlParams( pageContext );
 	Map<String,FourMinuteMealsHelper.FilterInfo> filterInfos = needToFilter ? result.getFilterInfos() : FourMinuteMealsHelper.getFilterInfos();

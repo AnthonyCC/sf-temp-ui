@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,8 +34,10 @@ import com.freshdirect.fdstore.content.Html;
 import com.freshdirect.fdstore.content.MediaI;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SkuModel;
+import com.freshdirect.fdstore.customer.FDUserI;
 import com.freshdirect.fdstore.pricing.ProductModelPricingAdapter;
 import com.freshdirect.fdstore.pricing.ProductPricingFactory;
+import com.freshdirect.fdstore.util.DYFUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.sorting.ShortTermPopularityComparator;
 
@@ -702,7 +705,7 @@ public class FourMinuteMealsHelper {
 	 * @param pricingContext ?
 	 * @return FilterResult containing the filtered items, the parsed filter parameters, and new FilterInfos to display.
 	 */
-	public static FilterResult filterItems( PageContext pageContext, PricingContext pricingContext ) {
+	public static FilterResult filterItems( PageContext pageContext, PricingContext pricingContext, FDUserI customer ) {
 		
 		// init if needed
 		initLazy();
@@ -927,6 +930,31 @@ public class FourMinuteMealsHelper {
 				}
 			}
 			
+			// Move favorites to top of every brand-list
+			if ( customer != null ) {
+				ListIterator<List<? extends ProductModel>> iter1 = separatedList.listIterator();
+				while ( iter1.hasNext() ) {					
+					List<? extends ProductModel> prodL = iter1.next();
+					List<ProductModel> favList = new ArrayList<ProductModel>();
+					boolean foundFav = false;
+					ListIterator<? extends ProductModel> iter2 = prodL.listIterator();
+					while ( iter2.hasNext() ) {
+						ProductModel prod = iter2.next();
+						if ( DYFUtil.isFavorite(prod, customer) ) {
+							favList.add( prod );
+							iter2.remove();
+							foundFav = true;
+						}
+					}
+					if ( foundFav ) {
+						List<ProductModel> newList = new ArrayList<ProductModel>();
+						newList.addAll( favList );
+						newList.addAll( prodL );
+						iter1.set( newList );
+					}
+				}
+			}
+			
 			result.setMediaList( mediaList );
 			result.setMultiList( separatedList );
 			
@@ -1016,7 +1044,7 @@ public class FourMinuteMealsHelper {
 		List<String> selectedIds=null;
 		@SuppressWarnings( "unchecked" )
 		Map<String,String[]> urlParams = pageContext.getRequest().getParameterMap();
-		String[] params = (String[]) urlParams.get( paramName );
+		String[] params = urlParams.get( paramName );
 		if(params!=null) {
 			selectedIds = Arrays.asList(params);			
 		}		
