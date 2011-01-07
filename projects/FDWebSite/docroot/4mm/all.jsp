@@ -78,7 +78,7 @@
 			
 			<% if ((selectedRestaurants.size() > 0 || selectedIngredients.size() > 0 || selectedPrices.size() > 0) && selectedNutritions.size() > 0) { %><span class="fourmm-breadcrumb-bullet">&bull;</span><% } %>
 			<logic:iterate id="breadCrumbItem" indexId="breadCrumbItemIndex" collection="<%= selectedNutritions %>" type="java.lang.String">
-			<% if (breadCrumbItemIndex != 0) { %><span class="fourmm-breadcrumb-with"> with </span><% } %><span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
+			<% if (breadCrumbItemIndex != 0) { %><span class="fourmm-breadcrumb-with"> and </span><% } %><span class="fourmm-breadcrumb-item"><%= FourMinuteMealsHelper.getFilterInfos().get(breadCrumbItem).getLabel() %></span>
 			</logic:iterate>
 			
 		</div>
