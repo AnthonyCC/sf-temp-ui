@@ -64,24 +64,10 @@ table.tsHeaderE, .tsHeaderE {
 	width: 100%;
 	text-align: center;
 }
-.tsSpacerC {
-	height: 25px;
-	width: 84px;
-}
 .tsContainerC {
 	height: 31px;
 	width: 84px;
 }
-.tsContentC, .tsContentE {
-	height: 100%;
-	width: 100%;
-	line-height: 31px;
-}
-
-a.tsContentC {
-	color:#333333;
-}
-
 .tsContCon table, .tsContExp table {
 	border: 0px;
 	padding: 0px;
@@ -139,19 +125,19 @@ a.tsContentC {
 	cursor: default;
 }
 
-.tsCol a.tsContent {
+.tsCol div.tsContent {
 	display: block;
 	height: 100%;
 	text-decoration: none;
 	color: #333;
 	cursor: pointer;
 }
-.tsCol a.tsContent div {
+.tsCol div.tsContent div {
 	height: 12px;
 	margin-left: 0px;
 }
 
-.tsCol a.tsContent div.tsCont, .tsCol a.tsContent div.msgCont {
+.tsCol div.tsContent div.tsCont, .tsCol div.tsContent div.msgCont {
 	padding-top: 10px;
 	margin-left: 4px;
 }
@@ -167,12 +153,14 @@ div.tsNoDeliv {
 	text-align: center;
 	height: 26px;
 }
-.cutoff a,.cutoffDisp a {
+.cutoff div,.cutoffDisp div {
 	text-decoration: none;
 	color: #333;
 	cursor: default;
+	height:100%;
+	width:100%;
 }
-.cutoff a.cutoffwBorder {
+.cutoff div.cutoffwBorder {
 	border: 1px solid #ccc;
 }
 .fleft {
@@ -185,6 +173,105 @@ div.tsNoDeliv {
 
 .tsFooterC {
 	display: none;
+}
+.tsTopModuleHeader {
+	font-size:12px;
+	font-weight:bold;
+	color:#333333;
+}
+
+.tsBottomModuleHeader {
+	font-size:10px;
+	font-weight:bold;
+}
+
+a.tsHiperlink {
+	color:#669933;
+	font-size: 10px;
+	font-family: Verdana, Arial, sans-serif;
+	text-decoration:none;
+}
+
+div.content_fixed td{
+	font-family:Verdana,Arial,sans-serif;
+	font-size:10px;
+}
+
+a.tsCTBenefits {
+	color: #77A642;
+	text-decoration: underline;
+}
+
+a.tsNCBenefits {
+	color: #006400;
+	text-decoration: none;
+}
+
+div.learnMoreTimeslot {
+	display:none;
+}
+
+div.holidayContent {
+	line-height:10px;
+	text-align:center;
+	padding-left:3px;
+	margin-top:5px;
+}
+
+a.holidayLearnMore {
+	color:#77A642;
+	cursor:pointer;
+	text-decoration:none;
+}
+div#MB_caption {
+	font: bold 12px "Lucida Grande",Arial,sans-serif;
+	padding:0.5em 2em 0.5em 0;
+}
+
+div#MB_content {
+	font: normal 10px "Lucida Grande",Arial,sans-serif;
+}
+
+.tsBordDefault {
+	border:1px solid #F8F8F8;
+}
+
+.tsBordDefaultExp {
+	border:1px solid #FFFFFF;
+}
+
+.tsBordDefaultExp div {
+	margin-top:8px;
+}
+
+a.tsDivHide {
+	color:#78ABDC;
+	float:right;
+}
+
+.tsTable td {
+    border: 1px solid #ccc;
+}
+.tsFooter div {
+    margin: -1px 0 -1px -1px;
+}
+div.tsHeaderE {
+    margin-top: -10px;
+}
+.tsTable td div div, .tsTable td table td, td.tsFooter, td.cutoff, .tsTable td div {
+    border: 0 none;
+} 
+.cutoffDisp {
+   border-right: 1px solid #ccc;
+   text-align:center;
+}
+
+.tsContainerBGC {
+	background-color: #F7F7F7;
+	
+}
+.tsContainerBGE {
+	background-color: #FFFFFF;
 }
 
 /*Steering Discount slot*/
@@ -212,7 +299,7 @@ div.tsNoDeliv {
 	margin:0px 10px 0 0;
 }
 
-a.tsBordDiscountE {
+td div.tsBordDiscountE {
 	border:1px solid #77A642;
 }
 
@@ -222,10 +309,10 @@ a.tsBordDiscountE {
 
 
 /*Reservation slot*/
-a.tsContentResC {
+div.tsContentResC {
 	background-color:#E0E0E0;
 }
-a.tsContentResE {
+div.tsContentResE {
 	background-color:#E0E0E0; /*#6D6968*/
 }
 .tsReservationE {
@@ -261,7 +348,7 @@ a.tsChefMoreE {
 	margin:6px 10px 0 0;
 }
 
-.tsBordCTE {
+td div.tsBordCTE {
 	border:1px solid #794E79;
 }
 /*SoldOut slot*/
@@ -298,22 +385,39 @@ a.tsEcoFriendlyMoreE {
 	margin:6px 10px 0 0;
 }
 
-a.tsBordEcoFriendlyE {
+td div.tsBordEcoFriendlyE {
 	border:1px solid #DB5F5F;
 }
 
-.tsDivHide a{
+.tsDivHide a, .tsDivHide div {
 	color:#78ABDC;
 	text-align:right;
 }
 
-/*Selected slot*/
-.tsContentSelC {
-	background-color:#666666;
-	color:#FFFFFF;
+/*Alcohol Restriction*/
+.tsAlcoholResE {
+	color:#800000;
+	font-weight:bold;
+	font-size: 9px; 
+	font-family: Verdana, Arial, sans-serif;
 }
+a.tsAlcoholResMoreE {
+	color:#FF8040;
+	font-size:8px;
+	text-decoration:underline;
+	cursor: pointer;
+}
+.tsAlcoholResPropE {
+	float:right;
+	line-height:20px;
+	margin:6px 10px 0 0;
+}
+td div.tsBordAlcoholResE {
+	border:1px solid #FF8040;
+}
+/*Selected slot*/
 .tsContentSelE {
-	background-color:#666666; 
+	background-color:#736F6E; 
 	color:#FFFFFF;
 }
 
@@ -329,97 +433,4 @@ a.tsBordEcoFriendlyE {
 	line-height:15px;
 	margin:6px 10px 0 0;
 }
-
-.tsTopModuleHeader {
-	font-size:12px;
-	font-weight:bold;
-	color:#333333;
-}
-
-.tsBottomModuleHeader {
-	font-size:10px;
-	font-weight:bold;
-}
-
-a.tsHiperlink {
-	color:#669933;
-	font-size: 10px;
-	font-family: Verdana, Arial, sans-serif;
-	text-decoration:none;
-}
-
-div.content_fixed td{
-	font-family:Verdana,Arial,sans-serif;
-	font-size:10px;
-}
-
-a.tsCTBenefits {
-	color: #77A642;
-	text-decoration: underline;
-}
-
-a.tsNCBenefits {
-	color: #006400;
-	text-decoration: none;
-}
-
-div.learnMoreTimeslot {
-	display:none;
-	float:left;
-	height:0;
-	visibility:hidden;
-	width:0;
-}
-
-div#learnMoreContent {
-	width:800px;
-}
-
-div#MB_caption {
-	font: bold 12px "Lucida Grande",Arial,sans-serif;
-	padding:0.5em 2em 0.5em 0;
-}
-
-div#MB_content {
-	font: normal 10px "Lucida Grande",Arial,sans-serif;
-}
-
-.tsBordDefault {
-	border:1px solid #F8F8F8;
-}
-
-.tsBordDefaultExp {
-	border:1px solid #FFFFFF;
-}
-
-.tsBordDefaultExp div {
-	margin-top:8px;
-}
-
-a.tsDivHide {
-	color:#78ABDC;
-	float:right;
-}
-
-.tsTable td {
-    border: 1px solid #ccc;
-}
-.tsFooter div {
-    margin: -1px 0 -1px -1px;
-}
-div.tsHeaderE {
-    margin-top: -10px;
-}
-
-.tsTable td div, .tsTable td table td, td.tsFooter, td.cutoff {
-    border: 0 none;
-}
-
-.cutoffDisp {
-   border-right: 1px solid #ccc;
-   text-align:center;
-}
-
-
-
 

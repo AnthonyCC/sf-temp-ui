@@ -1,6 +1,6 @@
 <%
 boolean ClickToCallEnabled=false;
-if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)){
+if(user.getIdentity()!=null && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)){
 	ClickToCallEnabled=true;
 }
 String hourString="";

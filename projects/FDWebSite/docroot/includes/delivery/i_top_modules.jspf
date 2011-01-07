@@ -59,7 +59,7 @@ if ( deliveryModel.getRsv()!=null ) {
 			<%if((deliveryModel.getMaxDiscount()>0 && !user.isDlvPassNone())||(deliveryModel.getMaxDiscount()>0 
 							&& (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
-			<%}else if(user.isChefsTable()&& !user.isDlvPassNone()){
+			<%}else if(user.isChefsTable()&& !user.isDlvPassNone() && !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){
 				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
 			%>
 				

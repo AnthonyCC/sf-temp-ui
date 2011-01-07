@@ -213,13 +213,12 @@
 	</tr>
 	<tr>
 		<td align="center">
-			<img src="/media_stat/images/layout/clear.gif" width="1" height="34"><br>
 			<% if (FDStoreProperties.isAdServerEnabled()) { %>
 				<SCRIPT LANGUAGE=JavaScript>
 					<!--
 						OAS_AD('TimeslotBottom');
 					//-->
-				</SCRIPT><br><br>
+				</SCRIPT>
 			 <% } %>
 		</td>
 	</tr>

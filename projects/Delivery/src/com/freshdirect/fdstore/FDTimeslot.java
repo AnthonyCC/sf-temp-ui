@@ -24,7 +24,7 @@ public class FDTimeslot implements Serializable, Comparable {
 	private final static Logger LOGGER = LoggerFactory.getInstance( FDTimeslot.class );
 	
 	private final DlvTimeslotModel dlvTimeslot;
-	private boolean isGeoRestricted;
+	private boolean isAlcoholRestricted;
 	private boolean normalAvailCapacity;
 	private boolean availCTCapacity;
 	
@@ -161,12 +161,12 @@ public class FDTimeslot implements Serializable, Comparable {
 		return dlvTimeslot.getSteeringDiscount();
 	}
 
-	public boolean isGeoRestricted() {
-		return isGeoRestricted;
+	public boolean isAlcoholRestricted() {
+		return isAlcoholRestricted;
 	}
 
-	public void setGeoRestricted(boolean isGeoRestricted) {
-		this.isGeoRestricted = isGeoRestricted;
+	public void setAlcoholRestricted(boolean isAlcoholRestricted) {
+		this.isAlcoholRestricted = isAlcoholRestricted;
 	}
 	
 	public boolean hasNormalAvailCapacity() {

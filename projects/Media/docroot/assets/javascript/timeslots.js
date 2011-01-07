@@ -142,6 +142,10 @@ var day = parseDay(elemId); //should now be the day index
 				if (t == refDataCur[d][0].length) {
 					$('ts_d'+d+'_ts'+t).style.borderBottomWidth = '1px';
 				}
+				//background color
+				if ($('ts_d'+d+'_ts'+t)) {
+					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerBGC", "tsContainerBGE");
+				}
 			}
 		}else{
 			//hide others
@@ -198,6 +202,10 @@ var day = parseDay(elemId); //should now be the day index
 				if ($('ts_d'+d+'_ts'+t)) {
 					$('ts_d'+d+'_ts'+t).style.borderBottomWidth = '1px';
 				}
+				//background color
+				if ($('ts_d'+d+'_ts'+t)) {
+					$('ts_d'+d+'_ts'+t).className = $('ts_d'+d+'_ts'+t).className.replace("tsContainerBGE", "tsContainerBGC");
+				}
 			}
 		}
 	}
@@ -253,7 +261,7 @@ var day = parseDay(elemId); //should now be the day index
 			//reset reorgs
 			if ($('ts_d'+d+'_ts'+t)) {
 				if ($('ts_d'+d+'_ts'+t).rowSpan > 1) { //blanks only
-					$('ts_d'+d+'_ts'+t).innerHTML = '<a onclick="tsContractAll(\'tsContainer\', \'ts_d'+d+'_ts'+t+'\'); tsExpand(\'ts_d'+d+'_ts'+t+'\'); return false;" class="tsContent" href="#"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont"></div></a>';
+					$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent" href="#"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont"></div></div>';
 				}
 				$('ts_d'+d+'_ts'+t).rowSpan = 1;
 				$('ts_d'+d+'_ts'+t).show();
@@ -306,7 +314,19 @@ var day = parseDay(elemId); //should now be the day index
 		if ($('ts_d'+d+'_ts'+reorgStart)) {
 			var padHeight = (sequenceCount-1)*31/2;
 			$('ts_d'+d+'_ts'+reorgStart).rowSpan = sequenceCount;
-			$('ts_d'+d+'_ts'+reorgStart).innerHTML = '<a onclick="tsContractAll(\'tsContainer\', \'ts_d'+d+'_ts'+reorgStart+'\'); tsExpand(\'ts_d'+d+'_ts'+reorgStart+'\'); return false;" class="tsContent" href="#" style="padding-top: '+padHeight+'px; padding-bottom: '+padHeight+'px;"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+reorgStart+'_rbCont"></div><div class="fleft tsNoDeliv"><b>No Deliveries</b></div></a>';
+			
+			//change the contents (holiday? no delivery?)
+			if ($('ts_d'+d+'_ts'+reorgStart).getAttribute('name') != null && ($('ts_d'+d+'_ts'+reorgStart).getAttribute('name')).indexOf('holiday_') == 0) {
+				//holiday
+				var contId = ($('ts_d'+d+'_ts'+reorgStart).getAttribute('name')).split('_');
+				if (isArray(contId) && $(contId[1])) {
+					//found content to use
+					$('ts_d'+d+'_ts'+reorgStart).innerHTML = $(contId[1]).innerHTML;
+				}
+			}else{
+				//no delivery
+				$('ts_d'+d+'_ts'+reorgStart).innerHTML = '<div class="tsContent" style="padding-top: '+padHeight+'px; padding-bottom: '+padHeight+'px;"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+reorgStart+'_rbCont"></div><div class="fleft tsNoDeliv"><b>No Deliveries</b></div></div>';
+			}
 		}
 		//now hide extra tds
 		for (var j = reorgStart+1; j < reorgEnd+1; j++) {
@@ -418,4 +438,30 @@ function hideAdvanceOrder() {
 			defaultColumnExpand(0,0);
 		}
 	}
+}
+
+function checkDeliveryShow(elemIdarg) {
+		var elemId = elemIdarg ||'learnMoreContent';
+		if($(elemId)){
+			var contentWidth = '400';
+			if ($(elemId)) {
+				if(($(elemId).getStyle('width'))!=null)
+					contentWidth = ($(elemId).getStyle('width')).replace("px","");
+			}
+			console.log(contentWidth);
+			Modalbox.show($(elemId), {
+					loadingString: 'Loading Window...',
+					closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
+					closeString: 'Close Window',
+					title: 'Delivery Information',
+					overlayOpacity: .30,
+					overlayClose: false,
+					width: contentWidth,
+					transitions: false,
+					autoFocusing: false,
+					centered: true,
+					afterLoad: function() { $('MB_content').style.overflow='hidden';window.scrollTo(0,0); },
+					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
+				})
+		}
 }
