@@ -7,12 +7,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.log4j.Logger;
+
 import com.freshdirect.cms.ContentKey;
 import com.freshdirect.cms.ContentKey.InvalidContentKeyException;
 import com.freshdirect.event.ImpressionLogger;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.customer.FDUserI;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.smartstore.SessionInput;
 import com.freshdirect.smartstore.fdstore.Recommendations;
 import com.freshdirect.webapp.taglib.AbstractGetterTag;
@@ -20,7 +23,9 @@ import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
 import com.freshdirect.webapp.util.FDEventUtil;
 
-public abstract class RecommendationsTag extends AbstractGetterTag {
+public abstract class RecommendationsTag extends AbstractGetterTag<Recommendations> {
+	private static final Logger LOGGER = LoggerFactory.getInstance( RecommendationsTag.class );
+
 	private static final long serialVersionUID = -7592561069328056899L;
 
 	// maximum number of recommended items
@@ -127,15 +132,31 @@ public abstract class RecommendationsTag extends AbstractGetterTag {
      * 
      * @return List of <{@link Recommendation}>
      */
-    protected Object getResult() throws Exception {
+    protected Recommendations getResult() throws Exception {
         Recommendations results = getRecommendations();
         
-        if (results != null && results.getProducts().size() == 0)
+        final List<ProductModel> products = results.getProducts();
+		if (results != null && products.size() == 0) {
+        	LOGGER.debug("Return empty result");
         	results = null;
+        }
 
         if (results != null && shouldLogImpressions()) {
             // do impression logging
             logImpressions(results);
+            
+            // DEBUG --> print out recommended products
+            //
+            StringBuilder buf = new StringBuilder();
+            buf.append("Result: [");
+            int k = products.size();
+            for (ProductModel obj : products) {
+            	buf.append(obj.getContentName());
+            	if (--k > 0)
+            		buf.append(", ");
+            }
+            buf.append("]");
+            LOGGER.debug(buf.toString());
         }
         return results;
     }

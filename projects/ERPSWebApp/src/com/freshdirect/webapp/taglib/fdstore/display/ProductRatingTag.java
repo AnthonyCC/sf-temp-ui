@@ -4,15 +4,17 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagData;
 import javax.servlet.jsp.tagext.TagExtraInfo;
 import javax.servlet.jsp.tagext.VariableInfo;
+
+import org.apache.log4j.Logger;
 
 import com.freshdirect.fdstore.EnumOrderLineRating;
 import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.content.EnumWineRating;
 import com.freshdirect.fdstore.content.ProductModel;
+import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.BodyTagSupport;
 import com.freshdirect.webapp.taglib.fdstore.FDSessionUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -25,6 +27,8 @@ import com.freshdirect.webapp.util.JspMethods;
  * 
  */
 public class ProductRatingTag extends BodyTagSupport {
+	private static final Logger LOGGER = LoggerFactory.getInstance( ProductRatingTag.class );
+
 	private static final long serialVersionUID = -5168098436665976237L;
 
 	ProductModel product; // product (mandatory)
@@ -59,10 +63,23 @@ public class ProductRatingTag extends BodyTagSupport {
 		FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
 
 		if (user == null) {
+			LOGGER.error("User is null! Skipping ...");
 			return SKIP_BODY;
 		}
 
-		final String deptName = product.getDepartment().getContentName();
+		if (product == null) {
+			LOGGER.error("Product is null! Skipping ...");
+			return SKIP_BODY;
+		}
+
+		if (product.getDepartment() == null) {
+			LOGGER.warn("Product "+ product.getContentName() +" has no department!");
+		}
+
+
+		final String deptName = product.getDepartment() != null ?
+				product.getDepartment().getContentName() : "";
+
 		if ("usq".equalsIgnoreCase(deptName)) {
 			// [A] WINE RATINGS
 			if (!product.isShowWineRatings()) {
