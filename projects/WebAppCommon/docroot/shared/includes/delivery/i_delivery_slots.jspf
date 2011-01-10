@@ -271,9 +271,12 @@ if (timeslots.size() > 0) {
 											var promodiscount = "<%= CCFormatter.formatQuantity(slot.getSteeringDiscount()) %>";
 													
 						<%				timeslotBuff.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<font class=\"tsDiscountE\">Save $"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
+											.append("<font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
 											.append("<div onclick=\"javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_discount_timeslot.html&windowSize=small&name=Promotion Discount Information',300,400)\"") 
 											.append("class=\"tsDiscountMoreE\">More Info</div>")
+											.append("</div>");
+										timeslotBuff.append("<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
+											.append("<font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
 											.append("</div>");
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
 										timeslotBuff.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")

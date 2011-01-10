@@ -282,11 +282,12 @@ div.tsHeaderE {
 .tsDiscountE {
 	color:#77A642;
 	font-weight:bold;
-	font-size: 10px; 
+	font-size: 11px; 
 	font-family: Verdana, Arial, sans-serif;
 }
 .tsDiscountPropE {
-	line-height:15px;
+	overflow:hidden;
+	margin-top:3px;
 }
 .tsDiscountMoreE {
 	color:#77A642;
@@ -303,6 +304,18 @@ td div.tsBordDiscountE {
 	border:1px solid #77A642;
 }
 
+.tsCol div.tsContent div.tsDiscountPropE {
+	height:28px;
+}
+.tsDiscountC {
+	color:#77A642;
+	font-weight:bold;
+	font-size: 11px; 
+	font-family: Verdana, Arial, sans-serif;
+}
+.tsDiscountPropC {
+	padding:2px 0 0 4px;
+}
 .tsCTStar {
 	margin-right:3px;
 }
@@ -369,7 +382,8 @@ td div.tsBordCTE {
 	font-family: Verdana, Arial, sans-serif;
 }
 .tsEcoFriendlyPropE {
-	line-height:15px;
+	overflow:hidden;
+	margin-top:3px;
 }
 .tsEcoFriendlyMoreE {
 	color:#DB5F5F;
@@ -385,7 +399,9 @@ td div.tsBordCTE {
 td div.tsBordEcoFriendlyE {
 	/*border:1px solid #DB5F5F*/;
 }
-
+.tsCol div.tsContent div.tsEcoFriendlyPropE {
+	height:28px;
+}
 .tsDivHide a, .tsDivHide div {
 	color:#78ABDC;
 	text-align:right;
