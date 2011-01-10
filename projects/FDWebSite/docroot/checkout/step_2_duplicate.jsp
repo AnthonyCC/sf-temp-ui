@@ -75,11 +75,11 @@ if (sameDayPendingOrderCount == 1) {
 		<table border="0" cellspacing="0" cellpadding="0">
 		    <tr valign="top">
 				<TD width="35">
-					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="previousX">
+					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 				</TD>
 				<TD width="350">
-					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText">
+					<a href="<%=response.encodeURL("/checkout/step_1_choose.jsp")%>" id="cancelText">
 					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 					Delivery Address<br/>
 					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">

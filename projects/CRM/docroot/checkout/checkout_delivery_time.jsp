@@ -123,7 +123,7 @@
 
 
 <div class="content_scroll" style="height: 72%;">
-<TABLE width="100%" cellpadding="2" cellspacing="0" border="0" class="order">
+<TABLE width="730" cellpadding="2" cellspacing="0" border="0" class="order" align="center">
 	<TR>
 		<TD  align="center" class="order_detail">	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
@@ -244,7 +244,7 @@
     showAdvanceOrderBand = timeslotList.size()>1 ? true && advOrdRangeOK: false;
  } %>
 
-	<%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
+	<BR><%@ include file="/shared/includes/delivery/i_delivery_slots.jspf"%>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ END TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 	</td>
@@ -263,10 +263,12 @@
 									</td>
 									<td style="color:#77A642;">Chefs Table Delivery Times</td>
 								<%}%>
-								<td>
-									<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
-								</td>
-								<td style="color:#77A642;">Discount Delivery Times</td>
+								<%if(deliveryModel.getMaxDiscount()>0){%>
+									<td>
+										<img src="/media/editorial/timeslots/images/dollar_discount_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
+									</td>
+									<td style="color:#77A642;">Discount Delivery Times</td>
+								<%}%>
 						</tr>
 				</table>	
 		</td>
@@ -309,19 +311,8 @@
 </TABLE>
 <BR><BR>
 </div>
-<% 
-if(!defaultColExp){%>
-	<script>
-		document.observe("dom:loaded", function() {
-			selectTS('tsContainer', 'div_set_0','ts_set_0_ts_0');
-		});
-	</script>
-<%}%>
 </tmpl:put>
 </fd:CheckoutController>
 </tmpl:insert>
 </crm:GetCurrentAgent>
 </fd:DeliveryTimeSlot>
-
-
-

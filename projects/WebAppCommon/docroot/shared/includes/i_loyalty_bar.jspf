@@ -9,13 +9,13 @@
 			<font style="font-weight:bold;font-size:11px;">		
 
 				<%= user.getFirstName() %> <%= user.getLastName() %>
-				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> </font><font style="font-weight:bold;">- Chefs Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
+				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> </font><font style="font-weight:bold;">- Chef's Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
 			
 			</font>
 		</td>
 		<td width="260" align="right" style="background:#333433; color: #fff">
 			<font style="font-weight:bold;">
-				<%if(request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1){%>
+				<%if(user.getTotalCTSlots()>0){%>
 					timeslots just for you <a href="#" class="tsCTBenefits">More Benefits</a>
 				<%}else{%>
 					Your Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a>

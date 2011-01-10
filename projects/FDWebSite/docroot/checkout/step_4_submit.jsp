@@ -223,11 +223,11 @@ if (user.isPromoConflictResolutionApplied()) {
 	<tr VALIGN="TOP">
 		
 			<td width="35">
-					<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp ")%>" id="previousX">
+					<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
 		    <td width="340">
-				<a href="<%=response.encodeURL("/checkout/checkout/step_3_choose.jsp  ")%>" id="previousX">
+				<a href="<%=response.encodeURL("/checkout/step_3_choose.jsp")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Payment Method<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">

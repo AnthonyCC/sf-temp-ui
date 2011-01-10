@@ -85,6 +85,11 @@ var day = parseDay(elemId); //should now be the day index
 			if ($('ts_d'+d+'_ts_hE')) {
 				$('ts_d'+d+'_ts_hE').show();
 			}
+			//line fix
+			if ($('ts_d'+d+'_ts_header')) {
+              $('ts_d'+d+'_ts_header').className = 'noTopBorder';
+			}
+
 			//footer
 			//collapsed
 			if ($('ts_d'+d+'_ts_fC')) {
@@ -157,6 +162,10 @@ var day = parseDay(elemId); //should now be the day index
 			//expanded
 			if ($('ts_d'+d+'_ts_hE')) {
 				$('ts_d'+d+'_ts_hE').hide();
+			}
+			//line fix
+	        if ($('ts_d'+d+'_ts_header')) {
+              $('ts_d'+d+'_ts_header').className = '';
 			}
 			//footer
 			//collapsed

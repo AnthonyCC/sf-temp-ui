@@ -41,6 +41,7 @@ import com.freshdirect.delivery.restriction.EnumDlvRestrictionReason;
 import com.freshdirect.delivery.restriction.GeographyRestriction;
 import com.freshdirect.delivery.restriction.OneTimeRestriction;
 import com.freshdirect.delivery.restriction.OneTimeReverseRestriction;
+import com.freshdirect.delivery.restriction.RecurringRestriction;
 import com.freshdirect.delivery.restriction.RestrictionI;
 import com.freshdirect.fdstore.EnumCheckoutMode;
 import com.freshdirect.fdstore.FDDeliveryManager;
@@ -147,7 +148,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		DateRange geoRestrictionRange = getStandardRange();
 		
 		DlvRestrictionsList restrictions = FDDeliveryManager.getInstance().getDlvRestrictions();
-
+		
+		List<RestrictionI> alcoholRestrictions = restrictions.getRestrictions(EnumDlvRestrictionCriterion.DELIVERY,getAlcoholRestrictionReasons(),baseRange);
+		
+		LOGGER.debug("AlcoholRestrictions :"+alcoholRestrictions.size());
+		
 		EnumDlvRestrictionReason specialHoliday = getNextHoliday(restrictions, baseRange, FDStoreProperties
 			.getHolidayLookaheadDays());
 
@@ -209,7 +214,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		filterDeliveryTimeSlots(user, geoRestrictionRange, restrictions,
 				timeslotList, zonesMap, retainTimeslotIds,
 				geographicRestrictions, messages, comments,
-				isKosherSlotAvailable, hasCapacity, deliverymodel);
+				isKosherSlotAvailable, hasCapacity, deliverymodel, alcoholRestrictions);
 		
 		deliverymodel.setZoneId(cart.getDeliveryZone());		
 		
@@ -304,7 +309,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			List timeslotList, HashMap zonesMap, Set retainTimeslotIds,
 			List geographicRestrictions, List messages, List comments,
 			boolean isKosherSlotAvailable, boolean hasCapacity,
-			FDDeliveryTimeslotModel deliveryModel) throws FDResourceException {
+			FDDeliveryTimeslotModel deliveryModel,List<RestrictionI> alcoholRestrictions) throws FDResourceException {
 
 		boolean ctActive = false;
 		double maxDiscount = 0.0;
@@ -324,7 +329,6 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 						// filter off empty timeslots (unless they must be retained)
 						LOGGER.debug("Timeslot Removed By Tag :" + ts);
 						k.remove();
-						// timeslot.setGeoRestricted(true);
 					}
 					String zoneCode = timeslot.getZoneId();
 					if (!zonesMap.containsKey(zoneCode)) {
@@ -343,12 +347,13 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 											+ timeslot.getTimeslotId());
 						}
 					}
+					if(isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot))timeslot.setAlcoholRestricted(true);
 					checkTimeslotCapacity(user, zonesMap, timeslot);
 					if (ts.getSteeringDiscount() > maxDiscount)
 						maxDiscount = ts.getSteeringDiscount();
 					if(!timeslot.hasNormalAvailCapacity()&&timeslot.hasAvailCTCapacity())
 						ctSlots = ctSlots+1;
-				}			
+				}
 			}
 			
 			for(Iterator<FDTimeslot> uniqueItr = list.getUniqueSlots().iterator();uniqueItr.hasNext();){
@@ -717,8 +722,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		List<RestrictionI> holidayRes = new ArrayList<RestrictionI>();
 		DateRange validRange = new DateRange(baseRange.getStartDate(), baseRange.getEndDate());
 		
-		for (Iterator i = restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).iterator(); i.hasNext();) {
-			RestrictionI r = (RestrictionI) i.next();			
+		for (Iterator<RestrictionI> i = restrictions.getRestrictions(EnumDlvRestrictionReason.CLOSED, validRange).iterator(); i.hasNext();) {
+			RestrictionI r = i.next();
 			holidayRes.add(r);			
 		}
 		deliveryModel.setHolidayRestrictions(holidayRes);
@@ -751,9 +756,9 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 	}
 
 	protected static Set<EnumDlvRestrictionReason> getSpecialHolidays(DlvRestrictionsList restrictions, DateRange baseRange, int lookahead) {
-		Set holidays = new HashSet();
-		for (Iterator i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
-			EnumDlvRestrictionReason reason = (EnumDlvRestrictionReason) i.next();
+		Set<EnumDlvRestrictionReason> holidays = new HashSet<EnumDlvRestrictionReason>();
+		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
+			EnumDlvRestrictionReason reason = i.next();
 			if (reason.isSpecialHoliday()) {
 				holidays.add(reason);
 			}
@@ -770,6 +775,35 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			}
 		}
 		return reasons;
+	}
+	
+	protected Set<EnumDlvRestrictionReason> getAlcoholRestrictionReasons(){
+		Set<EnumDlvRestrictionReason> alcoholReasons = new HashSet<EnumDlvRestrictionReason>();
+		for (Iterator<EnumDlvRestrictionReason> i = EnumDlvRestrictionReason.iterator(); i.hasNext();) {
+			EnumDlvRestrictionReason reason = i.next();
+			if ("WIN".equals(reason.getName())||"BER".equals(reason.getName())
+										||"ACL".equals(reason.getName())) {
+				alcoholReasons.add(reason);
+			}
+		}
+		return alcoholReasons;
+	}
+	
+	protected static boolean isTimeslotAlcoholRestricted(List<RestrictionI> alcoholRestrictions, FDTimeslot slot) {
+		if(alcoholRestrictions.size()>0 && slot != null){
+			DateRange slotRange = new DateRange(slot.getBegDateTime(),slot.getEndDateTime());		
+			for (Iterator<RestrictionI> i = alcoholRestrictions.iterator(); i.hasNext();) {
+				RestrictionI r = i.next();
+				if (r instanceof OneTimeReverseRestriction) {
+					OneTimeReverseRestriction or = (OneTimeReverseRestriction) r;
+					if (or.overlaps(slotRange)) return true;
+				}else if(r instanceof RecurringRestriction){
+					RecurringRestriction rr = (RecurringRestriction)r;
+					if(rr.overlaps(slotRange) && (rr.getDayOfWeek()==slot.getDayOfWeek()))return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public static class TagEI extends AbstractGetterTag.TagEI {

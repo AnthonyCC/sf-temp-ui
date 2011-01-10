@@ -3,16 +3,20 @@ boolean clickToCall = false;
 if(ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)) {
 	clickToCall = true;
 }
-DecimalFormat twoDForm = new DecimalFormat("#.##"); 
-SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE");
+String ctMember = FDStoreProperties.getCustomerServiceEmail();
+if(user!=null && user.isChefsTable())ctMember = FDStoreProperties.getChefsTableEmail();
+DecimalFormat twoDForm = new DecimalFormat("#.##");
+SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE, MMM. dd");
 SimpleDateFormat MIN_HOUR_FORMATTER = new SimpleDateFormat("h:mm aa");
 String reservationDate="";
-String reservationTime="";
+String reservationStartTime="";
+String reservationEndTime="";
 String reservationExpDate="";
 String reservationExpTime="";
 if ( deliveryModel.getRsv()!=null ) { 
 	reservationDate = dateFormatter.format(deliveryModel.getRsv().getStartTime());
-	reservationTime = FDTimeslot.format(deliveryModel.getRsv().getStartTime(), deliveryModel.getRsv().getEndTime());
+	reservationStartTime = MIN_HOUR_FORMATTER.format(deliveryModel.getRsv().getStartTime());
+	reservationEndTime =  MIN_HOUR_FORMATTER.format(deliveryModel.getRsv().getEndTime());
 	reservationExpDate = dateFormatter.format(deliveryModel.getRsv().getExpirationDateTime());
 	reservationExpTime = MIN_HOUR_FORMATTER.format(deliveryModel.getRsv().getExpirationDateTime());
 }
@@ -20,10 +24,11 @@ if ( deliveryModel.getRsv()!=null ) {
 <script>
 	var maxpromodiscount = "<%= CCFormatter.formatQuantity(deliveryModel.getMaxDiscount()) %>";
 	var rsvDate = "<%= reservationDate %>";
-	var rsvTime = "<%= reservationTime %>";
+	var rsvSTime = "<%= reservationStartTime %>";	var rsvETime = "<%= reservationEndTime %>";
 	var rsvExpDate = "<%= reservationExpDate %>";
 	var rsvExpTime = "<%= reservationExpTime %>";
 	var DPSavings = "<%= Double.valueOf(twoDForm.format(user.getDlvPassInfo().getDPSavings()))%>";
+	var CTMember = "<%=ctMember%>";
 </script>
 <table width="695" cellpadding="0" cellpadding="0" border="0" align="center">
 	<tr valign="TOP">

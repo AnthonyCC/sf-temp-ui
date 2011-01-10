@@ -233,7 +233,7 @@
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
 		    <td width="340">
-				<a href="<%=response.encodeURL("/checkout/checkout/step_2_select.jsp  ")%>" id="previousX">
+				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Time<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
@@ -572,25 +572,25 @@ user.setAddressVerificationError(false);
 					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
 			</td>
 		    <td width="340">
-				<a href="<%=response.encodeURL("/checkout/checkout/step_2_select.jsp  ")%>" id="previousX">
+				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
 				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 				Delivery Time<br/>
 				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
 			</td>
 			<td width="265" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><br/>Submit Order<br/>
+				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setPaymentMethod')"><br/>Submit Order<br/>
 			</td>
 			<td width="35" align="right" valign="middle">
 				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')">
+				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setPaymentMethod')">
 			</td>
 	    </tr>
 	</table>
 
 		<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 	</FORM>
-	
+<% } %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
 	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
@@ -600,7 +600,6 @@ user.setAddressVerificationError(false);
 	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
 	
 <%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-<% } %>
 
 </fd:CheckoutController>
 </fd:FDShoppingCart>
