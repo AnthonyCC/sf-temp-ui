@@ -101,7 +101,7 @@ if (timeslots.size() > 0) {
 							.append("<tr>")
 								.append("<td width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\"></td>")
 								.append("<td><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\"></td>")
-								.append("<td width=\"6\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
 							.append("</tr>")
 							.append("<tr>")
 								.append("<td align=\"center\" colspan=\"3\" valign=\"middle\">")
@@ -251,11 +251,25 @@ if (timeslots.size() > 0) {
 								timeslotBuff.append("</div>");
 							%>		
 						<%
-								timeslotBuff.append("<div class=\"fleft tsCont\">"+slot.getDisplayString(true)+"</div>");
+								timeslotBuff.append("<div class=\"fleft tsCont ")
+									.append(
+										(
+										soldOut 
+										? "tsSoldoutC"
+										:(isPreReservedSlotId && hasPreReserved)
+												?"tsReservationTimeE"
+												:(isSelectedSlotId)
+													?"tsContentSelC"
+													:(slot.getSteeringDiscount()>0)
+														?"tsDiscountTimeC"
+														:""
+										)
+									+"\">"+slot.getDisplayString(true)+"</div>");
+									
 									// START Timeslot promotion display 
 									if (soldOut) {
 										timeslotBuff.append("<div class=\"tsSoldoutPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<font class=\"tsSoldoutE\">SOLD OUT</font>")
+											.append("<font class=\"tsSoldoutE\">Sold Out</font>")
 											.append("</div>");
 									}else if(isPreReservedSlotId && hasPreReserved ){
 										timeslotBuff.append("<div class=\"tsReservationPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
@@ -281,7 +295,7 @@ if (timeslots.size() > 0) {
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
 										timeslotBuff.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<img class=\"tsCTStar\" src=\"/media_stat/images/timeslots/star_small.gif\" width=\"11\" height=\"10\" border=\"0\" alt=\"CHEFSTABLE\">")
-											.append("<font class=\"tsChefstableE\">Chefs Table<br/></font>")
+											.append("<font class=\"tsChefstableE\">Chef's Table<br/></font>")
 											.append("</div>");
 									}else if(slot.isAlcoholRestricted()){
 										timeslotBuff.append("<div class=\"tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
@@ -320,7 +334,7 @@ if (timeslots.size() > 0) {
 					//generate the days/timeslots going across
 					timeslotBuff.append("<td class=\"tsCol tsContainerC tsContainerBGC\" colspan=\"3\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"\" onclick=\"tsContractAll(\'tsContainer\', \'ts_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'ts_d"+dayIndex+"_ts"+slotIndex+"\');\" name=\""+(timeslots.getHolidays().contains(day)? "holiday_day"+dayIndex:"")+"\">");
 					timeslotBuff.append("<div class=\"tsContent\">")
-						.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div>&nbsp;</div></a>");
+						.append("<div id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_rbCont\" class=\"fleft ts_rb\">&nbsp;</div><div>&nbsp;</div></div>");
 					timeslotBuff.append("</td>");
 				%>
 					<%if(!isForAdvOrdSlots){%>

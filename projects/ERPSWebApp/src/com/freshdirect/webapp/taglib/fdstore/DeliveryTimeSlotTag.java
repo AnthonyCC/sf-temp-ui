@@ -313,7 +313,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 
 		boolean ctActive = false;
 		double maxDiscount = 0.0;
-		int ctSlots = 0;
+		int ctSlots = 0;int alcoholSlots =0;int ecoFriendlySlots = 0;
 		Set<FDTimeslot> tempSlots = new TreeSet<FDTimeslot>();
 		for (Iterator i = timeslotList.iterator(); i.hasNext();) {
 			FDTimeslotUtil list = (FDTimeslotUtil) i.next();
@@ -347,12 +347,17 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 											+ timeslot.getTimeslotId());
 						}
 					}
-					if(isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot))timeslot.setAlcoholRestricted(true);
+					if(isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)){
+						timeslot.setAlcoholRestricted(true);
+						alcoholSlots = alcoholSlots+1;
+					}
 					checkTimeslotCapacity(user, zonesMap, timeslot);
 					if (ts.getSteeringDiscount() > maxDiscount)
 						maxDiscount = ts.getSteeringDiscount();
 					if(!timeslot.hasNormalAvailCapacity()&&timeslot.hasAvailCTCapacity())
 						ctSlots = ctSlots+1;
+					if(timeslot.isEcoFriendly())
+						ecoFriendlySlots = ecoFriendlySlots+1;						
 				}
 			}
 			
@@ -382,6 +387,8 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		deliveryModel.setKosherSlotAvailable(isKosherSlotAvailable);
 		deliveryModel.setGeoRestrictionmessages(messages);
 		deliveryModel.setMaxDiscount(maxDiscount);
+		deliveryModel.setAlcoholRestrictedCount(alcoholSlots);
+		deliveryModel.setEcoFriendlyCount(ecoFriendlySlots);
 		user.setTotalCTSlots(ctSlots);
 	}
 

@@ -181,9 +181,9 @@
 			<div align="right">
 				 <table>
 					<tr>
-						<td align="right" style="padding-top:10px;">
+						<td align="right" style="padding:10px 5px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
-								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4">
+								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="18" border="0" alt="Reserve a Delivery Time" vspace="4">
 							</a><br>
 						</td>
 					</tr>
@@ -213,9 +213,9 @@
 			<div align="right">
 				 <table>
 					<tr>
-						<td align="right" style="padding-top:10px;">
+						<td align="right" style="padding:10px 10px 0 0;">
 							<a href="/your_account/reserve_timeslot.jsp">
-								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="200" height="15" border="0" alt="Reserve a Delivery Time" vspace="4">
+								<img src="/media_stat/images/template/youraccount/make_a_reservation.gif" width="164" height="18" border="0" alt="Reserve a Delivery Time" vspace="4">
 							</a><br>
 						</td>
 					</tr>
@@ -284,7 +284,7 @@
 									<td>
 										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="">
 									</td>
-									<td style="color:#77A642;">Chefs Table Delivery Times</td>
+									<td style="color:#77A642;">Chef's Table Delivery Times</td>
 								<%}%>
 								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>

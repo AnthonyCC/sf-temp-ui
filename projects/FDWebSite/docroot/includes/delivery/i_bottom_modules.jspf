@@ -3,6 +3,8 @@ boolean ClickToCallEnabled=false;
 if(user.getIdentity()!=null && ClickToCallUtil.evaluateClick2CallInfoDisplay(user,null)){
 	ClickToCallEnabled=true;
 }
+String ctMember = FDStoreProperties.getCustomerServiceEmail();
+if(user!=null && user.isChefsTable())ctMember = FDStoreProperties.getChefsTableEmail();
 String hourString="";
 Calendar calendar = Calendar.getInstance();
 Date today = calendar.getTime();
@@ -13,6 +15,7 @@ else hourString="12 a.m.";
 %>
 <script>
 	var serviceHourString = "<%= hourString %>";
+	var CTBottomMsg = "<%= CTBottomMsg %>";
 </script>
 <table width="695" cellpadding="0" cellpadding="0" border="0" align="center">
 	<tr valign="TOP">

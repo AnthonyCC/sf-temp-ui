@@ -52,20 +52,12 @@ public class FDDeliveryTimeslotModel implements Serializable{
 	public void setComments(List comments) {
 		this.comments = comments;
 	}
-	private int timeslotPageType;
-	
 	private boolean hasPreReserved;
 	private String preReserveSlotId;
 	private String timeSlotId;
 	private FDReservation rsv;
 	private boolean hasCapacity;
 	
-	public boolean hasCapacity() {
-		return hasCapacity;
-	}
-	public void setHasCapacity(boolean hasCapacity) {
-		this.hasCapacity = hasCapacity;
-	}
 	boolean thxgivingRestriction = false;
 	boolean easterRestriction = false;
 	boolean easterMealRestriction = false; 
@@ -75,18 +67,39 @@ public class FDDeliveryTimeslotModel implements Serializable{
     boolean thxgiving_meal_Restriction=false;
     boolean isKosherSlotAvailable;
     
+    private String zoneId;
+    private double zonePromoAmount;
+    private FDStandingOrder currentStandingOrder;
+	private List<RestrictionI> holidayRestrictions;
+	private List<RestrictionI> specialItemDlvRestrctions;
+    private double maxDiscount;
+    private int ecoFriendlyCount;
+    private int alcoholRestrictedCount;
+    
     public boolean isKosherSlotAvailable() {
 		return isKosherSlotAvailable;
 	}
 	public void setKosherSlotAvailable(boolean isKosherSlotAvailable) {
 		this.isKosherSlotAvailable = isKosherSlotAvailable;
 	}
-	private String zoneId;
-    private double zonePromoAmount;
-    private FDStandingOrder currentStandingOrder;
-	private List<RestrictionI> holidayRestrictions;
-	private List<RestrictionI> specialItemDlvRestrctions;
-    private double maxDiscount;
+	public boolean hasCapacity() {
+		return hasCapacity;
+	}
+	public void setHasCapacity(boolean hasCapacity) {
+		this.hasCapacity = hasCapacity;
+	}
+    public int getEcoFriendlyCount() {
+		return ecoFriendlyCount;
+	}
+	public void setEcoFriendlyCount(int ecoFriendlyCount) {
+		this.ecoFriendlyCount = ecoFriendlyCount;
+	}
+	public int getAlcoholRestrictedCount() {
+		return alcoholRestrictedCount;
+	}
+	public void setAlcoholRestrictedCount(int alcoholRestrictedCount) {
+		this.alcoholRestrictedCount = alcoholRestrictedCount;
+	}	
 
     public double getMaxDiscount() {
 		return maxDiscount;

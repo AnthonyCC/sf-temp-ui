@@ -270,7 +270,7 @@ var day = parseDay(elemId); //should now be the day index
 			//reset reorgs
 			if ($('ts_d'+d+'_ts'+t)) {
 				if ($('ts_d'+d+'_ts'+t).rowSpan > 1) { //blanks only
-					$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent" href="#"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="fleft tsCont"></div></div>';
+					$('ts_d'+d+'_ts'+t).innerHTML = '<div class="tsContent"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+t+'_rbCont"></div><div class="">&nbsp;</div></div>';
 				}
 				$('ts_d'+d+'_ts'+t).rowSpan = 1;
 				$('ts_d'+d+'_ts'+t).show();

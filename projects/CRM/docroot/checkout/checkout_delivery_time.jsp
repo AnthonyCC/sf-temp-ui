@@ -77,15 +77,6 @@
 		request.setAttribute("SHOW_WINDOWS_STEERING","true");
 	}
 %>
-<script>
-	var zonePromoString=""; 
-	var zonePromoEnabled=false;
-	<%if(zonePromoAmount>0){ %>
-		zonePromoString="<%=zonePromoString %>"; 
-		zonePromoEnabled=true;
-	<%} %>
-</script>
-
 
 <crm:GetCurrentAgent id="currentAgent">
 <tmpl:insert template='/template/top_nav.jsp'>
@@ -94,6 +85,16 @@
 <fd:CheckoutController actionName="reserveDeliveryTimeSlot" result="result" successPage="<%= successPage %>">
 
 <tmpl:put name='content' direct='true'>
+<link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css"/>
+<script type="text/javascript">
+	var zonePromoString=""; 
+	var zonePromoEnabled=false;
+	<%if(zonePromoAmount>0){ %>
+		zonePromoString="<%=zonePromoString %>"; 
+		zonePromoEnabled=true;
+	<%} %>
+</script>
+
 <jsp:include page='/includes/order_header.jsp'/>
 
 <% String[] checkErrorType = {"deliveryTime", "technical_difficulty", "pickup_didnot_agree"}; %>
@@ -101,7 +102,7 @@
 	<%@ include file="/includes/i_error_messages.jspf" %>
 </fd:ErrorHandler>
 
-<TABLE WIDTH="100%" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
+<TABLE WIDTH="730" CELLPADDING="2" CELLSPACING="0" BORDER="0" ALIGN="CENTER" class="checkout_header<%= (user.isActive()) ? "" : "_warning" %>">
 <FORM name="select_delivery_slot" method="POST" action="">
 	<TR>
 	<TD WIDTH="75%">

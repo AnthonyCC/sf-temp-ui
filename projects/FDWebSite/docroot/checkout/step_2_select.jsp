@@ -128,7 +128,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 <tmpl:put name='title' direct='true'>FreshDirect - Checkout - Choose Delivery Time </tmpl:put>
 <tmpl:put name='content' direct='true'>
 <fd:CheckoutController actionName="reserveDeliveryTimeSlot" result="result" successPage="<%=successPage%>">
-<script>
+<script type="text/javascript">
 	var zonePromoString=""; 
 	var zonePromoEnabled=false;
 	<%if(zonePromoAmount>0){ %>
