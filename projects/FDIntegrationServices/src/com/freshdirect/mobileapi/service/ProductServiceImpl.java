@@ -66,14 +66,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> search(String searchTerm, Integer page, Integer max, SessionUser user) throws ServiceException {
-        return search(searchTerm, page, max, null, null, null, null, user);
+        return search(searchTerm, null, page, max, null, null, null, null, user);
     }
 
     private static final AvailableFilter availableFilter = new AvailableFilter();
 
     private static final IphoneFilter iphoneFilter = new IphoneFilter();
 
-    public List<Product> search(String searchTerm, Integer page, Integer max, ProductModelSortUtil.SortType sortType, String brandId,
+    public List<Product> search(String searchTerm, String upc, Integer page, Integer max, ProductModelSortUtil.SortType sortType, String brandId,
             String categoryId, String deparmentId, SessionUser user) throws ServiceException {
         FilteredSearchResults fres = null;
         List<Product> result = new ArrayList<Product>();
@@ -86,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
             if (sortType == null) {
                 sortType = SortType.RELEVANCY;
             }
-            resultBundle = wrapper.getSearchResult(searchTerm, deparmentId, categoryId, brandId, 0, max, "", sortType.getSortValue());
+            resultBundle = wrapper.getSearchResult(searchTerm, upc, deparmentId, categoryId, brandId, 0, max, "", sortType.getSortValue());
             fres = (FilteredSearchResults) resultBundle.getExtraData(SmartSearchTagWrapper.SEARCH_RESULTS);
 
             //Set two more mobile specific filters

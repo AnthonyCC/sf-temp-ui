@@ -29,7 +29,6 @@ import com.freshdirect.mobileapi.model.comparator.FilterOptionLabelComparator;
 import com.freshdirect.mobileapi.service.ProductServiceImpl;
 import com.freshdirect.mobileapi.service.ServiceException;
 import com.freshdirect.mobileapi.util.ProductModelSortUtil;
-import com.freshdirect.mobileapi.util.SortUtil;
 import com.freshdirect.mobileapi.util.ProductModelSortUtil.SortType;
 
 public class SearchController extends BaseController {
@@ -64,6 +63,7 @@ public class SearchController extends BaseController {
             throws FDException, ServiceException, NoSessionException, JsonException {
         // Default values retrieved from GET request
         String searchTerm = request.getParameter("searchTerm");
+        String upc = request.getParameter("upc");
         int page = (StringUtils.isNumeric(request.getParameter("page")) ? Integer.parseInt(request.getParameter("page")) : 1);
         int resultMax = (StringUtils.isNumeric(request.getParameter("max")) ? Integer.parseInt(request.getParameter("max")) : 25);
         ProductModelSortUtil.SortType sortType = SortType.RELEVANCY; //Default sort type
@@ -78,6 +78,7 @@ public class SearchController extends BaseController {
         if (StringUtils.isNotEmpty(postData)) {
             SearchQuery requestMessage = parseRequestObject(request, response, SearchQuery.class);
             searchTerm = requestMessage.getQuery();
+            upc = requestMessage.getUpc();
             page = requestMessage.getPage();
             resultMax = requestMessage.getMax();
             sortType = ProductModelSortUtil.SortType.valueFromString(requestMessage.getSortBy());
@@ -98,7 +99,7 @@ public class SearchController extends BaseController {
         ProductServiceImpl productService = new ProductServiceImpl();
         FilterOptionLabelComparator filterComparator = new FilterOptionLabelComparator();
 
-        List<Product> products = productService.search(searchTerm, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
+        List<Product> products = productService.search(searchTerm, upc, page, resultMax, sortType, brandToFilter, categoryToFilter, departmentToFilter,
                 getUserFromSession(request, response));
 
         // Data required for filtering: Brands

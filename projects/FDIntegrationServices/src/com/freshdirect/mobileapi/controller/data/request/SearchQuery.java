@@ -3,77 +3,86 @@ package com.freshdirect.mobileapi.controller.data.request;
 import com.freshdirect.mobileapi.controller.data.Message;
 
 public class SearchQuery extends Message {
-    public static final Integer DEFAULT_PAGE = 1;
-    public static final Integer DEFAULT_MAX = 25;
-    
-    private String query;
+	public static final Integer DEFAULT_PAGE = 1;
+	public static final Integer DEFAULT_MAX = 25;
 
-    private Integer max = DEFAULT_MAX;
+	private String query;
 
-    private Integer page = DEFAULT_PAGE;
+	private Integer max = DEFAULT_MAX;
 
-    private String sortBy;
+	private Integer page = DEFAULT_PAGE;
 
-    private String category;
+	private String sortBy;
 
-    private String department;
+	private String category;
 
-    private String brand;
+	private String department;
 
-    public String getQuery() {
-        return query;
-    }
+	private String brand;
 
-    public void setQuery(String query) {
-        this.query = query;
-    }
+	private String upc;
 
-    public Integer getMax() {
-        return max;
-    }
+	public String getQuery() {
+		return query;
+	}
 
-    public void setMax(Integer max) {
-        this.max = max;
-    }
+	public void setQuery(String query) {
+		this.query = query;
+	}
 
-    public Integer getPage() {
-        return page;
-    }
+	public Integer getMax() {
+		return max;
+	}
 
-    public void setPage(Integer page) {
-        this.page = page;
-    }
+	public void setMax(Integer max) {
+		this.max = max;
+	}
 
-    public String getSortBy() {
-        return sortBy;
-    }
+	public Integer getPage() {
+		return page;
+	}
 
-    public void setSortBy(String sortBy) {
-        this.sortBy = sortBy;
-    }
+	public void setPage(Integer page) {
+		this.page = page;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public String getSortBy() {
+		return sortBy;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public void setSortBy(String sortBy) {
+		this.sortBy = sortBy;
+	}
 
-    public String getBrand() {
-        return brand;
-    }
+	public String getCategory() {
+		return category;
+	}
 
-    public void setBrand(String brand) {
-        this.brand = brand;
-    }
+	public void setCategory(String category) {
+		this.category = category;
+	}
 
-    public String getDepartment() {
-        return department;
-    }
+	public String getBrand() {
+		return brand;
+	}
 
-    public void setDepartment(String department) {
-        this.department = department;
-    }
+	public void setBrand(String brand) {
+		this.brand = brand;
+	}
 
+	public String getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(String department) {
+		this.department = department;
+	}
+
+	public String getUpc() {
+		return upc;
+	}
+
+	public void setUpc(String upc) {
+		this.upc = upc;
+	}
 }

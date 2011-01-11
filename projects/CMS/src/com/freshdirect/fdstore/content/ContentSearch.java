@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.content;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -23,6 +24,9 @@ import com.freshdirect.cms.search.SearchHit;
 import com.freshdirect.cms.search.SearchRelevancyList;
 import com.freshdirect.cms.search.SimpleCounterCreator;
 import com.freshdirect.cms.search.SpellingHit;
+import com.freshdirect.erp.ErpFactory;
+import com.freshdirect.erp.model.ErpProductInfoModel;
+import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.framework.util.StringUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
@@ -327,6 +331,27 @@ public class ContentSearch {
         return filteredResults;
     }
 
+    public SearchResults searchUpc(String upc) {
+    	List<ProductModel> products = new ArrayList<ProductModel>();
+    	ErpFactory erpFactory = ErpFactory.getInstance();
+    	try {
+			Collection<ErpProductInfoModel> productInfos = erpFactory.findProductsByUPC(upc);
+			for (ErpProductInfoModel productInfo : productInfos) {
+				String skuCode = productInfo.getSkuCode();
+				if (skuCode != null) {
+					SkuModel sku = (SkuModel) ContentFactory.getInstance().getContentNode(FDContentTypes.SKU, skuCode);
+					if (sku == null)
+						continue;
+					ProductModel product = sku.getProductModel();
+					if (product != null)
+						products.add(product);
+				}
+			}
+		} catch (FDResourceException e) {
+			LOGGER.error("failed to retrieve product info for upc: " + upc, e);
+		}
+    	return new SearchResults(products, Collections.<Recipe>emptyList(), false , upc);
+    }
     
     /**
      * Set a custom autocomplete service

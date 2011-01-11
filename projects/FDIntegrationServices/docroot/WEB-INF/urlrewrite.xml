@@ -27,6 +27,12 @@
 		<to last="true">/search.do?searchTerm=$2&amp;ver=$1</to>
 	</rule>
 
+	<!-- UPC Search -->
+	<rule>
+		<from>^/v/([0-9]+)/search/upc/(.*)</from>
+		<to last="true">/search.do?upc=$2&amp;ver=$1</to>
+	</rule>
+
 	<!-- Search with payload -->
 	<rule>
 		<from>^/v/([0-9]+)/search/$</from>

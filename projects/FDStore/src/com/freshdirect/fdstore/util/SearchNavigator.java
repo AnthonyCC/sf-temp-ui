@@ -12,9 +12,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
 
-import com.freshdirect.fdstore.content.DepartmentFilter;
 import com.freshdirect.fdstore.content.SearchSortType;
-import com.freshdirect.framework.util.StringUtil;
 
 
 /**
@@ -30,6 +28,7 @@ public class SearchNavigator {
 	
 
     String	searchTerms;
+    String  upc;
     
     public static final int VIEW_LIST		= 0;
     public static final int VIEW_GRID		= 1;
@@ -89,11 +88,12 @@ public class SearchNavigator {
 	/**
 	 * Clone support
 	 */
-	protected SearchNavigator(String searchAction, String terms, int view, String dept, String cat, String brand, String rcp, int psize, int page, SearchSortType sort, boolean ascend) {
+	protected SearchNavigator(String searchAction, String terms, String upc, int view, String dept, String cat, String brand, String rcp, int psize, int page, SearchSortType sort, boolean ascend) {
 		if (searchAction != null)
 			this.searchAction = searchAction;
 		
 		this.searchTerms = terms;
+		this.upc = upc;
 		this.view = view;
 		this.deptFilter = dept;
 		this.categoryFilter = cat;
@@ -106,14 +106,14 @@ public class SearchNavigator {
 	}
 
 	public Object clone() {
-		return new SearchNavigator(searchAction, searchTerms, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
+		return new SearchNavigator(searchAction, searchTerms, upc, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
 	}
 
 	/**
 	 * Convenience method of clone()
 	 */
 	public SearchNavigator dup() {
-		return (SearchNavigator) new SearchNavigator(searchAction, searchTerms, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
+		return (SearchNavigator) new SearchNavigator(searchAction, searchTerms, upc, view, deptFilter, categoryFilter, brandFilter, recipeFilter, pageSize, pageNumber, sortBy, isOrderAscending);
 	}
 
 
@@ -130,10 +130,14 @@ public class SearchNavigator {
 
 		/* search terms */
 		val = (String)params.get("searchParams");
-		if (val != null && val.length() > 0) {
-			searchTerms = val;
+		if (val != null && val.trim().length() > 0) {
+			searchTerms = val.trim();
 		}
 
+		val = (String)params.get("upc");
+		if (val != null && val.trim().length() > 0) {
+			upc = val.trim();
+		}
 		
 		/* view */
 		val = (String)params.get("view");
@@ -576,11 +580,16 @@ public class SearchNavigator {
 //		buf.append( (this.searchAction != null ? this.searchAction : "/search.jsp") + "?");
 		buf.append("?"); // generate relative url
 		
-		// search terms
-		buf.append("searchParams=");
-		// buf.append(safeURLEncode(searchTerms, "ISO-8859-1"));
-		//buf.append(StringUtil.escapeUri(searchTerms));
-		buf.append(safeURLEncode(searchTerms));
+		if (upc != null) {
+			buf.append("upc=");
+			buf.append(safeURLEncode(upc));
+		} else {
+			// search terms
+			buf.append("searchParams=");
+			// buf.append(safeURLEncode(searchTerms, "ISO-8859-1"));
+			//buf.append(StringUtil.escapeUri(searchTerms));
+			buf.append(safeURLEncode(searchTerms));
+		}
 
 		if (view != VIEW_DEFAULT) {
 			buf.append("&amp;view=" + getViewName());

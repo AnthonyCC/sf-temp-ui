@@ -171,6 +171,8 @@ public interface RequestParamName {
 
     public static final String REQ_PARAM_SEARCH_PARAMS = "searchParams";
 
+    public static final String REQ_PARAM_UPC = "upc";
+    
     public static final String REQ_PARAM_SEARCH_DEPT_ID = "deptId";
 
     public static final String REQ_PARAM_SEARCH_CAT_ID= "catId";

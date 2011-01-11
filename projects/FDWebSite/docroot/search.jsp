@@ -27,6 +27,8 @@ final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">
 final String trk = "srch"; // tracking code
 
 String criteria = request.getParameter("searchParams");
+String upc = request.getParameter("upc");
+String displayCriteria = upc != null ? upc : criteria;
 
 // OAS AD settings
 request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
@@ -100,7 +102,7 @@ if (results != null && results.numberOfResults() > 0) {
 
 
 %>
-<tmpl:put name='title' direct='true'>FreshDirect - Search<%= criteria != null && criteria.length() > 0 ?  (" - " + criteria) : ""%></tmpl:put>
+<tmpl:put name='title' direct='true'>FreshDirect - Search<%= displayCriteria != null && displayCriteria.length() > 0 ?  (" - " + displayCriteria) : ""%></tmpl:put>
 <tmpl:put name='content' direct='true'>
 
 <%
@@ -128,8 +130,6 @@ if ( results == null) {
 		%><%@ include file="/includes/search/no_results.jspf"%><%
 	} else {
 		int resultSize = results.getProductsSize();
-		String displayCriteria = criteria;
-
 
 		if (!jumpToRecipes) {
 			//
@@ -164,7 +164,7 @@ if ( results == null) {
 %>
 </span>
 
-<%= resultSize %> product<%= resultSize > 1 ? "s":""%> found <%= displayCriteria.equals(criteria) ? "for" : "in" %> <span style="font-weight:bold"><%= displayCriteria %></span>
+<%= resultSize %> product<%= resultSize > 1 ? "s":""%> found <%= displayCriteria.equals(upc) ? "for barcode" : (displayCriteria.equals(criteria) ? "for" : "in") %> <span style="font-weight:bold"><%= displayCriteria %></span>
 </div>
 <%
 	if (results.isSuggestionMoreRelevant()) {
@@ -199,6 +199,7 @@ if ( results == null) {
 <td>
 	<form name="form_brand_filter" id="form_brand_filter" method="GET" style="margin: 0;">
 		<input type="hidden" name="searchParams" value="<%= criteria %>">
+		<input type="hidden" name="upc" value="<%= upc %>">
 <% nav.appendToBrandForm(out); %>
 		<select name="brandValue" class="text9" style="width: 140px;" onchange="document.getElementById('form_brand_filter').submit()">
 			<option value=""><%= nav.getBrand() == null ? "Filter by brand" : "SHOW ALL PRODUCTS"%></option>

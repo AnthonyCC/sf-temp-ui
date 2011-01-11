@@ -29,7 +29,7 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
         super(new SmartSearchTag(), user);
     }
 
-    public ResultBundle getSearchResult(String searchTerm, String deptId, String catId, String brandValue, Integer start, Integer pageSize,
+    public ResultBundle getSearchResult(String searchTerm, String upc, String deptId, String catId, String brandValue, Integer start, Integer pageSize,
             String order, String sort) throws FDException {
         ResultBundle result = null;
         ((SmartSearchTag) this.wrapTarget).setSearchResults(SEARCH_RESULTS);
@@ -42,12 +42,13 @@ public class SmartSearchTagWrapper extends NonStandardControllerTagWrapper imple
         addExpectedRequestValues(
                 new String[] { REQ_PARAM_SEARCH_BRAND_VALUE, REQ_PARAM_SEARCH_CLASSIFICATION, REQ_PARAM_SEARCH_DEPT_ID,
                         REQ_PARAM_SEARCH_ORDER, REQ_PARAM_SEARCH_SORT, REQ_PARAM_SEARCH_PAGE_SIZE, REQ_PARAM_SEARCH_START,
-                        REQ_PARAM_SEARCH_PARAMS,REQ_PARAM_SEARCH_VIEW, REQ_PARAM_SEARCH_CAT_ID, SEARCH_RESULTS }, new String[] { REQ_PARAM_SEARCH_PARAMS, REQ_PARAM_SEARCH_BRAND_VALUE,
+                        REQ_PARAM_SEARCH_PARAMS,REQ_PARAM_UPC, REQ_PARAM_SEARCH_VIEW, REQ_PARAM_SEARCH_CAT_ID, SEARCH_RESULTS }, new String[] { REQ_PARAM_SEARCH_PARAMS, REQ_PARAM_UPC, REQ_PARAM_SEARCH_BRAND_VALUE,
                         REQ_PARAM_SEARCH_CLASSIFICATION, REQ_PARAM_SEARCH_DEPT_ID, REQ_PARAM_SEARCH_ORDER, REQ_PARAM_SEARCH_SORT,
                         REQ_PARAM_SEARCH_CAT_ID, REQ_PARAM_SEARCH_VIEW, CATEGORY_TREE_NAME, BRAND_SET_NAME, CATEGORY_SET_NAME,
                         PRODUCT_LIST, SEARCH_RESULTS, FILTERED_CATEGORY_TREE_NAME, REQ_PARAM_SEARCH_START,REQ_PARAM_SEARCH_PAGE_SIZE });
 
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_PARAMS, searchTerm);
+        this.pageContext.setAttribute(REQ_PARAM_UPC, upc);
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_DEPT_ID, deptId);
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_CAT_ID, catId);
         this.pageContext.setAttribute(REQ_PARAM_SEARCH_BRAND_VALUE, brandValue);

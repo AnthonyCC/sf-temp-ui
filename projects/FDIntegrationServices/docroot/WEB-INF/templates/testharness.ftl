@@ -181,6 +181,11 @@ function loadStuff() {
 	var postdata = '{"query": "coffee", "page" : "1"}';
   	$("#payload").val(postdata);
   	$("#result").val("");
+  } else if (loaddata == "SearchUPC") {
+  	$("#url").val("/search/");
+	var postdata = '{"upc": "689544080602", "page" : "1", "max" : "25"}';
+  	$("#payload").val(postdata);
+  	$("#result").val("");
   } else if (loaddata == "SearchSort") {
   	$("#url").val("/search/");
 	var postdata = '{"query": "coffee", "page" : "1", "max" : "25", "sortBy" : "name"}';
@@ -472,6 +477,7 @@ function doStuff() {
   <option value="SubmitOrder">CHECKOUT - Submit Order</option>
   <option value=""> ========== SEARCH ========== </option>
   <option value="Search">SEARCH - Basic</option>
+  <option value="SearchUPC">SEARCH - UPC barcode</option>
   <option value="SearchSort">SEARCH - Sort</option>
   <option value="SearchFilter">SEARCH - Filter</option>
   <option value="SearchAutocomplete">SEARCH - Autocomplete</option>

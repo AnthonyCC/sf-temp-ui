@@ -152,16 +152,32 @@ public class SmartSearchTag extends BodyTagSupport {
 
         ServletRequest request = pageContext.getRequest();
         String searchTerm = request.getParameter("searchParams");
+        if (searchTerm != null) {
+        	searchTerm = searchTerm.trim();
+        	if (searchTerm.length() == 0)
+        		searchTerm = null;
+        }
+        String upc = request.getParameter("upc");
+        if (upc != null) {
+        	upc = upc.trim();
+        	if (upc.length() == 0)
+        		upc = null;
+        }
 
         //
         // Sanity check the search criteria before performing search
         //
-        if (searchTerm == null || "".equals(searchTerm.trim())) {
+        if (searchTerm == null && upc == null) {
             LOGGER.debug("search criteria was null or empty");
             return EVAL_BODY_BUFFERED;
         }
 
-        SearchResults res = ContentSearch.getInstance().search(searchTerm);
+        SearchResults res;
+        if (upc != null) {
+            res = ContentSearch.getInstance().searchUpc(upc);        	
+        } else {
+            res = ContentSearch.getInstance().search(searchTerm);        	
+        }
 
         String userId = getUserId();
         String departmentId = request.getParameter("deptId");
@@ -172,7 +188,7 @@ public class SmartSearchTag extends BodyTagSupport {
 
         boolean reverseOrder = "desc".equalsIgnoreCase(request.getParameter("order"));
         FDUserI user = (FDUserI) pageContext.getSession().getAttribute(SessionName.USER);
-        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, searchTerm.toLowerCase(),user != null ? user.getPricingContext() : PricingContext.DEFAULT);
+        FilteredSearchResults fres = new FilteredSearchResults(res.getSearchTerm(), res, userId, upc != null ? upc : searchTerm.toLowerCase(),user != null ? user.getPricingContext() : PricingContext.DEFAULT);
         CategoryNodeTree contentTree = putTree(categoryTreeName, fres.getProducts(), true);
         fres.setNodeTree(contentTree);
         fres.setScoreOracle(new FilteredSearchResults.HierarchicalScoreOracle(contentTree));
