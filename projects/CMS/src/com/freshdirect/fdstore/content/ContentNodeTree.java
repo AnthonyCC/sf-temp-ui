@@ -14,23 +14,23 @@ import java.util.TreeSet;
 
 public class ContentNodeTree {
 
-    private static class TreeElementComparator implements Comparator {
-        Comparator comp;
+    private static class TreeElementComparator implements Comparator<TreeElement> {
+        Comparator<ContentNodeModel> comp;
         
-        public TreeElementComparator(Comparator comp) {
+        public TreeElementComparator(Comparator<ContentNodeModel> comp) {
             this.comp = comp;
         }
         
-        public int compare(Object o1, Object o2) {
-            return comp.compare(((TreeElement)o1).getModel(), ((TreeElement)o2).getModel());
+        public int compare(TreeElement o1, TreeElement o2) {
+            return comp.compare(o1.getModel(), o2.getModel());
         }
     }
     
-    public static class NodeIterator implements Iterator {
-        List list;
+    public static class NodeIterator implements Iterator<TreeElement> {
+        List<TreeElement> list;
         int position = 0;
         
-        NodeIterator(List list) {
+        NodeIterator(List<TreeElement> list) {
             this.list = list;
         }
         
@@ -38,13 +38,13 @@ public class ContentNodeTree {
             return position<list.size();
         }
         
-        public Object next() {
-            Object result = list.get(position);
+        public TreeElement next() {
+        	TreeElement result = list.get(position);
             position++;
             return result;
         }
         
-        public Object peekNext() {
+        public TreeElement peekNext() {
             return list.get(position);
         }
         
@@ -55,16 +55,16 @@ public class ContentNodeTree {
 
     public static class TreeElement {
         ContentNodeModel model;
-        Set              children;
+        Set<TreeElement>              children;
         int depth;
         int childCount;
 
         public TreeElement(ContentNodeModel model, TreeElementComparator comparator) {
             this.model = model;
             if (comparator==null) {
-                children = new HashSet();
+                children = new HashSet<TreeElement>();
             } else { 
-                children = new TreeSet(comparator);
+                children = new TreeSet<TreeElement>(comparator);
             }
         }
 
@@ -92,9 +92,7 @@ public class ContentNodeTree {
             childCount++;
         }
         
-
-        // Collection<TreeElement>
-        public Collection getChildren() {
+        public Collection<TreeElement> getChildren() {
             return children;
         }
         
@@ -107,20 +105,20 @@ public class ContentNodeTree {
         public boolean accept(TreeElement element);
     }
     
-    final Set                   roots;                              // Set<TreeElement>
-    final Map                   nodes              = new HashMap(); // Map<String,TreeElement>
-    Set                         expandedElementIds;
-    int                         expandNodesToDepth = -1;
-    final TreeElementComparator childComparator;
+    final Set<TreeElement>                   	roots;
+    final Map<String, TreeElement>				nodes              = new HashMap<String, TreeElement>();
+    Set<String>                    				expandedElementIds;
+    int                         				expandNodesToDepth = -1;
+    final TreeElementComparator 				childComparator;
     
     
     public ContentNodeTree() {
-        roots = new HashSet(); // Set<TreeElement>
+        roots = new HashSet<TreeElement>();
         childComparator = null;
     }
     
-    public ContentNodeTree(Comparator rootComparator, Comparator childComparator) {
-        this.roots = new TreeSet(new TreeElementComparator(rootComparator));
+    public ContentNodeTree(Comparator<ContentNodeModel> rootComparator, Comparator<ContentNodeModel> childComparator) {
+        this.roots = new TreeSet<TreeElement>(new TreeElementComparator(rootComparator));
         this.childComparator = new TreeElementComparator(childComparator);
     }
     
@@ -182,8 +180,8 @@ public class ContentNodeTree {
      * @param filter
      */
     public void purge(TreeElementFilter filter) {
-        for (Iterator iter = new HashSet(roots).iterator(); iter.hasNext(); ) {
-            TreeElement element = (TreeElement) iter.next();
+        for (Iterator<TreeElement> iter = new HashSet<TreeElement>(roots).iterator(); iter.hasNext(); ) {
+            TreeElement element = iter.next();
             purgeElement(filter, element, null);
         }
     }
@@ -191,8 +189,8 @@ public class ContentNodeTree {
     private void purgeElement(TreeElementFilter filter, TreeElement element,TreeElement  parent) {
         if (filter.accept(element)) {
             // recurse ...
-            for (Iterator iter= new HashSet(element.getChildren()).iterator();iter.hasNext();) {
-                TreeElement child = (TreeElement) iter.next();
+            for (Iterator<TreeElement> iter= new HashSet<TreeElement>(element.getChildren()).iterator();iter.hasNext();) {
+                TreeElement child = iter.next();
                 purgeElement(filter, child, element);
             }
         } else {
@@ -206,8 +204,8 @@ public class ContentNodeTree {
                 parent.getChildren().addAll(element.getChildren());
             }
             // recurse with the new parent
-            for (Iterator iter= element.getChildren().iterator();iter.hasNext();) {
-                TreeElement child = (TreeElement) iter.next();
+            for (Iterator<TreeElement> iter= element.getChildren().iterator();iter.hasNext();) {
+                TreeElement child = iter.next();
                 purgeElement(filter, child, parent);
             }
         }
@@ -221,7 +219,7 @@ public class ContentNodeTree {
     }
 
     // Set<TreeElement>
-    public Set getRoots() {
+    public Set<TreeElement> getRoots() {
         return roots;
     }
 
@@ -237,9 +235,8 @@ public class ContentNodeTree {
         Object element = nodes.get(model.getContentKey().getId());
         if (element instanceof TreeElement) {
             return (TreeElement) element;
-        } else {
-            return null;
         }
+		return null;
     }
     
     protected TreeElement getParentElement(TreeElement element) {
@@ -263,23 +260,22 @@ public class ContentNodeTree {
      * @param filter
      * @return a list of ContentNodeModel
      */
-    public List collectChildNodes(String rootId, TreeElementFilter filter) {
-        TreeElement root = (TreeElement) nodes.get(rootId);
+    public List<ContentNodeModel> collectChildNodes(String rootId, TreeElementFilter filter) {
+        TreeElement root = nodes.get(rootId);
         if (root!=null) {
-            List result = new ArrayList(nodes.size());
+            List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(nodes.size());
             iterate(result, root, filter);
             return result;
-        } else {
-            return Collections.EMPTY_LIST;
         }
+		return Collections.<ContentNodeModel>emptyList();
     }
     
-    private void iterate(List result, TreeElement root, TreeElementFilter filter) {
+    private void iterate(List<ContentNodeModel> result, TreeElement root, TreeElementFilter filter) {
         if (filter.accept(root)) {
             result.add(root.getModel());
         }
-        for (Iterator iter = root.getChildren().iterator();iter.hasNext();) {
-            TreeElement child = (TreeElement) iter.next();
+        for (Iterator<TreeElement> iter = root.getChildren().iterator();iter.hasNext();) {
+            TreeElement child = iter.next();
             iterate(result, child, filter);
         }
     }
@@ -289,21 +285,21 @@ public class ContentNodeTree {
     }
     /**
      * Return a NodeIterator which goes through the nodes, which the TreeElementFilter is accepted by. If the TreeElementFilter rejects one node, then their descendants is rejected
-     * also, automaticly.
+     * also, automatically.
      * 
      * @param filter
      * @return
      */
     public NodeIterator iterator(TreeElementFilter filter) {
-        List orderedNodes = new ArrayList(nodes.size());
+        List<TreeElement> orderedNodes = new ArrayList<TreeElement>(nodes.size());
         iterate(orderedNodes, roots.iterator(), 0, filter);
         
         return new NodeIterator(orderedNodes);
     }
 
-    private void iterate(List collectTo, Iterator iterator, int depth, TreeElementFilter filter) {
+    private void iterate(List<TreeElement> collectTo, Iterator<TreeElement> iterator, int depth, TreeElementFilter filter) {
         for (; iterator.hasNext();) {
-            TreeElement element = (TreeElement) iterator.next();
+            TreeElement element = iterator.next();
             element.setDepth(depth);
             if (filter==null || filter.accept(element)) {
                 collectTo.add(element);
@@ -320,17 +316,13 @@ public class ContentNodeTree {
                 return true;
             }
         }
-        if (expandedElementIds !=null) {
-            if (expandedElementIds.contains(element.getModel().getContentKey().getId())) {
-                return true;
-            } else {
-                return false;
-            }
+        if (expandedElementIds != null) {
+            return expandedElementIds.contains(element.getModel().getContentKey().getId());
         }
         return true;
     }
     
-    public void setExpandedElementIds(Set expandedElementIds) {
+    public void setExpandedElementIds(Set<String> expandedElementIds) {
         this.expandedElementIds = expandedElementIds;
     }
     
@@ -345,9 +337,9 @@ public class ContentNodeTree {
         initDepthFields(roots.iterator(), 0);
     }
 
-    private void initDepthFields(Iterator iterator, int depth) {
+    private void initDepthFields(Iterator<TreeElement> iterator, int depth) {
         for (; iterator.hasNext();) {
-            TreeElement element = (TreeElement) iterator.next();
+            TreeElement element = iterator.next();
             element.setDepth(depth);
             initDepthFields(element.getChildren().iterator(), depth+1);
         }

@@ -14,7 +14,7 @@ import com.freshdirect.fdstore.attributes.FDAttributeFactory;
  * @author zsombor
  * 
  */
-public abstract class ProductContainer extends ContentNodeModelImpl implements HasRedirectUrl, HasTemplateType {
+public abstract class ProductContainer extends ContentNodeModelImpl implements HasRedirectUrl, HasTemplateType, YmalSetSource {
 
     private List<Domain> rating = new ArrayList<Domain>();
 
@@ -142,9 +142,8 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
         Image img = getCategoryPhoto();
         if (img != null) {
             return img;
-        } else {
-            return new Image();
         }
+		return new Image();
     }
 
     /**
@@ -242,4 +241,29 @@ public abstract class ProductContainer extends ContentNodeModelImpl implements H
         return getAttribute("LIST_AS", defaultValue);
     }
     
+    
+    // =================================
+    // YmalSetSource interface methods :
+    // =================================
+    
+	/**
+	 *  The list of YmalSet objects related to this node.
+	 */
+	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
+
+	@Override
+	public List<YmalSet> getYmalSets() {
+		return YmalSetSourceUtil.getYmalSets( this, ymalSets );
+	}
+	
+	@Override
+	public boolean hasActiveYmalSets() {
+		return YmalSetSourceUtil.hasActiveYmalSets( this, ymalSets );
+	}
+
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return YmalSetSourceUtil.getParentYmalSetSource( this );
+	}
+
 }

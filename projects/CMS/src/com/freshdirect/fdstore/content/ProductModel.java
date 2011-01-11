@@ -20,7 +20,7 @@ import com.freshdirect.fdstore.FDSkuNotFoundException;
 import com.freshdirect.framework.util.DayOfWeekSet;
 import com.freshdirect.framework.util.NVL;
 
-public interface ProductModel extends ContentNodeModel, AvailabilityI, YmalSource, YmalSetSource, HasRedirectUrl, HasTemplateType {
+public interface ProductModel extends AvailabilityI, YmalSource, YmalSetSource, HasRedirectUrl, HasTemplateType {
 
 	/** Orders products by department & full name */
 	public final static Comparator<ProductModel> DEPTFULL_COMPARATOR = new Comparator<ProductModel>() {

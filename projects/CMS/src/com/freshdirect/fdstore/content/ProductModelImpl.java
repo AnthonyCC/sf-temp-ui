@@ -46,12 +46,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getInstance( ProductModelImpl.class ); 
 	
-	private static final Random rnd = new Random();
-	
-	private synchronized static final int nextInt(int n) {
-		return rnd.nextInt(n);
-	}
-
 	private static ThreadLocal<Map<String, YmalSet>> activeYmalSets = new ThreadLocal<Map<String, YmalSet>>() {
 		protected Map<String, YmalSet> initialValue() {
 			return new HashMap<String, YmalSet>();
@@ -114,14 +108,9 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	private final List<DomainValue> wineVarietals = new ArrayList<DomainValue>();
 	
 	/**
-	 *  The list of YMAL products related to this recipe.
+	 *  The list of YMAL products related to this product.
 	 */
 	private final List<ContentNodeModel> ymals = new ArrayList<ContentNodeModel>();
-	
-	/**
-	 *  The list of YmalSet objects related to this recipe.
-	 */
-	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
 	
 	/**
 	 * Gift Card changes
@@ -454,8 +443,8 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
         ContentKey preferredSku = (ContentKey) getCmsAttributeValue("PREFERRED_SKU");
 
-        for (ListIterator li = skus.listIterator(); li.hasNext();) {
-            SkuModel sku = (SkuModel) li.next();
+        for (ListIterator<SkuModel> li = skus.listIterator(); li.hasNext();) {
+            SkuModel sku = li.next();
             if (sku.isUnavailable()) {
                 li.remove();
             } else if (sku.getContentKey().equals(preferredSku)) {
@@ -465,7 +454,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
         if (skus.size() == 0)
             return null;
         
-        return (SkuModel) Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
+        return Collections.min(skus, new ZonePriceComparator(context.getZoneId()));
 	}
 	
 	/**
@@ -605,7 +594,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 
 			// find the brand that begins with the full name
 			for (int bx = 0; bx < myBrands.size(); bx++) {
-				BrandModel bm = (BrandModel) myBrands.get(bx);
+				BrandModel bm = myBrands.get(bx);
 				if (bm.getFullName() != null) {
 					if (prodNameLower.startsWith(bm.getFullName().toLowerCase())) {
 						return bm.getFullName();
@@ -644,11 +633,11 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		// now get the remaining brands from the sku
 		List<SkuModel> skus = getPrimarySkus();
 		for (Iterator<SkuModel> skuItr = skus.iterator();skuItr.hasNext() && numberOfBrands >0;) {
-			SkuModel sku = (SkuModel)skuItr.next();
+			SkuModel sku = skuItr.next();
 			List<BrandModel> skuBrands = sku.getBrands();
 			boolean gotOne = false;
 			for (Iterator<BrandModel> skbItr=skuBrands.iterator();skbItr.hasNext() && !gotOne; ) {
-				BrandModel b = (BrandModel) skbItr.next();
+				BrandModel b = skbItr.next();
 				Image brandLogoSmall = b.getLogoSmall();
 				if (brandLogoSmall!=null && !displayableBrands.contains(b) && !sku.isUnavailable()) {
 					numberOfBrands--;
@@ -671,12 +660,12 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 	
 	public String getKosherType() throws FDResourceException {
-            return getPriceCalculator().getKosherType();
+        return getPriceCalculator().getKosherType();
 	}
 
 	
 	public boolean isKosherProductionItem() throws FDResourceException {
-            return getPriceCalculator().isKosherProductionItem();
+        return getPriceCalculator().isKosherProductionItem();
 	}
 
 	public int getKosherPriority() throws FDResourceException {
@@ -712,7 +701,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 	
 	public EnumProductLayout getProductLayout(EnumProductLayout defValue) {
-            return EnumProductLayout.getLayoutType(this.getAttribute("PRODUCT_LAYOUT", defValue.getId()));
+        return EnumProductLayout.getLayoutType(this.getAttribute("PRODUCT_LAYOUT", defValue.getId()));
 	}
 
 	public String getSubtitle() {
@@ -736,7 +725,7 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 	}
 
 	public String getRedirectUrl() {
-            return (String) getCmsAttributeValue("REDIRECT_URL");
+        return (String) getCmsAttributeValue("REDIRECT_URL");
 	}
 
 	public String getSellBySalesunit() {
@@ -860,43 +849,6 @@ public class ProductModelImpl extends AbstractProductModelImpl {
 		return l;
 	}
 
-	/**
-	 *  Return all Ymal Sets related to this recipe.
-	 *  
-	 *  @return the list of all YmalSet objects related to this recipe.
-	 */
-	@Override
-	public List<YmalSet> getYmalSets() {
-		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
-		return Collections.unmodifiableList(ymalSets);
-	}
-
-	@Override
-	public boolean hasActiveYmalSets() {
-		for (YmalSet ymal : getYmalSets()) {
-			if (ymal.isActive())
-				return true;
-		}
-		return false;
-	}
-	
-	@Override
-	public YmalSetSource getParentYmalSetSource() {
-		// DEFAULT BEHAVIOUR
-		ContentNodeModel p = this.getParentNode();
-		while (p instanceof CategoryModel) {
-			CategoryModel aCat = (CategoryModel) p;
-			
-			if (aCat.hasActiveYmalSets())
-				return aCat;
-
-			// climb up
-			p = p.getParentNode();
-		}
-
-		return null;
-	}
-	
 	/**
 	 *  Return the active YmalSet, if any.
 	 *  

@@ -21,7 +21,7 @@ public class DepartmentModel extends ProductContainer {
 	
 	private final List<CategoryModel> featuredCategories = new ArrayList<CategoryModel> ();
 
-        private final List<TileList> tileList = new ArrayList<TileList> ();
+    private final List<TileList> tileList = new ArrayList<TileList> ();
 	
 	
 	public DepartmentModel(ContentKey cKey) {

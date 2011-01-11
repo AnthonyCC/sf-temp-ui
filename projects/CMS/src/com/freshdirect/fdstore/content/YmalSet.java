@@ -128,7 +128,7 @@ public class YmalSet extends ContentNodeModelImpl implements YmalSource {
 	/**
 	 *  Tell if the YMAL set is active.
 	 *  A YMAL set is only active, if its workflow status is ACTIVE, and
-	 *  the current date is betwen the start date and the end date.
+	 *  the current date is between the start date and the end date.
 	 *  If the start date or the end date is not set, only the workflow
 	 *  status is checked for.
 	 *  

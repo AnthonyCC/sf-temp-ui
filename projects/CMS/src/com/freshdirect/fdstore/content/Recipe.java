@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
@@ -23,12 +22,7 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 	
 	private static final long serialVersionUID = 1726859705342564086L;
 
-	private static final Random rnd = new Random();
 	
-	private synchronized static final int nextInt(int n) {
-		return rnd.nextInt(n);
-	}
-
 	private static ThreadLocal<HashMap<String,YmalSet>> activeYmalSets = new ThreadLocal<HashMap<String,YmalSet>>() {
 		protected HashMap<String,YmalSet> initialValue() {
 			return new HashMap<String,YmalSet>();
@@ -220,29 +214,19 @@ public class Recipe extends ContentNodeModelImpl implements ContentStatusI, Ymal
 		return l;
 	}
 
-	/**
-	 *  Return all Ymal Sets related to this recipe.
-	 *  
-	 *  @return the list of all YmalSet objects related to this recipe.
-	 */
 	@Override
 	public List<YmalSet> getYmalSets() {
-		ContentNodeModelUtil.refreshModels(this, "ymalSets", ymalSets, false, true);
-		return Collections.unmodifiableList(ymalSets);
+		return YmalSetSourceUtil.getYmalSets( this, ymalSets );
 	}
 	
 	@Override
 	public boolean hasActiveYmalSets() {
-		for (YmalSet ymal : getYmalSets()) {
-			if (ymal.isActive())
-				return true;
-		}
-		return false;
+		return YmalSetSourceUtil.hasActiveYmalSets( this, ymalSets );
 	}
-	
+
 	@Override
 	public YmalSetSource getParentYmalSetSource() {
-		return null;
+		return YmalSetSourceUtil.getParentYmalSetSource( this );
 	}
 
 	/**

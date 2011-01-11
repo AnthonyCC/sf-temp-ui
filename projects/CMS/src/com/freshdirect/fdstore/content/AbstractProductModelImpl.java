@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.freshdirect.cms.ContentKey;
-import com.freshdirect.cms.fdstore.FDContentTypes;
 import com.freshdirect.common.pricing.PricingContext;
 import com.freshdirect.fdstore.FDProductInfo;
 import com.freshdirect.fdstore.FDResourceException;
@@ -433,4 +432,33 @@ public abstract class AbstractProductModelImpl extends ContentNodeModelImpl impl
 
 		return false;
 	}
+
+	
+	
+    // =================================
+    // YmalSetSource interface methods :
+    // =================================
+    
+	/**
+	 *  The list of YmalSet objects related to this product.
+	 */
+	private final List<YmalSet> ymalSets = new ArrayList<YmalSet>();
+
+	
+	@Override
+	public List<YmalSet> getYmalSets() {
+		return YmalSetSourceUtil.getYmalSets( this, ymalSets );
+	}
+	
+	@Override
+	public boolean hasActiveYmalSets() {
+		return YmalSetSourceUtil.hasActiveYmalSets( this, ymalSets );
+	}
+
+	@Override
+	public YmalSetSource getParentYmalSetSource() {
+		return YmalSetSourceUtil.getParentYmalSetSource( this );
+	}
+
+	
 }
