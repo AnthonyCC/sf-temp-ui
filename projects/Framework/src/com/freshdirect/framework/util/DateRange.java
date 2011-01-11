@@ -2,8 +2,10 @@ package com.freshdirect.framework.util;
 
 import java.util.Date;
 
-public class DateRange extends Range {
+public class DateRange extends Range<Date> {
 
+	private static final long	serialVersionUID	= -9202120468747575170L;
+	
 	private final static Date PAST = new Date(Long.MIN_VALUE);
 	private final static Date FUTURE = new Date(Long.MAX_VALUE);
 
@@ -12,11 +14,11 @@ public class DateRange extends Range {
 	}
 
 	public Date getStartDate() {
-		return (Date) getStart();
+		return getStart();
 	}
 
 	public Date getEndDate() {
-		return (Date) getEnd();
+		return getEnd();
 	}
 
 	public static DateRange upTo(Date date) {

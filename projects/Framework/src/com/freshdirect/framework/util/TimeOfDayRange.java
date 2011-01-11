@@ -2,18 +2,20 @@ package com.freshdirect.framework.util;
 
 import java.util.Date;
 
-public class TimeOfDayRange extends Range {
+public class TimeOfDayRange extends Range<TimeOfDay> {
+
+	private static final long	serialVersionUID	= -6517764746993492221L;
 
 	public TimeOfDayRange(TimeOfDay start, TimeOfDay end) {
 		super(start, end);
 	}
 
 	public TimeOfDay getStartTime() {
-		return (TimeOfDay) getStart();
+		return getStart();
 	}
 
 	public TimeOfDay getEndTime() {
-		return (TimeOfDay) getEnd();
+		return getEnd();
 	}
 
 	public DateRange toDateRange(Date baseDate) {

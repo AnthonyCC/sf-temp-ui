@@ -5,12 +5,14 @@ import java.io.Serializable;
 /**
  * Generic range of Comparables. Start inclusive, end exclusive.
  */
-public class Range implements Serializable {
+public class Range<T extends Comparable<T>> implements Serializable {
 
-	private final Comparable start;
-	private final Comparable end;
+	private static final long	serialVersionUID	= -2280698101305314135L;
+	
+	private final T start;
+	private final T end;
 
-	public Range(Comparable start, Comparable end) {
+	public Range(T start, T end) {
 		if (lessThan(end, start)) {
 			throw new IllegalArgumentException("End cannot be before start.");
 		}
@@ -18,19 +20,19 @@ public class Range implements Serializable {
 		this.end = end;
 	}
 
-	public Comparable getStart() {
+	public T getStart() {
 		return start;
 	}
 
-	public Comparable getEnd() {
+	public T getEnd() {
 		return end;
 	}
 
-	public boolean contains(Comparable c) {
+	public boolean contains(T c) {
 		return !lessThan(c, start) && lessThan(c, end);
 	}
 	
-	public boolean containsEx(Comparable c) {
+	public boolean containsEx(T c) {
 		return !lessThan(c, start) && !moreThan(c, end);
 	}
 
@@ -39,7 +41,7 @@ public class Range implements Serializable {
 	 * 
 	 * @return true if the specified range is completely covered (or equal)
 	 */
-	public boolean contains(Range range) {
+	public boolean contains(Range<T> range) {
 		return (!lessThan(range.start, start) && !moreThan(range.end, end)) && !(range.start.equals(end) && range.end.equals(end));
 	}
 
@@ -48,16 +50,15 @@ public class Range implements Serializable {
 	 * 
 	 * @return true if there's any overlap with the specified range
 	 */
-	public boolean overlaps(Range range) {
-		// return !(lessThan(range.start, start) && !moreThan(range.end, start)) && !(!lessThan(range.start, end) && !lessThan(range.end, end));
+	public boolean overlaps(Range<T> range) {
 		return this.contains(range.start) || range.contains(this.start);
 	}
 
-	private boolean lessThan(Comparable o1, Comparable o2) {
+	private boolean lessThan(T o1, T o2) {
 		return o1.compareTo(o2) < 0;
 	}
 
-	private boolean moreThan(Comparable o1, Comparable o2) {
+	private boolean moreThan(T o1, T o2) {
 		return o1.compareTo(o2) > 0;
 	}
 
@@ -65,8 +66,8 @@ public class Range implements Serializable {
 		if (obj == this) {
 			return true;
 		}
-		if (obj instanceof Range) {
-			Range r = (Range) obj;
+		if (obj instanceof Range<?>) {
+			Range<?> r = (Range<?>) obj;
 			return start.equals(r.start) && end.equals(r.end);
 		}
 		return false;
