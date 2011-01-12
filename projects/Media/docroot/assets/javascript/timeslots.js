@@ -136,6 +136,11 @@ var day = parseDay(elemId); //should now be the day index
 						$(elemId+'_rb').checked = true;
 					}
 				}
+				//Force order fix
+				if ($('ts_d'+d+'_ts'+t+'_forceX')) {
+						$('ts_d'+d+'_ts'+t+'_forceX').show();
+				}
+
 				//msging
 				if ($('ts_d'+d+'_ts'+t+'_msgC')) {
 					$('ts_d'+d+'_ts'+t+'_msgC').hide();
@@ -199,6 +204,10 @@ var day = parseDay(elemId); //should now be the day index
 					if ($('ts_d'+d+'_ts'+t+'_rb')) {
 						$('ts_d'+d+'_ts'+t+'_rb').hide();
 					}
+				}
+				//Force order fix
+				if ($('ts_d'+d+'_ts'+t+'_forceX')) {
+						$('ts_d'+d+'_ts'+t+'_forceX').hide();
 				}
 				//msging
 				if ($('ts_d'+d+'_ts'+t+'_msgC')) {
@@ -398,7 +407,14 @@ function tsContractAll(parentIdArg, exceptIdArg) {
 	var exceptId = exceptIdArg || '';
 	var refs = $$('td.tsCol'); //style ref
 
-	if (parentId === '')	{ parentId = 'body'; } //no parent, use body tag
+    if (!$(parentId) || parentId === '') { //no parent, use body tag
+         if (document.body.id === "") {
+                //no id, add one
+                document.body.id = 'bodytag';
+                parentId = 'bodytag';
+         }
+       parentId = document.body.id;
+    }
 
 	//get the values from ref elements, if we haven't already
 	if (styleStrExp === '') {

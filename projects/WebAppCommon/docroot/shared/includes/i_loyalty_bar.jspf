@@ -1,5 +1,5 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
-<table cellspacing="0" cellpadding="0" border="0" width="695">
+<table cellspacing="0" cellpadding="0" border="0" width="695" id="timeslotloyalityHeader">
 	<tr>
 	<%if(user.isChefsTable()){%>
 		<td width="30">

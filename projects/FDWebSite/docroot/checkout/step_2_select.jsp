@@ -183,7 +183,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 		<%if (isDepotAddress) {%>
 			<FONT CLASS="title18">SELECT A <%=user.isCorporateUser() ? "DELIVERY" : "PICKUP"%> TIME</FONT><BR>
 		<%}else{%>
-			<FONT CLASS="title18">SELECT A DELIVERY TIME</FONT><BR>	
+			<FONT CLASS="title18">CHOOSE TIME</FONT><BR>
 		<%}%>
 			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 		</TD>

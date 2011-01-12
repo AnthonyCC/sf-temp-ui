@@ -85,7 +85,7 @@
 <fd:CheckoutController actionName="reserveDeliveryTimeSlot" result="result" successPage="<%= successPage %>">
 
 <tmpl:put name='content' direct='true'>
-<link rel="stylesheet" type="text/css" href="/assets/css/pc_ie.css"/>
+
 <script type="text/javascript">
 	var zonePromoString=""; 
 	var zonePromoEnabled=false;
@@ -211,7 +211,7 @@
 
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
-<table>
+<table CELLSPACING="0" CELLPADDING="0" id="tsContainer">
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 	<tr>
 		<td>
@@ -253,7 +253,7 @@
 </logic:iterate>
 </table>
 
-<table cellpadding="0" cellspacing="0" width="675">
+<table cellpadding="0" cellspacing="0" width="675" id="legendCheckout">
 	<tr>
 		<td align="right">
 				<table>

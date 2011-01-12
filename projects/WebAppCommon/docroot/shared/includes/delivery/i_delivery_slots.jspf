@@ -156,8 +156,8 @@ if (timeslots.size() > 0) {
 						if(cutoffSlotIndex==0){
 					
 						cutoffBuff.append("<td class=\"cutoff\" colspan=\"3\" onclick=\"tsContractAll(\'tsContainer\', \'co_d"+dayIndex+"_ts"+slotIndex+"\'); tsExpand(\'co_d"+dayIndex+"_ts"+slotIndex+"\');\">")
-							.append("<div id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">")
-							.append("<b>Order by "+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+" "+TimeslotPageUtil.getCutoffDay(day)+"</b></div>");
+							.append("<div class=\"cutoffDispChild\" id=\"co_d"+dayIndex+"_ts"+slotIndex+"\">")
+							.append("<div><b>Order&nbsp;by&nbsp;"+TimeslotPageUtil.getCutoffTimeDisplay(slot.getCutoffNormalDateTime())+"&nbsp;"+TimeslotPageUtil.getCutoffDay(day)+"</b></div></div>");
 						cutoffBuff.append("</td>");
 						if(!isForAdvOrdSlots){
 					%>
@@ -226,9 +226,8 @@ if (timeslots.size() > 0) {
 								if (isStaticSlot){	%>
 									
 								<% } else {
-									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { %>
-									
-									<%
+									if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
+
 									}
 									%>
 									<%
@@ -307,6 +306,8 @@ if (timeslots.size() > 0) {
 											.append("<div onclick=\"javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Promotion Discount Information',300,400)\"") 
 											.append("class=\"tsEcoFriendlyMoreE\">More Info</div>")
 											.append("</div>");
+									}else if (!slot.hasAvailCTCapacity() && !(isSelectedSlotId || isPreReservedSlotId) && isForce) { 
+										timeslotBuff.append("<div class=\"tsForceC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_forceX\"><b>F</b></div>");
 									}
 									
 									
