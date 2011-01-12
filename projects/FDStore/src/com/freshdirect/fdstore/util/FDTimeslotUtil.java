@@ -28,7 +28,6 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDTimeslot;
 import com.freshdirect.framework.util.DateRange;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 
 public class FDTimeslotUtil implements Serializable {
 	
@@ -37,34 +36,13 @@ public class FDTimeslotUtil implements Serializable {
 	private final SortedMap<Date,Map<Date,List<FDTimeslot>>> timeslotMap = new TreeMap<Date,Map<Date,List<FDTimeslot>>>();
 	private final Set<Date> holidaySet = new HashSet<Date>();
 	
-	private final Set<FDTimeslot> REFERENCE_TIMESLOTS = new TreeSet<FDTimeslot>();
+	private final Set<FDTimeslot> uniqueTimeslots = new TreeSet<FDTimeslot>();
 	
 	public FDTimeslotUtil( List<FDTimeslot> timeslots, Calendar startCal, Calendar endCal, DlvRestrictionsList restrictions ) {
 		Collections.sort( timeslots, TIMESLOT_COMPARATOR );
 		
 		for ( FDTimeslot timeslot : timeslots ) {
-					
-			boolean isMatching = false;
-			if(timeslot.getBegTime()!=null && timeslot.getEndTime()!=null){
-				for(FDTimeslot _slotTime: REFERENCE_TIMESLOTS){
-					Calendar startTimeCal = DateUtil.toCalendar(timeslot.getBegTime());
-					int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-					
-					Calendar tempStartTimeCal = DateUtil.toCalendar(_slotTime.getBegTime());
-					int tempStartHour = tempStartTimeCal.get(Calendar.HOUR_OF_DAY);					
-					Calendar tempEndTimeCal = DateUtil.toCalendar(_slotTime.getEndTime());
-					int tempEndHour = tempEndTimeCal.get(Calendar.HOUR_OF_DAY);				
-					
-					if((startHour == tempStartHour)||(startHour >=tempStartHour && startHour < tempEndHour)){
-							isMatching = true;
-							break;						
-					}					
-				}
-				if(!isMatching){
-					REFERENCE_TIMESLOTS.add(timeslot);
-				}
-			}	
-						
+
 			List<FDTimeslot> cutOffTimeslotList = null;
 			Map<Date,List<FDTimeslot>> cutOffMap = null;
 			
@@ -137,9 +115,14 @@ public class FDTimeslotUtil implements Serializable {
 	}
 	
 	public Set<FDTimeslot> getUniqueSlots() {
-		return REFERENCE_TIMESLOTS;
+		return uniqueTimeslots;
 	}
 	
+	public Set<FDTimeslot> setUniqueSlots(Set<FDTimeslot> uniquieSlots) {
+		uniqueTimeslots.addAll(uniquieSlots);
+		return uniqueTimeslots;
+	}
+
 	public Collection<Date> getHolidays() {
 		return holidaySet;
 	}
@@ -326,49 +309,24 @@ public class FDTimeslotUtil implements Serializable {
 	public FDTimeslot getTimeslotForDayAndTime( Date day, FDTimeslot slot ) {
 		List<FDTimeslot> lst = this.getTimeslotsForDate(day);
 		if ( lst != null ) {
+			Collections.sort( lst, TIMESLOT_COMPARATOR );
 			for ( FDTimeslot t : lst ) {
 				Calendar startTimeCal = DateUtil.toCalendar(slot.getBegDateTime());
 				int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-				Calendar endTimeCal = DateUtil.toCalendar(slot.getEndDateTime());
-				int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
 				
 				Calendar tempStartTimeCal = DateUtil.toCalendar(t.getBegDateTime());
 				int tempStartHour = tempStartTimeCal.get(Calendar.HOUR_OF_DAY);					
-				
-				
-				if((startHour == tempStartHour)||(tempStartHour>=startHour && tempStartHour < endHour)){
+					
+				if((startHour == tempStartHour)){
 					DlvTimeslotModel ts = t.getDlvTimeslot();
 					if(ts.getCapacity()>0)
-						return t;					
-				}				
+						return t;
+				}
 			}
 		}
 		return null;
 	}
-	
-	public FDTimeslot getTimeslotForTime( FDTimeslot slot ) {
-		List<FDTimeslot> lst = this.getTimeslotsFlat();
-		if ( lst != null ) {
-			for ( FDTimeslot t : lst ) {
-				Calendar startTimeCal = DateUtil.toCalendar(slot.getBegDateTime());
-				int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
-				Calendar endTimeCal = DateUtil.toCalendar(slot.getEndDateTime());
-				int endHour = endTimeCal.get(Calendar.HOUR_OF_DAY);
-				
-				Calendar tempStartTimeCal = DateUtil.toCalendar(t.getBegDateTime());
-				int tempStartHour = tempStartTimeCal.get(Calendar.HOUR_OF_DAY);					
-				
-				
-				if((startHour == tempStartHour)||(tempStartHour>=startHour && tempStartHour < endHour)){
-					DlvTimeslotModel ts = t.getDlvTimeslot();
-					if(ts.getCapacity()>0)
-						return t;					
-				}				
-			}
-		}
-		return null;
-	}
-	
+
 	public int getTimeslotIndexForDay( Date day, FDTimeslot slot ) {
 		boolean isMatching  = false;
 		Map<Date, List<FDTimeslot>> mapCutOff  = timeslotMap.get( day );
@@ -389,7 +347,7 @@ public class FDTimeslotUtil implements Serializable {
 	
 	private final static Comparator<FDTimeslot> TIMESLOT_COMPARATOR = new Comparator<FDTimeslot>() {
 		public int compare( FDTimeslot t1, FDTimeslot t2 ) {
-			return t1.getBegDateTime().compareTo(t2.getBegDateTime());
+			return t1.getBegTime().compareTo(t2.getBegTime());
 		}
 	};
 	

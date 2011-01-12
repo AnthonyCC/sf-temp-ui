@@ -280,13 +280,11 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		}
 	}
 	
-	private List getFDTimeslotListForDateRange(
-			DlvRestrictionsList restrictions, List dateRanges,
-			List timeslotList, Exception dynaError,
+	private List<FDTimeslotUtil> getFDTimeslotListForDateRange(DlvRestrictionsList restrictions, List<DateRange> dateRanges,List<FDTimeslotUtil> timeslotList, Exception dynaError,
 			ErpAddressModel timeslotAddress,FDUserI user) throws FDResourceException {
 		
-		for (Iterator i = dateRanges.iterator(); i.hasNext();) {
-			DateRange range = (DateRange) i.next();
+		for (Iterator<DateRange> i = dateRanges.iterator(); i.hasNext();) {
+			DateRange range = i.next();
 			
 			FDDynamicTimeslotList dynamicTimeslots = this.getTimeslots(
 					timeslotAddress,
@@ -296,7 +294,7 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 			if(dynamicTimeslots == null || dynamicTimeslots.getError() != null) {
 				dynaError = dynamicTimeslots.getError();				
 			} 
-			List timeslots = dynamicTimeslots.getTimeslots();
+			List<FDTimeslot> timeslots = dynamicTimeslots.getTimeslots();
 			
 			timeslotList.add(new FDTimeslotUtil(timeslots, DateUtil.toCalendar(range.getStartDate()), DateUtil.toCalendar(range
 				.getEndDate()), restrictions));
@@ -304,31 +302,31 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		return timeslotList;
 	}
 
-	private void filterDeliveryTimeSlots(FDUserI user,
-			DateRange geoRestrictionRange, DlvRestrictionsList restrictions,
-			List timeslotList, HashMap zonesMap, Set retainTimeslotIds,
-			List geographicRestrictions, List messages, List comments,
-			boolean isKosherSlotAvailable, boolean hasCapacity,
+	private void filterDeliveryTimeSlots(FDUserI user, DateRange geoRestrictionRange, DlvRestrictionsList restrictions,List<FDTimeslotUtil> timeslotList, HashMap<String, DlvZoneModel> zonesMap, Set retainTimeslotIds,
+			List<GeographyRestriction> geographicRestrictions, List<String> messages, List comments, boolean isKosherSlotAvailable, boolean hasCapacity,
 			FDDeliveryTimeslotModel deliveryModel,List<RestrictionI> alcoholRestrictions) throws FDResourceException {
 
 		boolean ctActive = false;
 		double maxDiscount = 0.0;
 		int ctSlots = 0;int alcoholSlots =0;int ecoFriendlySlots = 0;
-		Set<FDTimeslot> tempSlots = new TreeSet<FDTimeslot>();
-		for (Iterator i = timeslotList.iterator(); i.hasNext();) {
-			FDTimeslotUtil list = (FDTimeslotUtil) i.next();
-			for (Iterator j = list.getTimeslots().iterator(); j.hasNext();) {
-				Collection col = (Collection) j.next();
-				for (Iterator k = col.iterator(); k.hasNext();) {
-					FDTimeslot timeslot = (FDTimeslot) k.next();
+
+		for (Iterator<FDTimeslotUtil> i = timeslotList.iterator(); i.hasNext();) {
+
+			Set<FDTimeslot> uniqueTimeslots = new TreeSet<FDTimeslot>();
+			
+			FDTimeslotUtil list = i.next();
+			for (Iterator<List<FDTimeslot>> j = list.getTimeslots().iterator(); j.hasNext();) {
+				Collection<FDTimeslot> col = j.next();
+				for (Iterator<FDTimeslot> k = col.iterator(); k.hasNext();) {
+					FDTimeslot timeslot = k.next();
 					DlvTimeslotModel ts = timeslot.getDlvTimeslot();
 					ts.setSteeringDiscount(PromotionHelper.getDiscount(user,timeslot));
-
+					boolean isTimeslotRemoved = false;
 					if ((ts.getCapacity() <= 0 || GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
 													timeslot, messages, geoRestrictionRange,comments))&& !retainTimeslotIds.contains(ts.getId())) {
-						// filter off empty timeslots (unless they must be retained)
 						LOGGER.debug("Timeslot Removed By Tag :" + ts);
 						k.remove();
+						isTimeslotRemoved = true;
 					}
 					String zoneCode = timeslot.getZoneId();
 					if (!zonesMap.containsKey(zoneCode)) {
@@ -340,41 +338,45 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 							}
 							zonesMap.put(zoneCode, zoneModel);
 						} catch (FDZoneNotFoundException e) {
-							LOGGER
-									.error("Referenced zone not found, database error. Zone:"
-											+ zoneCode
-											+ " timeslot id:"
-											+ timeslot.getTimeslotId());
+							LOGGER.error("Referenced zone not found, database error. Zone:"+ zoneCode + " timeslot id:"+ timeslot.getTimeslotId());
 						}
 					}
+					
 					if(isTimeslotAlcoholRestricted(alcoholRestrictions, timeslot)){
 						timeslot.setAlcoholRestricted(true);
 						alcoholSlots = alcoholSlots+1;
 					}
 					checkTimeslotCapacity(user, zonesMap, timeslot);
-					if (ts.getSteeringDiscount() > maxDiscount)
+					if (ts.getSteeringDiscount() > maxDiscount && !isTimeslotRemoved)
 						maxDiscount = ts.getSteeringDiscount();
-					if(!timeslot.hasNormalAvailCapacity()&&timeslot.hasAvailCTCapacity())
+					if(!timeslot.hasNormalAvailCapacity()&& timeslot.hasAvailCTCapacity() && !isTimeslotRemoved)
 						ctSlots = ctSlots+1;
-					if(timeslot.isEcoFriendly())
-						ecoFriendlySlots = ecoFriendlySlots+1;						
-				}
-			}
-			
-			for(Iterator<FDTimeslot> uniqueItr = list.getUniqueSlots().iterator();uniqueItr.hasNext();){
-				FDTimeslot _slot = uniqueItr.next();
-				DlvTimeslotModel _dlvSlot = _slot.getDlvTimeslot();
-				if ((_dlvSlot.getCapacity() <= 0 || GeographyRestriction.isTimeSlotGeoRestricted(geographicRestrictions,
-												_slot, messages, geoRestrictionRange,comments))&& !retainTimeslotIds.contains(_dlvSlot.getId())) {
-					LOGGER.debug("Unique Timeslot Removed By Tag :" + _dlvSlot);
-					FDTimeslot tempslot = list.getTimeslotForTime(_slot);
-					if(tempslot!=null){
-							tempSlots.add(tempslot);							
+					if(timeslot.isEcoFriendly() && !isTimeslotRemoved)
+						ecoFriendlySlots = ecoFriendlySlots+1;
+					
+					if(!isTimeslotRemoved){
+						boolean isMatching = false;
+						if(timeslot.getBegTime()!=null && timeslot.getEndTime()!=null){
+							for(FDTimeslot _slotTime: uniqueTimeslots){
+								Calendar startTimeCal = DateUtil.toCalendar(timeslot.getBegTime());
+								int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
+								
+								Calendar tempStartTimeCal = DateUtil.toCalendar(_slotTime.getBegTime());
+								int tempStartHour = tempStartTimeCal.get(Calendar.HOUR_OF_DAY);					
+								
+								if((startHour == tempStartHour)){
+										isMatching = true;
+										break;						
+								}					
+							}
+							if(!isMatching){
+								uniqueTimeslots.add(timeslot);
+							}
+						}	
 					}
-					uniqueItr.remove();					
 				}
 			}
-			list.getUniqueSlots().addAll(tempSlots);
+			list.setUniqueSlots(uniqueTimeslots);	
 			
 			isKosherSlotAvailable = isKosherSlotAvailable || list.isKosherSlotAvailable(restrictions);
 			hasCapacity = hasCapacity || list.hasCapacity();
