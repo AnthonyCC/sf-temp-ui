@@ -1,34 +1,37 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
-<%@   page import='com.freshdirect.webapp.util.*'
-%><%@ page import="com.freshdirect.fdstore.content.DomainValue"
-%><%@ page import='com.freshdirect.framework.webapp.*'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.*'
-%><%@ page import='com.freshdirect.content.attributes.*'
-%><%@ page import="com.freshdirect.fdstore.util.URLGenerator"
-%><%@ page import="com.freshdirect.fdstore.util.SearchNavigator"
-%><%@ page import="com.freshdirect.fdstore.*"
-%><%@ page import="com.freshdirect.cms.*"
-%><%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"
-%><%@ page import="com.freshdirect.fdstore.content.*"
-%><%@ page import='com.freshdirect.fdstore.attributes.*'
-%><%@ page import='com.freshdirect.webapp.util.SearchResultUtil'
-%><%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'
-%><%@ page import="java.util.*"
-%><%@ page import="java.net.URLEncoder"
-%><%@ page import="java.text.DecimalFormat"
-%><%@ page import="com.freshdirect.framework.util.NVL"
-%><%@ taglib uri='template' prefix='tmpl'
-%><%@ taglib uri='freshdirect' prefix='fd'
-%><%@ taglib uri='oscache' prefix='oscache'
-%><fd:CheckLoginStatus /><%
+<%@ page import='com.freshdirect.webapp.util.*'%>
+<%@ page import="com.freshdirect.fdstore.content.DomainValue"%>
+<%@ page import='com.freshdirect.framework.webapp.*'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.*'%>
+<%@ page import='com.freshdirect.content.attributes.*'%>
+<%@ page import="com.freshdirect.fdstore.util.URLGenerator"%>
+<%@ page import="com.freshdirect.fdstore.util.SearchNavigator"%>
+<%@ page import="com.freshdirect.fdstore.*"%>
+<%@ page import="com.freshdirect.cms.*"%>
+<%@ page import="com.freshdirect.cms.fdstore.FDContentTypes"%>
+<%@ page import="com.freshdirect.fdstore.content.*"%>
+<%@ page import='com.freshdirect.fdstore.attributes.*'%>
+<%@ page import='com.freshdirect.webapp.util.SearchResultUtil'%>
+<%@ page import='com.freshdirect.webapp.taglib.fdstore.SessionName'%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.net.URLEncoder"%>
+<%@ page import="java.text.DecimalFormat"%>
+<%@ page import="com.freshdirect.framework.util.NVL"%>
+
+<%@ taglib uri='template' prefix='tmpl'%>
+<%@ taglib uri='freshdirect' prefix='fd'%>
+<%@ taglib uri='oscache' prefix='oscache'%>
+
+<fd:CheckLoginStatus id="user" guestAllowed="true" recognizedAllowed="true" noRedirect="true" />
+
+<%
 final String SEPARATOR = "&nbsp;<span class=\"text12\" style=\"color: #CCCCCC\">&bull;</span>&nbsp;";
 final String trk = "srch"; // tracking code
 
 String criteria = request.getParameter("searchParams");
 String upc = request.getParameter("upc");
-String displayCriteria = upc != null ? upc : criteria;
+String displayCriteria = upc != null && !upc.trim().equals("") ? upc : criteria;
 
 // OAS AD settings
 request.setAttribute("sitePage", "www.freshdirect.com/search.jsp");
