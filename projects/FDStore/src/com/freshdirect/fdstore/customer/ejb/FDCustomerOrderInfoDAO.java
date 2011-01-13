@@ -330,7 +330,7 @@ class FDCustomerOrderInfoDAO {
 		+" s.CROMOD_DATE=sa.action_date and s.customer_id =? group by s.CUSTOMER_ID";
 		
 	public static String getActiveDeliveryPassSavings(Connection conn, String customerPK,String dpNumber) throws SQLException {
-		String savings="";
+		String savings="0";
 		PreparedStatement ps = conn.prepareStatement(DELIVERY_PASS_SAVINGS);
 		ps.setString(1, dpNumber);
 		ps.setString(2, dpNumber);
