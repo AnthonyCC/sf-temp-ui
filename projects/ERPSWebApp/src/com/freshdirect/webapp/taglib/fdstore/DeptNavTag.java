@@ -56,7 +56,7 @@ public class DeptNavTag extends AbstractGetterTag<DepartmentModel> {
 		List<CategoryModel> catList = null;
 		if (deptNavAttrib == null || deptNavAttrib.size() == 0) {
 			// !!! filter off stuff based on hide flags?
-			catList = dept.getCategories();
+			catList = (dept == null) ? new ArrayList<CategoryModel>() : dept.getCategories();
 		} else {
 			catList = new ArrayList<CategoryModel>( deptNavAttrib.size() );
 			catList.addAll(deptNavAttrib);

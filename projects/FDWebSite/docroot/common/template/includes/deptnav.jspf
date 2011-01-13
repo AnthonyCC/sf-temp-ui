@@ -9,7 +9,6 @@
 //doing a check for your account pages, making static department nav, otherwise, build one for departments below
 if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 %>
-	
 	<table cellpadding="0" cellspacing="0" border="0">
 		<tr valign="middle">
 			<%
@@ -111,7 +110,6 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 	</table>
 	
 <% } else {  %>
-
 	<oscache:cache key='<%= "deptNav_"+request.getQueryString() %>' time='600'>
 		<% try { %>
 			<fd:DeptNav id='department' categoryList='folderList' categoryId='<%= request.getParameter("catId") %>' deptId='<%= request.getParameter("deptId") %>'>
@@ -121,6 +119,8 @@ if (request.getRequestURI().toLowerCase().indexOf("your_account/") != -1) {
 							Image titleImg = department.getTitleImage();
 							int maxRows = department.getMaxRowCount();
 							int maxCols = folderList.size() / maxRows+(folderList.size()%maxRows!=0?1:0);
+							//fix missing cache content on missing title image
+							titleImg = (titleImg == null) ? new Image() : titleImg;
 						%>
 						<td><a href="<%= response.encodeURL("/department.jsp?deptId=" + department+"&trk=dnav") %>"><img src="<%= titleImg.getPath() %>" border="0" width="<%= titleImg.getWidth() %>" height="<%= titleImg.getHeight() %>"></a></td>
 						<td align="center"><img src="/media_stat/images/layout/999966.gif" width="1" height="<%=12 * maxRows %>" border="0" hspace="0" vspace="0">&nbsp;</td>

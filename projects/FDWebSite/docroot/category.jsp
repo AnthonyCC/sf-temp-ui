@@ -22,10 +22,13 @@
 	String deptId = null;
 	// it should be CategoryModel ... 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
-	final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
+	final ProductContainer productContainer = null; //(currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
 	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 	if (categoryModel != null) {
-	     deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
+		
+		//deptId=((CategoryModel)currentFolder).getDepartment().getContentName();
+		//null check for orphaned cats
+		deptId = (((CategoryModel)currentFolder).getDepartment() != null) ? ((CategoryModel)currentFolder).getDepartment().getContentName() : "";
 	 	if ("usq".equals(deptId)) {
 			request.setAttribute("__yui_load_carousel__", Boolean.TRUE);
 		}
@@ -38,7 +41,6 @@
 	request.setAttribute("sitePage", prodModel == null ? currentFolder.getPath() : prodModel.getPath());
 	request.setAttribute("listPos", "LittleRandy,SystemMessage,CategoryNote,ProductNote,SideCartBottom");
 
-	
 	boolean noLeftNav = false;
 	String jspTemplate = null;
 	boolean showAlternateContent = false;
@@ -181,14 +183,14 @@
 			
 			//  get the rating & ranking stuff
 		    StringBuffer rateNRankLinks = new StringBuffer();
-		
+
 		    if ( !isIncludeMediaLayout 
 		    		&& EnumLayoutType.BULK_MEAT_PRODUCT.getId() != layouttype
 		            && EnumLayoutType.VALENTINES_CATEGORY.getId() != layouttype 
 		            && EnumLayoutType.PARTY_PLATTER_CATEGORY.getId() != layouttype ) { // don't paint intro stuff if we'll be using bulkMeat layout
-		    	
-		        rateNRankLinks.append(RatingUtil.buildCategoryRatingLink(productContainer, response));
-		            
+
+				if (productContainer != null) { rateNRankLinks.append(RatingUtil.buildCategoryRatingLink(productContainer, response)); }
+
 				if ( !noCache 
 					|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype 
 					|| EnumLayoutType.HOLIDAY_MENU.getId()==layouttype  
@@ -203,12 +205,12 @@
 						</script> <%
 					}
 				} 				
-				 
+
 				if ( !noCache 
 					|| EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId()==layouttype
 				    || EnumLayoutType.HOLIDAY_MENU.getId()==layouttype  
 				    || EnumLayoutType.PARTY_PLATTER_CATEGORY.getId()==layouttype ) { //not DFGS %>
-				    
+
 					<%-- start header stuff --%>
 					<table width="<%=tablewid%>" border="0" cellspacing="0" cellpadding="0">
 						 
@@ -221,14 +223,13 @@
 								if ( !introTitle.equals("") ) { %>
 									<font class="title16"><%=introTitle%></font>
 								<% }
-								String seasonText = productContainer.getSeasonText();
+								String seasonText = (productContainer==null) ? null : productContainer.getSeasonText();
 								if (seasonText != null ) { %>
 									<br/><img src="/media_stat/images/layout/clear.gif" height="4" width="1"><br/>
 									<font class="text12orbold"><%= seasonText %></font>
 								<% } %>
 							</td></tr>
 						<% }
-	
 						
 						if ( layouttype == EnumLayoutType.TRANSAC_MULTI_CATEGORY.getId() ) {
 							showLine=false;						
@@ -237,7 +238,7 @@
 							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
 							<% 
 						} 
-							
+
 						// bypass beer
 						if ( introCopy != null 
 								&& introCopy.trim().length() > 0 
@@ -259,14 +260,14 @@
 								</td></tr><%  
 							}
 						}
-						
+
 						if ( rateNRankLinks.length() > 0 ) {
 							
 							showLine=true; %>
 							<tr><td><img src="/media_stat/images/layout/clear.gif" height="7" width="1"></td></tr>
 							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" height="1" width="1"></td></tr>
 							<tr><td><img src="/media_stat/images/layout/clear.gif" height="4" width="1"></td></tr>
-							<tr align="center"><td>						
+							<tr><td align="center">
 								<table cellpadding="0" cellspacing="0" border="0">
 									<tr>
 										<td>
@@ -283,7 +284,7 @@
 								</table>
 							</td></tr>
 						<% }
-						
+
 						if ( showLine && layouttype != EnumLayoutType.HOLIDAY_MENU.getId() && layouttype != EnumLayoutType.FEATURED_MENU.getId() ) { %>
 							<tr><td><img src="/media_stat/images/layout/clear.gif" width="1" height="5"></td></tr>
 							<tr><td bgcolor="#CCCCCC"><img src="/media_stat/images/layout/clear.gif" width="1" height="1"></td></tr>
@@ -299,26 +300,26 @@
 						//place the products in out temporary list..then assign it to the array itemsToDisplayArray
 						%>
 					</table>
-					 
-					 
-					<%      
-					if ( rateNRankLinks.length() > 0 || ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() == null ) ) { 
+					
+					
+					<% 
+					//if ( rateNRankLinks.length() > 0 || ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() == null ) ) {
+					//null check
+					if ( rateNRankLinks.length() > 0 || ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() == null ) ) { 
 						%><br/><%
 					}
 					
 				} else if ( EnumLayoutType.TRANSAC_GROUPED_ITEMS.getId() == layouttype ) {
 				 	//paint the category_detail_image, intro copy and full name
 					MediaModel catDetailImg = categoryModel != null ? categoryModel.getCategoryDetailImage() : null;
-					
-				    
-				    Html editorialAttribute = currentFolder.getEditorial();
+
+					Html editorialAttribute = currentFolder.getEditorial();
 					String catEditorialPath = editorialAttribute==null ? "" : editorialAttribute.getPath();
-					        					    
 					%>
 					
 					<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
 								
-						<tr><td align="center" colspan="3"><br/><FONT CLASS="title18"><%=currentFolder.getFullName()%></font><br/><br/></td></tr>
+						<tr><td align="center" colspan="3"><br/><font class="title18"><%=currentFolder.getFullName()%></font><br/><br/></td></tr>
 						<tr valign="top">
 							<td width="<%= catDetailImg.getWidth() + 2 %>">
 								<%	if(catDetailImg!=null) { %>
@@ -344,7 +345,10 @@
 			<%-- end header stuff --%>
 			
 			<% 
-			if ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() != null ) { %>
+			//if ( "hmr".equals( currentFolder.getParentNode().toString() ) && currentFolder.getBlurb() != null ) { 
+			//null check
+			if ( "hmr".equals( (currentFolder.getParentNode() != null) ? currentFolder.getParentNode().toString() : "" ) && currentFolder.getBlurb() != null ) { 
+			%>
 				<table width="<%= tablewid %>" border="0" cellspacing="0" cellpadding="0">
 					<tr><td>
 						<%= currentFolder.getBlurb() %><FONT CLASS="space4pix"><br/><br/></FONT>

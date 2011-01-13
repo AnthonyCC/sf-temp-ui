@@ -159,12 +159,12 @@ public class ContentNodeModelUtil {
 			Object value;
 
 			if ( !inheritedAttrs ) {
-				value = refModel.getCMSNode().getAttributeValue( refNodeAttr );
+				value = (refModel.getCMSNode() != null) ? refModel.getCMSNode().getAttributeValue( refNodeAttr ) : null;
 			} else {
 				value = refModel.getCmsAttributeValue( refNodeAttr );
 			}
-			
-		        List<ContentKey> newKeys = (List<ContentKey>) value;
+
+			List<ContentKey> newKeys = (List<ContentKey>) value;
 
 			if (newKeys == null) {
 				newKeys = new ArrayList<ContentKey>();

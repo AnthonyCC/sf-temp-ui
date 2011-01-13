@@ -340,7 +340,8 @@ CategoryModel groceryCategory;
         ContentNodeModel node = currentFolder;
         // find the topmost Category
         while (!(node.getParentNode() instanceof DepartmentModel)) {
-                node = node.getParentNode();
+			if (node == null || node.getParentNode() == null) { break; }
+			node = node.getParentNode();
         }
         groceryCategory=(CategoryModel)node;
 }
@@ -609,7 +610,6 @@ if(productCode!=null && prodCatId !=null ) {
 %>
 
 <%@include file="/includes/product/i_price_taxdeposit.jspf"%>
-
 <br>
         <table border="0" cellspacing="0" cellpadding="1" width="215">
         <tr valign="MIDDLE">
@@ -1108,7 +1108,7 @@ if(isAnyProdAvailable) {
             </div>
         </fd:CCLCheck>
         </td></tr></table>
-<%} %>
+<% } %>
 <br/>
 <table border="0" cellspacing="0" cellpadding="0" width="425">
 <tr>

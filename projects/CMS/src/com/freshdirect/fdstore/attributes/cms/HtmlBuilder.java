@@ -23,6 +23,9 @@ public class HtmlBuilder extends AbstractAttributeBuilder {
     
     public Object buildValue(AttributeDefI aDef, Object value) {
         ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
+        
+        if (cNode == null) { return null; }
+        
         String path = (String) cNode.getAttributeValue("path");
 
 		if ( cNode.getAttributeValue( "title" ) == null && cNode.getAttributeValue( "popupSize" ) == null ) {

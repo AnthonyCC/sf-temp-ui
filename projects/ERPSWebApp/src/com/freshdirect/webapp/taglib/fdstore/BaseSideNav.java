@@ -116,15 +116,16 @@ public abstract class BaseSideNav extends BodyTagSupport {
     	while (!(tempNode instanceof DepartmentModel)) {
     		topNode = tempNode;
     		//LOGGER.debug(" tempNode: "+tempNode.getPK());
-    		tempNode = tempNode.getParentNode();
+    		if (tempNode == null) { break; }
+    		tempNode = (tempNode.getParentNode() != null) ? tempNode.getParentNode() : null;
     	}
     	CategoryModel topCategory = (CategoryModel)topNode;
-    	
-    	startRecursiveWalking(folder, topCategory);
     	
     	if (topCategory==null) {
     		return folder ;
     	} else {
+    		//only startRecursiveWalking if topCat is not null
+    		startRecursiveWalking(folder, topCategory);
     		return topCategory;
     	}
     }

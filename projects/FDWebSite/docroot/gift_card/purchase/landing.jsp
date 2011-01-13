@@ -38,11 +38,6 @@
 		
 		<table border="0" cellspacing="0" cellpadding="2" width="675">
 			<tr>
-				<td align="center">
-					<img src="/media_stat/images/giftcards/landing/headline_giftcards.gif" width="518" height="29" alt="the Gift of Deliciously Free Food. Gift Cards." />
-				</td>
-			</tr>
-			<tr>
 				<td align="left">
 					<fd:IncludeMedia name="/media/editorial/giftcards/media_includes/landing_header.html" />
 				</td>

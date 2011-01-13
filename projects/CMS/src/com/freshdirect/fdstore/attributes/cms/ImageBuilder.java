@@ -24,6 +24,8 @@ public class ImageBuilder extends AbstractAttributeBuilder {
 	public Object buildValue(AttributeDefI aDef, Object value) {
 		ContentNodeI cNode = ((ContentKey) value).lookupContentNode();
 
+        if (cNode == null) { return null; }
+
 		String path = (String) cNode.getAttributeValue("path");
 		
 		// FIXME this is due to invalid data
