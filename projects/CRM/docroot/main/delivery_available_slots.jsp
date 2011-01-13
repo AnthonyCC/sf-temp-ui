@@ -28,19 +28,7 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<style>
 
-span.control img{
-margin: 7px 8px 0 4px;
-}
-
-span.time {
-float:left;
-position:relative;
-top:1px;
-}
-
-</style>
 <%
 int timeslot_page_type = TimeslotLogic.PAGE_NORMAL;
 if("true".equals(request.getParameter("chefstable"))) {
@@ -83,6 +71,18 @@ if(isCheckAddress){
 	<tmpl:put name='title' direct='true'>Available Delivery TimeSlots</tmpl:put>
 		<tmpl:put name='content' direct='true'>
 
+<style>
+span.control img{
+	margin: 7px 8px 0 4px;
+}
+
+span.time {
+	float:left;
+	position:relative;
+	top:1px;
+}
+</style>
+
 	<div class="sub_nav">
 		<span class="sub_nav_title">Available Delivery TimeSlots</span> | <a href="/main/delivery_check_slots.jsp">Check available Slots for a new address</a>
 	</div>
@@ -94,12 +94,15 @@ if(isCheckAddress){
 		</tr>
 		<tr>
 			<td colspan="3" class="text12" align="left">Here are the currently available timeslots for delivery to this <%=isCheckAddress ? "address" : "customer's addresses"%>:
-					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR><BR>
 			</td>
 		</tr>	
-		
-		<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-		
+		<tr>
+			<td colspan="3">
+				<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
+			</td>
+		</tr>
+
 		<%//Finds the address%>
 		<%@ include file="/shared/includes/delivery/i_address_finder.jspf"%>
 		

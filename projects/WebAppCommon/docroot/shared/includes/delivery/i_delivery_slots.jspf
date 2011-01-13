@@ -99,9 +99,9 @@ if (timeslots.size() > 0) {
 						.append("<div id=\"ts_d"+hDayIndex+"_ts_hE\" class=\"tsHeaderE\" style=\"display: none;\">")
 							.append("<table cellspacing=\"0\" cellpadding=\"0\" width=\"100%\">")
 							.append("<tr>")
-								.append("<td width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\"></td>")
-								.append("<td><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\"></td>")
-								.append("<td width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td style=\"line-height: 0px;\" width=\"6\"><img src=\"/media_stat/images/layout/top_left.gif\" width=\"6\" height=\"6\"></td>")
+								.append("<td style=\"line-height: 0px;\"><img src=\"/media_stat/images/layout/clear.gif\" alt=\"\"></td>")
+								.append("<td style=\"line-height: 0px;\" width=\"6\" align=\"right\"><img src=\"/media_stat/images/layout/top_right.gif\" width=\"6\" height=\"6\"></td>")
 							.append("</tr>")
 							.append("<tr>")
 								.append("<td align=\"center\" colspan=\"3\" valign=\"middle\">")
@@ -284,17 +284,17 @@ if (timeslots.size() > 0) {
 											var promodiscount = "<%= CCFormatter.formatQuantity(slot.getSteeringDiscount()) %>";
 													
 						<%				timeslotBuff.append("<div class=\"tsDiscountPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
+											.append("<font class=\"tsDiscountE\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font>")
 											.append("<div onclick=\"javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_discount_timeslot.html&windowSize=small&name=Promotion Discount Information',300,400)\"") 
 											.append("class=\"tsDiscountMoreE\">More Info</div>")
 											.append("</div>");
 										timeslotBuff.append("<div class=\"tsDiscountPropC\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgC\">")
-											.append("<font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"<br/></font>")
+											.append("<font class=\"tsDiscountC\">Save&nbsp;$"+CCFormatter.formatQuantity(slot.getSteeringDiscount())+"</font>")
 											.append("</div>");
 									}else if(!slot.hasNormalAvailCapacity() && slot.hasAvailCTCapacity()) { 
 										timeslotBuff.append("<div class=\"tsChefstablePropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
 											.append("<img class=\"tsCTStar\" src=\"/media_stat/images/timeslots/star_small.gif\" width=\"11\" height=\"10\" border=\"0\" alt=\"CHEFSTABLE\">")
-											.append("<font class=\"tsChefstableE\">Chef's Table<br/></font>")
+											.append("<font class=\"tsChefstableE\">Chef's Table</font>")
 											.append("</div>");
 									}else if(slot.isAlcoholRestricted()){
 										timeslotBuff.append("<div class=\"tsAlcoholResPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
@@ -302,7 +302,7 @@ if (timeslots.size() > 0) {
 											.append("</div>");
 									}else if(slot.isEcoFriendly()){
 										timeslotBuff.append("<div class=\"tsEcoFriendlyPropE\" id=\"ts_d"+dayIndex+"_ts"+slotIndex+"_msgE\" style=\"display: none;\">")
-											.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly<br/></font>")
+											.append("<font class=\"tsEcoFriendlyE\">Eco-Friendly</font>")
 											.append("<div onclick=\"javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ecofriendly_timeslot.html&windowSize=small&name=Promotion Discount Information',300,400)\"") 
 											.append("class=\"tsEcoFriendlyMoreE\">More Info</div>")
 											.append("</div>");

@@ -63,7 +63,11 @@ if (sameDayPendingOrderCount == 1) {
 			<table cellpadding="1" cellspacing="0" border="0"><tr><td rowspan="2" width="32"><a href="<%=modifyLink%>"><img src="/media_stat/images/buttons/arrow_blue_left.gif" width="29" height="30" border="0" alt="MODIFY ORDER"></a></td><td class="text12" valign="bottom"><a href="<%=modifyLink%>"><img src="/media_stat/images/buttons/modify_order.gif" width="82" height="9" border="0" alt="MODIFY ORDER"></a></td></tr><tr><td valign="top">Go to Your Account</td></tr></table>
 			<br><br>
 			<b>Place this additional order</b> for the same day.<br><img src="/media_stat/images/layout/clear.gif" width="1" height="6"><br>
-			<table cellpadding="1" cellspacing="0" border="0"><tr><td align="right" valign="bottom"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a></td><td rowspan="2" width="32" align="right"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip"><img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a></td></tr><tr><td align="right" valign="top">Go to Step 3: Payment Info</td></tr></table>
+			<table cellpadding="1" cellspacing="0" border="0"><tr>
+			<td align="right" valign="bottom"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+			<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a></td>
+			<td rowspan="2" width="32" align="right"><a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+			<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a></td></tr><tr><td align="right" valign="top">Go to Step 3: Payment Info</td></tr></table>
 			</td></tr>
 		</table><br><br>
 		</td>
@@ -83,6 +87,14 @@ if (sameDayPendingOrderCount == 1) {
 					<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
 					Delivery Address<br/>
 					<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
+				</TD>
+				<TD align="right" valign="middle" WIDTH="265">
+					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+					<img src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT"></a><BR>Payment Method<BR>
+				</TD>
+				<TD width="35" align="right" VALIGN="MIDDLE">
+					<a href="/checkout/step_3_choose.jsp?duplicateCheck=skip">
+					<img src="/media_stat/images/buttons/checkout_arrow.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT"></a>
 				</TD>
 		    </tr>
 		</table>

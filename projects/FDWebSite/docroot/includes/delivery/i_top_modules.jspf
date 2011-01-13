@@ -20,6 +20,7 @@ if ( deliveryModel.getRsv()!=null ) {
 	reservationExpDate = dateFormatter.format(deliveryModel.getRsv().getExpirationDateTime());
 	reservationExpTime = MIN_HOUR_FORMATTER.format(deliveryModel.getRsv().getExpirationDateTime());
 }
+boolean duplicateFaq = false;
 %>
 <script>
 	var maxpromodiscount = "<%= CCFormatter.formatQuantity(deliveryModel.getMaxDiscount()) %>";
@@ -51,7 +52,9 @@ if ( deliveryModel.getRsv()!=null ) {
 			<%}else if(deliveryModel.getMaxDiscount()>0 && user.isDlvPassNone() && !user.isChefsTable() 
 						&& !(user.isCorporateUser() && "CORPORATE".equals(address.getServiceType().getName()))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>	
-			<%}else {%>
+			<%}else {
+				duplicateFaq = true;
+			%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
 			<%}%>
 		</td>
@@ -64,7 +67,8 @@ if ( deliveryModel.getRsv()!=null ) {
 			<%if((deliveryModel.getMaxDiscount()>0 && !user.isDlvPassNone())||(deliveryModel.getMaxDiscount()>0 
 							&& (user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName())))){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/promotion_discount.html"/>
-			<%}else if(user.isChefsTable()&& !user.isDlvPassNone() && !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){
+			<%}else if(user.isChefsTable()&& !user.isDlvPassNone() && user.isDlvPassActive() 
+						&& !(user.isCorporateUser() || "CORPORATE".equals(address.getServiceType().getName()))){
 				if(user.getDlvPassInfo()!=null && user.getDlvPassInfo().getDPSavings()<10){
 			%>
 				
@@ -80,7 +84,7 @@ if ( deliveryModel.getRsv()!=null ) {
 				<%}else{%>
 					<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/deliverypass_no_reservation.html"/>
 				<%}%>
-			<%}else{%>
+			<%}else if(!duplicateFaq){%>
 				<fd:IncludeMedia name="/media/editorial/timeslots/top_modules/faq_top_module.html"/>
 			<%}%>
 		</td>

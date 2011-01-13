@@ -148,7 +148,8 @@
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
 		<TR VALIGN="TOP">
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<img src="/media_stat/images/navigation/payment_info_top.gif" WIDTH="107" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
+			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 				  <FONT CLASS="space2pix"><BR></FONT>
@@ -354,7 +355,8 @@ if(isPaymentRequired) {
 		<input type="hidden" name="deletePaymentId" value="">
 		<TR VALIGN="TOP">
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<img src="/media_stat/images/navigation/payment_info_top.gif" WIDTH="107" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
+			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" >
 				  <FONT CLASS="space2pix"><BR></FONT>

@@ -262,7 +262,7 @@
 									<td>
 										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
 									</td>
-									<td style="color:#77A642;">Chefs Table Delivery Times</td>
+									<td style="color:#794E79;">Chefs Table Delivery Times</td>
 								<%}%>
 								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>

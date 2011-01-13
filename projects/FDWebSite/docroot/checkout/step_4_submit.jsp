@@ -89,7 +89,8 @@
 <table BORDER="0" CELLSPACING="0" CELLPADDING="0" width="693">
 	<tr VALIGN="TOP">
 			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
-				<img src="/media_stat/images/navigation/review_submit_top.gif" WIDTH="128" HEIGHT="16" border="0" alt="REVIEW SUBMIT ORDER">
+				<FONT CLASS="title18">REVIEW & SUBMIT</FONT><BR>
+			    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 			</td>
 			<td width="265" align="right" valign="middle">
 				<font class="space2pix"><br/></font><% if (!orderAmountFraud && !doubleSubmit) { %>

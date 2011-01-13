@@ -46,7 +46,8 @@ if (requestQryString !=null && requestQryString.trim().length() > 0 ) {
 
 	  <tr valign="top"> 
 			<td CLASS="text11" WIDTH="675" VALIGN="bottom">
-				<img src="/media_stat/images/navigation/delivery_address_top.gif" WIDTH="143" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
+				 <FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
+		         <IMG src="/media_stat/images/layout/clear.gif" WIDTH="675" HEIGHT="1" BORDER="0">
 			</td>
 	    </tr>
 	</TABLE>

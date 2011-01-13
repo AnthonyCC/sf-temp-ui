@@ -39,7 +39,8 @@
 <TABLE WIDTH="690" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD CLASS="text11" WIDTH="690" VALIGN="bottom">
-					<img src="/media_stat/images/navigation/payment_info_top.gif" WIDTH="107" HEIGHT="16" border="0" alt="PAYMENT INFO">
+			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 	</TR>
 </TABLE>

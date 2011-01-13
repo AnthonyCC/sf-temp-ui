@@ -156,7 +156,8 @@ while (e.hasMoreElements()) {
 	<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
 			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
-				<img src="/media_stat/images/navigation/delivery_address_top.gif" WIDTH="143" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
+				<FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 			</td>
 			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 				  <FONT CLASS="space2pix"><BR></FONT>

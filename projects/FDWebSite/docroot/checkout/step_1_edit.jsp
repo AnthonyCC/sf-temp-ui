@@ -79,7 +79,8 @@
 <TABLE WIDTH="690" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<img src="/media_stat/images/navigation/delivery_address_top.gif" WIDTH="143" HEIGHT="16" border="0" alt="DELIVERY ADDRESS">
+			<FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
 		</TD>
 		<TD WIDTH="205" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" style="color:#666666;font-weight:bold;">
 				  <FONT CLASS="space2pix"><BR></FONT>
@@ -120,9 +121,8 @@
 <TABLE WIDTH="690" cellspacing="0" cellpadding="0" border="0">	
 	<TR>
 		<TD CLASS="text11" WIDTH="690" VALIGN="bottom">
-					<img src="/media_stat/images/navigation/your_cart.gif" WIDTH="88" HEIGHT="12" border="0" alt="YOUR CART"><BR>
-					Please review the items in your cart before going to Checkout.<BR>
-					<IMG src="/media_stat/images/layout/clear.gif" WIDTH="690" HEIGHT="1" BORDER="0">
+			<FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
+		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="690" HEIGHT="1" BORDER="0">
 		</TD>
 	</TR>
 </TABLE>

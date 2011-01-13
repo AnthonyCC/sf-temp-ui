@@ -496,4 +496,8 @@ td.noTopBorder {
   font-size: 10px;
 }
 
+.tsFooter td {
+	line-height: 0px;
+	font-size: 1px !important;
+}
 

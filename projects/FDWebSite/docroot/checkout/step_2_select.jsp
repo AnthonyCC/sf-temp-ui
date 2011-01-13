@@ -181,7 +181,7 @@ boolean isAdvOrderGap = FDStoreProperties.IsAdvanceOrderGap();
 	<TR VALIGN="TOP">
 		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
 		<%if (isDepotAddress) {%>
-			<FONT CLASS="title18">SELECT A <%=user.isCorporateUser() ? "DELIVERY" : "PICKUP"%> TIME</FONT><BR>
+			<FONT CLASS="title18">CHOOSE A <%=user.isCorporateUser() ? "DELIVERY" : "PICKUP"%> TIME</FONT><BR>
 		<%}else{%>
 			<FONT CLASS="title18">CHOOSE TIME</FONT><BR>
 		<%}%>
@@ -450,7 +450,7 @@ if (errorMsg!=null) {%>
 									<td>
 										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
 									</td>
-									<td style="color:#77A642;">Chefs Table Delivery Times</td>
+									<td style="color:#794E79;">Chef's Table Delivery Times</td>
 								<%}%>
 								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>
