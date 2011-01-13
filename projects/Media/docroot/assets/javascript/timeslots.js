@@ -56,8 +56,12 @@ function getLBound(array) {
 }
 
 //one function to rule them all
-function solveDisplay(elemId) {
-var day = parseDay(elemId); //should now be the day index
+function solveDisplay(elemId, autoCheckRadioArg) {
+	var autoCheckRadio = true;
+	if (autoCheckRadioArg !== undefined) { autoCheckRadio = autoCheckRadioArg; }
+
+	//console.log(autoCheckRadio);
+	var day = parseDay(elemId); //should now be the day index
 	var d = 0, t = 0, i = 0;
 
 	var sequenceKey = -1;
@@ -87,7 +91,7 @@ var day = parseDay(elemId); //should now be the day index
 			}
 			//line fix
 			if ($('ts_d'+d+'_ts_header')) {
-              $('ts_d'+d+'_ts_header').className = 'noTopBorder';
+				$('ts_d'+d+'_ts_header').className = 'noTopBorder';
 			}
 
 			//footer
@@ -133,14 +137,15 @@ var day = parseDay(elemId); //should now be the day index
 					}
 					//check the radio button on the clicked slot
 					if ($(elemId+'_rb')) {
-						$(elemId+'_rb').checked = true;
+						if (autoCheckRadio) {
+							$(elemId+'_rb').checked = true;
+						}
 					}
 				}
 				//Force order fix
 				if ($('ts_d'+d+'_ts'+t+'_forceX')) {
 						$('ts_d'+d+'_ts'+t+'_forceX').show();
 				}
-
 				//msging
 				if ($('ts_d'+d+'_ts'+t+'_msgC')) {
 					$('ts_d'+d+'_ts'+t+'_msgC').hide();
@@ -357,8 +362,10 @@ var day = parseDay(elemId); //should now be the day index
 	return true;
 }
 
-function tsExpand(elemIdArg) {
+function tsExpand(elemIdArg, autoCheckRadioArg) {
 	var elemId = elemIdArg || '';
+	var autoCheckRadio = true;
+	if (autoCheckRadioArg !== undefined) { autoCheckRadio = autoCheckRadioArg; }
 
 	//get the values from ref elements, if we haven't already
 	if (styleStrExp === '') {
@@ -368,9 +375,9 @@ function tsExpand(elemIdArg) {
 
 	if (elemId !== '' && $(elemId)) {
 		//solve display issues
-		while (!solveDisplay('ts_d-1_ts0')) { };
-		while (!solveDisplay('ts_d9999_ts0')) { };
-		while (!solveDisplay(elemId)) { };
+		while (!solveDisplay('ts_d-1_ts0', autoCheckRadio)) { };
+		while (!solveDisplay('ts_d9999_ts0', autoCheckRadio)) { };
+		while (!solveDisplay(elemId, autoCheckRadio)) { };
 
 		var day = parseDay(elemId); //should now be the day index
 		
@@ -407,14 +414,14 @@ function tsContractAll(parentIdArg, exceptIdArg) {
 	var exceptId = exceptIdArg || '';
 	var refs = $$('td.tsCol'); //style ref
 
-    if (!$(parentId) || parentId === '') { //no parent, use body tag
-         if (document.body.id === "") {
-                //no id, add one
-                document.body.id = 'bodytag';
-                parentId = 'bodytag';
-         }
-       parentId = document.body.id;
-    }
+	if (!$(parentId) || parentId === '') { //no parent, use body tag
+		if (document.body.id === "") {
+			//no id, add one
+			document.body.id = 'bodytag';
+			parentId = 'bodytag';
+		}
+		parentId = document.body.id;
+	}
 
 	//get the values from ref elements, if we haven't already
 	if (styleStrExp === '') {
@@ -489,4 +496,80 @@ function checkDeliveryShow(elemIdarg) {
 					afterHide: function() { window.scrollTo(Modalbox.initScrollX,Modalbox.initScrollY); }
 				})
 		}
+}
+
+var timer;
+var timedExpandWait = 1000; //ms
+clickOnly = false;
+
+/* add even listeners for mouse over expands, needs to be on window load for refData */
+Event.observe(window, 'load', function() {
+	var refDataCur = null;
+
+	//add adv ts events (if they exist)
+	if (window.refAdvData !== undefined) {
+		refDataCur = refAdvData;
+		for (d = 0; d < refDataCur.length; d++) {
+			if (refDataCur[d] === undefined) { continue; }
+			
+			//headers
+			createMouseOverOutEvents('ts_d'+d+'_ts_header', 'tsContainer');
+			//footer
+			createMouseOverOutEvents('ts_d'+d+'_ts_footer', 'tsContainer');
+			//ts's and co's
+			for (t = 0; t < refDataCur[d][0].length; t++) {
+				createMouseOverOutEvents('ts_d'+d+'_ts'+t, 'tsContainer');
+				createMouseOverOutEvents('co_d'+d+'_ts'+t, 'tsContainer');
+			}
+		}
+	}
+
+	//add ts events
+	if (window.refData !== undefined) {
+		refDataCur = refData;
+		for (d = 0; d < refDataCur.length; d++) {
+			if (refDataCur[d] === undefined) { continue; }
+			
+			//headers
+			createMouseOverOutEvents('ts_d'+d+'_ts_header', 'tsContainer');
+			//footer
+			createMouseOverOutEvents('ts_d'+d+'_ts_footer', 'tsContainer');
+			//ts's and co's
+			for (t = 0; t < refDataCur[d][0].length; t++) {
+				createMouseOverOutEvents('ts_d'+d+'_ts'+t, 'tsContainer');
+				createMouseOverOutEvents('co_d'+d+'_ts'+t, 'tsContainer');
+			}
+		}
+	}
+
+});
+
+function createMouseOverOutEvents(elemIdArg, parentIdArg) {
+	var elemId = elemIdArg || '';
+	var parentIdArg = parentIdArg || '';
+
+	if ($(elemId)) {
+		$(elemId).observe('mouseover', setter.bindAsEventListener(elemId, parentIdArg, elemId));
+		$(elemId).observe('mouseout', forgetter);
+	}
+}
+
+function setter(e, set01, set02) {
+	if (!clickOnly) {
+		set_01 = set01;
+		set_02 = set02;
+		timer=setTimeout('timedExpand()', timedExpandWait);
+	}
+}
+
+function forgetter() {
+	set_01 = '';
+	set_02 = '';
+	clearTimeout(timer);
+}
+
+function timedExpand() {
+	tsContractAll(set_01, set_02);
+	tsExpand(set_02, false);
+	forgetter();
 }
