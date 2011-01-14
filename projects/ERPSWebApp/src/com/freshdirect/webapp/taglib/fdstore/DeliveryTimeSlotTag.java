@@ -356,12 +356,12 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 					
 					if(!isTimeslotRemoved){
 						boolean isMatching = false;
-						if(timeslot.getBegTime()!=null && timeslot.getEndTime()!=null){
+						if(timeslot.getBegDateTime()!=null && timeslot.getEndTime()!=null){
 							for(FDTimeslot _slotTime: uniqueTimeslots){
-								Calendar startTimeCal = DateUtil.toCalendar(timeslot.getBegTime());
+								Calendar startTimeCal = DateUtil.toCalendar(timeslot.getBegDateTime());
 								int startHour = startTimeCal.get(Calendar.HOUR_OF_DAY);
 								
-								Calendar tempStartTimeCal = DateUtil.toCalendar(_slotTime.getBegTime());
+								Calendar tempStartTimeCal = DateUtil.toCalendar(_slotTime.getBegDateTime());
 								int tempStartHour = tempStartTimeCal.get(Calendar.HOUR_OF_DAY);					
 								
 								if((startHour == tempStartHour)){

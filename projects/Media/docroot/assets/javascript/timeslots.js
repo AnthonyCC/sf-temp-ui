@@ -59,6 +59,7 @@ function getLBound(array) {
 function fillRef(refDataCur, startIndex) {
 	//check if refData is empty
 	if (refDataCur.join("").replace(/,/g,"") === "") {
+		var reorganizer = []; //hold elems to be reorganized
 		//it is, put in empty strings
 		for (var r=0; r < refDataCur.length; r++) {
 			if (refDataCur[r] === undefined) { continue; }
@@ -69,9 +70,14 @@ function fillRef(refDataCur, startIndex) {
 				refDataCur[r][s][2] = "";
 				refDataCur[r][s][3] = "";
 			}
+			reorganizer[reorganizer.length] = new Array(r, 0, 3);
 		}
 		while (!fillRefAddRows(refDataCur, startIndex)) {}
 	}
+
+	//call reorg
+	while (!tsReorganizer(reorganizer)) {}
+
 	return true;
 }
 
@@ -79,6 +85,8 @@ function fillRef(refDataCur, startIndex) {
 function fillRefAddRows(refDataCur, startIndex) {
 	//check header ref so we know we have a table to act on
 	if ($('ts_d'+startIndex+'_ts_header') && $('ts_d'+startIndex+'_ts_header').tagName === 'TD') {
+		var advId = '';
+		if (startIndex >= 10) { advId = 'Adv'; }
 		//get table ref
 		var node = $('ts_d'+startIndex+'_ts_header');
 		while (node.tagName !== 'TABLE') {
@@ -101,10 +109,10 @@ function fillRefAddRows(refDataCur, startIndex) {
 				for (var d = 0; d < refDataCur.length; d++) {
 					if (refDataCur[d] === undefined) { continue; }
 
-					newRow.id = 'co_ts'+r+'_row';
+					newRow.id = 'co'+advId+'_ts'+r+'_row';
 				
 					newCell = newRow.insertCell(cellIndex);
-					newCell.id = 'co_d'+d+'_ts'+r;
+					//newCell.id = 'co_d'+d+'_ts'+r;
 					newCell.innerHTML = '<div id="co_d'+d+'_ts'+r+'">&nbsp;</div>';
 					newCell.colSpan = 3;
 					newCell.className = 'cutoff';
@@ -132,6 +140,8 @@ function fillRefAddRows(refDataCur, startIndex) {
 }
 
 var addRows = true;
+var addRowsAdv = true;
+
 //one function to rule them all
 function solveDisplay(elemId, autoCheckRadioArg) {
 	var autoCheckRadio = true;
@@ -150,11 +160,17 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	}
 
 	
-	if (addRows && refDataCur.join("").replace(/,/g,"") === "") {
+	if ((addRows || addRowsAdv) && refDataCur.join("").replace(/,/g,"") === "") {
 		var startIndex = 0;
 		if (advId !== '') { startIndex = 10; }
-		while (!fillRef(refDataCur, startIndex)) {}
-		addRows = false;
+		if (addRows && startIndex < 10) {
+			while (!fillRef(refDataCur, startIndex)) {}
+			addRows = false;
+		}
+		if (addRowsAdv && startIndex >= 10) {
+			while (!fillRef(refDataCur, startIndex)) {}
+			addRowsAdv = false;
+		}
 	}
 
 	//navigate refDataCur matrix
@@ -327,11 +343,10 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		advId = (i) ? 'Adv' : '';
 
 		//always add borders for outer cutoffs, and show row 0
-		if ($('co'+advId+'_ts'+lbnd+'_row')) {
-			$('co'+advId+'_ts'+lbnd+'_row').show();
+		if ($('co'+advId+'_ts0_row')) {
+			$('co'+advId+'_ts0_row').show();
 		}
 		//do the same for the opposite
-
 		for (t = 0; t < refDataCur[sequenceKeyTemp][1].length; t++) {
 			if ($('co_d'+sequenceKeyTemp+'_ts'+t)) {
 				if ($('co_d'+lbnd+'_ts'+t)) {
@@ -410,7 +425,14 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 		}
 	}
 
-	//finally, go through reorganizer and do the reorganization
+	//call reorg
+	while (!tsReorganizer(reorganizer)) {}
+
+	return true;
+}
+
+function tsReorganizer(reorganizer) {
+	//go through reorganizer and do the reorganization
 	for (i = 0; i < reorganizer.length; i++) {
 		d = reorganizer[i][0];
 		reorgStart = reorganizer[i][1];
@@ -432,7 +454,7 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 				}
 			}else{
 				//no delivery
-				$('ts_d'+d+'_ts'+reorgStart).innerHTML = '<div class="tsContent" style="padding-top: '+padHeight+'px; padding-bottom: '+padHeight+'px;"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+reorgStart+'_rbCont"></div><div class="fleft tsNoDeliv"><b>No Deliveries</b></div></div>';
+				$('ts_d'+d+'_ts'+reorgStart).innerHTML = '<div class="tsContent" style="padding-top: '+padHeight+'px; padding-bottom: '+padHeight+'px;" onclick="tsContractAll(\'tsContainer\', \'ts_d'+d+'_ts'+reorgStart+'\'); tsExpand(\'ts_d'+d+'_ts'+reorgStart+'\')"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+reorgStart+'_rbCont"></div><div class="fleft tsNoDeliv"><b>No Deliveries</b></div></div>';
 			}
 		}
 		//now hide extra tds

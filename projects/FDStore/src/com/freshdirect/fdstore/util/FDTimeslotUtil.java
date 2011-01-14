@@ -347,7 +347,7 @@ public class FDTimeslotUtil implements Serializable {
 	
 	private final static Comparator<FDTimeslot> TIMESLOT_COMPARATOR = new Comparator<FDTimeslot>() {
 		public int compare( FDTimeslot t1, FDTimeslot t2 ) {
-			return t1.getBegTime().compareTo(t2.getBegTime());
+			return t1.getBegDateTime().compareTo(t2.getBegDateTime());
 		}
 	};
 	
