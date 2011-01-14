@@ -219,7 +219,7 @@
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-	<span class="text12"><b>SPECIAL DELIVERY</b></span><BR>	
+	<span class="text12"><b>SPECIAL DELIVERY</b></span>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <%}%>
 
@@ -262,7 +262,7 @@
 									<td>
 										<img src="/media/editorial/timeslots/images/star_ct_delivery_time.gif" WIDTH="15" HEIGHT="18" border="0" alt="PREVIOUS STEP">
 									</td>
-									<td style="color:#794E79;">Chefs Table Delivery Times</td>
+									<td style="color:#794E79;">Chef's Table Delivery Times</td>
 								<%}%>
 								<%if(deliveryModel.getMaxDiscount()>0){%>
 									<td>

@@ -53,7 +53,7 @@ if (timeslots.size() > 0) {
 		}
 		holidayIndex++;
 	}
-	
+	finalBuff.append("<center>");
 	finalBuff.append("<div class=\""+(timeslots.size()>1 ? "float_children":"float_children_noborder")+"\" id=\"timeslots_grid"+idx.intValue()+"\">");
 	finalBuff.append("<table border=\"0\" class=\"tsTable\" cellspacing=\"0\" cellpadding=\"0\">");	
 	int slotIndex = 0;
@@ -404,6 +404,7 @@ finalBuff.append(footerBuff);
 finalBuff.append("</table>");
 finalBuff.append("<br style=\"clear: left;\" />");
 finalBuff.append("</div>");
+finalBuff.append("</center>");
 out.write(finalBuff.toString());
 %>
 

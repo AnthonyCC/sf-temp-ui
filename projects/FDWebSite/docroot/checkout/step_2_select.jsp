@@ -369,7 +369,7 @@ if (errorMsg!=null) {%>
 <%}%>
 <!--END MESSAGING SECTION-->
 <BR>
-<table CELLSPACING="0" CELLPADDING="0" id="tsContainer">
+<table CELLSPACING="0" CELLPADDING="0" id="tsContainer" align="center" width="100%">
 <!-- ~~~~~~~~~~~~~~~~~~~~~~ START TIME SLOT SELECTION SECTION ~~~~~~~~~~~~~~~~~~~~~~ -->
 <logic:iterate id="timeslots" collection="<%=timeslotList%>" type="com.freshdirect.fdstore.util.FDTimeslotUtil" indexId="idx">
 	<tr>
@@ -377,10 +377,10 @@ if (errorMsg!=null) {%>
 <%
 	if(timeslotList.size()>1 && idx.intValue()==0){
 %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
-	<span class="text12 fleft"><b>SPECIAL DELIVERY</b></span>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0">
+	<span class="text12 fleft tsAdvanceHeader"><b>SPECIAL DELIVERY</b></span>
 	<a class="tsDivHide" id="displayAdvanceOrderGrid" href="javascript:hideAdvanceOrder();">Hide Details</a>
-	<BR><BR>
+	<BR>
 
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 <%}%>
@@ -400,7 +400,7 @@ if (errorMsg!=null) {%>
 	
 	showAdvanceOrderBand=false;
 %>
-	<span class="text12"><b>REGULAR DELIVERY</b><BR></span><BR>
+	<span class="text12 tsAdvanceHeader"><b>REGULAR DELIVERY</b><BR></span>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="10" BORDER="0"><BR>
 			
 <%} else { 
