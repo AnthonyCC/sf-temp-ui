@@ -55,12 +55,88 @@ function getLBound(array) {
 	return -1;
 }
 
+//fill ref data
+function fillRef(refDataCur, startIndex) {
+	//check if refData is empty
+	if (refDataCur.join("").replace(/,/g,"") === "") {
+		//it is, put in empty strings
+		for (var r=0; r < refDataCur.length; r++) {
+			if (refDataCur[r] === undefined) { continue; }
+
+			for (var s=0; s < refDataCur[r].length; s++) {
+				refDataCur[r][s][0] = "";
+				refDataCur[r][s][1] = "";
+				refDataCur[r][s][2] = "";
+				refDataCur[r][s][3] = "";
+			}
+		}
+		while (!fillRefAddRows(refDataCur, startIndex)) {}
+	}
+	return true;
+}
+
+//add in rows
+function fillRefAddRows(refDataCur, startIndex) {
+	//check header ref so we know we have a table to act on
+	if ($('ts_d'+startIndex+'_ts_header') && $('ts_d'+startIndex+'_ts_header').tagName === 'TD') {
+		//get table ref
+		var node = $('ts_d'+startIndex+'_ts_header');
+		while (node.tagName !== 'TABLE') {
+			node = node.parentNode;
+		}
+		
+		var rowIndex = 0;
+		var cellIndex;
+		var newRow;
+		var newCell;
+		
+		for (var r = 0; r < 4; r++) {
+			rowIndex++;
+			newRow = node.insertRow(rowIndex);
+			cellIndex = 0;
+			
+			//insert a cutoff
+			if (r === 0) {
+				
+				for (var d = 0; d < refDataCur.length; d++) {
+					if (refDataCur[d] === undefined) { continue; }
+
+					newRow.id = 'co_ts'+r+'_row';
+				
+					newCell = newRow.insertCell(cellIndex);
+					newCell.id = 'co_d'+d+'_ts'+r;
+					newCell.innerHTML = '<div id="co_d'+d+'_ts'+r+'">&nbsp;</div>';
+					newCell.colSpan = 3;
+					newCell.className = 'cutoff';
+					cellIndex++;
+				}
+				
+				rowIndex++;
+				newRow = node.insertRow(rowIndex);
+				cellIndex = 0;
+			}
+
+			for (var d = 0; d < refDataCur.length; d++) {
+				if (refDataCur[d] === undefined) { continue; }
+				
+				newCell = newRow.insertCell(cellIndex);
+				newCell.id = 'ts_d'+d+'_ts'+r;
+				newCell.innerHTML = '<div class="tsContent"><div class="fleft ts_rb" id="ts_d'+d+'_ts'+r+'_rbCont" style="display: none;">&nbsp;</div><div>&nbsp;</div></div>';
+				newCell.colSpan = 3;
+				newCell.className = 'tsCol tsContainerC tsContainerBGC';
+				cellIndex++;
+			}
+		}
+	}
+	return true;
+}
+
+var addRows = true;
 //one function to rule them all
 function solveDisplay(elemId, autoCheckRadioArg) {
 	var autoCheckRadio = true;
 	if (autoCheckRadioArg !== undefined) { autoCheckRadio = autoCheckRadioArg; }
 
-	//console.log(autoCheckRadio);
 	var day = parseDay(elemId); //should now be the day index
 	var d = 0, t = 0, i = 0;
 
@@ -71,6 +147,14 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	if (day >= 10 && window.refAdvData !== undefined) {
 		refDataCur = refAdvData;
 		advId = 'Adv';
+	}
+
+	
+	if (addRows && refDataCur.join("").replace(/,/g,"") === "") {
+		var startIndex = 0;
+		if (advId !== '') { startIndex = 10; }
+		while (!fillRef(refDataCur, startIndex)) {}
+		addRows = false;
 	}
 
 	//navigate refDataCur matrix
@@ -362,7 +446,9 @@ function solveDisplay(elemId, autoCheckRadioArg) {
 	return true;
 }
 
-function tsExpand(elemIdArg, autoCheckRadioArg) {
+function tsExpand(elemIdArg, autoCheckRadioArg, retryArg) {
+	var retry = true;
+	if (retryArg !== undefined) { retry = retryArg; }
 	var elemId = elemIdArg || '';
 	var autoCheckRadio = true;
 	if (autoCheckRadioArg !== undefined) { autoCheckRadio = autoCheckRadioArg; }
@@ -399,8 +485,13 @@ function tsExpand(elemIdArg, autoCheckRadioArg) {
 			$(elemId).style.borderBottomWidth = '0';
 		}
 	}else{
-		//solve display issues
-		while (!solveDisplay(elemId)) {};
+		if (retry) {
+			//run through solve display and try again
+			while (!solveDisplay(elemId)) {}; //solve display issues
+			tsExpand(elemId, autoCheckRadio, false);
+		}else{
+			while (!solveDisplay(elemId)) {}; //solve display issues
+		}
 	}
 }
 
@@ -480,7 +571,6 @@ function checkDeliveryShow(elemIdarg) {
 				if(($(elemId).getStyle('width'))!=null)
 					contentWidth = ($(elemId).getStyle('width')).replace("px","");
 			}
-			console.log(contentWidth);
 			Modalbox.show($(elemId), {
 					loadingString: 'Loading Window...',
 					closeValue: '<img src="/media_stat/images/giftcards/your_account/close.gif" border="0" alt="" />',
@@ -551,6 +641,7 @@ function createMouseOverOutEvents(elemIdArg, parentIdArg) {
 	if ($(elemId)) {
 		$(elemId).observe('mouseover', setter.bindAsEventListener(elemId, parentIdArg, elemId));
 		$(elemId).observe('mouseout', forgetter);
+		$(elemId).observe('click', forgetter);
 	}
 }
 

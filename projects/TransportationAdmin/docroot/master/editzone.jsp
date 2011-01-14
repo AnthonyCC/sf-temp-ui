@@ -186,7 +186,7 @@
                 </td>
                </tr>
                <tr>
-                  <td>Eco-Friendly</td>
+                  <td>Eco-Friendly Radius</td>
                   <td>
                     <form:input maxlength="50" size="30" path="ecoFriendly"/>
                   </td>

@@ -10,6 +10,7 @@
 <head>
     <title><tmpl:get name='title'/></title>
     <%@ include file="/common/template/includes/metatags.jspf" %>
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<%@ include file="/common/template/includes/i_javascripts.jspf" %>
 	<%@ include file="/shared/template/includes/style_sheet_detect.jspf" %>
     <link rel="stylesheet" href="/assets/css/giftcards.css" type="text/css">

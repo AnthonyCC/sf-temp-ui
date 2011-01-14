@@ -20,7 +20,7 @@
 					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
 					 <%= user.getTotalCTSlots() %> timeslots just for you <a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ct_morebenefits.html&windowSize=small&name=Promotion Discount Information',300,400)" class="tsCTBenefits">More Benefits</a>
 				<%}else{%>
-					Your Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a>
+					Your Order&nbsp; <a href="/help/index.jsp" class="tsCTBenefits">Need Help?</a>
 				<%}%>
 			</font>
 		</td>

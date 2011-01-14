@@ -166,7 +166,7 @@ div.tsNoDeliv {
 	width:100%;
 	line-height:25px;
 }
-.cutoffDisp div.cutoffDispChild{
+.cutoffDisp div.cutoffDispChild {
 	overflow:hidden;
 }
 .cutoffDisp div div{
@@ -215,12 +215,16 @@ a.tsCTBenefits {
 	text-decoration: underline;
 }
 
-a.tsNCBenefits {
+a.tsCTBenefits {
 	/*color: #006400;*/
 	color:#77A642;
 	text-decoration: none;
 }
 
+a.tsNCBenefits {
+	color: #006400;
+	text-decoration: none;
+}
 div.learnMoreTimeslot {
 	display:none;
 }
