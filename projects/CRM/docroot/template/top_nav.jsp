@@ -8,7 +8,7 @@
 <head>
 	<title>/ FreshDirect CRM : <tmpl:get name='title'/> /</title>
 
-	<meta http-equiv="X-UA-Compatible" content="IE=8">
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<link rel="stylesheet" type="text/css" href="/ccassets/javascript/timepicker/picker.css" >
 	<link rel="stylesheet" type="text/css" href="/assets/css/giftcards.css" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
