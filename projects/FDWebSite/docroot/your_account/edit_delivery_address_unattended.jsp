@@ -11,13 +11,21 @@
 <%
 	String successPage = "/your_account/delivery_information.jsp";
 
+	System.out.println("successPage before:" + successPage);
+	System.out.println("attribute before:" + session.getAttribute("redirectToIndex"));
+
 	if (session.getAttribute("redirectToIndex") != null) {
-		successPage = "/index.jsp";
+		if (!("false").equals(session.getAttribute("redirectToIndex"))) {
+			successPage = "/index.jsp";
+		}
 		//un-set attribute but check for null, because submitting passes here a second time before going to successPage
 		session.setAttribute("redirectToIndex", "false");
 	} else {
 		successPage = "/your_account/delivery_information.jsp";
 	}
+
+	System.out.println("successPage after:" + successPage);
+	System.out.println("attribute after:" + session.getAttribute("redirectToIndex"));
 
 %>
 <fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="<%=successPage%>">
