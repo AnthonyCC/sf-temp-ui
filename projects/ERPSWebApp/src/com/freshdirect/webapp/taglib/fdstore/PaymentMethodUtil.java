@@ -335,6 +335,10 @@ public class PaymentMethodUtil implements PaymentMethodName { //AddressName,
 	        		accountNumber == null || "".equals(accountNumber),
 					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_REQUIRED
 			);
+	        result.addError(
+	        		accountNumber != null && accountNumber.length()>17,
+					PaymentMethodName.ACCOUNT_NUMBER, SystemMessageList.MSG_INVALID_ACCOUNT_NUMBER
+			);
 	        
 	        // Check aba route number number
 	        result.addError(
