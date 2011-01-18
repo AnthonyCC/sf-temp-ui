@@ -75,8 +75,15 @@ public class FDDeliveryTimeslotModel implements Serializable{
     private double maxDiscount;
     private int ecoFriendlyCount;
     private int alcoholRestrictedCount;
+    private boolean isAlcoholdelivery;
     
-    public boolean isKosherSlotAvailable() {
+    public boolean isAlcoholdelivery() {
+		return isAlcoholdelivery;
+	}
+	public void setAlcoholdelivery(boolean isAlcoholdelivery) {
+		this.isAlcoholdelivery = isAlcoholdelivery;
+	}
+	public boolean isKosherSlotAvailable() {
 		return isKosherSlotAvailable;
 	}
 	public void setKosherSlotAvailable(boolean isKosherSlotAvailable) {

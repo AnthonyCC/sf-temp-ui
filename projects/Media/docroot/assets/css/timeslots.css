@@ -445,18 +445,25 @@ td div.tsBordEcoFriendlyE {
 	font-size: 9px; 
 	font-family: Verdana, Arial, sans-serif;
 }
-a.tsAlcoholResMoreE {
-	color:#FF8040;
-	font-size:8px;
-	text-decoration:underline;
-	cursor: pointer;
-}
 .tsAlcoholResPropE {
 	overflow: hidden;
-	margin-top:9px;
+	margin-top:3px;
+	text-align:right;
+	padding-right:1px;
+}
+.tsAlcoholResMoreE {
+	color:#800000;
+	font-size:8px;
+	text-decoration:none;
+	cursor: pointer;
+	font-weight:normal;
+	height: 5px;
 }
 td div.tsBordAlcoholResE {
 	border:1px solid #FF8040;
+}
+.tsCol div.tsContent div.tsAlcoholResPropE {
+	height:28px;
 }
 /*Selected slot*/
 .tsContentSelE {

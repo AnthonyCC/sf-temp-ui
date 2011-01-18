@@ -18,7 +18,7 @@
 				<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
 					|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
 					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
-					 <%= user.getTotalCTSlots() %> timeslots just for you <a href="javascript:pop('/shared/template/generic_popup.jsp?contentPath=/media/editorial/timeslots/msg_ct_morebenefits.html&windowSize=small&name=Promotion Discount Information',300,400)" class="tsCTBenefits">More Benefits</a>
+					 <%= user.getTotalCTSlots() %> timeslots just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a>
 				<%}else{%>
 					Your Order&nbsp; <a href="/help/index.jsp" class="tsCTBenefits">Need Help?</a>
 				<%}%>

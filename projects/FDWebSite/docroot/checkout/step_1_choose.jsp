@@ -155,11 +155,11 @@ while (e.hasMoreElements()) {
 
 	<table border="0" cellspacing="0" cellpadding="0" width="675">
 	    <tr valign="top"> 
-			<td CLASS="text11" WIDTH="395" VALIGN="bottom">
+			<td CLASS="text11" WIDTH="385" VALIGN="bottom">
 				<FONT CLASS="title18">DELIVERY ADDRESS</FONT><BR>
 				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 			</td>
-			<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
+			<TD WIDTH="275" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
 				  <FONT CLASS="space2pix"><BR></FONT>
 					<table>
 						<tr>

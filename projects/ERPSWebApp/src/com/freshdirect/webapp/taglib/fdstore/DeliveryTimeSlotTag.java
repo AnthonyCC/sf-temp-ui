@@ -222,7 +222,10 @@ public class DeliveryTimeSlotTag extends AbstractGetterTag {
 		deliverymodel.setZonePromoAmount(PromotionHelper.getDiscount(user, deliverymodel.getZoneId()));
 		//set cart to model
 		deliverymodel.setShoppingCart(cart);
-
+		
+		boolean isAlcoholDelivery = FDDeliveryManager.getInstance().checkForAlcoholDelivery(address);
+		deliverymodel.setAlcoholdelivery(isAlcoholDelivery);
+		
 		result = new Result(deliverymodel.getTimeslotList(),deliverymodel.getZones(),deliverymodel.isZoneCtActive(),
 									deliverymodel.getGeoRestrictionmessages(),deliverymodel.getComments());
 		if(dynaError != null) {
