@@ -1438,18 +1438,105 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = ?)"
 		+ " AND  s1.status = ?";
 
+
+	private static final String SETTLEMENT_PROBLEM_STF_QUERY =
+		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
+			+ " ("
+			+ "	SELECT di.starttime "
+				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+				+ " WHERE di.SALESACTION_ID = sa2.ID"
+				+ " AND sa2.sale_id = s2.id"
+				+ " AND s2.id = s1.id"
+				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
+				+ " AND sa2.action_date = ("
+									+ " SELECT MAX(sa3.action_date)"
+									+ " FROM cust.SALESACTION sa3"
+									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
+									+ " )"
+			+ " ) AS delivery_date"
+		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+		+ " WHERE sa1.sale_id=s1.id"
+		+ " AND s1.customer_id = ci.customer_id"
+		+ " AND sa1.id = p.salesaction_id"
+		+ "	AND  sa1.action_type = 'STF'"
+		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'STF')"
+		+ " AND  s1.status = 'STF'";
+	private static final String SETTLEMENT_PROBLEM_FRD_QUERY =
+		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
+			+ " ("
+			+ "	SELECT di.starttime "
+				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+				+ " WHERE di.SALESACTION_ID = sa2.ID"
+				+ " AND sa2.sale_id = s2.id"
+				+ " AND s2.id = s1.id"
+				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
+				+ " AND sa2.action_date = ("
+									+ " SELECT MAX(sa3.action_date)"
+									+ " FROM cust.SALESACTION sa3"
+									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
+									+ " )"
+			+ " ) AS delivery_date"
+		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+		+ " WHERE sa1.sale_id=s1.id"
+		+ " AND s1.customer_id = ci.customer_id"
+		+ " AND sa1.id = p.salesaction_id"
+		+ "	AND  sa1.action_type = 'FRD'"
+		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'FRD')"
+		+ " AND  s1.status = 'STL'";
+	
+	private static final String SETTLEMENT_PROBLEM_CBK_QUERY =
+		"SELECT s1.id, s1.status, sa1.amount, sa1.action_type, sa1.action_date AS failure_date,"
+		+ " ci.first_name || ' ' || ci.last_name AS customer_name, p.payment_method_type,"
+			+ " ("
+			+ "	SELECT di.starttime "
+				+ " FROM cust.DELIVERYINFO di, cust.SALESACTION sa2, cust.SALE s2"
+				+ " WHERE di.SALESACTION_ID = sa2.ID"
+				+ " AND sa2.sale_id = s2.id"
+				+ " AND s2.id = s1.id"
+				+ " AND sa2.ACTION_TYPE IN ('CRO', 'MOD')"
+				+ " AND sa2.action_date = ("
+									+ " SELECT MAX(sa3.action_date)"
+									+ " FROM cust.SALESACTION sa3"
+									+ " WHERE sa3.sale_id=s1.id AND sa3.action_type IN ('CRO','MOD')"
+									+ " )"
+			+ " ) AS delivery_date"
+		+ " FROM  CUST.SALE s1, CUST.SALESACTION sa1, cust.CUSTOMERINFO ci, cust.PAYMENT p"
+		+ " WHERE sa1.sale_id=s1.id"
+		+ " AND s1.customer_id = ci.customer_id"
+		+ " AND sa1.id = p.salesaction_id"
+		+ "	AND  sa1.action_type = 'CBK'"
+		+ " AND sa1.action_date = (SELECT MAX(sa4.action_date) FROM CUST.SALESACTION sa4 WHERE sa4.sale_id=s1.id AND sa4.action_type = 'CBK')"
+		+ " AND  s1.status = 'CBK'";
 	public List getSettlementProblemReport(String[] statusCodes, String[] transactionTypes, Date failureStartDate, Date failureEndDate) throws FDResourceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-
+		String saleStatus="";
+		String transactionType=""; 
 		try {
 			StringBuffer sb = new StringBuffer();
 			for (int i = 0; i < statusCodes.length && i < transactionTypes.length; i++) {
 				if (i != 0) {
 					sb.append(" UNION ");
 				}
-				sb.append(SETTLEMENT_PROBLEM_QUERY);
+				saleStatus=statusCodes[i];
+				transactionType=transactionTypes[i];
+				if( EnumSaleStatus.SETTLEMENT_FAILED.getStatusCode().equals(saleStatus) &&
+					EnumTransactionType.SETTLEMENT_FAILED.getCode().equals(transactionType)	
+						
+				   ) {
+					sb.append(SETTLEMENT_PROBLEM_STF_QUERY);
+				} else if( EnumSaleStatus.CHARGEBACK.getStatusCode().equals(saleStatus)&&
+						   EnumTransactionType.CHARGEBACK.getCode().equals(transactionType)
+				           ) {
+					sb.append(SETTLEMENT_PROBLEM_CBK_QUERY);
+				}else if( EnumSaleStatus.SETTLED.getStatusCode().equals(saleStatus)&&
+						  EnumTransactionType.FUNDS_REDEPOSIT.getCode().equals(transactionType)
+				         ) {
+					sb.append(SETTLEMENT_PROBLEM_FRD_QUERY);
+				}
 				if (failureStartDate != null) {
 					sb.append(" AND sa1.action_date >= ?");
 				}
@@ -1458,16 +1545,20 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 				}
 			}
 			sb.append(" ORDER BY failure_date");
+			
 			System.err.println("SALE_STATUS_OR_LAST_ACTION_TYPE_QUERY sql = " + sb.toString());
+			LOGGER.debug("The Settlement report query to be executed is "+sb.toString());
 
 			conn = this.getConnection();
 			ps = conn.prepareStatement(sb.toString());
 
 			int index = 1;
 			for (int i = 0; i < statusCodes.length && i < transactionTypes.length; i++) {
-				ps.setString(index++, transactionTypes[i]);
+				LOGGER.debug("Setting transactionType:"+transactionTypes[i]+" and status Code:"+statusCodes[i]);
+				/*ps.setString(index++, transactionTypes[i]);
 				ps.setString(index++, transactionTypes[i]);
 				ps.setString(index++, statusCodes[i]);
+				*/
 				if (failureStartDate != null) {
 					ps.setDate(index++, new java.sql.Date(DateUtil.truncate(failureStartDate).getTime()));
 				}
@@ -1478,7 +1569,7 @@ public class CallCenterManagerSessionBean extends SessionBeanSupport {
 
 			rs = ps.executeQuery();
 
-			List lst = new ArrayList();
+			List<CrmSettlementProblemReportLine> lst = new ArrayList<CrmSettlementProblemReportLine>();
 			while (rs.next()) {
 				CrmSettlementProblemReportLine rl = new CrmSettlementProblemReportLine(
 																			rs.getString("ID"),
