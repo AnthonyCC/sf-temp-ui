@@ -3,19 +3,20 @@ package com.freshdirect.mobileapi.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.fdstore.FDTimeslot;
-import com.freshdirect.fdstore.util.FDTimeslotUtil;
+import com.freshdirect.fdstore.FDTimeslotList;
 
 public class TimeslotList {
 
-    private FDTimeslotUtil target;
+    private FDTimeslotList target;
 
     /**
      * @param timeslotList
      * @return
      */
-    public static TimeslotList wrap(FDTimeslotUtil timeslotList) {
+    public static TimeslotList wrap(FDTimeslotList timeslotList) {
         TimeslotList newInstance = new TimeslotList();
         newInstance.target = timeslotList;
         return newInstance;
@@ -25,9 +26,9 @@ public class TimeslotList {
      * @param timeslotLists
      * @return
      */
-    public static List<TimeslotList> wrap(List<FDTimeslotUtil> timeslotLists) {
+    public static List<TimeslotList> wrap(List<FDTimeslotList> timeslotLists) {
         List<TimeslotList> lists = new ArrayList<TimeslotList>();
-        for (FDTimeslotUtil timeslotList : timeslotLists) {
+        for (FDTimeslotList timeslotList : timeslotLists) {
             lists.add(wrap(timeslotList));
         }
         return lists;

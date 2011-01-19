@@ -48,7 +48,7 @@ public class ChooseTimeslotAction extends WebActionSupport {
 		boolean isForced = false;
 		String deliveryTimeSlotId = request.getParameter("deliveryTimeslotId");
 		if (deliveryTimeSlotId == null) {
-			this.addError("deliveryTime", "You must select a delivery timeslot. Please select one from below or contact Us for help.");
+			this.addError("deliveryTime", "Please select a delivery time.");
 			return ERROR;
 		}
 

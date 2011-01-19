@@ -88,7 +88,7 @@ public class FDCompositeAvailabilityTestCase extends TestCase {
 			"foo",
 			"bar",
 			DF.parse("2004-01-22"),
-			DF.parse("2004-01-23"),""));
+			DF.parse("2004-01-23")));
 
 		this.availabilities.put("three", new FDRestrictedAvailability(
 			NullAvailability.AVAILABLE,

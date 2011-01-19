@@ -39,7 +39,6 @@ import com.freshdirect.fdstore.customer.FDBulkRecipientList;
 import com.freshdirect.fdstore.customer.FDCartModel;
 import com.freshdirect.fdstore.customer.FDCustomerManager;
 import com.freshdirect.fdstore.customer.FDCustomerModel;
-import com.freshdirect.fdstore.customer.FDDeliveryTimeslotModel;
 import com.freshdirect.fdstore.customer.FDIdentity;
 import com.freshdirect.fdstore.customer.FDModifyCartModel;
 import com.freshdirect.fdstore.customer.FDPromotionEligibility;
@@ -114,15 +113,8 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	private EnumCheckoutMode checkoutMode = EnumCheckoutMode.NORMAL;
 	
-
-	public FDDeliveryTimeslotModel getDeliveryTimeslotModel() {
-		return this.user.getDeliveryTimeslotModel();
-	}
-
-	public void setDeliveryTimeslotModel(FDDeliveryTimeslotModel deliveryModel) {
-		this.user.setDeliveryTimeslotModel(deliveryModel);
-	}
-
+	
+	
     public boolean getLastCOSSurveySuccess() {
     	return this.lastCOSSurveySuccess;
     }
@@ -1168,14 +1160,6 @@ public class FDSessionUser implements FDUserI, HttpSessionBindingListener {
 
 	public EnumWinePrice getPreferredWinePrice() {
 		return user.getPreferredWinePrice();
-	}
-	
-	public int getTotalCTSlots() {
-		return this.user.getTotalCTSlots();
-	}
-
-	public void setTotalCTSlots(int slots) {
-		this.user.setTotalCTSlots(slots);
 	}
 }
 

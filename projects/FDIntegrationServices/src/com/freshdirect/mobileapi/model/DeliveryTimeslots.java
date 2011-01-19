@@ -11,8 +11,8 @@ import com.freshdirect.delivery.restriction.DlvRestrictionsList;
 import com.freshdirect.fdstore.FDDeliveryManager;
 import com.freshdirect.fdstore.FDException;
 import com.freshdirect.fdstore.FDResourceException;
+import com.freshdirect.fdstore.FDTimeslotList;
 import com.freshdirect.fdstore.customer.FDUserI;
-import com.freshdirect.fdstore.util.FDTimeslotUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.mobileapi.model.tagwrapper.CheckoutControllerTagWrapper;
 import com.freshdirect.webapp.taglib.fdstore.Result;
@@ -107,7 +107,7 @@ public class DeliveryTimeslots {
          * @param isUserChefTable
          * @throws FDResourceException
          */
-        public TimeSlotCalculationResult(List<FDTimeslotUtil> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
+        public TimeSlotCalculationResult(List<FDTimeslotList> timeslotLists, Map<String, DlvZoneModel> zones, boolean zoneCtActive,
                 List<String> messages, boolean isUserChefTable) throws FDResourceException {
             this.timeslotList = TimeslotList.wrap(timeslotLists);
             //this.zones = zones;

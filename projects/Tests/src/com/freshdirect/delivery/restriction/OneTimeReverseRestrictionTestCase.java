@@ -23,7 +23,7 @@ public class OneTimeReverseRestrictionTestCase extends TestCase {
 			"Thanksgiving",
 			"Thanksgiving",
 			DF.parse("2003-09-06 00:00:00.0"),
-			DF.parse("2003-09-07 00:00:00.0"),"");
+			DF.parse("2003-09-07 00:00:00.0"));
 
 		assertTrue(s.contains(DF.parse("2003-09-05 00:00:00.0")));
 		assertTrue(s.contains(DF.parse("2003-09-07 00:00:00.0")));

@@ -57,7 +57,7 @@ public class DlvReverseRestrictionTestCase extends TestCase {
 			"Alcohol Sunday",
 			Calendar.SUNDAY,
 			new TimeOfDay("12:00 AM"),
-			new TimeOfDay("12:00 PM"),""));
+			new TimeOfDay("12:00 PM")));
 		res.add(new RecurringRestriction("123123",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
@@ -65,7 +65,7 @@ public class DlvReverseRestrictionTestCase extends TestCase {
 			"Friday",
 			Calendar.FRIDAY,
 			new TimeOfDay("00:00 AM"),
-			new TimeOfDay("11:59 PM"),""));
+			new TimeOfDay("11:59 PM")));
 		res.add(new RecurringRestriction("2123213",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
@@ -73,21 +73,21 @@ public class DlvReverseRestrictionTestCase extends TestCase {
 			"Saturday",
 			Calendar.SATURDAY,
 			new TimeOfDay("00:00 AM"),
-			new TimeOfDay("11:59 PM"),""));
+			new TimeOfDay("11:59 PM")));
 		res.add(new OneTimeRestriction("132323",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
 			"Kosher Holiday One",
 			"Holiday One",
 			DF.parse("2003-09-06 00:00:00.0"),
-			DF.parse("2003-09-06 23:59:59.0"),""));
+			DF.parse("2003-09-06 23:59:59.0")));
 		res.add(new OneTimeRestriction("123233",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
 			"Kosher Holiday Two",
 			"Holiday Two",
 			DF.parse("2003-09-08 00:00:00.0"),
-			DF.parse("2003-09-08 23:59:59.0"),""));
+			DF.parse("2003-09-08 23:59:59.0")));
 
 		res.add(new OneTimeReverseRestriction("312421",
 			EnumDlvRestrictionCriterion.DELIVERY,
@@ -95,7 +95,7 @@ public class DlvReverseRestrictionTestCase extends TestCase {
 			"Thanksgiving",
 			"Thanksgivng",
 			DF.parse("2003-10-23 00:00:00.0"),
-			DF.parse("2003-10-24 00:00:00.0"),""));
+			DF.parse("2003-10-24 00:00:00.0")));
 
 		this.restrictionList = new DlvRestrictionsList(res);
 	}

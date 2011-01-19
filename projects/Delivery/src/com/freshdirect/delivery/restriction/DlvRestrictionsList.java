@@ -129,19 +129,6 @@ public class DlvRestrictionsList implements Serializable {
 		}
 		return l;
 	}
-	
-	public List<RestrictionI> getRestrictions(EnumDlvRestrictionCriterion criterion, Set<EnumDlvRestrictionReason> reasons, DateRange range) {
-		List<RestrictionI> l = new ArrayList<RestrictionI>();
-		
-		List<RestrictionI> tempRestrictions = new ArrayList<RestrictionI>();
-		tempRestrictions = this.getRestrictions(range);
-		for ( RestrictionI r  : tempRestrictions ) {
-			if ((criterion.equals(r.getCriterion())) && reasons.contains(r.getReason())) {
-				l.add(r);
-			}
-		}
-		return l;
-	}
 
 	public String toString() {
 		return this.restrictions.toString();

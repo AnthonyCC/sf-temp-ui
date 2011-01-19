@@ -1,48 +1,13 @@
 <%@ page import="com.freshdirect.fdstore.util.TimeslotLogic" %>
-<table cellspacing="0" cellpadding="0" border="0" width="695" id="timeslotloyalityHeader">
+<table cellspacing="0" cellpadding="0" border="0" width="695">
 	<tr>
-	<%if(user.isChefsTable()){%>
-		<td width="30">
-			<img src="/media/editorial/site_pages/ct/CT_header_left.gif" width="30" height="25" border="0">
-		</td>
-		<td width="435" align="left" style="background:#333433; color: #fff">
-			<font style="font-weight:bold;font-size:11px;">		
-
-				<%= user.getFirstName() %> <%= user.getLastName() %>
-				<% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %> </font><font style="font-weight:bold;">- Chef's Table Member since <%= user.getChefsTableInduction().substring(0,4) %><% } %>
-			
-			</font>
-		</td>
-		<td width="260" align="right" style="background:#333433; color: #fff">
-			<font style="font-weight:bold;">
-				<%if(user.getTotalCTSlots()>0 && (request.getRequestURI().indexOf("/checkout/step_2_select.jsp")>-1
-					|| request.getRequestURI().indexOf("/your_account/delivery_info_avail_slots.jsp")>-1
-					|| request.getRequestURI().indexOf("/your_account/reserve_timeslot.jsp")>-1)){%>
-					 <%= user.getTotalCTSlots() %> timeslots just for you <a href="/your_account/manage_account.jsp" class="tsCTBenefits">More Benefits</a>
-				<%}else{%>
-					Your Order&nbsp; <a href="/help/index.jsp" class="tsCTBenefits">Need Help?</a>
-				<%}%>
-			</font>
-		</td>
-		<td width="10">
-			<img src="/media/editorial/site_pages/ct/CT_header_right.gif" width="10" height="25" border="0">
-		</td>
-	<%}else{%>
-		<td width="10">
-			<img src="/media/editorial/site_pages/non_chefstable/NC_header_left.gif" width="10" height="25" border="0">
-		</td>
-		<td width="455" align="left" style="background:#999966; color: #fff">
-			<font style="font-weight:bold;font-size:11px;">		
-				Welcome to FreshDirect&nbsp;
-				<%= user.getFirstName() %> <%= user.getLastName() %>
-			</font>
-		</td>
-		<td width="260" align="right" style="background:#999966; color: #fff">
-			<font style="font-weight:bold;">Your First Order&nbsp; <a href="/help/index.jsp" class="tsNCBenefits">Need Help?</a></font>
-		</td>
-		<td width="10">
-			<img src="/media/editorial/site_pages/non_chefstable/NC_header_right.gif" width="10" height="25" border="0">
-		</td>
-	<%}%>
+		<td width="190" align="left"><img
+			src="/media/editorial/site_pages/ct/loy_ctbar_left.gif"
+			width="190" height="25" border="0"></TD>
+		<td width="465" align="right" style="background: #222; color: #fff"><%= user.getFirstName() %>
+		<%= user.getLastName() %><% if(user.isChefsTable() && !user.getChefsTableInduction().equals("0") && user.getChefsTableInduction().length() == 8) { %>, Since <%= user.getChefsTableInduction().substring(0,4) %><% } %></td>
+		<td width="40"><img
+			src="/media/editorial/site_pages/ct/loy_ctbar_right.gif"
+			width="40" height="25" border="0"></td>
 	</tr>
 </table>

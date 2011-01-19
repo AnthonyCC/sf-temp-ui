@@ -77,7 +77,7 @@ String lineWidth = isShowSmaller?"290":"310";
     <TD WIDTH="290">
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="290">
         <TR VALIGN="TOP">
-            <TD WIDTH="290" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="102" HEIGHT="15" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
+            <TD WIDTH="290" COLSPAN="2"><img src="/media_stat/images/navigation/delivery_info.gif" WIDTH="92" HEIGHT="9" border="0" alt="DELIVERY INFO"><BR><IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR></TD>
         </TR>
         <TR VALIGN="TOP">
             <TD WIDTH="10"><BR></TD>
@@ -151,7 +151,7 @@ String lineWidth = isShowSmaller?"290":"310";
     </TD>
     <TD WIDTH="40"><IMG src="/media_stat/images/layout/clear.gif" WIDTH="30" HEIGHT="1" BORDER="0"></TD>
     <TD WIDTH="300">
-        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="100" HEIGHT="15" border="0" alt="PAYMENT INFO"><BR>
+        <img src="/media_stat/images/navigation/payment_info.gif" WIDTH="91" HEIGHT="9" border="0" alt="PAYMENT INFO"><BR>
         <IMG src="/media_stat/images/layout/999966.gif" WIDTH="<%=lineWidth%>" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
         <TABLE CELLPADDING="0" CELLSPACING="0" BORDER="0" WIDTH="300">
         <TR VALIGN="TOP">

@@ -11,9 +11,7 @@
     <tmpl:put name='content' direct='true'>
 
 <fd:PaymentMethodController actionName='addPaymentMethod' result='result' successPage='/your_account/payment_information.jsp'>
-<%
-boolean proceedThruCheckout = false;
-%>
+
 <fd:ErrorHandler result='<%=result%>' field='<%=checkPaymentMethodForm%>'>
 <% String errorMsg= SystemMessageList.MSG_MISSING_INFO; %>	
 	<%@ include file="/includes/i_error_messages.jspf" %>
@@ -38,13 +36,10 @@ boolean proceedThruCheckout = false;
 	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
 	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="2" WIDTH="675">
-		<TR VALIGN="TOP">
-				<TD WIDTH="675" ALIGN="RIGHT">
-					<a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="72" HEIGHT="19"  HSPACE="19" VSPACE="4" alt="CANCEL" border="0"></a>
-					<input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="91" HEIGHT="18" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0">
-				</TD>
-		</TR>
-	</TABLE>
+	<TR VALIGN="TOP">
+	<TD WIDTH="675" ALIGN="RIGHT"><a href="<%=cancelPage%>"><img src="/media_stat/images/buttons/cancel.gif" WIDTH="54" HEIGHT="16"  HSPACE="4" VSPACE="4" alt="CANCEL" border="0"></a><input type="image" name="checkout_credit_card_edit" src="/media_stat/images/buttons/save_changes.gif" WIDTH="84" HEIGHT="16" HSPACE="4" VSPACE="4" alt="SAVE ADDRESS"  border="0"></TD>
+</TR>
+</TABLE>
 <br>
 <%--<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
 <TR VALIGN="TOP"><TD WIDTH="640"><%@ include file="/includes/i_footer_account.jspf"%></TD></TR>

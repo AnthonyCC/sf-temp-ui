@@ -33,11 +33,11 @@ if(pickups.size() > 0){  %>
 	
 <table border="0" cellpadding="0" cellspacing="0" width="675">
 		<tr>
-			<td><img width="134" height="15" src="/media_stat/images/template/youraccount/pickup_locations.gif" alt="PICK UP LOCATIONS"></td>
+			<td><img src="/media_stat/images/template/checkout/pickup_locations.gif" alt="PICK UP LOCATIONS"></td>
 		</tr>
 		<tr>
 			<td><img src="/media_stat/images/layout/clear.gif" width="1" height="2" alt="" border="0"><br>
-				<img src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
+				<img src="/media_stat/images/layout/999966.gif" WIDTH="675" HEIGHT="1" BORDER="0" VSPACE="3"><BR>
 			</td>
 		</tr>
 

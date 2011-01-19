@@ -17,15 +17,15 @@
 <%@ page import='com.freshdirect.payment.*' %>
 <%@ page import='com.freshdirect.payment.fraud.*' %>
 <%@ page import='java.text.MessageFormat' %>
-<%@ page import='com.freshdirect.fdstore.customer.*' %>
-<%@ page import='com.freshdirect.fdstore.deliverypass.*' %>
-<%@ page import='com.freshdirect.webapp.util.JspMethods' %>
-<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
+<script type="text/javascript" language="javascript" src="/assets/javascript/prototype.js"></script>
+<script type="text/javascript" language="javascript" src="/assets/javascript/scriptaculous.js?load=effects,builder"></script>
+<script type="text/javascript" language="javascript" src="/assets/javascript/modalbox.js"></script>	
+<link rel="stylesheet" type="text/css" href="/assets/css/modalbox.css" />
+<script type="text/javascript" language="javascript" src="/assets/javascript/FD_PromoEligibility.js"></script>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 
 <%request.setAttribute("listPos", "SystemMessage,ProductNote,CategoryNote");%>
@@ -125,7 +125,7 @@
         			gcBufferAmount = perishableBufferAmount;
         		}else{*/
         			gcBufferAmount = gcSelectedBalance;
-        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;
+        			ccBufferAmount = perishableBufferAmount - gcSelectedBalance;    			
         		//}
         	}
     		else{
@@ -146,76 +146,22 @@
 
     <input type="hidden" name="actionName" id="actionName" value="setNoPaymentMethod">
     <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
-		<TR VALIGN="TOP">
-		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
-		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
-		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10">
-				  <FONT CLASS="space2pix"><BR></FONT>
-					<table>
-						<tr>
-							<td align="left" style="color:#666666;font-weight:bold;">Delivery Charge:</td>
-							<td align="right" style="color:#666666;font-weight:bold;">
-								<%	
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-									if(cart.isDlvPassApplied()) {
-								%>
-									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
-								%>     
-										Free! 
-										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-												
-								<%  } else {%>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-								<%}%>
-							</td>
-						</tr>
-							<%if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-										Discount discount = discountLine.getDiscount();
-									%>
-								<tr>
-									<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
-									<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
-								</tr>
-						<%}	}%>
-						<tr>
-							<td align="left" style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-							<td align="right" style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
-						</tr>
-					</table>
-		</TD>
-		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE">
-			<FONT CLASS="space2pix"><BR></FONT>
-			<input type="image" name="next_step" src="/media_stat/images/buttons/checkout_right.gif"
-			 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onClick="setActionName(this.form,'setPaymentMethod')" width="26" height="26">
-		</TD>
+	<TR VALIGN="TOP">
+	<TD CLASS="text11" WIDTH="415" VALIGN="bottom">
+		<FONT CLASS="title18">Choose Payment Information (Step 3 of 4)</FONT><BR>
+		<FONT CLASS="text12">Please select a payment option.</FONT>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0"></TD>
+	<TD WIDTH="245" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
+		<FONT CLASS="space2pix"><BR></FONT><input type="image" name="next_step" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><BR>
+		<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>:  <%= currencyFormatter.format(cart.getTotal()) %></TD>
+	<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
+		<input type="image" name="next_step" src="/media_stat/images/buttons/checkout_arrow.gif"
+		 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onClick="setActionName(this.form,'setNoPaymentMethod')"></TD>
 	</TR>
-</TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<!-- PROFILE HEADER -->
-<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-
-<TABLE border="0" cellspacing="0" cellpadding="0" width="693">
-	 <tr valign="top"> 
-		 <td class="text12" width="415" valign="bottom"> 
-			<FONT CLASS="title18">Choose Payment Information (Step 3 of 4)</FONT><BR>
-			<FONT CLASS="text12">Please select a payment option.</FONT>
-		</td>
-	</tr>
-</TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="3" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	</TABLE>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
     
     <div style="width: 685px; text-align: left;"><span style="color: #FF9933;font-size: 17px;">NO PAYMENT NECESSARY... YOUR TOTAL IS COVERED BY YOUR GIFT CARD.</span>
     <p align="left">Good news: you do not need to select a Payment Method because the Gift Card you applied to this order is greater than 
@@ -223,33 +169,18 @@
     Continue Checkout button. Enjoy your free food!</p></div>
 
 
-        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-        <IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
-        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-    <table border="0" cellspacing="0" cellpadding="0" width="675">
-	    <tr valign="top">
-			<td width="35">
-					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="340">
-				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				Delivery Time<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-			<td width="265" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><br/>Submit Order<br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setNoPaymentMethod')">
-			</td>
-	    </tr>
-	</table>
-</FORM>
+            <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+            <IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+            <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+            <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+            <TR VALIGN="TOP">
+            <TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
+            <TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+            <TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE"><input type="image" name="alt_next_step"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="117" HEIGHT="9" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setNoPaymentMethod')"><BR>Go to Step 4: Submit Order<BR></TD>
+            <TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT><input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setNoPaymentMethod')"></TD>
+            </TR>
+            </TABLE>    
+    </FORM>  
  <%
     } }
  %>   
@@ -354,75 +285,21 @@ if(isPaymentRequired) {
 		<input type="hidden" name="actionName" value="">
 		<input type="hidden" name="deletePaymentId" value="">
 		<TR VALIGN="TOP">
-		<TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-			<FONT CLASS="title18">PAYMENT INFO</FONT><BR>
-		    <IMG src="/media_stat/images/layout/clear.gif" WIDTH="395" HEIGHT="1" BORDER="0">
-		</TD>
-		<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" >
-				  <FONT CLASS="space2pix"><BR></FONT>
-					<table>
-						<tr>
-							<td align="left" style="color:#666666;font-weight:bold;"><%= (isDepotAddress && depotAddress.isPickup())?"Service":"Delivery" %> Charge:</td>
-							<td align="right" style="color:#666666;font-weight:bold;">
-								<%	
-									String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-									if(cart.isDlvPassApplied()) {
-								%>
-									<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-									
-								<%	} else if (cart.isDeliveryChargeWaived()) {
-										if((int)cart.getDeliverySurcharge() == 0){
-								%>     
-										Free! 
-										<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-												
-								<%  } else {%>
-										<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-								<%}%>
-						</td>
-						</tr>
-						<%if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-										Discount discount = discountLine.getDiscount();
-									%>
-								<tr>
-									<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
-									<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
-								</tr>
-						<%}	}%>
-						<tr>
-							<td align="left" style="color:#666666;font-weight:bold;"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-							<td align="right" style="color:#666666;font-weight:bold;"><%= currencyFormatter.format(cart.getTotal()) %></td>
-						</tr>
-					</table>
-		</TD>		
-		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE">
-			<FONT CLASS="space2pix"><BR></FONT>
-			<input type="image" name="next_step" src="/media_stat/images/buttons/checkout_right.gif"
-			 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onClick="setActionName(this.form,'setPaymentMethod')" width="26" height="26">
-		</TD>
-	</TR>
-</TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-<!-- PROFILE HEADER -->
-<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-
-<TABLE border="0" cellspacing="0" cellpadding="0" width="693">
-	 <tr valign="top"> 
-		 <td class="text12" width="415" valign="bottom"> 
+		<TD CLASS="text11" WIDTH="415" VALIGN="bottom">
 			<FONT CLASS="title18">Choose Payment Information (Step 3 of 4)</FONT><BR>
 			<FONT CLASS="text12">Please select a payment option.</FONT>
-		</td>
-	</tr>
-</TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="3" BORDER="0"><BR>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+			<IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0"></TD>
+		<TD WIDTH="245" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
+			<FONT CLASS="space2pix"><BR></FONT><input type="image" name="next_step" src="/media_stat/images/buttons/continue_checkout.gif" alt="CONTINUE CHECKOUT" VSPACE="2" border="0" onClick="setActionName(this.form,'setPaymentMethod')"><BR>
+			<A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated Total</A>:  <%= currencyFormatter.format(cart.getTotal()) %></TD>
+		<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
+			<input type="image" name="next_step" src="/media_stat/images/buttons/checkout_arrow.gif"
+			 BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2" onClick="setActionName(this.form,'setPaymentMethod')"></TD>
+		</TR>
+		</TABLE>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+		<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+		<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 	<%
 	JspMethods.dumpErrors(result);
 	%>
@@ -563,46 +440,21 @@ user.setAddressVerificationError(false);
 				<BR><BR><BR><BR>
 			<%
 			}%>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/dotted_line.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-	<table border="0" cellspacing="0" cellpadding="0" width="675">
-	    <tr valign="top">
-			<td width="35">
-					<a href="<%=response.encodeURL("/checkout/step_2_select.jsp ")%>" id="previousX">
-					<img src="/media_stat/images/buttons/checkout_left.gif" width="26" height="26" border="0" alt="PREVIOUS STEP"></a>
-			</td>
-		    <td width="340">
-				<a href="<%=response.encodeURL("/checkout/step_2_select.jsp  ")%>" id="previousX">
-				<img src="/media_stat/images/buttons/previous_step.gif" WIDTH="66" HEIGHT="11" border="0" alt="PREVIOUS STEP"></a><br/>
-				Delivery Time<br/>
-				<img src="/media_stat/images/layout/clear.gif" width="340" height="1" border="0">
-			</td>
-			<td width="265" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/continue_checkout.gif" width="91" height="11" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setPaymentMethod')"><br/>Submit Order<br/>
-			</td>
-			<td width="35" align="right" valign="middle">
-				<font class="space2pix"><br/></font>
-				<input type="image" name="alt_next_step" src="/media_stat/images/buttons/checkout_right.gif" width="26" height="26" border="0" alt="CONTINUE CHECKOUT" vspace="0" onClick="setActionName(this.form,'setPaymentMethod')">
-			</td>
-	    </tr>
-	</table>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+				<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="675" HEIGHT="1" BORDER="0"><BR>
+				<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+				<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="675">
+				<TR VALIGN="TOP">
+				<TD WIDTH="25"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelX"><img src="/media_stat/images/buttons/x_green.gif" WIDTH="20" HEIGHT="19" border="0" alt="CONTINUE SHOPPING"></a></TD>
+				<TD WIDTH="350"><a href="<%=response.encodeURL("/checkout/view_cart.jsp?trk=chkplc")%>" onclick="ntptEventTag('ev=button_event&ni_btn=cancel_checkout');var d=new Date();var cD;do{cD=new Date();}while((cD.getTime()-d.getTime())<500);" id="cancelText"><img src="/media_stat/images/buttons/cancel_checkout.gif" WIDTH="92" HEIGHT="7" border="0" alt="CANCEL CHECKOUT"></a><BR>and return to your cart.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+				<TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE"><input type="image" name="next_step"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="117" HEIGHT="9" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setPaymentMethod')"><BR>Go to Step 4: Submit Order<BR></TD>
+				<TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT><input type="image" name="next_step" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0" onClick="setActionName(this.form,'setPaymentMethod')"></TD>
+				</TR>
+				</TABLE>
 
 		<%@ include file="/checkout/includes/i_footer_text.jspf" %>
 	</FORM>
 <% } %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-	<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-<%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-
-	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
-	
-<%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-
 </fd:CheckoutController>
 </fd:FDShoppingCart>
 </tmpl:put>

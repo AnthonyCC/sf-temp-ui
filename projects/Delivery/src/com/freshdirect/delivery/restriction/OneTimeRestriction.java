@@ -18,8 +18,8 @@ public class OneTimeRestriction extends AbstractRestriction {
 		String name,
 		String message,
 		Date startDate,
-		Date endDate,String path) {
-		super(id, criterion, reason, name, message,path);
+		Date endDate) {
+		super(id, criterion, reason, name, message);
 		this.range = new DateRange(startDate, endDate);
 	}
 

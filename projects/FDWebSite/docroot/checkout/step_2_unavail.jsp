@@ -257,7 +257,7 @@ if (day != null) {
 		</td>
 		<td></td>
 		<td width="265" align="RIGHT" valign="MIDDLE">
-			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
+			<a href="/checkout/step_2_adjust.jsp?successPage=<%=request.getParameter("successPage")%>"><img src="/media_stat/images/buttons/continue_checkout.gif" width="117" height="9" border="0" alt="CONTINUE CHECKOUT" vspace="0"></a>
 			<br>Items will be removed from your cart<br>
 		</td>
 		<td width="35" align="RIGHT" valign="MIDDLE">

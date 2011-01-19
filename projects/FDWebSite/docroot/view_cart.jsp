@@ -4,9 +4,6 @@
 <%@ page import='com.freshdirect.framework.webapp.ActionWarning'%>  
 <%@ page import='com.freshdirect.fdstore.promotion.*'%>  
 <%@ page import="com.freshdirect.fdstore.EnumCheckoutMode"%>
-<%@ page import='com.freshdirect.fdstore.util.ClickToCallUtil'%>
-<%@ page import="com.freshdirect.dataloader.autoorder.create.util.DateUtil" %>
-<%@ page import="com.freshdirect.common.pricing.Discount" %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -108,62 +105,23 @@ StringBuffer buffer = new StringBuffer(
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="695">
     <TR VALIGN="TOP">
 	    <TD CLASS="text11" WIDTH="395" VALIGN="bottom">
-	        <FONT CLASS="title18">VIEW CART</FONT><BR>
-			Please review the items in your cart before going to Checkout.<BR>
+	        <FONT CLASS="title18"><%= custFirstName %> Cart</FONT><BR>
+	        Please review the items in your cart before going to Checkout.<BR>
 	        <IMG src="/media_stat/images/layout/clear.gif" WIDTH="375" HEIGHT="1" BORDER="0">
 		</TD>
-	    <TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10" style="color:#666666;font-weight:bold;">
-	      <FONT CLASS="space2pix"><BR></FONT>
-			<table>
-				<tr>
-					<td align="left">Delivery Charge:</td>
-					<td align="right">
-						<%	
-								String dlvCharge = JspMethods.formatPrice( cart.getDeliverySurcharge() );
-							if(cart.isDlvPassApplied()) {
-						%>
-							<%= DeliveryPassUtil.getDlvPassAppliedMessage(user) %>
-							
-						<%	} else if (cart.isDeliveryChargeWaived()) {
-								if((int)cart.getDeliverySurcharge() == 0){
-						%>     
-								Free! 
-								<% }else{ %> Free!(<%= dlvCharge %> waived)<% } %>
-										
-						<%  } else {%>
-								<%= (int)cart.getDeliverySurcharge() == 0 ? "Free!" : dlvCharge %>
-						<%}%>
-					</td>
-				</tr>
-				<%if (cart.getTotalDiscountValue() > 0) {
-								List discounts = cart.getDiscounts();
-									for (Iterator iter = discounts.iterator(); iter.hasNext();) {
-										ErpDiscountLineModel discountLine = (ErpDiscountLineModel) iter.next();
-										Discount discount = discountLine.getDiscount();
-								%>
-							<tr>
-								<td align="left" style="color:#669933;font-weight:bold;">Delivery Discount:</td>
-								<td align="right" style="color:#669933;font-weight:bold;">-<%= JspMethods.formatPrice(discount.getAmount()) %></td>
-							</tr>
-				<%}	}%>
-				<tr>
-					<td align="left"><A HREF="javascript:popup('/help/estimated_price.jsp','small')"></A>Estimated Total:</td>
-					<td align="right"><%= currencyFormatter.format(cart.getTotal()) %></td>
-				</tr>
-			</table>
+	    <TD WIDTH="265" ALIGN="RIGHT" VALIGN="MIDDLE" CLASS="text10bold">
+	        <FONT CLASS="space2pix"><BR></FONT><input type="image" name="checkout" src="/media_stat/images/buttons/checkout.gif" WIDTH="57" HEIGHT="9" alt="CHECKOUT" VSPACE="2" border="0"><BR>
+	        <A HREF="javascript:popup('/help/estimated_price.jsp','small')">Estimated</A> Total: <%= currencyFormatter.format(cart.getTotal()) %>
 	    </TD>
 	    <TD WIDTH="35" ALIGN="RIGHT" VALIGN="MIDDLE"><FONT CLASS="space2pix"><BR></FONT>
-	        <input type="image" name="checkout" src="/media_stat/images/buttons/checkout_right.gif"
+	        <input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif"
 	         BORDER="0" alt="CONTINUE CHECKOUT" VSPACE="2">
 		</TD>
     </TR>
 </TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
-
-<!-- PROFILE HEADER -->
-<%@ include file="/shared/includes/i_loyalty_bar.jspf" %>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="16" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 
 <%@ include file="/includes/i_cartcleanup.jspf" %>
 <%@ include file="/includes/i_viewcart.jspf" %> 
@@ -180,41 +138,26 @@ StringBuffer buffer = new StringBuffer(
 <BR>
 <IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% if (!"true".equals(request.getAttribute("recommendationsRendered"))) { %>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
-	<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/ff9933.gif" WIDTH="693" HEIGHT="1" BORDER="0"><BR>
+<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
 <% } %>
-
 <form name="viewcart_bottom" method="POST" style="margin:0px">
-	<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
-		<TR VALIGN="TOP">
-			<TD WIDTH="658" ALIGN="RIGHT" VALIGN="MIDDLE">
-				<input type="image" name="checkout_delivery_address_select"  src="/media_stat/images/buttons/continue_checkout.gif" WIDTH="91" HEIGHT="11" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"><BR>Delivery Address<BR>
-			</TD>
-			<TD WIDTH="35" ALIGN="RIGHT">
-				<input type="image" name="checkout" src="/media_stat/images/buttons/checkout_right.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0">
-			</TD>
-		</TR>
-	</TABLE>
+<TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
+    <TR VALIGN="TOP">
+    <TD WIDTH="30"><a href="/index.jsp"><img src="/media_stat/images/buttons/arrow_green_left.gif" WIDTH="28" HEIGHT="28" border="0" alt="CONTINUE SHOPPING"></a></TD>
+    <TD WIDTH="345"><a href="/index.jsp"><img src="/media_stat/images/buttons/continue_shopping_text.gif"  WIDTH="117" HEIGHT="13" border="0" alt="CANCEL CHECKOUT"></a><BR>from <FONT CLASS="text11bold"><a href="/index.jsp">Home Page</A></FONT>.<BR><IMG src="/media_stat/images/layout/clear.gif" WIDTH="340" HEIGHT="1" BORDER="0"></TD>
+    <TD WIDTH="283" ALIGN="RIGHT" VALIGN="MIDDLE"><input type="image" name="checkout" src="/media_stat/images/buttons/checkout.gif" WIDTH="57" HEIGHT="9" border="0" alt="CHECKOUT" VSPACE="0"></TD>
+    <TD WIDTH="35" ALIGN="RIGHT"><input type="image" name="checkout" src="/media_stat/images/buttons/checkout_arrow.gif" WIDTH="29" HEIGHT="29" border="0" alt="CONTINUE CHECKOUT" VSPACE="0"></TD>
+    </TR>
+</TABLE>
 </form>
 
 <TABLE BORDER="0" CELLSPACING="0" CELLPADDING="0" WIDTH="693">
     <TR VALIGN="TOP">
-        <TD WIDTH="693">
-			<%@ include file="/checkout/includes/i_footer_text_2.jspf" %>
-		</TD>
+        <TD WIDTH="693"><%@ include file="/checkout/includes/i_footer_text_2.jspf" %></TD>
     </TR>
 </TABLE>
-
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-<img src="/media_stat/images/layout/dotted_line.gif" width="675" height="1" border="0"><br/>
-<IMG src="/media_stat/images/layout/clear.gif" WIDTH="1" HEIGHT="8" BORDER="0"><BR>
-
-<%-- ~~~~~~~~~~~~~~~~~~~~~~ START BOTTOM MODULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
-
-	<%@ include file="/includes/delivery/i_bottom_modules.jspf" %>
-	
-<%-- ~~~~~~~~~~~~~~~~~~~~~~ END BOTTOM MODEULES DISPLAY SECTION ~~~~~~~~~~~~~~~~~~~~~~ --%>
 
 </tmpl:put>
 </fd:RedemptionCodeController>

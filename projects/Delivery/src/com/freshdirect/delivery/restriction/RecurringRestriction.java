@@ -24,8 +24,8 @@ public class RecurringRestriction extends AbstractRestriction {
 		String message,
 		int dayOfWeek,
 		TimeOfDay start,
-		TimeOfDay end,String path) {
-		super(id, criterion, reason, name, message,path);
+		TimeOfDay end) {
+		super(id, criterion, reason, name, message);
 		this.dayOfWeek = dayOfWeek;
 		this.timeRange = new TimeOfDayRange(start, end);
 	}

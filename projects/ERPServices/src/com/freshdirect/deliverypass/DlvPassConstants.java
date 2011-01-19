@@ -12,7 +12,7 @@ public class DlvPassConstants {
 	public static final int DECREMENT_FLAG = 1;
 	public static final String PROMO_CODE = "DELIVERYPASS";
 	public static final String BSGS_APPLIED_MSG = "1 DeliveryPass";
-	public static final String UNLIMITED_APPLIED_MSG = "FREE with DeliveryPass";
+	public static final String UNLIMITED_APPLIED_MSG = "FREE with FreshDirect DeliveryPass";
 	public static final String ACTIVE_ITEM = "ActiveItem";
 	public static final String REFUND_AMOUNT = "RefundAmount";
 	public static final String PASS_HISTORY = "PassHistory";

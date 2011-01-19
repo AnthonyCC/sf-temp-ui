@@ -39,7 +39,7 @@ public class FDRestrictedAvailabilityTestCase extends TestCase {
 			"Friday",
 			Calendar.FRIDAY,
 			TimeOfDay.MIDNIGHT,
-			TimeOfDay.NEXT_MIDNIGHT,""));
+			TimeOfDay.NEXT_MIDNIGHT));
 		res.add(new RecurringRestriction("34343455",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.KOSHER,
@@ -47,7 +47,7 @@ public class FDRestrictedAvailabilityTestCase extends TestCase {
 			"Saturday",
 			Calendar.SATURDAY,
 			TimeOfDay.MIDNIGHT,
-			TimeOfDay.NEXT_MIDNIGHT,""));
+			TimeOfDay.NEXT_MIDNIGHT));
 		res.add(new RecurringRestriction("2343556667",
 			EnumDlvRestrictionCriterion.DELIVERY,
 			EnumDlvRestrictionReason.ALCOHOL,
@@ -55,7 +55,7 @@ public class FDRestrictedAvailabilityTestCase extends TestCase {
 			"Alcohol",
 			Calendar.SUNDAY,
 			new TimeOfDay("12:00 AM"),
-			new TimeOfDay("12:00 PM"),""));
+			new TimeOfDay("12:00 PM")));
 
 		DlvRestrictionsList restrictionList = new DlvRestrictionsList(res);
 

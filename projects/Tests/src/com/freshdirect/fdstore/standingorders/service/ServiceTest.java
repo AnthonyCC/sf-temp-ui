@@ -216,7 +216,7 @@ public class ServiceTest extends MockObjectTestCase {
 				"Friday",
 				Calendar.FRIDAY,
 				TimeOfDay.MIDNIGHT,
-				TimeOfDay.NEXT_MIDNIGHT,""));
+				TimeOfDay.NEXT_MIDNIGHT));
 			res.add(new RecurringRestriction("34343455",
 				EnumDlvRestrictionCriterion.DELIVERY,
 				EnumDlvRestrictionReason.KOSHER,
@@ -224,7 +224,7 @@ public class ServiceTest extends MockObjectTestCase {
 				"Saturday",
 				Calendar.SATURDAY,
 				TimeOfDay.MIDNIGHT,
-				TimeOfDay.NEXT_MIDNIGHT,""));
+				TimeOfDay.NEXT_MIDNIGHT));
 			res.add(new RecurringRestriction("2343556667",
 				EnumDlvRestrictionCriterion.DELIVERY,
 				EnumDlvRestrictionReason.ALCOHOL,
@@ -232,7 +232,7 @@ public class ServiceTest extends MockObjectTestCase {
 				"Alcohol",
 				Calendar.SUNDAY,
 				new TimeOfDay("12:00 AM"),
-				new TimeOfDay("12:00 PM"),""));
+				new TimeOfDay("12:00 PM")));
 
 			DlvRestrictionsList restrictionList = new DlvRestrictionsList(res);
 
@@ -258,7 +258,7 @@ public class ServiceTest extends MockObjectTestCase {
 							"Today",
 							cal.get(Calendar.DAY_OF_WEEK), // current day
 							TimeOfDay.MIDNIGHT,
-							TimeOfDay.NEXT_MIDNIGHT,""));
+							TimeOfDay.NEXT_MIDNIGHT));
 			
 			Collection<FDCartLineI> ols = createCartLinesSimple(1);
 			SimpleCartLine cl = (SimpleCartLine) ols.iterator().next();

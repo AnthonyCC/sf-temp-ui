@@ -24,9 +24,10 @@ public class FDUserDlvPassInfo implements Serializable{
 	private NumberFormat CURRENCY_FORMATTER=NumberFormat.getCurrencyInstance(Locale.US);
 	private int daysSinceDPExpiry=0;
 	private int daysToDPExpiry=0;
-	private double dPSavings;
-	
 
+	
+	
+	
 	public FDUserDlvPassInfo(EnumDlvPassStatus status, DeliveryPassType type, Date expDate, String originalOrderId, int remCnt, int usedCount,int usablePassCount, boolean isFreeTrialRestricted,int autoRenewUsablePassCount, DeliveryPassType autoRenewDPType, double autoRenewPrice) {
 		super();
 		this.status = status;
@@ -144,14 +145,6 @@ public class FDUserDlvPassInfo implements Serializable{
 	
 	public int getDaysToDPExpiry() {
 		return daysToDPExpiry;
-	}
-
-	public double getDPSavings() {
-		return dPSavings;
-	}
-
-	public void setDPSavings(double savings) {
-		dPSavings = savings;
 	}
 
 	

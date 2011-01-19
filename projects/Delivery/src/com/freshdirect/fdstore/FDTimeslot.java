@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 import com.freshdirect.delivery.model.DlvTimeslotModel;
 import com.freshdirect.framework.util.DateUtil;
-import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.framework.util.log.LoggerFactory;
 
 /**
@@ -16,7 +15,7 @@ import com.freshdirect.framework.util.log.LoggerFactory;
  * @author $Author:Kashif Nadeem$
  */
 
-public class FDTimeslot implements Serializable, Comparable {
+public class FDTimeslot implements Serializable {
 
 	private static final long	serialVersionUID	= 4180048326412481300L;
 
@@ -24,10 +23,7 @@ public class FDTimeslot implements Serializable, Comparable {
 	private final static Logger LOGGER = LoggerFactory.getInstance( FDTimeslot.class );
 	
 	private final DlvTimeslotModel dlvTimeslot;
-	private boolean isAlcoholRestricted;
-	private boolean normalAvailCapacity;
-	private boolean availCTCapacity;
-	
+
 	/** Creates new FDTimeslot */
 	public FDTimeslot(DlvTimeslotModel dlvTimeslot) {
 		this.dlvTimeslot = dlvTimeslot;
@@ -40,25 +36,13 @@ public class FDTimeslot implements Serializable, Comparable {
 	public Date getBegDateTime() {
 		return dlvTimeslot.getStartTimeAsDate();
 	}
-	
-	public Date getBegTime() {
-		return dlvTimeslot.getStartTime().getNormalDate();
-	}
 
 	public Date getEndDateTime() {
 		return dlvTimeslot.getEndTimeAsDate();
 	}
-	
-	public Date getEndTime() {
-		return dlvTimeslot.getEndTime().getNormalDate();
-	}
 
 	public Date getCutoffDateTime() {
 		return dlvTimeslot.getCutoffTimeAsDate();
-	}
-	
-	public Date getCutoffNormalDateTime() {
-		return dlvTimeslot.getCutoffTimeAsNormalDate();
 	}
 
 	public String getZoneId() {
@@ -113,11 +97,10 @@ public class FDTimeslot implements Serializable, Comparable {
 					&& endCal.get(Calendar.HOUR_OF_DAY) > DateUtil.MORNING_END));
 
 		formatCal(startCal, false, sb);
-		if(forceAmPm)
-			sb.append(" - ");
-		else
-			sb.append("-");
-		formatCal(endCal, true, sb);
+
+		sb.append(" - ");
+
+		formatCal(endCal, showMarker, sb);
 
 		return sb.toString();
 	}
@@ -127,11 +110,11 @@ public class FDTimeslot implements Serializable, Comparable {
 		int minute = cal.get(Calendar.MINUTE);
 		int marker = cal.get(Calendar.AM_PM);
 
-		/*if (hour == 0) {
+		if (hour == 0) {
 			sb.append("midnight");
 		} else if (hour == 12) {
-			sb.append("noon");*/
-		if (hour > 12) {
+			sb.append("noon");
+		} else if (hour > 12) {
 			sb.append(hour - 12);
 		} else {
 			sb.append(hour);
@@ -140,7 +123,8 @@ public class FDTimeslot implements Serializable, Comparable {
 		if (minute != 0) {
 			sb.append(":").append(minute);
 		}
-		if (showAmPm) {
+
+		if (showAmPm && hour != 12 && hour != 0) {
 			if (marker == Calendar.AM) {
 				sb.append("am");
 			} else {
@@ -161,43 +145,9 @@ public class FDTimeslot implements Serializable, Comparable {
 		return dlvTimeslot.getSteeringDiscount();
 	}
 
-	public boolean isAlcoholRestricted() {
-		return isAlcoholRestricted;
-	}
-
-	public void setAlcoholRestricted(boolean isAlcoholRestricted) {
-		this.isAlcoholRestricted = isAlcoholRestricted;
-	}
 	
-	public boolean hasNormalAvailCapacity() {
-		return normalAvailCapacity;
-	}
-
-	public void setNormalAvailCapacity(boolean normalAvailCapacity) {
-		this.normalAvailCapacity = normalAvailCapacity;
-	}
-
-	public boolean hasAvailCTCapacity() {
-		return availCTCapacity;
-	}
-
-	public void setAvailCTCapacity(boolean availCTCapacity) {
-		this.availCTCapacity = availCTCapacity;
-	}
-	
-	/* Eco Friendly timeslot*/
-	public boolean isEcoFriendly() {
-		return dlvTimeslot.isEcoFriendly();
-	}
-
 	public String toString() {
 		return dlvTimeslot.toString();
-	}
-
-	@Override
-	public int compareTo(Object o) {
-		FDTimeslot t1 =(FDTimeslot)o;
-		return this.getBegTime().compareTo(t1.getBegTime());
 	}
 	
 	
