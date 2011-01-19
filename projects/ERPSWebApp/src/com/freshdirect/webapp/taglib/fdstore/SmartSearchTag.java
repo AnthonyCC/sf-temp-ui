@@ -18,12 +18,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.AbstractProductFilter;
 import com.freshdirect.fdstore.content.BrandFilter;
-import com.freshdirect.fdstore.content.CategoryNodeTree;
-import com.freshdirect.fdstore.content.ContentNodeModel;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
+import com.freshdirect.fdstore.content.CategoryNodeTree;
+import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeTree;
+import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
 import com.freshdirect.fdstore.content.ContentSearch;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
@@ -88,22 +88,7 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
     }
-    
-
-    public static class UniqueProductFilter implements TreeElementFilter {
-        Set<String> productIds = new HashSet<String>();
-        public boolean accept(TreeElement element) {
-            if (element.getModel() instanceof ProductModel) {
-                String id = element.getModel().getContentKey().getId();
-                if (!productIds.contains(id)) {
-                    productIds.add(id);
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-    
+        
 
     private static Category  LOGGER = LoggerFactory.getInstance(SmartSearchTag.class);
 
@@ -213,15 +198,15 @@ public class SmartSearchTag extends BodyTagSupport {
 
         String categoryId = pageContext.getRequest().getParameter("catId");
 
-        List filtered;
+        List<ProductModel> filtered;
         List<ProductModel> convFiltered;
         {
             
             if (categoryId != null) {
-                filtered = contentTree.collectChildNodes(categoryId, new UniqueProductFilter());
+                filtered = contentTree.collectChildNodes(categoryId, new ContentNodeTree.UniqueProductFilter());
                 Collections.sort(filtered, fres.getCurrentComparator());
             } else if (departmentId != null) {
-                filtered = contentTree.collectChildNodes(departmentId, new UniqueProductFilter());
+                filtered = contentTree.collectChildNodes(departmentId, new ContentNodeTree.UniqueProductFilter());
                 Collections.sort(filtered, fres.getCurrentComparator());
             } else {
                 filtered = fres.getProducts();
@@ -231,7 +216,7 @@ public class SmartSearchTag extends BodyTagSupport {
             if (brandSetName != null) {
                 TreeSet<BrandModel> brandSet = new TreeSet<BrandModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
                 for (int i = 0; i < filtered.size(); i++) {
-                    ProductModel prod = (ProductModel) filtered.get(i);
+                    ProductModel prod = filtered.get(i);
                     //Convert them to ProductModelPricingAdapter for zone pricing.
                     convFiltered.add(prod);
                 	brandSet.addAll(prod.getBrands());
@@ -272,10 +257,10 @@ public class SmartSearchTag extends BodyTagSupport {
         }
 
         if (categorySetName != null) {
-            List products = fres.getProducts();
+            List<ProductModel> products = fres.getProducts();
             TreeSet<CategoryModel> categorySet = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
             for (int i = 0; i < products.size(); i++) {
-                ProductModel prod = (ProductModel) products.get(i);
+                ProductModel prod = products.get(i);
                 categorySet.add(prod.getPrimaryHome());
             }
             pageContext.setAttribute(categorySetName, categorySet);
@@ -355,7 +340,8 @@ public class SmartSearchTag extends BodyTagSupport {
         return identity.getErpCustomerPK();
     }
     
-    private PricingContext getPricingContext() {
+    @SuppressWarnings( "unused" )
+	private PricingContext getPricingContext() {
         FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
         if (user == null) {
             throw new FDRuntimeException("User object is Null");

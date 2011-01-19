@@ -113,7 +113,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         Set<ContentKey> keys = new HashSet<ContentKey>();
         CmsManager instance = CmsManager.getInstance();
         for (Iterator<ContentType> i = searchService.getIndexedTypes().iterator(); i.hasNext();) {
-            ContentType type = (ContentType) i.next();
+            ContentType type = i.next();
             keys.addAll(instance.getContentKeysByType(type));
             setStatus("loading " + keys.size() + " keys");
         }
@@ -166,7 +166,7 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
         ContentValidationDelegate delegate = new ContentValidationDelegate();
         ContentValidatorI validator = new CmsFormValidator();
         for (Iterator<ContentNodeI> i = nodes.values().iterator(); i.hasNext();) {
-            ContentNodeI e = (ContentNodeI) i.next();
+            ContentNodeI e = i.next();
             validator.validate(delegate, instance, e, null);
         }
         LOG.warn("editor validation:"+delegate);
@@ -211,11 +211,11 @@ public class AdminServiceImpl extends RemoteServiceServlet implements AdminServi
                 Set<ContentKey> sectionKeys = ContentNodeUtil.getChildKeys(page);
 
                 for (Iterator<ContentNodeI> j = service.getContentNodes(sectionKeys).values().iterator(); j.hasNext();) {
-                    ContentNodeI section = (ContentNodeI) j.next();
+                    ContentNodeI section = j.next();
 
                     Set<ContentKey> fieldKeys = ContentNodeUtil.getChildKeys(section);
                     for (Iterator<ContentNodeI> k = service.getContentNodes(fieldKeys).values().iterator(); k.hasNext();) {
-                        ContentNodeI field = (ContentNodeI) k.next();
+                        ContentNodeI field = k.next();
 
                         String fieldName = (String) field.getAttributeValue("attribute");
                         if (!names.add(fieldName)) {

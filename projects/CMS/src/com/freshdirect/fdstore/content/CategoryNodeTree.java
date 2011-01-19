@@ -17,7 +17,7 @@ public class CategoryNodeTree extends ContentNodeTree {
         public boolean accept(TreeElement element) {
             if (element.getChildren().size()==1 && element.getModel() instanceof CategoryModel) {
                 
-                TreeElement onlyChild = (TreeElement) element.getChildren().iterator().next();
+                TreeElement onlyChild = element.getChildren().iterator().next();
                 if (onlyChild.getModel() instanceof CategoryModel) {
                     return false;
                 }

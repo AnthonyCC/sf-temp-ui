@@ -5,11 +5,8 @@ import java.io.StringReader;
 
 import org.apache.lucene.analysis.LowerCaseTokenizer;
 import org.apache.lucene.analysis.PorterStemFilter;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
-import org.apache.lucene.util.Version;
 
 import com.freshdirect.cms.search.ISOLatin1AccentFilter;
 

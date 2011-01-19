@@ -240,7 +240,7 @@ public class ErpFactory {
 		}
 	}
 
-	public Collection findProductsByUPC(String searchterm) throws FDResourceException {
+	public Collection<ErpProductInfoModel> findProductsByUPC(String searchterm) throws FDResourceException {
 		if (erpInfoHome == null) {
 			lookupInfoHome();
 		}

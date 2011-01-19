@@ -105,6 +105,21 @@ public class ContentNodeTree {
         public boolean accept(TreeElement element);
     }
     
+    public static class UniqueProductFilter implements TreeElementFilter {
+        Set<String> productIds = new HashSet<String>();
+        public boolean accept(TreeElement element) {
+            if (element.getModel() instanceof ProductModel) {
+                String id = element.getModel().getContentKey().getId();
+                if (!productIds.contains(id)) {
+                    productIds.add(id);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    
     final Set<TreeElement>                   	roots;
     final Map<String, TreeElement>				nodes              = new HashMap<String, TreeElement>();
     Set<String>                    				expandedElementIds;
@@ -260,19 +275,19 @@ public class ContentNodeTree {
      * @param filter
      * @return a list of ContentNodeModel
      */
-    public List<ContentNodeModel> collectChildNodes(String rootId, TreeElementFilter filter) {
+    public List<ProductModel> collectChildNodes(String rootId, TreeElementFilter filter) {
         TreeElement root = nodes.get(rootId);
         if (root!=null) {
-            List<ContentNodeModel> result = new ArrayList<ContentNodeModel>(nodes.size());
+            List<ProductModel> result = new ArrayList<ProductModel>(nodes.size());
             iterate(result, root, filter);
             return result;
         }
-		return Collections.<ContentNodeModel>emptyList();
+		return Collections.<ProductModel>emptyList();
     }
     
-    private void iterate(List<ContentNodeModel> result, TreeElement root, TreeElementFilter filter) {
+    private void iterate(List<ProductModel> result, TreeElement root, TreeElementFilter filter) {
         if (filter.accept(root)) {
-            result.add(root.getModel());
+            result.add((ProductModel)root.getModel());
         }
         for (Iterator<TreeElement> iter = root.getChildren().iterator();iter.hasNext();) {
             TreeElement child = iter.next();

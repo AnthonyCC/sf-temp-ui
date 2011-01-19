@@ -22,11 +22,12 @@ import com.freshdirect.fdstore.FDResourceException;
 import com.freshdirect.fdstore.FDRuntimeException;
 import com.freshdirect.fdstore.content.AbstractProductFilter;
 import com.freshdirect.fdstore.content.BrandFilter;
+import com.freshdirect.fdstore.content.BrandModel;
 import com.freshdirect.fdstore.content.CategoryModel;
 import com.freshdirect.fdstore.content.CategoryNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeModel;
+import com.freshdirect.fdstore.content.ContentNodeTree;
 import com.freshdirect.fdstore.content.ContentNodeTree.TreeElement;
-import com.freshdirect.fdstore.content.ContentNodeTree.TreeElementFilter;
 import com.freshdirect.fdstore.content.FilteredSearchResults;
 import com.freshdirect.fdstore.content.ProductModel;
 import com.freshdirect.fdstore.content.SearchResults;
@@ -92,21 +93,6 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
             return filters.isEmpty();
         }
 
-    }
-    
-
-    public static class UniqueProductFilter implements TreeElementFilter {
-        Set<String> productIds = new HashSet<String>();
-        public boolean accept(TreeElement element) {
-            if (element.getModel() instanceof ProductModel) {
-                String id = element.getModel().getContentKey().getId();
-                if (!productIds.contains(id)) {
-                    productIds.add(id);
-                    return true;
-                }
-            }
-            return false;
-        }
     }
     
 
@@ -205,7 +191,7 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
                 view = getNavigator().getDefaultViewName();  // "list"; // default view
             }
             int defaultPageSize = 0;
-            AbstractNavigator.PageView defs = (AbstractNavigator.PageView) AbstractNavigator.DEFAULTS.get(view);
+            AbstractNavigator.PageView defs = AbstractNavigator.DEFAULTS.get(view);
             if (defs != null) {
             	defaultPageSize = defs.normalPageSize;
             }
@@ -216,15 +202,15 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         String categoryId = pageContext.getRequest().getParameter("catId");
         boolean noTreenav = ((String) pageContext.getRequest().getAttribute("notreenav")) != null ;
         
-        List filtered;
+        List<ProductModel> filtered;
         List<ProductModel> convFiltered;
         {
             
             if (categoryId != null && !noTreenav) {
-                filtered = contentTree.collectChildNodes(categoryId, new UniqueProductFilter());
+                filtered = contentTree.collectChildNodes(categoryId, new ContentNodeTree.UniqueProductFilter());
                 Collections.sort(filtered, fres.getCurrentComparator());
             } else if (departmentId != null && !noTreenav) {
-                filtered = contentTree.collectChildNodes(departmentId, new UniqueProductFilter());
+                filtered = contentTree.collectChildNodes(departmentId, new ContentNodeTree.UniqueProductFilter());
                 Collections.sort(filtered, fres.getCurrentComparator());
             } else {
                 filtered = fres.getProducts();
@@ -232,9 +218,9 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
             convFiltered = new ArrayList<ProductModel>(filtered.size());
             // get brand names - all or just for the selected category
             if (brandSetName != null) {
-                TreeSet brandSet = new TreeSet(ContentNodeModel.FULL_NAME_COMPARATOR);
+                TreeSet<BrandModel> brandSet = new TreeSet<BrandModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
                 for (int i = 0; i < filtered.size(); i++) {
-                    ProductModel prod = (ProductModel) filtered.get(i);
+                    ProductModel prod = filtered.get(i);
                     //Convert them to ProductModelPricingAdapter for zone pricing.
                     convFiltered.add(prod);
                 	brandSet.addAll(prod.getBrands());
@@ -275,10 +261,10 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         }
 
         if (categorySetName != null) {
-            List products = fres.getProducts();
+            List<ProductModel> products = fres.getProducts();
             TreeSet<CategoryModel> categorySet = new TreeSet<CategoryModel>(ContentNodeModel.FULL_NAME_COMPARATOR);
             for (int i = 0; i < products.size(); i++) {
-                ProductModel prod = (ProductModel) products.get(i);
+                ProductModel prod = products.get(i);
                 categorySet.add(prod.getPrimaryHome());
             }
             pageContext.setAttribute(categorySetName, categorySet);
@@ -358,7 +344,8 @@ public abstract class AbstractNavigationTag extends BodyTagSupport {
         return identity.getErpCustomerPK();
     }
     
-    private PricingContext getPricingContext() {
+    @SuppressWarnings( "unused" )
+	private PricingContext getPricingContext() {
         FDUserI user = FDSessionUser.getFDSessionUser(pageContext.getSession());
         if (user == null) {
             throw new FDRuntimeException("User object is Null");

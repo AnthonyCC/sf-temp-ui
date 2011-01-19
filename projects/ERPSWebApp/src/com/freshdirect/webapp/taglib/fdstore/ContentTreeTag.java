@@ -17,9 +17,11 @@ import com.freshdirect.framework.webapp.BodyTagSupport;
 
 public class ContentTreeTag extends BodyTagSupport {
 
-    private final class CategoryTreeFilter implements ContentNodeTree.TreeElementFilter {
+	private static final long	serialVersionUID	= 3129393723729467345L;
+
+	private final class CategoryTreeFilter implements ContentNodeTree.TreeElementFilter {
         String catId;
-        Set childSelected = new HashSet();
+        Set<String> childSelected = new HashSet<String>();
 
         CategoryTreeFilter(String catId) {
             this.catId = catId;
@@ -60,7 +62,7 @@ public class ContentTreeTag extends BodyTagSupport {
     private String depthName;
     private String childCountName;
     private String selectedName;
-    private Set    selectedCategories;
+    private Set<String>    selectedCategories;
     private int    expandToDepth = 0;
     private String nextDepthName;
     private boolean includeProducts = false;
@@ -102,7 +104,7 @@ public class ContentTreeTag extends BodyTagSupport {
         ContentNodeTree contentTree = (ContentNodeTree) pageContext.getAttribute(tree);
         
         // calculate the set of the selected categories, to the root
-        selectedCategories = new HashSet();
+        selectedCategories = new HashSet<String>();
         String categoryId = pageContext.getRequest().getParameter("catId");
         if (categoryId!=null) {
             TreeElement rootElement = contentTree.getTreeElement(categoryId);
@@ -120,7 +122,7 @@ public class ContentTreeTag extends BodyTagSupport {
             treeElement = rootElement;
             if (treeElement != null) {
                 while (!CategoryNodeTree.UNNECESSARY_CATEGORY_REMOVER.accept(treeElement)) {
-                    TreeElement child = (TreeElement) treeElement.getChildren().iterator().next();
+                    TreeElement child = treeElement.getChildren().iterator().next();
                     selectedCategories.add(child.getModel().getContentKey().getId());
                     treeElement = child;
                 }
@@ -147,9 +149,8 @@ public class ContentTreeTag extends BodyTagSupport {
         if (iterator.hasNext()) {
             setupValues();
             return EVAL_BODY_AGAIN;
-        } else {
-            return SKIP_BODY;
         }
+		return SKIP_BODY;
     }
 
     public int doAfterBody() throws JspException {
@@ -161,7 +162,7 @@ public class ContentTreeTag extends BodyTagSupport {
     }
 
     private void setupValues() {
-        ContentNodeTree.TreeElement element = (TreeElement) iterator.next();
+        ContentNodeTree.TreeElement element = iterator.next();
         if (contentNodeName != null) {
             pageContext.setAttribute(contentNodeName, element.getModel());
         }
@@ -177,7 +178,7 @@ public class ContentTreeTag extends BodyTagSupport {
         if (nextDepthName!=null) {
             Integer nextDepth ;
             if (iterator.hasNext()) {
-                ContentNodeTree.TreeElement nextElement =((TreeElement) iterator.peekNext());
+                ContentNodeTree.TreeElement nextElement =(iterator.peekNext());
                 nextDepth = new Integer(nextElement.getDepth());
             } else {
                 nextDepth = new Integer(0);

@@ -92,7 +92,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	private final static StemmingAnalyzer STEMMER = new StemmingAnalyzer(Version.LUCENE_22);
 
 	/** Map of ContentType -> List of AttributeIndex */
-	private Map contentIndexes = new HashMap();
+	private Map<ContentType, List<ContentIndex>> contentIndexes = new HashMap<ContentType, List<ContentIndex>>();
 	
 	private SynonymDictionary dictionary;
 	
@@ -104,6 +104,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	
 	private LuceneSpellingSuggestionService spellService;
 
+	@SuppressWarnings( "unused" )
 	private final static int MAX_AUTOCOMPLETE_HITS = 20;
 
 	/**
@@ -154,9 +155,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	 * 
 	 * @param descrs Collection of {@link ContentIndex}
 	 */
-	public void setIndexes(Collection descrs) {
-		for (Iterator i = descrs.iterator(); i.hasNext();) {
-			ContentIndex idx = (ContentIndex) i.next();
+	public void setIndexes(Collection<ContentIndex> descrs) {
+		for ( ContentIndex idx : descrs ) {
 			this.addIndex(idx);
 		}
 	}
@@ -166,9 +166,9 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	 */
 	private void addIndex(ContentIndex idx) {
 		ContentType cType = ContentType.get(idx.getContentType());
-		List indexes = (List) contentIndexes.get(cType);
+		List<ContentIndex> indexes = contentIndexes.get(cType);
 		if (indexes == null) {
-			indexes = new ArrayList();
+			indexes = new ArrayList<ContentIndex>();
 			contentIndexes.put(cType, indexes);
 		}
 		if (idx instanceof AttributeIndex) {
@@ -179,7 +179,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 	/* (non-Javadoc)
 	 * @see com.freshdirect.cms.search.ContentSearchServiceI#getIndexedTypes()
 	 */
-	public Set getIndexedTypes() {
+	public Set<ContentType> getIndexedTypes() {
 		return contentIndexes.keySet();
 	}
 
@@ -195,8 +195,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			// delete old documents
 			IndexReader localReader = createReader(false);
 			int count = 0;
-			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
-				ContentNodeI node = (ContentNodeI) i.next();
+			for (Iterator<ContentNodeI> i = contentNodes.iterator(); i.hasNext();) {
+				ContentNodeI node = i.next();
 				// CHANGED count += reader.delete(new Term(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
 				count += localReader.deleteDocuments(new Term(FIELD_CONTENT_KEY, node.getKey().getEncoded()));
 				
@@ -208,8 +208,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			// index new documents
 			IndexWriter writer = new IndexWriter(getIndexDirectory(), STEMMER, false, new MaxFieldLength(1024));
 			count = 0;
-			for (Iterator i = contentNodes.iterator(); i.hasNext();) {
-				ContentNodeI node = (ContentNodeI) i.next();
+			for (Iterator<ContentNodeI> i = contentNodes.iterator(); i.hasNext();) {
+				ContentNodeI node = i.next();
 				indexNode(node, writer);
 
 				count++;
@@ -315,7 +315,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
         BrandNameExtractor brandNameExtractor = new BrandNameExtractor();
 
-        List indexes = (List) contentIndexes.get(node.getKey().getType());
+        List<ContentIndex> indexes = contentIndexes.get(node.getKey().getType());
         if (indexes == null) {
             return null;
         }
@@ -333,8 +333,11 @@ public class LuceneSearchService implements ContentSearchServiceI {
         // node.getKey().getId()));
         doc.add(new Field(FIELD_CONTENT_ID, node.getKey().getId(), Field.Store.NO, Field.Index.ANALYZED));
 
-        for (Iterator i = indexes.iterator(); i.hasNext();) {
-            AttributeIndex ad = (AttributeIndex) i.next();
+        for ( ContentIndex ci : indexes ) {
+        	if ( !( ci instanceof AttributeIndex ) )
+        		continue;
+        	
+            AttributeIndex ad = (AttributeIndex) ci;
 
             Object atrValue = node.getAttributeValue(ad.getAttributeName());
 
@@ -348,6 +351,10 @@ public class LuceneSearchService implements ContentSearchServiceI {
 
             if (ad.getAttributeName().equalsIgnoreCase("keywords") && this.dictionary != null) {
                 Object fullNameObj = node.getAttributeValue("FULL_NAME");
+                // If it has no "FULL_NAME" fall back to "name"
+                if ( fullNameObj == null ) {
+                	fullNameObj = node.getAttributeValue("name");
+                }
                 if (fullNameObj instanceof String) {
                     String fullName = (String) fullNameObj;
                     String newValue = this.dictionary.getAdditionalKeywords(fullName, value);
@@ -363,7 +370,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
                 // if it has 2-3 terms
                 if (ad.getAttributeName().equals("FULL_NAME")) {
 
-                    List tokens = new ArrayList();
+                    List<String> tokens = new ArrayList<String>();
                     for (StringTokenizer tokenizer = new StringTokenizer(value.trim().toLowerCase(), " \t&,"); tokenizer.hasMoreTokens(); tokens.add(tokenizer
                             .nextToken()))
                         ;
@@ -373,7 +380,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
                             if (stopWords.contains(tokens.get(p))) {
                                 continue;
                             }
-                            StringBuffer comp = new StringBuffer((String) tokens.get(p)).append(' ').append(tokens.get(tokens.size() - 1));
+                            StringBuffer comp = new StringBuffer(tokens.get(p)).append(' ').append(tokens.get(tokens.size() - 1));
                             // System.out.println("COMPOUND WORD: " + comp);
                             doc.add(new Field(FULL_NAME_INDEX, comp.toString(), Field.Store.NO, Field.Index.NOT_ANALYZED));
                         }
@@ -399,8 +406,8 @@ public class LuceneSearchService implements ContentSearchServiceI {
                 doc.add(new Field(ad.getAttributeName() + STEMMED_SUFFIX, value, Field.Store.YES, Field.Index.ANALYZED));
 
                 // extract potential brand names and add them to the search
-                List brandNames = brandNameExtractor.extract(value);
-                for (Iterator bni = brandNames.iterator(); bni.hasNext();) {
+                List<CharSequence> brandNames = brandNameExtractor.extract(value);
+                for (Iterator<CharSequence> bni = brandNames.iterator(); bni.hasNext();) {
                     String canonicalBrandName = StringUtil.removeAllWhiteSpace(bni.next().toString());
                     doc.add(new Field(ad.getAttributeName(), canonicalBrandName, Field.Store.YES, Field.Index.NOT_ANALYZED));
                 }
@@ -415,7 +422,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			boolean exists = IndexReader.indexExists(getIndexDirectory());
 			boolean indexGood = true;
 			if (exists) {
-				Collection indexedFields = getReader().getFieldNames(IndexReader.FieldOption.INDEXED);
+				Collection<String> indexedFields = getReader().getFieldNames(IndexReader.FieldOption.INDEXED);
 				for(int i=0; i< CHECK_INDEXES.length; ++i) {
 					if (!indexedFields.contains(CHECK_INDEXES[i])) {
 						LOGGER.debug("REQUIRED INDEX: " + CHECK_INDEXES[i] + " DOES NOT EXIST");
@@ -427,13 +434,13 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				if (!indexGood) {
 					
 					LOGGER.debug("REBUILDING INDEX");
-					Set keys = new HashSet();
-					for (Iterator i = getIndexedTypes().iterator(); i.hasNext();) {
-						ContentType type = (ContentType) i.next();
+					Set<ContentKey> keys = new HashSet<ContentKey>();
+					for (Iterator<ContentType> i = getIndexedTypes().iterator(); i.hasNext();) {
+						ContentType type = i.next();
 						keys.addAll(CmsManager.getInstance().getContentKeysByType(type));
 					}
 
-					Map nodes = CmsManager.getInstance().getContentNodes(keys);
+					Map<ContentKey,ContentNodeI> nodes = CmsManager.getInstance().getContentNodes(keys);
 					index(nodes.values());
 					spellService = null;
 				}
@@ -488,11 +495,11 @@ public class LuceneSearchService implements ContentSearchServiceI {
 							query, // name + STEMMED_SUFFIX
 							query, // FULL_NAME + STEMMED_SUFFIX
 							query, // title
-							query,  // title + STEMMED_SUFFIX
-							query,
-							query,
-							query,
-							query
+							query, // title + STEMMED_SUFFIX
+							query, // QUESTION
+							query, // ANSWER
+							query, // QUESTION + STEMMED_SUFFIX
+							query  // ANSWER + STEMMED_SUFFIX
 					},
 					new String[] {
 							FIELD_CONTENT_ID,
@@ -516,7 +523,7 @@ public class LuceneSearchService implements ContentSearchServiceI {
 			TopDocs hits = searcher.search(q, maxHits);
 
 			if (hits.totalHits == 0) {
-				return Collections.EMPTY_LIST;
+				return Collections.emptyList();
 			}
 
 			List<SearchHit> h = new ArrayList<SearchHit>(hits.totalHits);
@@ -525,7 +532,14 @@ public class LuceneSearchService implements ContentSearchServiceI {
 				Document doc = searcher.doc(hits.scoreDocs[i].doc);
 				
 				ContentKey key = ContentKey.decode(doc.get(FIELD_CONTENT_KEY));
-				h.add(new SearchHit(key, hits.scoreDocs[i].score, doc.get("KEYWORDS")));
+				
+				// use "KEYWORDS" if present, fall back to "keywords" if not 
+				String keywords = doc.get( "KEYWORDS" );
+				if ( keywords == null ) {
+					keywords = doc.get( "keywords" );
+				} 
+				
+				h.add(new SearchHit(key, hits.scoreDocs[i].score, keywords));
 			}
 			return h;
 

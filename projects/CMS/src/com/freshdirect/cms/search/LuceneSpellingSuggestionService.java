@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.TreeSet;
 
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -45,7 +44,7 @@ public class LuceneSpellingSuggestionService {
 	final static Logger LOGGER = LoggerFactory.getInstance(LuceneSpellingSuggestionService.class);
 	
 	// Do not try to search for these
-	private final static Set<String> stopWords = new HashSet(Arrays.asList(new String[] {"with","and","of","or"}));
+	private final static Set<String> stopWords = new HashSet<String>(Arrays.asList(new String[] {"with","and","of","or"}));
 	
 	// spell checker instance, created at construction
 	private SpellChecker checker;
@@ -57,7 +56,7 @@ public class LuceneSpellingSuggestionService {
 	private Directory directory;
 	
 	// indexes to search
-	private List indexes;
+	private List<String> indexes;
 	
 	/**
 	 * Interface to decide whether to accept a suggestion for a term.
@@ -95,7 +94,7 @@ public class LuceneSpellingSuggestionService {
 	 * @param reader index reader
 	 * @throws IOException
 	 */
-	public LuceneSpellingSuggestionService(String indexLocation, List indexes, IndexReader reader) throws IOException {
+	public LuceneSpellingSuggestionService(String indexLocation, List<String> indexes, IndexReader reader) throws IOException {
 		
 		directory = FSDirectory.open(new File(indexLocation));
 		
@@ -125,8 +124,7 @@ public class LuceneSpellingSuggestionService {
 	 */
 	public void indexWords(IndexReader reader) throws IOException {
 		LOGGER.info("Started indexing words for spell-checker");
-		for(Iterator i = indexes.iterator(); i.hasNext(); ) {
-			String index = (String)i.next();
+		for( String index : indexes ) {
 			LOGGER.info("About to index field \"" + index + "\" for spell-checker");
 			Dictionary dictionary = new LuceneDictionary(reader,index);
 			this.checker.indexDictionary(dictionary);
@@ -163,8 +161,7 @@ public class LuceneSpellingSuggestionService {
 		// E.g. query = "dite coke", dite will be rejected, but coke is ok
 		if (termIndex != -1) {
 			BooleanQuery tquery = new BooleanQuery();
-			for(Iterator idx = indexes.iterator(); idx.hasNext(); ) {
-				String index = (String)idx.next();
+			for( String index : indexes ) {
 				tquery.add(new TermQuery(new Term(index,query)),BooleanClause.Occur.SHOULD);
 			}
 			if (searcher.search(tquery, 1).totalHits > 0) {
@@ -218,8 +215,7 @@ public class LuceneSpellingSuggestionService {
 			if (termIndex != -1) {
 			
 				BooleanQuery tquery = new BooleanQuery();
-				for(Iterator idx = indexes.iterator(); idx.hasNext(); ) {
-					String index = (String)idx.next();
+				for( String index : indexes ) {
 					tquery.add(new TermQuery(new Term(index,words[i])),BooleanClause.Occur.SHOULD);
 				}
 				
@@ -327,7 +323,7 @@ public class LuceneSpellingSuggestionService {
 	 * @param df distance filter
 	 * @return suggested spellings (List<"{@link SpellingHit}>)
 	 */
-	public List getSpellingHits(String query, int maxHits, AcceptableEditDistanceFilter df) {
+	public List<SpellingHit> getSpellingHits(String query, int maxHits, AcceptableEditDistanceFilter df) {
 		
 		Map<String, SpellingHit.GrammaticalMatch> grammarHits = new HashMap<String, SpellingHit.GrammaticalMatch>(); // purely grammatical closeness
 		Map<ContentKey, SpellingHit.ContentKeyMatch> contentHits = new HashMap<ContentKey, SpellingHit.ContentKeyMatch>(); // relevant content: ... only triggered by multi-term queries
@@ -353,14 +349,12 @@ public class LuceneSpellingSuggestionService {
 		}
 		
 		// sort hits
-		Object[] values = hits.toArray();
+		SpellingHit[] values = hits.toArray( new SpellingHit[0] );
 		Arrays.sort(
 			values,
-			new Comparator() {
+			new Comparator<SpellingHit>() {
 
-				public int compare(Object o1, Object o2) {
-					SpellingHit h1 = (SpellingHit)o1;
-					SpellingHit h2 = (SpellingHit)o2;
+				public int compare(SpellingHit h1, SpellingHit h2) {
 					
 					// advantage to hits that match the more terms of the original
 					int diff1 = h1.getQueryTermCount() - h1.getMatchTermCount();
