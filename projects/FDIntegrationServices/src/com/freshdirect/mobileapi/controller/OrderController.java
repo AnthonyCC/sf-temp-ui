@@ -345,6 +345,7 @@ public class OrderController extends BaseController {
 	    			FilterOption option = new FilterOption();
 	    			option.setId(department.getId());
 	    			option.setLabel(department.getName());
+	    			option.setImages(department.getImages());
 	    			departmentList.add(option);
 	    		}
 	

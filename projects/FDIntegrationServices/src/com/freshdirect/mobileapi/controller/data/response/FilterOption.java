@@ -1,10 +1,17 @@
 package com.freshdirect.mobileapi.controller.data.response;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.freshdirect.mobileapi.controller.data.Image;
+
 public class FilterOption {
     private String label;
 
     private String id;
-
+    
+    List<Image> images = new ArrayList<Image>();
+    
     public String getLabel() {
         return label;
     }
@@ -21,4 +28,13 @@ public class FilterOption {
         this.id = id;
     }
 
+	public List<Image> getImages() {
+		return images;
+	}
+
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+    
+    
 }
