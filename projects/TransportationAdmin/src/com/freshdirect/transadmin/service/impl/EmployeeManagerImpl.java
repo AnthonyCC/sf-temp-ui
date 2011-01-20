@@ -686,11 +686,10 @@ public class EmployeeManagerImpl extends BaseManagerImpl implements
 				EmployeeStatus e = (EmployeeStatus) iterator.next();
 				EmployeeInfo em = TransAdminCacheManager.getInstance()
 						.getActiveInactiveEmployeeInfo(e.getPersonnum(), this);
-				if (e != null && em != null && e.isStatus() && "Active".equalsIgnoreCase(em.getStatus())) {
+				if (e != null && em != null && !e.isStatus() && "Active".equalsIgnoreCase(em.getStatus())) {
 					l.add(e);
 				}
-				if (e != null && em != null && !e.isStatus()
-						&& "Inactive".equalsIgnoreCase(em.getStatus())) {
+				if (e != null && em != null && e.isStatus()	&& "Inactive".equalsIgnoreCase(em.getStatus())) {
 					l.add(e);
 				}
 			}
