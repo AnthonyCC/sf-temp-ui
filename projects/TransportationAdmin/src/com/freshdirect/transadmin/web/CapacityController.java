@@ -21,9 +21,11 @@ import com.freshdirect.framework.util.TimeOfDay;
 import com.freshdirect.routing.model.IDeliverySlot;
 import com.freshdirect.routing.model.IDeliveryWindowMetrics;
 import com.freshdirect.routing.model.IRoutingSchedulerIdentity;
+import com.freshdirect.routing.model.IServiceTimeScenarioModel;
 import com.freshdirect.routing.model.IUnassignedModel;
 import com.freshdirect.routing.service.proxy.DeliveryServiceProxy;
 import com.freshdirect.routing.service.proxy.RoutingEngineServiceProxy;
+import com.freshdirect.routing.service.proxy.RoutingInfoServiceProxy;
 import com.freshdirect.routing.util.RoutingDateUtil;
 import com.freshdirect.transadmin.model.Region;
 import com.freshdirect.transadmin.model.TrnCutOff;
@@ -72,11 +74,13 @@ public class CapacityController extends AbstractMultiActionController {
 		
 		ModelAndView mav = new ModelAndView("earlyWarningView");
 		Map<String, List<TimeRange>> discountMapping = null;
+		IServiceTimeScenarioModel srvScenario = null;
 		
 		try {
 			if(rDate != null) {
-				discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(TransStringUtil.getDate(rDate));
-				
+				Date reportDate = TransStringUtil.getDate(rDate);
+                srvScenario = new RoutingInfoServiceProxy().getRoutingScenarioByDate(reportDate);
+                discountMapping = this.getZoneManagerService().getWindowSteeringDiscounts(reportDate);				
 			}			
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
@@ -104,6 +108,7 @@ public class CapacityController extends AbstractMultiActionController {
 		mav.getModel().put("rType", rType);
 		mav.getModel().put("autorefresh", request.getParameter("autorefresh"));
 		mav.getModel().put("cutoffs", domainManagerService.getCutOffs());
+		mav.getModel().put("srcscenario", srvScenario);
 		
 		return mav;
 	}

@@ -5,6 +5,7 @@
 <%@ page import= 'com.freshdirect.transadmin.util.*' %>
 <%@ page import= 'java.util.*' %>
 <%@ page import= 'com.freshdirect.transadmin.web.model.*' %>
+<%@ page import= 'com.freshdirect.routing.model.*' %>
 
 <%  
    pageContext.setAttribute("HAS_ADDBUTTON", "false");
@@ -12,6 +13,11 @@
    pageContext.setAttribute("IS_USERADMIN", ""+com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request));
    String dateRangeVal = request.getParameter("rDate") != null ? request.getParameter("rDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getNextDate();
+   String scenariotitle = "Service Time Scenario : ";
+   IServiceTimeScenarioModel srvScenario = (IServiceTimeScenarioModel)request.getAttribute("srcscenario");
+   if(srvScenario != null) {
+         scenariotitle += srvScenario.getDescription();
+   }
  %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
@@ -225,7 +231,7 @@
     <tr>    
 	  <td style="vertical-align: top;" width="68%">
 	      <ec:table items="earlywarnings"   action="${pageContext.request.contextPath}/earlywarning.do"
-	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="&nbsp;"
+	            imagePath="${pageContext.request.contextPath}/images/table/*.gif"   title="<%= scenariotitle %>"
 	            width="100%" filterable="false" showPagination="false" rowsDisplayed="1000" view="fd" >
 	            
 	            <ec:exportPdf fileName="earlywarnings.pdf" tooltip="Export PDF" 
