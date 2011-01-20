@@ -63,6 +63,8 @@ if (!yuzer.isSurveySkipped() && yuzer.getAdjustedValidOrderCount()==1 && yuzer.g
 %>
 <%-- =================================================================================================== --%>
 
+<% //check unattended %>
+<%@ include file="/includes/i_check_unattended_delivery.jspf" %>
 <% 
 if (yuzer.getLevel()==FDUserI.RECOGNIZED) {
     response.sendRedirect(response.encodeRedirectURL("/login/login.jsp?successPage=/checkout/step_1_choose.jsp"));

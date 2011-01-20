@@ -9,24 +9,7 @@
 <tmpl:put name='title' direct='true'>FreshDirect - Your Account - Unattended Delivery Confirmation</tmpl:put>
 <tmpl:put name='content' direct='true'>
 <%
-	String successPage = "/your_account/delivery_information.jsp";
-
-	System.out.println("successPage before:" + successPage);
-	System.out.println("attribute before:" + session.getAttribute("redirectToIndex"));
-
-	if (session.getAttribute("redirectToIndex") != null) {
-		if (!("false").equals(session.getAttribute("redirectToIndex"))) {
-			successPage = "/index.jsp";
-		}
-		//un-set attribute but check for null, because submitting passes here a second time before going to successPage
-		session.setAttribute("redirectToIndex", "false");
-	} else {
-		successPage = "/your_account/delivery_information.jsp";
-	}
-
-	System.out.println("successPage after:" + successPage);
-	System.out.println("attribute after:" + session.getAttribute("redirectToIndex"));
-
+	String successPage = (request.getParameter("successPage") == null || "".equals(request.getParameter("successPage"))) ? "/your_account/delivery_information.jsp" : request.getParameter("successPage") ;
 %>
 <fd:RegistrationController actionName="editDeliveryAddress" result="result" successPage="<%=successPage%>">
 

@@ -16,7 +16,8 @@
 	Collection shippingAddresses = FDCustomerManager.getShipToAddresses(dlvInfoUser.getIdentity());
 	Integer addressCount = shippingAddresses.size();
 	ErpAddressModel newAddress = null;
-
+	
+	String successPage = (request.getParameter("successPage") == null) ? "/your_account/delivery_information.jsp" : request.getParameter("successPage") ;
 
 	if (addressCount > 0) {
 		//we only have one address, since the user just signed up, so it's new
@@ -32,15 +33,23 @@
 		<fd:UnattendedDelivery id="zone" address="<%= newAddress %>" checkUserOptions="true">
 			<%
 				if (zone.isUnattended() && !EnumUnattendedDeliveryFlag.OPT_OUT.equals(newAddress.getUnattendedDeliveryFlag())) {
-					//set attribute so we redirect to homepage afterward instead of your account
-					session.setAttribute("redirectToIndex", "true");
 					//redirect
-					response.sendRedirect(response.encodeRedirectURL("/your_account/edit_delivery_address_unattended.jsp?page=udConfirm&addressId="+newAddressId));
+					response.sendRedirect(response.encodeRedirectURL("/your_account/edit_delivery_address_unattended.jsp?page=udConfirm&addressId="+newAddressId+"&successPage="+successPage));
 				}
 			%>
 		</fd:UnattendedDelivery>
 		<%
 	}
+
 	//fallback
-	response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
+	FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
+
+	if(userx.isCorporateUser()){
+		response.sendRedirect(response.encodeRedirectURL("/department.jsp?deptId=COS"));
+	}else if (userx.isDepotUser()){
+		response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
+	}else{
+		response.sendRedirect(response.encodeRedirectURL("/index.jsp"));
+	}
+
 %>

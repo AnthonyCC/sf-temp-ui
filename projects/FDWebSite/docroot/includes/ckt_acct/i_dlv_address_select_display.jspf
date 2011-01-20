@@ -125,19 +125,19 @@ if (__shipToAddresses.size() > 0) {
 				<% } %>
 				</fd:UnattendedDelivery>
 				<!-- alternate delivery -->
-				<%if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !__showingCorporateAddress) { %>
+				<% if (shipAddress.getAltDelivery() != null && shipAddress.getAltDelivery().getId() > 0 && !__showingCorporateAddress) { %>
 					<font class="text12bold">Alternate delivery</font>:<br>
-					<%=shipAddress.getAltDelivery().getName()%><br><br> 
-					<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>
-						<%=shipAddress.getAltFirstName()%> <%=shipAddress.getAltLastName()%><BR>
-						<% if(__showingCorporateAddress){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=shipAddress.getAltApartment()%><br>
-						<%if (shipAddress.getAltPhone()!=null) {%>
-							<%=shipAddress.getAltPhone().getPhone()%> 
-							<%if( !"".equals(shipAddress.getAltPhone().getExtension()) ){%>
-								Ext. <%= shipAddress.getAltPhone().getExtension() %> 
-							<%}%>
-						<%}%><br><br>
-					<%}%>
+					<%=shipAddress.getAltDelivery().getName()%><br><br>
+						<%if("NEIGHBOR".equalsIgnoreCase(shipAddress.getAltDelivery().getDeliveryCode())) {%>
+							<%=shipAddress.getAltFirstName()%> <%=shipAddress.getAltLastName()%><BR>
+							<% if(__showingCorporateAddress){ %>Floor/Suite <% }else{ %>Apt. <% } %><%=shipAddress.getAltApartment()%><br>
+							<%if (shipAddress.getAltPhone()!=null) {%>
+								<%=shipAddress.getAltPhone().getPhone()%>
+									<%if( !"".equals(shipAddress.getAltPhone().getExtension()) ){%>
+										Ext. <%= shipAddress.getAltPhone().getExtension() %>
+									<%}%>
+							<%}%><br><br>
+						<%}%>
 				<%}%>
 				</font>
 				<A HREF="<%= __linkURL + "?addressId=" + addrPKId %>"><IMG src="/media_stat/images/buttons/edit.gif" WIDTH="51" HEIGHT="16" ALT="EDIT" BORDER="0"></A>&nbsp;

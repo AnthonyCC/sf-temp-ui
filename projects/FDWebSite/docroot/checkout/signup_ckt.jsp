@@ -5,23 +5,24 @@
 <%@ page import='com.freshdirect.webapp.util.JspMethods'%>
 <%@ page import="com.freshdirect.webapp.util.AccountUtil" %>
 <%@ page import="com.freshdirect.delivery.restriction.GeographyRestrictionMessage"%>
-
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <fd:CheckLoginStatus />
 <%
-FDUserI usery = (FDUserI)session.getAttribute(SessionName.USER);
-int regType = 0;
-if(usery.isCorporateUser()){
-	regType = AccountUtil.CORP_USER;
-}else if (usery.isDepotUser()){
-	regType = AccountUtil.DEPOT_USER;
-}else{
-	regType = AccountUtil.HOME_USER;
-}
+	FDUserI usery = (FDUserI)session.getAttribute(SessionName.USER);
+	int regType = 0;
+	String regContSuccessPage = "/unattended_redirect.jsp?successPage=/checkout/step_1_choose.jsp";
+
+	if(usery.isCorporateUser()){
+		regType = AccountUtil.CORP_USER;
+	}else if (usery.isDepotUser()){
+		regType = AccountUtil.DEPOT_USER;
+	}else{
+		regType = AccountUtil.HOME_USER;
+	}
 %>
-<fd:RegistrationController actionName='register' successPage='/checkout/step_1_choose.jsp' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
+<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' signupFromCheckout='true' registrationType="<%=regType%>">
 <%
 ActionResult ar= new ActionResult();
 Collection aerrs=result.getErrors();

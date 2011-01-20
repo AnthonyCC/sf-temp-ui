@@ -13,18 +13,22 @@
 <fd:CheckLoginStatus />
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(); %>
 <%
-FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
-int regType = 0;
-if(userx.isCorporateUser()){
-	regType = AccountUtil.CORP_USER;
-}else if (userx.isDepotUser()){
-	regType = AccountUtil.DEPOT_USER;
-}else{
-	regType = AccountUtil.HOME_USER;
-}
-%>
+	FDUserI userx = (FDUserI)session.getAttribute(SessionName.USER);
+	int regType = 0;
+	String regContSuccessPage = "/unattended_redirect.jsp?successPage=";
 
-<fd:RegistrationController actionName='register' successPage='/unattended_redirect.jsp' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
+	if(userx.isCorporateUser()){
+		regType = AccountUtil.CORP_USER;
+		regContSuccessPage += "/department.jsp?deptId=COS";
+	}else if (userx.isDepotUser()){
+		regType = AccountUtil.DEPOT_USER;
+		regContSuccessPage += "/index.jsp";
+	}else{
+		regType = AccountUtil.HOME_USER;
+		regContSuccessPage += "/index.jsp";
+	}
+%>
+<fd:RegistrationController actionName='register' successPage='<%= regContSuccessPage %>' result='result' fraudPage='registration_note.jsp' statusChangePage='registration_status_change.jsp' registrationType="<%=regType%>">
 <tmpl:insert template='/common/template/no_nav.jsp'>
 <tmpl:put name='title' direct='true'>FreshDirect - Sign Up</tmpl:put>
 <tmpl:put name='content' direct='true'>

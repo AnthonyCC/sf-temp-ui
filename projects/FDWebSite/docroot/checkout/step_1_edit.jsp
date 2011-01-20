@@ -10,7 +10,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%! java.text.NumberFormat currencyFormatter = java.text.NumberFormat.getCurrencyInstance(Locale.US); %>
 <fd:CheckLoginStatus guestAllowed="false" recognizedAllowed="false" redirectPage="/login/login.jsp?successPage=/checkout/step_1_choose.jsp" />
-
+<%
+	//stick the current id being edited into the session so we can check it back on delivery info
+	session.setAttribute("lastEditedAddressId", (String)NVL.apply(request.getParameter("addressId"), ""));
+%>
 <%
     FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 	double cartTotal = user.getShoppingCart().getTotal();
