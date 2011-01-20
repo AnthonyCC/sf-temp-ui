@@ -36,11 +36,11 @@ public class ProductPricingFactory {
 		}
 	}
 
-	public List<ProductModelPricingAdapter> getPricingAdapter(List<ProductModel> list, PricingContext pCtx) {
+	public List<ProductModel> getPricingAdapter(List<ProductModel> list, PricingContext pCtx) {
 		if (list == null) {
 			return null;
 		}
-		List<ProductModelPricingAdapter> res = new ArrayList<ProductModelPricingAdapter>(list.size());
+		List<ProductModel> res = new ArrayList<ProductModel>(list.size());
 		for (ProductModel p : list) {
 			res.add(getPricingAdapter(p,pCtx));
 		}
