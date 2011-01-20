@@ -22,7 +22,7 @@
 	String deptId = null;
 	// it should be CategoryModel ... 
 	ContentNodeModel currentFolder = ContentFactory.getInstance().getContentNode(catId);
-	final ProductContainer productContainer = null; //(currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
+	final ProductContainer productContainer = (currentFolder instanceof ProductContainer) ? (ProductContainer) currentFolder : null;
 	final CategoryModel categoryModel = (currentFolder instanceof CategoryModel) ? (CategoryModel) currentFolder : null;
 	if (categoryModel != null) {
 		
