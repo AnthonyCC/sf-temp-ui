@@ -1,2 +1,2 @@
 <span class="text14"><a href="JavaScript:pop(&quot;/request_wine.jsp?department=wine&quot;,400,585);"><b>Request A Wine</b></a> |
-<a href="JavaScript:pop(&quot;/brandpop.jsp?brandId=bd_usq&quot;,400,585);"><b>About USQ</b></a></span>
+<a href="JavaScript:pop(&quot;/shared/brandpop.jsp?brandId=bd_usq&quot;,400,585);"><b>About USQ</b></a></span>

@@ -143,7 +143,7 @@
 	    	TitledMedia tm = (TitledMedia)brandAttrib;
 	        EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
 	        if (popupType !=null ) {
-	            brandPopupLink="javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
+	            brandPopupLink="javascript:pop('"+response.encodeURL("/shared/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
 	        } 
 	   } 
 	   brandPopupLinks.add(brandPopupLink);
