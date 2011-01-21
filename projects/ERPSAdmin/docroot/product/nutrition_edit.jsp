@@ -54,7 +54,7 @@
                         <% } %>
                     <td>
                         <% if (!ErpNutritionType.SOURCE.equals(value)) { %>
-                        <input name="<%=value%>" type="text" size="4" value="<%=formatter.format(Math.abs(nutrition.getValueFor(value))) %>">
+                        <input name="<%=value%>" type="text" size="4" value="<%=Math.abs(nutrition.getValueFor(value)) %>">
                         <% } %>
                     </td>
                     <td>
