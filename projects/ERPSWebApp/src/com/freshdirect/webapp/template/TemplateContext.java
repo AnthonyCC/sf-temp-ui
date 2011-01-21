@@ -131,7 +131,16 @@ public class TemplateContext extends BaseTemplateContext{
 		if (node != null) {
 			return node;
 		}
-		return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+
+		//check for a product model...
+		ContentNodeModel nodePMCheck = ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		if (nodePMCheck != null && nodePMCheck instanceof ProductModel) {
+			//...product model, return back a pricing context
+			return ProductPricingFactory.getInstance().getPricingAdapter(((ProductModel)nodePMCheck), pricingContext);
+		}else{
+			//...not product model, do normal decode
+			return ContentFactory.getInstance().getContentNodeByKey(ContentKey.decode(id));
+		}
 	}
 
 	/**
