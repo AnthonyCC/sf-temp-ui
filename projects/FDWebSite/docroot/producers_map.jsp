@@ -176,7 +176,7 @@ if (cat == null)
 		
 	TitledMedia tm = (TitledMedia)popupContent;
 	// EnumPopupType popupType = EnumPopupType.LARGE /* EnumPopupType.getPopupType(tm.getPopupSize()) */;
-%>			<br><a href="/unsupported.jsp" onclick="popup('/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="font-weight: bold;">Learn more &hellip;</a>
+%>			<br><a href="/unsupported.jsp" onclick="popup('/shared/brandpop.jsp?brandId=<%= bm %>', 'large'); return false;" style="font-weight: bold;">Learn more &hellip;</a>
 		</div>
 		<br>
 	</div>

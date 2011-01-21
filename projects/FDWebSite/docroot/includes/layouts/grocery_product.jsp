@@ -187,7 +187,7 @@ if (brandValue==null) {
                         TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
                         brandPopupLink = "javascript:pop('" +
-                                response.encodeURL( "/brandpop.jsp?brandId="+bm ) + "'," +
+                                response.encodeURL( "/shared/brandpop.jsp?brandId="+bm ) + "'," +
                                 popupType.getHeight() + "," + popupType.getWidth() + ")";
                 }
         }
@@ -402,7 +402,7 @@ if(productCode!=null && prodCatId !=null ) {
                 if (popupContent!=null) {
                         TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
-                        brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+thisBrandModel)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
+                        brandPopupLink = "javascript:pop('"+response.encodeURL("/shared/brandpop.jsp?brandId="+thisBrandModel)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
                 }
 
 
@@ -681,7 +681,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%
 	if (hasNutrition || hasIngredients) {
 %>
-<br><A HREF="javascript:pop('/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Nutrition, Ingredients, and Allergens</A>
+<br><A HREF="javascript:pop('/shared/nutrition_info.jsp?catId=<%=request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId")%>',335,375)">Nutrition, Ingredients, and Allergens</A>
 <%
 	} else {
 %><br>Please check product label for nutrition, ingredients, and allergens.<%
@@ -764,7 +764,7 @@ if(shelfLife != null && shelfLife.trim().length() > 0) { %>
 		<tr>
 			<td align="right">
 			<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
-			<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+			<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
 			</td>
 		</tr>
 	</table>

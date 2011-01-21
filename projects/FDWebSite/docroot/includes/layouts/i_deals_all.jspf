@@ -187,7 +187,7 @@ if (brandValue==null) {
                         TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType = EnumPopupType.getPopupType(tm.getPopupSize());
                         brandPopupLink = "javascript:pop('" +
-                                response.encodeURL( "/brandpop.jsp?brandId="+bm ) + "'," +
+                                response.encodeURL( "/shared/brandpop.jsp?brandId="+bm ) + "'," +
                                 popupType.getHeight() + "," + popupType.getWidth() + ")";
                 }
         }
@@ -390,7 +390,7 @@ if(productCode!=null && prodCatId !=null ) {
                 if (popupContent!=null) {
                         TitledMedia tm = (TitledMedia)popupContent;
                         EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
-                        brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+thisBrandModel)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
+                        brandPopupLink = "javascript:pop('"+response.encodeURL("/shared/brandpop.jsp?brandId="+thisBrandModel)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
                 }
 
                 for (int bx = 0;bx<brandsForProd.size();bx++){
@@ -592,7 +592,7 @@ if(productCode!=null && prodCatId !=null ) {
 <%@ include file="/includes/product/kosher.jspf" %>
 
 <% if (hasNutrition || hasIngredients) { %>
-<br><a href="javascript:pop('/nutrition_info.jsp?catId=<%= request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId") %>',335,375)">Nutrition, Ingredients, and Allergens</a>
+<br><a href="javascript:pop('/shared/nutrition_info.jsp?catId=<%= request.getParameter("prodCatId")%>&productId=<%=request.getParameter("productId") %>',335,375)">Nutrition, Ingredients, and Allergens</a>
 <% } else { %><br>Please check product label for nutrition, ingredients, and allergens.<% } %><br>
 </td>
 <td width="10">&nbsp;</td><%-- buffer cell --%>

@@ -83,7 +83,7 @@
 	<div class="chef-info">
 		<h3 class="chef-name"><%= chefName %></h3>
 		<% if ( brandId != null ) { %>
-			<p class="chef-bio"><%= chefBlurb %> <a href="javascript:pop('/brandpop.jsp?brandId=<%=brandId%>',400,585)">Learn&nbsp;More</a></p>
+			<p class="chef-bio"><%= chefBlurb %> <a href="javascript:pop('/shared/brandpop.jsp?brandId=<%=brandId%>',400,585)">Learn&nbsp;More</a></p>
 		<% } %>
 		<div>
 			<% if ( brandLogo != null ) { %>

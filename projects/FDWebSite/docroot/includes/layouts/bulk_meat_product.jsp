@@ -181,7 +181,7 @@ if (firstProduct!=null) {
             if (popupContent!=null) {
                 TitledMedia tm = (TitledMedia)popupContent;
                 EnumPopupType popupType=EnumPopupType.getPopupType(tm.getPopupSize());
-                brandPopupLink = "javascript:pop('"+response.encodeURL("/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
+                brandPopupLink = "javascript:pop('"+response.encodeURL("/shared/brandpop.jsp?brandId="+bm)+"',"+popupType.getHeight()+","+popupType.getWidth()+")";
             }
         }
     }

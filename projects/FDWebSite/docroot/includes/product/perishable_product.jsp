@@ -184,7 +184,7 @@
 							<tr>
 								<td align="right">
 								<img src="/media_stat/images/layout/clear.gif" width="100%" height="6">
-								<a href="javascript:pop('/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
+								<a href="javascript:pop('/shared/brandpop.jsp?brandId=bd_fd_fresh_guarantee',400,585)">Learn more about our Freshness Guarantee - CLICK HERE</a>
 								</td>
 							</tr>
 						</table>
@@ -225,7 +225,7 @@
 				<%@ include file="/shared/includes/product/i_product_about.jspf" %>
 
 				<% if ( hasNutriOrIngrd ) { %>
-                	<br/><a href="javascript:pop('/nutrition_info.jsp?catId=<%=productNode.getParentNode().getContentName()%>&productId=<%=productNode.getContentName()%>',335,375)">Nutrition, Ingredients, and Allergens</a>
+                	<br/><a href="javascript:pop('/shared/nutrition_info.jsp?catId=<%=productNode.getParentNode().getContentName()%>&productId=<%=productNode.getContentName()%>',335,375)">Nutrition, Ingredients, and Allergens</a>
 				<% } else { %>
 					<br/>Please check product label for nutrition, ingredients, and allergens.
 				<% } %>
