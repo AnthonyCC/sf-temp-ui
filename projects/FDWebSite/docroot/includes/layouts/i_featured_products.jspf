@@ -33,16 +33,16 @@
 
 <display:FeaturedProductsHelper currentFolder="<%=(DepartmentModel)currentFolder%>" maxFavsToShow="<%=MAX_FAVS2SHOW%>"/>
 
-<% if (true||favoritesToShow >= MIN_FAVS2SHOW) { %>
+<% if (favoritesToShow >= MIN_FAVS2SHOW) { %>
 	<!-- separator  -->
-	<tr id="tr-B01">
+	<tr>
 		<td colspan="6">
 			<br /><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br />
 			<font class="space4pix"><br /><br /></font>
 		</td>
 	</tr>
 
-	<tr id="tr-B02">
+	<tr>
 		<td colspan="6">
 	        <%
 			// display department specific media
@@ -53,7 +53,7 @@
 						Html piece = deptBotItr.next();
 						if (piece != null) {
 				        	String deptBotItm = piece.getPath();
-                            %><%=deptBotItm %><fd:IncludeMedia name='<%= deptBotItm %>' /><%
+                            %><fd:IncludeMedia name='<%= deptBotItm %>' /><%
 				    	}
 					}
 				}
@@ -109,7 +109,7 @@
 			        	Html piece = (Html)deptBotItr.next();
 			        	if (piece != null) {
 			            	String deptBotItm = piece.getPath();
-    						%><br/><%=deptBotItm %><fd:IncludeMedia name='<%= deptBotItm %>' /><%
+    						%><br/><fd:IncludeMedia name='<%= deptBotItm %>' /><%
                     	}
                 	}
             	}

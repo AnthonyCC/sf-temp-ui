@@ -82,18 +82,18 @@
     	<td width="550"> <%-- this is the category column --%>
         	<table cellpadding="0" cellspacing="0" border="0" width="100%">
 		    	<% if (currentFolder.getEditorialTitle() != null && currentFolder.getEditorialTitle().length() > 0) { %>
-					<tr id="tr-001"><td colspan="6">
+					<tr><td colspan="6">
 						<span class="title16"><%= currentFolder.getEditorialTitle() %></span>
 					</td></tr>
 	
 					<!-- separator  -->
-					<tr id="tr-002"><td colspan="6">
+					<tr><td colspan="6">
 						<br/><img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br/>
 						<font CLASS="space4pix"><br/><br/></font>
 					</td></tr>
 				<% } %>
 
-	            <tr id="tr-003">
+	            <tr>
 	                <td colspan="6"><img src="<%= BrowseHeader %>"><br/><br/></td>
 	            </tr>
 	            
@@ -157,7 +157,7 @@
 			    //writing the actual html for displaying all subfolders
 				%>
 				
-				<tr id="tr-004">
+				<tr>
 					<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
 					<td width="100" valign="top"><%= imageCell.toString() %></td>
 					<td width="5"><img src="/media_stat/images/layout/clear.gif" width="5" height="1" border="0"></td>
@@ -180,13 +180,13 @@
 		
 		        if (featuredCats != null && featuredCats.size() > 0) { %>
 					<!-- separator  -->
-		            <tr id="tr-005"><td colspan="6"><br/>
+		            <tr><td colspan="6"><br/>
 	            		<img src="/media_stat/images/layout/cccccc.gif" width="550" height="1" border="0"><br/>
 	            		<font CLASS="space4pix"><br/><br/></font>
 	            		<img src="/media_stat/images/layout/dfgs_featured_brands.gif" width="115" height="10" border="0"><br/><br/>
 		            </td></tr>
 		
-		            <tr id="tr-006"><td colspan="6">
+		            <tr><td colspan="6">
 						<%
 						for (int fc = 0; fc < featuredCats.size(); fc++) {
 			                CategoryModel catMod= featuredCats.get(fc);
