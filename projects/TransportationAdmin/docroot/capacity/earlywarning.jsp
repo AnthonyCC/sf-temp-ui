@@ -12,11 +12,12 @@
    pageContext.setAttribute("IS_USERADMIN", ""+com.freshdirect.transadmin.security.SecurityManager.isUserAdmin(request));
    String dateRangeVal = request.getParameter("rDate") != null ? request.getParameter("rDate") : "";
    if(dateRangeVal == null || dateRangeVal.length() == 0) dateRangeVal = TransStringUtil.getNextDate();
-   String scenariotitle = "Service Time Scenario : ";
+   String scenariotitle = "<span style=\"font-size: 11pt;\">Service Time Scenario : ";
    IServiceTimeScenarioModel srvScenario = (IServiceTimeScenarioModel)request.getAttribute("srcscenario");
    if(srvScenario != null) {
 	   scenariotitle += srvScenario.getDescription();
    }
+   scenariotitle += "</span>";
  %>
   
   <link rel="stylesheet" href="css/transportation.css" type="text/css" />		
