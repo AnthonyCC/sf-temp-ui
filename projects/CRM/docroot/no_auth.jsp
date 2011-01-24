@@ -26,7 +26,7 @@
       <div align="center">
 	  <h3><b>! ! !<br><br>...You do not have enough priviliges to access these resources...</b>
 	  <br><br>
-	  &raquo; <a href="/main/index.jsp">Back to Home</a> &laquo;</h3>
+	  &raquo; <a href="/main/main_index.jsp">Back to Home</a> &laquo;</h3>
 	  </div>
 </body>
 </html>

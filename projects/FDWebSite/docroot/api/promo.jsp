@@ -27,10 +27,11 @@
 			if ("publish".equalsIgnoreCase(action)) {
 				String promoCode = request.getParameter("promoCode");
 				
-				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+				//CrmAgentModel agent = CrmSession.getCurrentAgent(session);
 	
 				PromoPublisher p = new PromoPublisher();
-				p.setAgent(agent);
+				//p.setAgent(agent);
+				p.setAgentId(CrmSession.getCurrentAgentStr(session));
 				
 				List<FDPromotionNewModel> l = new ArrayList<FDPromotionNewModel>();
 				l.add(FDPromotionNewModelFactory.getInstance().getPromotion(promoCode));

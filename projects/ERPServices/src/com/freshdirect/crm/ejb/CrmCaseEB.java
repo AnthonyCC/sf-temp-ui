@@ -16,6 +16,8 @@ public interface CrmCaseEB extends EntityBeanRemoteI {
     
     public void lock(PrimaryKey agentPK) throws RemoteException;
     
+    public void lock(String agentUserId) throws RemoteException;
+    
     public void unlock() throws RemoteException;
     
     public void setState(CrmCaseState state) throws RemoteException;

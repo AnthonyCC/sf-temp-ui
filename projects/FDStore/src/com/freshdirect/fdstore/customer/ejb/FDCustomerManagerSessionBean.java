@@ -2571,12 +2571,12 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	 *             if order was not in proper state to accept complaints
 	 */
 	public void addComplaint(ErpComplaintModel complaint, String saleId,
-			String erpCustomerId, String fdCustomerId)
+			String erpCustomerId, String fdCustomerId, boolean autoApproveAuthorized, Double limit )
 			throws FDResourceException, ErpComplaintException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
 
-			PrimaryKey cPk = sb.addComplaint(complaint, saleId);
+			PrimaryKey cPk = sb.addComplaint(complaint, saleId,  autoApproveAuthorized, limit );
 			ErpComplaintModel alteredComplaint = sb.getComplaintInfo(saleId,
 					cPk.getId()).getComplaint();
 			if (alteredComplaint.okToSendEmailOnCreate()
@@ -2667,11 +2667,11 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 	}
 
 	public void approveComplaint(String complaintId, boolean isApproved,
-			String csrId, boolean sendMail) throws FDResourceException,
+			String csrId, boolean sendMail,Double limit) throws FDResourceException,
 			ErpComplaintException {
 		try {
 			ErpCustomerManagerSB sb = this.getErpCustomerManagerHome().create();
-			String saleId = sb.approveComplaint(complaintId, isApproved, csrId);
+			String saleId = sb.approveComplaint(complaintId, isApproved, csrId,limit);
 			if (isApproved) {
 				ErpComplaintInfoModel complaintInfo = sb.getComplaintInfo(
 						saleId, complaintId);
@@ -6034,7 +6034,19 @@ public class FDCustomerManagerSessionBean extends FDSessionBeanSupport {
 			}
 		}
 	
-	
+	public PrimaryKey getCustomerId(String userId) throws FDResourceException{
+		try {
+			FDCustomerEB custEB = getFdCustomerHome().findByUserId(userId);
+			
+			FDCustomerModel fdCustomer = (FDCustomerModel) custEB.getModel();
+			return new PrimaryKey(fdCustomer.getErpCustomerPK());
+
+		} catch (FinderException ex) {
+			throw new FDResourceException(ex);
+		} catch (RemoteException ex) {
+			throw new FDResourceException(ex);
+		}
+	}
 
 }
 

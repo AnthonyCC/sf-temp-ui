@@ -13,6 +13,8 @@
 				<% String selected_agent = request.getParameter("agent_pk"); %>
 				<crm:GetAgent id="agent" agentId="<%= selected_agent %>">
 					<% 
+						String agentId = CrmSecurityManager.getUserName(request);
+	            		String agentRole = CrmSecurityManager.getUserRole(request);
                         CrmCaseTemplate template = new CrmCaseTemplate();
                         template.setAssignedAgentPK( agent.getPK() ); 
                         template.setSortBy(request.getParameter("sortBy"));

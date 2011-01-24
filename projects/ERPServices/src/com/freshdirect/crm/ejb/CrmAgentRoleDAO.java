@@ -13,12 +13,12 @@ import com.freshdirect.enums.EnumDAOI;
 public class CrmAgentRoleDAO implements EnumDAOI{
 	
 	public List loadAll(Connection conn) throws SQLException {
-		PreparedStatement ps = conn.prepareStatement("SELECT CODE, NAME, DESCRIPTION FROM CUST.ROLE");
+		PreparedStatement ps = conn.prepareStatement("SELECT CODE, NAME, DESCRIPTION, LDAP_ROLE_NAME FROM CUST.ROLE");
 		ResultSet rs = ps.executeQuery();
 
 		List l = new ArrayList();
 		while (rs.next()) {
-			l.add(new CrmAgentRole(rs.getString("CODE"), rs.getString("NAME"), rs.getString("DESCRIPTION")));
+			l.add(new CrmAgentRole(rs.getString("CODE"), rs.getString("NAME"), rs.getString("DESCRIPTION"),rs.getString("LDAP_ROLE_NAME")));
 		}
 
 		rs.close();

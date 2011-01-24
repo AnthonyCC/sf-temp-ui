@@ -12,12 +12,12 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Pending Credits</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <table><form method="post" action="/supervisor/pending_credits_list.jsp"></table>
 <div class="sub_nav">
 <% String reason = request.getParameter("reason"); 

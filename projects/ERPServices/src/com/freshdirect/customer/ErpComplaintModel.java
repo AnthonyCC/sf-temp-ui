@@ -279,9 +279,31 @@ public class ErpComplaintModel extends ModelSupport {
 	 * @return Complaint can be auto approved or not
 	 * 
 	 */
-	public boolean canBeAutoApproved(EnumSaleStatus orderStatus) {
-		final double creditAutoApproveAmount = ErpServicesProperties.getCreditAutoApproveAmount();
+	public boolean canBeAutoApproved(EnumSaleStatus orderStatus,boolean autoApproveAuthorized, Double limit) {
+		final double creditAutoApproveAmount = (null==limit ? 0 : limit);//ErpServicesProperties.getCreditAutoApproveAmount();
 		final double amount = getAmount();
+		return autoApproveAuthorized && (
+			((amount <= creditAutoApproveAmount)
+				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
+				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)))
+			|| ((0 == Math.round(amount * 100.0))
+				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)
+				&& (EnumSaleStatus.SETTLED.equals(orderStatus)
+					|| EnumSaleStatus.PAYMENT_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.CAPTURE_PENDING.equals(orderStatus)
+					|| EnumSaleStatus.ENROUTE.equals(orderStatus)))
+			|| ((getComplaintMethod() == ErpComplaintModel.CASH_BACK
+					|| getComplaintMethod() == ErpComplaintModel.MIXED)
+					&& amount <= creditAutoApproveAmount
+					&& EnumSaleStatus.SETTLED.equals(orderStatus)));
+		
+	}
+	
+	public boolean canBeAutoApproved(EnumSaleStatus orderStatus, double amount) {
+		final double creditAutoApproveAmount = ErpServicesProperties.getCreditAutoApproveAmount();
+//		final double amount = getAmount();
 		return
 			((amount <= creditAutoApproveAmount)
 				&& (getComplaintMethod() == ErpComplaintModel.STORE_CREDIT)

@@ -283,7 +283,7 @@ if ("POST".equals(request.getMethod())) {
             </table>
                 
         </td>
-        <td width="15%" align="right"><a href="/reports/index.jsp">All Reports >></a></td>
+        <td width="15%" align="right"><a href="/reports/reports_index.jsp">All Reports >></a></td>
     </tr>
 	<script language"javascript">
 	<!--

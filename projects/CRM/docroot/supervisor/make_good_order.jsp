@@ -9,7 +9,7 @@
 <%@ page import="com.freshdirect.webapp.util.CCFormatter"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Make Good Orders</tmpl:put>
 
@@ -39,7 +39,7 @@
     }
 %>
 
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <div class="sub_nav">
 <span class="sub_nav_title">
 <table width="100%" border="0" cellpadding="0" cellspacing="0"><form name="makeGoodOrder" method="post">

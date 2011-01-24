@@ -77,7 +77,7 @@ public class CustomerSummaryUtil {
 		return recentCases;
 	}
 
-	static final Comparator<FDOrderInfoI> COMP_BY_PLACE_DATE = new Comparator<FDOrderInfoI>() {
+	public static final Comparator<FDOrderInfoI> COMP_BY_PLACE_DATE = new Comparator<FDOrderInfoI>() {
 		public int compare(FDOrderInfoI arg0, FDOrderInfoI arg1) {
 			FDOrderInfoI o1 = (FDOrderInfoI) arg0;
 			FDOrderInfoI o2 = (FDOrderInfoI) arg1;
@@ -98,6 +98,9 @@ public class CustomerSummaryUtil {
 		return orderInfos.size() > n ? orderInfos.subList(0, n) : orderInfos;
 	}
 
+	public FDOrderInfoI getFDOrderInfo(String orderId) throws FDResourceException {
+		return  ((FDOrderHistory)user.getOrderHistory()).getFDOrderInfo(orderId) ;
+	}
 	
 	/* @return late issue for the specific order. Can be null */
 	public CrmLateIssueModel getLateIssueForOrder(FDOrderI order) throws FDResourceException {

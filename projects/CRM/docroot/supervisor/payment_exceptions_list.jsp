@@ -9,14 +9,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Payment Exceptions</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
 <%	Collection sales = CallCenterServices.getFailedAuthorizationSales(); %>
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <div class="sub_nav">
 <span class="sub_nav_title">Payment Exceptions ( <span class="result"><%= sales.size() %></span> )</span> A = Automatic Order   M = Manual Order
 </div>

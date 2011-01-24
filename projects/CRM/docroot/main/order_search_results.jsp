@@ -64,11 +64,8 @@ boolean isGuest = false;
 boolean isExec = false;
 String guestView = "&for=print";
 %>
-<crm:GetCurrentAgent id="currentAgent">
-    <% isGuest = currentAgent.isGuest(); %> 
-    <% isExec = currentAgent.isExec();  %> 
-</crm:GetCurrentAgent>
-<% String originalPage = "/main/index.jsp"; %>
+
+<% String originalPage = "/main/main_index.jsp"; %>
 <fd:Locator originalPage='<%= originalPage + searchQuery.toString().trim()%>' results='searchResults' searchType='order' searchCriteria='<%=sc%>'>
 
 

@@ -572,8 +572,9 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
 			}
 			
 			if (agent_signature) {
-				CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-				cem.setSignature(agent.getFirstName());
+//				CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+//				cem.setSignature(agent.getFirstName());
+				cem.setSignature(CrmSession.getCurrentAgentStr(pageContext.getSession()));
 			}
     	} else {
 			complaintModel.setEmailOption(EnumSendCreditEmail.DONT_SEND);
@@ -584,9 +585,10 @@ public class ComplaintCreatorTag extends com.freshdirect.framework.webapp.BodyTa
     }
     
     private void setComplaintDetails(ActionResult result, ErpComplaintModel complaintModel) { 
-		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
-			if (agent != null) {
-				complaintModel.setCreatedBy(agent.getUserId());
+//		CrmAgentModel agent = CrmSession.getCurrentAgent(pageContext.getSession());
+    	String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());
+			if (agentId != null) {
+				complaintModel.setCreatedBy(agentId);
 			} else {
 				CallcenterUser ccUser = (CallcenterUser) pageContext.getSession().getAttribute(SessionName.CUSTOMER_SERVICE_REP);	
 				complaintModel.setCreatedBy(ccUser.getId());

@@ -14,6 +14,7 @@
 <%@ page import="com.freshdirect.framework.util.NVL"%>
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
+
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
@@ -80,7 +81,7 @@ for (Iterator itr = crmSubjects.iterator(); itr.hasNext();) {
 		
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
-    		<crm:GetCurrentAgent id='currAgent'>
+    		
 			<crm:CrmTRQIssuesController id="casesForOrder" result="result" action="<%=action%>" saleId="mySaleId" successPage="/main/worklist.jsp">
 <%				if (result.isFailure()) {
 					for (Iterator r = result.getErrors().iterator(); r.hasNext(); ) { 
@@ -460,6 +461,6 @@ for (int j=0; j < loopControl; j++) {
 	);
 </script>
 </crm:CrmTRQIssuesController>
-			</crm:GetCurrentAgent>
+			
 	    </tmpl:put>
 </tmpl:insert>

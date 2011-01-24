@@ -322,6 +322,29 @@ public class FDPromotionNewManager {
 			throw new FDResourceException(re, "Error talking to session bean");
 		}			
 	}
+	
+	public static void logPublishEvent(String agentId,
+			Date start, Date end, String destURL,
+			Map<String, Boolean> publishResults,
+			Map<String, EnumPromotionStatus> preStatuses,
+			Map<String, EnumPromotionStatus> postStatuses,
+			Map<String, String> changeIDs) throws FDResourceException {
+		
+		lookupManagerHome();
+
+		try {
+			FDPromotionManagerNewSB sb = managerHome.create();
+			sb.logPublishEvent(agentId,
+					start, end, destURL,
+					publishResults, preStatuses, postStatuses, changeIDs);
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}			
+	}
 
 	public static List<FDPromoChangeModel> loadPromoAuditChanges(String promotionId) throws FDResourceException, FinderException {
 		lookupManagerHome();

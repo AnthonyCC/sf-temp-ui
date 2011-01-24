@@ -72,6 +72,13 @@ public interface FDPromotionManagerNewSB extends EJBObject {
 			Map<String, EnumPromotionStatus> postStatuses,
 			Map<String, String> changeIDs) throws FDResourceException, RemoteException;
 	
+	public void logPublishEvent(String agentId,
+			java.util.Date start, java.util.Date end, String destURL,
+			Map<String, Boolean> publishResults,
+			Map<String, EnumPromotionStatus> preStatuses,
+			Map<String, EnumPromotionStatus> postStatuses,
+			Map<String, String> changeIDs) throws FDResourceException, RemoteException;
+	
 	public void storePromotionOfferInfo(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException, RemoteException;
 	
 	public void storePromotionCartInfo(FDPromotionNewModel promotion) throws FDResourceException, FDDuplicatePromoFieldException, FDPromoTypeNotFoundException, FDPromoCustNotFoundException,RemoteException;

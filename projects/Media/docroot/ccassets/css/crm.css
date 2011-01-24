@@ -209,6 +209,12 @@ border-bottom: 1px #999999 solid;
 margin-bottom: 2px;
 }
 
+.side_nav_module_supervisor {
+background-color: #999999;
+border-top: 1px #999999 solid;
+border-bottom: 1px #999999 solid;
+margin-bottom: 2px;
+}
 .side_nav_module_header {
 background-color: #FFFFFF;
 border-bottom: 1px #999999 solid;
@@ -1274,6 +1280,18 @@ a.sup_nav_on:link       { color: #FFFFFF; text-decoration: none; }
 a.sup_nav_on:visited    { color: #FFFFFF; text-decoration: none; }
 a.sup_nav_on:active     { color: #FFFFFF; text-decoration: none; }
 a.sup_nav_on:hover      { color: #FFFFFF; text-decoration: none; }
+
+.sup_nav_supervisor            { font-size:9pt; text-decoration: none; color: #FFFFFF; font-weight: bold; padding-left: 4px; padding-right: 4px; margin-right: 0px; margin-left: 0px; }
+a.sup_nav_supervisor:link      { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_supervisor:visited   { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_supervisor:active    { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_supervisor:hover     { color: #000000; text-decoration: none; border-bottom:4px solid #666699;}
+
+.sup_nav_on_supervisor             { font-size:9pt; background: #666699; color: #FFFFFF; font-weight: bold; text-decoration: none; padding-left: 4px; padding-right: 4px; padding-bottom:4px; margin-right: 0px; margin-left: 0px; border-bottom: 0px solid #000000;}
+a.sup_nav_on_supervisor:link       { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_on_supervisor:visited    { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_on_supervisor:active     { color: #FFFFFF; text-decoration: none; }
+a.sup_nav_on_supervisor:hover      { color: #FFFFFF; text-decoration: none; }
 /* SUPERVISOR */
 
 /* TRANSPORTATION font-family: Arial Narrow, Trebuchet, Arial; */

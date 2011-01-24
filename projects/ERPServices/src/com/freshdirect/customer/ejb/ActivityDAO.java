@@ -8,7 +8,9 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.freshdirect.crm.ejb.CriteriaBuilder;
 import com.freshdirect.customer.EnumAccountActivityType;
@@ -75,16 +77,27 @@ public class ActivityDAO implements java.io.Serializable {
 		
 		CriteriaBuilder builder = new CriteriaBuilder();
 		builder.addString("CUSTOMER_ID", template.getCustomerId());
-		builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
+//		builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
+		boolean isCCActivity = EnumAccountActivityType.VIEW_CC.equals(template.getActivityType()) || EnumAccountActivityType.VIEW_ECHECK.equals(template.getActivityType());
+		if(isCCActivity){
+			builder.addInString("ACTIVITY_ID", new String[]{EnumAccountActivityType.VIEW_CC.getCode(),EnumAccountActivityType.VIEW_ECHECK.getCode()});
+		}else{
+			builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
+		}
 		builder.addString("SOURCE", template.getSource() == null ? null : template.getSource().getCode());
 		builder.addString("INITIATOR", template.getInitiator());
 		//Criteria specific to delivery pass changes.
 		builder.addString("DLV_PASS_ID", template.getDeliveryPassId() == null ? null : template.getDeliveryPassId()); 
 		builder.addString("SALE_ID", template.getChangeOrderId() == null ? null : template.getChangeOrderId());
-		if (template.getDate() != null) {
+		/*if (template.getDate() != null) {
 			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getDate().getTime())});
+		}*/
+		if (template.getFromDate() != null) {
+			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getFromDate().getTime())});
 		}
-
+		if (template.getToDate() != null) {
+			builder.addSql("TIMESTAMP < ?", new Object[] { new Timestamp(template.getToDate().getTime())});
+		}
 		PreparedStatement ps = conn.prepareStatement("SELECT * FROM CUST.ACTIVITY_LOG WHERE " + builder.getCriteria());
 		Object[] par = builder.getParams();
 		for (int i = 0; i < par.length; i++) {
@@ -95,6 +108,52 @@ public class ActivityDAO implements java.io.Serializable {
 
 		while (rs.next()) {
 			l.add(this.loadFromResultSet(rs));
+		}
+
+		rs.close();
+		ps.close();
+
+		return l;
+	}
+	
+	/**
+	 * @return Collection of <code>ErpActivityRecord</code> objects
+	 */
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(Connection conn, ErpActivityRecord template) throws SQLException {
+		
+		CriteriaBuilder builder = new CriteriaBuilder();
+		builder.addString("AL.CUSTOMER_ID", template.getCustomerId());
+//		builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
+		boolean isCCActivity = EnumAccountActivityType.VIEW_CC.equals(template.getActivityType()) || EnumAccountActivityType.VIEW_ECHECK.equals(template.getActivityType());
+		if(isCCActivity){
+			builder.addInString("ACTIVITY_ID", new String[]{EnumAccountActivityType.VIEW_CC.getCode(),EnumAccountActivityType.VIEW_ECHECK.getCode()});
+		}else{
+			builder.addString("ACTIVITY_ID", template.getActivityType() == null ? null : template.getActivityType().getCode());
+		}
+		builder.addString("SOURCE", template.getSource() == null ? null : template.getSource().getCode());
+		builder.addString("INITIATOR", template.getInitiator());
+		//Criteria specific to delivery pass changes.
+		builder.addString("DLV_PASS_ID", template.getDeliveryPassId() == null ? null : template.getDeliveryPassId()); 
+		builder.addString("SALE_ID", template.getChangeOrderId() == null ? null : template.getChangeOrderId());
+		/*if (template.getDate() != null) {
+			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getDate().getTime())});
+		}*/
+		if (template.getFromDate() != null) {
+			builder.addSql("TIMESTAMP > ?", new Object[] { new Timestamp(template.getFromDate().getTime())});
+		}
+		if (template.getToDate() != null) {
+			builder.addSql("TIMESTAMP < ?", new Object[] { new Timestamp(template.getToDate().getTime())});
+		}
+		PreparedStatement ps = conn.prepareStatement("SELECT AL.*,CI.FIRST_NAME,CI.LAST_NAME FROM CUST.ACTIVITY_LOG AL, CUST.CUSTOMERINFO CI WHERE CI.CUSTOMER_ID= AL.CUSTOMER_ID AND " + builder.getCriteria());
+		Object[] par = builder.getParams();
+		for (int i = 0; i < par.length; i++) {
+			ps.setObject(i + 1, par[i]);
+		}
+		ResultSet rs = ps.executeQuery();
+		List<ErpActivityRecord> l = new ArrayList<ErpActivityRecord>();
+
+		while (rs.next()) {
+			l.add(this.loadFromResultSet2(rs));
 		}
 
 		rs.close();
@@ -116,8 +175,61 @@ public class ActivityDAO implements java.io.Serializable {
 		rec.setChangeOrderId( rs.getString( "SALE_ID" ) );
 		rec.setReason( rs.getString( "REASON" ) );
 		rec.setStandingOrderId( rs.getString( "STANDINGORDER_ID" ) );
-		rec.setMasqueradeAgent( rs.getString( "MASQUERADE_AGENT" ) );
+		rec.setMasqueradeAgent( rs.getString( "MASQUERADE_AGENT" ) );		
 		return rec;
+	}
+	
+	private ErpActivityRecord loadFromResultSet2( ResultSet rs ) throws SQLException {
+		ErpActivityRecord rec = loadFromResultSet(rs);
+		rec.setCustFirstName(rs.getString( "FIRST_NAME" ));
+		rec.setCustLastName(rs.getString( "LAST_NAME" ));
+		return rec;
+	}
+	public Map<String, List> getFilterLists(Connection conn,ErpActivityRecord template) throws SQLException{
+		CriteriaBuilder builder = new CriteriaBuilder();
+		builder.addString("CUSTOMER_ID", template.getCustomerId());
+		List<EnumAccountActivityType> activityTypeList = new ArrayList<EnumAccountActivityType>();
+		List<EnumTransactionSource> sourceList = new ArrayList<EnumTransactionSource>();
+		List<String> initiatorList = new ArrayList<String>();
+		String columnName ="";
+		List list = null;
+		Map<String, List> map = new HashMap<String, List>();
+		columnName="activity_id";
+		map.put(columnName, getUniqueList(conn, builder, columnName));
+		columnName="source";
+		map.put(columnName, getUniqueList(conn, builder, columnName));
+		columnName="initiator";
+		map.put(columnName, getUniqueList(conn, builder, columnName));
+		return map;
+	}
+
+	private List getUniqueList(Connection conn,
+			CriteriaBuilder builder,String columnName) throws SQLException {
+		List list = new ArrayList();
+		PreparedStatement ps = conn.prepareStatement("select distinct("+columnName+") from cust.activity_log  WHERE " + builder.getCriteria()+" order by "+columnName);
+		Object[] par = builder.getParams();
+		for (int i = 0; i < par.length; i++) {
+			ps.setObject(i + 1, par[i]);
+		}
+		ResultSet rs = ps.executeQuery();
+		
+		if("activity_id".equalsIgnoreCase(columnName)){
+			while(rs.next()){
+				list.add(EnumAccountActivityType.getActivityType(rs.getString("activity_id")));
+			}
+		}else if("source".equalsIgnoreCase(columnName)){
+			while(rs.next()){
+				list.add(EnumTransactionSource.getTransactionSource(rs.getString("source")));
+			}
+		}else{
+			while(rs.next()){
+				list.add(rs.getString("initiator"));
+			}
+		}
+		
+		rs.close();
+		ps.close();
+		return list;
 	}
 
 }

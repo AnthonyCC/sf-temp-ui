@@ -3,13 +3,15 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="com.freshdirect.fdstore.promotion.management.*" %>
 <%@ page import="com.freshdirect.deliverypass.EnumDlvPassStatus" %>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <tmpl:insert template='/template/top_nav.jsp'>
 
 	<tmpl:put name='title' direct='true'>Promotion Edit</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	<crm:GetCurrentAgent id='currentAgent'>
+	
 		<%
-		String promoId = request.getParameter("promoId");		
+		String promoId = request.getParameter("promoId");	
+		String userId = CrmSecurityManager.getUserName(request);
 		%>
 		<fd:GetPromotionNew id = "promotion" promotionId="<%= promoId %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
@@ -66,6 +68,6 @@
 		</div>
 		
 	</fd:GetPromotionNew>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 </tmpl:insert>

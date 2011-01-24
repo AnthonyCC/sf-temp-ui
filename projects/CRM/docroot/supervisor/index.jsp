@@ -59,20 +59,7 @@
 			  CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
 			  CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
 			%>
-			  <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-			        <div class="side_nav_module" style="position: relative; float: left; height:25%; width: <%= "ASV".equals(role.getCode())? "19" : "20"%>%;">
-			        	<%
-                            List agents = agentList.getAgents(role);
-                            Collections.sort(agents, AGENT_STATUS_COMPARATOR);
-                        %>
-				        <div class="side_nav_module_header"><%=role.getCode()%>s <span style="font-weight:normal;">(<%=agents.size()%>)</span></div>
-			             <div class="side_nav_module_content">
-				         <logic:iterate id='agent' collection="<%= agents %>" type="com.freshdirect.crm.CrmAgentModel">
-				                <a href="/supervisor/index.jsp?agent_pk=<%=agent.getPK().getId()%>&action=searchCase" class="user_mgmt_agent<%=agent.isActive()?"":"_inactive"%>"><%=agent.getFirstName()%>&nbsp;<%=agent.getLastName()%></a><br>
-			             </logic:iterate>
-			             </div>
-			        </div>
-			  </logic:iterate>
+			  
 			</crm:GetAllAgents>
 		
 		<br clear="all">

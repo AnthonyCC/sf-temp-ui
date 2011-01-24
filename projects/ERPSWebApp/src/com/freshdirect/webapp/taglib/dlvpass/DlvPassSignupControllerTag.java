@@ -148,12 +148,13 @@ public class DlvPassSignupControllerTag extends AbstractControllerTag {
 			else if(actionName.equalsIgnoreCase("FLIP_AUTORENEW_ON")||actionName.equalsIgnoreCase("FLIP_AUTORENEW_OFF")) {
 				HttpSession session = pageContext.getSession();
 				FDSessionUser currentUser = (FDSessionUser)session.getAttribute(SessionName.USER);
-				CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+//				CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+				String agentId = CrmSession.getCurrentAgentStr(session);
 				EnumTransactionSource source=EnumTransactionSource.WEBSITE;
 				String initiator="CUSTOMER";
-				if(agentModel!=null) {
+				if(agentId!= null){//agentModel!=null) {
 					source=EnumTransactionSource.CUSTOMER_REP;
-					initiator=agentModel.getUserId();
+					initiator=agentId;//agentModel.getUserId();
 				}
 				String customerID=currentUser.getIdentity().getErpCustomerPK();
 				//FDCustomerManager.flipAutoRenewDP(customerID);

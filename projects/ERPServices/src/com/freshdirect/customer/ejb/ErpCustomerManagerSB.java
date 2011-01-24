@@ -167,9 +167,9 @@ public interface ErpCustomerManagerSB extends EJBObject {
     
     public Collection<ModelI> getFailedAuthorizationSales() throws RemoteException;
     
-    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId) throws ErpComplaintException, RemoteException;
+    public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId, boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException, RemoteException;
     
-    public String approveComplaint(String complaintId, boolean isApproved, String csrId) throws ErpComplaintException, RemoteException;
+    public String approveComplaint(String complaintId, boolean isApproved, String csrId, Double limit) throws ErpComplaintException, RemoteException;
     
     public void updateCustomerCredit(PrimaryKey pk, String customerCreditId, double delta) throws RemoteException;
     

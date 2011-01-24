@@ -1200,7 +1200,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 		}
 	}
 
-	public String approveComplaint(String complaintId, boolean isApproved, String csrId) throws ErpComplaintException {
+	public String approveComplaint(String complaintId, boolean isApproved, String csrId,Double limit) throws ErpComplaintException {
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByComplaintId(complaintId);
 			ErpSaleModel saleModel = (ErpSaleModel) eb.getModel();
@@ -1254,10 +1254,16 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 					throw new ErpComplaintException("Cashback amount cannot be more than the invoice amount.");
 				}
 			
+				if(!"AUTO_APPROVED".equalsIgnoreCase(csrId) && (null ==limit || cashBackAmount > limit)){
+					this.getSessionContext().setRollbackOnly();
+					throw new ErpComplaintException("Sorry, you are unable to approve credits over $"+limit);
+				}
+				
 				if (cashBackAmount == 0.0 && pendingComplaint.getComplaintLines().isEmpty()) {
 					this.getSessionContext().setRollbackOnly();
 					throw new ErpComplaintException("Can't issue cashback for zero amount.");
-				}
+				}				
+				
 				// due to the way this whole complaint thing is split up we need
 				// this updateComplaint call here and in the else block it will be called
 				// once anyway. (for the genius who thinks that it can be made once at the
@@ -1311,11 +1317,11 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 	 * @param String the PK of the sale to which the complaint is to be added
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId) throws ErpComplaintException {
+	public PrimaryKey addComplaint(ErpComplaintModel complaint, String saleId,  boolean autoApproveAuthorized, Double limit ) throws ErpComplaintException {
 		Connection conn = null;
 		try {
 			ErpSaleEB eb = getErpSaleHome().findByPrimaryKey(new PrimaryKey(saleId));
-			boolean autoApprove = complaint.canBeAutoApproved(eb.getStatus());
+			boolean autoApprove = complaint.canBeAutoApproved(eb.getStatus(),autoApproveAuthorized,  limit);
 
 
 			//
@@ -1356,7 +1362,7 @@ public class ErpCustomerManagerSessionBean extends SessionBeanSupport {
 			// auto-approve the complaint if appropriate if its non-zero
 			//
 			if (autoApprove && 0 != Math.round(complaint.getAmount() * 100.0)) {
-				this.approveComplaint(lastComplaint.getPK().getId(), true, "AUTO_APPROVED");
+				this.approveComplaint(lastComplaint.getPK().getId(), true, "AUTO_APPROVED",null);
 			}
 			return complaintPk;
 			

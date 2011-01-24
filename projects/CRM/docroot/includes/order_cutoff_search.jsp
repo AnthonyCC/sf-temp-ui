@@ -23,8 +23,12 @@
     }
 -->
 </script>
+<%String actionName = ""; 
+if ("post".equalsIgnoreCase(request.getMethod()) && request.getParameter("cutoffSubmit") != null) {
+	actionName = "cutoffReport";
+} %>
 
-		<fd:CutoffSearchController actionName="cutoffReport" result="result" cutoffReportId="cutoffReport">
+		<fd:CutoffSearchController actionName='<%=actionName%>' result="result" cutoffReportId="cutoffReport">
 				<table width="100%">
 					<tr>
 						<td width="30%" align="right">Date of Delivery&nbsp;</td>

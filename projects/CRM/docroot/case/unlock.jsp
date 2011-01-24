@@ -3,7 +3,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
 <%
 	CrmSession.setLockedCase(session, null);
-	String redirect = "/main/index.jsp";
+	String redirect = "/main/main_index.jsp";//"/main/main_index.jsp";
 	if ("worklist".equalsIgnoreCase(request.getParameter("redirect"))) {
 		redirect = "/main/worklist.jsp";
 	} else if ("new_case".equalsIgnoreCase(request.getParameter("redirect"))) {
@@ -30,7 +30,7 @@
 	} else if ("new_customer".equalsIgnoreCase(request.getParameter("redirect"))) {
 		redirect = "/registration/nw_cst_check_zone.jsp";
 	} else if ("case_mgmt".equalsIgnoreCase(request.getParameter("redirect"))) {
-		redirect = "/case_mgmt/index.jsp";
+		redirect = "/case_mgmt/case_mgmt_index.jsp";
 	}
 	
 	String successPage = NVL.apply( request.getParameter("successPage"), redirect);

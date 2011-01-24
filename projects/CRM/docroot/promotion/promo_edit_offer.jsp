@@ -2,13 +2,15 @@
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ page import="java.util.*" %>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <tmpl:insert template='/template/top_nav.jsp'>
-<% String promoId = request.getParameter("promoId");%>
+<% String promoId = request.getParameter("promoId");
+String userId = CrmSecurityManager.getUserName(request);%>
 <fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 	<tmpl:put name='title' direct='true'>Edit Offer</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	<crm:GetCurrentAgent id='currentAgent'>
+	
 	<%
 	String successPage ="/promotion/promo_edit.jsp?promoId=";
 	%>
@@ -87,7 +89,7 @@
 		</div>
 		</form>
 		</fd:PromotionOfferController>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 	</fd:GetPromotionNew>
 </tmpl:insert>

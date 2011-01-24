@@ -7,6 +7,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Date"%>
 <%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Collections"%>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
 <%@ page import="com.freshdirect.crm.CrmCaseModel"%>
 <%@ page import="com.freshdirect.crm.CrmCaseTemplate"%>
@@ -43,10 +44,12 @@
 <%@ page import="com.freshdirect.fdstore.lists.FDCustomerCreatedList"%>
 <%@ page import="com.freshdirect.security.ticket.TicketService"%>
 <%@ page import="com.freshdirect.security.ticket.Ticket"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%
 String orderId = request.getParameter("orderId");
 FDSessionUser user = null;
-
+String agentId = CrmSecurityManager.getUserName(request);
+String agentRole = CrmSecurityManager.getUserRole(request);
 if (orderId != null) {
 	// clear any lingering search terms
 	session.removeAttribute(SessionName.LIST_SEARCH_RAW);
@@ -79,7 +82,22 @@ final Map orderDlvIssueTypes = CrmManager.getInstance().getDeliveryIssueTypes(us
 // determine page layout template
 final String PAGE_TEMPLATE = "print".equalsIgnoreCase(request.getParameter("for")) ? "/template/print.jsp" : "/template/top_nav.jsp";
 
-final List<FDOrderInfoI> recentOrders = util.getRecentOrders(5);
+List<FDOrderInfoI> recentOrders = util.getRecentOrders(5);
+if(null != orderId){
+	boolean isOrderFound = false;
+	for (FDOrderInfoI orderInfo : recentOrders) {
+		if(orderInfo.getErpSalesId().equals(orderId)){
+			isOrderFound = true;
+			break;
+		}
+	}
+	if(!isOrderFound){
+		recentOrders = util.getRecentOrders(4);
+		FDOrderInfoI lOrderInfo = util.getFDOrderInfo(orderId);
+		recentOrders.add(lOrderInfo);
+		Collections.sort(recentOrders, CustomerSummaryUtil.COMP_BY_PLACE_DATE);
+	}
+}
 %>
 <crm:GetLockedCase id="cm">
 </crm:GetLockedCase>
@@ -174,13 +192,13 @@ if (ldlv != null) {
 </table>
 
 <%-- === Masquerade! === --%>
-<crm:GetCurrentAgent id="agent">
-<% if ( agent.isMasqueradeAllowed() ) { %>
+
+<% if(CrmSecurityManager.hasAccessToPage(agentRole,"masquerade.jsp")){ %>
 	<hr/>
 		<a href="masquerade.jsp" target="_blank">Masquerade <%= user.getUserId() %></a><br/>
 	<hr/>
 <% } %>
-</crm:GetCurrentAgent>
+
 
 <%--
   ===== SECOND ROW =====
@@ -342,6 +360,16 @@ $E.on($('c-tr-<%= aCase.getId() %>'), 'click', function(e) {
 	font-size: 90%;
 }
 
+.order-row td {
+	padding-left: 3px;
+	padding-right: 3px;
+	border-top: 1px solid lightgray;
+	border-bottom: 1px solid darkgray;
+	border-right: 1px dotted darkgray;
+	background: #FFFF66;
+	font-size: 90%;
+}
+
 .orders-row-tickbox {
 	text-align: center;
 	font-weight: bold;
@@ -433,8 +461,12 @@ for (FDOrderInfoI orderInfo : recentOrders) {
 for (FDOrderInfoI orderInfo : recentOrders) {
 	// load order
 	FDOrderI order = FDCustomerManager.getOrder(orderInfo.getErpSalesId());
+	if(orderInfo.getErpSalesId().equals(orderId)){
 %>
-	<tr class="orders-row">
+		<tr class="order-row">
+	<% } else { %>
+		<tr class="orders-row">
+	<% } %>
 		<td style="font-weight: bold;"><a href="/main/order_details.jsp?orderId=<%= orderInfo.getErpSalesId() %>"><%= orderInfo.getErpSalesId() %></a></td>
 		<td><% if(EnumSaleType.REGULAR.equals(orderInfo.getSaleType())){%><%= CCFormatter.formatDate(orderInfo.getRequestedDate()) %><%} else {%>&nbsp;<%}%></td>
 <% if (orderInfo.getTruckNumber() == null) { %>

@@ -25,7 +25,8 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 			ActionResult actionResult) throws JspException {
 		// TODO Auto-generated method stub
 		CrmClick2CallModel click2CallModel = new CrmClick2CallModel();
-		CrmAgentModel agent =CrmSession.getCurrentAgent(request.getSession());
+//		CrmAgentModel agent =CrmSession.getCurrentAgent(request.getSession());
+		String agentId =CrmSession.getCurrentAgentStr(request.getSession());
 		try {
 			if(null != request.getParameter("cancel") || null !=request.getParameter("edit")){
 				click2CallModel = getClick2CallInfo(actionResult);
@@ -39,12 +40,12 @@ public class CrmClick2CallControllerTag extends AbstractControllerTag {
 				if(null != click2CallModel){
 					String id =click2CallModel.getId();
 					boolean status = click2CallModel.isStatus();
-					CallCenterServices.saveClick2CallStatus(id, agent.getUserId(), !status);
-					click2CallModel.setUserId(agent.getUserId());
+					CallCenterServices.saveClick2CallStatus(id, agentId, !status);
+					click2CallModel.setUserId(agentId);
 					click2CallModel.setStatus(!status);
 				}				
 			}else{		
-				click2CallModel.setUserId(agent.getUserId());
+				click2CallModel.setUserId(agentId);
 				String eligibleCustType = request.getParameter("eligibleCustType");
 				StringBuffer eligibleCustomers = new StringBuffer();
 				

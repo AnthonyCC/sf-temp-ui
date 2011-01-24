@@ -30,10 +30,30 @@
 			<div>
 		</div>
 		
-		<%String orderId = NVL.apply(request.getParameter("orderId"), "");%>
+		<%String orderId = NVL.apply(request.getParameter("orderId"), "");
+		String agentId= ((HttpServletRequest)request).getRemoteUser(); %>
 		<crm:CrmCCNumberController id="ccList" orderId="<%=orderId%>" result="result" actionName="getAccountNumber">
 		<table>
+		
 			<form name="checkPassword" method="POST">
+			<input id="username" type="hidden" name="j_username" value="<%= agentId %>"/>
+			<table class="login_form">
+				
+				<tr>
+					<td class="label">
+						<label for="password">Please enter the access key:</label>
+					</td>
+					<td>
+						<input id="accesskey" type="password" name="accesskey"/>
+					</td>
+				</tr>
+				<tr>
+					<td><br /><br /></td>
+					<td>
+						<input type="submit" value="ENTER" class="submit" name="submit" style="width: 120px;" tabindex="2">
+					</td>
+				</tr>
+			</table>
 			<tr>
 				<td>&nbsp;</td>
 				<td><fd:ErrorHandler result="<%= result %>" name="authentication" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>
@@ -44,11 +64,11 @@
 				<td><fd:ErrorHandler result="<%= result %>" name="technical_difficulty" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>
 				<td>&nbsp;</td>
 			</tr>
-			<tr>
-				<td><b>Please re-enter your password:</b> </td>
-				<td><input type="password" class="input_text" style="width: 150px;" tabindex="1" name="password"></td>
-				<td><input type="submit" value="ENTER" class="submit" name="submit" style="width: 120px;" tabindex="2"></td>
-			</tr>
+<!--			<tr>-->
+<!--				<td><b>Please re-enter your password:</b> </td>-->
+<!--				<td><input type="password" class="input_text" style="width: 150px;" tabindex="1" name="password"></td>-->
+<!--				<td><input type="submit" value="ENTER" class="submit" name="submit" style="width: 120px;" tabindex="2"></td>-->
+<!--			</tr>-->
 			<tr>
 				<td>&nbsp;</td>
 				<td><fd:ErrorHandler result="<%= result %>" name="password" id="error"><span class="error_detail"><%=error%></span></fd:ErrorHandler></td>

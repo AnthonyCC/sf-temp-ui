@@ -70,12 +70,12 @@ public class PromoPublishTag extends AbstractControllerTag {
 			 */
 			
 			HttpSession session = pageContext.getSession();
-			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-			
+//			CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+			String agentId = CrmSession.getCurrentAgentStr(session);
 			PromoPublisher publisher = new PromoPublisher();
 			publisher.setPromoList(ppList);
-			publisher.setAgent(agent);
-
+//			publisher.setAgent(agent);
+			publisher.setAgentId(agentId);
 			final boolean result = publisher.doPublish();
 
 			

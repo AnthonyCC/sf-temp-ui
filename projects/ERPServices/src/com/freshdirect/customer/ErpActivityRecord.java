@@ -1,13 +1,20 @@
 package com.freshdirect.customer;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Comparator;
+
+import com.freshdirect.framework.util.DateUtil;
 
 public class ErpActivityRecord implements java.io.Serializable {
 	
 	private static final long serialVersionUID = 8592047251020131505L;
 
 	private String customerId;
+	private String custFirstName;
+	private String custLastName;
 	private EnumTransactionSource source;
 	private String initiator;
 
@@ -19,6 +26,27 @@ public class ErpActivityRecord implements java.io.Serializable {
 	private String deliveryPassId;
 	private String changeOrderId;
 	private String reason;
+	private Date fromDate;
+	private String fromDateStr;
+	private Date toDate;
+	private String toDateStr;
+
+	public Date getFromDate() {
+		return getFormattedDate(fromDateStr, "00:00 AM");
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getToDate() {
+		return getFormattedDate(toDateStr, "11:59 PM");
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
 
 	private String standingOrderId;
 	
@@ -146,4 +174,61 @@ public class ErpActivityRecord implements java.io.Serializable {
 			return c1.getSource().getName().toLowerCase().compareTo(c2.getSource().getName().toLowerCase());
 		}
 	};
+	
+	public boolean isEmptyForFilter(){
+		boolean isEmtpy = true;
+		if((null != initiator && !initiator.trim().equalsIgnoreCase("")) 
+				|| (null != fromDate)
+				|| (null != toDate) 
+				|| (null != type) 
+				|| (null != source)){
+			isEmtpy = false;
+		}
+		return isEmtpy;
+	}
+
+	public String getFromDateStr() {
+		return fromDateStr;
+	}
+
+	public void setFromDateStr(String fromDateStr) {
+		this.fromDateStr = fromDateStr;
+	}
+
+	public String getToDateStr() {
+		return toDateStr;
+	}
+
+	public void setToDateStr(String toDateStr) {
+		this.toDateStr = toDateStr;
+	}
+	
+	private Date getFormattedDate(String dateStr, String time){
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
+			Date date = sdf.parse(dateStr+" "+time);
+			Calendar cal = DateUtil.toCalendar(date);				
+			return cal.getTime();
+		} catch (ParseException pe) { }
+	
+	
+		return null;
+	}
+
+	public String getCustFirstName() {
+		return custFirstName;
+	}
+
+	public void setCustFirstName(String custFirstName) {
+		this.custFirstName = custFirstName;
+	}
+
+	public String getCustLastName() {
+		return custLastName;
+	}
+
+	public void setCustLastName(String custLastName) {
+		this.custLastName = custLastName;
+	}
 }

@@ -1,0 +1,39 @@
+			<div id="cutoff_report" class="home_module" style="width: 100%; float: left; border-top: none; border-bottom: 2px solid;">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;"><tr><td class="home_module_header_text">Orders by Cutoff Search</td></tr></table>
+						<div id="monitor_content" scrolling="no" class="home_search_module_content" style="height: 20em; padding-top: 0px; padding-bottom: 0px;">
+							<form method="POST" name="searchByCutoff"><span class="space4pix"><br /><br /></span>
+								<input type="hidden" name="cutoffSubmit" value="cutoffSubmit">
+								<jsp:include page='/includes/order_cutoff_search.jsp'/>
+							</form>
+							<!-- <table width="90%" cellpaddding="0" cellspacing="0" border="0" align="center">
+							<tr>
+								<td colspan="3"><u>*List of acceptable order statuses for wave drop/extract are:</u></td>
+							</tr>
+							<tr>
+								<td width="33%">&middot; In process</td>
+								<td width="33%">&middot; Authorized</td>
+								<td width="33%">&middot; Cancelled</td>
+							</tr>
+							<tr>
+								<td width="33%">&middot; Authorization Failed</td>
+								<td width="33%">&middot; AVS Exception</td>
+								<td width="33%"></td>
+							</tr>
+							<tr>
+								<td colspan="3" style="padding-top:10px;"><u>If cutoff didn't happen:</u><br />
+								<strong>Wait 5 minutes for the email.</strong><br />If still not received, alert AppSupport, ERP & SA.  
+								<br /><br />
+								<u>If cutoff didn't happen and/or there are orders in:</u></td>
+							</tr>
+							<tr>
+								<td width="33%" style="color:#990033;">&middot; Processing</td>
+								<td width="33%" style="color:#990033;">&middot; Modified</td>
+								<td width="33%" style="color:#990033;">&middot; Modified Canceled</td>
+							</tr>
+							<tr>
+								<td colspan="3" style="padding-top:10px;"><strong>Wait 10 minutes and re-run cutoff report.</strong>
+								<br />If no change to order statuses observed, proceed with wave drop/extract and alert AppSupport, ERP & SA.</td>
+							</tr>
+							</table> -->
+						</div>
+					</div>

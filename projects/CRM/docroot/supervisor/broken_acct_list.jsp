@@ -31,12 +31,12 @@ body {
     }
 
 </script>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Broken Accounts</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <crm:GenericLocator id="searchResults" searchParam='BROKEN_ACCOUNT_SEARCH' result="result">
 	<fd:ErrorHandler result='<%= result %>' name='inputerror' id='errorMsg'>
 	   <%@ include file="/includes/i_error_messages.jspf" %>   

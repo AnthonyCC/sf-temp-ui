@@ -62,7 +62,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 <tmpl:put name='title' direct='true'>Reports > Orders by Route & Stop</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<jsp:include page="/includes/reports_nav.jsp" />
+<jsp:include page="/includes/transportation_nav.jsp" />
 <div class="sub_nav">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
 <form name="routestop_report" method="post">
@@ -163,7 +163,7 @@ if ("POST".equals(request.getMethod()) && "yes".equalsIgnoreCase(request.getPara
 
             <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> 
         </td>
-        <td width="30%" align="left"><a href="javascript:setXportSPOn();">Exp. to SilverPop fmt</a> | <a href="javascript:setXportVSOn();">Exp. to VoiceShot fmt</a> | <a href="/reports/index.jsp">All Reports >></a></td>
+        <td width="30%" align="left"><a href="javascript:setXportSPOn();">Exp. to SilverPop fmt</a> | <a href="javascript:setXportVSOn();">Exp. to VoiceShot fmt</a> | <a href="/reports/reports_index.jsp">All Reports >></a></td>
     </tr>
 	<script language"javascript">
 	<!--

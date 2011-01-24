@@ -2,6 +2,7 @@
 <%@ page import='com.freshdirect.framework.util.*'%>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerModel" %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import='com.freshdirect.webapp.crm.security.CrmSecurityManager'%>
 
 <%!
     private String getQueryString(HttpServletRequest request){
@@ -28,7 +29,7 @@
 **  This file expects CrmCaseSearchTemplate variable "template"
 **
 */
-
+String lAgentId = CrmSecurityManager.getUserName(request);
 int startRecord = template.getStartRecord();
 int endRecord = template.getEndRecord();
 int increment = Integer.parseInt(FDStoreProperties.getCaseListLength(request.getRequestURI().indexOf("case_history.jsp")>-1));
@@ -107,20 +108,20 @@ if (page_URI.indexOf("order_cases") > -1) {
 	case_history = true;
 }
 
-if (page_URI.indexOf("/main/index") > -1 ) {
+if (page_URI.indexOf("/main/main_index") > -1 ) {
 	monitor = true;
 	height = "70%";
 	caseLink = "/main/worklist.jsp";
 }
 
-if (page_URI.indexOf("case_mgmt/index") > -1) {
+if (page_URI.indexOf("case_mgmt/case_mgmt_index") > -1) {
 	height = "220px";
 }
 
-if (page_URI.indexOf("user_mgmt") > -1 || page_URI.indexOf("supervisor/index") > -1 ) {
+if (page_URI.indexOf("user_mgmt") > -1 || page_URI.indexOf("supervisor/supervisor_index") > -1 ) {
 	user_mgmt = true;
 	height = "94";
-	caseLink = "/case_mgmt/index.jsp";
+	caseLink = "/case_mgmt/case_mgmt_index.jsp";
 }
 
 boolean showAssigned = !monitor && !own_worklist && !user_mgmt;
@@ -198,23 +199,23 @@ JspTableSorter sort = new JspTableSorter(request);
 				<td width="<%= showAssigned ? "21" : "25"%>%"><%= cm.getSummary() %></td>
 				<% if (showAssigned) { %>
 				<td width="8%" align="center">
-					<%if(cm.getAssignedAgentPK() != null){%>
-						<%= CrmManager.getInstance().getAgentUserId(cm.getAssignedAgentPK().getId()) %>
+					<%if(cm.getAssignedAgentUserId() != null){%>
+						<%= cm.getAssignedAgentUserId() %>
 					<% } else { %>
 						<span class="not_set">-None-</span>
 					<% } %>
 				</td>
 				<% } %>
 				<td width="<%= showAssigned ? "12" : "14"%>%" align="right" <% if (case_history) { %><% if (cm.getState().equals(CrmCaseState.getEnum("OPEN"))) %> style="background:<%= selected? "#CC0066;'" : "#CC9999;"%>;"<% } %>>
-					<% if (cm.getState().equals(CrmCaseState.getEnum("CLSD")) && cm.getLockedAgentPK()==null){ %>
+					<% if (cm.getState().equals(CrmCaseState.getEnum("CLSD")) && cm.getLockedAgentUserId()==null){ %>
 					--
-					<% } else if (cm.getLockedAgentPK()!=null) { %>
-						<crm:GetCurrentAgent id='currAgent'>
-							<%=CrmManager.getInstance().getAgentUserId(cm.getLockedAgentPK().getId()) %>
-							<% if (currAgent.getPK().equals(cm.getLockedAgentPK())) { %>
+					<% } else if (cm.getLockedAgentUserId()!=null) { %>
+						
+							<%= cm.getLockedAgentUserId()%>
+							<% if (lAgentId.equalsIgnoreCase(cm.getLockedAgentUserId())) { %>
 								<img src="/media_stat/crm/images/locked.gif" width="8" height="12" border="0" hspace="0" vspace="0">
 							<% } %>
-						</crm:GetCurrentAgent>
+						
 					<% } else { %>
 						<%= CCFormatter.formatDuration( cm.getIdleTime() ) %>
 					<% } %>

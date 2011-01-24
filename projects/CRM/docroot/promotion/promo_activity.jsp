@@ -1,3 +1,4 @@
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -7,8 +8,9 @@
 	<tmpl:put name='title' direct='true'>Promotion Activity</tmpl:put>
 	
 	<tmpl:put name='content' direct='true'>
-	<crm:GetCurrentAgent id='currentAgent'>
+	
 		<%
+		String userId = CrmSecurityManager.getUserName(request);
 		String promoId = request.getParameter("promoId");
 		%>
 		<fd:GetPromotionNew id="promotion" promotionId="<%= promoId %>">
@@ -56,6 +58,6 @@
 			<%@ include file="/includes/promotions/i_promo_activity_log.jspf" %>
 		</div>
 	</fd:GetPromotionNew>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 </tmpl:insert>

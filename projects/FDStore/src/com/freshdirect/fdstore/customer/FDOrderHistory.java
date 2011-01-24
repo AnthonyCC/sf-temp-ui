@@ -42,6 +42,19 @@ public class FDOrderHistory extends ErpOrderHistory {
 		}
 		return l;
 	}
+	
+	public FDOrderInfoI getFDOrderInfo(String orderId) {
+
+		List<FDOrderInfoI> l = new ArrayList<FDOrderInfoI>();
+		for (Iterator<FDOrderInfoAdapter> i = this.fdOrderInfos.iterator(); i.hasNext();) {
+			FDOrderInfoI o = i.next();
+			if(orderId.equals(o.getErpSalesId())) {
+				return o;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * @return Collection of FDOrderInfoI where status allows creating make-good
 	 */

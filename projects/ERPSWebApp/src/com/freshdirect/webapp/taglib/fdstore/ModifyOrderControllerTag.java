@@ -238,7 +238,7 @@ public class ModifyOrderControllerTag extends com.freshdirect.framework.webapp.B
 			throw new JspException("No customer was found for the requested action.");
 		}
         
-        EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+        EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgentStr(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
 
         // !!! determine this
 		boolean sendEmail = true;

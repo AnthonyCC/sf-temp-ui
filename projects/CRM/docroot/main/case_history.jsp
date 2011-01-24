@@ -5,6 +5,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ page import='com.freshdirect.webapp.taglib.crm.CrmSession' %>
 <%@ page import="com.freshdirect.fdstore.FDStoreProperties" %>
+<%@ page import='com.freshdirect.webapp.crm.security.CrmSecurityManager' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -21,6 +22,9 @@
             template.setStartRecord(Integer.parseInt(NVL.apply(request.getParameter("startRecord"), "0")));
             template.setEndRecord(Integer.parseInt(NVL.apply(request.getParameter("endRecord"), FDStoreProperties.getCaseListLength(request.getRequestURI().indexOf("case_history.jsp")>-1))));
             boolean hasCase = false;
+            String userId = CrmSecurityManager.getUserName(request);
+            String userRole = CrmSecurityManager.getUserRole(request);
+            
         %>
 			<crm:FindCases id='cases' template='<%= template %>'>
 			<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav">

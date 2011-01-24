@@ -323,7 +323,7 @@ session.setAttribute(SessionName.USER,null);
 			<% String addtlMonitorParam = quickSearch ? "" : "search=advanced"; %>
 			
 			<div id="monitor" class="home_module" style="width: 100%; border-bottom: 2px solid; height: auto;">
-				<crm:CrmCaseDownloadController actionName="downloadCases" agentPK="<%=currentAgent.getPK()%>" result="result">
+				<crm:CrmCaseDownloadController actionName="downloadCases" agentId="" result="result">
 					<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
 				<tr>
 					<td>

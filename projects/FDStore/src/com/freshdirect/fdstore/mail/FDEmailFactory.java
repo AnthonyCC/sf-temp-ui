@@ -52,6 +52,7 @@ public class FDEmailFactory {
 	public static final String CHEFSTABLE_EMAIL = FDStoreProperties.getChefsTableEmail();
 	public static final String GENERAL_LABEL = "FreshDirect";
 	public static final String VENDING_EMAIL = FDStoreProperties.getVendingEmail();
+	public static final String CRM_SECURITY_CC_EMAIL = FDStoreProperties.getCrmCCSecurityEmail();
 
 
 	// default instance getter
@@ -333,6 +334,13 @@ public class FDEmailFactory {
 			return email;
 		}
 	
+	public XMLEmailI createCrmCCSecurityEmail(CrmSecurityCCCheckEmailVO emailVO) {
+		CrmSecurityCCCheckEmail email = new CrmSecurityCCCheckEmail(emailVO);
+		email.setFromAddress(new EmailAddress("CRM Security", GENERAL_CS_EMAIL));		
+		email.setSubject(FDStoreProperties.getCrmCCSecurityEmailSubject());
+
+		return email;
+	}
 	////////
 
 	protected String getFromAddress(String depotCode) {
@@ -897,6 +905,27 @@ public class FDEmailFactory {
 			this.setRecipient(VENDING_EMAIL);
 		}
 
+	}
+	
+	protected static class CrmSecurityCCCheckEmail  extends FDContactServiceEmail implements XMLEmailI{
+		private CrmSecurityCCCheckEmailVO emailVO;		
+
+		public CrmSecurityCCCheckEmail(CrmSecurityCCCheckEmailVO emailVO) {
+			super("");
+			this.emailVO=emailVO;
+			this.setRecipient(CRM_SECURITY_CC_EMAIL);
+		}
+		
+		public String getXslPath() {
+			return ErpServicesProperties.getMailerXslHome() + "x_cc_check_security_v1.xsl";
+		}
+		
+		public String getXML() {
+			FDXMLSerializer s = new FDXMLSerializer();
+			Map map = new HashMap();
+			map.put("emailvo", this.emailVO);
+			return s.serialize("fdemail", map);
+		}
 	}
 	
 	private static class FDDPCreditEmail extends FDInfoEmail {

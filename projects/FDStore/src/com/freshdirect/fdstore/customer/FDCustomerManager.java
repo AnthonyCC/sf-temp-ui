@@ -102,6 +102,7 @@ import com.freshdirect.fdstore.customer.ejb.FDServiceLocator;
 import com.freshdirect.fdstore.deliverypass.DeliveryPassUtil;
 import com.freshdirect.fdstore.deliverypass.FDUserDlvPassInfo;
 import com.freshdirect.fdstore.giftcard.FDGiftCardInfoList;
+import com.freshdirect.fdstore.mail.CrmSecurityCCCheckEmailVO;
 import com.freshdirect.fdstore.mail.FDEmailFactory;
 import com.freshdirect.fdstore.mail.TellAFriend;
 import com.freshdirect.fdstore.mail.TellAFriendProduct;
@@ -429,6 +430,21 @@ public class FDCustomerManager {
 		}
 	}
 
+	public static PrimaryKey getCustomerId(String userId) throws FDResourceException {
+		lookupManagerHome();
+
+		try {
+			FDCustomerManagerSB sb = managerHome.create();
+			return sb.getCustomerId(userId);
+
+		} catch (CreateException ce) {
+			invalidateManagerHome();
+			throw new FDResourceException(ce, "Error creating session bean");
+		} catch (RemoteException re) {
+			invalidateManagerHome();
+			throw new FDResourceException(re, "Error talking to session bean");
+		}
+	}
 	public static FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException {
 		lookupManagerHome();
 
@@ -818,7 +834,7 @@ public class FDCustomerManager {
 		custInfo.setRsvEndTime(endTime);
 		custInfo.setRsvAddressId(addressId);
 
-		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", null);
+		FDActionInfo aInfo = new FDActionInfo(EnumTransactionSource.WEBSITE, identity, initiator, "Updated Recurring Reservation", "");
 
 		updateCustomerInfo(aInfo, custInfo);
 
@@ -1568,14 +1584,14 @@ public class FDCustomerManager {
 	 * @param String the PK of the sale to which the complaint is to be added
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	public static void addComplaint(ErpComplaintModel complaint, String saleId,FDIdentity identity ) throws FDResourceException, ErpComplaintException {
+	public static void addComplaint(ErpComplaintModel complaint, String saleId,FDIdentity identity, boolean autoApproveAuthorized, Double limit ) throws FDResourceException, ErpComplaintException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
 			//
 			// add the complaint to the sale
 			//
-			sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK());
+			sb.addComplaint(complaint, saleId,identity.getErpCustomerPK(),identity.getFDCustomerPK(),autoApproveAuthorized, limit);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -1596,12 +1612,12 @@ public class FDCustomerManager {
 	 * @param String csrId
 	 * @param java.util.Date approvedDate
 	 */
-	public static void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail)
+	public static void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail,Double limit)
 		throws FDResourceException, ErpComplaintException {
 		lookupManagerHome();
 		try {
 			FDCustomerManagerSB sb = managerHome.create();
-			sb.approveComplaint(complaintId, isApproved, csrId, sendMail);
+			sb.approveComplaint(complaintId, isApproved, csrId, sendMail,limit);
 
 		} catch (CreateException ce) {
 			invalidateManagerHome();
@@ -2124,6 +2140,21 @@ public class FDCustomerManager {
 					email = FDEmailFactory.getInstance().createContactServiceEmail(customer, subject, body);
 				}
 			}
+			mailer.enqueueEmail(email);
+		} catch (CreateException ce) {
+			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");
+		} catch (RemoteException re) {
+			throw new FDResourceException(re, "Cannot talk to MailerGatewaySB");
+		}
+	}
+	
+	public static void sendCrmCCSecurityEmail(CrmSecurityCCCheckEmailVO emailVO) throws FDResourceException {
+		lookupMailerGatewayHome();
+		lookupManagerHome();
+		try {
+			MailerGatewaySB mailer = mailerHome.create();
+			XMLEmailI email = null;			
+			email = FDEmailFactory.getInstance().createCrmCCSecurityEmail(emailVO);			
 			mailer.enqueueEmail(email);
 		} catch (CreateException ce) {
 			throw new FDResourceException(ce, "Cannot create MailerGatewaySB");

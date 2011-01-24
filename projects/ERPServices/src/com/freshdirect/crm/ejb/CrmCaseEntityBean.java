@@ -35,6 +35,11 @@ public class CrmCaseEntityBean extends CrmEntityBeanSupport {
         setModified();
     }
     
+    public void lock(String agentUserId) {
+        ((CrmCaseModel) this.model).setLockedAgentUserId(agentUserId);
+        setModified();
+    }
+    
     public void unlock() {
         ((CrmCaseModel) this.model).setLockedAgentPK(null);
         setModified();

@@ -54,7 +54,7 @@
     ErpSaleModel saleModel = ((com.freshdirect.fdstore.customer.adapter.FDOrderAdapter) order).getSale();
     List txList = new ArrayList( saleModel.getTransactions() );
   	Collections.sort(txList, ErpTransactionI.TX_DATE_COMPARATOR);
-	CrmAgentModel currentAgent = CrmSession.getCurrentAgent(session);
+	//CrmAgentModel currentAgent = CrmSession.getCurrentAgent(session);
     for (Iterator txIter = txList.iterator(); txIter.hasNext(); ) {
         ErpTransactionModel txModel = (ErpTransactionModel) txIter.next();
 %>

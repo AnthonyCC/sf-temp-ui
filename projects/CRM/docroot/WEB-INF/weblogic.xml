@@ -1,6 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 8.1//EN" "http://www.bea.com/servers/wls810/dtd/weblogic810-web-jar.dtd">
 <weblogic-web-app>
+	<security-role-assignment>
+  		<role-name>CRM_Administrator</role-name>    
+    	
+<!--    <principal-name>CRM_Security</principal-name> -->
+			<externally-defined/>
+  	</security-role-assignment>
+  	  <security-role-assignment>
+  		<role-name>CRM_Developer</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_QA</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_ETS</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_Supervisor</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_MarketingOperations</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_COS</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	  <security-role-assignment>
+  		<role-name>CRM_Transportation</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_OperationsCenter</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_SeniorOperationsCenter</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_Finance</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_NewAgent</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_Agent</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment> 
+  	  <security-role-assignment>
+  		<role-name>CRM_SeniorAgent</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_Business</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_Security</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>
+  	<security-role-assignment>
+  		<role-name>CRM_ERP</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>  	
+  	<security-role-assignment>
+  		<role-name>CRM_System</role-name>    
+    	<externally-defined/>
+  	</security-role-assignment>  
+  	
     <session-descriptor>
         <session-param>
             <param-name>PersistentStoreType</param-name>

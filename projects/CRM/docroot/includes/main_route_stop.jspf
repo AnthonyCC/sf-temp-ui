@@ -1,0 +1,131 @@
+<%@ page import="java.text.*" %>
+<table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
+<form name="routestop_report" method="post" action="/reports/route_stop_report.jsp">
+ <input type="hidden" name="xPortVS" value='no'>
+ <input type="hidden" name="xPortSP" value='no'>
+ <%! DateFormatSymbols symbols = new DateFormatSymbols(); %>
+ <%
+ Calendar today = Calendar.getInstance();
+ int currmonth = today.get(Calendar.MONTH);
+ int currday  = today.get(Calendar.DATE);
+ int curryear  = today.get(Calendar.YEAR);
+ int month = request.getParameter("month") != null ? Integer.parseInt(request.getParameter("month")) : currmonth;
+ int day   = request.getParameter("day") != null ? Integer.parseInt(request.getParameter("day")) : currday;
+ int year  = request.getParameter("year") != null ? Integer.parseInt(request.getParameter("year")) : curryear;
+ String wave = request.getParameter("wave") != null ? request.getParameter("wave") : " ";
+ String route = request.getParameter("route") != null ? request.getParameter("route") : " ";
+ String stop1 = request.getParameter("stop1") != null ? request.getParameter("stop1") : " ";
+ String stop2= request.getParameter("stop2") != null ? request.getParameter("stop2") : " ";
+ %>
+<script language="JavaScript">
+    function checkForm(thisForm) {
+        var okToSubmit= true;
+        var day = thisForm.day.value;
+        var month = thisForm.month.value;
+        var year = thisForm.year.value;
+        var wave = thisForm.wave.value;
+        var route = thisForm.route.value;
+        var stop1 = thisForm.stop1.value;
+        var stop2 = thisForm.stop2.value;
+        document.routestop_report.xPortVS.value='no';
+        
+        
+        if (day.length<2) day="0"+day;
+        if (month.length<2) month="0"+month;
+        var date1=year+month+day;
+        
+        if (date1.length!=8 ) {
+            alert('The DATE field is invalid. Please correct and try again.');
+            okToSubmit = false;
+        }
+        
+        if(isNaN(wave)) {
+            alert('The WAVE field is invalid. Please correct and try again.');
+            okToSubmit = false;
+        }
+
+        if(isNaN(route)) {
+            alert('The ROUTE field is invalid. Please correct and try again.');
+            okToSubmit = false;
+        }
+        
+        if(isNaN(stop1) || isNaN(stop2)) {
+            alert('The STOP field is invalid. Please correct and try again.');
+            okToSubmit = false;
+        }
+        
+        if ((route.length==0 || route==null) && ((stop1.length>0 && stop1!=null) || (stop2.length>0 && stop2!=null))) {
+            alert('ROUTE field is required with STOP. Please correct and try again.');
+            okToSubmit = false;
+        }
+        
+        if (!isNaN(stop1) && !isNaN(stop2)) {
+            if (parseFloat(stop1) > parseFloat(stop2)) {
+                alert('Minimum range of STOP field cannot be larger than maximum range. Please correct and try again.');
+                okToSubmit = false;
+            }
+        }
+        
+        if (okToSubmit) {
+            thisForm.submit();
+        }
+    }
+    
+    function setXportSPOn() {
+        document.routestop_report.xPortSP.value='yes';
+        document.routestop_report.submit();
+    }
+
+    function setXportVSOn() {
+        document.routestop_report.xPortVS.value='yes';
+        document.routestop_report.submit();
+    }
+</script>
+    <tr>
+        <td width="15%"><span class="sub_nav_title">Orders by Route & Stop</span></td>
+        <td width="55%" align="center">
+            Date* 
+            <select name="month" required="true" class="pulldown">
+                <option value="">Month</option>
+                            <%  for (int i=0; i<12; i++) {  %>
+                            <option value="<%= i %>" <%= (i==month)?"selected":"" %>><%= symbols.getShortMonths()[i] %></option>
+                            <%  }   %>
+            </select>
+            <select name="day" required="true" class="pulldown">
+                <option value="">Day</option>
+                            <%  for (int i=1; i<=31; i++) { %>
+                <option value="<%= i %>" <%= (i==day)?"selected":"" %>><%= i %></option>
+                            <%  } %>
+            </select>
+            <select name="year" required="true" class="pulldown">
+                <option value="">Year</option>
+                            <%  for (int i=2001; i<2011; i++) { %>
+                <option value="<%= i %>" <%= (i==year)?"selected":"" %>><%= i %></option>
+                            <%  } %>
+            </select>
+            &nbsp;
+            Wave <input type="text" name="wave" size="6" maxlength="6" class="text" value="<%=request.getParameter("wave")%>">
+            &nbsp;
+            Route <input type="text" name="route" size="6" maxlength="6" class="text" value="<%=request.getParameter("route")%>">
+            &nbsp;
+            Stop <input type="text" name="stop1" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop1")%>"> to <input type="text" name="stop2" size="5" maxlength="5" class="text" value="<%=request.getParameter("stop2")%>">
+
+            <input type="submit" class="submit" onClick="javascript:checkForm(routestop_report); return false;" value="GO"> 
+        </td>
+       
+    </tr>
+	<script language"javascript">
+	<!--
+	function toggleScroll(divId,currentClass,newClass) {
+	var divStyle = document.getElementById(divId);
+		if (document.routestop_report.forPrint.checked) {
+			divStyle.className = newClass;
+		} else {
+			divStyle.className = currentClass;
+		}
+	}
+	//-->
+	</script>
+    </form>
+</table>
+<div class="separator"><img src="/media_stat/crm/images/clear.gif" width="1" height="8"></div>

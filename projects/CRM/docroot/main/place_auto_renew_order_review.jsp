@@ -10,6 +10,7 @@
 <%@ page import="com.freshdirect.crm.CrmAgentRole"%>
 <%@ page import="com.freshdirect.payment.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.CrmSession"%>
+<%@ page import='com.freshdirect.webapp.crm.security.CrmSecurityManager' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -23,10 +24,11 @@
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
     FDCartI order = (FDCartI) session.getAttribute("SUBSCRIPTION_CART");
     ErpPaymentMethodI paymentMethod=order.getPaymentMethod();
-     
+    String agentId = CrmSecurityManager.getUserName(request);
+    String agentRole = CrmSecurityManager.getUserRole(request); 
     
 %>
-<crm:GetCurrentAgent id="currentAgent">
+
 <crm:GetErpCustomer id="customer" user="<%= user %>">
 
 <tmpl:put name='content' direct='true'>
@@ -212,5 +214,5 @@
 </tmpl:put>
 
 </crm:GetErpCustomer>
-</crm:GetCurrentAgent>
+
 </tmpl:insert>

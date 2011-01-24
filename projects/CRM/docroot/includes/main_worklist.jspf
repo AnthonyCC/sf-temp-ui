@@ -1,0 +1,58 @@
+
+			
+			<div id="monitor" class="home_module" style="width: 100%; border-bottom: 2px solid; height: auto;">
+					
+				<div id="home_monitor_content" class="content" style="padding-left: 0px; height: 18em; overflow-y: hidden;">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
+				<tr>
+					<% if(showWorkListSection){ %>
+					
+					<script language="javascript">
+				<!--
+					function filterCases(queue,subject,state,priority) {
+						var thisQueue = queue;
+						var thisSubject = subject;
+						var thisState = state;
+						var thisPriority = priority;
+						var filterUrl = '/main/main_index.jsp?';
+							if (thisQueue != null && thisQueue != "") {
+								filterUrl += 'filterQueue=' + thisQueue + '&';
+							}
+							if (thisSubject != null && thisSubject != "") {
+								filterUrl += 'filterSubject=' + thisSubject + '&';
+							}
+							if (thisState != null && thisState != "") {
+								filterUrl += 'filterState=' + thisState + '&';
+							}
+							if (thisPriority != null && thisPriority != "") {
+								filterUrl += 'filterPriority=' + thisPriority + '&';
+							}
+						document.location.href = filterUrl;
+					}
+			
+				//-->
+			</script>
+				<td width="50%" valign="top">
+					<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em; <%=worklist?"padding: 0px;":""%>">
+					<tr><td width="70%" class="download" align="left">
+					<span class="module_header_text">Worklist (<span class='result'><%= cases.size()  %></span>)</span> 
+					<%@ include file="/includes/filter_cases.jspf"%>
+					</td></tr></table>
+					<%@ include file="/includes/case_list.jspf"%>
+					
+					</td>
+					<% } %>
+					<% if(showCustomerSearchSection && showOrderCutOffReportSection) { %>
+					<td width="25%">					
+							<%@ include file="/includes/order_cutoff_report.jspf"%>
+							</td>
+							<% } %>
+					<% if(showCustomerSearchSection && showOrderSummaryReportSection) { %>		
+							<td width="25%">
+							<%@ include file="/includes/order_summary_report.jspf"%>
+					
+					</td>
+					<% } %></tr></table>
+				</div>
+				
+			</div>

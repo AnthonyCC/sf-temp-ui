@@ -9,14 +9,14 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Refusals</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
 <fd:getOrdersByStatus id="orders" status="<%=EnumSaleStatus.REFUSED_ORDER%>">
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <div class="sub_nav">
 <span class="sub_nav_title">Refusals ( <span class="result"><%= orders.size() %></span> )</span>
 </div>

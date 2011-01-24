@@ -11,11 +11,7 @@
 --%>
 <% if (promo_create_edit) { isEmptyPromoCustreq = true; } %>
 
-<%
 
-String userId = request.getParameter("userId");
-
-%>
 
 <%@page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%><table width="100%" class="bordBotLgray">
 	<tr>
@@ -81,7 +77,7 @@ String userId = request.getParameter("userId");
 							
 							<td class="alignL">
 							<%= promotion.getAssignedCustomerSize() > 0 ? promotion.getAssignedCustomerSize() : "0" %>
-						<%if((FDStoreProperties.isPromoPublishNodeMaster() || EnumPromotionStatus.LIVE.equals(promotion.getStatus())) && isADMUser){ %>
+						<%if((FDStoreProperties.isPromoPublishNodeMaster() || EnumPromotionStatus.LIVE.equals(promotion.getStatus())) && isPromoAllAccessUser){ %>
 							<%if(promotion.getAssignedCustomerSize() > 0){ %>
 								<a href="javascript:void(0)" onclick="window.open('<%=FDStoreProperties.getMarketingAdminUrl()%>/downloadRestriction.do?promotionCode=<%=promotion.getPromotionCode()%>','editRestriction','width=600,height=700,menubar=no,status=no,scrollbars=yes,resizable=yes')">Download</a><img width="50px" height="0" src="/media_stat/crm/images/clear.gif" alt="" />
 								Marketing Admin Functions:

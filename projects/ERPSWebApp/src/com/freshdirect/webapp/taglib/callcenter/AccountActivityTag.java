@@ -24,6 +24,13 @@ public class AccountActivityTag extends com.freshdirect.framework.webapp.BodyTag
 
 	private String activities;
 	private EnumAccountActivityType activityType;
+	private ErpActivityRecord template;
+	
+	
+
+	public void setTemplate(ErpActivityRecord template) {
+		this.template = template;
+	}
 
 	public void setActivities(String s) {
 		this.activities = s;
@@ -38,10 +45,17 @@ public class AccountActivityTag extends com.freshdirect.framework.webapp.BodyTag
 		HttpSession session = pageContext.getSession();
 		FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
 		try {
-			ErpActivityRecord template = new ErpActivityRecord();
+			if(null == template){
+				template = new ErpActivityRecord();
+			}
 			template.setCustomerId(user.getIdentity().getErpCustomerPK());
-			template.setActivityType(this.activityType);
-			pageContext.setAttribute(this.activities, ActivityLog.getInstance().findActivityByTemplate(template));
+//			template.setActivityType(this.activityType);
+			if(null != template.getFromDate() && null != template.getToDate() && template.getToDate().before(template.getFromDate())){
+				pageContext.setAttribute("endDateBeforeErr", " 'To' date should not be before 'From' date for filtering.");
+			}else{
+				pageContext.setAttribute(this.activities, ActivityLog.getInstance().findActivityByTemplate(template));
+			}
+			pageContext.setAttribute("filterList", ActivityLog.getInstance().getFilterLists(template));
 		} catch (FDResourceException ex) {
 			LOGGER.debug("Error getting customer activity...", ex);
 			pageContext.setAttribute(this.activities, Collections.<ErpActivityRecord>emptyList());

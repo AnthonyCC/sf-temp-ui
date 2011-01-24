@@ -20,18 +20,19 @@
 <%! DateFormatSymbols symbols = new DateFormatSymbols();    
 
 final static CrmAgentRole[] ISSUING_ROLES = {
-	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
+		
+	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.OPS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.NCS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE)};
 	
 final static CrmAgentRole[] APPROVAL_ROLES = {
-	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),	
+	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
 %>
@@ -54,7 +55,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
 	criteria.setStoreCredits(request.getParameter("storeCredits") != null);
 	criteria.setCashbacks(request.getParameter("cashbacks") != null);
 	
-	CrmAgentList agents = CrmManager.getInstance().getAllAgents(true);
+	Map<CrmAgentRole, List<String>> agents = CrmManager.getInstance().getAllAgentsFromLDAP(true);
 %>
 
 <jsp:include page="/includes/reports_nav.jsp" />
@@ -105,13 +106,15 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
                             <option value="">Any</option>
 							<logic:iterate id='role' collection="<%= ISSUING_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 								<option class="header"><%= role.getName() %></option>
-								<logic:iterate id='agent' collection="<%= agents.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
-								<% if (agent.isActive()) { %>
-									<option value="<%=agent.getUserId()%>" <%=agent.getUserId().equals(criteria.getIssuedBy()) ? "selected" : "" %>>
-										&nbsp;<%= agent.getUserId() %>
+								<% if(null != agents && null !=agents.get(CrmAgentRole.getEnum(role.getCode()))){ %>
+								<logic:iterate id='agent' collection="<%= agents.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
+								
+									<option value="<%=agent%>" <%=agent.equalsIgnoreCase(criteria.getIssuedBy()) ? "selected" : "" %>>
+										&nbsp;<%= agent %>
 									</option>
-								<% } %>
+								
 								</logic:iterate>
+								<% } %>
 								<option></option>
 							</logic:iterate>
                         </select>
@@ -157,13 +160,15 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
 							<option value="AUTO_APPROVED" <%="AUTO_APPROVED".equals(criteria.getApprovedBy()) ? "selected" : "" %>>&nbsp;AUTO_APPROVED</option>
 							<logic:iterate id='role' collection="<%= APPROVAL_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 								<option class="header"><%= role.getName() %></option>
-								<logic:iterate id='agent' collection="<%= agents.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
-								<% if (agent.isActive()) { %>
-									<option value="<%=agent.getUserId()%>" <%=agent.getUserId().equals(criteria.getApprovedBy()) ? "selected" : "" %>>
-										&nbsp;<%= agent.getUserId() %>
+								<% if(null != agents && null !=agents.get(CrmAgentRole.getEnum(role.getCode()))){ %>
+								<logic:iterate id='agent' collection="<%= agents.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
+								
+									<option value="<%=agent%>" <%=agent.equals(criteria.getApprovedBy()) ? "selected" : "" %>>
+										&nbsp;<%= agent %>
 									</option>
-								<% } %>
+								
 								</logic:iterate>
+								<% } %>
 								<option></option>
 							</logic:iterate>
                         </select>
@@ -171,7 +176,7 @@ final static CrmAgentRole[] APPROVAL_ROLES = {
                 </tr>
             </table>
         </td>
-        <td width="15%" align="right"><a href="/reports/index.jsp">All Reports >></a></td>
+        <td width="15%" align="right"><a href="/reports/reports_index.jsp">All Reports >></a></td>
     </tr>
 	<script language"javascript">
 	<!--

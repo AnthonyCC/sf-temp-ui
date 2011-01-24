@@ -3,6 +3,8 @@ package com.freshdirect.customer.ejb;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJBException;
 
@@ -24,6 +26,28 @@ public class ActivityLogSessionBean extends SessionBeanSupport {
 			conn = getConnection();
 			
 			return new ActivityDAO().getActivityByTemplate(conn, template);
+			
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occured", ex);
+			throw new EJBException(ex.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+				LOGGER.warn("Unable to close Connection", ex);
+				throw new EJBException(ex.getMessage());
+			}
+		}
+	}
+	
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) {
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			return new ActivityDAO().getCCActivitiesByTemplate(conn, template);
 			
 		} catch (SQLException ex) {
 			LOGGER.error("SQLException occured", ex);
@@ -67,6 +91,28 @@ public class ActivityLogSessionBean extends SessionBeanSupport {
 	// See ejb-jar.xml for details.
 	public void logActivityNewTX(ErpActivityRecord rec) {
 		logActivity(rec);
+	}
+	
+	public Map<String, List> getFilterLists(ErpActivityRecord template){
+		Connection conn = null;
+		try {
+			conn = getConnection();
+			
+			return new ActivityDAO().getFilterLists(conn,template);
+			
+		} catch (SQLException ex) {
+			LOGGER.error("SQLException occured", ex);
+			throw new EJBException(ex.getMessage());
+		} finally {
+			try {
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException ex) {
+				LOGGER.warn("Unable to close Connection", ex);
+				throw new EJBException(ex.getMessage());
+			}
+		}
 	}
 
 }

@@ -44,8 +44,8 @@ public class CrmSearchCaseControllerTag extends TagSupport {
 			}
 
 			id = NVL.apply(request.getParameter("assignedAgent"), "");
-			PrimaryKey assignedAgentPK = "".equals(id) ? null : new PrimaryKey(id);
-
+//			PrimaryKey assignedAgentPK = "".equals(id) ? null : new PrimaryKey(id);
+			id ="".equals(id) ? null :id;
 			// bind
 			CrmCaseTemplate ct = CrmSession.getSearchTemplate(pageContext.getSession());
 
@@ -55,7 +55,8 @@ public class CrmSearchCaseControllerTag extends TagSupport {
 			ct.setQueue(CrmCaseQueue.getEnum(request.getParameter("queue")));
 			ct.setSubject(CrmCaseSubject.getEnum(request.getParameter("subject")));
 			ct.setPriority(CrmCasePriority.getEnum(request.getParameter("priority")));
-			ct.setAssignedAgentPK(assignedAgentPK);
+//			ct.setAssignedAgentPK(assignedAgentPK);
+			ct.setAssignedAgentId(id);
 			ct.setStartDate(getDate(NVL.apply(request.getParameter("startDate"), ""), false));
 			ct.setEndDate(getDate(NVL.apply(request.getParameter("endDate"), ""), true));
 			ct.setStartRecord(Integer.parseInt(NVL.apply(request.getParameter("startRecord"),"0")));

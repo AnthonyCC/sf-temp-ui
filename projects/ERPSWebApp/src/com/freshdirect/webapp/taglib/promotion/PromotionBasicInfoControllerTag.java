@@ -148,16 +148,17 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 		this.promotion.setNeedCustomerList("on".equals(NVL.apply(request.getParameter("eligibilityList"), "off")));
 				
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		String agentId = CrmSession.getCurrentAgentStr(session);
 		
 		if("createBasicPromo".equalsIgnoreCase(getActionName())){//null == promotion.getId()){
 			this.promotion.setPromotionType(EnumPromotionType.HEADER.getName());
 //			this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
 			/*this.promotion.setStatus(EnumPromotionStatus.DRAFT);			
 			this.promotion.setPromotionCode("CD_"+new Date().getTime());*/
-			this.promotion.setCreatedBy(agent.getUserId());
+			this.promotion.setCreatedBy(agentId);
 			this.promotion.setCreatedDate(date);
-			this.promotion.setModifiedBy(agent.getUserId());
+			this.promotion.setModifiedBy(agentId);
 			this.promotion.setModifiedDate(date);
 			String isWindowSteering = NVL.apply(request.getParameter("windowStrg"), "");
 			if("true".equalsIgnoreCase(isWindowSteering)){
@@ -166,7 +167,7 @@ public class PromotionBasicInfoControllerTag extends AbstractControllerTag {
 				this.promotion.setOfferType(EnumOfferType.GENERIC.getName());
 			}
 		}else{
-			this.promotion.setModifiedBy(agent.getUserId());
+			this.promotion.setModifiedBy(agentId);
 			this.promotion.setModifiedDate(date);			
 		}
 		populatePromoChangeModel();

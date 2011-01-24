@@ -520,7 +520,8 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			LOGGER.debug("apartmen1"+apartment);
 			LOGGER.debug("zipCode1"+zipCode);			
 			LOGGER.debug("reason"+reason);
-			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+//			CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+			String agentId = CrmSession.getCurrentAgentStr(pageContext.getSession());
 			
 			result.addError(
 					address1==null || address1.trim().length()==0,
@@ -538,7 +539,7 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 			restriction.setApartment(apartment);
 			restriction.setZipCode(zipCode);
 			restriction.setReason(reason);			
-			restriction.setModifiedBy(agentModel.getUserId());			
+			restriction.setModifiedBy(agentId);			
 		}catch (Exception pe) {
 			throw new FDResourceException(pe);
 		}
@@ -711,9 +712,10 @@ public class AdminToolsControllerTag extends AbstractControllerTag {
 	
 	private int doDeleteReservations(HttpServletRequest request, GenericSearchCriteria criteria, List resvList) throws FDResourceException {
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+//		CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);
+		String agentId = CrmSession.getCurrentAgentStr(session);
 		String notes = request.getParameter("notes");
-		int updateCount = CallCenterServices.cancelReservations(criteria, agentModel.getUserId(), notes);
+		int updateCount = CallCenterServices.cancelReservations(criteria, agentId, notes);
 		return updateCount;
 	}
 

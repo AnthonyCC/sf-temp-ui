@@ -8,6 +8,7 @@
 <%@ page import="com.freshdirect.framework.util.*" %>
 <%@ page import="com.freshdirect.crm.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.crm.*" %>
+<%@ page import="com.freshdirect.webapp.crm.security.CrmSecurityManager" %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -34,9 +35,8 @@ for (Iterator iter = EnumAlertType.iterator(); iter.hasNext();) {
 }
     boolean isSupervisor=false;    
     boolean isCsr=false;
-    CrmAgentModel agentModel = CrmSession.getCurrentAgent(session);    
-    isSupervisor=agentModel.isSupervisor() || agentModel.isAdmin();        
-    isCsr=agentModel.isCSR();
+    
+    String userRole = CrmSecurityManager.getUserRole(request);
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
 <tmpl:put name='title' direct='true'>Customer Alert List</tmpl:put>
@@ -44,7 +44,7 @@ for (Iterator iter = EnumAlertType.iterator(); iter.hasNext();) {
 	<div class="sub_nav">
 	<table cellpadding="0" cellspacing="0" border="0" width="99%">
 	<tr><td width="80%"><span class="sub_nav_title">Customer Alert List</span> </div></td>
-	<td width="20%"align="right"><% if (showAddAlertLink && (isSupervisor || isCsr)) {%> <a href="/customer_account/place_alert.jsp?action=place_alert">Add An Alert &raquo;</a> <% } else { %>&nbsp;<% } %></td>
+	<td width="20%"align="right"><% if (showAddAlertLink && (CrmSecurityManager.hasAccessToPage(userRole,"place_alert.jsp"))) {%> <a href="/customer_account/place_alert.jsp?action=place_alert">Add An Alert &raquo;</a> <% } else { %>&nbsp;<% } %></td>
 	</tr>
 	</table>
 	</div>	
@@ -75,7 +75,7 @@ for (Iterator iter = EnumAlertType.iterator(); iter.hasNext();) {
                 <td width="10%"><%=customerAlert.getCreateUserId()%></td>
                 <td width="35%"><%=customerAlert.getNote()%></td>
                 <td width="12%">
-                <% if (isCsr || isSupervisor) { %>
+                <% if (CrmSecurityManager.hasAccessToPage(userRole,"place_alert.jsp")) { %>
                 <a href="/customer_account/place_alert.jsp?action=remove_alert&customer_alert_id=<%=customerAlert.getPK().getId()%>&alert_type=<%=customerAlert.getAlertType()%>">Remove Alert &raquo;</a>                
                 <%  } %>
                 </td>

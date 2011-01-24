@@ -60,14 +60,16 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 			ActionResult actionResult) throws JspException {
 		try {
 			HttpSession session = pageContext.getSession();
-			CrmAgentModel agent = CrmSession.getCurrentAgent(session);			
+//			CrmAgentModel agent = CrmSession.getCurrentAgent(session);			
+			String agentId = CrmSession.getCurrentAgentStr(session);
 		if ("changeStatus".equalsIgnoreCase(getActionName())){ 
 			if(graph.getStates().contains(status)) {
 				final FDPromotionNewModel promotion = graph.getPromotion();
 					validatePromotion(request,actionResult);
 					if(actionResult.isSuccess()){
 						promotion.setStatus(status);
-						this.promotion.setModifiedBy(agent.getUserId());
+//						this.promotion.setModifiedBy(agent.getUserId());
+						this.promotion.setModifiedBy(agentId);
 						this.promotion.setModifiedDate(new Date());						
 						populatePromoChangeModel(promotion);
 						FDPromotionNewManager.storePromotionStatus(promotion,status);
@@ -78,7 +80,8 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 			}
 		}else if("holdStatus".equalsIgnoreCase(getActionName())){
 			promotion.setOnHold(!promotion.isOnHold());
-			this.promotion.setModifiedBy(agent.getUserId());
+//			this.promotion.setModifiedBy(agent.getUserId());
+			this.promotion.setModifiedBy(agentId);
 			this.promotion.setModifiedDate(new Date());				
 			populatePromoChangeModel(promotion);
 			FDPromotionNewManager.storePromotionHoldStatus(promotion);			
@@ -115,8 +118,10 @@ public class PromotionStateSwitchTag extends AbstractControllerTag {
 			}
 		}
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		changeModel.setUserId(agent.getUserId());
+//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		String agentId = CrmSession.getCurrentAgentStr(session);
+//		changeModel.setUserId(agent.getUserId());
+		changeModel.setUserId(agentId);
 		promoChanges.add(changeModel);
 		this.promotion.setAuditChanges(promoChanges);
 	}

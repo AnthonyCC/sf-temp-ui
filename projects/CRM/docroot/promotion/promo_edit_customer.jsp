@@ -6,6 +6,7 @@
 <%@ page import="com.freshdirect.fdstore.promotion.EnumPromotionProfileAttribute"%>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="com.freshdirect.fdstore.customer.FDCustomerManager"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%
 	//fetch profiles
 	Map profileAttributeNames = FDCustomerManager.loadProfileAttributeNames();
@@ -14,7 +15,8 @@
 	Collections.sort(profileAttributeNamesSorted);
 %>
 <tmpl:insert template='/template/top_nav.jsp'>
-	<% String promoId = request.getParameter("promoId");%>
+	<% String promoId = request.getParameter("promoId");
+	String userId = CrmSecurityManager.getUserName(request);%>
 	<fd:GetPromotionNew id="promotion" promotionId="<%=promoId%>">
 	<tmpl:put name='title' direct='true'>Edit Customer Requirement</tmpl:put>
 	
@@ -22,7 +24,7 @@
 	<%
 	String successPage ="/promotion/promo_edit.jsp?promoId="+promoId;
 	%>
-	<crm:GetCurrentAgent id='currentAgent'>
+	
 	<fd:PromotionCustReqController result="result" promotion="<%= promotion %>" actionName="promoCustReq" successPage="<%= successPage %>">
 		<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 		
@@ -73,7 +75,7 @@
 			</div>
 		</form>
 		</fd:PromotionCustReqController>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 	</fd:GetPromotionNew>
 </tmpl:insert>

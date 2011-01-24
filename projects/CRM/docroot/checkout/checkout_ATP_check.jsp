@@ -4,7 +4,7 @@
 <%@ page import='com.freshdirect.webapp.taglib.fdstore.*' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<crm:GetCurrentAgent id="currentAgent">
+
 <fd:CheckLoginStatus guestAllowed="false" redirectPage='/index.jsp' />
 <%
 response.setHeader("Cache-Control", "no-cache");
@@ -89,4 +89,3 @@ try {
 </body>
 </html>
 <% out.flush(); %>
-</crm:GetCurrentAgent>

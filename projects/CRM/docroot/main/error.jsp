@@ -13,7 +13,7 @@
 <span class="order_step">FD CRM : Error Encountered</span>
 <hr class="gray1px">
 <span class="order"><b>We've encountered an error :(</b><br><br>
-<a href="/main/index.jsp"><b>Click here</b></a> to return to the home page.
+<a href="/main/main_index.jsp"><b>Click here</b></a> to return to the home page.
 <br><br>
 </span>
 <%	if (exception!=null) { %>

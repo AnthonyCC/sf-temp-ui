@@ -2,6 +2,8 @@ package com.freshdirect.customer;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.ejb.CreateException;
 import javax.naming.NamingException;
@@ -41,6 +43,14 @@ public class ActivityLog {
 		}
 	}
 	
+	public Collection<ErpActivityRecord> getCCActivitiesByTemplate(ErpActivityRecord template) throws FDResourceException {
+		try {
+			return this.getActivityLogSB().getCCActivitiesByTemplate(template);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
+		}
+	}
+	
 	public void logActivity(ErpActivityRecord rec) throws FDResourceException {
 		try {
 			this.getActivityLogSB().logActivity( rec );
@@ -60,6 +70,15 @@ public class ActivityLog {
 		} catch (RemoteException e) {
 			throw new FDResourceException(e, "Cannot talk to CrmManagerSB");
 		}
+	}
+	
+	public Map<String, List> getFilterLists(ErpActivityRecord template) throws FDResourceException {
+		try {
+			return this.getActivityLogSB().getFilterLists(template);
+		} catch (RemoteException e) {
+			throw new FDResourceException(e, "Cannot talk to ActivityLogSB");
+		}
+	
 	}
 
 }

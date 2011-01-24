@@ -32,10 +32,13 @@ public class CutoffTimeSearchControllerTag extends AbstractControllerTag {
 	}
 
 	protected boolean performAction(HttpServletRequest request, ActionResult actionResult) throws JspException {
-		this.getCutoffTimes(this.getDate(request));
+		
 		if ("cutoffReport".equalsIgnoreCase(this.getActionName())) {
 			String cutoffTime = NVL.apply(request.getParameter("cutoffTime"), "");
 			this.getCutoffReport(this.getDate(request), cutoffTime);
+			this.getCutoffTimes(this.getDate(request));
+		}else{
+			this.getCutoffTimes(new Date());
 		}
 
 		return true;

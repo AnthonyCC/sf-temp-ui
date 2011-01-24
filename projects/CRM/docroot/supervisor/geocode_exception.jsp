@@ -55,13 +55,13 @@
         }                
     }
 </script>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Geocode Exceptions</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <div style="background-color: #FFFFFF;">
     <div style="float:left;width:30%; background-color: #FFFFFF;">
         <div class="sub_nav">

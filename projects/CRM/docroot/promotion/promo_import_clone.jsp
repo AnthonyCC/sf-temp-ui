@@ -10,6 +10,7 @@
 <%@ page import="org.apache.commons.fileupload.FileItemFactory"%>
 <%@ page import="org.apache.commons.fileupload.disk.DiskFileItemFactory"%>
 <%@ page import="org.apache.commons.fileupload.FileItem"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -20,7 +21,8 @@
 		<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 	</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-<crm:GetCurrentAgent id='currentAgent'>
+	<%String userId = CrmSecurityManager.getUserName(request); %>
+
 	<crm:ImportPromotion promo="promotion" fieldName="promoFile" result="result" jsonContent="jsonForm">
 	<%@ include file="/includes/promotions/i_promo_nav.jspf" %>
 <%
@@ -43,7 +45,7 @@
 	
 	if (promotion != null) {
 		if (savePromo) {
-%><crm:StoreImportedPromotion result="sResult" actionName="store" promotion="<%= promotion %>" agent="<%= currentAgent %>"><% storeResult = sResult; %></crm:StoreImportedPromotion><%
+%><crm:StoreImportedPromotion result="sResult" actionName="store" promotion="<%= promotion %>" ><% storeResult = sResult; %></crm:StoreImportedPromotion><%
 		}
 
 		// promotion is just imported (no save happened) or save failed
@@ -217,6 +219,6 @@
 	}
 %>
 	</crm:ImportPromotion>
-</crm:GetCurrentAgent>
+
 	</tmpl:put>
 </tmpl:insert>

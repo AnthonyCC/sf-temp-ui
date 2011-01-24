@@ -10,10 +10,22 @@ background-color: #005555;
 border-bottom: 1px solid #000000;
 }
 
+.case_header_seq {
+position: relative;
+/*width: 100%;*/
+height: auto;
+padding: 4px 0;
+/*padding-left: 8px;*/
+background-color: #666;
+border-bottom: 1px solid #000000;
+}
+
 .case_header_color {
 background-color: #005555;
 }
-
+.case_header_color_seq {
+background-color: #666;
+}
 .case_header_title_text 	{ font-size: 10pt; color: #FFFF00; text-decoration: none; text-indent: 8px; }
 a.case_header_title_text:link 	{ color: #FFFF00; text-decoration: none; }
 a.case_header_title_text:visited 	{ color: #FFFF00; text-decoration: none; }
@@ -115,6 +127,20 @@ a.case_subheader_action:hover 	{ color: #FFFFCE; padding: 1px; padding-left: 3px
 	overflow-y: hidden;
 }
 
+.case_content_seq {
+	position: relative;
+	/*width: 100%;*/
+	height: 80%;
+	background-color: #CCC;
+	padding: 4px;
+	padding-left: 8px;
+	padding-bottom: 0px;
+	margin: 0px;
+	border-bottom: 8px solid #666;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
 .case_content_scroll {
 	position: relative;
 	height: 185px;
@@ -128,6 +154,12 @@ a.case_subheader_action:hover 	{ color: #FFFFCE; padding: 1px; padding-left: 3px
 
 .case_content_field {
 color: #004444;
+font-weight: bold;
+font-size: 10pt;
+}
+
+.case_content_field_seq {
+color: #000000;
 font-weight: bold;
 font-size: 10pt;
 }
@@ -192,7 +224,15 @@ padding: 1px;
 border-top: 2px solid #000000;
 border-bottom: 2px solid #000000;
 }
-
+.case_summary_header_seq {
+position: relative;
+width: 100%;
+height: auto;
+background-color: #666;
+padding: 1px;
+border-top: 2px solid #000000;
+border-bottom: 2px solid #000000;
+}
 .case_summary_empty {
 position: relative;
 width: 100%;
@@ -443,6 +483,12 @@ padding-bottom: 5px;
 	width: 40%;
 	background-color: #9c9;
 	border-left: 6px solid #055;
+}
+
+.casedisp_cell_seq {
+	width: 40%;
+	background-color: #999;
+	border-left: 6px solid #666;
 }
 
 .casedisp_container {

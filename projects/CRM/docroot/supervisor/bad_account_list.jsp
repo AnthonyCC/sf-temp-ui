@@ -7,11 +7,11 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <crm:CrmGetRestrictedPaymentMethodList id="restrictedPaymentMethodList">
-<crm:GetCurrentAgent id="currentAgent">
-<tmpl:insert template='/template/top_nav.jsp'>
+
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 <tmpl:put name='title' direct='true'>Supervisor Resources > Bad Checking Accounts</tmpl:put>
 <tmpl:put name='content' direct='true'>
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <div class="sub_nav">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" class="sub_nav_text">
 <%!
@@ -295,7 +295,7 @@ if (comp == null) {
             <td width="15%" class="border_bottom"><%=(restrictedPaymentMethod.getReason()!=null)? restrictedPaymentMethod.getReason().getDescription():"&nbsp;"%></td>
             <% noteLength = (restrictedPaymentMethod.getNote()!= null && restrictedPaymentMethod.getNote().length() < NOTE_MAX_LENGTH) ? restrictedPaymentMethod.getNote().length() : NOTE_MAX_LENGTH; %>
             <td width="10%" class="border_bottom"><%=(restrictedPaymentMethod.getNote()!=null)? restrictedPaymentMethod.getNote().substring(0, noteLength):"&nbsp;"%></td>
-            <td width="9%" class="border_bottom" align="right"><% if (currentAgent.isSupervisor()) { %><a href="javascript:pop('/supervisor/remove_bad_account.jsp?restrict_payment_method_id=<%=restrictedPaymentMethod.getId()%>', 350, 500);">Remove</a><% } %>&nbsp;</td>
+            <td width="9%" class="border_bottom" align="right"><a href="javascript:pop('/supervisor/remove_bad_account.jsp?restrict_payment_method_id=<%=restrictedPaymentMethod.getId()%>', 350, 500);">Remove</a>&nbsp;</td>
         </tr>
 </logic:iterate>
     </table>
@@ -308,5 +308,5 @@ if (comp == null) {
 <%      }   %>
 </tmpl:put>
 </tmpl:insert>
-</crm:GetCurrentAgent>
+
 </crm:CrmGetRestrictedPaymentMethodList>

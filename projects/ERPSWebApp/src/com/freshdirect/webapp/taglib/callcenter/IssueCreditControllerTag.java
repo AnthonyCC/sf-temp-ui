@@ -26,6 +26,7 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Category;
 
 import com.freshdirect.crm.CrmAgentModel;
+import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.crm.CrmAuthorizationException;
 import com.freshdirect.crm.CrmCaseAction;
 import com.freshdirect.crm.CrmCaseActionType;
@@ -36,6 +37,7 @@ import com.freshdirect.crm.CrmCasePriority;
 import com.freshdirect.crm.CrmCaseState;
 import com.freshdirect.crm.CrmCaseSubject;
 import com.freshdirect.crm.CrmManager;
+import com.freshdirect.crm.CrmMessageBuffer;
 import com.freshdirect.customer.EnumComplaintLineMethod;
 import com.freshdirect.customer.EnumComplaintLineType;
 import com.freshdirect.customer.EnumComplaintStatus;
@@ -52,6 +54,7 @@ import com.freshdirect.framework.util.MathUtil;
 import com.freshdirect.framework.util.log.LoggerFactory;
 import com.freshdirect.framework.webapp.ActionError;
 import com.freshdirect.framework.webapp.ActionResult;
+import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.taglib.fdstore.CallcenterUser;
 import com.freshdirect.webapp.taglib.fdstore.SessionName;
@@ -116,93 +119,109 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 				throw new JspException(fdre.getMessage());
 			}
 
-			
+			CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(session);
 			if ("POST".equalsIgnoreCase(request.getMethod())) { 
 				if (ACTION_APPROVE.equals(this.action)) {
 					//
 					// This is a SUPERVISOR approval request
 					//
-					try {
-						doApproval(request, actionResult, true);
-						if (actionResult.isSuccess()) {
-							CrmSession.invalidateCachedOrder(session);
+					boolean approveAuthorized = CrmSecurityManager.isApproveAuthorized(agentRole.getLdapRoleName());
+					Double limit =CrmSecurityManager.getApprovalLimit(agentRole.getLdapRoleName());
+					if(approveAuthorized && limit!= null){
+						try {					
 							
-							// Also invalidate assigned user's order history
-							FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-							if (user != null) {
-								user.invalidateOrderHistoryCache();
+							doApproval(request, actionResult, true, limit);						
+							if (actionResult.isSuccess()) {
+								CrmSession.invalidateCachedOrder(session);
+								
+								// Also invalidate assigned user's order history
+								FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+								if (user != null) {
+									user.invalidateOrderHistoryCache();
+								}
+								
+								LOGGER.debug("Success, redirecting to: " + successPage);
+								HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+								try {
+									response.sendRedirect(response.encodeRedirectURL(successPage));
+									JspWriter writer = pageContext.getOut();
+									writer.close();
+								} catch (IOException ioe) {
+									throw new JspException(ioe.getMessage());
+								}
 							}
-							
-							LOGGER.debug("Success, redirecting to: " + successPage);
-							HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-							try {
-								response.sendRedirect(response.encodeRedirectURL(successPage));
-								JspWriter writer = pageContext.getOut();
-								writer.close();
-							} catch (IOException ioe) {
-								throw new JspException(ioe.getMessage());
-							}
+						} catch (ErpComplaintException ex) {
+							LOGGER.warn("ErpComplaintException: could not approve complaint.", ex);
+							actionResult.addError(new ActionError("approval_error", ex.getMessage()));
+						} catch (FDResourceException ex) {
+							LOGGER.warn("FDResourceException: ", ex);
+							actionResult.addError(
+								new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
+						} catch (CrmAuthorizationException ex) {
+							LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
+							actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
 						}
-					} catch (ErpComplaintException ex) {
-						LOGGER.warn("ErpComplaintException: could not approve complaint.", ex);
-						actionResult.addError(new ActionError("approval_error", ex.getMessage()));
-					} catch (FDResourceException ex) {
-						LOGGER.warn("FDResourceException: ", ex);
-						actionResult.addError(
-							new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
-					} catch (CrmAuthorizationException ex) {
-						LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
-						actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
+					}else{
+						LOGGER.warn(agentRole.getName()+" role is not authorized to approve complaint.");
+						actionResult.addError(new ActionError("approval_error",agentRole.getName()+" role is not authorized to approve complaint."));
 					}
 				} else if (ACTION_REJECT.equals(this.action)) {
 					
 					//
 					// This is a SUPERVISOR rejection request
 					//
-					try {
-						doApproval(request, actionResult, false);
-						if (actionResult.isSuccess()) {
-							CrmSession.invalidateCachedOrder(session);
-
-							// Also invalidate assigned user's order history
-							FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
-							if (user != null) {
-								user.invalidateOrderHistoryCache();
+					boolean rejectAuthorized = CrmSecurityManager.isRejectAuthorized(agentRole.getLdapRoleName());
+					if(rejectAuthorized){
+						try {
+							doApproval(request, actionResult, false,null);							
+							if (actionResult.isSuccess()) {
+								CrmSession.invalidateCachedOrder(session);
+	
+								// Also invalidate assigned user's order history
+								FDUserI user = (FDUserI) session.getAttribute(SessionName.USER);
+								if (user != null) {
+									user.invalidateOrderHistoryCache();
+								}
+								
+								LOGGER.debug("Success, redirecting to: " + successPage);
+								HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
+								try {
+									response.sendRedirect(response.encodeRedirectURL(successPage));
+									JspWriter writer = pageContext.getOut();
+									writer.close();
+								} catch (IOException ioe) {
+									throw new JspException(ioe.getMessage());
+								}
 							}
-							
-							LOGGER.debug("Success, redirecting to: " + successPage);
-							HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
-							try {
-								response.sendRedirect(response.encodeRedirectURL(successPage));
-								JspWriter writer = pageContext.getOut();
-								writer.close();
-							} catch (IOException ioe) {
-								throw new JspException(ioe.getMessage());
-							}
+						} catch (ErpComplaintException ex) {
+							LOGGER.warn("ErpComplaintException: could not reject complaint.", ex);
+							actionResult.addError(new ActionError("approval_error", ex.getMessage()));
+						} catch (FDResourceException ex) {
+							LOGGER.warn("FDResourceException: ", ex);
+							actionResult.addError(
+								new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
+						} catch (CrmAuthorizationException ex) {
+							LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
+							actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
 						}
-					} catch (ErpComplaintException ex) {
-						LOGGER.warn("ErpComplaintException: could not reject complaint.", ex);
-						actionResult.addError(new ActionError("approval_error", ex.getMessage()));
-					} catch (FDResourceException ex) {
-						LOGGER.warn("FDResourceException: ", ex);
-						actionResult.addError(
-							new ActionError("technical_difficulty", "Action not processed due to technical difficulty."));
-					} catch (CrmAuthorizationException ex) {
-						LOGGER.warn("CrmAuthorizationException: could not approve complaint.", ex);
-						actionResult.addError(new ActionError("technical_difficulty", ex.getMessage()));
+					}else{
+						LOGGER.warn(agentRole.getName()+" role is not authorized to reject complaint.");
+						actionResult.addError(new ActionError("approval_error",agentRole.getName()+" role is not authorized to reject complaint."));
 					}
 				} else if (ACTION_SUBMIT.equals(this.action)) {
 					//
 					// This is a standard CSR complaint submission
 					//
 					validateComplaint(actionResult, complaintModel);
+					boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
+					Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
 					if (actionResult.isSuccess() && "true".equalsIgnoreCase(request.getParameter("do_issue_credit"))) {
 						try {
 							// Create complaint first
-							addComplaint(actionResult, complaintModel);
+							addComplaint(actionResult, complaintModel,autoApproveAuthorized,limit);
 							
 							// Generate an auto case
-							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgent(session), order, complaintModel, pageContext.getRequest());
+							CrmCaseModel autoCase = AutoCaseGenerator.createAutoCase(CrmSession.getCurrentAgentStr(session), order, complaintModel, pageContext.getRequest());
 							// store case
 							PrimaryKey autoCasePK = CrmManager.getInstance().createCase(autoCase);
 
@@ -341,36 +360,38 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 	 * @return String the PK of the ErpComplaintModel just created
 	 * @throws ErpComplaintException if order was not in proper state to accept complaints
 	 */
-	private void addComplaint(ActionResult result, ErpComplaintModel complaintModel)
+	private void addComplaint(ActionResult result, ErpComplaintModel complaintModel,boolean autoApproveAuthorized, Double limit)
 		throws FDResourceException, ErpComplaintException {
 
 		LOGGER.debug(complaintModel.describe() );
 		
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = ((FDUserI)session.getAttribute(SessionName.USER)).getIdentity();
-		FDCustomerManager.addComplaint(complaintModel, orderId,identity);
+		FDCustomerManager.addComplaint(complaintModel, orderId,identity,autoApproveAuthorized,limit);
 	}
 
-	private void doApproval(HttpServletRequest request, ActionResult result, boolean isApproved)
+	private void doApproval(HttpServletRequest request, ActionResult result, boolean isApproved, Double limit)
 		throws FDResourceException, ErpComplaintException, CrmAuthorizationException {
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-
+		//CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+		String agentId = CrmSession.getCurrentAgentStr(request.getSession());
 		
 		// Close auto case first
-		if (agent != null && this.complaintModel.getAutoCaseId() != null) {
+		if (agentId != null && this.complaintModel.getAutoCaseId() != null) {
 			CrmCaseModel aCase = CrmManager.getInstance().getCaseByPk(this.complaintModel.getAutoCaseId());
 			
 			// try to lock case
-			PrimaryKey ownerPK = aCase.getLockedAgentPK();
+//			PrimaryKey ownerPK = aCase.getLockedAgentPK();
+			String ownerId = aCase.getLockedAgentUserId();
 
 			boolean caseIsMine = false;
-			if (ownerPK != null) {
-				if (!agent.getPK().equals(ownerPK)) {
+			if (ownerId != null) {
+				if (!agentId.equalsIgnoreCase(ownerId)) {
 					// gosh .. someone already owning the case
-					CrmAgentModel otherAgent = CrmManager.getInstance().getAgentByPk(ownerPK.getId());
+//					CrmAgentModel otherAgent = CrmManager.getInstance().getAgentByPk(ownerPK.getId());
 					
-					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+otherAgent.getFirstName()+" "+otherAgent.getLastName()+".");
+//					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+otherAgent.getFirstName()+" "+otherAgent.getLastName()+".");
+					result.addError(true, "approval_error", "Requested action cannot be performed. Associated case is locked by another user "+ownerId+".");
 					return;
 				}
 				caseIsMine = true;
@@ -403,11 +424,11 @@ public class IssueCreditControllerTag extends com.freshdirect.framework.webapp.B
 		boolean sendMail = true;
 		if(request.getParameter("sendMail") != null) sendMail = false;
 		
-		if (agent != null) {
-			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, agent.getUserId(), sendMail);
+		if (agentId != null) {
+			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, agentId, sendMail,limit);
 		} else {
 			CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
-			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, ccUser.getId(), sendMail);
+			FDCustomerManager.approveComplaint(request.getParameter("complaintId"), isApproved, ccUser.getId(), sendMail,limit);
 		}
 	}
 }

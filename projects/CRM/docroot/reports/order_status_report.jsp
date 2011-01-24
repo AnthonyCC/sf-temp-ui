@@ -15,7 +15,7 @@
 <tmpl:put name='content' direct='true'>
 <jsp:include page="/includes/reports_nav.jsp" />
 <fd:CrmOrderStatusSearch result="result" actionName="searchOrders" reportName="report">
-<table width="100%" cellpadding="0" cellspacing="0" class="sub_nav"><form method='POST' name="order_status"><tr><td><span class="sub_nav_title">Orders by Status</span> Search for orders in a particular status <% if ("POST".equals(request.getMethod()) && report.size() > 0) {%><span class="note" style="font-weight: normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></td><td align="right"><a href="/reports/index.jsp">All Reports >></a></td></tr></table>
+<table width="100%" cellpadding="0" cellspacing="0" class="sub_nav"><form method='POST' name="order_status"><tr><td><span class="sub_nav_title">Orders by Status</span> Search for orders in a particular status <% if ("POST".equals(request.getMethod()) && report.size() > 0) {%><span class="note" style="font-weight: normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></td><td align="right"><a href="/reports/reports_index.jsp">All Reports >></a></td></tr></table>
 
 <table width="100%" cellpadding="0" cellspacing="0" class="content_fixed">
         <tr>

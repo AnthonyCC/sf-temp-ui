@@ -36,7 +36,7 @@
 %>
 <div class="side_nav_module_content" style="height: 88%; padding-top: 8px;">
   <logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-        <%List agents = agentList.getAgents(role);%>
+        <%List agents = null;//agentList.getAgents(role);%>
         <a name="<%=role.getCode()%>"><div class="side_nav_module_header"><%=role.getName()%><%="TRN".equals(role.getCode())?"er":""%>s <span style="font-weight:normal;">(<%=agents.size()%>)</span></div></a>
              
 	         <% 

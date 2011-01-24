@@ -15,10 +15,17 @@ public class CrmStatus{
 	private String saleId;
 	private String erpCustomerId;
 	private String caseId;
+	private String agentId;
 	
 	public CrmStatus(final PrimaryKey agentPK) {
 		super();
 		this.agentPK = agentPK;
+	}
+	
+	public CrmStatus(final String agentId) {
+		super();
+		this.agentPK = null;
+		this.agentId = agentId;
 	}
 	
 	public PrimaryKey getAgentPK() {
@@ -47,5 +54,13 @@ public class CrmStatus{
 	
 	public void setErpCustomerId(String customerPK) {
 		this.erpCustomerId = customerPK;
+	}
+
+	public String getAgentId() {
+		return agentId;
+	}
+
+	public void setAgentId(String agentId) {
+		this.agentId = agentId;
 	}
 }

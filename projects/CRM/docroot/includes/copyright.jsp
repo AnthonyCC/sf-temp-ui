@@ -3,7 +3,7 @@
 	<td width="25%">
 		<table class="cust_module_content_note">
 			<tr valign="bottom">
-				<td><a href="http://www.freshdirect.com" target="freshdirect"><img src="/media_stat/crm/images/fd_logo.gif" width="72" height="16" border="0" alt="FreshDirect" vspace="0"></a></td><td style="line-height: 8pt;">Customer Relationship Management</td>
+				<td><a href="http://www.freshdirect.com" target="freshdirect"><img src="/media_stat/crm/images/fd_logo.gif" width="72" height="16" border="0" alt="FreshDirect" vspace="0"></a></td><td style="line-height: 8pt;">Customer Relationship Manager</td>
 			</tr>
 		</table>
 	</td>

@@ -17,13 +17,15 @@ public class AccountActivityUtil implements SessionName {
 		EnumTransactionSource src;
 		String initiator;
 		CrmAgentModel agent;
+		String agentId =null;
 
 		String app = (String) session.getAttribute(SessionName.APPLICATION);
 		if (app != null && app.equalsIgnoreCase("CALLCENTER")) {
 			src = EnumTransactionSource.CUSTOMER_REP;
-			agent = CrmSession.getCurrentAgent(session);
-			if (agent != null) {
-				initiator = agent.getUserId();
+//			agent = CrmSession.getCurrentAgent(session);
+			agentId = CrmSession.getCurrentAgentStr(session);
+			if (agentId != null) {
+				initiator = agentId;//agent.getUserId();
 			} else {
 				CallcenterUser ccUser = (CallcenterUser) session.getAttribute(SessionName.CUSTOMER_SERVICE_REP);
 				initiator = ccUser.getId();
@@ -43,7 +45,7 @@ public class AccountActivityUtil implements SessionName {
 
 		FDIdentity identity = currentUser == null ? null : currentUser.getIdentity();
 		
-		FDActionInfo info = new FDActionInfo(src, identity, initiator, note, agent);
+		FDActionInfo info = new FDActionInfo(src, identity, initiator, note, agentId);
 
 		return info;
 	}

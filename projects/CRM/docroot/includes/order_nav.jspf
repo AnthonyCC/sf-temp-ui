@@ -14,11 +14,14 @@
 <%@ page import="com.freshdirect.webapp.util.OrderPermissionsI"%>
 <%@ page import="com.freshdirect.webapp.util.OrderPermissionsImpl"%>
 <%@ page import="com.freshdirect.customer.EnumSaleType"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 
 <%@ taglib uri='crm' prefix='crm' %>
 
 <%
 String pageURI = request.getRequestURI();
+String agentId1 = CrmSecurityManager.getUserName(request);
+String agentRole1 = CrmSecurityManager.getUserRole(request);
 boolean hasCustomerCase = CrmSession.hasCustomerCase(session);
 
 boolean o_details = pageURI.indexOf("order_details") > -1;
@@ -83,7 +86,7 @@ for (ErpComplaintModel complaint : nav_complaints ) {
 boolean hasCase = false;
 %>
 <crm:ResubmitOrderController orderId="<%= nav_orderId %>" actionName='<%=request.getParameter("action")%>' result="nav_result" successPage="<%= nav_successPage %>">
-<crm:GetCurrentAgent id="currentAgent">
+
 <crm:GetLockedCase id="cm">
 	<% if (cm!= null) hasCase = true; %>
 </crm:GetLockedCase>
@@ -142,19 +145,19 @@ boolean hasCase = false;
 				<% if (!o_details) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
 				<% } %>
-				<% if (!o_order_cases && hasCasesForOrder) { %>
+				<% if (!o_order_cases && hasCasesForOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"order_cases.jsp")) { %>
 					<div class="cust_sub_nav_new" style="width: 140px;"><a name="linked_cases" href="<%= response.encodeURL("/main/order_cases.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text_new" onmouseover="return overlib('Cases linked to this order', AUTOSTATUS, WRAP, REF,'linked_cases',REFP,'LL');" onmouseout="nd();">Linked Cases</a></div>
 				<% } %>
-				<% if (o_details && currentAgent.isAuthorizedToSeeAuthAndCCInfo()){%>
+				<% if (o_details && CrmSecurityManager.hasAccessToPage(agentRole1,"credit_card_info.jsp")){%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="javascript:pop('/supervisor/credit_card_info.jsp?orderId=<%= nav_orderId %>', '500', '580')" class="cust_sub_nav_text">CC Details</a></div>
 				<%}%>
-				<% if (!o_charge_order && displayChargeOrderLink) { //and charge option required%>
+				<% if (!o_charge_order && displayChargeOrderLink && CrmSecurityManager.hasAccessToPage(agentRole1,"charge_order.jsp")) { //and charge option required%>
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="/order/charge_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Charge Order<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
-				<% if (!o_transactions) { %>
+				<% if (!o_transactions && CrmSecurityManager.hasAccessToPage(agentRole1,"order_transaction_details.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_transaction_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">View Transactions</a></div>
 				<% } %>
-				<% if (!o_reverse_credits && isReversible ) { %>
+				<% if (!o_reverse_credits && isReversible && CrmSecurityManager.hasAccessToPage(agentRole1,"reverse_credit.jsp") ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/reverse_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Reverse Credit<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
 				<% if (!o_return || "approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
@@ -163,36 +166,36 @@ boolean hasCase = false;
 					<% } %>
 				<% } %>
 				<% if (!o_return || !"approve_return".equalsIgnoreCase(request.getParameter("action"))) { %>
-					<% if ((currentAgent.isSupervisor() || currentAgent.isMonitor()) && orderPermissions.allowReturnOrder()) { %>
+					<% if (/*(currentAgent.isSupervisor() || currentAgent.isMonitor()) && */ orderPermissions.allowReturnOrder()) { %>
 						<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/returns/return_order.jsp?orderId=<%= nav_orderId %>&action=approve_return" class="cust_sub_nav_text"><%}%>Approve Return<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
 					<% } %>
 				<% } %> 
-				<% if ( o_details && orderPermissions.allowResubmitOrder() && currentAgent.isSupervisor() ) { %>
+				<% if ( o_details && orderPermissions.allowResubmitOrder() /*&& currentAgent.isSupervisor()*/ ) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
 				<% } %>
-				<% if (!o_modify && orderPermissions.allowModifyOrder()) { %>
+				<% if (!o_modify && orderPermissions.allowModifyOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"order_modify.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase && isRegularOrder){%><a href="/order/order_modify.jsp?orderId=<%=nav_orderId%>" class="cust_sub_nav_text"><%}%>Modify Order<%if(hasCustomerCase && isRegularOrder){%></a><%}%></div>
 				<% } %>
-				<% if (!o_cancel && orderPermissions.allowCancelOrder()) { %>
+				<% if (!o_cancel && orderPermissions.allowCancelOrder() && CrmSecurityManager.hasAccessToPage(agentRole1,"cancel_order.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/cancel_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Cancel Order<%if(hasCustomerCase ){%></a><%}%></div>
 				<% } %>
 				<!-- issue credit button -->
 				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { %>
 				<%
 					boolean isGiftCardOrder1 = (orderType.getSaleType().equalsIgnoreCase("GCD"))?true:false;
-					if(isGiftCardOrder1){					
+					if(isGiftCardOrder1 && CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")){					
 				%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
-				<% } else { %>
+				<% } else if(CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Issue Credit</a></div>
 				<% } %>
-				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 ) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(currentAgent.isSupervisor() || currentAgent.isMonitor()) ? "Approve Credit" : currentAgent.isCSR() ? "Deny Credit" : ""%></a></div>
+				<% } else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 && CrmSecurityManager.hasAccessToPage(agentRole1,"approve_credit.jsp")) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(CrmSecurityManager.hasAccessToPage(agentRole1,"approveCredit")) ? "Approve Credit" : CrmSecurityManager.hasAccessToPage(agentRole1,"rejectCredit") ? "Deny Credit" : ""%></a></div>
 				<% } %>
-				<% if (!o_payment_exception && orderPermissions.hasPaymentException()) { %>
+				<% if (!o_payment_exception && orderPermissions.hasPaymentException() && CrmSecurityManager.hasAccessToPage(agentRole1,"payment_exception.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="<%= response.encodeURL("/order/payment_exception.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text"><%}%>Payment Exception<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
-				<%if(isRegularOrder){%>
+				<%if(isRegularOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"shop_from_order.jsp")){%>
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/order/quickshop/shop_from_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">QuickShop Order</a></div>
 				<% } %>
 				<%if(o_details && isRegularOrder && orderPermissions.allowComplaint()){%>
@@ -200,19 +203,19 @@ boolean hasCase = false;
 				<% } %>
 				<% } else { %>
 				
-				<% if (!o_details) { %>
+				<% if (!o_details && CrmSecurityManager.hasAccessToPage(agentRole1,"order_details.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">Order Details</a></div>
 				<% } %>
-				<% if (!o_order_cases && hasCasesForOrder) { %>
+				<% if (!o_order_cases && hasCasesForOrder && CrmSecurityManager.hasAccessToPage(agentRole1,"order_cases.jsp")) { %>
 					<div class="cust_sub_nav_new" style="width: 140px;"><a name="linked_cases" href="<%= response.encodeURL("/main/order_cases.jsp?orderId=" + nav_orderId) %>" class="cust_sub_nav_text_new" onmouseover="return overlib('Cases linked to this order', AUTOSTATUS, WRAP, REF,'linked_cases',REFP,'LL');" onmouseout="nd();">Linked Cases</a></div>
 				<% } %>
-				<% if (o_details && currentAgent.isAuthorizedToSeeAuthAndCCInfo()){%>
+				<% if (o_details && CrmSecurityManager.hasAccessToPage(agentRole1,"credit_card_info.jsp")){%>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="javascript:pop('/supervisor/credit_card_info.jsp?orderId=<%= nav_orderId %>', '500', '580')" class="cust_sub_nav_text">CC Details</a></div>
 				<%}%>
-				<% if (!o_charge_order && displayChargeOrderLink) { //and charge option required%>
+				<% if (!o_charge_order && displayChargeOrderLink && CrmSecurityManager.hasAccessToPage(agentRole1,"charge_order.jsp")) { //and charge option required%>
 					<div class="cust_sub_nav" style="width: 140px;"><%if(hasCustomerCase){%><a href="/order/charge_order.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Charge Order<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
-				<% if (!o_transactions) { %>
+				<% if (!o_transactions && CrmSecurityManager.hasAccessToPage(agentRole1,"order_transaction_details.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><a href="/main/order_transaction_details.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text">View Transactions</a></div>
 				<% } %>
 				
@@ -220,18 +223,18 @@ boolean hasCase = false;
 				<% if (!o_issue_credit && orderPermissions.allowComplaint()) { 
 					
 				    boolean isDonationOrder1 = (orderType.getSaleType().equalsIgnoreCase("DON"))?true:false;
-				    if(isDonationOrder1){
+				    if(isDonationOrder1 && CrmSecurityManager.hasAccessToPage(agentRole1,"issue_credit.jsp")){
 				%>
 				    <div class="cust_sub_nav" style="width: 120px;"><a href="/returns/issue_credit.jsp?orderId=<%= nav_orderId %>&view=dept" class="cust_sub_nav_text">Issue Credit</a></div>
 				    <% } %>
-				<%} else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 ) { %>
-					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(currentAgent.isSupervisor() || currentAgent.isMonitor()) ? "Approve Credit" : currentAgent.isCSR() ? "Deny Credit" : ""%></a></div>
+				<%} else if ( !o_approve_credit && nav_order.hasCreditIssued() == 2 && CrmSecurityManager.hasAccessToPage(agentRole1,"approve_credit.jsp")) { %>
+					<div class="cust_sub_nav" style="width: 120px;"><a href="/returns/approve_credit.jsp?orderId=<%= nav_orderId %>&complaintId=<%= nav_complaintId %>" class="cust_sub_nav_text"><%=(CrmSecurityManager.hasAccessToPage(agentRole1,"approveCredit")) ? "Approve Credit" : CrmSecurityManager.hasAccessToPage(agentRole1,"rejectCredit") ? "Deny Credit" : ""%></a></div>
 				<% } %>
-				<% if (!o_reverse_credits && isReversible ) { %>
+				<% if (!o_reverse_credits && isReversible && CrmSecurityManager.hasAccessToPage(agentRole1,"reverse_credit.jsp")) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><%if(hasCustomerCase){%><a href="/order/reverse_credit.jsp?orderId=<%= nav_orderId %>" class="cust_sub_nav_text"><%}%>Reverse Credit<%if(hasCustomerCase){%></a><%}%></div>
 				<% } %>
 
-				<% if ( o_details && orderPermissions.allowResubmitOrder() && currentAgent.isSupervisor() ) { %>
+				<% if ( o_details && orderPermissions.allowResubmitOrder()) { %>
 					<div class="cust_sub_nav" style="width: 120px;"><% if (!resubmitted) {%><a href="javascript:setAction(document.order_details, 'resubmit')" class="cust_sub_nav_text"><%}%>Resubmit Order<% if (!resubmitted) {%></a><%}%></div>
 				<% } %>
                 <% } %>
@@ -257,5 +260,5 @@ boolean hasCase = false;
 	</table>
 	</form>
 </div>
-</crm:GetCurrentAgent>
+
 </crm:ResubmitOrderController>

@@ -12,11 +12,10 @@
 <%@ taglib uri='logic' prefix='logic' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
 
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 	<tmpl:put name='title' direct='true'>Supervisor Resources >Givex Admin</tmpl:put>
 		<tmpl:put name='content' direct='true'>
-			<jsp:include page="/includes/supervisor_nav.jsp" />
 
 			<iframe src ="/supervisor/connect.html" width="100%" height="500">
 				<p>Your browser does not support iframes.</p>

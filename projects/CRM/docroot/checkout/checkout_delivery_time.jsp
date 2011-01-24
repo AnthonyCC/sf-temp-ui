@@ -20,8 +20,10 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@page import="com.freshdirect.webapp.util.JspMethods"%>
-
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%
+	String userId = CrmSecurityManager.getUserName(request);
+	String userRole = CrmSecurityManager.getUserRole(request);
     String successPage = "checkout_select_payment.jsp";
     successPage = "checkout_ATP_check.jsp?successPage="+URLEncoder.encode(successPage);
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
@@ -117,7 +119,7 @@ zonePromoString="<%=zonePromoString %>";
 zonePromoEnabled=true;
 <%} %>
 </script>
-<crm:GetCurrentAgent id="currentAgent">
+
 <tmpl:insert template='/template/top_nav.jsp'>
 
 <tmpl:put name='title' direct='true'>Checkout > Select Delivery Time</tmpl:put>
@@ -142,7 +144,7 @@ zonePromoEnabled=true;
         <% } %>
     </TD>
 
-    <% if (currentAgent != null && (currentAgent.isSupervisor() || currentAgent.isAdmin())) { %>
+    <% if (CrmSecurityManager.hasAccessToPage(userRole,"forceorder")) { %>
 		<td align="right"><a href="/checkout/checkout_delivery_time.jsp?forceorder=true" class="checkout">FORCE ORDER >></a></td>
 	<% } %>
 	<td align="right"><a href="javascript:select_delivery_slot.submit()" class="checkout">CONTINUE CHECKOUT >></a></td>
@@ -364,7 +366,7 @@ List comments = DeliveryTimeSlotResult.getComments();
 </tmpl:put>
 	</fd:CheckoutController>
 </tmpl:insert>
-</crm:GetCurrentAgent>
+
 
 
 

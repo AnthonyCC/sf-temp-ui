@@ -9,6 +9,7 @@
 <%@ page import="com.freshdirect.customer.ErpOrderHistory" %>
 <%@ page import='com.freshdirect.webapp.util.CCFormatter'%>
 <%@ page import="weblogic.utils.StringUtils"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <link rel="stylesheet" href="/ccassets/css/crm.css" type="text/css">
 <link rel="stylesheet" href="/ccassets/css/case.css" type="text/css">
 <%
@@ -18,7 +19,9 @@ String width = "48";
 
 boolean case_mgmt = pageURI.indexOf("case_mgmt") > -1;
 boolean has_user = session.getAttribute(SessionName.USER) != null;
-
+String userId = CrmSecurityManager.getUserName(request);
+String userRole = CrmSecurityManager.getUserRole(request);
+boolean isSecurityQueue= false;
 String caseId = request.getParameter("case");
 
 if (case_mgmt){
@@ -37,13 +40,15 @@ if (caseId==null) {
 } else {
 %>
 	<crm:GetCase id="cm" caseId="<%= caseId %>">
-	<crm:GetCurrentAgent id='currAgent'><%
-
+	<%
+if(null != cm){
+	isSecurityQueue=  cm.getSubject().getQueue().getCode().equals("SEQ");
+}
 String erpCustId = request.getParameter("erpCustId");
 String fdCustId = request.getParameter("fdCustId");
 
 %><crm:GetFDUser id="user" useId="true" erpCustId="<%= erpCustId %>" fdCustId="<%= fdCustId %>">
-	<div class="case_summary_header">
+	<div class="<%= isSecurityQueue?"case_summary_header_seq":"case_summary_header" %>">
 	<table width="100%" cellpadding="0" cellspacing="0" border="0" class="case_header_text">
 		<tr>
 			<td width="50%">
@@ -53,10 +58,8 @@ String fdCustId = request.getParameter("fdCustId");
 					<td width="25%">Status: <span class="case_header_value"><%= cm.getState().getName() %></span></td>
 					<td width="30%">
 						Locked: <span class="case_header_value">
-							<% if (cm.getLockedAgentPK()!=null) { %>
-								<crm:GetAgent id="agent" agentId="<%= cm.getLockedAgentPK().getId() %>">
-									<%= agent.getUserId() %>
-								</crm:GetAgent>
+							<% if (cm.getLockedAgentUserId()!=null) { %>								
+									<%= cm.getLockedAgentUserId()%>								
 							<% } %>
 						</span>
 					</td>
@@ -69,7 +72,7 @@ String fdCustId = request.getParameter("fdCustId");
 					<tr>
 						<td width="50%"><b>Actions</b></td>
 						<td width="50%" align="right">
-								<% if (currAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE)) || cm.getLockedAgentPK() == null || currAgent.getPK().equals(cm.getLockedAgentPK())) { %>
+								<% if (userRole.equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE).getLdapRoleName()) || (cm.getLockedAgentUserId() == null || "".equals(cm.getLockedAgentUserId())) ||userId.equals(cm.getLockedAgentUserId())) { %>
 									<input type="submit" class="case_action" value="EDIT CASE FIELDS" onClick="parent.window.location.href='/case/case.jsp?case=<%=caseId%>&erpCustId=<%=erpCustId%>'">
 								<% } %>
 						</td>
@@ -80,7 +83,7 @@ String fdCustId = request.getParameter("fdCustId");
 	</table>
 	</div>
 
-	<div class="case_content_scroll" style="width: 50%; height: <%= height %>%; padding-top: 0px; <% if (!currAgent.getPK().equals(cm.getLockedAgentPK())) { %>background-color: #FFFFFF;<% } %>">
+	<div class="case_content_scroll" style="width: 50%; height: <%= height %>%; padding-top: 0px; <% if (!userId.equals(cm.getLockedAgentUserId())) { %>background-color: #FFFFFF;<% } %>">
 		<div class="case_subheader">
 			<table width="100%" class="case_subheader_text">
 				<tr>
@@ -126,6 +129,7 @@ String fdCustId = request.getParameter("fdCustId");
 				</tr>
 			</table>
 		</div>
+		<div class="<%= isSecurityQueue?"case_content_seq":"case_content" %>">
 			<table width="100%" cellpadding="0" cellspacing="8" border="0" class="case_content_text">
 				<tr valign="top">
 					<td width="10%" align="right" class="case_content_field">Queue:</td>
@@ -150,10 +154,8 @@ String fdCustId = request.getParameter("fdCustId");
 				<tr valign="top">
 					<td class="case_content_field" align="right">Assigned:</td>
 					<td colspan="3">
-					<%if(cm.getAssignedAgentPK() != null){%>
-						<crm:GetAgent id="agent" agentId="<%= cm.getAssignedAgentPK().getId() %>">
-							<%= agent.getUserId() %>
-						</crm:GetAgent>
+					<%if(cm.getAssignedAgentUserId() != null){%>						
+						<%= cm.getAssignedAgentUserId() %>						
 					<% } else { %>
 						<span class="not_set">-None-</span>
 					<% } %>
@@ -171,14 +173,16 @@ String fdCustId = request.getParameter("fdCustId");
 					</i></td>
 				</tr>
 			</table>
+			</div>
 	</div>
 
-	<div class="case_content_scroll" style="width: <%= width %>%; height: <%= height %>%; <% if (!currAgent.getPK().equals(cm.getLockedAgentPK())) { %>background-color: #FFFFFF;<% } %>">
+	
+	<div class="case_content<%=(isSecurityQueue?"_seq":"_scroll")%>" style="width: <%= width %>%; height: <%= height %>%; <% if (!userId.equals(cm.getLockedAgentUserId())) { %>background-color: #FFFFFF;<% } %>">
 		<%@ include file="/includes/case_actions.jspf" %>
 	</div>
 
 </crm:GetFDUser>
-</crm:GetCurrentAgent>
+
 </crm:GetCase>
 	
 <%	}	%>	

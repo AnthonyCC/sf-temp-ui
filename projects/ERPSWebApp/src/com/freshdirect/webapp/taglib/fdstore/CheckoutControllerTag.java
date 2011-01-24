@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
 
 import org.apache.log4j.Category;
 
+import com.freshdirect.crm.CrmAgentRole;
 import com.freshdirect.customer.ErpComplaintException;
 import com.freshdirect.customer.ErpComplaintLineModel;
 import com.freshdirect.customer.ErpComplaintModel;
@@ -37,7 +38,9 @@ import com.freshdirect.webapp.checkout.DeliveryAddressManipulator;
 import com.freshdirect.webapp.checkout.PaymentMethodManipulator;
 import com.freshdirect.webapp.checkout.RedirectToPage;
 import com.freshdirect.webapp.checkout.TimeslotManipulator;
+import com.freshdirect.webapp.crm.security.CrmSecurityManager;
 import com.freshdirect.webapp.taglib.AbstractControllerTag;
+import com.freshdirect.webapp.taglib.crm.CrmSession;
 import com.freshdirect.webapp.util.FDURLUtil;
 import com.freshdirect.webapp.util.QuickCartCache;
 import com.freshdirect.webapp.util.ShoppingCartUtil;
@@ -466,7 +469,10 @@ public class CheckoutControllerTag extends AbstractControllerTag {
 		HttpSession session = pageContext.getSession();
 		FDIdentity identity = getUser().getIdentity();
 		String orderId = (String)session.getAttribute( "referencedOrder" );
-		FDCustomerManager.addComplaint( complaintModel, orderId, identity );
+		CrmAgentRole agentRole = CrmSession.getCurrentAgentRole(session);
+		boolean autoApproveAuthorized = CrmSecurityManager.isAutoApproveAuthorized(agentRole.getLdapRoleName());
+		Double limit =CrmSecurityManager.getAutoApprovalLimit(agentRole.getLdapRoleName());
+		FDCustomerManager.addComplaint( complaintModel, orderId, identity,autoApproveAuthorized,limit );
 	}
 
 	public static class TagEI extends AbstractControllerTag.TagEI {

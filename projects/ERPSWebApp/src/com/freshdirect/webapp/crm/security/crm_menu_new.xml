@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<menus roles="CRM_Administrator,CRM_Developer,CRM_QA,CRM_Supervisor,CRM_MarketingOperations,CRM_ETS,CRM_Transportation,CRM_OperationsCenter,CRM_SeniorOperationsCenter,CRM_Finance,CRM_Agent,CRM_NewAgent,CRM_SeniorAgent,CRM_Business,CRM_Security,CRM_ERP,CRM_COS">
+	
+	<role name="CRM_Administrator">
+		<links>main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,case_summary.jsp,case.jsp,unlock.jsp,account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp,connect.jsp,activity_log.jsp,admintools_index.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp,crmLateIssues.jsp,crmTrqCases_step1.jsp,reports_index.jsp,subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,worklist.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,giftcard_landing.jsp,order_search_results.jsp,
+		summary.jsp,account_details.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,giftcard_summary.jsp,approve_credit.jsp,charge_order.jsp,profile_list.jsp,masquerade.jsp,credit_card_info.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,acct_lookup_auth.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,approveCredit,rejectCredit,forceorder,edit_profile</links>
+	</role>
+	<role name="CRM_Developer">
+		<links>main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,case_summary.jsp,case.jsp,unlock.jsp,account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp,connect.jsp,activity_log.jsp,admintools_index.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp,crmLateIssues.jsp,crmTrqCases_step1.jsp,reports_index.jsp,subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,worklist.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,giftcard_landing.jsp,order_search_results.jsp,
+		summary.jsp,account_details.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,giftcard_summary.jsp,charge_order.jsp,profile_list.jsp,masquerade.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,acct_lookup_auth.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,forceorder,edit_profile</links>
+	</role>
+	<role name="CRM_QA">
+		<links>main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,case_summary.jsp,case.jsp,unlock.jsp,account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,order_details.jsp,refusal_list.jsp,pending_return_list.jsp,order_cc_authorization.jsp,address_exception.jsp,geocode_exception.jsp,make_good_order.jsp,bad_account_list.jsp,broken_acct_list.jsp,acct_lookup.jsp,canned_text.jsp,connect.jsp,activity_log.jsp,admintools_index.jsp,resubmit_customers.jsp,delete_reservations.jsp,mass_cancellation.jsp,mass_returns.jsp,delivery_restrictions.jsp,address_restrictions.jsp,settlement_batch.jsp,top_faqs.jsp,click_to_call.jsp,search_orders_by_sku.jsp,modify_orders_by_sku.jsp,crmLateIssues.jsp,crmTrqCases_step1.jsp,reports_index.jsp,subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,order_status_report.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,worklist.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_publish.jsp,promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,giftcard_landing.jsp,order_search_results.jsp,
+		summary.jsp,account_details.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,giftcard_summary.jsp,charge_order.jsp,profile_list.jsp,masquerade.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,acct_lookup_auth.jsp,forceorder,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,edit_profile</links>
+	</role>
+	<role name="CRM_Supervisor">
+		<links>
+		main_index.jsp,supervisor_index.jsp,case_mgmt_index.jsp,case_summary.jsp,case.jsp,unlock.jsp,account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,geocode_exception.jsp,make_good_order.jsp,broken_acct_list.jsp,activity_log.jsp,crmLateIssues.jsp,crmTrqCases_step1.jsp,reports_index.jsp,subject_report.jsp,late_delivery_report.jsp,route_stop_report.jsp,credit_summary_report.jsp,credit_report.jsp,worklist.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,giftcard_landing.jsp,promo_details.jsp,order_search_results.jsp,
+		summary.jsp,account_details.jsp,case_history.jsp,order_history.jsp,credit_history.jsp,promotion_history.jsp,promotion_popup.jsp,place_order_build.jsp,delivery_available_slots.jsp,activity_log.jsp,referral_history.jsp,profile_list.jsp,delivery_pass.jsp,customer_profile_summary.jsp,giftcard_summary.jsp,approve_credit.jsp,charge_order.jsp,profile_list.jsp,masquerade.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,acct_lookup_auth.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,approveCredit,rejectCredit,forceorder</links>
+	</role>
+	<role name="CRM_MarketingOperations">
+		<links>
+		main_index.jsp,worklist.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit.jsp,promo_edit_basic.jsp,promo_edit_cart.jsp,promo_edit_customer.jsp,promo_edit_delivery.jsp,promo_edit_offer.jsp,promo_edit_payment.jsp,promo_publish.jsp,promo_edit.jsp,giftcard_landing.jsp,profile_list.jsp,edit_profile
+		</links>
+	</role>
+	<role name="CRM_ETS">
+		<links>
+		main_index.jsp
+		</links>
+	</role>
+	<role name="CRM_COS">
+		<links>
+		main_index.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,promotion_popup.jsp,approve_credit.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,approveCredit
+		</links>
+	</role>
+	<role name="CRM_Transportation">
+		<links>
+		main_index.jsp,reports_index.jsp,worklist.jsp,crmLateIssues.jsp,late_delivery_report.jsp,route_stop_report.jsp
+		</links>
+	</role>
+	<role name="CRM_OperationsCenter">
+		<links>
+		main_index.jsp,promotion_history.jsp,promotion_popup.jsp,reports_index.jsp,worklist.jsp,crmLateIssues.jsp,crmTrqCases_step1.jsp,late_delivery_report.jsp,route_stop_report.jsp,case_mgmt_index.jsp,approve_credit.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,rejectCredit
+		</links>
+	</role>	
+	<role name="CRM_SeniorOperationsCenter">
+		<links>
+		main_index.jsp,supervisor_index.jsp,account_deactivations.jsp,payment_exceptions_list.jsp,pending_credits_list.jsp,approve_credit.jsp,order_details.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,
+		geocode_exception.jsp,broken_acct_list.jsp,activity_log.jsp,case_mgmt_index.jsp,promotion_history.jsp,promotion_popup.jsp,approve_credit.jsp,profile_list.jsp,masquerade.jsp,approveCredit,rejectCredit,forceorder
+		</links>
+	</role>
+	<role name="CRM_Finance">
+		<links>
+		main_index.jsp,bad_account_list.jsp,supervisor_index.jsp,acct_lookup.jsp,reports_index.jsp,credit_summary_report.jsp,credit_report.jsp,settlement_problem_report.jsp,
+		worklist.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,giftcard_landing.jsp,profile_list.jsp,credit_card_info.jsp,acct_lookup_auth.jsp,edit_profile
+		</links>
+	</role>
+	<role name="CRM_Agent">
+		<links>
+		main_index.jsp,worklist.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,giftcard_landing.jsp,approve_credit.jsp,profile_list.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,rejectCredit
+		</links>
+	</role>
+	<role name="CRM_NewAgent">
+		<links>
+		main_index.jsp,worklist.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,giftcard_landing.jsp,approve_credit.jsp,profile_list.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,rejectCredit
+		</links>
+	</role>
+	<role name="CRM_SeniorAgent">
+		<links>
+		main_index.jsp,crmLateIssues.jsp,quickshop_index.jsp,all_lists.jsp,ccl_item_modify.jsp,every_item.jsp,item_modify.jsp,makegood_from_order.jsp,recipes.jsp,shop_from_list.jsp,shop_from_order.jsp,build_order_browse.jsp,checkout_ATP_adjust.jsp,checkout_ATP_check.jsp,checkout_ATP_unavail.jsp,checkout_confirmation.jsp,checkout_delivery_time.jsp,checkout_edit_address.jsp,checkout_edit_checkacct.jsp,checkout_edit_credit_card.jsp,checkout_new_address.jsp,checkout_new_checkacct.jsp,checkout_new_credit_card.jsp,checkout_new_gc_credit_card.jsp,checkout_preview.jsp,checkout_review_items.jsp,checkout_select_addr_payment.jsp,checkout_select_address.jsp,checkout_select_payment.jsp,checkout_verify_age.jsp,no_alcohol_address.jsp,step_2_green_popup.jsp,worklist.jsp,promotion_history.jsp,promotion_popup.jsp,promo_view.jsp,promo_home.jsp,promo_details.jsp,reports_index.jsp,route_stop_report.jsp,approve_credit.jsp,profile_list.jsp,add_bad_account.jsp,checkout_edit_checkacct.jsp,edit_checking_account.jsp,new_checking_account.jsp,rejectCredit
+		</links>
+	</role>
+	<role name="CRM_Business">
+		<links>
+		main_index.jsp,promo_view.jsp,promo_home.jsp,promo_create.jsp,promo_details.jsp,promo_edit.jsp
+		</links>
+	</role>
+	<role name="CRM_Security">
+		<links>
+		main_index.jsp,supervisor_index.jsp,broken_acct_list.jsp,acct_lookup.jsp,giftcard_landing.jsp,credit_card_info.jsp
+		</links>
+	</role>
+	<role name="CRM_ERP">
+		<links>
+		main_index.jsp
+		</links>
+	</role>
+	
+	
+	
+
+</menus>

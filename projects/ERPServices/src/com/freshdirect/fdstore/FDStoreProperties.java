@@ -480,6 +480,15 @@ public class FDStoreProperties {
 	
 	private final static String ADVERTISING_TILE_ENABLED = "fdstore.advertisingTile.enabled";
 	
+	private final static String PROP_CRM_MENU_ROLES_REFRESH_PERIOD = "crm.roles.menu.refresh.period";
+	private final static String PROP_CRM_LDAP_USERS_REFRESH_PERIOD = "crm.ldap.users.refresh.period";
+	private final static String PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY = "crm.ldap.access.primary.host.name";
+	private final static String PROP_CRM_CC_DETAILS_LOOKUP_LIMIT="crm.cc.details.limit";
+	private final static String PROP_CRM_CC_SECURITY_EMAIL ="crm.cc.security.email.addr";
+	private final static String PROP_CRM_CC_SECURITY_EMAIL_ENABLED="crm.cc.security.email.enabled";
+	private final static String PROP_CRM_CC_SECURITY_EMAIL_SUBJECT="crm.cc.security.email.subject";
+	private final static String PROP_CRM_CC_DETAILS_ACCESS_KEY="crm.cc.details.access.key";
+	
 	static {
 		defaults.put(PROP_ROUTING_PROVIDER_URL,"t3://localhost:7001");
 		defaults.put(PROP_PROVIDER_URL, 	"t3://localhost:7001");
@@ -838,7 +847,15 @@ public class FDStoreProperties {
 		defaults.put(WINE_SHOW_RATINGS_KEY, Boolean.toString(true));
 		
 		defaults.put(ADVERTISING_TILE_ENABLED, Boolean.toString(false));
-
+		
+		defaults.put(PROP_CRM_MENU_ROLES_REFRESH_PERIOD, "3600"); //every 60 mins
+		defaults.put(PROP_CRM_LDAP_USERS_REFRESH_PERIOD, "3600"); //every 60 mins
+		defaults.put(PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY, "t3://127.0.0.1:7001");
+		defaults.put(PROP_CRM_CC_DETAILS_LOOKUP_LIMIT, "10");//10
+		defaults.put(PROP_CRM_CC_SECURITY_EMAIL_ENABLED, Boolean.toString(false));
+		defaults.put(PROP_CRM_CC_SECURITY_EMAIL, "infosec@freshdirect.com");//infosec@freshdirect.com
+		defaults.put(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT, "ALERT: CC/EC decryptions above threshold");
+		defaults.put(PROP_CRM_CC_DETAILS_ACCESS_KEY, "9ac7ec230e0e4513578f309d6d3579ad");
 		refresh();
 	}
 
@@ -1977,4 +1994,35 @@ public class FDStoreProperties {
 			return defaultValue;
 		}
 	}
+	
+	public static int getCrmMenuRolesRefreshPeriod() {
+		return Integer.parseInt(config.getProperty(PROP_CRM_MENU_ROLES_REFRESH_PERIOD));
+	}
+	
+	public static int getCrmLDAPUsersRefreshPeriod() {
+		return Integer.parseInt(config.getProperty(PROP_CRM_LDAP_USERS_REFRESH_PERIOD));
+	}
+	
+	public static String getCrmLDAPPrimaryHostName() {
+		return config.getProperty(PROP_CRM_LDAP_ACCESS_HOST_NAME_PRIMARY);
+	}
+	public static int getCrmCCDetailsLookupLimit() {
+		return Integer.parseInt(config.getProperty(PROP_CRM_CC_DETAILS_LOOKUP_LIMIT));
+	}
+	
+	public static boolean isCrmCCSecurityNotificationEnabled() {
+        return (new Boolean(get(PROP_CRM_CC_SECURITY_EMAIL_ENABLED))).booleanValue();
+    }
+	
+	public static String getCrmCCSecurityEmail() {
+		return config.getProperty(PROP_CRM_CC_SECURITY_EMAIL);
+	}
+	public static String getCrmCCSecurityEmailSubject() {
+		return config.getProperty(PROP_CRM_CC_SECURITY_EMAIL_SUBJECT);
+	}
+	
+	public static String getCrmCCDetailsAccessKey(){
+		return config.getProperty(PROP_CRM_CC_DETAILS_ACCESS_KEY);
+	}
+	
 }

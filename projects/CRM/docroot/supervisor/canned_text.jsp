@@ -120,12 +120,12 @@ body {
         document.getElementById("ct_list").style.display = orig_display;
     }
 </script>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Canned Text</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 
 <form name="cannedText" method="POST">
 <input type="hidden" name="action" id="action" value="<%= action %>">

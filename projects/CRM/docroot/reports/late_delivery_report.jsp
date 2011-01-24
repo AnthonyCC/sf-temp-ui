@@ -92,7 +92,7 @@ if ("POST".equals(request.getMethod())) {
         </select>
         <input type="submit" class="submit" onClick="javascript:checkForm(latedlv_report); return false;" value="GO">
         </td>
-        <td width="25%" align="right"><% if ("POST".equals(request.getMethod()) && lateDlvLines.size() > 0) { %><a href="/reports/late_delivery_report.xls?month=<%=month%>&day=<%=day%>&year=<%=year%>">Export to Excel format</a><%} else {%>Export to Excel format<% } %> &nbsp;|&nbsp; <a href="/reports/index.jsp">All Reports >></a></td>
+        <td width="25%" align="right"><% if ("POST".equals(request.getMethod()) && lateDlvLines.size() > 0) { %><a href="/reports/late_delivery_report.xls?month=<%=month%>&day=<%=day%>&year=<%=year%>">Export to Excel format</a><%} else {%>Export to Excel format<% } %> &nbsp;|&nbsp; <a href="/reports/reports_index.jsp">All Reports >></a></td>
     </tr>
 	<script language"javascript">
 	<!--

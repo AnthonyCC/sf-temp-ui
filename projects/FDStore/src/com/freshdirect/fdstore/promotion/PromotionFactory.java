@@ -1,5 +1,6 @@
 package com.freshdirect.fdstore.promotion;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -46,7 +47,12 @@ public class PromotionFactory {
 		protected List<PromotionI> load() {
 			try {
 				LOGGER.info("REFRESHING AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS FROM LAST MODIFIED TIME "+maxLastModified);
-				List<PromotionI> promoList = FDPromotionNewManager.getModifiedOnlyPromos(maxLastModified);
+				List<PromotionI> promoList = new ArrayList<PromotionI>();
+				if(null !=maxLastModified){
+					promoList = FDPromotionNewManager.getModifiedOnlyPromos(maxLastModified);
+				}else{
+					loadAutomaticPromotions();
+				}
 				LOGGER.info("REFRESHED AUTOMATIC PROMOTION MAP FOR ANY NEW PROMOTIONS. FOUND "+promoList.size());
 				return promoList;
 			} catch (FDResourceException ex) {

@@ -14,9 +14,7 @@
 <%@ page import='com.freshdirect.framework.util.DateUtil'%>
 
 <% boolean isGuest = false; %>
-<crm:GetCurrentAgent id="currentAgent">
-	<% isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE)); %> 
-</crm:GetCurrentAgent>
+
 
 <%
 	boolean hasCustomerCase = CrmSession.hasCustomerCase(session);

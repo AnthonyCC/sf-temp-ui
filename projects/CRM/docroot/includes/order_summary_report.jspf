@@ -1,0 +1,34 @@
+<div id="report" class="home_module" style="width: 100%; float: left; border-top: none; border-bottom: 2px solid;">
+						<table width="100%" cellpadding="0" cellspacing="0" border="0" class="module_header" style="height: 2.2em;">
+							<tr><td class="home_module_header_text">Order Summary Report</td></tr>
+						</table>
+						<% String curSummaryDate = CCFormatter.formatDateYear(Calendar.getInstance().getTime()); %>
+						<input type="hidden" name="summaryDate" id="summaryDate" value="<%=curSummaryDate%>">
+						<div id="monitor_content" class="home_search_module_content" style="height: 20em;  padding-top: 0px; padding-bottom: 0px; text-align:center;">
+							Summary Date <input type="text" name="newSummaryDate" id="newSummaryDate" size="10" value="<%=curSummaryDate%>" disabled="true" onchange="setSummaryDate(this);"> &nbsp;<a href="#" id="trigger_sumDate" style="font-size: 9px;">>></a>
+									<br /><img src="/media_stat/crm/images/clear.gif" width="1" height="13"><br />
+									<input type="submit" value="SUBMIT" class="submit" onClick="loadUrl();">
+							<script language="javascript"> 
+								function loadUrl(){
+									URL= "/reports/summary_report.jsp?method=GET&summaryDate="+document.getElementById("summaryDate").value;
+									day = new Date();
+									id = day.getTime();
+									eval("page" + id + " = window.open(URL, '" + id + "', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=1,width=300,height=250,left = 540,top = 412');");  
+								}
+								function setSummaryDate(field){
+									document.getElementById("summaryDate").value=field.value;
+								}
+								
+								Calendar.setup(
+									{
+										showsTime : false,
+										electric : false,
+										inputField : "newSummaryDate",
+										ifFormat : "%Y-%m-%d",
+										singleClick: true,
+										button : "trigger_sumDate" 
+										}
+								);
+							</script>
+						</div>
+					</div>

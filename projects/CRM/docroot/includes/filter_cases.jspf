@@ -1,0 +1,54 @@
+<%@ page import="com.freshdirect.crm.CrmCaseState" %>
+<table cellpadding="2" cellspacing="0">
+<%-- require currentAgent --%>
+
+<form name="case_filter" method="POST" > <tr>
+			<td><strong>Show only:</strong></td>
+			<% template = CrmSession.getSearchTemplate(session); %>
+			<td>
+				<select name="queue" class="pulldown" onChange="populateSubject(this.form.queue.value,this.form.subject)">
+					<option class="title" value="">-Select Queue-</option>
+					<logic:iterate id='queue' collection="<%=CrmCaseQueue.getEnumList()%>" type="com.freshdirect.crm.CrmCaseQueue">
+						<option value='<%= queue.getCode() %>' <%= queue.equals(template.getQueue()) ? "selected" : "" %>><%= queue.getCode() %> - <%= queue.getName() %></option>
+					</logic:iterate>
+				</select>
+			</td>
+			<td>
+				<select name="subject" class="pulldown">
+					<option class="title" value="">-Select Queue then Subject-</option>
+				</select>
+			</td>
+				<% if (template.getQueue() != null) { %>
+				<script language="JavaScript">
+				<!--
+					populateSubject('<%= template.getQueue().getCode()%>', case_search.subject);
+					<% if (template.getSubject() != null) { %>
+						case_search.subject.value='<%= template.getSubject().getCode() %>';
+					<% } %>
+				//->
+				</script>
+				<% } %>
+			<td>
+				<select name="state" class="pulldown">
+					<option class="title" value="">-Select Status-</option>
+					<logic:iterate id='state' collection="<%=CrmCaseState.getEnumList()%>" type="com.freshdirect.crm.CrmCaseState">
+						<% if(!CrmCaseState.CODE_REVIEW.equalsIgnoreCase(state.getCode()) && !CrmCaseState.CODE_APPROVED.equalsIgnoreCase(state.getCode()))%>
+						<option value='<%= state.getCode() %>' <%= state.getCode().equalsIgnoreCase(filterState) ? "selected" : "" %>><%= state.getName() %></option>
+					</logic:iterate>
+				</select>
+			</td>
+			<td>
+				<select name="priority" class="pulldown">
+					<option class="title" value="">-Select Priority-</option>
+					<logic:iterate id='priority' collection="<%=CrmCasePriority.getEnumList()%>" type="com.freshdirect.crm.CrmCasePriority">
+						<option value='<%= priority.getCode() %>' <%= priority.equals(template.getPriority()) ? "selected" : "" %>><%= priority.getName() %></option>
+					</logic:iterate>
+				</select>
+			</td>
+			<td><a href="javascript:filterCases(document.case_filter.queue.value, document.case_filter.subject.value, document.case_filter.state.value, document.case_filter.priority.value)"><div class="submit" text-align="center" style="text-decoration:none;">&nbsp;&nbsp;FILTER&nbsp;&nbsp;</div></a>
+			</td>
+			<td>|</td>
+			<td><a href="/main/worklist.jsp"><div class="clear" text-align="center" style="text-decoration:none;">&nbsp;&nbsp;SHOW ALL&nbsp;&nbsp;</div></a></td>
+			</tr>
+		</form>
+		</table>

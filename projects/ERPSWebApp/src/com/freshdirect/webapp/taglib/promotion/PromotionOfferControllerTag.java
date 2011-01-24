@@ -255,8 +255,10 @@ public class PromotionOfferControllerTag extends AbstractControllerTag {
 
 		
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		this.promotion.setModifiedBy(agent.getUserId());
+//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+//		this.promotion.setModifiedBy(agent.getUserId());
+		String agentId = CrmSession.getCurrentAgentStr(session);
+		this.promotion.setModifiedBy(agentId);
 		this.promotion.setModifiedDate(new Date());
 		
 	}

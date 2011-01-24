@@ -23,13 +23,13 @@
 </script>
 
 <% String action = request.getParameter("action");%>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Address Exceptions</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 
 <div class="content_fixed" style="padding-left: 1%;">
 

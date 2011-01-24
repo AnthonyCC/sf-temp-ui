@@ -221,7 +221,7 @@ public class SubmitOrderAction extends WebActionSupport {
 			}
 			return ERROR;
 		}
-		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgentStr(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
         if(user.getRecipientList().size() > FDStoreProperties.getGiftCardRecipientLimit() && !EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
     		this.addError("limitReached", formatGCRecipientCountMsg(SystemMessageList.MSG_CHECKOUT_GC_RECIPIENT_COUNT));
     		return ERROR;
@@ -456,7 +456,7 @@ public class SubmitOrderAction extends WebActionSupport {
 		}
 		
 		boolean sendEmail = true;
-		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgent(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
+		EnumTransactionSource transactionSource = session.getAttribute(SessionName.CUSTOMER_SERVICE_REP)!=null || CrmSession.getCurrentAgentStr(session)!=null ? EnumTransactionSource.CUSTOMER_REP : EnumTransactionSource.WEBSITE;
 		
 		if (EnumTransactionSource.CUSTOMER_REP.equals(transactionSource)) {
 			//

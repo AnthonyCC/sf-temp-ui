@@ -14,9 +14,7 @@
 <%@ taglib uri='crm' prefix='crm' %>
 
 <% boolean isGuest = false; %>
-<crm:GetCurrentAgent id="currentAgent">
-	<% isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE)); %> 
-</crm:GetCurrentAgent>
+
 
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Gift Card : Buy in Bulk</tmpl:put>

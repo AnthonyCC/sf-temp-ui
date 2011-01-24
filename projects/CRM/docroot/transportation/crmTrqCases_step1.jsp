@@ -49,7 +49,7 @@ String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&rou
 		
     	<tmpl:put name='content' direct='true'>
 <%@ include file="/includes/transportation_nav.jsp"%>
-    		<crm:GetCurrentAgent id='currAgent'>
+    		
 			<crm:CrmTRQIssuesController id="issueList" result="result" successPage="<%= successPage %>" saleId="mySaleId">
 <%				if (result.isFailure()) {  %>
 				   <table>
@@ -146,7 +146,7 @@ String successPage = "/transportation/crmTrqCases.jsp?dlvDate="+fmtDlvDate+"&rou
 	);
 </script>			</crm:CrmTRQIssuesController>
 			
-			</crm:GetCurrentAgent>
+
 	    </tmpl:put>
 	    
 

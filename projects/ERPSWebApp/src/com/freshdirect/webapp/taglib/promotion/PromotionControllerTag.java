@@ -551,8 +551,9 @@ public class PromotionControllerTag extends AbstractControllerTag {
 		this.promotion.setMaxItemCount(Integer.parseInt(NVL.apply(request.getParameter("maximumItemCount"), "0").trim()));
 		
 		HttpSession session = pageContext.getSession();
-		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-		this.promotion.setModifiedBy(agent.getUserId());
+//		CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+		String agentId = CrmSession.getCurrentAgentStr(session);
+		this.promotion.setModifiedBy(agentId);
 		
 		if(zipRestrictionMap == null){
 			zipRestrictionMap = new TreeMap();			

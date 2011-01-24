@@ -1,15 +1,15 @@
 <table cellpadding="2" cellspacing="0">
 <%-- require currentAgent --%>
 
-<form name="downloadCases" method="POST"> 
+<form name="downloadCases" method="POST" > 
 	<tr>
 		<td class="download">&nbsp;
 			<select class="pulldown" name="selectedQueue" onChange="populateSubject(this.form.selectedQueue.value,this.form.subject)">
 				<option class="title" value="">- 1. Select Queue -</option>
 				<logic:iterate collection="<%=CrmManager.getInstance().getQueueOverview()%>" id="qInfo" type="com.freshdirect.crm.CrmQueueInfo">
-					<%if(currentAgent.hasCaseQueue(qInfo.getQueue())){%>
+					<%--if(currentAgent.hasCaseQueue(qInfo.getQueue())){%>--%>
 						<option value="<%=qInfo.getQueue().getCode()%>"><%=qInfo.getQueue().getCode()%> (<%=qInfo.getUnassigned()%>)</option>
-					<%}%>
+					<%--}--%>
 				</logic:iterate>
 			</select>
 		</td>
@@ -21,8 +21,8 @@
 		<td class="download"><b>&nbsp;# Cases</b></td>
 		<td class="download"><input type="text" name="numberToDownload" class="input_text" maxlength="4" size="3"></td>
 		<td class="download" style="font-weight: normal;">(1-10)</td>
-		<td class="download"><input type="submit" class="submit" value="DOWNLOAD">&nbsp;</td>
-		<td>&nbsp;<a href="/main/worklist.jsp" class="new" style="width: 88px;">REFRESH</a></td>
+		<td class="download"><input type="submit" class="submit" value="FILTER">&nbsp;</td>
+		<!-- <td>&nbsp;<a href="/main/worklist.jsp" class="new" style="width: 88px;">REFRESH</a></td> -->
 	</tr>
 </form>
 </table>

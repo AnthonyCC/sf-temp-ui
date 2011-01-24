@@ -29,8 +29,9 @@ public class GeocodeExceptionTag extends AbstractControllerTag implements Sessio
 			if("addGeocodeException".equals(getActionName())){
 				ExceptionAddress ex = populateAndValidate(actionResult, request);
 				if(actionResult.isSuccess()){
-					CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-					FDDeliveryManager.getInstance().addGeocodeException(ex, agent.getUserId());
+//					CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+					String agentId = CrmSession.getCurrentAgentStr(request.getSession());
+					FDDeliveryManager.getInstance().addGeocodeException(ex, agentId);
 				}
 			} else if("deleteGeocodeException".equals(getActionName())){
 				ExceptionAddress ex = new ExceptionAddress();

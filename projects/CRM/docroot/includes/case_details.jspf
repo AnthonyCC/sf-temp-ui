@@ -43,11 +43,21 @@ final static CrmCaseActionType[] BUTTON_ACTION_TYPES = new CrmCaseActionType[] {
 
 final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
+	//CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
+	//CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.DEV_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.QA_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.FIN_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.ETS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.OPS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE)};
 
 
 %>
@@ -62,7 +72,7 @@ final static CrmAgentRole[] DISPLAY_ROLES = {
 CrmCaseModel thisCase = (CrmCaseModel) cm;
 
 
-boolean isAssignmentPriorityAllowed = false;
+boolean isAssignmentPriorityAllowed = true;
 
 FDOrderI order = null;
 boolean isNewCase = false;
@@ -94,16 +104,7 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 );
 
 
-%><crm:GetCurrentAgent id="currentAgent"><%
-	isAssignmentPriorityAllowed = currentAgent.isSupervisor();
-	if (!thisCase.isAnonymous()) {
-		if ("ASQ".equals(thisCase.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE))) {
-			isAssignmentPriorityAllowed = true;
-		} else if (CrmCaseQueue.isTrnQueue(thisCase.getSubject().getQueue().getCode()) && currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE))) {
-			isAssignmentPriorityAllowed = true;
-		}
-	}
-%></crm:GetCurrentAgent>
+%>
 
 
 
@@ -402,38 +403,38 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 
 <table width="96%" cellpadding="0" cellspacing="5" border="0" class="case_content_text">
 	<tr>
-		<td class="case_content_field">Status</td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Status</td>
 		<td><div id="CaseStatus"><%= thisCase.getState()==null ? "Open" : thisCase.getState().getName() %></div></td>
-		<td class="case_content_field">Assigned</td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Assigned</td>
 		<td>
 
 		<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
 			<select id="assignedAgent" name="assignedAgent" class="pulldown">
 				<crm:GetAllAgents id="agentList">
-				<option class="title" value="<%= !thisCase.isAnonymous() ? ((CrmAgentModel)agentList.getAgents(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)).get(0)).getPK().getId() : "" %>">-Select Agent-</option>
+				<option class="title" value="<%= !thisCase.isAnonymous() ? (null !=(List)agentList.get(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))?((List)agentList.get(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))).get(0):"") : "" %>">-Select Agent-</option>
 				<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
 					<option class="header"><%= role.getName() %></option>
-					<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
-					<% if (agent.isActive()) { %>
-						<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(thisCase.getAssignedAgentPK()) ? "selected" : "" %>>
-							&nbsp;<%= agent.getUserId() %>
-						</option>
-					<% } %>
+					<% if(null != agentList && null !=agentList.get(CrmAgentRole.getEnum(role.getCode()))){ %>
+					<logic:iterate id='agent' collection="<%= agentList.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
+						<option value="<%= agent %>" <%= agent.equalsIgnoreCase(thisCase.getAssignedAgentUserId()) ? "selected" : "" %>>
+							&nbsp;<%= agent %>
+						</option>					
 					</logic:iterate>
+					<% } else { %>
 					<option></option>
+					<% } %>
 				</logic:iterate>
 				</crm:GetAllAgents>
 			</select>
 		<% } else { %>
-			<crm:GetAgent id="agent" agentId="<%= thisCase.getAssignedAgentPK().getId() %>">
-				<input type="hidden" name="assignedAgent" value="<%= thisCase.getAssignedAgentPK().getId() %>">
-				<%= agent.getUserId() %>
-			</crm:GetAgent>
+				<input type="hidden" name="assignedAgent" value="<%= thisCase.getAssignedAgentUserId() %>">
+				<%= thisCase.getAssignedAgentUserId() %>			
 		<% } %>
 <fd:ErrorHandler result='<%= result %>' name='assignedAgent' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 		
-		<td rowspan="9" class="casedisp_cell">
+		<td rowspan="9" class="<%= isSecurityQueue?"casedisp_cell_seq":"casedisp_cell" %>">
+		<% if(!isSecurityQueue){ %>
 			<div class="casedisp_container">
 				<div class="casedisp_line">
 					<div class="casedisp_text">
@@ -648,8 +649,10 @@ boolean isEditAllowed = (autoCaseComplaintId != null) || (
 				<fd:ErrorHandler result='<%= result %>' name='caseDisp07' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 						</div>
 					</div>
-				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>
+				<div id="MediaIsOtherWarn" class="casedisp_Err_invis">Choosing 'Other' will erase any previously saved Case Disposition choices!</div>				
 			</div>
+			<% } %>
+			
 <%--
 
   == MISSING CARTONS PART ==
@@ -786,20 +789,20 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr>
-		<td class="case_content_field">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Queue<span class="casedisp_Err_invis" id="queueErr">*</span></td>
 		<td>
-			<% if (isEditAllowed) { %>
+			<% if (!isSecurityQueue && isEditAllowed) { %>
 				<select id="queue" name="queue" class="pulldown" onChange="populateSubject(document.case_details.queue.value, document.case_details.subject);" onchange="verifyCaseDisp();">
 					<option class="title" value="">-Select Queue-</option>					
 					<logic:iterate id='queue' collection="<%=CrmCaseQueue.getEnumList()%>" type="com.freshdirect.crm.CrmCaseQueue">
-						<% if (!queue.isObsolete()) { %>
+						<% if (!queue.isObsolete() && (thisCase.isAnonymous() || (!thisCase.isAnonymous() && !queue.getCode().equals("SEQ")))) { %>
 						<option value='<%= queue.getCode() %>' 
                                                 <% if (!thisCase.isAnonymous()) {%>
                                                     <%= thisCase.getSubject().getQueue().getCode().equals(queue.getCode()) ? "selected":"" %>
                                                 <% } else { %>
                                                     <%= queue.getCode().equals(request.getParameter("queue")) ? "selected" : "" %>
                                                  <%}%>><%= queue.getCode() %> - <%= queue.getName() %></option>
-><%= queue.getCode() %> - <%= queue.getName() %></option>
+
 						<%}%>
 					</logic:iterate>
 				
@@ -809,7 +812,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='queue' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td class="case_content_field">Priority</td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Priority</td>
 		<td>
 			<% if (isEditAllowed && isAssignmentPriorityAllowed) { %>
 				<select id="priority" name="priority" class="pulldown">
@@ -826,7 +829,7 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 		</td>
 	</tr>
 	<tr>
-		<td class="case_content_field">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Subject<span class="casedisp_Err_invis" id="subjectErr">*</span></td>
 		<td>
 			<% if (isEditAllowed) { %>
 				<select id="subject" name="subject" class="pulldown" disabled="disabled" onchange="verifyCaseDisp();">
@@ -844,26 +847,29 @@ document.body.setAttribute("className", "yui-skin-sam"); // IE
 			<% } %>
 			<fd:ErrorHandler result='<%= result %>' name='subject' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
-		<td class="case_content_field">Quantities</td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Quantities</td>
 		<td>Reported: <input type="text" name="reported" value="<%=thisCase.getProjectedQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
 		    Actual: <input type="text" name="actual"  value="<%=thisCase.getActualQuantity()%>" size="3" maxlength="3">&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
 	<tr><td colspan="4"></td></tr>
 	<tr valign="top">
-		<td class="case_content_field">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Summary<span class="casedisp_Err_invis" id="summaryErr">*</span></td>
 		<td colspan="3">
 			<textarea <%= isEditAllowed ? "" : "readonly" %> name="summary" id="summary" rows="2" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("summary")!= null ? request.getParameter("summary"):thisCase.getSummary() %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='summary' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
 	<tr valign="top">
-		<td class="case_content_field">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
+		<td class="<%=isSecurityQueue?"case_content_field_seq":"case_content_field"%>">Notes<span class="casedisp_Err_invis" id="noteErr">*</span></td>
 		<td colspan="3">
 			<textarea id="note" name="note" rows="4" wrap="VIRTUAL" style="width: 500px;" onkeyup="verifyCaseDisp(); return true;"><%= request.getParameter("note") %></textarea>
 			<fd:ErrorHandler result='<%= result %>' name='note' id='errorMsg'><span class="error"><%=errorMsg%></span></fd:ErrorHandler>
 		</td>
 	</tr>
+	<% if(!isSecurityQueue){ %>
+	<tr><td>&nbsp;</td><td align="left"><input id="privateCase" name="privateCase" type="checkbox" <%=(thisCase.isPrivateCase())?"checked ":"" %> onKeyUp="verifyCaseDisp();">Private Case</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+	<% } %>
 	<tr>
 		<td></td>
 		<td colspan="3">

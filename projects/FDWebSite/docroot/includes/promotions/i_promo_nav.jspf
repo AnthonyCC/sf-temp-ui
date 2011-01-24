@@ -24,7 +24,8 @@
 
 <%-- include calendar setup/callbacks --%>
 
-<script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
+
+<%@page import="com.freshdirect.webapp.crm.security.CrmSecurityManager"%><script type="text/javascript" language="javascript" src="/assets/javascript/promo.js"></script>
 <%
 	String snav_pageURI = request.getRequestURI();
 	boolean promo_home = snav_pageURI.indexOf("/main/promo_home.jsp") > -1;
@@ -45,12 +46,13 @@
 	boolean promo_edit_cart = snav_pageURI.indexOf("/promo_edit_cart.jsp") > -1;
 	boolean promo_edit_delivery = snav_pageURI.indexOf("/promo_edit_delivery.jsp") > -1;
 	boolean promo_edit_payment = snav_pageURI.indexOf("/promo_edit_payment.jsp") > -1;
-	CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
-	boolean isADMUser = agent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE));
+	//CrmAgentModel agent = CrmSession.getCurrentAgent(request.getSession());
+	String lUserRole = CrmSecurityManager.getUserRole(request);
+	boolean isPromoAllAccessUser = CrmSecurityManager.isPromoAllAccessUser(lUserRole);
 %>
 
 <div class="promo_nav">
-<% if(FDStoreProperties.isPromoPublishNodeMaster() && isADMUser) { %>
+<% if(FDStoreProperties.isPromoPublishNodeMaster() && isPromoAllAccessUser) { %>
 	<% if (promo_home || promo_view) { %>
 		<div class="promo_sub_nav_on">
 			View
@@ -115,7 +117,7 @@
 			<a href="/promotion/export_promo_list.jsp?actionName=export">Export .xls</a>
 		</div>
 	<% } %>
-	<% if(FDStoreProperties.isPromoPublishNodeMaster() && isADMUser) { %>
+	<% if(FDStoreProperties.isPromoPublishNodeMaster() && isPromoAllAccessUser) { %>
 		<div class="promo_sub_nav">
 			<span onclick="showImportPanel(); return false;" style="cursor: pointer;">Import</span>
 		</div>

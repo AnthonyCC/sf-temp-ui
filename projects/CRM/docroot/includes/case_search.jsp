@@ -9,11 +9,21 @@
 final static CrmAgentRole[] DISPLAY_ROLES = {
 	CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.CSR_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
+	//CrmAgentRole.getEnum(CrmAgentRole.CSRH_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.TRN_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
+	//CrmAgentRole.getEnum(CrmAgentRole.ASV_CODE),
 	CrmAgentRole.getEnum(CrmAgentRole.SUP_CODE),
-	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE) };
+	CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.DEV_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.QA_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SEC_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.FIN_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.ETS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.OPS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SOP_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.SCS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.COS_CODE),
+	CrmAgentRole.getEnum(CrmAgentRole.MOP_CODE) };
 %>
 <%
 CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
@@ -21,7 +31,7 @@ CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
 
 <div class="case_mgmt_search_header">
 	<table width="100%" cellpadding="0" cellspacing="0" class="case_mgmt_text">
-	<form name="case_search" method="GET" action="/case_mgmt/index.jsp">
+	<form name="case_search" method="GET" action="/case_mgmt/case_mgmt_index.jsp">
 	<input type="hidden" name="action" value="searchCase">
 		<tr>
 			<td width="50%"><span class="case_mgmt_header">Case search:</span> (from current list)</td>
@@ -150,7 +160,7 @@ CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
 				<table cellpadding="0" cellspacing="2" border="0">
 					<tr>
 					<logic:iterate id='state' collection="<%=CrmCaseState.getEnumList()%>" type="com.freshdirect.crm.CrmCaseState">
-						<% if (! CrmCaseState.CODE_NEW.equals(state.getCode())) { %>
+						<% if (! CrmCaseState.CODE_NEW.equals(state.getCode()) && !CrmCaseState.CODE_REVIEW.equalsIgnoreCase(state.getCode()) && !CrmCaseState.CODE_APPROVED.equalsIgnoreCase(state.getCode())) { %>
 							<td><input type="checkbox" name="state" value="<%= state.getCode() %>" <%= template.getStates().contains(state) ? "checked" : "" %>> <%= state.getName() %>&nbsp;&nbsp;&nbsp;</td>
 						<% } %>
 					</logic:iterate>
@@ -184,16 +194,20 @@ CrmCaseTemplate template = CrmSession.getSearchTemplate(session);
 					<option value="" class="title" value="">-Select Agent-</option>
 					<crm:GetAllAgents id="agentList">
 					<logic:iterate id='role' collection="<%= DISPLAY_ROLES %>" type="com.freshdirect.crm.CrmAgentRole">
-					<% if (!role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%>
-						<option value="" class="header"><%= role.getName() %></option>
-					<% } %>
-						<logic:iterate id='agent' collection="<%= agentList.getAgents(role) %>" type="com.freshdirect.crm.CrmAgentModel">
-							<% if (role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%><option value=""></option><%}%>
-							<option value="<%= agent.getPK().getId() %>" <%= agent.getPK().equals(template.getAssignedAgentPK()) ? "selected" : "" %>>
-								&nbsp;<%= role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE)) ? "Unassigned" : agent.getUserId() %>
+					<% if(null !=role) { %>
+						<% if (!role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%>
+							<option value="" class="header"><%= role.getName() %></option>
+						<% } %>
+						<% if(null != agentList && null !=agentList.get(CrmAgentRole.getEnum(role.getCode()))){ %>
+						<logic:iterate id='agent' collection="<%= agentList.get(CrmAgentRole.getEnum(role.getCode())) %>" type="java.lang.String">
+							<% if ( null !=role && role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) {%><option value=""></option><%}%>
+							<option value="<%= agent %>" <%= agent.equalsIgnoreCase(template.getAssignedAgentId()) ? "selected" : "" %>>
+								&nbsp;<%= (null !=role && role.equals(CrmAgentRole.getEnum(CrmAgentRole.SYS_CODE))) ? "Unassigned" : agent %>
 							</option>
 						</logic:iterate>
-						<option value=""></option>
+						<% } %>
+							<option value=""></option>
+					<% } %>
 					</logic:iterate>
 					</crm:GetAllAgents>
 				</select>

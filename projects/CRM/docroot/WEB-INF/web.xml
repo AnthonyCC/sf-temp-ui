@@ -63,18 +63,18 @@
         <filter-name>CrmMonitor</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>CrmCaseAndCustomerFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
+<!--    <filter-mapping>-->
+<!--        <filter-name>CrmCaseAndCustomerFilter</filter-name>-->
+<!--        <url-pattern>/*</url-pattern>-->
+<!--    </filter-mapping>-->
     <filter-mapping>
         <filter-name>CrmLoginFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>OncePerRequestDateFilter</filter-name>
-        <url-pattern>/order/*</url-pattern>
-    </filter-mapping>
+<!--    <filter-mapping>-->
+<!--        <filter-name>OncePerRequestDateFilter</filter-name>-->
+<!--        <url-pattern>/order/*</url-pattern>-->
+<!--    </filter-mapping>-->
 
     <servlet>
         <servlet-name>com.freshdirect.webapp.util.json.FDJSONRPCServlet</servlet-name>
@@ -183,12 +183,10 @@
         <url-pattern>/promo_publish</url-pattern>
     </servlet-mapping> 
     <session-config>
-        <session-timeout>15</session-timeout>
+        <session-timeout>60</session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-        <welcome-file>index.html</welcome-file>
-        <welcome-file>index.htm</welcome-file>
+        <welcome-file>/main/main_index.jsp</welcome-file>
     </welcome-file-list>
     <error-page>
         <exception-type>java.lang.Throwable</exception-type>
@@ -230,4 +228,124 @@
         <taglib-uri>bean</taglib-uri>
         <taglib-location>/WEB-INF/shared/tld/struts-bean.tld</taglib-location>
     </taglib>
+    
+    <security-constraint>
+    <display-name></display-name>
+    <web-resource-collection>
+      <web-resource-name>CRM</web-resource-name>
+      <description>Security Constraints for CRM</description>
+      <url-pattern>/*</url-pattern>
+      <http-method>POST</http-method>
+      <http-method>GET</http-method>
+      <http-method>PUT</http-method>
+      <http-method>DELETE</http-method>
+    </web-resource-collection>
+    <auth-constraint>
+      <description>Security Constraints for CRM</description>
+      <role-name>CRM_Administrator</role-name>
+      <role-name>CRM_Developer</role-name>
+      <role-name>CRM_QA</role-name>     
+      <role-name>CRM_ETS</role-name>    
+      <role-name>CRM_Supervisor</role-name>    
+      <role-name>CRM_MarketingOperations</role-name>
+      <role-name>CRM_COS</role-name> 
+      <role-name>CRM_Transportation</role-name> 
+      <role-name>CRM_OperationsCenter</role-name>
+      <role-name>CRM_SeniorOperationsCenter</role-name>
+      <role-name>CRM_Finance</role-name>    
+      <role-name>CRM_NewAgent</role-name>
+      <role-name>CRM_Agent</role-name>     
+      <role-name>CRM_SeniorAgent</role-name>    
+      <role-name>CRM_Business</role-name>
+      <role-name>CRM_Security</role-name> 
+      <role-name>CRM_ERP</role-name>    
+      <role-name>CRM_System</role-name>         
+    </auth-constraint>
+    <user-data-constraint>
+      <description>SSL not required</description>
+      <transport-guarantee>NONE</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<realm-name>FreshDirect</realm-name>
+		<form-login-config>
+			<form-login-page>/login.jsp</form-login-page>
+			<form-error-page>/login.jsp</form-error-page>
+		</form-login-config>
+	</login-config>
+	
+	 <security-role>
+    	<description>CRM Administrator</description>
+    	<role-name>CRM_Administrator</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_Developer</description>
+    	<role-name>CRM_Developer</role-name>
+  	 </security-role>
+  	   <security-role>
+    	<description>CRM_QA</description>
+    	<role-name>CRM_QA</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_ETS</description>
+    	<role-name>CRM_ETS</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_Supervisor</description>
+    	<role-name>CRM_Supervisor</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_MarketingOperations</description>
+    	<role-name>CRM_MarketingOperations</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_COS</description>
+    	<role-name>CRM_COS</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_Transportation</description>
+    	<role-name>CRM_Transportation</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_OperationsCenter</description>
+    	<role-name>CRM_OperationsCenter</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_SeniorOperationsCenter</description>
+    	<role-name>CRM_SeniorOperationsCenter</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_Finance</description>
+    	<role-name>CRM_Finance</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_NewAgent</description>
+    	<role-name>CRM_NewAgent</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_Agent</description>
+    	<role-name>CRM_Agent</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_SeniorAgent</description>
+    	<role-name>CRM_SeniorAgent</role-name>
+  	 </security-role>
+  	  <security-role>
+    	<description>CRM_Business</description>
+    	<role-name>CRM_Business</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_Security</description>
+    	<role-name>CRM_Security</role-name>
+  	 </security-role>
+  	 <security-role>
+    	<description>CRM_ERP</description>
+    	<role-name>CRM_ERP</role-name>
+  	 </security-role>  	 
+  	 <security-role>
+    	<description>CRM_System</description>
+    	<role-name>CRM_System</role-name>
+  	 </security-role> 
 </web-app>

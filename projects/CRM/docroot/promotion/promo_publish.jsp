@@ -3,6 +3,7 @@
 <%@ page import="com.freshdirect.webapp.taglib.promotion.PromoFilterCriteria"%>
 <%@ page import="com.freshdirect.webapp.taglib.promotion.PromoNewRow"%>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.EnumUserInfoName"%>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <%@ taglib uri='freshdirect' prefix='fd' %>
@@ -10,13 +11,15 @@
 <tmpl:insert template='/template/top_nav.jsp'>
 	<tmpl:put name='title' direct='true'>Publish Promotions</tmpl:put>
 	<tmpl:put name='content' direct='true'>
-	<crm:GetCurrentAgent id='currentAgent'>
+	
 		<fd:GetPublishablePromotions id="promoRows">
 		<%
 			final boolean isPublishInvoked = "publish".equalsIgnoreCase(request.getParameter("action"));
 			final int s = promoRows.size();
 			
 			String promoId = "";
+			String userId = CrmSecurityManager.getUserName(request);
+			String userRole = CrmSecurityManager.getUserRole(request);
 		%>
 		<%-- PROMO HEADER --%>
 		<fd:GetPromotionNew id = "promotion" promotionId="<%= promoId %>">
@@ -101,6 +104,6 @@
 			</div>
 		</div>
 		</fd:GetPublishablePromotions>
-	</crm:GetCurrentAgent>
+	
 	</tmpl:put>
 </tmpl:insert>

@@ -72,8 +72,10 @@ session.setAttribute(SessionName.USER,null); %>
     <tmpl:put name='title' direct='true'>Order <%= orderId %> Cases</tmpl:put>
 		
     	<tmpl:put name='content' direct='true'>
-			<% CrmCaseTemplate template = new CrmCaseTemplate(); %>
-    		<crm:GetCurrentAgent id='currAgent'>
+			<% CrmCaseTemplate template = new CrmCaseTemplate();
+			String agentId = CrmSecurityManager.getUserName(request);
+			String agentRole = CrmSecurityManager.getUserRole(request);%>
+    		
     			<% template.setSalePK(new PrimaryKey(orderId)); %>
 
 			<crm:FindCases id='cases' template='<%= template %>'>
@@ -86,7 +88,7 @@ session.setAttribute(SessionName.USER,null); %>
 
 			</crm:FindCases>
 			<iframe id="case_summary" name="case_summary" src="/includes/case_summary.jsp?<%=NVL.apply(request.getQueryString(),"")%>" width="100%" height="240" scrolling="no" FrameBorder="0"></iframe>
-			</crm:GetCurrentAgent>
+			
 			
 		</tmpl:put>
 	

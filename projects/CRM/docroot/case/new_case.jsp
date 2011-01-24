@@ -23,7 +23,7 @@
 		if(saleId != null){
 			cm.setSalePK("".equals(saleId) ? null : new PrimaryKey(saleId));
 		}
-		
+		boolean isSecurityQueue= false;
 		String lastPage = "/main/index.jsp";
 			if (custId!=null && !"".equals(custId)) lastPage = "/main/case_history.jsp";
 			if (saleId!=null && !"".equals(custId)) lastPage = "/main/order_details.jsp?orderId=" + saleId;
@@ -33,9 +33,7 @@
 
 		<div class="case_content" <%= (session.getAttribute(SessionName.USER) != null) ? "style='height: 78%;'" : "" %>>
 
-			<crm:GetCurrentAgent id='currAgent'>
-				<% cm.setAssignedAgentPK( currAgent.getPK() ); %>
-			</crm:GetCurrentAgent>
+			
 			<%@ include file="/includes/case_details.jspf" %>
 			
 		</div>

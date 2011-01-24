@@ -86,8 +86,9 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 				Collections.sort(attrParamList);
 				promotion.setAttributeList(attrParamList);
 				HttpSession session = pageContext.getSession();
-				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-				promotion.setModifiedBy(agent.getUserId());
+//				CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+				String agentId = CrmSession.getCurrentAgentStr(session);
+				promotion.setModifiedBy(agentId);
 				promotion.setModifiedDate(new Date());
 				if(actionResult.isSuccess()){
 					populatePromoChangeModel(model);
@@ -158,8 +159,9 @@ public class PromotionCustReqControllerTag extends AbstractControllerTag {
 						model.setPriorEcheckUse("");
 					}
 					HttpSession session = pageContext.getSession();
-					CrmAgentModel agent = CrmSession.getCurrentAgent(session);
-					promotion.setModifiedBy(agent.getUserId());
+//					CrmAgentModel agent = CrmSession.getCurrentAgent(session);
+					String agentId = CrmSession.getCurrentAgentStr(session);
+					promotion.setModifiedBy(agentId);
 					promotion.setModifiedDate(new Date());
 					
 					populatePromoChangeModel(model);

@@ -51,13 +51,13 @@ if ("POST".equals(request.getMethod())) {
         dateParam = cal.getTime();
 }
 %>
-<tmpl:insert template='/template/top_nav.jsp'>
+<tmpl:insert template='/template/supervisor_resources.jsp'>
 
 <tmpl:put name='title' direct='true'>Supervisor Resources > Orders by Credit Card Info</tmpl:put>
 
 <tmpl:put name='content' direct='true'>
 
-<jsp:include page="/includes/supervisor_nav.jsp" />
+
 <%
 FDAuthInfoSearchCriteria criteria = new FDAuthInfoSearchCriteria();
 criteria.setCardType(EnumCardType.getCardType(NVL.apply(request.getParameter("cardType"), "").trim()));

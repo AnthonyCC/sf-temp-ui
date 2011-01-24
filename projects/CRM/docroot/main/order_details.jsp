@@ -14,13 +14,13 @@
 <%@ taglib uri='freshdirect' prefix='fd' %>
 <%@ taglib uri='crm' prefix='crm' %>
 <% boolean isGuest = false; %>
-	<crm:GetCurrentAgent id="currentAgent">
-		<% isGuest = currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.GUE_CODE)); %> 
-	</crm:GetCurrentAgent>
+	
 <%
     boolean forPrint = "print".equalsIgnoreCase(request.getParameter("for"));
     String tmpl = "/template/" + (forPrint && !isGuest ? "print" : "top_nav") + ".jsp";
     String orderId = request.getParameter("orderId");
+    String agentId = CrmSecurityManager.getUserName(request);
+    String agentRole = CrmSecurityManager.getUserRole(request);
 %>
 <tmpl:insert template='<%= tmpl %>'>
 

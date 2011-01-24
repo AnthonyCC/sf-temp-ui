@@ -1,5 +1,5 @@
 <td class="vTop" rowspan="2">
-<%if(FDStoreProperties.isPromoPublishNodeMaster() && isADMUser){ %>
+<%if(FDStoreProperties.isPromoPublishNodeMaster() && isPromoAllAccessUser){ %>
 	<input type="hidden" name="actionName" id="actionName" value=""/>
 	<input type="hidden" name="status" id="status" value=""/>
 		<img width="317" height="0" src="/media_stat/crm/images/clear.gif" alt="" />

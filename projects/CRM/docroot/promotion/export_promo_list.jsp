@@ -147,11 +147,7 @@
 %>
 <% 
 	String linkURL = "#";
-	/*if(currentAgent.getRole().equals(CrmAgentRole.getEnum(CrmAgentRole.ADM_CODE))) { 
-		linkURL = "/promotion/edit_promotion.jsp?promoId="+p.getCode();
-	} else {
-		linkURL = "/main/view_promotion.jsp?promoId="+p.getCode();
-	}*/	
+	
 	linkURL = "/main/view_promotion.jsp?promoId="+p.getCode();
 
 		  	String rCode = p.getRedemptionCode();

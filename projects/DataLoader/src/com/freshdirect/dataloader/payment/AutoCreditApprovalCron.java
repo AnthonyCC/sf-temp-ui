@@ -42,7 +42,7 @@ public class AutoCreditApprovalCron {
 				String complaintId = (String) i.next();
 				LOGGER.info("Auto approve STARTED for complaint ID : " + complaintId);
 				try {
-					sb.approveComplaint(complaintId, true, "SYSTEM", true);
+					sb.approveComplaint(complaintId, true, "SYSTEM", true,1000.0);
 					LOGGER.info("Auto approve FINISHED for comolaint ID : " + complaintId);
 				} catch (ErpComplaintException ex) {
 					LOGGER.warn("Auto approve FAILED for complaint ID : " + complaintId);

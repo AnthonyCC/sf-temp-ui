@@ -164,6 +164,8 @@ public interface FDCustomerManagerSB extends EJBObject {
      */
     public FDIdentity login(String userId, String password) throws FDAuthenticationException, FDResourceException, RemoteException;
     
+    public PrimaryKey getCustomerId(String userId) throws FDResourceException, RemoteException;
+    
     public FDCustomerInfo getCustomerInfo(FDIdentity identity) throws FDResourceException, RemoteException;
     
     /**
@@ -452,9 +454,9 @@ public interface FDCustomerManagerSB extends EJBObject {
      * @throws FDResourceException if an error occured while accessing remote resources
      * @throws ErpComplaintException if order was not in proper state to accept complaints
      */
-    public void addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId ) throws FDResourceException, ErpComplaintException, RemoteException;
+    public void addComplaint(ErpComplaintModel complaint, String saleId,String erpCustomerId,String fdCustomerId, boolean autoApproveAuthorized, Double limit  ) throws FDResourceException, ErpComplaintException, RemoteException;
     
-    public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail) throws FDResourceException, ErpComplaintException, RemoteException;
+    public void approveComplaint(String complaintId, boolean isApproved, String csrId, boolean sendMail,Double limit) throws FDResourceException, ErpComplaintException, RemoteException;
     
     public List<String> getComplaintsForAutoApproval() throws FDResourceException, ErpComplaintException, RemoteException;
     

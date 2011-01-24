@@ -7,6 +7,7 @@
 <%@ page import="com.freshdirect.framework.webapp.*" %>
 <%@ page import="com.freshdirect.webapp.taglib.fdstore.*" %>
 <%@ page import="com.freshdirect.webapp.util.*" %>
+<%@ page import='com.freshdirect.webapp.crm.security.*' %>
 
 <%@ taglib uri='template' prefix='tmpl' %>
 <%@ taglib uri='logic' prefix='logic' %>
@@ -14,7 +15,8 @@
 
 <%  
     FDSessionUser user = (FDSessionUser) session.getAttribute(SessionName.USER);
-    
+	String agentId = CrmSecurityManager.getUserName(request);
+	String agentRole = CrmSecurityManager.getUserRole(request);
     // Get the order and complaint IDs from the session
     ErpPaymentMethodI paymentMethod = null;
     String orderId = request.getParameter("orderId");
@@ -82,12 +84,12 @@
         <input type="hidden" name="orderId" value="<%= orderId %>">
         <TR>
             <td align="center">
-                <crm:GetCurrentAgent id="currentAgent">
-                <%if(currentAgent.isSupervisor() || currentAgent.isMonitor()){%>
+                <%if(CrmSecurityManager.hasAccessToPage(agentRole,"approveCredit")){%>
                     <input type="submit" class="submit" value="APPROVE THIS CREDIT" onClick="setThisAction(document.approve_credit,'approve');"> 
                 <%}%>
+                <%if(CrmSecurityManager.hasAccessToPage(agentRole,"rejectCredit")){%>
                 <input type="submit" class="clear" value="REJECT THIS CREDIT" onClick="setThisAction(document.approve_credit,'reject');"><br>
-                </crm:GetCurrentAgent>
+                <% } %>
             </td>
         </TR>
     </table>

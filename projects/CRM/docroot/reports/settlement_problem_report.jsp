@@ -42,7 +42,7 @@ if (sm == null || sd == null || sy == null) {
 <jsp:include page="/includes/reports_nav.jsp" />
 <fd:CrmSettlementProblemSearch result="result" actionName="searchSettlementProblems" reportName="report">
 <table width="100%" cellpadding="0" cellspacing="0" class="sub_nav">
-<form method='POST' name="settlement_problem"><tr><td><span class="sub_nav_title">Settlement Problem</span> Search for orders that have a settlement problem <% if ("POST".equals(request.getMethod()) && report.size() > 0) {%><span class="note" style="font-weight: normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></td><td align="right"><a href="/reports/index.jsp">All Reports >></a></td></tr></table>
+<form method='POST' name="settlement_problem"><tr><td><span class="sub_nav_title">Settlement Problem</span> Search for orders that have a settlement problem <% if ("POST".equals(request.getMethod()) && report.size() > 0) {%><span class="note" style="font-weight: normal;"><input type="checkbox" name="forPrint" onClick="javascript:toggleScroll('result','list_content','content_fixed');"> Print View</span><% } %></td><td align="right"><a href="/reports/reports_index.jsp">All Reports >></a></td></tr></table>
 <table width="100%" cellpadding="0" cellspacing="0" class="content_fixed">
         <tr>
 			<td><b>Select Type: </b></td>
